@@ -197,13 +197,17 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
     it('adds a discard expression and uniforms to the styles', () => {
       const firstBuilder = spy.firstCall.args[0].builder;
       const secondBuilder = spy.secondCall.args[0].builder;
-      expect(firstBuilder.uniforms_).to.contain('sampler2D u_depthMask');
-      expect(firstBuilder.uniforms_).to.contain('float u_tileZoomLevel');
+      expect(firstBuilder.uniforms_).to.eql([
+        {name: 'u_depthMask', type: 'sampler2D'},
+        {name: 'u_tileZoomLevel', type: 'float'},
+      ]);
       expect(firstBuilder.getFragmentDiscardExpression()).to.be(
         'texture2D(u_depthMask, gl_FragCoord.xy / u_pixelRatio / u_viewportSizePx).r * 50. > u_tileZoomLevel + 0.5',
       );
-      expect(secondBuilder.uniforms_).to.contain('sampler2D u_depthMask');
-      expect(secondBuilder.uniforms_).to.contain('float u_tileZoomLevel');
+      expect(secondBuilder.uniforms_).to.eql([
+        {name: 'u_depthMask', type: 'sampler2D'},
+        {name: 'u_tileZoomLevel', type: 'float'},
+      ]);
       expect(secondBuilder.getFragmentDiscardExpression()).to.be(
         '(!(u_zoom > 10.0)) || (texture2D(u_depthMask, gl_FragCoord.xy / u_pixelRatio / u_viewportSizePx).r * 50. > u_tileZoomLevel + 0.5)',
       );

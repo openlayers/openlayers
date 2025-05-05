@@ -87,7 +87,9 @@ describe('ol/render/webgl/compileUtil', () => {
 
       applyContextToBuilder(builder, context);
 
-      expect(builder.addUniform.calledWith('vec4 u_var_myColor')).to.be(true);
+      expect(builder.addUniform.calledWith('u_var_myColor', 'vec4')).to.be(
+        true,
+      );
       expect(
         builder.addAttribute.calledWith(
           'a_prop_colorProp',

@@ -191,8 +191,8 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
           ? `(${exisitingDiscard}) || (${discardFromMask})`
           : discardFromMask,
       );
-      builder.addUniform(`sampler2D ${Uniforms.TILE_MASK_TEXTURE}`);
-      builder.addUniform(`float ${Uniforms.TILE_ZOOM_LEVEL}`);
+      builder.addUniform(Uniforms.TILE_MASK_TEXTURE, 'sampler2D');
+      builder.addUniform(Uniforms.TILE_ZOOM_LEVEL, 'float');
     }
 
     this.styleRenderers_ = this.styles_.map((style) => {
@@ -234,7 +234,7 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
       .setFillColorExpression(
         `vec4(${Uniforms.TILE_ZOOM_LEVEL} / 50., 0., 0., 1.)`,
       )
-      .addUniform(`float ${Uniforms.TILE_ZOOM_LEVEL}`);
+      .addUniform(Uniforms.TILE_ZOOM_LEVEL, 'float');
     this.tileMaskProgram_ = this.helper.getProgram(
       builder.getFillFragmentShader(),
       builder.getFillVertexShader(),

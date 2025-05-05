@@ -99,7 +99,7 @@ export function applyContextToBuilder(builder, context) {
       // we're not packing colors when they're passed as uniforms
       glslType = 'vec4';
     }
-    builder.addUniform(`${glslType} ${uniformName}`);
+    builder.addUniform(uniformName, glslType);
   }
 
   // for each feature attribute used in the fragment shader, define a varying that will be used to pass data

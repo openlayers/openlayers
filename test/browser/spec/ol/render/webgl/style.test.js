@@ -40,8 +40,8 @@ describe('ol/render/webgl/style', () => {
       const lowerUniformName = uniformNameForVariable('lower');
       const higherUniformName = uniformNameForVariable('higher');
       expect(result.builder.uniforms_).to.eql([
-        `float ${lowerUniformName}`,
-        `float ${higherUniformName}`,
+        {name: lowerUniformName, type: 'float'},
+        {name: higherUniformName, type: 'float'},
       ]);
       expect(result.builder.attributes_).to.eql([
         {
@@ -363,8 +363,8 @@ describe('ol/render/webgl/style', () => {
         });
         it('sets up builder accordingly', () => {
           expect(result.builder.uniforms_).to.eql([
-            `vec2 u_texture${uid}_size`,
-            `sampler2D u_texture${uid}`,
+            {name: `u_texture${uid}_size`, type: 'vec2'},
+            {name: `u_texture${uid}`, type: 'sampler2D'},
           ]);
           expect(result.builder.attributes_).to.eql([
             {
@@ -703,10 +703,10 @@ describe('ol/render/webgl/style', () => {
         });
         it('parses style', () => {
           expect(result.builder.uniforms_).to.eql([
-            'float u_var_width',
-            'float u_var_capType',
-            'float u_var_joinType',
-            'float u_var_miterLimit',
+            {name: 'u_var_width', type: 'float'},
+            {name: 'u_var_capType', type: 'float'},
+            {name: 'u_var_joinType', type: 'float'},
+            {name: 'u_var_miterLimit', type: 'float'},
           ]);
           expect(result.builder.attributes_).to.eql([
             {
@@ -872,7 +872,9 @@ describe('ol/render/webgl/style', () => {
             },
           );
 
-          expect(result.builder.uniforms_).to.eql(['float u_var_scale']);
+          expect(result.builder.uniforms_).to.eql([
+            {name: 'u_var_scale', type: 'float'},
+          ]);
           expect(result.builder.attributes_).to.eql([
             {
               name: 'a_prop_intensity',
@@ -1114,19 +1116,19 @@ describe('ol/render/webgl/style', () => {
             color: 'pink',
             lineType: 'low',
             lineWidth: 0.5,
-            fillColor: 'rgba(123, 240, 100, 0.3)',
+            fillColor: 'rgba(51, 153, 102, 0.3)',
             transparent: true,
           },
         );
       });
       it('adds uniforms to the shader builder', () => {
         expect(parseResult.builder.uniforms_).to.eql([
-          'vec2 u_var_iconSize',
-          'vec4 u_var_color',
-          'float u_var_lineType',
-          'float u_var_lineWidth',
-          'float u_var_transparent',
-          'vec4 u_var_fillColor',
+          {name: 'u_var_iconSize', type: 'vec2'},
+          {name: 'u_var_color', type: 'vec4'},
+          {name: 'u_var_lineType', type: 'float'},
+          {name: 'u_var_lineWidth', type: 'float'},
+          {name: 'u_var_transparent', type: 'float'},
+          {name: 'u_var_fillColor', type: 'vec4'},
         ]);
       });
       it('returns uniforms in the result', () => {

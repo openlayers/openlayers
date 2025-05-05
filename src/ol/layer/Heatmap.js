@@ -261,12 +261,12 @@ class Heatmap extends BaseVector {
     if (typeof this.getBlur() === 'number') {
       blurCompiled = 'a_blur';
       blurRadiusUniforms['a_blur'] = () => this.getBlur();
-      builder.addUniform('float a_blur');
+      builder.addUniform('a_blur', 'float');
     }
     if (typeof this.getRadius() === 'number') {
       radiusCompiled = 'a_radius';
       blurRadiusUniforms['a_radius'] = () => this.getRadius();
-      builder.addUniform('float a_radius');
+      builder.addUniform('a_radius', 'float');
     }
 
     /** @type {import('../render/webgl/VectorStyleRenderer.js').AttributeDefinitions} */

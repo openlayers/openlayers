@@ -34,11 +34,17 @@ const DEFAULT_STYLE = createDefaultStyle();
 
 /**
  * @typedef {Object} AttributeDescription
- * @property {string} name Attribute name, as will be declared in the headers (including a_)
- * @property {string} type Attribute type, either `float`, `vec2`, `vec4`...
- * @property {string} varyingName Varying name, as will be declared in the fragment shader (including v_)
+ * @property {string} name Attribute name, as will be declared in the header of the vertex shader (including a_)
+ * @property {string} type Attribute GLSL type, either `float`, `vec2`, `vec4`...
+ * @property {string} varyingName Varying name, as will be declared in the header of both shaders (including v_)
  * @property {string} varyingType Varying type, either `float`, `vec2`, `vec4`...
- * @property {string} varyingExpression GLSL expression to assign to the varying in the vertex shader
+ * @property {string} varyingExpression GLSL expression to assign to the varying in the vertex shader (e.g. `unpackColor(a_myAttr)`)
+ */
+
+/**
+ * @typedef {Object} UniformDescription
+ * @property {string} name Uniform name, as will be declared in the header of the vertex shader (including u_)
+ * @property {string} type Uniform GLSL type, either `float`, `vec2`, `vec4`...
  */
 
 /**
@@ -48,8 +54,8 @@ const DEFAULT_STYLE = createDefaultStyle();
  *
  * ```js
  * const shader = new ShaderBuilder()
- *   .addVarying('v_width', 'float', 'a_width')
- *   .addUniform('u_time')
+ *   .addAttribute('a_width', 'float')
+ *   .addUniform('u_time', 'float)
  *   .setColorExpression('...')
  *   .setSymbolSizeExpression('...')
  *   .getSymbolFragmentShader();
@@ -63,7 +69,7 @@ export class ShaderBuilder {
   constructor() {
     /**
      * Uniforms; these will be declared in the header (should include the type).
-     * @type {Array<string>}
+     * @type {Array<UniformDescription>}
      * @private
      */
     this.uniforms_ = [];
@@ -202,11 +208,15 @@ export class ShaderBuilder {
   /**
    * Adds a uniform accessible in both fragment and vertex shaders.
    * The given name should include a type, such as `sampler2D u_texture`.
-   * @param {string} name Uniform name
+   * @param {string} name Uniform name, including the `u_` prefix
+   * @param {'float'|'vec2'|'vec3'|'vec4'|'sampler2D'} type GLSL type
    * @return {ShaderBuilder} the builder object
    */
-  addUniform(name) {
-    this.uniforms_.push(name);
+  addUniform(name, type) {
+    this.uniforms_.push({
+      name,
+      type,
+    });
     return this;
   }
 
@@ -214,21 +224,21 @@ export class ShaderBuilder {
    * Adds an attribute accessible in the vertex shader, read from the geometry buffer.
    * The given name should include a type, such as `vec2 a_position`.
    * Attributes will also be made available under the same name in fragment shaders.
-   * @param {string} name Attribute name
-   * @param {'float'|'vec2'|'vec3'|'vec4'} type Type
-   * @param {string} [transform] Expression which will be assigned to the varying in the vertex shader, and
+   * @param {string} name Attribute name, including the `a_` prefix
+   * @param {'float'|'vec2'|'vec3'|'vec4'} type GLSL type
+   * @param {string} [varyingExpression] Expression which will be assigned to the varying in the vertex shader, and
    * passed on to the fragment shader.
-   * @param {'float'|'vec2'|'vec3'|'vec4'} [transformedType] Type of the attribute after transformation;
+   * @param {'float'|'vec2'|'vec3'|'vec4'} [varyingType] Type of the attribute after transformation;
    * e.g. `vec4` after unpacking color components
    * @return {ShaderBuilder} the builder object
    */
-  addAttribute(name, type, transform, transformedType) {
+  addAttribute(name, type, varyingExpression, varyingType) {
     this.attributes_.push({
       name,
       type,
       varyingName: name.replace(/^a_/, 'v_'),
-      varyingType: transformedType ?? type,
-      varyingExpression: transform ?? name,
+      varyingType: varyingType ?? type,
+      varyingExpression: varyingExpression ?? name,
     });
     return this;
   }
@@ -463,7 +473,7 @@ export class ShaderBuilder {
     }
 
     return `${COMMON_HEADER}
-${this.uniforms_.map((uniform) => `uniform ${uniform};`).join('\n')}
+${this.uniforms_.map((uniform) => `uniform ${uniform.type} ${uniform.name};`).join('\n')}
 attribute vec2 a_position;
 attribute float a_index;
 attribute vec4 a_hitColor;
@@ -540,7 +550,7 @@ ${this.attributes_
     }
 
     return `${COMMON_HEADER}
-${this.uniforms_.map((uniform) => `uniform ${uniform};`).join('\n')}
+${this.uniforms_.map((uniform) => `uniform ${uniform.type} ${uniform.name};`).join('\n')}
 varying vec2 v_texCoord;
 varying vec4 v_hitColor;
 varying vec2 v_centerPx;
@@ -584,7 +594,7 @@ ${this.attributes_
     }
 
     return `${COMMON_HEADER}
-${this.uniforms_.map((uniform) => `uniform ${uniform};`).join('\n')}
+${this.uniforms_.map((uniform) => `uniform ${uniform.type} ${uniform.name};`).join('\n')}
 attribute vec2 a_segmentStart;
 attribute vec2 a_segmentEnd;
 attribute float a_measureStart;
@@ -704,7 +714,7 @@ ${this.attributes_
     }
 
     return `${COMMON_HEADER}
-${this.uniforms_.map((uniform) => `uniform ${uniform};`).join('\n')}
+${this.uniforms_.map((uniform) => `uniform ${uniform.type} ${uniform.name};`).join('\n')}
 varying vec2 v_segmentStart;
 varying vec2 v_segmentEnd;
 varying float v_angleStart;
@@ -884,7 +894,7 @@ ${this.attributes_
     }
 
     return `${COMMON_HEADER}
-${this.uniforms_.map((uniform) => `uniform ${uniform};`).join('\n')}
+${this.uniforms_.map((uniform) => `uniform ${uniform.type} ${uniform.name};`).join('\n')}
 attribute vec2 a_position;
 attribute vec4 a_hitColor;
 
@@ -919,7 +929,7 @@ ${this.attributes_
     }
 
     return `${COMMON_HEADER}
-${this.uniforms_.map((uniform) => `uniform ${uniform};`).join('\n')}
+${this.uniforms_.map((uniform) => `uniform ${uniform.type} ${uniform.name};`).join('\n')}
 varying vec4 v_hitColor;
 ${this.attributes_
   .map(
