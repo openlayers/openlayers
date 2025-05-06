@@ -184,7 +184,7 @@ function parseImageOffsetProperties(
   let offsetExpression = expressionToGlsl(
     context,
     style[`${prefix}offset`],
-    NumberArrayType,
+    SizeType,
   );
   if (`${prefix}offset-origin` in style) {
     switch (style[`${prefix}offset-origin`]) {
