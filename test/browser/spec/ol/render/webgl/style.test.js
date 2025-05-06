@@ -941,11 +941,11 @@ describe('ol/render/webgl/style', () => {
             `vec4(1.0, 0.0, 0.0, 1.0) * sampleFillPattern(u_texture${uid}, u_texture${uid}_size, vec2(0., u_texture${uid}_size.y) + vec2(5.0, 5.0) * vec2(0., -1.) + vec2(5.0, 10.0) * vec2(1., -1.), vec2(5.0, 5.0), pxOrigin, pxPos)`,
           );
         });
-      });      
-      
+      });
+
       describe('fill pattern, dynamic offset', () => {
-        let result, uid;
-        
+        let result;
+
         beforeEach(() => {
           const style = {
             'fill-color': 'red',
@@ -954,44 +954,50 @@ describe('ol/render/webgl/style', () => {
             'fill-pattern-offset': ['get', 'patternOffset'],
             'fill-pattern-size': [5, 5],
           };
-          uid = computeHash(style['fill-pattern-src']);
           result = parseLiteralStyle(style);
         });
-        
+
         it('includes pattern sampling function in the shader', () => {
           expect(result.builder.fragmentShaderFunctions_[0]).to.contain(
-            'vec4 sampleFillPattern'
+            'vec4 sampleFillPattern',
           );
         });
-        
+
         it('registers a vec2 pattern offset attribute', () => {
-          const patternOffsetAttr = result.builder.attributes_.find(attr => 
-            attr.name === 'a_prop_patternOffset');
-          
+          const patternOffsetAttr = result.builder.attributes_.find(
+            (attr) => attr.name === 'a_prop_patternOffset',
+          );
+
           expect(patternOffsetAttr).not.to.be(undefined);
           expect(patternOffsetAttr.type).to.be('vec2');
           expect(patternOffsetAttr.varyingName).to.be('v_prop_patternOffset');
           expect(patternOffsetAttr.varyingType).to.be('vec2');
-          expect(patternOffsetAttr.varyingExpression).to.be('a_prop_patternOffset');
+          expect(patternOffsetAttr.varyingExpression).to.be(
+            'a_prop_patternOffset',
+          );
         });
-        
+
         it('applies pattern offset in the fill color expression', () => {
-          expect(result.builder.fillColorExpression_).to.contain('a_prop_patternOffset');
+          expect(result.builder.fillColorExpression_).to.contain(
+            'a_prop_patternOffset',
+          );
         });
-        
+
         it('registers pattern offset as a size-2 attribute', () => {
-          expect(Object.keys(result.attributes)).to.contain('prop_patternOffset');
+          expect(Object.keys(result.attributes)).to.contain(
+            'prop_patternOffset',
+          );
           expect(result.attributes['prop_patternOffset'].size).to.eql(2);
         });
-        
+
         it('extracts pattern offset values correctly from features', () => {
           const callback = result.attributes['prop_patternOffset'].callback;
           const feature = new Feature({
-            patternOffset: [15, 25]
+            patternOffset: [15, 25],
           });
           expect(callback(feature)).to.eql([15, 25]);
         });
-        
+
         it('handles missing pattern offset gracefully', () => {
           const callback = result.attributes['prop_patternOffset'].callback;
           const feature = new Feature({});
