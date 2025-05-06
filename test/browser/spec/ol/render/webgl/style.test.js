@@ -995,7 +995,6 @@ describe('ol/render/webgl/style', () => {
         it('handles missing pattern offset gracefully', () => {
           const callback = result.attributes['prop_patternOffset'].callback;
           const feature = new Feature({});
-          // Should return undefined or default value depending on implementation
           expect(callback(feature)).to.eql(undefined);
         });
       });
