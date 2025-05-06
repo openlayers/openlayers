@@ -648,9 +648,9 @@ function parseStrokeProperties(style, builder, uniforms, context) {
     const uniqueDashKey = computeHash(style['stroke-line-dash']);
     const dashFunctionName = `dashDistanceField_${uniqueDashKey}`;
 
-    const dashLengthsDef = dashPattern.map(
-      (v, i) => `float dashLength${i} = ${v};`,
-    );
+    const dashLengthsParamsDef = dashPattern
+      .map((v, i) => `float dashLength${i}`)
+      .join(', ');
     const totalLengthDef = dashPattern
       .map((v, i) => `dashLength${i}`)
       .join(' + ');
@@ -664,13 +664,13 @@ function parseStrokeProperties(style, builder, uniforms, context) {
     }
 
     context.functions[dashFunctionName] =
-      `float ${dashFunctionName}(float distance, float radius, float capType, float lineWidth) {
-  ${dashLengthsDef.join('\n  ')}
+      `float ${dashFunctionName}(float distance, float radius, float capType, float lineWidth, ${dashLengthsParamsDef}) {
   float totalDashLength = ${totalLengthDef};
   return ${distanceExpression};
 }`;
+    const dashLengthsCalls = dashPattern.map((v, i) => `${v}`).join(', ');
     builder.setStrokeDistanceFieldExpression(
-      `${dashFunctionName}(currentLengthPx + ${offsetExpression}, currentRadiusPx, capType, v_width)`,
+      `${dashFunctionName}(currentLengthPx + ${offsetExpression}, currentRadiusPx, capType, v_width, ${dashLengthsCalls})`,
     );
   }
 }

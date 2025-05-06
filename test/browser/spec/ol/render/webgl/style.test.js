@@ -746,7 +746,7 @@ describe('ol/render/webgl/style', () => {
             '(u_var_miterLimit - 10.0)',
           );
           expect(result.builder.strokeDistanceFieldExpression_).to.eql(
-            'dashDistanceField_450289113(currentLengthPx + (u_time * 5.0), currentRadiusPx, capType, v_width)',
+            'dashDistanceField_450289113(currentLengthPx + (u_time * 5.0), currentRadiusPx, capType, v_width, (a_prop_size * 10.0), (a_prop_size * 20.0), 5.0, (a_prop_size * 20.0))',
           );
           expect(Object.keys(result.attributes).length).to.eql(3);
           expect(result.attributes).to.have.property('prop_intensity');
@@ -761,11 +761,7 @@ describe('ol/render/webgl/style', () => {
             'float getSingleDashDistance',
           );
           expect(result.builder.fragmentShaderFunctions_).to
-            .contain(`float dashDistanceField_450289113(float distance, float radius, float capType, float lineWidth) {
-  float dashLength0 = (a_prop_size * 10.0);
-  float dashLength1 = (a_prop_size * 20.0);
-  float dashLength2 = 5.0;
-  float dashLength3 = (a_prop_size * 20.0);
+            .contain(`float dashDistanceField_450289113(float distance, float radius, float capType, float lineWidth, float dashLength0, float dashLength1, float dashLength2, float dashLength3) {
   float totalDashLength = dashLength0 + dashLength1 + dashLength2 + dashLength3;
   return min(getSingleDashDistance(distance, radius, 0., dashLength0, totalDashLength, capType, lineWidth), getSingleDashDistance(distance, radius, 0. + dashLength0 + dashLength1, dashLength2, totalDashLength, capType, lineWidth));
 }`);
@@ -830,6 +826,100 @@ describe('ol/render/webgl/style', () => {
           expect(result.builder.strokeColorExpression_).to.eql(
             `vec4(1.0, 0.0, 0.0, 1.0) * sampleStrokePattern(u_texture${uid}, u_texture${uid}_size, vec2(0., u_texture${uid}_size.y) + vec2(5.0, 5.0) * vec2(0., -1.) + vec2(5.0, 10.0) * vec2(1., -1.), vec2(5.0, 5.0), (2.0 * 10.0), currentLengthPx, currentRadiusRatio, v_width)`,
           );
+        });
+      });
+
+      describe('stroke style with all dynamic dash length expressions', () => {
+        let result;
+
+        beforeEach(() => {
+          // Create a style where ALL dash lengths come from expressions
+          const style = {
+            'stroke-color': 'red',
+            'stroke-width': 3,
+            'stroke-line-dash': [
+              ['get', 'dashLength0'],
+              ['get', 'dashLength1'],
+              ['get', 'dashLength2'],
+              ['get', 'dashLength3'],
+            ],
+            'stroke-line-dash-offset': ['get', 'dashOffset'],
+          };
+          result = parseLiteralStyle(style);
+        });
+
+        it('includes dash distance functions in the shader', () => {
+          expect(
+            result.builder.fragmentShaderFunctions_.some((fn) =>
+              fn.includes('getSingleDashDistance'),
+            ),
+          ).to.be(true);
+
+          const dashFunctionName = result.builder.fragmentShaderFunctions_
+            .find((fn) => fn.startsWith('float dashDistanceField_'))
+            .split('(')[0]
+            .split(' ')[1];
+
+          expect(dashFunctionName).to.contain('dashDistanceField_');
+        });
+
+        it('defines dash lengths as function parameters instead of inside function body', () => {
+          // Get the dashDistanceField function definition
+          const dashFunctionDef = result.builder.fragmentShaderFunctions_.find(
+            (fn) => fn.startsWith('float dashDistanceField_'),
+          );
+
+          // The function signature should include parameters for all dash lengths
+          const functionSignature = dashFunctionDef.split('{')[0];
+          expect(functionSignature).to.contain('float distance');
+          expect(functionSignature).to.contain('float radius');
+          expect(functionSignature).to.contain('float capType');
+          expect(functionSignature).to.contain('float lineWidth');
+          expect(functionSignature).to.contain('float dashLength0');
+          expect(functionSignature).to.contain('float dashLength1');
+          expect(functionSignature).to.contain('float dashLength2');
+          expect(functionSignature).to.contain('float dashLength3');
+        });
+
+        it('passes all dynamic dash length expressions to the function as parameters', () => {
+          expect(result.builder.strokeDistanceFieldExpression_).to.contain(
+            'dashDistanceField_',
+          );
+          expect(result.builder.strokeDistanceFieldExpression_).to.contain(
+            'a_prop_dashLength0',
+          );
+          expect(result.builder.strokeDistanceFieldExpression_).to.contain(
+            'a_prop_dashLength1',
+          );
+          expect(result.builder.strokeDistanceFieldExpression_).to.contain(
+            'a_prop_dashLength2',
+          );
+          expect(result.builder.strokeDistanceFieldExpression_).to.contain(
+            'a_prop_dashLength3',
+          );
+        });
+
+        it('correctly extracts all dash length values from features', () => {
+          const feature = new Feature({
+            dashLength0: 10,
+            dashLength1: 5,
+            dashLength2: 15,
+            dashLength3: 12,
+            dashOffset: 2,
+          });
+
+          expect(
+            result.attributes['prop_dashLength0'].callback(feature),
+          ).to.eql(10);
+          expect(
+            result.attributes['prop_dashLength1'].callback(feature),
+          ).to.eql(5);
+          expect(
+            result.attributes['prop_dashLength2'].callback(feature),
+          ).to.eql(15);
+          expect(
+            result.attributes['prop_dashLength3'].callback(feature),
+          ).to.eql(12);
         });
       });
     });
