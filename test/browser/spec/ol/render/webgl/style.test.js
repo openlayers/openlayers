@@ -1143,12 +1143,14 @@ describe('ol/render/webgl/style', () => {
       });
       it('processes uniforms according to their types', () => {
         expect(parseResult.uniforms['u_var_iconSize']()).to.eql([12, 18]);
-        expect(parseResult.uniforms['u_var_color']()).to.eql(asArray('pink'));
+        expect(parseResult.uniforms['u_var_color']()).to.eql([
+          1, 0.7529411764705882, 0.796078431372549, 1,
+        ]);
         expect(parseResult.uniforms['u_var_lineType']()).to.be.a('number');
         expect(parseResult.uniforms['u_var_lineWidth']()).to.eql(0.5);
-        expect(parseResult.uniforms['u_var_fillColor']()).to.eql(
-          asArray('rgba(123, 240, 100, 0.3)'),
-        );
+        expect(parseResult.uniforms['u_var_fillColor']()).to.eql([
+          0.2, 0.6, 0.4, 0.3,
+        ]);
         expect(parseResult.uniforms['u_var_transparent']()).to.eql(1);
       });
     });

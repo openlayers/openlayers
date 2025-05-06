@@ -153,7 +153,12 @@ export function generateUniformsFromContext(context, variables) {
         return value ? 1 : 0;
       }
       if (variable.type === ColorType) {
-        return asArray(value || '#eee');
+        const color = [...asArray(value || '#eee')];
+        color[0] /= 255;
+        color[1] /= 255;
+        color[2] /= 255;
+        color[3] ??= 1;
+        return color;
       }
       if (typeof value === 'string') {
         return getStringNumberEquivalent(value);
