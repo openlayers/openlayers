@@ -111,7 +111,7 @@ describe('ol/layer/WebGLVectorTile', function () {
       expect(layer.styleVariables_['fillColor']).to.be('yellow');
       const renderer = layer.getRenderer();
       const uniforms = renderer.styleRenderers_[0].uniforms_;
-      expect(uniforms.u_var_fillColor()).to.eql([255, 255, 0, 1]);
+      expect(uniforms.u_var_fillColor()).to.eql([1, 1, 0, 1]);
     });
 
     it('can be called before the layer is rendered', function () {

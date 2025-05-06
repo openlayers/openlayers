@@ -83,7 +83,7 @@ void main(void) {
     });
     it('generates a symbol vertex shader (with uniforms and attributes)', () => {
       const builder = new ShaderBuilder();
-      builder.addUniform('float u_myUniform');
+      builder.addUniform('u_myUniform', 'float');
       builder.addAttribute('a_myAttr', 'vec2');
       builder.setSymbolSizeExpression(`vec2(${numberToGlsl(6)})`);
       builder.setSymbolOffsetExpression(arrayToGlsl([5, -7]));
@@ -325,8 +325,8 @@ void main(void) {
     });
     it('generates a symbol fragment shader (with uniforms)', () => {
       const builder = new ShaderBuilder();
-      builder.addUniform('float u_myUniform');
-      builder.addUniform('vec2 u_myUniform2');
+      builder.addUniform('u_myUniform', 'float');
+      builder.addUniform('u_myUniform2', 'vec2');
       builder.setSymbolSizeExpression(`vec2(${numberToGlsl(6)})`);
       builder.setSymbolOffsetExpression(arrayToGlsl([5, -7]));
       builder.setSymbolColorExpression(colorToGlsl([255, 255, 255, 1]));
@@ -375,7 +375,7 @@ void main(void) {
       builder.addAttribute('a_opacity', 'float', numberToGlsl(0.4));
       builder.addAttribute('a_test', 'vec3', arrayToGlsl([1, 2, 3]));
       builder.addAttribute('a_myAttr', 'vec2');
-      builder.addUniform('float u_myUniform');
+      builder.addUniform('u_myUniform', 'float');
       builder.setStrokeWidthExpression(numberToGlsl(4));
       builder.setStrokeColorExpression(colorToGlsl([80, 0, 255, 1]));
       builder.setStrokeCapExpression(stringToGlsl('butt'));
@@ -679,7 +679,7 @@ void main(void) {
       builder.addAttribute('a_opacity', 'float', numberToGlsl(0.4));
       builder.addAttribute('a_test', 'vec3', arrayToGlsl([1, 2, 3]));
       builder.addAttribute('a_myAttr', 'vec2');
-      builder.addUniform('float u_myUniform');
+      builder.addUniform('u_myUniform', 'float');
       builder.setFillColorExpression(colorToGlsl([80, 0, 255, 1]));
       builder.setFragmentDiscardExpression('u_myUniform > 0.5');
 
@@ -717,7 +717,7 @@ void main(void) {
       builder.addAttribute('a_opacity', 'float', numberToGlsl(0.4));
       builder.addAttribute('a_test', 'vec3', arrayToGlsl([1, 2, 3]));
       builder.addAttribute('a_myAttr', 'vec2');
-      builder.addUniform('float u_myUniform');
+      builder.addUniform('u_myUniform', 'float');
       builder.setFillColorExpression(colorToGlsl([80, 0, 255, 1]));
       builder.setFragmentDiscardExpression('u_myUniform > 0.5');
 

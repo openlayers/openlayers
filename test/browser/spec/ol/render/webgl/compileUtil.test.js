@@ -87,7 +87,9 @@ describe('ol/render/webgl/compileUtil', () => {
 
       applyContextToBuilder(builder, context);
 
-      expect(builder.addUniform.calledWith('vec4 u_var_myColor')).to.be(true);
+      expect(builder.addUniform.calledWith('u_var_myColor', 'vec4')).to.be(
+        true,
+      );
       expect(
         builder.addAttribute.calledWith(
           'a_prop_colorProp',
@@ -120,6 +122,7 @@ describe('ol/render/webgl/compileUtil', () => {
       const context = {
         variables: {
           colorVar: {name: 'colorVar', type: ColorType},
+          anotherColorVar: {name: 'anotherColorVar', type: ColorType},
           stringVar: {name: 'stringVar', type: StringType},
           arrayVar: {name: 'arrayVar', type: NumberArrayType},
           booleanVar: {name: 'booleanVar', type: BooleanType},
@@ -127,6 +130,7 @@ describe('ol/render/webgl/compileUtil', () => {
       };
       const styleVariables = {
         colorVar: '#FFF',
+        anotherColorVar: [51, 102, 0, 0.4],
         stringVar: 'hello world',
         arrayVar: [1, 2, 3],
         booleanVar: true,
@@ -134,10 +138,12 @@ describe('ol/render/webgl/compileUtil', () => {
       const uniforms = generateUniformsFromContext(context, styleVariables);
 
       expect(uniforms).to.have.property('u_var_colorVar');
+      expect(uniforms).to.have.property('u_var_anotherColorVar');
       expect(uniforms).to.have.property('u_var_stringVar');
       expect(uniforms).to.have.property('u_var_arrayVar');
       expect(uniforms).to.have.property('u_var_booleanVar');
-      expect(uniforms.u_var_colorVar()).to.eql([255, 255, 255, 1]);
+      expect(uniforms.u_var_colorVar()).to.eql([1, 1, 1, 1]);
+      expect(uniforms.u_var_anotherColorVar()).to.eql([0.2, 0.4, 0, 0.4]);
       expect(uniforms.u_var_stringVar()).to.eql(stringToGlsl('hello world'));
       expect(uniforms.u_var_arrayVar()).to.eql([1, 2, 3]);
       expect(uniforms.u_var_booleanVar()).to.eql(1);

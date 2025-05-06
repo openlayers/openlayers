@@ -157,11 +157,11 @@ function parseImageProperties(style, builder, uniforms, prefix, textureId) {
   uniforms[`u_texture${textureId}_size`] = () => {
     return image.complete ? [image.width, image.height] : [0, 0];
   };
-  builder.addUniform(`vec2 u_texture${textureId}_size`);
+  builder.addUniform(`u_texture${textureId}_size`, 'vec2');
   const size = `u_texture${textureId}_size`;
 
   uniforms[`u_texture${textureId}`] = image;
-  builder.addUniform(`sampler2D u_texture${textureId}`);
+  builder.addUniform(`u_texture${textureId}`, 'sampler2D');
   return size;
 }
 
