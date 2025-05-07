@@ -479,4 +479,22 @@ describe('ol/webgl/WebGLHelper', function () {
       ]);
     });
   });
+
+  describe('attributes disabling', () => {
+    let disableAttribSpy;
+    beforeEach(() => {
+      h = new WebGLHelper();
+      disableAttribSpy = sinonSpy(h.getGL(), 'disableVertexAttribArray');
+      const program = h.getProgram(FRAGMENT_SHADER, VERTEX_SHADER);
+      h.useProgram(program, SAMPLE_FRAMESTATE);
+    });
+    it('all active attributes are disabled when enabling programs, disregarding of previous state', () => {
+      const gl = h.getGL();
+      const max = gl.getParameter(gl.MAX_VERTEX_ATTRIBS);
+      expect(disableAttribSpy.getCalls().length).to.eql(max); // each possible attribute is disabled
+      for (let i = 0; i < max; i++) {
+        expect(disableAttribSpy.getCall(i).args[0]).to.eql(i);
+      }
+    });
+  });
 });
