@@ -18,6 +18,7 @@ const openLine = new Feature({
     [-60, -50],
   ]),
   lineColor: 'rgba(80,0,0,0.75)',
+  firstDashDistance: 18,
 });
 
 const closedLine = new Feature({
@@ -32,6 +33,7 @@ const closedLine = new Feature({
     [90, -80],
   ]),
   lineColor: 'rgba(255,243,177,0.75)',
+  firstDashDistance: 18,
 });
 
 const dataDriven = {
@@ -55,7 +57,7 @@ const dashed = {
   'stroke-color': 'rgb(0,104,218)',
   'stroke-offset': -10,
   'stroke-width': 4,
-  'stroke-line-dash': [18, 10, 10, 10],
+  'stroke-line-dash': [['get', 'firstDashDistance'], 10, 10, 10],
   'stroke-line-dash-offset': 10,
 };
 const style = [bevelJoins, dataDriven, miterJoins, dashed];
