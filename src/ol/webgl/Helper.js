@@ -446,6 +446,14 @@ class WebGLHelper extends Disposable {
      * @private
      */
     this.startTime_ = Date.now();
+
+    /**
+     * @type {number}
+     * @private
+     */
+    this.maxAttributeCount_ = this.gl_.getParameter(
+      this.gl_.MAX_VERTEX_ATTRIBS,
+    );
   }
 
   /**
@@ -894,6 +902,7 @@ class WebGLHelper extends Disposable {
    * @param {import("../Map.js").FrameState} [frameState] Frame state.
    */
   useProgram(program, frameState) {
+    this.disableAllAttributes_();
     const gl = this.gl_;
     gl.useProgram(program);
     this.currentProgram_ = program;
@@ -1063,6 +1072,16 @@ class WebGLHelper extends Disposable {
    */
   setUniformMatrixValue(uniform, value) {
     this.gl_.uniformMatrix4fv(this.getUniformLocation(uniform), false, value);
+  }
+
+  /**
+   * Disable all vertex attributes.
+   * @private
+   */
+  disableAllAttributes_() {
+    for (let i = 0; i < this.maxAttributeCount_; i++) {
+      this.gl_.disableVertexAttribArray(i);
+    }
   }
 
   /**
