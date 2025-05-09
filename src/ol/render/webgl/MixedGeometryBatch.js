@@ -519,16 +519,21 @@ class MixedGeometryBatch {
 
   /**
    * @param {Feature|RenderFeature} feature Feature
+   * @param {import("../../proj.js").TransformFunction} [projectionTransform] Projection transform.
    */
-  changeFeature(feature) {
+  changeFeature(feature, projectionTransform) {
     // the feature is not present in the batch; do not add it to avoid unexpected behaviors
     if (!this.uidToRef_.get(getUid(feature))) {
       return;
     }
     this.removeFeature(feature);
-    const geometry = feature.getGeometry();
+    let geometry = feature.getGeometry();
     if (!geometry) {
       return;
+    }
+    if (projectionTransform) {
+      geometry = geometry.clone();
+      geometry.applyTransform(projectionTransform);
     }
     this.addGeometry_(geometry, feature);
   }

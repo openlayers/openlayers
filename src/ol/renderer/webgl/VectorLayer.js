@@ -211,7 +211,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
       listen(
         source,
         VectorEventType.CHANGEFEATURE,
-        this.handleSourceFeatureChanged_,
+        this.handleSourceFeatureChanged_.bind(this, projectionTransform),
         this,
       ),
       listen(
@@ -295,12 +295,13 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
   }
 
   /**
+   * @param {import("../../proj.js").TransformFunction} projectionTransform Transform function.
    * @param {import("../../source/Vector.js").VectorSourceEvent} event Event.
    * @private
    */
-  handleSourceFeatureChanged_(event) {
+  handleSourceFeatureChanged_(projectionTransform, event) {
     const feature = event.feature;
-    this.batch_.changeFeature(feature);
+    this.batch_.changeFeature(feature, projectionTransform);
   }
 
   /**
