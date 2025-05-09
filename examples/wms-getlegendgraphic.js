@@ -14,7 +14,9 @@ const wmsSource = new ImageWMS({
 
 const updateLegend = function (resolution) {
   const graphicUrl = wmsSource.getLegendUrl(resolution);
-  const img = document.getElementById('legend');
+  const img = /** @type {HTMLImageElement} */ (
+    document.getElementById('legend')
+  );
   img.src = graphicUrl;
 };
 

@@ -141,21 +141,31 @@ const map = new Map({
 });
 
 let literalStyle;
+/** @type {WebGLVectorLayer|undefined} */
 let pointsLayer;
 
-let selected = null;
+/** @type {import('../src/ol/Feature.js').default|undefined} */
+let selected;
 
 map.on('pointermove', function (ev) {
-  if (selected !== null) {
-    selected.set('hover', 0);
-    selected = null;
+  const newSelected = map.forEachFeatureAtPixel(
+    ev.pixel,
+    /**
+     * @param {import('../src/ol/Feature.js').default} feature Feature
+     * @return {import('../src/ol/Feature.js').default} Feature
+     */
+    (feature) => feature,
+  );
+  if (selected === newSelected) {
+    return;
   }
-
-  map.forEachFeatureAtPixel(ev.pixel, function (feature) {
-    feature.set('hover', 1);
-    selected = feature;
-    return true;
-  });
+  if (selected) {
+    selected.set('hover', 0);
+  }
+  if (newSelected) {
+    newSelected.set('hover', 1);
+  }
+  selected = newSelected;
 });
 
 function refreshLayer(newStyle) {
@@ -178,11 +188,15 @@ const spanInvalid = document.getElementById('style-invalid');
 function setStyleStatus(errorMsg) {
   const isError = typeof errorMsg === 'string';
   spanValid.style.display = errorMsg === null ? 'initial' : 'none';
-  spanInvalid.firstElementChild.innerText = isError ? errorMsg : '';
+  /** @type {HTMLElement} */ (spanInvalid.firstElementChild).innerText = isError
+    ? errorMsg
+    : '';
   spanInvalid.style.display = isError ? 'initial' : 'none';
 }
 
-const editor = document.getElementById('style-editor');
+const editor = /** @type {HTMLTextAreaElement} */ (
+  document.getElementById('style-editor')
+);
 editor.addEventListener('input', function () {
   const textStyle = editor.value;
   try {
@@ -196,7 +210,9 @@ editor.addEventListener('input', function () {
   }
 });
 
-const select = document.getElementById('style-select');
+const select = /** @type {HTMLSelectElement} */ (
+  document.getElementById('style-select')
+);
 select.value = 'circles';
 function onSelectChange() {
   const style = select.value;

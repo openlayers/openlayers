@@ -86,7 +86,9 @@ const exportOptions = {
   },
 };
 
-const exportButton = document.getElementById('export-pdf');
+const exportButton = /** @type {HTMLButtonElement} */ (
+  document.getElementById('export-pdf')
+);
 
 exportButton.addEventListener(
   'click',
@@ -94,9 +96,18 @@ exportButton.addEventListener(
     exportButton.disabled = true;
     document.body.style.cursor = 'progress';
 
-    const format = document.getElementById('format').value;
-    const resolution = document.getElementById('resolution').value;
-    const scale = document.getElementById('scale').value;
+    const formatInput = /** @type {HTMLSelectElement} */ (
+      document.getElementById('format')
+    );
+    const resolutionInput = /** @type {HTMLSelectElement} */ (
+      document.getElementById('resolution')
+    );
+    const scaleInput = /** @type {HTMLSelectElement} */ (
+      document.getElementById('scale')
+    );
+    const format = formatInput.value;
+    const resolution = Number(resolutionInput.value);
+    const scale = Number(scaleInput.value);
     const dim = dims[format];
     const width = Math.round((dim[0] * resolution) / 25.4);
     const height = Math.round((dim[1] * resolution) / 25.4);

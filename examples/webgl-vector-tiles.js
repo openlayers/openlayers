@@ -7,6 +7,7 @@ import VectorTileSource from '../src/ol/source/VectorTile.js';
 const key =
   'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiY2t0cGdwMHVnMGdlbzMxbDhwazBic2xrNSJ9.WbcTL9uj8JPAsnT9mgb7oQ';
 
+/** @type {import('../src/ol/style/flat.js').FlatStyleLike} */
 const style = [
   {
     filter: [

@@ -17,7 +17,7 @@ const map = new Map({
 });
 
 osm.on('prerender', function (event) {
-  const ctx = event.context;
+  const ctx = /** @type {CanvasRenderingContext2D} */ (event.context);
 
   // calculate the pixel ratio and rotation of the canvas
   const matrix = event.inversePixelTransform;
@@ -50,6 +50,6 @@ osm.on('prerender', function (event) {
 });
 
 osm.on('postrender', function (event) {
-  const ctx = event.context;
+  const ctx = /** @type {CanvasRenderingContext2D} */ (event.context);
   ctx.restore();
 });

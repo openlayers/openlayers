@@ -8,10 +8,12 @@ const layer = new TileLayer(),
   map = new Map({
     layers: [layer],
     target: 'map',
-  }),
-  notifyDiv = document.getElementById('iiif-notification'),
-  urlInput = document.getElementById('imageInfoUrl'),
-  displayButton = document.getElementById('display');
+  });
+const notifyDiv = document.getElementById('iiif-notification');
+const urlInput = /** @type {HTMLInputElement} */ (
+  document.getElementById('imageInfoUrl')
+);
+const displayButton = document.getElementById('display');
 
 function refreshMap(imageInfoUrl) {
   fetch(imageInfoUrl)
