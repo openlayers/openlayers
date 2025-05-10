@@ -149,6 +149,12 @@ class WebGLPostProcessingPass {
       options.fragmentShader || DEFAULT_FRAGMENT_SHADER,
     );
     gl.compileShader(fragmentShader);
+    if (!gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS)) {
+      const message = `Fragment shader compilation failed: ${gl.getShaderInfoLog(
+        fragmentShader,
+      )}`;
+      throw new Error(message);
+    }
     /**
      * @private
      */
@@ -451,6 +457,9 @@ class WebGLPostProcessingPass {
               value[2],
               value[3],
             );
+            return;
+          case 16:
+            gl.uniformMatrix4fv(uniform.location, false, value);
             return;
           default:
             return;

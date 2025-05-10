@@ -1,10 +1,17 @@
 /**
  * @module ol/renderer/webgl/VectorTileLayer
  */
+import {createCanvasContext2D} from '../../dom.js';
 import EventType from '../../events/EventType.js';
 import {getIntersection} from '../../extent.js';
+import {getUserProjection} from '../../proj.js';
 import {ShaderBuilder} from '../../render/webgl/ShaderBuilder.js';
 import VectorStyleRenderer from '../../render/webgl/VectorStyleRenderer.js';
+import {TextOverlayWorkerMessageType} from '../../render/webgl/constants.js';
+import {
+  serializeFeature,
+  serializeFrameState,
+} from '../../render/webgl/serialize.js';
 import {
   breakDownFlatStyle,
   parseLiteralStyle,
@@ -24,6 +31,7 @@ import {AttributeType} from '../../webgl/Helper.js';
 import WebGLRenderTarget from '../../webgl/RenderTarget.js';
 import TileGeometry from '../../webgl/TileGeometry.js';
 import {ELEMENT_ARRAY_BUFFER, STATIC_DRAW} from '../../webgl.js';
+import {create as createTextOverlayWorker} from '../../worker/textOverlay.js';
 import WebGLBaseTileLayerRenderer, {
   Uniforms as BaseUniforms,
 } from './TileLayerBase.js';
@@ -32,6 +40,7 @@ export const Uniforms = {
   ...BaseUniforms,
   TILE_MASK_TEXTURE: 'u_depthMask',
   TILE_ZOOM_LEVEL: 'u_tileZoomLevel',
+  TEXT_OVERLAY_TEXTURE: 'u_textOverlay',
 };
 
 export const Attributes = {
@@ -77,6 +86,27 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
         [Uniforms.PATTERN_ORIGIN]: [0, 0],
         [Uniforms.TILE_MASK_TEXTURE]: () => this.tileMaskTarget_.getTexture(),
       },
+      postProcesses: [
+        {
+          fragmentShader: `
+            precision mediump float;
+
+            uniform sampler2D u_image;
+            uniform sampler2D ${Uniforms.TEXT_OVERLAY_TEXTURE};
+            
+            varying vec2 v_texCoord;
+
+            void main() {
+              vec4 color = texture2D(u_image, v_texCoord);
+              vec4 textColor = texture2D(${Uniforms.TEXT_OVERLAY_TEXTURE}, vec2(v_texCoord.x, 1.-v_texCoord.y));
+              gl_FragColor = textColor.a > 0.5 ? textColor : color;
+              // gl_FragColor = textColor + 0.5 * color;
+            }`,
+          uniforms: {
+            [Uniforms.TEXT_OVERLAY_TEXTURE]: () => this.textOverlayCanvas_,
+          },
+        },
+      ],
     });
 
     /**
@@ -154,6 +184,36 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
      */
     this.tileMaskProgram_;
 
+    this.textOverlayWorker_ = createTextOverlayWorker();
+    this.textOverlayCanvas_ = createCanvasContext2D().canvas;
+    this.textOverlayWorker_.addEventListener('message', (message) => {
+      const received = message.data;
+      if (received.type === TextOverlayWorkerMessageType.RENDERED) {
+        const imageData = message.data.imageData;
+        this.textOverlayCanvas_.width = imageData.width;
+        this.textOverlayCanvas_.height = imageData.height;
+        this.textOverlayCanvas_.getContext('2d').drawImage(imageData, 0, 0);
+        this.textOverlayCanvas_.style.transform = message.data.transform;
+
+        // transfer back the image data
+        this.textOverlayWorker_.postMessage(
+          {
+            type: TextOverlayWorkerMessageType.RENDERED,
+            imageData,
+          },
+          [imageData],
+        );
+
+        this.changed();
+        console.log('changed');
+      }
+    });
+    /**
+     * @type {Array<string>}
+     * @private
+     */
+    this.tilesToRender_ = [];
+
     this.applyOptions_(options);
   }
 
@@ -168,6 +228,7 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     if (this.helper) {
       this.createRenderers_();
       this.initTileMask_();
+      this.initTextOverlay_();
     }
   }
 
@@ -242,12 +303,25 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     this.helper.flushBufferData(this.tileMaskIndices_);
   }
 
+  initTextOverlay_() {
+    // this.textOverlay_ = new TextOverlay(
+    //   this.helper,
+    //   /** @type {any} */ (this.styles_),
+    // );
+    this.textOverlayWorker_.postMessage({
+      type: TextOverlayWorkerMessageType.INIT,
+      style: this.styles_,
+      userProjection: getUserProjection()?.getCode(),
+    });
+  }
+
   /**
    * @override
    */
   afterHelperCreated() {
     this.createRenderers_();
     this.initTileMask_();
+    this.initTextOverlay_();
   }
 
   /**
@@ -258,6 +332,15 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     // redraw the layer when the tile is ready
     const listener = () => {
       if (tileRep.ready) {
+        // this.textOverlay_.loadFeatureBatch(
+        //   tileRep.features,
+        //   tileRep.tile.getKey(),
+        // );
+        this.textOverlayWorker_.postMessage({
+          type: TextOverlayWorkerMessageType.LOAD_FEATURES,
+          batchId: tileRep.tile.getKey(),
+          features: tileRep.features.map(serializeFeature),
+        });
         this.getLayer().changed();
         tileRep.removeEventListener(EventType.CHANGE, listener);
       }
@@ -275,6 +358,7 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
       frameState,
       this.currentFrameStateTransform_,
     );
+    this.tilesToRender_.length = 0;
   }
 
   /**
@@ -306,6 +390,19 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
       mat4FromTransform(this.tmpMat4_, this.tmpTransform_),
     );
     return true;
+  }
+
+  /**
+   * @override
+   */
+  beforeFinalize(frameState) {
+    // this.textOverlay_.renderFeatures(frameState, []);
+    // this.textOverlay_.render(frameState, this.tilesToRender_);
+    this.textOverlayWorker_.postMessage({
+      type: TextOverlayWorkerMessageType.RENDER,
+      batchesId: this.tilesToRender_,
+      frameState: serializeFrameState(frameState),
+    });
   }
 
   /**
@@ -392,6 +489,21 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
         );
       });
     }
+    this.tilesToRender_.push(tileRepresentation.tile.getKey());
+  }
+
+  /**
+   * @override
+   */
+  beforeTileDispose(tileRepresentation) {
+    this.tilesToRender_.slice(
+      this.tilesToRender_.indexOf(tileRepresentation.tile.getKey()),
+    );
+    // this.textOverlay_.unloadFeatureBatch(tileRepresentation.tile.getKey());
+    this.textOverlayWorker_.postMessage({
+      type: TextOverlayWorkerMessageType.UNLOAD_FEATURES,
+      batchId: tileRepresentation.tile.getKey(),
+    });
   }
 
   /**
