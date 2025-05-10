@@ -31,8 +31,8 @@ import DataTileSource from './DataTile.js';
  * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
  * @property {number} [maxZoom=42] Optional max zoom level. Not used if `tileGrid` is provided.
  * @property {number} [minZoom=0] Optional min zoom level. Not used if `tileGrid` is provided.
- * @property {number|import("../size.js").Size} [tileSize=[256, 256]] The pixel width and height of the source tiles.
- * This may be different than the rendered pixel size if a `tileGrid` is provided.
+ * @property {number|import("../size.js").Size} [tileSize=[256, 256]] The tile size used by the tile service.
+ * Not used if `tileGrid` is provided.
  * @property {number} [gutter=0] The size in pixels of the gutter around data tiles to ignore.
  * This allows artifacts of rendering at tile edges to be ignored.
  * Supported data should be wider and taller than the tile size by a value of `2 x gutter`.
@@ -137,7 +137,7 @@ function keyFromUrlLike(url) {
 
 /**
  * @classdesc
- * A source for typed array data tiles.
+ * A source for typed array data tiles loaded as images.
  *
  * @extends DataTileSource<import("../ImageTile.js").default>
  * @fires import("./Tile.js").TileSourceEvent
@@ -145,7 +145,7 @@ function keyFromUrlLike(url) {
  */
 class ImageTileSource extends DataTileSource {
   /**
-   * @param {Options} [options] DataTile source options.
+   * @param {Options} [options] ImageTile source options.
    */
   constructor(options) {
     options = options || {};
