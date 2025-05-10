@@ -3,6 +3,7 @@
  */
 
 import {decode} from '../Image.js';
+import {setCrossOrigin} from '../cors.js';
 import {getForViewAndSize, getHeight, getWidth} from '../extent.js';
 import {floor, round} from '../math.js';
 import {get as getProjection} from '../proj.js';
@@ -132,7 +133,7 @@ export function getRequestParams(params, request) {
 
 /**
  * @typedef {Object} LoaderOptions
- * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
+ * @property {import("../cors.js").CrossOriginOption} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
  * @property {boolean} [hidpi=true] Use the `ol/Map#pixelRatio` value when requesting
@@ -164,7 +165,7 @@ export function createLoader(options) {
   const projection = getProjection(options.projection || 'EPSG:3857');
   const ratio = options.ratio || 1.5;
   const load = options.load || decode;
-  const crossOrigin = options.crossOrigin ?? null;
+  const crossOrigin = options.crossOrigin ?? 'no-cors';
 
   return (extent, resolution, pixelRatio) => {
     extent = getRequestExtent(extent, resolution, pixelRatio, ratio);
@@ -181,7 +182,7 @@ export function createLoader(options) {
       options.serverType,
     );
     const image = new Image();
-    image.crossOrigin = crossOrigin;
+    setCrossOrigin(image, crossOrigin);
     return load(image, src).then((image) => ({image, extent, pixelRatio}));
   };
 }

@@ -15,7 +15,7 @@ import UrlTile from './UrlTile.js';
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
  * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
  * @property {number} [cacheSize] Deprecated.  Use the cacheSize option on the layer instead.
- * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
+ * @property {import("../cors.js").CrossOriginOption} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
@@ -90,10 +90,9 @@ class TileImage extends UrlTile {
 
     /**
      * @protected
-     * @type {?string}
+     * @type {import("../cors.js").CrossOriginAttribute}
      */
-    this.crossOrigin =
-      options.crossOrigin !== undefined ? options.crossOrigin : null;
+    this.crossOrigin = options.crossOrigin ?? 'no-cors';
 
     /**
      * @protected
