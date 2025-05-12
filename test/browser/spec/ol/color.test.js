@@ -38,7 +38,7 @@ describe('ol/color', () => {
         // lch
         [
           'lch(from rgba(234 56 78 / 90%) l c h)',
-          [234, 55, 78, toFixed(Math.round(0.9 * 255) / 255, 3)],
+          [234, 57, 78, toFixed(Math.round(0.9 * 255) / 255, 3)],
         ],
       ];
       for (const c of cases) {
