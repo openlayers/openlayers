@@ -66,7 +66,9 @@ const map = new Map({
   }),
 });
 
-const control = document.getElementById('level');
+const control = /** @type {HTMLInputElement} */ (
+  document.getElementById('level')
+);
 const output = document.getElementById('output');
 control.addEventListener('input', function () {
   output.innerText = control.value;

@@ -6,6 +6,7 @@ import VectorLayer from '../src/ol/layer/Vector.js';
 import OSM from '../src/ol/source/OSM.js';
 import VectorSource from '../src/ol/source/Vector.js';
 
+/** @type {VectorSource<import('../src/ol/Feature.js').default<import('../src/ol/geom/SimpleGeometry.js').default>>} */
 const source = new VectorSource({
   url: 'data/geojson/switzerland.geojson',
   format: new GeoJSON(),

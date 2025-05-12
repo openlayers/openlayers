@@ -15,17 +15,6 @@
     document.getElementById('count').innerHTML = String(examples.length);
   }
 
-  let timerId;
-  function inputChange() {
-    if (timerId) {
-      window.clearTimeout(timerId);
-    }
-    const text = this.value;
-    timerId = window.setTimeout(function () {
-      filterList(text);
-    }, 500);
-  }
-
   function getMatchingExamples(text) {
     text = text.trim();
     if (text.length === 0) {
@@ -102,8 +91,19 @@
 
   const params = new URLSearchParams(window.location.search);
   const text = params.get('q') || '';
-  const input = document.getElementById('keywords');
-  input.addEventListener('input', inputChange);
-  input.value = text;
+  const searchField = /** @type {HTMLInputElement} */ (
+    document.getElementById('keywords')
+  );
+  let timerId;
+  searchField.addEventListener('input', function () {
+    if (timerId) {
+      clearTimeout(timerId);
+    }
+    const text = this.value;
+    timerId = setTimeout(function () {
+      filterList(text);
+    }, 500);
+  });
+  searchField.value = text;
   filterList(text);
 })();

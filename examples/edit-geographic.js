@@ -52,7 +52,7 @@ function removeInteractions() {
   map.removeInteraction(select);
 }
 
-const mode = document.getElementById('mode');
+const mode = /** @type {HTMLSelectElement} */ (document.getElementById('mode'));
 function onChange() {
   removeInteractions();
   switch (mode.value) {

@@ -45,12 +45,15 @@ fetch('data/polyline/route.json').then(function (response) {
   response.json().then(function (result) {
     const polyline = result.routes[0].geometry;
 
-    const route = new Polyline({
-      factor: 1e6,
-    }).readGeometry(polyline, {
-      dataProjection: 'EPSG:4326',
-      featureProjection: 'EPSG:3857',
-    });
+    const route =
+      /** @type {import('../src/ol/geom/LineString.js').default} */ (
+        new Polyline({
+          factor: 1e6,
+        }).readGeometry(polyline, {
+          dataProjection: 'EPSG:4326',
+          featureProjection: 'EPSG:3857',
+        })
+      );
 
     const routeFeature = new Feature({
       type: 'route',
@@ -106,7 +109,9 @@ fetch('data/polyline/route.json').then(function (response) {
 
     map.addLayer(vectorLayer);
 
-    const speedInput = document.getElementById('speed');
+    const speedInput = /** @type {HTMLInputElement} */ (
+      document.getElementById('speed')
+    );
     const startButton = document.getElementById('start-animation');
     let animating = false;
     let distance = 0;

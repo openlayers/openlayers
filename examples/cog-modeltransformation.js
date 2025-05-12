@@ -20,7 +20,9 @@ const cogSource = new GeoTIFF({
   ],
 });
 
-const showTilesCheckbox = document.getElementById('show-tiles');
+const showTilesCheckbox = /** @type {HTMLInputElement} */ (
+  document.getElementById('show-tiles')
+);
 const debugLayer = new TileLayer({
   source: new TileDebug({source: cogSource}),
   visible: showTilesCheckbox.checked,
@@ -45,7 +47,11 @@ const map = new Map({
 });
 
 cogSource.getView().then((viewConfig) =>
-  fromEPSGCode(viewConfig.projection.getCode()).then(() => {
+  fromEPSGCode(
+    /** @type {import('../src/ol/proj/Projection.js').default} */ (
+      viewConfig.projection
+    ).getCode(),
+  ).then(() => {
     const view = map.getView();
     view.fit(
       transformExtent(

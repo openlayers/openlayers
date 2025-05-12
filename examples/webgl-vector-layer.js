@@ -54,22 +54,16 @@ const map = new Map({
 
 let highlightedId = -1;
 const displayFeatureInfo = function (pixel) {
-  const feature = map.forEachFeatureAtPixel(pixel, function (feature) {
-    return feature;
-  });
+  const feature = map.forEachFeatureAtPixel(pixel, (feature) => feature);
+  const id = feature ? /** @type {number} */ (feature.getId()) : -1;
+  if (id === highlightedId) {
+    return;
+  }
 
   const info = document.getElementById('info');
-  if (feature) {
-    info.innerHTML = feature.get('ECO_NAME') || '&nbsp;';
-  } else {
-    info.innerHTML = '&nbsp;';
-  }
-
-  const id = feature ? feature.getId() : -1;
-  if (id !== highlightedId) {
-    highlightedId = id;
-    vectorLayer.updateStyleVariables({highlightedId});
-  }
+  info.innerHTML = feature ? feature.get('ECO_NAME') || '&nbsp;' : '&nbsp;';
+  highlightedId = id;
+  vectorLayer.updateStyleVariables({highlightedId});
 };
 
 map.on('pointermove', function (evt) {

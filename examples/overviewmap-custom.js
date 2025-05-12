@@ -7,7 +7,9 @@ import {defaults as defaultInteractions} from '../src/ol/interaction/defaults.js
 import TileLayer from '../src/ol/layer/Tile.js';
 import OSM from '../src/ol/source/OSM.js';
 
-const rotateWithView = document.getElementById('rotateWithView');
+const rotateWithView = /** @type {HTMLInputElement} */ (
+  document.getElementById('rotateWithView')
+);
 
 const overviewMapControl = new OverviewMap({
   // see in overviewmap-custom.html to see the custom CSS used

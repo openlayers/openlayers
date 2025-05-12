@@ -37,7 +37,9 @@ const map = new Map({
 });
 
 const infoElement = document.getElementById('country-info');
-const flagElement = document.getElementById('country-flag');
+const flagElement = /** @type {HTMLImageElement} */ (
+  document.getElementById('country-flag')
+);
 const nameElement = document.getElementById('country-name');
 
 const infoOverlay = new Overlay({
