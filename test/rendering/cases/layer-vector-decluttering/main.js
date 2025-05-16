@@ -184,4 +184,4 @@ source4.addFeature(point);
 source4.addFeature(line);
 map.addLayer(layer4);
 
-render({tolerance: 0.007});
+render({tolerance: 0.001});

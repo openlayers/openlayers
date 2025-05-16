@@ -418,7 +418,7 @@ class ExecutorGroup {
           }
           if (zIndexContext) {
             zIndexContext.offset();
-            const index = zs[i] * maxBuilderTypes + j;
+            const index = zs[i] * maxBuilderTypes + ALL.indexOf(builderType);
             if (!this.deferredZIndexContexts_[index]) {
               this.deferredZIndexContexts_[index] = [];
             }
