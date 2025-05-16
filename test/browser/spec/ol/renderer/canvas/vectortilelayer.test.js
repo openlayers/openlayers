@@ -188,9 +188,13 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
       layer.changed();
       const revision = layer.getRevision();
       setTimeout(function () {
-        expect(layer.getRevision()).to.be(revision);
-        done();
-      }, 800);
+        try {
+          expect(layer.getRevision()).to.be(revision);
+          done();
+        } catch (e) {
+          done(e);
+        }
+      }, 1000);
     });
 
     it('does not re-render for available fonts', function (done) {
@@ -199,9 +203,13 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
       layer.changed();
       const revision = layer.getRevision();
       setTimeout(function () {
-        expect(layer.getRevision()).to.be(revision);
-        done();
-      }, 800);
+        try {
+          expect(layer.getRevision()).to.be(revision);
+          done();
+        } catch (e) {
+          done(e);
+        }
+      }, 1000);
     });
 
     it('re-renders for fonts that become available', function (done) {
@@ -210,15 +218,19 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
       layerStyle[0].getText().setFont(`12px "${fontFamily}",sans-serif`);
       layer.changed();
       const revision = layer.getRevision();
-      setTimeout(function () {
-        try {
-          font.remove();
-          expect(layer.getRevision()).to.be(revision + 1);
-          done();
-        } catch (e) {
-          done(e);
-        }
-      }, 1600);
+      checkedFonts.addEventListener(
+        'propertychange',
+        function onPropertyChange(e) {
+          checkedFonts.removeEventListener('propertychange', onPropertyChange);
+          try {
+            font.remove();
+            expect(layer.getRevision()).to.be(revision + 1);
+            done();
+          } catch (e) {
+            done(e);
+          }
+        },
+      );
     });
 
     it('works for multiple layers that use the same source', function () {
@@ -949,7 +961,7 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
       checkedFonts.getListeners('propertychange').forEach((listener) => {
         checkedFonts.removeEventListener('propertychange', listener);
       });
-      checkedFonts.setProperties({});
+      checkedFonts.setProperties({}, true);
       disposeMap(map);
     });
 

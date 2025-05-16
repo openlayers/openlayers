@@ -2,7 +2,7 @@
  * @module ol/render/canvas
  */
 import BaseObject from '../Object.js';
-import {getFontParameters} from '../css.js';
+import {fontWeights, getFontParameters} from '../css.js';
 import {createCanvasContext2D} from '../dom.js';
 import {WORKER_OFFSCREEN_CANVAS} from '../has.js';
 import {clear} from '../obj.js';
@@ -178,98 +178,123 @@ let measureFont;
  */
 export const textHeights = {};
 
+const genericFontFamilies = new Set([
+  'serif',
+  'sans-serif',
+  'monospace',
+  'cursive',
+  'fantasy',
+  'system-ui',
+  'ui-serif',
+  'ui-sans-serif',
+  'ui-monospace',
+  'ui-rounded',
+  'emoji',
+  'math',
+  'fangsong',
+]);
+
+/**
+ * @param {string} style Css font-style
+ * @param {string} weight Css font-weight
+ * @param {string} family Css font-family
+ * @return {string} Font key.
+ */
+function getFontKey(style, weight, family) {
+  return `${style} ${weight} 16px "${family}"`;
+}
+
 /**
  * Clears the label cache when a font becomes available.
  * @param {string} fontSpec CSS font spec.
  */
 export const registerFont = (function () {
   const retries = 100;
-  const size = '32px ';
-  const referenceFonts = ['monospace', 'serif'];
-  const len = referenceFonts.length;
-  const text = 'wmytzilWMYTZIL@#/&?$%10\uF013';
-  let interval, referenceWidth;
+  let timeout, fontFaceSet;
 
   /**
-   * @param {string} fontStyle Css font-style
-   * @param {string} fontWeight Css font-weight
-   * @param {*} fontFamily Css font-family
-   * @return {boolean} Font with style and weight is available
+   * @param {string} fontSpec Css font spec
+   * @return {Promise<boolean>} Font with style and weight is available
    */
-  function isAvailable(fontStyle, fontWeight, fontFamily) {
-    let available = true;
-    for (let i = 0; i < len; ++i) {
-      const referenceFont = referenceFonts[i];
-      referenceWidth = measureTextWidth(
-        fontStyle + ' ' + fontWeight + ' ' + size + referenceFont,
-        text,
-      );
-      if (fontFamily != referenceFont) {
-        const width = measureTextWidth(
-          fontStyle +
-            ' ' +
-            fontWeight +
-            ' ' +
-            size +
-            fontFamily +
-            ',' +
-            referenceFont,
-          text,
+  async function isAvailable(fontSpec) {
+    await fontFaceSet.ready;
+    const fontFaces = await fontFaceSet.load(fontSpec);
+    if (fontFaces.length === 0) {
+      return false;
+    }
+    const font = getFontParameters(fontSpec);
+    const checkFamily = font.families[0].toLowerCase();
+    const checkWeight = font.weight;
+    return fontFaces.some(
+      /**
+       * @param {import('../css.js').FontParameters} f Font.
+       * @return {boolean} Font matches.
+       */
+      (f) => {
+        const family = f.family.replace(/^['"]|['"]$/g, '').toLowerCase();
+        const weight = fontWeights[f.weight] || f.weight;
+        return (
+          family === checkFamily &&
+          f.style === font.style &&
+          weight == checkWeight
         );
-        // If width and referenceWidth are the same, then the fallback was used
-        // instead of the font we wanted, so the font is not available.
-        available = available && width != referenceWidth;
-      }
-    }
-    if (available) {
-      return true;
-    }
-    return false;
+      },
+    );
   }
 
-  function check() {
+  async function check() {
+    await fontFaceSet.ready;
     let done = true;
-    const fonts = checkedFonts.getKeys();
-    for (let i = 0, ii = fonts.length; i < ii; ++i) {
+    const checkedFontsProperties = checkedFonts.getProperties();
+    const fonts = Object.keys(checkedFontsProperties).filter(
+      (key) => checkedFontsProperties[key] < retries,
+    );
+    for (let i = fonts.length - 1; i >= 0; --i) {
       const font = fonts[i];
-      if (checkedFonts.get(font) < retries) {
-        const [style, weight, family] = font.split('\n');
-        if (isAvailable(style, weight, family)) {
+      let currentRetries = checkedFontsProperties[font];
+      if (currentRetries < retries) {
+        if (await isAvailable(font)) {
           clear(textHeights);
-          // Make sure that loaded fonts are picked up by Safari
-          measureContext = null;
-          measureFont = undefined;
           checkedFonts.set(font, retries);
         } else {
-          checkedFonts.set(font, checkedFonts.get(font) + 1, true);
-          done = false;
+          currentRetries += 10;
+          checkedFonts.set(font, currentRetries, true);
+          if (currentRetries < retries) {
+            done = false;
+          }
         }
       }
     }
-    if (done) {
-      clearInterval(interval);
-      interval = undefined;
+    timeout = undefined;
+    if (!done) {
+      timeout = setTimeout(check, 100);
     }
   }
 
-  return function (fontSpec) {
+  return async function (fontSpec) {
+    if (!fontFaceSet) {
+      fontFaceSet = WORKER_OFFSCREEN_CANVAS ? self.fonts : document.fonts;
+    }
     const font = getFontParameters(fontSpec);
     if (!font) {
       return;
     }
     const families = font.families;
-    for (let i = 0, ii = families.length; i < ii; ++i) {
-      const family = families[i];
-      const key = font.style + '\n' + font.weight + '\n' + family;
-      if (checkedFonts.get(key) === undefined) {
-        checkedFonts.set(key, retries, true);
-        if (!isAvailable(font.style, font.weight, family)) {
-          checkedFonts.set(key, 0, true);
-          if (interval === undefined) {
-            interval = setInterval(check, 32);
-          }
-        }
+    let needCheck = false;
+    for (const family of families) {
+      if (genericFontFamilies.has(family)) {
+        continue;
       }
+      const key = getFontKey(font.style, font.weight, family);
+      if (checkedFonts.get(key) !== undefined) {
+        continue;
+      }
+      checkedFonts.set(key, 0, true);
+      needCheck = true;
+    }
+    if (needCheck) {
+      clearTimeout(timeout);
+      timeout = setTimeout(check, 100);
     }
   };
 })();

@@ -1470,7 +1470,10 @@ class Map extends BaseObject {
    * Redraws all text after new fonts have loaded
    */
   redrawText() {
-    const layerStates = this.getLayerGroup().getLayerStatesArray();
+    if (!this.frameState_) {
+      return;
+    }
+    const layerStates = this.frameState_.layerStatesArray;
     for (let i = 0, ii = layerStates.length; i < ii; ++i) {
       const layer = layerStates[i].layer;
       if (layer.hasRenderer()) {

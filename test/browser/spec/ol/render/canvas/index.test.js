@@ -9,58 +9,48 @@ describe('ol.render.canvas', function () {
 
   describe('ol.render.canvas.registerFont()', function () {
     beforeEach(function () {
-      render.checkedFonts.values_ = {};
+      render.checkedFonts.setProperties({}, true);
       render.measureTextHeight('12px sans-serif');
     });
 
     const retries = 100;
 
     it('does not trigger redraw and clear measurements for unavailable fonts', function (done) {
-      this.timeout(4000);
       const spy = sinonSpy();
       render.checkedFonts.addEventListener('propertychange', spy);
       const interval = setInterval(function () {
-        if (
-          render.checkedFonts.get('normal\nnormal\nfoo') == retries &&
-          render.checkedFonts.get('normal\nnormal\nsans-serif') == retries
-        ) {
+        if (render.checkedFonts.get('normal 400 16px "foo"') == retries) {
           clearInterval(interval);
           render.checkedFonts.removeEventListener('propertychange', spy);
           expect(spy.callCount).to.be(0);
           expect(render.textHeights).to.not.eql({});
           done();
         }
-      }, 32);
+      }, 100);
       render.registerFont('12px foo,sans-serif');
     });
 
     it('does not trigger redraw and clear measurements for available fonts', function (done) {
       const spy = sinonSpy();
       render.checkedFonts.addEventListener('propertychange', spy);
-      const interval = setInterval(function () {
-        if (render.checkedFonts.get('normal\nnormal\nsans-serif') == retries) {
-          clearInterval(interval);
-          render.checkedFonts.removeEventListener('propertychange', spy);
-          expect(spy.callCount).to.be(0);
-          expect(render.textHeights).to.not.eql({});
-          done();
-        }
-      }, 32);
+      setTimeout(function () {
+        render.checkedFonts.removeEventListener('propertychange', spy);
+        expect(spy.callCount).to.be(0);
+        expect(render.textHeights).to.not.eql({});
+        done();
+      }, 1000);
       render.registerFont('12px sans-serif');
     });
 
     it("does not trigger redraw and clear measurements for the 'monospace' font", function (done) {
       const spy = sinonSpy();
       render.checkedFonts.addEventListener('propertychange', spy);
-      const interval = setInterval(function () {
-        if (render.checkedFonts.get('normal\nnormal\nmonospace') == retries) {
-          clearInterval(interval);
-          render.checkedFonts.removeEventListener('propertychange', spy);
-          expect(spy.callCount).to.be(0);
-          expect(render.textHeights).to.not.eql({});
-          done();
-        }
-      }, 32);
+      setInterval(function () {
+        render.checkedFonts.removeEventListener('propertychange', spy);
+        expect(spy.callCount).to.be(0);
+        expect(render.textHeights).to.not.eql({});
+        done();
+      }, 1000);
       render.registerFont('12px monospace');
     });
 
@@ -73,10 +63,11 @@ describe('ol.render.canvas', function () {
             'propertychange',
             onPropertyChange,
           );
-          expect(e.key).to.be('normal\nnormal\nAbel');
+          expect(e.key).to.be('normal 400 16px "Abel"');
           expect(render.textHeights).to.eql({});
 
           font.remove();
+          render.checkedFonts.setProperties({}, true);
           done();
         },
       );

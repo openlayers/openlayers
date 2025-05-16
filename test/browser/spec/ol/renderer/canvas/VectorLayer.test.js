@@ -30,17 +30,20 @@ describe('ol/renderer/canvas/VectorLayer', function () {
       },
     });
 
-    let target;
+    let map;
 
     beforeEach(function () {
-      target = document.createElement('div');
-      target.style.width = '256px';
-      target.style.height = '256px';
-      document.body.appendChild(target);
+      map = new Map({
+        view: new View({
+          center: [0, 0],
+          zoom: 0,
+        }),
+        target: createMapDiv(256, 256),
+      });
     });
 
     afterEach(function () {
-      target.remove();
+      disposeMap(map);
     });
 
     it('creates a new instance', function () {
@@ -52,17 +55,6 @@ describe('ol/renderer/canvas/VectorLayer', function () {
     });
 
     it('gives precedence to feature styles over layer styles', function () {
-      const target = document.createElement('div');
-      target.style.width = '256px';
-      target.style.height = '256px';
-      document.body.appendChild(target);
-      const map = new Map({
-        view: new View({
-          center: [0, 0],
-          zoom: 0,
-        }),
-        target: target,
-      });
       const layerStyle = [
         new Style({
           text: new Text({
@@ -96,13 +88,6 @@ describe('ol/renderer/canvas/VectorLayer', function () {
     });
 
     it('does not re-render for unavailable fonts', function (done) {
-      const map = new Map({
-        view: new View({
-          center: [0, 0],
-          zoom: 0,
-        }),
-        target: target,
-      });
       const layerStyle = new Style({
         text: new Text({
           text: 'layer',
@@ -120,19 +105,16 @@ describe('ol/renderer/canvas/VectorLayer', function () {
       map.addLayer(layer);
       const revision = layer.getRevision();
       setTimeout(function () {
-        expect(layer.getRevision()).to.be(revision);
-        done();
-      }, 800);
+        try {
+          expect(layer.getRevision()).to.be(revision);
+          done();
+        } catch (e) {
+          done(e);
+        }
+      }, 1000);
     });
 
     it('does not re-render for available fonts', function (done) {
-      const map = new Map({
-        view: new View({
-          center: [0, 0],
-          zoom: 0,
-        }),
-        target: target,
-      });
       const layerStyle = new Style({
         text: new Text({
           text: 'layer',
@@ -150,20 +132,17 @@ describe('ol/renderer/canvas/VectorLayer', function () {
       map.addLayer(layer);
       const revision = layer.getRevision();
       setTimeout(function () {
-        expect(layer.getRevision()).to.be(revision);
-        done();
-      }, 800);
+        try {
+          expect(layer.getRevision()).to.be(revision);
+          done();
+        } catch (e) {
+          done(e);
+        }
+      }, 1000);
     });
 
     it('re-renders for fonts that become available', function (done) {
       font.add();
-      const map = new Map({
-        view: new View({
-          center: [0, 0],
-          zoom: 0,
-        }),
-        target: target,
-      });
       const layerStyle = new Style({
         text: new Text({
           text: 'layer',
@@ -180,15 +159,19 @@ describe('ol/renderer/canvas/VectorLayer', function () {
       });
       map.addLayer(layer);
       const revision = layer.getRevision();
-      setTimeout(function () {
-        try {
-          font.remove();
-          expect(layer.getRevision()).to.be(revision + 1);
-          done();
-        } catch (e) {
-          done(e);
-        }
-      }, 1600);
+      checkedFonts.addEventListener(
+        'propertychange',
+        function onPropertyChange() {
+          checkedFonts.removeEventListener('propertychange', onPropertyChange);
+          try {
+            font.remove();
+            expect(layer.getRevision()).to.be(revision + 1);
+            done();
+          } catch (e) {
+            done(e);
+          }
+        },
+      );
     });
   });
 
@@ -208,7 +191,7 @@ describe('ol/renderer/canvas/VectorLayer', function () {
       checkedFonts.getListeners('propertychange').forEach((listener) => {
         checkedFonts.removeEventListener('propertychange', listener);
       });
-      checkedFonts.setProperties({});
+      checkedFonts.setProperties({}, true);
       disposeMap(map);
     });
 
