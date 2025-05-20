@@ -36,9 +36,9 @@ import BaseVector from './BaseVector.js';
  * visible.
  * @property {number} [maxResolution] The maximum resolution (exclusive) below which this layer will
  * be visible.
- * @property {number} [minZoom] The minimum view zoom level (exclusive) above which this layer will be
+ * @property {number} [minZoom] The minimum view zoom level (inclusive) at which this layer will be
  * visible.
- * @property {number} [maxZoom] The maximum view zoom level (inclusive) at which this layer will
+ * @property {number} [maxZoom] The maximum view zoom level (exclusive) below which this layer will
  * be visible.
  * @property {Array<string>} [gradient=['#00f', '#0ff', '#0f0', '#ff0', '#f00']] The color gradient
  * of the heatmap, specified as an array of CSS color strings.
