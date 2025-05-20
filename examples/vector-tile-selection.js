@@ -65,7 +65,9 @@ const selectionLayer = new VectorTileLayer({
   },
 });
 
-const selectElement = document.getElementById('type');
+const selectElement = /** @type {HTMLSelectElement} */ (
+  document.getElementById('type')
+);
 
 map.on(['click', 'pointermove'], function (event) {
   if (

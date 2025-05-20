@@ -20,7 +20,9 @@ function setArea(n) {
   mapConfig.layers[0].options.sql =
     'select * from european_countries_e where area > ' + n;
 }
-const areaSelect = document.getElementById('country-area');
+const areaSelect = /** @type {HTMLSelectElement} */ (
+  document.getElementById('country-area')
+);
 setArea(areaSelect.value);
 
 const cartoDBSource = new CartoDB({

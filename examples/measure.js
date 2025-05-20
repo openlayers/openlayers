@@ -115,7 +115,9 @@ map.getViewport().addEventListener('mouseout', function () {
   helpTooltipElement.classList.add('hidden');
 });
 
-const typeSelect = document.getElementById('type');
+const typeSelect = /** @type {HTMLSelectElement} */ (
+  document.getElementById('type')
+);
 
 let draw; // global so we can remove it later
 

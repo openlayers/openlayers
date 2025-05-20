@@ -33,9 +33,12 @@ const map = new Map({
   }),
 });
 
-document.getElementById('auth-form').addEventListener('submit', (event) => {
-  const clientId = event.target.elements['id'].value;
-  const clientSecret = event.target.elements['secret'].value;
+const authForm = /** @type {HTMLFormElement} */ (
+  document.getElementById('auth-form')
+);
+authForm.addEventListener('submit', () => {
+  const clientId = authForm.elements['id'].value;
+  const clientSecret = authForm.elements['secret'].value;
   source.setAuth({clientId, clientSecret});
 });
 

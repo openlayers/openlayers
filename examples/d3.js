@@ -22,11 +22,18 @@ class CanvasLayer extends Layer {
 
     this.svg.append('path').datum(this.features).attr('class', 'boundary');
   }
-
+  /**
+   * @return {'ready'} Always ready
+   * @override
+   */
   getSourceState() {
     return 'ready';
   }
-
+  /**
+   * @param {import('../src/ol/Map.js').FrameState} frameState The state for this animation frame
+   * @return {SVGElement} The svg node
+   * @override
+   */
   render(frameState) {
     const width = frameState.size[0];
     const height = frameState.size[1];
@@ -52,7 +59,9 @@ class CanvasLayer extends Layer {
     const r = Math.max(widthResolution, heightResolution);
     const scale = r / frameState.viewState.resolution;
 
-    const center = toLonLat(getCenter(frameState.extent), projection);
+    const center = /** @type {[number, number]} */ (
+      toLonLat(getCenter(frameState.extent), projection)
+    );
     const angle = (-frameState.viewState.rotation * 180) / Math.PI;
 
     d3Projection

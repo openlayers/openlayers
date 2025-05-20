@@ -23,6 +23,10 @@ const source = new SentinelHub({
       input: ['B12', 'B08', 'B04'],
       output: {bands: 3},
     }),
+    /**
+     * @param {{[K in 'B12'|'B08'|'B04']: number}} sample Sample
+     * @return {Array<number>} Value
+     */
     evaluatePixel: (sample) => [
       2.5 * sample.B12,
       2 * sample.B08,
@@ -42,9 +46,12 @@ const map = new Map({
   }),
 });
 
-document.getElementById('auth-form').addEventListener('submit', (event) => {
-  const clientId = event.target.elements['id'].value;
-  const clientSecret = event.target.elements['secret'].value;
+const authForm = /** @type {HTMLFormElement} */ (
+  document.getElementById('auth-form')
+);
+authForm.addEventListener('submit', () => {
+  const clientId = authForm.elements['id'].value;
+  const clientSecret = authForm.elements['secret'].value;
   source.setAuth({clientId, clientSecret});
 });
 
