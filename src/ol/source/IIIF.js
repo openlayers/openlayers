@@ -16,7 +16,7 @@ import {CustomTile} from './Zoomify.js';
  * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
  * @property {boolean} [attributionsCollapsible=true] Attributions are collapsible.
  * @property {number} [cacheSize] Deprecated.  Use the cacheSize option on the layer instead.
- * @property {null|string} [crossOrigin] The value for the crossOrigin option of the request.
+ * @property {import("../cors.js").CrossOriginOption} [crossOrigin] The value for the crossOrigin option of the request.
  * @property {import("../extent.js").Extent} [extent=[0, -height, width, 0]] The extent.
  * @property {string} [format='jpg'] Requested image format.
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
