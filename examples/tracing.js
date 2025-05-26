@@ -53,10 +53,12 @@ const snapInteraction = new Snap({
   source: baseVector.getSource(),
 });
 
-const typeSelect = document.getElementById('type');
+const typeSelect = /** @type {HTMLSelectElement} */ (
+  document.getElementById('type')
+);
 
 function addInteraction() {
-  const value = typeSelect.value;
+  const value = /** @type {'Polygon'|'LineString'|'None'} */ (typeSelect.value);
   if (value !== 'None') {
     drawInteraction = new Draw({
       type: value,

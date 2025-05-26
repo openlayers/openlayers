@@ -7,7 +7,9 @@ import Fill from '../src/ol/style/Fill.js';
 import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
-const canvas = document.getElementById('canvas');
+const canvas = /** @type {HTMLCanvasElement} */ (
+  document.getElementById('canvas')
+);
 const vectorContext = toContext(canvas.getContext('2d'), {size: [100, 100]});
 
 const fill = new Fill({color: 'blue'});

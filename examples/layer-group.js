@@ -43,19 +43,31 @@ const map = new Map({
   }),
 });
 
+/**
+ * @param {string} layerid Layer id for html
+ * @param {import('../src/ol/layer/Base.js').default} layer The layer
+ */
 function bindInputs(layerid, layer) {
-  const visibilityInput = $(layerid + ' input.visible');
-  visibilityInput.on('change', function () {
-    layer.setVisible(this.checked);
+  const visibilityInput = /** @type {HTMLInputElement} */ (
+    document.querySelector(layerid + ' input.visible')
+  );
+  visibilityInput.addEventListener('change', function () {
+    layer.setVisible(visibilityInput.checked);
   });
-  visibilityInput.prop('checked', layer.getVisible());
+  visibilityInput.checked = layer.getVisible();
 
-  const opacityInput = $(layerid + ' input.opacity');
-  opacityInput.on('input', function () {
+  const opacityInput = /** @type {HTMLInputElement} */ (
+    document.querySelector(layerid + ' input.opacity')
+  );
+  opacityInput.addEventListener('input', function () {
     layer.setOpacity(parseFloat(this.value));
   });
-  opacityInput.val(String(layer.getOpacity()));
+  opacityInput.value = String(layer.getOpacity());
 }
+/**
+ * @param {string} id Layer id for html
+ * @param {LayerGroup} group The layer group
+ */
 function setup(id, group) {
   group.getLayers().forEach(function (layer, i) {
     const layerid = id + i;
@@ -68,8 +80,11 @@ function setup(id, group) {
 setup('#layer', map.getLayerGroup());
 
 $('#layertree li > span')
-  .click(function () {
-    $(this).siblings('fieldset').toggle();
-  })
+  .click(
+    /** @this {HTMLSpanElement} */
+    function () {
+      $(this).siblings('fieldset').toggle();
+    },
+  )
   .siblings('fieldset')
   .hide();

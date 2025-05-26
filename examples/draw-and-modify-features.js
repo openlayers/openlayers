@@ -44,12 +44,16 @@ const modify = new Modify({source: source});
 map.addInteraction(modify);
 
 let draw, snap; // global so we can remove them later
-const typeSelect = document.getElementById('type');
+const typeSelect = /** @type {HTMLSelectElement} */ (
+  document.getElementById('type')
+);
 
 function addInteractions() {
   draw = new Draw({
     source: source,
-    type: typeSelect.value,
+    type: /** @type {'Point'|'LineString'|'Polygon'|'Circle'} */ (
+      typeSelect.value
+    ),
   });
   map.addInteraction(draw);
   snap = new Snap({source: source});
