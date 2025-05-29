@@ -24,7 +24,7 @@ import ImageTile from './ImageTile.js';
  * If both `source` and individual options are specified the individual options will have precedence.
  * @property {string} [template='z:{z} x:{x} y:{y}'] Template for labeling the tiles.
  * Should include `{x}`, `{y}` or `{-y}`, and `{z}` placeholders.
- * @property {string} [color='grey'] Color to use to fill the text and grid that will be generated for each tile.
+ * @property {string} [color='grey'] CSS color to fill text and stroke grid lines of each tile.
  */
 
 /**
