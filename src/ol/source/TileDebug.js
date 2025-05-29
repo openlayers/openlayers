@@ -24,6 +24,7 @@ import ImageTile from './ImageTile.js';
  * If both `source` and individual options are specified the individual options will have precedence.
  * @property {string} [template='z:{z} x:{x} y:{y}'] Template for labeling the tiles.
  * Should include `{x}`, `{y}` or `{-y}`, and `{z}` placeholders.
+ * @property {string} [color='grey'] CSS color to fill text and stroke grid lines of each tile.
  */
 
 /**
@@ -44,6 +45,7 @@ class TileDebug extends ImageTile {
     options = options || {};
     const template = options.template || 'z:{z} x:{x} y:{y}';
     const source = options.source;
+    const color = options.color || 'grey';
 
     super({
       transition: 0,
@@ -97,10 +99,10 @@ class TileDebug extends ImageTile {
         const [width, height] = this.getTileSize(z);
         const context = createCanvasContext2D(width, height);
 
-        context.strokeStyle = 'grey';
+        context.strokeStyle = color;
         context.strokeRect(0.5, 0.5, width + 0.5, height + 0.5);
 
-        context.fillStyle = 'grey';
+        context.fillStyle = color;
         context.strokeStyle = 'white';
         context.textAlign = 'center';
         context.textBaseline = 'middle';
