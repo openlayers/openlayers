@@ -600,6 +600,7 @@ class GeoTIFFSource extends DataTile {
         );
       }
 
+      /** @type {import('../extent.js').Extent} */
       let sourceExtent;
       let sourceOrigin;
       const sourceTileSizes = new Array(imageCount);
@@ -622,7 +623,9 @@ class GeoTIFFSource extends DataTile {
         const level = imageCount - (imageIndex + 1);
 
         if (!sourceExtent) {
-          sourceExtent = getBoundingBox(image);
+          sourceExtent = /** @type {import('../extent.js').Extent} */ (
+            getBoundingBox(image)
+          );
         }
 
         if (!sourceOrigin) {

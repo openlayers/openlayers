@@ -517,7 +517,9 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       vectorSource.loadFeatures(extent, resolution, projection);
 
       this.rebuildBuffers_(frameState);
-      this.previousExtent_ = frameState.extent.slice();
+      this.previousExtent_ = /** @type {import('../../extent.js').Extent} */ (
+        frameState.extent.slice()
+      );
     }
 
     this.helper.useProgram(this.program_, frameState);
