@@ -254,7 +254,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
    * @private
    */
   resetDrawContext_() {
-    if (this.opacity_ !== 1) {
+    if (this.opacity_ !== 1 && this.targetContext_) {
       const alpha = this.targetContext_.globalAlpha;
       this.targetContext_.globalAlpha = this.opacity_;
       this.targetContext_.drawImage(this.context.canvas, 0, 0);
