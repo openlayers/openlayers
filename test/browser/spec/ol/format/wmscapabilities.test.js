@@ -258,6 +258,18 @@ describe('ol.format.WMSCapabilities', function () {
             },
           ],
         },
+        'DescribeLayer': {
+          'Format': ['application/vnd.ogc.gml'],
+          'DCPType': [
+            {
+              'HTTP': {
+                'Get': {
+                  'OnlineResource': 'http://hostname:port/path',
+                },
+              },
+            },
+          ],
+        },
       });
     });
 
@@ -721,10 +733,12 @@ describe('ol.format.WMSCapabilities', function () {
 
     it('can read Capability.UserDefinedSymbolization', function () {
       expect(capabilities.Capability.UserDefinedSymbolization).to.eql({
-        'SupportSLD': false,
+        'SupportSLD': true,
         'UserLayer': true,
         'UserStyle': true,
         'RemoteWFS': true,
+        'InlineFeatureData': false,
+        'RemoteWCS': false,
       });
     });
   });
