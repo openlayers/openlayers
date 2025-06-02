@@ -17,7 +17,16 @@ const map = new Map({
   }),
 });
 
+const width = 2560;
+const height = 1280;
+const svgResolution = 360 / width;
 const svgContainer = document.createElement('div');
+svgContainer.style.width = width + 'px';
+svgContainer.style.height = height + 'px';
+svgContainer.style.transformOrigin = 'top left';
+svgContainer.style.position = 'absolute';
+svgContainer.className = 'svg-layer';
+
 const xhr = new XMLHttpRequest();
 xhr.open('GET', 'data/world.svg');
 xhr.addEventListener('load', function () {
@@ -27,17 +36,13 @@ xhr.addEventListener('load', function () {
 });
 xhr.send();
 
-const width = 2560;
-const height = 1280;
-const svgResolution = 360 / width;
-svgContainer.style.width = width + 'px';
-svgContainer.style.height = height + 'px';
-svgContainer.style.transformOrigin = 'top left';
-svgContainer.className = 'svg-layer';
-svgContainer.style.position = 'absolute';
-
 map.addLayer(
   new Layer({
+    /**
+     * @param {import('../src/ol/Map.js').FrameState} frameState Frame state
+     * @return {HTMLDivElement} The container element
+     * @this {Layer}
+     */
     render: function (frameState) {
       const scale = svgResolution / frameState.viewState.resolution;
       const center = frameState.viewState.center;

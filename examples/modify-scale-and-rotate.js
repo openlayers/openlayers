@@ -160,7 +160,9 @@ const modify = new Modify({
     feature.get('features').forEach(function (modifyFeature) {
       const modifyGeometry = modifyFeature.get('modifyGeometry');
       if (modifyGeometry) {
-        const point = feature.getGeometry().getCoordinates();
+        const point = /** @type {Point} */ (
+          feature.getGeometry()
+        ).getCoordinates();
         let modifyPoint = modifyGeometry.point;
         if (!modifyPoint) {
           // save the initial geometry and vertex position
@@ -175,9 +177,8 @@ const modify = new Modify({
 
         const center = modifyGeometry.center;
         const minRadius = modifyGeometry.minRadius;
-        let dx, dy;
-        dx = modifyPoint[0] - center[0];
-        dy = modifyPoint[1] - center[1];
+        let dx = modifyPoint[0] - center[0];
+        let dy = modifyPoint[1] - center[1];
         const initialRadius = Math.sqrt(dx * dx + dy * dy);
         if (initialRadius > minRadius) {
           const initialAngle = Math.atan2(dy, dx);
@@ -229,12 +230,16 @@ map.addInteraction(
 );
 
 let draw; // global so we can remove it later
-const typeSelect = document.getElementById('type');
+const typeSelect = /** @type {HTMLSelectElement} */ (
+  document.getElementById('type')
+);
 
 function addInteractions() {
   draw = new Draw({
     source: source,
-    type: typeSelect.value,
+    type: /** @type {'Point'|'LineString'|'Polygon'|'Circle'} */ (
+      typeSelect.value
+    ),
   });
   map.addInteraction(draw);
 }

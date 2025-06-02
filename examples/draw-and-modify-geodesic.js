@@ -85,7 +85,12 @@ const modify = new Modify({
     feature.get('features').forEach(function (modifyFeature) {
       const modifyGeometry = modifyFeature.get('modifyGeometry');
       if (modifyGeometry) {
-        const modifyPoint = feature.getGeometry().getCoordinates();
+        const modifyPoint =
+          /** @type {import('../src/ol/Feature.js').default<Point|import('../src/ol/geom/LineString.js').default|Polygon|import('../src/ol/geom/Circle.js').default>} */ (
+            feature
+          )
+            .getGeometry()
+            .getCoordinates();
         const geometries = modifyFeature.getGeometry().getGeometries();
         const polygon = geometries[0].getCoordinates()[0];
         const center = geometries[1].getCoordinates();
@@ -145,10 +150,15 @@ modify.on('modifyend', function (event) {
 map.addInteraction(modify);
 
 let draw, snap; // global so we can remove them later
-const typeSelect = document.getElementById('type');
+const typeSelect = /** @type {HTMLSelectElement} */ (
+  document.getElementById('type')
+);
 
 function addInteractions() {
-  let value = typeSelect.value;
+  let value =
+    /** @type {'Point'|'LineString'|'Polygon'|'Circle'|'Geodesic'} */ (
+      typeSelect.value
+    );
   let geometryFunction;
   if (value === 'Geodesic') {
     value = 'Circle';

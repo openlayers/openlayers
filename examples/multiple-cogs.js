@@ -17,10 +17,13 @@ for (const channel of channels) {
 }
 
 function getVariables() {
+  /** @type {Object<string, number>} */
   const variables = {};
   for (const channel of channels) {
-    const selector = document.getElementById(channel);
-    variables[channel] = parseInt(selector.value, 10);
+    const selector = /** @type {HTMLSelectElement} */ (
+      document.getElementById(channel)
+    );
+    variables[channel] = Number(selector.value);
   }
   return variables;
 }

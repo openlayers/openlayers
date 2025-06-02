@@ -6,23 +6,36 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import OSM from '../src/ol/source/OSM.js';
 
 const scaleBarOptionsContainer = document.getElementById('scaleBarOptions');
-const unitsSelect = document.getElementById('units');
-const typeSelect = document.getElementById('type');
-const stepsRange = document.getElementById('steps');
-const scaleTextCheckbox = document.getElementById('showScaleText');
-const invertColorsCheckbox = document.getElementById('invertColors');
+const unitsSelect = /** @type {HTMLSelectElement} */ (
+  document.getElementById('units')
+);
+const typeSelect = /** @type {HTMLSelectElement} */ (
+  document.getElementById('type')
+);
+const stepsRange = /** @type {HTMLInputElement} */ (
+  document.getElementById('steps')
+);
+const scaleTextCheckbox = /** @type {HTMLInputElement} */ (
+  document.getElementById('showScaleText')
+);
+const invertColorsCheckbox = /** @type {HTMLInputElement} */ (
+  document.getElementById('invertColors')
+);
 
 let control;
 
 function scaleControl() {
+  const unit = /** @type {'degrees'|'imperial'|'us'|'nautical'|'metric'} */ (
+    unitsSelect.value
+  );
   if (typeSelect.value === 'scaleline') {
     control = new ScaleLine({
-      units: unitsSelect.value,
+      units: unit,
     });
     scaleBarOptionsContainer.style.display = 'none';
   } else {
     control = new ScaleLine({
-      units: unitsSelect.value,
+      units: unit,
       bar: true,
       steps: parseInt(stepsRange.value, 10),
       text: scaleTextCheckbox.checked,

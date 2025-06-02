@@ -52,8 +52,12 @@ const style = {
 };
 
 // handle input values & events
-const minYearInput = document.getElementById('min-year');
-const maxYearInput = document.getElementById('max-year');
+const minYearInput = /** @type {HTMLInputElement} */ (
+  document.getElementById('min-year')
+);
+const maxYearInput = /** @type {HTMLInputElement} */ (
+  document.getElementById('max-year')
+);
 
 function updateStatusText() {
   const div = document.getElementById('status');

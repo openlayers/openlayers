@@ -30,12 +30,11 @@ const map = new Map({
   }),
 });
 
-const swipe = document.getElementById('swipe');
+const swipe = /** @type {HTMLInputElement} */ (
+  document.getElementById('swipe')
+);
 
 imagery.on('prerender', function (event) {
-  const gl = event.context;
-  gl.enable(gl.SCISSOR_TEST);
-
   const mapSize = map.getSize(); // [width, height] in CSS pixels
 
   // get render coordinates and dimensions given CSS coordinates
@@ -47,11 +46,13 @@ imagery.on('prerender', function (event) {
   );
   const height = topRight[1] - bottomLeft[1];
 
+  const gl = /** @type {WebGLRenderingContext} */ (event.context);
+  gl.enable(gl.SCISSOR_TEST);
   gl.scissor(bottomLeft[0], bottomLeft[1], width, height);
 });
 
 imagery.on('postrender', function (event) {
-  const gl = event.context;
+  const gl = /** @type {WebGLRenderingContext} */ (event.context);
   gl.disable(gl.SCISSOR_TEST);
 });
 

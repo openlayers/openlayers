@@ -83,10 +83,12 @@ function clusterCircleStyle(cluster, resolution) {
     return null;
   }
   const clusterMembers = cluster.get('features');
-  const centerCoordinates = cluster.getGeometry().getCoordinates();
+  const centerCoordinates = /** @type {Point} */ (
+    cluster.getGeometry()
+  ).getCoordinates();
   return generatePointsCircle(
     clusterMembers.length,
-    cluster.getGeometry().getCoordinates(),
+    centerCoordinates,
     resolution,
   ).reduce((styles, coordinates, i) => {
     const point = new Point(coordinates);
@@ -106,7 +108,7 @@ function clusterCircleStyle(cluster, resolution) {
       ),
     );
     return styles;
-  }, []);
+  }, /** @type {Array<Style>} */ ([]));
 }
 
 /**

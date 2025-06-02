@@ -41,12 +41,14 @@ const map = new Map({
 let variable;
 for (variable in variables) {
   const name = variable;
-  const element = document.getElementById(name);
+  const element = /** @type {HTMLInputElement} */ (
+    document.getElementById(name)
+  );
   const value = variables[name];
   element.value = value.toString();
   document.getElementById(name + '-value').innerText = value.toFixed(2);
-  element.addEventListener('input', function (event) {
-    const value = parseFloat(event.target.value);
+  element.addEventListener('input', function () {
+    const value = parseFloat(this.value);
     document.getElementById(name + '-value').innerText = value.toFixed(2);
     layer.updateStyleVariables({[name]: value});
   });

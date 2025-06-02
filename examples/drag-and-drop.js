@@ -35,7 +35,9 @@ const map = new Map({
   }),
 });
 
-const extractStyles = document.getElementById('extractstyles');
+const extractStyles = /** @type {HTMLInputElement} */ (
+  document.getElementById('extractstyles')
+);
 let dragAndDropInteraction;
 
 function setInteraction() {
@@ -99,7 +101,9 @@ map.on('click', function (evt) {
 
 // Sample data downloads
 
-const link = document.getElementById('download');
+const link = /** @type {HTMLAnchorElement} */ (
+  document.getElementById('download')
+);
 
 function download(fullpath, filename) {
   fetch(fullpath)

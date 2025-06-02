@@ -51,15 +51,20 @@ const styles = {
   },
 };
 
-const typeSelect = document.getElementById('type');
+const typeSelect = /** @type {HTMLSelectElement} */ (
+  document.getElementById('type')
+);
 
+/** @type {Draw|undefined} */
 let draw; // global so we can remove it later
 function addInteraction() {
-  const value = typeSelect.value;
+  const value = /** @type {'Point'|'LineString'|'Polygon'|'Circle'|'None'} */ (
+    typeSelect.value
+  );
   if (value !== 'None') {
     draw = new Draw({
       source: source,
-      type: typeSelect.value,
+      type: value,
       style: styles[value],
     });
     map.addInteraction(draw);

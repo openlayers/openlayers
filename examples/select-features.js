@@ -77,7 +77,9 @@ const selectAltClick = new Select({
   },
 });
 
-const selectElement = document.getElementById('type');
+const selectElement = /** @type {HTMLSelectElement} */ (
+  document.getElementById('type')
+);
 
 const changeInteraction = function () {
   if (select !== null) {

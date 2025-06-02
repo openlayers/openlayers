@@ -19,6 +19,7 @@ const canvas = new OffscreenCanvas(1, 1);
 canvas.style = {};
 const context = canvas.getContext('2d');
 
+/** @type {Object<string, VectorTileSource>} */
 const sources = {
   landcover: new VectorTileSource({
     maxZoom: 9,
@@ -37,6 +38,7 @@ const sources = {
     url: 'https://api.maptiler.com/tiles/v3/{z}/{x}/{y}.pbf?key=' + key,
   }),
 };
+/** @type {Array<VectorTileLayer<VectorTileSource>>} */
 const layers = [];
 
 // Font replacement so we do not need to load web fonts in the worker
@@ -51,6 +53,7 @@ function loadStyles() {
   fetch(styleUrl)
     .then((data) => data.json())
     .then((styleJson) => {
+      /** @type {Array<{source: string, layers: Array<string>}>} */
       const buckets = [];
       let currentSource;
       styleJson.layers.forEach((layer) => {

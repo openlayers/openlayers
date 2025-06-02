@@ -68,6 +68,7 @@ const incidence = [
 ];
 const scaled = ['*', 255, incidence];
 
+/** @type {Object<string, number>} */
 const variables = {};
 
 const layer = new TileLayer({
@@ -86,7 +87,7 @@ const layer = new TileLayer({
 
 const controlIds = ['vert', 'sunEl', 'sunAz'];
 controlIds.forEach(function (id) {
-  const control = document.getElementById(id);
+  const control = /** @type {HTMLInputElement} */ (document.getElementById(id));
   const output = document.getElementById(id + 'Out');
   function updateValues() {
     output.innerText = control.value;
@@ -125,12 +126,18 @@ function formatLocation([lon, lat]) {
 
 const elevationOut = document.getElementById('elevationOut');
 const locationOut = document.getElementById('locationOut');
-function displayPixelValue(event) {
-  const data = layer.getData(event.pixel);
+map.on(['pointermove', 'click'], function displayPixelValue(event) {
+  const data = layer.getData(
+    /** @type {import('../src/ol/MapBrowserEvent.js').default} */ (event).pixel,
+  );
   if (!data) {
     return;
   }
   elevationOut.innerText = getElevation(data).toLocaleString() + ' m';
-  locationOut.innerText = formatLocation(event.coordinate);
-}
-map.on(['pointermove', 'click'], displayPixelValue);
+  locationOut.innerText = formatLocation(
+    /** @type {[number,number]} */ (
+      /** @type {import('../src/ol/MapBrowserEvent.js').default} */ (event)
+        .coordinate
+    ),
+  );
+});

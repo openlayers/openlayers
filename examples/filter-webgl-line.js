@@ -74,7 +74,7 @@ function showTime() {
   document.getElementById('time-value').textContent = dateTime.toUTCString();
 }
 document.getElementById('time-input').addEventListener('input', (event) => {
-  timestamp = parseFloat(event.target.value);
+  timestamp = parseFloat(/** @type {HTMLInputElement} */ (event.target).value);
   vectorLayer.updateStyleVariables({timestamp});
   showTime();
   map.render();

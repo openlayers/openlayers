@@ -27,9 +27,17 @@ function vgi(pixel) {
 }
 
 /**
+ * @typedef {Object} Counts
+ * @property {number} min Minimum value
+ * @property {number} max Maximum value
+ * @property {Array<number>} values Values
+ * @property {number} delta Delta
+ */
+
+/**
  * Summarize values for a histogram.
  * @param {number} value A VGI value.
- * @param {Object} counts An object for keeping track of VGI counts.
+ * @param {Counts} counts An object for keeping track of VGI counts.
  */
 function summarize(value, counts) {
   const min = counts.min;
@@ -59,7 +67,6 @@ const aerial = new ImageTile({
   url: 'https://api.maptiler.com/maps/satellite/{z}/{x}/{y}.jpg?key=' + key,
   tileSize: 512,
   maxZoom: 20,
-  crossOrigin: '',
 });
 
 /**
@@ -95,6 +102,12 @@ const raster = new RasterSource({
 });
 raster.set('threshold', 0.25);
 
+/**
+ * @param {number} min Minimum value
+ * @param {number} max Maximum value
+ * @param {number} num Number of valus
+ * @return {Counts} Counts
+ */
 function createCounts(min, max, num) {
   const values = new Array(num);
   for (let i = 0; i < num; ++i) {
@@ -135,13 +148,19 @@ const map = new Map({
   }),
 });
 
+/** @type {ReturnType<setTimeout>|null} */
 let timer = null;
+/**
+ * @param {number} resolution Resolution
+ * @param {Counts} counts Counts
+ * @param {number} threshold Threashold
+ */
 function schedulePlot(resolution, counts, threshold) {
   if (timer) {
     clearTimeout(timer);
     timer = null;
   }
-  timer = setTimeout(plot.bind(null, resolution, counts, threshold), 1000 / 60);
+  timer = setTimeout(() => plot(resolution, counts, threshold), 1000 / 60);
 }
 
 const barWidth = 15;
@@ -155,6 +174,11 @@ const chartRect = chart.node().getBoundingClientRect();
 
 const tip = select(document.body).append('div').attr('class', 'tip');
 
+/**
+ * @param {number} resolution Resolution
+ * @param {Counts} counts Counts
+ * @param {number} threshold Threshold
+ */
 function plot(resolution, counts, threshold) {
   const yScale = scaleLinear()
     .domain([0, max(counts.values)])

@@ -44,6 +44,9 @@ function showMap(key) {
   });
 }
 
-document.getElementById('key-form').addEventListener('submit', (event) => {
-  showMap(event.target.elements['key'].value);
+const form = /** @type {HTMLFormElement} */ (
+  document.getElementById('key-form')
+);
+form.addEventListener('submit', function () {
+  showMap(this.elements['key'].value);
 });

@@ -68,8 +68,12 @@ map.on('singleclick', function (e) {
   feature.changed();
 });
 
-const selectHitToleranceElement = document.getElementById('hitTolerance');
-const circleCanvas = document.getElementById('circle');
+const selectHitToleranceElement = /** @type {HTMLSelectElement} */ (
+  document.getElementById('hitTolerance')
+);
+const circleCanvas = /** @type {HTMLCanvasElement} */ (
+  document.getElementById('circle')
+);
 
 const changeHitTolerance = function () {
   hitTolerance = parseInt(selectHitToleranceElement.value, 10);

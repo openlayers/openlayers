@@ -16,9 +16,15 @@ import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 import Text from '../src/ol/style/Text.js';
 
-const typeSelect = document.getElementById('type');
-const showSegments = document.getElementById('segments');
-const clearPrevious = document.getElementById('clear');
+const typeSelect = /** @type {HTMLSelectElement} */ (
+  document.getElementById('type')
+);
+const showSegments = /** @type {HTMLInputElement} */ (
+  document.getElementById('segments')
+);
+const clearPrevious = /** @type {HTMLInputElement} */ (
+  document.getElementById('clear')
+);
 
 const style = new Style({
   fill: new Fill({
@@ -232,7 +238,7 @@ map.addInteraction(modify);
 let draw; // global so we can remove it later
 
 function addInteraction() {
-  const drawType = typeSelect.value;
+  const drawType = /** @type {'LineString'|'Polygon'} */ (typeSelect.value);
   const activeTip =
     'Click to continue drawing the ' +
     (drawType === 'Polygon' ? 'polygon' : 'line');

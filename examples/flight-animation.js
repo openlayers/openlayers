@@ -33,6 +33,7 @@ const style = new Style({
   }),
 });
 
+/** @type {VectorSource<Feature<LineString>>} */
 const flightsSource = new VectorSource({
   attributions:
     'Flight data by ' +

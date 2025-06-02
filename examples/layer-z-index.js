@@ -33,32 +33,28 @@ const styles = {
   },
 };
 
+/**
+ * @param {Array<number>} coordinates Feature coordinates
+ * @param {import('../src/ol/style/flat.js').FlatStyleLike} style Layer style
+ * @param {number} [zIndex] Layer z-index
+ * @return {VectorLayer} The new layer
+ */
 function createLayer(coordinates, style, zIndex) {
-  const feature = new Feature(new Point(coordinates));
-
-  const source = new VectorSource({
-    features: [feature],
-  });
-
-  const vectorLayer = new VectorLayer({
-    source: source,
+  return new VectorLayer({
+    source: new VectorSource({
+      features: [new Feature(new Point(coordinates))],
+    }),
     style,
+    zIndex,
   });
-  vectorLayer.setZIndex(zIndex);
-
-  return vectorLayer;
 }
 
 const layer0 = createLayer([40, 40], styles.star);
 const layer1 = createLayer([0, 0], styles.square, 1);
 const layer2 = createLayer([0, 40], styles.triangle, 0);
 
-const layers = [];
-layers.push(layer1);
-layers.push(layer2);
-
 const map = new Map({
-  layers: layers,
+  layers: [layer1, layer2],
   target: 'map',
   view: new View({
     center: [0, 0],
@@ -68,11 +64,17 @@ const map = new Map({
 
 layer0.setMap(map);
 
+/**
+ * @param {number} id Layer id for html
+ * @param {VectorLayer} layer The layer
+ */
 function bindInputs(id, layer) {
-  const idxInput = document.getElementById('idx' + id);
-  idxInput.onchange = function () {
+  const idxInput = /** @type {HTMLInputElement} */ (
+    document.getElementById('idx' + id)
+  );
+  idxInput.addEventListener('change', function () {
     layer.setZIndex(parseInt(this.value, 10) || 0);
-  };
+  });
   idxInput.value = String(layer.getZIndex());
 }
 bindInputs(1, layer1);

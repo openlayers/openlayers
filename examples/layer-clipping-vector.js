@@ -44,11 +44,12 @@ const style = new Style({
 
 base.on('postrender', function (e) {
   const vectorContext = getVectorContext(e);
-  e.context.globalCompositeOperation = 'destination-in';
+  const context = /** @type {CanvasRenderingContext2D} */ (e.context);
+  context.globalCompositeOperation = 'destination-in';
   clipLayer.getSource().forEachFeature(function (feature) {
     vectorContext.drawFeature(feature, style);
   });
-  e.context.globalCompositeOperation = 'source-over';
+  context.globalCompositeOperation = 'source-over';
 });
 
 const map = new Map({

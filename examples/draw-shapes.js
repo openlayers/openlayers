@@ -29,11 +29,15 @@ const map = new Map({
   }),
 });
 
-const typeSelect = document.getElementById('type');
+const typeSelect = /** @type {HTMLSelectElement} */ (
+  document.getElementById('type')
+);
 
 let draw; // global so we can remove it later
 function addInteraction() {
-  let value = typeSelect.value;
+  let value = /** @type {'Circle'|'Square'|'Box'|'Star'|'None'} */ (
+    typeSelect.value
+  );
   if (value !== 'None') {
     let geometryFunction;
     if (value === 'Square') {

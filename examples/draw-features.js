@@ -25,15 +25,19 @@ const map = new Map({
   }),
 });
 
-const typeSelect = document.getElementById('type');
+const typeSelect = /** @type {HTMLSelectElement} */ (
+  document.getElementById('type')
+);
 
 let draw; // global so we can remove it later
 function addInteraction() {
-  const value = typeSelect.value;
+  const value = /** @type {'Point'|'LineString'|'Polygon'|'Circle'|'None'} */ (
+    typeSelect.value
+  );
   if (value !== 'None') {
     draw = new Draw({
       source: source,
-      type: typeSelect.value,
+      type: value,
     });
     map.addInteraction(draw);
   }

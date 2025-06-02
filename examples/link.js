@@ -19,7 +19,9 @@ const map = new Map({
 
 const link = new Link();
 
-const exampleCheckbox = document.getElementById('example-checkbox');
+const exampleCheckbox = /** @type {HTMLInputElement} */ (
+  document.getElementById('example-checkbox')
+);
 exampleCheckbox.addEventListener('change', function () {
   if (exampleCheckbox.checked) {
     link.update('example', 'checked');

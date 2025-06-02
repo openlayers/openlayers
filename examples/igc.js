@@ -38,6 +38,7 @@ const styleFunction = function (feature) {
   return style;
 };
 
+/** @type {VectorSource<Feature<LineString>>} */
 const vectorSource = new VectorSource();
 
 const igcUrls = [
@@ -60,9 +61,11 @@ function get(url, callback) {
 const igcFormat = new IGC();
 for (let i = 0; i < igcUrls.length; ++i) {
   get(igcUrls[i], function (data) {
-    const features = igcFormat.readFeatures(data, {
-      featureProjection: 'EPSG:3857',
-    });
+    const features = /** @type {Array<Feature<LineString>>} */ (
+      igcFormat.readFeatures(data, {
+        featureProjection: 'EPSG:3857',
+      })
+    );
     vectorSource.addFeatures(features);
   });
 }
@@ -184,7 +187,9 @@ const featureOverlay = new VectorLayer({
   }),
 });
 
-const control = document.getElementById('time');
+const control = /** @type {HTMLInputElement} */ (
+  document.getElementById('time')
+);
 control.addEventListener('input', function () {
   const value = parseInt(control.value, 10) / 100;
   const m = time.start + time.duration * value;

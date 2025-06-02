@@ -74,7 +74,9 @@ const map = new Map({
   }),
 });
 
+/** @type {Array<CanvasTextAlign>} */
 const textAlignments = ['left', 'center', 'right'];
+/** @type {Array<CanvasTextBaseline>} */
 const textBaselines = ['top', 'middle', 'bottom'];
 const controls = {};
 const controlIds = [
@@ -96,7 +98,7 @@ const controlIds = [
   'textOffsetY',
 ];
 controlIds.forEach(function (id) {
-  const control = document.getElementById(id);
+  const control = /** @type {HTMLInputElement} */ (document.getElementById(id));
   const output = document.getElementById(id + 'Out');
   function setOutput() {
     const value = parseFloat(control.value);
@@ -121,56 +123,37 @@ controlIds.forEach(function (id) {
 });
 
 function updateStyle() {
-  iconStyle
-    .getImage()
-    .setRotation(parseFloat(controls['rotation'].value) * Math.PI);
+  const image = /** @type {import('../src/ol/style/Icon.js').default} */ (
+    iconStyle.getImage()
+  );
+  image.setRotation(parseFloat(controls['rotation'].value) * Math.PI);
+  image.setRotateWithView(controls['rotateWithView'].checked);
+  image.setScale([
+    parseFloat(controls['scaleX'].value),
+    parseFloat(controls['scaleY'].value),
+  ]);
+  image.setAnchor([
+    parseFloat(controls['anchorX'].value),
+    parseFloat(controls['anchorY'].value),
+  ]);
+  image.setDisplacement([
+    parseFloat(controls['displacementX'].value),
+    parseFloat(controls['displacementY'].value),
+  ]);
 
-  iconStyle.getImage().setRotateWithView(controls['rotateWithView'].checked);
-
-  iconStyle
-    .getImage()
-    .setScale([
-      parseFloat(controls['scaleX'].value),
-      parseFloat(controls['scaleY'].value),
-    ]);
-
-  iconStyle
-    .getImage()
-    .setAnchor([
-      parseFloat(controls['anchorX'].value),
-      parseFloat(controls['anchorY'].value),
-    ]);
-
-  iconStyle
-    .getImage()
-    .setDisplacement([
-      parseFloat(controls['displacementX'].value),
-      parseFloat(controls['displacementY'].value),
-    ]);
-
-  iconStyle
-    .getText()
-    .setRotation(parseFloat(controls['textRotation'].value) * Math.PI);
-
-  iconStyle.getText().setRotateWithView(controls['textRotateWithView'].checked);
-
-  iconStyle
-    .getText()
-    .setScale([
-      parseFloat(controls['textScaleX'].value),
-      parseFloat(controls['textScaleY'].value),
-    ]);
-
-  iconStyle
-    .getText()
-    .setTextAlign(textAlignments[parseFloat(controls['textAlign'].value)]);
-
-  iconStyle
-    .getText()
-    .setTextBaseline(textBaselines[parseFloat(controls['textBaseline'].value)]);
-
-  iconStyle.getText().setOffsetX(parseFloat(controls['textOffsetX'].value));
-  iconStyle.getText().setOffsetY(parseFloat(controls['textOffsetY'].value));
+  const text = iconStyle.getText();
+  text.setRotation(parseFloat(controls['textRotation'].value) * Math.PI);
+  text.setRotateWithView(controls['textRotateWithView'].checked);
+  text.setScale([
+    parseFloat(controls['textScaleX'].value),
+    parseFloat(controls['textScaleY'].value),
+  ]);
+  text.setTextAlign(textAlignments[parseFloat(controls['textAlign'].value)]);
+  text.setTextBaseline(
+    textBaselines[parseFloat(controls['textBaseline'].value)],
+  );
+  text.setOffsetX(parseFloat(controls['textOffsetX'].value));
+  text.setOffsetY(parseFloat(controls['textOffsetY'].value));
 
   iconFeature.changed();
 }

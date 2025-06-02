@@ -35,7 +35,10 @@ const styles = [
     }),
     geometry: function (feature) {
       // return the coordinates of the first ring of the polygon
-      const coordinates = feature.getGeometry().getCoordinates()[0];
+      const coordinates =
+        /** @type {import('../src/ol/geom/Polygon.js').default} */ (
+          feature.getGeometry()
+        ).getCoordinates()[0];
       return new MultiPoint(coordinates);
     },
   }),

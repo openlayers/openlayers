@@ -17,14 +17,29 @@ import {createXYZ} from '../src/ol/tilegrid.js';
 
 // Define a custom MVT format as ol/format/MVT requires an extent
 
-const tileCoordZ = document.getElementById('tileCoordZ');
-const tileCoordX = document.getElementById('tileCoordX');
-const tileCoordY = document.getElementById('tileCoordY');
+const tileCoordZ = /** @type {HTMLInputElement} */ (
+  document.getElementById('tileCoordZ')
+);
+const tileCoordX = /** @type {HTMLInputElement} */ (
+  document.getElementById('tileCoordX')
+);
+const tileCoordY = /** @type {HTMLInputElement} */ (
+  document.getElementById('tileCoordY')
+);
 
-class customMVT extends MVT {
+/**
+ * @extends {MVT<Feature>}
+ */
+class CustomMVT extends MVT {
   constructor() {
     super({featureClass: Feature});
   }
+  /**
+   * @param {ArrayBuffer} source Source.
+   * @param {import('../src/ol/format/Feature.js').ReadOptions} [options] Read options.
+   * @return {Array<import('../src/ol/Feature.js').default>} Features.
+   * @override
+   */
   readFeatures(source, options) {
     options.extent = createXYZ().getTileCoordExtent([
       parseInt(tileCoordZ.value),
@@ -38,7 +53,7 @@ class customMVT extends MVT {
 // Set up map with Drag and Drop interaction
 
 const dragAndDropInteraction = new DragAndDrop({
-  formatConstructors: [customMVT, GPX, GeoJSON, IGC, KML, TopoJSON],
+  formatConstructors: [CustomMVT, GPX, GeoJSON, IGC, KML, TopoJSON],
 });
 
 const map = new Map({
@@ -103,7 +118,9 @@ map.on('click', function (evt) {
 
 // Sample data download
 
-const link = document.getElementById('download');
+const link = /** @type {HTMLAnchorElement} */ (
+  document.getElementById('download')
+);
 
 function download(fullpath, filename) {
   fetch(fullpath)

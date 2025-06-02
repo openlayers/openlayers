@@ -44,7 +44,9 @@ function closeMapWindow() {
 // Close external window in case the main page is closed or reloaded
 window.addEventListener('pagehide', closeMapWindow);
 
-const button = document.getElementById('external-map-button');
+const button = /** @type {HTMLButtonElement} */ (
+  document.getElementById('external-map-button')
+);
 
 function resetMapTarget() {
   localMapTarget.style.height = '';
@@ -79,6 +81,7 @@ button.addEventListener('click', function () {
   button.disabled = true;
 
   // Reset button and map target in case window did not load or open
+  /** @type {ReturnType<setTimeout>|undefined} */
   let timeoutKey = setTimeout(function () {
     closeMapWindow();
     resetMapTarget();

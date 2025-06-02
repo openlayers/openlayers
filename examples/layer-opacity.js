@@ -30,7 +30,9 @@ const map = new Map({
   }),
 });
 
-const opacityInput = document.getElementById('opacity-input');
+const opacityInput = /** @type {HTMLInputElement} */ (
+  document.getElementById('opacity-input')
+);
 const opacityOutput = document.getElementById('opacity-output');
 function update() {
   const opacity = parseFloat(opacityInput.value);
