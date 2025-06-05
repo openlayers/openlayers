@@ -114,6 +114,41 @@ server. -->
           </HTTP>
         </DCPType>
       </GetFeatureInfo>
+      <DescribeLayer><!--optional;
+        used only by SLD-enabled WMS-->
+        <Format>application/vnd.ogc.gml</Format>
+        <DCPType>
+          <HTTP>
+            <Get>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink"
+                xlink:type="simple"
+                xlink:href="http://hostname:port/path" />
+            </Get>
+          </HTTP>
+        </DCPType>
+      </DescribeLayer>
+      <GetLegendGraphic><!--optional;
+        used only by SLD-enabled WMS-->
+        <Format>image/png</Format>
+        <Format>image/png; mode=8bit</Format>
+        <Format>image/jpeg</Format>
+        <Format>image/vnd.jpeg-png</Format>
+        <Format>image/vnd.jpeg-png8</Format>
+        <DCPType>
+          <HTTP>
+            <Get>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink"
+                xlink:type="simple"
+                xlink:href="http://hostname:port/path" />
+            </Get>
+            <Post>
+              <OnlineResource xmlns:xlink="http://www.w3.org/1999/xlink"
+                xlink:type="simple"
+                xlink:href="http://hostname:port/path" />
+            </Post>
+          </HTTP>
+        </DCPType>
+      </GetLegendGraphic>
     </Request>
     <Exception>
       <Format>application/vnd.ogc.se_xml</Format>
@@ -287,5 +322,7 @@ server. -->
         <Extent name="time" default="2000">1990/2000/P1Y</Extent>
       </Layer>
     </Layer>
+    <UserDefinedSymbolization SupportSLD="1" UserLayer="0" UserStyle="1" RemoteWFS="0"
+      InlineFeature="0" RemoteWCS="0" />
   </Capability>
 </WMT_MS_Capabilities>
