@@ -4,6 +4,7 @@
 import {listenImage} from './Image.js';
 import Tile from './Tile.js';
 import TileState from './TileState.js';
+import {setCrossOrigin} from './cors.js';
 import {createCanvasContext2D} from './dom.js';
 
 class ImageTile extends Tile {
@@ -11,7 +12,7 @@ class ImageTile extends Tile {
    * @param {import("./tilecoord.js").TileCoord} tileCoord Tile coordinate.
    * @param {import("./TileState.js").default} state State.
    * @param {string} src Image source URI.
-   * @param {?string} crossOrigin Cross origin.
+   * @param {import("./cors.js").CrossOriginOption} crossOrigin Cross origin.
    * @param {import("./Tile.js").LoadFunction} tileLoadFunction Tile load function.
    * @param {import("./Tile.js").Options} [options] Tile options.
    */
@@ -20,9 +21,9 @@ class ImageTile extends Tile {
 
     /**
      * @private
-     * @type {?string}
+     * @type {import("./cors.js").CrossOriginAttribute}
      */
-    this.crossOrigin_ = crossOrigin;
+    this.crossOrigin_ = crossOrigin ?? 'no-cors';
 
     /**
      * Image URI
@@ -39,9 +40,7 @@ class ImageTile extends Tile {
      * @type {HTMLImageElement|HTMLCanvasElement}
      */
     this.image_ = new Image();
-    if (crossOrigin !== null) {
-      this.image_.crossOrigin = crossOrigin;
-    }
+    setCrossOrigin(this.image_, this.crossOrigin_);
 
     /**
      * @private
@@ -145,9 +144,7 @@ class ImageTile extends Tile {
     if (this.state == TileState.ERROR) {
       this.state = TileState.IDLE;
       this.image_ = new Image();
-      if (this.crossOrigin_ !== null) {
-        this.image_.crossOrigin = this.crossOrigin_;
-      }
+      setCrossOrigin(this.image_, this.crossOrigin_);
     }
     if (this.state == TileState.IDLE) {
       this.state = TileState.LOADING;
