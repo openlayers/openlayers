@@ -17,6 +17,7 @@ document.getElementById('auth-form').addEventListener('submit', (event) => {
         clientSecret +
         '&api-version=2.0&tilesetId=microsoft.imagery&zoom={z}&x={x}&y={y}&tileSize=256&language=EN',
       crossOrigin: 'anonymous',
+      attributions: `© ${new Date().getFullYear()} TomTom, Microsoft`
     }),
   );
 });
