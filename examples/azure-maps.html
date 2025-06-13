@@ -1,0 +1,20 @@
+---
+layout: example.html
+title: Azure Maps
+shortdesc: Example of a Azure Maps layer.
+docs: >
+  This example renders a tile layer with a source that uses the Azure maps API (former Bing).
+  The Processing API requires a key. The form above can be used to provide YOUR primary key.
+tags: "Azure, Azure-maps"
+---
+
+    <div id="map" class="map"></div>
+    <dialog id="auth-dialog" open>
+      <form method="dialog" id="auth-form">
+        <label>Primary key
+          <br>
+          <input type="password" name="secret" value="your_primary_key">
+        </label>
+        <input type="submit" value="show map">
+      </form>
+    </dialog>
