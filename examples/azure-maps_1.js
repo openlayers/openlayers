@@ -55,7 +55,9 @@ document.getElementById('auth-form').addEventListener('submit', (event) => {
 });
 
 function updateLayer(index) {
-  if (!map) {return};
+  if (!map) {
+    return;
+  }
 
   const newLayer = new TileLayer({
     source: new ImageTile({
@@ -76,7 +78,9 @@ function updateLayer(index) {
     if (opacity < 1) {
       requestAnimationFrame(animateFade);
     } else {
-      if (currentLayer) map.removeLayer(currentLayer);
+      if (currentLayer) {
+        map.removeLayer(currentLayer);
+      }
       currentLayer = newLayer;
     }
   };
@@ -84,7 +88,7 @@ function updateLayer(index) {
    requestAnimationFrame(animateFade);
 
    // Mettre à jour les boutons
-   document.querySelectorAll('.layer-btn').forEach(btn => {
+   document.querySelectorAll('.layer-btn').forEach((btn) => {
      btn.classList.toggle('active', btn.value == index);
    });
 }
