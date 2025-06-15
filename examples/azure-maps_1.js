@@ -29,29 +29,23 @@ document.getElementById('auth-form').addEventListener('submit', (event) => {
     return;
   }
 
-  // Masquer le formulaire
   document.getElementById('auth-interface').style.display = 'none';
 
-  // Nettoyer la carte existante
-    if (map) {
-      map.setTarget(undefined);
-      map = null;
-    }
+  if (map) {
+    map.setTarget(undefined);
+    map = null;
+  }
 
-  // Créer la nouvelle carte
-    map = new Map({
-      target: 'map',
-      view: new View({
-        center: [2.35, 48.85],
-        zoom: 12,
-      }),
-    });
+  map = new Map({
+    target: 'map',
+    view: new View({
+      center: [2.35, 48.85],
+      zoom: 12,
+    }),
+  });
 
-    // Afficher la carte
-    document.getElementById('map-container').style.display = 'block';
-
-    // Charger la couche initiale
-    updateLayer(0);
+  document.getElementById('map-container').style.display = 'block';
+  updateLayer(0);
 });
 
 function updateLayer(index) {
