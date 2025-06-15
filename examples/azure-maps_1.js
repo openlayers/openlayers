@@ -9,7 +9,7 @@ useGeographic();
 const sometilesetId = [
 'microsoft.imagery',
 'microsoft.base.road',
-'microsoft.base.darkgrey'
+'microsoft.base.darkgrey',
 ];
 
 const baseurl = 'https://atlas.microsoft.com/map/tile?subscription-key=';
@@ -21,65 +21,65 @@ let map = null;
 let currentLayer = null;
 
 document.getElementById('auth-form').addEventListener('submit', (event) => {
-   event.preventDefault();
-   clientSecret = document.getElementById('secret').value.trim();
-   
-   if (!clientSecret) {
-     alert("Veuillez saisir une clé valide");
-     return;
-   }
+  event.preventDefault();
+  clientSecret = document.getElementById('secret').value.trim();
 
-   // Masquer le formulaire
-   document.getElementById('auth-interface').style.display = 'none';
+  if (!clientSecret) {
+    alert('Please enter a valid key');
+    return;
+  }
 
-// Nettoyer la carte existante
-   if (map) {
-     map.setTarget(undefined);
-     map = null;
-   }
+  // Masquer le formulaire
+  document.getElementById('auth-interface').style.display = 'none';
+  
+  // Nettoyer la carte existante
+    if (map) {
+      map.setTarget(undefined);
+      map = null;
+    }
 
-   // Créer la nouvelle carte
-   map = new Map({
-     target: 'map',
-     view: new View({
-       center: [2.35, 48.85], // Paris
-       zoom: 12
-     })
-   });
+  // Créer la nouvelle carte
+    map = new Map({
+      target: 'map',
+      view: new View({
+        center: [2.35, 48.85], // Paris
+        zoom: 12
+      })
+    });
 
-   // Afficher la carte
-   document.getElementById('map-container').style.display = 'block';
-   
-   // Charger la couche initiale
-   updateLayer(0);
+    // Afficher la carte
+    document.getElementById('map-container').style.display = 'block';
+    
+    // Charger la couche initiale
+    updateLayer(0);
 });
 
 function updateLayer(index) {
-   if (!map) return;
-   
-   const newLayer = new TileLayer({
-     source: new ImageTile({
-       url: baseurl + clientSecret + mideurl + sometilesetId[index] + endurl,
-       crossOrigin: 'anonymous',
-       attributions: `© ${new Date().getFullYear()} TomTom, Microsoft`
-     }),
-     opacity: 0
-   });
+  if (!map) {return};
 
-   map.addLayer(newLayer);
+  const newLayer = new TileLayer({
+    source: new ImageTile({
+      url: baseurl + clientSecret + mideurl + sometilesetId[index] + endurl,
+      crossOrigin: 'anonymous',
+      attributions: `© ${new Date().getFullYear()} TomTom, Microsoft`
+    }),
+    opacity: 0
+  });
 
-   // Animation de fondu
-   const animateFade = () => {
-     const opacity = newLayer.getOpacity() + 0.05;
-     newLayer.setOpacity(opacity);
-   
-     if (opacity < 1) {
-       requestAnimationFrame(animateFade);
-     } else {
-       if (currentLayer) map.removeLayer(currentLayer);
-       currentLayer = newLayer;
-     }
-   };
+  map.addLayer(newLayer);
+
+  // Animation de fondu
+  const animateFade = () => {
+    const opacity = newLayer.getOpacity() + 0.05;
+    newLayer.setOpacity(opacity);
+  
+    if (opacity < 1) {
+      requestAnimationFrame(animateFade);
+    } else {
+      if (currentLayer) map.removeLayer(currentLayer);
+      currentLayer = newLayer;
+    }
+  };
 
    requestAnimationFrame(animateFade);
 
@@ -92,6 +92,6 @@ function updateLayer(index) {
 // Gestion des boutons
 document.querySelectorAll('.layer-btn').forEach(btn => {
    btn.addEventListener('click', () => {
-     if (clientSecret) updateLayer(parseInt(btn.value));
+     if (clientSecret) {updateLayer(parseInt(btn.value))};
    });
 });
