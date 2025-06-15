@@ -7,9 +7,9 @@ import ImageTile from 'ol/source/ImageTile.js';
 useGeographic();
 
 const sometilesetId = [
-'microsoft.imagery',
-'microsoft.base.road',
-'microsoft.base.darkgrey',
+  'microsoft.imagery',
+  'microsoft.base.road',
+  'microsoft.base.darkgrey',
 ];
 
 const baseurl = 'https://atlas.microsoft.com/map/tile?subscription-key=';
@@ -59,7 +59,7 @@ function updateLayer(index) {
       crossOrigin: 'anonymous',
       attributions: `© ${new Date().getFullYear()} TomTom, Microsoft`
     }),
-    opacity: 0
+    opacity: 0,
   });
 
   map.addLayer(newLayer);
@@ -90,6 +90,8 @@ function updateLayer(index) {
 // Gestion des boutons
 document.querySelectorAll('.layer-btn').forEach(btn => {
    btn.addEventListener('click', () => {
-     if (clientSecret) {updateLayer(parseInt(btn.value))};
-   });
+    if (clientSecret) {
+      updateLayer(parseInt(btn.value));
+    }
+  });
 });
