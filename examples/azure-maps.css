@@ -1,0 +1,58 @@
+    #auth-interface {
+      background: #f5f5f5;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+    #map-container {
+      display: none;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    #map {
+      width: 100%;
+      height: 500px;
+    }
+    .layer-switcher {
+      display: flex;
+      gap: 10px;
+      padding: 15px;
+      background: #f9f9f9;
+      border-top: 1px solid #eee;
+    }
+    .layer-btn {
+      padding: 8px 15px;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .layer-btn:hover {
+      background: #f0f0f0;
+    }
+    .layer-btn.active {
+      background: #4CAF50;
+      color: white;
+      border-color: #4CAF50;
+    }
+    #auth-form {
+      display: flex;
+      gap: 10px;
+    }
+    #secret {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    button[type="submit"] {
+      padding: 10px 20px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
