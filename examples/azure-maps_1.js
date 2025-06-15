@@ -57,7 +57,7 @@ function updateLayer(index) {
     source: new ImageTile({
       url: baseurl + clientSecret + mideurl + sometilesetId[index] + endurl,
       crossOrigin: 'anonymous',
-      attributions: `© ${new Date().getFullYear()} TomTom, Microsoft`
+      attributions: `© ${new Date().getFullYear()} TomTom, Microsoft`,
     }),
     opacity: 0,
   });
@@ -79,17 +79,17 @@ function updateLayer(index) {
     }
   };
 
-   requestAnimationFrame(animateFade);
+  requestAnimationFrame(animateFade);
 
-   // Mettre à jour les boutons
-   document.querySelectorAll('.layer-btn').forEach((btn) => {
+  // Mettre à jour les boutons
+  document.querySelectorAll('.layer-btn').forEach((btn) => {
      btn.classList.toggle('active', btn.value == index);
-   });
+  });
 }
 
 // Gestion des boutons
 document.querySelectorAll('.layer-btn').forEach(btn => {
-   btn.addEventListener('click', () => {
+  btn.addEventListener('click', () => {
     if (clientSecret) {
       updateLayer(parseInt(btn.value));
     }
