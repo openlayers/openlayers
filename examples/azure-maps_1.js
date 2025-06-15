@@ -83,12 +83,12 @@ function updateLayer(index) {
 
   // Mettre à jour les boutons
   document.querySelectorAll('.layer-btn').forEach((btn) => {
-     btn.classList.toggle('active', btn.value == index);
+    btn.classList.toggle('active', btn.value == index);
   });
 }
 
 // Gestion des boutons
-document.querySelectorAll('.layer-btn').forEach(btn => {
+document.querySelectorAll('.layer-btn').forEach((btn) => {
   btn.addEventListener('click', () => {
     if (clientSecret) {
       updateLayer(parseInt(btn.value));
