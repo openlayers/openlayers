@@ -8,13 +8,18 @@ docs: >
 tags: "Azure, Azure-maps"
 ---
 
-    <div id="map" class="map"></div>
-    <dialog id="auth-dialog" open>
-      <form method="dialog" id="auth-form">
-        <label>Primary key
-          <br>
-          <input type="password" name="secret" value="your_primary_key">
-        </label>
-        <input type="submit" value="show map">
-      </form>
-    </dialog>
+  <div id="auth-interface">
+    <form id="auth-form">
+      <input type="text" id="secret" placeholder="Your Azure Maps primary key !" required>
+      <button type="submit">Ok show the map</button>
+    </form>
+  </div>
+
+  <div id="map-container">
+    <div id="map"></div>
+    <div class="layer-switcher">
+      <button class="layer-btn active" value="0">Satellite</button>
+      <button class="layer-btn" value="1">Roads</button>
+      <button class="layer-btn" value="2">Dark</button>
+    </div>
+  </div>
