@@ -31,7 +31,7 @@ document.getElementById('auth-form').addEventListener('submit', (event) => {
 
   // Masquer le formulaire
   document.getElementById('auth-interface').style.display = 'none';
-  
+
   // Nettoyer la carte existante
     if (map) {
       map.setTarget(undefined);
@@ -42,14 +42,14 @@ document.getElementById('auth-form').addEventListener('submit', (event) => {
     map = new Map({
       target: 'map',
       view: new View({
-        center: [2.35, 48.85], // Paris
-        zoom: 12
-      })
+        center: [2.35, 48.85],
+        zoom: 12,
+      }),
     });
 
     // Afficher la carte
     document.getElementById('map-container').style.display = 'block';
-    
+
     // Charger la couche initiale
     updateLayer(0);
 });
@@ -74,7 +74,7 @@ function updateLayer(index) {
   const animateFade = () => {
     const opacity = newLayer.getOpacity() + 0.05;
     newLayer.setOpacity(opacity);
-  
+
     if (opacity < 1) {
       requestAnimationFrame(animateFade);
     } else {
