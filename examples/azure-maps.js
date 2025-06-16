@@ -6,35 +6,20 @@ import ImageTile from 'ol/source/ImageTile.js';
 
 useGeographic();
 
-const sometilesetId = [
+const someTilesetId = [
   'microsoft.imagery',
   'microsoft.base.road',
   'microsoft.base.darkgrey',
 ];
 
-const baseurl = 'https://atlas.microsoft.com/map/tile?subscription-key=';
-const mideurl = '&api-version=2.0&tilesetId=';
-const endurl = '&zoom={z}&x={x}&y={y}&tileSize=256&language=EN';
+const baseUrl =
+  'https://atlas.microsoft.com/map/tile?zoom={z}&x={x}&y={y}&tileSize=256&language=EN&&api-version=2.0';
 
-let clientSecret = '';
-let map = null;
-let currentLayer = null;
+let subscriptionKey, currentLayer, map;
 
 document.getElementById('auth-form').addEventListener('submit', (event) => {
   event.preventDefault();
-  clientSecret = document.getElementById('secret').value.trim();
-
-  if (!clientSecret) {
-    alert('Please enter a valid key');
-    return;
-  }
-
-  document.getElementById('auth-interface').style.display = 'none';
-
-  if (map) {
-    map.setTarget(undefined);
-    map = null;
-  }
+  subscriptionKey = document.getElementById('secret').value.trim();
 
   map = new Map({
     target: 'map',
@@ -43,55 +28,42 @@ document.getElementById('auth-form').addEventListener('submit', (event) => {
       zoom: 12,
     }),
   });
-
+  document.getElementById('auth-interface').style.display = 'none';
   document.getElementById('map-container').style.display = 'block';
+
+  // Add behavior to the tileset buttons
+  document.querySelectorAll('.layer-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      updateLayer(Number(btn.value));
+    });
+  });
+
   updateLayer(0);
 });
 
 function updateLayer(index) {
-  if (!map) {
-    return;
-  }
-
-  const newLayer = new TileLayer({
+  currentLayer = new TileLayer({
     source: new ImageTile({
-      url: baseurl + clientSecret + mideurl + sometilesetId[index] + endurl,
+      url: `${baseUrl}&subscription-key=${subscriptionKey}&tilesetId=${someTilesetId[index]}`,
       crossOrigin: 'anonymous',
       attributions: `© ${new Date().getFullYear()} TomTom, Microsoft`,
     }),
-    opacity: 0,
   });
 
-  map.addLayer(newLayer);
+  map.addLayer(currentLayer);
 
-  // Animation de fondu
-  const animateFade = () => {
-    const opacity = newLayer.getOpacity() + 0.05;
-    newLayer.setOpacity(opacity);
-
-    if (opacity < 1) {
-      requestAnimationFrame(animateFade);
-    } else {
-      if (currentLayer) {
-        map.removeLayer(currentLayer);
+  // Remove previous layers after the map has rendered
+  map.once('rendercomplete', () => {
+    for (const layer of map.getLayers().getArray()) {
+      if (layer === currentLayer) {
+        break; // Skip the newly added layer
       }
-      currentLayer = newLayer;
+      map.removeLayer(layer);
     }
-  };
+  });
 
-  requestAnimationFrame(animateFade);
-
-  // Mettre à jour les boutons
+  // Update state of the tileset buttons
   document.querySelectorAll('.layer-btn').forEach((btn) => {
     btn.classList.toggle('active', btn.value == index);
   });
 }
-
-// Gestion des boutons
-document.querySelectorAll('.layer-btn').forEach((btn) => {
-  btn.addEventListener('click', () => {
-    if (clientSecret) {
-      updateLayer(parseInt(btn.value));
-    }
-  });
-});
