@@ -216,11 +216,14 @@ class ExecutorGroup {
 
     const newContext = !this.hitDetectionContext_;
     if (newContext) {
+      // Refrain from adding a 'willReadFrequently' hint in the options here.
+      // While it will remove the "Canvas2D: Multiple readback operations using
+      // getImageData are faster with the willReadFrequently attribute set
+      // to true" warnings in the console, it makes hitDetection extremely
+      // slow in Chrome when there are many features on the map
       this.hitDetectionContext_ = createCanvasContext2D(
         contextSize,
         contextSize,
-        undefined,
-        {willReadFrequently: false},
       );
     }
     const context = this.hitDetectionContext_;
