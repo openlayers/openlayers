@@ -1,12 +1,8 @@
 /**
  * @module ol/render/webgl/VectorStyleRenderer
  */
-import {buildExpression, newEvaluationContext} from '../../expr/cpu.js';
-import {
-  BooleanType,
-  computeGeometryType,
-  newParsingContext,
-} from '../../expr/expression.js';
+import {UNKNOWN, expressionToFunction} from '../../expr/cpu.js';
+import {BooleanType} from '../../expr/expression.js';
 import {
   create as createTransform,
   makeInverse as makeInverseTransform,
@@ -223,12 +219,17 @@ class VectorStyleRenderer {
     }
 
     /**
-     * @type {function(import('../../Feature.js').FeatureLike): boolean}
+     * @type {import('../../expr/cpu.js').ExpressionAsFunction}
      * @private
      */
     this.featureFilter_ = null;
     if (filter) {
-      this.featureFilter_ = this.computeFeatureFilter(filter);
+      try {
+        this.featureFilter_ = expressionToFunction(filter, BooleanType);
+      } catch {
+        // filter expression failed to compile for CPU: ignore it
+        return null;
+      }
     }
 
     const hitDetectionAttributes = this.hitDetectionEnabled_
@@ -338,46 +339,6 @@ class VectorStyleRenderer {
   }
 
   /**
-   * Will apply the style filter when generating geometry batches (if it can be evaluated outside a map context)
-   * @param {import("../../expr/expression.js").ExpressionValue} filter Style filter
-   * @return {function(import('../../Feature.js').FeatureLike): boolean} Feature filter
-   * @private
-   */
-  computeFeatureFilter(filter) {
-    const parsingContext = newParsingContext();
-    /**
-     * @type {import('../../expr/cpu.js').ExpressionEvaluator}
-     */
-    let compiled;
-    try {
-      compiled = buildExpression(filter, BooleanType, parsingContext);
-    } catch {
-      // filter expression failed to compile for CPU: ignore it
-      return null;
-    }
-
-    // do not apply the filter if it depends on map state (e.g. zoom level) or any variable
-    if (parsingContext.mapState || parsingContext.variables.size > 0) {
-      return null;
-    }
-
-    const evalContext = newEvaluationContext();
-    return (feature) => {
-      evalContext.properties = feature.getPropertiesInternal();
-      if (parsingContext.featureId) {
-        const id = feature.getId();
-        if (id !== undefined) {
-          evalContext.featureId = id;
-        } else {
-          evalContext.featureId = null;
-        }
-      }
-      evalContext.geometryType = computeGeometryType(feature.getGeometry());
-      return /** @type {boolean} */ (compiled(evalContext));
-    };
-  }
-
-  /**
    * @param {import('./MixedGeometryBatch.js').default} geometryBatch Geometry batch
    * @param {import("../../transform.js").Transform} transform Transform to apply to coordinates
    * @return {Promise<WebGLBuffers|null>} A promise resolving to WebGL buffers; returns null if buffers are empty
@@ -385,7 +346,10 @@ class VectorStyleRenderer {
   async generateBuffers(geometryBatch, transform) {
     let filteredBatch = geometryBatch;
     if (this.featureFilter_) {
-      filteredBatch = filteredBatch.filter(this.featureFilter_);
+      filteredBatch = filteredBatch.filter((feature) => {
+        const result = this.featureFilter_(feature);
+        return result === true || result === UNKNOWN;
+      });
       if (filteredBatch.isEmpty()) {
         return null;
       }
