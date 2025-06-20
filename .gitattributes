@@ -1,0 +1,4 @@
+*.js text eol=lf
+*.cjs text eol=lf
+*.ts text eol=lf
+*.mjs text eol=lf
