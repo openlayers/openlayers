@@ -9,7 +9,7 @@ import {createLoader} from './mapguide.js';
 /**
  * @typedef {Object} Options
  * @property {string} [url] The mapagent url.
- * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
+ * @property {import("../cors.js").CrossOriginOption} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
  * @property {number} [displayDpi=96] The display resolution.
@@ -48,10 +48,9 @@ class ImageMapGuide extends ImageSource {
 
     /**
      * @private
-     * @type {?string}
+     * @type {import("../cors.js").CrossOriginAttribute}
      */
-    this.crossOrigin_ =
-      options.crossOrigin !== undefined ? options.crossOrigin : null;
+    this.crossOrigin_ = options.crossOrigin ?? 'no-cors';
 
     /**
      * @private
