@@ -157,6 +157,29 @@ describe('ol/source/ImageTile', () => {
 
       tile.load();
     });
+
+    it('can be set to no-cors', (done) => {
+      const assert = getAssert(done);
+
+      let got;
+      const source = new ImageTile({
+        // TODO: Using `null` to indicate crossOrigin should be unset
+        crossOrigin: null,
+        loader: (x, y, z, {crossOrigin}) => {
+          got = crossOrigin;
+          return loadImage(emptyUrl);
+        },
+      });
+
+      const tile = source.getTile(3, 2, 1);
+      source.on('tileloadend', () => {
+        // TODO: Expecting `null` to indicate crossOrigin was not set
+        assert(got === null, `expected no-cors, got ${got}`);
+        done();
+      });
+
+      tile.load();
+    });
   });
 
   describe('#getInterpolate()', () => {
