@@ -518,13 +518,26 @@ describe('ol/source/WMTS', function () {
       );
     });
 
-    it('returns correct bounding box when the layer has BoundingBox', function () {
+    it('returns correct WGS84 bounding box when the layer has BoundingBox', function () {
       const options = optionsFromCapabilities(capabilities, {
         layer: 's2cloudless-2020',
       });
 
       const extent = options.tileGrid.getExtent();
       expect(extent).to.eql([-180, -90, 180, 90]);
+    });
+
+    it('returns correct projection bounding box when the layer has BoundingBox in the right projection', function () {
+      const options = optionsFromCapabilities(capabilities, {
+        layer: 'overlay_3857',
+        projection: 'EPSG:387',
+      });
+
+      const extent = options.tileGrid.getExtent();
+      expect(extent).to.eql([
+        -20037508.3427892, -20037508.3427892, 20037508.3427892,
+        20037508.3427892,
+      ]);
     });
   });
 
