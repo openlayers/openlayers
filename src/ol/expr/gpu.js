@@ -14,6 +14,7 @@ import {
   Ops,
   SizeType,
   StringType,
+  isType,
   parse,
   typeName,
 } from './expression.js';
@@ -226,7 +227,11 @@ const compilers = {
         type: expression.type,
       };
     }
-    return 'a_prop_' + propName;
+    let result = 'a_prop_' + propName;
+    if (isType(expression.type, BooleanType)) {
+      result = `(${result} > 0.0)`;
+    }
+    return result;
   },
   [Ops.Id]: (context) => {
     context.featureId = true;
@@ -247,7 +252,11 @@ const compilers = {
         type: expression.type,
       };
     }
-    return uniformNameForVariable(varName);
+    let result = uniformNameForVariable(varName);
+    if (isType(expression.type, BooleanType)) {
+      result = `(${result} > 0.0)`;
+    }
+    return result;
   },
   [Ops.Has]: (context, expression) => {
     const firstArg = /** @type {LiteralExpression} */ (expression.args[0]);
