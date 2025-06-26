@@ -1,11 +1,14 @@
 import {spy as sinonSpy} from 'sinon';
 import Feature from '../../../../../../src/ol/Feature.js';
+import {stringToGlsl} from '../../../../../../src/ol/expr/gpu.js';
 import LineString from '../../../../../../src/ol/geom/LineString.js';
 import Point from '../../../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../../../src/ol/geom/Polygon.js';
 import MixedGeometryBatch from '../../../../../../src/ol/render/webgl/MixedGeometryBatch.js';
 import {ShaderBuilder} from '../../../../../../src/ol/render/webgl/ShaderBuilder.js';
-import VectorStyleRenderer from '../../../../../../src/ol/render/webgl/VectorStyleRenderer.js';
+import VectorStyleRenderer, {
+  convertStyleToShaders,
+} from '../../../../../../src/ol/render/webgl/VectorStyleRenderer.js';
 import {
   compose as composeTransform,
   create as createTransform,
@@ -572,6 +575,208 @@ describe('VectorStyleRenderer', () => {
       it('does not filter the geometry batches', () => {
         expect(geometryBatch.filter.callCount).to.be(0);
       });
+    });
+  });
+
+  describe('convertStyleToShaders', function () {
+    it('breaks down a single flat style', function () {
+      const style = {
+        'fill-color': 'red',
+        'stroke-color': 'blue',
+        'stroke-width': 2,
+      };
+      const result = convertStyleToShaders(style);
+      expect(result).to.eql([
+        {
+          builder: new ShaderBuilder()
+            .setFillColorExpression('vec4(1.0, 0.0, 0.0, 1.0)')
+            .setStrokeColorExpression('vec4(0.0, 0.0, 1.0, 1.0)')
+            .setStrokeWidthExpression('2.0'),
+          'attributes': {},
+          'uniforms': {},
+        },
+      ]);
+    });
+    it('breaks down an array of flat styles', function () {
+      const styles = [
+        {
+          'fill-color': 'red',
+        },
+        {
+          'stroke-color': 'blue',
+          'stroke-width': 2,
+        },
+      ];
+      const result = convertStyleToShaders(styles);
+      expect(result).to.eql([
+        {
+          builder: new ShaderBuilder().setFillColorExpression(
+            'vec4(1.0, 0.0, 0.0, 1.0)',
+          ),
+          'attributes': {},
+          'uniforms': {},
+        },
+        {
+          builder: new ShaderBuilder()
+            .setStrokeColorExpression('vec4(0.0, 0.0, 1.0, 1.0)')
+            .setStrokeWidthExpression('2.0'),
+          'attributes': {},
+          'uniforms': {},
+        },
+      ]);
+    });
+    it('breaks down an array of rules, generating appropriate filters for "else" rules', function () {
+      const rules = [
+        {
+          filter: ['>', ['get', 'size'], 10],
+          style: [{'fill-color': 'red'}, {'fill-color': 'green'}],
+        },
+        {
+          else: true,
+          style: {'circle-radius': 5, 'circle-fill-color': 'red'},
+        },
+        {
+          else: true,
+          filter: ['==', ['get', 'type'], 'road'],
+          style: {'stroke-color': 'blue', 'stroke-width': 2},
+        },
+        {
+          else: true,
+          style: [
+            {'stroke-color': 'green', 'stroke-width': 2},
+            {'stroke-color': 'white', 'stroke-width': 1},
+          ],
+        },
+        {
+          style: {'stroke-color': 'yellow', 'stroke-width': 2},
+        },
+        {
+          filter: ['==', ['get', 'type'], 'street'],
+          style: {'stroke-color': 'black', 'stroke-width': 2},
+        },
+      ];
+      const result = convertStyleToShaders(rules);
+
+      expect(result).to.have.length(8);
+
+      expect(result[0].attributes).to.only.have.key('prop_size');
+      expect(result[0].builder).to.eql(
+        new ShaderBuilder()
+          .addAttribute('a_prop_size', 'float')
+          .setFillColorExpression('vec4(1.0, 0.0, 0.0, 1.0)')
+          .setFragmentDiscardExpression('!(a_prop_size > 10.0)'),
+      );
+
+      expect(result[1].attributes).to.only.have.key('prop_size');
+      expect(result[1].builder).to.eql(
+        new ShaderBuilder()
+          .addAttribute('a_prop_size', 'float')
+          .setFillColorExpression('vec4(0.0, 0.5019607843137255, 0.0, 1.0)')
+          .setFragmentDiscardExpression('!(a_prop_size > 10.0)'),
+      );
+
+      expect(result[2].attributes).to.only.have.key('prop_size');
+      expect(result[2].builder).to.eql(
+        new ShaderBuilder()
+          .addAttribute('a_prop_size', 'float')
+          .setSymbolColorExpression(
+            'vec4(1.0, 0.0, 0.0, 1.0) * vec4(1.0, 1.0, 1.0, (1.0 - smoothstep(-0.63, 0.58, circleDistanceField(coordsPx, 5.0))))',
+          )
+          .setSymbolSizeExpression('vec2(5.0 * 2. + 0.5)')
+          .addFragmentShaderFunction(
+            'float circleDistanceField(vec2 point, float radius) {\n  return length(point) - radius;\n}',
+          )
+          .addVertexShaderFunction(
+            'float circleDistanceField(vec2 point, float radius) {\n  return length(point) - radius;\n}',
+          )
+          .setFragmentDiscardExpression('!(!(a_prop_size > 10.0))'),
+      );
+
+      expect(result[3].attributes).to.only.have.keys([
+        'prop_size',
+        'prop_type',
+      ]);
+      expect(result[3].builder).to.eql(
+        new ShaderBuilder()
+          .addAttribute('a_prop_size', 'float')
+          .addAttribute('a_prop_type', 'float')
+          .setStrokeColorExpression('vec4(0.0, 0.0, 1.0, 1.0)')
+          .setStrokeWidthExpression('2.0')
+          .setFragmentDiscardExpression(
+            `!((!(a_prop_size > 10.0)) && (a_prop_type == ${stringToGlsl('road')}))`,
+          ),
+      );
+
+      expect(result[4].attributes).to.only.have.keys([
+        'prop_size',
+        'prop_type',
+      ]);
+      expect(result[4].builder).to.eql(
+        new ShaderBuilder()
+          .addAttribute('a_prop_size', 'float')
+          .addAttribute('a_prop_type', 'float')
+          .setStrokeColorExpression('vec4(0.0, 0.5019607843137255, 0.0, 1.0)')
+          .setStrokeWidthExpression('2.0')
+          .setFragmentDiscardExpression(
+            `!((!(a_prop_size > 10.0)) && (!(a_prop_type == ${stringToGlsl('road')})))`,
+          ),
+      );
+
+      expect(result[5].attributes).to.only.have.key('prop_size', 'prop_type');
+      expect(result[5].builder).to.eql(
+        new ShaderBuilder()
+          .addAttribute('a_prop_size', 'float')
+          .addAttribute('a_prop_type', 'float')
+          .setStrokeColorExpression('vec4(1.0, 1.0, 1.0, 1.0)')
+          .setStrokeWidthExpression('1.0')
+          .setFragmentDiscardExpression(
+            `!((!(a_prop_size > 10.0)) && (!(a_prop_type == ${stringToGlsl('road')})))`,
+          ),
+      );
+
+      expect(result[6].attributes).to.eql({});
+      expect(result[6].builder).to.eql(
+        new ShaderBuilder()
+          .setStrokeColorExpression('vec4(1.0, 1.0, 0.0, 1.0)')
+          .setStrokeWidthExpression('2.0'),
+      );
+
+      expect(result[7].attributes).to.only.have.key('prop_type');
+      expect(result[7].builder).to.eql(
+        new ShaderBuilder()
+          .addAttribute('a_prop_type', 'float')
+          .setStrokeColorExpression('vec4(0.0, 0.0, 0.0, 1.0)')
+          .setStrokeWidthExpression('2.0')
+          .setFragmentDiscardExpression(
+            `!(a_prop_type == ${stringToGlsl('street')})`,
+          ),
+      );
+    });
+    it('returns an array of shaders as is', function () {
+      const shaders = [
+        {
+          builder: new ShaderBuilder().setStrokeColorExpression(
+            'vec4(1.0, 0.0, 0.0, 1.0)',
+          ),
+          attributes: [],
+        },
+        {
+          builder: new ShaderBuilder().setStrokeColorExpression(
+            'vec4(0.0, 0.7, 0.7, 1.0)',
+          ),
+          attributes: [],
+        },
+      ];
+      const result = convertStyleToShaders(shaders);
+      expect(result).to.eql(shaders);
+    });
+    it('returns a single shader as array', function () {
+      const shader = {
+        builder: new ShaderBuilder().setStrokeWidthExpression('3.0'),
+        attributes: [],
+      };
+      const result = convertStyleToShaders(shader);
+      expect(result).to.eql([shader]);
     });
   });
 });

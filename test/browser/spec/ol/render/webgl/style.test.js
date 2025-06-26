@@ -6,10 +6,8 @@ import {
 } from '../../../../../../src/ol/expr/gpu.js';
 import MultiPolygon from '../../../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../../../src/ol/geom/Point.js';
-import {ShaderBuilder} from '../../../../../../src/ol/render/webgl/ShaderBuilder.js';
 import {packColor} from '../../../../../../src/ol/render/webgl/compileUtil.js';
 import {
-  breakDownFlatStyle,
   computeHash,
   parseLiteralStyle,
 } from '../../../../../../src/ol/render/webgl/style.js';
@@ -1431,146 +1429,6 @@ describe('ol/render/webgl/style', () => {
   return false;
 }`,
       );
-    });
-  });
-
-  describe('breakDownFlatStyle', function () {
-    it('breaks down a single flat style', function () {
-      const style = {
-        'fill-color': 'red',
-        'fill-opacity': 0.5,
-        'stroke-color': 'blue',
-        'stroke-width': 2,
-      };
-      const result = breakDownFlatStyle(style);
-      expect(result).to.eql([
-        {
-          style,
-        },
-      ]);
-    });
-    it('breaks down an array of flat styles', function () {
-      const styles = [
-        {
-          'fill-color': 'red',
-          'fill-opacity': 0.5,
-        },
-        {
-          'stroke-color': 'blue',
-          'stroke-width': 2,
-        },
-      ];
-      const result = breakDownFlatStyle(styles);
-      expect(result).to.eql([
-        {
-          style: styles[0],
-        },
-        {
-          style: styles[1],
-        },
-      ]);
-    });
-    it('breaks down an array of rules, generating appropriate filters for "else" rules', function () {
-      const rules = [
-        {
-          filter: ['>', ['get', 'size'], '10'],
-          style: [
-            {'fill-color': 'red', 'fill-opacity': 0.5},
-            {'fill-color': 'green', 'fill-opacity': 0.5},
-          ],
-        },
-        {
-          else: true,
-          style: {'circle-radius': 5, 'circle-fill-color': 'red'},
-        },
-        {
-          else: true,
-          filter: ['==', ['get', 'type'], 'road'],
-          style: {'stroke-color': 'blue', 'stroke-width': 2},
-        },
-        {
-          else: true,
-          style: [
-            {'stroke-color': 'green', 'stroke-width': 2},
-            {'stroke-color': 'white', 'stroke-width': 1},
-          ],
-        },
-        {
-          style: {'stroke-color': 'yellow', 'stroke-width': 2},
-        },
-        {
-          filter: ['==', ['get', 'type'], 'street'],
-          style: {'stroke-color': 'black', 'stroke-width': 2},
-        },
-      ];
-      const result = breakDownFlatStyle(rules);
-      expect(result).to.eql([
-        {
-          filter: ['>', ['get', 'size'], '10'],
-          style: {'fill-color': 'red', 'fill-opacity': 0.5},
-        },
-        {
-          filter: ['>', ['get', 'size'], '10'],
-          style: {'fill-color': 'green', 'fill-opacity': 0.5},
-        },
-        {
-          filter: ['!', ['>', ['get', 'size'], '10']],
-          style: {'circle-radius': 5, 'circle-fill-color': 'red'},
-        },
-        {
-          filter: [
-            'all',
-            ['!', ['>', ['get', 'size'], '10']],
-            ['==', ['get', 'type'], 'road'],
-          ],
-          style: {'stroke-color': 'blue', 'stroke-width': 2},
-        },
-        {
-          'filter': [
-            'all',
-            ['!', ['>', ['get', 'size'], '10']],
-            ['!', ['==', ['get', 'type'], 'road']],
-          ],
-          style: {'stroke-color': 'green', 'stroke-width': 2},
-        },
-        {
-          'filter': [
-            'all',
-            ['!', ['>', ['get', 'size'], '10']],
-            ['!', ['==', ['get', 'type'], 'road']],
-          ],
-          style: {'stroke-color': 'white', 'stroke-width': 1},
-        },
-        {
-          style: {'stroke-color': 'yellow', 'stroke-width': 2},
-        },
-        {
-          filter: ['==', ['get', 'type'], 'street'],
-          style: {'stroke-color': 'black', 'stroke-width': 2},
-        },
-      ]);
-    });
-    it('returns an array of shaders as is', function () {
-      const shaders = [
-        {
-          builder: new ShaderBuilder(),
-          attributes: [],
-        },
-        {
-          builder: new ShaderBuilder(),
-          attributes: [],
-        },
-      ];
-      const result = breakDownFlatStyle(shaders);
-      expect(result).to.eql(shaders);
-    });
-    it('returns a single shader as array', function () {
-      const shader = {
-        builder: new ShaderBuilder(),
-        attributes: [],
-      };
-      const result = breakDownFlatStyle(shader);
-      expect(result).to.eql([shader]);
     });
   });
 });

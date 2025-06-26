@@ -89,21 +89,17 @@ export const Attributes = {
  */
 
 /**
- * @typedef {Object} AsShaders
- * @property {import("./ShaderBuilder.js").ShaderBuilder} builder Shader builder with the appropriate presets.
- * @property {AttributeDefinitions} [attributes] Custom attributes made available in the vertex shaders.
- * Default shaders rely on the attributes in {@link Attributes}.
- * @property {UniformDefinitions} [uniforms] Additional uniforms usable in shaders.
+ * @typedef {import('./style.js').StyleParseResult} StyleShaders
  */
 
 /**
- * @typedef {Object} AsRule
- * @property {import('../../style/flat.js').FlatStyle} style Style
- * @property {import("../../expr/expression.js").EncodedExpression} [filter] Filter
+ * @typedef {import('../../style/flat.js').FlatStyleLike} FlatStyleLike
  */
-
 /**
- * @typedef {AsRule|AsShaders} VectorStyle
+ * @typedef {import('../../style/flat.js').FlatStyle} FlatStyle
+ */
+/**
+ * @typedef {import('../../style/flat.js').Rule} FlatStyleRule
  */
 
 /**
@@ -656,3 +652,64 @@ class VectorStyleRenderer {
 }
 
 export default VectorStyleRenderer;
+
+/**
+ * Breaks down a vector style into an array of prebuilt shader builders with attributes and uniforms
+ * @param {FlatStyleLike|StyleShaders|Array<StyleShaders>} style Vector style
+ * @param {import('../../style/flat.js').StyleVariables} variables Style variables
+ * @return {Array<StyleShaders>} Array of style shaders
+ */
+export function convertStyleToShaders(style, variables) {
+  // possible cases:
+  // - single shader
+  // - multiple shaders
+  // - single style
+  // - multiple styles
+  // - multiple rules
+  const asArray = Array.isArray(style) ? style : [style];
+
+  // if array of rules: break rules into separate styles, compute "else" filters
+  if ('style' in asArray[0]) {
+    /** @type {Array<StyleShaders>} */
+    const shaders = [];
+    const rules = /** @type {Array<FlatStyleRule>} */ (asArray);
+    const previousFilters = [];
+    for (const rule of rules) {
+      /** @type {Array<FlatStyle>} */
+      const ruleStyles = Array.isArray(rule.style) ? rule.style : [rule.style];
+      /** @type {import("../../expr/expression.js").EncodedExpression} */
+      let currentFilter = rule.filter;
+      if (rule.else && previousFilters.length) {
+        currentFilter = [
+          'all',
+          ...previousFilters.map((filter) => ['!', filter]),
+        ];
+        if (rule.filter) {
+          currentFilter.push(rule.filter);
+        }
+        if (currentFilter.length < 3) {
+          currentFilter = currentFilter[1];
+        }
+      }
+      if (rule.filter) {
+        previousFilters.push(rule.filter);
+      }
+      // parse each style and convert to shader
+      const styleShaders = ruleStyles.map((style) =>
+        parseLiteralStyle(style, variables, currentFilter),
+      );
+      shaders.push(...styleShaders);
+    }
+    return shaders;
+  }
+
+  // if array of shaders: return as is
+  if ('builder' in asArray[0]) {
+    return /** @type {Array<StyleShaders>} */ (asArray);
+  }
+
+  // array of flat styles: simply convert to shaders
+  return /** @type {Array<FlatStyle>} */ (asArray).map((style) =>
+    parseLiteralStyle(style, variables, null),
+  );
+}
