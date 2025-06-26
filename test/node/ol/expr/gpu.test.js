@@ -332,13 +332,14 @@ describe('ol/expr/gpu.js', () => {
         name: 'all',
         type: AnyType,
         expression: ['all', true, ['get', 'attr6']],
-        expected: '(true && a_prop_attr6)',
+        expected: '(true && (a_prop_attr6 > 0.0))',
       },
       {
         name: 'any',
         type: AnyType,
-        expression: ['any', true, ['get', 'attr6'], true],
-        expected: '(true || a_prop_attr6 || true)',
+        expression: ['any', true, ['get', 'attr6'], true, ['has', 'attr7']],
+        expected:
+          '(true || (a_prop_attr6 > 0.0) || true || (a_prop_attr7 != -9999999.0))',
       },
       {
         name: 'between',
@@ -350,7 +351,7 @@ describe('ol/expr/gpu.js', () => {
         name: 'not',
         type: AnyType,
         expression: ['!', ['get', 'attr6']],
-        expected: '(!a_prop_attr6)',
+        expected: '(!(a_prop_attr6 > 0.0))',
       },
       {
         name: 'array constructor',
@@ -464,6 +465,12 @@ describe('ol/expr/gpu.js', () => {
         ],
         expected:
           '(a_prop_attr2 == 0.0 ? vec4(0.0, 0.0, 1.0, 1.0) : (a_prop_attr2 == 1.0 ? vec4(1.0, 1.0, 2.0, 2.0) : (a_prop_attr2 == 2.0 ? vec4(2.0, 2.0, 3.0, 3.0) : vec4(3.0, 3.0, 4.0, 4.0))))',
+      },
+      {
+        name: 'case (boolean attribute)',
+        type: NumberType,
+        expression: ['case', ['get', 'attr'], 10, ['>', ['zoom'], 10], 5, 3],
+        expected: `((a_prop_attr > 0.0) ? 10.0 : ((u_zoom > 10.0) ? 5.0 : 3.0))`,
       },
       {
         name: 'interpolate (colors, linear)',
