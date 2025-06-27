@@ -62,17 +62,13 @@ describe('ol/layer/WebGLVectorTile', function () {
   it('creates a renderer with the given parameters', function () {
     const renderer = layer.getRenderer();
     expect(renderer).to.be.a(WebGLVectorTileLayerRenderer);
-    expect(renderer.styles_).to.eql([
+    expect(renderer.style_).to.eql([
       {
-        style: {
-          'circle-radius': 4,
-          'circle-fill-color': ['var', 'fillColor'],
-        },
+        'circle-radius': 4,
+        'circle-fill-color': ['var', 'fillColor'],
       },
       {
-        style: {
-          'fill-color': ['var', 'fillColor'],
-        },
+        'fill-color': ['var', 'fillColor'],
       },
     ]);
     expect(renderer.styleVariables_).to.eql({
@@ -110,7 +106,7 @@ describe('ol/layer/WebGLVectorTile', function () {
       });
       expect(layer.styleVariables_['fillColor']).to.be('yellow');
       const renderer = layer.getRenderer();
-      const uniforms = renderer.styleRenderers_[0].uniforms_;
+      const uniforms = renderer.styleRenderer_.uniforms_;
       expect(uniforms.u_var_fillColor()).to.eql([1, 1, 0, 1]);
     });
 
