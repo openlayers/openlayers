@@ -66,7 +66,7 @@ export const AttributeType = {
 /**
  * Description of an attribute in a buffer
  * @typedef {Object} AttributeDescription
- * @property {string} name Attribute name to use in shaders
+ * @property {string|null} name Attribute name to use in shaders; if null, this attribute will not be enabled and is simply used as padding in the buffers
  * @property {number} size Number of components per attributes
  * @property {AttributeType} [type] Attribute type, i.e. number of bytes used to store the value. This is
  * determined by the class of typed array which the buffer uses (eg. `Float32Array` for a `FLOAT` attribute).
@@ -1115,13 +1115,16 @@ class WebGLHelper extends Disposable {
     let offset = 0;
     for (let i = 0; i < attributes.length; i++) {
       const attr = attributes[i];
-      this.enableAttributeArray_(
-        attr.name,
-        attr.size,
-        attr.type || FLOAT,
-        stride,
-        offset,
-      );
+      // if a name is not given, simply skip this slot in the buffer
+      if (attr.name) {
+        this.enableAttributeArray_(
+          attr.name,
+          attr.size,
+          attr.type || FLOAT,
+          stride,
+          offset,
+        );
+      }
       offset += attr.size * getByteSizeFromType(attr.type);
     }
   }

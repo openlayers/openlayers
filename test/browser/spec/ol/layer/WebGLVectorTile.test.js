@@ -29,6 +29,7 @@ describe('ol/layer/WebGLVectorTile', function () {
         fillColor: 'rgba(255, 0, 0, 0.5)',
       },
       disableHitDetection: false,
+      cacheSize: 150,
     });
     target = document.createElement('div');
     target.style.width = '100px';
@@ -62,23 +63,20 @@ describe('ol/layer/WebGLVectorTile', function () {
   it('creates a renderer with the given parameters', function () {
     const renderer = layer.getRenderer();
     expect(renderer).to.be.a(WebGLVectorTileLayerRenderer);
-    expect(renderer.styles_).to.eql([
+    expect(renderer.style_).to.eql([
       {
-        style: {
-          'circle-radius': 4,
-          'circle-fill-color': ['var', 'fillColor'],
-        },
+        'circle-radius': 4,
+        'circle-fill-color': ['var', 'fillColor'],
       },
       {
-        style: {
-          'fill-color': ['var', 'fillColor'],
-        },
+        'fill-color': ['var', 'fillColor'],
       },
     ]);
     expect(renderer.styleVariables_).to.eql({
       fillColor: 'rgba(255, 0, 0, 0.5)',
     });
     expect(renderer.hitDetectionEnabled_).to.be(true);
+    expect(renderer.tileRepresentationCache.highWaterMark).to.be(150);
   });
 
   describe('setStyle()', function () {
@@ -110,7 +108,7 @@ describe('ol/layer/WebGLVectorTile', function () {
       });
       expect(layer.styleVariables_['fillColor']).to.be('yellow');
       const renderer = layer.getRenderer();
-      const uniforms = renderer.styleRenderers_[0].uniforms_;
+      const uniforms = renderer.styleRenderer_.uniforms_;
       expect(uniforms.u_var_fillColor()).to.eql([1, 1, 0, 1]);
     });
 

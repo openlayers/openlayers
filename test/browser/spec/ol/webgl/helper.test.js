@@ -448,6 +448,37 @@ describe('ol/webgl/WebGLHelper', function () {
       expect(spy.getCall(2).args[3]).to.eql(6 * bytesPerFloat);
       expect(spy.getCall(2).args[4]).to.eql(5 * bytesPerFloat);
     });
+
+    it('enables attributes including padding (empty slots)', function () {
+      const spy = sinonSpy(h, 'enableAttributeArray_');
+      h.enableAttributes([
+        {
+          name: 'attr1',
+          size: 3,
+        },
+        {
+          name: null,
+          size: 2,
+        },
+        {
+          name: 'attr3',
+          size: 1,
+        },
+      ]);
+      const bytesPerFloat = Float32Array.BYTES_PER_ELEMENT;
+
+      expect(spy.callCount).to.eql(2);
+      expect(spy.getCall(0).args[0]).to.eql('attr1');
+      expect(spy.getCall(0).args[1]).to.eql(3);
+      expect(spy.getCall(0).args[2]).to.eql(FLOAT);
+      expect(spy.getCall(0).args[3]).to.eql(6 * bytesPerFloat);
+      expect(spy.getCall(0).args[4]).to.eql(0);
+      expect(spy.getCall(1).args[0]).to.eql('attr3');
+      expect(spy.getCall(1).args[1]).to.eql(1);
+      expect(spy.getCall(1).args[2]).to.eql(FLOAT);
+      expect(spy.getCall(1).args[3]).to.eql(6 * bytesPerFloat);
+      expect(spy.getCall(1).args[4]).to.eql(5 * bytesPerFloat);
+    });
   });
 
   describe('#applyFrameState', function () {

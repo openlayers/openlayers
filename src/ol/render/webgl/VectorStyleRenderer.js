@@ -1,12 +1,6 @@
 /**
  * @module ol/render/webgl/VectorStyleRenderer
  */
-import {buildExpression, newEvaluationContext} from '../../expr/cpu.js';
-import {
-  BooleanType,
-  computeGeometryType,
-  newParsingContext,
-} from '../../expr/expression.js';
 import {
   create as createTransform,
   makeInverse as makeInverseTransform,
@@ -89,46 +83,53 @@ export const Attributes = {
  */
 
 /**
- * @typedef {Object} AsShaders
- * @property {import("./ShaderBuilder.js").ShaderBuilder} builder Shader builder with the appropriate presets.
- * @property {AttributeDefinitions} [attributes] Custom attributes made available in the vertex shaders.
- * Default shaders rely on the attributes in {@link Attributes}.
- * @property {UniformDefinitions} [uniforms] Additional uniforms usable in shaders.
+ * @typedef {import('./style.js').StyleParseResult} StyleShaders
  */
 
 /**
- * @typedef {Object} AsRule
- * @property {import('../../style/flat.js').FlatStyle} style Style
- * @property {import("../../expr/expression.js").EncodedExpression} [filter] Filter
+ * @typedef {import('../../style/flat.js').FlatStyleLike} FlatStyleLike
+ */
+/**
+ * @typedef {import('../../style/flat.js').FlatStyle} FlatStyle
+ */
+/**
+ * @typedef {import('../../style/flat.js').Rule} FlatStyleRule
  */
 
 /**
- * @typedef {AsRule|AsShaders} VectorStyle
+ * @typedef {Object} SubRenderPass
+ * @property {string} vertexShader Vertex shader
+ * @property {string} fragmentShader Fragment shader
+ * @property {Array<import('../../webgl/Helper.js').AttributeDescription>} attributesDesc Attributes description
+ * @property {WebGLProgram} [program] Program; this has to be recreated if the helper is lost/changed
+ */
+
+/**
+ * @typedef {Object} RenderPass
+ * @property {SubRenderPass} [fillRenderPass] Fill render pass; undefined if no fill in pass
+ * @property {SubRenderPass} [strokeRenderPass] Stroke render pass; undefined if no stroke in pass
+ * @property {SubRenderPass} [symbolRenderPass] Symbol render pass; undefined if no symbol in pass
  */
 
 /**
  * @classdesc This class is responsible for:
- * 1. generate WebGL buffers according to a provided style, using a MixedGeometryBatch as input
+ * 1. generating WebGL buffers according to a provided style, using a MixedGeometryBatch as input
  * 2. rendering geometries contained in said buffers
  *
- * A layer renderer will typically maintain several of these in order to have several styles rendered separately.
- *
- * A VectorStyleRenderer instance can be created either from a literal style or from shaders using either
- * `VectorStyleRenderer.fromStyle` or `VectorStyleRenderer.fromShaders`. The shaders should not be provided explicitly
- * but instead as a preconfigured ShaderBuilder instance.
+ * A VectorStyleRenderer instance can be created either from a literal style or from shaders.
+ * The shaders should not be provided explicitly but instead as a preconfigured ShaderBuilder instance.
  *
  * The `generateBuffers` method returns a promise resolving to WebGL buffers that are intended to be rendered by the
  * same renderer.
  */
 class VectorStyleRenderer {
   /**
-   * @param {VectorStyle} styleOrShaders Literal style or custom shaders
+   * @param {FlatStyleLike|StyleShaders|Array<StyleShaders>} styles Vector styles expressed as flat styles, flat style rules or style shaders
    * @param {import('../../style/flat.js').StyleVariables} variables Style variables
    * @param {import('../../webgl/Helper.js').default} helper Helper
    * @param {boolean} [enableHitDetection] Whether to enable the hit detection (needs compatible shader)
-   * @param {import("../../expr/expression.js").ExpressionValue} [filter] Optional filter expression
    */
-  constructor(styleOrShaders, variables, helper, enableHitDetection, filter) {
+  constructor(styles, variables, helper, enableHitDetection) {
     /**
      * @private
      * @type {import('../../webgl/Helper.js').default}
@@ -140,241 +141,160 @@ class VectorStyleRenderer {
      */
     this.hitDetectionEnabled_ = !!enableHitDetection;
 
-    let asShaders = /** @type {AsShaders} */ (styleOrShaders);
-    const isShaders = 'builder' in styleOrShaders;
-    if (!isShaders) {
-      const asRule = /** @type {AsRule} */ (styleOrShaders);
-      const parseResult = parseLiteralStyle(
-        asRule.style,
-        variables,
-        asRule.filter,
-      );
-      asShaders = {
-        builder: parseResult.builder,
-        attributes: parseResult.attributes,
-        uniforms: parseResult.uniforms,
+    /**
+     * @type {Array<StyleShaders>}
+     * @private
+     */
+    this.styleShaders = convertStyleToShaders(styles, variables);
+
+    /**
+     * @type {AttributeDefinitions}
+     * @private
+     */
+    this.customAttributes_ = {};
+
+    /**
+     @type {UniformDefinitions}
+     * @private
+     */
+    this.uniforms_ = {};
+
+    // add hit detection attribute if enabled
+    if (this.hitDetectionEnabled_) {
+      this.customAttributes_['hitColor'] = {
+        callback() {
+          return colorEncodeId(this.ref, tmpColor);
+        },
+        size: 4,
       };
     }
 
-    /**
-     * @private
-     * @type {WebGLProgram}
-     */
-    this.fillProgram_;
-
-    /**
-     * @private
-     * @type {WebGLProgram}
-     */
-    this.strokeProgram_;
-
-    /**
-     * @private
-     * @type {WebGLProgram}
-     */
-    this.symbolProgram_;
-
-    /**
-     * @type {boolean}
-     * @private
-     */
-    this.hasFill_ = !!asShaders.builder.getFillVertexShader();
-    if (this.hasFill_) {
-      /**
-       * @private
-       */
-      this.fillVertexShader_ = asShaders.builder.getFillVertexShader();
-      /**
-       * @private
-       */
-      this.fillFragmentShader_ = asShaders.builder.getFillFragmentShader();
-    }
-
-    /**
-     * @type {boolean}
-     * @private
-     */
-    this.hasStroke_ = !!asShaders.builder.getStrokeVertexShader();
-    if (this.hasStroke_) {
-      /**
-       * @private
-       */
-      this.strokeVertexShader_ = asShaders.builder.getStrokeVertexShader();
-      /**
-       * @private
-       */
-      this.strokeFragmentShader_ = asShaders.builder.getStrokeFragmentShader();
-    }
-
-    /**
-     * @type {boolean}
-     * @private
-     */
-    this.hasSymbol_ = !!asShaders.builder.getSymbolVertexShader();
-    if (this.hasSymbol_) {
-      /**
-       * @private
-       */
-      this.symbolVertexShader_ = asShaders.builder.getSymbolVertexShader();
-      /**
-       * @private
-       */
-      this.symbolFragmentShader_ = asShaders.builder.getSymbolFragmentShader();
-    }
-
-    /**
-     * @type {function(import('../../Feature.js').FeatureLike): boolean}
-     * @private
-     */
-    this.featureFilter_ = null;
-    if (filter) {
-      this.featureFilter_ = this.computeFeatureFilter(filter);
-    }
-
-    const hitDetectionAttributes = this.hitDetectionEnabled_
-      ? {
-          hitColor: {
-            callback() {
-              return colorEncodeId(this.ref, tmpColor);
-            },
-            size: 4,
-          },
+    // add attributes & uniforms coming from all shaders
+    for (const styleShader of this.styleShaders) {
+      for (const attributeName in styleShader.attributes) {
+        if (attributeName in this.customAttributes_) {
+          // already defined: skip
+          continue;
         }
-      : {};
-
-    /**
-     * @private
-     */
-    this.customAttributes_ = Object.assign(
-      {},
-      hitDetectionAttributes,
-      asShaders.attributes,
-    );
-    /**
-     * @private
-     */
-    this.uniforms_ = asShaders.uniforms;
-
-    const customAttributesDesc = Object.entries(this.customAttributes_).map(
-      ([name, value]) => ({
-        name: `a_${name}`,
-        size: value.size || 1,
-        type: AttributeType.FLOAT,
-      }),
-    );
-    /**
-     * @type {Array<import('../../webgl/Helper.js').AttributeDescription>}
-     * @private
-     */
-    this.polygonAttributesDesc_ = [
-      {
-        name: Attributes.POSITION,
-        size: 2,
-        type: AttributeType.FLOAT,
-      },
-      ...customAttributesDesc,
-    ];
-    /**
-     * @type {Array<import('../../webgl/Helper.js').AttributeDescription>}
-     * @private
-     */
-    this.lineStringAttributesDesc_ = [
-      {
-        name: Attributes.SEGMENT_START,
-        size: 2,
-        type: AttributeType.FLOAT,
-      },
-      {
-        name: Attributes.MEASURE_START,
-        size: 1,
-        type: AttributeType.FLOAT,
-      },
-      {
-        name: Attributes.SEGMENT_END,
-        size: 2,
-        type: AttributeType.FLOAT,
-      },
-      {
-        name: Attributes.MEASURE_END,
-        size: 1,
-        type: AttributeType.FLOAT,
-      },
-      {
-        name: Attributes.JOIN_ANGLES,
-        size: 2,
-        type: AttributeType.FLOAT,
-      },
-      {
-        name: Attributes.DISTANCE,
-        size: 1,
-        type: AttributeType.FLOAT,
-      },
-      {
-        name: Attributes.PARAMETERS,
-        size: 1,
-        type: AttributeType.FLOAT,
-      },
-      ...customAttributesDesc,
-    ];
-    /**
-     * @type {Array<import('../../webgl/Helper.js').AttributeDescription>}
-     * @private
-     */
-    this.pointAttributesDesc_ = [
-      {
-        name: Attributes.POSITION,
-        size: 2,
-        type: AttributeType.FLOAT,
-      },
-      {
-        name: Attributes.INDEX,
-        size: 1,
-        type: AttributeType.FLOAT,
-      },
-      ...customAttributesDesc,
-    ];
-
-    this.setHelper(helper);
-  }
-
-  /**
-   * Will apply the style filter when generating geometry batches (if it can be evaluated outside a map context)
-   * @param {import("../../expr/expression.js").ExpressionValue} filter Style filter
-   * @return {function(import('../../Feature.js').FeatureLike): boolean} Feature filter
-   * @private
-   */
-  computeFeatureFilter(filter) {
-    const parsingContext = newParsingContext();
-    /**
-     * @type {import('../../expr/cpu.js').ExpressionEvaluator}
-     */
-    let compiled;
-    try {
-      compiled = buildExpression(filter, BooleanType, parsingContext);
-    } catch {
-      // filter expression failed to compile for CPU: ignore it
-      return null;
-    }
-
-    // do not apply the filter if it depends on map state (e.g. zoom level) or any variable
-    if (parsingContext.mapState || parsingContext.variables.size > 0) {
-      return null;
-    }
-
-    const evalContext = newEvaluationContext();
-    return (feature) => {
-      evalContext.properties = feature.getPropertiesInternal();
-      if (parsingContext.featureId) {
-        const id = feature.getId();
-        if (id !== undefined) {
-          evalContext.featureId = id;
-        } else {
-          evalContext.featureId = null;
-        }
+        this.customAttributes_[attributeName] =
+          styleShader.attributes[attributeName];
       }
-      evalContext.geometryType = computeGeometryType(feature.getGeometry());
-      return /** @type {boolean} */ (compiled(evalContext));
-    };
+      for (const uniformName in styleShader.uniforms) {
+        if (uniformName in this.uniforms_) {
+          // already defined: skip
+          continue;
+        }
+        this.uniforms_[uniformName] = styleShader.uniforms[uniformName];
+      }
+    }
+
+    // create a render pass for each shader
+    /**
+     * @type {Array<RenderPass>}
+     * @private
+     */
+    this.renderPasses_ = this.styleShaders.map((styleShader) => {
+      /** @type {RenderPass} */
+      const renderPass = {};
+
+      const customAttributesDesc = Object.entries(this.customAttributes_).map(
+        ([name, value]) => {
+          const isUsed = name in styleShader.attributes || name === 'hitColor';
+          return {
+            name: isUsed ? `a_${name}` : null, // giving a null name means this is only used for "spacing" in between attributes
+            size: value.size || 1,
+            type: AttributeType.FLOAT,
+          };
+        },
+      );
+
+      // set up each subpass
+      if (styleShader.builder.getFillVertexShader()) {
+        renderPass.fillRenderPass = {
+          vertexShader: styleShader.builder.getFillVertexShader(),
+          fragmentShader: styleShader.builder.getFillFragmentShader(),
+          attributesDesc: [
+            {
+              name: Attributes.POSITION,
+              size: 2,
+              type: AttributeType.FLOAT,
+            },
+            ...customAttributesDesc,
+          ],
+        };
+      }
+      if (styleShader.builder.getStrokeVertexShader()) {
+        renderPass.strokeRenderPass = {
+          vertexShader: styleShader.builder.getStrokeVertexShader(),
+          fragmentShader: styleShader.builder.getStrokeFragmentShader(),
+          attributesDesc: [
+            {
+              name: Attributes.SEGMENT_START,
+              size: 2,
+              type: AttributeType.FLOAT,
+            },
+            {
+              name: Attributes.MEASURE_START,
+              size: 1,
+              type: AttributeType.FLOAT,
+            },
+            {
+              name: Attributes.SEGMENT_END,
+              size: 2,
+              type: AttributeType.FLOAT,
+            },
+            {
+              name: Attributes.MEASURE_END,
+              size: 1,
+              type: AttributeType.FLOAT,
+            },
+            {
+              name: Attributes.JOIN_ANGLES,
+              size: 2,
+              type: AttributeType.FLOAT,
+            },
+            {
+              name: Attributes.DISTANCE,
+              size: 1,
+              type: AttributeType.FLOAT,
+            },
+            {
+              name: Attributes.PARAMETERS,
+              size: 1,
+              type: AttributeType.FLOAT,
+            },
+            ...customAttributesDesc,
+          ],
+        };
+      }
+      if (styleShader.builder.getSymbolVertexShader()) {
+        renderPass.symbolRenderPass = {
+          vertexShader: styleShader.builder.getSymbolVertexShader(),
+          fragmentShader: styleShader.builder.getSymbolFragmentShader(),
+          attributesDesc: [
+            {
+              name: Attributes.POSITION,
+              size: 2,
+              type: AttributeType.FLOAT,
+            },
+            {
+              name: Attributes.INDEX,
+              size: 1,
+              type: AttributeType.FLOAT,
+            },
+            ...customAttributesDesc,
+          ],
+        };
+      }
+      return renderPass;
+    });
+
+    this.hasFill_ = this.renderPasses_.some((pass) => pass.fillRenderPass);
+    this.hasStroke_ = this.renderPasses_.some((pass) => pass.strokeRenderPass);
+    this.hasSymbol_ = this.renderPasses_.some((pass) => pass.symbolRenderPass);
+
+    // this will initialize render passes with the given helper
+    this.setHelper(helper);
   }
 
   /**
@@ -383,15 +303,11 @@ class VectorStyleRenderer {
    * @return {Promise<WebGLBuffers|null>} A promise resolving to WebGL buffers; returns null if buffers are empty
    */
   async generateBuffers(geometryBatch, transform) {
-    let filteredBatch = geometryBatch;
-    if (this.featureFilter_) {
-      filteredBatch = filteredBatch.filter(this.featureFilter_);
-      if (filteredBatch.isEmpty()) {
-        return null;
-      }
+    if (geometryBatch.isEmpty()) {
+      return null;
     }
     const renderInstructions = this.generateRenderInstructions_(
-      filteredBatch,
+      geometryBatch,
       transform,
     );
     const [polygonBuffers, lineStringBuffers, pointBuffers] = await Promise.all(
@@ -553,33 +469,35 @@ class VectorStyleRenderer {
    * @param {function(): void} preRenderCallback This callback will be called right before drawing, and can be used to set uniforms
    */
   render(buffers, frameState, preRenderCallback) {
-    this.hasFill_ &&
-      this.renderInternal_(
-        buffers.polygonBuffers[0],
-        buffers.polygonBuffers[1],
-        this.fillProgram_,
-        this.polygonAttributesDesc_,
-        frameState,
-        preRenderCallback,
-      );
-    this.hasStroke_ &&
-      this.renderInternal_(
-        buffers.lineStringBuffers[0],
-        buffers.lineStringBuffers[1],
-        this.strokeProgram_,
-        this.lineStringAttributesDesc_,
-        frameState,
-        preRenderCallback,
-      );
-    this.hasSymbol_ &&
-      this.renderInternal_(
-        buffers.pointBuffers[0],
-        buffers.pointBuffers[1],
-        this.symbolProgram_,
-        this.pointAttributesDesc_,
-        frameState,
-        preRenderCallback,
-      );
+    for (const renderPass of this.renderPasses_) {
+      renderPass.fillRenderPass &&
+        this.renderInternal_(
+          buffers.polygonBuffers[0],
+          buffers.polygonBuffers[1],
+          renderPass.fillRenderPass.program,
+          renderPass.fillRenderPass.attributesDesc,
+          frameState,
+          preRenderCallback,
+        );
+      renderPass.strokeRenderPass &&
+        this.renderInternal_(
+          buffers.lineStringBuffers[0],
+          buffers.lineStringBuffers[1],
+          renderPass.strokeRenderPass.program,
+          renderPass.strokeRenderPass.attributesDesc,
+          frameState,
+          preRenderCallback,
+        );
+      renderPass.symbolRenderPass &&
+        this.renderInternal_(
+          buffers.pointBuffers[0],
+          buffers.pointBuffers[1],
+          renderPass.symbolRenderPass.program,
+          renderPass.symbolRenderPass.attributesDesc,
+          frameState,
+          preRenderCallback,
+        );
+    }
   }
 
   /**
@@ -618,23 +536,25 @@ class VectorStyleRenderer {
   setHelper(helper, buffers = null) {
     this.helper_ = helper;
 
-    if (this.hasFill_) {
-      this.fillProgram_ = this.helper_.getProgram(
-        this.fillFragmentShader_,
-        this.fillVertexShader_,
-      );
-    }
-    if (this.hasStroke_) {
-      this.strokeProgram_ = this.helper_.getProgram(
-        this.strokeFragmentShader_,
-        this.strokeVertexShader_,
-      );
-    }
-    if (this.hasSymbol_) {
-      this.symbolProgram_ = this.helper_.getProgram(
-        this.symbolFragmentShader_,
-        this.symbolVertexShader_,
-      );
+    for (const renderPass of this.renderPasses_) {
+      if (renderPass.fillRenderPass) {
+        renderPass.fillRenderPass.program = this.helper_.getProgram(
+          renderPass.fillRenderPass.fragmentShader,
+          renderPass.fillRenderPass.vertexShader,
+        );
+      }
+      if (renderPass.strokeRenderPass) {
+        renderPass.strokeRenderPass.program = this.helper_.getProgram(
+          renderPass.strokeRenderPass.fragmentShader,
+          renderPass.strokeRenderPass.vertexShader,
+        );
+      }
+      if (renderPass.symbolRenderPass) {
+        renderPass.symbolRenderPass.program = this.helper_.getProgram(
+          renderPass.symbolRenderPass.fragmentShader,
+          renderPass.symbolRenderPass.vertexShader,
+        );
+      }
     }
     this.helper_.addUniforms(this.uniforms_);
 
@@ -656,3 +576,64 @@ class VectorStyleRenderer {
 }
 
 export default VectorStyleRenderer;
+
+/**
+ * Breaks down a vector style into an array of prebuilt shader builders with attributes and uniforms
+ * @param {FlatStyleLike|StyleShaders|Array<StyleShaders>} style Vector style
+ * @param {import('../../style/flat.js').StyleVariables} variables Style variables
+ * @return {Array<StyleShaders>} Array of style shaders
+ */
+export function convertStyleToShaders(style, variables) {
+  // possible cases:
+  // - single shader
+  // - multiple shaders
+  // - single style
+  // - multiple styles
+  // - multiple rules
+  const asArray = Array.isArray(style) ? style : [style];
+
+  // if array of rules: break rules into separate styles, compute "else" filters
+  if ('style' in asArray[0]) {
+    /** @type {Array<StyleShaders>} */
+    const shaders = [];
+    const rules = /** @type {Array<FlatStyleRule>} */ (asArray);
+    const previousFilters = [];
+    for (const rule of rules) {
+      /** @type {Array<FlatStyle>} */
+      const ruleStyles = Array.isArray(rule.style) ? rule.style : [rule.style];
+      /** @type {import("../../expr/expression.js").EncodedExpression} */
+      let currentFilter = rule.filter;
+      if (rule.else && previousFilters.length) {
+        currentFilter = [
+          'all',
+          ...previousFilters.map((filter) => ['!', filter]),
+        ];
+        if (rule.filter) {
+          currentFilter.push(rule.filter);
+        }
+        if (currentFilter.length < 3) {
+          currentFilter = currentFilter[1];
+        }
+      }
+      if (rule.filter) {
+        previousFilters.push(rule.filter);
+      }
+      // parse each style and convert to shader
+      const styleShaders = ruleStyles.map((style) =>
+        parseLiteralStyle(style, variables, currentFilter),
+      );
+      shaders.push(...styleShaders);
+    }
+    return shaders;
+  }
+
+  // if array of shaders: return as is
+  if ('builder' in asArray[0]) {
+    return /** @type {Array<StyleShaders>} */ (asArray);
+  }
+
+  // array of flat styles: simply convert to shaders
+  return /** @type {Array<FlatStyle>} */ (asArray).map((style) =>
+    parseLiteralStyle(style, variables, null),
+  );
+}
