@@ -712,6 +712,10 @@
       <ows:Title>Overlay layer by EOX - 3857</ows:Title>
       <ows:Abstract>&lt;a href="https://maps.eox.at"&gt;Overlay&lt;/a&gt; { Data &amp;copy; &lt;a href="http://www.openstreetmap.org/copyright"&gt;OpenStreetMap&lt;/a&gt; contributors, Rendering &amp;copy; &lt;a href="https://eox.at"&gt;EOX&lt;/a&gt; and &lt;a href="https://github.com/mapserver/basemaps"&gt;MapServer&lt;/a&gt; }</ows:Abstract>
       <ows:Identifier>overlay_3857</ows:Identifier>
+      <ows:BoundingBox crs="urn:ogc:def:crs:EPSG::3857">
+        <ows:LowerCorner>-20037508.3427892 -20037508.3427892</ows:LowerCorner>
+        <ows:UpperCorner>20037508.3427892 20037508.3427892</ows:UpperCorner>
+      </ows:BoundingBox>
       <Style isDefault="true">
         <ows:Identifier>default</ows:Identifier>
       </Style>
