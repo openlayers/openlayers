@@ -29,6 +29,7 @@ describe('ol/layer/WebGLVectorTile', function () {
         fillColor: 'rgba(255, 0, 0, 0.5)',
       },
       disableHitDetection: false,
+      cacheSize: 150,
     });
     target = document.createElement('div');
     target.style.width = '100px';
@@ -75,6 +76,7 @@ describe('ol/layer/WebGLVectorTile', function () {
       fillColor: 'rgba(255, 0, 0, 0.5)',
     });
     expect(renderer.hitDetectionEnabled_).to.be(true);
+    expect(renderer.tileRepresentationCache.highWaterMark).to.be(150);
   });
 
   describe('setStyle()', function () {
