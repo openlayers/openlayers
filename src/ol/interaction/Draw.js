@@ -1196,7 +1196,7 @@ class Draw extends PointerInteraction {
     }
 
     if (remove > 0) {
-      this.removeLastPoints_(remove);
+      this.removeLastPoints(remove);
     }
   }
 
@@ -1613,7 +1613,7 @@ class Draw extends PointerInteraction {
   /**
    * @param {number} n The number of points to remove.
    */
-  removeLastPoints_(n) {
+  removeLastPoints(n) {
     if (!this.sketchFeature_) {
       return;
     }
@@ -1665,7 +1665,7 @@ class Draw extends PointerInteraction {
    * @api
    */
   removeLastPoint() {
-    this.removeLastPoints_(1);
+    this.removeLastPoints(1);
   }
 
   /**
