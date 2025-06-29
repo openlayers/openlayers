@@ -10,6 +10,7 @@ if (process.env.CI) {
 
 module.exports = function (karma) {
   karma.set({
+    hostname: '127.0.0.1',
     browsers: ['ChromeHeadless'],
     customLaunchers: {
       ChromeHeadless: {

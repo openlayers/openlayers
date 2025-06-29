@@ -1,6 +1,11 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {altKeyOnly, click, pointerMove} from '../src/ol/events/condition.js';
+import {
+  altKeyOnly,
+  click,
+  never,
+  pointerMove,
+} from '../src/ol/events/condition.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import Select from '../src/ol/interaction/Select.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
@@ -67,6 +72,7 @@ const selectClick = new Select({
 // select interaction working on "pointermove"
 const selectPointerMove = new Select({
   condition: pointerMove,
+  toggleCondition: never, // otherwise the move events cause the features to flicker when holding shift
   style: selectStyle,
 });
 

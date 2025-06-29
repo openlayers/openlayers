@@ -377,19 +377,7 @@ class Select extends Interaction {
       this.applySelectedStyle_(feature);
     }
     if (!this.getLayer(feature)) {
-      const layer = /** @type {VectorLayer} */ (
-        this.getMap()
-          .getAllLayers()
-          .find(function (layer) {
-            if (
-              layer instanceof VectorLayer &&
-              layer.getSource() &&
-              layer.getSource().hasFeature(feature)
-            ) {
-              return layer;
-            }
-          })
-      );
+      const layer = this.findLayerOfFeature_(feature);
       if (layer) {
         this.addFeatureLayerAssociation_(feature, layer);
       }
@@ -404,6 +392,28 @@ class Select extends Interaction {
     if (this.style_) {
       this.restorePreviousStyle_(evt.element);
     }
+  }
+
+  /**
+   * @param {Feature} feature Feature of which to get the layer
+   * @return {VectorLayer} layer, if one was found.
+   * @private
+   */
+  findLayerOfFeature_(feature) {
+    const layer = /** @type {VectorLayer} */ (
+      this.getMap()
+        .getAllLayers()
+        .find(function (layer) {
+          if (
+            layer instanceof VectorLayer &&
+            layer.getSource() &&
+            layer.getSource().hasFeature(feature)
+          ) {
+            return layer;
+          }
+        })
+    );
+    return layer;
   }
 
   /**
@@ -458,6 +468,116 @@ class Select extends Interaction {
   }
 
   /**
+   * @param {import("../Feature.js").FeatureLike} feature The feature to select
+   * @param {import("../layer/Layer.js").default} layer Optional layer containing this feature
+   * @param {Array<Feature>} [selected] optional array to which selected features will be added
+   * @return {Feature|undefined} The feature, if it got selected.
+   * @private
+   */
+  selectFeatureInternal_(feature, layer, selected) {
+    if (!(feature instanceof Feature)) {
+      return;
+    }
+    if (!this.filter_(feature, layer)) {
+      return;
+    }
+    const features = this.getFeatures();
+    if (!features.getArray().includes(feature)) {
+      this.addFeatureLayerAssociation_(feature, layer);
+      features.push(feature);
+      selected?.push(feature);
+    }
+    return feature;
+  }
+
+  /**
+   * Try to select a feature as if it was clicked and `addCondition` evaluated to True.
+   * Unlike modifying `select.getFeatures()` directly, this respects the `filter` and `layers` options (except `multi`, which is ignored).
+   * The {@link module:ol/interaction/Select~SelectEvent} fired by this won't have a mapBrowserEvent property
+   * @param {Feature} feature The feature to select
+   * @return {boolean} True if the feature was selected
+   */
+  selectFeature(feature) {
+    const layer = this.findLayerOfFeature_(feature);
+    if (!this.layerFilter_(layer)) {
+      return false;
+    }
+    const selected = this.selectFeatureInternal_(feature, layer);
+    if (selected) {
+      this.dispatchEvent(
+        new SelectEvent(SelectEventType.SELECT, [selected], [], undefined),
+      );
+    }
+    return !!selected;
+  }
+
+  /**
+   * Deselects a feature if it was previously selected. Also removes layer association.
+   * @param {import("../Feature.js").FeatureLike} feature The feature to deselect
+   * @param {Array<Feature>} [deselected] optional array to which deselected features will be added
+   * @return {Feature|undefined} The feature, if it was previously selected.
+   * @private
+   */
+  removeFeatureInternal_(feature, deselected) {
+    const features = this.getFeatures();
+    if (
+      !(feature instanceof Feature) ||
+      !features.getArray().includes(feature)
+    ) {
+      return;
+    }
+    features.remove(feature);
+    this.removeFeatureLayerAssociation_(feature);
+    deselected?.push(feature);
+    return feature;
+  }
+
+  /**
+   * Try to deselect a feature as if it was clicked.
+   * Compared to `select.getFeatures().remove(feature)` this causes a SelectEvent.
+   * The {@link module:ol/interaction/Select~SelectEvent} fired by this won't have a mapBrowserEvent property
+   * @param {Feature} feature The feature to deselect
+   * @return {boolean} True if the feature was deselected
+   */
+  deselectFeature(feature) {
+    const deselected = this.removeFeatureInternal_(feature);
+    if (deselected) {
+      this.dispatchEvent(
+        new SelectEvent(SelectEventType.SELECT, [], [deselected], undefined),
+      );
+    }
+    return !!deselected;
+  }
+
+  /**
+   * Try to toggle a feature as if it was clicked and `toggleCondition` was True.
+   * Unlike modifying `select.getFeatures()` directly, this respects the `filter` and `layers` options (except `multi`, which is ignored).
+   * The {@link module:ol/interaction/Select~SelectEvent} fired by this won't have a mapBrowserEvent property
+   * @param {Feature} feature The feature to deselect
+   */
+  toggleFeature(feature) {
+    if (!this.deselectFeature(feature)) {
+      this.selectFeature(feature);
+    }
+  }
+  /**
+   * Deselect all features as if a user deselected them.
+   * Compared to `select.getFeatures().clear()` this causes a SelectEvent.
+   * The {@link module:ol/interaction/Select~SelectEvent} fired by this won't have a mapBrowserEvent property
+   */
+  clearSelection() {
+    clear(this.featureLayerAssociation_);
+    const features = this.getFeatures();
+    const deselected = features.getArray().slice(); // shallow copy
+    features.clear();
+    if (deselected.length !== 0) {
+      this.dispatchEvent(
+        new SelectEvent(SelectEventType.SELECT, [], deselected, undefined),
+      );
+    }
+  }
+
+  /**
    * Handles the {@link module:ol/MapBrowserEvent~MapBrowserEvent map browser event} and may change the
    * selected state of features.
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
@@ -485,79 +605,67 @@ class Select extends Interaction {
      */
     const selected = [];
 
+    // TODO: technically the way i've restructured this logic means that
+    //       instead of first emptying the features list of all extra features and then adding the selected ones back,
+    //       the selected features get added and then the old ones get removed.
+    //       a grow then shrink, instead of a shrink then grow. I can't imagine anyone relying on this, but alas, its worth a mention.
     if (set) {
       // Replace the currently selected feature(s) with the feature(s) at the
       // pixel, or clear the selected feature(s) if there is no feature at
       // the pixel.
-      clear(this.featureLayerAssociation_);
+      let foundAtCursor = false;
       map.forEachFeatureAtPixel(
         mapBrowserEvent.pixel,
-        /**
-         * @param {import("../Feature.js").FeatureLike} feature Feature.
-         * @param {import("../layer/Layer.js").default} layer Layer.
-         * @return {boolean|undefined} Continue to iterate over the features.
-         */
         (feature, layer) => {
-          if (!(feature instanceof Feature) || !this.filter_(feature, layer)) {
-            return;
+          foundAtCursor = true;
+          if (!this.selectFeatureInternal_(feature, layer, selected)) {
+            return; // keep going, this one wasn't selected
           }
-          this.addFeatureLayerAssociation_(feature, layer);
-          selected.push(feature);
-          return !this.multi_;
+          return !this.multi_; // stop if not multi
         },
         {
           layerFilter: this.layerFilter_,
           hitTolerance: this.hitTolerance_,
         },
       );
+
       for (let i = features.getLength() - 1; i >= 0; --i) {
         const feature = features.item(i);
-        const index = selected.indexOf(feature);
-        if (index > -1) {
-          // feature is already selected
-          selected.splice(index, 1);
-        } else {
-          features.remove(feature);
-          deselected.push(feature);
+        if (
+          // remove all but selected, if there were any selected
+          (selected.length > 0 && !selected.includes(feature)) ||
+          // remove all, if click outside of layer
+          !foundAtCursor
+        ) {
+          this.removeFeatureInternal_(feature, deselected);
         }
-      }
-      if (selected.length !== 0) {
-        features.extend(selected);
       }
     } else {
       // Modify the currently selected feature(s).
       map.forEachFeatureAtPixel(
         mapBrowserEvent.pixel,
-        /**
-         * @param {import("../Feature.js").FeatureLike} feature Feature.
-         * @param {import("../layer/Layer.js").default} layer Layer.
-         * @return {boolean|undefined} Continue to iterate over the features.
-         */
         (feature, layer) => {
-          if (!(feature instanceof Feature) || !this.filter_(feature, layer)) {
-            return;
+          let modifiedFeature;
+          if (remove || toggle) {
+            modifiedFeature = this.removeFeatureInternal_(feature, deselected);
           }
-          if ((add || toggle) && !features.getArray().includes(feature)) {
-            this.addFeatureLayerAssociation_(feature, layer);
-            selected.push(feature);
-          } else if (
-            (remove || toggle) &&
-            features.getArray().includes(feature)
-          ) {
-            deselected.push(feature);
-            this.removeFeatureLayerAssociation_(feature);
+          if ((add || toggle) && !modifiedFeature) {
+            modifiedFeature = this.selectFeatureInternal_(
+              feature,
+              layer,
+              selected,
+            );
           }
-          return !this.multi_;
+          if (!modifiedFeature) {
+            return; // keep going, this one wasn't removed/selected
+          }
+          return !this.multi_; // stop if not multi
         },
         {
           layerFilter: this.layerFilter_,
           hitTolerance: this.hitTolerance_,
         },
       );
-      for (let j = deselected.length - 1; j >= 0; --j) {
-        features.remove(deselected[j]);
-      }
-      features.extend(selected);
     }
     if (selected.length > 0 || deselected.length > 0) {
       this.dispatchEvent(
