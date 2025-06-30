@@ -113,7 +113,7 @@ class ImageCanvasSource extends ImageSource {
       return canvas;
     }
 
-    extent = extent.slice();
+    extent = /** @type {import('../extent.js').Extent} */ (extent.slice());
     scaleFromCenter(extent, this.ratio_);
     const width = getWidth(extent) / resolution;
     const height = getHeight(extent) / resolution;
