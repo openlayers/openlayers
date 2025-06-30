@@ -94,6 +94,7 @@ class WebGLVectorTileLayer extends BaseTileLayer {
       style: this.style_,
       variables: this.styleVariables_,
       disableHitDetection: this.hitDetectionDisabled_,
+      cacheSize: this.getCacheSize(),
     });
   }
 

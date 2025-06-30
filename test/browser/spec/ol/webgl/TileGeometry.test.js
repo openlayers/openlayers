@@ -25,7 +25,7 @@ describe('ol/webgl/TileGeometry', function () {
   /** @type {VectorRenderTile} */
   let tile;
 
-  let styleRenderers;
+  let styleRenderer;
   let helper;
 
   beforeEach(function () {
@@ -36,7 +36,7 @@ describe('ol/webgl/TileGeometry', function () {
       () => [],
       () => {},
     );
-    styleRenderers = [new MockRenderer(), new MockRenderer()];
+    styleRenderer = new MockRenderer();
     helper = new WebGLHelper();
 
     tileGeometry = new TileGeometry(
@@ -49,7 +49,7 @@ describe('ol/webgl/TileGeometry', function () {
         }),
         helper,
       },
-      styleRenderers,
+      styleRenderer,
     );
   });
   this.afterEach(() => {
@@ -114,20 +114,15 @@ describe('ol/webgl/TileGeometry', function () {
     });
     it('calls generateBuffers for each renderer with the tile origin as transform', () => {
       const originTransform = [1, 0, 0, 1, 100, 200];
-      expect(styleRenderers[0].generateBuffers.callCount).to.be(1);
-      expect(styleRenderers[0].generateBuffers.getCall(0).args[1]).to.eql(
-        originTransform,
-      );
-      expect(styleRenderers[1].generateBuffers.callCount).to.be(1);
-      expect(styleRenderers[1].generateBuffers.getCall(0).args[1]).to.eql(
+      expect(styleRenderer.generateBuffers.callCount).to.be(1);
+      expect(styleRenderer.generateBuffers.getCall(0).args[1]).to.eql(
         originTransform,
       );
     });
     it('becomes ready when each of the renderers have finished generating buffers', async () => {
       expect(tileGeometry.ready).to.be(false);
-      styleRenderers[0].endGenerate_();
+      styleRenderer.endGenerate_();
       expect(tileGeometry.ready).to.be(false);
-      styleRenderers[1].endGenerate_();
       await new Promise((resolve) => setTimeout(resolve));
       expect(tileGeometry.ready).to.be(true);
     });
@@ -142,19 +137,15 @@ describe('ol/webgl/TileGeometry', function () {
       beforeEach(async () => {
         deleteBufferSpy = sinonSpy(helper, 'deleteBuffer');
         // generate buffers and dispose the tile
-        styleRenderers[0].endGenerate_({
+        styleRenderer.endGenerate_({
           pointBuffers: [{}, {}],
           polygonBuffers: [{}, {}],
-        });
-        styleRenderers[1].endGenerate_({
-          polygonBuffers: [{}, {}],
-          lineStringBuffers: [{}, {}],
         });
         await new Promise((resolve) => setTimeout(resolve));
         tileGeometry.dispose();
       });
       it('deletes webgl buffers', () => {
-        expect(deleteBufferSpy.callCount).to.be(8); // 2 for points, 4 for polygons, 2 for line strings
+        expect(deleteBufferSpy.callCount).to.be(4); // 2 for points, 2 for polygons
       });
     });
   });

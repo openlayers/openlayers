@@ -725,10 +725,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
     const canvas = this.helper.getCanvas();
 
     const tileRepresentationCache = this.tileRepresentationCache;
-    while (tileRepresentationCache.canExpireCache()) {
-      const tileRepresentation = tileRepresentationCache.pop();
-      tileRepresentation.dispose();
-    }
+    tileRepresentationCache.expireCache();
 
     this.postRender(gl, frameState);
     return canvas;
