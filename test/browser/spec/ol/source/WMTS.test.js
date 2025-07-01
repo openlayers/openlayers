@@ -528,6 +528,37 @@ describe('ol/source/WMTS', function () {
     });
   });
 
+  describe('when creating options from capabilities with layer BoundingBox', function () {
+    const parser = new WMTSCapabilities();
+    let capabilities;
+    before(function (done) {
+      afterLoadText(
+        'spec/ol/format/wmts/capabilities_with_layer_boundingbox.xml',
+        function (xml) {
+          try {
+            capabilities = parser.read(xml);
+          } catch (e) {
+            done(e);
+          }
+          done();
+        },
+      );
+    });
+
+    it('returns correct projection bounding box when the layer has BoundingBox in the right projection', function () {
+      const options = optionsFromCapabilities(capabilities, {
+        layer: 'overlay_3857',
+        projection: 'EPSG:387',
+      });
+
+      const extent = options.tileGrid.getExtent();
+      expect(extent).to.eql([
+        -20037508.3427892, -20037508.3427892, 20037508.3427892,
+        20037508.3427892,
+      ]);
+    });
+  });
+
   describe('set wrap x by bounding box if available', function () {
     const parser = new WMTSCapabilities();
     let capabilities;
