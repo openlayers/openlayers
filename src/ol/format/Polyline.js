@@ -144,11 +144,9 @@ class Polyline extends TextFeature {
    * @override
    */
   writeGeometryText(geometry, options) {
-    geometry =
-      /** @type {LineString} */
-      (
-        transformGeometryWithOptions(geometry, true, this.adaptOptions(options))
-      );
+    geometry = /** @type {LineString} */ (
+      transformGeometryWithOptions(geometry, true, this.adaptOptions(options))
+    );
     const flatCoordinates = geometry.getFlatCoordinates();
     const stride = geometry.getStride();
     flipXY(flatCoordinates, 0, flatCoordinates.length, stride, flatCoordinates);
@@ -171,15 +169,11 @@ class Polyline extends TextFeature {
  */
 export function encodeDeltas(numbers, stride, factor) {
   factor = factor ? factor : 1e5;
-  let d;
 
-  const lastNumbers = new Array(stride);
-  for (d = 0; d < stride; ++d) {
-    lastNumbers[d] = 0;
-  }
+  const lastNumbers = new Array(stride).fill(0);
 
   for (let i = 0, ii = numbers.length; i < ii; ) {
-    for (d = 0; d < stride; ++d, ++i) {
+    for (let d = 0; d < stride; ++d, ++i) {
       const num = numbers[i];
       const delta = num - lastNumbers[d];
       lastNumbers[d] = num;
@@ -204,20 +198,14 @@ export function encodeDeltas(numbers, stride, factor) {
  */
 export function decodeDeltas(encoded, stride, factor) {
   factor = factor ? factor : 1e5;
-  let d;
 
   /** @type {Array<number>} */
-  const lastNumbers = new Array(stride);
-  for (d = 0; d < stride; ++d) {
-    lastNumbers[d] = 0;
-  }
-
+  const lastNumbers = new Array(stride).fill(0);
   const numbers = decodeFloats(encoded, factor);
 
   for (let i = 0, ii = numbers.length; i < ii; ) {
-    for (d = 0; d < stride; ++d, ++i) {
+    for (let d = 0; d < stride; ++d, ++i) {
       lastNumbers[d] += numbers[i];
-
       numbers[i] = lastNumbers[d];
     }
   }
