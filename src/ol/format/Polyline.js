@@ -5,7 +5,6 @@ import Feature from '../Feature.js';
 import LineString from '../geom/LineString.js';
 import {getStrideForLayout} from '../geom/SimpleGeometry.js';
 import {flipXY} from '../geom/flat/flip.js';
-import {inflateCoordinates} from '../geom/flat/inflate.js';
 import {get as getProjection} from '../proj.js';
 import {transformGeometryWithOptions} from './Feature.js';
 import TextFeature from './TextFeature.js';
@@ -95,13 +94,7 @@ class Polyline extends TextFeature {
     const stride = getStrideForLayout(this.geometryLayout_);
     const flatCoordinates = decodeDeltas(text, stride, this.factor_);
     flipXY(flatCoordinates, 0, flatCoordinates.length, stride, flatCoordinates);
-    const coordinates = inflateCoordinates(
-      flatCoordinates,
-      0,
-      flatCoordinates.length,
-      stride,
-    );
-    const lineString = new LineString(coordinates, this.geometryLayout_);
+    const lineString = new LineString(flatCoordinates, this.geometryLayout_);
 
     return transformGeometryWithOptions(
       lineString,
