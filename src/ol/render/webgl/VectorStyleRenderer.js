@@ -1,6 +1,7 @@
 /**
  * @module ol/render/webgl/VectorStyleRenderer
  */
+import {assert} from '../../asserts.js';
 import {
   create as createTransform,
   makeInverse as makeInverseTransform,
@@ -37,7 +38,7 @@ let workerMessageCounter = 0;
  */
 export const Attributes = {
   POSITION: 'a_position',
-  INDEX: 'a_index',
+  LOCAL_POSITION: 'a_localPosition',
   SEGMENT_START: 'a_segmentStart',
   SEGMENT_END: 'a_segmentEnd',
   MEASURE_START: 'a_measureStart',
@@ -62,10 +63,14 @@ export const Attributes = {
  */
 
 /**
+ * @typedef {Array<WebGLArrayBuffer>} WebGLArrayBufferSet Buffers organized like so: [indicesBuffer, vertexAttributesBuffer, instanceAttributesBuffer]
+ */
+
+/**
  * @typedef {Object} WebGLBuffers
- * @property {Array<WebGLArrayBuffer>} polygonBuffers Array containing indices and vertices buffers for polygons
- * @property {Array<WebGLArrayBuffer>} lineStringBuffers Array containing indices and vertices buffers for line strings
- * @property {Array<WebGLArrayBuffer>} pointBuffers Array containing indices and vertices buffers for points
+ * @property {WebGLArrayBufferSet} polygonBuffers Array containing indices and vertices buffers for polygons
+ * @property {WebGLArrayBufferSet} lineStringBuffers Array containing indices and vertices buffers for line strings
+ * @property {WebGLArrayBufferSet} pointBuffers Array containing indices and vertices buffers for points
  * @property {import("../../transform.js").Transform} invertVerticesTransform Inverse of the transform applied when generating buffers
  */
 
@@ -100,7 +105,9 @@ export const Attributes = {
  * @typedef {Object} SubRenderPass
  * @property {string} vertexShader Vertex shader
  * @property {string} fragmentShader Fragment shader
- * @property {Array<import('../../webgl/Helper.js').AttributeDescription>} attributesDesc Attributes description
+ * @property {Array<import('../../webgl/Helper.js').AttributeDescription>} attributesDesc Attributes description, defined for each primitive vertex
+ * @property {Array<import('../../webgl/Helper.js').AttributeDescription>} instancedAttributesDesc Attributes description, defined once per primitive
+ * @property {number} instancePrimitiveVertexCount Number of vertices per instance primitive in this render pass
  * @property {WebGLProgram} [program] Program; this has to be recreated if the helper is lost/changed
  */
 
@@ -219,8 +226,9 @@ class VectorStyleRenderer {
               size: 2,
               type: AttributeType.FLOAT,
             },
-            ...customAttributesDesc,
           ],
+          instancedAttributesDesc: customAttributesDesc,
+          instancePrimitiveVertexCount: 3,
         };
       }
       if (styleShader.builder.getStrokeVertexShader()) {
@@ -228,6 +236,13 @@ class VectorStyleRenderer {
           vertexShader: styleShader.builder.getStrokeVertexShader(),
           fragmentShader: styleShader.builder.getStrokeFragmentShader(),
           attributesDesc: [
+            {
+              name: Attributes.PARAMETERS,
+              size: 1,
+              type: AttributeType.FLOAT,
+            },
+          ],
+          instancedAttributesDesc: [
             {
               name: Attributes.SEGMENT_START,
               size: 2,
@@ -265,6 +280,7 @@ class VectorStyleRenderer {
             },
             ...customAttributesDesc,
           ],
+          instancePrimitiveVertexCount: 6,
         };
       }
       if (styleShader.builder.getSymbolVertexShader()) {
@@ -273,17 +289,20 @@ class VectorStyleRenderer {
           fragmentShader: styleShader.builder.getSymbolFragmentShader(),
           attributesDesc: [
             {
+              name: Attributes.LOCAL_POSITION,
+              size: 2,
+              type: AttributeType.FLOAT,
+            },
+          ],
+          instancedAttributesDesc: [
+            {
               name: Attributes.POSITION,
               size: 2,
               type: AttributeType.FLOAT,
             },
-            {
-              name: Attributes.INDEX,
-              size: 1,
-              type: AttributeType.FLOAT,
-            },
             ...customAttributesDesc,
           ],
+          instancePrimitiveVertexCount: 6,
         };
       }
       return renderPass;
@@ -292,6 +311,12 @@ class VectorStyleRenderer {
     this.hasFill_ = this.renderPasses_.some((pass) => pass.fillRenderPass);
     this.hasStroke_ = this.renderPasses_.some((pass) => pass.strokeRenderPass);
     this.hasSymbol_ = this.renderPasses_.some((pass) => pass.symbolRenderPass);
+
+    /**
+     * @type {ANGLE_instanced_arrays}
+     * @private
+     */
+    this.instancedRenderingExt_ = null;
 
     // this will initialize render passes with the given helper
     this.setHelper(helper);
@@ -385,7 +410,7 @@ class VectorStyleRenderer {
    * @param {Float32Array|null} renderInstructions Render instructions
    * @param {import("../../geom/Geometry.js").Type} geometryType Geometry type
    * @param {import("../../transform.js").Transform} transform Transform to apply to coordinates
-   * @return {Promise<Array<WebGLArrayBuffer>>|null} Indices buffer and vertices buffer; null if nothing to render
+   * @return {Promise<WebGLArrayBufferSet>|null} Indices buffer and vertices buffer; null if nothing to render
    * @private
    */
   generateBuffersForType_(renderInstructions, geometryType, transform) {
@@ -425,7 +450,7 @@ class VectorStyleRenderer {
 
     return new Promise((resolve) => {
       /**
-       * @param {*} event Event.
+       * @param {{data: import('./constants.js').WebGLWorkerGenerateBuffersMessage}} event Event.
        */
       const handleMessage = (event) => {
         const received = event.data;
@@ -444,18 +469,27 @@ class VectorStyleRenderer {
         }
 
         // copy & flush received buffers to GPU
-        const verticesBuffer = new WebGLArrayBuffer(
-          ARRAY_BUFFER,
-          DYNAMIC_DRAW,
-        ).fromArrayBuffer(received.vertexBuffer);
         const indicesBuffer = new WebGLArrayBuffer(
           ELEMENT_ARRAY_BUFFER,
           DYNAMIC_DRAW,
-        ).fromArrayBuffer(received.indexBuffer);
-        this.helper_.flushBufferData(verticesBuffer);
+        ).fromArrayBuffer(received.indicesBuffer);
+        const vertexAttributesBuffer = new WebGLArrayBuffer(
+          ARRAY_BUFFER,
+          DYNAMIC_DRAW,
+        ).fromArrayBuffer(received.vertexAttributesBuffer);
+        const instanceAttributesBuffer = new WebGLArrayBuffer(
+          ARRAY_BUFFER,
+          DYNAMIC_DRAW,
+        ).fromArrayBuffer(received.instanceAttributesBuffer);
         this.helper_.flushBufferData(indicesBuffer);
+        this.helper_.flushBufferData(vertexAttributesBuffer);
+        this.helper_.flushBufferData(instanceAttributesBuffer);
 
-        resolve([indicesBuffer, verticesBuffer]);
+        resolve([
+          indicesBuffer,
+          vertexAttributesBuffer,
+          instanceAttributesBuffer,
+        ]);
       };
 
       WEBGL_WORKER.addEventListener('message', handleMessage);
@@ -474,8 +508,8 @@ class VectorStyleRenderer {
         this.renderInternal_(
           buffers.polygonBuffers[0],
           buffers.polygonBuffers[1],
-          renderPass.fillRenderPass.program,
-          renderPass.fillRenderPass.attributesDesc,
+          buffers.polygonBuffers[2],
+          renderPass.fillRenderPass,
           frameState,
           preRenderCallback,
         );
@@ -483,8 +517,8 @@ class VectorStyleRenderer {
         this.renderInternal_(
           buffers.lineStringBuffers[0],
           buffers.lineStringBuffers[1],
-          renderPass.strokeRenderPass.program,
-          renderPass.strokeRenderPass.attributesDesc,
+          buffers.lineStringBuffers[2],
+          renderPass.strokeRenderPass,
           frameState,
           preRenderCallback,
         );
@@ -492,8 +526,8 @@ class VectorStyleRenderer {
         this.renderInternal_(
           buffers.pointBuffers[0],
           buffers.pointBuffers[1],
-          renderPass.symbolRenderPass.program,
-          renderPass.symbolRenderPass.attributesDesc,
+          buffers.pointBuffers[2],
+          renderPass.symbolRenderPass,
           frameState,
           preRenderCallback,
         );
@@ -502,18 +536,18 @@ class VectorStyleRenderer {
 
   /**
    * @param {WebGLArrayBuffer} indicesBuffer Indices buffer
-   * @param {WebGLArrayBuffer} verticesBuffer Vertices buffer
-   * @param {WebGLProgram} program Program
-   * @param {Array<import('../../webgl/Helper.js').AttributeDescription>} attributes Attribute descriptions
+   * @param {WebGLArrayBuffer} vertexAttributesBuffer Vertex attributes buffer
+   * @param {WebGLArrayBuffer} instanceAttributesBuffer Instance attributes buffer
+   * @param {SubRenderPass} subRenderPass Render pass (program, attributes, etc.) specific to one geometry type
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @param {function(): void} preRenderCallback This callback will be called right before drawing, and can be used to set uniforms
    * @private
    */
   renderInternal_(
     indicesBuffer,
-    verticesBuffer,
-    program,
-    attributes,
+    vertexAttributesBuffer,
+    instanceAttributesBuffer,
+    subRenderPass,
     frameState,
     preRenderCallback,
   ) {
@@ -521,12 +555,25 @@ class VectorStyleRenderer {
     if (renderCount === 0) {
       return;
     }
-    this.helper_.useProgram(program, frameState);
-    this.helper_.bindBuffer(verticesBuffer);
+
+    const instanceAttributesStride =
+      subRenderPass.instancedAttributesDesc.reduce(
+        (prev, curr) => prev + (curr.size || 1),
+        0,
+      );
+    const instanceCount =
+      instanceAttributesBuffer.getSize() / instanceAttributesStride;
+
+    this.helper_.useProgram(subRenderPass.program, frameState);
+    this.helper_.bindBuffer(vertexAttributesBuffer);
     this.helper_.bindBuffer(indicesBuffer);
-    this.helper_.enableAttributes(attributes);
+    this.helper_.enableAttributes(subRenderPass.attributesDesc);
+    this.helper_.bindBuffer(instanceAttributesBuffer);
+    this.helper_.enableInstancedAttributes(
+      subRenderPass.instancedAttributesDesc,
+    );
     preRenderCallback();
-    this.helper_.drawElements(0, renderCount);
+    this.helper_.drawElementsInstanced(0, renderCount, instanceCount);
   }
 
   /**
@@ -572,6 +619,14 @@ class VectorStyleRenderer {
         this.helper_.flushBufferData(buffers.pointBuffers[1]);
       }
     }
+
+    this.instancedRenderingExt_ = this.helper_.getExtension(
+      'ANGLE_instanced_arrays',
+    );
+    assert(
+      !!this.instancedRenderingExt_,
+      "WebGL extension 'ANGLE_instanced_arrays' is required for vector rendering",
+    );
   }
 }
 

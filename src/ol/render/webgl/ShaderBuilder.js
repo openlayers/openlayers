@@ -475,7 +475,7 @@ export class ShaderBuilder {
     return `${COMMON_HEADER}
 ${this.uniforms_.map((uniform) => `uniform ${uniform.type} ${uniform.name};`).join('\n')}
 attribute vec2 a_position;
-attribute float a_index;
+attribute vec2 a_localPosition;
 attribute vec4 a_hitColor;
 
 varying vec2 v_texCoord;
@@ -505,16 +505,7 @@ void main(void) {
   v_quadSizePx = ${this.symbolSizeExpression_};
   vec2 halfSizePx = v_quadSizePx * 0.5;
   vec2 centerOffsetPx = ${this.symbolOffsetExpression_};
-  vec2 offsetPx = centerOffsetPx;
-  if (a_index == 0.0) {
-    offsetPx -= halfSizePx;
-  } else if (a_index == 1.0) {
-    offsetPx += halfSizePx * vec2(1., -1.);
-  } else if (a_index == 2.0) {
-    offsetPx += halfSizePx;
-  } else {
-    offsetPx += halfSizePx * vec2(-1., 1.);
-  }
+  vec2 offsetPx = centerOffsetPx + a_localPosition * halfSizePx * vec2(1., -1.);
   float angle = ${this.symbolRotationExpression_}${this.symbolRotateWithView_ ? ' + u_rotation' : ''};
   float c = cos(-angle);
   float s = sin(-angle);
@@ -522,8 +513,8 @@ void main(void) {
   vec4 center = u_projectionMatrix * vec4(a_position, 0.0, 1.0);
   gl_Position = center + vec4(pxToScreen(offsetPx), u_depth, 0.);
   vec4 texCoord = ${this.texCoordExpression_};
-  float u = a_index == 0.0 || a_index == 3.0 ? texCoord.s : texCoord.p;
-  float v = a_index == 2.0 || a_index == 3.0 ? texCoord.t : texCoord.q;
+  float u = mix(texCoord.s, texCoord.p, a_localPosition.x * 0.5 + 0.5);
+  float v = mix(texCoord.t, texCoord.q, a_localPosition.y * 0.5 + 0.5);
   v_texCoord = vec2(u, v);
   v_hitColor = a_hitColor;
   v_angle = angle;
