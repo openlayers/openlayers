@@ -167,7 +167,8 @@ export function encodeDeltas(numbers, stride, factor) {
 
   for (let i = 0, ii = numbers.length; i < ii; ) {
     for (let d = 0; d < stride; ++d, ++i) {
-      const num = Math.round(numbers[i] * factor);
+      const value = numbers[i] * factor;
+      const num = value < 0 ? Math.ceil(value - 0.5) : Math.round(value);
       const delta = num - lastNumbers[d];
       lastNumbers[d] = num;
 
