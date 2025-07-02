@@ -399,11 +399,15 @@ function parseTileMatrixSet(
       }
     }
 
-    Object.assign(localContext, {
-      z: localContext.tileMatrix,
-      x: localContext.tileCol,
-      y: localContext.tileRow,
-    });
+    Object.assign(
+      localContext,
+      {
+        z: localContext.tileMatrix,
+        x: localContext.tileCol,
+        y: localContext.tileRow,
+      },
+      context,
+    );
 
     const url = tileUrlTemplate.replace(/\{(\w+?)\}/g, function (m, p) {
       return localContext[p];
