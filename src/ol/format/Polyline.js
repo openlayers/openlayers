@@ -194,12 +194,12 @@ export function decodeDeltas(encoded, stride, factor) {
 
   /** @type {Array<number>} */
   const lastNumbers = new Array(stride).fill(0);
-  const numbers = decodeFloats(encoded, factor);
+  const numbers = decodeSignedIntegers(encoded);
 
   for (let i = 0, ii = numbers.length; i < ii; ) {
     for (let d = 0; d < stride; ++d, ++i) {
       lastNumbers[d] += numbers[i];
-      numbers[i] = lastNumbers[d];
+      numbers[i] = lastNumbers[d] / factor;
     }
   }
 

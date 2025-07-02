@@ -1,7 +1,6 @@
 import Feature from '../../../../src/ol/Feature.js';
 import Polyline, {
   decodeDeltas,
-  decodeFloats,
   decodeSignedIntegers,
   decodeUnsignedIntegers,
   encodeDeltas,
@@ -104,9 +103,13 @@ describe('ol/format/Polyline.js', function () {
 
   describe('decodeFloats', function () {
     it('returns expected value', function () {
-      expect(decodeFloats(encodedFloats)).to.eql(smallFloats);
-      expect(decodeFloats(encodedFloats, 1e5)).to.eql(smallFloats);
-      expect(decodeFloats(encodedFloats, 1e2)).to.eql(floats);
+      expect(decodeDeltas(encodedFloats, smallFloats.length)).to.eql(
+        smallFloats,
+      );
+      expect(decodeDeltas(encodedFloats, smallFloats.length, 1e5)).to.eql(
+        smallFloats,
+      );
+      expect(decodeDeltas(encodedFloats, floats.length, 1e2)).to.eql(floats);
     });
   });
 
@@ -165,22 +168,22 @@ describe('ol/format/Polyline.js', function () {
 
   describe('decodeFloat', function () {
     it('returns expected value', function () {
-      expect(decodeFloats('?')).to.eql([0.0]);
-      expect(decodeFloats('@')).to.eql([-0.00001]);
-      expect(decodeFloats('A')).to.eql([0.00001]);
-      expect(decodeFloats('B')).to.eql([-0.00002]);
-      expect(decodeFloats('C')).to.eql([0.00002]);
-      expect(decodeFloats(']')).to.eql([0.00015]);
-      expect(decodeFloats('^')).to.eql([-0.00016]);
+      expect(decodeDeltas('?', 1)).to.eql([0.0]);
+      expect(decodeDeltas('@', 1)).to.eql([-0.00001]);
+      expect(decodeDeltas('A', 1)).to.eql([0.00001]);
+      expect(decodeDeltas('B', 1)).to.eql([-0.00002]);
+      expect(decodeDeltas('C', 1)).to.eql([0.00002]);
+      expect(decodeDeltas(']', 1)).to.eql([0.00015]);
+      expect(decodeDeltas('^', 1)).to.eql([-0.00016]);
 
-      expect(decodeFloats('@', 10)).to.eql([-0.1]);
-      expect(decodeFloats('A', 10)).to.eql([0.1]);
+      expect(decodeDeltas('@', 1, 10)).to.eql([-0.1]);
+      expect(decodeDeltas('A', 1, 10)).to.eql([0.1]);
 
-      expect(decodeFloats('__@')).to.eql([(16 * 32) / 1e5]);
-      expect(decodeFloats('___@')).to.eql([(16 * 32 * 32) / 1e5]);
+      expect(decodeDeltas('__@', 1)).to.eql([(16 * 32) / 1e5]);
+      expect(decodeDeltas('___@', 1)).to.eql([(16 * 32 * 32) / 1e5]);
 
       // from the "Encoded Polyline Algorithm Format" page at Google
-      expect(decodeFloats('`~oia@')).to.eql([-179.98321]);
+      expect(decodeDeltas('`~oia@', 1)).to.eql([-179.98321]);
     });
   });
 
