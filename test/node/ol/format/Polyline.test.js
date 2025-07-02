@@ -64,11 +64,30 @@ describe('ol/format/Polyline.js', function () {
     it('returns expected value', function () {
       expect(encodeDeltas(flippedFlatPoints, 2)).to.eql(encodedFlatPoints);
     });
+    it('rounds positive numbers in the python 2 way', function () {
+      expect(decodeDeltas(encodeDeltas([0.000005, 0], 2), 2)).to.eql([
+        0.00001, 0,
+      ]);
+    });
+    it('rounds negative numbers in the python 2 way', function () {
+      expect(decodeDeltas(encodeDeltas([-0.000005, 0], 2), 2)).to.eql([
+        -0.00001, 0,
+      ]);
+    });
+    it('encodes changes smaller than the configured precision', function () {
+      const coordinates = [0.04, 0, 0.08, 0, 0.12, 0];
+      expect(decodeDeltas(encodeDeltas(coordinates, 2, 1e1), 2, 1e1)).to.eql([
+        0.0, 0.0, 0.1, 0.0, 0.1, 0.0,
+      ]);
+    });
   });
 
   describe('decodeDeltas', function () {
     it('returns expected value', function () {
       expect(decodeDeltas(encodedFlatPoints, 2)).to.eql(flippedFlatPoints);
+    });
+    it('has no rounding errors from float additions', function () {
+      expect(decodeDeltas('?A?C', 2, 1e1)).to.eql([0.0, 0.1, 0.0, 0.3]);
     });
   });
 
