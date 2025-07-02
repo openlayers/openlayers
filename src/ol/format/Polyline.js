@@ -217,6 +217,7 @@ export function decodeDeltas(encoded, stride, factor) {
  *     multiplied. The remaining decimal places will get rounded away.
  *     Default is `1e5`.
  * @return {string} The encoded string.
+ * @deprecated
  * @api
  */
 export function encodeFloats(numbers, factor) {
@@ -235,6 +236,7 @@ export function encodeFloats(numbers, factor) {
  * @param {number} [factor] The factor by which the result will be divided.
  *     Default is `1e5`.
  * @return {Array<number>} A list of floating point numbers.
+ * @deprecated
  * @api
  */
 export function decodeFloats(encoded, factor) {
