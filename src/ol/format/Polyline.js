@@ -167,7 +167,7 @@ export function encodeDeltas(numbers, stride, factor) {
 
   for (let i = 0, ii = numbers.length; i < ii; ) {
     for (let d = 0; d < stride; ++d, ++i) {
-      const num = numbers[i];
+      const num = Math.round(numbers[i] * factor);
       const delta = num - lastNumbers[d];
       lastNumbers[d] = num;
 
@@ -175,7 +175,7 @@ export function encodeDeltas(numbers, stride, factor) {
     }
   }
 
-  return encodeFloats(numbers, factor);
+  return encodeSignedIntegers(numbers);
 }
 
 /**
