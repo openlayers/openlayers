@@ -398,6 +398,23 @@ class Icon extends ImageStyle {
   }
 
   /**
+   * Get the anchor origin
+   * @return {IconOrigin} Origin
+   * @api
+   */
+  getAnchorOrigin() {
+    return this.anchorOrigin_;
+  }
+
+  /**
+   * Get the units used to express the anchor
+   * @return {[IconAnchorUnits, IconAnchorUnits]} units as [x, y]
+   */
+  getAnchorUnits() {
+    return [this.anchorXUnits_, this.anchorYUnits_];
+  }
+
+  /**
    * Get the icon color.
    * @return {import("../color.js").Color} Color.
    * @api

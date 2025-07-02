@@ -192,6 +192,8 @@ describe('ol.style.Icon', function () {
         anchor: fractionAnchor,
       });
       expect(iconStyle.getAnchor()).to.eql([9, 12]);
+      expect(iconStyle.getAnchorUnits()).to.eql(['fraction', 'fraction']);
+      expect(iconStyle.getAnchorOrigin()).to.eql('top-left');
     });
 
     it('uses pixels units', function () {
@@ -203,6 +205,8 @@ describe('ol.style.Icon', function () {
         anchorYUnits: 'pixels',
       });
       expect(iconStyle.getAnchor()).to.eql([2, 18]);
+      expect(iconStyle.getAnchorUnits()).to.eql(['pixels', 'pixels']);
+      expect(iconStyle.getAnchorOrigin()).to.eql('top-left');
     });
 
     it('uses a bottom left anchor origin', function () {
@@ -213,6 +217,8 @@ describe('ol.style.Icon', function () {
         anchorOrigin: 'bottom-left',
       });
       expect(iconStyle.getAnchor()).to.eql([9, 36]);
+      expect(iconStyle.getAnchorUnits()).to.eql(['fraction', 'fraction']);
+      expect(iconStyle.getAnchorOrigin()).to.eql('bottom-left');
     });
 
     it('uses a bottom right anchor origin', function () {
@@ -223,6 +229,8 @@ describe('ol.style.Icon', function () {
         anchorOrigin: 'bottom-right',
       });
       expect(iconStyle.getAnchor()).to.eql([27, 36]);
+      expect(iconStyle.getAnchorUnits()).to.eql(['fraction', 'fraction']);
+      expect(iconStyle.getAnchorOrigin()).to.eql('bottom-right');
     });
 
     it('uses a top right anchor origin', function () {
@@ -233,6 +241,8 @@ describe('ol.style.Icon', function () {
         anchorOrigin: 'top-right',
       });
       expect(iconStyle.getAnchor()).to.eql([27, 12]);
+      expect(iconStyle.getAnchorUnits()).to.eql(['fraction', 'fraction']);
+      expect(iconStyle.getAnchorOrigin()).to.eql('top-right');
     });
 
     it('uses a top right anchor origin + displacement', function () {
@@ -247,6 +257,8 @@ describe('ol.style.Icon', function () {
         size[0] * (1 - fractionAnchor[0]) - 20,
         size[1] * fractionAnchor[1] + 10,
       ]);
+      expect(iconStyle.getAnchorUnits()).to.eql(['fraction', 'fraction']);
+      expect(iconStyle.getAnchorOrigin()).to.eql('top-right');
     });
 
     it('uses displacement', function () {
