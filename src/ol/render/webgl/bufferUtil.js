@@ -93,8 +93,7 @@ export function writePointFeatureToBuffers(
  * @param {number} segmentEndIndex Index of the segment end point from which render instructions will be read.
  * @param {number|null} beforeSegmentIndex Index of the point right before the segment (null if none, e.g this is a line start)
  * @param {number|null} afterSegmentIndex Index of the point right after the segment (null if none, e.g this is a line end)
- * @param {Array<number>} vertexArray Array containing vertices.
- * @param {Array<number>} indexArray Array containing indices.
+ * @param {Array<number>} instanceAttributesArray Array containing instance attributes.
  * @param {Array<number>} customAttributes Array of custom attributes value
  * @param {import('../../transform.js').Transform} toWorldTransform Transform matrix used to obtain world coordinates from instructions
  * @param {number} currentLength Cumulated length of segments processed so far
@@ -108,18 +107,12 @@ export function writeLineSegmentToBuffers(
   segmentEndIndex,
   beforeSegmentIndex,
   afterSegmentIndex,
-  vertexArray,
-  indexArray,
+  instanceAttributesArray,
   customAttributes,
   toWorldTransform,
   currentLength,
   currentAngleTangentSum,
 ) {
-  // compute the stride to determine how many vertices were already pushed
-  const baseVertexAttrsCount = 10; // base attributes: x0, y0, m0, x1, y1, m1, angle0, angle1, distance, params
-  const stride = baseVertexAttrsCount + customAttributes.length;
-  const baseIndex = vertexArray.length / stride;
-
   // The segment is composed of two positions called P0[x0, y0] and P1[x1, y1]
   // Depending on whether there are points before and after the segment, its final shape
   // will be different
@@ -204,20 +197,7 @@ export function writeLineSegmentToBuffers(
     }
   }
 
-  /**
-   * @param {number} vertexIndex From 0 to 3, indicating position in the quad
-   * @param {number} angleSum Sum of the join angles encountered so far (used to compute distance offset
-   * @return {number} A float value containing both information
-   */
-  function computeParameters(vertexIndex, angleSum) {
-    if (angleSum === 0) {
-      return vertexIndex * 10000;
-    }
-    return Math.sign(angleSum) * (vertexIndex * 10000 + Math.abs(angleSum));
-  }
-
-  // add main segment triangles
-  vertexArray.push(
+  instanceAttributesArray.push(
     p0[0],
     p0[1],
     m0,
@@ -227,60 +207,9 @@ export function writeLineSegmentToBuffers(
     angle0,
     angle1,
     currentLength,
-    computeParameters(0, currentAngleTangentSum),
+    currentAngleTangentSum,
   );
-  vertexArray.push(...customAttributes);
-
-  vertexArray.push(
-    p0[0],
-    p0[1],
-    m0,
-    p1[0],
-    p1[1],
-    m1,
-    angle0,
-    angle1,
-    currentLength,
-    computeParameters(1, currentAngleTangentSum),
-  );
-  vertexArray.push(...customAttributes);
-
-  vertexArray.push(
-    p0[0],
-    p0[1],
-    m0,
-    p1[0],
-    p1[1],
-    m1,
-    angle0,
-    angle1,
-    currentLength,
-    computeParameters(2, currentAngleTangentSum),
-  );
-  vertexArray.push(...customAttributes);
-
-  vertexArray.push(
-    p0[0],
-    p0[1],
-    m0,
-    p1[0],
-    p1[1],
-    m1,
-    angle0,
-    angle1,
-    currentLength,
-    computeParameters(3, currentAngleTangentSum),
-  );
-  vertexArray.push(...customAttributes);
-
-  indexArray.push(
-    baseIndex,
-    baseIndex + 1,
-    baseIndex + 2,
-    baseIndex + 1,
-    baseIndex + 3,
-    baseIndex + 2,
-  );
+  instanceAttributesArray.push(...customAttributes);
 
   return {
     length:

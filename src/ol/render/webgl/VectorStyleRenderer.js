@@ -43,7 +43,7 @@ export const Attributes = {
   SEGMENT_END: 'a_segmentEnd',
   MEASURE_START: 'a_measureStart',
   MEASURE_END: 'a_measureEnd',
-  PARAMETERS: 'a_parameters',
+  ANGLE_TANGENT_SUM: 'a_angleTangentSum',
   JOIN_ANGLES: 'a_joinAngles',
   DISTANCE: 'a_distance',
 };
@@ -237,8 +237,8 @@ class VectorStyleRenderer {
           fragmentShader: styleShader.builder.getStrokeFragmentShader(),
           attributesDesc: [
             {
-              name: Attributes.PARAMETERS,
-              size: 1,
+              name: Attributes.LOCAL_POSITION,
+              size: 2,
               type: AttributeType.FLOAT,
             },
           ],
@@ -274,7 +274,7 @@ class VectorStyleRenderer {
               type: AttributeType.FLOAT,
             },
             {
-              name: Attributes.PARAMETERS,
+              name: Attributes.ANGLE_TANGENT_SUM,
               size: 1,
               type: AttributeType.FLOAT,
             },
