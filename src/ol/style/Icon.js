@@ -499,6 +499,21 @@ class Icon extends ImageStyle {
   }
 
   /**
+   * Set the image URI
+   * @param {string} src Image source URI
+   * @api
+   */
+  setSrc(src) {
+    this.iconImage_ = getIconImage(
+      null,
+      src,
+      this.crossOrigin_,
+      ImageState.IDLE,
+      this.color_,
+    );
+  }
+
+  /**
    * Get the size of the icon (in pixels).
    * @return {import("../size.js").Size} Image size.
    * @api
