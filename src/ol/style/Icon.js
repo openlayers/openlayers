@@ -499,8 +499,8 @@ class Icon extends ImageStyle {
   }
 
   /**
-   * Set the image URL
-   * @param {string} src The new source/URL to the image
+   * Set the image URI
+   * @param {string} src Image source URI
    * @api
    */
   setSrc(src) {
