@@ -1,8 +1,10 @@
 import Feature from '../../../../src/ol/Feature.js';
 import Polyline, {
+  decode,
   decodeDeltas,
   decodeSignedIntegers,
   decodeUnsignedIntegers,
+  encode,
   encodeDeltas,
   encodeSignedIntegers,
   encodeUnsignedInteger,
@@ -14,8 +16,9 @@ import expect from '../../expect.js';
 
 describe('ol/format/Polyline.js', function () {
   let format;
-  let points;
+  let points, points4d;
   let flatPoints, encodedFlatPoints, flippedFlatPoints;
+  let encodedPoints3d, encodedPoints4d, encodedPointsLowPrecision;
   let floats, smallFloats, encodedFloats;
   let signedIntegers, encodedSignedIntegers;
   let unsignedIntegers, encodedUnsignedIntegers;
@@ -28,9 +31,17 @@ describe('ol/format/Polyline.js', function () {
       [-120.95, 40.7],
       [-126.453, 43.252],
     ];
+    points4d = [
+      [-120.2, 38.5, 0.5, 1000],
+      [-120.95, 40.7, 0.6, 1001],
+      [-126.453, 43.252, 0.7, 1004],
+    ];
     flatPoints = [-120.2, 38.5, -120.95, 40.7, -126.453, 43.252];
     flippedFlatPoints = [38.5, -120.2, 40.7, -120.95, 43.252, -126.453];
     encodedFlatPoints = '_p~iF~ps|U_ulLnnqC_mqNvxq`@';
+    encodedPoints3d = '_p~iF~ps|U_t`B_ulLnnqC_pR_mqNvxq`@_pR';
+    encodedPoints4d = '_p~iF~ps|U_t`B_oov}D_ulLnnqC_pR_ibE_mqNvxq`@_pR_}hQ';
+    encodedPointsLowPrecision = 'aWbjAk@Ns@lB';
     points3857 = [
       transform([-120.2, 38.5], 'EPSG:4326', 'EPSG:3857'),
       transform([-120.95, 40.7], 'EPSG:4326', 'EPSG:3857'),
@@ -55,6 +66,50 @@ describe('ol/format/Polyline.js', function () {
     it('returns the default projection', function () {
       const projection = format.readProjectionFromText(encodedFlatPoints);
       expect(projection).to.eql(getProjection('EPSG:4326'));
+    });
+  });
+
+  describe('encode', function () {
+    it('encodes points', function () {
+      expect(encode(points)).to.be(encodedFlatPoints);
+    });
+    it('encodes coordinates with 2 dimensions by default', function () {
+      expect(encode(points4d)).to.be(encodedFlatPoints);
+    });
+    it('encodes coordinates with less dimensions', function () {
+      expect(encode(points4d, {stride: 3})).to.be(encodedPoints3d);
+    });
+    it('encodes coordinates with four dimensions', function () {
+      expect(encode(points4d, {stride: 4})).to.be(encodedPoints4d);
+    });
+    it('encodes coordinates with lower precision', function () {
+      expect(encode(points4d, {factor: 1e1})).to.be(encodedPointsLowPrecision);
+    });
+  });
+
+  describe('decode', function () {
+    it('decodes points', function () {
+      expect(decode(encodedFlatPoints)).to.eql(points);
+    });
+    it('decodes 3 dimensional points', function () {
+      expect(decode(encodedPoints3d, {stride: 3})).to.eql(
+        points4d.map((c) => c.slice(0, 3)),
+      );
+    });
+    it('decodes 4 dimensional points', function () {
+      expect(decode(encodedPoints4d, {stride: 4})).to.eql(points4d);
+    });
+    it('decodes with lower precision', function () {
+      expect(decode(encodedPointsLowPrecision, {factor: 1e1})).to.eql(
+        points.map((c) =>
+          c.map((num) => {
+            const value = num * 1e1;
+            return (
+              (value < 0 ? Math.ceil(value - 0.5) : Math.round(value)) / 1e1
+            );
+          }),
+        ),
+      );
     });
   });
 
