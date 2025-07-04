@@ -520,4 +520,176 @@ describe('ol.interaction.Select', function () {
       });
     });
   });
+  describe('programmatically modifying selection', function () {
+    describe('without a filter', function () {
+      let select, feature, selected;
+
+      beforeEach(function () {
+        select = new Select();
+        map.addInteraction(select);
+        feature = source.getFeatures()[0];
+        selected = select.getFeatures().getArray();
+      });
+      afterEach(function () {
+        map.removeInteraction(select);
+      });
+      describe('using #selectFeature(feature)', function () {
+        it('adds to selection', function () {
+          select.selectFeature(feature);
+          expect(selected).to.contain(feature);
+        });
+        it('adds to layer associations', function () {
+          select.selectFeature(feature);
+          expect(select.getLayer(feature)).to.equal(layer);
+        });
+        it('sends select event with selected feature', function () {
+          const listenerSpy = sinonSpy();
+          select.on('select', listenerSpy);
+
+          select.selectFeature(feature);
+
+          expect(listenerSpy.callCount).to.be(1);
+          expect(listenerSpy.args[0][0].selected).to.have.length(1);
+          expect(listenerSpy.args[0][0].selected).to.contain(feature);
+          expect(listenerSpy.args[0][0].deselected).to.have.length(0);
+        });
+        it("doesn't select duplicates", function () {
+          select.selectFeature(feature);
+          select.selectFeature(feature);
+
+          expect(selected).to.have.length(1);
+        });
+      });
+      describe('using #deselectFeature(feature)', function () {
+        beforeEach(function () {
+          select.selectFeature(feature);
+        });
+        it('removes from selection', function () {
+          select.deselectFeature(feature);
+          expect(selected).to.not.contain(feature);
+        });
+        it('sends select event with deselected feature', function () {
+          const listenerSpy = sinonSpy();
+          select.on('select', listenerSpy);
+
+          select.deselectFeature(feature);
+
+          expect(listenerSpy.callCount).to.be(1);
+          expect(listenerSpy.args[0][0].deselected).to.have.length(1);
+          expect(listenerSpy.args[0][0].deselected).to.contain(feature);
+          expect(listenerSpy.args[0][0].selected).to.have.length(0);
+        });
+        it("doesn't error on repeated calls with the same feature", function () {
+          select.deselectFeature(feature);
+          select.deselectFeature(feature);
+
+          expect(selected).to.have.length(0);
+        });
+      });
+
+      describe('using #toggleFeature(feature)', function () {
+        let otherFeature;
+        beforeEach(function () {
+          select.selectFeature(feature);
+          otherFeature = source.getFeatures()[1];
+        });
+        it('selects a missing feature', function () {
+          select.toggleFeature(otherFeature);
+          expect(selected).to.contain(otherFeature);
+        });
+        it('sends select event with selected feature', function () {
+          const listenerSpy = sinonSpy();
+          select.on('select', listenerSpy);
+
+          select.toggleFeature(otherFeature);
+
+          expect(listenerSpy.callCount).to.be(1);
+          expect(listenerSpy.args[0][0].selected).to.have.length(1);
+          expect(listenerSpy.args[0][0].selected).to.contain(otherFeature);
+          expect(listenerSpy.args[0][0].deselected).to.have.length(0);
+        });
+        it('deselects an existing feature', function () {
+          select.toggleFeature(feature);
+          expect(selected).to.not.contain(feature);
+        });
+        it('sends select event with deselected feature', function () {
+          const listenerSpy = sinonSpy();
+          select.on('select', listenerSpy);
+
+          select.toggleFeature(feature);
+
+          expect(listenerSpy.callCount).to.be(1);
+          expect(listenerSpy.args[0][0].deselected).to.have.length(1);
+          expect(listenerSpy.args[0][0].deselected).to.contain(feature);
+          expect(listenerSpy.args[0][0].selected).to.have.length(0);
+        });
+        it('can be called many times to toggle a feature', function () {
+          const listenerSpy = sinonSpy();
+          select.on('select', listenerSpy);
+
+          select.toggleFeature(feature); // remove
+          select.toggleFeature(feature); // add
+          select.toggleFeature(feature); // remove
+          select.toggleFeature(feature); // add
+
+          expect(listenerSpy.callCount).to.be(4);
+        });
+      });
+      describe('using #clearSelection()', function () {
+        let allFeatures;
+        beforeEach(function () {
+          allFeatures = source.getFeatures();
+          allFeatures.forEach((f) => select.selectFeature(f));
+        });
+        it('clears all features', function () {
+          select.clearSelection();
+
+          expect(selected).to.have.length(0);
+        });
+        it('sends a select event with all features deselected', function () {
+          const listenerSpy = sinonSpy();
+          select.on('select', listenerSpy);
+          select.clearSelection();
+          expect(listenerSpy.callCount).to.be(1);
+          const deselected = listenerSpy.args[0][0].deselected;
+          expect(deselected).to.have.length(allFeatures.length);
+        });
+      });
+    });
+    describe('with a filter', function () {
+      let select, allFeatures, selected;
+
+      beforeEach(function () {
+        select = new Select({
+          filter: function (feature, layer) {
+            return feature.get('type') === 'bar';
+          },
+        });
+        map.addInteraction(select);
+        allFeatures = source.getFeatures();
+        selected = select.getFeatures().getArray();
+      });
+      afterEach(function () {
+        map.removeInteraction(select);
+      });
+      describe('using #selectFeature(feature)', function () {
+        it('only selects matching features', function () {
+          allFeatures.forEach((f) => select.selectFeature(f));
+
+          expect(selected).to.have.length(2);
+          expect(selected[0].get('type')).to.be('bar');
+          expect(selected[1].get('type')).to.be('bar');
+        });
+      });
+      describe('using #toggleFeature(feature)', function () {
+        it('only selects matching features', function () {
+          allFeatures.forEach((f) => select.toggleFeature(f));
+
+          expect(selected).to.have.length(2);
+          expect(selected[0].get('type')).to.be('bar');
+          expect(selected[1].get('type')).to.be('bar');
+        });
+      });
+    });
+  });
 });
