@@ -4,7 +4,9 @@
 import Feature from '../Feature.js';
 import LineString from '../geom/LineString.js';
 import {getStrideForLayout} from '../geom/SimpleGeometry.js';
+import {deflateCoordinates} from '../geom/flat/deflate.js';
 import {flipXY} from '../geom/flat/flip.js';
+import {inflateCoordinates} from '../geom/flat/inflate.js';
 import {get as getProjection} from '../proj.js';
 import {transformGeometryWithOptions} from './Feature.js';
 import TextFeature from './TextFeature.js';
@@ -145,6 +147,41 @@ class Polyline extends TextFeature {
     flipXY(flatCoordinates, 0, flatCoordinates.length, stride, flatCoordinates);
     return encodeDeltas(flatCoordinates, stride, this.factor_);
   }
+}
+
+/**
+ * @typedef {Object} EncodeDecodeOptions
+ * @property {number} [stride=2] The number of dimensions to encode/decode to.
+ * @property {number} [factor=1e5] The factor to apply to each number.
+ *  The remaining decimal places will be rounded away.
+ */
+
+/**
+ * @param {Array<import('../coordinate.js').Coordinate>} coordinates LineString coordinates
+ * @param {EncodeDecodeOptions} [options] Options for encoding
+ * @return {string} The encoded string.
+ * @api
+ */
+export function encode(coordinates, options) {
+  const stride = options?.stride ?? 2;
+  /** @type {Array<number>} */
+  const flatCoordinates = [];
+  deflateCoordinates(flatCoordinates, 0, coordinates, stride);
+  flipXY(flatCoordinates, 0, flatCoordinates.length, stride, flatCoordinates);
+  return encodeDeltas(flatCoordinates, stride, options?.factor);
+}
+
+/**
+ * @param {string} encoded Polyline string
+ * @param {EncodeDecodeOptions} [options] Options for decoding
+ * @return {Array<import('../coordinate.js').Coordinate>} LineString coordinates
+ * @api
+ */
+export function decode(encoded, options) {
+  const stride = options?.stride ?? 2;
+  const flatCoordinates = decodeDeltas(encoded, stride, options?.factor);
+  flipXY(flatCoordinates, 0, flatCoordinates.length, stride, flatCoordinates);
+  return inflateCoordinates(flatCoordinates, 0, flatCoordinates.length, stride);
 }
 
 /**
