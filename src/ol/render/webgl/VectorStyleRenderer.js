@@ -226,8 +226,9 @@ class VectorStyleRenderer {
               size: 2,
               type: AttributeType.FLOAT,
             },
+            ...customAttributesDesc,
           ],
-          instancedAttributesDesc: customAttributesDesc,
+          instancedAttributesDesc: [], // no instanced rendering for polygons
           instancePrimitiveVertexCount: 3,
         };
       }
@@ -556,13 +557,7 @@ class VectorStyleRenderer {
       return;
     }
 
-    const instanceAttributesStride =
-      subRenderPass.instancedAttributesDesc.reduce(
-        (prev, curr) => prev + (curr.size || 1),
-        0,
-      );
-    const instanceCount =
-      instanceAttributesBuffer.getSize() / instanceAttributesStride;
+    const usesInstancedRendering = subRenderPass.instancedAttributesDesc.length;
 
     this.helper_.useProgram(subRenderPass.program, frameState);
     this.helper_.bindBuffer(vertexAttributesBuffer);
@@ -572,8 +567,22 @@ class VectorStyleRenderer {
     this.helper_.enableInstancedAttributes(
       subRenderPass.instancedAttributesDesc,
     );
+
     preRenderCallback();
-    this.helper_.drawElementsInstanced(0, renderCount, instanceCount);
+
+    if (usesInstancedRendering) {
+      const instanceAttributesStride =
+        subRenderPass.instancedAttributesDesc.reduce(
+          (prev, curr) => prev + (curr.size || 1),
+          0,
+        );
+      const instanceCount =
+        instanceAttributesBuffer.getSize() / instanceAttributesStride;
+
+      this.helper_.drawElementsInstanced(0, renderCount, instanceCount);
+    } else {
+      this.helper_.drawElements(0, renderCount);
+    }
   }
 
   /**
