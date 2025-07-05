@@ -125,7 +125,7 @@
     "mocha": "11.6.0",
     "monotone-chain-convex-hull": "^1.1.0",
     "ol-mapbox-style": "^13.0.1",
-    "ol-stac": "^1.0.0-beta.8",
+    "ol-stac": "^1.0.0",
     "pixelmatch": "^7.1.0",
     "pmtiles": "^4.0.1",
     "pngjs": "^7.0.0",
