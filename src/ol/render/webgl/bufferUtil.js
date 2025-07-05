@@ -14,95 +14,57 @@ const tmpArray_ = [];
 /**
  * An object holding positions both in an index and a vertex buffer.
  * @typedef {Object} BufferPositions
- * @property {number} vertexPosition Position in the vertex buffer
- * @property {number} indexPosition Position in the index buffer
+ * @property {number} vertexAttributesPosition Position in the vertex buffer
+ * @property {number} instanceAttributesPosition Position in the vertex buffer
+ * @property {number} indicesPosition Position in the index buffer
  */
-const bufferPositions_ = {vertexPosition: 0, indexPosition: 0};
-
-/**
- * @param {Float32Array} buffer Buffer
- * @param {number} pos Position
- * @param {number} x X
- * @param {number} y Y
- * @param {number} index Index
- */
-function writePointVertex(buffer, pos, x, y, index) {
-  buffer[pos + 0] = x;
-  buffer[pos + 1] = y;
-  buffer[pos + 2] = index;
-}
+const bufferPositions_ = {
+  vertexAttributesPosition: 0,
+  instanceAttributesPosition: 0,
+  indicesPosition: 0,
+};
 
 /**
  * Pushes a quad (two triangles) based on a point geometry
  * @param {Float32Array} instructions Array of render instructions for points.
  * @param {number} elementIndex Index from which render instructions will be read.
- * @param {Float32Array} vertexBuffer Buffer in the form of a typed array.
- * @param {Uint32Array} indexBuffer Buffer in the form of a typed array.
+ * @param {Float32Array} instanceAttributesBuffer Buffer in the form of a typed array.
  * @param {number} customAttributesSize Amount of custom attributes for each element.
  * @param {BufferPositions} [bufferPositions] Buffer write positions; if not specified, positions will be set at 0.
  * @return {BufferPositions} New buffer positions where to write next
- * @property {number} vertexPosition New position in the vertex buffer where future writes should start.
- * @property {number} indexPosition New position in the index buffer where future writes should start.
+ * @property {number} vertexAttributesPosition New position in the vertex buffer where future writes should start.
+ * @property {number} indicesPosition New position in the index buffer where future writes should start.
  * @private
  */
 export function writePointFeatureToBuffers(
   instructions,
   elementIndex,
-  vertexBuffer,
-  indexBuffer,
+  instanceAttributesBuffer,
   customAttributesSize,
   bufferPositions,
 ) {
-  // This is for x, y and index
-  const baseVertexAttrsCount = 3;
-  const baseInstructionsCount = 2;
-  const stride = baseVertexAttrsCount + customAttributesSize;
-
-  const x = instructions[elementIndex + 0];
-  const y = instructions[elementIndex + 1];
+  const x = instructions[elementIndex++];
+  const y = instructions[elementIndex++];
 
   // read custom numerical attributes on the feature
   const customAttrs = tmpArray_;
   customAttrs.length = customAttributesSize;
   for (let i = 0; i < customAttrs.length; i++) {
-    customAttrs[i] = instructions[elementIndex + baseInstructionsCount + i];
+    customAttrs[i] = instructions[elementIndex + i];
   }
 
-  let vPos = bufferPositions ? bufferPositions.vertexPosition : 0;
-  let iPos = bufferPositions ? bufferPositions.indexPosition : 0;
-  const baseIndex = vPos / stride;
+  let instPos = bufferPositions
+    ? bufferPositions.instanceAttributesPosition
+    : 0;
 
-  // push vertices for each of the four quad corners (first standard then custom attributes)
-  writePointVertex(vertexBuffer, vPos, x, y, 0);
-  customAttrs.length &&
-    vertexBuffer.set(customAttrs, vPos + baseVertexAttrsCount);
-  vPos += stride;
+  instanceAttributesBuffer[instPos++] = x;
+  instanceAttributesBuffer[instPos++] = y;
+  if (customAttrs.length) {
+    instanceAttributesBuffer.set(customAttrs, instPos);
+    instPos += customAttrs.length;
+  }
 
-  writePointVertex(vertexBuffer, vPos, x, y, 1);
-  customAttrs.length &&
-    vertexBuffer.set(customAttrs, vPos + baseVertexAttrsCount);
-  vPos += stride;
-
-  writePointVertex(vertexBuffer, vPos, x, y, 2);
-  customAttrs.length &&
-    vertexBuffer.set(customAttrs, vPos + baseVertexAttrsCount);
-  vPos += stride;
-
-  writePointVertex(vertexBuffer, vPos, x, y, 3);
-  customAttrs.length &&
-    vertexBuffer.set(customAttrs, vPos + baseVertexAttrsCount);
-  vPos += stride;
-
-  indexBuffer[iPos++] = baseIndex;
-  indexBuffer[iPos++] = baseIndex + 1;
-  indexBuffer[iPos++] = baseIndex + 3;
-  indexBuffer[iPos++] = baseIndex + 1;
-  indexBuffer[iPos++] = baseIndex + 2;
-  indexBuffer[iPos++] = baseIndex + 3;
-
-  bufferPositions_.vertexPosition = vPos;
-  bufferPositions_.indexPosition = iPos;
-
+  bufferPositions_.instanceAttributesPosition = instPos;
   return bufferPositions_;
 }
 
@@ -131,8 +93,7 @@ export function writePointFeatureToBuffers(
  * @param {number} segmentEndIndex Index of the segment end point from which render instructions will be read.
  * @param {number|null} beforeSegmentIndex Index of the point right before the segment (null if none, e.g this is a line start)
  * @param {number|null} afterSegmentIndex Index of the point right after the segment (null if none, e.g this is a line end)
- * @param {Array<number>} vertexArray Array containing vertices.
- * @param {Array<number>} indexArray Array containing indices.
+ * @param {Array<number>} instanceAttributesArray Array containing instance attributes.
  * @param {Array<number>} customAttributes Array of custom attributes value
  * @param {import('../../transform.js').Transform} toWorldTransform Transform matrix used to obtain world coordinates from instructions
  * @param {number} currentLength Cumulated length of segments processed so far
@@ -146,18 +107,12 @@ export function writeLineSegmentToBuffers(
   segmentEndIndex,
   beforeSegmentIndex,
   afterSegmentIndex,
-  vertexArray,
-  indexArray,
+  instanceAttributesArray,
   customAttributes,
   toWorldTransform,
   currentLength,
   currentAngleTangentSum,
 ) {
-  // compute the stride to determine how many vertices were already pushed
-  const baseVertexAttrsCount = 10; // base attributes: x0, y0, m0, x1, y1, m1, angle0, angle1, distance, params
-  const stride = baseVertexAttrsCount + customAttributes.length;
-  const baseIndex = vertexArray.length / stride;
-
   // The segment is composed of two positions called P0[x0, y0] and P1[x1, y1]
   // Depending on whether there are points before and after the segment, its final shape
   // will be different
@@ -242,20 +197,7 @@ export function writeLineSegmentToBuffers(
     }
   }
 
-  /**
-   * @param {number} vertexIndex From 0 to 3, indicating position in the quad
-   * @param {number} angleSum Sum of the join angles encountered so far (used to compute distance offset
-   * @return {number} A float value containing both information
-   */
-  function computeParameters(vertexIndex, angleSum) {
-    if (angleSum === 0) {
-      return vertexIndex * 10000;
-    }
-    return Math.sign(angleSum) * (vertexIndex * 10000 + Math.abs(angleSum));
-  }
-
-  // add main segment triangles
-  vertexArray.push(
+  instanceAttributesArray.push(
     p0[0],
     p0[1],
     m0,
@@ -265,60 +207,9 @@ export function writeLineSegmentToBuffers(
     angle0,
     angle1,
     currentLength,
-    computeParameters(0, currentAngleTangentSum),
+    currentAngleTangentSum,
   );
-  vertexArray.push(...customAttributes);
-
-  vertexArray.push(
-    p0[0],
-    p0[1],
-    m0,
-    p1[0],
-    p1[1],
-    m1,
-    angle0,
-    angle1,
-    currentLength,
-    computeParameters(1, currentAngleTangentSum),
-  );
-  vertexArray.push(...customAttributes);
-
-  vertexArray.push(
-    p0[0],
-    p0[1],
-    m0,
-    p1[0],
-    p1[1],
-    m1,
-    angle0,
-    angle1,
-    currentLength,
-    computeParameters(2, currentAngleTangentSum),
-  );
-  vertexArray.push(...customAttributes);
-
-  vertexArray.push(
-    p0[0],
-    p0[1],
-    m0,
-    p1[0],
-    p1[1],
-    m1,
-    angle0,
-    angle1,
-    currentLength,
-    computeParameters(3, currentAngleTangentSum),
-  );
-  vertexArray.push(...customAttributes);
-
-  indexArray.push(
-    baseIndex,
-    baseIndex + 1,
-    baseIndex + 2,
-    baseIndex + 1,
-    baseIndex + 3,
-    baseIndex + 2,
-  );
+  instanceAttributesArray.push(...customAttributes);
 
   return {
     length:
