@@ -482,7 +482,7 @@ describe('ol/renderer/webgl/VectorLayer', () => {
         await new Promise((resolve) => setTimeout(resolve, 150));
       });
       it('deletes previous buffers', () => {
-        expect(renderer.helper.deleteBuffer.callCount).to.be(6); // 1 * buffer * 3 types of geometry * 2 different styles
+        expect(renderer.helper.deleteBuffer.callCount).to.be(9); // 3 buffers (index, vertex, instance) * 3 types of geometry
       });
     });
   });
@@ -643,7 +643,7 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       ).to.be(true);
     });
     it('deletes webgl buffers', () => {
-      expect(deleteBufferSpy.callCount).to.be(6); // 1 buffer * 3 types of geometry * 2 different styles
+      expect(deleteBufferSpy.callCount).to.be(9); // 3 buffers (index, vertex, instance) * 3 types of geometry
     });
   });
 });
