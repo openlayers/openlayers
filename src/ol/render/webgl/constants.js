@@ -21,7 +21,8 @@ export const WebGLWorkerMessageType = {
  * @property {WebGLWorkerMessageType} type Message type
  * @property {ArrayBuffer} renderInstructions render instructions raw binary buffer.
  * @property {number} [customAttributesSize] Amount of hit detection + custom attributes count in the render instructions.
- * @property {ArrayBuffer} [vertexBuffer] Vertices array raw binary buffer (sent by the worker).
- * @property {ArrayBuffer} [indexBuffer] Indices array raw binary buffer (sent by the worker).
+ * @property {ArrayBuffer} [indicesBuffer] Indices array raw binary buffer (sent by the worker).
+ * @property {ArrayBuffer} [vertexAttributesBuffer] Vertex attributes array raw binary buffer (sent by the worker).
+ * @property {ArrayBuffer} [instanceAttributesBuffer] Instance attributes array raw binary buffer (sent by the worker).
  * @property {import("../../transform").Transform} [renderInstructionsTransform] Transformation matrix used to project the instructions coordinates
  */

@@ -9,168 +9,94 @@ import {
   makeInverse as makeInverseTransform,
 } from '../../../../../../src/ol/transform.js';
 
-describe('webgl render utils', function () {
+describe('webgl buffer generation utils', function () {
   describe('writePointFeatureToBuffers', function () {
-    let vertexBuffer, indexBuffer, instructions;
+    let instanceAttributesBuffer, instructions;
 
     beforeEach(function () {
-      vertexBuffer = new Float32Array(100);
-      indexBuffer = new Uint32Array(100);
+      instanceAttributesBuffer = new Float32Array(100);
       instructions = new Float32Array(100);
 
       instructions.set([0, 0, 0, 0, 10, 11]);
     });
 
     it('writes correctly to the buffers (without custom attributes)', function () {
-      const stride = 3;
+      const stride = 2;
       const positions = writePointFeatureToBuffers(
         instructions,
         4,
-        vertexBuffer,
-        indexBuffer,
+        instanceAttributesBuffer,
         0,
       );
 
-      expect(vertexBuffer[0]).to.eql(10);
-      expect(vertexBuffer[1]).to.eql(11);
-      expect(vertexBuffer[2]).to.eql(0);
+      expect(instanceAttributesBuffer[0]).to.eql(10);
+      expect(instanceAttributesBuffer[1]).to.eql(11);
 
-      expect(vertexBuffer[stride + 0]).to.eql(10);
-      expect(vertexBuffer[stride + 1]).to.eql(11);
-      expect(vertexBuffer[stride + 2]).to.eql(1);
-
-      expect(vertexBuffer[stride * 2 + 0]).to.eql(10);
-      expect(vertexBuffer[stride * 2 + 1]).to.eql(11);
-      expect(vertexBuffer[stride * 2 + 2]).to.eql(2);
-
-      expect(vertexBuffer[stride * 3 + 0]).to.eql(10);
-      expect(vertexBuffer[stride * 3 + 1]).to.eql(11);
-      expect(vertexBuffer[stride * 3 + 2]).to.eql(3);
-
-      expect(indexBuffer[0]).to.eql(0);
-      expect(indexBuffer[1]).to.eql(1);
-      expect(indexBuffer[2]).to.eql(3);
-      expect(indexBuffer[3]).to.eql(1);
-      expect(indexBuffer[4]).to.eql(2);
-      expect(indexBuffer[5]).to.eql(3);
-
-      expect(positions.indexPosition).to.eql(6);
-      expect(positions.vertexPosition).to.eql(stride * 4);
+      expect(positions.instanceAttributesPosition).to.eql(stride);
     });
 
     it('writes correctly to the buffers (with 2 custom attributes)', function () {
       instructions.set([0, 0, 0, 0, 0, 0, 0, 0, 10, 11, 12, 13]);
-      const stride = 5;
+      const stride = 4;
       const positions = writePointFeatureToBuffers(
         instructions,
         8,
-        vertexBuffer,
-        indexBuffer,
+        instanceAttributesBuffer,
         2,
       );
 
-      expect(vertexBuffer[0]).to.eql(10);
-      expect(vertexBuffer[1]).to.eql(11);
-      expect(vertexBuffer[2]).to.eql(0);
-      expect(vertexBuffer[3]).to.eql(12);
-      expect(vertexBuffer[4]).to.eql(13);
+      expect(instanceAttributesBuffer[0]).to.eql(10);
+      expect(instanceAttributesBuffer[1]).to.eql(11);
+      expect(instanceAttributesBuffer[2]).to.eql(12);
+      expect(instanceAttributesBuffer[3]).to.eql(13);
 
-      expect(vertexBuffer[stride + 0]).to.eql(10);
-      expect(vertexBuffer[stride + 1]).to.eql(11);
-      expect(vertexBuffer[stride + 2]).to.eql(1);
-      expect(vertexBuffer[stride + 3]).to.eql(12);
-      expect(vertexBuffer[stride + 4]).to.eql(13);
-
-      expect(vertexBuffer[stride * 2 + 0]).to.eql(10);
-      expect(vertexBuffer[stride * 2 + 1]).to.eql(11);
-      expect(vertexBuffer[stride * 2 + 2]).to.eql(2);
-      expect(vertexBuffer[stride * 2 + 3]).to.eql(12);
-      expect(vertexBuffer[stride * 2 + 4]).to.eql(13);
-
-      expect(vertexBuffer[stride * 3 + 0]).to.eql(10);
-      expect(vertexBuffer[stride * 3 + 1]).to.eql(11);
-      expect(vertexBuffer[stride * 3 + 2]).to.eql(3);
-      expect(vertexBuffer[stride * 3 + 3]).to.eql(12);
-      expect(vertexBuffer[stride * 3 + 4]).to.eql(13);
-
-      expect(indexBuffer[0]).to.eql(0);
-      expect(indexBuffer[1]).to.eql(1);
-      expect(indexBuffer[2]).to.eql(3);
-      expect(indexBuffer[3]).to.eql(1);
-      expect(indexBuffer[4]).to.eql(2);
-      expect(indexBuffer[5]).to.eql(3);
-
-      expect(positions.indexPosition).to.eql(6);
-      expect(positions.vertexPosition).to.eql(stride * 4);
+      expect(positions.instanceAttributesPosition).to.eql(stride);
     });
 
     it('correctly chains buffer writes', function () {
       instructions.set([10, 11, 20, 21, 30, 31]);
-      const stride = 3;
+      const stride = 2;
       let positions = writePointFeatureToBuffers(
         instructions,
         0,
-        vertexBuffer,
-        indexBuffer,
+        instanceAttributesBuffer,
         0,
       );
       positions = writePointFeatureToBuffers(
         instructions,
         2,
-        vertexBuffer,
-        indexBuffer,
+        instanceAttributesBuffer,
         0,
         positions,
       );
       positions = writePointFeatureToBuffers(
         instructions,
         4,
-        vertexBuffer,
-        indexBuffer,
+        instanceAttributesBuffer,
         0,
         positions,
       );
 
-      expect(vertexBuffer[0]).to.eql(10);
-      expect(vertexBuffer[1]).to.eql(11);
-      expect(vertexBuffer[2]).to.eql(0);
+      expect(instanceAttributesBuffer[0]).to.eql(10);
+      expect(instanceAttributesBuffer[1]).to.eql(11);
 
-      expect(vertexBuffer[stride * 4 + 0]).to.eql(20);
-      expect(vertexBuffer[stride * 4 + 1]).to.eql(21);
-      expect(vertexBuffer[stride * 4 + 2]).to.eql(0);
+      expect(instanceAttributesBuffer[stride + 0]).to.eql(20);
+      expect(instanceAttributesBuffer[stride + 1]).to.eql(21);
 
-      expect(vertexBuffer[stride * 8 + 0]).to.eql(30);
-      expect(vertexBuffer[stride * 8 + 1]).to.eql(31);
-      expect(vertexBuffer[stride * 8 + 2]).to.eql(0);
+      expect(instanceAttributesBuffer[stride * 2 + 0]).to.eql(30);
+      expect(instanceAttributesBuffer[stride * 2 + 1]).to.eql(31);
 
-      expect(indexBuffer[6 + 0]).to.eql(4);
-      expect(indexBuffer[6 + 1]).to.eql(5);
-      expect(indexBuffer[6 + 2]).to.eql(7);
-      expect(indexBuffer[6 + 3]).to.eql(5);
-      expect(indexBuffer[6 + 4]).to.eql(6);
-      expect(indexBuffer[6 + 5]).to.eql(7);
-
-      expect(indexBuffer[6 * 2 + 0]).to.eql(8);
-      expect(indexBuffer[6 * 2 + 1]).to.eql(9);
-      expect(indexBuffer[6 * 2 + 2]).to.eql(11);
-      expect(indexBuffer[6 * 2 + 3]).to.eql(9);
-      expect(indexBuffer[6 * 2 + 4]).to.eql(10);
-      expect(indexBuffer[6 * 2 + 5]).to.eql(11);
-
-      expect(positions.indexPosition).to.eql(6 * 3);
-      expect(positions.vertexPosition).to.eql(stride * 4 * 3);
+      expect(positions.instanceAttributesPosition).to.eql(stride * 3);
     });
   });
 
   describe('writeLineSegmentToBuffers', function () {
-    let vertexArray, indexArray, instructions;
+    let instanceAttributesArray, instructions;
     let instructionsTransform, invertInstructionsTransform;
     let currentLength, currentAngleTangentSum;
 
     beforeEach(function () {
-      vertexArray = [];
-      indexArray = [];
-
+      instanceAttributesArray = [];
       instructions = new Float32Array(100);
 
       instructionsTransform = createTransform();
@@ -188,8 +114,7 @@ describe('webgl render utils', function () {
           9,
           null,
           null,
-          vertexArray,
-          indexArray,
+          instanceAttributesArray,
           [],
           invertInstructionsTransform,
           100,
@@ -198,24 +123,12 @@ describe('webgl render utils', function () {
         currentLength = result.length;
         currentAngleTangentSum = result.angle;
       });
-      // we expect 4 vertices (one quad) with 10 attributes each:
-      // Xstart, Ystart, Mstart, Xend, Yend, Mend, joinAngleStart, joinAngleEnd, base distance, vertex number (0..3)
+      // we expect one quad with 10 attributes each:
+      // Xstart, Ystart, Mstart, Xend, Yend, Mend, joinAngleStart, joinAngleEnd, base distance, angle tangent sum
       it('generates a quad for the segment', function () {
-        expect(vertexArray).to.have.length(40);
-        expect(vertexArray.slice(0, 10)).to.eql([
+        expect(instanceAttributesArray).to.eql([
           5, 5, 30, 25, 5, 40, -1, -1, 100, 100,
         ]);
-        expect(vertexArray.slice(10, 20)).to.eql([
-          5, 5, 30, 25, 5, 40, -1, -1, 100, 10100,
-        ]);
-        expect(vertexArray.slice(20, 30)).to.eql([
-          5, 5, 30, 25, 5, 40, -1, -1, 100, 20100,
-        ]);
-        expect(vertexArray.slice(30, 40)).to.eql([
-          5, 5, 30, 25, 5, 40, -1, -1, 100, 30100,
-        ]);
-        expect(indexArray).to.have.length(6);
-        expect(indexArray).to.eql([0, 1, 2, 1, 3, 2]);
       });
       it('computes the new current length', () => {
         expect(currentLength).to.eql(102);
@@ -234,8 +147,7 @@ describe('webgl render utils', function () {
           6,
           null,
           null,
-          vertexArray,
-          indexArray,
+          instanceAttributesArray,
           [888, 999],
           invertInstructionsTransform,
           100,
@@ -247,22 +159,9 @@ describe('webgl render utils', function () {
       // we expect 4 vertices (one quad) with 10 attributes each:
       // Xstart, Ystart, Xend, Yend, joinAngleStart, joinAngleEnd, base distance, vertex number (0..3), + 2 custom attributes
       it('adds custom attributes in the vertices buffer', function () {
-        expect(vertexArray).to.have.length(48);
-        expect(vertexArray.slice(0, 12)).to.eql([
+        expect(instanceAttributesArray).to.eql([
           5, 5, 30, 25, 5, 40, -1, -1, 100, 100, 888, 999,
         ]);
-        expect(vertexArray.slice(12, 24)).to.eql([
-          5, 5, 30, 25, 5, 40, -1, -1, 100, 10100, 888, 999,
-        ]);
-        expect(vertexArray.slice(24, 36)).to.eql([
-          5, 5, 30, 25, 5, 40, -1, -1, 100, 20100, 888, 999,
-        ]);
-        expect(vertexArray.slice(36, 48)).to.eql([
-          5, 5, 30, 25, 5, 40, -1, -1, 100, 30100, 888, 999,
-        ]);
-      });
-      it('does not impact indices array', function () {
-        expect(indexArray).to.have.length(6);
       });
       it('computes the new current length', () => {
         expect(currentLength).to.eql(102);
@@ -281,8 +180,7 @@ describe('webgl render utils', function () {
           4,
           7,
           null,
-          vertexArray,
-          indexArray,
+          instanceAttributesArray,
           [],
           invertInstructionsTransform,
           0,
@@ -291,16 +189,10 @@ describe('webgl render utils', function () {
         currentAngleTangentSum = result.angle;
       });
       it('generate the correct amount of vertices', () => {
-        expect(vertexArray).to.have.length(40);
+        expect(instanceAttributesArray).to.have.length(10);
       });
       it('correctly encodes the join angles', () => {
-        expect(vertexArray.slice(6, 8)).to.eql([Math.PI / 2, -1]);
-        expect(vertexArray.slice(16, 18)).to.eql([Math.PI / 2, -1]);
-        expect(vertexArray.slice(26, 28)).to.eql([Math.PI / 2, -1]);
-        expect(vertexArray.slice(36, 38)).to.eql([Math.PI / 2, -1]);
-      });
-      it('does not impact indices array', function () {
-        expect(indexArray).to.have.length(6);
+        expect(instanceAttributesArray.slice(6, 8)).to.eql([Math.PI / 2, -1]);
       });
       it('angle tangent sum decreases by one', () => {
         expect(currentAngleTangentSum).roughlyEqual(9, 1e-9);
@@ -316,8 +208,7 @@ describe('webgl render utils', function () {
           3,
           5,
           null,
-          vertexArray,
-          indexArray,
+          instanceAttributesArray,
           [],
           invertInstructionsTransform,
           0,
@@ -326,16 +217,13 @@ describe('webgl render utils', function () {
         currentAngleTangentSum = result.angle;
       });
       it('generate the correct amount of vertices', () => {
-        expect(vertexArray).to.have.length(40);
+        expect(instanceAttributesArray).to.have.length(10);
       });
       it('correctly encodes the join angle', () => {
-        expect(vertexArray.slice(6, 8)).to.eql([(Math.PI * 3) / 2, -1]);
-        expect(vertexArray.slice(16, 18)).to.eql([(Math.PI * 3) / 2, -1]);
-        expect(vertexArray.slice(26, 28)).to.eql([(Math.PI * 3) / 2, -1]);
-        expect(vertexArray.slice(36, 38)).to.eql([(Math.PI * 3) / 2, -1]);
-      });
-      it('does not impact indices array', function () {
-        expect(indexArray).to.have.length(6);
+        expect(instanceAttributesArray.slice(6, 8)).to.eql([
+          (Math.PI * 3) / 2,
+          -1,
+        ]);
       });
       it('angle tangent sum increases by one', () => {
         expect(currentAngleTangentSum).roughlyEqual(11, 1e-9);
@@ -351,8 +239,7 @@ describe('webgl render utils', function () {
           3,
           null,
           5,
-          vertexArray,
-          indexArray,
+          instanceAttributesArray,
           [],
           invertInstructionsTransform,
           0,
@@ -361,16 +248,13 @@ describe('webgl render utils', function () {
         currentAngleTangentSum = result.angle;
       });
       it('generate the correct amount of vertices', () => {
-        expect(vertexArray).to.have.length(40);
+        expect(instanceAttributesArray).to.have.length(10);
       });
       it('correctly encodes the join angle', () => {
-        expect(vertexArray.slice(6, 8)).to.eql([-1, (Math.PI * 7) / 4]);
-        expect(vertexArray.slice(16, 18)).to.eql([-1, (Math.PI * 7) / 4]);
-        expect(vertexArray.slice(26, 28)).to.eql([-1, (Math.PI * 7) / 4]);
-        expect(vertexArray.slice(36, 38)).to.eql([-1, (Math.PI * 7) / 4]);
-      });
-      it('does not impact indices array', function () {
-        expect(indexArray).to.have.length(6);
+        expect(instanceAttributesArray.slice(6, 8)).to.eql([
+          -1,
+          (Math.PI * 7) / 4,
+        ]);
       });
       it('angle tangent sum decreases', () => {
         expect(currentAngleTangentSum).roughlyEqual(
@@ -389,8 +273,7 @@ describe('webgl render utils', function () {
           3,
           null,
           5,
-          vertexArray,
-          indexArray,
+          instanceAttributesArray,
           [],
           invertInstructionsTransform,
           0,
@@ -399,16 +282,10 @@ describe('webgl render utils', function () {
         currentAngleTangentSum = result.angle;
       });
       it('generate the correct amount of vertices', () => {
-        expect(vertexArray).to.have.length(40);
+        expect(instanceAttributesArray).to.have.length(10);
       });
       it('correctly encodes join angles', () => {
-        expect(vertexArray.slice(6, 8)).to.eql([-1, Math.PI / 2]);
-        expect(vertexArray.slice(16, 18)).to.eql([-1, Math.PI / 2]);
-        expect(vertexArray.slice(26, 28)).to.eql([-1, Math.PI / 2]);
-        expect(vertexArray.slice(36, 38)).to.eql([-1, Math.PI / 2]);
-      });
-      it('does not impact indices array', function () {
-        expect(indexArray).to.have.length(6);
+        expect(instanceAttributesArray.slice(6, 8)).to.eql([-1, Math.PI / 2]);
       });
       it('angle tangent sum increases', () => {
         expect(currentAngleTangentSum).roughlyEqual(11, 1e-9);
