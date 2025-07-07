@@ -2,6 +2,7 @@
  * @module ol/webgl/Helper
  */
 import Disposable from '../Disposable.js';
+import {assert} from '../asserts.js';
 import {clear} from '../obj.js';
 import {
   compose as composeTransform,
@@ -500,6 +501,19 @@ class WebGLHelper extends Disposable {
   }
 
   /**
+   * Will throw if the extension is not available
+   * @return {ANGLE_instanced_arrays} Extension
+   */
+  getInstancedRenderingExtension_() {
+    const ext = this.getExtension('ANGLE_instanced_arrays');
+    assert(
+      !!ext,
+      "WebGL extension 'ANGLE_instanced_arrays' is required for vector rendering",
+    );
+    return ext;
+  }
+
+  /**
    * Just bind the buffer if it's in the cache. Otherwise create
    * the WebGL buffer, bind it, populate it, and add an entry to
    * the cache.
@@ -719,6 +733,37 @@ class WebGLHelper extends Disposable {
     const numItems = end - start;
     const offsetInBytes = start * elementSize;
     gl.drawElements(gl.TRIANGLES, numItems, elementType, offsetInBytes);
+  }
+
+  /**
+   * Execute a draw call similar to `drawElements`, but using instanced rendering.
+   * Will have no effect if `enableAttributesInstanced` was not called for this rendering pass.
+   * @param {number} start Start index.
+   * @param {number} end End index.
+   * @param {number} instanceCount The number of instances to render
+   */
+  drawElementsInstanced(start, end, instanceCount) {
+    const gl = this.gl_;
+    this.getExtension('OES_element_index_uint');
+    const ext = this.getInstancedRenderingExtension_();
+
+    const elementType = gl.UNSIGNED_INT;
+    const elementSize = 4;
+
+    const numItems = end - start;
+    const offsetInBytes = start * elementSize;
+    ext.drawElementsInstancedANGLE(
+      gl.TRIANGLES,
+      numItems,
+      elementType,
+      offsetInBytes,
+      instanceCount,
+    );
+
+    // reset divisor values to avoid side effects
+    for (let i = 0; i < this.maxAttributeCount_; i++) {
+      ext.vertexAttribDivisorANGLE(i, 0);
+    }
   }
 
   /**
@@ -1092,9 +1137,10 @@ class WebGLHelper extends Disposable {
    * @param {number} type UNSIGNED_INT, UNSIGNED_BYTE, UNSIGNED_SHORT or FLOAT
    * @param {number} stride Stride in bytes (0 means attribs are packed)
    * @param {number} offset Offset in bytes
+   * @param {boolean} instanced Whether the attribute is used for instanced rendering
    * @private
    */
-  enableAttributeArray_(attribName, size, type, stride, offset) {
+  enableAttributeArray_(attribName, size, type, stride, offset, instanced) {
     const location = this.getAttributeLocation(attribName);
     // the attribute has not been found in the shaders or is not used; do not enable it
     if (location < 0) {
@@ -1102,15 +1148,21 @@ class WebGLHelper extends Disposable {
     }
     this.gl_.enableVertexAttribArray(location);
     this.gl_.vertexAttribPointer(location, size, type, false, stride, offset);
+    if (instanced) {
+      // note: this is reset to 0 after drawElementsInstanced is called
+      this.getInstancedRenderingExtension_().vertexAttribDivisorANGLE(
+        location,
+        1,
+      );
+    }
   }
 
   /**
-   * Will enable the following attributes to be read from the currently bound buffer,
-   * i.e. tell the GPU where to read the different attributes in the buffer. An error in the
-   * size/type/order of attributes will most likely break the rendering and throw a WebGL exception.
+   * @private
    * @param {Array<AttributeDescription>} attributes Ordered list of attributes to read from the buffer
+   * @param {boolean} instanced Whether the attributes are instanced.
    */
-  enableAttributes(attributes) {
+  enableAttributes_(attributes, instanced) {
     const stride = computeAttributesStride(attributes);
     let offset = 0;
     for (let i = 0; i < attributes.length; i++) {
@@ -1123,10 +1175,30 @@ class WebGLHelper extends Disposable {
           attr.type || FLOAT,
           stride,
           offset,
+          instanced,
         );
       }
       offset += attr.size * getByteSizeFromType(attr.type);
     }
+  }
+
+  /**
+   * Will enable the following attributes to be read from the currently bound buffer,
+   * i.e. tell the GPU where to read the different attributes in the buffer. An error in the
+   * size/type/order of attributes will most likely break the rendering and throw a WebGL exception.
+   * @param {Array<AttributeDescription>} attributes Ordered list of attributes to read from the buffer
+   */
+  enableAttributes(attributes) {
+    this.enableAttributes_(attributes, false);
+  }
+
+  /**
+   * Will enable these attributes as instanced, meaning that they will only be read
+   * once per instance instead of per vertex.
+   * @param {Array<AttributeDescription>} attributes Ordered list of attributes to read from the buffer
+   */
+  enableAttributesInstanced(attributes) {
+    this.enableAttributes_(attributes, true);
   }
 
   /**
