@@ -475,7 +475,7 @@ export class ShaderBuilder {
     return `${COMMON_HEADER}
 ${this.uniforms_.map((uniform) => `uniform ${uniform.type} ${uniform.name};`).join('\n')}
 attribute vec2 a_position;
-attribute float a_index;
+attribute vec2 a_localPosition;
 attribute vec4 a_hitColor;
 
 varying vec2 v_texCoord;
@@ -505,16 +505,7 @@ void main(void) {
   v_quadSizePx = ${this.symbolSizeExpression_};
   vec2 halfSizePx = v_quadSizePx * 0.5;
   vec2 centerOffsetPx = ${this.symbolOffsetExpression_};
-  vec2 offsetPx = centerOffsetPx;
-  if (a_index == 0.0) {
-    offsetPx -= halfSizePx;
-  } else if (a_index == 1.0) {
-    offsetPx += halfSizePx * vec2(1., -1.);
-  } else if (a_index == 2.0) {
-    offsetPx += halfSizePx;
-  } else {
-    offsetPx += halfSizePx * vec2(-1., 1.);
-  }
+  vec2 offsetPx = centerOffsetPx + a_localPosition * halfSizePx * vec2(1., -1.);
   float angle = ${this.symbolRotationExpression_}${this.symbolRotateWithView_ ? ' + u_rotation' : ''};
   float c = cos(-angle);
   float s = sin(-angle);
@@ -522,8 +513,8 @@ void main(void) {
   vec4 center = u_projectionMatrix * vec4(a_position, 0.0, 1.0);
   gl_Position = center + vec4(pxToScreen(offsetPx), u_depth, 0.);
   vec4 texCoord = ${this.texCoordExpression_};
-  float u = a_index == 0.0 || a_index == 3.0 ? texCoord.s : texCoord.p;
-  float v = a_index == 2.0 || a_index == 3.0 ? texCoord.t : texCoord.q;
+  float u = mix(texCoord.s, texCoord.p, a_localPosition.x * 0.5 + 0.5);
+  float v = mix(texCoord.t, texCoord.q, a_localPosition.y * 0.5 + 0.5);
   v_texCoord = vec2(u, v);
   v_hitColor = a_hitColor;
   v_angle = angle;
@@ -597,9 +588,10 @@ ${this.attributes_
 ${this.uniforms_.map((uniform) => `uniform ${uniform.type} ${uniform.name};`).join('\n')}
 attribute vec2 a_segmentStart;
 attribute vec2 a_segmentEnd;
+attribute vec2 a_localPosition;
 attribute float a_measureStart;
 attribute float a_measureEnd;
-attribute float a_parameters;
+attribute float a_angleTangentSum;
 attribute float a_distance;
 attribute vec2 a_joinAngles;
 attribute vec4 a_hitColor;
@@ -656,10 +648,9 @@ vec2 getOffsetPoint(vec2 point, vec2 normal, float joinAngle, float offsetPx) {
 void main(void) {
   v_angleStart = a_joinAngles.x;
   v_angleEnd = a_joinAngles.y;
-  float vertexNumber = floor(abs(a_parameters) / 10000. + 0.5);
-  currentLineMetric = vertexNumber < 1.5 ? a_measureStart : a_measureEnd;
+  float startEndRatio = a_localPosition.x * 0.5 + 0.5;
+  currentLineMetric = mix(a_measureStart, a_measureEnd, startEndRatio);
   // we're reading the fractional part while keeping the sign (so -4.12 gives -0.12, 3.45 gives 0.45)
-  float angleTangentSum = fract(abs(a_parameters) / 10000.) * 10000. * sign(a_parameters);
 
   float lineWidth = ${this.strokeWidthExpression_};
   float lineOffsetPx = ${this.strokeOffsetExpression_};
@@ -673,11 +664,11 @@ void main(void) {
   segmentEndPx = getOffsetPoint(segmentEndPx, normalPx, v_angleEnd, lineOffsetPx);
 
   // compute current vertex position
-  float normalDir = vertexNumber < 0.5 || (vertexNumber > 1.5 && vertexNumber < 2.5) ? 1.0 : -1.0;
-  float tangentDir = vertexNumber < 1.5 ? 1.0 : -1.0;
-  float angle = vertexNumber < 1.5 ? v_angleStart : v_angleEnd;
+  float normalDir = -1. * a_localPosition.y;
+  float tangentDir = -1. * a_localPosition.x;
+  float angle = mix(v_angleStart, v_angleEnd, startEndRatio);
   vec2 joinDirection;
-  vec2 positionPx = vertexNumber < 1.5 ? segmentStartPx : segmentEndPx;
+  vec2 positionPx = mix(segmentStartPx, segmentEndPx, startEndRatio);
   // if angle is too high, do not make a proper join
   if (cos(angle) > ${LINESTRING_ANGLE_COSINE_CUTOFF} || isCap(angle)) {
     joinDirection = normalPx * normalDir - tangentPx * tangentDir;
@@ -691,7 +682,7 @@ void main(void) {
   v_segmentEnd = segmentEndPx;
   v_width = lineWidth;
   v_hitColor = a_hitColor;
-  v_distanceOffsetPx = a_distance / u_resolution - (lineOffsetPx * angleTangentSum);
+  v_distanceOffsetPx = a_distance / u_resolution - (lineOffsetPx * a_angleTangentSum);
   v_measureStart = a_measureStart;
   v_measureEnd = a_measureEnd;
 ${this.attributes_
