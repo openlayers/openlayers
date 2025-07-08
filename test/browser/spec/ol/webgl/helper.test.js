@@ -481,6 +481,64 @@ describe('ol/webgl/WebGLHelper', function () {
     });
   });
 
+  describe('#enableAttributesInstanced', function () {
+    let baseAttrs;
+
+    beforeEach(function () {
+      h = new WebGLHelper();
+      baseAttrs = [
+        {
+          name: 'attr1',
+          size: 3,
+        },
+      ];
+      h.useProgram(
+        h.getProgram(
+          FRAGMENT_SHADER,
+          `
+        precision mediump float;
+
+        uniform mat4 u_projectionMatrix;
+        uniform mat4 u_offsetScaleMatrix;
+        uniform mat4 u_offsetRotateMatrix;
+
+        attribute vec3 attr1;
+
+        void main(void) {
+          gl_Position = vec4(attr1, 1.0);
+        }`,
+        ),
+        SAMPLE_FRAMESTATE,
+      );
+    });
+
+    it('enables attributes based on the given array (FLOAT)', function () {
+      const spy = sinonSpy(h, 'enableAttributeArray_');
+      const extSpy = sinonSpy(
+        h.getInstancedRenderingExtension_(),
+        'vertexAttribDivisorANGLE',
+      );
+      h.enableAttributesInstanced(baseAttrs);
+      const bytesPerFloat = Float32Array.BYTES_PER_ELEMENT;
+
+      expect(spy.callCount).to.eql(1);
+      expect(spy.firstCall.args).to.eql([
+        'attr1',
+        3,
+        FLOAT,
+        3 * bytesPerFloat,
+        0,
+        true,
+      ]);
+
+      expect(extSpy.callCount).to.eql(1);
+      expect(extSpy.firstCall.args).to.eql([
+        h.getAttributeLocation('attr1'),
+        1,
+      ]);
+    });
+  });
+
   describe('#applyFrameState', function () {
     let stubFloat, stubVec2, stubTime;
     beforeEach(function () {
@@ -508,6 +566,45 @@ describe('ol/webgl/WebGLHelper', function () {
         DefaultUniform.VIEWPORT_SIZE_PX,
         [100, 150],
       ]);
+    });
+  });
+
+  describe('#drawElementsInstanced', () => {
+    let drawSpy, divisorSpy;
+    beforeEach(() => {
+      h = new WebGLHelper();
+      h.useProgram(
+        h.getProgram(FRAGMENT_SHADER, VERTEX_SHADER),
+        SAMPLE_FRAMESTATE,
+      );
+      drawSpy = sinonSpy(
+        h.getInstancedRenderingExtension_(),
+        'drawElementsInstancedANGLE',
+      );
+      divisorSpy = sinonSpy(
+        h.getInstancedRenderingExtension_(),
+        'vertexAttribDivisorANGLE',
+      );
+      h.drawElementsInstanced(0, 8, 20);
+    });
+    it('calls drawElementsInstancedANGLE', () => {
+      const gl = h.getGL();
+      expect(drawSpy.callCount).to.eql(1);
+      expect(drawSpy.firstCall.args).to.eql([
+        gl.TRIANGLES,
+        8,
+        gl.UNSIGNED_INT,
+        0,
+        20,
+      ]);
+    });
+    it('resets the divisors after rendering', () => {
+      const gl = h.getGL();
+      const max = gl.getParameter(gl.MAX_VERTEX_ATTRIBS);
+      expect(divisorSpy.getCalls().length).to.eql(max); // each possible attribute is disabled
+      for (let i = 0; i < max; i++) {
+        expect(divisorSpy.getCall(i).args).to.eql([i, 0]);
+      }
     });
   });
 
