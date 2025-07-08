@@ -159,6 +159,7 @@ class Polyline extends TextFeature {
  *     Default is `1e5`.
  * @return {string} The encoded string.
  * @api
+ * @deprecated
  */
 export function encodeDeltas(numbers, stride, factor) {
   factor = factor ? factor : 1e5;
@@ -189,6 +190,7 @@ export function encodeDeltas(numbers, stride, factor) {
  *     be divided. Default is `1e5`.
  * @return {Array<number>} A list of n-dimensional points.
  * @api
+ * @deprecated
  */
 export function decodeDeltas(encoded, stride, factor) {
   factor = factor ? factor : 1e5;
