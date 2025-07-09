@@ -57,6 +57,7 @@ const CIRCLE_CENTER_INDEX = 0;
  */
 const CIRCLE_CIRCUMFERENCE_INDEX = 1;
 
+/** @type {import('../extent.js').Extent} */
 const tempExtent = [0, 0, 0, 0];
 const tempSegment = [];
 
