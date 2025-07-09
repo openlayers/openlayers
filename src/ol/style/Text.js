@@ -241,7 +241,10 @@ class Text {
       textAlign: this.getTextAlign(),
       justify: this.getJustify(),
       textBaseline: this.getTextBaseline(),
-      fill: this.getFill() ? this.getFill().clone() : undefined,
+      fill:
+        this.getFill() instanceof Fill
+          ? this.getFill().clone()
+          : this.getFill(),
       stroke: this.getStroke() ? this.getStroke().clone() : undefined,
       offsetX: this.getOffsetX(),
       offsetY: this.getOffsetY(),
