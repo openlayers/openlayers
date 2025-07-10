@@ -575,11 +575,13 @@ function parseStrokeProperties(style, builder, uniforms, context) {
   float currentLengthScaled = (currentLengthPx - startOffsetPx) * sampleSize.y / lineWidth;
   float spacingScaled = spacingPx * sampleSize.y / lineWidth;
   float uCoordPx = mod(currentLengthScaled, (sampleSize.x + spacingScaled));
+  float isInsideOfPattern = step(uCoordPx, sampleSize.x);
+  float vCoordPx = (-currentRadiusRatio * 0.5 + 0.5) * sampleSize.y;
   // make sure that we're not sampling too close to the borders to avoid interpolation with outside pixels
   uCoordPx = clamp(uCoordPx, 0.5, sampleSize.x - 0.5);
-  float vCoordPx = (-currentRadiusRatio * 0.5 + 0.5) * sampleSize.y;
+  vCoordPx = clamp(vCoordPx, 0.5, sampleSize.y - 0.5);
   vec2 texCoord = (vec2(uCoordPx, vCoordPx) + textureOffset) / textureSize;
-  return texture2D(texture, texCoord);
+  return texture2D(texture, texCoord) * vec4(1.0, 1.0, 1.0, isInsideOfPattern);
 }`;
     const textureName = `u_texture${textureId}`;
     let tintExpression = '1.';
