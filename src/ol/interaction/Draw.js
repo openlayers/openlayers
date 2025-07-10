@@ -703,6 +703,15 @@ class Draw extends PointerInteraction {
     this.stopClick_ = !!options.stopClick;
 
     /**
+     * Ignore the next up event. This is set to `true` when a drag event is encountered,
+     * e.g. when the user pans the map while drawing. In this case, we do not want to bail
+     * out of tracing.
+     * @type {boolean}
+     * @private
+     */
+    this.ignoreNextUpEvent_ = false;
+
+    /**
      * The number of points that must be drawn before a polygon ring or line
      * string can be finished.  The default is 3 for polygon rings and 2 for
      * line strings.
@@ -1300,6 +1309,16 @@ class Draw extends PointerInteraction {
   }
 
   /**
+   * Handle drag events.
+   * @param {import("../MapBrowserEvent.js").default<PointerEvent>} event Event.
+   * @override
+   */
+  handleDragEvent(event) {
+    this.ignoreNextUpEvent_ = true;
+    super.handleDragEvent(event);
+  }
+
+  /**
    * Handle pointer up events.
    * @param {import("../MapBrowserEvent.js").default<PointerEvent>} event Event.
    * @return {boolean} If the event was consumed.
@@ -1316,7 +1335,9 @@ class Draw extends PointerInteraction {
 
       this.handlePointerMove_(event);
       const tracing = this.traceState_.active;
-      this.toggleTraceState_(event);
+      if (!this.ignoreNextUpEvent_) {
+        this.toggleTraceState_(event);
+      }
 
       if (this.shouldHandle_) {
         const startingToDraw = !this.finishCoordinate_;
@@ -1342,6 +1363,7 @@ class Draw extends PointerInteraction {
         this.abortDrawing();
       }
     }
+    this.ignoreNextUpEvent_ = false;
 
     if (!pass && this.stopClick_) {
       event.preventDefault();
