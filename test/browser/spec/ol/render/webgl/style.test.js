@@ -799,7 +799,7 @@ describe('ol/render/webgl/style', () => {
             'vec4 sampleStrokePattern',
           );
           expect(result.builder.strokeColorExpression_).to.eql(
-            `1. * sampleStrokePattern(u_texture${uid}, u_texture${uid}_size, vec2(0.), u_texture${uid}_size, 0., currentLengthPx, currentRadiusRatio, v_width)`,
+            `1. * sampleStrokePattern(u_texture${uid}, u_texture${uid}_size, vec2(0.), u_texture${uid}_size, 0., 0., currentLengthPx, currentRadiusRatio, v_width)`,
           );
         });
       });
@@ -813,6 +813,7 @@ describe('ol/render/webgl/style', () => {
             'stroke-pattern-offset-origin': 'bottom-left',
             'stroke-pattern-size': [5, 5],
             'stroke-pattern-spacing': ['*', 2, 10],
+            'stroke-pattern-start-offset': ['+', 5, 5],
           };
           uid = computeHash(style['stroke-pattern-src']);
           result = parseLiteralStyle(style);
@@ -822,7 +823,7 @@ describe('ol/render/webgl/style', () => {
             'vec4 sampleStrokePattern',
           );
           expect(result.builder.strokeColorExpression_).to.eql(
-            `vec4(1.0, 0.0, 0.0, 1.0) * sampleStrokePattern(u_texture${uid}, u_texture${uid}_size, vec2(0., u_texture${uid}_size.y) + vec2(5.0, 5.0) * vec2(0., -1.) + vec2(5.0, 10.0) * vec2(1., -1.), vec2(5.0, 5.0), (2.0 * 10.0), currentLengthPx, currentRadiusRatio, v_width)`,
+            `vec4(1.0, 0.0, 0.0, 1.0) * sampleStrokePattern(u_texture${uid}, u_texture${uid}_size, vec2(0., u_texture${uid}_size.y) + vec2(5.0, 5.0) * vec2(0., -1.) + vec2(5.0, 10.0) * vec2(1., -1.), vec2(5.0, 5.0), (2.0 * 10.0), (5.0 + 5.0), currentLengthPx, currentRadiusRatio, v_width)`,
           );
         });
       });

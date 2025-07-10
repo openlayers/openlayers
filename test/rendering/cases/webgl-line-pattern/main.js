@@ -31,7 +31,8 @@ context.fill();
 
 const srcPattern = {
   'stroke-pattern-src': '/data/fish.png',
-  'stroke-pattern-spacing': 4,
+  'stroke-pattern-spacing': 10,
+  'stroke-pattern-start-offset': 10,
   'stroke-width': 20,
   'stroke-offset': -32,
 };
