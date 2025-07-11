@@ -206,7 +206,8 @@ export function writeLineSegmentToBuffers(
     m1,
     angle0,
     angle1,
-    currentLength,
+    currentLength % 1_000_000,
+    Math.floor(currentLength / 1_000_000),
     currentAngleTangentSum,
   );
   instanceAttributesArray.push(...customAttributes);

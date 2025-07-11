@@ -23,6 +23,7 @@ const styleVariables = {
   dashLength4: 15,
   dashOffset: 0,
   patternSpacing: 0,
+  patternOffset: 0,
 };
 
 const source = new VectorSource({
@@ -62,6 +63,7 @@ const getStyle = (dash, pattern) => {
       ...newStyle,
       'stroke-pattern-src': 'data/dot.svg',
       'stroke-pattern-spacing': ['var', 'patternSpacing'],
+      'stroke-pattern-start-offset': ['var', 'patternOffset'],
     };
   }
   return newStyle;
