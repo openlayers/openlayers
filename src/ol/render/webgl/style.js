@@ -591,6 +591,17 @@ function parseStrokeProperties(style, builder, uniforms, context) {
     builder.setStrokeColorExpression(
       `${tintExpression} * sampleStrokePattern(${textureName}, ${sizeExpression}, ${offsetExpression}, ${sampleSizeExpression}, ${spacingExpression}, ${startOffsetExpression}, currentLengthPx, currentRadiusRatio, v_width)`,
     );
+
+    context.functions['computeStrokePatternLength'] =
+      `float computeStrokePatternLength(vec2 sampleSize, float spacingPx, float lineWidth) {
+  float patternLengthPx = sampleSize.x / sampleSize.y * lineWidth;
+  return patternLengthPx + spacingPx;
+}`;
+
+    // apply a stroke pattern length to avoid visual artifacts
+    builder.setStrokePatternLengthExpression(
+      `computeStrokePatternLength(${sampleSizeExpression}, ${spacingExpression}, v_width)`,
+    );
   }
 
   if ('stroke-width' in style) {

@@ -179,6 +179,12 @@ export class ShaderBuilder {
     this.strokeDistanceFieldExpression_ = '-1000.';
 
     /**
+     * @private
+     * @type {string}
+     */
+    this.strokePatternLengthExpression_ = null;
+
+    /**
      * @type {boolean}
      * @private
      */
@@ -432,6 +438,20 @@ export class ShaderBuilder {
   }
 
   /**
+   * Defining a pattern length for a stroke lets us avoid having visual artifacts when
+   * a linestring is very long and thus has very high "distance" attributes on its vertices.
+   * If we apply a pattern or dash array to a stroke we know for certain that the full distance value
+   * is not necessary and can be trimmed down using `mod(currentDistance, patternLength)`.
+   * @param {string} expression Stroke expression that evaluates to a`float; value is expected to be
+   * in pixels.
+   * @return {ShaderBuilder} the builder object
+   */
+  setStrokePatternLengthExpression(expression) {
+    this.strokePatternLengthExpression_ = expression;
+    return this;
+  }
+
+  /**
    * @param {string} expression Fill color expression, evaluate to `vec4`
    * @return {ShaderBuilder} the builder object
    */
@@ -592,7 +612,8 @@ attribute vec2 a_localPosition;
 attribute float a_measureStart;
 attribute float a_measureEnd;
 attribute float a_angleTangentSum;
-attribute float a_distance;
+attribute float a_distanceLow;
+attribute float a_distanceHigh;
 attribute vec2 a_joinAngles;
 attribute vec4 a_hitColor;
 
@@ -602,7 +623,7 @@ varying float v_angleStart;
 varying float v_angleEnd;
 varying float v_width;
 varying vec4 v_hitColor;
-varying float v_distanceOffsetPx;
+varying float v_distancePx;
 varying float v_measureStart;
 varying float v_measureEnd;
 
@@ -682,7 +703,17 @@ void main(void) {
   v_segmentEndPx = segmentEndPx;
   v_width = lineWidth;
   v_hitColor = a_hitColor;
-  v_distanceOffsetPx = a_distance / u_resolution - (lineOffsetPx * a_angleTangentSum);
+
+  v_distancePx = a_distanceLow / u_resolution - (lineOffsetPx * a_angleTangentSum);
+  float distanceHighPx = a_distanceHigh / u_resolution;
+  ${
+    this.strokePatternLengthExpression_ !== null
+      ? `v_distancePx = mod(v_distancePx, ${this.strokePatternLengthExpression_});
+  distanceHighPx = mod(distanceHighPx, ${this.strokePatternLengthExpression_});
+  `
+      : ''
+  }v_distancePx += distanceHighPx;
+
   v_measureStart = a_measureStart;
   v_measureEnd = a_measureEnd;
 ${this.attributes_
@@ -712,7 +743,7 @@ varying float v_angleStart;
 varying float v_angleEnd;
 varying float v_width;
 varying vec4 v_hitColor;
-varying float v_distanceOffsetPx;
+varying float v_distancePx;
 varying float v_measureStart;
 varying float v_measureEnd;
 ${this.attributes_
@@ -842,7 +873,7 @@ ${this.attributes_
   vec2 segmentNormal = vec2(-segmentTangent.y, segmentTangent.x);
   vec2 startToPointPx = currentPointPx - v_segmentStartPx;
   float lengthToPointPx = max(0., min(dot(segmentTangent, startToPointPx), segmentLengthPx));
-  float currentLengthPx = lengthToPointPx + v_distanceOffsetPx / u_resolution;
+  float currentLengthPx = lengthToPointPx + v_distancePx;
   float currentRadiusPx = distanceFromSegment(currentPointPx, v_segmentStartPx, v_segmentEndPx);
   float currentRadiusRatio = dot(segmentNormal, startToPointPx) * 2. / v_width;
   currentLineMetric = mix(v_measureStart, v_measureEnd, lengthToPointPx / segmentLengthPx);

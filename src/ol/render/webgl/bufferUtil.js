@@ -197,6 +197,10 @@ export function writeLineSegmentToBuffers(
     }
   }
 
+  const maxPrecision = Math.pow(2, 24);
+  const distanceLow = currentLength % maxPrecision;
+  const distanceHigh = Math.floor(currentLength / maxPrecision) * maxPrecision;
+
   instanceAttributesArray.push(
     p0[0],
     p0[1],
@@ -206,7 +210,8 @@ export function writeLineSegmentToBuffers(
     m1,
     angle0,
     angle1,
-    currentLength,
+    distanceLow,
+    distanceHigh,
     currentAngleTangentSum,
   );
   instanceAttributesArray.push(...customAttributes);
