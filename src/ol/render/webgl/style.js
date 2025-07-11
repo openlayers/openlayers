@@ -693,6 +693,17 @@ function parseStrokeProperties(style, builder, uniforms, context) {
     builder.setStrokeDistanceFieldExpression(
       `${dashFunctionName}(currentLengthPx + ${offsetExpression}, currentRadiusPx, capType, v_width, ${dashLengthsCalls})`,
     );
+
+    // apply a stroke pattern length to avoid visual artifacts
+    let patternLength = dashPattern.join(' + ');
+    if (builder.getStrokePatternLengthExpression()) {
+      context.functions['combinePatternLengths'] =
+        `float combinePatternLengths(float patternLength1, float patternLength2) {
+  return patternLength1 * patternLength2;
+}`;
+      patternLength = `combinePatternLengths(${builder.getStrokePatternLengthExpression()}, ${patternLength})`;
+    }
+    builder.setStrokePatternLengthExpression(patternLength);
   }
 }
 
