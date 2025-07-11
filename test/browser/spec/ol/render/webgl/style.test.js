@@ -826,6 +826,14 @@ describe('ol/render/webgl/style', () => {
             `vec4(1.0, 0.0, 0.0, 1.0) * sampleStrokePattern(u_texture${uid}, u_texture${uid}_size, vec2(0., u_texture${uid}_size.y) + vec2(5.0, 5.0) * vec2(0., -1.) + vec2(5.0, 10.0) * vec2(1., -1.), vec2(5.0, 5.0), (2.0 * 10.0), (5.0 + 5.0), currentLengthPx, currentRadiusRatio, v_width)`,
           );
         });
+        it('sets a pattern length on the builder to avoid visual artifacts', () => {
+          expect(result.builder.fragmentShaderFunctions_[1]).to.contain(
+            'float computeStrokePatternLength',
+          );
+          expect(result.builder.strokePatternLengthExpression_).to.eql(
+            'computeStrokePatternLength(vec2(5.0, 5.0), (2.0 * 10.0), v_width)',
+          );
+        });
       });
 
       describe('stroke style with all dynamic dash length expressions', () => {
