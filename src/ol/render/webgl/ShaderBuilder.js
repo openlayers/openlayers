@@ -452,6 +452,13 @@ export class ShaderBuilder {
   }
 
   /**
+   * @return {string} The current stroke pattern length expression.
+   */
+  getStrokePatternLengthExpression() {
+    return this.strokePatternLengthExpression_;
+  }
+
+  /**
    * @param {string} expression Fill color expression, evaluate to `vec4`
    * @return {ShaderBuilder} the builder object
    */

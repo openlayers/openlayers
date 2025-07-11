@@ -928,6 +928,50 @@ describe('ol/render/webgl/style', () => {
             result.attributes['prop_dashLength3'].callback(feature),
           ).to.eql(12);
         });
+
+        it('sets a pattern length on the builder to avoid visual artifacts', () => {
+          expect(result.builder.strokePatternLengthExpression_).to.eql(
+            'a_prop_dashLength0 + a_prop_dashLength1 + a_prop_dashLength2 + a_prop_dashLength3',
+          );
+        });
+      });
+
+      describe('stroke style with both pattern and array dash', () => {
+        let result;
+
+        beforeEach(() => {
+          // Create a style where ALL dash lengths come from expressions
+          const style = {
+            'stroke-color': 'red',
+            'stroke-width': 3,
+            'stroke-line-dash': [
+              ['var', 'dashLength'],
+              ['var', 'dashLength'],
+            ],
+            'stroke-pattern-src':
+              'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==',
+            'stroke-pattern-size': [5, 10],
+            'stroke-pattern-spacing': ['var', 'dashLength'],
+          };
+          result = parseLiteralStyle(style);
+        });
+
+        it('correctly combines the pattern length of both (using functions)', () => {
+          expect(
+            result.builder.fragmentShaderFunctions_.some((fn) =>
+              fn.includes('computeStrokePatternLength'),
+            ),
+          ).to.be(true);
+          expect(
+            result.builder.fragmentShaderFunctions_.some((fn) =>
+              fn.includes('combinePatternLengths'),
+            ),
+          ).to.be(true);
+
+          expect(result.builder.strokePatternLengthExpression_).to.eql(
+            'combinePatternLengths(computeStrokePatternLength(u_texture980902294_size, u_var_dashLength, v_width), u_var_dashLength + u_var_dashLength)',
+          );
+        });
       });
     });
 
