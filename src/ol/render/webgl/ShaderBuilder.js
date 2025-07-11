@@ -596,8 +596,8 @@ attribute float a_distance;
 attribute vec2 a_joinAngles;
 attribute vec4 a_hitColor;
 
-varying vec2 v_segmentStart;
-varying vec2 v_segmentEnd;
+varying vec2 v_segmentStartPx;
+varying vec2 v_segmentEndPx;
 varying float v_angleStart;
 varying float v_angleEnd;
 varying float v_width;
@@ -678,8 +678,8 @@ void main(void) {
   positionPx = positionPx + joinDirection * (lineWidth * 0.5 + 1.); // adding 1 pixel for antialiasing
   gl_Position = pxToScreen(positionPx);
 
-  v_segmentStart = segmentStartPx;
-  v_segmentEnd = segmentEndPx;
+  v_segmentStartPx = segmentStartPx;
+  v_segmentEndPx = segmentEndPx;
   v_width = lineWidth;
   v_hitColor = a_hitColor;
   v_distanceOffsetPx = a_distance / u_resolution - (lineOffsetPx * a_angleTangentSum);
@@ -706,8 +706,8 @@ ${this.attributes_
 
     return `${COMMON_HEADER}
 ${this.uniforms_.map((uniform) => `uniform ${uniform.type} ${uniform.name};`).join('\n')}
-varying vec2 v_segmentStart;
-varying vec2 v_segmentEnd;
+varying vec2 v_segmentStartPx;
+varying vec2 v_segmentEndPx;
 varying float v_angleStart;
 varying float v_angleEnd;
 varying float v_width;
@@ -821,9 +821,9 @@ ${this.attributes_
   )
   .join('\n')}
 
-  vec2 currentPoint = gl_FragCoord.xy / u_pixelRatio;
+  vec2 currentPointPx = gl_FragCoord.xy / u_pixelRatio;
   #ifdef GL_FRAGMENT_PRECISION_HIGH
-  vec2 worldPos = pxToWorld(currentPoint);
+  vec2 worldPos = pxToWorld(currentPointPx);
   if (
     abs(u_renderExtent[0] - u_renderExtent[2]) > 0.0 && (
       worldPos[0] < u_renderExtent[0] ||
@@ -836,28 +836,25 @@ ${this.attributes_
   }
   #endif
 
-  float segmentLength = length(v_segmentEnd - v_segmentStart);
-  vec2 segmentTangent = (v_segmentEnd - v_segmentStart) / segmentLength;
+  float segmentLengthPx = length(v_segmentEndPx - v_segmentStartPx);
+  segmentLengthPx = max(segmentLengthPx, 1.17549429e-38); // avoid divide by zero
+  vec2 segmentTangent = (v_segmentEndPx - v_segmentStartPx) / segmentLengthPx;
   vec2 segmentNormal = vec2(-segmentTangent.y, segmentTangent.x);
-  vec2 startToPoint = currentPoint - v_segmentStart;
-  float lengthToPoint = max(0., min(dot(segmentTangent, startToPoint), segmentLength));
-  float currentLengthPx = lengthToPoint + v_distanceOffsetPx;
-  float currentRadiusPx = distanceFromSegment(currentPoint, v_segmentStart, v_segmentEnd);
-  float currentRadiusRatio = dot(segmentNormal, startToPoint) * 2. / v_width;
-  currentLineMetric = mix(
-    v_measureStart,
-    v_measureEnd,
-    lengthToPoint / max(segmentLength, 1.17549429e-38)
-  );
+  vec2 startToPointPx = currentPointPx - v_segmentStartPx;
+  float lengthToPointPx = max(0., min(dot(segmentTangent, startToPointPx), segmentLengthPx));
+  float currentLengthPx = lengthToPointPx + v_distanceOffsetPx / u_resolution;
+  float currentRadiusPx = distanceFromSegment(currentPointPx, v_segmentStartPx, v_segmentEndPx);
+  float currentRadiusRatio = dot(segmentNormal, startToPointPx) * 2. / v_width;
+  currentLineMetric = mix(v_measureStart, v_measureEnd, lengthToPointPx / segmentLengthPx);
 
   if (${this.discardExpression_}) { discard; }
 
   float capType = ${this.strokeCapExpression_};
   float joinType = ${this.strokeJoinExpression_};
-  float segmentStartDistance = computeSegmentPointDistance(currentPoint, v_segmentStart, v_segmentEnd, v_width, v_angleStart, capType, joinType);
-  float segmentEndDistance = computeSegmentPointDistance(currentPoint, v_segmentEnd, v_segmentStart, v_width, v_angleEnd, capType, joinType);
+  float segmentStartDistance = computeSegmentPointDistance(currentPointPx, v_segmentStartPx, v_segmentEndPx, v_width, v_angleStart, capType, joinType);
+  float segmentEndDistance = computeSegmentPointDistance(currentPointPx, v_segmentEndPx, v_segmentStartPx, v_width, v_angleEnd, capType, joinType);
   float distanceField = max(
-    segmentDistanceField(currentPoint, v_segmentStart, v_segmentEnd, v_width),
+    segmentDistanceField(currentPointPx, v_segmentStartPx, v_segmentEndPx, v_width),
     max(segmentStartDistance, segmentEndDistance)
   );
   distanceField = max(distanceField, ${this.strokeDistanceFieldExpression_});
