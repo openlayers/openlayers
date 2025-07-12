@@ -26,6 +26,10 @@ import PointerInteraction from './Pointer.js';
  * takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * boolean to indicate whether that event should be handled.
  * Default is {@link module:ol/events/condition.always}.
+ * @property {import("../events/condition.js").Condition|null} [createCondition=null] A function that
+ * takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
+ * boolean to indicate whether that event should be handled to create a new extent.
+ * If `null`, the `condition` will also be used as `createCondition`.
  * @property {import("../extent.js").Extent} [extent] Initial extent. Defaults to no
  * initial extent.
  * @property {import("../style/Style.js").StyleLike} [boxStyle]
@@ -126,6 +130,12 @@ class Extent extends PointerInteraction {
      * @private
      */
     this.condition_ = options.condition ? options.condition : always;
+
+    /**
+     * @type {import("../events/condition.js").Condition}
+     * @private
+     */
+    this.createCondition_ = options.createCondition || this.condition_;
 
     /**
      * Extent of the drawn box
@@ -258,6 +268,7 @@ class Extent extends PointerInteraction {
 
   /**
    * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent pointer move event
+   * @return {boolean} The event was handled.
    * @private
    */
   handlePointerMove_(mapBrowserEvent) {
@@ -265,10 +276,16 @@ class Extent extends PointerInteraction {
     const map = mapBrowserEvent.map;
 
     let vertex = this.snapToVertex_(pixel, map);
-    if (!vertex) {
+    if (!vertex && this.createCondition_(mapBrowserEvent)) {
       vertex = map.getCoordinateFromPixelInternal(pixel);
     }
-    this.createOrUpdatePointerFeature_(vertex);
+    if (vertex) {
+      this.createOrUpdatePointerFeature_(vertex);
+      return true;
+    }
+    this.vertexOverlay_.getSource().clear();
+    this.vertexFeature_ = null;
+    return false;
   }
 
   /**
@@ -321,6 +338,7 @@ class Extent extends PointerInteraction {
    * @override
    */
   handleEvent(mapBrowserEvent) {
+    let handled = this.handlingDownUpSequence;
     if (!mapBrowserEvent.originalEvent || !this.condition_(mapBrowserEvent)) {
       return true;
     }
@@ -329,12 +347,12 @@ class Extent extends PointerInteraction {
       mapBrowserEvent.type == MapBrowserEventType.POINTERMOVE &&
       !this.handlingDownUpSequence
     ) {
-      this.handlePointerMove_(mapBrowserEvent);
+      handled = this.handlePointerMove_(mapBrowserEvent);
     }
     //call pointer to determine up/down/drag
     super.handleEvent(mapBrowserEvent);
     //return false to stop propagation
-    return false;
+    return !handled;
   }
 
   /**
@@ -391,12 +409,12 @@ class Extent extends PointerInteraction {
         );
       }
       //no snap - new bbox
-    } else {
+    } else if (this.createCondition_(mapBrowserEvent)) {
       vertex = map.getCoordinateFromPixelInternal(pixel);
       this.setExtent([vertex[0], vertex[1], vertex[0], vertex[1]]);
       this.pointerHandler_ = getPointHandler(vertex);
     }
-    return true; //event handled; start downup sequence
+    return !!this.pointerHandler_; //event handled; start downup sequence
   }
 
   /**
