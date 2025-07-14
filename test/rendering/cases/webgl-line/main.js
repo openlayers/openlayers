@@ -36,6 +36,17 @@ const closedLine = new Feature({
   firstDashDistance: 18,
 });
 
+const lineWithUnusualGeometry = new Feature({
+  geometry: new LineString([
+    [-70, -110],
+    [-70, -110], // first segment has 0-width
+    [70, -110],
+    [-20, -110], // last segment is colinear with the previous one
+  ]),
+  lineColor: 'rgba(177,228,255,0.5)',
+  firstDashDistance: 18,
+});
+
 const dataDriven = {
   'stroke-color': ['get', 'lineColor'],
   'stroke-width': 4,
@@ -64,7 +75,7 @@ const style = [bevelJoins, dataDriven, miterJoins, dashed];
 
 const vector = new WebGLVectorLayer({
   source: new VectorSource({
-    features: [openLine, closedLine],
+    features: [openLine, closedLine, lineWithUnusualGeometry],
   }),
   style,
 });
