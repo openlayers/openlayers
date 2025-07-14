@@ -184,44 +184,53 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
 
     it('does not re-render for unavailable fonts', function (done) {
       map.renderSync();
-      checkedFonts.values_ = {};
       layerStyle[0].getText().setFont('12px "Unavailable font",sans-serif');
       layer.changed();
       const revision = layer.getRevision();
       setTimeout(function () {
-        expect(layer.getRevision()).to.be(revision);
-        done();
-      }, 800);
-    });
-
-    it('does not re-render for available fonts', function (done) {
-      map.renderSync();
-      checkedFonts.values_ = {};
-      layerStyle[0].getText().setFont('12px sans-serif');
-      layer.changed();
-      const revision = layer.getRevision();
-      setTimeout(function () {
-        expect(layer.getRevision()).to.be(revision);
-        done();
-      }, 800);
-    });
-
-    it('re-renders for fonts that become available', function (done) {
-      map.renderSync();
-      checkedFonts.values_ = {};
-      font.add();
-      layerStyle[0].getText().setFont(`12px "${fontFamily}",sans-serif`);
-      layer.changed();
-      const revision = layer.getRevision();
-      setTimeout(function () {
         try {
-          font.remove();
-          expect(layer.getRevision()).to.be(revision + 1);
+          expect(layer.getRevision()).to.be(revision);
           done();
         } catch (e) {
           done(e);
         }
-      }, 1600);
+      }, 1000);
+    });
+
+    it('does not re-render for available fonts', function (done) {
+      map.renderSync();
+      layerStyle[0].getText().setFont('12px sans-serif');
+      layer.changed();
+      const revision = layer.getRevision();
+      setTimeout(function () {
+        try {
+          expect(layer.getRevision()).to.be(revision);
+          done();
+        } catch (e) {
+          done(e);
+        }
+      }, 1000);
+    });
+
+    it('re-renders for fonts that become available', function (done) {
+      map.renderSync();
+      font.add();
+      layerStyle[0].getText().setFont(`12px "${fontFamily}",sans-serif`);
+      layer.changed();
+      const revision = layer.getRevision();
+      checkedFonts.addEventListener(
+        'propertychange',
+        function onPropertyChange(e) {
+          checkedFonts.removeEventListener('propertychange', onPropertyChange);
+          try {
+            font.remove();
+            expect(layer.getRevision()).to.be(revision + 1);
+            done();
+          } catch (e) {
+            done(e);
+          }
+        },
+      );
     });
 
     it('works for multiple layers that use the same source', function () {
@@ -949,6 +958,10 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
     });
 
     afterEach(() => {
+      checkedFonts.getListeners('propertychange').forEach((listener) => {
+        checkedFonts.removeEventListener('propertychange', listener);
+      });
+      checkedFonts.setProperties({}, true);
       disposeMap(map);
     });
 

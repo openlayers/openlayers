@@ -255,13 +255,8 @@ class CanvasPolygonBuilder extends CanvasBuilder {
    */
   setFillStrokeStyles_() {
     const state = this.state;
-    const fillStyle = state.fillStyle;
-    if (fillStyle !== undefined) {
-      this.updateFillStyle(state, this.createFill);
-    }
-    if (state.strokeStyle !== undefined) {
-      this.updateStrokeStyle(state, this.applyStroke);
-    }
+    this.updateFillStyle(state, this.createFill);
+    this.updateStrokeStyle(state, this.applyStroke);
   }
 }
 

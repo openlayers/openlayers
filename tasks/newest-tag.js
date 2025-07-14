@@ -1,7 +1,7 @@
 import esMain from 'es-main';
 import semver from 'semver';
 import yargs from 'yargs';
-import {hideBin} from 'yargs/helpers';
+import {hideBin} from 'yargs/helpers'; //eslint-disable-line import/no-unresolved
 import {getLatestRelease} from './get-latest-release.js';
 
 /**

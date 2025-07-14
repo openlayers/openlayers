@@ -789,7 +789,7 @@ class VectorSource extends Source {
    * @param {function(FeatureType):boolean} [filter] Feature filter function.
    *     The filter function will receive one argument, the {@link module:ol/Feature~Feature feature}
    *     and it should return a boolean value. By default, no filtering is made.
-   * @return {FeatureType} Closest feature.
+   * @return {FeatureType|null} Closest feature (or `null` if none found).
    * @api
    */
   getClosestFeatureToCoordinate(coordinate, filter) {

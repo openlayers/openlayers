@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path, {dirname} from 'path';
 import {fileURLToPath} from 'url';
-import CopyPlugin from 'copy-webpack-plugin'; // eslint-disable-line import/default
+import CopyPlugin from 'copy-webpack-plugin';
 import TerserPlugin from 'terser-webpack-plugin';
 import ExampleBuilder from './example-builder.js';
 
@@ -38,7 +38,9 @@ export default {
     minimizer: [
       new TerserPlugin({
         // Do not minify examples that inject code into workers
-        exclude: [/(color-manipulation|region-growing|raster)\.js/],
+        exclude: [
+          /(color-manipulation|region-growing|raster|contour-interpolation)\.js/,
+        ],
         extractComments: false,
       }),
     ],

@@ -124,7 +124,7 @@ function getRenderExtent(frameState, extent) {
  * @return {string} The cache key.
  */
 export function getCacheKey(source, tileCoord) {
-  return `${source.getKey()},${source.getRevision()},${getTileCoordKey(tileCoord)}`;
+  return `${getUid(source)},${source.getKey()},${source.getRevision()},${getTileCoordKey(tileCoord)}`;
 }
 
 /**
@@ -725,10 +725,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
     const canvas = this.helper.getCanvas();
 
     const tileRepresentationCache = this.tileRepresentationCache;
-    while (tileRepresentationCache.canExpireCache()) {
-      const tileRepresentation = tileRepresentationCache.pop();
-      tileRepresentation.dispose();
-    }
+    tileRepresentationCache.expireCache();
 
     this.postRender(gl, frameState);
     return canvas;

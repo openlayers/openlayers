@@ -4,6 +4,7 @@ import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
 import Circle from '../../../../../src/ol/geom/Circle.js';
 import LineString from '../../../../../src/ol/geom/LineString.js';
+import MultiPoint from '../../../../../src/ol/geom/MultiPoint.js';
 import Point from '../../../../../src/ol/geom/Point.js';
 import Snap from '../../../../../src/ol/interaction/Snap.js';
 import {
@@ -245,6 +246,45 @@ describe('ol.interaction.Snap', function () {
         done();
       });
       snapInteraction.handleEvent(event);
+    });
+
+    it('snaps to multi point', function (done) {
+      const multiPoint = new Feature(
+        new MultiPoint([
+          [0, 0],
+          [50, 0],
+        ]),
+      );
+      const snapInteraction = new Snap({
+        features: new Collection([multiPoint]),
+        pixelTolerance: 5,
+      });
+      snapInteraction.setMap(map);
+
+      const event1 = {
+        pixel: [3 + width / 2, height / 2],
+        coordinate: [3, 0],
+        map: map,
+      };
+      const event2 = {
+        pixel: [53 + width / 2, height / 2],
+        coordinate: [53, 0],
+        map: map,
+      };
+      const snapEvents = [];
+      snapInteraction.on('snap', function (snapEvent) {
+        snapEvents.push(snapEvent);
+        if (snapEvents.length != 2) {
+          return;
+        }
+        expect(snapEvent.feature).to.be(multiPoint);
+        expect(snapEvent.segment).to.be(null);
+        expect(event1.coordinate).to.eql([0, 0]);
+        expect(event2.coordinate).to.eql([50, 0]);
+        done();
+      });
+      snapInteraction.handleEvent(event1);
+      snapInteraction.handleEvent(event2);
     });
 
     it('snaps to intersection only', function (done) {
@@ -533,16 +573,23 @@ describe('ol.interaction.Snap', function () {
       };
 
       const event = {
-        pixel: [30, 30],
+        pixel: [30 + width / 2, height / 2 - 30],
         coordinate: [30, 30],
         map: map,
       };
 
-      snapInteraction.on('unsnap', function (snapEvent) {
-        expect(snapEvent.feature).to.be(point1);
-        expect(snapEvent.segment).to.be(null);
+      const snapEvents = [];
+      const snapEventHandler = (e) => {
+        snapEvents.push(e);
+        if (snapEvents.length !== 2) {
+          return;
+        }
+        expect(snapEvents.map((e) => e.type)).to.eql(['unsnap', 'snap']);
+        expect(snapEvents.map((e) => e.feature)).to.eql([point1, point2]);
         done();
-      });
+      };
+      snapInteraction.on('unsnap', snapEventHandler);
+      snapInteraction.on('snap', snapEventHandler);
 
       snapInteraction.handleEvent(event);
     });

@@ -672,6 +672,9 @@ class Map extends BaseObject {
    * Detect features that intersect a pixel on the viewport, and execute a
    * callback with each intersecting feature. Layers included in the detection can
    * be configured through the `layerFilter` option in `options`.
+   * For polygons without a fill, only the stroke will be used for hit detection.
+   * Polygons must have a fill style applied to ensure that pixels inside a polygon are detected.
+   * The fill can be transparent.
    * @param {import("./pixel.js").Pixel} pixel Pixel.
    * @param {function(import("./Feature.js").FeatureLike, import("./layer/Layer.js").default<import("./source/Source").default>, import("./geom/SimpleGeometry.js").default): T} callback Feature callback. The callback will be
    *     called with two arguments. The first argument is one
@@ -711,6 +714,9 @@ class Map extends BaseObject {
 
   /**
    * Get all features that intersect a pixel on the viewport.
+   * For polygons without a fill, only the stroke will be used for hit detection.
+   * Polygons must have a fill style applied to ensure that pixels inside a polygon are detected.
+   * The fill can be transparent.
    * @param {import("./pixel.js").Pixel} pixel Pixel.
    * @param {AtPixelOptions} [options] Optional options.
    * @return {Array<import("./Feature.js").FeatureLike>} The detected features or
@@ -752,6 +758,9 @@ class Map extends BaseObject {
   /**
    * Detect if features intersect a pixel on the viewport. Layers included in the
    * detection can be configured through the `layerFilter` option.
+   * For polygons without a fill, only the stroke will be used for hit detection.
+   * Polygons must have a fill style applied to ensure that pixels inside a polygon are detected.
+   * The fill can be transparent.
    * @param {import("./pixel.js").Pixel} pixel Pixel.
    * @param {AtPixelOptions} [options] Optional options.
    * @return {boolean} Is there a feature at the given pixel?
@@ -1099,7 +1108,7 @@ class Map extends BaseObject {
   }
 
   /**
-   * @param {UIEvent} browserEvent Browser event.
+   * @param {PointerEvent|KeyboardEvent|WheelEvent} browserEvent Browser event.
    * @param {string} [type] Type.
    */
   handleBrowserEvent(browserEvent, type) {
@@ -1117,9 +1126,7 @@ class Map extends BaseObject {
       // coordinates so interactions cannot be used.
       return;
     }
-    const originalEvent = /** @type {PointerEvent} */ (
-      mapBrowserEvent.originalEvent
-    );
+    const originalEvent = mapBrowserEvent.originalEvent;
     const eventType = originalEvent.type;
     if (
       eventType === PointerEventType.POINTERDOWN ||
@@ -1463,7 +1470,10 @@ class Map extends BaseObject {
    * Redraws all text after new fonts have loaded
    */
   redrawText() {
-    const layerStates = this.getLayerGroup().getLayerStatesArray();
+    if (!this.frameState_) {
+      return;
+    }
+    const layerStates = this.frameState_.layerStatesArray;
     for (let i = 0, ii = layerStates.length; i < ii; ++i) {
       const layer = layerStates[i].layer;
       if (layer.hasRenderer()) {
@@ -1687,7 +1697,7 @@ class Map extends BaseObject {
 
   /**
    * Set the view for this map.
-   * @param {View|Promise<import("./View.js").ViewOptions>} view The view that controls this map.
+   * @param {View|Promise<import("./View.js").ViewOptions>|null} view The view that controls this map.
    * It is also possible to pass a promise that resolves to options for constructing a view.  This
    * alternative allows view properties to be resolved by sources or other components that load
    * view-related metadata.

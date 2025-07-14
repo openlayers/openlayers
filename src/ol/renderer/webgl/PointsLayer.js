@@ -8,7 +8,7 @@ import {buffer, createEmpty, equals} from '../../extent.js';
 import BaseVector from '../../layer/BaseVector.js';
 import {fromUserCoordinate, getUserProjection} from '../../proj.js';
 import {WebGLWorkerMessageType} from '../../render/webgl/constants.js';
-import {colorDecodeId, colorEncodeId} from '../../render/webgl/utils.js';
+import {colorDecodeId, colorEncodeId} from '../../render/webgl/encodeUtil.js';
 import VectorEventType from '../../source/VectorEventType.js';
 import {
   apply as applyTransform,
@@ -151,6 +151,13 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     /**
      * @private
      */
+    this.instanceAttributesBuffer_ = new WebGLArrayBuffer(
+      ARRAY_BUFFER,
+      DYNAMIC_DRAW,
+    );
+    /**
+     * @private
+     */
     this.indicesBuffer_ = new WebGLArrayBuffer(
       ELEMENT_ARRAY_BUFFER,
       DYNAMIC_DRAW,
@@ -189,36 +196,41 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       : [];
 
     /**
-     * A list of attributes used by the renderer. By default only the position and
-     * index of the vertex (0 to 3) are required.
+     * A list of attributes used by the renderer.
      * @type {Array<import('../../webgl/Helper.js').AttributeDescription>}
      */
     this.attributes = [
+      {
+        name: 'a_localPosition',
+        size: 2,
+        type: AttributeType.FLOAT,
+      },
+    ];
+
+    /**
+     * @type {Array<import('../../webgl/Helper.js').AttributeDescription>}
+     */
+    this.instanceAttributes = [
       {
         name: 'a_position',
         size: 2,
         type: AttributeType.FLOAT,
       },
-      {
-        name: 'a_index',
-        size: 1,
-        type: AttributeType.FLOAT,
-      },
     ];
 
     if (this.hitDetectionEnabled_) {
-      this.attributes.push({
+      this.instanceAttributes.push({
         name: 'a_hitColor',
         size: 4,
         type: AttributeType.FLOAT,
       });
-      this.attributes.push({
+      this.instanceAttributes.push({
         name: 'a_featureUid',
         size: 1,
         type: AttributeType.FLOAT,
       });
     }
-    this.attributes.push(...customAttributes);
+    this.instanceAttributes.push(...customAttributes);
 
     this.customAttributes = options.attributes ? options.attributes : [];
 
@@ -282,9 +294,13 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
         const received = event.data;
         if (received.type === WebGLWorkerMessageType.GENERATE_POINT_BUFFERS) {
           const projectionTransform = received.projectionTransform;
-          this.verticesBuffer_.fromArrayBuffer(received.vertexBuffer);
+          this.verticesBuffer_.fromArrayBuffer(received.vertexAttributesBuffer);
+          this.instanceAttributesBuffer_.fromArrayBuffer(
+            received.instanceAttributesBuffer,
+          );
           this.helper.flushBufferData(this.verticesBuffer_);
-          this.indicesBuffer_.fromArrayBuffer(received.indexBuffer);
+          this.helper.flushBufferData(this.instanceAttributesBuffer_);
+          this.indicesBuffer_.fromArrayBuffer(received.indicesBuffer);
           this.helper.flushBufferData(this.indicesBuffer_);
 
           this.renderTransform_ = projectionTransform;
@@ -523,11 +539,6 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     this.helper.useProgram(this.program_, frameState);
     this.helper.prepareDraw(frameState);
 
-    // write new data
-    this.helper.bindBuffer(this.verticesBuffer_);
-    this.helper.bindBuffer(this.indicesBuffer_);
-    this.helper.enableAttributes(this.attributes);
-
     return true;
   }
 
@@ -679,18 +690,27 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       );
     }
 
-    this.helper.bindBuffer(this.verticesBuffer_);
-    this.helper.bindBuffer(this.indicesBuffer_);
-    this.helper.enableAttributes(this.attributes);
+    const instanceAttributesStride = this.instanceAttributes.reduce(
+      (prev, curr) => prev + (curr.size || 1),
+      0,
+    );
+    const instanceCount =
+      this.instanceAttributesBuffer_.getSize() / instanceAttributesStride;
 
     do {
+      this.helper.bindBuffer(this.indicesBuffer_);
+      this.helper.bindBuffer(this.verticesBuffer_);
+      this.helper.enableAttributes(this.attributes);
+      this.helper.bindBuffer(this.instanceAttributesBuffer_);
+      this.helper.enableAttributesInstanced(this.instanceAttributes);
+
       this.helper.makeProjectionTransform(frameState, this.currentTransform_);
       translateTransform(this.currentTransform_, world * worldWidth, 0);
       multiplyTransform(this.currentTransform_, this.invertRenderTransform_);
       this.helper.applyUniforms(frameState);
       this.helper.applyHitDetectionUniform(forHitDetection);
       const renderCount = this.indicesBuffer_.getSize();
-      this.helper.drawElements(0, renderCount);
+      this.helper.drawElementsInstanced(0, renderCount, instanceCount);
     } while (++world < endWorld);
   }
 

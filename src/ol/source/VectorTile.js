@@ -5,6 +5,7 @@
 import TileState from '../TileState.js';
 import VectorRenderTile from '../VectorRenderTile.js';
 import Tile from '../VectorTile.js';
+import {assert} from '../asserts.js';
 import EventType from '../events/EventType.js';
 import {
   buffer as bufferExtent,
@@ -13,6 +14,7 @@ import {
 } from '../extent.js';
 import {loadFeaturesXhr} from '../featureloader.js';
 import {isEmpty} from '../obj.js';
+import {equivalent} from '../proj.js';
 import {toSize} from '../size.js';
 import TileGrid from '../tilegrid/TileGrid.js';
 import {DEFAULT_MAX_ZOOM} from '../tilegrid/common.js';
@@ -365,6 +367,12 @@ class VectorTile extends UrlTile {
     const code = projection.getCode();
     let tileGrid = this.tileGrids_[code];
     if (!tileGrid) {
+      const sourceProjection = this.getProjection();
+      assert(
+        sourceProjection === null || equivalent(sourceProjection, projection),
+        'A VectorTile source can only be rendered if it has a projection compatible with the view projection.',
+      );
+
       // A tile grid that matches the tile size of the source tile grid is more
       // likely to have 1:1 relationships between source tiles and rendered tiles.
       const sourceTileGrid = this.tileGrid;

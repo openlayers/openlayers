@@ -3,18 +3,18 @@ import {
   colorToGlsl,
   numberToGlsl,
   stringToGlsl,
-} from '../../../../../src/ol/expr/gpu.js';
+} from '../../../../../../src/ol/expr/gpu.js';
 import {
   COMMON_HEADER,
   ShaderBuilder,
-} from '../../../../../src/ol/webgl/ShaderBuilder.js';
+} from '../../../../../../src/ol/render/webgl/ShaderBuilder.js';
 
 describe('ol.webgl.ShaderBuilder', () => {
   describe('getSymbolVertexShader', () => {
-    it('generates a symbol vertex shader (with varying)', () => {
+    it('generates a symbol vertex shader (with attributes)', () => {
       const builder = new ShaderBuilder();
-      builder.addVarying('v_opacity', 'float', numberToGlsl(0.4));
-      builder.addVarying('v_test', 'vec3', arrayToGlsl([1, 2, 3]));
+      builder.addAttribute('a_opacity', 'float', numberToGlsl(0.4));
+      builder.addAttribute('a_test', 'vec3', arrayToGlsl([1, 2, 3]));
       builder.setSymbolSizeExpression(`vec2(${numberToGlsl(6)})`);
       builder.setSymbolOffsetExpression(arrayToGlsl([5, -7]));
       builder.setSymbolColorExpression(colorToGlsl([80, 0, 255, 1]));
@@ -23,7 +23,7 @@ describe('ol.webgl.ShaderBuilder', () => {
       expect(builder.getSymbolVertexShader()).to.eql(`${COMMON_HEADER}
 
 attribute vec2 a_position;
-attribute float a_index;
+attribute vec2 a_localPosition;
 attribute vec4 a_hitColor;
 
 varying vec2 v_texCoord;
@@ -32,7 +32,10 @@ varying vec4 v_hitColor;
 varying vec2 v_centerPx;
 varying float v_angle;
 varying vec2 v_quadSizePx;
+
+attribute float a_opacity;
 varying float v_opacity;
+attribute vec3 a_test;
 varying vec3 v_test;
 
 vec2 pxToScreen(vec2 coordPx) {
@@ -48,32 +51,22 @@ void main(void) {
   v_quadSizePx = vec2(6.0);
   vec2 halfSizePx = v_quadSizePx * 0.5;
   vec2 centerOffsetPx = vec2(5.0, -7.0);
-  vec2 offsetPx = centerOffsetPx;
-  if (a_index == 0.0) {
-    offsetPx -= halfSizePx;
-  } else if (a_index == 1.0) {
-    offsetPx += halfSizePx * vec2(1., -1.);
-  } else if (a_index == 2.0) {
-    offsetPx += halfSizePx;
-  } else {
-    offsetPx += halfSizePx * vec2(-1., 1.);
-  }
+  vec2 offsetPx = centerOffsetPx + a_localPosition * halfSizePx * vec2(1., -1.);
   float angle = 0.0;
-  
   float c = cos(-angle);
   float s = sin(-angle);
   offsetPx = vec2(c * offsetPx.x - s * offsetPx.y, s * offsetPx.x + c * offsetPx.y);
   vec4 center = u_projectionMatrix * vec4(a_position, 0.0, 1.0);
   gl_Position = center + vec4(pxToScreen(offsetPx), u_depth, 0.);
   vec4 texCoord = vec4(0.0, 0.5, 0.5, 1.0);
-  float u = a_index == 0.0 || a_index == 3.0 ? texCoord.s : texCoord.p;
-  float v = a_index == 2.0 || a_index == 3.0 ? texCoord.t : texCoord.q;
+  float u = mix(texCoord.s, texCoord.p, a_localPosition.x * 0.5 + 0.5);
+  float v = mix(texCoord.t, texCoord.q, a_localPosition.y * 0.5 + 0.5);
   v_texCoord = vec2(u, v);
   v_hitColor = a_hitColor;
   v_angle = angle;
   c = cos(-v_angle);
   s = sin(-v_angle);
-  centerOffsetPx = vec2(c * centerOffsetPx.x - s * centerOffsetPx.y, s * centerOffsetPx.x + c * centerOffsetPx.y); 
+  centerOffsetPx = vec2(c * centerOffsetPx.x - s * centerOffsetPx.y, s * centerOffsetPx.x + c * centerOffsetPx.y);
   v_centerPx = screenToPx(center.xy) + centerOffsetPx;
   v_opacity = 0.4;
   v_test = vec3(1.0, 2.0, 3.0);
@@ -81,8 +74,8 @@ void main(void) {
     });
     it('generates a symbol vertex shader (with uniforms and attributes)', () => {
       const builder = new ShaderBuilder();
-      builder.addUniform('float u_myUniform');
-      builder.addAttribute('vec2 a_myAttr');
+      builder.addUniform('u_myUniform', 'float');
+      builder.addAttribute('a_myAttr', 'vec2');
       builder.setSymbolSizeExpression(`vec2(${numberToGlsl(6)})`);
       builder.setSymbolOffsetExpression(arrayToGlsl([5, -7]));
       builder.setSymbolColorExpression(colorToGlsl([80, 0, 255, 1]));
@@ -91,9 +84,9 @@ void main(void) {
       expect(builder.getSymbolVertexShader()).to.eql(`${COMMON_HEADER}
 uniform float u_myUniform;
 attribute vec2 a_position;
-attribute float a_index;
+attribute vec2 a_localPosition;
 attribute vec4 a_hitColor;
-attribute vec2 a_myAttr;
+
 varying vec2 v_texCoord;
 varying vec2 v_quadCoord;
 varying vec4 v_hitColor;
@@ -101,6 +94,8 @@ varying vec2 v_centerPx;
 varying float v_angle;
 varying vec2 v_quadSizePx;
 
+attribute vec2 a_myAttr;
+varying vec2 v_myAttr;
 
 vec2 pxToScreen(vec2 coordPx) {
   vec2 scaled = coordPx / u_viewportSizePx / 0.5;
@@ -115,34 +110,24 @@ void main(void) {
   v_quadSizePx = vec2(6.0);
   vec2 halfSizePx = v_quadSizePx * 0.5;
   vec2 centerOffsetPx = vec2(5.0, -7.0);
-  vec2 offsetPx = centerOffsetPx;
-  if (a_index == 0.0) {
-    offsetPx -= halfSizePx;
-  } else if (a_index == 1.0) {
-    offsetPx += halfSizePx * vec2(1., -1.);
-  } else if (a_index == 2.0) {
-    offsetPx += halfSizePx;
-  } else {
-    offsetPx += halfSizePx * vec2(-1., 1.);
-  }
+  vec2 offsetPx = centerOffsetPx + a_localPosition * halfSizePx * vec2(1., -1.);
   float angle = 0.0;
-  
   float c = cos(-angle);
   float s = sin(-angle);
   offsetPx = vec2(c * offsetPx.x - s * offsetPx.y, s * offsetPx.x + c * offsetPx.y);
   vec4 center = u_projectionMatrix * vec4(a_position, 0.0, 1.0);
   gl_Position = center + vec4(pxToScreen(offsetPx), u_depth, 0.);
   vec4 texCoord = vec4(0.0, 0.5, 0.5, 1.0);
-  float u = a_index == 0.0 || a_index == 3.0 ? texCoord.s : texCoord.p;
-  float v = a_index == 2.0 || a_index == 3.0 ? texCoord.t : texCoord.q;
+  float u = mix(texCoord.s, texCoord.p, a_localPosition.x * 0.5 + 0.5);
+  float v = mix(texCoord.t, texCoord.q, a_localPosition.y * 0.5 + 0.5);
   v_texCoord = vec2(u, v);
   v_hitColor = a_hitColor;
   v_angle = angle;
   c = cos(-v_angle);
   s = sin(-v_angle);
-  centerOffsetPx = vec2(c * centerOffsetPx.x - s * centerOffsetPx.y, s * centerOffsetPx.x + c * centerOffsetPx.y); 
+  centerOffsetPx = vec2(c * centerOffsetPx.x - s * centerOffsetPx.y, s * centerOffsetPx.x + c * centerOffsetPx.y);
   v_centerPx = screenToPx(center.xy) + centerOffsetPx;
-
+  v_myAttr = a_myAttr;
 }`);
     });
     it('generates a symbol vertex shader (with rotateWithView)', () => {
@@ -156,7 +141,7 @@ void main(void) {
       expect(builder.getSymbolVertexShader()).to.eql(`${COMMON_HEADER}
 
 attribute vec2 a_position;
-attribute float a_index;
+attribute vec2 a_localPosition;
 attribute vec4 a_hitColor;
 
 varying vec2 v_texCoord;
@@ -165,6 +150,7 @@ varying vec4 v_hitColor;
 varying vec2 v_centerPx;
 varying float v_angle;
 varying vec2 v_quadSizePx;
+
 
 
 vec2 pxToScreen(vec2 coordPx) {
@@ -180,32 +166,22 @@ void main(void) {
   v_quadSizePx = vec2(6.0);
   vec2 halfSizePx = v_quadSizePx * 0.5;
   vec2 centerOffsetPx = vec2(5.0, -7.0);
-  vec2 offsetPx = centerOffsetPx;
-  if (a_index == 0.0) {
-    offsetPx -= halfSizePx;
-  } else if (a_index == 1.0) {
-    offsetPx += halfSizePx * vec2(1., -1.);
-  } else if (a_index == 2.0) {
-    offsetPx += halfSizePx;
-  } else {
-    offsetPx += halfSizePx * vec2(-1., 1.);
-  }
-  float angle = 0.0;
-  angle += u_rotation;
+  vec2 offsetPx = centerOffsetPx + a_localPosition * halfSizePx * vec2(1., -1.);
+  float angle = 0.0 + u_rotation;
   float c = cos(-angle);
   float s = sin(-angle);
   offsetPx = vec2(c * offsetPx.x - s * offsetPx.y, s * offsetPx.x + c * offsetPx.y);
   vec4 center = u_projectionMatrix * vec4(a_position, 0.0, 1.0);
   gl_Position = center + vec4(pxToScreen(offsetPx), u_depth, 0.);
   vec4 texCoord = vec4(0.0, 0.5, 0.5, 1.0);
-  float u = a_index == 0.0 || a_index == 3.0 ? texCoord.s : texCoord.p;
-  float v = a_index == 2.0 || a_index == 3.0 ? texCoord.t : texCoord.q;
+  float u = mix(texCoord.s, texCoord.p, a_localPosition.x * 0.5 + 0.5);
+  float v = mix(texCoord.t, texCoord.q, a_localPosition.y * 0.5 + 0.5);
   v_texCoord = vec2(u, v);
   v_hitColor = a_hitColor;
   v_angle = angle;
   c = cos(-v_angle);
   s = sin(-v_angle);
-  centerOffsetPx = vec2(c * centerOffsetPx.x - s * centerOffsetPx.y, s * centerOffsetPx.x + c * centerOffsetPx.y); 
+  centerOffsetPx = vec2(c * centerOffsetPx.x - s * centerOffsetPx.y, s * centerOffsetPx.x + c * centerOffsetPx.y);
   v_centerPx = screenToPx(center.xy) + centerOffsetPx;
 
 }`);
@@ -220,7 +196,7 @@ void main(void) {
       expect(builder.getSymbolVertexShader()).to.eql(`${COMMON_HEADER}
 
 attribute vec2 a_position;
-attribute float a_index;
+attribute vec2 a_localPosition;
 attribute vec4 a_hitColor;
 
 varying vec2 v_texCoord;
@@ -229,6 +205,7 @@ varying vec4 v_hitColor;
 varying vec2 v_centerPx;
 varying float v_angle;
 varying vec2 v_quadSizePx;
+
 
 
 vec2 pxToScreen(vec2 coordPx) {
@@ -244,32 +221,22 @@ void main(void) {
   v_quadSizePx = vec2(6.0);
   vec2 halfSizePx = v_quadSizePx * 0.5;
   vec2 centerOffsetPx = vec2(5.0, -7.0);
-  vec2 offsetPx = centerOffsetPx;
-  if (a_index == 0.0) {
-    offsetPx -= halfSizePx;
-  } else if (a_index == 1.0) {
-    offsetPx += halfSizePx * vec2(1., -1.);
-  } else if (a_index == 2.0) {
-    offsetPx += halfSizePx;
-  } else {
-    offsetPx += halfSizePx * vec2(-1., 1.);
-  }
+  vec2 offsetPx = centerOffsetPx + a_localPosition * halfSizePx * vec2(1., -1.);
   float angle = u_time * 0.2;
-  
   float c = cos(-angle);
   float s = sin(-angle);
   offsetPx = vec2(c * offsetPx.x - s * offsetPx.y, s * offsetPx.x + c * offsetPx.y);
   vec4 center = u_projectionMatrix * vec4(a_position, 0.0, 1.0);
   gl_Position = center + vec4(pxToScreen(offsetPx), u_depth, 0.);
   vec4 texCoord = vec4(0.0, 0.0, 1.0, 1.0);
-  float u = a_index == 0.0 || a_index == 3.0 ? texCoord.s : texCoord.p;
-  float v = a_index == 2.0 || a_index == 3.0 ? texCoord.t : texCoord.q;
+  float u = mix(texCoord.s, texCoord.p, a_localPosition.x * 0.5 + 0.5);
+  float v = mix(texCoord.t, texCoord.q, a_localPosition.y * 0.5 + 0.5);
   v_texCoord = vec2(u, v);
   v_hitColor = a_hitColor;
   v_angle = angle;
   c = cos(-v_angle);
   s = sin(-v_angle);
-  centerOffsetPx = vec2(c * centerOffsetPx.x - s * centerOffsetPx.y, s * centerOffsetPx.x + c * centerOffsetPx.y); 
+  centerOffsetPx = vec2(c * centerOffsetPx.x - s * centerOffsetPx.y, s * centerOffsetPx.x + c * centerOffsetPx.y);
   v_centerPx = screenToPx(center.xy) + centerOffsetPx;
 
 }`);
@@ -284,10 +251,10 @@ void main(void) {
     });
   });
   describe('getSymbolFragmentShader', () => {
-    it('generates a symbol fragment shader (with varying)', () => {
+    it('generates a symbol fragment shader (with attributes)', () => {
       const builder = new ShaderBuilder();
-      builder.addVarying('v_opacity', 'float', numberToGlsl(0.4));
-      builder.addVarying('v_test', 'vec3', arrayToGlsl([1, 2, 3]));
+      builder.addAttribute('a_opacity', 'float', numberToGlsl(0.4));
+      builder.addAttribute('a_test', 'vec3', arrayToGlsl([1, 2, 3]));
       builder.setSymbolSizeExpression(`vec2(${numberToGlsl(6)})`);
       builder.setSymbolOffsetExpression(arrayToGlsl([5, -7]));
       builder.setSymbolColorExpression(colorToGlsl([80, 0, 255]));
@@ -305,6 +272,8 @@ varying vec3 v_test;
 
 
 void main(void) {
+  float a_opacity = v_opacity; // assign to original attribute name
+  vec3 a_test = v_test; // assign to original attribute name
   if (false) { discard; }
   vec2 coordsPx = gl_FragCoord.xy / u_pixelRatio - v_centerPx; // relative to center
   float c = cos(v_angle);
@@ -320,8 +289,8 @@ void main(void) {
     });
     it('generates a symbol fragment shader (with uniforms)', () => {
       const builder = new ShaderBuilder();
-      builder.addUniform('float u_myUniform');
-      builder.addUniform('vec2 u_myUniform2');
+      builder.addUniform('u_myUniform', 'float');
+      builder.addUniform('u_myUniform2', 'vec2');
       builder.setSymbolSizeExpression(`vec2(${numberToGlsl(6)})`);
       builder.setSymbolOffsetExpression(arrayToGlsl([5, -7]));
       builder.setSymbolColorExpression(colorToGlsl([255, 255, 255, 1]));
@@ -340,6 +309,7 @@ varying vec2 v_quadSizePx;
 
 
 void main(void) {
+
   if (u_myUniform > 0.5) { discard; }
   vec2 coordsPx = gl_FragCoord.xy / u_pixelRatio - v_centerPx; // relative to center
   float c = cos(v_angle);
@@ -366,10 +336,10 @@ void main(void) {
     let builder;
     beforeEach(() => {
       builder = new ShaderBuilder();
-      builder.addVarying('v_opacity', 'float', numberToGlsl(0.4));
-      builder.addVarying('v_test', 'vec3', arrayToGlsl([1, 2, 3]));
-      builder.addUniform('float u_myUniform');
-      builder.addAttribute('vec2 a_myAttr');
+      builder.addAttribute('a_opacity', 'float', numberToGlsl(0.4));
+      builder.addAttribute('a_test', 'vec3', arrayToGlsl([1, 2, 3]));
+      builder.addAttribute('a_myAttr', 'vec2');
+      builder.addUniform('u_myUniform', 'float');
       builder.setStrokeWidthExpression(numberToGlsl(4));
       builder.setStrokeColorExpression(colorToGlsl([80, 0, 255, 1]));
       builder.setStrokeCapExpression(stringToGlsl('butt'));
@@ -385,13 +355,14 @@ void main(void) {
 uniform float u_myUniform;
 attribute vec2 a_segmentStart;
 attribute vec2 a_segmentEnd;
+attribute vec2 a_localPosition;
 attribute float a_measureStart;
 attribute float a_measureEnd;
-attribute float a_parameters;
+attribute float a_angleTangentSum;
 attribute float a_distance;
 attribute vec2 a_joinAngles;
 attribute vec4 a_hitColor;
-attribute vec2 a_myAttr;
+
 varying vec2 v_segmentStart;
 varying vec2 v_segmentEnd;
 varying float v_angleStart;
@@ -401,8 +372,13 @@ varying vec4 v_hitColor;
 varying float v_distanceOffsetPx;
 varying float v_measureStart;
 varying float v_measureEnd;
+
+attribute float a_opacity;
 varying float v_opacity;
+attribute vec3 a_test;
 varying vec3 v_test;
+attribute vec2 a_myAttr;
+varying vec2 v_myAttr;
 
 vec2 worldToPx(vec2 worldPos) {
   vec4 screenPos = u_projectionMatrix * vec4(worldPos, 0.0, 1.0);
@@ -439,10 +415,9 @@ vec2 getOffsetPoint(vec2 point, vec2 normal, float joinAngle, float offsetPx) {
 void main(void) {
   v_angleStart = a_joinAngles.x;
   v_angleEnd = a_joinAngles.y;
-  float vertexNumber = floor(abs(a_parameters) / 10000. + 0.5);
-  currentLineMetric = vertexNumber < 1.5 ? a_measureStart : a_measureEnd;
+  float startEndRatio = a_localPosition.x * 0.5 + 0.5;
+  currentLineMetric = mix(a_measureStart, a_measureEnd, startEndRatio);
   // we're reading the fractional part while keeping the sign (so -4.12 gives -0.12, 3.45 gives 0.45)
-  float angleTangentSum = fract(abs(a_parameters) / 10000.) * 10000. * sign(a_parameters);
 
   float lineWidth = 4.0;
   float lineOffsetPx = 0.;
@@ -454,13 +429,13 @@ void main(void) {
   vec2 normalPx = vec2(-tangentPx.y, tangentPx.x);
   segmentStartPx = getOffsetPoint(segmentStartPx, normalPx, v_angleStart, lineOffsetPx),
   segmentEndPx = getOffsetPoint(segmentEndPx, normalPx, v_angleEnd, lineOffsetPx);
-  
+
   // compute current vertex position
-  float normalDir = vertexNumber < 0.5 || (vertexNumber > 1.5 && vertexNumber < 2.5) ? 1.0 : -1.0;
-  float tangentDir = vertexNumber < 1.5 ? 1.0 : -1.0;
-  float angle = vertexNumber < 1.5 ? v_angleStart : v_angleEnd;
+  float normalDir = -1. * a_localPosition.y;
+  float tangentDir = -1. * a_localPosition.x;
+  float angle = mix(v_angleStart, v_angleEnd, startEndRatio);
   vec2 joinDirection;
-  vec2 positionPx = vertexNumber < 1.5 ? segmentStartPx : segmentEndPx;
+  vec2 positionPx = mix(segmentStartPx, segmentEndPx, startEndRatio);
   // if angle is too high, do not make a proper join
   if (cos(angle) > 0.985 || isCap(angle)) {
     joinDirection = normalPx * normalDir - tangentPx * tangentDir;
@@ -474,11 +449,12 @@ void main(void) {
   v_segmentEnd = segmentEndPx;
   v_width = lineWidth;
   v_hitColor = a_hitColor;
-  v_distanceOffsetPx = a_distance / u_resolution - (lineOffsetPx * angleTangentSum);
+  v_distanceOffsetPx = a_distance / u_resolution - (lineOffsetPx * a_angleTangentSum);
   v_measureStart = a_measureStart;
   v_measureEnd = a_measureEnd;
   v_opacity = 0.4;
   v_test = vec3(1.0, 2.0, 3.0);
+  v_myAttr = a_myAttr;
 }`);
       });
 
@@ -488,7 +464,7 @@ void main(void) {
       });
     });
     describe('getStrokeFragmentShader', () => {
-      it('generates a stroke fragment shader (with varying, attribute and uniform)', () => {
+      it('generates a stroke fragment shader (with attribute and uniform)', () => {
         expect(builder.getStrokeFragmentShader()).to.eql(`${COMMON_HEADER}
 uniform float u_myUniform;
 varying vec2 v_segmentStart;
@@ -502,6 +478,7 @@ varying float v_measureStart;
 varying float v_measureEnd;
 varying float v_opacity;
 varying vec3 v_test;
+varying vec2 v_myAttr;
 
 
 vec2 pxToWorld(vec2 pxPos) {
@@ -587,7 +564,19 @@ float computeSegmentPointDistance(vec2 point, vec2 start, vec2 end, float width,
   return joinDistanceField(point, start, end, width, joinAngle, joinType);
 }
 
+float distanceFromSegment(vec2 point, vec2 start, vec2 end) {
+  vec2 tangent = end - start;
+  vec2 startToPoint = point - start;
+  // inspire by capsule fn in https://iquilezles.org/articles/distfunctions/
+  float h = clamp(dot(startToPoint, tangent) / dot(tangent, tangent), 0.0, 1.0);
+  return length(startToPoint - tangent * h);
+}
+
 void main(void) {
+  float a_opacity = v_opacity; // assign to original attribute name
+  vec3 a_test = v_test; // assign to original attribute name
+  vec2 a_myAttr = v_myAttr; // assign to original attribute name
+
   vec2 currentPoint = gl_FragCoord.xy / u_pixelRatio;
   #ifdef GL_FRAGMENT_PRECISION_HIGH
   vec2 worldPos = pxToWorld(currentPoint);
@@ -608,24 +597,29 @@ void main(void) {
   vec2 segmentNormal = vec2(-segmentTangent.y, segmentTangent.x);
   vec2 startToPoint = currentPoint - v_segmentStart;
   float lengthToPoint = max(0., min(dot(segmentTangent, startToPoint), segmentLength));
-  float currentLengthPx = lengthToPoint + v_distanceOffsetPx; 
-  float currentRadiusPx = abs(dot(segmentNormal, startToPoint));
+  float currentLengthPx = lengthToPoint + v_distanceOffsetPx;
+  float currentRadiusPx = distanceFromSegment(currentPoint, v_segmentStart, v_segmentEnd);
   float currentRadiusRatio = dot(segmentNormal, startToPoint) * 2. / v_width;
-  currentLineMetric = mix(v_measureStart, v_measureEnd, lengthToPoint / segmentLength);
+  currentLineMetric = mix(
+    v_measureStart,
+    v_measureEnd,
+    lengthToPoint / max(segmentLength, 1.17549429e-38)
+  );
 
   if (u_myUniform > 0.5) { discard; }
 
-  vec4 color = vec4(0.3137254901960784, 0.0, 1.0, 1.0);
   float capType = ${stringToGlsl('butt')};
   float joinType = ${stringToGlsl('bevel')};
   float segmentStartDistance = computeSegmentPointDistance(currentPoint, v_segmentStart, v_segmentEnd, v_width, v_angleStart, capType, joinType);
   float segmentEndDistance = computeSegmentPointDistance(currentPoint, v_segmentEnd, v_segmentStart, v_width, v_angleEnd, capType, joinType);
-  float distance = max(
+  float distanceField = max(
     segmentDistanceField(currentPoint, v_segmentStart, v_segmentEnd, v_width),
     max(segmentStartDistance, segmentEndDistance)
   );
-  distance = max(distance, cos(currentLengthPx));
-  color.a *= smoothstep(0.5, -0.5, distance);
+  distanceField = max(distanceField, cos(currentLengthPx));
+
+  vec4 color = vec4(0.3137254901960784, 0.0, 1.0, 1.0);
+  color.a *= smoothstep(0.5, -0.5, distanceField);
   gl_FragColor = color;
   gl_FragColor.a *= u_globalAlpha;
   gl_FragColor.rgb *= gl_FragColor.a;
@@ -644,12 +638,12 @@ void main(void) {
   });
 
   describe('getFillVertexShader', () => {
-    it('generates a fill vertex shader (with varying, attribute and uniform)', () => {
+    it('generates a fill vertex shader (with attribute and uniform)', () => {
       const builder = new ShaderBuilder();
-      builder.addVarying('v_opacity', 'float', numberToGlsl(0.4));
-      builder.addVarying('v_test', 'vec3', arrayToGlsl([1, 2, 3]));
-      builder.addUniform('float u_myUniform');
-      builder.addAttribute('vec2 a_myAttr');
+      builder.addAttribute('a_opacity', 'float', numberToGlsl(0.4));
+      builder.addAttribute('a_test', 'vec3', arrayToGlsl([1, 2, 3]));
+      builder.addAttribute('a_myAttr', 'vec2');
+      builder.addUniform('u_myUniform', 'float');
       builder.setFillColorExpression(colorToGlsl([80, 0, 255, 1]));
       builder.setFragmentDiscardExpression('u_myUniform > 0.5');
 
@@ -657,16 +651,22 @@ void main(void) {
 uniform float u_myUniform;
 attribute vec2 a_position;
 attribute vec4 a_hitColor;
-attribute vec2 a_myAttr;
+
 varying vec4 v_hitColor;
+
+attribute float a_opacity;
 varying float v_opacity;
+attribute vec3 a_test;
 varying vec3 v_test;
+attribute vec2 a_myAttr;
+varying vec2 v_myAttr;
 
 void main(void) {
   gl_Position = u_projectionMatrix * vec4(a_position, u_depth, 1.0);
   v_hitColor = a_hitColor;
   v_opacity = 0.4;
   v_test = vec3(1.0, 2.0, 3.0);
+  v_myAttr = a_myAttr;
 }`);
     });
 
@@ -676,12 +676,12 @@ void main(void) {
     });
   });
   describe('getFillFragmentShader', () => {
-    it('generates a fill fragment shader (with varying, attribute and uniform)', () => {
+    it('generates a fill fragment shader (with attribute and uniform)', () => {
       const builder = new ShaderBuilder();
-      builder.addVarying('v_opacity', 'float', numberToGlsl(0.4));
-      builder.addVarying('v_test', 'vec3', arrayToGlsl([1, 2, 3]));
-      builder.addUniform('float u_myUniform');
-      builder.addAttribute('vec2 a_myAttr');
+      builder.addAttribute('a_opacity', 'float', numberToGlsl(0.4));
+      builder.addAttribute('a_test', 'vec3', arrayToGlsl([1, 2, 3]));
+      builder.addAttribute('a_myAttr', 'vec2');
+      builder.addUniform('u_myUniform', 'float');
       builder.setFillColorExpression(colorToGlsl([80, 0, 255, 1]));
       builder.setFragmentDiscardExpression('u_myUniform > 0.5');
 
@@ -690,6 +690,7 @@ uniform float u_myUniform;
 varying vec4 v_hitColor;
 varying float v_opacity;
 varying vec3 v_test;
+varying vec2 v_myAttr;
 
 vec2 pxToWorld(vec2 pxPos) {
   vec2 screenPos = 2.0 * pxPos / u_viewportSizePx - 1.0;
@@ -702,6 +703,9 @@ vec2 worldToPx(vec2 worldPos) {
 }
 
 void main(void) {
+  float a_opacity = v_opacity; // assign to original attribute name
+  vec3 a_test = v_test; // assign to original attribute name
+  vec2 a_myAttr = v_myAttr; // assign to original attribute name
   vec2 pxPos = gl_FragCoord.xy / u_pixelRatio;
   vec2 pxOrigin = worldToPx(u_patternOrigin);
   #ifdef GL_FRAGMENT_PRECISION_HIGH

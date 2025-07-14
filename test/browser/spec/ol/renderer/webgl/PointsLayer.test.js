@@ -11,6 +11,7 @@ import TileLayer from '../../../../../../src/ol/layer/Tile.js';
 import VectorLayer from '../../../../../../src/ol/layer/Vector.js';
 import WebGLPointsLayer from '../../../../../../src/ol/layer/WebGLPoints.js';
 import {get as getProjection} from '../../../../../../src/ol/proj.js';
+import {ShaderBuilder} from '../../../../../../src/ol/render/webgl/ShaderBuilder.js';
 import {WebGLWorkerMessageType} from '../../../../../../src/ol/render/webgl/constants.js';
 import WebGLPointsLayerRenderer from '../../../../../../src/ol/renderer/webgl/PointsLayer.js';
 import OSM from '../../../../../../src/ol/source/OSM.js';
@@ -20,7 +21,6 @@ import {
   create as createTransform,
 } from '../../../../../../src/ol/transform.js';
 import {getUid} from '../../../../../../src/ol/util.js';
-import {ShaderBuilder} from '../../../../../../src/ol/webgl/ShaderBuilder.js';
 
 const baseFrameState = {
   viewHints: [],
@@ -113,25 +113,21 @@ describe('ol/renderer/webgl/PointsLayer', function () {
       );
       renderer.prepareFrame(frameState);
 
-      const attributePerVertex = 3;
+      const attributePerVertex = 2;
 
       renderer.worker_.addEventListener('message', function (event) {
         if (event.data.type !== WebGLWorkerMessageType.GENERATE_POINT_BUFFERS) {
           return;
         }
-        expect(renderer.verticesBuffer_.getArray().length).to.eql(
-          2 * 4 * attributePerVertex,
+        expect(renderer.verticesBuffer_.getArray().length).to.eql(8);
+        expect(renderer.instanceAttributesBuffer_.getArray().length).to.eql(
+          2 * attributePerVertex,
         );
-        expect(renderer.indicesBuffer_.getArray().length).to.eql(2 * 6);
+        expect(renderer.indicesBuffer_.getArray().length).to.eql(6);
 
-        expect(renderer.verticesBuffer_.getArray()[0]).to.eql(10);
-        expect(renderer.verticesBuffer_.getArray()[1]).to.eql(20);
-        expect(
-          renderer.verticesBuffer_.getArray()[4 * attributePerVertex + 0],
-        ).to.eql(30);
-        expect(
-          renderer.verticesBuffer_.getArray()[4 * attributePerVertex + 1],
-        ).to.eql(40);
+        expect(renderer.instanceAttributesBuffer_.getArray()).to.eql([
+          10, 20, 30, 40,
+        ]);
         done();
       });
     });
@@ -155,7 +151,7 @@ describe('ol/renderer/webgl/PointsLayer', function () {
       );
       renderer.prepareFrame(frameState);
 
-      const attributePerVertex = 8;
+      const attributePerVertex = 7;
 
       renderer.worker_.addEventListener('message', function (event) {
         if (event.data.type !== WebGLWorkerMessageType.GENERATE_POINT_BUFFERS) {
@@ -164,19 +160,21 @@ describe('ol/renderer/webgl/PointsLayer', function () {
         if (!renderer.verticesBuffer_.getArray()) {
           return;
         }
-        expect(renderer.verticesBuffer_.getArray().length).to.eql(
-          2 * 4 * attributePerVertex,
+        expect(renderer.verticesBuffer_.getArray().length).to.eql(8);
+        expect(renderer.instanceAttributesBuffer_.getArray().length).to.eql(
+          2 * attributePerVertex,
         );
-        expect(renderer.indicesBuffer_.getArray().length).to.eql(2 * 6);
+        expect(renderer.indicesBuffer_.getArray().length).to.eql(6);
 
-        expect(renderer.verticesBuffer_.getArray()[0]).to.eql(10);
-        expect(renderer.verticesBuffer_.getArray()[1]).to.eql(20);
+        expect(renderer.instanceAttributesBuffer_.getArray().length).to.eql(14);
         expect(
-          renderer.verticesBuffer_.getArray()[4 * attributePerVertex + 0],
-        ).to.eql(30);
+          renderer.instanceAttributesBuffer_.getArray().slice(0, 2),
+        ).to.eql([10, 20]);
         expect(
-          renderer.verticesBuffer_.getArray()[4 * attributePerVertex + 1],
-        ).to.eql(40);
+          renderer.instanceAttributesBuffer_
+            .getArray()
+            .slice(attributePerVertex, 2 + attributePerVertex),
+        ).to.eql([30, 40]);
         done();
       });
     });
@@ -200,11 +198,13 @@ describe('ol/renderer/webgl/PointsLayer', function () {
         if (event.data.type !== WebGLWorkerMessageType.GENERATE_POINT_BUFFERS) {
           return;
         }
-        const attributePerVertex = 3;
-        expect(renderer.verticesBuffer_.getArray().length).to.eql(
-          4 * attributePerVertex,
+        const attributePerVertex = 1;
+        expect(renderer.verticesBuffer_.getArray().length).to.eql(8);
+        expect(renderer.instanceAttributesBuffer_.getArray().length).to.eql(
+          2 * attributePerVertex,
         );
         expect(renderer.indicesBuffer_.getArray().length).to.eql(6);
+
         done();
       });
     });

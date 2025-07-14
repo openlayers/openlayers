@@ -476,6 +476,12 @@ export function optionsFromCapabilities(wmtsCap, config) {
     }
   }
 
+  const layerExtent = l['BoundingBox']?.find(
+    (bbox) =>
+      getProjection(bbox.crs) &&
+      equivalent(getProjection(bbox.crs), projection),
+  );
+
   const resolution =
     (matrix.ScaleDenominator * 0.00028) / projection.getMetersPerUnit(); // WMTS 1.0.0: standardized rendering pixel size
   const origin = switchXY
@@ -483,7 +489,7 @@ export function optionsFromCapabilities(wmtsCap, config) {
     : matrix.TopLeftCorner;
   const tileSpanX = matrix.TileWidth * resolution;
   const tileSpanY = matrix.TileHeight * resolution;
-  let matrixSetExtent = matrixSetObj['BoundingBox'];
+  let matrixSetExtent = layerExtent?.extent ?? matrixSetObj['BoundingBox'];
   if (matrixSetExtent && switchXY) {
     matrixSetExtent = [
       matrixSetExtent[1],

@@ -20,9 +20,16 @@ const builder = Metalsmith(baseDir)
   .metadata({
     version: env.OL_VERSION || 'dev',
   })
-  .use(inPlace({transform: 'handlebars'}))
+  .use(inPlace({transform: 'handlebars', extname: '.hbs'}))
   .use(markdown())
-  .use(layouts());
+  .use(
+    layouts({
+      directory: 'layouts',
+      transform: 'handlebars',
+      default: 'default.hbs',
+      pattern: '**/*.(html|hbs|md)',
+    }),
+  );
 
 builder.build(async (err) => {
   if (err) {

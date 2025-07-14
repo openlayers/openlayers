@@ -4,7 +4,7 @@ import View from '../../../../../../src/ol/View.js';
 import TileLayer from '../../../../../../src/ol/layer/Tile.js';
 import {fromLonLat} from '../../../../../../src/ol/proj.js';
 import ImageTile from '../../../../../../src/ol/source/ImageTile.js';
-import OSM from '../../../../../../src/ol/source/OSM.js';
+import TileDebug from '../../../../../../src/ol/source/TileDebug.js';
 import XYZ from '../../../../../../src/ol/source/XYZ.js';
 
 describe('ol/renderer/canvas/TileLayer', function () {
@@ -55,7 +55,7 @@ describe('ol/renderer/canvas/TileLayer', function () {
 
     describe('caching', () => {
       it('updates the size of the tile cache ', (done) => {
-        const source = new OSM();
+        const source = new TileDebug();
         const layer = new TileLayer({source: source});
         const spy = sinonSpy(layer.getRenderer(), 'updateCacheSize');
         map.addLayer(layer);
@@ -69,7 +69,7 @@ describe('ol/renderer/canvas/TileLayer', function () {
         });
       });
       it('expires the tile cache, which disposes unused tiles', async () => {
-        const source = new OSM();
+        const source = new TileDebug();
         const layer = new TileLayer({source: source, cacheSize: 0});
         const tiles = [];
         layer.getSource().on('tileloadend', (event) => {
@@ -89,7 +89,7 @@ describe('ol/renderer/canvas/TileLayer', function () {
       });
 
       it('caches tiles and clears the cache when the source is refreshed', async () => {
-        const source = new OSM();
+        const source = new TileDebug();
         const layer = new TileLayer({source: source});
         const tiles = [];
         source.on('tileloadend', (event) => {
@@ -102,6 +102,28 @@ describe('ol/renderer/canvas/TileLayer', function () {
         await new Promise((resolve) => map.once('rendercomplete', resolve));
         expect(tiles.length).to.be(2);
         source.refresh();
+        await new Promise((resolve) => map.once('rendercomplete', resolve));
+        expect(tiles.length).to.be(4);
+      });
+
+      it('clears the cache when the layer has a new source with the same key', async () => {
+        const tiles = [];
+        let source = new TileDebug();
+        source.on('tileloadend', (event) => {
+          tiles.push(event.tile);
+        });
+        source.setKey('foo');
+        const layer = new TileLayer({source: source});
+        map.addLayer(layer);
+        await new Promise((resolve) => map.once('rendercomplete', resolve));
+        expect(tiles.length).to.be(2);
+        source.dispose();
+        source = new TileDebug();
+        source.on('tileloadend', (event) => {
+          tiles.push(event.tile);
+        });
+        source.setKey('foo');
+        layer.setSource(source);
         await new Promise((resolve) => map.once('rendercomplete', resolve));
         expect(tiles.length).to.be(4);
       });

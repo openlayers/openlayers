@@ -2,6 +2,7 @@
  * @module ol/webgl/Helper
  */
 import Disposable from '../Disposable.js';
+import {assert} from '../asserts.js';
 import {clear} from '../obj.js';
 import {
   compose as composeTransform,
@@ -66,7 +67,7 @@ export const AttributeType = {
 /**
  * Description of an attribute in a buffer
  * @typedef {Object} AttributeDescription
- * @property {string} name Attribute name to use in shaders
+ * @property {string|null} name Attribute name to use in shaders; if null, this attribute will not be enabled and is simply used as padding in the buffers
  * @property {number} size Number of components per attributes
  * @property {AttributeType} [type] Attribute type, i.e. number of bytes used to store the value. This is
  * determined by the class of typed array which the buffer uses (eg. `Float32Array` for a `FLOAT` attribute).
@@ -446,6 +447,14 @@ class WebGLHelper extends Disposable {
      * @private
      */
     this.startTime_ = Date.now();
+
+    /**
+     * @type {number}
+     * @private
+     */
+    this.maxAttributeCount_ = this.gl_.getParameter(
+      this.gl_.MAX_VERTEX_ATTRIBS,
+    );
   }
 
   /**
@@ -489,6 +498,19 @@ class WebGLHelper extends Disposable {
     const extension = this.gl_.getExtension(name);
     this.extensionCache_[name] = extension;
     return extension;
+  }
+
+  /**
+   * Will throw if the extension is not available
+   * @return {ANGLE_instanced_arrays} Extension
+   */
+  getInstancedRenderingExtension_() {
+    const ext = this.getExtension('ANGLE_instanced_arrays');
+    assert(
+      !!ext,
+      "WebGL extension 'ANGLE_instanced_arrays' is required for vector rendering",
+    );
+    return ext;
   }
 
   /**
@@ -714,6 +736,37 @@ class WebGLHelper extends Disposable {
   }
 
   /**
+   * Execute a draw call similar to `drawElements`, but using instanced rendering.
+   * Will have no effect if `enableAttributesInstanced` was not called for this rendering pass.
+   * @param {number} start Start index.
+   * @param {number} end End index.
+   * @param {number} instanceCount The number of instances to render
+   */
+  drawElementsInstanced(start, end, instanceCount) {
+    const gl = this.gl_;
+    this.getExtension('OES_element_index_uint');
+    const ext = this.getInstancedRenderingExtension_();
+
+    const elementType = gl.UNSIGNED_INT;
+    const elementSize = 4;
+
+    const numItems = end - start;
+    const offsetInBytes = start * elementSize;
+    ext.drawElementsInstancedANGLE(
+      gl.TRIANGLES,
+      numItems,
+      elementType,
+      offsetInBytes,
+      instanceCount,
+    );
+
+    // reset divisor values to avoid side effects
+    for (let i = 0; i < this.maxAttributeCount_; i++) {
+      ext.vertexAttribDivisorANGLE(i, 0);
+    }
+  }
+
+  /**
    * Apply the successive post process passes which will eventually render to the actual canvas.
    * @param {import("../Map.js").FrameState} frameState current frame state
    * @param {function(WebGLRenderingContext, import("../Map.js").FrameState):void} [preCompose] Called before composing.
@@ -894,6 +947,7 @@ class WebGLHelper extends Disposable {
    * @param {import("../Map.js").FrameState} [frameState] Frame state.
    */
   useProgram(program, frameState) {
+    this.disableAllAttributes_();
     const gl = this.gl_;
     gl.useProgram(program);
     this.currentProgram_ = program;
@@ -1066,6 +1120,16 @@ class WebGLHelper extends Disposable {
   }
 
   /**
+   * Disable all vertex attributes.
+   * @private
+   */
+  disableAllAttributes_() {
+    for (let i = 0; i < this.maxAttributeCount_; i++) {
+      this.gl_.disableVertexAttribArray(i);
+    }
+  }
+
+  /**
    * Will set the currently bound buffer to an attribute of the shader program. Used by `#enableAttributes`
    * internally.
    * @param {string} attribName Attribute name
@@ -1073,9 +1137,10 @@ class WebGLHelper extends Disposable {
    * @param {number} type UNSIGNED_INT, UNSIGNED_BYTE, UNSIGNED_SHORT or FLOAT
    * @param {number} stride Stride in bytes (0 means attribs are packed)
    * @param {number} offset Offset in bytes
+   * @param {boolean} instanced Whether the attribute is used for instanced rendering
    * @private
    */
-  enableAttributeArray_(attribName, size, type, stride, offset) {
+  enableAttributeArray_(attribName, size, type, stride, offset, instanced) {
     const location = this.getAttributeLocation(attribName);
     // the attribute has not been found in the shaders or is not used; do not enable it
     if (location < 0) {
@@ -1083,6 +1148,38 @@ class WebGLHelper extends Disposable {
     }
     this.gl_.enableVertexAttribArray(location);
     this.gl_.vertexAttribPointer(location, size, type, false, stride, offset);
+    if (instanced) {
+      // note: this is reset to 0 after drawElementsInstanced is called
+      this.getInstancedRenderingExtension_().vertexAttribDivisorANGLE(
+        location,
+        1,
+      );
+    }
+  }
+
+  /**
+   * @private
+   * @param {Array<AttributeDescription>} attributes Ordered list of attributes to read from the buffer
+   * @param {boolean} instanced Whether the attributes are instanced.
+   */
+  enableAttributes_(attributes, instanced) {
+    const stride = computeAttributesStride(attributes);
+    let offset = 0;
+    for (let i = 0; i < attributes.length; i++) {
+      const attr = attributes[i];
+      // if a name is not given, simply skip this slot in the buffer
+      if (attr.name) {
+        this.enableAttributeArray_(
+          attr.name,
+          attr.size,
+          attr.type || FLOAT,
+          stride,
+          offset,
+          instanced,
+        );
+      }
+      offset += attr.size * getByteSizeFromType(attr.type);
+    }
   }
 
   /**
@@ -1092,19 +1189,16 @@ class WebGLHelper extends Disposable {
    * @param {Array<AttributeDescription>} attributes Ordered list of attributes to read from the buffer
    */
   enableAttributes(attributes) {
-    const stride = computeAttributesStride(attributes);
-    let offset = 0;
-    for (let i = 0; i < attributes.length; i++) {
-      const attr = attributes[i];
-      this.enableAttributeArray_(
-        attr.name,
-        attr.size,
-        attr.type || FLOAT,
-        stride,
-        offset,
-      );
-      offset += attr.size * getByteSizeFromType(attr.type);
-    }
+    this.enableAttributes_(attributes, false);
+  }
+
+  /**
+   * Will enable these attributes as instanced, meaning that they will only be read
+   * once per instance instead of per vertex.
+   * @param {Array<AttributeDescription>} attributes Ordered list of attributes to read from the buffer
+   */
+  enableAttributesInstanced(attributes) {
+    this.enableAttributes_(attributes, true);
   }
 
   /**

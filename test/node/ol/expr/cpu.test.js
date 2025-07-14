@@ -630,6 +630,15 @@ describe('ol/expr/cpu.js', () => {
         expected: 'got other',
       },
       {
+        name: 'match (input equals fallback value)',
+        type: NumberType,
+        expression: ['match', ['get', 'number'], 0, 1, 42],
+        context: {
+          properties: {number: 42},
+        },
+        expected: 42,
+      },
+      {
         name: 'interpolate (linear number)',
         type: NumberType,
         expression: [

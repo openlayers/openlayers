@@ -182,6 +182,33 @@ describe('ol.style.Icon', function () {
     });
   });
 
+  describe('#setSrc', function () {
+    const newSrc = 'spec/ol/data/dot.png';
+
+    it('changes the source of the icon (by changing the whole image)', function () {
+      const icon = new Icon({
+        src,
+      });
+      const oldIconImage = icon.iconImage_;
+      icon.setSrc(newSrc);
+      expect(icon.getSrc()).to.be(newSrc);
+      expect(icon.iconImage_).to.not.be(oldIconImage);
+    });
+
+    it('loads the new image', function (done) {
+      const icon = new Icon({
+        src,
+      });
+      icon.setSrc(newSrc);
+      expect(icon.getImageState()).to.be(ImageState.IDLE);
+      icon.load();
+      icon.listenImageChange(() => {
+        expect(icon.getImageState()).to.be(ImageState.LOADED);
+        done();
+      });
+    });
+  });
+
   describe('#getAnchor', function () {
     const fractionAnchor = [0.25, 0.25];
 

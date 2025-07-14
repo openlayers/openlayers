@@ -624,9 +624,7 @@ class CanvasBuilder extends VectorContext {
   updateFillStyle(state, createFill) {
     const fillStyle = state.fillStyle;
     if (typeof fillStyle !== 'string' || state.currentFillStyle != fillStyle) {
-      if (fillStyle !== undefined) {
-        this.instructions.push(createFill.call(this, state));
-      }
+      this.instructions.push(createFill.call(this, state));
       state.currentFillStyle = fillStyle;
     }
   }
@@ -653,9 +651,7 @@ class CanvasBuilder extends VectorContext {
       state.currentLineWidth != lineWidth ||
       state.currentMiterLimit != miterLimit
     ) {
-      if (strokeStyle !== undefined) {
-        applyStroke.call(this, state);
-      }
+      applyStroke.call(this, state);
       state.currentStrokeStyle = strokeStyle;
       state.currentLineCap = lineCap;
       state.currentLineDash = lineDash;

@@ -112,6 +112,20 @@ function createTextChunks(acc, line, i) {
   return acc;
 }
 
+/**
+ * Converts rich text to plain text for text along lines.
+ * @param {string} result The resulting plain text.
+ * @param {string} part Item of the rich text array.
+ * @param {number} index Index of the item in the rich text array.
+ * @return {string} The resulting plain text.
+ */
+function richTextToPlainText(result, part, index) {
+  if (index % 2 === 0) {
+    result += part;
+  }
+  return result;
+}
+
 class Executor {
   /**
    * @param {number} resolution Resolution.
@@ -597,6 +611,9 @@ class Executor {
   setStrokeStyle_(context, instruction) {
     context.strokeStyle =
       /** @type {import("../../colorlike.js").ColorLike} */ (instruction[1]);
+    if (!instruction[1]) {
+      return;
+    }
     context.lineWidth = /** @type {number} */ (instruction[2]);
     context.lineCap = /** @type {CanvasLineCap} */ (instruction[3]);
     context.lineJoin = /** @type {CanvasLineJoin} */ (instruction[4]);
@@ -992,7 +1009,11 @@ class Executor {
           const offsetY = /** @type {number} */ (instruction[8]);
           strokeKey = /** @type {string} */ (instruction[9]);
           const strokeWidth = /** @type {number} */ (instruction[10]);
-          text = /** @type {string} */ (instruction[11]);
+          text = /** @type {string|Array<string>} */ (instruction[11]);
+          if (Array.isArray(text)) {
+            //FIXME Add support for rich text along lines
+            text = text.reduce(richTextToPlainText, '');
+          }
           textKey = /** @type {string} */ (instruction[12]);
           const pixelRatioScale = [
             /** @type {number} */ (instruction[13]),

@@ -14,7 +14,7 @@ import serveStatic from 'serve-static';
 import webpack from 'webpack';
 import webpackMiddleware from 'webpack-dev-middleware';
 import yargs from 'yargs';
-import {hideBin} from 'yargs/helpers';
+import {hideBin} from 'yargs/helpers'; //eslint-disable-line import/no-unresolved
 import config from './webpack.config.js';
 
 const baseDir = dirname(fileURLToPath(import.meta.url));

@@ -160,11 +160,15 @@ describe('ol.layer.VectorTile', function () {
           .then(function (result) {
             const tile = layer
               .getRenderer()
-              .tileCache_.get(objectURL + ',0/0/0');
+              .tileCache_.get(
+                `${getUid(layer.getSource())},${objectURL},0/0/0`,
+              );
             expect(Object.keys(tile.hitDetectionImageData).length).to.be(1);
             const tile2 = layer2
               .getRenderer()
-              .tileCache_.get(objectURL + ',0/0/0');
+              .tileCache_.get(
+                `${getUid(layer.getSource())},${objectURL},0/0/0`,
+              );
             expect(Object.keys(tile2.hitDetectionImageData).length).to.be(1);
             done();
           })

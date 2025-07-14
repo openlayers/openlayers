@@ -14,7 +14,7 @@ import {
 } from '../../proj.js';
 import MixedGeometryBatch from '../../render/webgl/MixedGeometryBatch.js';
 import VectorStyleRenderer from '../../render/webgl/VectorStyleRenderer.js';
-import {breakDownFlatStyle, colorDecodeId} from '../../render/webgl/utils.js';
+import {colorDecodeId} from '../../render/webgl/encodeUtil.js';
 import VectorEventType from '../../source/VectorEventType.js';
 import {
   apply as applyTransform,
@@ -41,16 +41,16 @@ export const Uniforms = {
 };
 
 /**
- * @typedef {import('../../render/webgl/VectorStyleRenderer.js').AsShaders} StyleAsShaders
+ * @typedef {import('../../render/webgl/VectorStyleRenderer.js').StyleShaders} StyleShaders
  */
 /**
- * @typedef {import('../../render/webgl/VectorStyleRenderer.js').AsRule} StyleAsRule
+ * @typedef {import('../../style/flat.js').FlatStyleLike | Array<StyleShaders> | StyleShaders} LayerStyle
  */
 
 /**
  * @typedef {Object} Options
  * @property {string} [className='ol-layer'] A CSS class name to set to the canvas element.
- * @property {import('../../style/flat.js').FlatStyleLike | Array<StyleAsShaders> | StyleAsShaders} style Flat vector style; also accepts shaders
+ * @property {LayerStyle} style Flat vector style; also accepts shaders
  * @property {Object<string, number|Array<number>|string|boolean>} variables Style variables
  * @property {boolean} [disableHitDetection=false] Setting this to true will provide a slight performance boost, but will
  * prevent all hit detection on the layer.
@@ -149,22 +149,22 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     this.styleVariables_ = {};
 
     /**
-     * @type {Array<StyleAsRule | StyleAsShaders>}
+     * @type {LayerStyle}
      * @private
      */
-    this.styles_ = [];
+    this.style_ = [];
 
     /**
-     * @type {Array<VectorStyleRenderer>}
-     * @private
+     * @type {VectorStyleRenderer}
+     * @public
      */
-    this.styleRenderers_ = [];
+    this.styleRenderer_ = null;
 
     /**
-     * @type {Array<import('../../render/webgl/VectorStyleRenderer.js').WebGLBuffers>}
+     * @type {import('../../render/webgl/VectorStyleRenderer.js').WebGLBuffers}
      * @private
      */
-    this.buffers_ = [];
+    this.buffers_ = null;
 
     this.applyOptions_(options);
 
@@ -210,7 +210,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
       listen(
         source,
         VectorEventType.CHANGEFEATURE,
-        this.handleSourceFeatureChanged_,
+        this.handleSourceFeatureChanged_.bind(this, projectionTransform),
         this,
       ),
       listen(
@@ -234,23 +234,19 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
    */
   applyOptions_(options) {
     this.styleVariables_ = options.variables;
-    this.styles_ = breakDownFlatStyle(options.style);
+    this.style_ = options.style;
   }
 
   /**
    * @private
    */
   createRenderers_() {
-    this.buffers_ = [];
-    this.styleRenderers_ = this.styles_.map(
-      (style) =>
-        new VectorStyleRenderer(
-          style,
-          this.styleVariables_,
-          this.helper,
-          this.hitDetectionEnabled_,
-          'filter' in style ? style.filter : null,
-        ),
+    this.buffers_ = null;
+    this.styleRenderer_ = new VectorStyleRenderer(
+      this.style_,
+      this.styleVariables_,
+      this.helper,
+      this.hitDetectionEnabled_,
     );
   }
 
@@ -269,11 +265,9 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
    * @override
    */
   afterHelperCreated() {
-    if (this.styleRenderers_.length) {
+    if (this.styleRenderer_) {
       // To reuse buffers
-      this.styleRenderers_.forEach((renderer, i) =>
-        renderer.setHelper(this.helper, this.buffers_[i]),
-      );
+      this.styleRenderer_.setHelper(this.helper, this.buffers_);
     } else {
       this.createRenderers_();
     }
@@ -294,12 +288,13 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
   }
 
   /**
+   * @param {import("../../proj.js").TransformFunction} projectionTransform Transform function.
    * @param {import("../../source/Vector.js").VectorSourceEvent} event Event.
    * @private
    */
-  handleSourceFeatureChanged_(event) {
+  handleSourceFeatureChanged_(projectionTransform, event) {
     const feature = event.feature;
-    this.batch_.changeFeature(feature);
+    this.batch_.changeFeature(feature, projectionTransform);
   }
 
   /**
@@ -433,18 +428,16 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
         createTransform(),
       );
 
-      const generatePromises = this.styleRenderers_.map((renderer, i) =>
-        renderer.generateBuffers(this.batch_, transform).then((buffers) => {
-          if (this.buffers_[i]) {
-            this.disposeBuffers(this.buffers_[i]);
+      this.styleRenderer_
+        .generateBuffers(this.batch_, transform)
+        .then((buffers) => {
+          if (this.buffers_) {
+            this.disposeBuffers(this.buffers_);
           }
-          this.buffers_[i] = buffers;
-        }),
-      );
-      Promise.all(generatePromises).then(() => {
-        this.ready = true;
-        this.getLayer().changed();
-      });
+          this.buffers_ = buffers;
+          this.ready = true;
+          this.getLayer().changed();
+        });
 
       this.previousExtent_ = frameState.extent.slice();
     }
@@ -485,17 +478,13 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
         world * worldWidth,
         0,
       );
-      for (let i = 0, ii = this.styleRenderers_.length; i < ii; i++) {
-        const renderer = this.styleRenderers_[i];
-        const buffers = this.buffers_[i];
-        if (!buffers) {
-          continue;
-        }
-        renderer.render(buffers, frameState, () => {
-          this.applyUniforms_(buffers.invertVerticesTransform);
-          this.helper.applyHitDetectionUniform(forHitDetection);
-        });
+      if (!this.buffers_) {
+        continue;
       }
+      this.styleRenderer_.render(this.buffers_, frameState, () => {
+        this.applyUniforms_(this.buffers_.invertVerticesTransform);
+        this.helper.applyHitDetectionUniform(forHitDetection);
+      });
     } while (++world < endWorld);
   }
 
@@ -520,7 +509,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
       this.hitDetectionEnabled_,
       '`forEachFeatureAtCoordinate` cannot be used on a WebGL layer if the hit detection logic has been disabled using the `disableHitDetection: true` option.',
     );
-    if (!this.styleRenderers_.length || !this.hitDetectionEnabled_) {
+    if (!this.styleRenderer_ || !this.hitDetectionEnabled_) {
       return undefined;
     }
 
@@ -570,11 +559,9 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
    * @override
    */
   disposeInternal() {
-    this.buffers_.forEach((buffers) => {
-      if (buffers) {
-        this.disposeBuffers(buffers);
-      }
-    });
+    if (this.buffers_) {
+      this.disposeBuffers(this.buffers_);
+    }
     if (this.sourceListenKeys_) {
       this.sourceListenKeys_.forEach(function (key) {
         unlistenByKey(key);
@@ -583,6 +570,8 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     }
     super.disposeInternal();
   }
+
+  renderDeclutter() {}
 }
 
 export default WebGLVectorLayerRenderer;

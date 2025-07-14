@@ -20,19 +20,8 @@ canvas.style = {};
 const context = canvas.getContext('2d');
 
 const sources = {
-  landcover: new VectorTileSource({
-    maxZoom: 9,
-    format: new MVT(),
-    url: 'https://api.maptiler.com/tiles/landcover/{z}/{x}/{y}.pbf?key=' + key,
-  }),
-  contours: new VectorTileSource({
-    minZoom: 9,
-    maxZoom: 14,
-    format: new MVT(),
-    url: 'https://api.maptiler.com/tiles/contours/{z}/{x}/{y}.pbf?key=' + key,
-  }),
   maptiler_planet: new VectorTileSource({
-    format: new MVT(),
+    format: new MVT({layerName: 'mvt:layer'}),
     maxZoom: 14,
     url: 'https://api.maptiler.com/tiles/v3/{z}/{x}/{y}.pbf?key=' + key,
   }),
@@ -163,7 +152,7 @@ worker.addEventListener('message', (event) => {
       if (!renderer.prepareFrame(frameState)) {
         return;
       }
-      if (layer.getDeclutter() && !frameState.declutterTree) {
+      if (layer.getDeclutter() && !frameState.declutter) {
         frameState.declutter = {};
       }
       renderer.renderFrame(frameState, canvas);

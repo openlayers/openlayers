@@ -254,7 +254,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
    * @private
    */
   resetDrawContext_() {
-    if (this.opacity_ !== 1) {
+    if (this.opacity_ !== 1 && this.targetContext_) {
       const alpha = this.targetContext_.globalAlpha;
       this.targetContext_.globalAlpha = this.opacity_;
       this.targetContext_.drawImage(this.context.canvas, 0, 0);
@@ -297,7 +297,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
    * Render the layer.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @param {HTMLElement|null} target Target that may be used to render content to.
-   * @return {HTMLElement|null} The rendered element.
+   * @return {HTMLElement} The rendered element.
    * @override
    */
   renderFrame(frameState, target) {
@@ -315,7 +315,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
         this.getLayer().hasListener(RenderEventType.PRERENDER) ||
         this.getLayer().hasListener(RenderEventType.POSTRENDER);
       if (!hasRenderListeners) {
-        return null;
+        return this.container;
       }
     }
 

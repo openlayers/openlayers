@@ -9,11 +9,11 @@ import {
   uniformNameForVariable,
 } from '../expr/gpu.js';
 import LayerProperty from '../layer/Property.js';
+import {expressionToGlsl} from '../render/webgl/compileUtil.js';
 import WebGLTileLayerRenderer, {
   Attributes,
   Uniforms,
 } from '../renderer/webgl/TileLayer.js';
-import {expressionToGlsl} from '../webgl/styleparser.js';
 import BaseTileLayer from './BaseTile.js';
 
 /**
@@ -121,7 +121,6 @@ function parseStyle(style, bandCount) {
    */
   const context = {
     ...newCompilationContext(),
-    inFragmentShader: true,
     bandCount: bandCount,
   };
 

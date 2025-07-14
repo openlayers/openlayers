@@ -133,7 +133,6 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
           [declutter]: new RBush(9),
         };
       }
-      let emptyImage = true;
       const image = new ImageCanvas(
         renderedExtent,
         viewResolution,
@@ -145,11 +144,9 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
             vectorRenderer.replayGroupChanged
           ) {
             vectorRenderer.clipping = false;
-            if (vectorRenderer.renderFrame(imageFrameState, null)) {
-              vectorRenderer.renderDeclutter(imageFrameState);
-              vectorRenderer.renderDeferred(imageFrameState);
-              emptyImage = false;
-            }
+            vectorRenderer.renderFrame(imageFrameState, null);
+            vectorRenderer.renderDeclutter(imageFrameState);
+            vectorRenderer.renderDeferred(imageFrameState);
             callback();
           }
         },
@@ -159,7 +156,7 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
         if (image.getState() !== ImageState.LOADED) {
           return;
         }
-        this.image = emptyImage ? null : image;
+        this.image = image;
         const imagePixelRatio = image.getPixelRatio();
         const renderedResolution =
           (fromResolutionLike(image.getResolution()) * pixelRatio) /
@@ -184,7 +181,7 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
         frameState.pixelToCoordinateTransform.slice();
     }
 
-    return !!this.image;
+    return !this.getLayer().getSource()?.loading && !!this.image;
   }
 
   /**
