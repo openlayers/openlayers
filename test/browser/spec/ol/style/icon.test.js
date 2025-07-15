@@ -385,7 +385,7 @@ describe('ol.style.Icon', function () {
     it('uses the cache', function (done) {
       const src = './spec/ol/data/dot.png';
       const iconImage = new IconImage(new Image(), src);
-      iconImageCache.set(src, null, null, iconImage);
+      iconImageCache.set(src, 'no-cors', null, iconImage);
       iconImage.load();
 
       const iconStyle = new Icon({
