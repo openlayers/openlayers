@@ -176,7 +176,8 @@ describe('VectorStyleRenderer', () => {
         {name: 'a_segmentEnd', size: 2, type: FLOAT},
         {name: 'a_measureEnd', size: 1, type: FLOAT},
         {name: 'a_joinAngles', size: 2, type: FLOAT},
-        {name: 'a_distance', size: 1, type: FLOAT},
+        {name: 'a_distanceLow', size: 1, type: FLOAT},
+        {name: 'a_distanceHigh', size: 1, type: FLOAT},
         {name: 'a_angleTangentSum', size: 1, type: FLOAT},
         {name: 'a_prop_size', size: 1, type: FLOAT},
         {name: 'a_prop_color', size: 2, type: FLOAT},
@@ -256,7 +257,8 @@ describe('VectorStyleRenderer', () => {
         {name: 'a_segmentEnd', size: 2, type: FLOAT},
         {name: 'a_measureEnd', size: 1, type: FLOAT},
         {name: 'a_joinAngles', size: 2, type: FLOAT},
-        {name: 'a_distance', size: 1, type: FLOAT},
+        {name: 'a_distanceLow', size: 1, type: FLOAT},
+        {name: 'a_distanceHigh', size: 1, type: FLOAT},
         {name: 'a_angleTangentSum', size: 1, type: FLOAT},
         {name: 'a_hitColor', size: 4, type: FLOAT},
         {name: 'a_prop_size', size: 1, type: FLOAT},
@@ -328,7 +330,8 @@ describe('VectorStyleRenderer', () => {
         {name: 'a_segmentEnd', size: 2, type: FLOAT},
         {name: 'a_measureEnd', size: 1, type: FLOAT},
         {name: 'a_joinAngles', size: 2, type: FLOAT},
-        {name: 'a_distance', size: 1, type: FLOAT},
+        {name: 'a_distanceLow', size: 1, type: FLOAT},
+        {name: 'a_distanceHigh', size: 1, type: FLOAT},
         {name: 'a_angleTangentSum', size: 1, type: FLOAT},
         {name: 'a_prop_attr1', size: 1, type: FLOAT},
         {name: 'a_prop_attr2', size: 3, type: FLOAT},
@@ -388,9 +391,9 @@ describe('VectorStyleRenderer', () => {
         expect(buffers.lineStringBuffers[2]).to.be.an(WebGLArrayBuffer);
         expect(buffers.lineStringBuffers[2].getType()).to.be(ARRAY_BUFFER);
         expect(buffers.lineStringBuffers[2].getUsage()).to.be(DYNAMIC_DRAW);
-        expect(buffers.lineStringBuffers[2].getArray().slice(0, 14)).to.eql([
+        expect(buffers.lineStringBuffers[2].getArray().slice(0, 15)).to.eql([
           -45, -47.5, 0, -40, -47.5, 0, 1.5707963705062866, 4.71238899230957, 0,
-          0, 3000, 128, 255, 3,
+          0, 0, 3000, 128, 255, 3,
         ]);
 
         expect(buffers.pointBuffers[0]).to.be.an(WebGLArrayBuffer);

@@ -112,19 +112,19 @@ describe('ol/worker/webgl', () => {
       it('responds with buffer data', () => {
         expect(indices).to.eql([0, 1, 3, 1, 2, 3]);
         expect(vertices).to.eql([-1, -1, 1, -1, 1, 1, -1, 1]);
-        expect(instanceAttrs.length).to.eql(33); // 3 segments, 10 attributes each + 1 custom attr
+        expect(instanceAttrs.length).to.eql(36); // 3 segments, 11 attributes each + 1 custom attr
       });
       it('computes join angles for an open line', () => {
         // join angles for first and last segments; the line is not a loop so it starts and ends with -1 angles
         expect(instanceAttrs.slice(6, 8)).to.eql([-1, 0.11635516583919525]);
-        expect(instanceAttrs.slice(6 + 22, 8 + 22)).to.eql([
+        expect(instanceAttrs.slice(6 + 24, 8 + 24)).to.eql([
           0.05909299477934837, -1,
         ]);
       });
       it('computes the base length for each segment', () => {
         expect(instanceAttrs[8]).to.eql(0);
-        expect(instanceAttrs[8 + 11]).to.eql(28.284271240234375);
-        expect(instanceAttrs[8 + 22]).to.eql(83.1021499633789);
+        expect(instanceAttrs[8 + 12]).to.eql(28.284271240234375);
+        expect(instanceAttrs[8 + 24]).to.eql(83.1021499633789);
       });
 
       describe('closed line', () => {
@@ -164,7 +164,7 @@ describe('ol/worker/webgl', () => {
           expect(instanceAttrs.slice(6, 8)).to.eql([
             3.380202054977417, 0.11635516583919525,
           ]);
-          expect(instanceAttrs.slice(6 + 22, 8 + 22)).to.eql([
+          expect(instanceAttrs.slice(6 + 24, 8 + 24)).to.eql([
             6.16093111038208, 2.9029834270477295,
           ]);
         });

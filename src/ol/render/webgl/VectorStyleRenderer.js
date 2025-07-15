@@ -44,7 +44,8 @@ export const Attributes = {
   MEASURE_END: 'a_measureEnd',
   ANGLE_TANGENT_SUM: 'a_angleTangentSum',
   JOIN_ANGLES: 'a_joinAngles',
-  DISTANCE: 'a_distance',
+  DISTANCE_LOW: 'a_distanceLow',
+  DISTANCE_HIGH: 'a_distanceHigh',
 };
 
 /**
@@ -269,7 +270,12 @@ class VectorStyleRenderer {
               type: AttributeType.FLOAT,
             },
             {
-              name: Attributes.DISTANCE,
+              name: Attributes.DISTANCE_LOW,
+              size: 1,
+              type: AttributeType.FLOAT,
+            },
+            {
+              name: Attributes.DISTANCE_HIGH,
               size: 1,
               type: AttributeType.FLOAT,
             },
