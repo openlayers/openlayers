@@ -1,63 +1,57 @@
 /**
  * @module ol/format/XML
  */
-import { abstract } from '../util.js';
-import { isDocument, parse } from '../xml.js';
+import {abstract} from '../util.js';
+import {isDocument, parse} from '../xml.js';
 
 /**
  * @classdesc
- * Generic format for reading non-feature XML data.
- *
- * This is an abstract base class. Subclasses must implement `readFromNode`.
+ * Generic format for reading non-feature XML data
  *
  * @abstract
- * @api
  */
 class XML {
   /**
-   * Read and parse the XML source into a JavaScript object.
+   * Read the source document.
    *
-   * @param {Document|Element|string|null|undefined} source The XML source.
-   * @return {Object|null} Parsed object or `null` if source is invalid.
+   * @param {Document|Element|string} source The XML source.
+   * @return {Object|null} An object representing the source.
    * @api
    */
   read(source) {
-    if (!source) return null;
-
+    if (!source) {
+      return null;
+    }
     if (typeof source === 'string') {
-      const doc = parse(source);
+      var doc = parse(source);
       return this.readFromDocument(doc);
     }
-
     if (isDocument(source)) {
       return this.readFromDocument(/** @type {Document} */ (source));
     }
-
     return this.readFromNode(/** @type {Element} */ (source));
   }
 
   /**
-   * Read from a full XML Document.
-   *
-   * @param {Document} doc XML Document.
-   * @return {Object|null} Parsed object or `null`.
+   * @param {Document} doc Document.
+   * @return {Object|null} Object
    */
   readFromDocument(doc) {
-    const root = Array.from(doc.childNodes).find(
-      (node) => node.nodeType === Node.ELEMENT_NODE
-    );
-    return root ? this.readFromNode(/** @type {Element} */ (root)) : null;
+    for (var n = doc.firstChild; n; n = n.nextSibling) {
+      if (n.nodeType == Node.ELEMENT_NODE) {
+        return this.readFromNode(/** @type {Element} */ (n));
+      }
+    }
+    return null;
   }
 
   /**
-   * Read from an XML Element. Must be implemented by subclasses.
-   *
    * @abstract
-   * @param {Element} node XML Element.
-   * @return {Object|null} Parsed object.
+   * @param {Element} node Node.
+   * @return {Object|null} Object
    */
   readFromNode(node) {
-    abstract(); // Enforces implementation by subclass
+    abstract();
   }
 }
 

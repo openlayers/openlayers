@@ -3,124 +3,206 @@
  */
 import Feature from '../Feature.js';
 import LineString from '../geom/LineString.js';
-import { get as getProjection } from '../proj.js';
-import { transformGeometryWithOptions } from './Feature.js';
+import {get as getProjection} from '../proj.js';
+import {transformGeometryWithOptions} from './Feature.js';
 import TextFeature from './TextFeature.js';
 
 /**
  * @typedef {'barometric' | 'gps' | 'none'} IGCZ
+ * IGC altitude/z. One of 'barometric', 'gps', 'none'.
  */
 
 /**
- * @typedef {Object} Options
- * @property {IGCZ} [altitudeMode='none'] Altitude mode. Possible values: 'barometric', 'gps', 'none'.
+ * @const
+ * @type {RegExp}
  */
+const B_RECORD_RE =
+  /^B(\d{2})(\d{2})(\d{2})(\d{2})(\d{5})([NS])(\d{3})(\d{5})([EW])([AV])(\d{5})(\d{5})/;
 
-// Regex constants
-const B_RECORD_RE = /^B(\d{2})(\d{2})(\d{2})(\d{2})(\d{5})([NS])(\d{3})(\d{5})([EW])([AV])(\d{5})(\d{5})/;
+/**
+ * @const
+ * @type {RegExp}
+ */
 const H_RECORD_RE = /^H.([A-Z]{3}).*?:(.*)/;
+
+/**
+ * @const
+ * @type {RegExp}
+ */
 const HFDTE_RECORD_RE = /^HFDTE(\d{2})(\d{2})(\d{2})/;
+
+/**
+ * @const
+ * @type {RegExp}
+ */
 const HFDTEDATE_RECORD_RE = /^HFDTEDATE:(\d{2})(\d{2})(\d{2}),(\d{2})/;
+
+/**
+ * regular expression matching the newline characters `\r\n`, `\r` and `\n`.
+ *
+ * @const
+ * @type {RegExp}
+ */
 const NEWLINE_RE = /\r\n|\r|\n/;
+
+/**
+ * @typedef {Object} Options
+ * @property {IGCZ} [altitudeMode='none'] Altitude mode. Possible
+ * values are `'barometric'`, `'gps'`, and `'none'`.
+ */
 
 /**
  * @classdesc
  * Feature format for `*.igc` flight recording files.
+ *
+ * As IGC sources contain a single feature,
+ * {@link module:ol/format/IGC~IGC#readFeatures} will return the feature in an
+ * array
+ *
  * @api
  */
 class IGC extends TextFeature {
   /**
-   * @param {Options} [options]
+   * @param {Options} [options] Options.
    */
-  constructor(options = {}) {
+  constructor(options) {
     super();
 
-    /** @type {import("../proj/Projection.js").default} */
+    options = options || {};
+
+    /**
+     * @type {import("../proj/Projection.js").default}
+     */
     this.dataProjection = getProjection('EPSG:4326');
 
-    /** @private @type {IGCZ} */
-    this.altitudeMode_ = options.altitudeMode ?? 'none';
+    /**
+     * @private
+     * @type {IGCZ}
+     */
+    this.altitudeMode_ = options.altitudeMode || 'none';
 
-    /** @private */
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.lad_ = false;
-    /** @private */
+
+    /**
+     * @private
+     * @type {boolean}
+     */
     this.lod_ = false;
 
+    /**
+     * @private
+     * @type {number}
+     */
     this.ladStart_ = 0;
+
+    /**
+     * @private
+     * @type {number}
+     */
     this.ladStop_ = 0;
+
+    /**
+     * @private
+     * @type {number}
+     */
     this.lodStart_ = 0;
+
+    /**
+     * @private
+     * @type {number}
+     */
     this.lodStop_ = 0;
   }
 
   /**
    * @protected
+   * @param {string} text Text.
+   * @param {import("./Feature.js").ReadOptions} [options] Read options.
+   * @return {import("../Feature.js").default} Feature.
    * @override
-   * @param {string} text
-   * @param {import("./Feature.js").ReadOptions} [options]
-   * @return {import("../Feature.js").default | null}
    */
   readFeatureFromText(text, options) {
     const altitudeMode = this.altitudeMode_;
     const lines = text.split(NEWLINE_RE);
-    const flatCoordinates = [];
+    /** @type {Object<string, string>} */
     const properties = {};
-
-    let [year, month, day] = [2000, 0, 1];
+    const flatCoordinates = [];
+    let year = 2000;
+    let month = 0;
+    let day = 1;
     let lastDateTime = -1;
 
-    for (const line of lines) {
-      if (line.startsWith('B')) {
-        const m = B_RECORD_RE.exec(line);
-        if (!m) continue;
-
-        const [hour, minute, second] = [m[1], m[2], m[3]].map(Number);
-
-        let lat = parseInt(m[4], 10) + parseInt(m[5], 10) / 60000;
-        if (this.lad_) {
-          lat += parseInt(line.slice(this.ladStart_, this.ladStop_), 10) / 60000 / 10 ** (this.ladStop_ - this.ladStart_);
+    for (let i = 0, ii = lines.length; i < ii; ++i) {
+      const line = lines[i];
+      let m;
+      if (line.charAt(0) === 'B') {
+        m = B_RECORD_RE.exec(line);
+        if (m) {
+          const hour = parseInt(m[1], 10);
+          const minute = parseInt(m[2], 10);
+          const second = parseInt(m[3], 10);
+          let y = parseInt(m[4], 10) + parseInt(m[5], 10) / 60000;
+          if (this.lad_) {
+            y += parseInt(line.slice(this.ladStart_, this.ladStop_), 10) / 60000 / Math.pow(10, this.ladStop_ - this.ladStart_);
+          }
+          if (m[6] === 'S') {
+            y = -y;
+          }
+          let x = parseInt(m[7], 10) + parseInt(m[8], 10) / 60000;
+          if (this.lod_) {
+            x += parseInt(line.slice(this.lodStart_, this.lodStop_), 10) / 60000 / Math.pow(10, this.lodStop_ - this.lodStart_);
+          }
+          if (m[9] === 'W') {
+            x = -x;
+          }
+          flatCoordinates.push(x, y);
+          if (altitudeMode !== 'none') {
+            let z;
+            if (altitudeMode === 'gps') {
+              z = parseInt(m[11], 10);
+            } else if (altitudeMode === 'barometric') {
+              z = parseInt(m[12], 10);
+            } else {
+              z = 0;
+            }
+            flatCoordinates.push(z);
+          }
+          let dateTime = Date.UTC(year, month, day, hour, minute, second);
+          if (dateTime < lastDateTime) {
+            dateTime = Date.UTC(year, month, day + 1, hour, minute, second);
+          }
+          flatCoordinates.push(dateTime / 1000);
+          lastDateTime = dateTime;
         }
-        if (m[6] === 'S') lat *= -1;
-
-        let lon = parseInt(m[7], 10) + parseInt(m[8], 10) / 60000;
-        if (this.lod_) {
-          lon += parseInt(line.slice(this.lodStart_, this.lodStop_), 10) / 60000 / 10 ** (this.lodStop_ - this.lodStart_);
-        }
-        if (m[9] === 'W') lon *= -1;
-
-        flatCoordinates.push(lon, lat);
-
-        if (altitudeMode !== 'none') {
-          const z = altitudeMode === 'gps' ? parseInt(m[11], 10) : parseInt(m[12], 10);
-          flatCoordinates.push(z);
-        }
-
-        let dateTime = Date.UTC(year, month, day, hour, minute, second);
-        if (dateTime < lastDateTime) {
-          dateTime = Date.UTC(year, month, day + 1, hour, minute, second);
-        }
-
-        flatCoordinates.push(dateTime / 1000);
-        lastDateTime = dateTime;
-
-      } else if (line.startsWith('H')) {
-        let m = HFDTEDATE_RECORD_RE.exec(line) ?? HFDTE_RECORD_RE.exec(line);
+      } else if (line.charAt(0) === 'H') {
+        m = HFDTEDATE_RECORD_RE.exec(line);
         if (m) {
           day = parseInt(m[1], 10);
           month = parseInt(m[2], 10) - 1;
           year = 2000 + parseInt(m[3], 10);
         } else {
-          m = H_RECORD_RE.exec(line);
+          m = HFDTE_RECORD_RE.exec(line);
           if (m) {
-            properties[m[1]] = m[2].trim();
+            day = parseInt(m[1], 10);
+            month = parseInt(m[2], 10) - 1;
+            year = 2000 + parseInt(m[3], 10);
+          } else {
+            m = H_RECORD_RE.exec(line);
+            if (m) {
+              properties[m[1]] = m[2].trim();
+            }
           }
         }
-      } else if (line.startsWith('I')) {
+      } else if (line.charAt(0) === 'I') {
         const numberAdds = parseInt(line.slice(1, 3), 10);
         for (let i = 0; i < numberAdds; i++) {
-          const start = 3 + i * 7;
-          const addStart = parseInt(line.slice(start, start + 2), 10) - 1;
-          const addStop = parseInt(line.slice(start + 2, start + 4), 10);
-          const addCode = line.slice(start + 4, start + 7);
+          const addCode = line.slice(7 + i * 7, 10 + i * 7);
+          const addStart = parseInt(line.slice(3 + i * 7, 5 + i * 7), 10) - 1;
+          const addStop = parseInt(line.slice(5 + i * 7, 7 + i * 7), 10);
           if (addCode === 'LAD') {
             this.lad_ = true;
             this.ladStart_ = addStart;
@@ -134,21 +216,25 @@ class IGC extends TextFeature {
       }
     }
 
-    if (flatCoordinates.length === 0) return null;
+    if (flatCoordinates.length === 0) {
+      return null;
+    }
 
     const layout = altitudeMode === 'none' ? 'XYM' : 'XYZM';
     const lineString = new LineString(flatCoordinates, layout);
-    const feature = new Feature(transformGeometryWithOptions(lineString, false, options));
+    const feature = new Feature(
+      transformGeometryWithOptions(lineString, false, options),
+    );
     feature.setProperties(properties, true);
     return feature;
   }
 
   /**
+   * @param {string} text Text.
+   * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @protected
+   * @return {Array<Feature>} Features.
    * @override
-   * @param {string} text
-   * @param {import("./Feature.js").ReadOptions} [options]
-   * @return {Array<Feature>}
    */
   readFeaturesFromText(text, options) {
     const feature = this.readFeatureFromText(text, options);
