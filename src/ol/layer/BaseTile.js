@@ -30,9 +30,9 @@ import TileProperty from './TileProperty.js';
  * visible.
  * @property {number} [maxResolution] The maximum resolution (exclusive) below which this layer will
  * be visible.
- * @property {number} [minZoom] The minimum view zoom level (exclusive) above which this layer will be
+ * @property {number} [minZoom] The minimum view zoom level (inclusive) at which this layer will be
  * visible.
- * @property {number} [maxZoom] The maximum view zoom level (inclusive) at which this layer will
+ * @property {number} [maxZoom] The maximum view zoom level (exclusive) below which this layer will
  * be visible.
  * @property {number} [preload=0] Preload. Load low-resolution tiles up to `preload` levels. `0`
  * means no preloading.
