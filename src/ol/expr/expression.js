@@ -122,6 +122,11 @@ import {toSize} from '../size.js';
  *     If the input is a number, it is converted to a string as specified by the "NumberToString" algorithm of the ECMAScript
  *     Language Specification. If the input is a color, it is converted to a string of the form "rgba(r,g,b,a)". (Canvas only)
  *
+ * * String operators:
+ *   * `['concat', ...valueN]` `concat` any number of strings together into a single string
+ *   * `['regex', value, regex, index]` performs a regex match against the `value` and returns the match at `index`.
+ *     `\` characters must be escaped, for example: ['regex', '123', '^\\d+', 0] > '123'
+ *
  * Values can either be literals or another operator, as they will be evaluated recursively.
  * Literal values can be of the following types:
  * * `boolean`
@@ -424,6 +429,7 @@ export const Ops = {
   Palette: 'palette',
   ToString: 'to-string',
   Has: 'has',
+  Regex: 'regex',
 };
 
 /**
@@ -597,6 +603,7 @@ const parsers = {
     hasArgsCount(1, 1),
     withArgsOfType(BooleanType | NumberType | StringType | ColorType),
   ),
+  [Ops.Regex]: createCallExpressionParser(hasArgsCount(3, 3), withRegexArgs),
 };
 
 /**
@@ -979,6 +986,38 @@ function withPaletteArgs(encoded, returnType, context) {
     parsedColors[i] = color;
   }
   return [index, ...parsedColors];
+}
+
+/**
+ * @type {ArgValidator}
+ */
+function withRegexArgs(encoded, returnType, context) {
+  let input, regex, index;
+  try {
+    input = parse(encoded[1], StringType, context);
+  } catch (err) {
+    throw new Error(
+      `failed to parse arg 1 in regex expression: ${err.message}`,
+    );
+  }
+
+  try {
+    regex = parse(encoded[2], StringType, context);
+  } catch (err) {
+    throw new Error(
+      `failed to parse arg 2 in regex expression: ${err.message}`,
+    );
+  }
+
+  try {
+    index = parse(encoded[3], NumberType, context);
+  } catch (err) {
+    throw new Error(
+      `failed to parse arg 3 in regex expression: ${err.message}`,
+    );
+  }
+
+  return [input, regex, index];
 }
 
 /**
