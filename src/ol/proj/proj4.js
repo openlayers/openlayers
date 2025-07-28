@@ -12,7 +12,7 @@ import {get as getCachedProjection} from './projections.js';
 import {get as getTransform} from './transforms.js';
 
 /**
- * @type {import("proj4").default|null}
+ * @type {import("proj4")|null}
  */
 let registered = null;
 
@@ -38,7 +38,7 @@ export function unregister() {
  * registry, e.g. after calling `proj4.defs()`. Existing transforms will not be
  * modified by this function.
  *
- * @param {import("proj4").default} proj4 Proj4.
+ * @param {import("proj4")} proj4 Proj4.
  * @api
  */
 export function register(proj4) {
