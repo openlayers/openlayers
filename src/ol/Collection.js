@@ -226,9 +226,6 @@ class Collection extends BaseObject {
    * @api
    */
   push(elem) {
-    if (this.unique_) {
-      this.assertUnique_(elem);
-    }
     const n = this.getLength();
     this.insertAt(n, elem);
     return this.getLength();
