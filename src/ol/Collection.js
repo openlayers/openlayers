@@ -108,10 +108,10 @@ class Collection extends BaseObject {
      * @private
      * @type {!Array<T>}
      */
-    this.array_ = array ? array : [];
+    this.array_ = array ?? [];
 
     if (this.unique_) {
-      for (let i = 0, ii = this.array_.length; i < ii; ++i) {
+      for (let i = 1, ii = this.array_.length; i < ii; ++i) {
         this.assertUnique_(this.array_[i], i);
       }
     }
@@ -311,11 +311,12 @@ class Collection extends BaseObject {
   /**
    * @private
    * @param {T} elem Element.
-   * @param {number} [except] Optional index to ignore.
+   * @param {number} [ignoreStartingAt] Optional indexes to ignore.
    */
-  assertUnique_(elem, except) {
-    for (let i = 0, ii = this.array_.length; i < ii; ++i) {
-      if (this.array_[i] === elem && i !== except) {
+  assertUnique_(elem, ignoreStartingAt) {
+    const array = this.array_;
+    for (let i = 0, ii = ignoreStartingAt ?? array.length; i < ii; ++i) {
+      if (array[i] === elem) {
         throw new Error('Duplicate item added to a unique collection');
       }
     }
