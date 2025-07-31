@@ -14,7 +14,7 @@ import {getUid} from '../util.js';
 import BaseLayer from './Base.js';
 
 /**
- * @enum {'addlayer'|'removelayer'}
+ * @enum {string}
  */
 const GroupEventType = {
   /**
@@ -22,13 +22,13 @@ const GroupEventType = {
    * @event GroupEvent#addlayer
    * @api
    */
-  ADDLAYER: /** @type {'addlayer'}*/ ('addlayer'),
+  ADDLAYER: 'addlayer',
   /**
    * Triggered when a layer is removed
    * @event GroupEvent#removelayer
    * @api
    */
-  REMOVELAYER: /** @type {'removelayer'} */ ('removelayer'),
+  REMOVELAYER: 'removelayer',
 };
 
 /**
@@ -59,8 +59,8 @@ export class GroupEvent extends Event {
  * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
  *   import("../Observable").OnSignature<import("./Base").BaseLayerObjectEventTypes|
  *     'change:layers', import("../Object").ObjectEvent, Return> &
- *   import("../Observable").OnSignature<GroupEventType, GroupEvent, Return> &
- *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("./Base").BaseLayerObjectEventTypes|GroupEventType|'change:layers', Return>} GroupOnSignature
+ *   import("../Observable").OnSignature<'addlayer'|'removelayer', GroupEvent, Return> &
+ *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("./Base").BaseLayerObjectEventTypes|'addlayer'|'removelayer'|'change:layers', Return>} GroupOnSignature
  */
 
 /**
