@@ -311,12 +311,12 @@ class Collection extends BaseObject {
   /**
    * @private
    * @param {T} elem Element.
-   * @param {number} [ignoreStartingAt] Optional indexes to ignore.
+   * @param {number} [except] Optional index to ignore.
    */
-  assertUnique_(elem, ignoreStartingAt) {
+  assertUnique_(elem, except) {
     const array = this.array_;
-    for (let i = 0, ii = ignoreStartingAt ?? array.length; i < ii; ++i) {
-      if (array[i] === elem) {
+    for (let i = 0, ii = array.length; i < ii; ++i) {
+      if (array[i] === elem && i !== except) {
         throw new Error('Duplicate item added to a unique collection');
       }
     }
