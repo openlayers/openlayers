@@ -386,6 +386,13 @@ describe('ol/Collection.js', function () {
         unique.setAt(1, item);
       };
       expect(call).to.throwException();
+
+      const item2 = {};
+      unique.setAt(1, item2);
+      const call2 = function () {
+        unique.setAt(0, item2);
+      };
+      expect(call2).to.throwException();
     });
   });
 });
