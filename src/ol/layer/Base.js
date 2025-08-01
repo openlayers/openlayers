@@ -41,9 +41,9 @@ import LayerProperty from './Property.js';
  * visible.
  * @property {number} [maxResolution] The maximum resolution (exclusive) below which this layer will
  * be visible.
- * @property {number} [minZoom] The minimum view zoom level (exclusive) above which this layer will be
+ * @property {number} [minZoom] The minimum view zoom level (inclusive) at which this layer will be
  * visible.
- * @property {number} [maxZoom] The maximum view zoom level (inclusive) at which this layer will
+ * @property {number} [maxZoom] The maximum view zoom level (exclusive) below which this layer will
  * be visible.
  * @property {BackgroundColor} [background] Background color for the layer. If not specified, no background
  * will be rendered.
