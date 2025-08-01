@@ -4,6 +4,7 @@ import {
 } from '../../../../../src/ol/expr/cpu.js';
 import {
   ColorType,
+  StringType,
   newParsingContext,
 } from '../../../../../src/ol/expr/expression.js';
 
@@ -28,6 +29,12 @@ describe('ol/expr/cpu.js', () => {
         type: ColorType,
         expression: ['interpolate', ['linear'], 0.5, 0, 'red', 1, [0, 255, 0]],
         expected: [209, 169, 0, 1],
+      },
+      {
+        name: 'regex',
+        type: StringType,
+        expression: ['regex', 'hello world', '^hello', 0],
+        expected: 'hello',
       },
     ];
 
