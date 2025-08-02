@@ -27,7 +27,7 @@ import TileImage from './TileImage.js';
  * @property {Array<string>} [grids] Optional grids.
  * @property {number} [minzoom] Minimum zoom level.
  * @property {number} [maxzoom] Maximum zoom level.
- * @property {Array<number>} [bounds] Optional bounds.
+ * @property {import("../extent.js").Extent} [bounds] Optional bounds.
  * @property {Array<number>} [center] Optional center.
  */
 
