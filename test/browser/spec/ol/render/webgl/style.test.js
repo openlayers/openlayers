@@ -799,7 +799,7 @@ describe('ol/render/webgl/style', () => {
             'vec4 sampleStrokePattern',
           );
           expect(result.builder.strokeColorExpression_).to.eql(
-            `1. * sampleStrokePattern(u_texture${uid}, u_texture${uid}_size, vec2(0.), u_texture${uid}_size, 0., currentLengthPx, currentRadiusRatio, v_width)`,
+            `1. * sampleStrokePattern(u_texture${uid}, u_texture${uid}_size, vec2(0.), u_texture${uid}_size, 0., 0., currentLengthPx, currentRadiusRatio, v_width)`,
           );
         });
       });
@@ -813,6 +813,7 @@ describe('ol/render/webgl/style', () => {
             'stroke-pattern-offset-origin': 'bottom-left',
             'stroke-pattern-size': [5, 5],
             'stroke-pattern-spacing': ['*', 2, 10],
+            'stroke-pattern-start-offset': ['+', 5, 5],
           };
           uid = computeHash(style['stroke-pattern-src']);
           result = parseLiteralStyle(style);
@@ -822,7 +823,15 @@ describe('ol/render/webgl/style', () => {
             'vec4 sampleStrokePattern',
           );
           expect(result.builder.strokeColorExpression_).to.eql(
-            `vec4(1.0, 0.0, 0.0, 1.0) * sampleStrokePattern(u_texture${uid}, u_texture${uid}_size, vec2(0., u_texture${uid}_size.y) + vec2(5.0, 5.0) * vec2(0., -1.) + vec2(5.0, 10.0) * vec2(1., -1.), vec2(5.0, 5.0), (2.0 * 10.0), currentLengthPx, currentRadiusRatio, v_width)`,
+            `vec4(1.0, 0.0, 0.0, 1.0) * sampleStrokePattern(u_texture${uid}, u_texture${uid}_size, vec2(0., u_texture${uid}_size.y) + vec2(5.0, 5.0) * vec2(0., -1.) + vec2(5.0, 10.0) * vec2(1., -1.), vec2(5.0, 5.0), (2.0 * 10.0), (5.0 + 5.0), currentLengthPx, currentRadiusRatio, v_width)`,
+          );
+        });
+        it('sets a pattern length on the builder to avoid visual artifacts', () => {
+          expect(result.builder.fragmentShaderFunctions_[1]).to.contain(
+            'float computeStrokePatternLength',
+          );
+          expect(result.builder.strokePatternLengthExpression_).to.eql(
+            'computeStrokePatternLength(vec2(5.0, 5.0), (2.0 * 10.0), v_width)',
           );
         });
       });
@@ -918,6 +927,50 @@ describe('ol/render/webgl/style', () => {
           expect(
             result.attributes['prop_dashLength3'].callback(feature),
           ).to.eql(12);
+        });
+
+        it('sets a pattern length on the builder to avoid visual artifacts', () => {
+          expect(result.builder.strokePatternLengthExpression_).to.eql(
+            'a_prop_dashLength0 + a_prop_dashLength1 + a_prop_dashLength2 + a_prop_dashLength3',
+          );
+        });
+      });
+
+      describe('stroke style with both pattern and array dash', () => {
+        let result;
+
+        beforeEach(() => {
+          // Create a style where ALL dash lengths come from expressions
+          const style = {
+            'stroke-color': 'red',
+            'stroke-width': 3,
+            'stroke-line-dash': [
+              ['var', 'dashLength'],
+              ['var', 'dashLength'],
+            ],
+            'stroke-pattern-src':
+              'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==',
+            'stroke-pattern-size': [5, 10],
+            'stroke-pattern-spacing': ['var', 'dashLength'],
+          };
+          result = parseLiteralStyle(style);
+        });
+
+        it('correctly combines the pattern length of both (using functions)', () => {
+          expect(
+            result.builder.fragmentShaderFunctions_.some((fn) =>
+              fn.includes('computeStrokePatternLength'),
+            ),
+          ).to.be(true);
+          expect(
+            result.builder.fragmentShaderFunctions_.some((fn) =>
+              fn.includes('combinePatternLengths'),
+            ),
+          ).to.be(true);
+
+          expect(result.builder.strokePatternLengthExpression_).to.eql(
+            'combinePatternLengths(computeStrokePatternLength(u_texture980902294_size, u_var_dashLength, v_width), u_var_dashLength + u_var_dashLength)',
+          );
         });
       });
     });
