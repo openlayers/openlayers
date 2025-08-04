@@ -139,7 +139,7 @@
     "source-map-loader": "^5.0.0",
     "threads": "^1.6.5",
     "topojson-client": "^3.1.0",
-    "typescript": "5.8.3",
+    "typescript": "5.9.2",
     "walk": "^2.3.9",
     "webpack": "^5.27.2",
     "webpack-cli": "^6.0.1",
