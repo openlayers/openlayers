@@ -1,11 +1,14 @@
 /**
  * @module ol/renderer/webgl/TileLayerBase
  */
+import DataTile, {asArrayLike, asImageLike} from '../../DataTile.js';
+import ImageTile from '../../ImageTile.js';
 import TileRange from '../../TileRange.js';
 import TileState from '../../TileState.js';
 import {descending} from '../../array.js';
 import {getIntersection, getRotatedViewport, isEmpty} from '../../extent.js';
 import {fromUserExtent} from '../../proj.js';
+import ReprojTile from '../../reproj/Tile.js';
 import {toSize} from '../../size.js';
 import LRUCache from '../../structs/LRUCache.js';
 import {
@@ -428,7 +431,8 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
    * @param {import("../../coordinate.js").Coordinate} tileOrigin Tile origin
    * @param {import("../../extent.js").Extent} tileExtent tile Extent
    * @param {number} depth Depth
-   * @param {number} gutter Gutter
+   * @param {number} gutterX Gutter (X axis)
+   * @param {number} gutterY Gutter (Y axis)
    * @param {number} alpha Alpha
    * @protected
    */
@@ -442,7 +446,8 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
     tileOrigin,
     tileExtent,
     depth,
-    gutter,
+    gutterX,
+    gutterY,
     alpha,
   ) {}
 
@@ -486,8 +491,30 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
     const centerX = viewState.center[0];
     const centerY = viewState.center[1];
 
-    const tileWidthWithGutter = tileSize[0] + 2 * gutter;
-    const tileHeightWithGutter = tileSize[1] + 2 * gutter;
+    let pixelSize;
+    if (tile instanceof DataTile) {
+      const arrayData = asArrayLike(tile.getData());
+      if (arrayData) {
+        const size = tile.getSize();
+        pixelSize = [size[0] + 2 * gutter, size[1] + 2 * gutter];
+      } else {
+        const imageData = asImageLike(tile.getData());
+        pixelSize = [imageData.width, imageData.height];
+      }
+    } else if (tile instanceof ImageTile || tile instanceof ReprojTile) {
+      const imageData = tile.getImage();
+      pixelSize = [imageData.width, imageData.height];
+    }
+
+    let renderGutterX = gutter;
+    let renderGutterY = gutter;
+    if (pixelSize) {
+      renderGutterX = (gutter * tileSize[0]) / (pixelSize[0] - 2 * gutter);
+      renderGutterY = (gutter * tileSize[1]) / (pixelSize[1] - 2 * gutter);
+    }
+
+    const tileWidthWithGutter = tileSize[0] + 2 * renderGutterX;
+    const tileHeightWithGutter = tileSize[1] + 2 * renderGutterY;
 
     const aspectRatio = tileWidthWithGutter / tileHeightWithGutter;
 
@@ -509,8 +536,10 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
     scaleTransform(this.tileTransform_, 1, 1 / aspectRatio);
     translateTransform(
       this.tileTransform_,
-      (tileSize[0] * (tileCenterI - centerI) - gutter) / tileWidthWithGutter,
-      (tileSize[1] * (tileCenterJ - centerJ) - gutter) / tileHeightWithGutter,
+      (tileSize[0] * (tileCenterI - centerI) - renderGutterX) /
+        tileWidthWithGutter,
+      (tileSize[1] * (tileCenterJ - centerJ) - renderGutterY) /
+        tileHeightWithGutter,
     );
 
     this.renderTile(
@@ -523,7 +552,8 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
       tileOrigin,
       tileExtent,
       depth,
-      gutter,
+      renderGutterX,
+      renderGutterY,
       alpha,
     );
   }
