@@ -3,11 +3,12 @@
  */
 
 import {decode} from '../Image.js';
+import {setCrossOrigin} from '../cors.js';
 import {getHeight, getWidth} from '../extent.js';
 
 /**
  * @typedef {Object} LoaderOptions
- * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
+ * @property {import("../cors.js").CrossOriginOption} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
  * @property {import("../extent.js").Extent} imageExtent Extent of the image in map coordinates.
@@ -28,11 +29,11 @@ import {getHeight, getWidth} from '../extent.js';
 export function createLoader(options) {
   const load = options.load || decode;
   const extent = options.imageExtent;
-  const crossOrigin = options.crossOrigin ?? null;
+  const crossOrigin = options.crossOrigin ?? 'no-cors';
 
   return () => {
     const image = new Image();
-    image.crossOrigin = crossOrigin;
+    setCrossOrigin(image, crossOrigin);
     return load(image, options.url).then((image) => {
       const resolutionX = getWidth(extent) / image.width;
       const resolutionY = getHeight(extent) / image.height;
