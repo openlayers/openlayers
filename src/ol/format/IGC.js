@@ -38,7 +38,7 @@ const HFDTE_RECORD_RE = /^HFDTE(\d{2})(\d{2})(\d{2})/;
 const HFDTEDATE_RECORD_RE = /^HFDTEDATE:(\d{2})(\d{2})(\d{2}),(\d{2})/;
 
 /**
- * A regular expression matching the newline characters `\r\n`, `\r` and `\n`.
+ * regular expression matching the newline characters `\r\n`, `\r` and `\n`.
  *
  * @const
  * @type {RegExp}
@@ -68,7 +68,7 @@ class IGC extends TextFeature {
   constructor(options) {
     super();
 
-    options = options ? options : {};
+    options = options || {};
 
     /**
      * @type {import("../proj/Projection.js").default}
@@ -79,7 +79,7 @@ class IGC extends TextFeature {
      * @private
      * @type {IGCZ}
      */
-    this.altitudeMode_ = options.altitudeMode ? options.altitudeMode : 'none';
+    this.altitudeMode_ = options.altitudeMode || 'none';
 
     /**
      * @private
@@ -135,11 +135,11 @@ class IGC extends TextFeature {
     let month = 0;
     let day = 1;
     let lastDateTime = -1;
-    let i, ii;
-    for (i = 0, ii = lines.length; i < ii; ++i) {
+
+    for (let i = 0, ii = lines.length; i < ii; ++i) {
       const line = lines[i];
       let m;
-      if (line.charAt(0) == 'B') {
+      if (line.charAt(0) === 'B') {
         m = B_RECORD_RE.exec(line);
         if (m) {
           const hour = parseInt(m[1], 10);
@@ -147,30 +147,24 @@ class IGC extends TextFeature {
           const second = parseInt(m[3], 10);
           let y = parseInt(m[4], 10) + parseInt(m[5], 10) / 60000;
           if (this.lad_) {
-            y +=
-              parseInt(line.slice(this.ladStart_, this.ladStop_), 10) /
-              60000 /
-              10 ** (this.ladStop_ - this.ladStart_);
+            y += parseInt(line.slice(this.ladStart_, this.ladStop_), 10) / 60000 / Math.pow(10, this.ladStop_ - this.ladStart_);
           }
-          if (m[6] == 'S') {
+          if (m[6] === 'S') {
             y = -y;
           }
           let x = parseInt(m[7], 10) + parseInt(m[8], 10) / 60000;
           if (this.lod_) {
-            x +=
-              parseInt(line.slice(this.lodStart_, this.lodStop_), 10) /
-              60000 /
-              10 ** (this.lodStop_ - this.lodStart_);
+            x += parseInt(line.slice(this.lodStart_, this.lodStop_), 10) / 60000 / Math.pow(10, this.lodStop_ - this.lodStart_);
           }
-          if (m[9] == 'W') {
+          if (m[9] === 'W') {
             x = -x;
           }
           flatCoordinates.push(x, y);
-          if (altitudeMode != 'none') {
+          if (altitudeMode !== 'none') {
             let z;
-            if (altitudeMode == 'gps') {
+            if (altitudeMode === 'gps') {
               z = parseInt(m[11], 10);
-            } else if (altitudeMode == 'barometric') {
+            } else if (altitudeMode === 'barometric') {
               z = parseInt(m[12], 10);
             } else {
               z = 0;
@@ -178,14 +172,13 @@ class IGC extends TextFeature {
             flatCoordinates.push(z);
           }
           let dateTime = Date.UTC(year, month, day, hour, minute, second);
-          // Detect UTC midnight wrap around.
           if (dateTime < lastDateTime) {
             dateTime = Date.UTC(year, month, day + 1, hour, minute, second);
           }
           flatCoordinates.push(dateTime / 1000);
           lastDateTime = dateTime;
         }
-      } else if (line.charAt(0) == 'H') {
+      } else if (line.charAt(0) === 'H') {
         m = HFDTEDATE_RECORD_RE.exec(line);
         if (m) {
           day = parseInt(m[1], 10);
@@ -204,31 +197,30 @@ class IGC extends TextFeature {
             }
           }
         }
-      } else if (line.charAt(0) == 'I') {
+      } else if (line.charAt(0) === 'I') {
         const numberAdds = parseInt(line.slice(1, 3), 10);
         for (let i = 0; i < numberAdds; i++) {
           const addCode = line.slice(7 + i * 7, 10 + i * 7);
-          if (addCode === 'LAD' || addCode === 'LOD') {
-            // in IGC format, columns are numbered from 1
-            const addStart = parseInt(line.slice(3 + i * 7, 5 + i * 7), 10) - 1;
-            const addStop = parseInt(line.slice(5 + i * 7, 7 + i * 7), 10);
-            if (addCode === 'LAD') {
-              this.lad_ = true;
-              this.ladStart_ = addStart;
-              this.ladStop_ = addStop;
-            } else if (addCode === 'LOD') {
-              this.lod_ = true;
-              this.lodStart_ = addStart;
-              this.lodStop_ = addStop;
-            }
+          const addStart = parseInt(line.slice(3 + i * 7, 5 + i * 7), 10) - 1;
+          const addStop = parseInt(line.slice(5 + i * 7, 7 + i * 7), 10);
+          if (addCode === 'LAD') {
+            this.lad_ = true;
+            this.ladStart_ = addStart;
+            this.ladStop_ = addStop;
+          } else if (addCode === 'LOD') {
+            this.lod_ = true;
+            this.lodStart_ = addStart;
+            this.lodStop_ = addStop;
           }
         }
       }
     }
+
     if (flatCoordinates.length === 0) {
       return null;
     }
-    const layout = altitudeMode == 'none' ? 'XYM' : 'XYZM';
+
+    const layout = altitudeMode === 'none' ? 'XYM' : 'XYZM';
     const lineString = new LineString(flatCoordinates, layout);
     const feature = new Feature(
       transformGeometryWithOptions(lineString, false, options),
@@ -246,10 +238,7 @@ class IGC extends TextFeature {
    */
   readFeaturesFromText(text, options) {
     const feature = this.readFeatureFromText(text, options);
-    if (feature) {
-      return [feature];
-    }
-    return [];
+    return feature ? [feature] : [];
   }
 }
 

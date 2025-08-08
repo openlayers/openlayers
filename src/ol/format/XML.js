@@ -23,7 +23,7 @@ class XML {
       return null;
     }
     if (typeof source === 'string') {
-      const doc = parse(source);
+      var doc = parse(source);
       return this.readFromDocument(doc);
     }
     if (isDocument(source)) {
@@ -37,7 +37,7 @@ class XML {
    * @return {Object|null} Object
    */
   readFromDocument(doc) {
-    for (let n = doc.firstChild; n; n = n.nextSibling) {
+    for (var n = doc.firstChild; n; n = n.nextSibling) {
       if (n.nodeType == Node.ELEMENT_NODE) {
         return this.readFromNode(/** @type {Element} */ (n));
       }
