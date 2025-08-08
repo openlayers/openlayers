@@ -562,16 +562,26 @@ function parseStrokeProperties(style, builder, uniforms, context) {
         NumberType,
       );
     }
+    let startOffsetExpression = '0.';
+    if ('stroke-pattern-start-offset' in style) {
+      startOffsetExpression = expressionToGlsl(
+        context,
+        style['stroke-pattern-start-offset'],
+        NumberType,
+      );
+    }
     context.functions['sampleStrokePattern'] =
-      `vec4 sampleStrokePattern(sampler2D texture, vec2 textureSize, vec2 textureOffset, vec2 sampleSize, float spacingPx, float currentLengthPx, float currentRadiusRatio, float lineWidth) {
-  float currentLengthScaled = currentLengthPx * sampleSize.y / lineWidth;
+      `vec4 sampleStrokePattern(sampler2D texture, vec2 textureSize, vec2 textureOffset, vec2 sampleSize, float spacingPx, float startOffsetPx, float currentLengthPx, float currentRadiusRatio, float lineWidth) {
+  float currentLengthScaled = (currentLengthPx - startOffsetPx) * sampleSize.y / lineWidth;
   float spacingScaled = spacingPx * sampleSize.y / lineWidth;
   float uCoordPx = mod(currentLengthScaled, (sampleSize.x + spacingScaled));
+  float isInsideOfPattern = step(uCoordPx, sampleSize.x);
+  float vCoordPx = (-currentRadiusRatio * 0.5 + 0.5) * sampleSize.y;
   // make sure that we're not sampling too close to the borders to avoid interpolation with outside pixels
   uCoordPx = clamp(uCoordPx, 0.5, sampleSize.x - 0.5);
-  float vCoordPx = (-currentRadiusRatio * 0.5 + 0.5) * sampleSize.y;
+  vCoordPx = clamp(vCoordPx, 0.5, sampleSize.y - 0.5);
   vec2 texCoord = (vec2(uCoordPx, vCoordPx) + textureOffset) / textureSize;
-  return texture2D(texture, texCoord);
+  return texture2D(texture, texCoord) * vec4(1.0, 1.0, 1.0, isInsideOfPattern);
 }`;
     const textureName = `u_texture${textureId}`;
     let tintExpression = '1.';
@@ -579,7 +589,18 @@ function parseStrokeProperties(style, builder, uniforms, context) {
       tintExpression = builder.getStrokeColorExpression();
     }
     builder.setStrokeColorExpression(
-      `${tintExpression} * sampleStrokePattern(${textureName}, ${sizeExpression}, ${offsetExpression}, ${sampleSizeExpression}, ${spacingExpression}, currentLengthPx, currentRadiusRatio, v_width)`,
+      `${tintExpression} * sampleStrokePattern(${textureName}, ${sizeExpression}, ${offsetExpression}, ${sampleSizeExpression}, ${spacingExpression}, ${startOffsetExpression}, currentLengthPx, currentRadiusRatio, v_width)`,
+    );
+
+    context.functions['computeStrokePatternLength'] =
+      `float computeStrokePatternLength(vec2 sampleSize, float spacingPx, float lineWidth) {
+  float patternLengthPx = sampleSize.x / sampleSize.y * lineWidth;
+  return patternLengthPx + spacingPx;
+}`;
+
+    // apply a stroke pattern length to avoid visual artifacts
+    builder.setStrokePatternLengthExpression(
+      `computeStrokePatternLength(${sampleSizeExpression}, ${spacingExpression}, v_width)`,
     );
   }
 
@@ -672,6 +693,17 @@ function parseStrokeProperties(style, builder, uniforms, context) {
     builder.setStrokeDistanceFieldExpression(
       `${dashFunctionName}(currentLengthPx + ${offsetExpression}, currentRadiusPx, capType, v_width, ${dashLengthsCalls})`,
     );
+
+    // apply a stroke pattern length to avoid visual artifacts
+    let patternLength = dashPattern.join(' + ');
+    if (builder.getStrokePatternLengthExpression()) {
+      context.functions['combinePatternLengths'] =
+        `float combinePatternLengths(float patternLength1, float patternLength2) {
+  return patternLength1 * patternLength2;
+}`;
+      patternLength = `combinePatternLengths(${builder.getStrokePatternLengthExpression()}, ${patternLength})`;
+    }
+    builder.setStrokePatternLengthExpression(patternLength);
   }
 }
 

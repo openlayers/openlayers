@@ -123,17 +123,18 @@
  * @property {NumberArrayExpression} [stroke-line-dash] Line dash pattern.
  * @property {NumberExpression} [stroke-line-dash-offset=0] Line dash offset.
  * @property {NumberExpression} [stroke-miter-limit=10] Miter limit.
- * @property {NumberExpression} [stroke-offset] Stroke offset in pixel. A positive value offsets the line to the right,
+ * @property {NumberExpression} [stroke-offset] Stroke offset in pixel along the normal. A positive value offsets the line to the right,
  * relative to the direction of the line. (WebGL only)
  * @property {string} [stroke-pattern-src] Stroke pattern image source URI. If `stroke-color` is defined as well,
  * it will be used to tint this image. (WebGL only)
  * @property {SizeExpression} [stroke-pattern-offset=[0, 0]] Offset, which, together with the size and the offset origin,
- * define the sub-rectangle to use from the original fill pattern image. (WebGL only)
+ * define the sub-rectangle to use from the original stroke pattern image. (WebGL only)
  * @property {import("./Icon.js").IconOrigin} [stroke-pattern-offset-origin='top-left'] Origin of the offset: `bottom-left`, `bottom-right`,
  * `top-left` or `top-right`. (WebGL only)
  * @property {SizeExpression} [stroke-pattern-size] Stroke pattern image size in pixel. Can be used together with `stroke-pattern-offset` to define the
  * sub-rectangle to use from the origin (sprite) fill pattern image. (WebGL only)
- * @property {NumberExpression} [stroke-pattern-spacing] Spacing between each pattern occurrence in pixels; 0 if undefined.
+ * @property {NumberExpression} [stroke-pattern-spacing] Spacing between each pattern occurrence in pixels; 0 if undefined. (WebGL only)
+ * @property {NumberExpression} [stroke-pattern-start-offset] Stroke pattern offset in pixels at the start of the line. (WebGL only)
  * @property {NumberExpression} [z-index] The zIndex of the style.
  */
 
