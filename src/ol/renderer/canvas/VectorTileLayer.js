@@ -113,6 +113,15 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   }
 
   /**
+   * Determine whether tiles for next extent should be enqueued for rendering.
+   * @return {boolean} Rendering tiles for next extent is supported.
+   * @override
+   */
+  enqueueTilesForNextExtent() {
+    return this.getLayer().getRenderMode() !== 'vector';
+  }
+
+  /**
    * @param {import("../../VectorRenderTile.js").default} tile Tile.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @param {number} x Left of the tile.

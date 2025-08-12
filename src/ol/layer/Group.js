@@ -14,8 +14,22 @@ import {getUid} from '../util.js';
 import BaseLayer from './Base.js';
 
 /**
- * @typedef {'addlayer'|'removelayer'} GroupEventType
+ * @enum {string}
  */
+const GroupEventType = {
+  /**
+   * Triggered when a layer is added
+   * @event GroupEvent#addlayer
+   * @api
+   */
+  ADDLAYER: 'addlayer',
+  /**
+   * Triggered when a layer is removed
+   * @event GroupEvent#removelayer
+   * @api
+   */
+  REMOVELAYER: 'removelayer',
+};
 
 /**
  * @classdesc
@@ -45,7 +59,8 @@ export class GroupEvent extends Event {
  * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
  *   import("../Observable").OnSignature<import("./Base").BaseLayerObjectEventTypes|
  *     'change:layers', import("../Object").ObjectEvent, Return> &
- *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("./Base").BaseLayerObjectEventTypes|'change:layers', Return>} GroupOnSignature
+ *   import("../Observable").OnSignature<'addlayer'|'removelayer', GroupEvent, Return> &
+ *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("./Base").BaseLayerObjectEventTypes|'addlayer'|'removelayer'|'change:layers', Return>} GroupOnSignature
  */
 
 /**
@@ -84,6 +99,7 @@ const Property = {
  *
  * A generic `change` event is triggered when the group/Collection changes.
  *
+ * @fires GroupEvent
  * @api
  */
 class LayerGroup extends BaseLayer {
@@ -178,7 +194,7 @@ class LayerGroup extends BaseLayer {
     for (let i = 0, ii = layersArray.length; i < ii; i++) {
       const layer = layersArray[i];
       this.registerLayerListeners_(layer);
-      this.dispatchEvent(new GroupEvent('addlayer', layer));
+      this.dispatchEvent(new GroupEvent(GroupEventType.ADDLAYER, layer));
     }
     this.changed();
   }
@@ -199,8 +215,13 @@ class LayerGroup extends BaseLayer {
 
     if (layer instanceof LayerGroup) {
       listenerKeys.push(
-        listen(layer, 'addlayer', this.handleLayerGroupAdd_, this),
-        listen(layer, 'removelayer', this.handleLayerGroupRemove_, this),
+        listen(layer, GroupEventType.ADDLAYER, this.handleLayerGroupAdd_, this),
+        listen(
+          layer,
+          GroupEventType.REMOVELAYER,
+          this.handleLayerGroupRemove_,
+          this,
+        ),
       );
     }
 
@@ -211,14 +232,14 @@ class LayerGroup extends BaseLayer {
    * @param {GroupEvent} event The layer group event.
    */
   handleLayerGroupAdd_(event) {
-    this.dispatchEvent(new GroupEvent('addlayer', event.layer));
+    this.dispatchEvent(new GroupEvent(GroupEventType.ADDLAYER, event.layer));
   }
 
   /**
    * @param {GroupEvent} event The layer group event.
    */
   handleLayerGroupRemove_(event) {
-    this.dispatchEvent(new GroupEvent('removelayer', event.layer));
+    this.dispatchEvent(new GroupEvent(GroupEventType.REMOVELAYER, event.layer));
   }
 
   /**
@@ -228,7 +249,7 @@ class LayerGroup extends BaseLayer {
   handleLayersAdd_(collectionEvent) {
     const layer = collectionEvent.element;
     this.registerLayerListeners_(layer);
-    this.dispatchEvent(new GroupEvent('addlayer', layer));
+    this.dispatchEvent(new GroupEvent(GroupEventType.ADDLAYER, layer));
     this.changed();
   }
 
@@ -241,7 +262,7 @@ class LayerGroup extends BaseLayer {
     const key = getUid(layer);
     this.listenerKeys_[key].forEach(unlistenByKey);
     delete this.listenerKeys_[key];
-    this.dispatchEvent(new GroupEvent('removelayer', layer));
+    this.dispatchEvent(new GroupEvent(GroupEventType.REMOVELAYER, layer));
     this.changed();
   }
 
@@ -272,7 +293,9 @@ class LayerGroup extends BaseLayer {
     if (collection) {
       const currentLayers = collection.getArray();
       for (let i = 0, ii = currentLayers.length; i < ii; ++i) {
-        this.dispatchEvent(new GroupEvent('removelayer', currentLayers[i]));
+        this.dispatchEvent(
+          new GroupEvent(GroupEventType.REMOVELAYER, currentLayers[i]),
+        );
       }
     }
 

@@ -1606,4 +1606,78 @@ describe('ol.interaction.Modify', function () {
       expect(geometry3.getCenter()).to.eql([5, 5]);
     });
   });
+
+  describe('tracing polygons', function () {
+    let modify;
+
+    beforeEach(function () {
+      modify = new Modify({
+        source: source,
+        trace: true,
+      });
+      map.addInteraction(modify);
+    });
+
+    it('starts tracing with first edge drag, stops tracing with second edge drag', function () {
+      const modifyFeature = new Feature(
+        // a polygon we'll modify
+        new Polygon([
+          [
+            [200, 0],
+            [250, 0],
+            [250, -150],
+            [200, -150],
+            [200, 0],
+          ],
+        ]),
+      );
+      source.addFeatures([
+        new Feature(
+          // a polygon we'll trace around
+          new Polygon([
+            [
+              [0, -50],
+              [100, -50],
+              [100, -100],
+              [0, -100],
+              [0, -50],
+            ],
+          ]),
+        ),
+        modifyFeature,
+      ]);
+
+      // first drag activates tracing (center of bottom edge)
+      simulateEvent('pointermove', 200, 100, null, 0);
+      simulateEvent('pointerdown', 200, 100, null, 0);
+      simulateEvent('pointermove', 50, 50, null, 0);
+      simulateEvent('pointerdrag', 50, 50, null, 0);
+      simulateEvent('pointerup', 50, 50, null, 0);
+
+      expect(modify.traceState_.active).to.be(true);
+      expect(modify.traceState_.targetIndex).to.be(-1);
+
+      // decond drag ends tracing (right half of top edge)
+      simulateEvent('pointermove', 200, 0, null, 0);
+      simulateEvent('pointerdown', 200, 0, null, 0);
+      simulateEvent('pointermove', 90, 100, null, 0);
+      simulateEvent('pointerdrag', 90, 100, null, 0);
+      simulateEvent('pointerup', 90, 100, null, 0);
+      expect(modify.traceState_.active).to.be(false);
+
+      const geometry = modifyFeature.getGeometry();
+
+      expect(geometry.getCoordinates()).to.eql([
+        [
+          [90, -100], // second drag point
+          [250, 0],
+          [250, -150],
+          [200, -150],
+          [50, -50], // first drag point
+          [100, -50], // traced point
+          [100, -100], // traced point
+        ],
+      ]);
+    });
+  });
 });
