@@ -151,7 +151,7 @@ describe('ol/renderer/webgl/PointsLayer', function () {
       );
       renderer.prepareFrame(frameState);
 
-      const attributePerVertex = 7;
+      const attributePerVertex = 5;
 
       renderer.worker_.addEventListener('message', function (event) {
         if (event.data.type !== WebGLWorkerMessageType.GENERATE_POINT_BUFFERS) {
@@ -166,7 +166,6 @@ describe('ol/renderer/webgl/PointsLayer', function () {
         );
         expect(renderer.indicesBuffer_.getArray().length).to.eql(6);
 
-        expect(renderer.instanceAttributesBuffer_.getArray().length).to.eql(14);
         expect(
           renderer.instanceAttributesBuffer_.getArray().slice(0, 2),
         ).to.eql([10, 20]);

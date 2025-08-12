@@ -5,6 +5,7 @@
 import {colorToGlsl, numberToGlsl, stringToGlsl} from '../../expr/gpu.js';
 import {createDefaultStyle} from '../../style/flat.js';
 import {LINESTRING_ANGLE_COSINE_CUTOFF} from './bufferUtil.js';
+import {UNPACK_COLOR_FN} from './compileUtil.js';
 
 export const COMMON_HEADER = `#ifdef GL_FRAGMENT_PRECISION_HIGH
 precision highp float;
@@ -28,6 +29,8 @@ uniform mediump int u_hitDetection;
 const float PI = 3.141592653589793238;
 const float TWO_PI = 2.0 * PI;
 float currentLineMetric = 0.; // an actual value will be used in the stroke shaders
+
+${UNPACK_COLOR_FN}
 `;
 
 const DEFAULT_STYLE = createDefaultStyle();
@@ -503,7 +506,7 @@ export class ShaderBuilder {
 ${this.uniforms_.map((uniform) => `uniform ${uniform.type} ${uniform.name};`).join('\n')}
 attribute vec2 a_position;
 attribute vec2 a_localPosition;
-attribute vec4 a_hitColor;
+attribute vec2 a_hitColor;
 
 varying vec2 v_texCoord;
 varying vec2 v_quadCoord;
@@ -543,7 +546,7 @@ void main(void) {
   float u = mix(texCoord.s, texCoord.p, a_localPosition.x * 0.5 + 0.5);
   float v = mix(texCoord.t, texCoord.q, a_localPosition.y * 0.5 + 0.5);
   v_texCoord = vec2(u, v);
-  v_hitColor = a_hitColor;
+  v_hitColor = unpackColor(a_hitColor);
   v_angle = angle;
   c = cos(-v_angle);
   s = sin(-v_angle);
@@ -622,7 +625,7 @@ attribute float a_angleTangentSum;
 attribute float a_distanceLow;
 attribute float a_distanceHigh;
 attribute vec2 a_joinAngles;
-attribute vec4 a_hitColor;
+attribute vec2 a_hitColor;
 
 varying vec2 v_segmentStartPx;
 varying vec2 v_segmentEndPx;
@@ -709,7 +712,7 @@ void main(void) {
   v_segmentStartPx = segmentStartPx;
   v_segmentEndPx = segmentEndPx;
   v_width = lineWidth;
-  v_hitColor = a_hitColor;
+  v_hitColor = unpackColor(a_hitColor);
 
   v_distancePx = a_distanceLow / u_resolution - (lineOffsetPx * a_angleTangentSum);
   float distanceHighPx = a_distanceHigh / u_resolution;
@@ -922,7 +925,7 @@ ${this.attributes_
     return `${COMMON_HEADER}
 ${this.uniforms_.map((uniform) => `uniform ${uniform.type} ${uniform.name};`).join('\n')}
 attribute vec2 a_position;
-attribute vec4 a_hitColor;
+attribute vec2 a_hitColor;
 
 varying vec4 v_hitColor;
 
@@ -935,7 +938,7 @@ varying ${attribute.varyingType} ${attribute.varyingName};`,
 ${this.vertexShaderFunctions_.join('\n')}
 void main(void) {
   gl_Position = u_projectionMatrix * vec4(a_position, u_depth, 1.0);
-  v_hitColor = a_hitColor;
+  v_hitColor = unpackColor(a_hitColor);
 ${this.attributes_
   .map(
     (attribute) =>

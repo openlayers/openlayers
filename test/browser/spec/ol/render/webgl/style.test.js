@@ -1243,12 +1243,6 @@ describe('ol/render/webgl/style', () => {
           },
         ]);
       });
-      it('adds unpack color function to the shader builder', () => {
-        expect(parseResult.builder.vertexShaderFunctions_.length).to.eql(2);
-        expect(parseResult.builder.vertexShaderFunctions_[0]).to.contain(
-          'vec4 unpackColor(',
-        );
-      });
       it('returns attributes with their callbacks in the result', () => {
         expect(parseResult.attributes).to.eql({
           prop_iconSize: {size: 2, callback: {}},

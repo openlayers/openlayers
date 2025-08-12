@@ -219,7 +219,7 @@ describe('VectorStyleRenderer', () => {
       expect(vectorStyleRenderer.customAttributes_).to.eql({
         hitColor: {
           callback: {},
-          size: 4,
+          size: 2,
         },
         prop_color: {
           callback: {},
@@ -242,7 +242,7 @@ describe('VectorStyleRenderer', () => {
       expect(firstPass.fillRenderPass.program).to.be.an(WebGLProgram);
       expect(firstPass.fillRenderPass.attributesDesc).to.eql([
         {name: 'a_position', size: 2, type: FLOAT},
-        {name: 'a_hitColor', size: 4, type: FLOAT},
+        {name: 'a_hitColor', size: 2, type: FLOAT},
         {name: 'a_prop_size', size: 1, type: FLOAT},
         {name: 'a_prop_color', size: 2, type: FLOAT},
         {name: null, size: 1, type: FLOAT}, // this is padding for the `id` attribute
@@ -260,7 +260,7 @@ describe('VectorStyleRenderer', () => {
         {name: 'a_distanceLow', size: 1, type: FLOAT},
         {name: 'a_distanceHigh', size: 1, type: FLOAT},
         {name: 'a_angleTangentSum', size: 1, type: FLOAT},
-        {name: 'a_hitColor', size: 4, type: FLOAT},
+        {name: 'a_hitColor', size: 2, type: FLOAT},
         {name: 'a_prop_size', size: 1, type: FLOAT},
         {name: 'a_prop_color', size: 2, type: FLOAT},
         {name: null, size: 1, type: FLOAT},
@@ -271,7 +271,7 @@ describe('VectorStyleRenderer', () => {
       ]);
       expect(firstPass.symbolRenderPass.instancedAttributesDesc).to.eql([
         {name: 'a_position', size: 2, type: FLOAT},
-        {name: 'a_hitColor', size: 4, type: FLOAT},
+        {name: 'a_hitColor', size: 2, type: FLOAT},
         {name: 'a_prop_size', size: 1, type: FLOAT},
         {name: 'a_prop_color', size: 2, type: FLOAT},
         {name: null, size: 1, type: FLOAT},
@@ -281,7 +281,7 @@ describe('VectorStyleRenderer', () => {
       expect(secondPass.fillRenderPass.program).to.be.an(WebGLProgram);
       expect(secondPass.fillRenderPass.attributesDesc).to.eql([
         {name: 'a_position', size: 2, type: FLOAT},
-        {name: 'a_hitColor', size: 4, type: FLOAT},
+        {name: 'a_hitColor', size: 2, type: FLOAT},
         {name: null, size: 1, type: FLOAT},
         {name: null, size: 2, type: FLOAT},
         {name: 'a_prop_id', size: 1, type: FLOAT},
