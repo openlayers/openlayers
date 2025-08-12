@@ -1,0 +1,26 @@
+---
+layout: example.html
+title: Draw, modify, trace and snap
+shortdesc: Using the draw, modify, and snap interactions to edit existing geometries with tracing enabled.
+docs: >
+  The Draw and Modify interactions have a <code>trace</code> option to enable tracing
+  around existing features.  This example uses the <code>traceSource</code> option
+  to trace features from one source and add them to another source.  When drawing, the first click
+  on an edge of the target feature will start tracing. The second click on the edge
+  will stop tracing.  When modifying, dragging a vertex onto an edge of the target feature will activate
+  tracing for the next drag. Now when an adjacent vertex is dragged onto the edge, the segment between the two vertices
+  will be traced along the target feature. If a different vertex is dragged, no tracing will occur.
+tags: "draw, modify, trace, vector, snap, topology"
+cloak:
+  - key: get_your_own_D6rA4zTHduk6KOKTXzGB
+    value: Get your own API key at https://www.maptiler.com/cloud/
+---
+<div id="map" class="map"></div>
+<form>
+  <label for="type">Draw geometry mode &nbsp;</label>
+  <select id="type">
+    <option value="Polygon">Polygon</option>
+    <option value="LineString">LineString</option>
+    <option value="None">Modify only</option>
+  </select>
+</form>
