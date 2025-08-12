@@ -359,17 +359,18 @@ attribute vec2 a_localPosition;
 attribute float a_measureStart;
 attribute float a_measureEnd;
 attribute float a_angleTangentSum;
-attribute float a_distance;
+attribute float a_distanceLow;
+attribute float a_distanceHigh;
 attribute vec2 a_joinAngles;
 attribute vec4 a_hitColor;
 
-varying vec2 v_segmentStart;
-varying vec2 v_segmentEnd;
+varying vec2 v_segmentStartPx;
+varying vec2 v_segmentEndPx;
 varying float v_angleStart;
 varying float v_angleEnd;
 varying float v_width;
 varying vec4 v_hitColor;
-varying float v_distanceOffsetPx;
+varying float v_distancePx;
 varying float v_measureStart;
 varying float v_measureEnd;
 
@@ -445,17 +446,32 @@ void main(void) {
   positionPx = positionPx + joinDirection * (lineWidth * 0.5 + 1.); // adding 1 pixel for antialiasing
   gl_Position = pxToScreen(positionPx);
 
-  v_segmentStart = segmentStartPx;
-  v_segmentEnd = segmentEndPx;
+  v_segmentStartPx = segmentStartPx;
+  v_segmentEndPx = segmentEndPx;
   v_width = lineWidth;
   v_hitColor = a_hitColor;
-  v_distanceOffsetPx = a_distance / u_resolution - (lineOffsetPx * a_angleTangentSum);
+
+  v_distancePx = a_distanceLow / u_resolution - (lineOffsetPx * a_angleTangentSum);
+  float distanceHighPx = a_distanceHigh / u_resolution;
+  v_distancePx += distanceHighPx;
+
   v_measureStart = a_measureStart;
   v_measureEnd = a_measureEnd;
   v_opacity = 0.4;
   v_test = vec3(1.0, 2.0, 3.0);
   v_myAttr = a_myAttr;
 }`);
+      });
+
+      it('takes into account the pattern length expression if specified', () => {
+        builder.setStrokePatternLengthExpression('10.0 * 3.0');
+        expect(builder.getStrokeVertexShader()).to.contain(`
+  v_distancePx = a_distanceLow / u_resolution - (lineOffsetPx * a_angleTangentSum);
+  float distanceHighPx = a_distanceHigh / u_resolution;
+  v_distancePx = mod(v_distancePx, 10.0 * 3.0);
+  distanceHighPx = mod(distanceHighPx, 10.0 * 3.0);
+  v_distancePx += distanceHighPx;
+`);
       });
 
       it('returns null if no color or size specified', () => {
@@ -467,13 +483,13 @@ void main(void) {
       it('generates a stroke fragment shader (with attribute and uniform)', () => {
         expect(builder.getStrokeFragmentShader()).to.eql(`${COMMON_HEADER}
 uniform float u_myUniform;
-varying vec2 v_segmentStart;
-varying vec2 v_segmentEnd;
+varying vec2 v_segmentStartPx;
+varying vec2 v_segmentEndPx;
 varying float v_angleStart;
 varying float v_angleEnd;
 varying float v_width;
 varying vec4 v_hitColor;
-varying float v_distanceOffsetPx;
+varying float v_distancePx;
 varying float v_measureStart;
 varying float v_measureEnd;
 varying float v_opacity;
@@ -577,9 +593,9 @@ void main(void) {
   vec3 a_test = v_test; // assign to original attribute name
   vec2 a_myAttr = v_myAttr; // assign to original attribute name
 
-  vec2 currentPoint = gl_FragCoord.xy / u_pixelRatio;
+  vec2 currentPointPx = gl_FragCoord.xy / u_pixelRatio;
   #ifdef GL_FRAGMENT_PRECISION_HIGH
-  vec2 worldPos = pxToWorld(currentPoint);
+  vec2 worldPos = pxToWorld(currentPointPx);
   if (
     abs(u_renderExtent[0] - u_renderExtent[2]) > 0.0 && (
       worldPos[0] < u_renderExtent[0] ||
@@ -592,28 +608,25 @@ void main(void) {
   }
   #endif
 
-  float segmentLength = length(v_segmentEnd - v_segmentStart);
-  vec2 segmentTangent = (v_segmentEnd - v_segmentStart) / segmentLength;
+  float segmentLengthPx = length(v_segmentEndPx - v_segmentStartPx);
+  segmentLengthPx = max(segmentLengthPx, 1.17549429e-38); // avoid divide by zero
+  vec2 segmentTangent = (v_segmentEndPx - v_segmentStartPx) / segmentLengthPx;
   vec2 segmentNormal = vec2(-segmentTangent.y, segmentTangent.x);
-  vec2 startToPoint = currentPoint - v_segmentStart;
-  float lengthToPoint = max(0., min(dot(segmentTangent, startToPoint), segmentLength));
-  float currentLengthPx = lengthToPoint + v_distanceOffsetPx;
-  float currentRadiusPx = distanceFromSegment(currentPoint, v_segmentStart, v_segmentEnd);
-  float currentRadiusRatio = dot(segmentNormal, startToPoint) * 2. / v_width;
-  currentLineMetric = mix(
-    v_measureStart,
-    v_measureEnd,
-    lengthToPoint / max(segmentLength, 1.17549429e-38)
-  );
+  vec2 startToPointPx = currentPointPx - v_segmentStartPx;
+  float lengthToPointPx = max(0., min(dot(segmentTangent, startToPointPx), segmentLengthPx));
+  float currentLengthPx = lengthToPointPx + v_distancePx;
+  float currentRadiusPx = distanceFromSegment(currentPointPx, v_segmentStartPx, v_segmentEndPx);
+  float currentRadiusRatio = dot(segmentNormal, startToPointPx) * 2. / v_width;
+  currentLineMetric = mix(v_measureStart, v_measureEnd, lengthToPointPx / segmentLengthPx);
 
   if (u_myUniform > 0.5) { discard; }
 
   float capType = ${stringToGlsl('butt')};
   float joinType = ${stringToGlsl('bevel')};
-  float segmentStartDistance = computeSegmentPointDistance(currentPoint, v_segmentStart, v_segmentEnd, v_width, v_angleStart, capType, joinType);
-  float segmentEndDistance = computeSegmentPointDistance(currentPoint, v_segmentEnd, v_segmentStart, v_width, v_angleEnd, capType, joinType);
+  float segmentStartDistance = computeSegmentPointDistance(currentPointPx, v_segmentStartPx, v_segmentEndPx, v_width, v_angleStart, capType, joinType);
+  float segmentEndDistance = computeSegmentPointDistance(currentPointPx, v_segmentEndPx, v_segmentStartPx, v_width, v_angleEnd, capType, joinType);
   float distanceField = max(
-    segmentDistanceField(currentPoint, v_segmentStart, v_segmentEnd, v_width),
+    segmentDistanceField(currentPointPx, v_segmentStartPx, v_segmentEndPx, v_width),
     max(segmentStartDistance, segmentEndDistance)
   );
   distanceField = max(distanceField, cos(currentLengthPx));

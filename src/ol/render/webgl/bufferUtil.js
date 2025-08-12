@@ -117,7 +117,7 @@ export function writeLineSegmentToBuffers(
   // Depending on whether there are points before and after the segment, its final shape
   // will be different
   const p0 = [
-    instructions[segmentStartIndex + 0],
+    instructions[segmentStartIndex],
     instructions[segmentStartIndex + 1],
   ];
   const p1 = [instructions[segmentEndIndex], instructions[segmentEndIndex + 1]];
@@ -148,12 +148,13 @@ export function writeLineSegmentToBuffers(
     const tangentB = [(pB[0] - p0[0]) / lenB, (pB[1] - p0[1]) / lenB];
 
     // this angle can be clockwise or anticlockwise; hence the computation afterwards
-    const angle =
+    let angle =
       lenA === 0 || lenB === 0
         ? 0
         : Math.acos(
             clamp(tangentB[0] * tangentA[0] + tangentB[1] * tangentA[1], -1, 1),
           );
+    angle = Math.max(angle, 0.00001); // avoid a zero angle otherwise this is detected as a line cap
     const isClockwise = tangentB[0] * orthoA[0] + tangentB[1] * orthoA[1] > 0;
     return !isClockwise ? Math.PI * 2 - angle : angle;
   }
@@ -197,6 +198,10 @@ export function writeLineSegmentToBuffers(
     }
   }
 
+  const maxPrecision = Math.pow(2, 24);
+  const distanceLow = currentLength % maxPrecision;
+  const distanceHigh = Math.floor(currentLength / maxPrecision) * maxPrecision;
+
   instanceAttributesArray.push(
     p0[0],
     p0[1],
@@ -206,7 +211,8 @@ export function writeLineSegmentToBuffers(
     m1,
     angle0,
     angle1,
-    currentLength,
+    distanceLow,
+    distanceHigh,
     currentAngleTangentSum,
   );
   instanceAttributesArray.push(...customAttributes);

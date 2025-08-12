@@ -124,10 +124,10 @@ describe('webgl buffer generation utils', function () {
         currentAngleTangentSum = result.angle;
       });
       // we expect one quad with 10 attributes each:
-      // Xstart, Ystart, Mstart, Xend, Yend, Mend, joinAngleStart, joinAngleEnd, base distance, angle tangent sum
+      // Xstart, Ystart, Mstart, Xend, Yend, Mend, joinAngleStart, joinAngleEnd, distance (low part), distance (high part) angle tangent sum
       it('generates a quad for the segment', function () {
         expect(instanceAttributesArray).to.eql([
-          5, 5, 30, 25, 5, 40, -1, -1, 100, 100,
+          5, 5, 30, 25, 5, 40, -1, -1, 100, 0, 100,
         ]);
       });
       it('computes the new current length', () => {
@@ -157,10 +157,10 @@ describe('webgl buffer generation utils', function () {
         currentAngleTangentSum = result.angle;
       });
       // we expect 4 vertices (one quad) with 10 attributes each:
-      // Xstart, Ystart, Xend, Yend, joinAngleStart, joinAngleEnd, base distance, vertex number (0..3), + 2 custom attributes
+      // Xstart, Ystart, Xend, Yend, joinAngleStart, joinAngleEnd, distance (low part), distance (high part), vertex number (0..3), + 2 custom attributes
       it('adds custom attributes in the vertices buffer', function () {
         expect(instanceAttributesArray).to.eql([
-          5, 5, 30, 25, 5, 40, -1, -1, 100, 100, 888, 999,
+          5, 5, 30, 25, 5, 40, -1, -1, 100, 0, 100, 888, 999,
         ]);
       });
       it('computes the new current length', () => {
@@ -189,7 +189,7 @@ describe('webgl buffer generation utils', function () {
         currentAngleTangentSum = result.angle;
       });
       it('generate the correct amount of vertices', () => {
-        expect(instanceAttributesArray).to.have.length(10);
+        expect(instanceAttributesArray).to.have.length(11);
       });
       it('correctly encodes the join angles', () => {
         expect(instanceAttributesArray.slice(6, 8)).to.eql([Math.PI / 2, -1]);
@@ -217,7 +217,7 @@ describe('webgl buffer generation utils', function () {
         currentAngleTangentSum = result.angle;
       });
       it('generate the correct amount of vertices', () => {
-        expect(instanceAttributesArray).to.have.length(10);
+        expect(instanceAttributesArray).to.have.length(11);
       });
       it('correctly encodes the join angle', () => {
         expect(instanceAttributesArray.slice(6, 8)).to.eql([
@@ -248,7 +248,7 @@ describe('webgl buffer generation utils', function () {
         currentAngleTangentSum = result.angle;
       });
       it('generate the correct amount of vertices', () => {
-        expect(instanceAttributesArray).to.have.length(10);
+        expect(instanceAttributesArray).to.have.length(11);
       });
       it('correctly encodes the join angle', () => {
         expect(instanceAttributesArray.slice(6, 8)).to.eql([
@@ -282,13 +282,69 @@ describe('webgl buffer generation utils', function () {
         currentAngleTangentSum = result.angle;
       });
       it('generate the correct amount of vertices', () => {
-        expect(instanceAttributesArray).to.have.length(10);
+        expect(instanceAttributesArray).to.have.length(11);
       });
       it('correctly encodes join angles', () => {
         expect(instanceAttributesArray.slice(6, 8)).to.eql([-1, Math.PI / 2]);
       });
       it('angle tangent sum increases', () => {
         expect(currentAngleTangentSum).roughlyEqual(11, 1e-9);
+      });
+    });
+
+    describe('segment with zero length', function () {
+      beforeEach(function () {
+        instructions.set([-10, -10, 5, 5, 5, 5, 10, 10]);
+        const result = writeLineSegmentToBuffers(
+          instructions,
+          2,
+          4,
+          0,
+          6,
+          instanceAttributesArray,
+          [],
+          invertInstructionsTransform,
+          0,
+          10,
+        );
+        currentAngleTangentSum = result.angle;
+      });
+      it('generate the correct amount of vertices', () => {
+        expect(instanceAttributesArray).to.have.length(11);
+      });
+      it('do not use zero or 2PI for both angles', () => {
+        expect(instanceAttributesArray.slice(6, 8)).to.not.eql([
+          Math.PI * 2,
+          Math.PI * 2,
+        ]);
+        expect(instanceAttributesArray.slice(6, 8)).to.not.eql([0, 0]);
+      });
+    });
+
+    describe('colinear segment', function () {
+      beforeEach(function () {
+        instructions.set([-10, -10, 5, 5, -5, -5, -15, 5]);
+        const result = writeLineSegmentToBuffers(
+          instructions,
+          2,
+          4,
+          0,
+          6,
+          instanceAttributesArray,
+          [],
+          invertInstructionsTransform,
+          0,
+          10,
+        );
+        currentAngleTangentSum = result.angle;
+      });
+      it('generate the correct amount of vertices', () => {
+        expect(instanceAttributesArray).to.have.length(11);
+      });
+      it('do not use zero or 2PI for the first angle', () => {
+        expect(instanceAttributesArray[6]).to.not.eql(Math.PI * 2);
+        expect(instanceAttributesArray[6]).to.not.eql(0);
+        expect(instanceAttributesArray[7]).to.eql(Math.PI / 2); // this is normal
       });
     });
   });
