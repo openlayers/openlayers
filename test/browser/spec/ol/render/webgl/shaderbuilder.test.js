@@ -24,7 +24,7 @@ describe('ol.webgl.ShaderBuilder', () => {
 
 attribute vec2 a_position;
 attribute vec2 a_localPosition;
-attribute vec4 a_hitColor;
+attribute vec2 a_hitColor;
 
 varying vec2 v_texCoord;
 varying vec2 v_quadCoord;
@@ -62,7 +62,7 @@ void main(void) {
   float u = mix(texCoord.s, texCoord.p, a_localPosition.x * 0.5 + 0.5);
   float v = mix(texCoord.t, texCoord.q, a_localPosition.y * 0.5 + 0.5);
   v_texCoord = vec2(u, v);
-  v_hitColor = a_hitColor;
+  v_hitColor = unpackColor(a_hitColor);
   v_angle = angle;
   c = cos(-v_angle);
   s = sin(-v_angle);
@@ -85,7 +85,7 @@ void main(void) {
 uniform float u_myUniform;
 attribute vec2 a_position;
 attribute vec2 a_localPosition;
-attribute vec4 a_hitColor;
+attribute vec2 a_hitColor;
 
 varying vec2 v_texCoord;
 varying vec2 v_quadCoord;
@@ -121,7 +121,7 @@ void main(void) {
   float u = mix(texCoord.s, texCoord.p, a_localPosition.x * 0.5 + 0.5);
   float v = mix(texCoord.t, texCoord.q, a_localPosition.y * 0.5 + 0.5);
   v_texCoord = vec2(u, v);
-  v_hitColor = a_hitColor;
+  v_hitColor = unpackColor(a_hitColor);
   v_angle = angle;
   c = cos(-v_angle);
   s = sin(-v_angle);
@@ -142,7 +142,7 @@ void main(void) {
 
 attribute vec2 a_position;
 attribute vec2 a_localPosition;
-attribute vec4 a_hitColor;
+attribute vec2 a_hitColor;
 
 varying vec2 v_texCoord;
 varying vec2 v_quadCoord;
@@ -177,7 +177,7 @@ void main(void) {
   float u = mix(texCoord.s, texCoord.p, a_localPosition.x * 0.5 + 0.5);
   float v = mix(texCoord.t, texCoord.q, a_localPosition.y * 0.5 + 0.5);
   v_texCoord = vec2(u, v);
-  v_hitColor = a_hitColor;
+  v_hitColor = unpackColor(a_hitColor);
   v_angle = angle;
   c = cos(-v_angle);
   s = sin(-v_angle);
@@ -197,7 +197,7 @@ void main(void) {
 
 attribute vec2 a_position;
 attribute vec2 a_localPosition;
-attribute vec4 a_hitColor;
+attribute vec2 a_hitColor;
 
 varying vec2 v_texCoord;
 varying vec2 v_quadCoord;
@@ -232,7 +232,7 @@ void main(void) {
   float u = mix(texCoord.s, texCoord.p, a_localPosition.x * 0.5 + 0.5);
   float v = mix(texCoord.t, texCoord.q, a_localPosition.y * 0.5 + 0.5);
   v_texCoord = vec2(u, v);
-  v_hitColor = a_hitColor;
+  v_hitColor = unpackColor(a_hitColor);
   v_angle = angle;
   c = cos(-v_angle);
   s = sin(-v_angle);
@@ -362,7 +362,7 @@ attribute float a_angleTangentSum;
 attribute float a_distanceLow;
 attribute float a_distanceHigh;
 attribute vec2 a_joinAngles;
-attribute vec4 a_hitColor;
+attribute vec2 a_hitColor;
 
 varying vec2 v_segmentStartPx;
 varying vec2 v_segmentEndPx;
@@ -449,7 +449,7 @@ void main(void) {
   v_segmentStartPx = segmentStartPx;
   v_segmentEndPx = segmentEndPx;
   v_width = lineWidth;
-  v_hitColor = a_hitColor;
+  v_hitColor = unpackColor(a_hitColor);
 
   v_distancePx = a_distanceLow / u_resolution - (lineOffsetPx * a_angleTangentSum);
   float distanceHighPx = a_distanceHigh / u_resolution;
@@ -663,7 +663,7 @@ void main(void) {
       expect(builder.getFillVertexShader()).to.eql(`${COMMON_HEADER}
 uniform float u_myUniform;
 attribute vec2 a_position;
-attribute vec4 a_hitColor;
+attribute vec2 a_hitColor;
 
 varying vec4 v_hitColor;
 
@@ -676,7 +676,7 @@ varying vec2 v_myAttr;
 
 void main(void) {
   gl_Position = u_projectionMatrix * vec4(a_position, u_depth, 1.0);
-  v_hitColor = a_hitColor;
+  v_hitColor = unpackColor(a_hitColor);
   v_opacity = 0.4;
   v_test = vec3(1.0, 2.0, 3.0);
   v_myAttr = a_myAttr;

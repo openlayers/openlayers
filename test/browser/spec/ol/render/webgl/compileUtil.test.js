@@ -1,6 +1,5 @@
 import {stub as sinonStub} from 'sinon';
 import Feature from '../../../../../../src/ol/Feature.js';
-import {asArray} from '../../../../../../src/ol/color.js';
 import {
   BooleanType,
   ColorType,
@@ -14,7 +13,6 @@ import {
   stringToGlsl,
 } from '../../../../../../src/ol/expr/gpu.js';
 import {
-  UNPACK_COLOR_FN,
   applyContextToBuilder,
   expressionToGlsl,
   generateAttributesFromContext,
@@ -22,13 +20,19 @@ import {
   getGlslSizeFromType,
   getGlslTypeFromType,
   packColor,
+  unpackColor,
 } from '../../../../../../src/ol/render/webgl/compileUtil.js';
 
 describe('ol/render/webgl/compileUtil', () => {
-  describe('packColor', () => {
-    it('compresses all the components of a color into a [number, number] array', () => {
-      expect(packColor(asArray('red'))).to.eql([65280, 255]);
-      expect(packColor(asArray('rgba(0, 255, 255, 0.5)'))).to.eql([255, 65408]);
+  describe('packColor and unpackColor', () => {
+    it('unpacks colors from packed colors correctly', () => {
+      expect(unpackColor(packColor('red'))).to.eql([1, 0, 0, 1]);
+      expect(unpackColor(packColor('rgba(0, 255, 255, 0.4)'))).to.eql([
+        0, 1, 1, 0.4,
+      ]);
+      expect(unpackColor(packColor('rgba(51, 51, 0, 0.8)'))).to.eql([
+        0.2, 0.2, 0, 0.8,
+      ]);
     });
   });
 
@@ -106,9 +110,6 @@ describe('ol/render/webgl/compileUtil', () => {
           'function myFunction() { return 1.0; }',
         ),
       ).to.be(true);
-      expect(builder.addVertexShaderFunction.calledWith(UNPACK_COLOR_FN)).to.be(
-        true,
-      );
       expect(
         builder.addFragmentShaderFunction.calledWith(
           'function myFunction() { return 1.0; }',

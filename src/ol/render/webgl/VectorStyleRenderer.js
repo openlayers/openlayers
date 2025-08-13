@@ -10,7 +10,7 @@ import {AttributeType} from '../../webgl/Helper.js';
 import {ARRAY_BUFFER, DYNAMIC_DRAW, ELEMENT_ARRAY_BUFFER} from '../../webgl.js';
 import {create as createWebGLWorker} from '../../worker/webgl.js';
 import {WebGLWorkerMessageType} from './constants.js';
-import {colorEncodeId} from './encodeUtil.js';
+import {colorEncodeIdAndPack} from './encodeUtil.js';
 import {
   generateLineStringRenderInstructions,
   generatePointRenderInstructions,
@@ -170,9 +170,9 @@ class VectorStyleRenderer {
     if (this.hitDetectionEnabled_) {
       this.customAttributes_['hitColor'] = {
         callback() {
-          return colorEncodeId(this.ref, tmpColor);
+          return colorEncodeIdAndPack(this.ref, tmpColor);
         },
-        size: 4,
+        size: 2,
       };
     }
 
