@@ -245,6 +245,12 @@ class Draw extends PointerInteraction {
     this.un;
 
     /**
+     * @type {Options}
+     * @private
+     */
+    this.options_ = options;
+
+    /**
      * @type {boolean}
      * @private
      */
@@ -606,12 +612,39 @@ class Draw extends PointerInteraction {
   }
 
   /**
+   * Set whether the drawing is done in freehand mode.
+   *
+   * @param {boolean} freehand Freehand drawing.
+   * @api
+   */
+  setFreehand(freehand) {
+    this.freehand_ = freehand;
+    if (this.freehand_) {
+      this.freehandCondition_ = always;
+    } else {
+      this.freehandCondition_ =
+        this.options_ && this.options_.freehandCondition
+          ? this.options_.freehandCondition
+          : shiftKeyOnly;
+    }
+  }
+
+  /**
    * Get the overlay layer that this interaction renders sketch features to.
    * @return {VectorLayer} Overlay layer.
    * @api
    */
   getOverlay() {
     return this.overlay_;
+  }
+
+  /**
+   * Get if this interaction is in freehand mode.
+   * @return {boolean} Freehand drawing.
+   * @api
+   */
+  getFreehand() {
+    return this.freehand_;
   }
 
   /**

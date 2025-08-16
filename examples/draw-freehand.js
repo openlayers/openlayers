@@ -27,14 +27,15 @@ const map = new Map({
 
 const typeSelect = document.getElementById('type');
 
+const freehandCheckbox = document.getElementById('freehand');
+
 let draw; // global so we can remove it later
 function addInteraction() {
-  const value = typeSelect.value;
-  if (value !== 'None') {
+  if (typeSelect.value !== 'None') {
     draw = new Draw({
       source: source,
       type: typeSelect.value,
-      freehand: true,
+      freehand: freehandCheckbox.checked,
     });
     map.addInteraction(draw);
   }
@@ -46,6 +47,15 @@ function addInteraction() {
 typeSelect.onchange = function () {
   map.removeInteraction(draw);
   addInteraction();
+};
+
+/**
+ * Handle change event.
+ */
+freehandCheckbox.onchange = function () {
+  if (draw) {
+    draw.setFreehand(freehandCheckbox.checked);
+  }
 };
 
 addInteraction();

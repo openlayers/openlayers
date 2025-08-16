@@ -1644,6 +1644,48 @@ describe('ol/interaction/Draw', function () {
     });
   });
 
+  describe('#setFreehand()', function () {
+    let interaction;
+
+    beforeEach(function () {
+      interaction = new Draw({
+        type: 'LineString',
+      });
+
+      expect(interaction.getActive()).to.be(true);
+
+      map.addInteraction(interaction);
+
+      // first point
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
+
+      expect(interaction.sketchFeature_).not.to.be(null);
+    });
+
+    afterEach(function () {
+      map.removeInteraction(interaction);
+    });
+
+    describe('#setFreehand()', function () {
+      it('sets freehand property', function () {
+        interaction.setFreehand(true);
+        expect(interaction.getFreehand()).to.be(true);
+
+        interaction.setFreehand(false);
+        expect(interaction.getFreehand()).to.be(false);
+      });
+    });
+  });
+
+  describe('#getFreehand()', function () {
+    it('returns the freehand mode', function () {
+      const draw = new Draw({type: 'LineString'});
+      expect(draw.getFreehand()).to.eql(draw.freehand_);
+    });
+  });
+
   describe('#getOverlay', function () {
     it('returns the feature overlay layer', function () {
       const draw = new Draw({type: 'Point'});
