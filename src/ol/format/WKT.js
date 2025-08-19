@@ -66,7 +66,7 @@ const ZM = 'ZM';
  * @const
  * @enum {number}
  */
-const TokenType = {
+export const TokenType = {
   START: 0,
   TEXT: 1,
   LEFT_PAREN: 2,
