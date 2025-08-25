@@ -251,6 +251,34 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
       expect(Object.keys(tile2.executorGroups)).to.have.length(1);
     });
 
+    it('sets the correct `wantedResolution`', (done) => {
+      map.getView().setZoom(0.1);
+      map.renderSync();
+      map.frameState_;
+      const resolution = map.frameState_.viewState.resolution;
+      const tile = layer.getRenderer().getTile(0, 0, 0, map.frameState_);
+      // hifi - use exact view resolution
+      expect(tile.wantedResolution).to.be(resolution);
+      map.getView().animate({zoom: 0.6, duration: 200}, () => {
+        setTimeout(() => {
+          try {
+            // hifi - use exact view resolution
+            expect(tile.wantedResolution).to.be(
+              map.frameState_.viewState.resolution,
+            );
+            done();
+          } catch (e) {
+            done(e);
+          }
+        }, 100);
+      });
+      setTimeout(
+        // not hifi - use previous resolution
+        () => expect(tile.wantedResolution).to.be(resolution),
+        100,
+      );
+    });
+
     it('reuses render container and adds and removes overlay context', function (done) {
       map.getLayers().insertAt(
         0,

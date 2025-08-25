@@ -163,12 +163,19 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const viewState = frameState.viewState;
     const resolution = viewState.resolution;
     const viewHints = frameState.viewHints;
+    const source = this.getLayer().getSource();
+    const tileGrid = source.getTileGridForProjection(viewState.projection);
     const hifi = !(
       viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING]
     );
-    if (hifi || !tile.wantedResolution) {
+    const withinTileResolutionRange =
+      tileGrid.getZForResolution(resolution, source.zDirection) === z;
+    if (hifi && withinTileResolutionRange) {
       tile.wantedResolution = resolution;
+    } else if (!tile.wantedResolution) {
+      tile.wantedResolution = tileGrid.getResolution(z);
     }
+
     return tile;
   }
 
@@ -919,10 +926,10 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const replayState = tile.getReplayState(layer);
     const revision = layer.getRevision();
     const resolution = tile.wantedResolution;
-    return (
+    const tileImageNeedsRender =
       replayState.renderedTileResolution !== resolution ||
-      replayState.renderedTileRevision !== revision
-    );
+      replayState.renderedTileRevision !== revision;
+    return tileImageNeedsRender;
   }
 
   /**
