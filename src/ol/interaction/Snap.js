@@ -535,6 +535,9 @@ class Snap extends PointerInteraction {
     }
 
     if (register) {
+      if (this.featureChangeListenerKeys_[feature_uid]) {
+        unlistenByKey(this.featureChangeListenerKeys_[feature_uid]);
+      }
       this.featureChangeListenerKeys_[feature_uid] = listen(
         feature,
         EventType.CHANGE,
