@@ -20,6 +20,8 @@ export function createCanvasContext2D(width, height, canvasPool, settings) {
     canvas = /** @type {HTMLCanvasElement} */ (canvasPool.shift());
   } else if (WORKER_OFFSCREEN_CANVAS) {
     canvas = new OffscreenCanvas(width || 300, height || 300);
+    // OffscreenCanvas does not have a style, so we mock it
+    /** @type {HTMLCanvasElement} */ (canvas).style = {};
   } else {
     canvas = document.createElement('canvas');
   }

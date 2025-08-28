@@ -1,6 +1,8 @@
 /**
  * @module ol/render/webgl/VectorStyleRenderer
  */
+import {UNKNOWN, expressionToFunction} from '../../expr/cpu.js';
+import {BooleanType} from '../../expr/expression.js';
 import {
   create as createTransform,
   makeInverse as makeInverseTransform,
