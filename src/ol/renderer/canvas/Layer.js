@@ -12,6 +12,7 @@ import {
   getTopRight,
   getWidth,
 } from '../../extent.js';
+import {WORKER_OFFSCREEN_CANVAS} from '../../has.js';
 import RenderEvent from '../../render/Event.js';
 import RenderEventType from '../../render/EventType.js';
 import ZIndexContext from '../../render/canvas/ZIndexContext.js';
@@ -54,8 +55,9 @@ class CanvasLayerRenderer extends LayerRenderer {
     super(layer);
 
     /**
+     * HTMLElement container for the layer to be rendered in.
      * @protected
-     * @type {HTMLElement}
+     * @type {HTMLElement | OffscreenCanvas}
      */
     this.container = null;
 
@@ -101,6 +103,7 @@ class CanvasLayerRenderer extends LayerRenderer {
     this.deferredContext_ = null;
 
     /**
+     * true if the container has been reused from the previous renderer
      * @type {boolean}
      */
     this.containerReused = false;
@@ -155,6 +158,7 @@ class CanvasLayerRenderer extends LayerRenderer {
    * @param {string} [backgroundColor] Background color.
    */
   useContainer(target, transform, backgroundColor) {
+    // renderer canvas to target canvas
     const layerClassName = this.getLayer().getClassName();
     let container, context;
     if (
@@ -169,11 +173,18 @@ class CanvasLayerRenderer extends LayerRenderer {
           )))
     ) {
       const canvas = target.firstElementChild;
-      if (canvas instanceof HTMLCanvasElement) {
+      if (
+        canvas instanceof OffscreenCanvas ||
+        (!WORKER_OFFSCREEN_CANVAS && canvas instanceof HTMLCanvasElement)
+      ) {
         context = canvas.getContext('2d');
       }
     }
-    if (context && equivalent(context.canvas.style.transform, transform)) {
+    if (
+      context &&
+      (context.canvas instanceof OffscreenCanvas ||
+        equivalent(context.canvas.style.transform, transform))
+    ) {
       // Container of the previous layer renderer can be used.
       this.container = target;
       this.context = context;
@@ -183,25 +194,54 @@ class CanvasLayerRenderer extends LayerRenderer {
       this.container = null;
       this.context = null;
       this.containerReused = false;
-    } else if (this.container) {
+    } else if (this.container && !(this.container instanceof OffscreenCanvas)) {
       this.container.style.backgroundColor = null;
     }
     if (!this.container) {
-      container = document.createElement('div');
-      container.className = layerClassName;
-      let style = container.style;
-      style.position = 'absolute';
-      style.width = '100%';
-      style.height = '100%';
-      context = createCanvasContext2D();
-      const canvas = context.canvas;
-      container.appendChild(canvas);
-      style = canvas.style;
-      style.position = 'absolute';
-      style.left = '0';
-      style.transformOrigin = 'top left';
-      this.container = container;
-      this.context = context;
+      if (WORKER_OFFSCREEN_CANVAS) {
+        // to do: why do we need a div here, only for the background color?
+        // to do: for background, create offscreen canvas instead of div
+        //this.container = new OffscreenCanvas(512, 512); // to do: hardcoded size
+        // TO DO: mock the container, keep the structure the same
+        this.context = createCanvasContext2D();
+        this.container = new Proxy(
+          {
+            style: {
+              backgroundColor: '',
+            },
+            className: 'ol-layer',
+            childNodes: [this.context.canvas],
+            appendChild: () => {},
+          },
+          {
+            get(target, prop, receiver) {
+              if (prop === 'firstElementChild') {
+                return target.childNodes.length > 0
+                  ? target.childNodes[0]
+                  : null;
+              }
+              return Reflect.get(target, prop, receiver);
+            },
+          },
+        );
+        // appendChild needs special treatment in worker
+      } else {
+        container = document.createElement('div');
+        container.className = layerClassName;
+        let style = container.style;
+        style.position = 'absolute';
+        style.width = '100%';
+        style.height = '100%';
+        context = createCanvasContext2D();
+        const canvas = context.canvas;
+        container.appendChild(canvas);
+        style = canvas.style;
+        style.position = 'absolute';
+        style.left = '0';
+        style.transformOrigin = 'top left';
+        this.container = container;
+        this.context = context;
+      }
     }
     if (
       !this.containerReused &&
@@ -280,7 +320,10 @@ class CanvasLayerRenderer extends LayerRenderer {
       } else {
         this.context.clearRect(0, 0, width, height);
       }
-      if (canvasTransform !== canvas.style.transform) {
+      if (
+        !WORKER_OFFSCREEN_CANVAS &&
+        canvasTransform !== canvas.style.transform
+      ) {
         canvas.style.transform = canvasTransform;
       }
     }

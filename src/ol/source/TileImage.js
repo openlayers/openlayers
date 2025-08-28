@@ -4,6 +4,7 @@
 import ImageTile from '../ImageTile.js';
 import TileState from '../TileState.js';
 import EventType from '../events/EventType.js';
+import {WORKER_OFFSCREEN_CANVAS} from '../has.js';
 import {equivalent, get as getProjection} from '../proj.js';
 import ReprojTile from '../reproj/Tile.js';
 import {getForProjection as getTileGridForProjection} from '../tilegrid.js';
@@ -313,6 +314,33 @@ class TileImage extends UrlTile {
  * @param {string} src Source.
  */
 export function defaultTileLoadFunction(imageTile, src) {
+  if (WORKER_OFFSCREEN_CANVAS) {
+    // special treatment for offscreen canvas
+    fetch(src)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+        return response.blob();
+      })
+      .then((blob) => {
+        return createImageBitmap(blob);
+      })
+      .then((imageBitmap) => {
+        // to do: use imageBitmap without canvas?
+        const canvas = imageTile.getImage();
+        canvas.width = imageBitmap.width;
+        canvas.height = imageBitmap.height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(imageBitmap, 0, 0);
+        imageBitmap.close?.();
+        canvas.dispatchEvent(new Event('load'));
+      })
+      .catch((err) => {
+        console.error('Error loading image:', err); // eslint-disable-line no-console
+      });
+  }
+
   /** @type {HTMLImageElement|HTMLVideoElement} */ (imageTile.getImage()).src =
     src;
 }

@@ -568,7 +568,6 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
    */
   renderFrame(frameState, target) {
     this.renderComplete = true;
-
     /**
      * TODO:
      *  maybe skip transition when not fully opaque
@@ -879,6 +878,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       frameState.postRenderFunctions.push(postRenderFunction);
     }
 
+    // this normally is `div.ol-layer` and is a mocked div in worker
     return this.container;
   }
 
@@ -916,6 +916,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
         /** @type {import("../../ImageTile.js").default} */ (tile),
       );
     }
+
     if (!image) {
       return;
     }

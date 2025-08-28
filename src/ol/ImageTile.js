@@ -5,6 +5,7 @@ import {listenImage} from './Image.js';
 import Tile from './Tile.js';
 import TileState from './TileState.js';
 import {createCanvasContext2D} from './dom.js';
+import {WORKER_OFFSCREEN_CANVAS} from './has.js';
 
 class ImageTile extends Tile {
   /**
@@ -36,10 +37,17 @@ class ImageTile extends Tile {
 
     /**
      * @private
-     * @type {HTMLImageElement|HTMLCanvasElement}
+     * @type {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas}
      */
-    this.image_ = new Image();
-    if (crossOrigin !== null) {
+    this.image_ = WORKER_OFFSCREEN_CANVAS
+      ? new OffscreenCanvas(1, 1)
+      : new Image();
+
+    if (
+      !WORKER_OFFSCREEN_CANVAS &&
+      this.image_ instanceof HTMLImageElement &&
+      crossOrigin !== null
+    ) {
       this.image_.crossOrigin = crossOrigin;
     }
 
@@ -57,8 +65,8 @@ class ImageTile extends Tile {
   }
 
   /**
-   * Get the HTML image element for this tile (may be a Canvas, Image, or Video).
-   * @return {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} Image.
+   * Get the HTML image element for this tile (may be a Canvas, OffscreenCanvas, Image, or Video).
+   * @return {HTMLCanvasElement|OffscreenCanvas|HTMLImageElement|HTMLVideoElement} Image.
    * @api
    */
   getImage() {
@@ -67,7 +75,7 @@ class ImageTile extends Tile {
 
   /**
    * Sets an HTML image element for this tile (may be a Canvas or preloaded Image).
-   * @param {HTMLCanvasElement|HTMLImageElement} element Element.
+   * @param {HTMLCanvasElement|OffscreenCanvas|HTMLImageElement} element Element.
    */
   setImage(element) {
     this.image_ = element;
@@ -94,6 +102,13 @@ class ImageTile extends Tile {
    * @private
    */
   handleImageLoad_() {
+    if (WORKER_OFFSCREEN_CANVAS) {
+      // OffscreenCanvas does not have naturalWidth and naturalHeight
+      this.state = TileState.LOADED;
+      this.unlistenImage_();
+      this.changed();
+      return;
+    }
     const image = /** @type {HTMLImageElement} */ (this.image_);
     if (image.naturalWidth && image.naturalHeight) {
       this.state = TileState.LOADED;

@@ -147,7 +147,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
    * Render the layer.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @param {HTMLElement} target Target that may be used to render content to.
-   * @return {HTMLElement} The rendered element.
+   * @return {HTMLElement|OffscreenCanvas} The rendered element.
    * @override
    */
   renderFrame(frameState, target) {
@@ -233,7 +233,6 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
       context.restore();
     }
     context.imageSmoothingEnabled = true;
-
     return this.container;
   }
 }

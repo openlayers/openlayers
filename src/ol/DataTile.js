@@ -6,7 +6,7 @@ import TileState from './TileState.js';
 import {createCanvasContext2D} from './dom.js';
 
 /**
- * @typedef {HTMLImageElement|HTMLCanvasElement|HTMLVideoElement|ImageBitmap} ImageLike
+ * @typedef {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas|HTMLVideoElement|ImageBitmap} ImageLike
  */
 
 /**
