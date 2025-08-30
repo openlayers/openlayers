@@ -205,7 +205,7 @@
  * the y value in pixels.
  * @property {ColorExpression} [icon-color] Color to tint the icon. If not specified,
  * the icon will be left as is.
- * @property {null|string} [icon-cross-origin] The `crossOrigin` attribute for loaded images. Note that you must provide a
+ * @property {import("../cors.js").CrossOriginOption} [icon-cross-origin] The `crossOrigin` attribute for loaded images. Note that you must provide a
  * `icon-cross-origin` value if you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
  * @property {SizeExpression} [icon-offset=[0, 0]] Offset, which, together with the size and the offset origin, define the
