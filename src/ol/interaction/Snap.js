@@ -832,7 +832,7 @@ class Snap extends PointerInteraction {
       for (let i = 0; i < segmentsLength; ++i) {
         let vertex = null;
         const segmentData = segments[i];
-        if (segmentData.feature.getGeometry().getType() === 'Circle') {
+        if (segmentData.feature.getGeometry().getType()) {
           let circleGeometry = segmentData.feature.getGeometry();
           const userProjection = getUserProjection();
           if (userProjection) {
