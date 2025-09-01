@@ -809,7 +809,7 @@ class Snap extends PointerInteraction {
     if (this.vertex_ || this.intersection_) {
       for (let i = 0; i < segmentsLength; ++i) {
         const segmentData = segments[i];
-        if (segmentData.feature.getGeometry().getType() === 'Circle') {
+        if (segmentData.feature.getGeometry().getType()) {
           for (const vertex of segmentData.segment) {
             const tempVertexCoord = fromUserCoordinate(vertex, projection);
             const delta = squaredDistance(projectedCoordinate, tempVertexCoord);
