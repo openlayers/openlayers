@@ -29,22 +29,28 @@ const typeSelect = document.getElementById('type');
 
 let draw; // global so we can remove it later
 function addInteraction() {
-  const value = typeSelect.value;
-  if (value !== 'None') {
-    draw = new Draw({
-      source: source,
-      type: typeSelect.value,
-    });
-    map.addInteraction(draw);
+  draw = new Draw({
+    source: source,
+    type: typeSelect.value !== 'None' ? typeSelect.value : 'Point',
+  });
+
+  if (typeSelect.value === 'None') {
+    draw.setActive(false);
   }
+
+  map.addInteraction(draw);
 }
 
 /**
  * Handle change event.
  */
 typeSelect.onchange = function () {
-  map.removeInteraction(draw);
-  addInteraction();
+  if (typeSelect.value !== 'None') {
+    draw.setActive(true);
+    draw.setType(typeSelect.value);
+  } else {
+    draw.setActive(false);
+  }
 };
 
 document.getElementById('undo').addEventListener('click', function () {

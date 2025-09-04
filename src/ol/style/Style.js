@@ -533,7 +533,7 @@ export function createEditingStyle() {
     }),
     new Style({
       stroke: new Stroke({
-        color: blue,
+        color: 'red',
         width: width,
       }),
     }),

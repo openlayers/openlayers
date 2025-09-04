@@ -1686,6 +1686,48 @@ describe('ol/interaction/Draw', function () {
     });
   });
 
+  describe('#setType()', function () {
+    let interaction;
+
+    beforeEach(function () {
+      interaction = new Draw({
+        type: 'LineString',
+      });
+
+      expect(interaction.getActive()).to.be(true);
+
+      map.addInteraction(interaction);
+
+      // first point
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
+
+      expect(interaction.sketchFeature_).not.to.be(null);
+    });
+
+    afterEach(function () {
+      map.removeInteraction(interaction);
+    });
+
+    describe('#setType()', function () {
+      it('sets type property', function () {
+        interaction.setType('Polygon');
+        expect(interaction.getType()).to.be('Polygon');
+
+        interaction.setType('Point');
+        expect(interaction.getType()).to.be('Point');
+      });
+    });
+  });
+
+  describe('#getType()', function () {
+    it('returns the drawing type', function () {
+      const draw = new Draw({type: 'LineString'});
+      expect(draw.getType()).to.be('LineString');
+    });
+  });
+
   describe('#getOverlay', function () {
     it('returns the feature overlay layer', function () {
       const draw = new Draw({type: 'Point'});
