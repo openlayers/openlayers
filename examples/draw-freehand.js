@@ -29,7 +29,7 @@ const typeSelect = document.getElementById('type');
 
 const freehandCheckbox = document.getElementById('freehand');
 
-let draw; // global so we can remove it later
+let draw; // global so we can change it later
 function addInteraction() {
   if (typeSelect.value !== 'None') {
     draw = new Draw({
@@ -45,8 +45,12 @@ function addInteraction() {
  * Handle change event.
  */
 typeSelect.onchange = function () {
-  map.removeInteraction(draw);
-  addInteraction();
+  if (typeSelect.value !== 'None') {
+    draw.setActive(true);
+    draw.setType(typeSelect.value);
+  } else {
+    draw.setActive(false);
+  }
 };
 
 /**

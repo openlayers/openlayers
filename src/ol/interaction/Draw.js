@@ -348,11 +348,7 @@ class Draw extends PointerInteraction {
      * @type {number}
      * @private
      */
-    this.minPoints_ = options.minPoints
-      ? options.minPoints
-      : this.mode_ === 'Polygon'
-        ? 3
-        : 2;
+    this.minPoints_ = this.calculateMinPoints();
 
     /**
      * The number of points that can be drawn before a polygon ring or line string
@@ -360,12 +356,7 @@ class Draw extends PointerInteraction {
      * @type {number}
      * @private
      */
-    this.maxPoints_ =
-      this.mode_ === 'Circle'
-        ? 2
-        : options.maxPoints
-          ? options.maxPoints
-          : Infinity;
+    this.maxPoints_ = this.calculateMaxPoints();
 
     /**
      * A function to decide if a potential finish coordinate is permissible
@@ -386,70 +377,7 @@ class Draw extends PointerInteraction {
 
     let geometryFunction = options.geometryFunction;
     if (!geometryFunction) {
-      const mode = this.mode_;
-      if (mode === 'Circle') {
-        /**
-         * @param {!LineCoordType} coordinates The coordinates.
-         * @param {import("../geom/SimpleGeometry.js").default|undefined} geometry Optional geometry.
-         * @param {import("../proj/Projection.js").default} projection The view projection.
-         * @return {import("../geom/SimpleGeometry.js").default} A geometry.
-         */
-        geometryFunction = (coordinates, geometry, projection) => {
-          const circle = geometry
-            ? /** @type {Circle} */ (geometry)
-            : new Circle([NaN, NaN]);
-          const center = fromUserCoordinate(coordinates[0], projection);
-          const squaredLength = squaredCoordinateDistance(
-            center,
-            fromUserCoordinate(coordinates[coordinates.length - 1], projection),
-          );
-          circle.setCenterAndRadius(
-            center,
-            Math.sqrt(squaredLength),
-            this.geometryLayout_,
-          );
-          const userProjection = getUserProjection();
-          if (userProjection) {
-            circle.transform(projection, userProjection);
-          }
-          return circle;
-        };
-      } else {
-        let Constructor;
-        if (mode === 'Point') {
-          Constructor = Point;
-        } else if (mode === 'LineString') {
-          Constructor = LineString;
-        } else if (mode === 'Polygon') {
-          Constructor = Polygon;
-        }
-        /**
-         * @param {!LineCoordType} coordinates The coordinates.
-         * @param {import("../geom/SimpleGeometry.js").default|undefined} geometry Optional geometry.
-         * @param {import("../proj/Projection.js").default} projection The view projection.
-         * @return {import("../geom/SimpleGeometry.js").default} A geometry.
-         */
-        geometryFunction = (coordinates, geometry, projection) => {
-          if (geometry) {
-            if (mode === 'Polygon') {
-              if (coordinates[0].length) {
-                // Add a closing coordinate to match the first
-                geometry.setCoordinates(
-                  [coordinates[0].concat([coordinates[0][0]])],
-                  this.geometryLayout_,
-                );
-              } else {
-                geometry.setCoordinates([], this.geometryLayout_);
-              }
-            } else {
-              geometry.setCoordinates(coordinates, this.geometryLayout_);
-            }
-          } else {
-            geometry = new Constructor(coordinates, this.geometryLayout_);
-          }
-          return geometry;
-        };
-      }
+      geometryFunction = this.getGeometryFunction_();
     }
 
     /**
@@ -610,6 +538,27 @@ class Draw extends PointerInteraction {
     super.setMap(map);
     this.updateState_();
   }
+  /**
+   * Change the geometry type for this interaction.
+   * @param {import("../geom/Geometry.js").Type} type New geometry type.
+   * @api
+   */
+  setType(type) {
+    this.type_ = type;
+    this.mode_ = getMode(type);
+
+    // Reset geometry function if not custom
+    if (!this.options_.geometryFunction) {
+      this.geometryFunction_ = this.getGeometryFunction_();
+    }
+
+    // Update min/max points for new type
+    this.minPoints_ = this.calculateMinPoints();
+    this.maxPoints_ = this.calculateMaxPoints();
+
+    // Abort any ongoing drawing
+    this.abortDrawing();
+  }
 
   /**
    * Set whether the drawing is done in freehand mode.
@@ -645,6 +594,43 @@ class Draw extends PointerInteraction {
    */
   getFreehand() {
     return this.freehand_;
+  }
+
+  /**
+   * Get the interaction drawing type.
+   * @return {import("../geom/Geometry.js").Type} Drawing type.
+   * @api
+   */
+  getType() {
+    return this.type_;
+  }
+
+  /**
+   * Get the drawing mode.  The mode for multi-part geometries is the same as for
+   * their single-part cousins.
+   * @return {number} number of min points.
+   * @private
+   */
+  calculateMinPoints() {
+    return this.options_.minPoints
+      ? this.options_.minPoints
+      : this.mode_ === 'Polygon'
+        ? 3
+        : 2;
+  }
+
+  /**
+   * Get the drawing mode.  The mode for multi-part geometries is the same as for
+   * their single-part cousins.
+   * @return {number} number of max points.
+   * @private
+   */
+  calculateMaxPoints() {
+    return this.mode_ === 'Circle'
+      ? 2
+      : this.options_.maxPoints
+        ? this.options_.maxPoints
+        : Infinity;
   }
 
   /**
@@ -1176,6 +1162,7 @@ class Draw extends PointerInteraction {
       this.sketchLineCoords_ = this.sketchCoords_[0];
     } else {
       this.sketchCoords_ = [start.slice(), start.slice()];
+      this.sketchLineCoords_ = null;
     }
     if (this.sketchLineCoords_) {
       this.sketchLine_ = new Feature(new LineString(this.sketchLineCoords_));
@@ -1532,6 +1519,79 @@ class Draw extends PointerInteraction {
       this.abortDrawing();
     }
     this.overlay_.setMap(active ? map : null);
+  }
+
+  /**
+   * @return {GeometryFunction} GeometryFunction.
+   * @private
+   */
+  getGeometryFunction_() {
+    let geometryFunction;
+    const mode = this.mode_;
+    if (mode === 'Circle') {
+      /**
+       * @param {!LineCoordType} coordinates The coordinates.
+       * @param {import("../geom/SimpleGeometry.js").default|undefined} geometry Optional geometry.
+       * @param {import("../proj/Projection.js").default} projection The view projection.
+       * @return {import("../geom/SimpleGeometry.js").default} A geometry.
+       */
+      geometryFunction = (coordinates, geometry, projection) => {
+        const circle = geometry
+          ? /** @type {Circle} */ (geometry)
+          : new Circle([NaN, NaN]);
+        const center = fromUserCoordinate(coordinates[0], projection);
+        const squaredLength = squaredCoordinateDistance(
+          center,
+          fromUserCoordinate(coordinates[coordinates.length - 1], projection),
+        );
+        circle.setCenterAndRadius(
+          center,
+          Math.sqrt(squaredLength),
+          this.geometryLayout_,
+        );
+        const userProjection = getUserProjection();
+        if (userProjection) {
+          circle.transform(projection, userProjection);
+        }
+        return circle;
+      };
+    } else {
+      let Constructor;
+      if (mode === 'Point') {
+        Constructor = Point;
+      } else if (mode === 'LineString') {
+        Constructor = LineString;
+      } else if (mode === 'Polygon') {
+        Constructor = Polygon;
+      }
+      /**
+       * @param {!LineCoordType} coordinates The coordinates.
+       * @param {import("../geom/SimpleGeometry.js").default|undefined} geometry Optional geometry.
+       * @param {import("../proj/Projection.js").default} projection The view projection.
+       * @return {import("../geom/SimpleGeometry.js").default} A geometry.
+       */
+      geometryFunction = (coordinates, geometry, projection) => {
+        if (geometry) {
+          if (mode === 'Polygon') {
+            if (coordinates[0].length) {
+              // Add a closing coordinate to match the first
+              geometry.setCoordinates(
+                [coordinates[0].concat([coordinates[0][0]])],
+                this.geometryLayout_,
+              );
+            } else {
+              geometry.setCoordinates([], this.geometryLayout_);
+            }
+          } else {
+            geometry.setCoordinates(coordinates, this.geometryLayout_);
+          }
+        } else {
+          geometry = new Constructor(coordinates, this.geometryLayout_);
+        }
+        return geometry;
+      };
+    }
+    return geometryFunction;
   }
 }
 

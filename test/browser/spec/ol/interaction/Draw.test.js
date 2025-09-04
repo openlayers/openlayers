@@ -1686,6 +1686,56 @@ describe('ol/interaction/Draw', function () {
     });
   });
 
+  describe('#setType()', function () {
+    let interaction;
+
+    beforeEach(function () {
+      interaction = new Draw({
+        type: 'LineString',
+      });
+
+      map.addInteraction(interaction);
+
+      // first point
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
+    });
+
+    afterEach(function () {
+      map.removeInteraction(interaction);
+    });
+
+    describe('#setType()', function () {
+      it('sets type property', function () {
+        interaction.setType('Polygon');
+        expect(interaction.getType()).to.be('Polygon');
+        expect(interaction.mode_).to.be('Polygon');
+        expect(interaction.minPoints_).to.be(3);
+        expect(interaction.maxPoints_).to.be(Infinity);
+
+        interaction.setType('Point');
+        expect(interaction.getType()).to.be('Point');
+        expect(interaction.mode_).to.be('Point');
+        expect(interaction.minPoints_).to.be(2);
+        expect(interaction.maxPoints_).to.be(Infinity);
+
+        interaction.setType('MultiLineString');
+        expect(interaction.getType()).to.be('MultiLineString');
+        expect(interaction.mode_).to.be('LineString');
+        expect(interaction.minPoints_).to.be(2);
+        expect(interaction.maxPoints_).to.be(Infinity);
+      });
+    });
+  });
+
+  describe('#getType()', function () {
+    it('returns the drawing type', function () {
+      const draw = new Draw({type: 'LineString'});
+      expect(draw.getType()).to.be('LineString');
+    });
+  });
+
   describe('#getOverlay', function () {
     it('returns the feature overlay layer', function () {
       const draw = new Draw({type: 'Point'});
