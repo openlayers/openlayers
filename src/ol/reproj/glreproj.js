@@ -222,7 +222,7 @@ export function render(
   let stitchWidth;
   /** @type {number} */
   let stitchHeight;
-  const stitchScale = 1 / sourceResolution;
+  const stitchScale = pixelRatio / sourceResolution;
 
   if (!drawSingle || sources.length !== 1 || gutter !== 0) {
     stitchTexture = gl.createTexture();
@@ -382,17 +382,23 @@ export function render(
       const {u1, v1, u0, v0, u2, v2} = getUVs(target);
 
       const su0 =
-        (source[0][0] - sourceTopLeft[0]) / sourceResolution / stitchWidth;
+        ((source[0][0] - sourceTopLeft[0]) / sourceResolution / stitchWidth) *
+        pixelRatio;
       const sv0 =
-        -(source[0][1] - sourceTopLeft[1]) / sourceResolution / stitchHeight;
+        (-(source[0][1] - sourceTopLeft[1]) / sourceResolution / stitchHeight) *
+        pixelRatio;
       const su1 =
-        (source[1][0] - sourceTopLeft[0]) / sourceResolution / stitchWidth;
+        ((source[1][0] - sourceTopLeft[0]) / sourceResolution / stitchWidth) *
+        pixelRatio;
       const sv1 =
-        -(source[1][1] - sourceTopLeft[1]) / sourceResolution / stitchHeight;
+        (-(source[1][1] - sourceTopLeft[1]) / sourceResolution / stitchHeight) *
+        pixelRatio;
       const su2 =
-        (source[2][0] - sourceTopLeft[0]) / sourceResolution / stitchWidth;
+        ((source[2][0] - sourceTopLeft[0]) / sourceResolution / stitchWidth) *
+        pixelRatio;
       const sv2 =
-        -(source[2][1] - sourceTopLeft[1]) / sourceResolution / stitchHeight;
+        (-(source[2][1] - sourceTopLeft[1]) / sourceResolution / stitchHeight) *
+        pixelRatio;
 
       vertices.push(u1, v1, u0, v0, u2, v2);
       texcoords.push(su1, sv1, su0, sv0, su2, sv2);
