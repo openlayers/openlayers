@@ -19,6 +19,11 @@ export const SnapEventType = {
    * @api
    */
   UNSNAP: 'unsnap',
+
+  SNAP_VERTEX: 'snap:vertex',
+  SNAP_EDGE: 'snap:edge',
+  SNAP_INTERSECTION: 'snap:intersection',
+  SNAP_MIDPOINT: 'snap:midpoint',
 };
 
 /**
