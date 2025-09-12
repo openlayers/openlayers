@@ -1,4 +1,7 @@
 /**
+ * @enum {string}
+ */
+/**
  * @module ol/events/SnapEvent
  */
 import Event from './Event.js';
@@ -8,17 +11,12 @@ import Event from './Event.js';
  */
 export const SnapEventType = {
   /**
-   * Triggered upon snapping to vertex, edge, intersection or midpoint
+   * Triggered upon snapping to vertex or edge
    * @event SnapEvent#snap
    * @api
    */
   SNAP: 'snap',
   UNSNAP: 'unsnap',
-
-  SNAP_VERTEX: 'snap:vertex',
-  SNAP_EDGE: 'snap:edge',
-  SNAP_INTERSECTION: 'snap:intersection',
-  SNAP_MIDPOINT: 'snap:midpoint',
 };
 
 /**
