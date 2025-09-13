@@ -88,13 +88,17 @@ import PointerInteraction from './Pointer.js';
  */
 
 /**
+ * @typedef {'edge'|'vertex'|'midpoint'|'intersection'} SnapType
+ */
+
+/**
  * Information about the last snapped state.
  * @typedef {Object} SnappedInfo
  * @property {import("../coordinate.js").Coordinate|null} vertex - The snapped vertex.
  * @property {import("../pixel.js").Pixel|null} vertexPixel - The pixel of the snapped vertex.
  * @property {import("../Feature.js").default|null} feature - The feature being snapped.
  * @property {Segment|null} segment - Segment, or `null` if snapped to a vertex.
- * @property {import("../events/SnapEvent.js").SnapEventType} snapType - The reason of snapping.
+ * @property {SnapType} snapType - The reason for snapping.
  */
 
 /***
@@ -619,7 +623,6 @@ class Snap extends PointerInteraction {
         snapType: result.snapType,
       };
       this.dispatchEvent(new SnapEvent(SnapEventType.SNAP, this.snapped_));
-      this.dispatchEvent(new SnapEvent(result.snapType, this.snapped_));
     } else if (this.snapped_) {
       // Dispatch UNSNAP event if no longer snapped
       this.dispatchEvent(new SnapEvent(SnapEventType.UNSNAP, this.snapped_));
@@ -798,7 +801,7 @@ class Snap extends PointerInteraction {
     let minSquaredDistance = Infinity;
     let closestFeature;
     let closestSegment = null;
-    let snapType;
+    let /** @type {SnapType} */ snapType;
 
     const squaredPixelTolerance = this.pixelTolerance_ * this.pixelTolerance_;
     const getResult = () => {
@@ -835,8 +838,8 @@ class Snap extends PointerInteraction {
               minSquaredDistance = delta;
               closestFeature = segmentData.feature;
               snapType = segmentData.intersectionFeature
-                ? SnapEventType.SNAP_INTERSECTION
-                : SnapEventType.SNAP_VERTEX;
+                ? 'intersection'
+                : 'vertex';
             }
           }
         }
@@ -869,7 +872,7 @@ class Snap extends PointerInteraction {
             closestSegment = segmentData.segment;
             minSquaredDistance = delta;
             closestFeature = segmentData.feature;
-            snapType = SnapEventType.SNAP_MIDPOINT;
+            snapType = 'midpoint';
           }
         }
       }
@@ -914,7 +917,7 @@ class Snap extends PointerInteraction {
                 : segmentData.segment;
             minSquaredDistance = delta;
             closestFeature = segmentData.feature;
-            snapType = SnapEventType.SNAP_EDGE;
+            snapType = 'edge';
           }
         }
       }
