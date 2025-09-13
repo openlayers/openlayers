@@ -87,13 +87,17 @@ import PointerInteraction from './Pointer.js';
  */
 
 /**
+ * @typedef {'edge'|'vertex'|'midpoint'|'intersection'} SnapType
+ */
+
+/**
  * Information about the last snapped state.
  * @typedef {Object} SnappedInfo
  * @property {import("../coordinate.js").Coordinate|null} vertex - The snapped vertex.
  * @property {import("../pixel.js").Pixel|null} vertexPixel - The pixel of the snapped vertex.
  * @property {import("../Feature.js").default|null} feature - The feature being snapped.
  * @property {Segment|null} segment - Segment, or `null` if snapped to a vertex.
- * @property {import("../events/SnapEvent.js").SnapEventType|null} snapType - The reason of snapping.
+ * @property {SnapType|null} snaptype - The reason for snapping.
  */
 
 /***
@@ -383,8 +387,7 @@ class Snap extends PointerInteraction {
      * @private
      * @type {boolean}
      */
-    this.midpoint_ =
-      options.midpoint !== undefined ? options.midpoint : false;
+    this.midpoint_ = options.midpoint ?? false;
 
     /**
      * @type {import("../Collection.js").default<import("../Feature.js").default>|null}
@@ -607,10 +610,9 @@ class Snap extends PointerInteraction {
         vertexPixel: evt.pixel,
         feature: result.feature,
         segment: result.segment,
-        snapType: result.snapType
+        snaptype: result.snaptype,
       };
       this.dispatchEvent(new SnapEvent(SnapEventType.SNAP, this.snapped_));
-      this.dispatchEvent(new SnapEvent(result.snapType, this.snapped_));
     } else if (this.snapped_) {
       // Dispatch UNSNAP event if no longer snapped
       this.dispatchEvent(new SnapEvent(SnapEventType.UNSNAP, this.snapped_));
@@ -795,7 +797,7 @@ class Snap extends PointerInteraction {
     let closestFeature;
     let closestSegment = null;
     let isIntersection;
-    let snapType;
+    let /** @type {SnapType} */ snaptype;
 
     const squaredPixelTolerance = this.pixelTolerance_ * this.pixelTolerance_;
     const getResult = () => {
@@ -815,7 +817,7 @@ class Snap extends PointerInteraction {
             ],
             feature: closestFeature,
             segment: closestSegment,
-            snapType: snapType,
+            snaptype: snaptype,
           };
         }
       }
@@ -834,7 +836,7 @@ class Snap extends PointerInteraction {
               minSquaredDistance = delta;
               closestFeature = segmentData.feature;
               isIntersection = segmentData.isIntersection;
-              snapType = isIntersection ? SnapEventType.SNAP_INTERSECTION : SnapEventType.SNAP_VERTEX;              
+              snaptype = isIntersection ? 'intersection' : 'vertex';              
             }
           }
         }
@@ -848,9 +850,16 @@ class Snap extends PointerInteraction {
     if (this.midpoint_) {
       for (let i = 0; i < segmentsLength; ++i) {
         const segmentData = segments[i];
-        if (segmentData.segment.length != 2) continue;
+        if (segmentData.segment.length != 2) {
+          continue;
+        }
         const geometryType = segmentData.feature.getGeometry().getType();
-        if (geometryType === "LineString" || geometryType === "MultiLineString" || geometryType === "Polygon" || geometryType === "MultiPolygon") {
+        if (
+          geometryType === 'LineString' ||
+          geometryType === 'MultiLineString' ||
+          geometryType === 'Polygon' ||
+          geometryType === 'MultiPolygon'
+        ) {
           const [start, end] = segmentData.segment;
           const midpoint = [(start[0] + end[0]) / 2, (start[1] + end[1]) / 2];
           const tempMidpointCoord = fromUserCoordinate(midpoint, projection);
@@ -860,7 +869,7 @@ class Snap extends PointerInteraction {
             closestSegment = segmentData.segment;
             minSquaredDistance = delta;
             closestFeature = segmentData.feature;
-            snapType = SnapEventType.SNAP_MIDPOINT;
+            snaptype = 'midpoint';
           }
         }
       }
@@ -868,7 +877,7 @@ class Snap extends PointerInteraction {
       if (result) {
         return result;
       }
-    }    
+    }
 
     if (this.edge_) {
       for (let i = 0; i < segmentsLength; ++i) {
@@ -905,7 +914,7 @@ class Snap extends PointerInteraction {
                 : segmentData.segment;
             minSquaredDistance = delta;
             closestFeature = segmentData.feature;
-            snapType = SnapEventType.SNAP_EDGE;
+            snaptype = 'edge';
           }
         }
       }
