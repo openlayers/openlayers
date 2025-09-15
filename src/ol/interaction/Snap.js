@@ -836,7 +836,7 @@ class Snap extends PointerInteraction {
               minSquaredDistance = delta;
               closestFeature = segmentData.feature;
               isIntersection = segmentData.isIntersection;
-              snaptype = isIntersection ? 'intersection' : 'vertex';              
+              snaptype = isIntersection ? 'intersection' : 'vertex';
             }
           }
         }
