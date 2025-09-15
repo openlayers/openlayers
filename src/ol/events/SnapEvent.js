@@ -13,6 +13,11 @@ export const SnapEventType = {
    * @api
    */
   SNAP: 'snap',
+  /**
+   * Triggered if no longer snapped
+   * @event SnapEvent#unsnap
+   * @api
+   */
   UNSNAP: 'unsnap',
 };
 
