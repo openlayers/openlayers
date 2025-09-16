@@ -94,9 +94,9 @@ import PointerInteraction from './Pointer.js';
 /**
  * Information about the last snapped state.
  * @typedef {Object} SnappedInfo
- * @property {import("../coordinate.js").Coordinate|null} vertex - The snapped vertex.
- * @property {import("../pixel.js").Pixel|null} vertexPixel - The pixel of the snapped vertex.
- * @property {import("../Feature.js").default|null} feature - The feature being snapped.
+ * @property {import("../coordinate.js").Coordinate} vertex - The snapped vertex.
+ * @property {import("../pixel.js").Pixel} vertexPixel - The pixel of the snapped vertex.
+ * @property {import("../Feature.js").default} feature - The feature being snapped.
  * @property {Segment|null} segment - Segment, or `null` if snapped to a vertex.
  * @property {SnapType} snapType - The reason for snapping.
  */
@@ -283,6 +283,7 @@ function getFeatureFromEvent(evt) {
   return null;
 }
 
+/** @type {Array<import('../coordinate.js').Coordinate>} */
 const tempSegment = [];
 /** @type {Array<import('../extent.js').Extent>} */
 const tempExtents = [];
@@ -797,9 +798,11 @@ class Snap extends PointerInteraction {
       return null;
     }
 
+    /** @type {import('../coordinate.js').Coordinate|undefined} */
     let closestVertex;
     let minSquaredDistance = Infinity;
     let closestFeature;
+    /** @type {Array<import('../coordinate.js').Coordinate>|null} */
     let closestSegment = null;
     let /** @type {SnapType} */ snapType;
 
