@@ -783,30 +783,23 @@ class Snap extends PointerInteraction {
     let minSquaredDistance = Infinity;
     let closestFeature;
     let closestSegment = null;
-    let isIntersection;
 
     const squaredPixelTolerance = this.pixelTolerance_ * this.pixelTolerance_;
     const getResult = () => {
-      if (closestVertex) {
-        const vertexPixel = map.getPixelFromCoordinate(closestVertex);
-        const squaredPixelDistance = squaredDistance(pixel, vertexPixel);
-        if (
-          squaredPixelDistance <= squaredPixelTolerance &&
-          ((isIntersection && this.intersection_) ||
-            (!isIntersection && (this.vertex_ || this.edge_)))
-        ) {
-          return {
-            vertex: closestVertex,
-            vertexPixel: [
-              Math.round(vertexPixel[0]),
-              Math.round(vertexPixel[1]),
-            ],
-            feature: closestFeature,
-            segment: closestSegment,
-          };
-        }
+      if (!closestVertex) {
+        return null;
       }
-      return null;
+      const vertexPixel = map.getPixelFromCoordinate(closestVertex);
+      const squaredPixelDistance = squaredDistance(pixel, vertexPixel);
+      if (squaredPixelDistance > squaredPixelTolerance) {
+        return null;
+      }
+      return {
+        vertex: closestVertex,
+        vertexPixel: [Math.round(vertexPixel[0]), Math.round(vertexPixel[1])],
+        feature: closestFeature,
+        segment: closestSegment,
+      };
     };
 
     if (this.vertex_ || this.intersection_) {
@@ -816,11 +809,14 @@ class Snap extends PointerInteraction {
           for (const vertex of segmentData.segment) {
             const tempVertexCoord = fromUserCoordinate(vertex, projection);
             const delta = squaredDistance(projectedCoordinate, tempVertexCoord);
-            if (delta < minSquaredDistance) {
+            if (
+              delta < minSquaredDistance &&
+              ((this.intersection_ && segmentData.isIntersection) ||
+                (this.vertex_ && !segmentData.isIntersection))
+            ) {
               closestVertex = vertex;
               minSquaredDistance = delta;
               closestFeature = segmentData.feature;
-              isIntersection = segmentData.isIntersection;
             }
           }
         }
