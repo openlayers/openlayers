@@ -844,10 +844,6 @@ class Snap extends PointerInteraction {
           }
         }
       }
-      const result = getResult();
-      if (result) {
-        return result;
-      }
     }
 
     if (this.midpoint_) {
@@ -876,10 +872,10 @@ class Snap extends PointerInteraction {
           }
         }
       }
-      const result = getResult();
-      if (result) {
-        return result;
-      }
+    }
+    const result = getResult();
+    if (result) {
+      return result;
     }
 
     if (this.edge_) {
