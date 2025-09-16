@@ -2,6 +2,7 @@
  * @module ol/interaction/Snap
  */
 import CollectionEventType from '../CollectionEventType.js';
+import {equals} from '../array.js';
 import {
   closestOnCircle,
   closestOnSegment,
@@ -595,7 +596,12 @@ class Snap extends PointerInteraction {
    * @private
    */
   areSnapDataEqual_(data1, data2) {
-    return data1.segment === data2.segment && data1.feature === data2.feature;
+    return (
+      data1.segment === data2.segment &&
+      data1.feature === data2.feature &&
+      data1.snapType === data2.snapType &&
+      (data1.snapType === 'edge' || equals(data1.vertex, data2.vertex))
+    );
   }
 
   /**
