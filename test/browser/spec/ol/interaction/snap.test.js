@@ -237,8 +237,9 @@ describe.only('ol.interaction.Snap', function () {
       snapInteraction.on('snap', function (snapEvent) {
         expect(snapEvent.feature).to.be(line);
         expect(snapEvent.segment).to.eql(segment);
-        expect(event.coordinate).to.eql([0, 0]);
         expect(snapEvent.snapType).to.be('midpoint');
+
+        expect(event.coordinate).to.eql([0, 0]);
       });
       snapInteraction.handleEvent(event);
     });
@@ -528,6 +529,7 @@ describe.only('ol.interaction.Snap', function () {
         vertexPixel: map.getPixelFromCoordinate([10, 10]),
         feature: point,
         segment: null,
+        snapType: 'vertex',
       };
 
       const event = eventFromCoordinate([50, 50]);
@@ -561,7 +563,73 @@ describe.only('ol.interaction.Snap', function () {
       });
       snapInteraction.setMap(map);
       snapInteraction.on('snap', (evt) => {
+        expect(evt.snapType).to.be('intersection');
         expect(evt.vertex).to.eql([0, 0]);
+      });
+      snapInteraction.handleEvent(eventFromCoordinate([0, -10]));
+    });
+
+    it('unsnaps when snapping to other vertex of same segment', function () {
+      const line = new Feature(
+        new LineString([
+          [-1, 0],
+          [1, 0],
+        ]),
+      );
+
+      const snapInteraction = new Snap({
+        features: new Collection([line]),
+      });
+      snapInteraction.setMap(map);
+      snapInteraction.handleEvent(eventFromCoordinate([-1, 0]));
+
+      let n = 0;
+      snapInteraction.on('unsnap', (evt) => {
+        expect(++n).to.be(1);
+        expect(evt.snapType).to.be('vertex');
+        expect(evt.vertex).to.eql([-1, 0]);
+      });
+      snapInteraction.on('snap', (evt) => {
+        expect(++n).to.be(2);
+        expect(evt.snapType).to.be('vertex');
+        expect(evt.vertex).to.eql([1, 0]);
+      });
+      snapInteraction.handleEvent(eventFromCoordinate([1, 0]));
+    });
+
+    it('unsnaps when snap type changes on segment', function () {
+      const line1 = new Feature(
+        new LineString([
+          [-10, 0],
+          [10, 0],
+        ]),
+      );
+      const line2 = new Feature(
+        new LineString([
+          [0, -10],
+          [0, 10],
+        ]),
+      );
+
+      const snapInteraction = new Snap({
+        features: new Collection([line1, line2]),
+        pixelTolerance: 2,
+        intersection: true,
+        vertex: true,
+      });
+      snapInteraction.setMap(map);
+      snapInteraction.handleEvent(eventFromCoordinate([0, 0]));
+
+      let n = 0;
+      snapInteraction.on('unsnap', (evt) => {
+        expect(++n).to.be(1);
+        expect(evt.snapType).to.be('intersection');
+        expect(evt.vertex).to.eql([0, 0]);
+      });
+      snapInteraction.on('snap', (evt) => {
+        expect(++n).to.be(2);
+        expect(evt.snapType).to.be('vertex');
+        expect(evt.vertex).to.eql([0, -10]);
       });
       snapInteraction.handleEvent(eventFromCoordinate([0, -10]));
     });
@@ -580,6 +648,7 @@ describe.only('ol.interaction.Snap', function () {
         vertexPixel: map.getPixelFromCoordinate([10, 10]),
         feature: point1,
         segment: null,
+        snapType: 'vertex',
       };
 
       const snapEvents = [];
