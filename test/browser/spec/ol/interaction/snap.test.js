@@ -141,6 +141,7 @@ describe('ol.interaction.Snap', function () {
           [-10, 0],
           [10, 0],
         ]);
+        expect(snapEvent.snaptype).to.be('edge');
 
         expect(event.coordinate).to.eql([7, 0]);
 
@@ -181,6 +182,7 @@ describe('ol.interaction.Snap', function () {
           transform([-10, 0], viewProjection, userProjection),
           transform([10, 0], viewProjection, userProjection),
         ]);
+        expect(snapEvent.snaptype).to.be('edge');
 
         expect(event.coordinate[0]).to.roughlyEqual(coordinate[0], 1e-10);
         expect(event.coordinate[1]).to.roughlyEqual(coordinate[1], 1e-10);
@@ -212,10 +214,43 @@ describe('ol.interaction.Snap', function () {
       snapInteraction.on('snap', function (snapEvent) {
         expect(snapEvent.feature).to.be(point);
         expect(snapEvent.segment).to.be(null);
+        expect(snapEvent.snaptype).to.be('vertex');
 
         expect(event.coordinate).to.eql([10, 0]);
 
         done();
+      });
+      snapInteraction.handleEvent(event);
+    });
+
+    it('snaps to midpoint', function (done) {
+      const segment = [
+        [-10, 3],
+        [10, -3],
+      ];
+      const line = new Feature(new LineString(segment));
+      const snapInteraction = new Snap({
+        features: new Collection([line]),
+        pixelTolerance: 5,
+        midpoint: true,
+      });
+      snapInteraction.setMap(map);
+
+      const event = {
+        pixel: [2 + width / 2, height / 2 - 1],
+        coordinate: [2, 1],
+        map: map,
+      };
+      snapInteraction.on('snap', function (snapEvent) {
+        try {
+          expect(snapEvent.feature).to.be(line);
+          expect(snapEvent.segment).to.eql(segment);
+          expect(event.coordinate).to.eql([0, 0]);
+          expect(snapEvent.snaptype).to.be('midpoint');
+          done();
+        } catch (error) {
+          done(error);
+        }
       });
       snapInteraction.handleEvent(event);
     });
@@ -240,6 +275,7 @@ describe('ol.interaction.Snap', function () {
       snapInteraction.on('snap', function (snapEvent) {
         expect(snapEvent.feature).to.be(point);
         expect(snapEvent.segment).to.be(null);
+        expect(snapEvent.snaptype).to.be('vertex');
 
         expect(event.coordinate).to.eql([5, 0]);
 
@@ -313,6 +349,7 @@ describe('ol.interaction.Snap', function () {
           expect(snapEvent.feature).to.be(line);
           expect(snapEvent.segment).to.be(null);
           expect(event.coordinate).to.eql([50, 50]);
+          expect(snapEvent.snaptype).to.be('intersection');
           done();
         } catch (error) {
           done(error);
@@ -344,6 +381,7 @@ describe('ol.interaction.Snap', function () {
           [0, 0],
           [50, 0],
         ]);
+        expect(snapEvent.snaptype).to.be('edge');
 
         expect(event.coordinate).to.eql([16, 0]);
 
@@ -368,6 +406,7 @@ describe('ol.interaction.Snap', function () {
       snapInteraction.on('snap', function (snapEvent) {
         expect(snapEvent.feature).to.eql(circle);
         expect(snapEvent.segment).to.be(null);
+        expect(snapEvent.snaptype).to.be('edge');
 
         expect(event.coordinate[0]).to.roughlyEqual(
           Math.sin(Math.PI / 4) * 10,
@@ -412,6 +451,7 @@ describe('ol.interaction.Snap', function () {
       snapInteraction.on('snap', function (snapEvent) {
         expect(snapEvent.feature).to.eql(circle);
         expect(snapEvent.segment).to.be(null);
+        expect(snapEvent.snaptype).to.be('edge');
 
         expect(event.coordinate[0]).to.roughlyEqual(coordinate[0], 1e-10);
         expect(event.coordinate[1]).to.roughlyEqual(coordinate[1], 1e-10);
