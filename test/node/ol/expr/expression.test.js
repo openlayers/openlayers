@@ -471,6 +471,30 @@ describe('ol/expr/expression.js', () => {
         expression: ['palette', ['band', 2], 'red'],
         error: 'the second argument of palette must be an array',
       },
+      {
+        name: 'index must be number (at)',
+        expression: ['at', 'one', ['literal', ['one', 'two', 'three']]],
+        error:
+          'failed to parse "at" expression: the index argument must be a number',
+      },
+      {
+        name: 'index must be positive number (at)',
+        expression: ['at', -1, ['literal', ['one', 'two', 'three']]],
+        error:
+          'failed to parse "at" expression: the index argument must be a positive number',
+      },
+      {
+        name: 'second argument must be an array (at)',
+        expression: ['at', 0, 'one'],
+        error:
+          'failed to parse "at" expression: the second argument must be an array or expression that returns an array',
+      },
+      {
+        name: 'argument must be an array or string (length)',
+        expression: ['length', 3],
+        error:
+          'failed to parse "length" expression: only an array or string is allowed',
+      },
     ];
 
     for (const {name, expression, error, context} of cases) {
