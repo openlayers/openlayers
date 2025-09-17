@@ -66,6 +66,6 @@ export class SnapEvent extends Event {
      * @type {import("../interaction/Snap.js").SnapType}
      * @api
      */
-    this.snaptype = options.snapType;
+    this.snapType = options.snapType;
   }
 }
