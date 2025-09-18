@@ -1,6 +1,5 @@
 import {
   AnyType,
-  BooleanType,
   ColorType,
   NumberArrayType,
   NumberType,
@@ -138,9 +137,7 @@ describe('ol/expr/gpu.js', () => {
           },
         },
         contextAssertion: (context) => {
-          const variable = context.variables['myVar'];
-          expect(variable.name).to.equal('myVar');
-          expect(variable.type).to.equal(AnyType);
+          expect(context.variables.get('myVar')).to.equal(AnyType);
         },
       },
       {
@@ -629,34 +626,12 @@ describe('ol/expr/gpu.js', () => {
         },
         expected: `((u_var_symbolType == ${stringToGlsl('dynamic')}) ? vec2((a_prop_type == ${stringToGlsl('low')} ? u_var_lowHeight : (a_prop_type == ${stringToGlsl('medium')} ? u_var_mediumHeight : a_prop_height)), 10.0) : u_var_fixedSize)`,
         contextAssertion: (context) => {
-          expect(context.properties).to.eql({
-            type: {
-              name: 'type',
-              type: StringType | NumberType | BooleanType,
-            },
-            height: {
-              name: 'height',
-              type: NumberType,
-            },
-          });
-          expect(context.variables).to.eql({
-            fixedSize: {
-              name: 'fixedSize',
-              type: NumberArrayType,
-            },
-            symbolType: {
-              name: 'symbolType',
-              type: AnyType,
-            },
-            mediumHeight: {
-              name: 'mediumHeight',
-              type: NumberType,
-            },
-            lowHeight: {
-              name: 'lowHeight',
-              type: NumberType,
-            },
-          });
+          expect(context.properties.get('type')).to.eql(StringType);
+          expect(context.properties.get('height')).to.eql(NumberType);
+          expect(context.variables.get('fixedSize')).to.eql(NumberArrayType);
+          expect(context.variables.get('symbolType')).to.eql(StringType);
+          expect(context.variables.get('mediumHeight')).to.eql(NumberType);
+          expect(context.variables.get('lowHeight')).to.eql(NumberType);
         },
       },
       {
@@ -685,7 +660,6 @@ describe('ol/expr/gpu.js', () => {
         const compilationContext = c.context
           ? {...newCompilationContext(), ...c.context}
           : newCompilationContext();
-        parsingContext.style = compilationContext.style;
         const result = buildExpression(
           c.expression,
           c.type,
@@ -792,7 +766,6 @@ describe('ol/expr/gpu.js', () => {
         const compilationContext = c.context
           ? {...newCompilationContext(), ...c.context}
           : newCompilationContext();
-        parsingContext.style = compilationContext.style;
         const build = () =>
           buildExpression(
             c.expression,
