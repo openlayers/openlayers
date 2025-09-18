@@ -8,11 +8,15 @@ import Select from '../src/ol/interaction/Select.js';
 import Snap from '../src/ol/interaction/Snap.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
-import { fromUserCoordinate, getUserProjection, useGeographic } from '../src/ol/proj.js';
+import {
+  fromUserCoordinate,
+  getUserProjection,
+  useGeographic,
+} from '../src/ol/proj.js';
 import OSM from '../src/ol/source/OSM.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import Stroke from '../src/ol/style/Stroke.js';
-import Style, { createEditingStyle }  from '../src/ol/style/Style.js';
+import Style, {createEditingStyle} from '../src/ol/style/Style.js';
 
 const raster = new TileLayer({
   source: new OSM(),
@@ -112,30 +116,6 @@ const ExampleDraw = {
 };
 ExampleDraw.init();
 
-/**
- * Let user change the geometry type and different snap types.
- * @param {Event} e Change event.
- */
-optionsForm.onchange = function (e) {
-  const type = e.target.getAttribute('name');
-  if (type == 'draw-type') {
-    ExampleModify.setActive(false);
-    ExampleDraw.setActive(true);
-    optionsForm.elements['interaction'].value = 'draw';
-  } else if (type == 'interaction') {
-    const interactionType = e.target.value;
-    if (interactionType == 'modify') {
-      ExampleDraw.setActive(false);
-      ExampleModify.setActive(true);
-    } else if (interactionType == 'draw') {
-      ExampleDraw.setActive(true);
-      ExampleModify.setActive(false);
-    }
-  } else {
-    modifySnapInteraction();
-  }
-};
-
 ExampleDraw.setActive(true);
 ExampleModify.setActive(false);
 
@@ -217,8 +197,18 @@ const updateStyle = function (e) {
           ]),
           [x, y],
           e.feature.getGeometry().getType() == 'Circle'
-            ? bearing([x, y], fromUserCoordinate(e.feature.getGeometry().getCenter(), projection))
-            : bearing(fromUserCoordinate(e.segment[0], projection), fromUserCoordinate(e.segment[1], projection)) + Math.PI / 2,
+            ? bearing(
+                [x, y],
+                fromUserCoordinate(
+                  e.feature.getGeometry().getCenter(),
+                  projection,
+                ),
+              )
+            : bearing(
+                fromUserCoordinate(e.segment[0], projection),
+                fromUserCoordinate(e.segment[1], projection),
+              ) +
+                Math.PI / 2,
         );
         break;
       case 'midpoint':
@@ -231,11 +221,14 @@ const updateStyle = function (e) {
           ],
         ]);
         break;
+      default:
     }
     if (e.type != 'unsnap') {
       styles['Point'] = [
         new Style({
-          geometry: userProjection ? geometry.transform(projection, userProjection) : geometry,
+          geometry: userProjection
+            ? geometry.transform(projection, userProjection)
+            : geometry,
           stroke: stroke,
         }),
       ];
@@ -273,3 +266,27 @@ const modifySnapOptions = function () {
 };
 
 modifySnapOptions();
+
+/**
+ * Let user change the geometry type and different snap types.
+ * @param {Event} e Change event.
+ */
+optionsForm.onchange = function (e) {
+  const type = e.target.getAttribute('name');
+  if (type == 'draw-type') {
+    ExampleModify.setActive(false);
+    ExampleDraw.setActive(true);
+    optionsForm.elements['interaction'].value = 'draw';
+  } else if (type == 'interaction') {
+    const interactionType = e.target.value;
+    if (interactionType == 'modify') {
+      ExampleDraw.setActive(false);
+      ExampleModify.setActive(true);
+    } else if (interactionType == 'draw') {
+      ExampleDraw.setActive(true);
+      ExampleModify.setActive(false);
+    }
+  } else {
+    modifySnapOptions();
+  }
+};
