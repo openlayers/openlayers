@@ -19,6 +19,10 @@ import {
 } from './expression.js';
 
 /**
+ * @typedef {import('./expression.js').ValueType} ValueType
+ */
+
+/**
  * @fileoverview This module includes functions to build expressions for evaluation on the CPU.
  * Building is composed of two steps: parsing and compiling.  The parsing step takes an encoded
  * expression and returns an instance of one of the expression classes.  The compiling step takes
@@ -110,7 +114,7 @@ function isUnknown(argEvaluators) {
 
 /**
  * @param {import('./expression.js').EncodedExpression} encoded The encoded expression.
- * @param {number} type The expected type.
+ * @param {ValueType} type The expected type.
  * @param {import('./expression.js').ParsingContext} context The parsing context.
  * @return {ExpressionEvaluator} The expression evaluator.
  */
@@ -766,7 +770,7 @@ function interpolateColor(base, value, input1, rgba1, input2, rgba2) {
 /**
  * Converts the expression to an evaluator function that can be called with a feature, a resolution and style variables.
  * @param {import('./expression.js').EncodedExpression} expression The encoded expression.
- * @param {number} expectedType The expected type.
+ * @param {ValueType} expectedType The expected type.
  * @return {ExpressionAsFunction} A function that evaluates an expression. All arguments (feature, resolution, variables)
  * are optional. If any of each is not provided but the expression relies on their value, `UNKNOWN` will be returned.
  */
