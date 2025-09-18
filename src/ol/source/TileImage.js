@@ -312,7 +312,7 @@ class TileImage extends UrlTile {
  * @param {ImageTile} imageTile Image tile.
  * @param {string} src Source.
  */
-function defaultTileLoadFunction(imageTile, src) {
+export function defaultTileLoadFunction(imageTile, src) {
   /** @type {HTMLImageElement|HTMLVideoElement} */ (imageTile.getImage()).src =
     src;
 }

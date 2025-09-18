@@ -2,6 +2,7 @@
  * @module ol/source/OSM
  */
 
+import {defaultTileLoadFunction} from './TileImage.js';
 import XYZ from './XYZ.js';
 
 /**
@@ -79,7 +80,18 @@ class OSM extends XYZ {
       interpolate: options.interpolate,
       maxZoom: options.maxZoom !== undefined ? options.maxZoom : 19,
       reprojectionErrorThreshold: options.reprojectionErrorThreshold,
-      tileLoadFunction: options.tileLoadFunction,
+      tileLoadFunction:
+        /**
+         * @param {import("../ImageTile.js").default} tile Image tile
+         * @param {string} src Image src
+         */
+        (tile, src) => {
+          const image = tile.getImage();
+          if (image instanceof HTMLImageElement) {
+            image.referrerPolicy = 'origin-when-cross-origin';
+          }
+          (options.tileLoadFunction || defaultTileLoadFunction)(tile, src);
+        },
       transition: options.transition,
       url: url,
       wrapX: options.wrapX,
