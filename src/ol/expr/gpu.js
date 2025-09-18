@@ -20,6 +20,10 @@ import {
 } from './expression.js';
 
 /**
+ * @typedef {import('./expression.js').ValueType} ValueType
+ */
+
+/**
  * @param {string} operator Operator
  * @param {CompilationContext} context Compilation context
  * @return {string} A function name based on the operator, unique in the given context
@@ -126,13 +130,13 @@ export function uniformNameForVariable(variableName) {
 /**
  * @typedef {Object} CompilationContextProperty
  * @property {string} name Name
- * @property {number} type Resolved property type
+ * @property {ValueType} type Resolved property type
  */
 
 /**
  * @typedef {Object} CompilationContextVariable
  * @property {string} name Name
- * @property {number} type Resolved variable type
+ * @property {ValueType} type Resolved variable type
  */
 
 /**
@@ -457,7 +461,7 @@ ${ifBlocks}
 
 /**
  * @param {Expression} expression The expression.
- * @param {number} returnType The expected return type.
+ * @param {ValueType} returnType The expected return type.
  * @param {CompilationContext} context The compilation context.
  * @return {CompiledExpression} The compiled expression
  */
