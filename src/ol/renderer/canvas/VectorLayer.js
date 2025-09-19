@@ -9,6 +9,7 @@ import {
   buffer,
   containsExtent,
   createEmpty,
+  extend,
   getHeight,
   getWidth,
   intersects as intersectsExtent,
@@ -20,6 +21,7 @@ import {
   getUserProjection,
   toUserExtent,
   toUserResolution,
+  transformExtent,
 } from '../../proj.js';
 import RenderEventType from '../../render/EventType.js';
 import CanvasBuilderGroup from '../../render/canvas/BuilderGroup.js';
@@ -587,6 +589,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const projection = viewState.projection;
     const resolution = viewState.resolution;
     const pixelRatio = frameState.pixelRatio;
+    const multiWorld = vectorSource.getWrapX() && projection.canWrapX();
     const vectorLayerRevision = vectorLayer.getRevision();
     const vectorLayerRenderBuffer = vectorLayer.getRenderBuffer();
     let vectorLayerRenderOrder = vectorLayer.getRenderOrder();
@@ -603,6 +606,33 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const renderedExtent = extent.slice();
     const loadExtents = [extent.slice()];
     const projectionExtent = projection.getExtent();
+    const rawSourceExtent = vectorSource.getExtent();
+    if (
+      multiWorld &&
+      rawSourceExtent &&
+      (!this.rawSourceExtent_ ||
+        !equals(this.rawSourceExtent_, rawSourceExtent))
+    ) {
+      this.rawSourceExtent_ = rawSourceExtent;
+      // transformExtent will fail if it doesn't find a valid transformFunc for the pair of projections
+      try {
+        const tranformedExtent = transformExtent(
+          rawSourceExtent,
+          vectorSource.getProjection() ?? 'EPSG:3857',
+          projection,
+        );
+        this.sourceExtent_ = extend(tranformedExtent, rawSourceExtent);
+      } catch {
+        this.sourceExtent_ = rawSourceExtent;
+      }
+      this.sourceExtent_ = buffer(
+        this.sourceExtent_,
+        vectorLayerRenderBuffer * resolution,
+      );
+    }
+    if (this.sourceExtent_) {
+      extend(extent, this.sourceExtent_);
+    }
 
     if (
       vectorSource.getWrapX() &&
