@@ -868,12 +868,12 @@ class Snap extends PointerInteraction {
           geometryType === 'Polygon' ||
           geometryType === 'MultiPolygon'
         ) {
-          const [start, end] = segmentData.segment;
+          const start = fromUserCoordinate(segmentData.segment[0], projection);
+          const end = fromUserCoordinate(segmentData.segment[1], projection);
           const midpoint = [(start[0] + end[0]) / 2, (start[1] + end[1]) / 2];
-          const tempMidpointCoord = fromUserCoordinate(midpoint, projection);
-          const delta = squaredDistance(projectedCoordinate, tempMidpointCoord);
+          const delta = squaredDistance(projectedCoordinate, midpoint);
           if (delta < minSquaredDistance) {
-            closestVertex = midpoint;
+            closestVertex = toUserCoordinate(midpoint, projection);
             closestSegment = segmentData.segment;
             minSquaredDistance = delta;
             closestFeature = segmentData.feature;
