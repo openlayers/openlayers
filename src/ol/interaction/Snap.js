@@ -467,6 +467,7 @@ class Snap extends PointerInteraction {
    */
   addFeature(feature, register) {
     register = register !== undefined ? register : true;
+    const projection = this.getMap().getView().getProjection();
     const feature_uid = getUid(feature);
     const geometry = feature.getGeometry();
     if (geometry) {
@@ -474,10 +475,7 @@ class Snap extends PointerInteraction {
       if (segmenter) {
         this.indexedFeaturesExtents_[feature_uid] =
           geometry.getExtent(createEmpty());
-        const segments = segmenter(
-          geometry,
-          this.getMap().getView().getProjection(),
-        );
+        const segments = segmenter(geometry, projection);
         let segmentCount = segments.length;
         for (let i = 0; i < segmentCount; ++i) {
           const segment = segments[i];
@@ -507,11 +505,22 @@ class Snap extends PointerInteraction {
               if (!intersectsExtent(extent, tempExtents[k])) {
                 continue;
               }
-              const intersection = getIntersectionPoint(segment, otherSegment);
+              const intersection = getIntersectionPoint(
+                [
+                  fromUserCoordinate(segment[0], projection),
+                  fromUserCoordinate(segment[1], projection),
+                ],
+                [
+                  fromUserCoordinate(otherSegment[0], projection),
+                  fromUserCoordinate(otherSegment[1], projection),
+                ],
+              );
               if (!intersection) {
                 continue;
               }
-              const intersectionSegment = [intersection];
+              const intersectionSegment = [
+                toUserCoordinate(intersection, projection),
+              ];
               tempExtents[segmentCount] = boundingExtent(intersectionSegment);
               tempSegmentData[segmentCount++] = {
                 feature,
@@ -525,11 +534,22 @@ class Snap extends PointerInteraction {
               if (otherSegment.length === 1) {
                 continue;
               }
-              const intersection = getIntersectionPoint(segment, otherSegment);
+              const intersection = getIntersectionPoint(
+                [
+                  fromUserCoordinate(segment[0], projection),
+                  fromUserCoordinate(segment[1], projection),
+                ],
+                [
+                  fromUserCoordinate(otherSegment[0], projection),
+                  fromUserCoordinate(otherSegment[1], projection),
+                ],
+              );
               if (!intersection) {
                 continue;
               }
-              const intersectionSegment = [intersection];
+              const intersectionSegment = [
+                toUserCoordinate(intersection, projection),
+              ];
               tempExtents[segmentCount] = boundingExtent(intersectionSegment);
               tempSegmentData[segmentCount++] = {
                 feature,
@@ -849,8 +869,6 @@ class Snap extends PointerInteraction {
       }
     }
 
-    const userProjection = getUserProjection();
-
     if (this.midpoint_) {
       for (let i = 0; i < segmentsLength; ++i) {
         const segmentData = segments[i];
@@ -864,14 +882,8 @@ class Snap extends PointerInteraction {
           geometryType === 'Polygon' ||
           geometryType === 'MultiPolygon'
         ) {
-          let projectedSegment = segmentData.segment;
-          if (userProjection) {
-            projectedSegment = [
-              fromUserCoordinate(projectedSegment[0], projection),
-              fromUserCoordinate(projectedSegment[1], projection),
-            ];
-          }
-          const [start, end] = projectedSegment;
+          const start = fromUserCoordinate(segmentData.segment[0], projection);
+          const end = fromUserCoordinate(segmentData.segment[1], projection);
           const midpoint = [(start[0] + end[0]) / 2, (start[1] + end[1]) / 2];
           const delta = squaredDistance(projectedCoordinate, midpoint);
           if (delta < minSquaredDistance) {
@@ -895,6 +907,7 @@ class Snap extends PointerInteraction {
         const segmentData = segments[i];
         if (segmentData.feature.getGeometry().getType() === 'Circle') {
           let circleGeometry = segmentData.feature.getGeometry();
+          const userProjection = getUserProjection();
           if (userProjection) {
             circleGeometry = circleGeometry
               .clone()
