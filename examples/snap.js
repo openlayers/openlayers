@@ -136,13 +136,14 @@ ExampleModify.setActive(false);
 const snap = new Snap({
   source: vector.getSource(),
   intersection: true,
+  midpoint: true,
 });
 
 const snappedElement = document.getElementById('snapped');
 
-snap.on('snap', () => {
+snap.on('snap', (e) => {
   document.getElementById('map').style.cursor = 'grabbing';
-  snappedElement.innerHTML = 'Snapped: true';
+  snappedElement.innerHTML = 'Snapped: ' + e.snapType;
 });
 
 snap.on('unsnap', () => {

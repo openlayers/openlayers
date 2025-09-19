@@ -8,11 +8,16 @@ import Event from './Event.js';
  */
 export const SnapEventType = {
   /**
-   * Triggered upon snapping to vertex or edge
+   * Triggered upon snapping to vertex, edge, intersection or midpoint
    * @event SnapEvent#snap
    * @api
    */
   SNAP: 'snap',
+  /**
+   * Triggered if no longer snapped
+   * @event SnapEvent#unsnap
+   * @api
+   */
   UNSNAP: 'unsnap',
 };
 
@@ -28,6 +33,7 @@ export class SnapEvent extends Event {
    * @param {import("../coordinate.js").Coordinate} options.vertexPixel The pixel of the snapped vertex.
    * @param {import("../Feature.js").default} options.feature The feature being snapped.
    * @param {Array<import("../coordinate.js").Coordinate>|null} options.segment Segment, or `null` if snapped to a vertex.
+   * @param {import("../interaction/Snap.js").SnapType} options.snapType The type of snapped point: `edge`, `vertex`, `midpoint` or `intersection`
    */
   constructor(type, options) {
     super(type);
@@ -55,5 +61,11 @@ export class SnapEvent extends Event {
      * @api
      */
     this.segment = options.segment;
+    /**
+     * The type of snapped point: `edge`, `vertex`, `midpoint` or `intersection`
+     * @type {import("../interaction/Snap.js").SnapType}
+     * @api
+     */
+    this.snapType = options.snapType;
   }
 }
