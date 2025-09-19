@@ -450,13 +450,10 @@ class Snap extends PointerInteraction {
     if (geometry) {
       const segmenter = this.segmenters_[geometry.getType()];
       if (segmenter) {
+        const projection = this.getMap().getView().getProjection();
+        const segments = segmenter.call(this.segmenters_, geometry, projection);
         this.indexedFeaturesExtents_[feature_uid] =
           geometry.getExtent(createEmpty());
-        const segments = segmenter.call(
-          this.segmenters_,
-          geometry,
-          this.getMap().getView().getProjection(),
-        );
         let segmentCount = segments.length;
         for (let i = 0; i < segmentCount; ++i) {
           const segment = segments[i];
@@ -481,11 +478,22 @@ class Snap extends PointerInteraction {
               if (!intersectsExtent(extent, tempExtents[k])) {
                 continue;
               }
-              const intersection = getIntersectionPoint(segment, otherSegment);
+              const intersection = getIntersectionPoint(
+                [
+                  fromUserCoordinate(segment[0], projection),
+                  fromUserCoordinate(segment[1], projection),
+                ],
+                [
+                  fromUserCoordinate(otherSegment[0], projection),
+                  fromUserCoordinate(otherSegment[1], projection),
+                ],
+              );
               if (!intersection) {
                 continue;
               }
-              const intersectionSegment = [intersection];
+              const intersectionSegment = [
+                toUserCoordinate(intersection, projection),
+              ];
               tempExtents[segmentCount] = boundingExtent(intersectionSegment);
               tempSegmentData[segmentCount++] = {
                 feature,
@@ -500,11 +508,22 @@ class Snap extends PointerInteraction {
               if (otherSegment.length === 1) {
                 continue;
               }
-              const intersection = getIntersectionPoint(segment, otherSegment);
+              const intersection = getIntersectionPoint(
+                [
+                  fromUserCoordinate(segment[0], projection),
+                  fromUserCoordinate(segment[1], projection),
+                ],
+                [
+                  fromUserCoordinate(otherSegment[0], projection),
+                  fromUserCoordinate(otherSegment[1], projection),
+                ],
+              );
               if (!intersection) {
                 continue;
               }
-              const intersectionSegment = [intersection];
+              const intersectionSegment = [
+                toUserCoordinate(intersection, projection),
+              ];
               tempExtents[segmentCount] = boundingExtent(intersectionSegment);
               tempSegmentData[segmentCount++] = {
                 feature,
