@@ -587,6 +587,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const projection = viewState.projection;
     const resolution = viewState.resolution;
     const pixelRatio = frameState.pixelRatio;
+    const multiWorld = vectorSource.getWrapX() && projection.canWrapX();
     const vectorLayerRevision = vectorLayer.getRevision();
     const vectorLayerRenderBuffer = vectorLayer.getRenderBuffer();
     let vectorLayerRenderOrder = vectorLayer.getRenderOrder();
@@ -603,6 +604,19 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const renderedExtent = extent.slice();
     const loadExtents = [extent.slice()];
     const projectionExtent = projection.getExtent();
+    const rawSourceExtent = vectorSource.getExtent();
+    if (
+      multiWorld &&
+      rawSourceExtent &&
+      (!this.rawSourceExtent_ ||
+        !equals(this.rawSourceExtent_, rawSourceExtent))
+    ) {
+      this.rawSourceExtent_ = rawSourceExtent;
+      this.sourceExtent_ = buffer(
+        rawSourceExtent,
+        vectorLayerRenderBuffer * resolution,
+      );
+    }
 
     if (
       vectorSource.getWrapX() &&
@@ -665,7 +679,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     const replayGroup = new CanvasBuilderGroup(
       getRenderTolerance(resolution, pixelRatio),
-      extent,
+      this.sourceExtent_ ?? extent,
       resolution,
       pixelRatio,
     );
@@ -733,8 +747,9 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     this.ready = ready;
 
     const replayGroupInstructions = replayGroup.finish();
+    const bufferedMaxExtent = replayGroup.getBufferedMaxExtent();
     const executorGroup = new ExecutorGroup(
-      extent,
+      bufferedMaxExtent,
       resolution,
       pixelRatio,
       vectorSource.getOverlaps(),

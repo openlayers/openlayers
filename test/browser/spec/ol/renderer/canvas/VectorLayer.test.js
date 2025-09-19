@@ -303,6 +303,7 @@ describe('ol/renderer/canvas/VectorLayer', function () {
           wrapX: true,
           loader: loader,
           strategy: bboxStrategy,
+          useSpatialIndex: false,
         }),
       });
       renderer = new CanvasVectorLayerRenderer(layer);
