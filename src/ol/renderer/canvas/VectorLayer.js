@@ -719,7 +719,10 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     const userExtent = toUserExtent(extent, projection);
     /** @type {Array<import("../../Feature.js").default>} */
-    const features = vectorSource.getFeaturesInExtent(userExtent);
+    const features = vectorSource.getFeaturesInExtent(
+      userExtent,
+      userProjection ?? projection,
+    );
     if (vectorLayerRenderOrder) {
       features.sort(vectorLayerRenderOrder);
     }
