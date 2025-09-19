@@ -9,6 +9,7 @@ import {
   buffer,
   containsExtent,
   createEmpty,
+  extend,
   getHeight,
   getWidth,
   intersects as intersectsExtent,
@@ -20,6 +21,7 @@ import {
   getUserProjection,
   toUserExtent,
   toUserResolution,
+  transformExtent,
 } from '../../proj.js';
 import RenderEventType from '../../render/EventType.js';
 import CanvasBuilderGroup from '../../render/canvas/BuilderGroup.js';
@@ -200,10 +202,10 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const multiWorld = vectorSource.getWrapX() && projection.canWrapX();
     const worldWidth = multiWorld ? getWidth(projectionExtent) : null;
     const endWorld = multiWorld
-      ? Math.ceil((extent[2] - projectionExtent[2]) / worldWidth) + 1
+      ? Math.ceil((extent[2] - this.sourceExtent_[0]) / worldWidth)
       : 1;
     let world = multiWorld
-      ? Math.floor((extent[0] - projectionExtent[0]) / worldWidth)
+      ? Math.floor((extent[0] - this.sourceExtent_[2]) / worldWidth) + 1
       : 0;
     do {
       let transform = this.getRenderTransform(
@@ -587,6 +589,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const projection = viewState.projection;
     const resolution = viewState.resolution;
     const pixelRatio = frameState.pixelRatio;
+    const multiWorld = vectorSource.getWrapX() && projection.canWrapX();
     const vectorLayerRevision = vectorLayer.getRevision();
     const vectorLayerRenderBuffer = vectorLayer.getRenderBuffer();
     let vectorLayerRenderOrder = vectorLayer.getRenderOrder();
@@ -603,6 +606,26 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const renderedExtent = extent.slice();
     const loadExtents = [extent.slice()];
     const projectionExtent = projection.getExtent();
+    const rawSourceExtent = vectorSource.getExtent();
+    if (
+      multiWorld &&
+      rawSourceExtent &&
+      (!this.rawSourceExtent_ ||
+        !equals(this.rawSourceExtent_, rawSourceExtent))
+    ) {
+      this.rawSourceExtent_ = rawSourceExtent;
+      // transformExtent will fail if it doesn't find a valid transformFunc for the pair of projections
+      try {
+        this.sourceExtent_ = transformExtent(
+          rawSourceExtent,
+          vectorSource.getProjection() ?? 'EPSG:3857',
+          projection,
+        );
+      } catch {
+        this.sourceExtent_ = rawSourceExtent;
+      }
+      extend(extent, this.sourceExtent_);
+    }
 
     if (
       vectorSource.getWrapX() &&
@@ -719,7 +742,10 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     const userExtent = toUserExtent(extent, projection);
     /** @type {Array<import("../../Feature.js").default>} */
-    const features = vectorSource.getFeaturesInExtent(userExtent);
+    const features = vectorSource.getFeaturesInExtent(
+      userExtent,
+      userProjection ?? projection,
+    );
     if (vectorLayerRenderOrder) {
       features.sort(vectorLayerRenderOrder);
     }
