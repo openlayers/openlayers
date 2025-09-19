@@ -69,10 +69,11 @@ function always(context) {
  * and pass a more complete evaluation context (variables, zoom, time, etc.).
  *
  * @param {Array<import('../../style/flat.js').Rule>} rules The rules.
+ * @param {ParsingContext} [parsingContext] Optional parsing context; will create a new one if not provided
  * @return {import('../../style/Style.js').StyleFunction} A style function.
  */
-export function rulesToStyleFunction(rules) {
-  const parsingContext = newParsingContext();
+export function rulesToStyleFunction(rules, parsingContext) {
+  parsingContext = parsingContext ?? newParsingContext();
   const evaluator = buildRuleSet(rules, parsingContext);
   const evaluationContext = newEvaluationContext();
   return function (feature, resolution) {

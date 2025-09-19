@@ -3,13 +3,16 @@
  * @module ol/worker/textOverlay
  */
 
+import {newParsingContext} from '../expr/expression.js';
 import {setUserProjection} from '../proj.js';
+import Executor from '../render/canvas/Executor.js';
+import TextBuilder from '../render/canvas/TextBuilder.js';
+import {rulesToStyleFunction} from '../render/canvas/style.js';
 import TextOverlay from '../render/webgl/TextOverlay.js';
 import {TextOverlayWorkerMessageType} from '../render/webgl/constants.js';
-import {
-  deserializeFeature,
-  deserializeFrameState,
-} from '../render/webgl/serialize.js';
+import {deserializeFrameState} from '../render/webgl/serialize.js';
+import {convertRenderInstructionsToCanvasTextBuilder} from '../render/webgl/textUtil.js';
+import {create as createTransform} from '../transform.js';
 
 /** @type {any} */
 const worker = self;
@@ -21,6 +24,16 @@ let textOverlay = null;
 
 let renderOverlayKey = 0;
 
+const canvas = new OffscreenCanvas(1, 1);
+const context = canvas.getContext('2d');
+
+let canvasInstructions = null;
+
+/**
+ * @type {Executor}
+ */
+let executor = null;
+
 worker.onmessage = (event) => {
   const received = event.data;
   switch (received.type) {
@@ -31,27 +44,38 @@ worker.onmessage = (event) => {
       textOverlay = new TextOverlay(received.style);
       break;
     }
-    case TextOverlayWorkerMessageType.LOAD_FEATURES: {
-      const batchId = received.batchId;
-      const features = received.features.map(deserializeFeature);
-      textOverlay.loadFeatureBatch(features, batchId);
-      break;
-    }
-    case TextOverlayWorkerMessageType.UNLOAD_FEATURES: {
-      const batchId = received.batchId;
-      textOverlay.unloadFeatureBatch(batchId);
-      break;
-    }
+    // case TextOverlayWorkerMessageType.LOAD_FEATURES: {
+    //   const batchId = received.batchId;
+    //   const features = received.features.map(deserializeFeature);
+    //   textOverlay.loadFeatureBatch(features, batchId);
+    //   break;
+    // }
+    // case TextOverlayWorkerMessageType.UNLOAD_FEATURES: {
+    //   const batchId = received.batchId;
+    //   textOverlay.unloadFeatureBatch(batchId);
+    //   break;
+    // }
     case TextOverlayWorkerMessageType.RENDER: {
-      const batchesId = received.batchesId;
+      // const batchesId = received.batchesId;
       const frameState = deserializeFrameState(received.frameState);
       if (renderOverlayKey) {
         cancelAnimationFrame(renderOverlayKey);
       }
       renderOverlayKey = requestAnimationFrame(() => {
         renderOverlayKey = 0;
-        textOverlay.render(frameState, batchesId);
-        const canvas = /** @type {OffscreenCanvas} */ (textOverlay.getCanvas());
+
+        canvas.width = frameState.size[0];
+        canvas.height = frameState.size[1];
+
+        // textOverlay.render(frameState, batchesId);
+        executor.execute(
+          context,
+          frameState.size,
+          createTransform(),
+          frameState.viewState.rotation,
+          false,
+        );
+
         const imageData = canvas.transferToImageBitmap();
 
         /** @type {import('../render/webgl/constants.js').TextOverlayWorkerMessage} */
@@ -65,6 +89,55 @@ worker.onmessage = (event) => {
 
       break;
     }
+
+    case TextOverlayWorkerMessageType.SET_RENDER_INSTRUCTIONS: {
+      const {
+        polygonRenderInstructions,
+        lineStringRenderInstructions,
+        pointRenderInstructions,
+        style,
+        // customAttributes,
+        customAttributesSizes,
+      } = received;
+      const resolution = 1;
+      const pixelRatio = 1;
+      // const customAttributesSize = getCustomAttributesSize(customAttributes);
+
+      const renderInstructions = new Float32Array(polygonRenderInstructions);
+      const labelsArray = new Uint8Array(received.labelsArray);
+      const builder = new TextBuilder(
+        1,
+        [-180, -90, 180, 90],
+        resolution,
+        pixelRatio,
+      );
+
+      const parsingContext = newParsingContext();
+      const styleFn = rulesToStyleFunction(style, parsingContext);
+
+      let currentInstructionsIndex = 0;
+      while (currentInstructionsIndex < renderInstructions.length) {
+        currentInstructionsIndex = convertRenderInstructionsToCanvasTextBuilder(
+          renderInstructions,
+          labelsArray,
+          currentInstructionsIndex,
+          parsingContext.properties,
+          customAttributesSizes,
+          builder,
+          styleFn,
+        );
+      }
+      canvasInstructions = builder.finish();
+      executor = new Executor(
+        resolution,
+        pixelRatio,
+        false,
+        canvasInstructions,
+      );
+
+      break;
+    }
+
     default:
     // pass
   }

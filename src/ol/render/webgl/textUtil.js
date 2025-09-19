@@ -2,6 +2,8 @@
  * @module ol/render/webgl/textUtil
  */
 import {createCanvasContext2D} from '../../dom.js';
+import {ColorType, StringType} from '../../expr/expression.js';
+import Polygon from '../../geom/Polygon.js';
 import {
   create as createMat4,
   reset as resetMat4,
@@ -9,6 +11,8 @@ import {
   scale as scaleMat4,
   translate as translateMat4,
 } from '../../vec/mat4.js';
+import RenderFeature from '../Feature.js';
+import {unpackColor} from './compileUtil.js';
 import {TextOverlayWorkerMessageType} from './constants.js';
 
 export const Uniforms = {
@@ -217,6 +221,9 @@ export function createPostProcessDefinition(
       [Uniforms.TEXT_OVERLAY_MATRIX]: (frameState) => {
         const textOverlayCanvas = textOverlayCanvasGetter();
         const textOverlayFrameState = textOverlayFrameStateGetter();
+        if (!textOverlayCanvas || !textOverlayFrameState) {
+          return tmpMatrix;
+        }
         const textOverlayViewState = textOverlayFrameState.viewState;
         const viewState = frameState.viewState;
         const center = viewState.center;
@@ -255,4 +262,140 @@ export function createPostProcessDefinition(
       },
     },
   };
+}
+
+const textFeatureProps = {};
+const textFeature = new RenderFeature(
+  'Point',
+  [0, 0],
+  [],
+  2,
+  textFeatureProps,
+  'dummy',
+);
+//
+// function getPropertyAttributesCount(propType) {
+//   // string are also encoded on 2 values
+//   if (
+//     isType(propType, ColorType) ||
+//     isType(propType, SizeType) ||
+//     isType(propType, StringType)
+//   ) {
+//     return 2;
+//   }
+//   if (isType(propType, NumberArrayType)) {
+//     return 4;
+//   }
+//   return 1;
+// }
+
+const textDecoder = new TextDecoder();
+
+/**
+ * Pushes several triangles to form a polygon, including holes
+ * @param {Float32Array} instructions Array of render instructions for lines.
+ * @param {Uint8Array} labels Integer array containing encoded labels
+ * @param {number} polygonStartIndex Index of the polygon start point from which render instructions will be read.
+ * @param {Map<string,import('../../expr/expression.js').ValueType>} properties Custom attributes
+ * @param {Record<string, number>} customAttributesSizes Custom attributes sizes
+ * @param {import('../canvas/TextBuilder.js').default} textBuilder Text builder
+ * @param {import('../../style/Style.js').StyleFunction} styleFunction Text style
+ * @return {number} Next polygon instructions index
+ * @private
+ */
+export function convertRenderInstructionsToCanvasTextBuilder(
+  instructions,
+  labels,
+  polygonStartIndex,
+  properties,
+  customAttributesSizes,
+  textBuilder,
+  styleFunction,
+) {
+  const customAttributesKeys = Object.keys(customAttributesSizes);
+  const totalCustomAttributesSize = customAttributesKeys.reduce(
+    (prev, curr) => prev + customAttributesSizes[curr],
+    0,
+  );
+  const instructionsPerVertex = 2; // x, y
+  // const attributesPerVertex = 2 + totalCustomAttributesSize;
+  let instructionsIndex = polygonStartIndex;
+  const customAttributesValues = instructions.slice(
+    instructionsIndex,
+    instructionsIndex + totalCustomAttributesSize,
+  );
+  instructionsIndex += totalCustomAttributesSize;
+  const ringsCount = instructions[instructionsIndex++];
+  let verticesCount = 0;
+  const ends = new Array(ringsCount - 1);
+  for (let i = 0; i < ringsCount; i++) {
+    verticesCount += instructions[instructionsIndex++];
+    if (i < ringsCount - 1) {
+      ends[i] = verticesCount;
+    }
+  }
+  const newInstructionsIndex =
+    instructionsIndex + verticesCount * instructionsPerVertex;
+
+  const flatCoords = Array.from(
+    instructions.slice(
+      instructionsIndex,
+      instructionsIndex + verticesCount * instructionsPerVertex,
+    ),
+  );
+  const polygon = new Polygon(flatCoords, 'XYM', ends); // render instructions always provide XYM coordinates
+  const sharedData = {};
+  const propEntries = Array.from(properties.entries());
+  for (let i = 0; i < propEntries.length; i++) {
+    const [propName, propType] = propEntries[i];
+    const customAttrName = `prop_${propName}`;
+    const customAttrPosition = customAttributesKeys.findIndex(
+      (key) => key === customAttrName,
+    );
+    const customAttrOffset = customAttributesKeys
+      .slice(0, customAttrPosition)
+      .reduce((prev, curr) => prev + customAttributesSizes[curr], 0);
+    const customAttrSize = customAttributesSizes[customAttrName];
+    /** @type {number|Array<number>|string} */
+    let value;
+    if (propType === StringType) {
+      const start = customAttributesValues[customAttrOffset + 1];
+      const length = customAttributesValues[customAttrOffset + 2];
+      const bytes = labels.slice(start, start + length);
+      value = textDecoder.decode(bytes);
+    } else if (propType === ColorType) {
+      value = unpackColor(
+        Array.from(
+          customAttributesValues.slice(customAttrOffset, customAttrOffset + 2),
+        ),
+      );
+    } else if (customAttrSize > 1) {
+      value = Array.from(
+        customAttributesValues.slice(
+          customAttrOffset,
+          customAttrOffset + customAttrSize,
+        ),
+      );
+    } else {
+      value = customAttributesValues[customAttrOffset];
+    }
+    textFeatureProps[propName] = value;
+  }
+  // console.log(textFeatureProps);
+
+  let styles = styleFunction(textFeature, 1);
+  if (!styles) {
+    return newInstructionsIndex;
+  }
+  styles = Array.isArray(styles) ? styles : [styles];
+  for (const style of styles) {
+    const textStyle = style.getText();
+    if (!textStyle) {
+      continue;
+    }
+    textBuilder.setTextStyle(textStyle, sharedData);
+    textBuilder.drawText(polygon, textFeature);
+  }
+
+  return newInstructionsIndex;
 }

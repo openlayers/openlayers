@@ -1,7 +1,10 @@
 /**
  * @module ol/render/webgl/renderinstructions
  */
-import {UNDEFINED_PROP_VALUE} from '../../expr/gpu.js';
+import {
+  UNDEFINED_PROP_VALUE,
+  getStringNumberEquivalent,
+} from '../../expr/gpu.js';
 import {transform2D} from '../../geom/flat/transform.js';
 import {apply as applyTransform} from '../../transform.js';
 
@@ -25,6 +28,8 @@ function pushCustomAttributesInRenderInstructions(
     const attr = customAttributes[key];
     const value = attr.callback.call(batchEntry, batchEntry.feature);
     if (typeof value === 'string') {
+      renderInstructions[currentIndex + shift++] =
+        getStringNumberEquivalent(value);
       renderInstructions[currentIndex + shift++] = labels.getArray().length;
       renderInstructions[currentIndex + shift++] = value.length;
       labels.push(value);
@@ -43,15 +48,18 @@ function pushCustomAttributesInRenderInstructions(
     if (!attr.size || attr.size === 1) {
       continue;
     }
-    renderInstructions[currentIndex + shift++] = value[1];
+    renderInstructions[currentIndex + shift++] =
+      value?.[1] ?? UNDEFINED_PROP_VALUE;
     if (attr.size < 3) {
       continue;
     }
-    renderInstructions[currentIndex + shift++] = value[2];
+    renderInstructions[currentIndex + shift++] =
+      value?.[2] ?? UNDEFINED_PROP_VALUE;
     if (attr.size < 4) {
       continue;
     }
-    renderInstructions[currentIndex + shift++] = value[3];
+    renderInstructions[currentIndex + shift++] =
+      value?.[3] ?? UNDEFINED_PROP_VALUE;
   }
   return shift;
 }

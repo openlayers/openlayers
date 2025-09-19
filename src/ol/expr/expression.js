@@ -1107,14 +1107,3 @@ export function computeGeometryType(geometry) {
       return '';
   }
 }
-
-/**
- * @param {Expression} expression The input expression.
- * @param {ParsingContext} context Parsing context
- * @return {Expression} The parsed expression result.
- */
-export function makeIndependantFromMapState(expression, context) {
-  if (!context.mapState) {
-    return expression;
-  }
-}

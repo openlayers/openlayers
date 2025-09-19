@@ -1,17 +1,22 @@
 /**
  * @module ol/render/webgl/VectorStyleRenderer
  */
-import {UNKNOWN, expressionToFunction} from '../../expr/cpu.js';
-import {BooleanType} from '../../expr/expression.js';
+import Disposable from '../../Disposable.js';
+import {getUserProjection} from '../../proj.js';
 import {
   create as createTransform,
   makeInverse as makeInverseTransform,
 } from '../../transform.js';
 import WebGLArrayBuffer from '../../webgl/Buffer.js';
 import {AttributeType} from '../../webgl/Helper.js';
+import LabelsArray from '../../webgl/LabelsArray.js';
 import {ARRAY_BUFFER, DYNAMIC_DRAW, ELEMENT_ARRAY_BUFFER} from '../../webgl.js';
+import {create as createTextOverlayWorker} from '../../worker/textOverlay.js';
 import {create as createWebGLWorker} from '../../worker/webgl.js';
-import {WebGLWorkerMessageType} from './constants.js';
+import {
+  TextOverlayWorkerMessageType,
+  WebGLWorkerMessageType,
+} from './constants.js';
 import {colorEncodeIdAndPack} from './encodeUtil.js';
 import {
   generateLineStringRenderInstructions,
@@ -19,7 +24,9 @@ import {
   generatePolygonRenderInstructions,
   getCustomAttributesSize,
 } from './renderinstructions.js';
+import {serializeFrameState} from './serialize.js';
 import {parseLiteralStyle} from './style.js';
+import {setupTextOverlayWorker} from './textUtil.js';
 
 const tmpColor = [];
 /** @type {Worker|undefined} */
@@ -73,6 +80,7 @@ export const Attributes = {
  * @property {WebGLArrayBufferSet} polygonBuffers Array containing indices and vertices buffers for polygons
  * @property {WebGLArrayBufferSet} lineStringBuffers Array containing indices and vertices buffers for line strings
  * @property {WebGLArrayBufferSet} pointBuffers Array containing indices and vertices buffers for points
+ * @property {LabelsArray} labelsArray Labels array
  * @property {import("../../transform.js").Transform} invertVerticesTransform Inverse of the transform applied when generating buffers
  */
 
@@ -131,7 +139,7 @@ export const Attributes = {
  * The `generateBuffers` method returns a promise resolving to WebGL buffers that are intended to be rendered by the
  * same renderer.
  */
-class VectorStyleRenderer {
+class VectorStyleRenderer extends Disposable {
   /**
    * @param {FlatStyleLike|StyleShaders|Array<StyleShaders>} styles Vector styles expressed as flat styles, flat style rules or style shaders
    * @param {import('../../style/flat.js').StyleVariables} variables Style variables
@@ -139,6 +147,8 @@ class VectorStyleRenderer {
    * @param {boolean} [enableHitDetection] Whether to enable the hit detection (needs compatible shader)
    */
   constructor(styles, variables, helper, enableHitDetection) {
+    super();
+
     /**
      * @private
      * @type {import('../../webgl/Helper.js').default}
@@ -155,6 +165,7 @@ class VectorStyleRenderer {
      * @private
      */
     this.styleShaders = convertStyleToShaders(styles, variables);
+    this.styles = styles;
 
     /**
      * @type {AttributeDefinitions}
@@ -320,6 +331,33 @@ class VectorStyleRenderer {
     this.hasStroke_ = this.renderPasses_.some((pass) => pass.strokeRenderPass);
     this.hasSymbol_ = this.renderPasses_.some((pass) => pass.symbolRenderPass);
 
+    // Text rendering below
+
+    /**
+     * @type {HTMLCanvasElement}
+     * @private
+     */
+    this.textOverlayCanvas_ = null;
+
+    /**
+     * @type {import("../../Map.js").FrameState}
+     * @private
+     */
+    this.textOverlayRenderFrameState_ = null;
+
+    this.textOverlayWorker_ = createTextOverlayWorker();
+    setupTextOverlayWorker(this.textOverlayWorker_, (canvas, frameState) => {
+      this.textOverlayCanvas_ = canvas;
+      this.textOverlayRenderFrameState_ = frameState;
+      // TODO: update layer when the overlay is rendered
+      // this.changed();
+    });
+    this.textOverlayWorker_.postMessage({
+      type: TextOverlayWorkerMessageType.INIT,
+      style: styles,
+      userProjection: getUserProjection()?.getCode(),
+    });
+
     // this will initialize render passes with the given helper
     this.setHelper(helper);
   }
@@ -333,9 +371,43 @@ class VectorStyleRenderer {
     if (geometryBatch.isEmpty()) {
       return null;
     }
+    const labelsArray = new LabelsArray();
     const renderInstructions = this.generateRenderInstructions_(
       geometryBatch,
+      labelsArray,
       transform,
+    );
+    const textRenderInstructions = cloneRenderInstructions(renderInstructions);
+    const transferables = [labelsArray.getArray().buffer];
+    if (textRenderInstructions.polygonInstructions) {
+      transferables.push(textRenderInstructions.polygonInstructions.buffer);
+    }
+    if (textRenderInstructions.lineStringInstructions) {
+      transferables.push(textRenderInstructions.lineStringInstructions.buffer);
+    }
+    if (textRenderInstructions.pointInstructions) {
+      transferables.push(textRenderInstructions.pointInstructions.buffer);
+    }
+    const customAttributesSizes = Object.keys(this.customAttributes_).reduce(
+      (prev, curr) => ({
+        ...prev,
+        [curr]: this.customAttributes_[curr].size || 1,
+      }),
+      {},
+    );
+    // load render instructions in text overlay worker
+    this.textOverlayWorker_.postMessage(
+      {
+        type: TextOverlayWorkerMessageType.SET_RENDER_INSTRUCTIONS,
+        polygonRenderInstructions: textRenderInstructions.polygonInstructions,
+        lineStringRenderInstructions:
+          textRenderInstructions.lineStringInstructions,
+        pointRenderInstructions: textRenderInstructions.pointInstructions,
+        labelsArray: labelsArray.getArray(),
+        style: this.styles,
+        customAttributesSizes,
+      },
+      transferables,
     );
     const [polygonBuffers, lineStringBuffers, pointBuffers] = await Promise.all(
       [
@@ -366,20 +438,23 @@ class VectorStyleRenderer {
       lineStringBuffers: lineStringBuffers,
       pointBuffers: pointBuffers,
       invertVerticesTransform: invertVerticesTransform,
+      labelsArray,
     };
   }
 
   /**
    * @param {import('./MixedGeometryBatch.js').default} geometryBatch Geometry batch
+   * @param {LabelsArray} labelsArray Labels array
    * @param {import("../../transform.js").Transform} transform Transform to apply to coordinates
    * @return {RenderInstructions} Render instructions
    * @private
    */
-  generateRenderInstructions_(geometryBatch, transform) {
+  generateRenderInstructions_(geometryBatch, labelsArray, transform) {
     const polygonInstructions = this.hasFill_
       ? generatePolygonRenderInstructions(
           geometryBatch.polygonBatch,
           new Float32Array(0),
+          labelsArray,
           this.customAttributes_,
           transform,
         )
@@ -388,6 +463,7 @@ class VectorStyleRenderer {
       ? generateLineStringRenderInstructions(
           geometryBatch.lineStringBatch,
           new Float32Array(0),
+          labelsArray,
           this.customAttributes_,
           transform,
         )
@@ -396,6 +472,7 @@ class VectorStyleRenderer {
       ? generatePointRenderInstructions(
           geometryBatch.pointBatch,
           new Float32Array(0),
+          labelsArray,
           this.customAttributes_,
           transform,
         )
@@ -584,6 +661,12 @@ class VectorStyleRenderer {
     } else {
       this.helper_.drawElements(0, renderCount);
     }
+
+    this.textOverlayWorker_.postMessage({
+      type: TextOverlayWorkerMessageType.RENDER,
+      batchesId: ['main'],
+      frameState: serializeFrameState(frameState),
+    });
   }
 
   /**
@@ -632,6 +715,23 @@ class VectorStyleRenderer {
         this.helper_.flushBufferData(buffers.pointBuffers[2]);
       }
     }
+  }
+
+  getTextOverlayCanvas() {
+    return this.textOverlayCanvas_;
+  }
+
+  getTextOverlayFrameState() {
+    return this.textOverlayRenderFrameState_;
+  }
+
+  /**
+   * Clean up.
+   * @override
+   */
+  disposeInternal() {
+    this.textOverlayWorker_.terminate();
+    super.disposeInternal();
   }
 }
 
@@ -696,4 +796,22 @@ export function convertStyleToShaders(style, variables) {
   return /** @type {Array<FlatStyle>} */ (asArray).map((style) =>
     parseLiteralStyle(style, variables, null),
   );
+}
+
+/**
+ * @param {RenderInstructions} renderInstructions Render instructions
+ * @return {RenderInstructions} Cloned render instructions
+ */
+export function cloneRenderInstructions(renderInstructions) {
+  return {
+    polygonInstructions: renderInstructions.polygonInstructions
+      ? new Float32Array(renderInstructions.polygonInstructions)
+      : null,
+    lineStringInstructions: renderInstructions.lineStringInstructions
+      ? new Float32Array(renderInstructions.lineStringInstructions)
+      : null,
+    pointInstructions: renderInstructions.pointInstructions
+      ? new Float32Array(renderInstructions.pointInstructions)
+      : null,
+  };
 }
