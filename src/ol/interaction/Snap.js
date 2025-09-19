@@ -849,6 +849,8 @@ class Snap extends PointerInteraction {
       }
     }
 
+    const userProjection = getUserProjection();
+
     if (this.midpoint_) {
       for (let i = 0; i < segmentsLength; ++i) {
         const segmentData = segments[i];
@@ -862,12 +864,18 @@ class Snap extends PointerInteraction {
           geometryType === 'Polygon' ||
           geometryType === 'MultiPolygon'
         ) {
-          const [start, end] = segmentData.segment;
+          let projectedSegment = segmentData.segment;
+          if (userProjection) {
+            projectedSegment = [
+              fromUserCoordinate(projectedSegment[0], projection),
+              fromUserCoordinate(projectedSegment[1], projection),
+            ];
+          }
+          const [start, end] = projectedSegment;
           const midpoint = [(start[0] + end[0]) / 2, (start[1] + end[1]) / 2];
-          const tempMidpointCoord = fromUserCoordinate(midpoint, projection);
-          const delta = squaredDistance(projectedCoordinate, tempMidpointCoord);
+          const delta = squaredDistance(projectedCoordinate, midpoint);
           if (delta < minSquaredDistance) {
-            closestVertex = midpoint;
+            closestVertex = toUserCoordinate(midpoint, projection);
             closestSegment = segmentData.segment;
             minSquaredDistance = delta;
             closestFeature = segmentData.feature;
@@ -887,7 +895,6 @@ class Snap extends PointerInteraction {
         const segmentData = segments[i];
         if (segmentData.feature.getGeometry().getType() === 'Circle') {
           let circleGeometry = segmentData.feature.getGeometry();
-          const userProjection = getUserProjection();
           if (userProjection) {
             circleGeometry = circleGeometry
               .clone()
