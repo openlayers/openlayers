@@ -10,7 +10,7 @@ import {assert} from '../asserts.js';
 import Event from '../events/Event.js';
 import EventType from '../events/EventType.js';
 import {listen, unlistenByKey} from '../events.js';
-import {containsExtent, equals, wrapAndSliceX} from '../extent.js';
+import {containsExtent, equals, getWidth} from '../extent.js';
 import {xhr} from '../featureloader.js';
 import {TRUE, VOID} from '../functions.js';
 import {all as allStrategy} from '../loadingstrategy.js';
@@ -767,11 +767,29 @@ class VectorSource extends Source {
         return this.featuresRtree_.getInExtent(extent);
       }
 
-      const extents = wrapAndSliceX(extent, projection);
+      const sourceExtent = this.getExtent();
+      const worldWidth = getWidth(projection.getExtent());
+      let world = Math.floor((extent[0] - sourceExtent[2]) / worldWidth) + 1;
+      const endWorld = Math.ceil((extent[2] - sourceExtent[0]) / worldWidth);
 
-      return [].concat(
-        ...extents.map((anExtent) => this.featuresRtree_.getInExtent(anExtent)),
+      const extents = [];
+      do {
+        const xOffset = world * worldWidth;
+        extents.push([
+          extent[0] - xOffset,
+          extent[1],
+          extent[2] - xOffset,
+          extent[3],
+        ]);
+      } while (++world < endWorld);
+
+      const features = new Set(
+        extents.flatMap((anExtent) =>
+          this.featuresRtree_.getInExtent(anExtent),
+        ),
       );
+
+      return [...features];
     }
     if (this.featuresCollection_) {
       return this.featuresCollection_.getArray().slice(0);
