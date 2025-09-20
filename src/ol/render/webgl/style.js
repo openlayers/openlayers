@@ -940,7 +940,9 @@ export function parseLiteralStyle(style, variables, filter) {
   }
   parseStrokeProperties(style, builder, uniforms, context);
   parseFillProperties(style, builder, uniforms, context);
-  parseTextProperties(style, builder, uniforms, context); // this will not change the shaders but still collect the properties
+  try {
+    parseTextProperties(style, builder, uniforms, context); // this will not change the shaders but still collect the properties
+  } catch (e) {}
 
   // note that the style filter may have already been applied earlier when building the rendering instructions
   // this is still needed in case a filter cannot be evaluated statically beforehand (e.g. depending on time)

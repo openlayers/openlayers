@@ -30,9 +30,8 @@ function pushCustomAttributesInRenderInstructions(
     if (typeof value === 'string') {
       renderInstructions[currentIndex + shift++] =
         getStringNumberEquivalent(value);
-      renderInstructions[currentIndex + shift++] = labels.getArray().length;
+      renderInstructions[currentIndex + shift++] = labels.push(value);
       renderInstructions[currentIndex + shift++] = value.length;
-      labels.push(value);
       continue;
     }
     let first = value?.[0] ?? value;

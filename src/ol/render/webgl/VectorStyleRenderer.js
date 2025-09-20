@@ -406,6 +406,7 @@ class VectorStyleRenderer extends Disposable {
         labelsArray: labelsArray.getArray(),
         style: this.styles,
         customAttributesSizes,
+        renderInstructionsTransform: transform,
       },
       transferables,
     );

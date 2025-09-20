@@ -4,7 +4,7 @@
  */
 
 import {newParsingContext} from '../expr/expression.js';
-import {setUserProjection} from '../proj.js';
+import {get as getProjection, setUserProjection} from '../proj.js';
 import Executor from '../render/canvas/Executor.js';
 import TextBuilder from '../render/canvas/TextBuilder.js';
 import {rulesToStyleFunction} from '../render/canvas/style.js';
@@ -12,7 +12,12 @@ import TextOverlay from '../render/webgl/TextOverlay.js';
 import {TextOverlayWorkerMessageType} from '../render/webgl/constants.js';
 import {deserializeFrameState} from '../render/webgl/serialize.js';
 import {convertRenderInstructionsToCanvasTextBuilder} from '../render/webgl/textUtil.js';
-import {create as createTransform} from '../transform.js';
+import {
+  compose as composeTransform,
+  create as createTransform,
+  invert as invertTransform,
+  multiply as multiplyTransform,
+} from '../transform.js';
 
 /** @type {any} */
 const worker = self;
@@ -28,11 +33,32 @@ const canvas = new OffscreenCanvas(1, 1);
 const context = canvas.getContext('2d');
 
 let canvasInstructions = null;
+let canvasInstructionsInverseTransform = null;
 
 /**
  * @type {Executor}
  */
 let executor = null;
+
+const tmpTransform = createTransform();
+
+function getRenderTransform(
+  center,
+  resolution,
+  rotation,
+  pixelRatio,
+  width,
+  height,
+  offsetX,
+) {
+  const dx1 = width / 2;
+  const dy1 = height / 2;
+  const sx = pixelRatio / resolution;
+  const sy = -sx;
+  const dx2 = -center[0] + offsetX;
+  const dy2 = -center[1];
+  return composeTransform(tmpTransform, dx1, dy1, sx, sy, -rotation, dx2, dy2);
+}
 
 worker.onmessage = (event) => {
   const received = event.data;
@@ -58,6 +84,7 @@ worker.onmessage = (event) => {
     case TextOverlayWorkerMessageType.RENDER: {
       // const batchesId = received.batchesId;
       const frameState = deserializeFrameState(received.frameState);
+      const viewState = frameState.viewState;
       if (renderOverlayKey) {
         cancelAnimationFrame(renderOverlayKey);
       }
@@ -67,11 +94,21 @@ worker.onmessage = (event) => {
         canvas.width = frameState.size[0];
         canvas.height = frameState.size[1];
 
-        // textOverlay.render(frameState, batchesId);
+        const transform = getRenderTransform(
+          viewState.center,
+          viewState.resolution,
+          0,
+          frameState.pixelRatio,
+          canvas.width,
+          canvas.height,
+          0,
+        );
+        multiplyTransform(transform, canvasInstructionsInverseTransform);
+
         executor.execute(
           context,
           frameState.size,
-          createTransform(),
+          transform,
           frameState.viewState.rotation,
           false,
         );
@@ -98,6 +135,8 @@ worker.onmessage = (event) => {
         style,
         // customAttributes,
         customAttributesSizes,
+        renderInstructionsTransform,
+        // TODO: view projection
       } = received;
       const resolution = 1;
       const pixelRatio = 1;
@@ -107,7 +146,7 @@ worker.onmessage = (event) => {
       const labelsArray = new Uint8Array(received.labelsArray);
       const builder = new TextBuilder(
         1,
-        [-180, -90, 180, 90],
+        getProjection('EPSG:3857').getWorldExtent(),
         resolution,
         pixelRatio,
       );
@@ -128,6 +167,9 @@ worker.onmessage = (event) => {
         );
       }
       canvasInstructions = builder.finish();
+      canvasInstructionsInverseTransform = invertTransform(
+        renderInstructionsTransform,
+      );
       executor = new Executor(
         resolution,
         pixelRatio,

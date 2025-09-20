@@ -82,65 +82,65 @@ function keepTextStyleProperties(style) {
  * @return {import("../../expr/expression.js").EncodedExpression} A single filter expression that can be used to keep
  *   only features associated with a text style
  */
-export function createFilterForFeaturesWithText(style) {
-  // single style
-  if (!Array.isArray(style)) {
-    return hasTextStyle(style);
-  }
-
-  // array of simple styles (no filters)
-  if (style.every((styleRule) => !('style' in styleRule))) {
-    return style.some(hasTextStyle);
-  }
-
-  /** @type {import("../../expr/expression.js").EncodedExpression} */
-  let textFilterExpression = false;
-  /** @type {Array<import("../../expr/expression.js").EncodedExpression>} */
-  const excludeFilters = [];
-
-  function addExpressionToFilter(expr) {
-    let exprWithExcludes;
-    if (Array.isArray(expr) && expr[0] === 'all') {
-      exprWithExcludes = ['all', ...excludeFilters, ...expr.slice(1)];
-    } else if (excludeFilters.length) {
-      exprWithExcludes = ['all', ...excludeFilters, expr];
-    } else {
-      exprWithExcludes = expr;
-    }
-    if (!Array.isArray(textFilterExpression)) {
-      textFilterExpression = exprWithExcludes;
-    } else if (textFilterExpression[0] !== 'any') {
-      textFilterExpression = ['any', textFilterExpression, exprWithExcludes];
-    } else {
-      textFilterExpression.push(exprWithExcludes);
-    }
-  }
-
-  for (const rule of /** @type {Array<import('../../style/flat.js').Rule>} */ (
-    style
-  )) {
-    // this is not an else rule: empty the exclude filters
-    if (!rule.else) {
-      excludeFilters.length = 0;
-    }
-    const hasText = Array.isArray(rule.style)
-      ? rule.style.some(hasTextStyle)
-      : hasTextStyle(rule.style);
-    if (hasText && textFilterExpression === false && !rule.filter) {
-      textFilterExpression = true;
-    }
-    if (!rule.filter) {
-      continue;
-    }
-    if (hasText) {
-      addExpressionToFilter(rule.filter);
-    } else {
-      // no text style: store the filter as an exclude filter
-      excludeFilters.push(['!', rule.filter]);
-    }
-  }
-  return textFilterExpression;
-}
+// export function createFilterForFeaturesWithText(style) {
+//   // single style
+//   if (!Array.isArray(style)) {
+//     return hasTextStyle(style);
+//   }
+//
+//   // array of simple styles (no filters)
+//   if (style.every((styleRule) => !('style' in styleRule))) {
+//     return style.some(hasTextStyle);
+//   }
+//
+//   /** @type {import("../../expr/expression.js").EncodedExpression} */
+//   let textFilterExpression = false;
+//   /** @type {Array<import("../../expr/expression.js").EncodedExpression>} */
+//   const excludeFilters = [];
+//
+//   function addExpressionToFilter(expr) {
+//     let exprWithExcludes;
+//     if (Array.isArray(expr) && expr[0] === 'all') {
+//       exprWithExcludes = ['all', ...excludeFilters, ...expr.slice(1)];
+//     } else if (excludeFilters.length) {
+//       exprWithExcludes = ['all', ...excludeFilters, expr];
+//     } else {
+//       exprWithExcludes = expr;
+//     }
+//     if (!Array.isArray(textFilterExpression)) {
+//       textFilterExpression = exprWithExcludes;
+//     } else if (textFilterExpression[0] !== 'any') {
+//       textFilterExpression = ['any', textFilterExpression, exprWithExcludes];
+//     } else {
+//       textFilterExpression.push(exprWithExcludes);
+//     }
+//   }
+//
+//   for (const rule of /** @type {Array<import('../../style/flat.js').Rule>} */ (
+//     style
+//   )) {
+//     // this is not an else rule: empty the exclude filters
+//     if (!rule.else) {
+//       excludeFilters.length = 0;
+//     }
+//     const hasText = Array.isArray(rule.style)
+//       ? rule.style.some(hasTextStyle)
+//       : hasTextStyle(rule.style);
+//     if (hasText && textFilterExpression === false && !rule.filter) {
+//       textFilterExpression = true;
+//     }
+//     if (!rule.filter) {
+//       continue;
+//     }
+//     if (hasText) {
+//       addExpressionToFilter(rule.filter);
+//     } else {
+//       // no text style: store the filter as an exclude filter
+//       excludeFilters.push(['!', rule.filter]);
+//     }
+//   }
+//   return textFilterExpression;
+// }
 
 /**
  * @param {import('../../style/flat.js').FlatStyleLike} style Flat style
@@ -148,43 +148,43 @@ export function createFilterForFeaturesWithText(style) {
  *   all style rules without any text-related properties are discarded.
  *   Returns null if no style applies to text.
  */
-export function transformToTextStyle(style) {
-  // single style
-  if (!Array.isArray(style)) {
-    return keepTextStyleProperties(style);
-  }
-
-  // array of simple styles (no filters)
-  if (style.every((styleRule) => !('style' in styleRule))) {
-    const filteredStyle =
-      /** @type {Array<import('../../style/flat.js').FlatStyle>} */ (style)
-        .filter(hasTextStyle)
-        .map(keepTextStyleProperties);
-    return filteredStyle.length ? filteredStyle : null;
-  }
-
-  // remove properties not related to text
-  const textOnlyRules =
-    /** @type {Array<import('../../style/flat.js').Rule>} */ (style).map(
-      (styleRule) => {
-        const textStyle = Array.isArray(styleRule.style)
-          ? styleRule.style.map(keepTextStyleProperties)
-          : keepTextStyleProperties(styleRule.style);
-        return {
-          ...styleRule,
-          style: textStyle,
-        };
-      },
-    );
-
-  // 2. collapse style rules without text styles
-
-  if (!textOnlyRules.length) {
-    return null;
-  }
-
-  return textOnlyRules;
-}
+// export function transformToTextStyle(style) {
+//   // single style
+//   if (!Array.isArray(style)) {
+//     return keepTextStyleProperties(style);
+//   }
+//
+//   // array of simple styles (no filters)
+//   if (style.every((styleRule) => !('style' in styleRule))) {
+//     const filteredStyle =
+//       /** @type {Array<import('../../style/flat.js').FlatStyle>} */ (style)
+//         .filter(hasTextStyle)
+//         .map(keepTextStyleProperties);
+//     return filteredStyle.length ? filteredStyle : null;
+//   }
+//
+//   // remove properties not related to text
+//   const textOnlyRules =
+//     /** @type {Array<import('../../style/flat.js').Rule>} */ (style).map(
+//       (styleRule) => {
+//         const textStyle = Array.isArray(styleRule.style)
+//           ? styleRule.style.map(keepTextStyleProperties)
+//           : keepTextStyleProperties(styleRule.style);
+//         return {
+//           ...styleRule,
+//           style: textStyle,
+//         };
+//       },
+//     );
+//
+//   // 2. collapse style rules without text styles
+//
+//   if (!textOnlyRules.length) {
+//     return null;
+//   }
+//
+//   return textOnlyRules;
+// }
 
 /**
  * @param {function(): HTMLCanvasElement} textOverlayCanvasGetter Function that returns the canvas where the text overlay was rendered
@@ -343,7 +343,7 @@ export function convertRenderInstructionsToCanvasTextBuilder(
       instructionsIndex + verticesCount * instructionsPerVertex,
     ),
   );
-  const polygon = new Polygon(flatCoords, 'XYM', ends); // render instructions always provide XYM coordinates
+  const polygon = new Polygon(flatCoords, 'XY', ends); // render instructions always provide XYM coordinates
   const sharedData = {};
   const propEntries = Array.from(properties.entries());
   for (let i = 0; i < propEntries.length; i++) {
@@ -369,6 +369,9 @@ export function convertRenderInstructionsToCanvasTextBuilder(
           customAttributesValues.slice(customAttrOffset, customAttrOffset + 2),
         ),
       );
+      value[0] *= 255;
+      value[1] *= 255;
+      value[2] *= 255;
     } else if (customAttrSize > 1) {
       value = Array.from(
         customAttributesValues.slice(
