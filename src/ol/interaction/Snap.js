@@ -129,7 +129,7 @@ const GEOMETRY_SEGMENTERS = {
     const segments = [];
     const geometries = geometry.getGeometriesArray();
     for (let i = 0; i < geometries.length; ++i) {
-      const segmenter = GEOMETRY_SEGMENTERS[geometries[i].getType()];
+      const segmenter = this[geometries[i].getType()];
       if (segmenter) {
         segments.push(segmenter(geometries[i], projection));
       }
@@ -452,7 +452,8 @@ class Snap extends PointerInteraction {
       if (segmenter) {
         this.indexedFeaturesExtents_[feature_uid] =
           geometry.getExtent(createEmpty());
-        const segments = segmenter(
+        const segments = segmenter.call(
+          this.segmenters_,
           geometry,
           this.getMap().getView().getProjection(),
         );
