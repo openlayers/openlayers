@@ -473,8 +473,6 @@ class Snap extends PointerInteraction {
             segment: segment,
           };
         }
-        tempExtents.length = segmentCount;
-        tempSegmentData.length = segmentCount;
 
         if (this.intersection_) {
           for (let j = 0, jj = segments.length; j < jj; ++j) {
@@ -527,6 +525,8 @@ class Snap extends PointerInteraction {
         if (segmentCount === 1) {
           this.rBush_.insert(tempExtents[0], tempSegmentData[0]);
         } else {
+          tempExtents.length = segmentCount;
+          tempSegmentData.length = segmentCount;
           this.rBush_.load(tempExtents, tempSegmentData);
         }
       }
