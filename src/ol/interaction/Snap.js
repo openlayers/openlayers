@@ -39,8 +39,8 @@ import PointerInteraction from './Pointer.js';
 /**
  * @typedef {Object} SegmentData
  * @property {import("../Feature.js").default} feature Feature.
+ * @property {import("../Feature.js").default} [intersectionFeature] Feature which intersects.
  * @property {Segment} segment Segment.
- * @property {boolean} [isIntersection] Is intersection.
  */
 
 /**
@@ -498,13 +498,14 @@ class Snap extends PointerInteraction {
               tempExtents[segmentCount] = boundingExtent(intersectionSegment);
               tempSegmentData[segmentCount++] = {
                 feature,
+                intersectionFeature: feature,
                 segment: intersectionSegment,
-                isIntersection: true,
               };
             }
             // Calculate intersections with existing segments
             const otherSegments = this.rBush_.getInExtent(tempExtents[j]);
-            for (const {segment: otherSegment} of otherSegments) {
+            for (let k = 0, kk = otherSegments.length; k < kk; ++k) {
+              const otherSegment = otherSegments[k].segment;
               if (otherSegment.length === 1) {
                 continue;
               }
@@ -516,8 +517,8 @@ class Snap extends PointerInteraction {
               tempExtents[segmentCount] = boundingExtent(intersectionSegment);
               tempSegmentData[segmentCount++] = {
                 feature,
+                intersectionFeature: otherSegments[k].feature,
                 segment: intersectionSegment,
-                isIntersection: true,
               };
             }
           }
@@ -673,15 +674,11 @@ class Snap extends PointerInteraction {
     const extent = this.indexedFeaturesExtents_[feature_uid];
     if (extent) {
       const rBush = this.rBush_;
-      const nodesToRemove = [];
-      rBush.forEachInExtent(extent, function (node) {
-        if (feature === node.feature) {
-          nodesToRemove.push(node);
+      rBush.getInExtent(extent).forEach((node) => {
+        if (feature === node.feature || feature === node.intersectionFeature) {
+          rBush.remove(node);
         }
       });
-      for (let i = nodesToRemove.length - 1; i >= 0; --i) {
-        rBush.remove(nodesToRemove[i]);
-      }
     }
 
     if (unregister) {
@@ -808,8 +805,8 @@ class Snap extends PointerInteraction {
             const delta = squaredDistance(projectedCoordinate, tempVertexCoord);
             if (
               delta < minSquaredDistance &&
-              ((this.intersection_ && segmentData.isIntersection) ||
-                (this.vertex_ && !segmentData.isIntersection))
+              ((this.intersection_ && segmentData.intersectionFeature) ||
+                (this.vertex_ && !segmentData.intersectionFeature))
             ) {
               closestVertex = vertex;
               minSquaredDistance = delta;

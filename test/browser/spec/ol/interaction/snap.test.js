@@ -677,7 +677,7 @@ describe('ol.interaction.Snap', function () {
         expect(!!intersectionSegmentData).to.be(intersection);
         if (intersection) {
           expect(intersectionSegmentData.segment[0]).to.eql(intersectionPoint);
-          expect(intersectionSegmentData.isIntersection).to.be(true);
+          expect(intersectionSegmentData.intersectionFeature).to.be.ok();
         }
       });
     }
@@ -702,7 +702,7 @@ describe('ol.interaction.Snap', function () {
 
       const segments = snapInteraction.rBush_
         .getAll()
-        .filter((item) => item.isIntersection);
+        .filter((item) => item.intersectionFeature);
       expect(segments).to.have.length(1);
       expect(segments[0].segment).to.eql([[0, 0]]);
     });
@@ -734,13 +734,13 @@ describe('ol.interaction.Snap', function () {
 
         const intersections2 = snapInteraction.rBush_
           .getAll()
-          .filter((item) => item.isIntersection);
+          .filter((item) => item.intersectionFeature);
         expect(intersections2).to.have.length(1);
 
         snapInteraction.removeFeature(features[i]);
         const intersections1 = snapInteraction.rBush_
           .getAll()
-          .filter((item) => item.isIntersection);
+          .filter((item) => item.intersectionFeature);
         expect(intersections1).to.have.length(0);
       });
     }
