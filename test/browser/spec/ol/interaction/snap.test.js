@@ -643,6 +643,31 @@ describe('ol.interaction.Snap', function () {
       });
       snapInteraction.handleEvent(event);
     });
+
+    it('snaps to correct intersection', function () {
+      const line1 = new Feature(
+        new LineString([
+          [-10, 10],
+          [10, 10],
+          [10, 0],
+          [-10, 20],
+        ]),
+      );
+
+      const snapInteraction = new Snap({
+        features: new Collection([line1]),
+        intersection: true,
+        vertex: false,
+        edege: false,
+      });
+      snapInteraction.setMap(new Map({}));
+
+      const segments = snapInteraction.rBush_
+        .getAll()
+        .filter((item) => item.intersectionFeature);
+      expect(segments).to.have.length(1);
+      expect(segments[0].segment).to.eql([[0.15508357960832925, 10]]);
+    });
   });
 
   describe('setMap', function () {
