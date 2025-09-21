@@ -488,6 +488,33 @@ describe('ol.interaction.Snap', function () {
       snapInteraction.handleEvent(event);
     });
 
+    it('snaps to intersection when a vertex is closer, but vertex is false', function () {
+      const line1 = new Feature(
+        new LineString([
+          [-10, 0],
+          [10, 0],
+        ]),
+      );
+      const line2 = new Feature(
+        new LineString([
+          [0, -10],
+          [0, 10],
+        ]),
+      );
+
+      const snapInteraction = new Snap({
+        features: new Collection([line1, line2]),
+        pixelTolerance: 11,
+        intersection: true,
+        vertex: false,
+      });
+      snapInteraction.setMap(map);
+      snapInteraction.on('snap', (evt) => {
+        expect(evt.vertex).to.eql([0, 0]);
+      });
+      snapInteraction.handleEvent(eventFromCoordinate([0, -10]));
+    });
+
     it('unsnaps if snapped to other feature', function () {
       const point1 = new Feature(new Point([10, 10]));
       const point2 = new Feature(new Point([30, 30]));
