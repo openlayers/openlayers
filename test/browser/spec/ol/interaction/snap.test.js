@@ -1,6 +1,7 @@
 import Collection from '../../../../../src/ol/Collection.js';
 import Feature from '../../../../../src/ol/Feature.js';
 import Map from '../../../../../src/ol/Map.js';
+import MapBrowserEvent from '../../../../../src/ol/MapBrowserEvent.js';
 import View from '../../../../../src/ol/View.js';
 import Circle from '../../../../../src/ol/geom/Circle.js';
 import LineString from '../../../../../src/ol/geom/LineString.js';
@@ -542,6 +543,27 @@ describe('ol.interaction.Snap', function () {
       });
 
       snapInteraction.handleEvent(eventFromCoordinate([30, 30]));
+    });
+
+    it('clears pending feature changes on pointer up', function () {
+      const point1 = new Feature(new Point([10, 10]));
+      const snapInteraction = new Snap({
+        features: new Collection([point1]),
+      });
+      snapInteraction.setMap(map);
+
+      snapInteraction.handleEvent(
+        new MapBrowserEvent(
+          'pointerdown',
+          map,
+          new PointerEvent('pointerdown'),
+        ),
+      );
+      point1.getGeometry().setCoordinates([0, 0]);
+      snapInteraction.handleEvent(
+        new MapBrowserEvent('pointerup', map, new PointerEvent('pointerup')),
+      );
+      expect(Object.keys(snapInteraction.pendingFeatures_)).to.have.length(0);
     });
   });
 
