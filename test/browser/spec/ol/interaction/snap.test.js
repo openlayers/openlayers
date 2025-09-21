@@ -706,6 +706,44 @@ describe('ol.interaction.Snap', function () {
       expect(segments).to.have.length(1);
       expect(segments[0].segment).to.eql([[0, 0]]);
     });
+
+    for (const i of [0, 1]) {
+      it('removes intersections if either feature is removed', function () {
+        const features = [
+          new Feature(
+            new LineString([
+              [0, 0],
+              [10, 10],
+            ]),
+          ),
+          new Feature(
+            new LineString([
+              [0, 10],
+              [10, 0],
+            ]),
+          ),
+        ];
+
+        const snapInteraction = new Snap({
+          features: new Collection(features),
+          intersection: true,
+          vertex: false,
+          edge: false,
+        });
+        snapInteraction.setMap(new Map({}));
+
+        const intersections2 = snapInteraction.rBush_
+          .getAll()
+          .filter((item) => item.isIntersection);
+        expect(intersections2).to.have.length(1);
+
+        snapInteraction.removeFeature(features[i]);
+        const intersections1 = snapInteraction.rBush_
+          .getAll()
+          .filter((item) => item.isIntersection);
+        expect(intersections1).to.have.length(0);
+      });
+    }
   });
 
   describe('Custom segmenters', () => {
