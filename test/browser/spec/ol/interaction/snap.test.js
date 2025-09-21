@@ -681,6 +681,31 @@ describe('ol.interaction.Snap', function () {
         }
       });
     }
+
+    it('only adds single self intersection point', function () {
+      const line1 = new Feature(
+        new LineString([
+          [-10, 0],
+          [10, 0],
+          [10, 10],
+          [-10, -10],
+        ]),
+      );
+
+      const snapInteraction = new Snap({
+        features: new Collection([line1]),
+        intersection: true,
+        vertex: false,
+        edege: false,
+      });
+      snapInteraction.setMap(new Map({}));
+
+      const segments = snapInteraction.rBush_
+        .getAll()
+        .filter((item) => item.isIntersection);
+      expect(segments).to.have.length(1);
+      expect(segments[0].segment).to.eql([[0, 0]]);
+    });
   });
 
   describe('Custom segmenters', () => {
