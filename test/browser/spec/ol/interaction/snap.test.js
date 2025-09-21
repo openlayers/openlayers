@@ -13,9 +13,34 @@ import {
   transform,
   useGeographic,
 } from '../../../../../src/ol/proj.js';
-import {overrideRAF} from '../../util.js';
 
 describe('ol.interaction.Snap', function () {
+  /** @type {Map} */
+  let map;
+  /**
+   * @param {import('../../../../../src/ol/coordinate.js').Coordinate} coordinate Coordinate
+   * @return {{pixel: Array<number>, coordinate: import('../../../../../src/ol/coordinate.js').Coordinate, map: Map}} Event
+   */
+  function eventFromCoordinate(coordinate) {
+    return {
+      pixel: map.getPixelFromCoordinate(coordinate),
+      coordinate,
+      map,
+    };
+  }
+
+  /**
+   * @param {Array<number>} pixel Pixel
+   * @return {{pixel: Array<number>, coordinate: import('../../../../../src/ol/coordinate.js').Coordinate, map: Map}} Event
+   */
+  function eventFromPixel(pixel) {
+    return {
+      pixel,
+      coordinate: map.getCoordinateFromPixel(pixel),
+      map,
+    };
+  }
+
   describe('constructor', function () {
     it('can be constructed without arguments', function () {
       const instance = new Snap();
@@ -24,12 +49,12 @@ describe('ol.interaction.Snap', function () {
   });
 
   describe('handleEvent', function () {
-    let target, map;
+    let target;
 
     const width = 360;
     const height = 180;
 
-    beforeEach(function (done) {
+    beforeEach(function () {
       target = document.createElement('div');
 
       const style = target.style;
@@ -48,10 +73,7 @@ describe('ol.interaction.Snap', function () {
           resolution: 1,
         }),
       });
-
-      map.once('postrender', function () {
-        done();
-      });
+      map.renderSync();
     });
 
     afterEach(function () {
@@ -59,18 +81,14 @@ describe('ol.interaction.Snap', function () {
       clearUserProjection();
     });
 
-    it('can handle XYZ coordinates', function (done) {
+    it('can handle XYZ coordinates', function () {
       const point = new Feature(new Point([0, 0, 123]));
       const snapInteraction = new Snap({
         features: new Collection([point]),
       });
       snapInteraction.setMap(map);
 
-      const event = {
-        pixel: [width / 2, height / 2],
-        coordinate: [0, 0],
-        map: map,
-      };
+      const event = eventFromCoordinate([0, 0]);
       snapInteraction.on('snap', function (snapEvent) {
         expect(snapEvent.type).to.be('snap');
         expect(snapEvent.vertex).to.be(event.coordinate);
@@ -80,14 +98,12 @@ describe('ol.interaction.Snap', function () {
 
         // check that the coordinate is in XY and not XYZ
         expect(event.coordinate).to.eql([0, 0]);
-
-        done();
       });
 
       snapInteraction.handleEvent(event);
     });
 
-    it('can handle view rotation', function (done) {
+    it('can handle view rotation', function () {
       map.getView().setRotation(Math.PI / 4);
       map.renderSync();
 
@@ -97,11 +113,7 @@ describe('ol.interaction.Snap', function () {
       });
       snapInteraction.setMap(map);
 
-      const event = {
-        pixel: [6 + width / 2, height / 2 - 3],
-        coordinate: [1, 3],
-        map: map,
-      };
+      const event = eventFromCoordinate([1, 3]);
       snapInteraction.on('snap', function (snapEvent) {
         expect(snapEvent.vertex).to.be(event.coordinate);
         expect(snapEvent.vertexPixel).to.be(event.pixel);
@@ -110,13 +122,11 @@ describe('ol.interaction.Snap', function () {
 
         expect(event.coordinate).to.eql([0, 0]);
         expect(event.pixel).to.eql([width / 2, height / 2]);
-
-        done();
       });
       snapInteraction.handleEvent(event);
     });
 
-    it('snaps to edges only', function (done) {
+    it('snaps to edges only', function () {
       const line = new Feature(
         new LineString([
           [-10, 0],
@@ -129,11 +139,7 @@ describe('ol.interaction.Snap', function () {
         vertex: false,
       });
       snapInteraction.setMap(map);
-      const event = {
-        pixel: [7 + width / 2, height / 2 - 4],
-        coordinate: [7, 4],
-        map: map,
-      };
+      const event = eventFromCoordinate([7, 4]);
 
       snapInteraction.on('snap', function (snapEvent) {
         expect(snapEvent.feature).to.eql(line);
@@ -143,14 +149,12 @@ describe('ol.interaction.Snap', function () {
         ]);
 
         expect(event.coordinate).to.eql([7, 0]);
-
-        done();
       });
 
       snapInteraction.handleEvent(event);
     });
 
-    it('snaps to edges in a user projection', function (done) {
+    it('snaps to edges in a user projection', function () {
       const userProjection = 'EPSG:3857';
       setUserProjection(userProjection);
       const viewProjection = map.getView().getProjection();
@@ -167,11 +171,9 @@ describe('ol.interaction.Snap', function () {
       });
       snapInteraction.setMap(map);
 
-      const event = {
-        pixel: [7 + width / 2, height / 2 - 4],
-        coordinate: transform([7, 4], viewProjection, userProjection),
-        map: map,
-      };
+      const event = eventFromCoordinate(
+        transform([7, 4], viewProjection, userProjection),
+      );
 
       const coordinate = transform([7, 0], viewProjection, userProjection);
 
@@ -184,13 +186,11 @@ describe('ol.interaction.Snap', function () {
 
         expect(event.coordinate[0]).to.roughlyEqual(coordinate[0], 1e-10);
         expect(event.coordinate[1]).to.roughlyEqual(coordinate[1], 1e-10);
-
-        done();
       });
       snapInteraction.handleEvent(event);
     });
 
-    it('snaps to vertices only', function (done) {
+    it('snaps to vertices only', function () {
       const point = new Feature(
         new LineString([
           [-10, 0],
@@ -204,23 +204,17 @@ describe('ol.interaction.Snap', function () {
       });
       snapInteraction.setMap(map);
 
-      const event = {
-        pixel: [7 + width / 2, height / 2 - 4],
-        coordinate: [7, 4],
-        map: map,
-      };
+      const event = eventFromCoordinate([7, 4]);
       snapInteraction.on('snap', function (snapEvent) {
         expect(snapEvent.feature).to.be(point);
         expect(snapEvent.segment).to.be(null);
 
         expect(event.coordinate).to.eql([10, 0]);
-
-        done();
       });
       snapInteraction.handleEvent(event);
     });
 
-    it('snaps to point', function (done) {
+    it('snaps to point', function () {
       const line = new Feature(
         new LineString([
           [0, 0],
@@ -232,23 +226,17 @@ describe('ol.interaction.Snap', function () {
         features: new Collection([line, point]),
       });
       snapInteraction.setMap(map);
-      const event = {
-        pixel: [3 + width / 2, height / 2],
-        coordinate: [3, 0],
-        map: map,
-      };
+      const event = eventFromCoordinate([3, 0]);
       snapInteraction.on('snap', function (snapEvent) {
         expect(snapEvent.feature).to.be(point);
         expect(snapEvent.segment).to.be(null);
 
         expect(event.coordinate).to.eql([5, 0]);
-
-        done();
       });
       snapInteraction.handleEvent(event);
     });
 
-    it('snaps to multi point', function (done) {
+    it('snaps to multi point', function () {
       const multiPoint = new Feature(
         new MultiPoint([
           [0, 0],
@@ -261,16 +249,8 @@ describe('ol.interaction.Snap', function () {
       });
       snapInteraction.setMap(map);
 
-      const event1 = {
-        pixel: [3 + width / 2, height / 2],
-        coordinate: [3, 0],
-        map: map,
-      };
-      const event2 = {
-        pixel: [53 + width / 2, height / 2],
-        coordinate: [53, 0],
-        map: map,
-      };
+      const event1 = eventFromCoordinate([3, 0]);
+      const event2 = eventFromCoordinate([53, 0]);
       const snapEvents = [];
       snapInteraction.on('snap', function (snapEvent) {
         snapEvents.push(snapEvent);
@@ -279,15 +259,15 @@ describe('ol.interaction.Snap', function () {
         }
         expect(snapEvent.feature).to.be(multiPoint);
         expect(snapEvent.segment).to.be(null);
+
         expect(event1.coordinate).to.eql([0, 0]);
         expect(event2.coordinate).to.eql([50, 0]);
-        done();
       });
       snapInteraction.handleEvent(event1);
       snapInteraction.handleEvent(event2);
     });
 
-    it('snaps to intersection only', function (done) {
+    it('snaps to intersection only', function () {
       const line = new Feature(
         new LineString([
           [0, 0],
@@ -303,25 +283,17 @@ describe('ol.interaction.Snap', function () {
         edge: false,
       });
       snapInteraction.setMap(map);
-      const event = {
-        pixel: [48 + width / 2, height / 2 - 48],
-        coordinate: [48, 48],
-        map: map,
-      };
+      const event = eventFromCoordinate([48, 48]);
       snapInteraction.on('snap', function (snapEvent) {
-        try {
-          expect(snapEvent.feature).to.be(line);
-          expect(snapEvent.segment).to.be(null);
-          expect(event.coordinate).to.eql([50, 50]);
-          done();
-        } catch (error) {
-          done(error);
-        }
+        expect(snapEvent.feature).to.be(line);
+        expect(snapEvent.segment).to.be(null);
+
+        expect(event.coordinate).to.eql([50, 50]);
       });
       snapInteraction.handleEvent(event);
     });
 
-    it('snaps to point along line', function (done) {
+    it('snaps to point along line', function () {
       const line = new Feature(
         new LineString([
           [0, 0],
@@ -333,11 +305,7 @@ describe('ol.interaction.Snap', function () {
         features: new Collection([line, point]),
       });
       snapInteraction.setMap(map);
-      const event = {
-        pixel: [16 + width / 2, 5 + height / 2],
-        coordinate: [16, 5],
-        map: map,
-      };
+      const event = eventFromCoordinate([16, 5]);
       snapInteraction.on('snap', function (snapEvent) {
         expect(snapEvent.feature).to.be(line);
         expect(snapEvent.segment).to.eql([
@@ -346,13 +314,11 @@ describe('ol.interaction.Snap', function () {
         ]);
 
         expect(event.coordinate).to.eql([16, 0]);
-
-        done();
       });
       snapInteraction.handleEvent(event);
     });
 
-    it('snaps to circle', function (done) {
+    it('snaps to circle', function () {
       const circle = new Feature(new Circle([0, 0], 10));
       const snapInteraction = new Snap({
         features: new Collection([circle]),
@@ -360,11 +326,7 @@ describe('ol.interaction.Snap', function () {
       });
       snapInteraction.setMap(map);
 
-      const event = {
-        pixel: [5 + width / 2, height / 2 - 5],
-        coordinate: [5, 5],
-        map: map,
-      };
+      const event = eventFromCoordinate([5, 5]);
       snapInteraction.on('snap', function (snapEvent) {
         expect(snapEvent.feature).to.eql(circle);
         expect(snapEvent.segment).to.be(null);
@@ -377,13 +339,11 @@ describe('ol.interaction.Snap', function () {
           Math.sin(Math.PI / 4) * 10,
           1e-10,
         );
-
-        done();
       });
       snapInteraction.handleEvent(event);
     });
 
-    it('snaps to circle in a user projection', function (done) {
+    it('snaps to circle in a user projection', function () {
       const userProjection = 'EPSG:3857';
       setUserProjection(userProjection);
       const viewProjection = map.getView().getProjection();
@@ -397,11 +357,9 @@ describe('ol.interaction.Snap', function () {
       });
       snapInteraction.setMap(map);
 
-      const event = {
-        pixel: [5 + width / 2, height / 2 - 5],
-        coordinate: transform([5, 5], viewProjection, userProjection),
-        map: map,
-      };
+      const event = eventFromCoordinate(
+        transform([5, 5], viewProjection, userProjection),
+      );
 
       const coordinate = transform(
         [Math.sin(Math.PI / 4) * 10, Math.sin(Math.PI / 4) * 10],
@@ -415,13 +373,11 @@ describe('ol.interaction.Snap', function () {
 
         expect(event.coordinate[0]).to.roughlyEqual(coordinate[0], 1e-10);
         expect(event.coordinate[1]).to.roughlyEqual(coordinate[1], 1e-10);
-
-        done();
       });
       snapInteraction.handleEvent(event);
     });
 
-    it('handle feature without geometry', function (done) {
+    it('handle feature without geometry', function () {
       const feature = new Feature();
       const snapInteraction = new Snap({
         features: new Collection([feature]),
@@ -437,23 +393,17 @@ describe('ol.interaction.Snap', function () {
         ]),
       );
 
-      const event = {
-        pixel: [7 + width / 2, height / 2 - 4],
-        coordinate: [7, 4],
-        map: map,
-      };
+      const event = eventFromCoordinate([7, 4]);
       snapInteraction.on('snap', function (snapEvent) {
         expect(snapEvent.feature).to.be(feature);
         expect(snapEvent.segment).to.be(null);
 
         expect(event.coordinate).to.eql([10, 0]);
-
-        done();
       });
       snapInteraction.handleEvent(event);
     });
 
-    it('handle geometry changes', function (done) {
+    it('handle geometry changes', function () {
       const line = new Feature(
         new LineString([
           [-10, 0],
@@ -472,23 +422,17 @@ describe('ol.interaction.Snap', function () {
         [10, 0],
       ]);
 
-      const event = {
-        pixel: [7 + width / 2, height / 2 - 4],
-        coordinate: [7, 4],
-        map: map,
-      };
+      const event = eventFromCoordinate([7, 4]);
       snapInteraction.on('snap', function (snapEvent) {
         expect(snapEvent.feature).to.be(line);
         expect(snapEvent.segment).to.be(null);
 
         expect(event.coordinate).to.eql([10, 0]);
-
-        done();
       });
       snapInteraction.handleEvent(event);
     });
 
-    it('handle geometry name changes', function (done) {
+    it('handle geometry name changes', function () {
       const line = new Feature({
         geometry: new LineString([
           [-10, 0],
@@ -508,25 +452,19 @@ describe('ol.interaction.Snap', function () {
 
       line.setGeometryName('alt_geometry');
 
-      const event = {
-        pixel: [7 + width / 2, height / 2 - 4],
-        coordinate: [7, 4],
-        map: map,
-      };
+      const event = eventFromCoordinate([7, 4]);
 
       snapInteraction.on('snap', function (snapEvent) {
         expect(snapEvent.feature).to.be(line);
         expect(snapEvent.segment).to.be(null);
 
         expect(event.coordinate).to.eql([10, 0]);
-
-        done();
       });
 
       snapInteraction.handleEvent(event);
     });
 
-    it('unsnaps not snapped to anything', function (done) {
+    it('unsnaps not snapped to anything', function () {
       const point = new Feature(new Point([10, 10]));
 
       const snapInteraction = new Snap({
@@ -536,27 +474,21 @@ describe('ol.interaction.Snap', function () {
 
       snapInteraction.snapped_ = {
         vertex: [10, 10],
-        vertexPixel: [10, 10],
+        vertexPixel: map.getPixelFromCoordinate([10, 10]),
         feature: point,
         segment: null,
       };
 
-      const event = {
-        pixel: [50, 50],
-        coordinate: [50, 50],
-        map: map,
-      };
+      const event = eventFromCoordinate([50, 50]);
 
       snapInteraction.on('unsnap', function (snapEvent) {
         expect(snapEvent.feature).to.be(point);
         expect(snapEvent.segment).to.be(null);
-        done();
       });
-
       snapInteraction.handleEvent(event);
     });
 
-    it('unsnaps if snapped to other feature', function (done) {
+    it('unsnaps if snapped to other feature', function () {
       const point1 = new Feature(new Point([10, 10]));
       const point2 = new Feature(new Point([30, 30]));
 
@@ -567,43 +499,30 @@ describe('ol.interaction.Snap', function () {
 
       snapInteraction.snapped_ = {
         vertex: [10, 10],
-        vertexPixel: [10, 10],
+        vertexPixel: map.getPixelFromCoordinate([10, 10]),
         feature: point1,
         segment: null,
       };
 
-      const event = {
-        pixel: [30 + width / 2, height / 2 - 30],
-        coordinate: [30, 30],
-        map: map,
-      };
-
       const snapEvents = [];
-      const snapEventHandler = (e) => {
+      snapInteraction.on(['unsnap', 'snap'], (e) => {
         snapEvents.push(e);
         if (snapEvents.length !== 2) {
           return;
         }
         expect(snapEvents.map((e) => e.type)).to.eql(['unsnap', 'snap']);
         expect(snapEvents.map((e) => e.feature)).to.eql([point1, point2]);
-        done();
-      };
-      snapInteraction.on('unsnap', snapEventHandler);
-      snapInteraction.on('snap', snapEventHandler);
+      });
 
-      snapInteraction.handleEvent(event);
+      snapInteraction.handleEvent(eventFromCoordinate([30, 30]));
     });
   });
 
   describe('handleEvent - useGeographic', () => {
-    let target, map;
+    let target;
     const size = 256;
 
-    let restoreRAF;
-
-    beforeEach((done) => {
-      restoreRAF = overrideRAF();
-
+    beforeEach(() => {
       useGeographic();
       target = document.createElement('div');
 
@@ -623,19 +542,15 @@ describe('ol.interaction.Snap', function () {
           zoom: 0,
         }),
       });
-
-      map.once('postrender', () => {
-        done();
-      });
+      map.renderSync();
     });
 
     afterEach(() => {
       disposeMap(map);
       clearUserProjection();
-      restoreRAF();
     });
 
-    it('snaps to user coordinates', (done) => {
+    it('snaps to user coordinates', () => {
       const lon = -90;
       const lat = 45;
       const point = new Feature(new Point([lon, lat]));
@@ -648,34 +563,22 @@ describe('ol.interaction.Snap', function () {
       const expectedPixel = map
         .getPixelFromCoordinate([lon, lat])
         .map((value) => Math.round(value));
-
       const delta = 5;
-      const pixel = expectedPixel.slice();
-      pixel[0] += delta;
-      pixel[1] += delta;
-
-      const coordinate = map.getCoordinateFromPixel(pixel);
-
-      const event = {
-        pixel: pixel,
-        coordinate: coordinate,
-        map: map,
-      };
+      const pixel = [expectedPixel[0] + delta, expectedPixel[1] + delta];
+      const event = eventFromPixel(pixel);
       snapInteraction.on('snap', function (snapEvent) {
         expect(snapEvent.feature).to.be(point);
         expect(snapEvent.segment).to.be(null);
 
         expect(event.coordinate).to.eql([lon, lat]);
         expect(event.pixel).to.eql(expectedPixel);
-
-        done();
       });
       snapInteraction.handleEvent(event);
     });
   });
 
   describe('setMap', function () {
-    let map, featureCollection;
+    let featureCollection;
 
     beforeEach(function () {
       setUserProjection();
@@ -754,7 +657,7 @@ describe('ol.interaction.Snap', function () {
   });
 
   describe('Custom segmenters', () => {
-    it('calls custom segmenters and uses their results', function (done) {
+    it('calls custom segmenters and uses their results', function () {
       const customSegmenters = {
         Point(geometry) {
           const coordinates = geometry.getCoordinates();
@@ -784,8 +687,7 @@ describe('ol.interaction.Snap', function () {
         );
       });
 
-      expect(!!customSegment).to.be(true);
-      done();
+      expect(customSegment).to.be.ok();
     });
   });
 });
