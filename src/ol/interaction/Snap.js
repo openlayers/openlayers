@@ -19,6 +19,7 @@ import {
 import {FALSE, TRUE} from '../functions.js';
 import {fromCircle} from '../geom/Polygon.js';
 import {getIntersectionPoint} from '../geom/flat/segments.js';
+import {clear} from '../obj.js';
 import {
   fromUserCoordinate,
   getUserProjection,
@@ -626,6 +627,7 @@ class Snap extends PointerInteraction {
     const feature = getFeatureFromEvent(evt);
     if (feature) {
       this.removeFeature(feature);
+      delete this.pendingFeatures_[getUid(feature)];
     }
   }
 
@@ -636,10 +638,7 @@ class Snap extends PointerInteraction {
   handleFeatureChange_(evt) {
     const feature = /** @type {import("../Feature.js").default} */ (evt.target);
     if (this.handlingDownUpSequence) {
-      const uid = getUid(feature);
-      if (!(uid in this.pendingFeatures_)) {
-        this.pendingFeatures_[uid] = feature;
-      }
+      this.pendingFeatures_[getUid(feature)] = feature;
     } else {
       this.updateFeature_(feature);
     }
@@ -657,6 +656,7 @@ class Snap extends PointerInteraction {
       for (const feature of featuresToUpdate) {
         this.updateFeature_(feature);
       }
+      clear(this.pendingFeatures_);
     }
     return false;
   }
