@@ -1,9 +1,11 @@
+import {spy as sinonSpy} from 'sinon';
 import Collection from '../../../../../src/ol/Collection.js';
 import Feature from '../../../../../src/ol/Feature.js';
 import Map from '../../../../../src/ol/Map.js';
 import MapBrowserEvent from '../../../../../src/ol/MapBrowserEvent.js';
 import View from '../../../../../src/ol/View.js';
 import Circle from '../../../../../src/ol/geom/Circle.js';
+import GeometryCollection from '../../../../../src/ol/geom/GeometryCollection.js';
 import LineString from '../../../../../src/ol/geom/LineString.js';
 import MultiPoint from '../../../../../src/ol/geom/MultiPoint.js';
 import Point from '../../../../../src/ol/geom/Point.js';
@@ -376,6 +378,23 @@ describe('ol.interaction.Snap', function () {
         expect(event.coordinate[1]).to.roughlyEqual(coordinate[1], 1e-10);
       });
       snapInteraction.handleEvent(event);
+    });
+
+    it('uses custom segmenters for geometries of GeometryCollection', function () {
+      const geometryCollection = new Feature(
+        new GeometryCollection([new Point([0, 0])]),
+      );
+      const segmenter = sinonSpy((geometry) => {
+        return [geometry.getCoordinates()];
+      });
+      const snapInteraction = new Snap({
+        features: new Collection([geometryCollection]),
+        segmenters: {
+          Point: segmenter,
+        },
+      });
+      snapInteraction.setMap(map);
+      expect(segmenter.called).to.be(true);
     });
 
     it('handle feature without geometry', function () {
