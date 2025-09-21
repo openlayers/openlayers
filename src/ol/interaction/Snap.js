@@ -483,12 +483,9 @@ class Snap extends PointerInteraction {
               continue;
             }
             const extent = tempExtents[j];
-            // Calculate intersections with own segments
-            for (let k = 0, kk = segments.length; k < kk; ++k) {
-              if (j === k || j - 1 === k || j + 1 === k) {
-                // Exclude self and neighbours
-                continue;
-              }
+            // Calculate intersections with own segments excluding self and
+            // neighbors
+            for (let k = 0, kk = j - 1; k < kk; ++k) {
               const otherSegment = segments[k];
               if (!intersectsExtent(extent, tempExtents[k])) {
                 continue;
