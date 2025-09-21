@@ -324,19 +324,10 @@ class Snap extends PointerInteraction {
   constructor(options) {
     options = options ? options : {};
 
-    const pointerOptions = /** @type {import("./Pointer.js").Options} */ (
-      options
-    );
-
-    if (!pointerOptions.handleDownEvent) {
-      pointerOptions.handleDownEvent = TRUE;
-    }
-
-    if (!pointerOptions.stopDown) {
-      pointerOptions.stopDown = FALSE;
-    }
-
-    super(pointerOptions);
+    super({
+      handleDownEvent: TRUE,
+      stopDown: FALSE,
+    });
 
     /***
      * @type {SnapOnSignature<import("../events").EventsKey>}
