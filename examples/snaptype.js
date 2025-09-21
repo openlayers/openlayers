@@ -18,25 +18,26 @@ import VectorSource from '../src/ol/source/Vector.js';
 import Stroke from '../src/ol/style/Stroke.js';
 import Style, {createEditingStyle} from '../src/ol/style/Style.js';
 
-const raster = new TileLayer({
-  source: new OSM(),
-});
-
-const vector = new VectorLayer({
-  source: new VectorSource(),
-  style: {
-    'fill-color': 'rgba(255, 255, 255, 0.2)',
-    'stroke-color': '#ffcc33',
-    'stroke-width': 2,
-    'circle-radius': 7,
-    'circle-fill-color': '#ffcc33',
-  },
-});
-
 useGeographic(); //alias for setUserProjection('EPSG:4326')
 
+const optionsForm = document.getElementById('options-form');
+
+const source = new VectorSource();
+
 const map = new Map({
-  layers: [raster, vector],
+  layers: [
+    new TileLayer({source: new OSM()}),
+    new VectorLayer({
+      source: source,
+      style: {
+        'fill-color': 'rgba(255, 255, 255, 0.2)',
+        'stroke-color': '#ffcc33',
+        'stroke-width': 2,
+        'circle-radius': 7,
+        'circle-fill-color': '#ffcc33',
+      },
+    }),
+  ],
   target: 'map',
   view: new View({
     center: [-89.78, 36.95],
@@ -44,80 +45,76 @@ const map = new Map({
   }),
 });
 
-const ExampleModify = {
-  init: function () {
+class ExampleModify {
+  constructor(map, source) {
     this.select = new Select();
-    map.addInteraction(this.select);
-
+    const selectedCollection = this.select.getFeatures();
     this.modify = new Modify({
-      features: this.select.getFeatures(),
+      features: selectedCollection,
     });
-    map.addInteraction(this.modify);
-
-    this.setEvents();
-  },
-  setEvents: function () {
-    const selectedFeatures = this.select.getFeatures();
 
     this.select.on('change:active', function () {
-      selectedFeatures.forEach(function (each) {
-        selectedFeatures.remove(each);
-      });
+      selectedCollection.clear();
     });
-  },
-  setActive: function (active) {
+    source.on('removefeature', (evt) => {
+      selectedCollection.remove(evt.feature);
+    });
+
+    map.addInteraction(this.select);
+    map.addInteraction(this.modify);
+  }
+  setActive(active) {
     this.select.setActive(active);
     this.modify.setActive(active);
-  },
-};
-ExampleModify.init();
+  }
+  setStyle(style) {
+    this.modify.getOverlay().setStyle(style);
+  }
+}
 
-const optionsForm = document.getElementById('options-form');
-
-const ExampleDraw = {
-  init: function () {
-    map.addInteraction(this.Point);
-    this.Point.setActive(false);
-    map.addInteraction(this.LineString);
-    this.LineString.setActive(false);
-    map.addInteraction(this.Polygon);
-    this.Polygon.setActive(false);
-    map.addInteraction(this.Circle);
-    this.Circle.setActive(false);
-  },
-  Point: new Draw({
-    source: vector.getSource(),
-    type: 'Point',
-  }),
-  LineString: new Draw({
-    source: vector.getSource(),
-    type: 'LineString',
-  }),
-  Polygon: new Draw({
-    source: vector.getSource(),
-    type: 'Polygon',
-  }),
-  Circle: new Draw({
-    source: vector.getSource(),
-    type: 'Circle',
-  }),
-  activeDraw: null,
-  setActive: function (active) {
-    if (this.activeDraw) {
-      this.activeDraw.setActive(false);
-      this.activeDraw = null;
+class ExampleDraw {
+  constructor(map, source) {
+    this.interactions = ['Point', 'LineString', 'Polygon', 'Circle'].reduce(
+      (all, type) => {
+        const draw = new Draw({
+          type,
+          source,
+        });
+        draw.setActive(false);
+        map.addInteraction(draw);
+        all[type] = draw;
+        return all;
+      },
+      /** @type {Object<string, Draw>} */ ({}),
+    );
+  }
+  setActive(type) {
+    if (this.activeDrawType === type) {
+      return;
     }
-    if (active) {
-      const type = optionsForm.elements['draw-type'].value;
-      this.activeDraw = this[type];
-      this.activeDraw.setActive(true);
+    if (this.activeDrawType) {
+      this.interactions[this.activeDrawType].setActive(false);
     }
-  },
-};
-ExampleDraw.init();
+    if (type) {
+      this.interactions[type].setActive(true);
+    }
+    this.activeDrawType = type;
+  }
+  setStyle(style) {
+    if (this.activeDrawType) {
+      this.interactions[this.activeDrawType].getOverlay().setStyle(style);
+    }
+  }
+}
 
-ExampleDraw.setActive(true);
-ExampleModify.setActive(false);
+const exampleModify = new ExampleModify(map, source);
+const exampleDraw = new ExampleDraw(map, source);
+exampleModify.setActive(optionsForm.elements['interaction'] === 'modify');
+exampleDraw.setActive(
+  optionsForm.elements['interaction'].value === 'draw'
+    ? optionsForm.elements['draw-type'].value
+    : null,
+);
 
 const bearing = function (p1, p2) {
   // p1 ---> p2
@@ -235,33 +232,27 @@ const updateStyle = function (e) {
     }
     return styles[feature.getGeometry().getType()];
   };
-  if (ExampleDraw.activeDraw) {
-    ExampleDraw.activeDraw.getOverlay().setStyle(newStyle);
-  }
-  ExampleModify.modify.getOverlay().setStyle(newStyle);
+  exampleDraw.setStyle(newStyle);
+  exampleModify.setStyle(newStyle);
 };
 
-// The snap interaction must be added after the Modify and Draw interactions
-// in order for its map browser event handlers to be fired first. Its handlers
-// are responsible of doing the snapping.
+// The Snap interaction must be added after the Modify and Draw interactions
+// in order for its map browser event handlers to be fired first.
 let snap;
-
 const modifySnapOptions = function () {
   if (snap) {
     map.removeInteraction(snap);
   }
   snap = new Snap({
-    source: vector.getSource(),
+    source,
     edge: optionsForm.elements['edge'].checked,
     vertex: optionsForm.elements['vertex'].checked,
     intersection: optionsForm.elements['intersection'].checked,
     midpoint: optionsForm.elements['midpoint'].checked,
   });
-
   snap.on(['snap', 'unsnap'], (e) => {
     updateStyle(e);
   });
-
   map.addInteraction(snap);
 };
 
@@ -272,20 +263,19 @@ modifySnapOptions();
  * @param {Event} e Change event.
  */
 optionsForm.onchange = function (e) {
-  const type = e.target.getAttribute('name');
+  let type = e.target.getAttribute('name');
   if (type == 'draw-type') {
-    ExampleModify.setActive(false);
-    ExampleDraw.setActive(true);
     optionsForm.elements['interaction'].value = 'draw';
-  } else if (type == 'interaction') {
+    type = 'interaction';
+  }
+  if (type == 'interaction') {
     const interactionType = e.target.value;
-    if (interactionType == 'modify') {
-      ExampleDraw.setActive(false);
-      ExampleModify.setActive(true);
-    } else if (interactionType == 'draw') {
-      ExampleDraw.setActive(true);
-      ExampleModify.setActive(false);
-    }
+    exampleDraw.setActive(
+      interactionType === 'modify'
+        ? null
+        : optionsForm.elements['draw-type'].value,
+    );
+    exampleModify.setActive(interactionType === 'modify');
   } else {
     modifySnapOptions();
   }
