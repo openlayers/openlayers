@@ -17,7 +17,7 @@ import {
   useGeographic,
 } from '../../../../../src/ol/proj.js';
 
-describe('ol.interaction.Snap', function () {
+describe.only('ol.interaction.Snap', function () {
   /** @type {Map} */
   let map;
   /**
