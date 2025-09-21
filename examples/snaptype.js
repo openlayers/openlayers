@@ -62,6 +62,11 @@ class ExampleModify {
     this.select.setActive(active);
     this.modify.setActive(active);
   }
+  changed() {
+    if (this.modify.getActive()) {
+      this.modify.getOverlay().changed();
+    }
+  }
 }
 
 class ExampleDraw {
@@ -88,6 +93,11 @@ class ExampleDraw {
       this.interactions[type].setActive(true);
     }
     this.activeDrawType = type;
+  }
+  changed() {
+    if (this.activeDrawType) {
+      this.interactions[this.activeDrawType].getOverlay().changed();
+    }
   }
 }
 
@@ -162,6 +172,10 @@ const modifySnapOptions = function () {
     snapEvent = e.type === 'snap' ? e : undefined;
   });
   map.addInteraction(snap);
+
+  snapEvent = undefined;
+  exampleDraw.changed();
+  exampleModify.changed();
 };
 
 modifySnapOptions();
