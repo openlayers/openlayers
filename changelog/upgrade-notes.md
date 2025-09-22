@@ -2,6 +2,26 @@
 
 ### Next Release
 
+#### Deprecation of ol/array's stableSort
+
+Sorting is guaranteed to be stable since [ECMAScript 2019](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort#sort_stability).
+```js
+// Before
+stableSort(arr, compareFnc);
+```
+```js
+// After
+arr.sort(compareFnc);
+```
+
+#### Deprecation of functions in ol/format/Polyline
+
+The following functions have been deprecated without replacement:
+- decodeDeltas
+- encodeDeltas
+- decodeFloats
+- encodeFloats
+
 ### 10.4.0
 
 #### Deprecation of ol/layer/WebGLPoints

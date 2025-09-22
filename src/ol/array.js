@@ -208,6 +208,7 @@ export function equals(arr1, arr2) {
  * @param {Array<*>} arr The array to sort (modifies original).
  * @param {!function(*, *): number} compareFnc Comparison function.
  * @api
+ * @deprecated
  */
 export function stableSort(arr, compareFnc) {
   const length = arr.length;
