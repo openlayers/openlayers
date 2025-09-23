@@ -124,11 +124,6 @@ function compileExpression(expression, context) {
     case Ops.GeometryType: {
       return (context) => context.geometryType;
     }
-    case Ops.Concat: {
-      const args = expression.args.map((e) => compileExpression(e, context));
-      return (context) =>
-        ''.concat(...args.map((arg) => arg(context).toString()));
-    }
     case Ops.Resolution: {
       return (context) => context.resolution;
     }
@@ -164,6 +159,10 @@ function compileExpression(expression, context) {
     case Ops.Sqrt: {
       return compileNumericExpression(expression, context);
     }
+    case Ops.Concat:
+    case Ops.Regex: {
+      return compileStringExpression(expression, context);
+    }
     case Ops.Case: {
       return compileCaseExpression(expression, context);
     }
@@ -175,6 +174,10 @@ function compileExpression(expression, context) {
     }
     case Ops.ToString: {
       return compileConvertExpression(expression, context);
+    }
+    case Ops.Length:
+    case Ops.At: {
+      return compileLookupExpression(expression, context);
     }
     default: {
       throw new Error(`Unsupported operator ${operator}`);
@@ -372,6 +375,81 @@ function compileLogicalExpression(expression, context) {
     }
     default: {
       throw new Error(`Unsupported logical operator ${op}`);
+    }
+  }
+}
+
+/**
+ * @param {import('./expression.js').CallExpression} expression The call expression.
+ * @param {import('./expression.js').ParsingContext} context The parsing context.
+ * @return {StringEvaluator | NumberEvaluator} The evaluator function.
+ */
+function compileLookupExpression(expression, context) {
+  const op = expression.operator;
+  const length = expression.args.length;
+
+  const args = new Array(length);
+  for (let i = 0; i < length; ++i) {
+    args[i] = compileExpression(expression.args[i], context);
+  }
+  switch (op) {
+    case Ops.Length: {
+      return (context) => {
+        return args[0](context).length;
+      };
+    }
+    case Ops.At: {
+      return (context) => {
+        const index = args[0](context);
+        const array = args[1](context);
+        if (Array.isArray(array)) {
+          // an array from an expression
+          return array[index];
+        }
+        return args[index + 1](context);
+      };
+    }
+
+    default: {
+      throw new Error(`Unsupported lookup operator ${op}`);
+    }
+  }
+}
+
+/**
+ * @param {import('./expression.js').CallExpression} expression The call expression.
+ * @param {import('./expression.js').ParsingContext} context The parsing context.
+ * @return {StringEvaluator} The evaluator function.
+ */
+function compileStringExpression(expression, context) {
+  const op = expression.operator;
+  const length = expression.args.length;
+
+  const args = new Array(length);
+  for (let i = 0; i < length; ++i) {
+    args[i] = compileExpression(expression.args[i], context);
+  }
+  switch (op) {
+    case Ops.Concat: {
+      return (context) =>
+        ''.concat(...args.map((arg) => arg(context).toString()));
+    }
+    case Ops.Regex: {
+      return (context) => {
+        const value = args[0](context);
+        const regexLiteral = args[1](context);
+
+        const parsed = regexLiteral.match(/^\/(.*)\/([gimsuy]*)$/);
+        const pattern = parsed[1];
+        const flags = parsed[2];
+        const regex = new RegExp(pattern, flags);
+
+        return value.match(regex) ?? [];
+      };
+    }
+
+    default: {
+      throw new Error(`Unsupported string operator ${op}`);
     }
   }
 }
