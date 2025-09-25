@@ -7,6 +7,7 @@ import {ShaderBuilder} from '../../render/webgl/ShaderBuilder.js';
 import VectorStyleRenderer, {
   convertStyleToShaders,
 } from '../../render/webgl/VectorStyleRenderer.js';
+import {createPostProcessDefinition} from '../../render/webgl/textUtil.js';
 import {
   create as createTransform,
   makeInverse as makeInverseTransform,
@@ -30,6 +31,7 @@ export const Uniforms = {
   ...BaseUniforms,
   TILE_MASK_TEXTURE: 'u_depthMask',
   TILE_ZOOM_LEVEL: 'u_tileZoomLevel',
+  TEXT_OVERLAY_TEXTURE: 'u_textOverlay',
 };
 
 export const Attributes = {
@@ -75,6 +77,12 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
         [Uniforms.PATTERN_ORIGIN]: [0, 0],
         [Uniforms.TILE_MASK_TEXTURE]: () => this.tileMaskTarget_.getTexture(),
       },
+      postProcesses: [
+        createPostProcessDefinition(
+          () => this.styleRenderer_.getTextOverlayCanvas(),
+          () => this.styleRenderer_.getTextOverlayFrameState(),
+        ),
+      ],
     });
 
     /**
@@ -152,6 +160,37 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
      */
     this.tileMaskProgram_;
 
+    // /**
+    //  * @type {HTMLCanvasElement}
+    //  * @private
+    //  */
+    // this.textOverlayCanvas_ = null;
+
+    // /**
+    //  * @type {import("../../Map.js").FrameState}
+    //  * @private
+    //  */
+    // this.textOverlayRenderFrameState_ = null;
+
+    // /**
+    //  * @type {function(Array<import('../../Feature.js').FeatureLike>): Array<import('../../Feature.js').FeatureLike>}
+    //  * @private
+    //  */
+    // this.textFeaturesFilter = null;
+    //
+    // this.textOverlayWorker_ = createTextOverlayWorker();
+    // setupTextOverlayWorker(this.textOverlayWorker_, (canvas, frameState) => {
+    //   this.textOverlayCanvas_ = canvas;
+    //   this.textOverlayRenderFrameState_ = frameState;
+    //   this.changed();
+    // });
+
+    /**
+     * @type {Array<string>}
+     * @private
+     */
+    this.tilesToRender_ = [];
+
     this.applyOptions_(options);
   }
 
@@ -166,6 +205,7 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     if (this.helper) {
       this.createRenderers_();
       this.initTileMask_();
+      this.initTextOverlay_();
     }
   }
 
@@ -175,6 +215,24 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
    */
   applyOptions_(options) {
     this.style_ = options.style;
+    // const textFeaturesFilter = createFilterForFeaturesWithText(options.style);
+    // const filterFn = expressionToFunction(textFeaturesFilter, BooleanType);
+    // this.textFeaturesFilter = (features) => {
+    //   const filtered = [];
+    //   for (const feature of features) {
+    //     const result = filterFn(feature);
+    //     if (result === true || result === UNKNOWN) {
+    //       filtered.push(feature);
+    //     }
+    //   }
+    //   console.log(
+    //     'filtered features',
+    //     filtered.length,
+    //     'from',
+    //     features.length,
+    //   );
+    //   return filtered;
+    // };
   }
 
   /**
@@ -226,12 +284,21 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     this.helper.flushBufferData(this.tileMaskIndices_);
   }
 
+  initTextOverlay_() {
+    // this.textOverlayWorker_.postMessage({
+    //   type: TextOverlayWorkerMessageType.INIT,
+    //   style: this.style_,
+    //   userProjection: getUserProjection()?.getCode(),
+    // });
+  }
+
   /**
    * @override
    */
   afterHelperCreated() {
     this.createRenderers_();
     this.initTileMask_();
+    this.initTextOverlay_();
   }
 
   /**
@@ -242,6 +309,13 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     // redraw the layer when the tile is ready
     const listener = () => {
       if (tileRep.ready) {
+        // this.textOverlayWorker_.postMessage({
+        //   type: TextOverlayWorkerMessageType.LOAD_FEATURES,
+        //   batchId: tileRep.tile.getKey(),
+        //   features: this.textFeaturesFilter(tileRep.features).map(
+        //     serializeFeature,
+        //   ),
+        // });
         this.getLayer().changed();
         tileRep.removeEventListener(EventType.CHANGE, listener);
       }
@@ -259,6 +333,7 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
       frameState,
       this.currentFrameStateTransform_,
     );
+    this.tilesToRender_.length = 0;
   }
 
   /**
@@ -290,6 +365,17 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
       mat4FromTransform(this.tmpMat4_, this.tmpTransform_),
     );
     return true;
+  }
+
+  /**
+   * @override
+   */
+  beforeFinalize(frameState) {
+    // this.textOverlayWorker_.postMessage({
+    //   type: TextOverlayWorkerMessageType.RENDER,
+    //   batchesId: this.tilesToRender_,
+    //   frameState: serializeFrameState(frameState),
+    // });
   }
 
   /**
@@ -373,6 +459,20 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
         depth,
       );
     });
+    this.tilesToRender_.push(tileRepresentation.tile.getKey());
+  }
+
+  /**
+   * @override
+   */
+  beforeTileDispose(tileRepresentation) {
+    this.tilesToRender_.slice(
+      this.tilesToRender_.indexOf(tileRepresentation.tile.getKey()),
+    );
+    // this.textOverlayWorker_.postMessage({
+    //   type: TextOverlayWorkerMessageType.UNLOAD_FEATURES,
+    //   batchId: tileRepresentation.tile.getKey(),
+    // });
   }
 
   /**

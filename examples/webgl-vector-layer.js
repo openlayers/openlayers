@@ -15,6 +15,21 @@ const style = [
       'stroke-width': 3,
       'stroke-offset': -1,
       'fill-color': [255, 255, 255, 0.4],
+      'text-value': [
+        'case',
+        ['has', 'ECO_NAME'],
+        ['get', 'ECO_NAME'],
+        'unknown',
+      ],
+      'text-font': 'bold 12px "Open Sans", "Arial Unicode MS", sans-serif',
+      'text-fill-color': ['get', 'COLOR'],
+      // 'text-fill-color': '#333',
+      // 'text-stroke-color': 'rgba(255,255,255,0.8)',
+      'text-stroke-color': 'rgba(0, 0, 0,0.8)',
+      'text-stroke-width': 2,
+      'text-overflow': true,
+      'text-declutter-mode': 'declutter',
+      // 'text-rotate-with-view': true,
     },
   },
   {
@@ -35,6 +50,7 @@ const osm = new TileLayer({
 const vectorLayer = new WebGLVectorLayer({
   source: new VectorSource({
     url: 'https://openlayers.org/data/vector/ecoregions.json',
+    // format: new GeoJSON({featureClass: RenderFeature}),
     format: new GeoJSON(),
   }),
   style,
