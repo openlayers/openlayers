@@ -4,9 +4,13 @@ updates:
   directory: "/"
   schedule:
     interval: weekly
+  cooldown:
+    default-days: 5
   open-pull-requests-limit: 10
   versioning-strategy: increase-if-necessary
 - package-ecosystem: github-actions
   directory: "/"
   schedule:
     interval: weekly
+  cooldown:
+    default-days: 5
