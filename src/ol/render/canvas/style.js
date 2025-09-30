@@ -69,10 +69,11 @@ function always(context) {
  * and pass a more complete evaluation context (variables, zoom, time, etc.).
  *
  * @param {Array<import('../../style/flat.js').Rule>} rules The rules.
+ * @param {ParsingContext} [parsingContext] Optional parsing context; will create a new one if not provided
  * @return {import('../../style/Style.js').StyleFunction} A style function.
  */
-export function rulesToStyleFunction(rules) {
-  const parsingContext = newParsingContext();
+export function rulesToStyleFunction(rules, parsingContext) {
+  parsingContext = parsingContext ?? newParsingContext();
   const evaluator = buildRuleSet(rules, parsingContext);
   const evaluationContext = newEvaluationContext();
   return function (feature, resolution) {
@@ -956,7 +957,7 @@ function buildCircle(flatStyle, context) {
  * @param {FlatStyle} flatStyle The flat style.
  * @param {string} name The property name.
  * @param {ParsingContext} context The parsing context.
- * @return {import('../../expr/cpu.js').NumberEvaluator|undefined} The expression evaluator or undefined.
+ * @return {function(EvaluationContext):number|undefined} The expression evaluator or undefined.
  */
 function numberEvaluator(flatStyle, name, context) {
   if (!(name in flatStyle)) {
@@ -972,7 +973,7 @@ function numberEvaluator(flatStyle, name, context) {
  * @param {FlatStyle} flatStyle The flat style.
  * @param {string} name The property name.
  * @param {ParsingContext} context The parsing context.
- * @return {import('../../expr/cpu.js').StringEvaluator?} The expression evaluator.
+ * @return {function(EvaluationContext):string?} The expression evaluator.
  */
 function stringEvaluator(flatStyle, name, context) {
   if (!(name in flatStyle)) {
@@ -1019,7 +1020,7 @@ function patternEvaluator(flatStyle, prefix, context) {
  * @param {FlatStyle} flatStyle The flat style.
  * @param {string} name The property name.
  * @param {ParsingContext} context The parsing context.
- * @return {import('../../expr/cpu.js').BooleanEvaluator?} The expression evaluator.
+ * @return {function(EvaluationContext):boolean?} The expression evaluator.
  */
 function booleanEvaluator(flatStyle, name, context) {
   if (!(name in flatStyle)) {
@@ -1039,7 +1040,7 @@ function booleanEvaluator(flatStyle, name, context) {
  * @param {FlatStyle} flatStyle The flat style.
  * @param {string} name The property name.
  * @param {ParsingContext} context The parsing context.
- * @return {import('../../expr/cpu.js').ColorLikeEvaluator?} The expression evaluator.
+ * @return {function(EvaluationContext):(Array<number>|string)?} The expression evaluator.
  */
 function colorLikeEvaluator(flatStyle, name, context) {
   if (!(name in flatStyle)) {
@@ -1055,7 +1056,7 @@ function colorLikeEvaluator(flatStyle, name, context) {
  * @param {FlatStyle} flatStyle The flat style.
  * @param {string} name The property name.
  * @param {ParsingContext} context The parsing context.
- * @return {import('../../expr/cpu.js').NumberArrayEvaluator?} The expression evaluator.
+ * @return {function(EvaluationContext):Array<number>?} The expression evaluator.
  */
 function numberArrayEvaluator(flatStyle, name, context) {
   if (!(name in flatStyle)) {
@@ -1071,7 +1072,7 @@ function numberArrayEvaluator(flatStyle, name, context) {
  * @param {FlatStyle} flatStyle The flat style.
  * @param {string} name The property name.
  * @param {ParsingContext} context The parsing context.
- * @return {import('../../expr/cpu.js').CoordinateEvaluator?} The expression evaluator.
+ * @return {function(EvaluationContext):Array<number>?} The expression evaluator.
  */
 function coordinateEvaluator(flatStyle, name, context) {
   if (!(name in flatStyle)) {
@@ -1091,7 +1092,7 @@ function coordinateEvaluator(flatStyle, name, context) {
  * @param {FlatStyle} flatStyle The flat style.
  * @param {string} name The property name.
  * @param {ParsingContext} context The parsing context.
- * @return {import('../../expr/cpu.js').SizeEvaluator?} The expression evaluator.
+ * @return {function(EvaluationContext):Array<number>?} The expression evaluator.
  */
 function sizeEvaluator(flatStyle, name, context) {
   if (!(name in flatStyle)) {
@@ -1107,7 +1108,7 @@ function sizeEvaluator(flatStyle, name, context) {
  * @param {FlatStyle} flatStyle The flat style.
  * @param {string} name The property name.
  * @param {ParsingContext} context The parsing context.
- * @return {import('../../expr/cpu.js').SizeLikeEvaluator?} The expression evaluator.
+ * @return {function(EvaluationContext):(Array<number>|number)?} The expression evaluator.
  */
 function sizeLikeEvaluator(flatStyle, name, context) {
   if (!(name in flatStyle)) {
