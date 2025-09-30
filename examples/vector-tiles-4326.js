@@ -1,30 +1,16 @@
-import {applyBackground, applyStyle} from 'ol-mapbox-style';
+import {apply} from 'ol-mapbox-style';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import VectorTileLayer from '../src/ol/layer/VectorTile.js';
-import VectorTileSource from '../src/ol/source/VectorTile.js';
-import {createXYZ} from '../src/ol/tilegrid.js';
+import LayerGroup from '../src/ol/layer/Group.js';
 
 const key = 'get_your_own_D6rA4zTHduk6KOKTXzGB';
 const url = 'https://api.maptiler.com/maps/basic-4326/style.json?key=' + key;
 
-// Match the server resolutions
-const tileGrid = createXYZ({
-  extent: [-180, -90, 180, 90],
-  tileSize: 512,
-  maxResolution: 180 / 512,
-  maxZoom: 13,
-});
+// Container for ol-mapbox-style layers
+const layer = new LayerGroup();
 
-const layer = new VectorTileLayer({
-  declutter: true,
-  source: new VectorTileSource({
-    projection: 'EPSG:4326',
-    tileGrid: tileGrid,
-  }),
-});
-applyStyle(layer, url, {resolutions: tileGrid.getResolutions()});
-applyBackground(layer, url);
+// The layer group will be populated with a background layer and a VectorTile layer
+apply(layer, url, {projection: 'EPSG:4326'});
 
 const map = new Map({
   target: 'map',

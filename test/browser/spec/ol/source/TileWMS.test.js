@@ -252,7 +252,7 @@ describe('ol/source/TileWMS', function () {
 
     it('changes the BBOX order for EN axis orientations', function () {
       const source = new TileWMS(options);
-      const tile = source.getTile(3, 2, 2, 1, getProjection('EPSG:4326'));
+      const tile = source.getTile(2, 2, 2, 1, getProjection('EPSG:4326'));
       const uri = new URL(tile.src_);
       const queryData = uri.searchParams;
       expect(queryData.get('BBOX')).to.be('-45,-90,0,-45');
@@ -261,7 +261,7 @@ describe('ol/source/TileWMS', function () {
     it('uses EN BBOX order if version < 1.3', function () {
       options.params.VERSION = '1.1.0';
       const source = new TileWMS(options);
-      const tile = source.getTile(3, 2, 2, 1, getProjection('CRS:84'));
+      const tile = source.getTile(2, 2, 2, 1, getProjection('CRS:84'));
       const uri = new URL(tile.src_);
       const queryData = uri.searchParams;
       expect(queryData.get('BBOX')).to.be('-90,-45,-45,0');
@@ -309,7 +309,7 @@ describe('ol/source/TileWMS', function () {
     it('returns a tile if it is contained within layers extent', function () {
       options.extent = [-80, -40, -50, -10];
       const source = new TileWMS(options);
-      const tileCoord = [3, 2, 2];
+      const tileCoord = [2, 2, 2];
       const url = source.tileUrlFunction(
         tileCoord,
         1,
@@ -323,7 +323,7 @@ describe('ol/source/TileWMS', function () {
     it('returns a tile if it intersects layers extent', function () {
       options.extent = [-80, -40, -40, -10];
       const source = new TileWMS(options);
-      const tileCoord = [3, 3, 2];
+      const tileCoord = [2, 3, 2];
       const url = source.tileUrlFunction(
         tileCoord,
         1,

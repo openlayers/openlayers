@@ -122,15 +122,13 @@ export function createXYZ(options) {
  */
 function resolutionsFromExtent(extent, maxZoom, tileSize, maxResolution) {
   maxZoom = maxZoom !== undefined ? maxZoom : DEFAULT_MAX_ZOOM;
-  tileSize = toSize(tileSize !== undefined ? tileSize : DEFAULT_TILE_SIZE);
 
-  const height = getHeight(extent);
-  const width = getWidth(extent);
-
-  maxResolution =
-    maxResolution > 0
-      ? maxResolution
-      : Math.max(width / tileSize[0], height / tileSize[1]);
+  if (!(maxResolution > 0)) {
+    tileSize = toSize(tileSize !== undefined ? tileSize : DEFAULT_TILE_SIZE);
+    const height = getHeight(extent);
+    const width = getWidth(extent);
+    maxResolution = Math.min(width / tileSize[0], height / tileSize[1]);
+  }
 
   const length = maxZoom + 1;
   const resolutions = new Array(length);

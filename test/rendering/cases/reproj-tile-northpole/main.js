@@ -5,6 +5,7 @@ import TileLayer from '../../../../src/ol/layer/Tile.js';
 import {register} from '../../../../src/ol/proj/proj4.js';
 import {get, transform} from '../../../../src/ol/proj.js';
 import XYZ from '../../../../src/ol/source/XYZ.js';
+import {TileGrid} from '../../../../src/ol/tilegrid.js';
 
 proj4.defs(
   'EPSG:3413',
@@ -20,7 +21,10 @@ const center4326 = [0, 90];
 const center = transform(center4326, 'EPSG:4326', 'EPSG:3413');
 
 const source = new XYZ({
-  maxZoom: 0,
+  tileGrid: new TileGrid({
+    origin: [-180, 90],
+    resolutions: [360 / 256],
+  }),
   projection: 'EPSG:4326',
   url: '/data/tiles/4326/{z}/{x}/{y}.png',
   transition: 0,

@@ -1,5 +1,9 @@
 import TileRange from '../../../../src/ol/TileRange.js';
-import {createOrUpdate} from '../../../../src/ol/extent.js';
+import {
+  createOrUpdate,
+  getHeight,
+  getWidth,
+} from '../../../../src/ol/extent.js';
 import Projection from '../../../../src/ol/proj/Projection.js';
 import {METERS_PER_UNIT} from '../../../../src/ol/proj/Units.js';
 import {HALF_SIZE} from '../../../../src/ol/proj/epsg3857.js';
@@ -419,6 +423,18 @@ describe('ol/tilegrid/TileGrid.js', function () {
 
       const resolutions = grid.getResolutions();
       expect(resolutions.length).to.be(DEFAULT_MAX_ZOOM + 1);
+    });
+
+    it('calculates z0 resolution from the shorter edge of the projection extent for correct tile extents', () => {
+      const projection = getProjection('EPSG:4326');
+      const extent = projection.getExtent();
+      const grid = createForProjection(projection);
+      const resolutions = grid.getResolutions();
+      expect(resolutions[0]).to.be(
+        Math.min(getHeight(extent), getWidth(extent)) / DEFAULT_TILE_SIZE,
+      );
+      expect(grid.getTileCoordExtent([0, 0, 0])).to.eql([-180, -90, 0, 90]);
+      expect(grid.getTileCoordExtent([0, 1, 0])).to.eql([0, -90, 180, 90]);
     });
 
     it('accepts a number of zoom levels', function () {
@@ -1074,14 +1090,14 @@ describe('ol/tilegrid/TileGrid.js', function () {
     it('calls the provided function with each tile coordinate', function () {
       const tileGrid = createXYZ({extent: [-180, -90, 180, 90]});
       const tileCoords = [];
-      tileGrid.forEachTileCoord([15, 47, 16, 48], 8, function (tileCoord) {
+      tileGrid.forEachTileCoord([15, 47, 16, 48], 7, function (tileCoord) {
         tileCoords.push(tileCoord);
       });
       expect(tileCoords).to.eql([
-        [8, 138, 29],
-        [8, 138, 30],
-        [8, 139, 29],
-        [8, 139, 30],
+        [7, 138, 29],
+        [7, 138, 30],
+        [7, 139, 29],
+        [7, 139, 30],
       ]);
     });
   });
