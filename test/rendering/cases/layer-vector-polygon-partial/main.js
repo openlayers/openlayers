@@ -32,7 +32,7 @@ const src = new VectorSource({
   ],
 });
 const layer = new VectorLayer({
-  renderBuffer: 0,
+  renderBuffer: 2,
   source: src,
   style: {
     'stroke-color': [0, 0, 0, 1],
