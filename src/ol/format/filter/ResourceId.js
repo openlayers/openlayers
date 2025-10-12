@@ -5,8 +5,9 @@ import Filter from './Filter.js';
 
 /**
  * @classdesc
+ * Represents a `<ResourceId>` comparison operator
  *
- * @abstract
+ * @api
  */
 class ResourceId extends Filter {
   /**
