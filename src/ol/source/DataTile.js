@@ -18,13 +18,9 @@ import TileSource, {TileSourceEvent} from './Tile.js';
 import TileEventType from './TileEventType.js';
 
 /**
- * @typedef {'anonymous'|'use-credentials'} CrossOriginAttribute
- */
-
-/**
  * @typedef {Object} LoaderOptions
  * @property {AbortSignal} signal An abort controller signal.
- * @property {CrossOriginAttribute} [crossOrigin] The cross-origin attribute for images.
+ * @property {import("../cors.js").CrossOriginAttribute} [crossOrigin] The cross-origin attribute for images.
  * @property {number} [maxY] The maximum y coordinate at the given z level.  Will be undefined if the
  * underlying tile grid does not have a known extent.
  */
@@ -58,7 +54,7 @@ import TileEventType from './TileEventType.js';
  * @property {number} [bandCount=4] Number of bands represented in the data.
  * @property {boolean} [interpolate=false] Use interpolated values when resampling.  By default,
  * the nearest neighbor is used when resampling.
- * @property {CrossOriginAttribute} [crossOrigin='anonymous'] The crossOrigin property to pass to loaders for image data.
+ * @property {import("../cors.js").CrossOriginOption} [crossOrigin='anonymous'] The crossOrigin property to pass to loaders for image data.
  * @property {string} [key] Key for use in caching tiles.
  * @property {number|import("../array.js").NearestDirectionFunction} [zDirection=0]
  * Choose whether to use tiles with a higher or lower zoom level when between integer
@@ -154,9 +150,9 @@ class DataTileSource extends TileSource {
 
     /**
      * @private
-     * @type {CrossOriginAttribute}
+     * @type {import("../cors.js").CrossOriginAttribute}
      */
-    this.crossOrigin_ = options.crossOrigin || 'anonymous';
+    this.crossOrigin_ = options.crossOrigin ?? 'anonymous';
 
     /**
      * @type {import("../transform.js").Transform|null}
