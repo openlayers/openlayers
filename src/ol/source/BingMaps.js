@@ -174,7 +174,8 @@ class BingMaps extends TileImage {
     this.placeholderTiles_ = options.placeholderTiles;
 
     const url =
-      (options.url || 'https://dev.virtualearth.net/REST/v1/Imagery/Metadata/') +
+      (options.url ||
+        'https://dev.virtualearth.net/REST/v1/Imagery/Metadata/') +
       this.imagerySet_ +
       '?uriScheme=https&include=ImageryProviders&key=' +
       this.apiKey_ +

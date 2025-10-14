@@ -189,7 +189,6 @@ class Google extends TileImage {
      */
     this.attributionUrl_ = baseUrl + 'tile/v1/viewport';
 
-
     this.createSession_();
   }
 
