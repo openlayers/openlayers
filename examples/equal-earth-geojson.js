@@ -4,7 +4,7 @@ import View from '../src/ol/View.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import {register} from '../src/ol/proj/proj4.js';
-import {get as getProjection} from '../src/ol/proj.js';
+import {fromLonLat, get as getProjection, toLonLat} from '../src/ol/proj.js';
 import VectorSource from '../src/ol/source/Vector.js';
 
 // Equal Earth projection with dynamic center meridian
@@ -58,6 +58,35 @@ function dynEqualEarth(center) {
     }),
   });
 
+  // Event handler for updating view projection
+  function handleMoveEnd(evt) {
+    const curView = evt.map.getView();
+    const center = toLonLat(curView.getCenter(), curView.getProjection());
+    const newProjection = dynEqualEarth(center);
+    if (curView.getProjection().getCode() !== newProjection.getCode()) {
+      // map.getView().setCenter([0, 0]);
+      map.setView(
+        new View({
+          projection: newProjection,
+          center: fromLonLat(center, newProjection),
+          zoom: curView.getZoom(),
+          rotation: curView.getRotation(),
+          extent: [-17243959.06, -8392927.6, 17243959.06, 8392927.6],
+          constrainOnlyCenter: true,
+        }),
+      );
+      vectorLayer.setSource(
+        new VectorSource({
+          features: new GeoJSON({
+            featureProjection: dynEqualEarth(center),
+          }).readFeatures(geojson),
+        }),
+      );
+    }
+  }
+
+  map.on('moveend', (evt) => handleMoveEnd(evt));
+
   const featureOverlay = new VectorLayer({
     source: new VectorSource(),
     map: map,
@@ -75,6 +104,7 @@ function dynEqualEarth(center) {
 
     const info = document.getElementById('info');
     if (feature) {
+      // console.log(feature.getGeometry().getCoordinates());
       info.innerHTML = feature.get('ECO_NAME') || '&nbsp;';
     } else {
       info.innerHTML = '&nbsp;';
