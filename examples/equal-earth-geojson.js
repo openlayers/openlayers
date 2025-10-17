@@ -1,3 +1,6 @@
+import {bbox as turfBbox} from '@turf/bbox';
+import {bboxClip} from '@turf/bbox-clip';
+import {booleanValid} from '@turf/boolean-valid';
 import proj4 from 'proj4';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
@@ -58,6 +61,64 @@ function dynEqualEarth(center) {
     }),
   });
 
+  function clipPolygon(geojson, lon0) {
+    const eps = 0;
+    const minX = lon0 - 180.0;
+    const maxX = lon0 + 180.0;
+    const clippedJson = {type: 'FeatureCollection', features: []};
+    for (const feature of geojson.features) {
+      const bbox = turfBbox(feature);
+      if (
+        (bbox[0] < minX && bbox[2] > minX) ||
+        (bbox[0] < maxX && bbox[2] > maxX)
+      ) {
+        const clippedFeat = bboxClip(feature, [
+          minX + eps,
+          -90,
+          maxX - eps,
+          90,
+        ]);
+        clippedJson.features.push(clippedFeat);
+        const offset = bbox[0] < minX ? 360 : -360;
+        const transformedFeat = structuredClone(feature);
+        if (transformedFeat.geometry.type === 'Polygon') {
+          transformedFeat.geometry.type = 'MultiPolygon';
+          transformedFeat.geometry.coordinates = [
+            transformedFeat.geometry.coordinates,
+          ];
+        }
+        for (const polygon of transformedFeat.geometry.coordinates) {
+          for (const ring of polygon) {
+            for (const coord of ring) {
+              coord[0] += offset;
+            }
+          }
+        }
+        const wrappedFeat = bboxClip(transformedFeat, [
+          minX + eps,
+          -90,
+          maxX - eps,
+          90,
+        ]);
+        // Remove empty polygons
+        // wrappedFeat.geometry.coordinates =
+        //   wrappedFeat.geometry.coordinates.filter(
+        //     (polygon) => !polygon.length,
+        //   );
+        // Remove empty rings
+        wrappedFeat.geometry.coordinates = wrappedFeat.geometry.coordinates.map(
+          (polygon) => polygon.filter((ring) => !ring.length),
+        );
+        // if (booleanValid(wrappedFeat)) {
+        // }
+        clippedJson.features.push(wrappedFeat);
+      } else {
+        clippedJson.features.push(feature);
+      }
+    }
+    return clippedJson;
+  }
+
   // Event handler for updating view projection
   function handleMoveEnd(evt) {
     const curView = evt.map.getView();
@@ -75,11 +136,13 @@ function dynEqualEarth(center) {
           constrainOnlyCenter: true,
         }),
       );
+      const lon0 = Math.round(center[0] / 15) * 15;
+      const clippedJson = clipPolygon(geojson, lon0);
       vectorLayer.setSource(
         new VectorSource({
           features: new GeoJSON({
             featureProjection: dynEqualEarth(center),
-          }).readFeatures(geojson),
+          }).readFeatures(clippedJson),
         }),
       );
     }
