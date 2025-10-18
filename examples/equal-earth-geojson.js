@@ -50,7 +50,7 @@ const initialProjection = dynEqualEarth([0, 0]);
   }
 
   const vectorLayer = new VectorLayer({
-    source: jsonSource(geojson, initialProjection),
+    source: jsonSource(clipPolygon(geojson, 0), initialProjection),
     extent: [-17243959.06, -8392927.6, 17243959.06, 8392927.6],
     wrapX: false,
     style: {
@@ -109,8 +109,18 @@ const initialProjection = dynEqualEarth([0, 0]);
         (bbox[0] < maxX + eps && bbox[2] > maxX - eps)
       ) {
         const clippedFeat = bboxClip(feature, [minX, -90, maxX, 90]);
+        // if (feature.properties.name === 'Fiji') {
+        //   console.log(clippedFeat);
+        // }
+        // Remove empty rings
+        clippedFeat.geometry.coordinates = clippedFeat.geometry.coordinates.map(
+          (polygon) => polygon.filter((ring) => !ring.length),
+        );
+        // Remove empty polygons
+        clippedFeat.geometry.coordinates =
+          clippedFeat.geometry.coordinates.filter((polygon) => !polygon.length);
         const empty = clippedFeat.geometry.coordinates.every(
-          (polygon) => !polygon.length,
+          (polygon) => !polygon.length /*&& !polygon[0].length*/,
         );
         if (!empty) {
           clippedJson.features.push(clippedFeat);
@@ -132,9 +142,6 @@ const initialProjection = dynEqualEarth([0, 0]);
           }
         }
         const wrappedFeat = bboxClip(transformedFeat, [minX, -90, maxX, 90]);
-        // Remove empty polygons
-        // wrappedFeat.geometry.coordinates =
-        //   wrappedFeat.geometry.coordinates.filter((polygon) => !polygon.length);
         // Remove empty rings
         wrappedFeat.geometry.coordinates = wrappedFeat.geometry.coordinates.map(
           (polygon) => polygon.filter((ring) => !ring.length),
@@ -164,7 +171,8 @@ const initialProjection = dynEqualEarth([0, 0]);
 
     const info = document.getElementById('info');
     if (feature) {
-      info.innerHTML = feature.get('ECO_NAME') || '&nbsp;';
+      info.innerHTML =
+        feature.get('ECO_NAME') || feature.get('name') || '&nbsp;';
     } else {
       info.innerHTML = '&nbsp;';
     }
