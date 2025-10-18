@@ -1,5 +1,4 @@
 import {bbox as turfBbox} from '@turf/bbox';
-import {bboxClip} from '@turf/bbox-clip';
 import proj4 from 'proj4';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
@@ -34,7 +33,8 @@ const initialProjection = dynEqualEarth([0, 0]);
 
 (async () => {
   const response = await fetch(
-    'https://openlayers.org/data/vector/ecoregions.json',
+    'ecoregions.json',
+    // 'https://openlayers.org/data/vector/ecoregions.json',
     // 'https://openlayersbook.github.io/openlayers_book_samples/assets/data/countries.geojson',
   );
   const geojson = await response.json();
@@ -108,45 +108,47 @@ const initialProjection = dynEqualEarth([0, 0]);
         (bbox[0] < minX + eps && bbox[2] > minX - eps) ||
         (bbox[0] < maxX + eps && bbox[2] > maxX - eps)
       ) {
-        const clippedFeat = bboxClip(feature, [minX, -90, maxX, 90]);
-        // if (feature.properties.name === 'Fiji') {
-        //   console.log(clippedFeat);
-        // }
-        // Remove empty rings
-        clippedFeat.geometry.coordinates = clippedFeat.geometry.coordinates.map(
-          (polygon) => polygon.filter((ring) => !ring.length),
-        );
-        // Remove empty polygons
-        clippedFeat.geometry.coordinates =
-          clippedFeat.geometry.coordinates.filter((polygon) => !polygon.length);
-        const empty = clippedFeat.geometry.coordinates.every(
-          (polygon) => !polygon.length /*&& !polygon[0].length*/,
-        );
-        if (!empty) {
-          clippedJson.features.push(clippedFeat);
+        const offset = bbox[0] < minX ? 360 : -360;
+        const feat = structuredClone(feature);
+        if (feat.geometry.type === 'Polygon') {
+          feat.geometry.type = 'MultiPolygon';
+          feat.geometry.coordinates = [feat.geometry.coordinates];
         }
 
-        const offset = bbox[0] < minX ? 360 : -360;
-        const transformedFeat = structuredClone(feature);
-        if (transformedFeat.geometry.type === 'Polygon') {
-          transformedFeat.geometry.type = 'MultiPolygon';
-          transformedFeat.geometry.coordinates = [
-            transformedFeat.geometry.coordinates,
-          ];
-        }
-        for (const polygon of transformedFeat.geometry.coordinates) {
+        const polys = [];
+        for (const polygon of feat.geometry.coordinates) {
+          const tpoly = structuredClone(polygon);
+          const ncoords = polygon.reduce((sum, ring) => sum + ring.length, 0);
+          let clamped = 0;
           for (const ring of polygon) {
             for (const coord of ring) {
-              coord[0] += offset;
+              const x = coord[0];
+              coord[0] = Math.min(Math.max(x, minX), maxX);
+              if (coord[0] !== x) {
+                clamped++;
+              }
             }
           }
+          if (clamped < ncoords) {
+            // Skip possibly degenerated polys with all coords clamped
+            polys.push(polygon);
+          }
+          // Shift poly by 360deg and clamp other part
+          if (clamped && clamped < ncoords) {
+            // this still creates bad polys, but fewer with second condition...
+            for (const ring of tpoly) {
+              for (const coord of ring) {
+                const x = coord[0] + offset;
+                coord[0] = Math.min(Math.max(x, minX + eps), maxX - eps);
+              }
+            }
+            polys.push(tpoly);
+          }
         }
-        const wrappedFeat = bboxClip(transformedFeat, [minX, -90, maxX, 90]);
-        // Remove empty rings
-        wrappedFeat.geometry.coordinates = wrappedFeat.geometry.coordinates.map(
-          (polygon) => polygon.filter((ring) => !ring.length),
-        );
-        clippedJson.features.push(wrappedFeat);
+        feat.geometry.coordinates = polys;
+        if (![772, 779].includes(feat.id)) {
+          clippedJson.features.push(feat);
+        }
       } else {
         clippedJson.features.push(feature);
       }
