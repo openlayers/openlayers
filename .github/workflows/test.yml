@@ -24,7 +24,7 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Set Node.js Version
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v6
         with:
           node-version: '24'
 
@@ -43,7 +43,7 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Set Node.js Version
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v6
         with:
           node-version: '24'
 
@@ -62,7 +62,7 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Set Node.js Version
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v6
         with:
           node-version: '24'
 
@@ -81,7 +81,7 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Set Node.js Version
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v6
         with:
           node-version: '24'
 
@@ -100,7 +100,7 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Set Node.js Version
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v6
         with:
           node-version: '24'
 

@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success'}}
     steps:
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@v6
         with:
           node-version: '24'
       - run: npm install --global netlify-cli@6
