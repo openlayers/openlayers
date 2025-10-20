@@ -42,7 +42,7 @@ import {TEXT_ALIGN} from './TextBuilder.js';
  */
 
 /**
- * @typedef {{0: CanvasRenderingContext2D, 1: import('../../size.js').Size, 2: import("../canvas.js").Label|HTMLImageElement|HTMLCanvasElement|HTMLVideoElement, 3: ImageOrLabelDimensions, 4: number, 5: Array<*>, 6: Array<*>}} ReplayImageOrLabelArgs
+ * @typedef {{0: CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D, 1: import('../../size.js').Size, 2: import("../canvas.js").Label|HTMLImageElement|HTMLCanvasElement|HTMLVideoElement, 3: ImageOrLabelDimensions, 4: number, 5: Array<*>, 6: Array<*>}} ReplayImageOrLabelArgs
  */
 
 /**
@@ -583,7 +583,7 @@ class Executor {
 
   /**
    * @private
-   * @param {CanvasRenderingContext2D} context Context.
+   * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
    */
   fill_(context) {
     const alignAndScale = this.alignAndScaleFill_;
@@ -605,7 +605,7 @@ class Executor {
 
   /**
    * @private
-   * @param {CanvasRenderingContext2D} context Context.
+   * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
    * @param {Array<*>} instruction Instruction.
    */
   setStrokeStyle_(context, instruction) {
@@ -661,7 +661,7 @@ class Executor {
 
   /**
    * @private
-   * @param {CanvasRenderingContext2D} context Context.
+   * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
    * @param {import('../../size.js').Size} scaledCanvasSize Scaled canvas size
    * @param {import("../../transform.js").Transform} transform Transform.
    * @param {Array<*>} instructions Instructions array.
@@ -1258,7 +1258,7 @@ class Executor {
   }
 
   /**
-   * @param {CanvasRenderingContext2D} context Context.
+   * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
    * @param {import('../../size.js').Size} scaledCanvasSize Scaled canvas size.
    * @param {import("../../transform.js").Transform} transform Transform.
    * @param {number} viewRotation View rotation.
@@ -1287,7 +1287,7 @@ class Executor {
   }
 
   /**
-   * @param {CanvasRenderingContext2D} context Context.
+   * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
    * @param {import("../../transform.js").Transform} transform Transform.
    * @param {number} viewRotation View rotation.
    * @param {FeatureCallback<T>} [featureCallback] Feature callback.

@@ -27,12 +27,12 @@ import {
 import LayerRenderer from '../Layer.js';
 
 /**
- * @type {Array<HTMLCanvasElement>}
+ * @type {Array<HTMLCanvasElement|OffscreenCanvas>}
  */
 export const canvasPool = [];
 
 /**
- * @type {CanvasRenderingContext2D}
+ * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D}
  */
 let pixelContext = null;
 
@@ -57,7 +57,7 @@ class CanvasLayerRenderer extends LayerRenderer {
     /**
      * HTMLElement container for the layer to be rendered in.
      * @protected
-     * @type {HTMLElement | OffscreenCanvas}
+     * @type {HTMLElement}
      */
     this.container = null;
 
@@ -92,7 +92,7 @@ class CanvasLayerRenderer extends LayerRenderer {
     this.inversePixelTransform = createTransform();
 
     /**
-     * @type {CanvasRenderingContext2D}
+     * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D}
      */
     this.context = null;
 
@@ -194,25 +194,25 @@ class CanvasLayerRenderer extends LayerRenderer {
       this.container = null;
       this.context = null;
       this.containerReused = false;
-    } else if (this.container && !(this.container instanceof OffscreenCanvas)) {
+    } else if (this.container) {
       this.container.style.backgroundColor = null;
     }
     if (!this.container) {
       if (WORKER_OFFSCREEN_CANVAS) {
-        // to do: why do we need a div here, only for the background color?
-        // to do: for background, create offscreen canvas instead of div
-        //this.container = new OffscreenCanvas(512, 512); // to do: hardcoded size
-        // TO DO: mock the container, keep the structure the same
         this.context = createCanvasContext2D();
-        this.container = new Proxy(
-          {
-            style: {
-              backgroundColor: '',
-            },
-            className: 'ol-layer',
-            childNodes: [this.context.canvas],
-            appendChild: () => {},
-          },
+
+        const container = new Proxy(
+          /** @type {HTMLElement} */ (
+            // TO DO: better types
+            /** @type {unknown} */ ({
+              style: {
+                backgroundColor: null,
+              },
+              className: 'ol-layer',
+              childNodes: [this.context.canvas],
+              appendChild: () => {},
+            })
+          ),
           {
             get(target, prop, receiver) {
               if (prop === 'firstElementChild') {
@@ -224,7 +224,7 @@ class CanvasLayerRenderer extends LayerRenderer {
             },
           },
         );
-        // appendChild needs special treatment in worker
+        this.container = container;
       } else {
         container = document.createElement('div');
         container.className = layerClassName;
@@ -233,7 +233,7 @@ class CanvasLayerRenderer extends LayerRenderer {
         style.width = '100%';
         style.height = '100%';
         context = createCanvasContext2D();
-        const canvas = context.canvas;
+        const canvas = /** @type {HTMLCanvasElement} */ (context.canvas);
         container.appendChild(canvas);
         style = canvas.style;
         style.position = 'absolute';
@@ -253,7 +253,7 @@ class CanvasLayerRenderer extends LayerRenderer {
   }
 
   /**
-   * @param {CanvasRenderingContext2D} context Context.
+   * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @param {import("../../extent.js").Extent} extent Clip extent.
    * @protected
@@ -311,7 +311,6 @@ class CanvasLayerRenderer extends LayerRenderer {
 
     const canvasTransform = toTransformString(this.pixelTransform);
     this.useContainer(target, canvasTransform, this.getBackground(frameState));
-
     if (!this.containerReused) {
       const canvas = this.context.canvas;
       if (canvas.width != width || canvas.height != height) {
@@ -322,16 +321,18 @@ class CanvasLayerRenderer extends LayerRenderer {
       }
       if (
         !WORKER_OFFSCREEN_CANVAS &&
-        canvasTransform !== canvas.style.transform
+        canvasTransform !==
+          /** @type {HTMLCanvasElement} */ (canvas).style.transform
       ) {
-        canvas.style.transform = canvasTransform;
+        /** @type {HTMLCanvasElement} */ (canvas).style.transform =
+          canvasTransform;
       }
     }
   }
 
   /**
    * @param {import("../../render/EventType.js").default} type Event type.
-   * @param {CanvasRenderingContext2D} context Context.
+   * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @private
    */
@@ -349,7 +350,7 @@ class CanvasLayerRenderer extends LayerRenderer {
   }
 
   /**
-   * @param {CanvasRenderingContext2D} context Context.
+   * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @protected
    */
@@ -362,7 +363,7 @@ class CanvasLayerRenderer extends LayerRenderer {
   }
 
   /**
-   * @param {CanvasRenderingContext2D} context Context.
+   * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @protected
    */

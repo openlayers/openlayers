@@ -40,7 +40,7 @@ export class CustomTile extends ImageTile {
 
     /**
      * @private
-     * @type {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement}
+     * @type {HTMLCanvasElement|OffscreenCanvas|HTMLImageElement|HTMLVideoElement}
      */
     this.zoomifyImage_ = null;
 
@@ -53,7 +53,7 @@ export class CustomTile extends ImageTile {
 
   /**
    * Get the image element for this tile.
-   * @return {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} Image.
+   * @return {HTMLCanvasElement|OffscreenCanvas|HTMLImageElement|HTMLVideoElement} Image.
    * @override
    */
   getImage() {

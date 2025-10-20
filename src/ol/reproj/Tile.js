@@ -85,7 +85,7 @@ class ReprojTile extends Tile {
 
     /**
      * @private
-     * @type {HTMLCanvasElement}
+     * @type {HTMLCanvasElement|OffscreenCanvas}
      */
     this.canvas_ = null;
 
@@ -262,7 +262,7 @@ class ReprojTile extends Tile {
 
   /**
    * Get the HTML Canvas element for this tile.
-   * @return {HTMLCanvasElement} Canvas.
+   * @return {HTMLCanvasElement|OffscreenCanvas} Canvas.
    */
   getImage() {
     return this.canvas_;

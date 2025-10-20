@@ -327,11 +327,10 @@ export function defaultTileLoadFunction(imageTile, src) {
         return createImageBitmap(blob);
       })
       .then((imageBitmap) => {
-        // to do: use imageBitmap without canvas?
         const canvas = imageTile.getImage();
         canvas.width = imageBitmap.width;
         canvas.height = imageBitmap.height;
-        const ctx = canvas.getContext('2d');
+        const ctx = /** @type {OffscreenCanvas} */ (canvas).getContext('2d');
         ctx.drawImage(imageBitmap, 0, 0);
         imageBitmap.close?.();
         canvas.dispatchEvent(new Event('load'));

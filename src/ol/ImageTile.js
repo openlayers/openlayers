@@ -200,7 +200,7 @@ class ImageTile extends Tile {
 
 /**
  * Get a 1-pixel blank image.
- * @return {HTMLCanvasElement} Blank image.
+ * @return {HTMLCanvasElement|OffscreenCanvas} Blank image.
  */
 function getBlankImage() {
   const ctx = createCanvasContext2D(1, 1);

@@ -117,7 +117,7 @@ function uploadDataTexture(
 }
 
 /**
- * @type {CanvasRenderingContext2D}
+ * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D}
  */
 let pixelContext = null;
 

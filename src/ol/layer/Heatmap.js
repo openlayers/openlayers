@@ -110,7 +110,7 @@ class Heatmap extends BaseVector {
 
     /**
      * @private
-     * @type {HTMLCanvasElement}
+     * @type {HTMLCanvasElement|OffscreenCanvas}
      */
     this.gradient_ = null;
 
@@ -375,7 +375,7 @@ class Heatmap extends BaseVector {
 
 /**
  * @param {Array<string>} colors A list of colored.
- * @return {HTMLCanvasElement} canvas with gradient texture.
+ * @return {HTMLCanvasElement|OffscreenCanvas} canvas with gradient texture.
  */
 function createGradient(colors) {
   const width = 1;

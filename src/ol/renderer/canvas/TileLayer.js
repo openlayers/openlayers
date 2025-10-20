@@ -954,7 +954,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
   }
 
   /**
-   * @return {HTMLCanvasElement} Image
+   * @return {HTMLCanvasElement|OffscreenCanvas} Image
    */
   getImage() {
     const context = this.context;
@@ -964,7 +964,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
   /**
    * Get the image from a tile.
    * @param {import("../../ImageTile.js").default} tile Tile.
-   * @return {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} Image.
+   * @return {HTMLCanvasElement|OffscreenCanvas|HTMLImageElement|HTMLVideoElement} Image.
    * @protected
    */
   getTileImage(tile) {

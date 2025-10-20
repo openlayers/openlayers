@@ -9,9 +9,9 @@ import {WORKER_OFFSCREEN_CANVAS} from './has.js';
  * Create an html canvas element and returns its 2d context.
  * @param {number} [width] Canvas width.
  * @param {number} [height] Canvas height.
- * @param {Array<HTMLCanvasElement>} [canvasPool] Canvas pool to take existing canvas from.
+ * @param {Array<HTMLCanvasElement|OffscreenCanvas>} [canvasPool] Canvas pool to take existing canvas from.
  * @param {CanvasRenderingContext2DSettings} [settings] CanvasRenderingContext2DSettings
- * @return {CanvasRenderingContext2D} The context.
+ * @return {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} The context.
  */
 export function createCanvasContext2D(width, height, canvasPool, settings) {
   /** @type {HTMLCanvasElement|OffscreenCanvas} */
@@ -29,13 +29,9 @@ export function createCanvasContext2D(width, height, canvasPool, settings) {
   if (height) {
     canvas.height = height;
   }
-  //FIXME Allow OffscreenCanvasRenderingContext2D as return type
-  return /** @type {CanvasRenderingContext2D} */ (
-    canvas.getContext('2d', settings)
-  );
+  return canvas.getContext('2d', settings);
 }
 
-/** @type {CanvasRenderingContext2D} */
 let sharedCanvasContext;
 
 /**
@@ -51,7 +47,7 @@ export function getSharedCanvasContext2D() {
 /**
  * Releases canvas memory to avoid exceeding memory limits in Safari.
  * See https://pqina.nl/blog/total-canvas-memory-use-exceeds-the-maximum-limit/
- * @param {CanvasRenderingContext2D} context Context.
+ * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
  */
 export function releaseCanvas(context) {
   const canvas = context.canvas;

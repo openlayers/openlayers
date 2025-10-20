@@ -900,7 +900,7 @@ RasterSource.prototype.dispose;
 
 /**
  * A reusable canvas context.
- * @type {CanvasRenderingContext2D}
+ * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D}
  * @private
  */
 let sharedContext = null;

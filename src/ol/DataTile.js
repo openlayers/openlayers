@@ -50,7 +50,7 @@ export function asArrayLike(data) {
 export const disposedError = new Error('disposed');
 
 /**
- * @type {CanvasRenderingContext2D|null}
+ * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D|null}
  */
 let sharedContext = null;
 
