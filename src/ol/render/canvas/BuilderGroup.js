@@ -2,6 +2,7 @@
  * @module ol/render/canvas/BuilderGroup
  */
 
+import {buffer, clone} from '../../extent.js';
 import Builder from './Builder.js';
 import ImageBuilder from './ImageBuilder.js';
 import LineStringBuilder from './LineStringBuilder.js';
@@ -99,6 +100,24 @@ class BuilderGroup {
       replays[builderType] = replay;
     }
     return replay;
+  }
+
+  getBufferedMaxExtent() {
+    const bufferedMaxExtent = clone(this.maxExtent_);
+    let groupMaxLineWidth = 0;
+    for (const zKey in this.buildersByZIndex_) {
+      const builders = this.buildersByZIndex_[zKey];
+      for (const builderKey in builders) {
+        const maxLineWidth = builders[builderKey].maxLineWidth;
+        groupMaxLineWidth = Math.max(groupMaxLineWidth, maxLineWidth);
+      }
+    }
+
+    if (groupMaxLineWidth > 0) {
+      const width = (this.resolution_ * (groupMaxLineWidth + 1)) / 2;
+      buffer(bufferedMaxExtent, width, bufferedMaxExtent);
+    }
+    return bufferedMaxExtent;
   }
 }
 
