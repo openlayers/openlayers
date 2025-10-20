@@ -339,7 +339,9 @@ class ReprojDataTile extends DataTile {
       const isFloat = tileData instanceof Float32Array;
       const pixelCount = pixelSize[0] * pixelSize[1];
       const DataType = isFloat ? Float32Array : Uint8ClampedArray;
-      const tileDataR = new DataType(tileData.buffer);
+      const tileDataR = new DataType(
+        /** @type {ArrayBuffer} */ (tileData.buffer),
+      );
       const bytesPerElement = DataType.BYTES_PER_ELEMENT;
       const bytesPerPixel = (bytesPerElement * tileDataR.length) / pixelCount;
       const bytesPerRow = tileDataR.byteLength / pixelSize[1];
