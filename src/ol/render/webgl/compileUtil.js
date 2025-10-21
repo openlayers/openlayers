@@ -5,16 +5,14 @@
 
 import {asArray} from '../../color.js';
 import {
+  BooleanType,
   ColorType,
   NumberArrayType,
   SizeType,
+  StringType,
   newParsingContext,
 } from '../../expr/expression.js';
-import {
-  buildExpression,
-  getStringNumberEquivalent,
-  uniformNameForVariable,
-} from '../../expr/gpu.js';
+import {buildExpression, uniformNameForVariable} from '../../expr/gpu.js';
 
 /**
  * Recursively parses a style expression and outputs a GLSL-compatible string. Takes in a compilation context that
@@ -87,6 +85,9 @@ export function getGlslSizeFromType(type) {
   if (type === NumberArrayType) {
     return 4;
   }
+  if (type === StringType) {
+    return 3;
+  }
   return 1;
 }
 
@@ -95,6 +96,9 @@ export function getGlslSizeFromType(type) {
  * @return {'float'|'vec2'|'vec3'|'vec4'} The corresponding GLSL type for this value
  */
 export function getGlslTypeFromType(type) {
+  if (type === StringType) {
+    return 'float'; // strings take 3 floats in the attributes but only the first is used in the shader
+  }
   const size = getGlslSizeFromType(type);
   if (size > 1) {
     return /** @type {'vec2'|'vec3'|'vec4'} */ (`vec${size}`);
@@ -110,11 +114,11 @@ export function getGlslTypeFromType(type) {
  */
 export function applyContextToBuilder(builder, context) {
   // define one uniform per variable
-  for (const varName in context.variables) {
-    const variable = context.variables[varName];
-    const uniformName = uniformNameForVariable(variable.name);
-    let glslType = getGlslTypeFromType(variable.type);
-    if (variable.type === ColorType) {
+  for (const entry of context.variables.entries()) {
+    const [varName, varType] = entry;
+    const uniformName = uniformNameForVariable(varName);
+    let glslType = getGlslTypeFromType(varType);
+    if (varType === ColorType) {
       // we're not packing colors when they're passed as uniforms
       glslType = 'vec4';
     }
@@ -123,11 +127,11 @@ export function applyContextToBuilder(builder, context) {
 
   // for each feature attribute used in the fragment shader, define a varying that will be used to pass data
   // from the vertex to the fragment shader, as well as an attribute in the vertex shader (if not already present)
-  for (const propName in context.properties) {
-    const property = context.properties[propName];
-    const glslType = getGlslTypeFromType(property.type);
-    const attributeName = `a_prop_${property.name}`;
-    if (property.type === ColorType) {
+  for (const entry of context.properties.entries()) {
+    const [propName, propType] = entry;
+    const glslType = getGlslTypeFromType(propType);
+    const attributeName = `a_prop_${propName}`;
+    if (propType === ColorType) {
       builder.addAttribute(
         attributeName,
         glslType,
@@ -158,28 +162,22 @@ export function generateUniformsFromContext(context, variables) {
   const uniforms = {};
 
   // define one uniform per variable
-  for (const varName in context.variables) {
-    const variable = context.variables[varName];
-    const uniformName = uniformNameForVariable(variable.name);
+  for (const entry of context.variables.entries()) {
+    const [varName, varType] = entry;
+    const uniformName = uniformNameForVariable(varName);
 
     uniforms[uniformName] = () => {
-      const value = variables[variable.name];
-      if (typeof value === 'number') {
-        return value;
-      }
-      if (typeof value === 'boolean') {
+      const value = variables[varName];
+      if (varType === BooleanType) {
         return value ? 1 : 0;
       }
-      if (variable.type === ColorType) {
+      if (varType === ColorType) {
         const color = [...asArray(value || '#eee')];
         color[0] /= 255;
         color[1] /= 255;
         color[2] /= 255;
         color[3] ??= 1;
         return color;
-      }
-      if (typeof value === 'string') {
-        return getStringNumberEquivalent(value);
       }
       return value;
     };
@@ -201,24 +199,21 @@ export function generateAttributesFromContext(context) {
   const attributes = {};
 
   // Define attributes with their callback for each property used in the vertex shader
-  for (const propName in context.properties) {
-    const property = context.properties[propName];
+  for (const entry of context.properties.entries()) {
+    const [propName, propType] = entry;
     const callback = (feature) => {
-      const value = feature.get(property.name);
-      if (property.type === ColorType) {
+      const value = feature.get(propName);
+      if (propType === ColorType) {
         return packColor([...asArray(value || '#eee')]);
       }
-      if (typeof value === 'string') {
-        return getStringNumberEquivalent(value);
-      }
-      if (typeof value === 'boolean') {
+      if (propType === BooleanType) {
         return value ? 1 : 0;
       }
       return value;
     };
 
-    attributes[`prop_${property.name}`] = {
-      size: getGlslSizeFromType(property.type),
+    attributes[`prop_${propName}`] = {
+      size: getGlslSizeFromType(propType),
       callback,
     };
   }

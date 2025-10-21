@@ -123,7 +123,14 @@ describe('ol/expr/expression.js', () => {
       expect(expression).to.be.a(CallExpression);
       expect(expression.operator).to.be('get');
       expect(isType(expression.type, AnyType)).to.be(true);
-      expect(context.properties.has('foo')).to.be(true);
+      expect(context.properties.get('foo')).to.be(AnyType);
+    });
+
+    it('parses a get expression with a specific style', () => {
+      const context = newParsingContext();
+      const expression = parse(['get', 'foo'], NumberArrayType, context);
+      expect(isType(expression.type, NumberArrayType)).to.be(true);
+      expect(context.properties.get('foo')).to.be(NumberArrayType);
     });
 
     it('parses a var expression', () => {
@@ -132,7 +139,7 @@ describe('ol/expr/expression.js', () => {
       expect(expression).to.be.a(CallExpression);
       expect(expression.operator).to.be('var');
       expect(isType(expression.type, AnyType)).to.be(true);
-      expect(context.variables.has('foo')).to.be(true);
+      expect(context.variables.get('foo')).to.be(AnyType);
     });
 
     it('parses an expression relying on map state', () => {
@@ -159,7 +166,7 @@ describe('ol/expr/expression.js', () => {
       expect(expression).to.be.a(CallExpression);
       expect(expression.operator).to.be('concat');
       expect(isType(expression.type, StringType));
-      expect(context.properties.has('foo')).to.be(true);
+      expect(context.properties.get('foo')).to.be(StringType);
     });
 
     it('is ok to have a concat expression with a string and number', () => {
@@ -187,7 +194,7 @@ describe('ol/expr/expression.js', () => {
       expect(expression).to.be.a(CallExpression);
       expect(expression.operator).to.be('coalesce');
       expect(isType(expression.type, StringType));
-      expect(context.properties.has('foo')).to.be(true);
+      expect(context.properties.get('foo')).to.be(StringType);
     });
 
     it('parses id expression', () => {
@@ -212,10 +219,10 @@ describe('ol/expr/expression.js', () => {
       expect(isType(expression.type, BooleanType)).to.be(true);
       expect(expression.args).to.have.length(2);
       expect(expression.args[0]).to.be.a(CallExpression);
-      expect(isType(expression.args[0].type, AnyType)).to.be(true);
+      expect(isType(expression.args[0].type, StringType)).to.be(true);
       expect(expression.args[1]).to.be.a(LiteralExpression);
       expect(isType(expression.args[1].type, StringType)).to.be(true);
-      expect(context.properties.has('foo')).to.be(true);
+      expect(context.properties.get('foo')).to.be(StringType);
     });
 
     describe('case operation', () => {
@@ -272,12 +279,14 @@ describe('ol/expr/expression.js', () => {
 
     describe('match operation', () => {
       it('respects the return type (string)', () => {
+        const context = newParsingContext();
         const expression = parse(
           ['match', ['get', 'attr'], 0, 'red', 1, 'yellow', 'not_a_color'],
           StringType,
-          newParsingContext(),
+          context,
         );
         expect(isType(expression.type, StringType)).to.be(true);
+        expect(context.properties.get('attr')).to.be(NumberType);
       });
 
       it('respects the return type (color array)', () => {
@@ -290,12 +299,14 @@ describe('ol/expr/expression.js', () => {
       });
 
       it('respects the return type (size)', () => {
+        const context = newParsingContext();
         const expression = parse(
           ['match', ['get', 'shape'], 'light', 0.5, 0.7],
           SizeType,
-          newParsingContext(),
+          context,
         );
         expect(isType(expression.type, SizeType)).to.be(true);
+        expect(context.properties.get('shape')).to.be(StringType);
       });
     });
 
@@ -315,6 +326,7 @@ describe('ol/expr/expression.js', () => {
         expect(isType(expression.args[1].type, NumberType)).to.be(true);
         expect(isType(expression.args[2].type, NumberType)).to.be(true);
         expect(isType(expression.args[3].type, NumberType)).to.be(true);
+        expect(context.properties.get('attr')).to.be(NumberType);
       });
 
       it('respects the return types (string haystack)', () => {
@@ -333,15 +345,17 @@ describe('ol/expr/expression.js', () => {
         expect(isType(expression.args[2].type, StringType)).to.be(true);
         expect(isType(expression.args[3].type, StringType)).to.be(true);
         expect(isType(expression.args[4].type, StringType)).to.be(true);
+        expect(context.properties.get('attr')).to.be(StringType);
       });
     });
 
     describe('array operator', () => {
       it('respects the return type (number array)', () => {
+        const context = newParsingContext();
         const expression = parse(
           ['array', 1, 2, ['get', 'third'], 4, 5],
           NumberArrayType,
-          newParsingContext(),
+          context,
         );
         expect(expression.operator).to.be('array');
         expect(isType(expression.type, NumberArrayType)).to.be(true);
@@ -351,19 +365,22 @@ describe('ol/expr/expression.js', () => {
         expect(isType(expression.args[2].type, NumberType)).to.be(true);
         expect(isType(expression.args[3].type, NumberType)).to.be(true);
         expect(isType(expression.args[4].type, NumberType)).to.be(true);
+        expect(context.properties.get('third')).to.be(NumberType);
       });
 
       it('respects the return type (color)', () => {
+        const context = newParsingContext();
         const expression = parse(
           ['array', 1, 2, ['get', 'blue']],
           ColorType,
-          newParsingContext(),
+          context,
         );
         expect(isType(expression.type, ColorType)).to.be(true);
         expect(expression.args).to.have.length(3);
         expect(isType(expression.args[0].type, NumberType)).to.be(true);
         expect(isType(expression.args[1].type, NumberType)).to.be(true);
         expect(isType(expression.args[2].type, NumberType)).to.be(true);
+        expect(context.properties.get('blue')).to.be(NumberType);
       });
     });
   });
