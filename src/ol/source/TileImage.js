@@ -350,11 +350,14 @@ export function defaultTileLoadFunction(imageTile, src) {
         const ctx = /** @type {OffscreenCanvas} */ (canvas).getContext('2d');
         ctx.drawImage(imageBitmap, 0, 0);
         imageBitmap.close?.();
+        // mock the image 'load' event
         canvas.dispatchEvent(new Event('load'));
       })
-      .catch((err) => {
-        console.error('Error loading image:', err); // eslint-disable-line no-console
+      .catch(() => {
+        const canvas = imageTile.getImage();
+        canvas.dispatchEvent(new Event('error'));
       });
+    return;
   }
 
   /** @type {HTMLImageElement|HTMLVideoElement} */ (imageTile.getImage()).src =

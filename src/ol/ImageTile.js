@@ -112,15 +112,13 @@ class ImageTile extends Tile {
     if (WORKER_OFFSCREEN_CANVAS) {
       // OffscreenCanvas does not have naturalWidth and naturalHeight
       this.state = TileState.LOADED;
-      this.unlistenImage_();
-      this.changed();
-      return;
-    }
-    const image = /** @type {HTMLImageElement} */ (this.image_);
-    if (image.naturalWidth && image.naturalHeight) {
-      this.state = TileState.LOADED;
     } else {
-      this.state = TileState.EMPTY;
+      const image = /** @type {HTMLImageElement} */ (this.image_);
+      if (image.naturalWidth && image.naturalHeight) {
+        this.state = TileState.LOADED;
+      } else {
+        this.state = TileState.EMPTY;
+      }
     }
     this.unlistenImage_();
     this.changed();
