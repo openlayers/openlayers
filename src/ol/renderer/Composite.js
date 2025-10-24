@@ -3,8 +3,9 @@
  */
 import ObjectEventType from '../ObjectEventType.js';
 import {CLASS_UNSELECTABLE} from '../css.js';
-import {replaceChildren} from '../dom.js';
+import {createMockDiv, replaceChildren} from '../dom.js';
 import {listen, unlistenByKey} from '../events.js';
+import {WORKER_OFFSCREEN_CANVAS} from '../has.js';
 import BaseVectorLayer from '../layer/BaseVector.js';
 import {inView} from '../layer/Layer.js';
 import RenderEvent from '../render/Event.js';
@@ -39,7 +40,9 @@ class CompositeMapRenderer extends MapRenderer {
      * @private
      * @type {HTMLDivElement}
      */
-    this.element_ = document.createElement('div');
+    this.element_ = WORKER_OFFSCREEN_CANVAS
+      ? createMockDiv()
+      : document.createElement('div');
     const style = this.element_.style;
     style.position = 'absolute';
     style.width = '100%';
@@ -49,7 +52,10 @@ class CompositeMapRenderer extends MapRenderer {
     this.element_.className = CLASS_UNSELECTABLE + ' ol-layers';
 
     const container = map.getViewport();
-    container.insertBefore(this.element_, container.firstChild || null);
+    if (container) {
+      // maps in a worker do not have a viewport.
+      container.insertBefore(this.element_, container.firstChild || null);
+    }
 
     /**
      * @private

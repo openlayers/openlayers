@@ -29,13 +29,18 @@ export function createCanvasContext2D(width, height, canvasPool, settings) {
   if (height) {
     canvas.height = height;
   }
-  return canvas.getContext('2d', settings);
+  return /** @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} */ (
+    canvas.getContext('2d', settings)
+  );
 }
 
+/**
+ * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D}
+ */
 let sharedCanvasContext;
 
 /**
- * @return {CanvasRenderingContext2D} Shared canvas context.
+ * @return {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} Shared canvas context.
  */
 export function getSharedCanvasContext2D() {
   if (!sharedCanvasContext) {
@@ -147,4 +152,52 @@ export function replaceChildren(node, children) {
     // reorder
     node.insertBefore(newChild, oldChild);
   }
+}
+
+/**
+ * Creates a minimal structure that mocks a DIV to be used in a worker environment
+ * @return {HTMLDivElement} mocked DIV
+ */
+export function createMockDiv() {
+  const mockedDiv = {
+    /**
+     * @type {Array<HTMLElement>}
+     */
+    childNodes: [],
+    /**
+     * @param {HTMLElement} node html node.
+     * @return {HTMLElement} html node.
+     */
+    appendChild: function (node) {
+      this.childNodes.push(node);
+      return node;
+    },
+    /**
+     * @param {HTMLElement} node html node.
+     * @return {HTMLElement} html node.
+     */
+    removeChild: function (node) {
+      const index = this.childNodes.indexOf(node);
+      if (index === -1) {
+        throw new Error('Node to remove was not found');
+      }
+      this.childNodes.splice(index, 1);
+      return node;
+    },
+    /**
+     * @param {HTMLElement} newNode new html node.
+     * @param {HTMLElement} referenceNode reference html node.
+     * @return {HTMLElement} new html node.
+     */
+    insertBefore: function (newNode, referenceNode) {
+      const index = this.childNodes.indexOf(referenceNode);
+      if (index === -1) {
+        throw new Error('Reference node not found');
+      }
+      this.childNodes.splice(index, 0, newNode);
+      return newNode;
+    },
+    style: {},
+  };
+  return /** @type {HTMLDivElement} */ (/** @type {unknown} */ (mockedDiv));
 }
