@@ -316,7 +316,24 @@ class TileImage extends UrlTile {
 export function defaultTileLoadFunction(imageTile, src) {
   if (WORKER_OFFSCREEN_CANVAS) {
     // special treatment for offscreen canvas
-    fetch(src)
+    const crossOrigin = imageTile.getCrossOrigin();
+
+    /** @type {RequestMode} */
+    let mode = 'same-origin';
+    /** @type {RequestCredentials} */
+    let credentials = 'same-origin';
+    if (crossOrigin === 'anonymous' || crossOrigin === '') {
+      mode = 'cors';
+      credentials = 'omit';
+    } else if (crossOrigin === 'use-credentials') {
+      mode = 'cors';
+      credentials = 'include';
+    }
+
+    fetch(src, {
+      mode,
+      credentials,
+    })
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}`);

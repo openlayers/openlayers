@@ -39,16 +39,15 @@ class ImageTile extends Tile {
      * @private
      * @type {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas}
      */
-    this.image_ = WORKER_OFFSCREEN_CANVAS
-      ? new OffscreenCanvas(1, 1)
-      : new Image();
+    this.image_;
 
-    if (
-      !WORKER_OFFSCREEN_CANVAS &&
-      this.image_ instanceof HTMLImageElement &&
-      crossOrigin !== null
-    ) {
-      this.image_.crossOrigin = crossOrigin;
+    if (WORKER_OFFSCREEN_CANVAS) {
+      this.image_ = new OffscreenCanvas(1, 1);
+    } else {
+      this.image_ = new Image();
+      if (crossOrigin !== null) {
+        this.image_.crossOrigin = crossOrigin;
+      }
     }
 
     /**
@@ -82,6 +81,14 @@ class ImageTile extends Tile {
     this.state = TileState.LOADED;
     this.unlistenImage_();
     this.changed();
+  }
+
+  /**
+   * Get the cross origin of the ImageTile.
+   * @return {string} Cross origin.
+   */
+  getCrossOrigin() {
+    return this.crossOrigin_;
   }
 
   /**
