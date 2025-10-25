@@ -392,7 +392,11 @@ class ReprojTile extends Tile {
    */
   release() {
     if (this.canvas_) {
-      releaseCanvas(this.canvas_.getContext('2d'));
+      releaseCanvas(
+        /** @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} */ (
+          this.canvas_.getContext('2d')
+        ),
+      );
       canvasPool.push(this.canvas_);
       this.canvas_ = null;
     }

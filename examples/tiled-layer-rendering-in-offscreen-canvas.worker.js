@@ -1,7 +1,8 @@
-import Map from 'ol/Map.js';
-import TileLayer from 'ol/layer/Tile';
-import {OSM} from 'ol/source';
-import {createXYZ} from 'ol/tilegrid';
+import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import OSM from '../src/ol/source/OSM.js';
+import {createXYZ} from '../src/ol/tilegrid.js';
 
 const worker = self;
 
@@ -16,35 +17,24 @@ const map = new Map({
   layers: [
     new TileLayer({
       source: new OSM({
-        tileGrid,
+        // No need to fade in tiles in the worker
+        transition: 0,
       }),
     }),
   ],
-  controls: [],
-  interactions: [],
 });
 
-worker.addEventListener('message', async (event) => {
-  if (event.data.action !== 'render') {
+worker.addEventListener('message', async ({data: {action, tile}}) => {
+  if (action !== 'render') {
     return;
   }
-
-  const {x, y, z} = event.data.tile;
-  const extent = tileGrid.getTileCoordExtent([x, y, z]);
-  map.getView().fit(extent, {
-    callback: () => {
-      map.once('rendercomplete', (e) => {
-        const imageData =
-          e.target.renderer_.children_[0]?.childNodes[0].transferToImageBitmap();
-        worker.postMessage(
-          {
-            action: 'rendered',
-            imageData: imageData,
-            tile: event.data.tile,
-          },
-          [imageData],
-        );
-      });
-    },
+  const view = new View({
+    center: tileGrid.getTileCoordCenter(tile),
+    resolution: tileGrid.getResolution(tile[0]),
+  });
+  map.setView(view);
+  map.once('rendercomplete', () => {
+    const imageData = canvas.transferToImageBitmap();
+    worker.postMessage({action: 'rendered', imageData: imageData}, [imageData]);
   });
 });

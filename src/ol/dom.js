@@ -19,7 +19,9 @@ export function createCanvasContext2D(width, height, canvasPool, settings) {
   if (canvasPool && canvasPool.length) {
     canvas = /** @type {HTMLCanvasElement} */ (canvasPool.shift());
   } else if (WORKER_OFFSCREEN_CANVAS) {
-    canvas = new OffscreenCanvas(width || 300, height || 300);
+    canvas = new (class extends OffscreenCanvas {
+      style = {};
+    })(width ?? 300, height ?? 150);
   } else {
     canvas = document.createElement('canvas');
   }
@@ -159,45 +161,67 @@ export function replaceChildren(node, children) {
  * @return {HTMLDivElement} mocked DIV
  */
 export function createMockDiv() {
-  const mockedDiv = {
-    /**
-     * @type {Array<HTMLElement>}
-     */
-    childNodes: [],
-    /**
-     * @param {HTMLElement} node html node.
-     * @return {HTMLElement} html node.
-     */
-    appendChild: function (node) {
-      this.childNodes.push(node);
-      return node;
+  const mockedDiv = new Proxy(
+    {
+      /**
+       * @type {Array<HTMLElement>}
+       */
+      childNodes: [],
+      /**
+       * @param {HTMLElement} node html node.
+       * @return {HTMLElement} html node.
+       */
+      appendChild: function (node) {
+        this.childNodes.push(node);
+        return node;
+      },
+      /**
+       * @param {HTMLElement} node html node.
+       * @return {HTMLElement} html node.
+       */
+      removeChild: function (node) {
+        const index = this.childNodes.indexOf(node);
+        if (index === -1) {
+          throw new Error('Node to remove was not found');
+        }
+        this.childNodes.splice(index, 1);
+        return node;
+      },
+      /**
+       * @param {HTMLElement} newNode new html node.
+       * @param {HTMLElement} referenceNode reference html node.
+       * @return {HTMLElement} new html node.
+       */
+      insertBefore: function (newNode, referenceNode) {
+        const index = this.childNodes.indexOf(referenceNode);
+        if (index === -1) {
+          throw new Error('Reference node not found');
+        }
+        this.childNodes.splice(index, 0, newNode);
+        return newNode;
+      },
+      style: {},
     },
-    /**
-     * @param {HTMLElement} node html node.
-     * @return {HTMLElement} html node.
-     */
-    removeChild: function (node) {
-      const index = this.childNodes.indexOf(node);
-      if (index === -1) {
-        throw new Error('Node to remove was not found');
-      }
-      this.childNodes.splice(index, 1);
-      return node;
+    {
+      get(target, prop, receiver) {
+        if (prop === 'firstElementChild') {
+          return target.childNodes.length > 0 ? target.childNodes[0] : null;
+        }
+        return Reflect.get(target, prop, receiver);
+      },
     },
-    /**
-     * @param {HTMLElement} newNode new html node.
-     * @param {HTMLElement} referenceNode reference html node.
-     * @return {HTMLElement} new html node.
-     */
-    insertBefore: function (newNode, referenceNode) {
-      const index = this.childNodes.indexOf(referenceNode);
-      if (index === -1) {
-        throw new Error('Reference node not found');
-      }
-      this.childNodes.splice(index, 0, newNode);
-      return newNode;
-    },
-    style: {},
-  };
-  return /** @type {HTMLDivElement} */ (/** @type {unknown} */ (mockedDiv));
+  );
+  return /** @type {HTMLDivElement} */ (/** @type {*} */ (mockedDiv));
+}
+
+/***
+ * @param {*} obj The object to check.
+ * @return {obj is (HTMLCanvasElement | OffscreenCanvas)} The object is a canvas.
+ */
+export function isCanvas(obj) {
+  return (
+    (typeof HTMLCanvasElement !== 'undefined' &&
+      obj instanceof HTMLCanvasElement) ||
+    (typeof OffscreenCanvas !== 'undefined' && obj instanceof OffscreenCanvas)
+  );
 }

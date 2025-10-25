@@ -18,6 +18,7 @@ import {equals} from './array.js';
 import {assert} from './asserts.js';
 import {warn} from './console.js';
 import {defaults as defaultControls} from './control/defaults.js';
+import {isCanvas} from './dom.js';
 import EventType from './events/EventType.js';
 import {listen, unlistenByKey} from './events.js';
 import {
@@ -122,12 +123,12 @@ import {getUid} from './util.js';
  * @typedef {Object} MapOptions
  * @property {Collection<import("./control/Control.js").default>|Array<import("./control/Control.js").default>} [controls]
  * Controls initially added to the map. If not specified,
- * {@link module:ol/control/defaults.defaults} is used.
+ * {@link module:ol/control/defaults.defaults} is used. In a worker, no controls are added by default.
  * @property {number} [pixelRatio=window.devicePixelRatio] The ratio between
  * physical pixels and device-independent pixels (dips) on the device.
  * @property {Collection<import("./interaction/Interaction.js").default>|Array<import("./interaction/Interaction.js").default>} [interactions]
  * Interactions that are initially added to the map. If not specified,
- * {@link module:ol/interaction/defaults.defaults} is used.
+ * {@link module:ol/interaction/defaults.defaults} is used. In a worker, no interactions are added by default.
  * @property {HTMLElement|Document|string} [keyboardEventTarget] The element to
  * listen to keyboard events on. This determines when the `KeyboardPan` and
  * `KeyboardZoom` interactions trigger. For example, if this option is set to
@@ -148,10 +149,11 @@ import {getUid} from './util.js';
  * Increasing this value can make it easier to click on the map.
  * @property {Collection<import("./Overlay.js").default>|Array<import("./Overlay.js").default>} [overlays]
  * Overlays initially added to the map. By default, no overlays are added.
- * @property {HTMLElement|string} [target] The container for the map, either the
+ * @property {HTMLElement|string|HTMLCanvasElement|OffscreenCanvas} [target] The container for the map, either the
  * element itself or the `id` of the element. If not specified at construction
  * time, {@link module:ol/Map~Map#setTarget} must be called for the map to be
  * rendered. If passed by element, the container can be in a secondary document.
+ * For use in workers or when exporting a map, use an `OffscreenCanvas` or `HTMLCanvasElement` as target.
  * For accessibility (focus and keyboard events for map navigation), the `target` element must have a
  *  properly configured `tabindex` attribute. If the `target` element is inside a Shadow DOM, the
  *  `tabindex` atribute must be set on the custom element's host element.
@@ -449,7 +451,9 @@ class Map extends BaseObject {
      * @type {Collection<import("./control/Control.js").default>}
      * @protected
      */
-    this.controls = optionsInternal.controls || defaultControls();
+    this.controls =
+      optionsInternal.controls ||
+      (WORKER_OFFSCREEN_CANVAS ? new Collection() : defaultControls());
 
     /**
      * @type {Collection<import("./interaction/Interaction.js").default>}
@@ -457,9 +461,11 @@ class Map extends BaseObject {
      */
     this.interactions =
       optionsInternal.interactions ||
-      defaultInteractions({
-        onFocusOnly: true,
-      });
+      (WORKER_OFFSCREEN_CANVAS
+        ? new Collection()
+        : defaultInteractions({
+            onFocusOnly: true,
+          }));
 
     /**
      * @type {Collection<import("./Overlay.js").default>}
@@ -1286,13 +1292,11 @@ class Map extends BaseObject {
       this.viewport_.remove();
     }
 
-    if (this.targetElement_) {
-      if (!WORKER_OFFSCREEN_CANVAS) {
-        this.resizeObserver_.unobserve(this.targetElement_);
-        const rootNode = this.targetElement_.getRootNode();
-        if (rootNode instanceof ShadowRoot) {
-          this.resizeObserver_.unobserve(rootNode.host);
-        }
+    if (this.targetElement_ && !isCanvas(this.targetElement_)) {
+      this.resizeObserver_?.unobserve(this.targetElement_);
+      const rootNode = this.targetElement_.getRootNode();
+      if (rootNode instanceof ShadowRoot) {
+        this.resizeObserver_.unobserve(rootNode.host);
       }
       this.setSize(undefined);
     }
@@ -1319,15 +1323,14 @@ class Map extends BaseObject {
         this.animationDelayKey_ = undefined;
       }
     } else {
-      if (!WORKER_OFFSCREEN_CANVAS) {
-        // to do
+      if (!isCanvas(targetElement)) {
         targetElement.appendChild(this.viewport_);
       }
       if (!this.renderer_) {
         this.renderer_ = new CompositeMapRenderer(this);
       }
 
-      if (!WORKER_OFFSCREEN_CANVAS) {
+      if (!isCanvas(targetElement)) {
         this.mapBrowserEventHandler_ = new MapBrowserEventHandler(
           this,
           this.moveTolerance_,
@@ -1374,11 +1377,13 @@ class Map extends BaseObject {
             this,
           ),
         ];
-        const rootNode = targetElement.getRootNode();
-        if (rootNode instanceof ShadowRoot) {
-          this.resizeObserver_.observe(rootNode.host);
+        if (targetElement instanceof HTMLElement) {
+          const rootNode = targetElement.getRootNode();
+          if (rootNode instanceof ShadowRoot) {
+            this.resizeObserver_.observe(rootNode.host);
+          }
+          this.resizeObserver_?.observe(targetElement);
         }
-        this.resizeObserver_?.observe(targetElement);
       }
 
       this.updateSize();
@@ -1744,7 +1749,7 @@ class Map extends BaseObject {
     let size = undefined;
     if (targetElement) {
       let width, height;
-      if (targetElement instanceof OffscreenCanvas) {
+      if (isCanvas(targetElement)) {
         width = targetElement.width;
         height = targetElement.height;
       } else {

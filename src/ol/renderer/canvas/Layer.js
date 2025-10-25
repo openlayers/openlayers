@@ -3,7 +3,7 @@
  */
 import {equals} from '../../array.js';
 import {asArray} from '../../color.js';
-import {createCanvasContext2D} from '../../dom.js';
+import {createCanvasContext2D, createMockDiv, isCanvas} from '../../dom.js';
 import {
   getBottomLeft,
   getBottomRight,
@@ -173,18 +173,11 @@ class CanvasLayerRenderer extends LayerRenderer {
           )))
     ) {
       const canvas = target.firstElementChild;
-      if (
-        canvas instanceof OffscreenCanvas ||
-        (!WORKER_OFFSCREEN_CANVAS && canvas instanceof HTMLCanvasElement)
-      ) {
+      if (isCanvas(canvas)) {
         context = canvas.getContext('2d');
       }
     }
-    if (
-      context &&
-      (context.canvas instanceof OffscreenCanvas ||
-        equivalent(context.canvas.style.transform, transform))
-    ) {
+    if (context && equivalent(context.canvas.style.transform, transform)) {
       // Container of the previous layer renderer can be used.
       this.container = target;
       this.context = context;
@@ -198,50 +191,23 @@ class CanvasLayerRenderer extends LayerRenderer {
       this.container.style.backgroundColor = null;
     }
     if (!this.container) {
-      if (WORKER_OFFSCREEN_CANVAS) {
-        this.context = createCanvasContext2D();
-
-        const container = new Proxy(
-          /** @type {HTMLElement} */ (
-            // TO DO: better types
-            /** @type {unknown} */ ({
-              style: {
-                backgroundColor: null,
-              },
-              className: 'ol-layer',
-              childNodes: [this.context.canvas],
-              appendChild: () => {},
-            })
-          ),
-          {
-            get(target, prop, receiver) {
-              if (prop === 'firstElementChild') {
-                return target.childNodes.length > 0
-                  ? target.childNodes[0]
-                  : null;
-              }
-              return Reflect.get(target, prop, receiver);
-            },
-          },
-        );
-        this.container = container;
-      } else {
-        container = document.createElement('div');
-        container.className = layerClassName;
-        let style = container.style;
-        style.position = 'absolute';
-        style.width = '100%';
-        style.height = '100%';
-        context = createCanvasContext2D();
-        const canvas = /** @type {HTMLCanvasElement} */ (context.canvas);
-        container.appendChild(canvas);
-        style = canvas.style;
-        style.position = 'absolute';
-        style.left = '0';
-        style.transformOrigin = 'top left';
-        this.container = container;
-        this.context = context;
-      }
+      container = WORKER_OFFSCREEN_CANVAS
+        ? createMockDiv()
+        : document.createElement('div');
+      container.className = layerClassName;
+      let style = container.style;
+      style.position = 'absolute';
+      style.width = '100%';
+      style.height = '100%';
+      context = createCanvasContext2D();
+      const canvas = /** @type {HTMLCanvasElement} */ (context.canvas);
+      container.appendChild(canvas);
+      style = canvas.style;
+      style.position = 'absolute';
+      style.left = '0';
+      style.transformOrigin = 'top left';
+      this.container = container;
+      this.context = context;
     }
     if (
       !this.containerReused &&

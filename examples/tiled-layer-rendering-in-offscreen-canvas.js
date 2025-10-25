@@ -3,8 +3,6 @@ import View from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import ImageTileSource from '../src/ol/source/ImageTile.js';
 import Worker from 'worker-loader!./tiled-layer-rendering-in-offscreen-canvas.worker.js'; //eslint-disable-line
-import {createXYZ} from '../src/ol/tilegrid.js';
-
 const worker = new Worker();
 
 const tileQueue = [];
@@ -13,34 +11,27 @@ new Map({
   layers: [
     new TileLayer({
       source: new ImageTileSource({
-        tileSize: [512, 512],
-        loader: (x, y, z) => {
+        tileSize: 512,
+        loader: (z, x, y) => {
           return new Promise((resolve) => {
-            const queueIsEmpty = !tileQueue.length;
-            tileQueue.push({
-              tile: {x, y, z},
-              loadTile: function () {
-                const handleMessage = (message) => {
-                  if (message.data.action !== 'rendered') {
-                    return;
-                  }
-                  worker.removeEventListener('message', handleMessage);
-                  resolve(message.data.imageData);
-                  tileQueue.shift();
-                  if (tileQueue.length) {
-                    tileQueue[0].loadTile();
-                  }
-                };
-                worker.addEventListener('message', handleMessage);
-                worker.postMessage({
-                  action: 'render',
-                  tile: {x, y, z},
-                });
-              },
-            });
-            if (queueIsEmpty) {
-              tileQueue[0].loadTile();
+            const loadTile = () => {
+              const handleMessage = ({data: {action, imageData}}) => {
+                if (action !== 'rendered') {
+                  return;
+                }
+                worker.removeEventListener('message', handleMessage);
+                resolve(imageData);
+                tileQueue.shift();
+                const loadNextTile = tileQueue[0];
+                loadNextTile?.();
+              };
+              worker.addEventListener('message', handleMessage);
+              worker.postMessage({action: 'render', tile: [z, x, y]});
+            };
+            if (tileQueue.length === 0) {
+              loadTile();
             }
+            tileQueue.push(loadTile);
           });
         },
         attributions: [
@@ -51,7 +42,6 @@ new Map({
   ],
   target: 'map',
   view: new View({
-    resolutions: createXYZ({tileSize: 512}).getResolutions(),
     center: [0, 0],
     zoom: 2,
   }),
