@@ -18,7 +18,7 @@ class ImageCanvas extends ImageWrapper {
    * @param {import("./extent.js").Extent} extent Extent.
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
-   * @param {HTMLCanvasElement} canvas Canvas.
+   * @param {HTMLCanvasElement|OffscreenCanvas} canvas Canvas.
    * @param {Loader} [loader] Optional loader function to
    *     support asynchronous canvas drawing.
    */
@@ -36,7 +36,7 @@ class ImageCanvas extends ImageWrapper {
 
     /**
      * @private
-     * @type {HTMLCanvasElement}
+     * @type {HTMLCanvasElement|OffscreenCanvas}
      */
     this.canvas_ = canvas;
 
@@ -83,7 +83,7 @@ class ImageCanvas extends ImageWrapper {
   }
 
   /**
-   * @return {HTMLCanvasElement} Canvas element.
+   * @return {HTMLCanvasElement|OffscreenCanvas} Canvas element.
    * @override
    */
   getImage() {

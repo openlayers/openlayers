@@ -6,7 +6,7 @@ import TileState from './TileState.js';
 import {createCanvasContext2D} from './dom.js';
 
 /**
- * @typedef {HTMLImageElement|HTMLCanvasElement|HTMLVideoElement|ImageBitmap} ImageLike
+ * @typedef {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas|HTMLVideoElement|ImageBitmap} ImageLike
  */
 
 /**
@@ -50,7 +50,7 @@ export function asArrayLike(data) {
 export const disposedError = new Error('disposed');
 
 /**
- * @type {CanvasRenderingContext2D|null}
+ * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D|null}
  */
 let sharedContext = null;
 

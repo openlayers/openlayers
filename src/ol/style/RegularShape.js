@@ -74,7 +74,7 @@ class RegularShape extends ImageStyle {
 
     /**
      * @private
-     * @type {HTMLCanvasElement|null}
+     * @type {HTMLCanvasElement|OffscreenCanvas|null}
      */
     this.hitDetectionCanvas_ = null;
 
@@ -218,7 +218,7 @@ class RegularShape extends ImageStyle {
   }
 
   /**
-   * @return {HTMLCanvasElement} Image element.
+   * @return {HTMLCanvasElement|OffscreenCanvas} Image element.
    * @override
    */
   getHitDetectionImage() {
@@ -233,7 +233,7 @@ class RegularShape extends ImageStyle {
   /**
    * Get the image icon.
    * @param {number} pixelRatio Pixel ratio.
-   * @return {HTMLCanvasElement} Image or Canvas element.
+   * @return {HTMLCanvasElement|OffscreenCanvas} Image or Canvas element.
    * @api
    * @override
    */
@@ -242,7 +242,7 @@ class RegularShape extends ImageStyle {
     const cacheKey =
       `${pixelRatio},${this.angle_},${this.radius},${this.radius2_},${this.points_},${fillKey}` +
       Object.values(this.renderOptions_).join(',');
-    let image = /** @type {HTMLCanvasElement} */ (
+    let image = /** @type {HTMLCanvasElement|OffscreenCanvas} */ (
       iconImageCache.get(cacheKey, null, null)?.getImage(1)
     );
     if (!image) {
@@ -514,7 +514,7 @@ class RegularShape extends ImageStyle {
   /**
    * @private
    * @param {RenderOptions} renderOptions Render options.
-   * @param {CanvasRenderingContext2D} context The rendering context.
+   * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context The rendering context.
    * @param {number} pixelRatio The pixel ratio.
    */
   draw_(renderOptions, context, pixelRatio) {
@@ -549,7 +549,7 @@ class RegularShape extends ImageStyle {
   /**
    * @private
    * @param {RenderOptions} renderOptions Render options.
-   * @return {HTMLCanvasElement} Canvas containing the icon
+   * @return {HTMLCanvasElement|OffscreenCanvas} Canvas containing the icon
    */
   createHitDetectionCanvas_(renderOptions) {
     let context;
@@ -578,7 +578,7 @@ class RegularShape extends ImageStyle {
 
   /**
    * @private
-   * @param {CanvasRenderingContext2D} context The context to draw in.
+   * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context The context to draw in.
    */
   createPath_(context) {
     let points = this.points_;
@@ -604,7 +604,7 @@ class RegularShape extends ImageStyle {
   /**
    * @private
    * @param {RenderOptions} renderOptions Render options.
-   * @param {CanvasRenderingContext2D} context The context.
+   * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context The context.
    */
   drawHitDetectionCanvas_(renderOptions, context) {
     // set origin to canvas center

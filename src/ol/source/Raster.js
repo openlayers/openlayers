@@ -832,7 +832,10 @@ class RasterSource extends ImageSource {
 
     let context;
     if (this.renderedImageCanvas_) {
-      context = this.renderedImageCanvas_.getImage().getContext('2d');
+      context =
+        /** @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} */ (
+          this.renderedImageCanvas_.getImage().getContext('2d')
+        );
     } else {
       const width = Math.round(getWidth(extent) / resolution);
       const height = Math.round(getHeight(extent) / resolution);
@@ -900,7 +903,7 @@ RasterSource.prototype.dispose;
 
 /**
  * A reusable canvas context.
- * @type {CanvasRenderingContext2D}
+ * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D}
  * @private
  */
 let sharedContext = null;

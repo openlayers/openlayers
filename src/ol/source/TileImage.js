@@ -4,6 +4,7 @@
 import ImageTile from '../ImageTile.js';
 import TileState from '../TileState.js';
 import EventType from '../events/EventType.js';
+import {WORKER_OFFSCREEN_CANVAS} from '../has.js';
 import {equivalent, get as getProjection} from '../proj.js';
 import ReprojTile from '../reproj/Tile.js';
 import {getForProjection as getTileGridForProjection} from '../tilegrid.js';
@@ -313,6 +314,52 @@ class TileImage extends UrlTile {
  * @param {string} src Source.
  */
 export function defaultTileLoadFunction(imageTile, src) {
+  if (WORKER_OFFSCREEN_CANVAS) {
+    // special treatment for offscreen canvas
+    const crossOrigin = imageTile.getCrossOrigin();
+
+    /** @type {RequestMode} */
+    let mode = 'same-origin';
+    /** @type {RequestCredentials} */
+    let credentials = 'same-origin';
+    if (crossOrigin === 'anonymous' || crossOrigin === '') {
+      mode = 'cors';
+      credentials = 'omit';
+    } else if (crossOrigin === 'use-credentials') {
+      mode = 'cors';
+      credentials = 'include';
+    }
+
+    fetch(src, {
+      mode,
+      credentials,
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+        return response.blob();
+      })
+      .then((blob) => {
+        return createImageBitmap(blob);
+      })
+      .then((imageBitmap) => {
+        const canvas = imageTile.getImage();
+        canvas.width = imageBitmap.width;
+        canvas.height = imageBitmap.height;
+        const ctx = /** @type {OffscreenCanvas} */ (canvas).getContext('2d');
+        ctx.drawImage(imageBitmap, 0, 0);
+        imageBitmap.close?.();
+        // mock the image 'load' event
+        canvas.dispatchEvent(new Event('load'));
+      })
+      .catch(() => {
+        const canvas = imageTile.getImage();
+        canvas.dispatchEvent(new Event('error'));
+      });
+    return;
+  }
+
   /** @type {HTMLImageElement|HTMLVideoElement} */ (imageTile.getImage()).src =
     src;
 }

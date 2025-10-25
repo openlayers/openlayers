@@ -2,6 +2,7 @@
  * @module ol/source/OSM
  */
 
+import {WORKER_OFFSCREEN_CANVAS} from '../has.js';
 import {defaultTileLoadFunction} from './TileImage.js';
 import XYZ from './XYZ.js';
 
@@ -87,7 +88,8 @@ class OSM extends XYZ {
          */
         (tile, src) => {
           const image = tile.getImage();
-          if (image instanceof HTMLImageElement) {
+          // FIXME referrer policy for worker fetch requests
+          if (!WORKER_OFFSCREEN_CANVAS && image instanceof HTMLImageElement) {
             image.referrerPolicy = 'origin-when-cross-origin';
           }
           (options.tileLoadFunction || defaultTileLoadFunction)(tile, src);

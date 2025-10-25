@@ -101,7 +101,7 @@ class ExecutorGroup {
 
     /**
      * @private
-     * @type {CanvasRenderingContext2D}
+     * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D}
      */
     this.hitDetectionContext_ = null;
 
@@ -113,7 +113,7 @@ class ExecutorGroup {
 
     /**
      * @private
-     * @type {CanvasRenderingContext2D}
+     * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D}
      */
     this.renderedContext_ = null;
 
@@ -127,7 +127,7 @@ class ExecutorGroup {
   }
 
   /**
-   * @param {CanvasRenderingContext2D} context Context.
+   * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
    * @param {import("../../transform.js").Transform} transform Transform.
    */
   clip(context, transform) {
@@ -345,7 +345,7 @@ class ExecutorGroup {
   }
 
   /**
-   * @param {CanvasRenderingContext2D} targetContext Context.
+   * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} targetContext Context.
    * @param {import('../../size.js').Size} scaledCanvasSize Scale of the context.
    * @param {import("../../transform.js").Transform} transform Transform.
    * @param {number} viewRotation View rotation.

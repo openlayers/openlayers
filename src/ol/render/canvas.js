@@ -164,7 +164,7 @@ export const defaultLineWidth = 1;
 export const checkedFonts = new BaseObject();
 
 /**
- * @type {CanvasRenderingContext2D}
+ * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D}
  */
 let measureContext = null;
 
@@ -518,7 +518,7 @@ export function drawImageOrLabel(
 
 /**
  * @param {Label} label Label.
- * @param {CanvasRenderingContext2D} context Context.
+ * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
  */
 function executeLabelInstructions(label, context) {
   const contextInstructions = label.contextInstructions;
