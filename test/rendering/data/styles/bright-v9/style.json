@@ -70,6 +70,7 @@
   "sources": {
     "mapbox": {
       "tiles": ["/data/styles/bright-v9/mapbox-streets-v7/{z}/{x}/{y}.vector.pbf"],
+      "maxzoom": 15,
       "type": "vector"
     }
   },

@@ -1,0 +1,17 @@
+---
+layout: example.html
+title: Vector tiles reprojected
+
+shortdesc: Example showing vector tiles in EPSG:4326, reprojected to a polar projection.
+docs: >
+  Vector tile layers can be reprojected to other projections. This example shows vector tiles in geographic coordinates (EPSG:4326) reprojected to North Pole Lambert Azimuthal Equal Area (ESRI:102017).
+  For polar regions, vector tiles in geographic coordinates are recommended, because Web Mercator tiles do not work beyond 85° North and South.
+  <br>
+  <br>
+  **Note**: Make sure to get your own API key at https://www.maptiler.com/cloud/ when using this example. No map will be visible when the API key has expired.
+tags: "vector tiles, tile, mapbox, maplibre, ol-mapbox-style, reprojection"
+cloak:
+  - key: get_your_own_D6rA4zTHduk6KOKTXzGB
+    value: Get your own API key at https://www.maptiler.com/cloud/
+---
+<div id="map" class="map" style="background:none;"></div>
