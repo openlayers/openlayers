@@ -1258,7 +1258,7 @@ class Executor {
   }
 
   /**
-   * @param {CanvasRenderingContext2D} context Context.
+   * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
    * @param {import('../../size.js').Size} scaledCanvasSize Scaled canvas size.
    * @param {import("../../transform.js").Transform} transform Transform.
    * @param {number} viewRotation View rotation.

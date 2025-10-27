@@ -3,6 +3,7 @@
  */
 
 import MixedGeometryBatch from '../render/webgl/MixedGeometryBatch.js';
+import VectorSource from '../source/Vector.js';
 import {
   create as createTransform,
   translate as translateTransform,
@@ -48,6 +49,16 @@ class TileGeometry extends BaseTileRepresentation {
      */
     this.maskVertices = new WebGLArrayBuffer(ARRAY_BUFFER, STATIC_DRAW);
 
+    /**
+     * @type {Array<import("../Feature.js").default|import("../render/Feature.js").default>}
+     */
+    this.features = null;
+
+    this.vectorSource_ = new VectorSource({
+      features: [],
+      useSpatialIndex: true,
+    });
+
     this.setTile(options.tile);
   }
 
@@ -77,11 +88,12 @@ class TileGeometry extends BaseTileRepresentation {
 
     this.batch_.clear();
     const sourceTiles = this.tile.getSourceTiles();
-    const features = sourceTiles.reduce(
+    this.features = sourceTiles.reduce(
       (accumulator, sourceTile) => accumulator.concat(sourceTile.getFeatures()),
       [],
     );
-    this.batch_.addFeatures(features);
+    this.batch_.addFeatures(this.features);
+    this.vectorSource_.addFeatures(this.features);
 
     const tileOriginX = sourceTiles[0].extent[0];
     const tileOriginY = sourceTiles[0].extent[1];
@@ -97,6 +109,14 @@ class TileGeometry extends BaseTileRepresentation {
         this.buffers = buffers;
         this.setReady();
       });
+  }
+
+  getFeatures() {
+    return this.batch_;
+  }
+
+  getSource() {
+    return this.vectorSource_;
   }
 
   /**
@@ -120,6 +140,9 @@ class TileGeometry extends BaseTileRepresentation {
         disposeBuffersOfType(this.buffers.lineStringBuffers);
       this.buffers.polygonBuffers &&
         disposeBuffersOfType(this.buffers.polygonBuffers);
+      this.styleRenderer_.disposeTextInstructions(
+        this.buffers.textInstructionsKey,
+      );
     }
     super.disposeInternal();
   }

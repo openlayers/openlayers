@@ -300,6 +300,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       if (renderOrder && renderOrder !== builderState.renderedRenderOrder) {
         features.sort(renderOrder);
       }
+      let renderedCount = 0;
       for (let i = 0, ii = features.length; i < ii; ++i) {
         let feature = features[i];
         if (
@@ -317,8 +318,10 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
           intersects(bufferedExtent, feature.getGeometry().getExtent())
         ) {
           render.call(this, feature, i);
+          renderedCount++;
         }
       }
+      console.log(`rendered ${renderedCount} features`);
       const executorGroupInstructions = builderGroup.finish();
       // no need to clip when the render tile is covered by a single source tile
       const replayExtent =

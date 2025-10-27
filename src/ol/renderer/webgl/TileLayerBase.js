@@ -455,6 +455,12 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
    */
   renderTileMask(tileRepresentation, tileZ, extent, depth) {}
 
+  /**
+   * @param {TileRepresentation} tileRepresentation Tile representation
+   * @protected
+   */
+  beforeTileDispose(tileRepresentation) {}
+
   drawTile_(
     frameState,
     tileRepresentation,
@@ -725,7 +731,11 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
     const canvas = this.helper.getCanvas();
 
     const tileRepresentationCache = this.tileRepresentationCache;
-    tileRepresentationCache.expireCache();
+    while (tileRepresentationCache.canExpireCache()) {
+      const tileRepresentation = tileRepresentationCache.pop();
+      this.beforeTileDispose(tileRepresentation);
+      tileRepresentation.dispose();
+    }
 
     this.postRender(gl, frameState);
     return canvas;

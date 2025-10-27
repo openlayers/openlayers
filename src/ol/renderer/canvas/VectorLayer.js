@@ -723,9 +723,14 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     if (vectorLayerRenderOrder) {
       features.sort(vectorLayerRenderOrder);
     }
+
+    let renderedCount = 0;
     for (let i = 0, ii = features.length; i < ii; ++i) {
       render(features[i], i);
+      renderedCount++;
     }
+
+    console.log(`rendered ${renderedCount} features`);
     this.renderedFeatures_ = features;
     this.ready = ready;
 

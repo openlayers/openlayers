@@ -12,7 +12,16 @@ const vectorLayer = new VectorLayer({
   }),
   style: {
     'fill-color': ['string', ['get', 'COLOR'], '#eee'],
+    'text-value': ['coalesce', ['get', 'ECO_NAME'], 'unknown'],
+    'text-font': 'bold 12px "Open Sans", "Arial Unicode MS", sans-serif',
+    'text-fill-color': '#333',
+    'text-stroke-color': 'rgba(255,255,255,0.8)',
+    'text-stroke-width': 2,
+    'text-overflow': true,
+    'text-declutter-mode': 'declutter',
+    // 'text-rotate-with-view': true,
   },
+  declutter: true,
 });
 
 const map = new Map({

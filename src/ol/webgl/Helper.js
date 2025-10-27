@@ -4,10 +4,7 @@
 import Disposable from '../Disposable.js';
 import {assert} from '../asserts.js';
 import {clear} from '../obj.js';
-import {
-  compose as composeTransform,
-  create as createTransform,
-} from '../transform.js';
+import {compose as composeTransform} from '../transform.js';
 import {getUid} from '../util.js';
 import {create, fromTransform} from '../vec/mat4.js';
 import ContextEventType from '../webgl/ContextEventType.js';
@@ -374,18 +371,6 @@ class WebGLHelper extends Disposable {
       ContextEventType.RESTORED,
       this.boundHandleWebGLContextRestored_,
     );
-
-    /**
-     * @private
-     * @type {import("../transform.js").Transform}
-     */
-    this.offsetRotateMatrix_ = createTransform();
-
-    /**
-     * @private
-     * @type {import("../transform.js").Transform}
-     */
-    this.offsetScaleMatrix_ = createTransform();
 
     /**
      * @private
