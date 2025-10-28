@@ -286,9 +286,8 @@ class CanvasLayerRenderer extends LayerRenderer {
         this.context.clearRect(0, 0, width, height);
       }
       if (
-        !WORKER_OFFSCREEN_CANVAS &&
         canvasTransform !==
-          /** @type {HTMLCanvasElement} */ (canvas).style.transform
+        /** @type {HTMLCanvasElement} */ (canvas).style.transform
       ) {
         /** @type {HTMLCanvasElement} */ (canvas).style.transform =
           canvasTransform;
