@@ -4,7 +4,7 @@
 
 import {getSharedCanvasContext2D} from '../../dom.js';
 
-/** @typedef {CanvasRenderingContext2D & {globalAlpha: any}} ZIndexContextProxy */
+/** @typedef {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D & {globalAlpha: any}} ZIndexContextProxy */
 
 /**
  * @extends {CanvasRenderingContext2D}
@@ -94,7 +94,7 @@ class ZIndexContext {
   }
 
   /**
-   * @param {CanvasRenderingContext2D} context Context.
+   * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
    */
   draw(context) {
     this.instructions_.forEach((instructionsAtIndex) => {

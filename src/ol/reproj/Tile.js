@@ -85,7 +85,7 @@ class ReprojTile extends Tile {
 
     /**
      * @private
-     * @type {HTMLCanvasElement}
+     * @type {HTMLCanvasElement|OffscreenCanvas}
      */
     this.canvas_ = null;
 
@@ -262,7 +262,7 @@ class ReprojTile extends Tile {
 
   /**
    * Get the HTML Canvas element for this tile.
-   * @return {HTMLCanvasElement} Canvas.
+   * @return {HTMLCanvasElement|OffscreenCanvas} Canvas.
    */
   getImage() {
     return this.canvas_;
@@ -392,7 +392,11 @@ class ReprojTile extends Tile {
    */
   release() {
     if (this.canvas_) {
-      releaseCanvas(this.canvas_.getContext('2d'));
+      releaseCanvas(
+        /** @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} */ (
+          this.canvas_.getContext('2d')
+        ),
+      );
       canvasPool.push(this.canvas_);
       this.canvas_ = null;
     }

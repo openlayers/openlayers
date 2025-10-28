@@ -11,13 +11,13 @@ import EventTarget from '../events/Target.js';
 import {shared as iconImageCache} from './IconImageCache.js';
 
 /**
- * @type {CanvasRenderingContext2D}
+ * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D}
  */
 let taintedTestContext = null;
 
 class IconImage extends EventTarget {
   /**
-   * @param {HTMLImageElement|HTMLCanvasElement|ImageBitmap|null} image Image.
+   * @param {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas|ImageBitmap|null} image Image.
    * @param {string|undefined} src Src.
    * @param {?string} crossOrigin Cross origin.
    * @param {import("../ImageState.js").default|undefined} imageState Image state.
@@ -28,13 +28,13 @@ class IconImage extends EventTarget {
 
     /**
      * @private
-     * @type {HTMLImageElement|HTMLCanvasElement|ImageBitmap}
+     * @type {HTMLImageElement|OffscreenCanvas|HTMLCanvasElement|ImageBitmap}
      */
     this.hitDetectionImage_ = null;
 
     /**
      * @private
-     * @type {HTMLImageElement|HTMLCanvasElement|ImageBitmap|null}
+     * @type {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas|ImageBitmap|null}
      */
     this.image_ = image;
 
@@ -46,7 +46,7 @@ class IconImage extends EventTarget {
 
     /**
      * @private
-     * @type {Object<number, HTMLCanvasElement>}
+     * @type {Object<number, HTMLCanvasElement|OffscreenCanvas>}
      */
     this.canvas_ = {};
 
@@ -146,7 +146,7 @@ class IconImage extends EventTarget {
 
   /**
    * @param {number} pixelRatio Pixel ratio.
-   * @return {HTMLImageElement|HTMLCanvasElement|ImageBitmap} Image or Canvas element or image bitmap.
+   * @return {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas|ImageBitmap} Image or Canvas element or image bitmap.
    */
   getImage(pixelRatio) {
     if (!this.image_) {
@@ -173,7 +173,7 @@ class IconImage extends EventTarget {
   }
 
   /**
-   * @return {HTMLImageElement|HTMLCanvasElement|ImageBitmap} Image element.
+   * @return {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas|ImageBitmap} Image element.
    */
   getHitDetectionImage() {
     if (!this.image_) {
@@ -300,7 +300,7 @@ class IconImage extends EventTarget {
 }
 
 /**
- * @param {HTMLImageElement|HTMLCanvasElement|ImageBitmap|null} image Image.
+ * @param {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas|ImageBitmap|null} image Image.
  * @param {string|undefined} cacheKey Src.
  * @param {?string} crossOrigin Cross origin.
  * @param {import("../ImageState.js").default|undefined} imageState Image state.

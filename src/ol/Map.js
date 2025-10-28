@@ -18,6 +18,7 @@ import {equals} from './array.js';
 import {assert} from './asserts.js';
 import {warn} from './console.js';
 import {defaults as defaultControls} from './control/defaults.js';
+import {isCanvas} from './dom.js';
 import EventType from './events/EventType.js';
 import {listen, unlistenByKey} from './events.js';
 import {
@@ -28,7 +29,11 @@ import {
   isEmpty,
 } from './extent.js';
 import {TRUE} from './functions.js';
-import {DEVICE_PIXEL_RATIO, PASSIVE_EVENT_LISTENERS} from './has.js';
+import {
+  DEVICE_PIXEL_RATIO,
+  PASSIVE_EVENT_LISTENERS,
+  WORKER_OFFSCREEN_CANVAS,
+} from './has.js';
 import {defaults as defaultInteractions} from './interaction/defaults.js';
 import LayerGroup, {GroupEvent} from './layer/Group.js';
 import Layer from './layer/Layer.js';
@@ -118,12 +123,12 @@ import {getUid} from './util.js';
  * @typedef {Object} MapOptions
  * @property {Collection<import("./control/Control.js").default>|Array<import("./control/Control.js").default>} [controls]
  * Controls initially added to the map. If not specified,
- * {@link module:ol/control/defaults.defaults} is used.
+ * {@link module:ol/control/defaults.defaults} is used. In a worker, no controls are added by default.
  * @property {number} [pixelRatio=window.devicePixelRatio] The ratio between
  * physical pixels and device-independent pixels (dips) on the device.
  * @property {Collection<import("./interaction/Interaction.js").default>|Array<import("./interaction/Interaction.js").default>} [interactions]
  * Interactions that are initially added to the map. If not specified,
- * {@link module:ol/interaction/defaults.defaults} is used.
+ * {@link module:ol/interaction/defaults.defaults} is used. In a worker, no interactions are added by default.
  * @property {HTMLElement|Document|string} [keyboardEventTarget] The element to
  * listen to keyboard events on. This determines when the `KeyboardPan` and
  * `KeyboardZoom` interactions trigger. For example, if this option is set to
@@ -144,10 +149,11 @@ import {getUid} from './util.js';
  * Increasing this value can make it easier to click on the map.
  * @property {Collection<import("./Overlay.js").default>|Array<import("./Overlay.js").default>} [overlays]
  * Overlays initially added to the map. By default, no overlays are added.
- * @property {HTMLElement|string} [target] The container for the map, either the
+ * @property {HTMLElement|string|HTMLCanvasElement|OffscreenCanvas} [target] The container for the map, either the
  * element itself or the `id` of the element. If not specified at construction
  * time, {@link module:ol/Map~Map#setTarget} must be called for the map to be
  * rendered. If passed by element, the container can be in a secondary document.
+ * For use in workers or when exporting a map, use an `OffscreenCanvas` or `HTMLCanvasElement` as target.
  * For accessibility (focus and keyboard events for map navigation), the `target` element must have a
  *  properly configured `tabindex` attribute. If the `target` element is inside a Shadow DOM, the
  *  `tabindex` atribute must be set on the custom element's host element.
@@ -366,39 +372,42 @@ class Map extends BaseObject {
      * @private
      * @type {!HTMLElement}
      */
-    this.viewport_ = document.createElement('div');
-    this.viewport_.className =
-      'ol-viewport' + ('ontouchstart' in window ? ' ol-touch' : '');
-    this.viewport_.style.position = 'relative';
-    this.viewport_.style.overflow = 'hidden';
-    this.viewport_.style.width = '100%';
-    this.viewport_.style.height = '100%';
+    if (!WORKER_OFFSCREEN_CANVAS) {
+      this.viewport_ = document.createElement('div');
+      this.viewport_.className =
+        'ol-viewport' + ('ontouchstart' in window ? ' ol-touch' : '');
+      this.viewport_.style.position = 'relative';
+      this.viewport_.style.overflow = 'hidden';
+      this.viewport_.style.width = '100%';
+      this.viewport_.style.height = '100%';
 
-    /**
-     * @private
-     * @type {!HTMLElement}
-     */
-    this.overlayContainer_ = document.createElement('div');
-    this.overlayContainer_.style.position = 'absolute';
-    this.overlayContainer_.style.zIndex = '0';
-    this.overlayContainer_.style.width = '100%';
-    this.overlayContainer_.style.height = '100%';
-    this.overlayContainer_.style.pointerEvents = 'none';
-    this.overlayContainer_.className = 'ol-overlaycontainer';
-    this.viewport_.appendChild(this.overlayContainer_);
+      /**
+       * @private
+       * @type {!HTMLElement}
+       */
+      this.overlayContainer_ = document.createElement('div');
+      this.overlayContainer_.style.position = 'absolute';
+      this.overlayContainer_.style.zIndex = '0';
+      this.overlayContainer_.style.width = '100%';
+      this.overlayContainer_.style.height = '100%';
+      this.overlayContainer_.style.pointerEvents = 'none';
+      this.overlayContainer_.className = 'ol-overlaycontainer';
+      this.viewport_.appendChild(this.overlayContainer_);
 
-    /**
-     * @private
-     * @type {!HTMLElement}
-     */
-    this.overlayContainerStopEvent_ = document.createElement('div');
-    this.overlayContainerStopEvent_.style.position = 'absolute';
-    this.overlayContainerStopEvent_.style.zIndex = '0';
-    this.overlayContainerStopEvent_.style.width = '100%';
-    this.overlayContainerStopEvent_.style.height = '100%';
-    this.overlayContainerStopEvent_.style.pointerEvents = 'none';
-    this.overlayContainerStopEvent_.className = 'ol-overlaycontainer-stopevent';
-    this.viewport_.appendChild(this.overlayContainerStopEvent_);
+      /**
+       * @private
+       * @type {!HTMLElement}
+       */
+      this.overlayContainerStopEvent_ = document.createElement('div');
+      this.overlayContainerStopEvent_.style.position = 'absolute';
+      this.overlayContainerStopEvent_.style.zIndex = '0';
+      this.overlayContainerStopEvent_.style.width = '100%';
+      this.overlayContainerStopEvent_.style.height = '100%';
+      this.overlayContainerStopEvent_.style.pointerEvents = 'none';
+      this.overlayContainerStopEvent_.className =
+        'ol-overlaycontainer-stopevent';
+      this.viewport_.appendChild(this.overlayContainerStopEvent_);
+    }
 
     /**
      * @private
@@ -430,17 +439,21 @@ class Map extends BaseObject {
      */
     this.targetElement_ = null;
 
-    /**
-     * @private
-     * @type {ResizeObserver}
-     */
-    this.resizeObserver_ = new ResizeObserver(() => this.updateSize());
+    if (!WORKER_OFFSCREEN_CANVAS) {
+      /**
+       * @private
+       * @type {ResizeObserver}
+       */
+      this.resizeObserver_ = new ResizeObserver(() => this.updateSize());
+    }
 
     /**
      * @type {Collection<import("./control/Control.js").default>}
      * @protected
      */
-    this.controls = optionsInternal.controls || defaultControls();
+    this.controls =
+      optionsInternal.controls ||
+      (WORKER_OFFSCREEN_CANVAS ? new Collection() : defaultControls());
 
     /**
      * @type {Collection<import("./interaction/Interaction.js").default>}
@@ -448,9 +461,11 @@ class Map extends BaseObject {
      */
     this.interactions =
       optionsInternal.interactions ||
-      defaultInteractions({
-        onFocusOnly: true,
-      });
+      (WORKER_OFFSCREEN_CANVAS
+        ? new Collection()
+        : defaultInteractions({
+            onFocusOnly: true,
+          }));
 
     /**
      * @type {Collection<import("./Overlay.js").default>}
@@ -663,7 +678,7 @@ class Map extends BaseObject {
     this.controls.clear();
     this.interactions.clear();
     this.overlays_.clear();
-    this.resizeObserver_.disconnect();
+    this.resizeObserver_?.disconnect();
     this.setTarget(null);
     super.disposeInternal();
   }
@@ -1277,8 +1292,8 @@ class Map extends BaseObject {
       this.viewport_.remove();
     }
 
-    if (this.targetElement_) {
-      this.resizeObserver_.unobserve(this.targetElement_);
+    if (this.targetElement_ && !isCanvas(this.targetElement_)) {
+      this.resizeObserver_?.unobserve(this.targetElement_);
       const rootNode = this.targetElement_.getRootNode();
       if (rootNode instanceof ShadowRoot) {
         this.resizeObserver_.unobserve(rootNode.host);
@@ -1308,65 +1323,71 @@ class Map extends BaseObject {
         this.animationDelayKey_ = undefined;
       }
     } else {
-      targetElement.appendChild(this.viewport_);
+      if (!isCanvas(targetElement)) {
+        targetElement.appendChild(this.viewport_);
+      }
       if (!this.renderer_) {
         this.renderer_ = new CompositeMapRenderer(this);
       }
 
-      this.mapBrowserEventHandler_ = new MapBrowserEventHandler(
-        this,
-        this.moveTolerance_,
-      );
-      for (const key in MapBrowserEventType) {
-        this.mapBrowserEventHandler_.addEventListener(
-          MapBrowserEventType[key],
-          this.handleMapBrowserEvent.bind(this),
+      if (!isCanvas(targetElement)) {
+        this.mapBrowserEventHandler_ = new MapBrowserEventHandler(
+          this,
+          this.moveTolerance_,
         );
-      }
-      this.viewport_.addEventListener(
-        EventType.CONTEXTMENU,
-        this.boundHandleBrowserEvent_,
-        false,
-      );
-      this.viewport_.addEventListener(
-        EventType.WHEEL,
-        this.boundHandleBrowserEvent_,
-        PASSIVE_EVENT_LISTENERS ? {passive: false} : false,
-      );
+        for (const key in MapBrowserEventType) {
+          this.mapBrowserEventHandler_.addEventListener(
+            MapBrowserEventType[key],
+            this.handleMapBrowserEvent.bind(this),
+          );
+        }
+        this.viewport_.addEventListener(
+          EventType.CONTEXTMENU,
+          this.boundHandleBrowserEvent_,
+          false,
+        );
+        this.viewport_.addEventListener(
+          EventType.WHEEL,
+          this.boundHandleBrowserEvent_,
+          PASSIVE_EVENT_LISTENERS ? {passive: false} : false,
+        );
 
-      let keyboardEventTarget;
-      if (!this.keyboardEventTarget_) {
-        // check if map target is in shadowDOM, if yes use host element as target
-        const targetRoot = targetElement.getRootNode();
-        const targetCandidate =
-          targetRoot instanceof ShadowRoot ? targetRoot.host : targetElement;
-        keyboardEventTarget = targetCandidate;
-      } else {
-        keyboardEventTarget = this.keyboardEventTarget_;
+        let keyboardEventTarget;
+        if (!this.keyboardEventTarget_) {
+          // check if map target is in shadowDOM, if yes use host element as target
+          const targetRoot = targetElement.getRootNode();
+          const targetCandidate =
+            targetRoot instanceof ShadowRoot ? targetRoot.host : targetElement;
+          keyboardEventTarget = targetCandidate;
+        } else {
+          keyboardEventTarget = this.keyboardEventTarget_;
+        }
+
+        this.targetChangeHandlerKeys_ = [
+          listen(
+            keyboardEventTarget,
+            EventType.KEYDOWN,
+            this.handleBrowserEvent,
+            this,
+          ),
+          listen(
+            keyboardEventTarget,
+            EventType.KEYPRESS,
+            this.handleBrowserEvent,
+            this,
+          ),
+        ];
+        if (targetElement instanceof HTMLElement) {
+          const rootNode = targetElement.getRootNode();
+          if (rootNode instanceof ShadowRoot) {
+            this.resizeObserver_.observe(rootNode.host);
+          }
+          this.resizeObserver_?.observe(targetElement);
+        }
       }
 
-      this.targetChangeHandlerKeys_ = [
-        listen(
-          keyboardEventTarget,
-          EventType.KEYDOWN,
-          this.handleBrowserEvent,
-          this,
-        ),
-        listen(
-          keyboardEventTarget,
-          EventType.KEYPRESS,
-          this.handleBrowserEvent,
-          this,
-        ),
-      ];
-      const rootNode = targetElement.getRootNode();
-      if (rootNode instanceof ShadowRoot) {
-        this.resizeObserver_.observe(rootNode.host);
-      }
-      this.resizeObserver_.observe(targetElement);
+      this.updateSize();
     }
-
-    this.updateSize();
     // updateSize calls setSize, so no need to call this.render
     // ourselves here.
   }
@@ -1727,19 +1748,25 @@ class Map extends BaseObject {
 
     let size = undefined;
     if (targetElement) {
-      const computedStyle = getComputedStyle(targetElement);
-      const width =
-        targetElement.offsetWidth -
-        parseFloat(computedStyle['borderLeftWidth']) -
-        parseFloat(computedStyle['paddingLeft']) -
-        parseFloat(computedStyle['paddingRight']) -
-        parseFloat(computedStyle['borderRightWidth']);
-      const height =
-        targetElement.offsetHeight -
-        parseFloat(computedStyle['borderTopWidth']) -
-        parseFloat(computedStyle['paddingTop']) -
-        parseFloat(computedStyle['paddingBottom']) -
-        parseFloat(computedStyle['borderBottomWidth']);
+      let width, height;
+      if (isCanvas(targetElement)) {
+        width = targetElement.width;
+        height = targetElement.height;
+      } else {
+        const computedStyle = getComputedStyle(targetElement);
+        width =
+          targetElement.offsetWidth -
+          parseFloat(computedStyle['borderLeftWidth']) -
+          parseFloat(computedStyle['paddingLeft']) -
+          parseFloat(computedStyle['paddingRight']) -
+          parseFloat(computedStyle['borderRightWidth']);
+        height =
+          targetElement.offsetHeight -
+          parseFloat(computedStyle['borderTopWidth']) -
+          parseFloat(computedStyle['paddingTop']) -
+          parseFloat(computedStyle['paddingBottom']) -
+          parseFloat(computedStyle['borderBottomWidth']);
+      }
       if (!isNaN(width) && !isNaN(height)) {
         size = [Math.max(0, width), Math.max(0, height)];
         if (

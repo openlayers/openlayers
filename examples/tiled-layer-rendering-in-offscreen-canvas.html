@@ -1,0 +1,12 @@
+---
+layout: example.html
+title: Tiled Layer Rendering in an Offscreen Canvas
+shortdesc: Simplified example of a tiled layer strategy using a map that lives inside a worker.
+docs: >
+  The tiles of the map in this example are rendered in a web worker, using `OffscreenCanvas`. This can be improved by using a pool of workers to enable parallel, multi-threaded rendering.
+tags: "worker, offscreencanvas, tiles"
+sources:
+  - path: tiled-layer-rendering-in-offscreen-canvas.worker.js
+    as: worker.js
+---
+<div id="map" class="map"></div>

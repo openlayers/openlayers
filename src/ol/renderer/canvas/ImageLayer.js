@@ -233,7 +233,6 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
       context.restore();
     }
     context.imageSmoothingEnabled = true;
-
     return this.container;
   }
 }

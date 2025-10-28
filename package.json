@@ -76,7 +76,6 @@
     "@types/geojson": "^7946.0.7",
     "@types/mocha": "^10.0.7",
     "@types/node": "^24.9.0",
-    "@types/offscreencanvas": "^2019.6.4",
     "@types/pbf": "^3.0.2",
     "@types/sinon": "^17.0.3",
     "@types/topojson-specification": "^1.0.1",

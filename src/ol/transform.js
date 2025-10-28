@@ -285,7 +285,7 @@ export function toString(mat) {
  * @param {string} cssTransform The CSS string to parse.
  * @return {!Transform} The transform.
  */
-function fromString(cssTransform) {
+export function fromString(cssTransform) {
   const values = cssTransform.substring(7, cssTransform.length - 1).split(',');
   return values.map(parseFloat);
 }

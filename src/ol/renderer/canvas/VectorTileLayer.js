@@ -756,7 +756,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
   /**
    * Render the vectors for this layer.
-   * @param {CanvasRenderingContext2D} context Target context.
+   * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Target context.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @override
    */
