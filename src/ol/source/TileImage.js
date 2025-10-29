@@ -124,10 +124,11 @@ class TileImage extends UrlTile {
 
   /**
    * @param {import("../proj/Projection.js").default} projection Projection.
+   * @param {number} [pixelRatio] Pixel ratio.
    * @return {number} Gutter.
    * @override
    */
-  getGutterForProjection(projection) {
+  getGutterForProjection(projection, pixelRatio) {
     if (
       this.getProjection() &&
       projection &&
@@ -247,8 +248,8 @@ class TileImage extends UrlTile {
       targetTileGrid,
       tileCoord,
       wrappedTileCoord,
-      this.getTilePixelRatio(pixelRatio),
-      this.getGutter(),
+      pixelRatio,
+      this.getGutterForProjection(sourceProjection, pixelRatio),
       (z, x, y, pixelRatio) =>
         this.getTileInternal(z, x, y, pixelRatio, sourceProjection),
       this.reprojectionErrorThreshold_,
