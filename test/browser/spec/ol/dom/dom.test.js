@@ -1,5 +1,6 @@
 import {
   createCanvasContext2D,
+  createMockDiv,
   outerHeight,
   outerWidth,
   replaceChildren,
@@ -317,15 +318,15 @@ describe('ol.dom', function () {
     });
   });
 
-  describe('replaceChildren()', function () {
-    function assertChildrenMatch(parent, children) {
-      const actual = parent.childNodes;
-      expect(actual).to.have.length(children.length);
-      for (let i = 0; i < children.length; i++) {
-        expect(actual[i]).to.be(children[i]);
-      }
+  function assertChildrenMatch(parent, children) {
+    const actual = parent.childNodes;
+    expect(actual).to.have.length(children.length);
+    for (let i = 0; i < children.length; i++) {
+      expect(actual[i]).to.be(children[i]);
     }
+  }
 
+  describe('replaceChildren()', function () {
     it('adds new children to an empty parent', function () {
       const parent = document.createElement('div');
       const children = [
@@ -469,6 +470,44 @@ describe('ol.dom', function () {
 
       // confirm we haven't modified the input
       expect(desiredChildren).to.eql(clone);
+    });
+  });
+
+  describe('mockDiv for use in worker', function () {
+    it('mocks appendChild', function () {
+      const parent = createMockDiv();
+      const child = createMockDiv();
+      parent.appendChild(child);
+      assertChildrenMatch(parent, [child]);
+    });
+    it('mocks removeChild', function () {
+      const parent = createMockDiv();
+      const child = createMockDiv();
+      parent.appendChild(child);
+      parent.removeChild(child);
+      assertChildrenMatch(parent, []);
+    });
+    it('mocks insertBefore', function () {
+      const parent = createMockDiv();
+      const childA = createMockDiv();
+      const childB = createMockDiv();
+      const childC = createMockDiv();
+      parent.appendChild(childA);
+      parent.appendChild(childB);
+      parent.insertBefore(childC, childB);
+      assertChildrenMatch(parent, [childA, childC, childB]);
+    });
+    it('mocks firstElementChild', function () {
+      const parent = createMockDiv();
+      const childA = createMockDiv();
+      const childB = createMockDiv();
+      parent.appendChild(childA);
+      parent.appendChild(childB);
+      expect(parent.firstElementChild).to.be(childA);
+    });
+    it('mocks remove()', function () {
+      const parent = createMockDiv();
+      expect(() => parent.remove()).to.not.throwError();
     });
   });
 });
