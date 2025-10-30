@@ -33,8 +33,7 @@ const initialProjection = dynEqualEarth([0, 0]);
 
 (async () => {
   const response = await fetch(
-    'ecoregions.json',
-    // 'https://openlayers.org/data/vector/ecoregions.json',
+    'https://openlayers.org/data/vector/ecoregions.json',
     // 'https://openlayersbook.github.io/openlayers_book_samples/assets/data/countries.geojson',
   );
   const geojson = await response.json();
@@ -51,7 +50,7 @@ const initialProjection = dynEqualEarth([0, 0]);
 
   const vectorLayer = new VectorLayer({
     source: jsonSource(clipPolygon(geojson, 0), initialProjection),
-    extent: [-17243959.06, -8392927.6, 17243959.06, 8392927.6],
+    extent: initialProjection.getExtent(),
     wrapX: false,
     style: {
       'fill-color': ['string', ['get', 'COLOR'], '#eee'],
@@ -98,6 +97,9 @@ const initialProjection = dynEqualEarth([0, 0]);
   map.getView().on('change:center', handleCenterChange);
 
   function clipPolygon(geojson, lon0) {
+    function roundN(num, n = 10) {
+      return Math.round(num * Math.pow(10, n)) / Math.pow(10, n);
+    }
     const minX = lon0 - 180.0;
     const maxX = lon0 + 180.0;
     const clippedJson = {type: 'FeatureCollection', features: []};
@@ -123,32 +125,36 @@ const initialProjection = dynEqualEarth([0, 0]);
           for (const ring of polygon) {
             for (const coord of ring) {
               const x = coord[0];
-              coord[0] = Math.min(Math.max(x, minX), maxX);
-              if (coord[0] !== x) {
+              coord[0] = roundN(Math.min(Math.max(x, minX), maxX));
+              if (coord[0] !== roundN(x)) {
                 clamped++;
               }
             }
           }
+          // Skip possibly degenerated polys with all coords clamped
           if (clamped < ncoords) {
-            // Skip possibly degenerated polys with all coords clamped
             polys.push(polygon);
           }
-          // Shift poly by 360deg and clamp other part
-          if (clamped && clamped < ncoords) {
-            // this still creates bad polys, but fewer with second condition...
+          // Shift poly by 360° and clamp other part
+          if (clamped) {
+            let around180 = false;
             for (const ring of tpoly) {
               for (const coord of ring) {
                 const x = coord[0] + offset;
                 coord[0] = Math.min(Math.max(x, minX + eps), maxX - eps);
+                // this still creates bad polys when coords are around 180°
+                if (Math.abs(coord[0]) - 180 < 0.00000001) {
+                  around180 = true;
+                }
               }
             }
-            polys.push(tpoly);
+            if (!around180) {
+              polys.push(tpoly);
+            }
           }
         }
         feat.geometry.coordinates = polys;
-        if (![772, 779].includes(feat.id)) {
-          clippedJson.features.push(feat);
-        }
+        clippedJson.features.push(feat);
       } else {
         clippedJson.features.push(feature);
       }
