@@ -148,6 +148,35 @@ describe('ol/renderer/canvas/TileLayer', function () {
           layer.getRenderer().tileCache_.newest_.value_.tileCoord[0],
         ).to.be(9);
       });
+
+      it('caches source tiles when reprojecting', async () => {
+        const source = new TileDebug();
+        const layer = new TileLayer({
+          source: source,
+        });
+        map.addLayer(layer);
+        map.setView(
+          new View({
+            projection: 'EPSG:4326',
+            center: [-122.416667, 37.783333],
+            zoom: 5,
+          }),
+        );
+        await new Promise((resolve) => map.once('rendercomplete', resolve));
+        expect(
+          layer.getRenderer().sourceTileCache_.getKeys().length,
+        ).to.be.greaterThan(0);
+      });
+
+      it('does not cache source tiles when not reprojecting', async () => {
+        const source = new TileDebug();
+        const layer = new TileLayer({
+          source: source,
+        });
+        map.addLayer(layer);
+        await new Promise((resolve) => map.once('rendercomplete', resolve));
+        expect(layer.getRenderer().sourceTileCache_).to.be(null);
+      });
     });
   });
 });
