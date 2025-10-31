@@ -165,10 +165,12 @@ class CompositeMapRenderer extends MapRenderer {
       const mapContext = mapCanvas.getContext('2d');
       for (const container of this.children_) {
         const canvas = container.firstElementChild || container;
-        if (!isCanvas(canvas)) {
-          continue;
+        const backgroundColor = container.style.backgroundColor;
+        if (backgroundColor && (!isCanvas(canvas) || canvas.width > 0)) {
+          mapContext.fillStyle = backgroundColor;
+          mapContext.fillRect(0, 0, mapCanvas.width, mapCanvas.height);
         }
-        if (canvas.width > 0) {
+        if (isCanvas(canvas) && canvas.width > 0) {
           const opacity = container.style.opacity || canvas.style.opacity;
           mapContext.globalAlpha = opacity === '' ? 1 : Number(opacity);
           const transform = canvas.style.transform;
@@ -183,11 +185,6 @@ class CompositeMapRenderer extends MapRenderer {
             const w = parseFloat(canvas.style.width) / canvas.width;
             const h = parseFloat(canvas.style.height) / canvas.height;
             mapContext.setTransform(w, 0, 0, h, 0, 0);
-          }
-          const backgroundColor = container.style.backgroundColor;
-          if (backgroundColor) {
-            mapContext.fillStyle = backgroundColor;
-            mapContext.fillRect(0, 0, canvas.width, canvas.height);
           }
           mapContext.drawImage(canvas, 0, 0);
         }
