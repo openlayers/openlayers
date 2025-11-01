@@ -1,4 +1,3 @@
-import {bbox as turfBbox} from '@turf/bbox';
 import proj4 from 'proj4';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
@@ -104,13 +103,22 @@ const initialProjection = dynEqualEarth([0, 0]);
     const maxX = lon0 + 180.0;
     const clippedJson = {type: 'FeatureCollection', features: []};
     for (const feature of geojson.features) {
-      const bbox = turfBbox(feature);
+      const depth = feature.geometry.type === 'MultiPolygon' ? 2 : 1;
+      const [featMinX, featMaxX] = feature.geometry.coordinates
+        .flat(depth)
+        .reduce(
+          (minmax, coord) => [
+            Math.min(minmax[0], coord[0]),
+            Math.max(minmax[1], coord[0]),
+          ],
+          [Number.MAX_VALUE, Number.MIN_VALUE],
+        );
       const eps = 0.01;
       if (
-        (bbox[0] < minX + eps && bbox[2] > minX - eps) ||
-        (bbox[0] < maxX + eps && bbox[2] > maxX - eps)
+        (featMinX < minX + eps && featMaxX > minX - eps) ||
+        (featMinX < maxX + eps && featMaxX > maxX - eps)
       ) {
-        const offset = bbox[0] < minX ? 360 : -360;
+        const offset = featMinX < minX ? 360 : -360;
         const feat = structuredClone(feature);
         if (feat.geometry.type === 'Polygon') {
           feat.geometry.type = 'MultiPolygon';
