@@ -28,7 +28,8 @@ function dynEqualEarth(center, round = 15) {
   return prj;
 }
 
-const initialProjection = dynEqualEarth([0, 0]);
+const initialCenter = [11, 0];
+const initialProjection = dynEqualEarth(initialCenter, 1);
 
 (async () => {
   const response = await fetch(
@@ -48,7 +49,10 @@ const initialProjection = dynEqualEarth([0, 0]);
   }
 
   const vectorLayer = new VectorLayer({
-    source: jsonSource(clipPolygon(geojson, 0), initialProjection),
+    source: jsonSource(
+      clipPolygon(geojson, initialCenter[0]),
+      initialProjection,
+    ),
     extent: initialProjection.getExtent(),
     wrapX: false,
     style: {
@@ -61,7 +65,7 @@ const initialProjection = dynEqualEarth([0, 0]);
     target: 'map',
     view: new View({
       projection: initialProjection,
-      center: [0, 0],
+      center: initialCenter,
       zoom: 0,
       showFullExtent: true,
     }),
