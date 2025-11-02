@@ -2,9 +2,11 @@ import {applyBackground, applyStyle} from 'ol-mapbox-style';
 import proj4 from 'proj4';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
+import TileLayer from '../src/ol/layer/Tile.js';
 import VectorTileLayer from '../src/ol/layer/VectorTile.js';
 import {register} from '../src/ol/proj/proj4.js';
-import {get as getProjection} from '../src/ol/proj.js';
+import {fromLonLat, get as getProjection, toLonLat} from '../src/ol/proj.js';
+import OSM from '../src/ol/source/OSM.js';
 import VectorTileSource from '../src/ol/source/VectorTile.js';
 import {createXYZ} from '../src/ol/tilegrid.js';
 
@@ -31,7 +33,7 @@ function dynEqualEarth(center, round = 15) {
   return prj;
 }
 
-const projection = dynEqualEarth([0, 0]);
+const initialProjection = dynEqualEarth([0, 0]);
 
 // Match the server resolutions
 const tileGrid = createXYZ({
@@ -47,6 +49,7 @@ const layer = new VectorTileLayer({
     projection: 'EPSG:4326',
     tileGrid: tileGrid,
     wrapX: false,
+    maxZoom: 3,
   }),
 });
 applyStyle(layer, url, {resolutions: tileGrid.getResolutions()});
@@ -54,11 +57,41 @@ applyBackground(layer, url);
 
 const map = new Map({
   target: 'map',
-  layers: [layer],
+  layers: [
+    layer,
+    new TileLayer({
+      source: new OSM(),
+      minZoom: 3,
+    }),
+  ],
   view: new View({
-    projection,
+    projection: initialProjection,
     zoom: 0,
     center: [0, 0],
     showFullExtent: true,
   }),
 });
+
+// Event handler for updating view projection
+function handleCenterChange() {
+  const curView = map.getView();
+  const center = toLonLat(curView.getCenter(), curView.getProjection());
+  const globalProjection = initialProjection; // dynEqualEarth(center);
+  const newProjection =
+    curView.getZoom() < 3 ? globalProjection : getProjection('EPSG:3857');
+  if (curView.getProjection().getCode() !== newProjection.getCode()) {
+    curView.un('change:center', handleCenterChange);
+    map.setView(
+      new View({
+        projection: newProjection,
+        center: fromLonLat(center, newProjection),
+        zoom: curView.getZoom(),
+        rotation: curView.getRotation(),
+        showFullExtent: true,
+      }),
+    );
+    map.getView().on('change:center', handleCenterChange);
+  }
+}
+
+map.getView().on('change:center', handleCenterChange);
