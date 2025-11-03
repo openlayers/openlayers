@@ -4,7 +4,7 @@ import {fileURLToPath} from 'node:url';
 import inPlace from '@metalsmith/in-place';
 import layouts from '@metalsmith/layouts';
 import markdown from '@metalsmith/markdown';
-import alias from '@rollup/plugin-alias';
+import alias from '@rollup/plugin-alias'; //eslint-disable-line import/no-unresolved
 import common from '@rollup/plugin-commonjs';
 import {nodeResolve} from '@rollup/plugin-node-resolve';
 import terser from '@rollup/plugin-terser';
