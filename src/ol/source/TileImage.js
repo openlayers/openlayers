@@ -7,6 +7,7 @@ import EventType from '../events/EventType.js';
 import {WORKER_OFFSCREEN_CANVAS} from '../has.js';
 import {equivalent, get as getProjection} from '../proj.js';
 import ReprojTile from '../reproj/Tile.js';
+import {getCacheKey} from '../tilecoord.js';
 import {getForProjection as getTileGridForProjection} from '../tilegrid.js';
 import {getUid} from '../util.js';
 import UrlTile from './UrlTile.js';
@@ -214,10 +215,11 @@ class TileImage extends UrlTile {
    * @param {number} y Tile coordinate y.
    * @param {number} pixelRatio Pixel ratio.
    * @param {import("../proj/Projection.js").default} projection Projection.
+   * @param {import("../structs/LRUCache.js").default<import("../Tile.js").default>} [tileCache] Tile cache.
    * @return {!(ImageTile|ReprojTile)} Tile.
    * @override
    */
-  getTile(z, x, y, pixelRatio, projection) {
+  getTile(z, x, y, pixelRatio, projection, tileCache) {
     const sourceProjection = this.getProjection();
     if (
       !sourceProjection ||
@@ -250,7 +252,7 @@ class TileImage extends UrlTile {
       this.getTilePixelRatio(pixelRatio),
       this.getGutter(),
       (z, x, y, pixelRatio) =>
-        this.getTileInternal(z, x, y, pixelRatio, sourceProjection),
+        this.getTileInternal(z, x, y, pixelRatio, sourceProjection, tileCache),
       this.reprojectionErrorThreshold_,
       this.renderReprojectionEdges_,
       this.tileOptions,
@@ -265,12 +267,20 @@ class TileImage extends UrlTile {
    * @param {number} y Tile coordinate y.
    * @param {number} pixelRatio Pixel ratio.
    * @param {!import("../proj/Projection.js").default} projection Projection.
+   * @param {import("../structs/LRUCache.js").default<import("../Tile.js").default>} [tileCache] Tile cache.
    * @return {!ImageTile} Tile.
    * @protected
    */
-  getTileInternal(z, x, y, pixelRatio, projection) {
+  getTileInternal(z, x, y, pixelRatio, projection, tileCache) {
     const key = this.getKey();
-    return this.createTile_(z, x, y, pixelRatio, projection, key);
+    const cacheKey = getCacheKey(this, key, z, x, y);
+    if (tileCache && tileCache.containsKey(cacheKey)) {
+      const tile = /** @type {!ImageTile} */ (tileCache.get(cacheKey));
+      return tile;
+    }
+    const tile = this.createTile_(z, x, y, pixelRatio, projection, key);
+    tileCache?.set(cacheKey, tile);
+    return tile;
   }
 
   /**

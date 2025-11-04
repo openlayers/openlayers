@@ -15,29 +15,20 @@ import {
   getTopLeft,
   intersects,
 } from '../../extent.js';
-import {fromUserExtent} from '../../proj.js';
+import {equivalent, fromUserExtent} from '../../proj.js';
 import ReprojTile from '../../reproj/Tile.js';
 import {toSize} from '../../size.js';
 import LRUCache from '../../structs/LRUCache.js';
-import {createOrUpdate as createTileCoord, getKeyZXY} from '../../tilecoord.js';
+import {
+  createOrUpdate as createTileCoord,
+  getCacheKey,
+} from '../../tilecoord.js';
 import {
   apply as applyTransform,
   compose as composeTransform,
 } from '../../transform.js';
 import {getUid} from '../../util.js';
 import CanvasLayerRenderer from './Layer.js';
-
-/**
- * @param {import("../../source/Tile.js").default} source The tile source.
- * @param {string} sourceKey The source key.
- * @param {number} z The tile z level.
- * @param {number} x The tile x level.
- * @param {number} y The tile y level.
- * @return {string} The cache key.
- */
-function getCacheKey(source, sourceKey, z, x, y) {
-  return `${getUid(source)},${sourceKey},${getKeyZXY(z, x, y)}`;
-}
 
 /**
  * @typedef {Object<number, Set<import("../../Tile.js").default>>} TileLookup
@@ -201,6 +192,12 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
      */
     this.tileCache_ = new LRUCache(cacheSize);
 
+    /**
+     * @type {import("../../structs/LRUCache.js").default<import("../../Tile.js").default|null>}
+     * @private
+     */
+    this.sourceTileCache_ = null;
+
     this.maxStaleKeys = cacheSize * 0.5;
   }
 
@@ -209,6 +206,16 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
    */
   getTileCache() {
     return this.tileCache_;
+  }
+
+  /**
+   * @return {LRUCache} Tile cache.
+   */
+  getSourceTileCache() {
+    if (!this.sourceTileCache_) {
+      this.sourceTileCache_ = new LRUCache(512);
+    }
+    return this.sourceTileCache_;
   }
 
   /**
@@ -233,12 +240,17 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     if (tileCache.containsKey(cacheKey)) {
       tile = tileCache.get(cacheKey);
     } else {
+      const projection = frameState.viewState.projection;
+      const sourceProjection = tileSource.getProjection();
       tile = tileSource.getTile(
         z,
         x,
         y,
         frameState.pixelRatio,
-        frameState.viewState.projection,
+        projection,
+        !sourceProjection || equivalent(sourceProjection, projection)
+          ? undefined
+          : this.getSourceTileCache(),
       );
       if (!tile) {
         return null;
@@ -370,6 +382,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       this.renderedSourceRevision_ = sourceRevision;
       if (this.renderedSourceKey_ === source.getKey()) {
         this.tileCache_.clear();
+        this.sourceTileCache_?.clear();
       }
     }
     return true;
@@ -873,6 +886,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
         const tilesCount = wantedTiles ? Object.keys(wantedTiles).length : 0;
         this.updateCacheSize(tilesCount);
         this.tileCache_.expireCache();
+        this.sourceTileCache_?.expireCache();
       };
 
       frameState.postRenderFunctions.push(postRenderFunction);
