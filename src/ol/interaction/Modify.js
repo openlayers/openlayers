@@ -110,6 +110,14 @@ const ModifyEventType = {
  * boolean to indicate whether that event should be handled. By default,
  * {@link module:ol/events/condition.singleClick} with
  * {@link module:ol/events/condition.altKeyOnly} results in a vertex deletion.
+ * This combination is handled by wrapping the two condition checks in a single function:
+ * ```js
+ * import { altKeyOnly, singleClick } from 'ol/events/condition.js';
+ *
+ * function (event) {
+ *   return altKeyOnly(event) && singleClick(event)
+ * }
+ * ```
  * @property {import("../events/condition.js").Condition} [insertVertexCondition] A
  * function that takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and
  * returns a boolean to indicate whether a new vertex should be added to the sketch
