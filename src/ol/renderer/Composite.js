@@ -171,12 +171,13 @@ class CompositeMapRenderer extends MapRenderer {
           mapContext.fillRect(0, 0, mapCanvas.width, mapCanvas.height);
         }
         if (isCanvas(canvas) && canvas.width > 0) {
+          mapContext.save();
           const opacity = container.style.opacity || canvas.style.opacity;
           mapContext.globalAlpha = opacity === '' ? 1 : Number(opacity);
           const transform = canvas.style.transform;
           if (transform) {
             // Get the transform parameters from the style's transform matrix
-            mapContext.setTransform(
+            mapContext.transform(
               .../** @type {[number, number, number, number, number, number]} */ (
                 fromString(transform)
               ),
@@ -184,13 +185,12 @@ class CompositeMapRenderer extends MapRenderer {
           } else {
             const w = parseFloat(canvas.style.width) / canvas.width;
             const h = parseFloat(canvas.style.height) / canvas.height;
-            mapContext.setTransform(w, 0, 0, h, 0, 0);
+            mapContext.transform(w, 0, 0, h, 0, 0);
           }
           mapContext.drawImage(canvas, 0, 0);
+          mapContext.restore();
         }
       }
-      mapContext.globalAlpha = 1;
-      mapContext.setTransform(1, 0, 0, 1, 0, 0);
     }
 
     this.dispatchRenderEvent(RenderEventType.POSTCOMPOSE, frameState);

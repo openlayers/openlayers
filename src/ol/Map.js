@@ -153,7 +153,9 @@ import {getUid} from './util.js';
  * element itself or the `id` of the element. If not specified at construction
  * time, {@link module:ol/Map~Map#setTarget} must be called for the map to be
  * rendered. If passed by element, the container can be in a secondary document.
- * For use in workers or when exporting a map, use an `OffscreenCanvas` or `HTMLCanvasElement` as target.
+ * For use in workers or when exporting a map, use an `OffscreenCanvas` or `HTMLCanvasElement` as target,
+ * with a width and height in physical pixels, optionally multiplied by and a scale transform matching
+ * the map's pixel ratio.
  * For accessibility (focus and keyboard events for map navigation), the `target` element must have a
  *  properly configured `tabindex` attribute. If the `target` element is inside a Shadow DOM, the
  *  `tabindex` atribute must be set on the custom element's host element.
@@ -1750,8 +1752,10 @@ class Map extends BaseObject {
     if (targetElement) {
       let width, height;
       if (isCanvas(targetElement)) {
-        width = targetElement.width;
-        height = targetElement.height;
+        const transform = targetElement.getContext('2d').getTransform();
+        // Use scale components of the transform to calculate the size in CSS pixels
+        width = targetElement.width / transform.a;
+        height = targetElement.height / transform.d;
       } else {
         const computedStyle = getComputedStyle(targetElement);
         width =
