@@ -5,7 +5,6 @@
 import {FetchStore, get, open, slice} from 'zarrita';
 import {getCenter} from '../extent.js';
 import {toUserCoordinate, toUserExtent} from '../proj.js';
-import {WMTS} from '../tilegrid.js';
 import DataTileSource from './DataTile.js';
 import {parseTileMatrixSet} from './ogcTileUtil.js';
 
@@ -146,6 +145,7 @@ export default class GeoZarr extends DataTileSource {
 
     const resolution = this.tileGrid.getResolution(z);
     const origin = this.tileGrid.getOrigin(z);
+    const [width, height] = this.tileGrid.getTileSize(z);
 
     const minCol = Math.round((tileExtent[0] - origin[0]) / resolution);
     const maxCol = Math.round((tileExtent[2] - origin[0]) / resolution);
@@ -162,16 +162,32 @@ export default class GeoZarr extends DataTileSource {
         slice(minRow, maxRow),
         slice(minCol, maxCol),
       ]);
+      const tileData = data.data;
+      const gotWidth = data.shape[1];
+      const gotHeight = data.shape[0];
 
-      for (const value of data.data) {
-        if (value < minValue) {
-          minValue = value;
-        }
-        if (value > maxValue) {
-          maxValue = value;
+      // Create a new typed array with the requested shape, filled with 0
+      const isFloat =
+        tileData instanceof Float16Array ||
+        tileData instanceof Float32Array ||
+        tileData instanceof Float64Array;
+      const TypedArrayConstructor = isFloat ? Float32Array : Uint8Array;
+      const resampledData = new TypedArrayConstructor(width * height);
+
+      // Copy the available data into the correct position
+      for (let row = 0; row < gotHeight; row++) {
+        for (let col = 0; col < gotWidth; col++) {
+          const value = tileData[row * gotWidth + col];
+          resampledData[row * width + col] = value;
+          if (value < minValue) {
+            minValue = value;
+          }
+          if (value > maxValue) {
+            maxValue = value;
+          }
         }
       }
-      // TODO: check data.shape and make it square by filling with nodata
+
       console.log({
         minRow,
         maxRow,
@@ -181,10 +197,11 @@ export default class GeoZarr extends DataTileSource {
         minCol,
         maxCol,
         data,
+        resampledData,
         minValue,
         maxValue,
       });
-      return data.data;
+      return resampledData;
     }
   }
 }
