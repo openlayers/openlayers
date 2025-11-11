@@ -6,7 +6,7 @@ import OSM from '../src/ol/source/OSM.js';
 const source = new GeoZarr({
   url: 'http://localhost:5173/s2l2_test.zarr',
   group: 'measurements/reflectance/r20m',
-  bands: ['b04'],
+  bands: ['b04', 'b03', 'b02'],
 });
 
 const map = new Map({
@@ -16,7 +16,13 @@ const map = new Map({
     }),
     new TileLayer({
       style: {
-        color: ['color', ['band', 0], ['band', 0], ['band', 0], 1],
+        color: [
+          'color',
+          ['*', 256, ['band', 1]],
+          ['*', 256, ['band', 1]],
+          ['*', 256, ['band', 1]],
+          1,
+        ],
       },
       source,
     }),
