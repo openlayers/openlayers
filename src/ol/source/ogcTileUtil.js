@@ -102,16 +102,16 @@ const knownVectorMediaTypes = {
  * @typedef {Object} TileSetInfo
  * @property {string} [urlTemplate] The tile URL template.
  * @property {import("../proj/Projection.js").default} projection The source projection.
- * @property {import("../tilegrid/TileGrid.js").default} grid The tile grid.
+ * @property {import("../tilegrid/WMTS.js").default} grid The tile grid.
  * @property {import("../Tile.js").UrlFunction} [urlFunction] The tile URL function.
  */
 
 /**
  * @typedef {Object} SourceInfo
- * @property {string} url The tile set URL.
+ * @property {string} [url] The tile set URL.
  * @property {string} [mediaType] The preferred tile media type.
  * @property {Array<string>} [supportedMediaTypes] The supported media types.
- * @property {import("../proj/Projection.js").default} projection The source projection.
+ * @property {import("../proj/Projection.js").default} [projection] The source projection.
  * @property {Object} [context] Optional context for constructing the URL.
  * @property {Array<string>} [collections] Optional collections to append the URL with.
  */
@@ -310,7 +310,9 @@ export function parseTileMatrixSet(
     for (let i = 0; i < tileMatrixSetLimits.length; ++i) {
       const limit = tileMatrixSetLimits[i];
       const id = limit.tileMatrix;
-      matrixIds.push(id);
+      const matrix = matrixLookup[id];
+      const zoomLevel = matrices.indexOf(matrix);
+      matrixIds[zoomLevel] = id;
       limitLookup[id] = limit;
     }
   } else {
