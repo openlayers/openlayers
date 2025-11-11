@@ -46,7 +46,8 @@ class GeoZarr extends DataTileSource {
 
     this.configure_()
       .then(() => {
-        this.setState('ready');
+        console.log('TODO: ready');
+        // this.setState('ready');
       })
       .catch((err) => {
         this.error_ = err;
@@ -66,12 +67,42 @@ class GeoZarr extends DataTileSource {
     const sourceInfo = {};
 
     const tileMatrixSet = group.attrs.multiscales.tile_matrix_set;
+
+    /**
+     * @type {import("../src/ol/tilegrid/WMTS.js").default}
+     */
+    let grid;
+
+    /**
+     * @type {import("../src/ol/proj/Projection.js").default}
+     */
+    let projection;
+
     try {
-      const {grid, projection} = parseTileMatrixSet(sourceInfo, tileMatrixSet);
-      console.log(grid, projection);
+      const info = parseTileMatrixSet(sourceInfo, tileMatrixSet);
+      grid = info.grid;
+      projection = info.projection;
+      console.log('projection', projection);
     } catch (err) {
       console.error(err);
     }
+
+    const first = grid.getMatrixId(grid.getMaxZoom());
+
+    const firstGroup = await zarr.open(group.resolve(first));
+
+    const spatialRefPath = firstGroup.attrs.grid_mapping;
+    if (!spatialRefPath) {
+      throw new Error('TODO: handle missing grid_mapping');
+    }
+
+    const spatialRefNode = await zarr.open(firstGroup.resolve(spatialRefPath));
+
+    // TODO: maybe make use of
+    const geoTransform =
+      spatialRefNode.attrs.GeoTransform.split(' ').map(Number);
+
+    console.log(geoTransform);
   }
 }
 
@@ -86,7 +117,7 @@ const map = new Map({
         ],
       },
       source: new GeoZarr({
-        url: 'http://localhost:3000/s2l2_test.zarr',
+        url: 'http://localhost:5173/s2l2_test.zarr',
         group: 'measurements/reflectance/r20m',
       }),
     }),
