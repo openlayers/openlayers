@@ -5,6 +5,7 @@
 import {FetchStore, get, open, slice} from 'zarrita';
 import {getCenter} from '../extent.js';
 import {toUserCoordinate, toUserExtent} from '../proj.js';
+import {toSize} from '../size.js';
 import DataTileSource from './DataTile.js';
 import {parseTileMatrixSet} from './ogcTileUtil.js';
 
@@ -145,7 +146,7 @@ export default class GeoZarr extends DataTileSource {
 
     const resolution = this.tileGrid.getResolution(z);
     const origin = this.tileGrid.getOrigin(z);
-    const [width, height] = this.tileGrid.getTileSize(z);
+    const [width, height] = toSize(this.tileGrid.getTileSize(z));
 
     const minCol = Math.round((tileExtent[0] - origin[0]) / resolution);
     const maxCol = Math.round((tileExtent[2] - origin[0]) / resolution);
@@ -153,55 +154,35 @@ export default class GeoZarr extends DataTileSource {
     const minRow = Math.round((origin[1] - tileExtent[3]) / resolution);
     const maxRow = Math.round((origin[1] - tileExtent[1]) / resolution);
 
+    const bandPromises = [];
     for (const band of this.bands_) {
-      let minValue = Infinity;
-      let maxValue = -Infinity;
       const path = `${this.group_}/${tileMatrixId}/${band}`;
       const array = await open(this.root_.resolve(path), {kind: 'array'});
-      const data = await get(array, [
-        slice(minRow, maxRow),
-        slice(minCol, maxCol),
-      ]);
-      const tileData = data.data;
-      const gotWidth = data.shape[1];
-      const gotHeight = data.shape[0];
+      bandPromises.push(
+        get(array, [slice(minRow, maxRow), slice(minCol, maxCol)]),
+      );
+    }
 
-      // Create a new typed array with the requested shape, filled with 0
-      const isFloat =
-        tileData instanceof Float16Array ||
-        tileData instanceof Float32Array ||
-        tileData instanceof Float64Array;
-      const TypedArrayConstructor = isFloat ? Float32Array : Uint8Array;
-      const resampledData = new TypedArrayConstructor(width * height);
-
-      // Copy the available data into the correct position
-      for (let row = 0; row < gotHeight; row++) {
-        for (let col = 0; col < gotWidth; col++) {
-          const value = tileData[row * gotWidth + col];
-          resampledData[row * width + col] = value;
-          if (value < minValue) {
-            minValue = value;
+    const bandDatas = await Promise.all(bandPromises);
+    const bandCount = bandDatas.length;
+    const resampledData = new Float32Array(width * height * bandCount);
+    // Copy the available data into the correct position
+    for (let row = 0; row < width; row++) {
+      for (let col = 0; col < height; col++) {
+        for (let band = 0; band < bandCount; ++band) {
+          const data = bandDatas[band];
+          const gotHeight = data.shape[0];
+          const gotWidth = data.shape[1];
+          // get value from band tileData if within row/col count, use 0 otherwise
+          //TODO use fillvalue from metadata instead of 0
+          let value = 0;
+          if (row < gotHeight && col < gotWidth) {
+            value = data.data[row * gotWidth + col];
           }
-          if (value > maxValue) {
-            maxValue = value;
-          }
+          resampledData[bandCount * (row * width + col) + band] = value;
         }
       }
-
-      console.log({
-        minRow,
-        maxRow,
-        x,
-        y,
-        z,
-        minCol,
-        maxCol,
-        data,
-        resampledData,
-        minValue,
-        maxValue,
-      });
-      return resampledData;
     }
+    return resampledData;
   }
 }
