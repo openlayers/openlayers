@@ -16,12 +16,18 @@ const map = new Map({
     }),
     new TileLayer({
       style: {
+        gamma: 1.5,
         color: [
           'color',
-          ['*', 512, ['band', 1]],
-          ['*', 512, ['band', 2]],
-          ['*', 512, ['band', 3]],
-          1,
+          ['interpolate', ['linear'], ['band', 1], 0, 0, 0.5, 255],
+          ['interpolate', ['linear'], ['band', 2], 0, 0, 0.5, 255],
+          ['interpolate', ['linear'], ['band', 3], 0, 0, 0.5, 255],
+          [
+            'case',
+            ['==', ['+', ['band', 1], ['band', 2], ['band', 3]], 0],
+            0,
+            1,
+          ],
         ],
       },
       source,
