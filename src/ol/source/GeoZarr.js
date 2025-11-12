@@ -6,6 +6,7 @@ import {FetchStore, get, open, slice} from 'zarrita';
 import {getCenter} from '../extent.js';
 import {toUserCoordinate, toUserExtent} from '../proj.js';
 import {toSize} from '../size.js';
+import WMTSTileGrid from '../tilegrid/WMTS.js';
 import DataTileSource from './DataTile.js';
 import {parseTileMatrixSet} from './ogcTileUtil.js';
 
@@ -81,6 +82,13 @@ export default class GeoZarr extends DataTileSource {
 
     this.root_ = await open(store, {kind: 'group'});
 
+    // const consolidatedMetadata = JSON.parse(
+    //   new TextDecoder().decode(
+    //     await store.get(this.root_.resolve('zarr.json').path),
+    //   ),
+    // );
+    // console.log(consolidatedMetadata);
+
     const group = await open(this.root_.resolve(this.group_), {kind: 'group'});
 
     /**
@@ -101,9 +109,14 @@ export default class GeoZarr extends DataTileSource {
 
     const numMatrices = tileMatrixSet.tileMatrices.length;
     const tileMatrixLimits = new Array(numMatrices);
+    let overrideTileSize = false;
     for (let i = 0; i < numMatrices; i += 1) {
       const tileMatrix = tileMatrixSet.tileMatrices[i];
       const tilematrixId = tileMatrix.id;
+      if (tileMatrix.tileWidth > 512 || tileMatrix.tileHeight > 512) {
+        // Avoid tile sizes that are too large for rendering
+        overrideTileSize = true;
+      }
       tileMatrixLimits[i] = tileMatrixLimitsObject[tilematrixId];
     }
 
@@ -114,11 +127,24 @@ export default class GeoZarr extends DataTileSource {
       tileMatrixLimits,
     );
 
+    let tileGrid = info.grid;
+
+    // Tile size sanity check
+    if (overrideTileSize) {
+      tileGrid = new WMTSTileGrid({
+        tileSize: 512,
+        extent: tileGrid.getExtent(),
+        origins: tileGrid.getOrigins(),
+        resolutions: tileGrid.getResolutions(),
+        matrixIds: tileGrid.getMatrixIds(),
+      });
+    }
+
     /**
      * @override
      * @type {import("../tilegrid/WMTS.js").default}
      */
-    this.tileGrid = info.grid;
+    this.tileGrid = tileGrid;
     this.projection = info.projection;
 
     const extent = this.tileGrid.getExtent();

@@ -324,6 +324,14 @@ class TileGrid {
   }
 
   /**
+   * Get the list of origins for the grid.
+   * @return {Array<import("../coordinate.js").Coordinate>|null} Origin.
+   */
+  getOrigins() {
+    return this.origins_;
+  }
+
+  /**
    * Get the resolution for the given zoom level.
    * @param {number} z Integer zoom level.
    * @return {number} Resolution.
