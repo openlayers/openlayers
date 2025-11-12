@@ -1,9 +1,12 @@
 ---
 layout: example.html
-title: Simple Map
-shortdesc: Example of a simple map.
+title: GeoZarr
+shortdesc: A GeoZarr source displaying Sentinel-2 imagery.
 docs: >
-  A simple map with an OSM source.
-tags: "simple, openstreetmap"
+  The GeoZarr source can be used to read groups of multi-band data from Zarr files following the [GeoZarr specification](https://github.com/zarr-developers/geozarr-spec).
+  In this example, a true-color composite is rendered from Sentinel-2 L2A bands B02 (blue), B03 (green), and B04 (red) reflectance values.
+  Reflectance values from 0 to 0.5 are stretched to values between 0 and 255 for the RGB color channels; and values that are all zero are
+  made transparent (with 0 in the alpha channel). A gamma correction is also made to brighten the image.
+tags: "zarr, geozarr, sentinel-2"
 ---
 <div id="map" class="map"></div>
