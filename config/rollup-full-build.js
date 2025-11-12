@@ -18,6 +18,7 @@ export default {
     externalGlobals({
       geotiff: 'GeoTIFF',
       'ol-mapbox-style': 'olms',
+      zarrita: 'zarrita',
     }),
     terser(),
   ],
