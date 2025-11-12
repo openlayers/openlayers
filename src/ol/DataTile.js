@@ -10,7 +10,7 @@ import {createCanvasContext2D} from './dom.js';
  */
 
 /**
- * @typedef {Uint8Array|Uint8ClampedArray|Float32Array|Float64Array|DataView} ArrayLike
+ * @typedef {Uint8Array|Uint8ClampedArray|Float32Array|DataView} ArrayLike
  */
 
 /**
@@ -39,7 +39,6 @@ export function asArrayLike(data) {
   return data instanceof Uint8Array ||
     data instanceof Uint8ClampedArray ||
     data instanceof Float32Array ||
-    data instanceof Float64Array ||
     data instanceof DataView
     ? data
     : null;
