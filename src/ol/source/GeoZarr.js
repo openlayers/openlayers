@@ -106,84 +106,20 @@ export default class GeoZarr extends DataTileSource {
 
     const group = await open(this.root_.resolve(this.group_), {kind: 'group'});
 
-    /**
-     * @type {import('./ogcTileUtil.js').SourceInfo}
-     */
-    const sourceInfo = {};
+    const attributes =
+      /** @type {LegacyDatasetAttributes | DatasetAttributes} */ (group.attrs);
 
-    /**
-     * @type {Object<string, any>}
-     */
-    const attributes = group.attrs;
-
-    /**
-     * @type {import('./ogcTileUtil.js').TileMatrixSet}
-     */
-    const tileMatrixSet = attributes.multiscales.tile_matrix_set;
-
-    if (tileMatrixSet) {
-      const tileMatrixLimitsObject = attributes.multiscales.tile_matrix_limits;
-
-      const numMatrices = tileMatrixSet.tileMatrices.length;
-      const tileMatrixLimits = new Array(numMatrices);
-      let overrideTileSize = false;
-      for (let i = 0; i < numMatrices; i += 1) {
-        const tileMatrix = tileMatrixSet.tileMatrices[i];
-        const tilematrixId = tileMatrix.id;
-        if (tileMatrix.tileWidth > 512 || tileMatrix.tileHeight > 512) {
-          // Avoid tile sizes that are too large for rendering
-          overrideTileSize = true;
-        }
-        tileMatrixLimits[i] = tileMatrixLimitsObject[tilematrixId];
-      }
-
-      const info = parseTileMatrixSet(
-        sourceInfo,
-        tileMatrixSet,
-        undefined,
-        tileMatrixLimits,
+    if ('tile_matrix_set' in attributes.multiscales) {
+      const {tileGrid, projection} = getTileGridInfoFromLegacyAttributes(
+        /** @type {LegacyDatasetAttributes} */ (attributes),
       );
-
-      let tileGrid = info.grid;
-
-      // Tile size sanity
-      if (overrideTileSize) {
-        tileGrid = new WMTSTileGrid({
-          tileSize: 512,
-          extent: tileGrid.getExtent(),
-          origins: tileGrid.getOrigins(),
-          resolutions: tileGrid.getResolutions(),
-          matrixIds: tileGrid.getMatrixIds(),
-        });
-      }
-
-      /**
-       * @override
-       * @type {import("../tilegrid/WMTS.js").default}
-       */
       this.tileGrid = tileGrid;
-      this.projection = info.projection;
-    } else if (attributes.multiscales.layout) {
-      const extent = attributes['proj:bbox'];
-      const projection = getProjection(attributes['proj:code']);
-      /** @type {Array<{matrixId: string, resolution: number}>} */
-      const groupInfo = [];
-      for (const group of attributes.multiscales.layout) {
-        //TODO Handle the complete transform (rotation and different x/y resolutions)
-        const transform = group['proj:transform'];
-        const resolution = transform[0];
-        const matrixId = group.group;
-        groupInfo.push({
-          matrixId,
-          resolution,
-        });
-      }
-      groupInfo.sort((a, b) => b.resolution - a.resolution);
-      this.tileGrid = new WMTSTileGrid({
-        extent: extent,
-        resolutions: groupInfo.map((g) => g.resolution),
-        matrixIds: groupInfo.map((g) => g.matrixId),
-      });
+      this.projection = projection;
+    } else if ('layout' in attributes.multiscales) {
+      const {tileGrid, projection} = getTileGridInfoFromAttributes(
+        /** @type {DatasetAttributes} */ (attributes),
+      );
+      this.tileGrid = tileGrid;
       this.projection = projection;
     }
 
@@ -232,6 +168,107 @@ export default class GeoZarr extends DataTileSource {
     const bandChunks = await Promise.all(bandPromises);
     return composeData(bandChunks, colCount, rowCount, this.resampleMethod_);
   }
+}
+
+/**
+ * @typedef {Object} DatasetAttributes
+ * @property {Multiscales} multiscales The multiscales attribute.
+ */
+
+/**
+ * @typedef {Object} Multiscales
+ * @property {Object} layout The layout.
+ */
+
+/**
+ * @typedef {Object} LegacyDatasetAttributes
+ * @property {LegacyMultiscales} multiscales The multiscales attribute.
+ */
+
+/**
+ * @typedef {Object} LegacyMultiscales
+ * @property {any} tile_matrix_limits The tile matrix limits.
+ * @property {any} tile_matrix_set The tile matrix set.
+ */
+
+/**
+ * @typedef {Object} TileGridInfo
+ * @property {WMTSTileGrid} tileGrid The tile grid.
+ * @property {import("../proj/Projection.js").default} projection The projection.
+ */
+
+/**
+ * @param {DatasetAttributes} attributes The dataset attributes.
+ * @return {TileGridInfo} The tile grid info.
+ */
+function getTileGridInfoFromAttributes(attributes) {
+  const multiscales = attributes.multiscales;
+  const extent = attributes['proj:bbox'];
+  const projection = getProjection(attributes['proj:code']);
+  /** @type {Array<{matrixId: string, resolution: number}>} */
+  const groupInfo = [];
+  for (const group of multiscales.layout) {
+    //TODO Handle the complete transform (rotation and different x/y resolutions)
+    const transform = group['proj:transform'];
+    const resolution = transform[0];
+    const matrixId = group.group;
+    groupInfo.push({
+      matrixId,
+      resolution,
+    });
+  }
+  groupInfo.sort((a, b) => b.resolution - a.resolution);
+  const tileGrid = new WMTSTileGrid({
+    extent: extent,
+    resolutions: groupInfo.map((g) => g.resolution),
+    matrixIds: groupInfo.map((g) => g.matrixId),
+  });
+
+  return {tileGrid, projection};
+}
+
+/**
+ * @param {LegacyDatasetAttributes} attributes The dataset attributes.
+ * @return {TileGridInfo} The tile grid info.
+ */
+function getTileGridInfoFromLegacyAttributes(attributes) {
+  const multiscales = attributes.multiscales;
+  const tileMatrixSet = multiscales.tile_matrix_set;
+  const tileMatrixLimitsObject = multiscales.tile_matrix_limits;
+
+  const numMatrices = tileMatrixSet.tileMatrices.length;
+  const tileMatrixLimits = new Array(numMatrices);
+  let overrideTileSize = false;
+  for (let i = 0; i < numMatrices; i += 1) {
+    const tileMatrix = tileMatrixSet.tileMatrices[i];
+    const tilematrixId = tileMatrix.id;
+    if (tileMatrix.tileWidth > 512 || tileMatrix.tileHeight > 512) {
+      // Avoid tile sizes that are too large for rendering
+      overrideTileSize = true;
+    }
+    tileMatrixLimits[i] = tileMatrixLimitsObject[tilematrixId];
+  }
+
+  const info = parseTileMatrixSet(
+    {},
+    tileMatrixSet,
+    undefined,
+    tileMatrixLimits,
+  );
+
+  let tileGrid = info.grid;
+
+  // Tile size sanity
+  if (overrideTileSize) {
+    tileGrid = new WMTSTileGrid({
+      tileSize: 512,
+      extent: tileGrid.getExtent(),
+      origins: tileGrid.getOrigins(),
+      resolutions: tileGrid.getResolutions(),
+      matrixIds: tileGrid.getMatrixIds(),
+    });
+  }
+  return {tileGrid, projection: info.projection};
 }
 
 /**
