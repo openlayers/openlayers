@@ -172,7 +172,7 @@ export default class GeoZarr extends DataTileSource {
 
     const resolution = this.tileGrid.getResolution(z);
     const origin = this.tileGrid.getOrigin(z);
-    const [width, height] = toSize(this.tileGrid.getTileSize(z));
+    const [colCount, rowCount] = toSize(this.tileGrid.getTileSize(z));
 
     const minCol = Math.round((tileExtent[0] - origin[0]) / resolution);
     const maxCol = Math.round((tileExtent[2] - origin[0]) / resolution);
@@ -189,23 +189,23 @@ export default class GeoZarr extends DataTileSource {
       );
     }
 
-    const bandDatas = await Promise.all(bandPromises);
-    const bandCount = bandDatas.length;
-    const resampledData = new Float32Array(width * height * bandCount);
+    const bandChunks = await Promise.all(bandPromises);
+    const bandCount = bandChunks.length;
+    const resampledData = new Float32Array(colCount * rowCount * bandCount);
     // Copy the available data into the correct position
-    for (let row = 0; row < width; row++) {
-      for (let col = 0; col < height; col++) {
+    for (let row = 0; row < rowCount; row++) {
+      for (let col = 0; col < colCount; col++) {
         for (let band = 0; band < bandCount; ++band) {
-          const data = bandDatas[band];
-          const gotHeight = data.shape[0];
-          const gotWidth = data.shape[1];
+          const chunk = bandChunks[band];
+          const chunkRowCount = chunk.shape[0];
+          const chunkColCount = chunk.shape[1];
           // get value from band tileData if within row/col count, use 0 otherwise
-          //TODO use fillvalue from metadata instead of 0
+          // TODO use fillvalue from metadata instead of 0
           let value = 0;
-          if (row < gotHeight && col < gotWidth) {
-            value = data.data[row * gotWidth + col];
+          if (row < chunkRowCount && col < chunkColCount) {
+            value = chunk.data[row * chunkColCount + col];
           }
-          resampledData[bandCount * (row * width + col) + band] = value;
+          resampledData[bandCount * (row * colCount + col) + band] = value;
         }
       }
     }
