@@ -156,30 +156,69 @@ export default class GeoZarr extends DataTileSource {
    * @private
    */
   async loadTile_(z, x, y, options) {
-    const tileMatrixId = this.tileGrid.getMatrixId(z);
+    const resolutions = this.tileGrid.getResolutions();
+    const tileResolution = this.tileGrid.getResolution(z);
     const tileExtent = this.tileGrid.getTileCoordExtent([z, x, y]);
 
-    const resolution = this.tileGrid.getResolution(z);
-    const origin = this.tileGrid.getOrigin(z);
-    const [colCount, rowCount] = toSize(this.tileGrid.getTileSize(z));
-
-    const minCol = Math.round((tileExtent[0] - origin[0]) / resolution);
-    const maxCol = Math.round((tileExtent[2] - origin[0]) / resolution);
-
-    const minRow = Math.round((origin[1] - tileExtent[3]) / resolution);
-    const maxRow = Math.round((origin[1] - tileExtent[1]) / resolution);
-
     const bandPromises = [];
+    const bandResolutions = [];
     for (const band of this.bands_) {
-      const path = `${this.group_}/${tileMatrixId}/${band}`;
+      let bandMatrixId;
+      let bandResolution;
+      let bandZ = 0;
+
+      if (!this.bandsByLevel_) {
+        // TODO: remove this if we stop supporting legacy attributes
+        bandMatrixId = this.tileGrid.getMatrixId(z);
+        bandResolution = tileResolution;
+        bandZ = z;
+      } else {
+        for (
+          let candidateZ = 0;
+          candidateZ < resolutions.length;
+          candidateZ += 1
+        ) {
+          const candidateResolution = resolutions[candidateZ];
+          if (bandMatrixId && candidateResolution < tileResolution) {
+            break;
+          }
+          const candidateMatrixId = this.tileGrid.getMatrixId(candidateZ);
+          if (this.bandsByLevel_[candidateMatrixId].includes(band)) {
+            bandMatrixId = candidateMatrixId;
+            bandResolution = this.tileGrid.getResolution(candidateZ);
+            bandZ = candidateZ;
+          }
+        }
+      }
+
+      if (!bandMatrixId || !bandResolution) {
+        throw new Error(`Could not find available resolution for band ${band}`);
+      }
+
+      const origin = this.tileGrid.getOrigin(bandZ);
+      const minCol = Math.round((tileExtent[0] - origin[0]) / bandResolution);
+      const maxCol = Math.round((tileExtent[2] - origin[0]) / bandResolution);
+
+      const minRow = Math.round((origin[1] - tileExtent[3]) / bandResolution);
+      const maxRow = Math.round((origin[1] - tileExtent[1]) / bandResolution);
+
+      const path = `${this.group_}/${bandMatrixId}/${band}`;
       const array = await open(this.root_.resolve(path), {kind: 'array'});
       bandPromises.push(
         get(array, [slice(minRow, maxRow), slice(minCol, maxCol)]),
       );
+      bandResolutions.push(bandResolution);
     }
 
     const bandChunks = await Promise.all(bandPromises);
-    return composeData(bandChunks, colCount, rowCount, this.resampleMethod_);
+    const [colCount, rowCount] = toSize(this.tileGrid.getTileSize(z));
+    return composeData(
+      bandChunks,
+      bandResolutions,
+      colCount,
+      rowCount,
+      this.resampleMethod_,
+    );
   }
 }
 
@@ -305,12 +344,19 @@ function getTileGridInfoFromLegacyAttributes(attributes) {
 
 /**
  * @param {Array<import("zarrita").Chunk<import("zarrita").DataType>>} bandChunks The input chunks.
+ * @param {Array<number>} bandResolutions The resolutions for each band.
  * @param {number} colCount The number of columns in the output data.
  * @param {number} rowCount The number of rows in the output data.
  * @param {ResampleMethod} resampleMethod The resampling method.
  * @return {Float32Array} The tile data.
  */
-function composeData(bandChunks, colCount, rowCount, resampleMethod) {
+function composeData(
+  bandChunks,
+  bandResolutions,
+  colCount,
+  rowCount,
+  resampleMethod,
+) {
   const bandCount = bandChunks.length;
   const tileData = new Float32Array(colCount * rowCount * bandCount);
   // Copy the available data into the correct position
