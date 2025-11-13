@@ -6,6 +6,7 @@ import {
   withLowerResolutions,
   withZoom,
 } from '../src/ol/View.js';
+import Link from '../src/ol/interaction/Link.js';
 import TileLayer from '../src/ol/layer/WebGLTile.js';
 import GeoZarr from '../src/ol/source/GeoZarr.js';
 import OSM from '../src/ol/source/OSM.js';
@@ -49,3 +50,5 @@ const map = new Map({
     withZoom(3),
   ),
 });
+
+map.addInteraction(new Link());
