@@ -266,17 +266,19 @@ function getTileGridInfoFromAttributes(
   const multiscales = attributes.multiscales;
   const extent = attributes['proj:bbox'];
   const projection = getProjection(attributes['proj:code']);
-  /** @type {Array<{matrixId: string, resolution: number}>} */
+  /** @type {Array<{matrixId: string, resolution: number, origin: import("ol/coordinate").Coordinate}>} */
   const groupInfo = [];
   const bandsByLevel = consolidatedMetadata ? {} : null;
   for (const groupMetadata of multiscales.layout) {
     //TODO Handle the complete transform (rotation and different x/y resolutions)
     const transform = groupMetadata['proj:transform'];
     const resolution = transform[0];
+    const origin = [transform[2], transform[5]];
     const matrixId = groupMetadata.group;
     groupInfo.push({
       matrixId,
       resolution,
+      origin,
     });
     if (consolidatedMetadata) {
       const availableBands = [];
@@ -291,6 +293,7 @@ function getTileGridInfoFromAttributes(
   groupInfo.sort((a, b) => b.resolution - a.resolution);
   const tileGrid = new WMTSTileGrid({
     extent: extent,
+    origins: groupInfo.map((g) => g.origin),
     resolutions: groupInfo.map((g) => g.resolution),
     matrixIds: groupInfo.map((g) => g.matrixId),
   });
