@@ -61,6 +61,11 @@ export default class GeoZarr extends DataTileSource {
     this.root_ = null;
 
     /**
+     * @type {any|null}
+     */
+    this.consolidatedMetadata_ = null;
+
+    /**
      * @type {Array<string>}
      */
     this.bands_ = options.bands;
@@ -97,12 +102,15 @@ export default class GeoZarr extends DataTileSource {
 
     this.root_ = await open(store, {kind: 'group'});
 
-    // const consolidatedMetadata = JSON.parse(
-    //   new TextDecoder().decode(
-    //     await store.get(this.root_.resolve('zarr.json').path),
-    //   ),
-    // );
-    // console.log(consolidatedMetadata);
+    try {
+      this.consolidatedMetadata_ = JSON.parse(
+        new TextDecoder().decode(
+          await store.get(this.root_.resolve('zarr.json').path),
+        ),
+      ).consolidated_metadata.metadata;
+    } catch {
+      // empty catch block
+    }
 
     const group = await open(this.root_.resolve(this.group_), {kind: 'group'});
 
@@ -116,9 +124,14 @@ export default class GeoZarr extends DataTileSource {
       this.tileGrid = tileGrid;
       this.projection = projection;
     } else if ('layout' in attributes.multiscales) {
-      const {tileGrid, projection} = getTileGridInfoFromAttributes(
-        /** @type {DatasetAttributes} */ (attributes),
-      );
+      const {tileGrid, projection, bandsByLevel} =
+        getTileGridInfoFromAttributes(
+          /** @type {DatasetAttributes} */ (attributes),
+          this.consolidatedMetadata_,
+          this.group_,
+          this.bands_,
+        );
+      this.bandsByLevel_ = bandsByLevel;
       this.tileGrid = tileGrid;
       this.projection = projection;
     }
@@ -195,27 +208,46 @@ export default class GeoZarr extends DataTileSource {
  * @typedef {Object} TileGridInfo
  * @property {WMTSTileGrid} tileGrid The tile grid.
  * @property {import("../proj/Projection.js").default} projection The projection.
+ * @property {Object<string, Array<string>>} [bandsByLevel] Available bands by level.
  */
 
 /**
  * @param {DatasetAttributes} attributes The dataset attributes.
+ * @param {any} consolidatedMetadata The consolidated metadata.
+ * @param {string} wantedGroup The path to the wanted group.
+ * @param {Array<string>} wantedBands The wanted bands.
  * @return {TileGridInfo} The tile grid info.
  */
-function getTileGridInfoFromAttributes(attributes) {
+function getTileGridInfoFromAttributes(
+  attributes,
+  consolidatedMetadata,
+  wantedGroup,
+  wantedBands,
+) {
   const multiscales = attributes.multiscales;
   const extent = attributes['proj:bbox'];
   const projection = getProjection(attributes['proj:code']);
   /** @type {Array<{matrixId: string, resolution: number}>} */
   const groupInfo = [];
-  for (const group of multiscales.layout) {
+  const bandsByLevel = consolidatedMetadata ? {} : null;
+  for (const groupMetadata of multiscales.layout) {
     //TODO Handle the complete transform (rotation and different x/y resolutions)
-    const transform = group['proj:transform'];
+    const transform = groupMetadata['proj:transform'];
     const resolution = transform[0];
-    const matrixId = group.group;
+    const matrixId = groupMetadata.group;
     groupInfo.push({
       matrixId,
       resolution,
     });
+    if (consolidatedMetadata) {
+      const availableBands = [];
+      for (const band of wantedBands) {
+        if (consolidatedMetadata[`${wantedGroup}/${matrixId}/${band}`]) {
+          availableBands.push(band);
+        }
+      }
+      bandsByLevel[matrixId] = availableBands;
+    }
   }
   groupInfo.sort((a, b) => b.resolution - a.resolution);
   const tileGrid = new WMTSTileGrid({
@@ -224,7 +256,7 @@ function getTileGridInfoFromAttributes(attributes) {
     matrixIds: groupInfo.map((g) => g.matrixId),
   });
 
-  return {tileGrid, projection};
+  return {tileGrid, projection, bandsByLevel};
 }
 
 /**
