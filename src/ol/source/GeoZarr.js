@@ -11,6 +11,10 @@ import DataTileSource from './DataTile.js';
 import {parseTileMatrixSet} from './ogcTileUtil.js';
 
 /**
+ * @typedef {'nearest'|'linear'} ResampleMethod
+ */
+
+/**
  * @typedef {Object} Options
  * @property {string} url The Zarr URL.
  * @property {string} group The group with arrays to render.
@@ -20,6 +24,7 @@ import {parseTileMatrixSet} from './ogcTileUtil.js';
  * @property {number} [transition=250] Duration of the opacity transition for rendering.
  * To disable the opacity transition, pass `transition: 0`.
  * @property {boolean} [wrapX=false] Render tiles beyond the tile grid extent.
+ * @property {ResampleMethod} [resample='nearest'] Resamplilng method if bands are not available for all multi-scale levels.
  */
 
 export default class GeoZarr extends DataTileSource {
@@ -59,6 +64,16 @@ export default class GeoZarr extends DataTileSource {
      * @type {Array<string>}
      */
     this.bands_ = options.bands;
+
+    /**
+     * @type {Object<string, Array<string>> | null}
+     */
+    this.bandsByLevel_ = null;
+
+    /**
+     * @type {ResampleMethod}
+     */
+    this.resampleMethod_ = options.resample || 'linear';
 
     this.setLoader(this.loadTile_.bind(this));
 
@@ -215,25 +230,36 @@ export default class GeoZarr extends DataTileSource {
     }
 
     const bandChunks = await Promise.all(bandPromises);
-    const bandCount = bandChunks.length;
-    const resampledData = new Float32Array(colCount * rowCount * bandCount);
-    // Copy the available data into the correct position
-    for (let row = 0; row < rowCount; row++) {
-      for (let col = 0; col < colCount; col++) {
-        for (let band = 0; band < bandCount; ++band) {
-          const chunk = bandChunks[band];
-          const chunkRowCount = chunk.shape[0];
-          const chunkColCount = chunk.shape[1];
-          // get value from band tileData if within row/col count, use 0 otherwise
-          // TODO use fillvalue from metadata instead of 0
-          let value = 0;
-          if (row < chunkRowCount && col < chunkColCount) {
-            value = chunk.data[row * chunkColCount + col];
-          }
-          resampledData[bandCount * (row * colCount + col) + band] = value;
+    return composeData(bandChunks, colCount, rowCount, this.resampleMethod_);
+  }
+}
+
+/**
+ * @param {Array<import("zarrita").Chunk<import("zarrita").DataType>>} bandChunks The input chunks.
+ * @param {number} colCount The number of columns in the output data.
+ * @param {number} rowCount The number of rows in the output data.
+ * @param {ResampleMethod} resampleMethod The resampling method.
+ * @return {Float32Array} The tile data.
+ */
+function composeData(bandChunks, colCount, rowCount, resampleMethod) {
+  const bandCount = bandChunks.length;
+  const tileData = new Float32Array(colCount * rowCount * bandCount);
+  // Copy the available data into the correct position
+  for (let row = 0; row < rowCount; row++) {
+    for (let col = 0; col < colCount; col++) {
+      for (let band = 0; band < bandCount; ++band) {
+        const chunk = bandChunks[band];
+        const chunkRowCount = chunk.shape[0];
+        const chunkColCount = chunk.shape[1];
+        // get value from band tileData if within row/col count, use 0 otherwise
+        // TODO use fillvalue from metadata instead of 0
+        let value = 0;
+        if (row < chunkRowCount && col < chunkColCount) {
+          value = chunk.data[row * chunkColCount + col];
         }
+        tileData[bandCount * (row * colCount + col) + band] = value;
       }
     }
-    return resampledData;
   }
+  return tileData;
 }
