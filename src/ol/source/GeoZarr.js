@@ -143,13 +143,15 @@ export default class GeoZarr extends DataTileSource {
     }
 
     const extent = this.tileGrid.getExtent();
-    this.viewResolver({
-      showFullExtent: true,
-      projection: this.projection,
-      resolutions: this.tileGrid.getResolutions(),
-      center: toUserCoordinate(getCenter(extent), this.projection),
-      extent: toUserExtent(extent, this.projection),
-      zoom: 1,
+    setTimeout(() => {
+      this.viewResolver({
+        showFullExtent: true,
+        projection: this.projection,
+        resolutions: this.tileGrid.getResolutions(),
+        center: toUserCoordinate(getCenter(extent), this.projection),
+        extent: toUserExtent(extent, this.projection),
+        zoom: 1,
+      });
     });
   }
 
