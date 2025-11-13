@@ -217,13 +217,15 @@ export default class GeoZarr extends DataTileSource {
     }
 
     const bandChunks = await Promise.all(bandPromises);
-    const [colCount, rowCount] = toSize(this.tileGrid.getTileSize(z));
+    const [tileColCount, tileRowCount] = toSize(this.tileGrid.getTileSize(z));
     return composeData(
       bandChunks,
       bandResolutions,
-      colCount,
-      rowCount,
+      tileColCount,
+      tileRowCount,
+      tileResolution,
       this.resampleMethod_,
+      this.fillValue_ || 0,
     );
   }
 }
@@ -359,36 +361,59 @@ function getTileGridInfoFromLegacyAttributes(attributes) {
 }
 
 /**
- * @param {Array<import("zarrita").Chunk<import("zarrita").DataType>>} bandChunks The input chunks.
- * @param {Array<number>} bandResolutions The resolutions for each band.
- * @param {number} colCount The number of columns in the output data.
- * @param {number} rowCount The number of rows in the output data.
+ * @param {Array<import("zarrita").Chunk<import("zarrita").DataType>>} chunks The input chunks.
+ * @param {Array<number>} chunkResolutions The resolutions for each band.
+ * @param {number} tileColCount The number of columns in the output data.
+ * @param {number} tileRowCount The number of rows in the output data.
+ * @param {number} tileResolution The tile resolution.
  * @param {ResampleMethod} resampleMethod The resampling method.
+ * @param {number} fillValue The fill value.
  * @return {Float32Array} The tile data.
  */
 function composeData(
-  bandChunks,
-  bandResolutions,
-  colCount,
-  rowCount,
+  chunks,
+  chunkResolutions,
+  tileColCount,
+  tileRowCount,
+  tileResolution,
   resampleMethod,
+  fillValue,
 ) {
-  const bandCount = bandChunks.length;
-  const tileData = new Float32Array(colCount * rowCount * bandCount);
-  // Copy the available data into the correct position
-  for (let row = 0; row < rowCount; row++) {
-    for (let col = 0; col < colCount; col++) {
+  const bandCount = chunks.length;
+  const tileData = new Float32Array(tileColCount * tileRowCount * bandCount);
+  for (let tileRow = 0; tileRow < tileRowCount; tileRow++) {
+    for (let tileCol = 0; tileCol < tileColCount; tileCol++) {
       for (let band = 0; band < bandCount; ++band) {
-        const chunk = bandChunks[band];
+        const chunk = chunks[band];
         const chunkRowCount = chunk.shape[0];
         const chunkColCount = chunk.shape[1];
-        // get value from band tileData if within row/col count, use 0 otherwise
-        // TODO use fillvalue from metadata instead of 0
-        let value = 0;
-        if (row < chunkRowCount && col < chunkColCount) {
-          value = chunk.data[row * chunkColCount + col];
+        const scaleFactor = tileResolution / chunkResolutions[band];
+        let value = fillValue;
+        if (scaleFactor === 1) {
+          if (tileRow < chunkRowCount && tileCol < chunkColCount) {
+            value = chunk.data[tileRow * chunkColCount + tileCol];
+          }
+        } else {
+          const chunkRow = tileRow * scaleFactor;
+          const chunkCol = tileCol * scaleFactor;
+          switch (resampleMethod) {
+            case 'nearest': {
+              const valueRow = Math.round(chunkRow);
+              const valueCol = Math.round(chunkCol);
+              if (valueRow < chunkRowCount && valueCol < chunkColCount) {
+                value = chunk.data[valueRow * chunkColCount + valueCol];
+              }
+              break;
+            }
+            default: {
+              throw new Error(`Unsupported resample method: ${resampleMethod}`);
+            }
+          }
         }
-        tileData[bandCount * (row * colCount + col) + band] = value;
+        if (isNaN(value)) {
+          value = fillValue;
+        }
+        tileData[bandCount * (tileRow * tileColCount + tileCol) + band] = value;
       }
     }
   }
