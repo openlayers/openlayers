@@ -76,6 +76,11 @@ export default class GeoZarr extends DataTileSource {
     this.bandsByLevel_ = null;
 
     /**
+     * @type {number|undefined}
+     */
+    this.fillValue_;
+
+    /**
      * @type {ResampleMethod}
      */
     this.resampleMethod_ = options.resample || 'linear';
@@ -124,7 +129,7 @@ export default class GeoZarr extends DataTileSource {
       this.tileGrid = tileGrid;
       this.projection = projection;
     } else if ('layout' in attributes.multiscales) {
-      const {tileGrid, projection, bandsByLevel} =
+      const {tileGrid, projection, bandsByLevel, fillValue} =
         getTileGridInfoFromAttributes(
           /** @type {DatasetAttributes} */ (attributes),
           this.consolidatedMetadata_,
@@ -134,6 +139,7 @@ export default class GeoZarr extends DataTileSource {
       this.bandsByLevel_ = bandsByLevel;
       this.tileGrid = tileGrid;
       this.projection = projection;
+      this.fillValue_ = fillValue;
     }
 
     const extent = this.tileGrid.getExtent();
@@ -248,6 +254,7 @@ export default class GeoZarr extends DataTileSource {
  * @property {WMTSTileGrid} tileGrid The tile grid.
  * @property {import("../proj/Projection.js").default} projection The projection.
  * @property {Object<string, Array<string>>} [bandsByLevel] Available bands by level.
+ * @property {number} [fillValue] The fill value.
  */
 
 /**
@@ -269,6 +276,7 @@ function getTileGridInfoFromAttributes(
   /** @type {Array<{matrixId: string, resolution: number, origin: import("ol/coordinate").Coordinate}>} */
   const groupInfo = [];
   const bandsByLevel = consolidatedMetadata ? {} : null;
+  let fillValue;
   for (const groupMetadata of multiscales.layout) {
     //TODO Handle the complete transform (rotation and different x/y resolutions)
     const transform = groupMetadata['proj:transform'];
@@ -283,8 +291,13 @@ function getTileGridInfoFromAttributes(
     if (consolidatedMetadata) {
       const availableBands = [];
       for (const band of wantedBands) {
-        if (consolidatedMetadata[`${wantedGroup}/${matrixId}/${band}`]) {
+        const bandArray =
+          consolidatedMetadata[`${wantedGroup}/${matrixId}/${band}`];
+        if (bandArray) {
           availableBands.push(band);
+          if (fillValue === undefined) {
+            fillValue = bandArray['fill_value'];
+          }
         }
       }
       bandsByLevel[matrixId] = availableBands;
@@ -298,7 +311,7 @@ function getTileGridInfoFromAttributes(
     matrixIds: groupInfo.map((g) => g.matrixId),
   });
 
-  return {tileGrid, projection, bandsByLevel};
+  return {tileGrid, projection, bandsByLevel, fillValue};
 }
 
 /**
