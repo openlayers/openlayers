@@ -4,7 +4,7 @@
 
 import {FetchStore, get, open, slice} from 'zarrita';
 import {getCenter} from '../extent.js';
-import {toUserCoordinate, toUserExtent} from '../proj.js';
+import {get as getProjection, toUserCoordinate, toUserExtent} from '../proj.js';
 import {toSize} from '../size.js';
 import WMTSTileGrid from '../tilegrid/WMTS.js';
 import DataTileSource from './DataTile.js';
@@ -105,47 +105,72 @@ export default class GeoZarr extends DataTileSource {
      * @type {import('./ogcTileUtil.js').TileMatrixSet}
      */
     const tileMatrixSet = attributes.multiscales.tile_matrix_set;
-    const tileMatrixLimitsObject = attributes.multiscales.tile_matrix_limits;
 
-    const numMatrices = tileMatrixSet.tileMatrices.length;
-    const tileMatrixLimits = new Array(numMatrices);
-    let overrideTileSize = false;
-    for (let i = 0; i < numMatrices; i += 1) {
-      const tileMatrix = tileMatrixSet.tileMatrices[i];
-      const tilematrixId = tileMatrix.id;
-      if (tileMatrix.tileWidth > 512 || tileMatrix.tileHeight > 512) {
-        // Avoid tile sizes that are too large for rendering
-        overrideTileSize = true;
+    if (tileMatrixSet) {
+      const tileMatrixLimitsObject = attributes.multiscales.tile_matrix_limits;
+
+      const numMatrices = tileMatrixSet.tileMatrices.length;
+      const tileMatrixLimits = new Array(numMatrices);
+      let overrideTileSize = false;
+      for (let i = 0; i < numMatrices; i += 1) {
+        const tileMatrix = tileMatrixSet.tileMatrices[i];
+        const tilematrixId = tileMatrix.id;
+        if (tileMatrix.tileWidth > 512 || tileMatrix.tileHeight > 512) {
+          // Avoid tile sizes that are too large for rendering
+          overrideTileSize = true;
+        }
+        tileMatrixLimits[i] = tileMatrixLimitsObject[tilematrixId];
       }
-      tileMatrixLimits[i] = tileMatrixLimitsObject[tilematrixId];
-    }
 
-    const info = parseTileMatrixSet(
-      sourceInfo,
-      tileMatrixSet,
-      undefined,
-      tileMatrixLimits,
-    );
+      const info = parseTileMatrixSet(
+        sourceInfo,
+        tileMatrixSet,
+        undefined,
+        tileMatrixLimits,
+      );
 
-    let tileGrid = info.grid;
+      let tileGrid = info.grid;
 
-    // Tile size sanity check
-    if (overrideTileSize) {
-      tileGrid = new WMTSTileGrid({
-        tileSize: 512,
-        extent: tileGrid.getExtent(),
-        origins: tileGrid.getOrigins(),
-        resolutions: tileGrid.getResolutions(),
-        matrixIds: tileGrid.getMatrixIds(),
+      // Tile size sanity
+      if (overrideTileSize) {
+        tileGrid = new WMTSTileGrid({
+          tileSize: 512,
+          extent: tileGrid.getExtent(),
+          origins: tileGrid.getOrigins(),
+          resolutions: tileGrid.getResolutions(),
+          matrixIds: tileGrid.getMatrixIds(),
+        });
+      }
+
+      /**
+       * @override
+       * @type {import("../tilegrid/WMTS.js").default}
+       */
+      this.tileGrid = tileGrid;
+      this.projection = info.projection;
+    } else if (attributes.multiscales.layout) {
+      const extent = attributes['proj:bbox'];
+      const projection = getProjection(attributes['proj:code']);
+      /** @type {Array<{matrixId: string, resolution: number}>} */
+      const groupInfo = [];
+      for (const group of attributes.multiscales.layout) {
+        //TODO Handle the complete transform (rotation and different x/y resolutions)
+        const transform = group['proj:transform'];
+        const resolution = transform[0];
+        const matrixId = group.group;
+        groupInfo.push({
+          matrixId,
+          resolution,
+        });
+      }
+      groupInfo.sort((a, b) => b.resolution - a.resolution);
+      this.tileGrid = new WMTSTileGrid({
+        extent: extent,
+        resolutions: groupInfo.map((g) => g.resolution),
+        matrixIds: groupInfo.map((g) => g.matrixId),
       });
+      this.projection = projection;
     }
-
-    /**
-     * @override
-     * @type {import("../tilegrid/WMTS.js").default}
-     */
-    this.tileGrid = tileGrid;
-    this.projection = info.projection;
 
     const extent = this.tileGrid.getExtent();
     this.viewResolver({
