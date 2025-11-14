@@ -2167,6 +2167,7 @@ export default View;
  * Adds higher resolutions.
  * @param {number} num The number of higher resolution levels to use.
  * @return {ViewTransform} A view transform.
+ * @api
  */
 export function withHigherResolutions(num) {
   return function (options) {
