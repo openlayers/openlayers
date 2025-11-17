@@ -66,6 +66,21 @@ function expectStrokeEquals(stroke, expected) {
 
   const expectedWidth = expected.getWidth();
   expect(stroke.getWidth()).to.eql(expectedWidth);
+
+  const expectedLineCap = expected.getLineCap();
+  expect(stroke.getLineCap()).to.eql(expectedLineCap);
+
+  const expectedLineJoin = expected.getLineJoin();
+  expect(stroke.getLineJoin()).to.eql(expectedLineJoin);
+
+  const expectedMiterLimit = expected.getMiterLimit();
+  expect(stroke.getMiterLimit()).to.eql(expectedMiterLimit);
+
+  const expectedLineDash = expected.getLineDash();
+  expect(stroke.getLineDash()).to.eql(expectedLineDash);
+
+  const expectedLineDashOffset = expected.getLineDashOffset();
+  expect(stroke.getLineDashOffset()).to.eql(expectedLineDashOffset);
 }
 
 /**
@@ -306,53 +321,147 @@ describe('ol/render/canvas/style.js', () => {
         }),
       },
       {
-        name: 'dynamic properties with stroke-line-dash and multiple variables',
+        name: 'dynamic stroke-color',
         style: {
-          'stroke-color': [
-            'interpolate',
-            ['linear'],
-            ['get', 'intensity'],
-            0,
-            'blue',
-            1,
-            'red',
-          ],
-          'stroke-width': ['*', ['var', 'width'], 3],
-          'stroke-line-join': ['var', 'joinType'],
-          'stroke-line-cap': ['var', 'capType'],
-          'stroke-offset': ['+', ['get', 'offset'], 4],
-          'stroke-miter-limit': ['-', ['var', 'miterLimit'], 10],
-          'stroke-line-dash': [
-            ['*', ['get', 'size'], 10],
-            ['*', ['get', 'size'], 20],
-            5,
-            ['*', ['get', 'size'], 20],
-          ],
-          'stroke-line-dash-offset': ['*', ['get', 'dashOffset'], 5],
+          'stroke-color': ['get', 'color'],
+          'stroke-width': 2,
         },
         context: {
           properties: {
-            intensity: 0.7,
-            offset: 2,
-            size: 1.5,
-            dashOffset: 3,
-          },
-          variables: {
-            width: 2,
-            capType: 'round',
-            joinType: 'miter',
-            miterLimit: 15,
+            color: [1, 2, 3, 0.5],
           },
         },
         expected: new Style({
           stroke: new Stroke({
-            color: [102, 0, 153, 1], // interpolated color between blue and red at intensity 0.7
-            width: 6, // width * 3 = 2 * 3
-            lineCap: 'round',
-            lineJoin: 'miter',
-            miterLimit: 5, // miterLimit - 10 = 15 - 10
-            lineDash: [15, 30, 5, 30],
-            lineDashOffset: 15, // dashOffset * 5 = 3 * 5
+            color: [1, 2, 3, 0.5],
+            width: 2,
+          }),
+        }),
+      },
+      {
+        name: 'dynamic stroke-width',
+        style: {
+          'stroke-color': [0, 0, 0, 1],
+          'stroke-width': ['*', ['var', 'width'], 4],
+        },
+        context: {
+          variables: {
+            width: 1.5,
+          },
+        },
+        expected: new Style({
+          stroke: new Stroke({
+            color: [0, 0, 0, 1],
+            width: 6,
+          }),
+        }),
+      },
+      {
+        name: 'dynamic stroke-line-join',
+        style: {
+          'stroke-color': [0, 0, 0, 1],
+          'stroke-width': 2,
+          'stroke-line-join': ['var', 'joinType'],
+        },
+        context: {
+          variables: {
+            joinType: 'bevel',
+          },
+        },
+        expected: new Style({
+          stroke: new Stroke({
+            color: [0, 0, 0, 1],
+            width: 2,
+            lineJoin: 'bevel',
+          }),
+        }),
+      },
+      {
+        name: 'dynamic stroke-line-cap',
+        style: {
+          'stroke-color': [0, 0, 0, 1],
+          'stroke-width': 2,
+          'stroke-line-cap': ['var', 'capType'],
+        },
+        context: {
+          variables: {
+            capType: 'square',
+          },
+        },
+        expected: new Style({
+          stroke: new Stroke({
+            color: [0, 0, 0, 1],
+            width: 2,
+            lineCap: 'square',
+          }),
+        }),
+      },
+      {
+        name: 'dynamic stroke-miter-limit',
+        style: {
+          'stroke-color': [0, 0, 0, 1],
+          'stroke-width': 2,
+          'stroke-miter-limit': ['+', ['get', 'limit'], 2],
+        },
+        context: {
+          properties: {
+            limit: 4,
+          },
+        },
+        expected: new Style({
+          stroke: new Stroke({
+            color: [0, 0, 0, 1],
+            width: 2,
+            miterLimit: 6,
+          }),
+        }),
+      },
+      {
+        name: 'dynamic stroke-line-dash',
+        style: {
+          'stroke-color': [0, 0, 0, 1],
+          'stroke-width': 2,
+          'stroke-line-dash': [
+            ['*', ['var', 'factor'], 2],
+            10,
+            ['+', ['get', 'extra'], 1],
+          ],
+        },
+        context: {
+          properties: {
+            extra: 4,
+          },
+          variables: {
+            factor: 3,
+          },
+        },
+        expected: new Style({
+          stroke: new Stroke({
+            color: [0, 0, 0, 1],
+            width: 2,
+            lineDash: [6, 10, 5],
+          }),
+        }),
+      },
+      {
+        name: 'dynamic stroke-line-dash-offset',
+        style: {
+          'stroke-color': [0, 0, 0, 1],
+          'stroke-width': 2,
+          'stroke-line-dash': [1, 2],
+          'stroke-line-dash-offset': ['+', ['get', 'offset'], 0.5],
+        },
+        context: {
+          properties: {
+            offset: 1.5,
+          },
+        },
+        expected: new Style({
+          stroke: new Stroke({
+            color: [0, 0, 0, 1],
+            width: 2,
+            lineDash: [1, 2],
+            lineDashOffset: 2,
           }),
         }),
       },

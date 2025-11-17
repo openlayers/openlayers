@@ -1061,7 +1061,30 @@ function numberArrayEvaluator(flatStyle, name, context) {
   if (!(name in flatStyle)) {
     return null;
   }
-  const evaluator = buildExpression(flatStyle[name], NumberArrayType, context);
+  const encoded = flatStyle[name];
+  if (
+    Array.isArray(encoded) &&
+    (encoded.length === 0 || typeof encoded[0] !== 'string')
+  ) {
+    /** @type {Array<import('../../expr/cpu.js').NumberEvaluator>} */
+    const evaluators = encoded.map((value, index) => {
+      if (typeof value === 'number') {
+        return () => value;
+      }
+      const evaluator = buildExpression(value, NumberType, context);
+      return function (context) {
+        return requireNumber(evaluator(context), `${name}[${index}]`);
+      };
+    });
+    return function (context) {
+      const array = new Array(evaluators.length);
+      for (let i = 0; i < evaluators.length; ++i) {
+        array[i] = evaluators[i](context);
+      }
+      return array;
+    };
+  }
+  const evaluator = buildExpression(encoded, NumberArrayType, context);
   return function (context) {
     return requireNumberArray(evaluator(context), name);
   };
