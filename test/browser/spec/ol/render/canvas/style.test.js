@@ -9,6 +9,7 @@ import Icon from '../../../../../../src/ol/style/Icon.js';
 import Image from '../../../../../../src/ol/style/Image.js';
 import Stroke from '../../../../../../src/ol/style/Stroke.js';
 import Style from '../../../../../../src/ol/style/Style.js';
+import Text from '../../../../../../src/ol/style/Text.js';
 
 /**
  * @param {Style} style The style to test.
@@ -301,6 +302,57 @@ describe('ol/render/canvas/style.js', () => {
           text: new Text({
             text: 'test',
             keepTextUpright: false,
+          }),
+        }),
+      },
+      {
+        name: 'dynamic properties with stroke-line-dash and multiple variables',
+        style: {
+          'stroke-color': [
+            'interpolate',
+            ['linear'],
+            ['get', 'intensity'],
+            0,
+            'blue',
+            1,
+            'red',
+          ],
+          'stroke-width': ['*', ['var', 'width'], 3],
+          'stroke-line-join': ['var', 'joinType'],
+          'stroke-line-cap': ['var', 'capType'],
+          'stroke-offset': ['+', ['get', 'offset'], 4],
+          'stroke-miter-limit': ['-', ['var', 'miterLimit'], 10],
+          'stroke-line-dash': [
+            ['*', ['get', 'size'], 10],
+            ['*', ['get', 'size'], 20],
+            5,
+            ['*', ['get', 'size'], 20],
+          ],
+          'stroke-line-dash-offset': ['*', ['get', 'dashOffset'], 5],
+        },
+        context: {
+          properties: {
+            intensity: 0.7,
+            offset: 2,
+            size: 1.5,
+            dashOffset: 3,
+          },
+          variables: {
+            width: 2,
+            capType: 'round',
+            joinType: 'miter',
+            miterLimit: 15,
+          },
+        },
+        expected: new Style({
+          stroke: new Stroke({
+            color: [102, 0, 153, 1], // interpolated color between blue and red at intensity 0.7
+            width: 6, // width * 3 = 2 * 3
+            lineCap: 'round',
+            lineJoin: 'miter',
+            miterLimit: 5, // miterLimit - 10 = 15 - 10
+            lineDash: [15, 30, 5, 30],
+            lineDashOffset: 15, // dashOffset * 5 = 3 * 5
           }),
         }),
       },
