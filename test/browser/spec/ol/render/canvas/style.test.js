@@ -7,6 +7,7 @@ import {
 import Fill from '../../../../../../src/ol/style/Fill.js';
 import Icon from '../../../../../../src/ol/style/Icon.js';
 import Image from '../../../../../../src/ol/style/Image.js';
+import RegularShape from '../../../../../../src/ol/style/RegularShape.js';
 import Stroke from '../../../../../../src/ol/style/Stroke.js';
 import Style from '../../../../../../src/ol/style/Style.js';
 import Text from '../../../../../../src/ol/style/Text.js';
@@ -99,6 +100,28 @@ function expectImageEquals(image, expected) {
     }
     const expectedSrc = expected.getSrc();
     expect(image.getSrc()).to.eql(expectedSrc);
+    return;
+  }
+  if (expected instanceof RegularShape) {
+    if (!(image instanceof RegularShape)) {
+      throw new Error('Expected image to be a RegularShape');
+    }
+    expect(image.getPoints()).to.eql(expected.getPoints());
+    expect(image.getRadius()).to.eql(expected.getRadius());
+    expect(image.getRadius2()).to.eql(expected.getRadius2());
+    expect(image.getAngle()).to.eql(expected.getAngle());
+    const expectedFill = expected.getFill();
+    if (expectedFill) {
+      expectFillEquals(image.getFill(), expectedFill);
+    } else {
+      expect(image.getFill()).to.be(null);
+    }
+    const expectedStroke = expected.getStroke();
+    if (expectedStroke) {
+      expectStrokeEquals(image.getStroke(), expectedStroke);
+    } else {
+      expect(image.getStroke()).to.be(null);
+    }
     return;
   }
 
@@ -462,6 +485,54 @@ describe('ol/render/canvas/style.js', () => {
             width: 2,
             lineDash: [1, 2],
             lineDashOffset: 2,
+          }),
+        }),
+      },
+      {
+        name: 'dynamic shape-radius',
+        style: {
+          'shape-points': 4,
+          'shape-radius': ['*', ['get', 'size'], 2],
+          'shape-fill-color': 'red',
+        },
+        context: {
+          properties: {
+            size: 3,
+          },
+        },
+        expected: new Style({
+          image: new RegularShape({
+            points: 4,
+            radius: 6,
+            fill: new Fill({
+              color: [255, 0, 0, 1],
+            }),
+          }),
+        }),
+      },
+      {
+        name: 'dynamic shape-radius2',
+        style: {
+          'shape-points': 5,
+          'shape-radius': 6,
+          'shape-radius2': ['get', 'ratio'],
+          'shape-stroke-color': 'blue',
+          'shape-stroke-width': 2,
+        },
+        context: {
+          properties: {
+            ratio: 4,
+          },
+        },
+        expected: new Style({
+          image: new RegularShape({
+            points: 5,
+            radius: 6,
+            radius2: 4,
+            stroke: new Stroke({
+              color: [0, 0, 255, 1],
+              width: 2,
+            }),
           }),
         }),
       },

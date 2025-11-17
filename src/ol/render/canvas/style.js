@@ -823,7 +823,18 @@ function buildShape(flatStyle, context) {
   const pointsName = prefix + 'points';
   const radiusName = prefix + 'radius';
   const points = requireNumber(flatStyle[pointsName], pointsName);
-  const radius = requireNumber(flatStyle[radiusName], radiusName);
+  if (!(radiusName in flatStyle)) {
+    throw new Error(`Expected a number for ${radiusName}`);
+  }
+  const evaluateRadius = numberEvaluator(flatStyle, radiusName, context);
+  const initialRadius =
+    typeof flatStyle[radiusName] === 'number' ? flatStyle[radiusName] : 5;
+  const radius2Name = prefix + 'radius2';
+  const evaluateRadius2 = numberEvaluator(flatStyle, radius2Name, context);
+  const initialRadius2 =
+    typeof flatStyle[radius2Name] === 'number'
+      ? flatStyle[radius2Name]
+      : undefined;
 
   // settable properties
   const evaluateFill = buildFill(flatStyle, prefix, context);
@@ -846,7 +857,6 @@ function buildShape(flatStyle, context) {
   );
 
   // the remaining properties are not currently settable
-  const radius2 = optionalNumber(flatStyle, prefix + 'radius2');
   const angle = optionalNumber(flatStyle, prefix + 'angle');
   const declutterMode = optionalDeclutterMode(
     flatStyle,
@@ -855,13 +865,19 @@ function buildShape(flatStyle, context) {
 
   const shape = new RegularShape({
     points,
-    radius,
-    radius2,
+    radius: initialRadius,
+    radius2: initialRadius2,
     angle,
     declutterMode,
   });
 
   return function (context) {
+    if (evaluateRadius) {
+      shape.setRadius(evaluateRadius(context));
+    }
+    if (evaluateRadius2) {
+      shape.setRadius2(evaluateRadius2(context));
+    }
     if (evaluateFill) {
       shape.setFill(evaluateFill(context));
     }

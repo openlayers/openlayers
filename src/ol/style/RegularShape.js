@@ -317,12 +317,38 @@ class RegularShape extends ImageStyle {
   }
 
   /**
+   * Set the (primary) radius for the shape.
+   * @param {number} radius Radius.
+   * @api
+   */
+  setRadius(radius) {
+    if (this.radius === radius) {
+      return;
+    }
+    this.radius = radius;
+    this.render();
+  }
+
+  /**
    * Get the secondary radius for the shape.
    * @return {number|undefined} Radius2.
    * @api
    */
   getRadius2() {
     return this.radius2_;
+  }
+
+  /**
+   * Set the secondary radius for the shape.
+   * @param {number|undefined} radius2 Radius2.
+   * @api
+   */
+  setRadius2(radius2) {
+    if (this.radius2_ === radius2) {
+      return;
+    }
+    this.radius2_ = radius2;
+    this.render();
   }
 
   /**
