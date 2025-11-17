@@ -971,14 +971,28 @@ function buildCircle(flatStyle, context) {
 /**
  * @param {FlatStyle} flatStyle The flat style.
  * @param {string} name The property name.
+ * @return {any|undefined} The encoded value, or undefined if not provided.
+ */
+function getExpressionValue(flatStyle, name) {
+  if (!(name in flatStyle)) {
+    return undefined;
+  }
+  const value = flatStyle[name];
+  return value === undefined ? undefined : value;
+}
+
+/**
+ * @param {FlatStyle} flatStyle The flat style.
+ * @param {string} name The property name.
  * @param {ParsingContext} context The parsing context.
  * @return {import('../../expr/cpu.js').NumberEvaluator|undefined} The expression evaluator or undefined.
  */
 function numberEvaluator(flatStyle, name, context) {
-  if (!(name in flatStyle)) {
+  const encoded = getExpressionValue(flatStyle, name);
+  if (encoded === undefined) {
     return undefined;
   }
-  const evaluator = buildExpression(flatStyle[name], NumberType, context);
+  const evaluator = buildExpression(encoded, NumberType, context);
   return function (context) {
     return requireNumber(evaluator(context), name);
   };
@@ -991,10 +1005,11 @@ function numberEvaluator(flatStyle, name, context) {
  * @return {import('../../expr/cpu.js').StringEvaluator?} The expression evaluator.
  */
 function stringEvaluator(flatStyle, name, context) {
-  if (!(name in flatStyle)) {
+  const encoded = getExpressionValue(flatStyle, name);
+  if (encoded === undefined) {
     return null;
   }
-  const evaluator = buildExpression(flatStyle[name], StringType, context);
+  const evaluator = buildExpression(encoded, StringType, context);
   return function (context) {
     return requireString(evaluator(context), name);
   };
@@ -1038,10 +1053,11 @@ function patternEvaluator(flatStyle, prefix, context) {
  * @return {import('../../expr/cpu.js').BooleanEvaluator?} The expression evaluator.
  */
 function booleanEvaluator(flatStyle, name, context) {
-  if (!(name in flatStyle)) {
+  const encoded = getExpressionValue(flatStyle, name);
+  if (encoded === undefined) {
     return null;
   }
-  const evaluator = buildExpression(flatStyle[name], BooleanType, context);
+  const evaluator = buildExpression(encoded, BooleanType, context);
   return function (context) {
     const value = evaluator(context);
     if (typeof value !== 'boolean') {
@@ -1058,10 +1074,11 @@ function booleanEvaluator(flatStyle, name, context) {
  * @return {import('../../expr/cpu.js').ColorLikeEvaluator?} The expression evaluator.
  */
 function colorLikeEvaluator(flatStyle, name, context) {
-  if (!(name in flatStyle)) {
+  const encoded = getExpressionValue(flatStyle, name);
+  if (encoded === undefined) {
     return null;
   }
-  const evaluator = buildExpression(flatStyle[name], ColorType, context);
+  const evaluator = buildExpression(encoded, ColorType, context);
   return function (context) {
     return requireColorLike(evaluator(context), name);
   };
@@ -1074,10 +1091,10 @@ function colorLikeEvaluator(flatStyle, name, context) {
  * @return {import('../../expr/cpu.js').NumberArrayEvaluator?} The expression evaluator.
  */
 function numberArrayEvaluator(flatStyle, name, context) {
-  if (!(name in flatStyle)) {
+  const encoded = getExpressionValue(flatStyle, name);
+  if (encoded === undefined) {
     return null;
   }
-  const encoded = flatStyle[name];
   if (
     Array.isArray(encoded) &&
     (encoded.length === 0 || typeof encoded[0] !== 'string')
@@ -1113,10 +1130,11 @@ function numberArrayEvaluator(flatStyle, name, context) {
  * @return {import('../../expr/cpu.js').CoordinateEvaluator?} The expression evaluator.
  */
 function coordinateEvaluator(flatStyle, name, context) {
-  if (!(name in flatStyle)) {
+  const encoded = getExpressionValue(flatStyle, name);
+  if (encoded === undefined) {
     return null;
   }
-  const evaluator = buildExpression(flatStyle[name], NumberArrayType, context);
+  const evaluator = buildExpression(encoded, NumberArrayType, context);
   return function (context) {
     const array = requireNumberArray(evaluator(context), name);
     if (array.length !== 2) {
@@ -1133,10 +1151,11 @@ function coordinateEvaluator(flatStyle, name, context) {
  * @return {import('../../expr/cpu.js').SizeEvaluator?} The expression evaluator.
  */
 function sizeEvaluator(flatStyle, name, context) {
-  if (!(name in flatStyle)) {
+  const encoded = getExpressionValue(flatStyle, name);
+  if (encoded === undefined) {
     return null;
   }
-  const evaluator = buildExpression(flatStyle[name], NumberArrayType, context);
+  const evaluator = buildExpression(encoded, NumberArrayType, context);
   return function (context) {
     return requireSize(evaluator(context), name);
   };
@@ -1149,11 +1168,12 @@ function sizeEvaluator(flatStyle, name, context) {
  * @return {import('../../expr/cpu.js').SizeLikeEvaluator?} The expression evaluator.
  */
 function sizeLikeEvaluator(flatStyle, name, context) {
-  if (!(name in flatStyle)) {
+  const encoded = getExpressionValue(flatStyle, name);
+  if (encoded === undefined) {
     return null;
   }
   const evaluator = buildExpression(
-    flatStyle[name],
+    encoded,
     NumberArrayType | NumberType,
     context,
   );

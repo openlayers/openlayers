@@ -42,6 +42,14 @@ function expectStyleEquals(style, expected) {
   } else {
     expect(gotImage).to.be(null);
   }
+
+  const gotText = style.getText();
+  const expectedText = expected.getText();
+  if (expectedText) {
+    expectTextEquals(gotText, expectedText);
+  } else {
+    expect(gotText).to.be(null);
+  }
 }
 
 /**
@@ -110,6 +118,9 @@ function expectImageEquals(image, expected) {
     expect(image.getRadius()).to.eql(expected.getRadius());
     expect(image.getRadius2()).to.eql(expected.getRadius2());
     expect(image.getAngle()).to.eql(expected.getAngle());
+    expect(image.getRotateWithView()).to.eql(expected.getRotateWithView());
+    expect(image.getScale()).to.eql(expected.getScale());
+    expect(image.getDisplacement()).to.eql(expected.getDisplacement());
     const expectedFill = expected.getFill();
     if (expectedFill) {
       expectFillEquals(image.getFill(), expectedFill);
@@ -128,6 +139,40 @@ function expectImageEquals(image, expected) {
   throw new Error(
     `Comparison not implemented for ${expected.constructor.name}`,
   );
+}
+
+/**
+ * @param {Text} text The text symbolizer to test.
+ * @param {Text} expected The expected text symbolizer.
+ */
+function expectTextEquals(text, expected) {
+  expect(text).to.be.a(Text);
+
+  expect(text.getText()).to.eql(expected.getText());
+  expect(text.getScale()).to.eql(expected.getScale());
+  expect(text.getRotation()).to.eql(expected.getRotation());
+  expect(text.getRotateWithView()).to.eql(expected.getRotateWithView());
+  expect(text.getOffsetX()).to.eql(expected.getOffsetX());
+  expect(text.getOffsetY()).to.eql(expected.getOffsetY());
+  expect(text.getPadding()).to.eql(expected.getPadding());
+  expect(text.getKeepUpright()).to.eql(expected.getKeepUpright());
+  expect(text.getTextAlign()).to.eql(expected.getTextAlign());
+  expect(text.getJustify()).to.eql(expected.getJustify());
+  expect(text.getTextBaseline()).to.eql(expected.getTextBaseline());
+
+  const expectedFill = expected.getFill();
+  if (expectedFill) {
+    expectFillEquals(text.getFill(), expectedFill);
+  } else {
+    expect(text.getFill()).to.be(null);
+  }
+
+  const expectedStroke = expected.getStroke();
+  if (expectedStroke) {
+    expectStrokeEquals(text.getStroke(), expectedStroke);
+  } else {
+    expect(text.getStroke()).to.be(null);
+  }
 }
 
 describe('ol/render/canvas/style.js', () => {
@@ -485,6 +530,112 @@ describe('ol/render/canvas/style.js', () => {
             width: 2,
             lineDash: [1, 2],
             lineDashOffset: 2,
+          }),
+        }),
+      },
+      {
+        name: 'stroke-line-dash undefined value',
+        style: {
+          'stroke-color': 'black',
+          'stroke-width': 2,
+          'stroke-line-dash': undefined,
+        },
+        expected: new Style({
+          stroke: new Stroke({
+            color: [0, 0, 0, 1],
+            width: 2,
+          }),
+        }),
+      },
+      {
+        name: 'stroke-width undefined value',
+        style: {
+          'stroke-color': 'black',
+          'stroke-width': undefined,
+        },
+        expected: new Style({
+          stroke: new Stroke({
+            color: [0, 0, 0, 1],
+          }),
+        }),
+      },
+      {
+        name: 'stroke-line-cap undefined value',
+        style: {
+          'stroke-color': 'black',
+          'stroke-width': 3,
+          'stroke-line-cap': undefined,
+        },
+        expected: new Style({
+          stroke: new Stroke({
+            color: [0, 0, 0, 1],
+            width: 3,
+          }),
+        }),
+      },
+      {
+        name: 'text-keep-upright undefined value',
+        style: {
+          'text-value': 'test',
+          'text-keep-upright': undefined,
+        },
+        expected: new Style({
+          text: new Text({
+            text: 'test',
+          }),
+        }),
+      },
+      {
+        name: 'text-padding undefined value',
+        style: {
+          'text-value': 'test',
+          'text-padding': undefined,
+        },
+        expected: new Style({
+          text: new Text({
+            text: 'test',
+          }),
+        }),
+      },
+      {
+        name: 'shape-rotate-with-view undefined value',
+        style: {
+          'shape-points': 3,
+          'shape-radius': 4,
+          'shape-rotate-with-view': undefined,
+        },
+        expected: new Style({
+          image: new RegularShape({
+            points: 3,
+            radius: 4,
+          }),
+        }),
+      },
+      {
+        name: 'shape-displacement undefined value',
+        style: {
+          'shape-points': 3,
+          'shape-radius': 4,
+          'shape-displacement': undefined,
+        },
+        expected: new Style({
+          image: new RegularShape({
+            points: 3,
+            radius: 4,
+            displacement: [0, 0],
+          }),
+        }),
+      },
+      {
+        name: 'icon-scale undefined value',
+        style: {
+          'icon-src': 'icon.svg',
+          'icon-scale': undefined,
+        },
+        expected: new Style({
+          image: new Icon({
+            src: 'icon.svg',
+            scale: 1,
           }),
         }),
       },
