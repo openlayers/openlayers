@@ -384,7 +384,7 @@ describe('ol/render/canvas/style.js', () => {
         expected: new Style({
           text: new Text({
             text: 'test',
-            keepTextUpright: false,
+            keepUpright: false,
           }),
         }),
       },
