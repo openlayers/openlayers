@@ -96,9 +96,8 @@ const ModifyEventType = {
  */
 
 /**
- * A function that takes a {@link module:ol/Feature~Feature} and a
- * {@link module:ol/layer/Layer~Layer} and returns `true` if the feature may be
- * modified or `false` otherwise.
+ * A function that takes a {@link module:ol/Feature~Feature} and  returns `true` if
+ * the feature may be modified or `false` otherwise.
  * @typedef {function(Feature):boolean} FilterFunction
  */
 
