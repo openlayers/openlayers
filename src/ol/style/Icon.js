@@ -378,10 +378,10 @@ class Icon extends ImageStyle {
     const displacement = this.getDisplacement();
     const scale = this.getScaleArray();
     // anchor is scaled by renderer but displacement should not be scaled
-    // so divide by scale here
+    // so divide by scale here (as long as the scale is not zero)
     return [
-      anchor[0] - displacement[0] / scale[0],
-      anchor[1] + displacement[1] / scale[1],
+      scale[0] == 0 ? 0 : anchor[0] - displacement[0] / scale[0],
+      scale[1] == 0 ? 0 : anchor[1] + displacement[1] / scale[1],
     ];
   }
 
