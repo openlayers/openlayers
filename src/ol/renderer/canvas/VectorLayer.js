@@ -3,6 +3,7 @@
  */
 import ViewHint from '../../ViewHint.js';
 import {equals} from '../../array.js';
+import {wrapX as wrapCoordinateX} from '../../coordinate.js';
 import {createCanvasContext2D, releaseCanvas} from '../../dom.js';
 import {
   buffer,
@@ -11,10 +12,10 @@ import {
   getHeight,
   getWidth,
   intersects as intersectsExtent,
+  isEmpty,
+  wrapX as wrapExtentX,
 } from '../../extent.js';
 import {
-  composeTransformFuncs,
-  createTransformFromCoordinateTransform,
   fromUserExtent,
   getTransformFromProjections,
   getUserProjection,
@@ -74,6 +75,14 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
      * @type {boolean}
      */
     this.clipped_ = false;
+
+    /**
+     * Do we need to extend the rendered area on the x-axis to handle
+     * features that cross the antimeridian?
+     * @private
+     * @type {boolean}
+     */
+    this.extendX_ = false;
 
     /**
      * @private
@@ -183,7 +192,10 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const viewState = frameState.viewState;
     const center = viewState.center;
     const resolution = viewState.resolution;
+    const projection = viewState.projection;
     const rotation = viewState.rotation;
+    const projectionExtent = projection.getExtent();
+    const vectorSource = this.getLayer().getSource();
     const declutter = this.getLayer().getDeclutter();
     const pixelRatio = frameState.pixelRatio;
     const viewHints = frameState.viewHints;
@@ -194,28 +206,45 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const width = Math.round((getWidth(extent) / resolution) * pixelRatio);
     const height = Math.round((getHeight(extent) / resolution) * pixelRatio);
 
-    const transform = this.getRenderTransform(
-      center,
-      resolution,
-      0,
-      pixelRatio,
-      width,
-      height,
-      0,
-    );
-    executorGroup.execute(
-      context,
-      [context.canvas.width, context.canvas.height],
-      transform,
-      rotation,
-      snapToPixel,
-      declutterable === undefined
-        ? ALL
-        : declutterable
-          ? DECLUTTER
-          : NON_DECLUTTER,
-      declutterable ? declutter && frameState.declutter[declutter] : undefined,
-    );
+    const multiWorld = vectorSource.getWrapX() && projection.canWrapX();
+    const worldWidth = multiWorld ? getWidth(projectionExtent) : null;
+    const endWorld = multiWorld
+      ? Math.ceil((extent[2] - projectionExtent[2]) / worldWidth) +
+        (this.extendX_ ? 2 : 1)
+      : 1;
+    let world = multiWorld
+      ? Math.floor((extent[0] - projectionExtent[0]) / worldWidth) -
+        (this.extendX_ ? 1 : 0)
+      : 0;
+    do {
+      let transform = this.getRenderTransform(
+        center,
+        resolution,
+        0,
+        pixelRatio,
+        width,
+        height,
+        world * worldWidth,
+      );
+      if (frameState.declutter) {
+        transform = transform.slice(0);
+      }
+      executorGroup.execute(
+        context,
+        [context.canvas.width, context.canvas.height],
+        transform,
+        rotation,
+        snapToPixel,
+        declutterable === undefined
+          ? ALL
+          : declutterable
+            ? DECLUTTER
+            : NON_DECLUTTER,
+        declutterable
+          ? declutter && frameState.declutter[declutter]
+          : undefined,
+      );
+    } while (++world < endWorld);
   }
 
   /**
@@ -583,7 +612,64 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       vectorLayerRenderBuffer * resolution,
     );
     const renderedExtent = extent.slice();
+    const loadExtents = [extent.slice()];
     const projectionExtent = projection.getExtent();
+
+    const canWrapX = vectorSource.getWrapX() && projection.canWrapX();
+    this.extendX_ = false;
+    if (canWrapX) {
+      const sourceExtent = vectorSource.getExtent();
+      if (sourceExtent && !isEmpty(sourceExtent)) {
+        this.extendX_ =
+          sourceExtent[0] < projectionExtent[0] ||
+          sourceExtent[2] > projectionExtent[2];
+      }
+    }
+
+    if (
+      canWrapX &&
+      (!containsExtent(projectionExtent, frameState.extent) || this.extendX_)
+    ) {
+      // For the replay group, we need an extent that intersects the real world
+      // (-180° to +180°). To support geometries in a coordinate range from -540°
+      // to +540°, we add at least 1 world width on each side of the projection
+      // extent. If the viewport is wider than the world, we need to add half of
+      // the viewport width to make sure we cover the whole viewport.
+      const worldWidth = getWidth(projectionExtent);
+      const gutter = Math.max(getWidth(extent) / 2, worldWidth);
+      let projMinX = projectionExtent[0];
+      let projMaxX = projectionExtent[2];
+      if (this.extendX_) {
+        projMinX -= worldWidth;
+        projMaxX += worldWidth;
+      }
+      extent[0] = projMinX - gutter;
+      extent[2] = projMaxX + gutter;
+      wrapCoordinateX(center, projection);
+      const loadExtent = wrapExtentX(loadExtents[0], projection);
+      // If the extent crosses the date line, we load data for both edges of the worlds
+      if (
+        loadExtent[0] < projectionExtent[0] &&
+        loadExtent[2] < projectionExtent[2]
+      ) {
+        loadExtents.push([
+          loadExtent[0] + worldWidth,
+          loadExtent[1],
+          loadExtent[2] + worldWidth,
+          loadExtent[3],
+        ]);
+      } else if (
+        loadExtent[0] > projectionExtent[0] &&
+        loadExtent[2] > projectionExtent[2]
+      ) {
+        loadExtents.push([
+          loadExtent[0] - worldWidth,
+          loadExtent[1],
+          loadExtent[2] - worldWidth,
+          loadExtent[3],
+        ]);
+      }
+    }
 
     if (
       this.ready &&
@@ -603,20 +689,6 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     }
 
     this.replayGroup_ = null;
-    const sourceExtent = vectorSource.getExtent();
-    const multiWorld =
-      vectorSource.getWrapX() && projection.canWrapX() && sourceExtent;
-    const worldWidth = getWidth(projectionExtent);
-
-    const leftMost = multiWorld
-      ? Math.ceil((extent[0] - sourceExtent[2]) / worldWidth)
-      : 0;
-    const rightMost = multiWorld
-      ? Math.floor((extent[2] - sourceExtent[0]) / worldWidth)
-      : 0;
-
-    const renderedFeatures = new Set();
-    let ready = true;
 
     const replayGroup = new CanvasBuilderGroup(
       getRenderTolerance(resolution, pixelRatio),
@@ -625,76 +697,63 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       pixelRatio,
     );
 
-    for (let world = leftMost; world <= rightMost; world++) {
-      const offset = world * worldWidth;
-      const currentTransform = createTransformFromCoordinateTransform(
-        ([x, ...rest]) => [x + offset, ...rest],
-      );
-      const currentExtent = [
-        extent[0] - offset,
-        extent[1],
-        extent[2] - offset,
-        extent[3],
-      ];
-
-      const userProjection = getUserProjection();
-      let userTransform;
-      if (userProjection) {
-        const userExtent = toUserExtent(currentExtent, projection);
+    const userProjection = getUserProjection();
+    let userTransform;
+    if (userProjection) {
+      for (let i = 0, ii = loadExtents.length; i < ii; ++i) {
+        const extent = loadExtents[i];
+        const userExtent = toUserExtent(extent, projection);
         vectorSource.loadFeatures(
           userExtent,
           toUserResolution(resolution, projection),
           userProjection,
         );
-        userTransform = getTransformFromProjections(userProjection, projection);
-      } else {
-        vectorSource.loadFeatures(currentExtent, resolution, projection);
       }
-
-      const squaredTolerance = getSquaredRenderTolerance(
-        resolution,
-        pixelRatio,
-      );
-      const render =
-        /**
-         * @param {import("../../Feature.js").default} feature Feature.
-         * @param {number} index Index.
-         */
-        (feature, index) => {
-          let styles;
-          const styleFunction =
-            feature.getStyleFunction() || vectorLayer.getStyleFunction();
-          if (styleFunction) {
-            styles = styleFunction(feature, resolution);
-          }
-          if (styles) {
-            const dirty = this.renderFeature(
-              feature,
-              squaredTolerance,
-              styles,
-              replayGroup,
-              userTransform
-                ? composeTransformFuncs(userTransform, currentTransform)
-                : currentTransform,
-              this.getLayer().getDeclutter(),
-              index,
-            );
-            ready = ready && !dirty;
-          }
-        };
-
-      const userExtent = toUserExtent(currentExtent, projection);
-      /** @type {Array<import("../../Feature.js").default>} */
-      const features = vectorSource.getFeaturesInExtent(userExtent);
-      if (vectorLayerRenderOrder) {
-        features.sort(vectorLayerRenderOrder);
-      }
-      for (let i = 0, ii = features.length; i < ii; ++i) {
-        render(features[i], i);
-        renderedFeatures.add(features[i]);
+      userTransform = getTransformFromProjections(userProjection, projection);
+    } else {
+      for (let i = 0, ii = loadExtents.length; i < ii; ++i) {
+        vectorSource.loadFeatures(loadExtents[i], resolution, projection);
       }
     }
-    this.renderedFeatures_ = Array.from(renderedFeatures);
+
+    const squaredTolerance = getSquaredRenderTolerance(resolution, pixelRatio);
+    let ready = true;
+    const render =
+      /**
+       * @param {import("../../Feature.js").default} feature Feature.
+       * @param {number} index Index.
+       */
+      (feature, index) => {
+        let styles;
+        const styleFunction =
+          feature.getStyleFunction() || vectorLayer.getStyleFunction();
+        if (styleFunction) {
+          styles = styleFunction(feature, resolution);
+        }
+        if (styles) {
+          const dirty = this.renderFeature(
+            feature,
+            squaredTolerance,
+            styles,
+            replayGroup,
+            userTransform,
+            this.getLayer().getDeclutter(),
+            index,
+          );
+          ready = ready && !dirty;
+        }
+      };
+
+    const userExtent = toUserExtent(extent, projection);
+    /** @type {Array<import("../../Feature.js").default>} */
+    const features = vectorSource.getFeaturesInExtent(userExtent);
+    if (vectorLayerRenderOrder) {
+      features.sort(vectorLayerRenderOrder);
+    }
+    for (let i = 0, ii = features.length; i < ii; ++i) {
+      render(features[i], i);
+    }
+    this.renderedFeatures_ = features;
     this.ready = ready;
 
     const replayGroupInstructions = replayGroup.finish();
