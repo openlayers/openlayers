@@ -566,7 +566,7 @@ export function getTransformFromProjections(source, destination) {
  * @param {TransformFunction} t2 The second transform function.
  * @return {TransformFunction} The composed transform function.
  */
-export function composeTransformFuncs(t1, t2) {
+function composeTransformFuncs(t1, t2) {
   return function (input, output, dimensions, stride) {
     output = t1(input, output, dimensions, stride);
     return t2(output, output, dimensions, stride);
