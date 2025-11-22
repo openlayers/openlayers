@@ -841,15 +841,15 @@ class VectorSource extends Source {
   /**
    * Get the extent of the features currently in the source.
    *
-   * This will return undefined when the source is configured with
+   * This will return `null` when the source is configured with
    * `useSpatialIndex` set to `false`.
    * @param {import("../extent.js").Extent} [extent] Destination extent. If provided, no new extent
    *     will be created. Instead, that extent's coordinates will be overwritten.
-   * @return {import("../extent.js").Extent | undefined} Extent or undefined.
+   * @return {import("../extent.js").Extent | null} Extent.
    * @api
    */
   getExtent(extent) {
-    return this.featuresRtree_?.getExtent(extent);
+    return this.featuresRtree_?.getExtent(extent) ?? null;
   }
 
   /**
