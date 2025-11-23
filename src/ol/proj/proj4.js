@@ -226,7 +226,7 @@ export async function fromEPSGCode(code) {
  * @param {string} key MapTiler API key.  Get your own API key at https://www.maptiler.com/cloud/.
  * @return {function(number):Promise<string>} The EPSG lookup function.
  * @api
- * @deprecated Use {@link module:ol/proj/proj4.projLookup} instead.
+ * @deprecated Not needed any more, the default lookup provides this functionality now.
  */
 export function epsgLookupMapTiler(key) {
   return async function (code) {
