@@ -9,7 +9,7 @@ import {globby} from 'globby';
 import {LogLevel} from 'loglevelnext';
 import pixelmatch from 'pixelmatch';
 import png from 'pngjs';
-import puppeteer from 'puppeteer';
+import {launch} from 'puppeteer';
 import serveStatic from 'serve-static';
 import webpack from 'webpack';
 import webpackMiddleware from 'webpack-dev-middleware';
@@ -238,7 +238,7 @@ async function renderEach(page, entries, options) {
 }
 
 async function render(entries, options) {
-  const browser = await puppeteer.launch({
+  const browser = await launch({
     args: options.puppeteerArgs,
     headless: options.headless ? 'new' : false,
   });
