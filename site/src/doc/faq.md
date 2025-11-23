@@ -98,7 +98,7 @@ const map = new Map({
 ```
 
 We recommend to lookup parameters of your projection (like the validity extent)
-over at [epsg.io](https://epsg.io/).
+over at [spatialreference.org](https://spatialreference.org/).
 
 
 ## Why is my map centered on the gulf of guinea (or africa, the ocean, null-island)?
