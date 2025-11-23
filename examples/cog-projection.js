@@ -1,12 +1,7 @@
 import proj4 from 'proj4';
 import Map from '../src/ol/Map.js';
 import TileLayer from '../src/ol/layer/WebGLTile.js';
-import {
-  epsgLookupMapTiler,
-  fromEPSGCode,
-  register,
-  setEPSGLookup,
-} from '../src/ol/proj/proj4.js';
+import {fromProjectionCode, register} from '../src/ol/proj/proj4.js';
 import GeoTIFF from '../src/ol/source/GeoTIFF.js';
 import XYZ from '../src/ol/source/XYZ.js';
 
@@ -16,7 +11,6 @@ const attributions =
   '<a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>';
 
 register(proj4);
-setEPSGLookup(epsgLookupMapTiler(key));
 
 const cogSource = new GeoTIFF({
   sources: [
@@ -55,6 +49,8 @@ const map = new Map({
   view: cogSource
     .getView()
     .then((viewConfig) =>
-      fromEPSGCode(viewConfig.projection.getCode()).then(() => viewConfig),
+      fromProjectionCode(viewConfig.projection.getCode()).then(
+        () => viewConfig,
+      ),
     ),
 });
