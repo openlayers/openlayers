@@ -271,13 +271,6 @@ class Modify extends PointerInteraction {
     /** @private */
     this.handleFeatureChange_ = this.handleFeatureChange_.bind(this);
 
-    //add/remove listeners on internal features_ collection
-    /** @private */
-    this.handleFeatureAdd_ = this.handleFeatureAdd_.bind(this);
-
-    /** @private */
-    this.handleFeatureRemove_ = this.handleFeatureRemove_.bind(this);
-
     /***
      * @type {ModifyOnSignature<import("../events").EventsKey>}
      */
@@ -494,7 +487,7 @@ class Modify extends PointerInteraction {
         this.handleExternalCollectionRemove_,
       );
       //keep ref for unsubscribe on dispose
-      this.externalFeaturesCollection_ = options.features;
+      this.featuresCollection_ = options.features;
     } else if (options.source) {
       features = options.source.getFeatures();
       //setup listeners on external source and features
@@ -526,19 +519,15 @@ class Modify extends PointerInteraction {
     }
 
     /**
-     * @type {Collection<Feature>}
+     * Internal features array.  When adding or removing features, be sure to use
+     * addFeature()/removeFeature() so that the the segment index is adjusted.
+     * @type {Array<Feature>}
      * @private
      */
-    this.features_ = new Collection(features.filter(this.filter_));
-    this.features_.forEach(this.addFeature_.bind(this));
-    this.features_.addEventListener(
-      CollectionEventType.ADD,
-      this.handleFeatureAdd_,
-    );
-    this.features_.addEventListener(
-      CollectionEventType.REMOVE,
-      this.handleFeatureRemove_,
-    );
+    this.features_ = [];
+    features
+      .filter(this.filter_)
+      .forEach((feature) => this.addFeature_(feature));
 
     /**
      * @type {import("../MapBrowserEvent.js").default}
@@ -586,6 +575,7 @@ class Modify extends PointerInteraction {
    * @private
    */
   addFeature_(feature) {
+    this.features_.push(feature);
     const geometry = feature.getGeometry();
     if (geometry) {
       const writer = this.SEGMENT_WRITERS_[geometry.getType()];
@@ -629,14 +619,17 @@ class Modify extends PointerInteraction {
   }
 
   /**
-   * Called when a feature is removed from the internal features collection
+   * Removes a feature from the internal features collection and updates internal state
+   * accordingly.
    * @param {Feature} feature Feature.
    * @private
    */
   removeFeature_(feature) {
+    const itemIndex = this.features_.indexOf(feature);
+    this.features_.splice(itemIndex, 1);
     this.removeFeatureSegmentData_(feature);
     // Remove the vertex feature if the collection of candidate features is empty.
-    if (this.vertexFeature_ && this.features_.getLength() === 0) {
+    if (this.vertexFeature_ && this.features_.length === 0) {
       this.overlay_.getSource().removeFeature(this.vertexFeature_);
       this.vertexFeature_ = null;
     }
@@ -766,7 +759,7 @@ class Modify extends PointerInteraction {
       );
     }
     if (this.filter_(feature)) {
-      this.features_.push(feature);
+      this.addFeature_(feature);
     }
   }
 
@@ -783,15 +776,7 @@ class Modify extends PointerInteraction {
         this.handleFeatureChange_,
       );
     }
-    this.features_.remove(feature);
-  }
-
-  /**
-   * @param {import("../Collection.js").CollectionEvent<Feature>} evt Event.
-   * @private
-   */
-  handleFeatureAdd_(evt) {
-    this.addFeature_(evt.element);
+    this.removeFeature_(feature);
   }
 
   /**
@@ -803,19 +788,11 @@ class Modify extends PointerInteraction {
   handleFeatureChange_(evt) {
     if (!this.changingFeature_) {
       const feature = /** @type {Feature} */ (evt.target);
-      this.features_.remove(feature);
+      this.removeFeature_(feature);
       //safe to remove handler on a feature if there isn't one, but need to apply the filter
       // before adding the feature.
-      this.filter_(feature) && this.features_.push(feature);
+      this.filter_(feature) && this.addFeature_(feature);
     }
-  }
-
-  /**
-   * @param {import("../Collection.js").CollectionEvent<Feature>} evt Event.
-   * @private
-   */
-  handleFeatureRemove_(evt) {
-    this.removeFeature_(evt.element);
   }
 
   /**
@@ -1744,7 +1721,7 @@ class Modify extends PointerInteraction {
             geom &&
             geom.getType() === 'Point' &&
             feature instanceof Feature &&
-            this.features_.getArray().includes(feature)
+            this.features_.includes(feature)
           ) {
             hitPointGeometry = /** @type {Point} */ (geom);
             const coordinate = /** @type {Point} */ (feature.getGeometry())
@@ -2247,18 +2224,18 @@ class Modify extends PointerInteraction {
    */
   disposeInternal() {
     super.disposeInternal();
-    if (this.externalFeaturesCollection_) {
-      this.externalFeaturesCollection_.removeEventListener(
+    if (this.featuresCollection_) {
+      this.featuresCollection_.removeEventListener(
         CollectionEventType.ADD,
         this.handleExternalCollectionAdd_,
       );
-      this.externalFeaturesCollection_.removeEventListener(
+      this.featuresCollection_.removeEventListener(
         CollectionEventType.REMOVE,
         this.handleExternalCollectionRemove_,
       );
       //change and propertychange event handlers were placed on all features in the external
       // collection, not just the ones that passed the filter.  Remove these too.
-      for (const feature of this.externalFeaturesCollection_.getArray()) {
+      for (const feature of this.featuresCollection_.getArray()) {
         feature.removeEventListener(
           EventType.CHANGE,
           this.handleFeatureChange_,
