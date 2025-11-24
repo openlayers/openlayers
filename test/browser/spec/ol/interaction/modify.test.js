@@ -1,5 +1,6 @@
 import {spy as sinonSpy} from 'sinon';
 import Collection from '../../../../../src/ol/Collection.js';
+import CollectionEventType from '../../../../../src/ol/CollectionEventType.js';
 import Feature from '../../../../../src/ol/Feature.js';
 import Map from '../../../../../src/ol/Map.js';
 import MapBrowserEvent from '../../../../../src/ol/MapBrowserEvent.js';
@@ -1661,15 +1662,42 @@ describe('ol.interaction.Modify', function () {
       simulateEvent('pointerup', 5, -20, null, 0);
       expect(lineFeature.getGeometry().getRevision()).to.equal(firstRevision);
     });
+  });
 
-    it('removes listeners on external Observable objects', function () {
-      function getListeners(type, observable, modify) {
-        const listeners = observable.listeners_?.[type] || [];
-        const candidates = Object.values(modify);
-        return listeners.filter(function (listener) {
-          return candidates.includes(listener);
-        });
-      }
+  describe('Event Listeners on external Observables', function () {
+    let modify, lineFeature;
+
+    beforeEach(function () {
+      lineFeature = new Feature({
+        geometry: new LineString([
+          [0, 0],
+          [10, 20],
+          [0, 40],
+          [40, 40],
+          [40, 0],
+        ]),
+      });
+    });
+
+    function getListeners(type, observable, modify) {
+      const listeners = observable.listeners_?.[type] || [];
+      const candidates = Object.values(modify);
+      return listeners.filter(function (listener) {
+        return candidates.includes(listener);
+      });
+    }
+
+    it('are removed on dispose() when source is provided', function () {
+      source.clear();
+      source.addFeature(lineFeature);
+      modify = new Modify({
+        source,
+        filter: (feature) => {
+          return feature.get('someProp') !== 'disqualifyingPropValue';
+        },
+      });
+      map.addInteraction(modify);
+
       //modify was constructed with a source containing only lineFeature
       let listeners = getListeners(EventType.CHANGE, lineFeature, modify);
       expect(listeners.length).to.equal(1);
@@ -1717,6 +1745,83 @@ describe('ol.interaction.Modify', function () {
       listeners = getListeners(VectorEventType.ADDFEATURE, source, modify);
       expect(listeners.length).to.equal(0);
       listeners = getListeners(VectorEventType.REMOVEFEATURE, source, modify);
+      expect(listeners.length).to.equal(0);
+    });
+
+    it('are removed on dispose() when feature collection is provided', function () {
+      const featureCollection = new Collection();
+      featureCollection.push(lineFeature);
+
+      modify = new Modify({
+        features: featureCollection,
+        filter: (feature) => {
+          return feature.get('someProp') !== 'disqualifyingPropValue';
+        },
+      });
+      map.addInteraction(modify);
+
+      let listeners = getListeners(EventType.CHANGE, lineFeature, modify);
+      expect(listeners.length).to.equal(1);
+      //propertychange event handler won't be registered unless a filter function
+      // is provided.  In this case it was.
+      listeners = getListeners(
+        ObjectEventType.PROPERTYCHANGE,
+        lineFeature,
+        modify,
+      );
+      expect(listeners.length).to.equal(1);
+      listeners = getListeners(
+        CollectionEventType.ADD,
+        featureCollection,
+        modify,
+      );
+      expect(listeners.length).to.equal(1);
+      listeners = getListeners(
+        CollectionEventType.REMOVE,
+        featureCollection,
+        modify,
+      );
+      expect(listeners.length).to.equal(1);
+
+      const newFeature = lineFeature.clone();
+      featureCollection.push(newFeature);
+      listeners = getListeners(
+        ObjectEventType.PROPERTYCHANGE,
+        newFeature,
+        modify,
+      );
+      expect(listeners.length).to.equal(1);
+      listeners = getListeners(EventType.CHANGE, newFeature, modify);
+      expect(listeners.length).to.equal(1);
+
+      modify.dispose();
+      listeners = getListeners(
+        ObjectEventType.PROPERTYCHANGE,
+        lineFeature,
+        modify,
+      );
+      expect(listeners.length).to.equal(0);
+      listeners = getListeners(EventType.CHANGE, lineFeature, modify);
+      expect(listeners.length).to.equal(0);
+      listeners = getListeners(
+        ObjectEventType.PROPERTYCHANGE,
+        newFeature,
+        modify,
+      );
+      expect(listeners.length).to.equal(0);
+      listeners = getListeners(EventType.CHANGE, newFeature, modify);
+      expect(listeners.length).to.equal(0);
+      listeners = getListeners(
+        CollectionEventType.ADD,
+        featureCollection,
+        modify,
+      );
+      expect(listeners.length).to.equal(0);
+      listeners = getListeners(
+        CollectionEventType.REMOVE,
+        featureCollection,
+        modify,
+      );
       expect(listeners.length).to.equal(0);
     });
   });
