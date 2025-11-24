@@ -12,6 +12,7 @@ import {error as logError} from '../console.js';
 import {applyTransform, getCenter, getIntersection} from '../extent.js';
 import {clamp} from '../math.js';
 import {fromCode as unitsFromCode} from '../proj/Units.js';
+import {fromEPSGCode} from '../proj/proj4.js';
 import {
   Projection,
   createTransformFromCoordinateTransform,
@@ -177,49 +178,70 @@ function getResolutions(image, referenceImage) {
 }
 
 /**
- * @param {GeoTIFFImage} image A GeoTIFF.
- * @return {import("../proj/Projection.js").default} The image projection.
+ * @async
+ * @param {Object<string, any>} geoKeys Geo keys object.
+ * @param {string} geoKey The geo key to lookup.
+ * @param {string} unitKey The unit key to lookup.
+ * @param {boolean} loadMissingProjection Whether to load missing projections.
+ * @return {Promise<Projection|null>} The projection.
  */
-function getProjection(image) {
+async function getProjectionFromKeys(
+  geoKeys,
+  geoKey,
+  unitKey,
+  loadMissingProjection,
+) {
+  const value = geoKeys[geoKey];
+  if (value && value !== 32767) {
+    const code = 'EPSG:' + value;
+    let projection = getCachedProjection(code);
+    if (!projection && loadMissingProjection) {
+      try {
+        projection = await fromEPSGCode(value);
+      } catch {
+        // pass
+      }
+    }
+    if (!projection) {
+      const units = unitsFromCode(geoKeys[unitKey]);
+      if (units) {
+        projection = new Projection({
+          code: code,
+          units: units,
+        });
+      }
+    }
+    return projection || null;
+  }
+}
+
+/**
+ * @async
+ * @param {GeoTIFFImage} image A GeoTIFF.
+ * @param {boolean} loadMissingProjection Whether to load missing projections.
+ * @return {Promise<Projection|null>} The image projection.
+ */
+async function getProjection(image, loadMissingProjection) {
   const geoKeys = image.geoKeys;
   if (!geoKeys) {
     return null;
   }
 
-  if (
-    geoKeys.ProjectedCSTypeGeoKey &&
-    geoKeys.ProjectedCSTypeGeoKey !== 32767
-  ) {
-    const code = 'EPSG:' + geoKeys.ProjectedCSTypeGeoKey;
-    let projection = getCachedProjection(code);
-    if (!projection) {
-      const units = unitsFromCode(geoKeys.ProjLinearUnitsGeoKey);
-      if (units) {
-        projection = new Projection({
-          code: code,
-          units: units,
-        });
-      }
-    }
+  const projection = await getProjectionFromKeys(
+    geoKeys,
+    'ProjectedCSTypeGeoKey',
+    'ProjLinearUnitsGeoKey',
+    loadMissingProjection,
+  );
+  if (projection) {
     return projection;
   }
-
-  if (geoKeys.GeographicTypeGeoKey && geoKeys.GeographicTypeGeoKey !== 32767) {
-    const code = 'EPSG:' + geoKeys.GeographicTypeGeoKey;
-    let projection = getCachedProjection(code);
-    if (!projection) {
-      const units = unitsFromCode(geoKeys.GeogAngularUnitsGeoKey);
-      if (units) {
-        projection = new Projection({
-          code: code,
-          units: units,
-        });
-      }
-    }
-    return projection;
-  }
-
-  return null;
+  return await getProjectionFromKeys(
+    geoKeys,
+    'GeographicTypeGeoKey',
+    'GeogAngularUnitsGeoKey',
+    loadMissingProjection,
+  );
 }
 
 /**
@@ -367,6 +389,8 @@ function getMaxForDataType(array) {
  * to `false` will make it so any `min` and `max` properties on sources are ignored.
  * @property {import("../proj.js").ProjectionLike} [projection] Source projection.  If not provided, the GeoTIFF metadata
  * will be read for projection information.
+ * @property {boolean} [loadMissingProjection=false] Whether to attempt to load missing projection definitions.
+ * Uses the configured EPSG lookup function, which can be set with {@link module:ol/proj/proj4.setEPSGLookup}.
  * @property {number} [transition=250] Duration of the opacity transition for rendering.
  * To disable the opacity transition, pass `transition: 0`.
  * @property {boolean} [wrapX=false] Render tiles beyond the tile grid extent.
@@ -470,6 +494,12 @@ class GeoTIFFSource extends DataTile {
      */
     this.convertToRGB_ = options.convertToRGB || false;
 
+    /**
+     * @type {boolean}
+     * @private
+     */
+    this.loadMissingProjection_ = options.loadMissingProjection || false;
+
     this.setKey(this.sourceInfo_.map((source) => source.url).join(','));
 
     const self = this;
@@ -482,7 +512,7 @@ class GeoTIFFSource extends DataTile {
     }
     Promise.all(requests)
       .then(function (sources) {
-        self.configure_(sources);
+        return self.configure_(sources);
       })
       .catch(function (error) {
         logError(error);
@@ -513,14 +543,18 @@ class GeoTIFFSource extends DataTile {
    * of each image in turn.
    * You can override this method in a subclass to support more projections.
    *
+   * @async
    * @param {Array<Array<GeoTIFFImage>>} sources Each source is a list of images
    * from a single GeoTIFF.
    */
-  determineProjection(sources) {
+  async determineProjection(sources) {
     const firstSource = sources[0];
     for (let i = firstSource.length - 1; i >= 0; --i) {
       const image = firstSource[i];
-      const projection = getProjection(image);
+      const projection = await getProjection(
+        image,
+        this.loadMissingProjection_,
+      );
       if (projection) {
         this.projection = projection;
         break;
@@ -569,8 +603,9 @@ class GeoTIFFSource extends DataTile {
    * @param {Array<Array<GeoTIFFImage>>} sources Each source is a list of images
    * from a single GeoTIFF.
    * @private
+   * @async
    */
-  configure_(sources) {
+  async configure_(sources) {
     let extent;
     let origin;
     let commonRenderTileSizes;
@@ -725,7 +760,7 @@ class GeoTIFFSource extends DataTile {
     }
 
     if (!this.getProjection()) {
-      this.determineProjection(sources);
+      await this.determineProjection(sources);
     }
     this.determineTransformMatrix(sources);
 
