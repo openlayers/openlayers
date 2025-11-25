@@ -1280,6 +1280,32 @@ describe('ol/Map', function () {
     });
   });
 
+  describe('#getPixelRatio() and #setPixelRatio()', function () {
+    let map;
+
+    beforeEach(function () {
+      map = new Map({
+        target: document.createElement('div'),
+      });
+    });
+
+    afterEach(function () {
+      disposeMap(map);
+    });
+
+    it('gets the pixel ratio', function () {
+      expect(map.getPixelRatio()).to.be(window.devicePixelRatio || 1);
+    });
+
+    it('sets the pixel ratio and re-renders the map', function () {
+      const spy = sinonSpy(map, 'render');
+      map.setPixelRatio(2);
+      expect(map.getPixelRatio()).to.be(2);
+      expect(spy.called).to.be(true);
+      spy.restore();
+    });
+  });
+
   describe('create interactions', function () {
     let options;
 
