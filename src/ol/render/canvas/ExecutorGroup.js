@@ -41,10 +41,14 @@ export const NON_DECLUTTER = ALL.filter(
 );
 
 /** @type {boolean|undefined} */
-let willReadFrequently;
+let willReadFrequently = false;
+
+/** @type {boolean|undefined} */
+let canvasReadsBenchmarked = false;
 
 /** Determine if canvas read operations are faster with willReadFrequently set to true or false */
 function benchmarkCanvasReads() {
+  let bestResult = 0;
   /**
    * @param {boolean} willReadFrequently Will read frequently.
    * @return {number} Operation count.
@@ -58,10 +62,17 @@ function benchmarkCanvasReads() {
       context.fillRect(0, 0, 1, 1);
       context.getImageData(0, 0, 1, 1);
     }
+    bestResult = count > bestResult ? count : bestResult;
     return count;
   };
 
-  willReadFrequently = measure(true) > measure(false);
+  const measures = {
+    [measure(true)]: true,
+    [measure(false)]: false,
+    [measure(undefined)]: undefined,
+  };
+  willReadFrequently = measures[bestResult];
+  canvasReadsBenchmarked = true;
 }
 
 class ExecutorGroup {
@@ -225,7 +236,7 @@ class ExecutorGroup {
     callback,
     declutteredFeatures,
   ) {
-    if (willReadFrequently === undefined) {
+    if (canvasReadsBenchmarked === false) {
       benchmarkCanvasReads();
     }
 
