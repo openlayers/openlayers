@@ -224,6 +224,7 @@
     "../src/ol/source/Cluster.js",
     "../src/ol/source/DataTile.js",
     "../src/ol/source/GeoTIFF.js",
+    "../src/ol/source/GeoZarr.js",
     "../src/ol/source/Google.js",
     "../src/ol/source/IIIF.js",
     "../src/ol/source/Image.js",
