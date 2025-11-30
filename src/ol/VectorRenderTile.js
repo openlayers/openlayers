@@ -11,6 +11,7 @@ import {getUid} from './util.js';
  * @property {null|import("./render.js").OrderFunction} renderedRenderOrder RenderedRenderOrder.
  * @property {number} renderedTileRevision RenderedTileRevision.
  * @property {number} renderedResolution RenderedResolution.
+ * @property {number} renderedPixelRatio RenderedPixelRatio.
  * @property {number} renderedRevision RenderedRevision.
  * @property {number} renderedTileResolution RenderedTileResolution.
  * @property {number} renderedTileZ RenderedTileZ.
@@ -135,6 +136,7 @@ class VectorRenderTile extends Tile {
         dirty: false,
         renderedRenderOrder: null,
         renderedResolution: NaN,
+        renderedPixelRatio: NaN,
         renderedRevision: -1,
         renderedTileResolution: NaN,
         renderedTileRevision: -1,

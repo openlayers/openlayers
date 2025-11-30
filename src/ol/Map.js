@@ -1038,6 +1038,28 @@ class Map extends BaseObject {
   }
 
   /**
+   * Get the pixel ratio of the rendered map.
+   * @return {number} Pixel ratio.
+   * @api
+   */
+  getPixelRatio() {
+    return this.pixelRatio_;
+  }
+
+  /**
+   * Set the pixel ratio of the rendered map.
+   * @param {number} pixelRatio Pixel ratio.
+   * @api
+   */
+  setPixelRatio(pixelRatio) {
+    if (this.pixelRatio_ === pixelRatio) {
+      return;
+    }
+    this.pixelRatio_ = pixelRatio;
+    this.render();
+  }
+
+  /**
    * Get the map renderer.
    * @return {import("./renderer/Map.js").default|null} Renderer
    */

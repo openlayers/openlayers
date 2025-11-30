@@ -674,6 +674,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     if (
       this.ready &&
       this.renderedResolution_ == resolution &&
+      this.renderedPixelRatio_ === pixelRatio &&
       this.renderedRevision_ == vectorLayerRevision &&
       this.renderedRenderOrder_ == vectorLayerRenderOrder &&
       this.renderedFrameDeclutter_ === !!frameState.declutter &&

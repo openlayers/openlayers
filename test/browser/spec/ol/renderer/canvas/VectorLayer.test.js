@@ -457,6 +457,9 @@ describe('ol/renderer/canvas/VectorLayer', function () {
       frameState.declutter = {};
       renderer.prepareFrame(frameState);
       expect(renderer.replayGroupChanged).to.be(true);
+      frameState.pixelRatio = 2;
+      renderer.prepareFrame(frameState);
+      expect(renderer.replayGroupChanged).to.be(true);
     });
 
     it('dispatches a postrender event when rendering', function () {
