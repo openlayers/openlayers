@@ -214,6 +214,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       !builderState.dirty &&
       builderState.renderedResolution === resolution &&
       builderState.renderedRevision == revision &&
+      builderState.renderedPixelRatio === pixelRatio &&
       builderState.renderedRenderOrder == renderOrder
     ) {
       return;
@@ -339,6 +340,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       tile.executorGroups[layerUid].push(renderingReplayGroup);
     }
     builderState.renderedRevision = revision;
+    builderState.renderedPixelRatio = pixelRatio;
     builderState.renderedRenderOrder = renderOrder;
     builderState.renderedResolution = resolution;
   }
