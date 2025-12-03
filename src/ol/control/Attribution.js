@@ -345,6 +345,19 @@ class Attribution extends Control {
   render(mapEvent) {
     this.updateElement_(mapEvent.frameState);
   }
+
+  /**
+   * Clean up.
+   * @override
+   */
+  disposeInternal() {
+    this.toggleButton_.removeEventListener(
+      EventType.CLICK,
+      this.handleClick_,
+      false,
+    );
+    super.disposeInternal();
+  }
 }
 
 export default Attribution;
