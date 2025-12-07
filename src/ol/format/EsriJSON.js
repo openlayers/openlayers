@@ -127,6 +127,16 @@ class EsriJSON extends JSONFeature {
    */
   readFeaturesFromObject(object, options) {
     options = options ? options : {};
+
+    // if (object['error']) {
+    //   const error = object['error'];
+    //   const message = error.message || 'Unknown error';
+    //   const code = error.code !== undefined ? error.code : '';
+    //   const details = error.details ? ' - ' + error.details.join(', ') : '';
+    //   throw new Error(
+    //     `Error reading FeatureCollection: ${message}${details}${code ? ' (code ' + code + ')' : ''}`,
+    //   );
+    // }
     if (object['features']) {
       const esriJSONFeatureSet = /** @type {EsriJSONFeatureSet} */ (object);
       /** @type {Array<import("../Feature.js").default>} */
