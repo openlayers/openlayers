@@ -252,12 +252,18 @@ class RegularShape extends ImageStyle {
       this.draw_(renderOptions, context, pixelRatio);
 
       image = context.canvas;
-      iconImageCache.set(
-        cacheKey,
+      const iconImage = new IconImage(
+        image,
+        undefined,
         null,
+        ImageState.LOADED,
         null,
-        new IconImage(image, undefined, null, ImageState.LOADED, null),
       );
+      iconImageCache.set(cacheKey, null, null, iconImage);
+      // Update the image in place to an ImageBitmap for better performance and lower memory usage
+      createImageBitmap(image).then((imageBitmap) => {
+        iconImage.setImage(imageBitmap);
+      });
     }
     return image;
   }
