@@ -157,6 +157,13 @@ class IconImage extends EventTarget {
   }
 
   /**
+   * @param {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas|ImageBitmap} image Image.
+   */
+  setImage(image) {
+    this.image_ = image;
+  }
+
+  /**
    * @param {number} pixelRatio Pixel ratio.
    * @return {number} Image or Canvas element.
    */
