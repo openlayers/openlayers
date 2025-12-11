@@ -595,7 +595,6 @@ class Executor {
       if (alignAndScale !== 1) {
         context.scale(alignAndScale, alignAndScale);
       }
-      context.rotate(this.viewRotation_);
     }
     context.fill();
     if (alignAndScale) {
