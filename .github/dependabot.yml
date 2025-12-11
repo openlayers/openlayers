@@ -18,6 +18,9 @@ updates:
         update-types:
           - "minor"
           - "patch"
+      development-security:
+        dependency-type: development
+        applies-to: security-updates
       production-major:
         dependency-type: production
         update-types:
@@ -27,6 +30,9 @@ updates:
         update-types:
           - "minor"
           - "patch"
+      production-security:
+        dependency-type: production
+        applies-to: security-updates
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
