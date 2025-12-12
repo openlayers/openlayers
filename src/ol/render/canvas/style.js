@@ -756,7 +756,20 @@ function buildIcon(flatStyle, context) {
     flatStyle,
     prefix + 'anchor-y-units',
   );
-  const color = optionalColorLike(flatStyle, prefix + 'color');
+  const colorValue = getExpressionValue(flatStyle, prefix + 'color');
+  let color;
+  let evaluateColor = null;
+  if (colorValue !== undefined) {
+    const isColorExpression =
+      Array.isArray(colorValue) &&
+      colorValue.length > 0 &&
+      typeof colorValue[0] === 'string';
+    if (isColorExpression) {
+      evaluateColor = colorLikeEvaluator(flatStyle, prefix + 'color', context);
+    } else {
+      color = requireColorLike(colorValue, prefix + 'color');
+    }
+  }
   const crossOrigin = optionalString(flatStyle, prefix + 'cross-origin');
   const offset = optionalNumberArray(flatStyle, prefix + 'offset');
   const offsetOrigin = optionalIconOrigin(flatStyle, prefix + 'offset-origin');
@@ -768,12 +781,11 @@ function buildIcon(flatStyle, context) {
     prefix + 'declutter-mode',
   );
 
-  const icon = new Icon({
+  const iconOptions = {
     src,
     anchorOrigin,
     anchorXUnits,
     anchorYUnits,
-    color,
     crossOrigin,
     offset,
     offsetOrigin,
@@ -781,9 +793,22 @@ function buildIcon(flatStyle, context) {
     width,
     size,
     declutterMode,
-  });
+  };
+
+  let icon = null;
 
   return function (context) {
+    if (!icon) {
+      // lazily create the icon to allow for expression evaluation
+      const initialColor = evaluateColor ? evaluateColor(context) : color;
+      icon = new Icon(
+        initialColor !== undefined
+          ? Object.assign({}, iconOptions, {color: initialColor})
+          : Object.assign({}, iconOptions),
+      );
+    } else if (evaluateColor) {
+      icon.setColor(evaluateColor(context));
+    }
     if (evaluateOpacity) {
       icon.setOpacity(evaluateOpacity(context));
     }

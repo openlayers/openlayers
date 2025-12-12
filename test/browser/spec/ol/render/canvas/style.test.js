@@ -108,6 +108,7 @@ function expectImageEquals(image, expected) {
     }
     const expectedSrc = expected.getSrc();
     expect(image.getSrc()).to.eql(expectedSrc);
+    expect(image.getColor()).to.eql(expected.getColor());
     return;
   }
   if (expected instanceof RegularShape) {
@@ -636,6 +637,37 @@ describe('ol/render/canvas/style.js', () => {
           image: new Icon({
             src: 'icon.svg',
             scale: 1,
+          }),
+        }),
+      },
+      {
+        name: 'icon color static',
+        style: {
+          'icon-src': 'icon.svg',
+          'icon-color': 'red',
+        },
+        expected: new Style({
+          image: new Icon({
+            src: 'icon.svg',
+            color: 'red',
+          }),
+        }),
+      },
+      {
+        name: 'icon color dynamic expression',
+        style: {
+          'icon-src': 'icon.svg',
+          'icon-color': ['get', 'iconColor'],
+        },
+        context: {
+          properties: {
+            iconColor: [0, 128, 255, 0.4],
+          },
+        },
+        expected: new Style({
+          image: new Icon({
+            src: 'icon.svg',
+            color: [0, 128, 255, 0.4],
           }),
         }),
       },
