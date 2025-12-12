@@ -1337,19 +1337,6 @@ function optionalDeclutterMode(flatStyle, property) {
 }
 
 /**
- * @param {FlatStyle} flatStyle The flat style.
- * @param {string} property The symbolizer property.
- * @return {string|Array<number>|undefined} A string or an array of color values or undefined.
- */
-function optionalColorLike(flatStyle, property) {
-  const encoded = flatStyle[property];
-  if (encoded === undefined) {
-    return undefined;
-  }
-  return requireColorLike(encoded, property);
-}
-
-/**
  * @param {any} value The value.
  * @param {string} property The property.
  * @return {Array<number>} An array of numbers.
