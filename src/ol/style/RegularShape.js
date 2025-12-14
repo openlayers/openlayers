@@ -5,7 +5,7 @@
 import ImageState from '../ImageState.js';
 import {asArray} from '../color.js';
 import {asColorLike} from '../colorlike.js';
-import {createCanvasContext2D, releaseCanvas} from '../dom.js';
+import {createCanvasContext2D} from '../dom.js';
 import {
   defaultFillStyle,
   defaultLineCap,
@@ -263,9 +263,6 @@ class RegularShape extends ImageStyle {
       // Update the image in place to an ImageBitmap for better performance and lower memory usage
       createImageBitmap(image).then((imageBitmap) => {
         iconImage.setImage(imageBitmap);
-        if (this.hitDetectionCanvas_ !== image) {
-          releaseCanvas(context);
-        }
       });
     }
     return image;
