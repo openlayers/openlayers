@@ -11,7 +11,7 @@ import OSM from '../src/ol/source/OSM.js';
 
 const source = new GeoZarr({
   // url: 'https://storage.googleapis.com/open-cogs/geozarr/S2A_MSIL2A_20251025T095111_N0511_R079_T33SVB_20251025T121315.zarr',
-  url: 'https://s3.explorer.eopf.copernicus.eu/esa-zarr-sentinel-explorer-fra/tests-output/sentinel-2-l2a/S2C_MSIL2A_20251128T101401_N0511_R022_T32TQR_20251128T140816.zarr',
+  url: 'https://s3.explorer.eopf.copernicus.eu/esa-zarr-sentinel-explorer-fra/tests-output/sentinel-2-l2a/S2A_MSIL2A_20250711T110651_N0511_R137_T30UXV_20250711T153113.zarr',
   group: 'measurements/reflectance',
   bands: ['b04', 'b03', 'b02'],
 });
