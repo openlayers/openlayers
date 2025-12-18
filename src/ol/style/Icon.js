@@ -414,7 +414,6 @@ class Icon extends ImageStyle {
    * severe performance impact.
    *
    * @param {import("../color.js").Color|string|null|undefined} color Color.
-   * @api
    */
   setColor(color) {
     const nextColor = color ? asArray(color) : null;
