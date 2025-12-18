@@ -10,6 +10,12 @@ import WMTSTileGrid from '../tilegrid/WMTS.js';
 import DataTileSource from './DataTile.js';
 import {parseTileMatrixSet} from './ogcTileUtil.js';
 
+const REQUIRED_ZARR_CONVENTIONS = [
+  'd35379db-88df-4056-af3a-620245f8e347', // multisacles
+  'f17cb550-5864-4468-aeb7-f3180cfb622f', // proj:
+  '689b58e2-cf7b-45e0-9fff-9cfc0883d6b4', // spatial:
+];
+
 /**
  * @typedef {'nearest'|'linear'} ResampleMethod
  */
@@ -122,13 +128,14 @@ export default class GeoZarr extends DataTileSource {
     const attributes =
       /** @type {LegacyDatasetAttributes | DatasetAttributes} */ (group.attrs);
 
-    if ('tile_matrix_set' in attributes.multiscales) {
-      const {tileGrid, projection} = getTileGridInfoFromLegacyAttributes(
-        /** @type {LegacyDatasetAttributes} */ (attributes),
-      );
-      this.tileGrid = tileGrid;
-      this.projection = projection;
-    } else if ('layout' in attributes.multiscales) {
+    if (
+      'zarr_conventions' in attributes &&
+      Array.isArray(attributes.zarr_conventions) &&
+      REQUIRED_ZARR_CONVENTIONS.every((uuid) =>
+        attributes.zarr_conventions.find((c) => c.uuid === uuid),
+      ) &&
+      'layout' in attributes.multiscales
+    ) {
       const {tileGrid, projection, bandsByLevel, fillValue} =
         getTileGridInfoFromAttributes(
           /** @type {DatasetAttributes} */ (attributes),
@@ -140,6 +147,12 @@ export default class GeoZarr extends DataTileSource {
       this.tileGrid = tileGrid;
       this.projection = projection;
       this.fillValue_ = fillValue;
+    } else if ('tile_matrix_set' in attributes.multiscales) {
+      const {tileGrid, projection} = getTileGridInfoFromLegacyAttributes(
+        /** @type {LegacyDatasetAttributes} */ (attributes),
+      );
+      this.tileGrid = tileGrid;
+      this.projection = projection;
     }
 
     const extent = this.tileGrid.getExtent();
@@ -235,6 +248,7 @@ export default class GeoZarr extends DataTileSource {
 /**
  * @typedef {Object} DatasetAttributes
  * @property {Multiscales} multiscales The multiscales attribute.
+ * @property {Array<{uuid: string}>} zarr_conventions The zarr conventions attribute.
  */
 
 /**
@@ -275,7 +289,7 @@ function getTileGridInfoFromAttributes(
   wantedBands,
 ) {
   const multiscales = attributes.multiscales;
-  const extent = attributes['proj:bbox'];
+  const extent = attributes['spatial:bbox'];
   const projection = getProjection(attributes['proj:code']);
   /** @type {Array<{matrixId: string, resolution: number, origin: import("ol/coordinate").Coordinate}>} */
   const groupInfo = [];
@@ -283,10 +297,10 @@ function getTileGridInfoFromAttributes(
   let fillValue;
   for (const groupMetadata of multiscales.layout) {
     //TODO Handle the complete transform (rotation and different x/y resolutions)
-    const transform = groupMetadata['proj:transform'];
+    const transform = groupMetadata['spatial:transform'];
     const resolution = transform[0];
     const origin = [transform[2], transform[5]];
-    const matrixId = groupMetadata.group;
+    const matrixId = groupMetadata.asset;
     groupInfo.push({
       matrixId,
       resolution,

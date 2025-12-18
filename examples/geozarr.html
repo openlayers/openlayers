@@ -10,3 +10,17 @@ docs: >
 tags: "zarr, geozarr, sentinel-2"
 ---
 <div id="map" class="map"></div>
+<div class="row mt-2">
+  <div class="col-auto">
+    <div class="input-group">
+      <label class="input-group-text" for="url-select">URL</label>
+      <select class="form-select" id="url-select">
+        <option value="https://s3.explorer.eopf.copernicus.eu/esa-zarr-sentinel-explorer-fra/tests-output/sentinel-2-l2a/S2C_MSIL2A_20251128T101401_N0511_R022_T32TQQ_20251128T140816.zarr">Sentinel-2 L2A (Ravenna)</option>
+        <option value="https://s3.explorer.eopf.copernicus.eu/esa-zarr-sentinel-explorer-fra/tests-output/sentinel-2-l2a-staging/S2B_MSIL2A_20251115T091139_N0511_R050_T35SLU_20251115T111807.zarr">Sentinel-2 L2A (Crete)</option>
+        <option value="custom">Custom...</option>
+      </select>
+      <input type="text" class="form-control" id="custom-url" placeholder="Enter Zarr URL" style="display: none; width: 300px;">
+      <button class="btn btn-outline-secondary" id="load-url" type="button">Load</button>
+    </div>
+  </div>
+</div>
