@@ -407,6 +407,42 @@ class Icon extends ImageStyle {
   }
 
   /**
+   * Set the icon color.
+   *
+   * Warning: Repeatedly setting the color on an icon style
+   * causes the icon image to be re-created each time. This can have a
+   * severe performance impact.
+   *
+   * @param {import("../color.js").Color|string|null|undefined} color Color.
+   */
+  setColor(color) {
+    const nextColor = color ? asArray(color) : null;
+    if (
+      this.color_ === nextColor ||
+      (this.color_ &&
+        nextColor &&
+        this.color_.length === nextColor.length &&
+        this.color_.every((value, index) => value === nextColor[index]))
+    ) {
+      // Discard if the color hasn't changed.
+      return;
+    }
+
+    this.color_ = nextColor;
+    const src = this.getSrc();
+    const image = src !== undefined ? null : this.getHitDetectionImage();
+    const imageState =
+      src !== undefined ? ImageState.IDLE : this.iconImage_.getImageState();
+    this.iconImage_ = getIconImage(
+      image,
+      src,
+      this.crossOrigin_,
+      imageState,
+      this.color_,
+    );
+  }
+
+  /**
    * Get the image icon.
    * @param {number} pixelRatio Pixel ratio.
    * @return {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas|ImageBitmap} Image or Canvas element. If the Icon
