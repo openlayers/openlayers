@@ -4,6 +4,7 @@ import {
   withExtentCenter,
   withHigherResolutions,
   withLowerResolutions,
+  withZoom,
 } from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/WebGLTile.js';
 import GeoZarr from '../src/ol/source/GeoZarr.js';
@@ -74,6 +75,7 @@ function render() {
       withLowerResolutions(1),
       withHigherResolutions(2),
       withExtentCenter(),
+      withZoom(2),
     ),
   });
 }

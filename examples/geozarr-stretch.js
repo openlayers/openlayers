@@ -33,7 +33,7 @@ function getVariables() {
 const source = new GeoZarr({
   url: 'https://s3.explorer.eopf.copernicus.eu/esa-zarr-sentinel-explorer-fra/tests-output/sentinel-2-l2a-staging/S2B_MSIL2A_20251115T091139_N0511_R050_T35SLU_20251115T111807.zarr',
   group: 'measurements/reflectance',
-  bands: ['b04', 'b03', 'b02', 'b05'],
+  bands: ['b04', 'b03', 'b02', 'b11'],
 });
 
 const layer = new TileLayer({

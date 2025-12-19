@@ -6,6 +6,7 @@ docs: >
   This example shows how to load multiple bands from a GeoZarr and use the `layer.updateStyleVariables()`
   method to update the rendering based on user selected bands and contrast stretch parameters.
 tags: "geozarr, zarr, style"
+experimental: true
 ---
 <div id="map" class="map"></div>
 <div class="controls">
@@ -14,7 +15,7 @@ tags: "geozarr, zarr, style"
     <option value="1" selected>visible red</option>
     <option value="2">visible green</option>
     <option value="3">visible blue</option>
-    <option value="4">red edge</option>
+    <option value="4">short-wave infrared</option>
   </select>
   <label>max
     <input type="range" id="redMax" value="0.3" min="0.2" max="0.5" step="0.01">
@@ -25,7 +26,7 @@ tags: "geozarr, zarr, style"
     <option value="1">visible red</option>
     <option value="2" selected>visible green</option>
     <option value="3">visible blue</option>
-    <option value="4">red edge</option>
+    <option value="4">short-wave infrared</option>
   </select>
   <label>max
     <input type="range" id="greenMax" value="0.3" min="0.2" max="0.5" step="0.01">
@@ -36,7 +37,7 @@ tags: "geozarr, zarr, style"
     <option value="1">visible red</option>
     <option value="2">visible green</option>
     <option value="3" selected>visible blue</option>
-    <option value="4">red edge</option>
+    <option value="4">short-wave infrared</option>
   </select>
   <label>max
     <input type="range" id="blueMax" value="0.3" min="0.2" max="0.5" step="0.01">
