@@ -1,0 +1,16 @@
+---
+layout: example.html
+title: GeoZarr
+shortdesc: A GeoZarr source displaying Sentinel-2 imagery with resampling.
+docs: >
+  The GeoZarr dataset used in this example doesn't have all bands available at all zoom levels. When
+  this is the case, band data from the nearest resolution level will be resampled in composing a
+  data tile. The example shows a false-color composite composed of blue (`b02`), green (`b03`), and
+  short-wave infrared (`b11`) data. The short-wave infrared data is only available to 20 m
+  resolution. The visible blue and green bands are available at 10 m resolution. When the map is
+  zoomed in beyond 20 meters per pixel, the highest resolution short-wave infrared data is fetched,
+  resampled, and composed together with the higher resolution visible bands.
+tags: "zarr, geozarr, sentinel-2"
+experimental: true
+---
+<div id="map" class="map"></div>
