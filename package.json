@@ -75,7 +75,7 @@
     "@types/expect.js": "^0.3.32",
     "@types/geojson": "^7946.0.7",
     "@types/mocha": "^10.0.7",
-    "@types/node": "^24.9.0",
+    "@types/node": "^25.0.2",
     "@types/pbf": "^3.0.2",
     "@types/sinon": "^21.0.0",
     "@types/topojson-specification": "^1.0.1",
