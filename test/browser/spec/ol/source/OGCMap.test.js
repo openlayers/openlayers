@@ -62,6 +62,35 @@ describe('ol/source/OGCMap', function () {
 
       expect(before).to.eql({test: 'before', foo: 'bar'});
     });
+
+    it('sets new parameters and applies them on the next image load', function () {
+      const viewExtent = [10, 20, 30.1, 39.9];
+      const source = new OGCMap({
+        ...options,
+        params: {
+          ...options.params,
+          f: 'image/jpeg',
+        },
+      });
+      let image = source.getImage(
+        viewExtent,
+        resolution,
+        pixelRatio,
+        projection,
+      );
+      image.load();
+      let uri = new URL(image.getImage().src);
+      expect(uri.searchParams.get('f')).to.be('image/jpeg');
+
+      source.setParams({
+        ...options.params,
+        f: 'image/png',
+      });
+      image = source.getImage(viewExtent, resolution, pixelRatio, projection);
+      image.load();
+      uri = new URL(image.getImage().src);
+      expect(uri.searchParams.get('f')).to.be('image/png');
+    });
   });
 
   describe('#getImage', function () {
