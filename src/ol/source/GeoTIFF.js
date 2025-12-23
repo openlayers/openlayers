@@ -35,8 +35,7 @@ import DataTile from './DataTile.js';
  * @return {boolean} The image is a mask.
  */
 function isMask(image) {
-  const fileDirectory = image.fileDirectory;
-  const type = fileDirectory.NewSubfileType || 0;
+  const type = image.fileDirectory.getValue('NewSubfileType') || 0;
   return (type & 4) === 4;
 }
 
@@ -55,7 +54,9 @@ function readRGB(preference, image) {
   if (image.getSamplesPerPixel() !== 3) {
     return false;
   }
-  const interpretation = image.fileDirectory.PhotometricInterpretation;
+  const interpretation = image.fileDirectory.getValue(
+    'PhotometricInterpretation',
+  );
   const interpretations = geotiffGlobals.photometricInterpretations;
   return (
     interpretation === interpretations.CMYK ||
@@ -181,7 +182,7 @@ function getResolutions(image, referenceImage) {
  * @return {import("../proj/Projection.js").default} The image projection.
  */
 function getProjection(image) {
-  const geoKeys = image.geoKeys;
+  const geoKeys = image.fileDirectory.parseGeoKeyDirectory();
   if (!geoKeys) {
     return null;
   }
@@ -540,7 +541,9 @@ class GeoTIFFSource extends DataTile {
     const firstSource = sources[0];
     for (let i = firstSource.length - 1; i >= 0; --i) {
       const image = firstSource[i];
-      const modelTransformation = image.fileDirectory.ModelTransformation;
+      const modelTransformation = image.fileDirectory.getValue(
+        'ModelTransformation',
+      );
       if (modelTransformation) {
         // eslint-disable-next-line no-unused-vars
         const [a, b, c, d, e, f, g, h] = modelTransformation;
