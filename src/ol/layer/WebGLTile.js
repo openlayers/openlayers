@@ -210,11 +210,7 @@ function parseStyle(style, bandCount) {
   );
 
   const fragmentShader = `
-    #ifdef GL_FRAGMENT_PRECISION_HIGH
     precision highp float;
-    #else
-    precision mediump float;
-    #endif
 
     varying vec2 v_textureCoord;
     uniform vec4 ${Uniforms.RENDER_EXTENT};
