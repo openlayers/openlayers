@@ -1,0 +1,111 @@
+---
+layout: example.html
+title: WebGL Text Styles
+shortdesc: Interactive showcase of WebGL text styling capabilities.
+docs: >
+  This example demonstrates the rich text styling features of the `WebGLTextLayer`.
+  You can dynamically adjust font properties, colors, outlines, and spacing.
+tags: "webgl, text, style, typography"
+---
+<div id="map" class="map"></div>
+
+<div class="edit-form">
+  <h2>Text Style</h2>
+
+  <div class="edit-form-elem">
+    <label for="textInput">Text: </label>
+    <input type="text" id="textInput" value="OpenLayers">
+  </div>
+
+  <div class="edit-form-elem">
+    <label for="visibility">Visible: </label>
+    <input type="checkbox" id="visibility" checked>
+  </div>
+
+  <div class="edit-form-elem">
+    <label for="fontFamily">Font: </label>
+    <select id="fontFamily">
+      <option value="sans-serif">Sans Serif</option>
+      <option value="serif">Serif</option>
+      <option value="monospace">Monospace</option>
+      <option value="Arial">Arial</option>
+      <option value="Courier New">Courier New</option>
+      <option value="Verdana">Verdana</option>
+      <option value="Times New Roman">Times New Roman</option>
+      <option value="Georgia">Georgia</option>
+      <option value="Impact">Impact</option>
+    </select>
+  </div>
+
+  <div class="edit-form-elem">
+    <label for="fontWeight">Weight: </label>
+    <select id="fontWeight">
+      <option value="normal">Normal</option>
+      <option value="bold">Bold</option>
+      <option value="lighter">Lighter</option>
+      <option value="bolder">Bolder</option>
+      <option value="100">100</option>
+      <option value="900">900</option>
+    </select>
+  </div>
+
+  <hr>
+
+  <div class="edit-form-elem">
+    <label for="textSize">Size (px): </label>
+    <input type="range" id="textSize" min="12" max="128" value="64"> <span id="textSizeVal">64</span>
+  </div>
+
+  <div class="edit-form-elem">
+    <label for="rotation">Rotation (°): </label>
+    <input type="range" id="rotation" min="0" max="360" step="1" value="45"> <span id="rotationVal">45</span>
+  </div>
+
+  <div class="edit-form-elem">
+    <label for="spacing">Spacing (px): </label>
+    <input type="range" id="spacing" min="-10" max="20" step="1" value="0"> <span id="spacingVal">0</span>
+  </div>
+
+  <hr>
+
+  <div class="edit-form-elem">
+    <label for="fillColor">Color: </label>
+    <input type="color" id="fillColor" value="#ffff00">
+    <label for="fillAlpha">Alpha: </label>
+    <input type="range" id="fillAlpha" min="0" max="1" step="0.1" value="1">
+  </div>
+
+  <div class="edit-form-elem">
+    <label for="outlineColor">Outline: </label>
+    <input type="color" id="outlineColor" value="#ff0000">
+    <label for="outlineAlpha">Alpha: </label>
+    <input type="range" id="outlineAlpha" min="0" max="1" step="0.1" value="1">
+  </div>
+
+  <div class="edit-form-elem">
+    <label for="outlineWidth">Width (px): </label>
+    <input type="range" id="outlineWidth" min="0" max="0.5" step="0.01" value="0.1"> <span
+      id="outlineWidthVal">0.1</span>
+  </div>
+
+  <hr>
+
+  <div class="edit-form-elem">
+    <label for="bgColor">BG Color: </label>
+    <input type="color" id="bgColor" value="#000000">
+    <label for="bgAlpha">Alpha: </label>
+    <input type="range" id="bgAlpha" min="0" max="1" step="0.1" value="0.5">
+  </div>
+
+  <div class="edit-form-elem">
+    <label for="bgOutlineColor">BG Outline: </label>
+    <input type="color" id="bgOutlineColor" value="#ffffff">
+    <label for="bgOutlineAlpha">Alpha: </label>
+    <input type="range" id="bgOutlineAlpha" min="0" max="1" step="0.1" value="1">
+  </div>
+
+  <div class="edit-form-elem">
+    <label for="bgOutlineWidth">BG Width: </label>
+    <input type="range" id="bgOutlineWidth" min="0" max="5" step="0.5" value="2"> <span id="bgOutlineWidthVal">2</span>
+  </div>
+</div>

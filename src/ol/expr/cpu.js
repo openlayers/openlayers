@@ -9,7 +9,7 @@ import {
   toString,
   withAlpha,
 } from '../color.js';
-import {ColorType, LiteralExpression, Ops, parse} from './expression.js';
+import { ColorType, LiteralExpression, Ops, parse } from './expression.js';
 
 /**
  * @fileoverview This module includes functions to build expressions for evaluation on the CPU.

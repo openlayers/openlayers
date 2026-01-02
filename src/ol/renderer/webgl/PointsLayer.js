@@ -2,12 +2,12 @@
  * @module ol/renderer/webgl/PointsLayer
  */
 import ViewHint from '../../ViewHint.js';
-import {assert} from '../../asserts.js';
-import {listen, unlistenByKey} from '../../events.js';
-import {buffer, createEmpty, equals} from '../../extent.js';
+import { assert } from '../../asserts.js';
+import { listen, unlistenByKey } from '../../events.js';
+import { buffer, createEmpty, equals } from '../../extent.js';
 import BaseVector from '../../layer/BaseVector.js';
-import {fromUserCoordinate, getUserProjection} from '../../proj.js';
-import {WebGLWorkerMessageType} from '../../render/webgl/constants.js';
+import { fromUserCoordinate, getUserProjection } from '../../proj.js';
+import { WebGLWorkerMessageType } from '../../render/webgl/constants.js';
 import {
   colorDecodeId,
   colorEncodeIdAndPack,
@@ -20,14 +20,14 @@ import {
   multiply as multiplyTransform,
   translate as translateTransform,
 } from '../../transform.js';
-import {getUid} from '../../util.js';
+import { getUid } from '../../util.js';
 import WebGLArrayBuffer from '../../webgl/Buffer.js';
-import {AttributeType, DefaultUniform} from '../../webgl/Helper.js';
+import { AttributeType, DefaultUniform } from '../../webgl/Helper.js';
 import WebGLRenderTarget from '../../webgl/RenderTarget.js';
-import {ARRAY_BUFFER, DYNAMIC_DRAW, ELEMENT_ARRAY_BUFFER} from '../../webgl.js';
-import {create as createWebGLWorker} from '../../worker/webgl.js';
+import { ARRAY_BUFFER, DYNAMIC_DRAW, ELEMENT_ARRAY_BUFFER } from '../../webgl.js';
+import { create as createWebGLWorker } from '../../worker/webgl.js';
 import WebGLLayerRenderer from './Layer.js';
-import {getWorldParameters} from './worldUtil.js';
+import { getWorldParameters } from './worldUtil.js';
 
 /** @typedef {import("../../geom/Point.js").default} Point */
 /** @typedef {import("../../Feature").default<Point>} PointFeature */
@@ -190,12 +190,12 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
 
     const customAttributes = options.attributes
       ? options.attributes.map(function (attribute) {
-          return {
-            name: 'a_' + attribute.name,
-            size: 1,
-            type: AttributeType.FLOAT,
-          };
-        })
+        return {
+          name: 'a_' + attribute.name,
+          size: 1,
+          type: AttributeType.FLOAT,
+        };
+      })
       : [];
 
     /**
@@ -590,6 +590,10 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       renderInstructions[++idx] = tmpCoords[0];
       renderInstructions[++idx] = tmpCoords[1];
 
+      if (idx < 20) {
+        console.log(`[PointsLayer] Vertex ${idx / 2}: ${tmpCoords[0]}, ${tmpCoords[1]} (Transformed)`);
+      }
+
       // for hit detection, the feature uid is saved in the opacity value
       // and the index of the opacity value is encoded in the color values
       if (this.hitDetectionEnabled_) {
@@ -708,6 +712,11 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       this.helper.makeProjectionTransform(frameState, this.currentTransform_);
       translateTransform(this.currentTransform_, world * worldWidth, 0);
       multiplyTransform(this.currentTransform_, this.invertRenderTransform_);
+
+      if (Math.random() < 0.01) {
+        console.log('[PointsLayer] Current Transform:', this.currentTransform_);
+      }
+
       this.helper.applyUniforms(frameState);
       this.helper.applyHitDetectionUniform(forHitDetection);
       const renderCount = this.indicesBuffer_.getSize();
@@ -728,7 +737,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     super.disposeInternal();
   }
 
-  renderDeclutter() {}
+  renderDeclutter() { }
 }
 
 export default WebGLPointsLayerRenderer;
