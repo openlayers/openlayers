@@ -91,6 +91,11 @@ export default class GeoZarr extends DataTileSource {
      */
     this.resampleMethod_ = options.resample || 'linear';
 
+    /**
+     * @type {number} Number of bands.
+     */
+    this.bandCount = this.bands_.length;
+
     this.setLoader(this.loadTile_.bind(this));
 
     /**
