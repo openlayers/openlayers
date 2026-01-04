@@ -203,9 +203,25 @@ class WebGLTextLayerRenderer extends WebGLLayerRenderer {
         const source = this.getLayer().getSource();
         const features = source.getFeatures();
 
-        const vertices = [];
-        const indices = [];
+        const stride = 19;
+        let vCursor = 0;
+        let iCursor = 0;
         let vertexIndex = 0;
+        let vertices = new Float32Array(features.length * stride * 4);
+        let indices = new Uint32Array(features.length * 6);
+
+        const resizeArrays = (minV, minI) => {
+            if (vCursor + minV > vertices.length) {
+                const newV = new Float32Array(Math.max(vertices.length * 2, vCursor + minV));
+                newV.set(vertices);
+                vertices = newV;
+            }
+            if (iCursor + minI > indices.length) {
+                const newI = new Uint32Array(Math.max(indices.length * 2, iCursor + minI));
+                newI.set(indices);
+                indices = newI;
+            }
+        };
 
         const atlasWidth = this.atlas_.getWidth();
         const atlasHeight = this.atlas_.getHeight();
@@ -248,7 +264,6 @@ class WebGLTextLayerRenderer extends WebGLLayerRenderer {
             const x = flatCoords[0];
             const y = flatCoords[1];
 
-            // Evaluate Styles
             evalContext.properties = feature.getProperties();
 
             let visible = true;
@@ -274,10 +289,8 @@ class WebGLTextLayerRenderer extends WebGLLayerRenderer {
             if (!text) return;
             text = String(text);
 
-            // Handle RTL (BiDi)
             if (this.bidiInstance_) {
                 try {
-                    // Manual reordering based on bidi-js segments
                     const bidi = this.bidiInstance_;
                     const levels = bidi.getEmbeddingLevels(text);
                     const flips = bidi.getReorderSegments(text, levels);
@@ -286,7 +299,6 @@ class WebGLTextLayerRenderer extends WebGLLayerRenderer {
                         const chars = text.split('');
                         flips.forEach(range => {
                             const [start, end] = range;
-                            // Reverse the range [start, end] IN PLACE
                             const segment = chars.slice(start, end + 1).reverse();
                             for (let i = 0; i < segment.length; i++) {
                                 chars[start + i] = segment[i];
@@ -299,7 +311,6 @@ class WebGLTextLayerRenderer extends WebGLLayerRenderer {
                 }
             }
 
-            // Defaults
             const rotation = feature.get('rotation') !== undefined ? feature.get('rotation') : 0;
             const rotateWithView = feature.get('rotateWithView') ? 1.0 : 0.0;
 
@@ -335,8 +346,6 @@ class WebGLTextLayerRenderer extends WebGLLayerRenderer {
             if (strokeWidthEvaluator) {
                 try {
                     const widthPixels = strokeWidthEvaluator(evalContext);
-                    // Approx factor for SDF spread (0.6 threshold, ~12px radius) -> 24px spread?
-                    // Empirical factor: 24.0
                     outlineWidth = widthPixels / 24.0;
                 } catch (e) { }
             } else if (feature.get('outlineWidth') !== undefined) {
@@ -401,6 +410,10 @@ class WebGLTextLayerRenderer extends WebGLLayerRenderer {
             const visualCenterX = (minX + maxX) / 2;
             currentOffsetX = -visualCenterX;
 
+            if (hasBackground && whiteGlyph) {
+                resizeArrays(4 * stride * 2, 6 * 2);
+            }
+
 
             if (hasBackground && whiteGlyph) {
                 const paddingX = 8;
@@ -431,15 +444,19 @@ class WebGLTextLayerRenderer extends WebGLLayerRenderer {
                     const boX1 = bx + bw;
                     const boY1 = by + bh;
 
-                    vertices.push(x, y, u0, v0, bx, by, 1, rotateWithView, rotation, scale, bgOR, bgOG, bgOB, bgOA, 0, 0, 0, 0, 0);
-                    vertices.push(x, y, u1, v0, boX1, by, 1, rotateWithView, rotation, scale, bgOR, bgOG, bgOB, bgOA, 0, 0, 0, 0, 0);
-                    vertices.push(x, y, u1, v1, boX1, boY1, 1, rotateWithView, rotation, scale, bgOR, bgOG, bgOB, bgOA, 0, 0, 0, 0, 0);
-                    vertices.push(x, y, u0, v1, bx, boY1, 1, rotateWithView, rotation, scale, bgOR, bgOG, bgOB, bgOA, 0, 0, 0, 0, 0);
+                    vertices.set([
+                        x, y, u0, v0, bx, by, 1, rotateWithView, rotation, scale, bgOR, bgOG, bgOB, bgOA, 0, 0, 0, 0, 0,
+                        x, y, u1, v0, boX1, by, 1, rotateWithView, rotation, scale, bgOR, bgOG, bgOB, bgOA, 0, 0, 0, 0, 0,
+                        x, y, u1, v1, boX1, boY1, 1, rotateWithView, rotation, scale, bgOR, bgOG, bgOB, bgOA, 0, 0, 0, 0, 0,
+                        x, y, u0, v1, bx, boY1, 1, rotateWithView, rotation, scale, bgOR, bgOG, bgOB, bgOA, 0, 0, 0, 0, 0
+                    ], vCursor);
+                    vCursor += 4 * stride;
 
-                    indices.push(
+                    indices.set([
                         vertexIndex + 0, vertexIndex + 1, vertexIndex + 2,
                         vertexIndex + 0, vertexIndex + 2, vertexIndex + 3
-                    );
+                    ], iCursor);
+                    iCursor += 6;
                     vertexIndex += 4;
                 }
 
@@ -449,15 +466,19 @@ class WebGLTextLayerRenderer extends WebGLLayerRenderer {
                     const offY0 = bgY;
                     const offY1 = bgY + h;
 
-                    vertices.push(x, y, u0, v0, offX0, offY0, 1, rotateWithView, rotation, scale, bgR, bgG, bgB, bgA, 0, 0, 0, 0, 0);
-                    vertices.push(x, y, u1, v0, offX1, offY0, 1, rotateWithView, rotation, scale, bgR, bgG, bgB, bgA, 0, 0, 0, 0, 0);
-                    vertices.push(x, y, u1, v1, offX1, offY1, 1, rotateWithView, rotation, scale, bgR, bgG, bgB, bgA, 0, 0, 0, 0, 0);
-                    vertices.push(x, y, u0, v1, offX0, offY1, 1, rotateWithView, rotation, scale, bgR, bgG, bgB, bgA, 0, 0, 0, 0, 0);
+                    vertices.set([
+                        x, y, u0, v0, offX0, offY0, 1, rotateWithView, rotation, scale, bgR, bgG, bgB, bgA, 0, 0, 0, 0, 0,
+                        x, y, u1, v0, offX1, offY0, 1, rotateWithView, rotation, scale, bgR, bgG, bgB, bgA, 0, 0, 0, 0, 0,
+                        x, y, u1, v1, offX1, offY1, 1, rotateWithView, rotation, scale, bgR, bgG, bgB, bgA, 0, 0, 0, 0, 0,
+                        x, y, u0, v1, offX0, offY1, 1, rotateWithView, rotation, scale, bgR, bgG, bgB, bgA, 0, 0, 0, 0, 0
+                    ], vCursor);
+                    vCursor += 4 * stride;
 
-                    indices.push(
+                    indices.set([
                         vertexIndex + 0, vertexIndex + 1, vertexIndex + 2,
                         vertexIndex + 0, vertexIndex + 2, vertexIndex + 3
-                    );
+                    ], iCursor);
+                    iCursor += 6;
                     vertexIndex += 4;
                 }
             }
@@ -467,6 +488,8 @@ class WebGLTextLayerRenderer extends WebGLLayerRenderer {
             const oR = outlineColor[0], oG = outlineColor[1], oB = outlineColor[2], oA = outlineColor[3];
 
             prevChar = null;
+
+            resizeArrays(text.length * 4 * stride, text.length * 6);
 
             for (let i = 0; i < text.length; i++) {
                 const char = text[i];
@@ -495,15 +518,19 @@ class WebGLTextLayerRenderer extends WebGLLayerRenderer {
                 const offY0 = -glyph.top;
                 const offY1 = offY0 + h;
 
-                vertices.push(x, y, u0, v0, offX0, offY0, 1, rotateWithView, rotation, scale, cR, cG, cB, cA, oR, oG, oB, oA, outlineWidth);
-                vertices.push(x, y, u1, v0, offX1, offY0, 1, rotateWithView, rotation, scale, cR, cG, cB, cA, oR, oG, oB, oA, outlineWidth);
-                vertices.push(x, y, u1, v1, offX1, offY1, 1, rotateWithView, rotation, scale, cR, cG, cB, cA, oR, oG, oB, oA, outlineWidth);
-                vertices.push(x, y, u0, v1, offX0, offY1, 1, rotateWithView, rotation, scale, cR, cG, cB, cA, oR, oG, oB, oA, outlineWidth);
+                vertices.set([
+                    x, y, u0, v0, offX0, offY0, 1, rotateWithView, rotation, scale, cR, cG, cB, cA, oR, oG, oB, oA, outlineWidth,
+                    x, y, u1, v0, offX1, offY0, 1, rotateWithView, rotation, scale, cR, cG, cB, cA, oR, oG, oB, oA, outlineWidth,
+                    x, y, u1, v1, offX1, offY1, 1, rotateWithView, rotation, scale, cR, cG, cB, cA, oR, oG, oB, oA, outlineWidth,
+                    x, y, u0, v1, offX0, offY1, 1, rotateWithView, rotation, scale, cR, cG, cB, cA, oR, oG, oB, oA, outlineWidth
+                ], vCursor);
+                vCursor += 4 * stride;
 
-                indices.push(
+                indices.set([
                     vertexIndex + 0, vertexIndex + 1, vertexIndex + 2,
                     vertexIndex + 0, vertexIndex + 2, vertexIndex + 3
-                );
+                ], iCursor);
+                iCursor += 6;
 
                 vertexIndex += 4;
                 currentOffsetX += glyph.advance + totalSpacing;
@@ -513,8 +540,8 @@ class WebGLTextLayerRenderer extends WebGLLayerRenderer {
 
 
 
-        this.verticesBuffer_.fromArray(vertices);
-        this.indicesBuffer_.fromArray(indices);
+        this.verticesBuffer_.setArray(vertices.subarray(0, vCursor));
+        this.indicesBuffer_.setArray(indices.subarray(0, iCursor));
 
         this.helper.flushBufferData(this.verticesBuffer_);
         this.helper.flushBufferData(this.indicesBuffer_);

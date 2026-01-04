@@ -33,8 +33,7 @@ class GlyphAtlas {
         this.fontFamily_ = fontFamily;
         this.fontWeight_ = fontWeight;
 
-        // TinySDF configuration
-        this.fontSize_ = 128; // Increased from 32 for better quality
+        this.fontSize_ = 128;
         this.buffer_ = 8;
         this.radius_ = 12;
         this.cutoff_ = 0.25;
@@ -60,21 +59,19 @@ class GlyphAtlas {
          */
         this.glyphs_ = new Map();
 
-        // Atlas canvas
         this.width_ = 2048;
         this.height_ = 2048;
         const context = createCanvasContext2D(this.width_, this.height_);
         this.context_ = context;
         this.canvas_ = context.canvas;
 
-        // Packing cursor
         this.cursorX_ = 0;
         this.cursorY_ = 0;
         this.rowHeight_ = 0;
     }
 
     /**
-     * @return {HTMLCanvasElement} The atlas canvas
+     * @return {HTMLCanvasElement | OffscreenCanvas} The atlas canvas
      */
     getCanvas() {
         return this.canvas_;
@@ -86,7 +83,6 @@ class GlyphAtlas {
      * @return {number} Kerning offset (usually negative)
      */
     getKerning(char1, char2) {
-        // Kerning is generally not applicable to CJK or if chars are missing
         if (!char1 || !char2) return 0;
 
         const key = char1 + char2;
@@ -94,15 +90,12 @@ class GlyphAtlas {
             return this.kerningCache_.get(key);
         }
 
-        // Use the atlas context for measurement
-        // Ensure font matches TinySDF settings
         this.context_.font = `${this.fontWeight_} ${this.fontSize_}px ${this.fontFamily_}`;
 
         const w1 = this.context_.measureText(char1).width;
         const w2 = this.context_.measureText(char2).width;
         const wTotal = this.context_.measureText(char1 + char2).width;
 
-        // Kerning is the difference. If "Te" fits in less width than "T" + "e", k is negative.
         const k = wTotal - (w1 + w2);
 
         this.kerningCache_.set(key, k);
@@ -137,28 +130,23 @@ class GlyphAtlas {
         const width = sdfData.width;
         const height = sdfData.height;
 
-        // Check if we need a new row
         if (this.cursorX_ + width > this.width_) {
             this.cursorX_ = 0;
             this.cursorY_ += this.rowHeight_;
             this.rowHeight_ = 0;
         }
 
-        // Check if atlas is full (super simple check)
         if (this.cursorY_ + height > this.height_) {
-            // Ideally we should resize, but for "super simple" we just warn
             console.warn('GlyphAtlas is full!');
             return null;
         }
-
-        // copy data to canvas
         const imgData = this.context_.createImageData(width, height);
         for (let i = 0; i < width * height; i++) {
             const val = sdfData.data[i];
             imgData.data[i * 4] = val;     // R
             imgData.data[i * 4 + 1] = val; // G
             imgData.data[i * 4 + 2] = val; // B
-            imgData.data[i * 4 + 3] = val; // A (using alpha for SDF is common, or RGB)
+            imgData.data[i * 4 + 3] = val; // A
         }
         this.context_.putImageData(imgData, this.cursorX_, this.cursorY_);
 
@@ -169,13 +157,12 @@ class GlyphAtlas {
             width: width,
             height: height,
             advance: sdfData.glyphAdvance,
-            top: sdfData.glyphTop, // Distance from top of glyph to baseline
-            left: sdfData.glyphLeft // Distance from left of glyph to origin
+            top: sdfData.glyphTop,
+            left: sdfData.glyphLeft
         };
 
         this.glyphs_.set(char, glyphInfo);
 
-        // Update cursor
         this.cursorX_ += width;
         this.rowHeight_ = Math.max(this.rowHeight_, height);
 
@@ -191,18 +178,9 @@ class GlyphAtlas {
             return this.glyphs_.get(char);
         }
 
-        // Draw a solid white block 
-        // 4x4 block with some buffer to avoid bleeding?
-        // Actually for SDF shader, a solid block implies distance = HIGH.
-        // We set the alpha to 255 (distance = 1.0?).
-        // In SDF, 0.5 is edge. 1.0 is inside. 0.0 is outside.
-        // If we want a solid rectangle, we want a region where distance > threshold everywhere.
-        // So we fill with 255.
-
         const width = 8;
         const height = 8;
 
-        // Check cursor
         if (this.cursorX_ + width > this.width_) {
             this.cursorX_ = 0;
             this.cursorY_ += this.rowHeight_;

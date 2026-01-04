@@ -12,7 +12,6 @@ const vectorSource = new Vector({
     wrapX: true,
 });
 
-// Single Feature for Showcase
 const testFeature = new Feature({
     geometry: new Point(fromLonLat([0, 0])),
     name: 'OpenLayers',
@@ -63,10 +62,8 @@ map = new Map({
     }),
 });
 
-// Initial creation
 createLayer('sans-serif', 'normal');
 
-// Helper to hex to rgb array [r,g,b,a]
 function hexToRgba(hex, alpha) {
     const r = parseInt(hex.slice(1, 3), 16) / 255;
     const g = parseInt(hex.slice(3, 5), 16) / 255;
@@ -74,7 +71,6 @@ function hexToRgba(hex, alpha) {
     return [r, g, b, parseFloat(alpha)];
 }
 
-// UI Handling functions
 function updateFeature() {
     const text = document.getElementById('textInput').value;
     const textSize = parseFloat(document.getElementById('textSize').value);
@@ -82,35 +78,27 @@ function updateFeature() {
     const spacing = parseFloat(document.getElementById('spacing').value);
     const visible = document.getElementById('visibility').checked;
 
-    // Fill
     const fillHex = document.getElementById('fillColor').value;
     const fillAlpha = document.getElementById('fillAlpha').value;
 
-    // Outline
     const outlineHex = document.getElementById('outlineColor').value;
     const outlineAlpha = document.getElementById('outlineAlpha').value;
     const outlineWidth = parseFloat(document.getElementById('outlineWidth').value);
 
-    // BG
     const bgHex = document.getElementById('bgColor').value;
     const bgAlpha = document.getElementById('bgAlpha').value;
-
-    // BG Outline
     const bgOHex = document.getElementById('bgOutlineColor').value;
     const bgOAlpha = document.getElementById('bgOutlineAlpha').value;
     const bgOWidth = parseFloat(document.getElementById('bgOutlineWidth').value);
 
-    // Update Labels
     document.getElementById('textSizeVal').textContent = textSize;
     document.getElementById('rotationVal').textContent = rotationDeg;
     document.getElementById('spacingVal').textContent = spacing;
     document.getElementById('outlineWidthVal').textContent = outlineWidth;
     document.getElementById('bgOutlineWidthVal').textContent = bgOWidth;
 
-    // Convert Rotation to Radians
     const rotationRad = rotationDeg * (Math.PI / 180);
 
-    // Set Properties
     testFeature.set('name', text);
     testFeature.set('textSize', textSize);
     testFeature.set('rotation', rotationRad);
@@ -124,7 +112,6 @@ function updateFeature() {
     testFeature.set('visible', visible);
 }
 
-// Global Re-create for Font
 document.getElementById('fontFamily').addEventListener('change', () => {
     const fam = document.getElementById('fontFamily').value;
     const weight = document.getElementById('fontWeight').value;
@@ -137,12 +124,10 @@ document.getElementById('fontWeight').addEventListener('change', () => {
     createLayer(fam, weight);
 });
 
-// Attach listeners
 const inputs = document.querySelectorAll('input');
 inputs.forEach(input => {
     input.addEventListener('input', updateFeature);
     input.addEventListener('change', updateFeature);
 });
 
-// Run once
 updateFeature();
