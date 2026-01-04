@@ -25,28 +25,29 @@ import Layer from './Layer.js';
  * @extends {Layer<import("../source/Vector.js").default, WebGLTextLayerRenderer>}
  */
 class WebGLTextLayer extends Layer {
-    /**
-     * @param {Options} options Options.
-     */
-    constructor(options) {
-        const baseOptions = Object.assign({}, options);
-        super(baseOptions);
-        this.style_ = options.style;
-    }
+  /**
+   * @param {Options} options Options.
+   */
+  constructor(options) {
+    const baseOptions = Object.assign({}, options);
+    super(baseOptions);
+    this.style_ = options.style;
+  }
 
-    /**
-     * @override
-     */
-    createRenderer() {
-        const style = /** @type {any} */ (this.style_);
-        const fontFamily = (style && style.fontFamily) ? style.fontFamily : 'sans-serif';
-        const fontWeight = (style && style.fontWeight) ? style.fontWeight : 'normal';
-        return new WebGLTextLayerRenderer(this, {
-            fontFamily: fontFamily,
-            fontWeight: fontWeight,
-            style: this.style_
-        });
-    }
+  /**
+   * @override
+   */
+  createRenderer() {
+    const style = /** @type {any} */ (this.style_);
+    const fontFamily =
+      style && style.fontFamily ? style.fontFamily : 'sans-serif';
+    const fontWeight = style && style.fontWeight ? style.fontWeight : 'normal';
+    return new WebGLTextLayerRenderer(this, {
+      fontFamily: fontFamily,
+      fontWeight: fontWeight,
+      style: this.style_,
+    });
+  }
 }
 
 export default WebGLTextLayer;
