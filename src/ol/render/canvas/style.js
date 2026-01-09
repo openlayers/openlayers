@@ -392,6 +392,12 @@ function buildStroke(flatStyle, prefix, context) {
     context,
   );
 
+  const evaluateOffset = numberEvaluator(
+    flatStyle,
+    prefix + 'stroke-offset',
+    context,
+  );
+
   const stroke = new Stroke();
   return function (context) {
     if (evaluateColor) {
@@ -436,6 +442,10 @@ function buildStroke(flatStyle, prefix, context) {
 
     if (evaluateMiterLimit) {
       stroke.setMiterLimit(evaluateMiterLimit(context));
+    }
+
+    if (evaluateOffset) {
+      stroke.setOffset(evaluateOffset(context));
     }
 
     return stroke;
