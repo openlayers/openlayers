@@ -1,6 +1,92 @@
 import {angleBetween} from '../../math.js';
 
 /**
+ * Offsets a line string to the left / right along its segments direction.
+ * Offset is applied to each segment of the line in the direciton of the segment normal (positive offset goes "right" relative to the line direction).
+ * For very sharp angles between segments, the function falls back to offsetting along the segment normal direction to avoid excessively long miters.
+ *
+ * Coordinates and the offset should be in the same units — either pixels or the same spatial reference system as the input line coordinates.
+ *
+ * @param {Array<number>} flatCoordinates Flat coordinates.
+ * @param {number} stride Stride.
+ * @param {number} offset Offset distance along the segment normal direction.
+ *   Positive values offset to the right relative to the direction of the line.
+ *   Negative values offset to the left.
+ * @param {boolean} isClosedRing If coordinates build a closed circle (in this the first and the last coordinate offsets will consider previous / next ring coordinate)
+ * @param {Array<number>} [dest] Destination coordinate array. If not provided a new one will be created
+ * @param {number} [destinationStride] Stride of destination coordinates. If unspecified, assumed to be same as the source coordinates stride.
+ * @return {Array<number>} Result flat coordinates of the offset line.
+ */
+export function offsetLineString(
+  flatCoordinates,
+  stride,
+  offset,
+  isClosedRing,
+  dest,
+  destinationStride,
+) {
+  dest = dest ?? [];
+  destinationStride = destinationStride ?? stride;
+
+  const firstPointX = flatCoordinates[0];
+  const firstPointY = flatCoordinates[1];
+  const secondToLastPointX = flatCoordinates[flatCoordinates.length - 4];
+  const secondToLastPointY = flatCoordinates[flatCoordinates.length - 3];
+  let x, y, prevX, prevY, nextX, nextY, offsetX, offsetY;
+
+  let i = 0;
+  for (let j = 0; j < flatCoordinates.length; j += stride) {
+    // 1. Detect previous and next coordinates of a current vertex
+    prevX = x;
+    prevY = y;
+    nextX = undefined;
+    nextY = undefined;
+    if (j + stride < flatCoordinates.length) {
+      nextX = flatCoordinates[j + stride];
+      nextY = flatCoordinates[j + stride + 1];
+    }
+    // First coordinate of a closed ring -> previous coordinate is the second to last one
+    if (isClosedRing && j === 0) {
+      prevX = secondToLastPointX;
+      prevY = secondToLastPointY;
+    }
+    // Last coordinate of a closed ring -> next coordinate is the first vertex of a line string
+    if (isClosedRing && j === flatCoordinates.length - 2) {
+      // last coordinate
+      nextX = firstPointX;
+      nextY = firstPointY;
+    }
+
+    // 2. Current vertex to offset
+    x = flatCoordinates[j];
+    y = flatCoordinates[j + 1];
+
+    // 3. Offset the vertex
+    [offsetX, offsetY] = offsetLineVertex(
+      x,
+      y,
+      prevX,
+      prevY,
+      nextX,
+      nextY,
+      offset,
+    );
+    dest[i++] = offsetX;
+    dest[i++] = offsetY;
+
+    // 4. Copy over other dimension values if any
+    for (let k = 2; k < destinationStride; k++) {
+      dest[i++] = flatCoordinates[j + k];
+    }
+  }
+
+  if (dest.length != i) {
+    dest.length = i;
+  }
+  return dest;
+}
+
+/**
  * Computes the offset of a single vertex of a line string.
  *
  * The function calculates a new vertex coordinate offset along the normal/miter direction of the line at this vertex.
