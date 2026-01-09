@@ -79,6 +79,7 @@ export function toContext(context, options) {
     canvas.style.width = size[0] + 'px';
     canvas.style.height = size[1] + 'px';
   }
+  /** @type {import('./extent.js').Extent} */
   const extent = [0, 0, canvas.width, canvas.height];
   const transform = scaleTransform(createTransform(), pixelRatio, pixelRatio);
   return new CanvasImmediateRenderer(context, pixelRatio, extent, transform, 0);
