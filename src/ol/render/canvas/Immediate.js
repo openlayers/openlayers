@@ -432,7 +432,7 @@ class CanvasImmediateRenderer extends VectorContext {
    * @param {number} end End.
    * @param {number} stride Stride.
    * @param {boolean} close Close.
-   * @param {number} strokeOffset Stroke Offset.
+   * @param {number} [strokeOffset] Stroke Offset.
    * @private
    * @return {number} end End.
    */
@@ -474,7 +474,7 @@ class CanvasImmediateRenderer extends VectorContext {
    * @param {number} offset Offset.
    * @param {Array<number>} ends Ends.
    * @param {number} stride Stride.
-   * @param {number} strokeOffset Stroke Offset.
+   * @param {number} [strokeOffset] Stroke Offset.
    * @private
    * @return {number} End.
    */
@@ -836,7 +836,7 @@ class CanvasImmediateRenderer extends VectorContext {
         0,
         /** @type {Array<number>} */ (geometry.getEnds()),
         geometry.getStride(),
-        this.strokeState_.strokeOffset,
+        this.strokeState_?.strokeOffset,
       );
       if (this.fillState_) {
         context.fill();
@@ -889,7 +889,7 @@ class CanvasImmediateRenderer extends VectorContext {
           offset,
           ends,
           stride,
-          this.strokeState_.strokeOffset,
+          this.strokeState_?.strokeOffset,
         );
       }
       if (this.fillState_) {
