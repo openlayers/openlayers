@@ -1,4 +1,4 @@
-import {angleBetween} from '../../math.js';
+import {angleBetween} from '../../coordinate.js';
 
 /**
  * Offsets a line string to the left / right along its segments direction.

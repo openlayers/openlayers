@@ -3,7 +3,7 @@
  * @module ol/render/webgl/bufferUtil
  */
 import earcut from 'earcut';
-import {angleBetween} from '../../math.js';
+import {angleBetween} from '../../coordinate.js';
 import {apply as applyTransform} from '../../transform.js';
 
 export const LINESTRING_ANGLE_COSINE_CUTOFF = 0.985;
