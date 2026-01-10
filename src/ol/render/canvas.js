@@ -33,6 +33,7 @@ import {clear} from '../obj.js';
  * @property {CanvasLineJoin} [currentLineJoin] Current LineJoin.
  * @property {number} [currentLineWidth] Current LineWidth.
  * @property {number} [currentMiterLimit] Current MiterLimit.
+ * @property {number} [currentStrokeOffset] Current StrokeOffset.
  * @property {number} [lastStroke] Last stroke.
  * @property {import("../colorlike.js").ColorLike} [fillStyle] FillStyle.
  * @property {import("../colorlike.js").ColorLike} [strokeStyle] StrokeStyle.
@@ -42,6 +43,7 @@ import {clear} from '../obj.js';
  * @property {CanvasLineJoin} [lineJoin] LineJoin.
  * @property {number} [lineWidth] LineWidth.
  * @property {number} [miterLimit] MiterLimit.
+ * @property {number} [strokeOffset] StrokeOffset.
  * @property {number} [fillPatternScale] Fill pattern scale.
  */
 
@@ -53,6 +55,7 @@ import {clear} from '../obj.js';
  * @property {CanvasLineJoin} lineJoin LineJoin.
  * @property {number} lineWidth LineWidth.
  * @property {number} miterLimit MiterLimit.
+ * @property {number} [strokeOffset] StrokeOffset.
  * @property {import("../colorlike.js").ColorLike} strokeStyle StrokeStyle.
  */
 
@@ -127,6 +130,12 @@ export const defaultLineJoin = 'round';
  * @type {number}
  */
 export const defaultMiterLimit = 10;
+
+/**
+ * @const
+ * @type {number}
+ */
+export const defaultStrokeOffset = 0;
 
 /**
  * @const
