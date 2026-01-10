@@ -85,6 +85,7 @@
     "../src/ol/geom/flat/interiorpoint.js",
     "../src/ol/geom/flat/interpolate.js",
     "../src/ol/geom/flat/intersectsextent.js",
+    "../src/ol/geom/flat/lineoffset.js",
     "../src/ol/geom/flat/segments.js",
     "../src/ol/geom/flat/simplify.js",
     "../src/ol/geom/flat/straightchunk.js",
