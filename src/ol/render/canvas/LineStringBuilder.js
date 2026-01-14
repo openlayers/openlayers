@@ -105,6 +105,7 @@ class CanvasLineStringBuilder extends CanvasBuilder {
     const state = this.state;
     const strokeStyle = state.strokeStyle;
     const lineWidth = state.lineWidth;
+    const strokeOffset = state.strokeOffset;
     if (strokeStyle === undefined || lineWidth === undefined) {
       return;
     }
@@ -133,6 +134,7 @@ class CanvasLineStringBuilder extends CanvasBuilder {
         offset,
         /** @type {number} */ (ends[i]),
         stride,
+        strokeOffset,
       );
     }
     this.hitDetectionInstructions.push(strokeInstruction);
