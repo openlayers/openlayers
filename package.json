@@ -129,7 +129,7 @@
     "pmtiles": "^4.0.1",
     "pngjs": "^7.0.0",
     "proj4": "2.20.2",
-    "puppeteer": "24.34.0",
+    "puppeteer": "24.35.0",
     "rollup": "^4.1.4",
     "rollup-plugin-external-globals": "^0.13.0",
     "semver": "^7.3.7",
