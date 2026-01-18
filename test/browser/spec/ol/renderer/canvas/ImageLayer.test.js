@@ -367,4 +367,155 @@ describe('ol/renderer/canvas/ImageLayer', function () {
       });
     });
   });
+
+  describe('cache invalidation on visibility change', function () {
+    /** @type {Map} */
+    let map;
+
+    /** @type {ImageLayer} */
+    let layer;
+
+    /** @type {Static} */
+    let source;
+
+    /** @type {HTMLDivElement} */
+    let target;
+
+    const projection = new Projection({
+      code: 'custom-image',
+      units: 'pixels',
+      extent: [0, 0, 256, 256],
+    });
+
+    beforeEach(function (done) {
+      target = document.createElement('div');
+      target.style.width = '100px';
+      target.style.height = '100px';
+      document.body.appendChild(target);
+
+      source = new Static({
+        url: 'spec/ol/data/osm-0-0-0.png',
+        projection: projection,
+        imageExtent: [0, 0, 256, 256],
+      });
+
+      layer = new ImageLayer({
+        source: source,
+      });
+
+      map = new Map({
+        target: target,
+        layers: [layer],
+        view: new View({
+          projection: projection,
+          center: [128, 128],
+          zoom: 0,
+        }),
+      });
+
+      source.on('imageloadend', function () {
+        done();
+      });
+    });
+
+    afterEach(function () {
+      disposeMap(map);
+    });
+
+    it('calls markUnrendered when layer becomes invisible', function () {
+      const renderer = layer.getRenderer();
+      const spy = sinonSpy(renderer, 'markUnrendered');
+
+      map.renderSync();
+      expect(spy.callCount).to.be(0);
+
+      layer.setVisible(false);
+      map.renderSync();
+      expect(spy.callCount).to.be(1);
+    });
+
+    it('only saves revision on first markUnrendered call', function () {
+      const renderer = layer.getRenderer();
+      map.renderSync();
+
+      layer.setVisible(false);
+      map.renderSync();
+      const savedRevision = renderer.revisionAtUnrender_;
+      expect(savedRevision).to.be.a('number');
+
+      source.changed();
+      const newRevision = source.getRevision();
+      expect(newRevision).to.be.greaterThan(savedRevision);
+
+      map.renderSync();
+      expect(renderer.revisionAtUnrender_).to.be(savedRevision);
+    });
+
+    it('invalidates cache when source changed while hidden', function () {
+      const renderer = layer.getRenderer();
+      map.renderSync();
+      expect(renderer.image).to.not.be(null);
+
+      layer.setVisible(false);
+      map.renderSync();
+
+      const savedRevision = renderer.revisionAtUnrender_;
+      expect(savedRevision).to.be.a('number');
+
+      source.changed();
+      expect(source.getRevision()).to.be.greaterThan(savedRevision);
+
+      let imageWasCleared = false;
+      const originalImage = renderer.image;
+      Object.defineProperty(renderer, 'image', {
+        get: function () {
+          return this._image;
+        },
+        set: function (value) {
+          if (value === null && this._image === originalImage) {
+            imageWasCleared = true;
+          }
+          this._image = value;
+        },
+        configurable: true,
+      });
+      renderer._image = originalImage;
+
+      layer.setVisible(true);
+      map.renderSync();
+      expect(imageWasCleared).to.be(true);
+      expect(renderer.revisionAtUnrender_).to.be(null);
+    });
+
+    it('preserves cached image when source unchanged while hidden', function () {
+      const renderer = layer.getRenderer();
+      map.renderSync();
+
+      const cachedImage = renderer.image;
+      expect(cachedImage).to.not.be(null);
+
+      layer.setVisible(false);
+      map.renderSync();
+
+      layer.setVisible(true);
+      map.renderSync();
+      expect(renderer.image).to.be(cachedImage);
+    });
+
+    it('does not clear cache when source changes while layer is visible', function () {
+      const renderer = layer.getRenderer();
+      map.renderSync();
+
+      expect(renderer.image).to.not.be(null);
+      expect(renderer.revisionAtUnrender_).to.be(null);
+
+      const cachedImage = renderer.image;
+
+      source.changed();
+      map.renderSync();
+
+      expect(renderer.revisionAtUnrender_).to.be(null);
+      expect(renderer.image).to.be(cachedImage);
+    });
+  });
 });
