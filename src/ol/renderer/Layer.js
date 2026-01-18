@@ -185,6 +185,12 @@ class LayerRenderer extends Observable {
   renderDeferred(frameState) {}
 
   /**
+   * Called when the layer is not visible during a map render.
+   * Subclasses can override this to handle cache invalidation.
+   */
+  markUnrendered() {}
+
+  /**
    * Clean up.
    * @override
    */

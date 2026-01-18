@@ -36,6 +36,12 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
      * @type {?import("../../Image.js").default}
      */
     this.image = null;
+
+    /**
+     * @private
+     * @type {number|null}
+     */
+    this.revisionAtUnrender_ = null;
   }
 
   /**
@@ -43,6 +49,21 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
    */
   getImage() {
     return !this.image ? null : this.image.getImage();
+  }
+
+  /**
+   * Called when the layer is not visible during a map render.
+   * Saves the current source revision to detect changes while hidden.
+   * @override
+   */
+  markUnrendered() {
+    if (this.revisionAtUnrender_ !== null) {
+      return;
+    }
+    const source = this.getLayer().getSource();
+    if (source) {
+      this.revisionAtUnrender_ = source.getRevision();
+    }
   }
 
   /**
@@ -75,6 +96,14 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
       !isEmpty(renderedExtent)
     ) {
       if (imageSource) {
+        if (
+          this.revisionAtUnrender_ !== null &&
+          this.revisionAtUnrender_ !== imageSource.getRevision()
+        ) {
+          this.image = null;
+        }
+        this.revisionAtUnrender_ = null;
+
         const projection = viewState.projection;
         const image = imageSource.getImage(
           renderedExtent,
@@ -91,6 +120,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
         }
       } else {
         this.image = null;
+        this.revisionAtUnrender_ = null;
       }
     }
 

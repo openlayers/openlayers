@@ -381,6 +381,7 @@ class Layer extends BaseLayer {
    */
   unrender() {
     this.rendered = false;
+    this.renderer_?.markUnrendered();
   }
 
   /** @return {string} Declutter */
