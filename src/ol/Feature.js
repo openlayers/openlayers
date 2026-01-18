@@ -54,7 +54,7 @@ import {listen, unlistenByKey} from './events.js';
  * import Point from 'ol/geom/Point.js';
  *
  * const feature = new Feature({
- *   `geometry`: new Polygon(polyCoords),
+ *   geometry: new Polygon(polyCoords),
  *   labelPoint: new Point(labelCoords),
  *   name: 'My Polygon',
  * });
