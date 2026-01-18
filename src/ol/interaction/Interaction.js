@@ -37,6 +37,8 @@ import InteractionProperty from './Property.js';
  * Although interactions do not have a DOM element, some of them do render
  * vectors and so are visible on the screen.
  * @api
+ * @template {Object<string, *>} [Properties=Object<string, *>]
+ * @extends {BaseObject<Properties>}
  */
 class Interaction extends BaseObject {
   /**

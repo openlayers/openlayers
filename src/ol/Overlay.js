@@ -108,6 +108,8 @@ const Property = {
  *     map.addOverlay(popup);
  *
  * @api
+ * @template {Object<string, *>} [Properties=Object<string, *>]
+ * @extends {BaseObject<Properties>}
  */
 class Overlay extends BaseObject {
   /**
