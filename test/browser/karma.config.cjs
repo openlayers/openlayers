@@ -54,6 +54,7 @@ module.exports = function (karma) {
     proxies: {
       '/spec/': '/base/spec/',
       '/wms': '/base/spec/ol/data/blank.png',
+      '/ogcapi/map': '/base/spec/ol/data/blank.png',
       '/ImageServer/exportImage': '/base/spec/ol/data/blank.png',
       '/MapServer/export': '/base/spec/ol/data/blank.png',
     },
