@@ -59,6 +59,8 @@ import LayerProperty from './Property.js';
  * is observable, and has get/set accessors.
  *
  * @api
+ * @template {Object<string, *>} [Properties=Object<string, *>]
+ * @extends {BaseObject<Properties>}
  */
 class BaseLayer extends BaseObject {
   /**

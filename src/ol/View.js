@@ -309,6 +309,8 @@ const DEFAULT_MIN_ZOOM = 0;
  * put back the view to a stable state;
  *
  * @api
+ * @template {Object<string, *>} [Properties=Object<string, *>]
+ * @extends {BaseObject<Properties>}
  */
 class View extends BaseObject {
   /**

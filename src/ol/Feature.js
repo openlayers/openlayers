@@ -54,7 +54,7 @@ import {listen, unlistenByKey} from './events.js';
  * import Point from 'ol/geom/Point.js';
  *
  * const feature = new Feature({
- *   geometry: new Polygon(polyCoords),
+ *   `geometry`: new Polygon(polyCoords),
  *   labelPoint: new Point(labelCoords),
  *   name: 'My Polygon',
  * });
@@ -71,6 +71,8 @@ import {listen, unlistenByKey} from './events.js';
  *
  * @api
  * @template {import("./geom/Geometry.js").default} [Geometry=import("./geom/Geometry.js").default]
+ * @template {Object<string, *>} [Properties=Object<string, *>]
+ * @extends {BaseObject<Properties>}
  */
 class Feature extends BaseObject {
   /**
