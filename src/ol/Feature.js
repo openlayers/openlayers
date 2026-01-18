@@ -24,7 +24,8 @@ import {listen, unlistenByKey} from './events.js';
 
 /***
  * @template {import("./geom/Geometry.js").default} [Geometry=import("./geom/Geometry.js").default]
- * @typedef {Object<string, *> & { geometry?: Geometry }} ObjectWithGeometry
+ * @template {Object<string, *>} [Properties=Object<string, *>]
+ * @typedef {Properties & { geometry?: Geometry }} ObjectWithGeometry
  */
 
 /**
@@ -76,7 +77,7 @@ import {listen, unlistenByKey} from './events.js';
  */
 class Feature extends BaseObject {
   /**
-   * @param {Geometry|ObjectWithGeometry<Geometry>} [geometryOrProperties]
+   * @param {Geometry|ObjectWithGeometry<Geometry, Properties>} [geometryOrProperties]
    *     You may pass a Geometry object directly, or an object literal containing
    *     properties. If you pass an object literal, you may include a Geometry
    *     associated with a `geometry` key.
