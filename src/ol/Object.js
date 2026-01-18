@@ -156,7 +156,11 @@ class BaseObject extends Observable {
    * @api
    */
   getProperties() {
-    return /** @type {Properties} */ (this.values_ && Object.assign({}, this.values_)) || {};
+    return (
+      /** @type {Properties} */ (
+        this.values_ && Object.assign({}, this.values_)
+      ) || {}
+    );
   }
 
   /**
