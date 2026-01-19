@@ -41,8 +41,6 @@ import {VOID} from '../functions.js';
  * examples/custom-controls for an example of how to do this.
  *
  * @api
- * @template {Object<string, *>} [Properties=Object<string, *>]
- * @extends {BaseObject<Properties>}
  */
 class Control extends BaseObject {
   /**

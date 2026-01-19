@@ -246,8 +246,6 @@ function setLayerMapProperty(layer, map) {
  * @fires import("./render/Event.js").default#postcompose
  * @fires import("./render/Event.js").default#rendercomplete
  * @api
- * @template {Object<string, *>} [Properties=Object<string, *>]
- * @extends {BaseObject<Properties>}
  */
 class Map extends BaseObject {
   /**

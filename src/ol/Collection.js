@@ -72,8 +72,6 @@ export class CollectionEvent extends Event {
  *
  * @template T
  * @api
- * @template {Object<string, *>} [Properties=Object<string, *>]
- * @extends {BaseObject<Properties>}
  */
 class Collection extends BaseObject {
   /**

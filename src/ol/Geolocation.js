@@ -116,8 +116,6 @@ export class GeolocationError extends BaseEvent {
  *
  * @fires GeolocationError
  * @api
- * @template {Object<string, *>} [Properties=Object<string, *>]
- * @extends {BaseObject<Properties>}
  */
 class Geolocation extends BaseObject {
   /**

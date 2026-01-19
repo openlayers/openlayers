@@ -61,11 +61,11 @@ import LayerProperty from './Property.js';
  *
  * @api
  * @template {Object<string, *>} [Properties=Object<string, *>]
- * @extends {BaseObject<Properties>}
+ * @extends {BaseObject<Options<NoInfer<Properties>>>}
  */
 class BaseLayer extends BaseObject {
   /**
-   * @param {Options<Properties>} options Layer options.
+   * @param {Options<NoInfer<Properties>>} options Layer options.
    */
   constructor(options) {
     super();
