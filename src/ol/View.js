@@ -309,6 +309,7 @@ const DEFAULT_MIN_ZOOM = 0;
  * put back the view to a stable state;
  *
  * @api
+ * @extends {BaseObject<ViewOptions>}
  */
 class View extends BaseObject {
   /**

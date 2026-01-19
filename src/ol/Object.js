@@ -85,11 +85,12 @@ export class ObjectEvent extends Event {
  * object.unset('foo').
  *
  * @fires ObjectEvent
+ * @template {Object<string, *>} [Properties=Object<string, *>]
  * @api
  */
 class BaseObject extends Observable {
   /**
-   * @param {Object<string, *>} [values] An object with key-value pairs.
+   * @param {NoInfer<Properties>} [values] An object with key-value pairs.
    */
   constructor(values) {
     super();
@@ -117,7 +118,7 @@ class BaseObject extends Observable {
 
     /**
      * @private
-     * @type {Object<string, *>|null}
+     * @type {Partial<NoInfer<Properties>>|null}
      */
     this.values_ = null;
 
@@ -151,16 +152,18 @@ class BaseObject extends Observable {
 
   /**
    * Get an object of all property names and values.
-   * @return {Object<string, *>} Object.
+   * @return {NoInfer<Properties>} Object.
    * @api
    */
   getProperties() {
-    return (this.values_ && Object.assign({}, this.values_)) || {};
+    return /** @type {NoInfer<Properties>} */ (
+      (this.values_ && Object.assign({}, this.values_)) || {}
+    );
   }
 
   /**
    * Get an object of all property names and values.
-   * @return {Object<string, *>?} Object.
+   * @return {Partial<NoInfer<Properties>>?} Object.
    */
   getPropertiesInternal() {
     return this.values_;
@@ -228,7 +231,7 @@ class BaseObject extends Observable {
   /**
    * Sets a collection of key-value pairs.  Note that this changes any existing
    * properties and adds new ones (it does not remove any existing properties).
-   * @param {Object<string, *>} values Values.
+   * @param {Partial<NoInfer<Properties>>} values Values.
    * @param {boolean} [silent] Update without triggering an event.
    * @api
    */

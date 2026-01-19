@@ -27,6 +27,7 @@ import LayerProperty from './Property.js';
  */
 
 /**
+ * @template {Object<string, *>} [Properties=Object<string, *>]
  * @typedef {Object} Options
  * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
  * @property {number} [opacity=1] Opacity (0, 1).
@@ -47,7 +48,7 @@ import LayerProperty from './Property.js';
  * be visible.
  * @property {BackgroundColor} [background] Background color for the layer. If not specified, no background
  * will be rendered.
- * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
+ * @property {Properties} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
  */
 
 /**
@@ -59,10 +60,12 @@ import LayerProperty from './Property.js';
  * is observable, and has get/set accessors.
  *
  * @api
+ * @template {Object<string, *>} [Properties=Object<string, *>]
+ * @extends {BaseObject<Options<NoInfer<Properties>>>}
  */
 class BaseLayer extends BaseObject {
   /**
-   * @param {Options} options Layer options.
+   * @param {Options<NoInfer<Properties>>} options Layer options.
    */
   constructor(options) {
     super();
