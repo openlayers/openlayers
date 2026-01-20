@@ -127,9 +127,10 @@ class TileSource extends Source {
 
   /**
    * @param {import("../proj/Projection.js").default} projection Projection.
+   * @param {number} [pixelRatio] Pixel ratio.
    * @return {number} Gutter.
    */
-  getGutterForProjection(projection) {
+  getGutterForProjection(projection, pixelRatio) {
     return 0;
   }
 
