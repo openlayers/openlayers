@@ -998,7 +998,7 @@ class Map extends BaseObject {
         return true;
       }
       const source = state.layer.getSource();
-      if (source && source.loading) {
+      if (source && (source.loading || source.getState() === 'loading')) {
         return true;
       }
     }
