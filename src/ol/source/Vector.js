@@ -301,6 +301,12 @@ class VectorSource extends Source {
      */
     this.featuresCollection_ = null;
 
+    /**
+     * @private
+     * @type {Object<string, import("../events.js").Listener>|null}
+     */
+    this.featureCollectionListeners_ = null;
+
     /** @type {Collection<FeatureType>} */
     let collection;
     /** @type {Array<FeatureType>} */
@@ -516,33 +522,53 @@ class VectorSource extends Source {
         }
       },
     );
-    collection.addEventListener(
-      CollectionEventType.ADD,
+
+    this.featuresCollection_ = collection;
+    this.featureCollectionListeners_ = {
       /**
        * @param {import("../Collection.js").CollectionEvent<FeatureType>} evt The collection event
        */
-      (evt) => {
+      [CollectionEventType.ADD]: (evt) => {
         if (!modifyingCollection) {
           modifyingCollection = true;
           this.addFeature(evt.element);
           modifyingCollection = false;
         }
       },
-    );
-    collection.addEventListener(
-      CollectionEventType.REMOVE,
       /**
        * @param {import("../Collection.js").CollectionEvent<FeatureType>} evt The collection event
        */
-      (evt) => {
+      [CollectionEventType.REMOVE]: (evt) => {
         if (!modifyingCollection) {
           modifyingCollection = true;
           this.removeFeature(evt.element);
           modifyingCollection = false;
         }
       },
-    );
-    this.featuresCollection_ = collection;
+    };
+
+    for (const collectionEventKey in this.featureCollectionListeners_) {
+      collection.addEventListener(
+        collectionEventKey,
+        this.featureCollectionListeners_[collectionEventKey],
+      );
+    }
+  }
+
+  /**
+   * Clean up.
+   * @override
+   */
+  disposeInternal() {
+    if (this.featuresCollection_ && this.featureCollectionListeners_) {
+      for (const collectionEventKey in this.featureCollectionListeners_) {
+        this.featuresCollection_.removeEventListener(
+          collectionEventKey,
+          this.featureCollectionListeners_[collectionEventKey],
+        );
+      }
+    }
+    super.disposeInternal();
   }
 
   /**
