@@ -286,8 +286,8 @@ class MouseWheelZoom extends Interaction {
         this.maxDelta_ * this.deltaPerZoom_,
       ) / this.deltaPerZoom_;
     if (view.getConstrainResolution() || this.constrainResolution_) {
-      // view has a zoom constraint, zoom by 1
-      delta = delta ? (delta > 0 ? 1 : -1) : 0;
+      // view has a zoom constraint, zoom by integer
+      delta = delta ? (delta > 0 ? Math.ceil(delta) : Math.floor(delta)) : 0;
     }
     zoomByDelta(
       view,
