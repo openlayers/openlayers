@@ -177,6 +177,78 @@ describe('ol/layer/Tile', function () {
     });
   });
 
+  describe('hidpi gutter', () => {
+    let map, target, layer, data;
+    beforeEach((done) => {
+      target = document.createElement('div');
+      target.style.width = '256px';
+      target.style.height = '256px';
+      document.body.appendChild(target);
+
+      layer = new TileLayer({
+        source: new TileWMS({
+          params: {
+            LAYERS: 'layer',
+          },
+          serverType: 'geoserver',
+          hidpi: true,
+          gutter: 20,
+          url: 'spec/ol/data/wms20@1.5x.png',
+        }),
+      });
+
+      map = new Map({
+        target: target,
+        pixelRatio: 1.5,
+        layers: [layer],
+        view: new View({
+          center: [0, 0],
+          zoom: 0,
+        }),
+      });
+
+      map.once('rendercomplete', () => done());
+    });
+
+    afterEach(() => {
+      disposeMap(map);
+    });
+
+    it('gets pixel data', () => {
+      data = layer.getData([76, 114]);
+      expect(data).to.be.a(Uint8ClampedArray);
+      expect(data.length).to.be(4);
+      expect(data[0]).to.be(77);
+      expect(data[1]).to.be(255);
+      expect(data[2]).to.be(77);
+      expect(data[3]).to.be(179);
+
+      data = layer.getData([76, 118]);
+      expect(data).to.be.a(Uint8ClampedArray);
+      expect(data.length).to.be(4);
+      expect(data[0]).to.be(255);
+      expect(data[1]).to.be(77);
+      expect(data[2]).to.be(77);
+      expect(data[3]).to.be(179);
+
+      data = layer.getData([80, 114]);
+      expect(data).to.be.a(Uint8ClampedArray);
+      expect(data.length).to.be(4);
+      expect(data[0]).to.be(255);
+      expect(data[1]).to.be(77);
+      expect(data[2]).to.be(77);
+      expect(data[3]).to.be(179);
+
+      data = layer.getData([80, 118]);
+      expect(data).to.be.a(Uint8ClampedArray);
+      expect(data.length).to.be(4);
+      expect(data[0]).to.be(77);
+      expect(data[1]).to.be(255);
+      expect(data[2]).to.be(77);
+      expect(data[3]).to.be(179);
+    });
+  });
+
   describe('frameState.animate after tile transition with layer opacity', function () {
     let target, map;
 
