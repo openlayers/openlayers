@@ -1481,16 +1481,50 @@ class Modify extends PointerInteraction {
         coordinates[depth[0]][segmentData.index + index] = vertex;
         segment[index] = vertex;
         break;
-      case 'Polygon':
+      case 'Polygon': {
         coordinates = geometry.getCoordinates();
-        coordinates[depth[0]][segmentData.index + index] = vertex;
+        const ring = coordinates[depth[0]];
+        const targetIndex = segmentData.index + index;
+
+        // Prevent duplicate change events when vertex already at position
+        if (
+          ring[targetIndex][0] === vertex[0] &&
+          ring[targetIndex][1] === vertex[1]
+        ) {
+          coordinates = null;
+        } else {
+          ring[targetIndex] = vertex;
+          if (targetIndex === 0) {
+            ring[ring.length - 1] = vertex;
+          } else if (targetIndex === ring.length - 1) {
+            ring[0] = vertex;
+          }
+        }
         segment[index] = vertex;
         break;
-      case 'MultiPolygon':
+      }
+      case 'MultiPolygon': {
         coordinates = geometry.getCoordinates();
-        coordinates[depth[1]][depth[0]][segmentData.index + index] = vertex;
+        const mRing = coordinates[depth[1]][depth[0]];
+        const mTargetIndex = segmentData.index + index;
+
+        // Prevent duplicate change events when vertex already at position
+        if (
+          mRing[mTargetIndex][0] === vertex[0] &&
+          mRing[mTargetIndex][1] === vertex[1]
+        ) {
+          coordinates = null;
+        } else {
+          mRing[mTargetIndex] = vertex;
+          if (mTargetIndex === 0) {
+            mRing[mRing.length - 1] = vertex;
+          } else if (mTargetIndex === mRing.length - 1) {
+            mRing[0] = vertex;
+          }
+        }
         segment[index] = vertex;
         break;
+      }
       case 'Circle':
         const circle = /** @type {import("../geom/Circle.js").default} */ (
           geometry
