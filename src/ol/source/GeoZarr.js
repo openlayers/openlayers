@@ -152,12 +152,21 @@ export default class GeoZarr extends DataTileSource {
       this.tileGrid = tileGrid;
       this.projection = projection;
       this.fillValue_ = fillValue;
-    } else if ('tile_matrix_set' in attributes.multiscales) {
+    }
+    if ('tile_matrix_set' in attributes.multiscales) {
+      // If available, use tile_matrix_set (legacy attributes) to get a tile grid, because it
+      // provides a better mapping of tiles to zarr chunks.
       const {tileGrid, projection} = getTileGridInfoFromLegacyAttributes(
         /** @type {LegacyDatasetAttributes} */ (attributes),
       );
       this.tileGrid = tileGrid;
-      this.projection = projection;
+      if (!this.projection) {
+        // If there were no required zarr conventions, we don't have a projection yet
+        this.projection = projection;
+      }
+    }
+    if (!this.tileGrid) {
+      throw new Error('Could not determine tile grid');
     }
 
     const extent = this.tileGrid.getExtent();
