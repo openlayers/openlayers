@@ -10,7 +10,7 @@ import GeoZarr from '../src/ol/source/GeoZarr.js';
 import OSM from '../src/ol/source/OSM.js';
 
 const source = new GeoZarr({
-  url: 'https://s3.explorer.eopf.copernicus.eu/esa-zarr-sentinel-explorer-fra/tests-output/sentinel-2-l2a-staging/S2B_MSIL2A_20251115T091139_N0511_R050_T35SLU_20251115T111807.zarr',
+  url: 'https://s3.explorer.eopf.copernicus.eu/esa-zarr-sentinel-explorer-fra/tests-output/sentinel-2-l2a/S2B_MSIL2A_20260120T125339_N0511_R138_T27VWL_20260120T131151.zarr',
   group: 'measurements/reflectance',
   bands: ['b11', 'b03', 'b02'],
 });
