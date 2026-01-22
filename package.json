@@ -48,7 +48,7 @@
   "dependencies": {
     "@types/rbush": "4.0.0",
     "earcut": "^3.0.0",
-    "geotiff": "^3.0.0",
+    "geotiff": "^3.0.0-beta.3",
     "pbf": "4.0.1",
     "rbush": "^4.0.0",
     "zarrita": "^0.6.0"
