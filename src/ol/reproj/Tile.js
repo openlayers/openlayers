@@ -233,7 +233,7 @@ class ReprojTile extends Tile {
       }
 
       const sourceExtents = wrapAndSliceX(
-        sourceExtent.slice(),
+        /** @type {import('../extent.js').Extent} */ (sourceExtent.slice()),
         sourceProj,
         true,
       );
