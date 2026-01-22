@@ -5,15 +5,16 @@ shortdesc: A GeoZarr source displaying Sentinel-2 imagery.
 docs: >
 
   The GeoZarr source can be used to read groups of multi-band data from Zarr files following the [GeoZarr specification](https://github.com/zarr-developers/geozarr-spec).
-  The Venice scene uses the first version of the spec, which contains an OGC TileMatrixSet definition. The Crete scene uses the latest version of the spec and follows the [Multiscales convention](https://github.com/zarr-conventions/multiscales).
-
-
-  To try different scenes, browse to the [Sentinel-2 Level-2A](https://api.explorer.eopf.copernicus.eu/browser/external/api.explorer.eopf.copernicus.eu/stac/collections/sentinel-2-l2a) catalog of the EOPF Explorer, find a Zarr store, and paste the url after selecting "Custom..." from the dropdown above.
+  GeoZarrs following the [Multiscales convention](https://github.com/zarr-conventions/multiscales) are supported. Legacy multiscales GeoZarrs with an OGC TileMatrixSet definition also work.
 
 
   In this example, a true-color composite is rendered from Sentinel-2 L2A bands B02 (blue), B03 (green), and B04 (red) reflectance values.
   Reflectance values from 0 to 0.5 are stretched to values between 0 and 255 for the RGB color channels; and values that are all zero are
   made transparent (with 0 in the alpha channel). A gamma correction is also made to brighten the image.
+
+
+  To try different scenes, browse to the [Sentinel-2 Level-2A](https://api.explorer.eopf.copernicus.eu/browser/external/api.explorer.eopf.copernicus.eu/stac/collections/sentinel-2-l2a) catalog of the EOPF Explorer, find a Zarr store, and paste the url after selecting "Custom..." from the dropdown above.
+  Note that only GeoZarrs with a 'measurements/reflectance' group and bands 'b02', 'b03', and 'b04' will work without changes to the source code.
 
 tags: "zarr, geozarr, sentinel-2"
 experimental: true
@@ -24,8 +25,8 @@ experimental: true
     <div class="input-group">
       <label class="input-group-text" for="url-select">URL</label>
       <select class="form-select" id="url-select">
-        <option value="https://s3.explorer.eopf.copernicus.eu/esa-zarr-sentinel-explorer-fra/tests-output/sentinel-2-l2a/S2A_MSIL2A_20251107T100231_N0511_R122_T32TQR_20251107T115310.zarr">Sentinel-2 L2A (Venice)</option>
-        <option value="https://s3.explorer.eopf.copernicus.eu/esa-zarr-sentinel-explorer-fra/tests-output/sentinel-2-l2a-staging/S2B_MSIL2A_20251115T091139_N0511_R050_T35SLU_20251115T111807.zarr">Sentinel-2 L2A (Crete)</option>
+        <option value="https://s3.explorer.eopf.copernicus.eu/esa-zarr-sentinel-explorer-fra/tests-output/sentinel-2-l2a/S2C_MSIL2A_20260120T084301_N0511_R064_T36UXA_20260120T122910.zarr">Sentinel-2 L2A (Krasnokuts'k)</option>
+        <option value="https://s3.explorer.eopf.copernicus.eu/esa-zarr-sentinel-explorer-fra/tests-output/sentinel-2-l2a/S2B_MSIL2A_20260120T125339_N0511_R138_T27VWL_20260120T131151.zarr">Sentinel-2 L2A (Hvolsvöllur)</option>
         <option value="custom">Custom...</option>
       </select>
       <input type="text" class="form-control" id="custom-url" placeholder="Enter Zarr URL" style="display: none; width: 300px;">

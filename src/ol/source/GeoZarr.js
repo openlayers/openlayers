@@ -152,12 +152,21 @@ export default class GeoZarr extends DataTileSource {
       this.tileGrid = tileGrid;
       this.projection = projection;
       this.fillValue_ = fillValue;
-    } else if ('tile_matrix_set' in attributes.multiscales) {
+    }
+    if ('tile_matrix_set' in attributes.multiscales) {
+      // If available, use tile_matrix_set (legacy attributes) to get a tile grid, because it
+      // provides a better mapping of tiles to zarr chunks.
       const {tileGrid, projection} = getTileGridInfoFromLegacyAttributes(
         /** @type {LegacyDatasetAttributes} */ (attributes),
       );
       this.tileGrid = tileGrid;
-      this.projection = projection;
+      if (!this.projection) {
+        // If there were no required zarr conventions, we don't have a projection yet
+        this.projection = projection;
+      }
+    }
+    if (!this.tileGrid) {
+      throw new Error('Could not determine tile grid');
     }
 
     const extent = this.tileGrid.getExtent();
@@ -423,6 +432,27 @@ function composeData(
               const valueCol = Math.round(chunkCol);
               if (valueRow < chunkRowCount && valueCol < chunkColCount) {
                 value = chunk.data[valueRow * chunkColCount + valueCol];
+              }
+              break;
+            }
+            case 'linear': {
+              const row0 = Math.floor(chunkRow);
+              const col0 = Math.floor(chunkCol);
+              if (row0 < chunkRowCount && col0 < chunkColCount) {
+                const row1 = Math.min(row0 + 1, chunkRowCount - 1);
+                const col1 = Math.min(col0 + 1, chunkColCount - 1);
+
+                const v00 = chunk.data[row0 * chunkColCount + col0];
+                const v01 = chunk.data[row0 * chunkColCount + col1];
+                const v10 = chunk.data[row1 * chunkColCount + col0];
+                const v11 = chunk.data[row1 * chunkColCount + col1];
+
+                const dx = chunkCol - col0;
+                const dy = chunkRow - row0;
+
+                value =
+                  (1 - dy) * ((1 - dx) * v00 + dx * v01) +
+                  dy * ((1 - dx) * v10 + dx * v11);
               }
               break;
             }
