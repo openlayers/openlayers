@@ -6,7 +6,7 @@ const source = new GeoTIFF({
   sources: [
     {
       url: 'https://openlayers.org/data/raster/no-overviews.tif',
-      overviews: ['https://openlayers.org/data/raster/no-overviews.tif.ovr'],
+      overviews: ['https://openlayers.org/data/raster/no-overviews.ovr.tif'],
     },
   ],
 });
