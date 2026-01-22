@@ -182,7 +182,7 @@ function getResolutions(image, referenceImage) {
  * @return {import("../proj/Projection.js").default} The image projection.
  */
 function getProjection(image) {
-  const geoKeys = image.fileDirectory.parseGeoKeyDirectory();
+  const geoKeys = image.getGeoKeys();
   if (!geoKeys) {
     return null;
   }
@@ -910,10 +910,10 @@ class GeoTIFFSource extends DataTile {
   /**
    * @param {import("../size.js").Size} sourceTileSize The source tile size.
    * @param {Array} sourceSamples The source samples.
-   * @return {import("../DataTile.js").Data} The composed tile data.
+   * @return {Promise<import("../DataTile.js").Data>} The composed tile data.
    * @private
    */
-  composeTile_(sourceTileSize, sourceSamples) {
+  async composeTile_(sourceTileSize, sourceSamples) {
     const metadata = this.metadata_;
     const sourceInfo = this.sourceInfo_;
     const sourceCount = this.sourceImagery_.length;
@@ -944,7 +944,7 @@ class GeoTIFFSource extends DataTile {
         let max = source.max;
         let gain, bias;
         if (normalize) {
-          const stats = metadata[sourceIndex][0];
+          const stats = await metadata[sourceIndex][0];
           if (min === undefined) {
             if (stats && STATISTICS_MINIMUM in stats) {
               min = parseFloat(stats[STATISTICS_MINIMUM]);
