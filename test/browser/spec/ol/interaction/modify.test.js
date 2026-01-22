@@ -16,6 +16,7 @@ import Circle from '../../../../../src/ol/geom/Circle.js';
 import GeometryCollection from '../../../../../src/ol/geom/GeometryCollection.js';
 import LineString from '../../../../../src/ol/geom/LineString.js';
 import MultiPoint from '../../../../../src/ol/geom/MultiPoint.js';
+import MultiPolygon from '../../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../../src/ol/geom/Point.js';
 import Polygon, {fromExtent} from '../../../../../src/ol/geom/Polygon.js';
 import Modify, {ModifyEvent} from '../../../../../src/ol/interaction/Modify.js';
@@ -879,7 +880,7 @@ describe('ol.interaction.Modify', function () {
       validateEvents(events, [feature]);
     });
 
-    it('clicking with drag should add vertex and +r3', function () {
+    it('clicking with drag should add vertex and +r2', function () {
       expect(feature.getGeometry().getRevision()).to.equal(1);
       expect(feature.getGeometry().getCoordinates()[0]).to.have.length(5);
 
@@ -889,7 +890,7 @@ describe('ol.interaction.Modify', function () {
       simulateEvent('pointerdrag', 30, -20, null, 0);
       simulateEvent('pointerup', 30, -20, null, 0);
 
-      expect(feature.getGeometry().getRevision()).to.equal(4);
+      expect(feature.getGeometry().getRevision()).to.equal(3);
       expect(feature.getGeometry().getCoordinates()[0]).to.have.length(6);
 
       validateEvents(events, [feature]);
@@ -1897,6 +1898,96 @@ describe('ol.interaction.Modify', function () {
           [100, -100], // traced point
         ],
       ]);
+    });
+  });
+
+  describe('polygon first/last vertex synchronization', function () {
+    it('keeps first and last vertex synchronized when dragging first vertex of Polygon', function () {
+      const polygonFeature = new Feature({
+        geometry: new Polygon([
+          [
+            [0, 0],
+            [10, 0],
+            [10, 10],
+            [0, 10],
+            [0, 0],
+          ],
+        ]),
+      });
+      features.length = 0;
+      features.push(polygonFeature);
+
+      const modify = new Modify({
+        features: new Collection(features),
+      });
+      map.addInteraction(modify);
+
+      const invalidStates = [];
+      polygonFeature.on('change', function () {
+        const coords = polygonFeature.getGeometry().getCoordinates()[0];
+        const first = coords[0];
+        const last = coords[coords.length - 1];
+        if (first[0] !== last[0] || first[1] !== last[1]) {
+          invalidStates.push({first: first.slice(), last: last.slice()});
+        }
+      });
+
+      simulateEvent('pointermove', 0, 0, null, 0);
+      simulateEvent('pointerdown', 0, 0, null, 0);
+      simulateEvent('pointermove', 5, -5, null, 0);
+      simulateEvent('pointerdrag', 5, -5, null, 0);
+      simulateEvent('pointerup', 5, -5, null, 0);
+
+      expect(invalidStates.length).to.be(0);
+
+      const finalCoords = polygonFeature.getGeometry().getCoordinates()[0];
+      expect(finalCoords[0]).to.eql(finalCoords[finalCoords.length - 1]);
+    });
+
+    it('keeps first and last vertex synchronized when dragging first vertex of MultiPolygon', function () {
+      const multiPolygonFeature = new Feature({
+        geometry: new MultiPolygon([
+          [
+            [
+              [0, 0],
+              [10, 0],
+              [10, 10],
+              [0, 10],
+              [0, 0],
+            ],
+          ],
+        ]),
+      });
+      features.length = 0;
+      features.push(multiPolygonFeature);
+
+      const modify = new Modify({
+        features: new Collection(features),
+      });
+      map.addInteraction(modify);
+
+      const invalidStates = [];
+      multiPolygonFeature.on('change', function () {
+        const ring = multiPolygonFeature.getGeometry().getCoordinates()[0][0];
+        const first = ring[0];
+        const last = ring[ring.length - 1];
+        if (first[0] !== last[0] || first[1] !== last[1]) {
+          invalidStates.push({first: first.slice(), last: last.slice()});
+        }
+      });
+
+      simulateEvent('pointermove', 0, 0, null, 0);
+      simulateEvent('pointerdown', 0, 0, null, 0);
+      simulateEvent('pointermove', 5, -5, null, 0);
+      simulateEvent('pointerdrag', 5, -5, null, 0);
+      simulateEvent('pointerup', 5, -5, null, 0);
+
+      expect(invalidStates.length).to.be(0);
+
+      const finalCoords = multiPolygonFeature
+        .getGeometry()
+        .getCoordinates()[0][0];
+      expect(finalCoords[0]).to.eql(finalCoords[finalCoords.length - 1]);
     });
   });
 });
