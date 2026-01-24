@@ -444,7 +444,7 @@ class GeoTIFFSource extends DataTile {
     this.nodataValues_;
 
     /**
-     * @type {Array<Array<GDALMetadata>>}
+     * @type {Array<Array<Promise<GDALMetadata>>>}
      * @private
      */
     this.metadata_;
