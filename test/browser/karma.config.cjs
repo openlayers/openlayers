@@ -28,13 +28,6 @@ module.exports = function (karma) {
     },
     files: [
       {
-        pattern: path.resolve(
-          __dirname,
-          require.resolve('jquery/dist/jquery.js'),
-        ),
-        watched: false,
-      },
-      {
         pattern: path.resolve(__dirname, require.resolve('expect.js/index.js')),
         watched: false,
       },
