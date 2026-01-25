@@ -54,11 +54,10 @@ const TranslateEventType = {
  * function will be called for each layer in the map and should return
  * `true` for layers that you want to be translatable. If the option is
  * absent, all visible layers will be considered translatable.
- * Not used if `features` is provided.
  * @property {FilterFunction} [filter] A function
  * that takes a {@link module:ol/Feature~Feature} and an
  * {@link module:ol/layer/Layer~Layer} and returns `true` if the feature may be
- * translated or `false` otherwise. Not used if `features` is provided.
+ * translated or `false` otherwise.
  * @property {number} [hitTolerance=0] Hit-detection tolerance. Pixels inside the radius around the given position
  * will be checked for features.
  */
@@ -177,7 +176,7 @@ class Translate extends PointerInteraction {
 
     /** @type {function(import("../layer/Layer.js").default<import("../source/Source").default>): boolean} */
     let layerFilter;
-    if (options.layers && !this.features_) {
+    if (options.layers) {
       if (typeof options.layers === 'function') {
         layerFilter = options.layers;
       } else {
@@ -200,7 +199,7 @@ class Translate extends PointerInteraction {
      * @private
      * @type {FilterFunction}
      */
-    this.filter_ = options.filter && !this.features_ ? options.filter : TRUE;
+    this.filter_ = options.filter ? options.filter : TRUE;
 
     /**
      * @private
