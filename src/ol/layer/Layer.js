@@ -30,6 +30,7 @@ import LayerProperty from './Property.js';
 
 /**
  * @template {import("../source/Source.js").default} [SourceType=import("../source/Source.js").default]
+ * @template {Object<string, *>} [Properties=Object<string, *>]
  * @typedef {Object} Options
  * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
  * @property {number} [opacity=1] Opacity (0, 1).
@@ -54,7 +55,7 @@ import LayerProperty from './Property.js';
  * @property {import("../Map.js").default|null} [map] Map.
  * @property {RenderFunction} [render] Render function. Takes the frame state as input and is expected to return an
  * HTML element. Will overwrite the default rendering for the layer.
- * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
+ * @property {Properties} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
  */
 
 /**
@@ -95,11 +96,13 @@ import LayerProperty from './Property.js';
  *
  * @template {import("../source/Source.js").default} [SourceType=import("../source/Source.js").default]
  * @template {import("../renderer/Layer.js").default} [RendererType=import("../renderer/Layer.js").default]
+ * @template {Object<string, *>} [Properties=Object<string, *>]
+ * @extends {BaseLayer<NoInfer<Properties>>}
  * @api
  */
 class Layer extends BaseLayer {
   /**
-   * @param {Options<SourceType>} options Layer options.
+   * @param {Options<SourceType, NoInfer<Properties>>} options Layer options.
    */
   constructor(options) {
     const baseOptions = Object.assign({}, options);

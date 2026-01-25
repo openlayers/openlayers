@@ -61,7 +61,7 @@ import LayerProperty from './Property.js';
  *
  * @api
  * @template {Object<string, *>} [Properties=Object<string, *>]
- * @extends {BaseObject<Options<NoInfer<Properties>>>}
+ * @extends {BaseObject<NoInfer<Properties> & Object<string, *>>}
  */
 class BaseLayer extends BaseObject {
   /**
@@ -92,7 +92,7 @@ class BaseLayer extends BaseObject {
     this.background_ = options.background;
 
     /**
-     * @type {Object<string, *>}
+     * @type {?}
      */
     const properties = Object.assign({}, options);
     if (typeof options.properties === 'object') {
