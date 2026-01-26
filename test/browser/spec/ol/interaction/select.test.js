@@ -177,6 +177,30 @@ describe('ol.interaction.Select', function () {
       expect(features.getLength()).to.equal(1);
     });
 
+    it('deselects before select', function () {
+      const feature = source.getFeatures()[0];
+      const geometry = feature.getGeometry().clone();
+      geometry.translate(-40, 0);
+      feature.setGeometry(geometry);
+      map.renderSync();
+
+      const features = select.getFeatures();
+      const listenerSpy = sinonSpy(function (e) {
+        expect(features.getLength()).to.be.lessThan(2);
+      });
+      features.on(['add', 'remove'], listenerSpy);
+
+      simulateEvent(MapBrowserEventType.SINGLECLICK, 10, -20);
+      simulateEvent(MapBrowserEventType.SINGLECLICK, -10, -21);
+
+      expect(listenerSpy.callCount).to.be(3);
+      expect(listenerSpy.getCall(0).args[0].type).to.be('add');
+      expect(listenerSpy.getCall(1).args[0].type).to.be('remove');
+      expect(listenerSpy.getCall(2).args[0].type).to.be('add');
+
+      expect(features.getLength()).to.be(1);
+    });
+
     it('select with shift single-click', function () {
       const listenerSpy = sinonSpy(function (e) {
         expect(e.selected).to.have.length(1);
