@@ -9,7 +9,6 @@ import Event from '../events/Event.js';
 import {never, shiftKeyOnly, singleClick} from '../events/condition.js';
 import {TRUE} from '../functions.js';
 import VectorLayer from '../layer/Vector.js';
-import {clear} from '../obj.js';
 import {createEditingStyle} from '../style/Style.js';
 import {getUid} from '../util.js';
 import Interaction from './Interaction.js';
@@ -392,6 +391,7 @@ class Select extends Interaction {
     if (this.style_) {
       this.restorePreviousStyle_(evt.element);
     }
+    this.removeFeatureLayerAssociation_(evt.element);
   }
 
   /**
@@ -528,7 +528,6 @@ class Select extends Interaction {
       return;
     }
     features.remove(feature);
-    this.removeFeatureLayerAssociation_(feature);
     deselected?.push(feature);
     return feature;
   }
@@ -570,11 +569,10 @@ class Select extends Interaction {
    * @api
    */
   clearSelection() {
-    clear(this.featureLayerAssociation_);
     const features = this.getFeatures();
-    const deselected = features.getArray().slice(); // shallow copy
-    features.clear();
-    if (deselected.length !== 0) {
+    if (features.getLength() !== 0) {
+      const deselected = features.getArray().slice(); // shallow copy
+      features.clear();
       this.dispatchEvent(
         new SelectEvent(SelectEventType.SELECT, [], deselected, undefined),
       );
