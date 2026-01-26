@@ -18,7 +18,7 @@ describe('ol.interaction.Select', function () {
   const width = 360;
   const height = 180;
 
-  beforeEach(function (done) {
+  beforeEach(function () {
     target = document.createElement('div');
 
     const style = target.style;
@@ -77,9 +77,7 @@ describe('ol.interaction.Select', function () {
       }),
     });
 
-    map.once('postrender', function () {
-      done();
-    });
+    map.renderSync();
   });
 
   afterEach(function () {
@@ -381,6 +379,18 @@ describe('ol.interaction.Select', function () {
       interaction.getFeatures().push(feature);
       const layerWithSelectedFeature = interaction.getLayer(feature);
       expect(layerWithSelectedFeature).to.equal(layer);
+    });
+
+    it('removes layer association when removing feature programmatically from collection', function () {
+      const features = interaction.getFeatures();
+      const feature = source.getFeatures()[0];
+      interaction.selectFeature(feature);
+      expect(features.getArray()).to.not.be.empty();
+      features.forEach((f) => expect(interaction.getLayer(f)).to.be.ok());
+
+      features.clear();
+      expect(features.getArray()).to.be.empty();
+      expect(interaction.getLayer(feature)).to.be(undefined);
     });
   });
 
