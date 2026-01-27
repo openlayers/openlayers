@@ -481,10 +481,11 @@ class Select extends Interaction {
       return false;
     }
     const features = this.getFeatures();
-    if (!features.getArray().includes(feature)) {
-      this.addFeatureLayerAssociation_(feature, layer);
-      features.push(feature);
+    if (features.getArray().includes(feature)) {
+      return false;
     }
+    this.addFeatureLayerAssociation_(feature, layer);
+    features.push(feature);
     this.dispatchEvent(
       new SelectEvent(SelectEventType.SELECT, [feature], [], undefined),
     );
