@@ -614,10 +614,12 @@ describe('ol.interaction.Select', function () {
           expect(listenerSpy.args[0][0].selected).to.have.length(0);
         });
         it("doesn't error on repeated calls with the same feature", function () {
-          select.deselectFeature(feature);
-          select.deselectFeature(feature);
+          const result1 = select.deselectFeature(feature);
+          const result2 = select.deselectFeature(feature);
+          expect(result1).to.be(true);
+          expect(result2).to.be(false);
 
-          expect(selected).to.have.length(0);
+          expect(selected).to.be.empty();
         });
       });
 
@@ -713,6 +715,17 @@ describe('ol.interaction.Select', function () {
           expect(selected).to.have.length(2);
           expect(selected[0].get('type')).to.be('bar');
           expect(selected[1].get('type')).to.be('bar');
+        });
+        it('does not fire select event for feature already selected', function () {
+          const spy = sinonSpy();
+          select.on('select', spy);
+          const result1 = select.selectFeature(allFeatures[0]);
+          expect(result1).to.be(true);
+          expect(spy.callCount).to.be(1);
+
+          const result2 = select.selectFeature(allFeatures[0]);
+          expect(result2).to.be(false);
+          expect(spy.callCount).to.be(1);
         });
       });
       describe('using #toggleFeature(feature)', function () {
