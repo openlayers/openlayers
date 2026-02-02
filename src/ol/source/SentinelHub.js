@@ -542,12 +542,17 @@ class SentinelHub extends DataTileSource {
     if (!this.token_ || !this.evalscript_ || !this.inputData_) {
       return;
     }
+    this.setKey(this.getKeyForConfig_());
     const state = this.getState();
     if (state === 'ready') {
       this.changed();
       return;
     }
     this.setState('ready');
+  }
+
+  getKeyForConfig_() {
+    return this.token_ + this.evalscript_ + JSON.stringify(this.inputData_);
   }
 
   /**
