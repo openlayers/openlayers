@@ -1811,6 +1811,7 @@ describe('ol/View', function () {
         resolutions: [200, 100, 50, 20, 10, 5, 2, 1],
         zoom: 5,
       });
+      view.setViewportSize([100, 100]);
     });
     it('fits correctly to the geometry (with unconstrained resolution)', function () {
       view.fit(
@@ -1980,6 +1981,31 @@ describe('ol/View', function () {
           },
         },
       );
+    });
+  });
+
+  describe('fit async', function () {
+    let view;
+    beforeEach(function () {
+      view = new View();
+    });
+
+    it('fits to the extent after viewport has been set', function (done) {
+      let promiseResolved = false;
+
+      view.fit([1000, 1000, 2000, 2000]).then(() => {
+        promiseResolved = true;
+
+        expect(promiseResolved).to.be(true);
+        expect(view.getResolution()).to.be(10 / 3);
+        expect(view.getCenter()[0]).to.be(1500);
+        expect(view.getCenter()[1]).to.be(1500);
+        done();
+      });
+      expect(view.getResolution()).to.be(undefined);
+      expect(promiseResolved).to.be(false);
+
+      view.setViewportSize([300, 300]);
     });
   });
 
