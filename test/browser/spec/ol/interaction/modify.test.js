@@ -1,9 +1,12 @@
 import {spy as sinonSpy} from 'sinon';
 import Collection from '../../../../../src/ol/Collection.js';
+import CollectionEventType from '../../../../../src/ol/CollectionEventType.js';
 import Feature from '../../../../../src/ol/Feature.js';
 import Map from '../../../../../src/ol/Map.js';
 import MapBrowserEvent from '../../../../../src/ol/MapBrowserEvent.js';
+import ObjectEventType from '../../../../../src/ol/ObjectEventType.js';
 import View from '../../../../../src/ol/View.js';
+import EventType from '../../../../../src/ol/events/EventType.js';
 import {
   click,
   doubleClick,
@@ -13,6 +16,7 @@ import Circle from '../../../../../src/ol/geom/Circle.js';
 import GeometryCollection from '../../../../../src/ol/geom/GeometryCollection.js';
 import LineString from '../../../../../src/ol/geom/LineString.js';
 import MultiPoint from '../../../../../src/ol/geom/MultiPoint.js';
+import MultiPolygon from '../../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../../src/ol/geom/Point.js';
 import Polygon, {fromExtent} from '../../../../../src/ol/geom/Polygon.js';
 import Modify, {ModifyEvent} from '../../../../../src/ol/interaction/Modify.js';
@@ -24,6 +28,7 @@ import {
   useGeographic,
 } from '../../../../../src/ol/proj.js';
 import VectorSource from '../../../../../src/ol/source/Vector.js';
+import VectorEventType from '../../../../../src/ol/source/VectorEventType.js';
 import CircleStyle from '../../../../../src/ol/style/Circle.js';
 import Fill from '../../../../../src/ol/style/Fill.js';
 import Style from '../../../../../src/ol/style/Style.js';
@@ -875,7 +880,7 @@ describe('ol.interaction.Modify', function () {
       validateEvents(events, [feature]);
     });
 
-    it('clicking with drag should add vertex and +r3', function () {
+    it('clicking with drag should add vertex and +r2', function () {
       expect(feature.getGeometry().getRevision()).to.equal(1);
       expect(feature.getGeometry().getCoordinates()[0]).to.have.length(5);
 
@@ -885,7 +890,7 @@ describe('ol.interaction.Modify', function () {
       simulateEvent('pointerdrag', 30, -20, null, 0);
       simulateEvent('pointerup', 30, -20, null, 0);
 
-      expect(feature.getGeometry().getRevision()).to.equal(4);
+      expect(feature.getGeometry().getRevision()).to.equal(3);
       expect(feature.getGeometry().getCoordinates()[0]).to.have.length(6);
 
       validateEvents(events, [feature]);
@@ -1607,6 +1612,221 @@ describe('ol.interaction.Modify', function () {
     });
   });
 
+  describe('Feature filter', function () {
+    let firstRevision, modify, lineFeature;
+
+    beforeEach(function () {
+      source.clear();
+      lineFeature = new Feature({
+        geometry: new LineString([
+          [0, 0],
+          [10, 20],
+          [0, 40],
+          [40, 40],
+          [40, 0],
+        ]),
+      });
+      source.addFeature(lineFeature);
+
+      modify = new Modify({
+        source,
+        filter: (feature) => {
+          return feature.get('someProp') !== 'disqualifyingPropValue';
+        },
+      });
+      map.addInteraction(modify);
+    });
+
+    it('allows modification of features that pass the filter', function () {
+      lineFeature.set('someProp', 'allowablePropValue');
+      firstRevision = lineFeature.getGeometry().getRevision();
+
+      // Try to move a vertex
+      simulateEvent('pointermove', 10, -20, null, 0);
+      simulateEvent('pointerdown', 10, -20, null, 0);
+      simulateEvent('pointermove', 5, -20, null, 0);
+      simulateEvent('pointerdrag', 5, -20, null, 0);
+      simulateEvent('pointerup', 5, -20, null, 0);
+      expect(lineFeature.getGeometry().getRevision()).to.be.greaterThan(
+        firstRevision,
+      );
+    });
+
+    it('prevents modification of features that do not pass the filter', function () {
+      firstRevision = lineFeature.getGeometry().getRevision();
+      lineFeature.set('someProp', 'disqualifyingPropValue');
+      // Try to move a vertex
+      simulateEvent('pointermove', 10, -20, null, 0);
+      simulateEvent('pointerdown', 10, -20, null, 0);
+      simulateEvent('pointermove', 5, -20, null, 0);
+      simulateEvent('pointerdrag', 5, -20, null, 0);
+      simulateEvent('pointerup', 5, -20, null, 0);
+      expect(lineFeature.getGeometry().getRevision()).to.equal(firstRevision);
+    });
+  });
+
+  describe('Event Listeners on external Observables', function () {
+    let modify, lineFeature;
+
+    beforeEach(function () {
+      lineFeature = new Feature({
+        geometry: new LineString([
+          [0, 0],
+          [10, 20],
+          [0, 40],
+          [40, 40],
+          [40, 0],
+        ]),
+      });
+    });
+
+    function getListeners(type, observable, modify) {
+      const listeners = observable.listeners_?.[type] || [];
+      const candidates = Object.values(modify);
+      return listeners.filter(function (listener) {
+        return candidates.includes(listener);
+      });
+    }
+
+    it('are removed on dispose() when source is provided', function () {
+      source.clear();
+      source.addFeature(lineFeature);
+      modify = new Modify({
+        source,
+        filter: (feature) => {
+          return feature.get('someProp') !== 'disqualifyingPropValue';
+        },
+      });
+      map.addInteraction(modify);
+
+      //modify was constructed with a source containing only lineFeature
+      let listeners = getListeners(EventType.CHANGE, lineFeature, modify);
+      expect(listeners.length).to.equal(1);
+      //propertychange event handler won't be registered unless a filter function
+      // is provided.  In this case it was.
+      listeners = getListeners(
+        ObjectEventType.PROPERTYCHANGE,
+        lineFeature,
+        modify,
+      );
+      expect(listeners.length).to.equal(1);
+      listeners = getListeners(VectorEventType.ADDFEATURE, source, modify);
+      expect(listeners.length).to.equal(1);
+      listeners = getListeners(VectorEventType.REMOVEFEATURE, source, modify);
+      expect(listeners.length).to.equal(1);
+
+      const newFeature = lineFeature.clone();
+      source.addFeature(newFeature);
+      listeners = getListeners(
+        ObjectEventType.PROPERTYCHANGE,
+        newFeature,
+        modify,
+      );
+      expect(listeners.length).to.equal(1);
+      listeners = getListeners(EventType.CHANGE, newFeature, modify);
+      expect(listeners.length).to.equal(1);
+
+      modify.dispose();
+      listeners = getListeners(
+        ObjectEventType.PROPERTYCHANGE,
+        lineFeature,
+        modify,
+      );
+      expect(listeners.length).to.equal(0);
+      listeners = getListeners(EventType.CHANGE, lineFeature, modify);
+      expect(listeners.length).to.equal(0);
+      listeners = getListeners(
+        ObjectEventType.PROPERTYCHANGE,
+        newFeature,
+        modify,
+      );
+      expect(listeners.length).to.equal(0);
+      listeners = getListeners(EventType.CHANGE, newFeature, modify);
+      expect(listeners.length).to.equal(0);
+      listeners = getListeners(VectorEventType.ADDFEATURE, source, modify);
+      expect(listeners.length).to.equal(0);
+      listeners = getListeners(VectorEventType.REMOVEFEATURE, source, modify);
+      expect(listeners.length).to.equal(0);
+    });
+
+    it('are removed on dispose() when feature collection is provided', function () {
+      const featureCollection = new Collection();
+      featureCollection.push(lineFeature);
+
+      modify = new Modify({
+        features: featureCollection,
+        filter: (feature) => {
+          return feature.get('someProp') !== 'disqualifyingPropValue';
+        },
+      });
+      map.addInteraction(modify);
+
+      let listeners = getListeners(EventType.CHANGE, lineFeature, modify);
+      expect(listeners.length).to.equal(1);
+      //propertychange event handler won't be registered unless a filter function
+      // is provided.  In this case it was.
+      listeners = getListeners(
+        ObjectEventType.PROPERTYCHANGE,
+        lineFeature,
+        modify,
+      );
+      expect(listeners.length).to.equal(1);
+      listeners = getListeners(
+        CollectionEventType.ADD,
+        featureCollection,
+        modify,
+      );
+      expect(listeners.length).to.equal(1);
+      listeners = getListeners(
+        CollectionEventType.REMOVE,
+        featureCollection,
+        modify,
+      );
+      expect(listeners.length).to.equal(1);
+
+      const newFeature = lineFeature.clone();
+      featureCollection.push(newFeature);
+      listeners = getListeners(
+        ObjectEventType.PROPERTYCHANGE,
+        newFeature,
+        modify,
+      );
+      expect(listeners.length).to.equal(1);
+      listeners = getListeners(EventType.CHANGE, newFeature, modify);
+      expect(listeners.length).to.equal(1);
+
+      modify.dispose();
+      listeners = getListeners(
+        ObjectEventType.PROPERTYCHANGE,
+        lineFeature,
+        modify,
+      );
+      expect(listeners.length).to.equal(0);
+      listeners = getListeners(EventType.CHANGE, lineFeature, modify);
+      expect(listeners.length).to.equal(0);
+      listeners = getListeners(
+        ObjectEventType.PROPERTYCHANGE,
+        newFeature,
+        modify,
+      );
+      expect(listeners.length).to.equal(0);
+      listeners = getListeners(EventType.CHANGE, newFeature, modify);
+      expect(listeners.length).to.equal(0);
+      listeners = getListeners(
+        CollectionEventType.ADD,
+        featureCollection,
+        modify,
+      );
+      expect(listeners.length).to.equal(0);
+      listeners = getListeners(
+        CollectionEventType.REMOVE,
+        featureCollection,
+        modify,
+      );
+      expect(listeners.length).to.equal(0);
+    });
+  });
+
   describe('tracing polygons', function () {
     let modify;
 
@@ -1678,6 +1898,96 @@ describe('ol.interaction.Modify', function () {
           [100, -100], // traced point
         ],
       ]);
+    });
+  });
+
+  describe('polygon first/last vertex synchronization', function () {
+    it('keeps first and last vertex synchronized when dragging first vertex of Polygon', function () {
+      const polygonFeature = new Feature({
+        geometry: new Polygon([
+          [
+            [0, 0],
+            [10, 0],
+            [10, 10],
+            [0, 10],
+            [0, 0],
+          ],
+        ]),
+      });
+      features.length = 0;
+      features.push(polygonFeature);
+
+      const modify = new Modify({
+        features: new Collection(features),
+      });
+      map.addInteraction(modify);
+
+      const invalidStates = [];
+      polygonFeature.on('change', function () {
+        const coords = polygonFeature.getGeometry().getCoordinates()[0];
+        const first = coords[0];
+        const last = coords[coords.length - 1];
+        if (first[0] !== last[0] || first[1] !== last[1]) {
+          invalidStates.push({first: first.slice(), last: last.slice()});
+        }
+      });
+
+      simulateEvent('pointermove', 0, 0, null, 0);
+      simulateEvent('pointerdown', 0, 0, null, 0);
+      simulateEvent('pointermove', 5, -5, null, 0);
+      simulateEvent('pointerdrag', 5, -5, null, 0);
+      simulateEvent('pointerup', 5, -5, null, 0);
+
+      expect(invalidStates.length).to.be(0);
+
+      const finalCoords = polygonFeature.getGeometry().getCoordinates()[0];
+      expect(finalCoords[0]).to.eql(finalCoords[finalCoords.length - 1]);
+    });
+
+    it('keeps first and last vertex synchronized when dragging first vertex of MultiPolygon', function () {
+      const multiPolygonFeature = new Feature({
+        geometry: new MultiPolygon([
+          [
+            [
+              [0, 0],
+              [10, 0],
+              [10, 10],
+              [0, 10],
+              [0, 0],
+            ],
+          ],
+        ]),
+      });
+      features.length = 0;
+      features.push(multiPolygonFeature);
+
+      const modify = new Modify({
+        features: new Collection(features),
+      });
+      map.addInteraction(modify);
+
+      const invalidStates = [];
+      multiPolygonFeature.on('change', function () {
+        const ring = multiPolygonFeature.getGeometry().getCoordinates()[0][0];
+        const first = ring[0];
+        const last = ring[ring.length - 1];
+        if (first[0] !== last[0] || first[1] !== last[1]) {
+          invalidStates.push({first: first.slice(), last: last.slice()});
+        }
+      });
+
+      simulateEvent('pointermove', 0, 0, null, 0);
+      simulateEvent('pointerdown', 0, 0, null, 0);
+      simulateEvent('pointermove', 5, -5, null, 0);
+      simulateEvent('pointerdrag', 5, -5, null, 0);
+      simulateEvent('pointerup', 5, -5, null, 0);
+
+      expect(invalidStates.length).to.be(0);
+
+      const finalCoords = multiPolygonFeature
+        .getGeometry()
+        .getCoordinates()[0][0];
+      expect(finalCoords[0]).to.eql(finalCoords[finalCoords.length - 1]);
     });
   });
 });

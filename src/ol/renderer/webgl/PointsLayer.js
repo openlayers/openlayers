@@ -8,7 +8,10 @@ import {buffer, createEmpty, equals} from '../../extent.js';
 import BaseVector from '../../layer/BaseVector.js';
 import {fromUserCoordinate, getUserProjection} from '../../proj.js';
 import {WebGLWorkerMessageType} from '../../render/webgl/constants.js';
-import {colorDecodeId, colorEncodeId} from '../../render/webgl/encodeUtil.js';
+import {
+  colorDecodeId,
+  colorEncodeIdAndPack,
+} from '../../render/webgl/encodeUtil.js';
 import VectorEventType from '../../source/VectorEventType.js';
 import {
   apply as applyTransform,
@@ -221,7 +224,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     if (this.hitDetectionEnabled_) {
       this.instanceAttributes.push({
         name: 'a_hitColor',
-        size: 4,
+        size: 2,
         type: AttributeType.FLOAT,
       });
       this.instanceAttributes.push({
@@ -554,7 +557,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
 
     const userProjection = getUserProjection();
 
-    const baseInstructionLength = this.hitDetectionEnabled_ ? 7 : 2; // see below
+    const baseInstructionLength = this.hitDetectionEnabled_ ? 5 : 2; // see below
     const singleInstructionLength =
       baseInstructionLength + this.customAttributes.length;
     const totalSize = singleInstructionLength * this.featureCount_;
@@ -590,11 +593,9 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       // for hit detection, the feature uid is saved in the opacity value
       // and the index of the opacity value is encoded in the color values
       if (this.hitDetectionEnabled_) {
-        const hitColor = colorEncodeId(idx + 5, tmpColor);
+        const hitColor = colorEncodeIdAndPack(idx + 3, tmpColor);
         renderInstructions[++idx] = hitColor[0];
         renderInstructions[++idx] = hitColor[1];
-        renderInstructions[++idx] = hitColor[2];
-        renderInstructions[++idx] = hitColor[3];
         renderInstructions[++idx] = Number(featureUid);
       }
 

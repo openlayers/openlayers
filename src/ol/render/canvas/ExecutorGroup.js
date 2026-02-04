@@ -40,6 +40,41 @@ export const NON_DECLUTTER = ALL.filter(
   (builderType) => !DECLUTTER.includes(builderType),
 );
 
+/** @type {boolean|undefined} */
+let willReadFrequently = false;
+
+/** @type {boolean|undefined} */
+let canvasReadsBenchmarked = false;
+
+/** Determine if canvas read operations are faster with willReadFrequently set to true or false */
+function benchmarkCanvasReads() {
+  let bestResult = 0;
+  /**
+   * @param {boolean} willReadFrequently Will read frequently.
+   * @return {number} Operation count.
+   */
+  const measure = (willReadFrequently) => {
+    const context = createCanvasContext2D(1, 1, null, {willReadFrequently});
+    let count = 0;
+    const start = performance.now();
+    for (; performance.now() - start < 50; ++count) {
+      context.fillStyle = `rgba(255,0,${count % 256},1)`;
+      context.fillRect(0, 0, 1, 1);
+      context.getImageData(0, 0, 1, 1);
+    }
+    bestResult = count > bestResult ? count : bestResult;
+    return count;
+  };
+
+  const measures = {
+    [measure(true)]: true,
+    [measure(false)]: false,
+    [measure(undefined)]: undefined,
+  };
+  willReadFrequently = measures[bestResult];
+  canvasReadsBenchmarked = true;
+}
+
 class ExecutorGroup {
   /**
    * @param {import("../../extent.js").Extent} maxExtent Max extent for clipping. When a
@@ -101,7 +136,7 @@ class ExecutorGroup {
 
     /**
      * @private
-     * @type {CanvasRenderingContext2D}
+     * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D}
      */
     this.hitDetectionContext_ = null;
 
@@ -113,7 +148,7 @@ class ExecutorGroup {
 
     /**
      * @private
-     * @type {CanvasRenderingContext2D}
+     * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D}
      */
     this.renderedContext_ = null;
 
@@ -127,7 +162,7 @@ class ExecutorGroup {
   }
 
   /**
-   * @param {CanvasRenderingContext2D} context Context.
+   * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
    * @param {import("../../transform.js").Transform} transform Transform.
    */
   clip(context, transform) {
@@ -201,6 +236,10 @@ class ExecutorGroup {
     callback,
     declutteredFeatures,
   ) {
+    if (canvasReadsBenchmarked === false) {
+      benchmarkCanvasReads();
+    }
+
     hitTolerance = Math.round(hitTolerance);
     const contextSize = hitTolerance * 2 + 1;
     const transform = composeTransform(
@@ -216,14 +255,11 @@ class ExecutorGroup {
 
     const newContext = !this.hitDetectionContext_;
     if (newContext) {
-      // Refrain from adding a 'willReadFrequently' hint in the options here.
-      // While it will remove the "Canvas2D: Multiple readback operations using
-      // getImageData are faster with the willReadFrequently attribute set
-      // to true" warnings in the console, it makes hitDetection extremely
-      // slow in Chrome when there are many features on the map
       this.hitDetectionContext_ = createCanvasContext2D(
         contextSize,
         contextSize,
+        null,
+        {willReadFrequently},
       );
     }
     const context = this.hitDetectionContext_;
@@ -345,7 +381,7 @@ class ExecutorGroup {
   }
 
   /**
-   * @param {CanvasRenderingContext2D} targetContext Context.
+   * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} targetContext Context.
    * @param {import('../../size.js').Size} scaledCanvasSize Scale of the context.
    * @param {import("../../transform.js").Transform} transform Transform.
    * @param {number} viewRotation View rotation.

@@ -9,7 +9,6 @@ import Event from '../events/Event.js';
 import {never, shiftKeyOnly, singleClick} from '../events/condition.js';
 import {TRUE} from '../functions.js';
 import VectorLayer from '../layer/Vector.js';
-import {clear} from '../obj.js';
 import {createEditingStyle} from '../style/Style.js';
 import {getUid} from '../util.js';
 import Interaction from './Interaction.js';
@@ -392,6 +391,7 @@ class Select extends Interaction {
     if (this.style_) {
       this.restorePreviousStyle_(evt.element);
     }
+    this.removeFeatureLayerAssociation_(evt.element);
   }
 
   /**
@@ -468,68 +468,28 @@ class Select extends Interaction {
   }
 
   /**
-   * @param {import("../Feature.js").FeatureLike} feature The feature to select
-   * @param {import("../layer/Layer.js").default} layer Optional layer containing this feature
-   * @param {Array<Feature>} [selected] optional array to which selected features will be added
-   * @return {Feature|undefined} The feature, if it got selected.
-   * @private
-   */
-  selectFeatureInternal_(feature, layer, selected) {
-    if (!(feature instanceof Feature)) {
-      return;
-    }
-    if (!this.filter_(feature, layer)) {
-      return;
-    }
-    const features = this.getFeatures();
-    if (!features.getArray().includes(feature)) {
-      this.addFeatureLayerAssociation_(feature, layer);
-      features.push(feature);
-      selected?.push(feature);
-    }
-    return feature;
-  }
-
-  /**
    * Try to select a feature as if it was clicked and `addCondition` evaluated to True.
    * Unlike modifying `select.getFeatures()` directly, this respects the `filter` and `layers` options (except `multi`, which is ignored).
    * The {@link module:ol/interaction/Select~SelectEvent} fired by this won't have a mapBrowserEvent property
    * @param {Feature} feature The feature to select
    * @return {boolean} True if the feature was selected
+   * @api
    */
   selectFeature(feature) {
     const layer = this.findLayerOfFeature_(feature);
-    if (!this.layerFilter_(layer)) {
+    if (!this.layerFilter_(layer) || !this.filter_(feature, layer)) {
       return false;
     }
-    const selected = this.selectFeatureInternal_(feature, layer);
-    if (selected) {
-      this.dispatchEvent(
-        new SelectEvent(SelectEventType.SELECT, [selected], [], undefined),
-      );
-    }
-    return !!selected;
-  }
-
-  /**
-   * Deselects a feature if it was previously selected. Also removes layer association.
-   * @param {import("../Feature.js").FeatureLike} feature The feature to deselect
-   * @param {Array<Feature>} [deselected] optional array to which deselected features will be added
-   * @return {Feature|undefined} The feature, if it was previously selected.
-   * @private
-   */
-  removeFeatureInternal_(feature, deselected) {
     const features = this.getFeatures();
-    if (
-      !(feature instanceof Feature) ||
-      !features.getArray().includes(feature)
-    ) {
-      return;
+    if (features.getArray().includes(feature)) {
+      return false;
     }
-    features.remove(feature);
-    this.removeFeatureLayerAssociation_(feature);
-    deselected?.push(feature);
-    return feature;
+    this.addFeatureLayerAssociation_(feature, layer);
+    features.push(feature);
+    this.dispatchEvent(
+      new SelectEvent(SelectEventType.SELECT, [feature], [], undefined),
+    );
+    return true;
   }
 
   /**
@@ -538,15 +498,19 @@ class Select extends Interaction {
    * The {@link module:ol/interaction/Select~SelectEvent} fired by this won't have a mapBrowserEvent property
    * @param {Feature} feature The feature to deselect
    * @return {boolean} True if the feature was deselected
+   * @api
    */
   deselectFeature(feature) {
-    const deselected = this.removeFeatureInternal_(feature);
-    if (deselected) {
-      this.dispatchEvent(
-        new SelectEvent(SelectEventType.SELECT, [], [deselected], undefined),
-      );
+    const features = this.getFeatures();
+    const index = features.getArray().indexOf(feature);
+    if (index === -1) {
+      return false;
     }
-    return !!deselected;
+    features.removeAt(index);
+    this.dispatchEvent(
+      new SelectEvent(SelectEventType.SELECT, [], [feature], undefined),
+    );
+    return true;
   }
 
   /**
@@ -554,23 +518,25 @@ class Select extends Interaction {
    * Unlike modifying `select.getFeatures()` directly, this respects the `filter` and `layers` options (except `multi`, which is ignored).
    * The {@link module:ol/interaction/Select~SelectEvent} fired by this won't have a mapBrowserEvent property
    * @param {Feature} feature The feature to deselect
+   * @api
    */
   toggleFeature(feature) {
     if (!this.deselectFeature(feature)) {
       this.selectFeature(feature);
     }
   }
+
   /**
    * Deselect all features as if a user deselected them.
    * Compared to `select.getFeatures().clear()` this causes a SelectEvent.
    * The {@link module:ol/interaction/Select~SelectEvent} fired by this won't have a mapBrowserEvent property
+   * @api
    */
   clearSelection() {
-    clear(this.featureLayerAssociation_);
     const features = this.getFeatures();
-    const deselected = features.getArray().slice(); // shallow copy
-    features.clear();
-    if (deselected.length !== 0) {
+    if (features.getLength() !== 0) {
+      const deselected = features.getArray().slice(); // shallow copy
+      features.clear();
       this.dispatchEvent(
         new SelectEvent(SelectEventType.SELECT, [], deselected, undefined),
       );
@@ -605,23 +571,19 @@ class Select extends Interaction {
      */
     const selected = [];
 
-    // TODO: technically the way i've restructured this logic means that
-    //       instead of first emptying the features list of all extra features and then adding the selected ones back,
-    //       the selected features get added and then the old ones get removed.
-    //       a grow then shrink, instead of a shrink then grow. I can't imagine anyone relying on this, but alas, its worth a mention.
     if (set) {
       // Replace the currently selected feature(s) with the feature(s) at the
       // pixel, or clear the selected feature(s) if there is no feature at
       // the pixel.
-      let foundAtCursor = false;
       map.forEachFeatureAtPixel(
         mapBrowserEvent.pixel,
         (feature, layer) => {
-          foundAtCursor = true;
-          if (!this.selectFeatureInternal_(feature, layer, selected)) {
-            return; // keep going, this one wasn't selected
+          if (!(feature instanceof Feature) || !this.filter_(feature, layer)) {
+            return;
           }
-          return !this.multi_; // stop if not multi
+          this.addFeatureLayerAssociation_(feature, layer);
+          selected.push(feature);
+          return !this.multi_;
         },
         {
           layerFilter: this.layerFilter_,
@@ -631,33 +593,32 @@ class Select extends Interaction {
 
       for (let i = features.getLength() - 1; i >= 0; --i) {
         const feature = features.item(i);
-        if (
-          // remove all but selected, if there were any selected
-          (selected.length > 0 && !selected.includes(feature)) ||
-          // remove all, if click outside of layer
-          !foundAtCursor
-        ) {
-          this.removeFeatureInternal_(feature, deselected);
+        const index = selected.indexOf(feature);
+        if (index === -1) {
+          features.removeAt(i);
+          deselected.push(feature);
+        } else {
+          // feature is already selected
+          selected.splice(index, 1);
         }
+      }
+      if (selected.length !== 0) {
+        features.extend(selected);
       }
     } else {
       // Modify the currently selected feature(s).
       map.forEachFeatureAtPixel(
         mapBrowserEvent.pixel,
         (feature, layer) => {
-          let modifiedFeature;
-          if (remove || toggle) {
-            modifiedFeature = this.removeFeatureInternal_(feature, deselected);
+          if (!(feature instanceof Feature) || !this.filter_(feature, layer)) {
+            return;
           }
-          if ((add || toggle) && !modifiedFeature) {
-            modifiedFeature = this.selectFeatureInternal_(
-              feature,
-              layer,
-              selected,
-            );
-          }
-          if (!modifiedFeature) {
-            return; // keep going, this one wasn't removed/selected
+          const hasFeature = features.getArray().includes(feature);
+          if (hasFeature && (remove || toggle)) {
+            deselected.push(feature);
+          } else if (!hasFeature && (add || toggle)) {
+            this.addFeatureLayerAssociation_(feature, layer);
+            selected.push(feature);
           }
           return !this.multi_; // stop if not multi
         },
@@ -666,6 +627,10 @@ class Select extends Interaction {
           hitTolerance: this.hitTolerance_,
         },
       );
+      for (let j = deselected.length - 1; j >= 0; --j) {
+        features.remove(deselected[j]);
+      }
+      features.extend(selected);
     }
     if (selected.length > 0 || deselected.length > 0) {
       this.dispatchEvent(

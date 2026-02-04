@@ -1,32 +1,42 @@
+import {unpackColor} from '../../../../../../src/ol/render/webgl/compileUtil.js';
 import {
   colorDecodeId,
-  colorEncodeId,
+  colorEncodeIdAndPack,
 } from '../../../../../../src/ol/render/webgl/encodeUtil.js';
 
 describe('webgl encode utils', function () {
-  describe('colorEncodeId and colorDecodeId', function () {
+  describe('colorEncodeIdAndPack and colorDecodeId', function () {
     it('correctly encodes and decodes ids', function () {
-      expect(colorDecodeId(colorEncodeId(0))).to.eql(0);
-      expect(colorDecodeId(colorEncodeId(1))).to.eql(1);
-      expect(colorDecodeId(colorEncodeId(123))).to.eql(123);
-      expect(colorDecodeId(colorEncodeId(12345))).to.eql(12345);
-      expect(colorDecodeId(colorEncodeId(123456))).to.eql(123456);
-      expect(colorDecodeId(colorEncodeId(91612))).to.eql(91612);
-      expect(colorDecodeId(colorEncodeId(1234567890))).to.eql(1234567890);
+      expect(colorDecodeId(unpackColor(colorEncodeIdAndPack(0)))).to.eql(0);
+      expect(colorDecodeId(unpackColor(colorEncodeIdAndPack(1)))).to.eql(1);
+      expect(colorDecodeId(unpackColor(colorEncodeIdAndPack(123)))).to.eql(123);
+      expect(colorDecodeId(unpackColor(colorEncodeIdAndPack(12345)))).to.eql(
+        12345,
+      );
+      expect(colorDecodeId(unpackColor(colorEncodeIdAndPack(123456)))).to.eql(
+        123456,
+      );
+      expect(colorDecodeId(unpackColor(colorEncodeIdAndPack(91612)))).to.eql(
+        91612,
+      );
+      expect(
+        colorDecodeId(unpackColor(colorEncodeIdAndPack(1234567890))),
+      ).to.eql(1234567890);
     });
 
     it('correctly reuses array', function () {
       const arr = [];
-      expect(colorEncodeId(123, arr)).to.be(arr);
+      expect(colorEncodeIdAndPack(123, arr)).to.be(arr);
     });
 
-    it('is compatible with Uint8Array storage', function () {
-      const encoded = colorEncodeId(91612);
+    it('make sure that the encoded color (once unpacked) is compatible with Uint8Array storage', function () {
+      const encoded = colorEncodeIdAndPack(91612);
+      const unpackedColor = unpackColor(encoded);
       const typed = Uint8Array.of(
-        encoded[0] * 255,
-        encoded[1] * 255,
-        encoded[2] * 255,
-        encoded[3] * 255,
+        unpackedColor[0] * 255,
+        unpackedColor[1] * 255,
+        unpackedColor[2] * 255,
+        unpackedColor[3] * 255,
       );
       const arr = [
         typed[0] / 255,

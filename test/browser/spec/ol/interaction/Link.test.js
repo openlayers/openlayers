@@ -48,6 +48,13 @@ describe('ol/interaction/Link', () => {
       view.setRotation(0.5);
     });
 
+    it('works with a view that is not fully defined', () => {
+      map.setView(new View({}));
+      expect(() => {
+        map.addInteraction(new Link());
+      }).to.not.throwError();
+    });
+
     it('accepts a prefix', (done) => {
       map.addInteraction(new Link({prefix: 'ol:'}));
 

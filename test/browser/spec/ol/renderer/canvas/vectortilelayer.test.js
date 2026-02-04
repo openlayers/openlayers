@@ -251,6 +251,34 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
       expect(Object.keys(tile2.executorGroups)).to.have.length(1);
     });
 
+    it('sets the correct `wantedResolution`', (done) => {
+      map.getView().setZoom(0.1);
+      map.renderSync();
+      map.frameState_;
+      const resolution = map.frameState_.viewState.resolution;
+      const tile = layer.getRenderer().getTile(0, 0, 0, map.frameState_);
+      // hifi - use exact view resolution
+      expect(tile.wantedResolution).to.be(resolution);
+      map.getView().animate({zoom: 0.6, duration: 200}, () => {
+        setTimeout(() => {
+          try {
+            // hifi - use exact view resolution
+            expect(tile.wantedResolution).to.be(
+              map.frameState_.viewState.resolution,
+            );
+            done();
+          } catch (e) {
+            done(e);
+          }
+        }, 100);
+      });
+      setTimeout(
+        // not hifi - use previous resolution
+        () => expect(tile.wantedResolution).to.be(resolution),
+        100,
+      );
+    });
+
     it('reuses render container and adds and removes overlay context', function (done) {
       map.getLayers().insertAt(
         0,
@@ -427,6 +455,60 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
       layer.changed();
       renderer.renderFrame(frameState, null);
       expect(replayState.renderedTileRevision).to.be(revision + 1);
+    });
+
+    it('re-renders when pixelRatio changed', function () {
+      const layer = new VectorTileLayer({
+        source: new VectorTileSource({
+          tileGrid: createXYZ(),
+          transition: 0,
+        }),
+      });
+      const sourceTile = new VectorTile([0, 0, 0], 2);
+      sourceTile.features_ = [];
+      sourceTile.getImage = function () {
+        return document.createElement('canvas');
+      };
+      const tile = new VectorRenderTile(
+        [0, 0, 0],
+        1,
+        [0, 0, 0],
+        function () {
+          return sourceTile;
+        },
+        () => {},
+      );
+      tile.transition_ = 0;
+      tile.setState(TileState.LOADED);
+      layer.getSource().getTile = function () {
+        return tile;
+      };
+      const renderer = new CanvasVectorTileLayerRenderer(layer);
+      const proj = getProjection('EPSG:3857');
+      const frameState = {
+        layerStatesArray: [layer.getLayerState()],
+        layerIndex: 0,
+        extent: proj.getExtent(),
+        pixelRatio: 1,
+        pixelToCoordinateTransform: create(),
+        postRenderFunctions: [],
+        time: Date.now(),
+        viewHints: [],
+        viewState: {
+          center: [0, 0],
+          resolution: 156543.03392804097,
+          projection: proj,
+        },
+        size: [256, 256],
+        usedTiles: {},
+        wantedTiles: {},
+      };
+      renderer.renderFrame(frameState);
+      const replayState = renderer.renderedTiles[0].getReplayState(layer);
+      expect(replayState.renderedPixelRatio).to.be(1);
+      frameState.pixelRatio = 2;
+      renderer.renderFrame(frameState, null);
+      expect(replayState.renderedPixelRatio).to.be(2);
     });
   });
 

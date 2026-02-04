@@ -145,7 +145,7 @@ class ReprojImage extends ImageWrapper {
 
     /**
      * @private
-     * @type {HTMLCanvasElement}
+     * @type {HTMLCanvasElement|OffscreenCanvas}
      */
     this.canvas_ = null;
 
@@ -168,7 +168,7 @@ class ReprojImage extends ImageWrapper {
   }
 
   /**
-   * @return {HTMLCanvasElement} Image.
+   * @return {HTMLCanvasElement|OffscreenCanvas} Image.
    * @override
    */
   getImage() {

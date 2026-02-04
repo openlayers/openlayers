@@ -54,6 +54,15 @@ const lineStyle = new Style({
     }),
   }),
 });
+const lineStyleWithOffset = new Style({
+  stroke: new Stroke({
+    color: 'gray',
+    width: 1,
+    lineCap: 'square',
+    lineJoin: 'miter',
+    offset: 20,
+  }),
+});
 
 const vector = new VectorLayer({
   source: new VectorSource({
@@ -64,6 +73,9 @@ const vector = new VectorLayer({
 vector.on('postrender', function (evt) {
   const context = getVectorContext(evt);
   context.setStyle(lineStyle);
+  context.drawGeometry(line);
+
+  context.setStyle(lineStyleWithOffset);
   context.drawGeometry(line);
 
   context.setStyle(pointStyle);

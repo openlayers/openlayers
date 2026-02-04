@@ -474,7 +474,7 @@ describe('ol.layer.Vector', function () {
       map.renderSync();
 
       const pixel1 = map.getPixelFromCoordinate([16, 48]);
-      const pixel2 = map.getPixelFromCoordinate([16.2, 48.2]);
+      const pixel2 = map.getPixelFromCoordinate([16.15, 48.15]);
 
       return Promise.all([
         layer.getFeatures(pixel1).then(function (features) {

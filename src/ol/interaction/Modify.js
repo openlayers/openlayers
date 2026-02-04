@@ -5,6 +5,7 @@ import Collection from '../Collection.js';
 import CollectionEventType from '../CollectionEventType.js';
 import Feature from '../Feature.js';
 import MapBrowserEventType from '../MapBrowserEventType.js';
+import ObjectEventType from '../ObjectEventType.js';
 import {equals} from '../array.js';
 import {
   closestOnSegment,
@@ -95,6 +96,12 @@ const ModifyEventType = {
  */
 
 /**
+ * A function that takes a {@link module:ol/Feature~Feature} and  returns `true` if
+ * the feature may be modified or `false` otherwise.
+ * @typedef {function(Feature):boolean} FilterFunction
+ */
+
+/**
  * @typedef {[SegmentData, number]} DragSegment
  */
 
@@ -110,6 +117,14 @@ const ModifyEventType = {
  * boolean to indicate whether that event should be handled. By default,
  * {@link module:ol/events/condition.singleClick} with
  * {@link module:ol/events/condition.altKeyOnly} results in a vertex deletion.
+ * This combination is handled by wrapping the two condition checks in a single function:
+ * ```js
+ * import { altKeyOnly, singleClick } from 'ol/events/condition.js';
+ *
+ * function (event) {
+ *   return altKeyOnly(event) && singleClick(event)
+ * }
+ * ```
  * @property {import("../events/condition.js").Condition} [insertVertexCondition] A
  * function that takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and
  * returns a boolean to indicate whether a new vertex should be added to the sketch
@@ -136,6 +151,8 @@ const ModifyEventType = {
  * @property {Collection<Feature>} [features]
  * The features the interaction works on.  If a feature collection is not
  * provided, a vector source must be provided with the `source` option.
+ * @property {FilterFunction} [filter] A function that takes a {@link module:ol/Feature~Feature}
+ * and returns `true` if the feature may be modified or `false` otherwise.
  * @property {boolean|import("../events/condition.js").Condition} [trace=false] Trace a portion of another geometry.
  * Tracing starts when two neighboring vertices are dragged onto a trace target, without any other modification in between..
  * @property {VectorSource} [traceSource] Source for features to trace.  If tracing is active and a `traceSource` is
@@ -236,6 +253,24 @@ class Modify extends PointerInteraction {
   constructor(options) {
     super(/** @type {import("./Pointer.js").Options} */ (options));
 
+    //Maintain a ref to event handlers for later unregistering
+    /** @private */
+    this.handleSourceAdd_ = this.handleSourceAdd_.bind(this);
+
+    /** @private */
+    this.handleSourceRemove_ = this.handleSourceRemove_.bind(this);
+
+    /** @private */
+    this.handleExternalCollectionAdd_ =
+      this.handleExternalCollectionAdd_.bind(this);
+
+    /** @private */
+    this.handleExternalCollectionRemove_ =
+      this.handleExternalCollectionRemove_.bind(this);
+
+    /** @private */
+    this.handleFeatureChange_ = this.handleFeatureChange_.bind(this);
+
     /***
      * @type {ModifyOnSignature<import("../events").EventsKey>}
      */
@@ -250,9 +285,6 @@ class Modify extends PointerInteraction {
      * @type {ModifyOnSignature<void>}
      */
     this.un;
-
-    /** @private */
-    this.boundHandleFeatureChange_ = this.handleFeatureChange_.bind(this);
 
     /**
      * @private
@@ -422,46 +454,80 @@ class Modify extends PointerInteraction {
      */
     this.hitDetection_ = null;
 
-    /** @type {Collection<Feature>} */
+    /**
+     * Useful for performance optimization
+     * @private
+     * @type boolean
+     */
+    this.filterFunctionWasSupplied_ =
+      options.filter != undefined ? true : false;
+
+    /**
+     * @private
+     * @type {FilterFunction}
+     */
+    this.filter_ = options.filter ? options.filter : () => true;
+
+    if (!(options.features || options.source)) {
+      throw new Error(
+        'The modify interaction requires features collection or a source',
+      );
+    }
+    /** @type {Array<Feature>} */
     let features;
     if (options.features) {
-      features = options.features;
+      features = options.features.getArray();
+      //setup listeners on external features collection and features
+      options.features.addEventListener(
+        CollectionEventType.ADD,
+        this.handleExternalCollectionAdd_,
+      );
+      options.features.addEventListener(
+        CollectionEventType.REMOVE,
+        this.handleExternalCollectionRemove_,
+      );
+      //keep ref for unsubscribe on dispose
+      this.featuresCollection_ = options.features;
     } else if (options.source) {
-      this.source_ = options.source;
-      features = new Collection(this.source_.getFeatures());
-      this.source_.addEventListener(
+      features = options.source.getFeatures();
+      //setup listeners on external source and features
+      options.source.addEventListener(
         VectorEventType.ADDFEATURE,
-        this.handleSourceAdd_.bind(this),
+        this.handleSourceAdd_,
       );
-      this.source_.addEventListener(
+      options.source.addEventListener(
         VectorEventType.REMOVEFEATURE,
-        this.handleSourceRemove_.bind(this),
+        this.handleSourceRemove_,
       );
+      //keep ref for unsubscribe on dispose
+      this.source_ = options.source;
     }
-    if (!features) {
-      throw new Error(
-        'The modify interaction requires features, a source or a layer',
-      );
-    }
+    features.forEach((feature) => {
+      //any modification to the feature requires filter to be re-run
+      feature.addEventListener(EventType.CHANGE, this.handleFeatureChange_);
+      //prop change handler is only to re-run the filter
+      if (this.filterFunctionWasSupplied_) {
+        feature.addEventListener(
+          ObjectEventType.PROPERTYCHANGE,
+          this.handleFeatureChange_,
+        );
+      }
+    });
+
     if (options.hitDetection) {
       this.hitDetection_ = options.hitDetection;
     }
 
     /**
-     * @type {Collection<Feature>}
+     * Internal features array.  When adding or removing features, be sure to use
+     * addFeature_()/removeFeature_() so that the the segment index is adjusted.
+     * @type {Array<Feature>}
      * @private
      */
-    this.features_ = features;
-
-    this.features_.forEach(this.addFeature_.bind(this));
-    this.features_.addEventListener(
-      CollectionEventType.ADD,
-      this.handleFeatureAdd_.bind(this),
-    );
-    this.features_.addEventListener(
-      CollectionEventType.REMOVE,
-      this.handleFeatureRemove_.bind(this),
-    );
+    this.features_ = [];
+    features
+      .filter(this.filter_)
+      .forEach((feature) => this.addFeature_(feature));
 
     /**
      * @type {import("../MapBrowserEvent.js").default}
@@ -504,10 +570,12 @@ class Modify extends PointerInteraction {
   }
 
   /**
+   * Called when a feature is added to the internal features collection
    * @param {Feature} feature Feature.
    * @private
    */
   addFeature_(feature) {
+    this.features_.push(feature);
     const geometry = feature.getGeometry();
     if (geometry) {
       const writer = this.SEGMENT_WRITERS_[geometry.getType()];
@@ -519,7 +587,6 @@ class Modify extends PointerInteraction {
     if (map && map.isRendered() && this.getActive()) {
       this.handlePointerAtPixel_(this.lastCoordinate_);
     }
-    feature.addEventListener(EventType.CHANGE, this.boundHandleFeatureChange_);
   }
 
   /**
@@ -552,20 +619,20 @@ class Modify extends PointerInteraction {
   }
 
   /**
+   * Removes a feature from the internal features collection and updates internal state
+   * accordingly.
    * @param {Feature} feature Feature.
    * @private
    */
   removeFeature_(feature) {
+    const itemIndex = this.features_.indexOf(feature);
+    this.features_.splice(itemIndex, 1);
     this.removeFeatureSegmentData_(feature);
     // Remove the vertex feature if the collection of candidate features is empty.
-    if (this.vertexFeature_ && this.features_.getLength() === 0) {
+    if (this.vertexFeature_ && this.features_.length === 0) {
       this.overlay_.getSource().removeFeature(this.vertexFeature_);
       this.vertexFeature_ = null;
     }
-    feature.removeEventListener(
-      EventType.CHANGE,
-      this.boundHandleFeatureChange_,
-    );
   }
 
   /**
@@ -638,8 +705,9 @@ class Modify extends PointerInteraction {
    * @private
    */
   handleSourceAdd_(event) {
-    if (event.feature) {
-      this.features_.push(event.feature);
+    const feature = event.feature;
+    if (feature) {
+      this.externalAddFeatureHandler_(feature);
     }
   }
 
@@ -648,37 +716,83 @@ class Modify extends PointerInteraction {
    * @private
    */
   handleSourceRemove_(event) {
-    if (event.feature) {
-      this.features_.remove(event.feature);
+    const feature = event.feature;
+    if (feature) {
+      this.externalRemoveFeatureHandler_(feature);
     }
   }
 
   /**
-   * @param {import("../Collection.js").CollectionEvent<Feature>} evt Event.
+   * @param {import("../Collection.js").CollectionEvent} event Event.
    * @private
    */
-  handleFeatureAdd_(evt) {
-    this.addFeature_(evt.element);
+  handleExternalCollectionAdd_(event) {
+    const feature = event.element;
+    if (feature) {
+      this.externalAddFeatureHandler_(feature);
+    }
   }
 
   /**
-   * @param {import("../events/Event.js").default} evt Event.
+   * @param {import("../Collection.js").CollectionEvent} event Event.
+   * @private
+   */
+  handleExternalCollectionRemove_(event) {
+    const feature = event.element;
+    if (feature) {
+      this.externalRemoveFeatureHandler_(feature);
+    }
+  }
+
+  /**
+   * Common handler for event signaling addition of feature to the supplied features source
+   * or collection.
+   * @param {Feature} feature Feature.
+   */
+  externalAddFeatureHandler_(feature) {
+    feature.addEventListener(EventType.CHANGE, this.handleFeatureChange_);
+    //prop change handler is only for reapplying the filter
+    if (this.filterFunctionWasSupplied_) {
+      feature.addEventListener(
+        ObjectEventType.PROPERTYCHANGE,
+        this.handleFeatureChange_,
+      );
+    }
+    if (this.filter_(feature)) {
+      this.addFeature_(feature);
+    }
+  }
+
+  /**
+   * Common handler for event signaling removal of feature from the supplied features source
+   * or collection.
+   * @param {Feature} feature Feature.
+   */
+  externalRemoveFeatureHandler_(feature) {
+    feature.removeEventListener(EventType.CHANGE, this.handleFeatureChange_);
+    if (this.filterFunctionWasSupplied_) {
+      feature.removeEventListener(
+        ObjectEventType.PROPERTYCHANGE,
+        this.handleFeatureChange_,
+      );
+    }
+    this.removeFeature_(feature);
+  }
+
+  /**
+   * Listener for features in external source or features collection.  Ensures the feature filter
+   * is re-run and segment data is updated.
+   * @param {import("../events/Event.js").default | import("../Object").ObjectEvent} evt Event.
    * @private
    */
   handleFeatureChange_(evt) {
     if (!this.changingFeature_) {
       const feature = /** @type {Feature} */ (evt.target);
       this.removeFeature_(feature);
-      this.addFeature_(feature);
+      //safe to remove handler on a feature if there isn't one, but need to apply the filter
+      // before adding the feature.
+      this.filter_(feature) && this.addFeature_(feature);
     }
-  }
-
-  /**
-   * @param {import("../Collection.js").CollectionEvent<Feature>} evt Event.
-   * @private
-   */
-  handleFeatureRemove_(evt) {
-    this.removeFeature_(evt.element);
   }
 
   /**
@@ -1367,16 +1481,50 @@ class Modify extends PointerInteraction {
         coordinates[depth[0]][segmentData.index + index] = vertex;
         segment[index] = vertex;
         break;
-      case 'Polygon':
+      case 'Polygon': {
         coordinates = geometry.getCoordinates();
-        coordinates[depth[0]][segmentData.index + index] = vertex;
+        const ring = coordinates[depth[0]];
+        const targetIndex = segmentData.index + index;
+
+        // Prevent duplicate change events when vertex already at position
+        if (
+          ring[targetIndex][0] === vertex[0] &&
+          ring[targetIndex][1] === vertex[1]
+        ) {
+          coordinates = null;
+        } else {
+          ring[targetIndex] = vertex;
+          if (targetIndex === 0) {
+            ring[ring.length - 1] = vertex;
+          } else if (targetIndex === ring.length - 1) {
+            ring[0] = vertex;
+          }
+        }
         segment[index] = vertex;
         break;
-      case 'MultiPolygon':
+      }
+      case 'MultiPolygon': {
         coordinates = geometry.getCoordinates();
-        coordinates[depth[1]][depth[0]][segmentData.index + index] = vertex;
+        const mRing = coordinates[depth[1]][depth[0]];
+        const mTargetIndex = segmentData.index + index;
+
+        // Prevent duplicate change events when vertex already at position
+        if (
+          mRing[mTargetIndex][0] === vertex[0] &&
+          mRing[mTargetIndex][1] === vertex[1]
+        ) {
+          coordinates = null;
+        } else {
+          mRing[mTargetIndex] = vertex;
+          if (mTargetIndex === 0) {
+            mRing[mRing.length - 1] = vertex;
+          } else if (mTargetIndex === mRing.length - 1) {
+            mRing[0] = vertex;
+          }
+        }
         segment[index] = vertex;
         break;
+      }
       case 'Circle':
         const circle = /** @type {import("../geom/Circle.js").default} */ (
           geometry
@@ -1607,7 +1755,7 @@ class Modify extends PointerInteraction {
             geom &&
             geom.getType() === 'Point' &&
             feature instanceof Feature &&
-            this.features_.getArray().includes(feature)
+            this.features_.includes(feature)
           ) {
             hitPointGeometry = /** @type {Point} */ (geom);
             const coordinate = /** @type {Point} */ (feature.getGeometry())
@@ -2103,6 +2251,60 @@ class Modify extends PointerInteraction {
         }
       },
     );
+  }
+
+  /**
+   * @override
+   */
+  disposeInternal() {
+    super.disposeInternal();
+    if (this.featuresCollection_) {
+      this.featuresCollection_.removeEventListener(
+        CollectionEventType.ADD,
+        this.handleExternalCollectionAdd_,
+      );
+      this.featuresCollection_.removeEventListener(
+        CollectionEventType.REMOVE,
+        this.handleExternalCollectionRemove_,
+      );
+      //change and propertychange event handlers were placed on all features in the external
+      // collection, not just the ones that passed the filter.  Remove these too.
+      for (const feature of this.featuresCollection_.getArray()) {
+        feature.removeEventListener(
+          EventType.CHANGE,
+          this.handleFeatureChange_,
+        );
+        if (this.filterFunctionWasSupplied_) {
+          feature.removeEventListener(
+            ObjectEventType.PROPERTYCHANGE,
+            this.handleFeatureChange_,
+          );
+        }
+      }
+    } else if (this.source_) {
+      this.source_.removeEventListener(
+        VectorEventType.ADDFEATURE,
+        this.handleSourceAdd_,
+      );
+      this.source_.removeEventListener(
+        VectorEventType.REMOVEFEATURE,
+        this.handleSourceRemove_,
+      );
+      //change and propertychange event handlers were placed on all features in the source, not
+      // just the ones that passed the filter.  Remove these too.
+      for (const feature of this.source_.getFeatures()) {
+        feature.removeEventListener(
+          EventType.CHANGE,
+          this.handleFeatureChange_,
+        );
+        if (this.filterFunctionWasSupplied_) {
+          feature.removeEventListener(
+            ObjectEventType.PROPERTYCHANGE,
+            this.handleFeatureChange_,
+          );
+        }
+      }
+    }
   }
 }
 

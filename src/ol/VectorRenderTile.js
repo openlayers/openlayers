@@ -11,13 +11,14 @@ import {getUid} from './util.js';
  * @property {null|import("./render.js").OrderFunction} renderedRenderOrder RenderedRenderOrder.
  * @property {number} renderedTileRevision RenderedTileRevision.
  * @property {number} renderedResolution RenderedResolution.
+ * @property {number} renderedPixelRatio RenderedPixelRatio.
  * @property {number} renderedRevision RenderedRevision.
  * @property {number} renderedTileResolution RenderedTileResolution.
  * @property {number} renderedTileZ RenderedTileZ.
  */
 
 /**
- * @type {Array<HTMLCanvasElement>}
+ * @type {Array<HTMLCanvasElement|OffscreenCanvas>}
  */
 const canvasPool = [];
 
@@ -40,7 +41,7 @@ class VectorRenderTile extends Tile {
 
     /**
      * @private
-     * @type {CanvasRenderingContext2D|null}
+     * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D|null}
      */
     this.context_ = null;
 
@@ -100,7 +101,7 @@ class VectorRenderTile extends Tile {
   }
 
   /**
-   * @return {CanvasRenderingContext2D} The rendering context.
+   * @return {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} The rendering context.
    */
   getContext() {
     if (!this.context_) {
@@ -118,7 +119,7 @@ class VectorRenderTile extends Tile {
 
   /**
    * Get the Canvas for this tile.
-   * @return {HTMLCanvasElement} Canvas.
+   * @return {HTMLCanvasElement|OffscreenCanvas} Canvas.
    */
   getImage() {
     return this.hasContext() ? this.getContext().canvas : null;
@@ -135,6 +136,7 @@ class VectorRenderTile extends Tile {
         dirty: false,
         renderedRenderOrder: null,
         renderedResolution: NaN,
+        renderedPixelRatio: NaN,
         renderedRevision: -1,
         renderedTileResolution: NaN,
         renderedTileRevision: -1,

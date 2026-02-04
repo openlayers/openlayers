@@ -4,6 +4,7 @@ import Feature from '../../../../../src/ol/Feature.js';
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
 import {listen} from '../../../../../src/ol/events.js';
+import {isEmpty} from '../../../../../src/ol/extent.js';
 import GeoJSON from '../../../../../src/ol/format/GeoJSON.js';
 import LineString from '../../../../../src/ol/geom/LineString.js';
 import Point from '../../../../../src/ol/geom/Point.js';
@@ -30,6 +31,16 @@ describe('ol/source/Vector', function () {
     let vectorSource;
     beforeEach(function () {
       vectorSource = new VectorSource();
+    });
+
+    describe('#getExtent', function () {
+      it('returns null when `useSpatialIndex` is `false`', () => {
+        const source = new VectorSource({useSpatialIndex: false});
+        expect(source.getExtent()).to.be(null);
+      });
+      it('returns an empty extent when no features', () => {
+        expect(isEmpty(vectorSource.getExtent())).to.be(true);
+      });
     });
 
     describe('#forEachFeatureInExtent', function () {

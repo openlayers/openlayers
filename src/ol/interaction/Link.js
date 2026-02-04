@@ -301,7 +301,7 @@ class Link extends Interaction {
       return;
     }
     const view = map.getView();
-    if (!view) {
+    if (!view || !view.isDef()) {
       return;
     }
 
@@ -421,7 +421,7 @@ class Link extends Interaction {
       return;
     }
     const view = map.getView();
-    if (!view) {
+    if (!view || !view.isDef()) {
       return;
     }
 

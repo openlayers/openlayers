@@ -12,6 +12,7 @@ import {
   getHeight,
   getWidth,
   intersects as intersectsExtent,
+  isEmpty,
   wrapX as wrapExtentX,
 } from '../../extent.js';
 import {
@@ -74,6 +75,14 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
      * @type {boolean}
      */
     this.clipped_ = false;
+
+    /**
+     * Do we need to extend the rendered area on the x-axis to handle
+     * features that cross the antimeridian?
+     * @private
+     * @type {boolean}
+     */
+    this.extendX_ = false;
 
     /**
      * @private
@@ -161,7 +170,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     /**
      * @private
-     * @type {CanvasRenderingContext2D}
+     * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D}
      */
     this.targetContext_ = null;
 
@@ -200,10 +209,12 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const multiWorld = vectorSource.getWrapX() && projection.canWrapX();
     const worldWidth = multiWorld ? getWidth(projectionExtent) : null;
     const endWorld = multiWorld
-      ? Math.ceil((extent[2] - projectionExtent[2]) / worldWidth) + 1
+      ? Math.ceil((extent[2] - projectionExtent[2]) / worldWidth) +
+        (this.extendX_ ? 2 : 1)
       : 1;
     let world = multiWorld
-      ? Math.floor((extent[0] - projectionExtent[0]) / worldWidth)
+      ? Math.floor((extent[0] - projectionExtent[0]) / worldWidth) -
+        (this.extendX_ ? 1 : 0)
       : 0;
     do {
       let transform = this.getRenderTransform(
@@ -604,10 +615,20 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const loadExtents = [extent.slice()];
     const projectionExtent = projection.getExtent();
 
+    const canWrapX = vectorSource.getWrapX() && projection.canWrapX();
+    this.extendX_ = false;
+    if (canWrapX) {
+      const sourceExtent = vectorSource.getExtent();
+      if (sourceExtent && !isEmpty(sourceExtent)) {
+        this.extendX_ =
+          sourceExtent[0] < projectionExtent[0] ||
+          sourceExtent[2] > projectionExtent[2];
+      }
+    }
+
     if (
-      vectorSource.getWrapX() &&
-      projection.canWrapX() &&
-      !containsExtent(projectionExtent, frameState.extent)
+      canWrapX &&
+      (!containsExtent(projectionExtent, frameState.extent) || this.extendX_)
     ) {
       // For the replay group, we need an extent that intersects the real world
       // (-180° to +180°). To support geometries in a coordinate range from -540°
@@ -616,8 +637,14 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       // the viewport width to make sure we cover the whole viewport.
       const worldWidth = getWidth(projectionExtent);
       const gutter = Math.max(getWidth(extent) / 2, worldWidth);
-      extent[0] = projectionExtent[0] - gutter;
-      extent[2] = projectionExtent[2] + gutter;
+      let projMinX = projectionExtent[0];
+      let projMaxX = projectionExtent[2];
+      if (this.extendX_) {
+        projMinX -= worldWidth;
+        projMaxX += worldWidth;
+      }
+      extent[0] = projMinX - gutter;
+      extent[2] = projMaxX + gutter;
       wrapCoordinateX(center, projection);
       const loadExtent = wrapExtentX(loadExtents[0], projection);
       // If the extent crosses the date line, we load data for both edges of the worlds
@@ -647,6 +674,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     if (
       this.ready &&
       this.renderedResolution_ == resolution &&
+      this.renderedPixelRatio_ === pixelRatio &&
       this.renderedRevision_ == vectorLayerRevision &&
       this.renderedRenderOrder_ == vectorLayerRenderOrder &&
       this.renderedFrameDeclutter_ === !!frameState.declutter &&

@@ -4,6 +4,7 @@
 import {equals} from '../../array.js';
 import {createEmpty, createOrUpdate, intersects} from '../../extent.js';
 import {lineStringLength} from '../../geom/flat/length.js';
+import {offsetLineVertex} from '../../geom/flat/lineoffset.js';
 import {drawTextOnPath} from '../../geom/flat/textpath.js';
 import {transform2D} from '../../geom/flat/transform.js';
 import {
@@ -42,7 +43,7 @@ import {TEXT_ALIGN} from './TextBuilder.js';
  */
 
 /**
- * @typedef {{0: CanvasRenderingContext2D, 1: import('../../size.js').Size, 2: import("../canvas.js").Label|HTMLImageElement|HTMLCanvasElement|HTMLVideoElement, 3: ImageOrLabelDimensions, 4: number, 5: Array<*>, 6: Array<*>}} ReplayImageOrLabelArgs
+ * @typedef {{0: CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D, 1: import('../../size.js').Size, 2: import("../canvas.js").Label|HTMLImageElement|HTMLCanvasElement|HTMLVideoElement, 3: ImageOrLabelDimensions, 4: number, 5: Array<*>, 6: Array<*>}} ReplayImageOrLabelArgs
  */
 
 /**
@@ -583,7 +584,7 @@ class Executor {
 
   /**
    * @private
-   * @param {CanvasRenderingContext2D} context Context.
+   * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
    */
   fill_(context) {
     const alignAndScale = this.alignAndScaleFill_;
@@ -595,7 +596,6 @@ class Executor {
       if (alignAndScale !== 1) {
         context.scale(alignAndScale, alignAndScale);
       }
-      context.rotate(this.viewRotation_);
     }
     context.fill();
     if (alignAndScale) {
@@ -605,7 +605,7 @@ class Executor {
 
   /**
    * @private
-   * @param {CanvasRenderingContext2D} context Context.
+   * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
    * @param {Array<*>} instruction Instruction.
    */
   setStrokeStyle_(context, instruction) {
@@ -661,7 +661,7 @@ class Executor {
 
   /**
    * @private
-   * @param {CanvasRenderingContext2D} context Context.
+   * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
    * @param {import('../../size.js').Size} scaledCanvasSize Scaled canvas size
    * @param {import("../../transform.js").Transform} transform Transform.
    * @param {Array<*>} instructions Instructions array.
@@ -708,6 +708,9 @@ class Executor {
     let dd; // end of per-instruction data
     let anchorX,
       anchorY,
+      lineOffsetPx,
+      /** @type {boolean} */ isClosedRing,
+      /** @type {number} */ dStart,
       /** @type {import('../../style/Style.js').DeclutterMode} */
       declutterMode,
       prevX,
@@ -782,10 +785,11 @@ class Executor {
           break;
         case CanvasInstruction.CIRCLE:
           d = /** @type {number} */ (instruction[1]);
+          lineOffsetPx = /** @type {number} */ instruction[2] ?? 0;
           const x1 = pixelCoordinates[d];
           const y1 = pixelCoordinates[d + 1];
-          const x2 = pixelCoordinates[d + 2];
-          const y2 = pixelCoordinates[d + 3];
+          const x2 = pixelCoordinates[d + 2] - lineOffsetPx;
+          const y2 = pixelCoordinates[d + 3] - lineOffsetPx;
           const dx = x2 - x1;
           const dy = y2 - y1;
           const r = Math.sqrt(dx * dx + dy * dy);
@@ -1193,8 +1197,25 @@ class Executor {
         case CanvasInstruction.MOVE_TO_LINE_TO:
           d = /** @type {number} */ (instruction[1]);
           dd = /** @type {number} */ (instruction[2]);
+          lineOffsetPx = /** @type {number|undefined} */ (instruction[3]);
+          isClosedRing =
+            /** @type {boolean|undefined} */ (instruction[4]) ?? false;
           x = pixelCoordinates[d];
           y = pixelCoordinates[d + 1];
+
+          if (lineOffsetPx) {
+            dStart = d;
+            [x, y] = offsetLineVertex(
+              x,
+              y,
+              isClosedRing ? pixelCoordinates[dd - 4] : undefined,
+              isClosedRing ? pixelCoordinates[dd - 3] : undefined,
+              pixelCoordinates[d + 2],
+              pixelCoordinates[d + 3],
+              lineOffsetPx,
+            );
+          }
+
           context.moveTo(x, y);
           prevX = (x + 0.5) | 0;
           prevY = (y + 0.5) | 0;
@@ -1204,6 +1225,31 @@ class Executor {
             roundX = (x + 0.5) | 0;
             roundY = (y + 0.5) | 0;
             if (d == dd - 2 || roundX !== prevX || roundY !== prevY) {
+              if (lineOffsetPx) {
+                if (d == dd - 2) {
+                  // last coordinate
+                  [x, y] = offsetLineVertex(
+                    x,
+                    y,
+                    pixelCoordinates[d - 2],
+                    pixelCoordinates[d - 1],
+                    isClosedRing ? pixelCoordinates[dStart + 2] : undefined,
+                    isClosedRing ? pixelCoordinates[dStart + 3] : undefined,
+                    lineOffsetPx,
+                  );
+                } else {
+                  [x, y] = offsetLineVertex(
+                    x,
+                    y,
+                    pixelCoordinates[d - 2],
+                    pixelCoordinates[d - 1],
+                    pixelCoordinates[d + 2],
+                    pixelCoordinates[d + 3],
+                    lineOffsetPx,
+                  );
+                }
+              }
+
               context.lineTo(x, y);
               prevX = roundX;
               prevY = roundY;
@@ -1258,7 +1304,7 @@ class Executor {
   }
 
   /**
-   * @param {CanvasRenderingContext2D} context Context.
+   * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
    * @param {import('../../size.js').Size} scaledCanvasSize Scaled canvas size.
    * @param {import("../../transform.js").Transform} transform Transform.
    * @param {number} viewRotation View rotation.
@@ -1287,7 +1333,7 @@ class Executor {
   }
 
   /**
-   * @param {CanvasRenderingContext2D} context Context.
+   * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
    * @param {import("../../transform.js").Transform} transform Transform.
    * @param {number} viewRotation View rotation.
    * @param {FeatureCallback<T>} [featureCallback] Feature callback.

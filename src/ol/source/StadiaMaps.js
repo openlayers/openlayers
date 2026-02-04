@@ -54,6 +54,12 @@ const LayerConfig = {
   'stamen_toner_lite': {
     extension: 'png',
   },
+  'stamen_toner_dark': {
+    extension: 'png',
+  },
+  'stamen_toner_blacklite': {
+    extension: 'png',
+  },
   'stamen_watercolor': {
     extension: 'jpg',
   },
@@ -84,6 +90,16 @@ const ProviderConfig = {
     retina: true,
   },
   'stamen_toner': {
+    minZoom: 0,
+    maxZoom: 20,
+    retina: true,
+  },
+  'stamen_toner_dark': {
+    minZoom: 0,
+    maxZoom: 20,
+    retina: true,
+  },
+  'stamen_toner_blacklite': {
     minZoom: 0,
     maxZoom: 20,
     retina: true,

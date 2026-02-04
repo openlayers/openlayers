@@ -23,7 +23,8 @@ import {ERROR_THRESHOLD} from './common.js';
 
 /**
  * @typedef {Object} TileOffset
- * @property {import("../ImageTile.js").default} tile Tile.
+ * @property {import("../ImageTile.js").default} [tile] Tile.
+ * @property {function(): import("../ImageTile.js").default} getTile Tile getter.
  * @property {number} offset Offset.
  */
 
@@ -85,7 +86,7 @@ class ReprojTile extends Tile {
 
     /**
      * @private
-     * @type {HTMLCanvasElement}
+     * @type {HTMLCanvasElement|OffscreenCanvas}
      */
     this.canvas_ = null;
 
@@ -244,11 +245,12 @@ class ReprojTile extends Tile {
 
         for (let srcX = sourceRange.minX; srcX <= sourceRange.maxX; srcX++) {
           for (let srcY = sourceRange.minY; srcY <= sourceRange.maxY; srcY++) {
-            const tile = getTileFunction(this.sourceZ_, srcX, srcY, pixelRatio);
-            if (tile) {
-              const offset = worldsAway * worldWidth;
-              this.sourceTiles_.push({tile, offset});
-            }
+            const offset = worldsAway * worldWidth;
+            this.sourceTiles_.push({
+              getTile: () =>
+                getTileFunction(this.sourceZ_, srcX, srcY, pixelRatio),
+              offset,
+            });
           }
         }
         ++worldsAway;
@@ -262,7 +264,7 @@ class ReprojTile extends Tile {
 
   /**
    * Get the HTML Canvas element for this tile.
-   * @return {HTMLCanvasElement} Canvas.
+   * @return {HTMLCanvasElement|OffscreenCanvas} Canvas.
    */
   getImage() {
     return this.canvas_;
@@ -334,6 +336,9 @@ class ReprojTile extends Tile {
    * @override
    */
   load() {
+    for (const sourceTile of this.sourceTiles_) {
+      sourceTile.tile = sourceTile.getTile();
+    }
     if (this.state == TileState.IDLE) {
       this.state = TileState.LOADING;
       this.changed();
@@ -392,10 +397,15 @@ class ReprojTile extends Tile {
    */
   release() {
     if (this.canvas_) {
-      releaseCanvas(this.canvas_.getContext('2d'));
+      releaseCanvas(
+        /** @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} */ (
+          this.canvas_.getContext('2d')
+        ),
+      );
       canvasPool.push(this.canvas_);
       this.canvas_ = null;
     }
+    this.sourceTiles_.length = 0;
     super.release();
   }
 }

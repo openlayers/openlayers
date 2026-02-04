@@ -339,7 +339,9 @@ class ReprojDataTile extends DataTile {
       const isFloat = tileData instanceof Float32Array;
       const pixelCount = pixelSize[0] * pixelSize[1];
       const DataType = isFloat ? Float32Array : Uint8ClampedArray;
-      const tileDataR = new DataType(tileData.buffer);
+      const tileDataR = new DataType(
+        /** @type {ArrayBuffer} */ (tileData.buffer),
+      );
       const bytesPerElement = DataType.BYTES_PER_ELEMENT;
       const bytesPerPixel = (bytesPerElement * tileDataR.length) / pixelCount;
       const bytesPerRow = tileDataR.byteLength / pixelSize[1];
@@ -376,8 +378,8 @@ class ReprojDataTile extends DataTile {
     const size = this.targetTileGrid_.getTileSize(z);
     const targetWidth = typeof size === 'number' ? size : size[0];
     const targetHeight = typeof size === 'number' ? size : size[1];
-    const outWidth = targetWidth * this.pixelRatio_;
-    const outHeight = targetHeight * this.pixelRatio_;
+    const outWidth = Math.round(targetWidth * this.pixelRatio_);
+    const outHeight = Math.round(targetHeight * this.pixelRatio_);
     const targetResolution = this.targetTileGrid_.getResolution(z);
     const sourceResolution = this.sourceTileGrid_.getResolution(this.sourceZ_);
 
@@ -510,7 +512,7 @@ class ReprojDataTile extends DataTile {
     } else {
       this.reprojData_ = dataR;
     }
-    this.reprojSize_ = [Math.round(outWidth), Math.round(outHeight)];
+    this.reprojSize_ = [outWidth, outHeight];
     this.state = TileState.LOADED;
     this.changed();
   }

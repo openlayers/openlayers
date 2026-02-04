@@ -35,7 +35,7 @@ import ImageStyle from './Image.js';
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images. Note that you must provide a
  * `crossOrigin` value if you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
- * @property {HTMLImageElement|HTMLCanvasElement|ImageBitmap} [img] Image object for the icon.
+ * @property {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas|ImageBitmap} [img] Image object for the icon.
  * @property {Array<number>} [displacement=[0, 0]] Displacement of the icon in pixels.
  * Positive values will shift the icon right and up.
  * @property {number} [opacity=1] Opacity of the icon.
@@ -407,9 +407,45 @@ class Icon extends ImageStyle {
   }
 
   /**
+   * Set the icon color.
+   *
+   * Warning: Repeatedly setting the color on an icon style
+   * causes the icon image to be re-created each time. This can have a
+   * severe performance impact.
+   *
+   * @param {import("../color.js").Color|string|null|undefined} color Color.
+   */
+  setColor(color) {
+    const nextColor = color ? asArray(color) : null;
+    if (
+      this.color_ === nextColor ||
+      (this.color_ &&
+        nextColor &&
+        this.color_.length === nextColor.length &&
+        this.color_.every((value, index) => value === nextColor[index]))
+    ) {
+      // Discard if the color hasn't changed.
+      return;
+    }
+
+    this.color_ = nextColor;
+    const src = this.getSrc();
+    const image = src !== undefined ? null : this.getHitDetectionImage();
+    const imageState =
+      src !== undefined ? ImageState.IDLE : this.iconImage_.getImageState();
+    this.iconImage_ = getIconImage(
+      image,
+      src,
+      this.crossOrigin_,
+      imageState,
+      this.color_,
+    );
+  }
+
+  /**
    * Get the image icon.
    * @param {number} pixelRatio Pixel ratio.
-   * @return {HTMLImageElement|HTMLCanvasElement|ImageBitmap} Image or Canvas element. If the Icon
+   * @return {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas|ImageBitmap} Image or Canvas element. If the Icon
    * style was configured with `src` or with a not let loaded `img`, an `ImageBitmap` will be returned.
    * @api
    * @override
@@ -446,7 +482,7 @@ class Icon extends ImageStyle {
   }
 
   /**
-   * @return {HTMLImageElement|HTMLCanvasElement|ImageBitmap} Image element.
+   * @return {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas|ImageBitmap} Image element.
    * @override
    */
   getHitDetectionImage() {

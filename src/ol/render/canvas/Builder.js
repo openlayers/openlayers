@@ -24,6 +24,7 @@ import {
   defaultLineJoin,
   defaultLineWidth,
   defaultMiterLimit,
+  defaultStrokeOffset,
   defaultStrokeStyle,
 } from '../canvas.js';
 import CanvasInstruction from './Instruction.js';
@@ -549,6 +550,8 @@ class CanvasBuilder extends VectorContext {
         strokeStyleMiterLimit !== undefined
           ? strokeStyleMiterLimit
           : defaultMiterLimit;
+      const strokeStyleOffset = strokeStyle.getOffset();
+      state.strokeOffset = strokeStyleOffset ?? defaultStrokeOffset;
 
       if (state.lineWidth > this.maxLineWidth) {
         this.maxLineWidth = state.lineWidth;
@@ -563,6 +566,7 @@ class CanvasBuilder extends VectorContext {
       state.lineJoin = undefined;
       state.lineWidth = undefined;
       state.miterLimit = undefined;
+      state.strokeOffset = undefined;
     }
     return state;
   }
@@ -641,6 +645,7 @@ class CanvasBuilder extends VectorContext {
     const lineJoin = state.lineJoin;
     const lineWidth = state.lineWidth;
     const miterLimit = state.miterLimit;
+    const strokeOffset = state.strokeOffset;
     if (
       state.currentStrokeStyle != strokeStyle ||
       state.currentLineCap != lineCap ||
@@ -649,7 +654,8 @@ class CanvasBuilder extends VectorContext {
       state.currentLineDashOffset != lineDashOffset ||
       state.currentLineJoin != lineJoin ||
       state.currentLineWidth != lineWidth ||
-      state.currentMiterLimit != miterLimit
+      state.currentMiterLimit != miterLimit ||
+      state.currentStrokeOffset != strokeOffset
     ) {
       applyStroke.call(this, state);
       state.currentStrokeStyle = strokeStyle;
@@ -659,6 +665,7 @@ class CanvasBuilder extends VectorContext {
       state.currentLineJoin = lineJoin;
       state.currentLineWidth = lineWidth;
       state.currentMiterLimit = miterLimit;
+      state.currentStrokeOffset = strokeOffset;
     }
   }
 

@@ -20,7 +20,7 @@ import ImageWMS from '../src/ol/source/ImageWMS.js';
 //
 // Note that we are setting the projection's extent here, which is used to
 // determine the view resolution for zoom level 0. Recommended values for a
-// projection's validity extent can be found at https://epsg.io/.
+// projection's validity extent can be found at https://spatialreference.org/.
 
 proj4.defs(
   'EPSG:21781',

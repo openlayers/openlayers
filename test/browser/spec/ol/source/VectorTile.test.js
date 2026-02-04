@@ -7,7 +7,7 @@ import {listen, unlistenByKey} from '../../../../../src/ol/events.js';
 import GeoJSON from '../../../../../src/ol/format/GeoJSON.js';
 import MVT from '../../../../../src/ol/format/MVT.js';
 import VectorTileLayer from '../../../../../src/ol/layer/VectorTile.js';
-import {get as getProjection, toLonLat} from '../../../../../src/ol/proj.js';
+import {get as getProjection} from '../../../../../src/ol/proj.js';
 import VectorTileSource from '../../../../../src/ol/source/VectorTile.js';
 import TileGrid from '../../../../../src/ol/tilegrid/TileGrid.js';
 import {createXYZ} from '../../../../../src/ol/tilegrid.js';
@@ -373,18 +373,6 @@ describe('ol/source/VectorTile', function () {
         expect(loaded).to.eql(['5/13/-28']);
         done();
       }, 0);
-    });
-
-    it('throws if projections are not equivalent', function () {
-      const view = new View({
-        zoom: 11,
-        center: toLonLat([666373.1624999996, 7034265.3572]),
-        projection: 'EPSG:4326',
-      });
-      map.setView(view);
-      expect(function () {
-        map.renderSync();
-      }).to.throwException();
     });
   });
 

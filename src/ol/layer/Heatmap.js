@@ -16,6 +16,20 @@ import WebGLVectorLayerRenderer from '../renderer/webgl/VectorLayer.js';
 import BaseVector from './BaseVector.js';
 
 /**
+ * @typedef {'change:blur'|'change:radius'|'change:gradient'} HeatmapEventTypes
+ */
+
+/***
+ * @template Return
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
+ *   import("../Observable").OnSignature<import("./Base").BaseLayerObjectEventTypes|
+ *     import("./Layer.js").LayerEventType|HeatmapEventTypes, import("../Object").ObjectEvent, Return> &
+ *   import("../Observable").OnSignature<import("../render/EventType").LayerRenderEventTypes, import("../render/Event").default, Return> &
+ *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("./Base").BaseLayerObjectEventTypes|
+ *     import("./Layer.js").LayerEventType|HeatmapEventTypes|import("../render/EventType").LayerRenderEventTypes, Return>} HeatmapOnSignature
+ */
+
+/**
  * @typedef {import("../style/flat.js").NumberExpression|string|function(import("../Feature.js").default):number} WeightExpression
  */
 
@@ -100,6 +114,21 @@ class Heatmap extends BaseVector {
     delete baseOptions.weight;
     super(baseOptions);
 
+    /***
+     * @type {HeatmapOnSignature<import("../events").EventsKey>}
+     */
+    this.on;
+
+    /***
+     * @type {HeatmapOnSignature<import("../events").EventsKey>}
+     */
+    this.once;
+
+    /***
+     * @type {HeatmapOnSignature<void>}
+     */
+    this.un;
+
     this.filter_ = options.filter ?? true;
 
     /**
@@ -110,7 +139,7 @@ class Heatmap extends BaseVector {
 
     /**
      * @private
-     * @type {HTMLCanvasElement}
+     * @type {HTMLCanvasElement|OffscreenCanvas}
      */
     this.gradient_ = null;
 
@@ -375,7 +404,7 @@ class Heatmap extends BaseVector {
 
 /**
  * @param {Array<string>} colors A list of colored.
- * @return {HTMLCanvasElement} canvas with gradient texture.
+ * @return {HTMLCanvasElement|OffscreenCanvas} canvas with gradient texture.
  */
 function createGradient(colors) {
   const width = 1;
