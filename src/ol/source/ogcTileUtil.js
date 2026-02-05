@@ -327,7 +327,12 @@ export function parseTileMatrixSet(
   const resolutions = new Array(length);
   const sizes = new Array(length);
   const tileSizes = new Array(length);
-  const extent = [-Infinity, -Infinity, Infinity, Infinity];
+  const extent = /** @type {import('../extent.js').Extent} */ ([
+    -Infinity,
+    -Infinity,
+    Infinity,
+    Infinity,
+  ]);
 
   for (let i = 0; i < length; ++i) {
     const id = matrixIds[i];

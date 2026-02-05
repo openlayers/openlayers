@@ -622,7 +622,12 @@ class VectorSource extends Source {
    * @template T
    */
   forEachFeatureAtCoordinateDirect(coordinate, callback) {
-    const extent = [coordinate[0], coordinate[1], coordinate[0], coordinate[1]];
+    const extent = /** @type {import('../extent.js').Extent} */ ([
+      coordinate[0],
+      coordinate[1],
+      coordinate[0],
+      coordinate[1],
+    ]);
     return this.forEachFeatureInExtent(extent, function (feature) {
       const geometry = feature.getGeometry();
       if (
@@ -805,7 +810,12 @@ class VectorSource extends Source {
     let closestFeature = null;
     const closestPoint = [NaN, NaN];
     let minSquaredDistance = Infinity;
-    const extent = [-Infinity, -Infinity, Infinity, Infinity];
+    const extent = /** @type {import('../extent.js').Extent} */ ([
+      -Infinity,
+      -Infinity,
+      Infinity,
+      Infinity,
+    ]);
     filter = filter ? filter : TRUE;
     this.featuresRtree_.forEachInExtent(
       extent,
@@ -1035,7 +1045,11 @@ class VectorSource extends Source {
             );
           },
         );
-        loadedExtentsRtree.insert(extentToLoad, {extent: extentToLoad.slice()});
+        loadedExtentsRtree.insert(extentToLoad, {
+          extent: /** @type {import('../extent.js').Extent} */ (
+            extentToLoad.slice()
+          ),
+        });
       }
     }
     this.loading =

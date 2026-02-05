@@ -313,7 +313,13 @@ class BingMaps extends TileImage {
             const coverageArea = coverageAreas[i];
             if (zoom >= coverageArea.zoomMin && zoom <= coverageArea.zoomMax) {
               const bbox = coverageArea.bbox;
-              const epsg4326Extent = [bbox[1], bbox[0], bbox[3], bbox[2]];
+              const epsg4326Extent =
+                /** @type {import('../extent.js').Extent} */ ([
+                  bbox[1],
+                  bbox[0],
+                  bbox[3],
+                  bbox[2],
+                ]);
               const extent = applyTransform(epsg4326Extent, transform);
               if (intersects(extent, frameState.extent)) {
                 intersecting = true;

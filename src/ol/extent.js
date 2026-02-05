@@ -5,7 +5,7 @@ import Relationship from './extent/Relationship.js';
 
 /**
  * An array of numbers representing an extent: `[minx, miny, maxx, maxy]`.
- * @typedef {Array<number>} Extent
+ * @typedef {[number, number, number, number]} Extent
  * @api
  */
 
@@ -83,7 +83,7 @@ export function clone(extent, dest) {
     dest[3] = extent[3];
     return dest;
   }
-  return extent.slice();
+  return /** @type {Extent} */ (extent.slice());
 }
 
 /**

@@ -98,7 +98,9 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
     const vectorRenderer = this.vectorRenderer_;
     let renderedExtent = frameState.extent;
     if (this.layerImageRatio_ !== 1) {
-      renderedExtent = renderedExtent.slice(0);
+      renderedExtent = /** @type {import('../../extent.js').Extent} */ (
+        renderedExtent.slice()
+      );
       scaleFromCenter(renderedExtent, this.layerImageRatio_);
     }
     const width = getWidth(renderedExtent) / viewResolution;

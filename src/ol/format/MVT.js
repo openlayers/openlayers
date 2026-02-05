@@ -263,7 +263,14 @@ class MVT extends FeatureFormat {
       }
       const pbfLayer = pbfLayers[name];
 
-      const extent = pbfLayer ? [0, 0, pbfLayer.extent, pbfLayer.extent] : null;
+      const extent = pbfLayer
+        ? /** @type {import('../extent.js').Extent} */ ([
+            0,
+            0,
+            pbfLayer.extent,
+            pbfLayer.extent,
+          ])
+        : null;
       dataProjection.setExtent(extent);
 
       for (let i = 0, ii = pbfLayer.length; i < ii; ++i) {
