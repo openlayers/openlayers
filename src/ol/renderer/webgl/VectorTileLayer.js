@@ -302,6 +302,12 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
         this.hitRenderTarget_,
         true
       );
+    } else if (this.hitDetectionEnabled_) {
+      // Mark the hit render target data cache as dirty so that the next
+      // readPixel() call fetches fresh data from the GPU framebuffer.
+      // Without this, readPixel() returns stale cached data from the
+      // previous read, causing hit detection to fail on subsequent interactions.
+      this.hitRenderTarget_.clearCachedData();
     }
   }
 
