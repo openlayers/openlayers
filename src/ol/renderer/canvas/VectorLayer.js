@@ -72,9 +72,9 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     /**
      * @private
-     * @type {boolean}
+     * @type {import("../../extent.js").Extent}
      */
-    this.clipped_ = false;
+    this.clipExtent_ = null;
 
     /**
      * Do we need to extend the rendered area on the x-axis to handle
@@ -297,9 +297,13 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     if (!this.replayGroup_) {
       return;
     }
+    if (this.clipExtent_) {
+      this.clipUnrotated(this.context, frameState, this.clipExtent_);
+    }
     this.replayGroup_.renderDeferred();
-    if (this.clipped_) {
+    if (this.clipExtent_) {
       this.context.restore();
+      this.clipExtent_ = null;
     }
     this.resetDrawContext_();
   }
@@ -337,13 +341,22 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const projection = viewState.projection;
 
     // clipped rendering if layer extent is set
-    this.clipped_ = false;
+    this.clipExtent_ = null;
+    let clipped = false;
     if (render && layerState.extent && this.clipping) {
       const layerExtent = fromUserExtent(layerState.extent, projection);
       render = intersectsExtent(layerExtent, frameState.extent);
-      this.clipped_ = render && !containsExtent(layerExtent, frameState.extent);
-      if (this.clipped_) {
-        this.clipUnrotated(context, frameState, layerExtent);
+      const needsClip =
+        render && !containsExtent(layerExtent, frameState.extent);
+      if (needsClip) {
+        if (frameState.declutter) {
+          // Store extent for deferred clipping
+          this.clipExtent_ = layerExtent;
+        } else {
+          // Apply clipping immediately for non-declutter rendering
+          this.clipUnrotated(context, frameState, layerExtent);
+          clipped = true;
+        }
       }
     }
 
@@ -355,7 +368,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       );
     }
 
-    if (!frameState.declutter && this.clipped_) {
+    if (clipped) {
       context.restore();
     }
 
