@@ -1,20 +1,13 @@
 ---
 layout: example.html
-title: Snap Interaction
+title: Apply different styles to the snap target
 shortdesc: Example of using the snap interaction together with draw and modify interactions.
 docs: >
   Example of using the snap interaction together with
-  draw and modify interactions. The snap interaction must be added
-  last, as it needs to be the first to handle the
-  <code>pointermove</code> event.</p> By default, the Snap interaction snaps to edges
-  (<code>edge: true</code>) and vertices (<code>vertex: true</code>).
-  It can also be configured to snap to intersections between edges
-  or to the midpoint of line segments, which is done here with the
-  <code>intersection: true</code> and the <code>midpoint: true</code> option.
+  draw and modify interactions. Shows how to apply different styles to the snap target.
 tags: "draw, edit, modify, vector, snap"
 ---
 <div id="map" class="map"></div>
-<span id="snapped">Snapped: false</span>
 <form id="options-form" autocomplete="off">
   <div class="radio">
     <label>
@@ -32,6 +25,33 @@ tags: "draw, edit, modify, vector, snap"
     <label>
       <input type="radio" name="interaction" value="modify">
       Modify &nbsp;
+    </label>
+  </div>
+  <div class="radio">
+    Snapping to
+  </div>
+  <div class="radio">
+    <label>
+      <input type="checkbox" name="vertex" value="vertex" checked>
+      vertex
+    </label>
+  </div>
+  <div class="radio">
+    <label>
+      <input type="checkbox" name="edge" value="edge" checked>
+      edge
+    </label>
+  </div>
+  <div class="radio">
+    <label>
+      <input type="checkbox" name="intersection" value="intersection" checked>
+      intersection
+    </label>
+  </div>
+  <div class="radio">
+    <label>
+      <input type="checkbox" name="midpoint" value="midpoint" checked>
+      midpoint
     </label>
   </div>
 </form>
