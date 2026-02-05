@@ -239,7 +239,7 @@ function getImagesForTIFF(tiff) {
 
 /**
  * @param {SourceInfo} source The GeoTIFF source.
- * @param {Object} options Options for the GeoTIFF source.
+ * @param {import('geotiff').RemoteSourceOptions} options Options for the GeoTIFF source.
  * @return {Promise<Array<GeoTIFFImage>>} Resolves to a list of images.
  */
 function getImagesForSource(source, options) {
