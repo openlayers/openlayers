@@ -807,6 +807,70 @@ describe('ol/expr/cpu.js', () => {
         expression: ['has', 'property', 0, 'foo'],
         expected: false,
       },
+      {
+        name: 'at (with exact array)',
+        type: StringType,
+        expression: ['at', 0, ['one', 'two', 'three']],
+        expected: 'one',
+      },
+      {
+        name: 'at (with literal array)',
+        type: StringType,
+        expression: ['at', 0, ['literal', ['one', 'two', 'three']]],
+        expected: 'one',
+      },
+      {
+        name: 'at (with get in array)',
+        context: {
+          properties: {
+            text: 'needle',
+          },
+        },
+        type: StringType,
+        expression: ['at', 0, [['get', 'text'], 'two', 'three']],
+        expected: 'needle',
+      },
+      {
+        name: 'at (with array from property)',
+        context: {
+          properties: {
+            array: ['one', 'two', 'three'],
+          },
+        },
+        type: StringType,
+        expression: ['at', 0, ['get', 'array']],
+        expected: 'one',
+      },
+      {
+        name: 'at (with array from regex)',
+        type: StringType,
+        expression: ['at', 0, ['regex', '123', '/\\d/g']],
+        expected: '1',
+      },
+      {
+        name: 'length (array)',
+        type: NumberType,
+        expression: ['length', ['one', 'two', 'three']],
+        expected: 3,
+      },
+      {
+        name: 'length (string)',
+        type: NumberType,
+        expression: ['length', 'hello'],
+        expected: 5,
+      },
+      {
+        name: 'regex (valid)',
+        type: StringType,
+        expression: ['regex', 'hello world', '/^hello/g'],
+        expected: ['hello'],
+      },
+      {
+        name: 'regex (no match)',
+        type: StringType,
+        expression: ['regex', 'hello world', '/^world/g'],
+        expected: [],
+      },
     ];
 
     for (const c of cases) {
