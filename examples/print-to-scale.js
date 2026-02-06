@@ -1,14 +1,15 @@
-import Map from '../src/ol/Map.js';
-import TileLayer from '../src/ol/layer/Tile.js';
-import View from '../src/ol/View.js';
-import WMTS, {optionsFromCapabilities} from '../src/ol/source/WMTS.js';
-import WMTSCapabilities from '../src/ol/format/WMTSCapabilities.js';
 import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
+import {jsPDF} from 'jspdf';
 import proj4 from 'proj4';
-import {ScaleLine, defaults as defaultControls} from '../src/ol/control.js';
-import {getPointResolution, get as getProjection} from '../src/ol/proj.js';
+import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
+import ScaleLine from '../src/ol/control/ScaleLine.js';
+import {defaults as defaultControls} from '../src/ol/control/defaults.js';
+import WMTSCapabilities from '../src/ol/format/WMTSCapabilities.js';
+import TileLayer from '../src/ol/layer/Tile.js';
 import {register} from '../src/ol/proj/proj4.js';
+import {get as getProjection, getPointResolution} from '../src/ol/proj.js';
+import WMTS, {optionsFromCapabilities} from '../src/ol/source/WMTS.js';
 
 proj4.defs(
   'EPSG:27700',
@@ -123,7 +124,7 @@ exportButton.addEventListener(
         );
         pdf.save('map.pdf');
         // Reset original map size
-        scaleLine.setDpi();
+        scaleLine.setDpi(undefined);
         map.getTargetElement().style.width = '';
         map.getTargetElement().style.height = '';
         map.updateSize();

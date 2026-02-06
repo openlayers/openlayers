@@ -9,6 +9,7 @@ docs: >
   component vector of the wind velocity, and the second band (or green channel) is the north-south
   component vector.  The flow layer is configured with this data tile source and a style for applying
   a color ramp based on wind speed.
+experimental: true
 tags: "wind"
 ---
 <!DOCTYPE html>
@@ -17,6 +18,7 @@ tags: "wind"
     <meta charset="UTF-8">
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
     <title>Wind</title>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="/theme/ol.css">
     <link rel="stylesheet" type="text/css" href="/theme/site.css">
     <style>
@@ -35,7 +37,14 @@ tags: "wind"
   </head>
   <body>
     <div id="map"></div>
+    <div id="experimental-notice" class="alert alert-warning alert-dismissible" role="alert" style="position: absolute; bottom: 0; margin: 1em;">
+      <button id="experimental-dismiss" type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      This example uses features that are not part of the stable API and subject to change between releases.  Consult the <a href="/en/latest/apidoc/">API documentation</a>
+      to see what is supported in the latest release.
+    </div>
+
     <script src="wind.js"></script>
     <script src="common.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
   </body>
 </html>

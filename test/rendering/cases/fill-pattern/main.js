@@ -1,9 +1,9 @@
 import Feature from '../../../../src/ol/Feature.js';
 import Map from '../../../../src/ol/Map.js';
-import Polygon from 'ol/geom/Polygon.js';
+import View from '../../../../src/ol/View.js';
+import Polygon from '../../../../src/ol/geom/Polygon.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
-import View from '../../../../src/ol/View.js';
 
 const polygon1 = new Feature({
   geometry: new Polygon([

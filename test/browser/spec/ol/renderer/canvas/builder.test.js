@@ -1,10 +1,4 @@
-import BuilderGroup from '../../../../../../src/ol/render/canvas/BuilderGroup.js';
-import CanvasBuilder from '../../../../../../src/ol/render/canvas/Builder.js';
-import CanvasLineStringBuilder from '../../../../../../src/ol/render/canvas/LineStringBuilder.js';
-import CanvasPolygonBuilder from '../../../../../../src/ol/render/canvas/PolygonBuilder.js';
-import ExecutorGroup from '../../../../../../src/ol/render/canvas/ExecutorGroup.js';
 import Feature from '../../../../../../src/ol/Feature.js';
-import Fill from '../../../../../../src/ol/style/Fill.js';
 import GeometryCollection from '../../../../../../src/ol/geom/GeometryCollection.js';
 import LineString from '../../../../../../src/ol/geom/LineString.js';
 import MultiLineString from '../../../../../../src/ol/geom/MultiLineString.js';
@@ -12,20 +6,27 @@ import MultiPoint from '../../../../../../src/ol/geom/MultiPoint.js';
 import MultiPolygon from '../../../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../../../src/ol/geom/Polygon.js';
+import CanvasBuilder from '../../../../../../src/ol/render/canvas/Builder.js';
+import BuilderGroup from '../../../../../../src/ol/render/canvas/BuilderGroup.js';
+import ExecutorGroup from '../../../../../../src/ol/render/canvas/ExecutorGroup.js';
+import CanvasLineStringBuilder from '../../../../../../src/ol/render/canvas/LineStringBuilder.js';
+import CanvasPolygonBuilder from '../../../../../../src/ol/render/canvas/PolygonBuilder.js';
+import {renderFeature} from '../../../../../../src/ol/renderer/vector.js';
+import Fill from '../../../../../../src/ol/style/Fill.js';
 import Stroke from '../../../../../../src/ol/style/Stroke.js';
 import Style from '../../../../../../src/ol/style/Style.js';
 import {
   create as createTransform,
   scale as scaleTransform,
 } from '../../../../../../src/ol/transform.js';
-import {renderFeature} from '../../../../../../src/ol/renderer/vector.js';
 
 describe('ol.render.canvas.BuilderGroup', function () {
   describe('#replay', function () {
     let context, builder, fillCount, transform;
     let strokeCount, beginPathCount, moveToCount, lineToCount;
     let feature0, feature1, feature2, feature3;
-    let fill0, fill1, style1, style2;
+    let fill0, fill1, style1, style2, style3, style4;
+    let sequence;
 
     /**
      * @param {BuilderGroup} builder The builder to get instructions from.
@@ -110,6 +111,15 @@ describe('ol.render.canvas.BuilderGroup', function () {
           lineDashOffset: 2,
         }),
       });
+      style3 = new Style({
+        fill: new Fill({color: 'black'}),
+        stroke: null,
+      });
+      style4 = new Style({
+        fill: null,
+        stroke: new Stroke({color: 'white', width: 1}),
+      });
+      sequence = [];
       fillCount = 0;
       strokeCount = 0;
       beginPathCount = 0;
@@ -117,30 +127,42 @@ describe('ol.render.canvas.BuilderGroup', function () {
       lineToCount = 0;
       context = {
         fill: function () {
+          sequence.push('fill');
           fillCount++;
         },
         stroke: function () {
+          sequence.push('stroke');
           strokeCount++;
         },
         beginPath: function () {
+          sequence.push('beginPath');
           beginPathCount++;
         },
         clip: function () {
+          sequence.push('clip');
           // remove beginPath, moveTo and lineTo counts for clipping
           beginPathCount--;
           moveToCount--;
           lineToCount -= 3;
         },
         moveTo: function () {
+          sequence.push('moveTo');
           moveToCount++;
         },
         lineTo: function () {
+          sequence.push('lineTo');
           lineToCount++;
         },
-        closePath: function () {},
-        setLineDash: function () {},
+        closePath: function () {
+          sequence.push('closePath');
+        },
+        setLineDash: function () {
+          sequence.push('setLineDash');
+        },
         save: function () {},
         restore: function () {},
+        translate: function () {},
+        rotate: function () {},
       };
     });
 
@@ -179,6 +201,78 @@ describe('ol.render.canvas.BuilderGroup', function () {
       expect(fillCount).to.be(2);
       expect(strokeCount).to.be(2);
       expect(beginPathCount).to.be(2);
+    });
+
+    it('overlaps: false - batches fill and stroke instructions for changing from stroke to no stroke', function () {
+      renderFeature(builder, feature1, style1, 1);
+      renderFeature(builder, feature2, style3, 1);
+      renderFeature(builder, feature3, style3, 1);
+      execute(builder, 1, false);
+      expect(sequence).to.eql([
+        'beginPath',
+        'moveTo',
+        'lineTo',
+        'lineTo',
+        'lineTo',
+        'clip',
+        'setLineDash',
+        'beginPath',
+        'moveTo',
+        'lineTo',
+        'lineTo',
+        'lineTo',
+        'lineTo',
+        'closePath',
+        'stroke',
+        'moveTo',
+        'lineTo',
+        'lineTo',
+        'lineTo',
+        'moveTo',
+        'lineTo',
+        'lineTo',
+        'lineTo',
+        'fill',
+      ]);
+    });
+
+    it('overlaps: false - batches fill and stroke instructions for changing from fill to no fill', function () {
+      renderFeature(builder, feature1, style1, 1);
+      renderFeature(builder, feature2, style4, 1);
+      renderFeature(builder, feature3, style4, 1);
+      execute(builder, 1, false);
+      expect(sequence).to.eql([
+        'beginPath',
+        'moveTo',
+        'lineTo',
+        'lineTo',
+        'lineTo',
+        'clip',
+        'setLineDash',
+        'beginPath',
+        'moveTo',
+        'lineTo',
+        'lineTo',
+        'lineTo',
+        'lineTo',
+        'closePath',
+        'fill',
+        'stroke',
+        'beginPath',
+        'moveTo',
+        'lineTo',
+        'lineTo',
+        'lineTo',
+        'lineTo',
+        'closePath',
+        'moveTo',
+        'lineTo',
+        'lineTo',
+        'lineTo',
+        'lineTo',
+        'closePath',
+        'stroke',
+      ]);
     });
 
     it('batches fill and stroke instructions for changing styles', function () {

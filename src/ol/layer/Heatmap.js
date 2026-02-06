@@ -1,11 +1,37 @@
 /**
  * @module ol/layer/Heatmap
  */
-import BaseVector from './BaseVector.js';
-import WebGLPointsLayerRenderer from '../renderer/webgl/PointsLayer.js';
-import {ShaderBuilder} from '../webgl/ShaderBuilder.js';
-import {clamp} from '../math.js';
 import {createCanvasContext2D} from '../dom.js';
+import {BooleanType, NumberType} from '../expr/expression.js';
+import {newCompilationContext} from '../expr/gpu.js';
+import {clamp} from '../math.js';
+import {ShaderBuilder} from '../render/webgl/ShaderBuilder.js';
+import {
+  applyContextToBuilder,
+  expressionToGlsl,
+  generateAttributesFromContext,
+  generateUniformsFromContext,
+} from '../render/webgl/compileUtil.js';
+import WebGLVectorLayerRenderer from '../renderer/webgl/VectorLayer.js';
+import BaseVector from './BaseVector.js';
+
+/**
+ * @typedef {'change:blur'|'change:radius'|'change:gradient'} HeatmapEventTypes
+ */
+
+/***
+ * @template Return
+ * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
+ *   import("../Observable").OnSignature<import("./Base").BaseLayerObjectEventTypes|
+ *     import("./Layer.js").LayerEventType|HeatmapEventTypes, import("../Object").ObjectEvent, Return> &
+ *   import("../Observable").OnSignature<import("../render/EventType").LayerRenderEventTypes, import("../render/Event").default, Return> &
+ *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("./Base").BaseLayerObjectEventTypes|
+ *     import("./Layer.js").LayerEventType|HeatmapEventTypes|import("../render/EventType").LayerRenderEventTypes, Return>} HeatmapOnSignature
+ */
+
+/**
+ * @typedef {import("../style/flat.js").NumberExpression|string|function(import("../Feature.js").default):number} WeightExpression
+ */
 
 /**
  * @template {import("../Feature.js").FeatureLike} [FeatureType=import("../Feature.js").default]
@@ -30,11 +56,15 @@ import {createCanvasContext2D} from '../dom.js';
  * be visible.
  * @property {Array<string>} [gradient=['#00f', '#0ff', '#0f0', '#ff0', '#f00']] The color gradient
  * of the heatmap, specified as an array of CSS color strings.
- * @property {number} [radius=8] Radius size in pixels.
- * @property {number} [blur=15] Blur size in pixels.
- * @property {string|function(import("../Feature.js").default):number} [weight='weight'] The feature
- * attribute to use for the weight or a function that returns a weight from a feature. Weight values
+ * @property {import("../style/flat.js").NumberExpression} [radius=8] Radius size in pixels. Note that for LineStrings,
+ * the width of the line will be double the radius.
+ * @property {import("../style/flat.js").NumberExpression} [blur=15] Blur size in pixels. This is added to the `radius`
+ * parameter above to create the final size of the blur effect.
+ * @property {WeightExpression} [weight='weight'] The feature
+ * attribute to use for the weight. This also supports expressions returning a number or a function that returns a weight from a feature. Weight values
  * should range from 0 to 1 (and values outside will be clamped to that range).
+ * @property {import("../style/flat.js").BooleanExpression} [filter] Optional filter expression.
+ * @property {Object<string, number|Array<number>|string|boolean>} [variables] Variables used in expressions (optional)
  * @property {VectorSourceType} [source] Point source.
  * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
  */
@@ -66,7 +96,7 @@ const DEFAULT_GRADIENT = ['#00f', '#0ff', '#0f0', '#ff0', '#f00'];
  * @fires import("../render/Event.js").RenderEvent#postrender
  * @template {import("../Feature.js").FeatureLike} [FeatureType=import("../Feature.js").default]
  * @template {import("../source/Vector.js").default<FeatureType>} [VectorSourceType=import("../source/Vector.js").default<FeatureType>]
- * @extends {BaseVector<FeatureType, VectorSourceType, WebGLPointsLayerRenderer>}
+ * @extends {BaseVector<FeatureType, VectorSourceType, WebGLVectorLayerRenderer>}
  * @api
  */
 class Heatmap extends BaseVector {
@@ -84,9 +114,32 @@ class Heatmap extends BaseVector {
     delete baseOptions.weight;
     super(baseOptions);
 
+    /***
+     * @type {HeatmapOnSignature<import("../events").EventsKey>}
+     */
+    this.on;
+
+    /***
+     * @type {HeatmapOnSignature<import("../events").EventsKey>}
+     */
+    this.once;
+
+    /***
+     * @type {HeatmapOnSignature<void>}
+     */
+    this.un;
+
+    this.filter_ = options.filter ?? true;
+
+    /**
+     * @type {import('../style/flat.js').StyleVariables}
+     * @private
+     */
+    this.styleVariables_ = options.variables || {};
+
     /**
      * @private
-     * @type {HTMLCanvasElement}
+     * @type {HTMLCanvasElement|OffscreenCanvas}
      */
     this.gradient_ = null;
 
@@ -103,14 +156,7 @@ class Heatmap extends BaseVector {
     /**
      * @private
      */
-    this.weightFunction_ =
-      typeof weight === 'string'
-        ? /**
-           * @param {import('../Feature.js').default} feature Feature
-           * @return {any} weight
-           */
-          (feature) => feature.get(weight)
-        : weight;
+    this.weight_ = weight;
 
     // For performance reasons, don't sort the features before rendering.
     // The render order is not relevant for a heatmap representation.
@@ -119,12 +165,14 @@ class Heatmap extends BaseVector {
 
   /**
    * Return the blur size in pixels.
-   * @return {number} Blur size in pixels.
+   * @return {import("../style/flat.js").NumberExpression} Blur size in pixels.
    * @api
    * @observable
    */
   getBlur() {
-    return /** @type {number} */ (this.get(Property.BLUR));
+    return /** @type {import("../style/flat.js").NumberExpression} */ (
+      this.get(Property.BLUR)
+    );
   }
 
   /**
@@ -139,12 +187,14 @@ class Heatmap extends BaseVector {
 
   /**
    * Return the size of the radius in pixels.
-   * @return {number} Radius size in pixel.
+   * @return {import("../style/flat.js").NumberExpression} Radius size in pixel.
    * @api
    * @observable
    */
   getRadius() {
-    return /** @type {number} */ (this.get(Property.RADIUS));
+    return /** @type {import("../style/flat.js").NumberExpression} */ (
+      this.get(Property.RADIUS)
+    );
   }
 
   /**
@@ -156,12 +206,19 @@ class Heatmap extends BaseVector {
 
   /**
    * Set the blur size in pixels.
-   * @param {number} blur Blur size in pixels.
+   * @param {import("../style/flat.js").NumberExpression} blur Blur size in pixels (supports expressions).
    * @api
    * @observable
    */
   setBlur(blur) {
+    const previousValue = this.get(Property.BLUR);
     this.set(Property.BLUR, blur);
+    // if the value stays numerical, simply refresh the layer
+    if (typeof blur === 'number' && typeof previousValue === 'number') {
+      this.changed();
+      return;
+    }
+    this.clearRenderer();
   }
 
   /**
@@ -176,52 +233,134 @@ class Heatmap extends BaseVector {
 
   /**
    * Set the size of the radius in pixels.
-   * @param {number} radius Radius size in pixel.
+   * @param {import("../style/flat.js").NumberExpression} radius Radius size in pixel (supports expressions).
    * @api
    * @observable
    */
   setRadius(radius) {
+    const previousValue = this.get(Property.RADIUS);
     this.set(Property.RADIUS, radius);
+    // if the value stays numerical, simply refresh the layer
+    if (typeof radius === 'number' && typeof previousValue === 'number') {
+      this.changed();
+      return;
+    }
+    this.clearRenderer();
+  }
+
+  /**
+   * Set the filter expression
+   * @param {import("../style/flat.js").BooleanExpression} filter Filter expression
+   * @api
+   */
+  setFilter(filter) {
+    this.filter_ = filter;
+    this.changed();
+    this.clearRenderer();
+  }
+
+  /**
+   * Set the weight expression
+   * @param {WeightExpression} weight Weight expression
+   * @api
+   */
+  setWeight(weight) {
+    this.weight_ = weight;
+    this.changed();
+    this.clearRenderer();
   }
 
   /**
    * @override
    */
   createRenderer() {
-    const builder = new ShaderBuilder()
-      .addAttribute('float a_prop_weight')
-      .addVarying('v_prop_weight', 'float', 'a_prop_weight')
-      .addUniform('float u_size')
-      .addUniform('float u_blurSlope')
-      .setSymbolSizeExpression('vec2(u_size)')
-      .setSymbolColorExpression(
-        'vec4(smoothstep(0., 1., (1. - length(coordsPx * 2. / v_quadSizePx)) * u_blurSlope) * v_prop_weight)',
-      );
+    const builder = new ShaderBuilder();
 
-    return new WebGLPointsLayerRenderer(this, {
+    const context = newCompilationContext();
+    const filterCompiled = expressionToGlsl(context, this.filter_, BooleanType);
+    let radiusCompiled = expressionToGlsl(
+      context,
+      this.getRadius(),
+      NumberType,
+    );
+    let blurCompiled = expressionToGlsl(context, this.getBlur(), NumberType);
+
+    /** @type {import('../render/webgl/VectorStyleRenderer.js').UniformDefinitions} */
+    const blurRadiusUniforms = {};
+    if (typeof this.getBlur() === 'number') {
+      blurCompiled = 'a_blur';
+      blurRadiusUniforms['a_blur'] = () => this.getBlur();
+      builder.addUniform('a_blur', 'float');
+    }
+    if (typeof this.getRadius() === 'number') {
+      radiusCompiled = 'a_radius';
+      blurRadiusUniforms['a_radius'] = () => this.getRadius();
+      builder.addUniform('a_radius', 'float');
+    }
+
+    /** @type {import('../render/webgl/VectorStyleRenderer.js').AttributeDefinitions} */
+    const weightAttribute = {};
+    let weightExpression = null;
+    if (
+      typeof this.weight_ === 'string' ||
+      typeof this.weight_ === 'function'
+    ) {
+      const weightFunction =
+        typeof this.weight_ === 'string'
+          ? (feature) => feature.get(this.weight_)
+          : this.weight_;
+      weightAttribute['prop_weight'] = {
+        size: 1,
+        callback: (feature) => {
+          const weightValue = weightFunction(feature);
+          return weightValue !== undefined ? clamp(weightValue, 0, 1) : 1;
+        },
+      };
+      weightExpression = 'a_prop_weight';
+      builder.addAttribute('a_prop_weight', 'float');
+    } else {
+      const clampedWeight = ['clamp', this.weight_, 0, 1];
+      weightExpression = expressionToGlsl(context, clampedWeight, NumberType);
+    }
+
+    builder
+      .addFragmentShaderFunction(
+        `float getBlurSlope() {
+  float blur = max(1., ${blurCompiled});
+  float radius = ${radiusCompiled};
+  return radius / blur;
+}`,
+      )
+      .setSymbolSizeExpression(`vec2(${radiusCompiled} + ${blurCompiled}) * 2.`)
+      .setSymbolColorExpression(
+        `vec4(smoothstep(0., 1., (1. - length(coordsPx * 2. / v_quadSizePx)) * getBlurSlope()) * ${weightExpression})`,
+      )
+      .setStrokeColorExpression(
+        `vec4(smoothstep(0., 1., (1. - length(currentRadiusPx * 2. / v_width)) * getBlurSlope()) * ${weightExpression})`,
+      )
+      .setStrokeWidthExpression(`(${radiusCompiled} + ${blurCompiled}) * 2.`)
+      .setFillColorExpression(`vec4(${weightExpression})`)
+      .setFragmentDiscardExpression(`!${filterCompiled}`);
+
+    applyContextToBuilder(builder, context);
+    const attributes = generateAttributesFromContext(context);
+    const uniforms = generateUniformsFromContext(context, this.styleVariables_);
+
+    return new WebGLVectorLayerRenderer(this, {
       className: this.getClassName(),
-      attributes: [
-        {
-          name: 'weight',
-          callback: (feature) => {
-            const weight = this.weightFunction_(feature);
-            return weight !== undefined ? clamp(weight, 0, 1) : 1;
-          },
+      variables: this.styleVariables_,
+      style: {
+        builder,
+        attributes: {
+          ...attributes,
+          ...weightAttribute,
         },
-      ],
-      uniforms: {
-        u_size: () => {
-          return (this.get(Property.RADIUS) + this.get(Property.BLUR)) * 2;
-        },
-        u_blurSlope: () => {
-          return (
-            this.get(Property.RADIUS) / Math.max(1, this.get(Property.BLUR))
-          );
+        uniforms: {
+          ...uniforms,
+          ...blurRadiusUniforms,
         },
       },
-      hitDetectionEnabled: true,
-      vertexShader: builder.getSymbolVertexShader(),
-      fragmentShader: builder.getSymbolFragmentShader(),
+      disableHitDetection: false,
       postProcesses: [
         {
           fragmentShader: `
@@ -249,6 +388,15 @@ class Heatmap extends BaseVector {
   }
 
   /**
+   * Update any variables used by the layer style and trigger a re-render.
+   * @param {import('../style/flat.js').StyleVariables} variables Variables to update.
+   */
+  updateStyleVariables(variables) {
+    Object.assign(this.styleVariables_, variables);
+    this.changed();
+  }
+
+  /**
    * @override
    */
   renderDeclutter() {}
@@ -256,7 +404,7 @@ class Heatmap extends BaseVector {
 
 /**
  * @param {Array<string>} colors A list of colored.
- * @return {HTMLCanvasElement} canvas with gradient texture.
+ * @return {HTMLCanvasElement|OffscreenCanvas} canvas with gradient texture.
  */
 function createGradient(colors) {
   const width = 1;

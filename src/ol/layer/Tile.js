@@ -1,8 +1,8 @@
 /**
  * @module ol/layer/Tile
  */
-import BaseTileLayer from './BaseTile.js';
 import CanvasTileLayerRenderer from '../renderer/canvas/TileLayer.js';
+import BaseTileLayer from './BaseTile.js';
 
 /**
  * @classdesc

@@ -2,12 +2,12 @@
  * @module ol/source/TileArcGISRest
  */
 
-import TileImage from './TileImage.js';
 import {createEmpty} from '../extent.js';
-import {getRequestUrl} from './arcgisRest.js';
 import {modulo} from '../math.js';
 import {scale as scaleSize, toSize} from '../size.js';
 import {hash as tileCoordHash} from '../tilecoord.js';
+import TileImage from './TileImage.js';
+import {getRequestUrl} from './arcgisRest.js';
 
 /**
  * @typedef {Object} Options
@@ -182,6 +182,16 @@ class TileArcGISRest extends TileImage {
    */
   getTilePixelRatio(pixelRatio) {
     return this.hidpi_ ? pixelRatio : 1;
+  }
+
+  /**
+   * Set the user-provided params.
+   * @param {Object} params Params.
+   * @api
+   */
+  setParams(params) {
+    this.params_ = Object.assign({}, params);
+    this.setKey(this.getKeyForParams_());
   }
 
   /**

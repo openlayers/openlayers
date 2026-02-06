@@ -2,9 +2,9 @@
  * @module ol/source/ImageArcGISRest
  */
 
+import {decode} from '../Image.js';
 import ImageSource, {defaultImageLoadFunction} from './Image.js';
 import {createLoader} from './arcgisRest.js';
-import {decode} from '../Image.js';
 
 /**
  * @typedef {Object} Options
@@ -202,6 +202,16 @@ class ImageArcGISRest extends ImageSource {
       this.loader = null;
       this.changed();
     }
+  }
+
+  /**
+   * Set the user-provided params.
+   * @param {Object} params Params.
+   * @api
+   */
+  setParams(params) {
+    this.params_ = Object.assign({}, params);
+    this.changed();
   }
 
   /**

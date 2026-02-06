@@ -1,6 +1,12 @@
 /**
  * @module ol/render/canvas/PolygonBuilder
  */
+import {snap} from '../../geom/flat/simplify.js';
+import {
+  defaultFillStyle,
+  defaultLineDash,
+  defaultLineDashOffset,
+} from '../canvas.js';
 import CanvasBuilder from './Builder.js';
 import CanvasInstruction, {
   beginPathInstruction,
@@ -8,12 +14,6 @@ import CanvasInstruction, {
   fillInstruction,
   strokeInstruction,
 } from './Instruction.js';
-import {
-  defaultFillStyle,
-  defaultLineDash,
-  defaultLineDashOffset,
-} from '../canvas.js';
-import {snap} from '../../geom/flat/simplify.js';
 
 class CanvasPolygonBuilder extends CanvasBuilder {
   /**
@@ -31,10 +31,11 @@ class CanvasPolygonBuilder extends CanvasBuilder {
    * @param {number} offset Offset.
    * @param {Array<number>} ends Ends.
    * @param {number} stride Stride.
+   * @param {number} [strokeOffset] Stroke Offset in pixels.
    * @private
    * @return {number} End.
    */
-  drawFlatCoordinatess_(flatCoordinates, offset, ends, stride) {
+  drawFlatCoordinatess_(flatCoordinates, offset, ends, stride, strokeOffset) {
     const state = this.state;
     const fill = state.fillStyle !== undefined;
     const stroke = state.strokeStyle !== undefined;
@@ -52,13 +53,20 @@ class CanvasPolygonBuilder extends CanvasBuilder {
         true,
         !stroke,
       );
-      const moveToLineToInstruction = [
+      this.instructions.push([
         CanvasInstruction.MOVE_TO_LINE_TO,
         myBegin,
         myEnd,
-      ];
-      this.instructions.push(moveToLineToInstruction);
-      this.hitDetectionInstructions.push(moveToLineToInstruction);
+        strokeOffset * this.pixelRatio,
+        true,
+      ]);
+      this.hitDetectionInstructions.push([
+        CanvasInstruction.MOVE_TO_LINE_TO,
+        myBegin,
+        myEnd,
+        strokeOffset,
+        true,
+      ]);
       if (stroke) {
         // Performance optimization: only call closePath() when we have a stroke.
         // Otherwise the ring is closed already (see appendFlatLineCoordinates above).
@@ -88,7 +96,16 @@ class CanvasPolygonBuilder extends CanvasBuilder {
     const state = this.state;
     const fillStyle = state.fillStyle;
     const strokeStyle = state.strokeStyle;
+    const strokeOffset = state.strokeOffset;
     if (fillStyle === undefined && strokeStyle === undefined) {
+      return;
+    }
+
+    if (
+      this.handleStrokeOffset_(() =>
+        this.drawCircle(circleGeometry, feature, index),
+      )
+    ) {
       return;
     }
     this.setFillStrokeStyles_();
@@ -122,7 +139,7 @@ class CanvasPolygonBuilder extends CanvasBuilder {
       false,
       false,
     );
-    const circleInstruction = [CanvasInstruction.CIRCLE, myBegin];
+    const circleInstruction = [CanvasInstruction.CIRCLE, myBegin, strokeOffset];
     this.instructions.push(beginPathInstruction, circleInstruction);
     this.hitDetectionInstructions.push(beginPathInstruction, circleInstruction);
     if (state.fillStyle !== undefined) {
@@ -146,9 +163,18 @@ class CanvasPolygonBuilder extends CanvasBuilder {
     const state = this.state;
     const fillStyle = state.fillStyle;
     const strokeStyle = state.strokeStyle;
+    const strokeOffset = state.strokeOffset;
     if (fillStyle === undefined && strokeStyle === undefined) {
       return;
     }
+    if (
+      this.handleStrokeOffset_(() =>
+        this.drawPolygon(polygonGeometry, feature, index),
+      )
+    ) {
+      return;
+    }
+
     this.setFillStrokeStyles_();
     this.beginGeometry(polygonGeometry, feature, index);
     if (state.fillStyle !== undefined) {
@@ -177,6 +203,7 @@ class CanvasPolygonBuilder extends CanvasBuilder {
       0,
       /** @type {Array<number>} */ (ends),
       stride,
+      strokeOffset,
     );
     this.endGeometry(feature);
   }
@@ -191,7 +218,15 @@ class CanvasPolygonBuilder extends CanvasBuilder {
     const state = this.state;
     const fillStyle = state.fillStyle;
     const strokeStyle = state.strokeStyle;
+    const strokeOffset = state.strokeOffset;
     if (fillStyle === undefined && strokeStyle === undefined) {
+      return;
+    }
+    if (
+      this.handleStrokeOffset_(() =>
+        this.drawMultiPolygon(multiPolygonGeometry, feature, index),
+      )
+    ) {
       return;
     }
     this.setFillStrokeStyles_();
@@ -224,6 +259,7 @@ class CanvasPolygonBuilder extends CanvasBuilder {
         offset,
         endss[i],
         stride,
+        strokeOffset,
       );
     }
     this.endGeometry(feature);
@@ -255,13 +291,38 @@ class CanvasPolygonBuilder extends CanvasBuilder {
    */
   setFillStrokeStyles_() {
     const state = this.state;
+    this.updateFillStyle(state, this.createFill);
+    this.updateStrokeStyle(state, this.applyStroke);
+  }
+
+  handleStrokeOffset_(drawGeometryCallback) {
+    const state = this.state;
     const fillStyle = state.fillStyle;
-    if (fillStyle !== undefined) {
-      this.updateFillStyle(state, this.createFill);
+    const strokeStyle = state.strokeStyle;
+    const strokeOffset = state.strokeOffset;
+
+    // In case both fill style and stroke style are defined and the stroke style has an offset,
+    // the stroke and fill should be done in separate steps, because offset stroke shape will
+    // be different from the original shape used for the fill.
+    if (
+      Math.abs(strokeOffset) > 0 &&
+      fillStyle !== undefined &&
+      strokeStyle !== undefined
+    ) {
+      // First do only fill
+      state.strokeStyle = undefined;
+      state.strokeOffset = 0;
+      drawGeometryCallback();
+      // Now separately do the stroke
+      state.fillStyle = undefined;
+      state.strokeStyle = strokeStyle;
+      state.strokeOffset = strokeOffset;
+      drawGeometryCallback();
+      // Reset the state to the original
+      state.fillStyle = fillStyle;
+      return true;
     }
-    if (state.strokeStyle !== undefined) {
-      this.updateStrokeStyle(state, this.applyStroke);
-    }
+    return false;
   }
 }
 

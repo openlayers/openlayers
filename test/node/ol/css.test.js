@@ -1,5 +1,5 @@
-import expect from '../expect.js';
 import {getFontParameters} from '../../../src/ol/css.js';
+import expect from '../expect.js';
 
 describe('ol.css', function () {
   describe('getFontParameters()', function () {
@@ -7,25 +7,37 @@ describe('ol.css', function () {
       {
         font: '2em "Open Sans"',
         style: 'normal',
-        weight: 'normal',
-        families: ['"Open Sans"'],
+        weight: '400',
+        families: ['Open Sans'],
       },
       {
         font: "2em 'Open Sans'",
         style: 'normal',
-        weight: 'normal',
-        families: ['"Open Sans"'],
+        weight: '400',
+        families: ['Open Sans'],
+      },
+      {
+        font: 'bold 2em Open Sans',
+        style: 'normal',
+        weight: '700',
+        families: ['Open Sans'],
       },
       {
         font: '2em "Open Sans", sans-serif',
         style: 'normal',
-        weight: 'normal',
-        families: ['"Open Sans"', 'sans-serif'],
+        weight: '400',
+        families: ['Open Sans', 'sans-serif'],
       },
       {
         font: 'italic small-caps bolder 16px/3 cursive',
         style: 'italic',
         weight: 'bolder',
+        families: ['cursive'],
+      },
+      {
+        font: 'italic small-caps 900 16px/3 cursive',
+        style: 'italic',
+        weight: '900',
         families: ['cursive'],
       },
       {
@@ -35,7 +47,7 @@ describe('ol.css', function () {
       {
         font: '100% fantasy',
         style: 'normal',
-        weight: 'normal',
+        weight: '400',
         families: ['fantasy'],
       },
     ];

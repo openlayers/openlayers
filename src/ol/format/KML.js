@@ -2,20 +2,23 @@
  * @module ol/format/KML
  */
 import Feature from '../Feature.js';
-import Fill from '../style/Fill.js';
-import GeometryCollection from '../geom/GeometryCollection.js';
-import Icon from '../style/Icon.js';
 import ImageState from '../ImageState.js';
+import {extend} from '../array.js';
+import {asArray} from '../color.js';
+import GeometryCollection from '../geom/GeometryCollection.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';
 import MultiPolygon from '../geom/MultiPolygon.js';
 import Point from '../geom/Point.js';
 import Polygon from '../geom/Polygon.js';
+import {toRadians} from '../math.js';
+import {get as getProjection} from '../proj.js';
+import Fill from '../style/Fill.js';
+import Icon from '../style/Icon.js';
 import Stroke from '../style/Stroke.js';
 import Style from '../style/Style.js';
 import Text from '../style/Text.js';
-import XMLFeature from './XMLFeature.js';
 import {
   OBJECT_PROPERTY_NODE_FACTORY,
   XML_SCHEMA_INSTANCE_URI,
@@ -35,20 +38,16 @@ import {
   pushParseAndPop,
   pushSerializeAndPop,
 } from '../xml.js';
-import {asArray} from '../color.js';
-import {extend} from '../array.js';
-import {get as getProjection} from '../proj.js';
+import {transformGeometryWithOptions} from './Feature.js';
+import XMLFeature from './XMLFeature.js';
 import {
   readBoolean,
   readDecimal,
   readString,
   writeBooleanTextNode,
-  writeCDATASection,
   writeDecimalTextNode,
   writeStringTextNode,
 } from './xsd.js';
-import {toRadians} from '../math.js';
-import {transformGeometryWithOptions} from './Feature.js';
 
 /**
  * @typedef {Object} Vec2
@@ -2508,7 +2507,7 @@ function writeDataNode(node, pair, objectStack) {
  * @param {string} name DisplayName.
  */
 function writeDataNodeName(node, name) {
-  writeCDATASection(node, name);
+  writeStringTextNode(node, name);
 }
 
 /**

@@ -4,6 +4,7 @@ title: Draw lines rendered with WebGL
 shortdesc: Example showing how stroke styling options are represented with the WebGL renderer
 docs: >
   This example lets you tweak the stroke styling options dynamically to see how they affect line rendering. The line string showing by default can be modified and new ones can be drawn by single-clicking on the map.
+experimental: true
 tags: "draw, vector, webgl, line, dash"
 ---
 <div id="map" class="map"></div>
@@ -85,5 +86,12 @@ tags: "draw, vector, webgl, line, dash"
       <input type="range" class="uniform" name="patternSpacing" min="0" max="64" value="0">
     </label>
     <span id="value-patternSpacing">0</span>
+  </div>
+  <div class="form-group" style="margin-left: 18px">
+    <label>
+      Pattern start offset (pixels)
+      <input type="range" class="uniform" name="patternOffset" min="0" max="64" value="0">
+    </label>
+    <span id="value-patternOffset">0</span>
   </div>
 </form>

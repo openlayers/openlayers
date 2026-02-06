@@ -1,7 +1,7 @@
-import EventTarget from '../../../src/ol/events/Target.js';
+import {spy as sinonSpy} from 'sinon';
 import Observable, {unByKey} from '../../../src/ol/Observable.js';
+import EventTarget from '../../../src/ol/events/Target.js';
 import expect from '../expect.js';
-import sinon from 'sinon';
 
 describe('ol/Observable.js', function () {
   describe('constructor', function () {
@@ -16,7 +16,7 @@ describe('ol/Observable.js', function () {
     let observable, listener;
     beforeEach(function () {
       observable = new Observable();
-      listener = sinon.spy();
+      listener = sinonSpy();
     });
 
     it('registers a listener for events of the given type', function () {
@@ -50,7 +50,7 @@ describe('ol/Observable.js', function () {
     let observable, listener;
     beforeEach(function () {
       observable = new Observable();
-      listener = sinon.spy();
+      listener = sinonSpy();
     });
 
     it('registers a listener that is only called once', function () {
@@ -112,7 +112,7 @@ describe('ol/Observable.js', function () {
     let observable, listener;
     beforeEach(function () {
       observable = new Observable();
-      listener = sinon.spy();
+      listener = sinonSpy();
     });
 
     it('unregisters a previously registered listener', function () {
@@ -131,7 +131,7 @@ describe('ol/Observable.js', function () {
     let observable, listener;
     beforeEach(function () {
       observable = new Observable();
-      listener = sinon.spy();
+      listener = sinonSpy();
     });
 
     it('unregisters a listener given the key returned by `on`', function () {

@@ -1,7 +1,5 @@
-import CanvasImmediateRenderer from '../../../../../../src/ol/render/canvas/Immediate.js';
+import {spy as sinonSpy} from 'sinon';
 import Circle from '../../../../../../src/ol/geom/Circle.js';
-import CircleStyle from '../../../../../../src/ol/style/Circle.js';
-import Fill from '../../../../../../src/ol/style/Fill.js';
 import GeometryCollection from '../../../../../../src/ol/geom/GeometryCollection.js';
 import LineString from '../../../../../../src/ol/geom/LineString.js';
 import MultiLineString from '../../../../../../src/ol/geom/MultiLineString.js';
@@ -9,20 +7,23 @@ import MultiPoint from '../../../../../../src/ol/geom/MultiPoint.js';
 import MultiPolygon from '../../../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../../../src/ol/geom/Polygon.js';
+import VectorContext from '../../../../../../src/ol/render/VectorContext.js';
+import CanvasImmediateRenderer from '../../../../../../src/ol/render/canvas/Immediate.js';
+import CircleStyle from '../../../../../../src/ol/style/Circle.js';
+import Fill from '../../../../../../src/ol/style/Fill.js';
 import Stroke from '../../../../../../src/ol/style/Stroke.js';
 import Style from '../../../../../../src/ol/style/Style.js';
 import Text from '../../../../../../src/ol/style/Text.js';
-import VectorContext from '../../../../../../src/ol/render/VectorContext.js';
 
 describe('ol.render.canvas.Immediate', function () {
   function getMockContext() {
     return {
-      setLineDash: sinon.spy(),
-      beginPath: sinon.spy(),
-      closePath: sinon.spy(),
-      stroke: sinon.spy(),
-      lineTo: sinon.spy(),
-      moveTo: sinon.spy(),
+      setLineDash: sinonSpy(),
+      beginPath: sinonSpy(),
+      closePath: sinonSpy(),
+      stroke: sinonSpy(),
+      lineTo: sinonSpy(),
+      moveTo: sinonSpy(),
     };
   }
 
@@ -37,9 +38,9 @@ describe('ol.render.canvas.Immediate', function () {
   describe('#setStyle()', function () {
     it('calls the more specific methods with style parts', function () {
       const context = new CanvasImmediateRenderer();
-      sinon.spy(context, 'setFillStrokeStyle');
-      sinon.spy(context, 'setImageStyle');
-      sinon.spy(context, 'setTextStyle');
+      sinonSpy(context, 'setFillStrokeStyle');
+      sinonSpy(context, 'setImageStyle');
+      sinonSpy(context, 'setTextStyle');
       const fill = new Fill({});
       const stroke = new Stroke({});
       const text = new Text({});
@@ -72,7 +73,7 @@ describe('ol.render.canvas.Immediate', function () {
 
     it('calls drawPoint() with a Point', function () {
       const context = new CanvasImmediateRenderer(getMockContext(), 1, extent);
-      sinon.spy(context, 'drawPoint');
+      sinonSpy(context, 'drawPoint');
 
       const geometry = new Point([1, 2]);
       context.drawGeometry(geometry);
@@ -84,7 +85,7 @@ describe('ol.render.canvas.Immediate', function () {
 
     it('calls drawLineString() with a LineString', function () {
       const context = new CanvasImmediateRenderer(getMockContext(), 1, extent);
-      sinon.spy(context, 'drawLineString');
+      sinonSpy(context, 'drawLineString');
 
       const geometry = new LineString([
         [1, 2],
@@ -99,7 +100,7 @@ describe('ol.render.canvas.Immediate', function () {
 
     it('calls drawPolygon() with a Polygon', function () {
       const context = new CanvasImmediateRenderer(getMockContext(), 1, extent);
-      sinon.spy(context, 'drawPolygon');
+      sinonSpy(context, 'drawPolygon');
 
       const geometry = new Polygon([
         [
@@ -118,7 +119,7 @@ describe('ol.render.canvas.Immediate', function () {
 
     it('calls drawMultiPoint() with a MultiPoint', function () {
       const context = new CanvasImmediateRenderer(getMockContext(), 1, extent);
-      sinon.spy(context, 'drawMultiPoint');
+      sinonSpy(context, 'drawMultiPoint');
 
       const geometry = new MultiPoint([
         [1, 2],
@@ -133,7 +134,7 @@ describe('ol.render.canvas.Immediate', function () {
 
     it('calls drawMultiLineString() with a MultiLineString', function () {
       const context = new CanvasImmediateRenderer(getMockContext(), 1, extent);
-      sinon.spy(context, 'drawMultiLineString');
+      sinonSpy(context, 'drawMultiLineString');
 
       const geometry = new MultiLineString([
         [
@@ -150,7 +151,7 @@ describe('ol.render.canvas.Immediate', function () {
 
     it('calls drawMultiPolygon() with a MultiPolygon', function () {
       const context = new CanvasImmediateRenderer(getMockContext(), 1, extent);
-      sinon.spy(context, 'drawMultiPolygon');
+      sinonSpy(context, 'drawMultiPolygon');
 
       const geometry = new MultiPolygon([
         [
@@ -171,10 +172,10 @@ describe('ol.render.canvas.Immediate', function () {
 
     it('calls drawGeometryCollection() with a GeometryCollection', function () {
       const context = new CanvasImmediateRenderer(getMockContext(), 1, extent);
-      sinon.spy(context, 'drawGeometryCollection');
-      sinon.spy(context, 'drawPoint');
-      sinon.spy(context, 'drawLineString');
-      sinon.spy(context, 'drawPolygon');
+      sinonSpy(context, 'drawGeometryCollection');
+      sinonSpy(context, 'drawPoint');
+      sinonSpy(context, 'drawLineString');
+      sinonSpy(context, 'drawPolygon');
 
       const point = new Point([1, 2]);
       const linestring = new LineString([
@@ -208,7 +209,7 @@ describe('ol.render.canvas.Immediate', function () {
 
     it('calls drawCircle() with a Circle', function () {
       const context = new CanvasImmediateRenderer(getMockContext(), 1, extent);
-      sinon.spy(context, 'drawCircle');
+      sinonSpy(context, 'drawCircle');
 
       const geometry = new Circle([0, 0]);
       context.drawGeometry(geometry);

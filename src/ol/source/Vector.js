@@ -4,22 +4,22 @@
 
 import Collection from '../Collection.js';
 import CollectionEventType from '../CollectionEventType.js';
+import ObjectEventType from '../ObjectEventType.js';
+import {extend} from '../array.js';
+import {assert} from '../asserts.js';
 import Event from '../events/Event.js';
 import EventType from '../events/EventType.js';
-import ObjectEventType from '../ObjectEventType.js';
-import RBush from '../structs/RBush.js';
-import RenderFeature from '../render/Feature.js';
-import Source from './Source.js';
-import VectorEventType from './VectorEventType.js';
+import {listen, unlistenByKey} from '../events.js';
+import {containsExtent, equals, wrapAndSliceX} from '../extent.js';
+import {xhr} from '../featureloader.js';
 import {TRUE, VOID} from '../functions.js';
 import {all as allStrategy} from '../loadingstrategy.js';
-import {assert} from '../asserts.js';
-import {containsExtent, equals, wrapAndSliceX} from '../extent.js';
-import {extend} from '../array.js';
-import {getUid} from '../util.js';
 import {isEmpty} from '../obj.js';
-import {listen, unlistenByKey} from '../events.js';
-import {xhr} from '../featureloader.js';
+import RenderFeature from '../render/Feature.js';
+import RBush from '../structs/RBush.js';
+import {getUid} from '../util.js';
+import Source from './Source.js';
+import VectorEventType from './VectorEventType.js';
 
 /**
  * A function that takes an {@link module:ol/extent~Extent} and a resolution as arguments, and
@@ -211,7 +211,7 @@ class VectorSource extends Source {
 
     /**
      * @private
-     * @type {import("../featureloader.js").FeatureLoader<FeatureType>}
+     * @type {import("../featureloader.js").FeatureLoader<import("../Feature.js").FeatureLike>}
      */
     this.loader_ = VOID;
 
@@ -408,12 +408,10 @@ class VectorSource extends Source {
         const indexedFeature = this.idIndex_[id];
         if (!(indexedFeature instanceof RenderFeature)) {
           valid = false;
+        } else if (!Array.isArray(indexedFeature)) {
+          this.idIndex_[id] = [indexedFeature, feature];
         } else {
-          if (!Array.isArray(indexedFeature)) {
-            this.idIndex_[id] = [indexedFeature, feature];
-          } else {
-            indexedFeature.push(feature);
-          }
+          indexedFeature.push(feature);
         }
       } else {
         valid = false;
@@ -565,10 +563,9 @@ class VectorSource extends Source {
       }
     } else {
       if (this.featuresRtree_) {
-        const removeAndIgnoreReturn = (feature) => {
+        this.featuresRtree_.forEach((feature) => {
           this.removeFeatureInternal(feature);
-        };
-        this.featuresRtree_.forEach(removeAndIgnoreReturn);
+        });
         for (const id in this.nullGeometryFeatures_) {
           this.removeFeatureInternal(this.nullGeometryFeatures_[id]);
         }
@@ -736,10 +733,11 @@ class VectorSource extends Source {
   /**
    * Get all features whose geometry intersects the provided coordinate.
    * @param {import("../coordinate.js").Coordinate} coordinate Coordinate.
-   * @return {Array<import("../Feature.js").default>} Features.
+   * @return {Array<FeatureType>} Features.
    * @api
    */
   getFeaturesAtCoordinate(coordinate) {
+    /** @type {Array<FeatureType>} */
     const features = [];
     this.forEachFeatureAtCoordinateDirect(coordinate, function (feature) {
       features.push(feature);
@@ -791,7 +789,7 @@ class VectorSource extends Source {
    * @param {function(FeatureType):boolean} [filter] Feature filter function.
    *     The filter function will receive one argument, the {@link module:ol/Feature~Feature feature}
    *     and it should return a boolean value. By default, no filtering is made.
-   * @return {FeatureType} Closest feature.
+   * @return {FeatureType|null} Closest feature (or `null` if none found).
    * @api
    */
   getClosestFeatureToCoordinate(coordinate, filter) {
@@ -843,15 +841,15 @@ class VectorSource extends Source {
   /**
    * Get the extent of the features currently in the source.
    *
-   * This method is not available when the source is configured with
+   * This will return `null` when the source is configured with
    * `useSpatialIndex` set to `false`.
    * @param {import("../extent.js").Extent} [extent] Destination extent. If provided, no new extent
    *     will be created. Instead, that extent's coordinates will be overwritten.
-   * @return {import("../extent.js").Extent} Extent.
+   * @return {import("../extent.js").Extent | null} Extent.
    * @api
    */
   getExtent(extent) {
-    return this.featuresRtree_.getExtent(extent);
+    return this.featuresRtree_?.getExtent(extent) ?? null;
   }
 
   /**
@@ -1017,6 +1015,9 @@ class VectorSource extends Source {
           extentToLoad,
           resolution,
           projection,
+          /**
+           * @param {Array<FeatureType>} features Loaded features
+           */
           (features) => {
             --this.loadingExtentsCount_;
             this.dispatchEvent(
@@ -1165,7 +1166,7 @@ class VectorSource extends Source {
   /**
    * Set the new loader of the source. The next render cycle will use the
    * new loader.
-   * @param {import("../featureloader.js").FeatureLoader<FeatureType>} loader The loader to set.
+   * @param {import("../featureloader.js").FeatureLoader} loader The loader to set.
    * @api
    */
   setLoader(loader) {

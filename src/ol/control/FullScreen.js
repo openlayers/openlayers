@@ -1,18 +1,14 @@
 /**
  * @module ol/control/FullScreen
  */
-import Control from './Control.js';
-import EventType from '../events/EventType.js';
 import MapProperty from '../MapProperty.js';
 import {CLASS_CONTROL, CLASS_UNSELECTABLE, CLASS_UNSUPPORTED} from '../css.js';
-import {listen, unlistenByKey} from '../events.js';
 import {replaceNode} from '../dom.js';
+import EventType from '../events/EventType.js';
+import {listen, unlistenByKey} from '../events.js';
+import Control from './Control.js';
 
-const events = [
-  'fullscreenchange',
-  'webkitfullscreenchange',
-  'MSFullscreenChange',
-];
+const events = ['fullscreenchange', 'webkitfullscreenchange'];
 
 /**
  * @enum {string}

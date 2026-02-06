@@ -1,13 +1,8 @@
 /**
  * @module ol/renderer/canvas/ImageLayer
  */
-import CanvasLayerRenderer from './Layer.js';
 import ImageState from '../../ImageState.js';
 import ViewHint from '../../ViewHint.js';
-import {
-  apply as applyTransform,
-  compose as composeTransform,
-} from '../../transform.js';
 import {
   containsCoordinate,
   containsExtent,
@@ -18,6 +13,11 @@ import {
   isEmpty,
 } from '../../extent.js';
 import {fromUserExtent} from '../../proj.js';
+import {
+  apply as applyTransform,
+  compose as composeTransform,
+} from '../../transform.js';
+import CanvasLayerRenderer from './Layer.js';
 
 /**
  * @classdesc
@@ -36,6 +36,12 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
      * @type {?import("../../Image.js").default}
      */
     this.image = null;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.renderedSourceRevision_ = 0;
   }
 
   /**
@@ -75,6 +81,14 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
       !isEmpty(renderedExtent)
     ) {
       if (imageSource) {
+        if (
+          !this.getLayer().rendered &&
+          this.renderedSourceRevision_ !== imageSource.getRevision()
+        ) {
+          this.image = null;
+        }
+        this.renderedSourceRevision_ = imageSource.getRevision();
+
         const projection = viewState.projection;
         const image = imageSource.getImage(
           renderedExtent,
@@ -233,7 +247,6 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
       context.restore();
     }
     context.imageSmoothingEnabled = true;
-
     return this.container;
   }
 }

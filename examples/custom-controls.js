@@ -1,8 +1,9 @@
 import Map from '../src/ol/Map.js';
-import OSM from '../src/ol/source/OSM.js';
-import TileLayer from '../src/ol/layer/Tile.js';
 import View from '../src/ol/View.js';
-import {Control, defaults as defaultControls} from '../src/ol/control.js';
+import Control from '../src/ol/control/Control.js';
+import {defaults as defaultControls} from '../src/ol/control/defaults.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import OSM from '../src/ol/source/OSM.js';
 
 //
 // Define rotate to north control.

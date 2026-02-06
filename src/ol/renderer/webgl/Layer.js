@@ -2,14 +2,14 @@
  * @module ol/renderer/webgl/Layer
  */
 import LayerProperty from '../../layer/Property.js';
-import LayerRenderer from '../Layer.js';
 import RenderEvent from '../../render/Event.js';
 import RenderEventType from '../../render/EventType.js';
-import WebGLHelper from '../../webgl/Helper.js';
 import {
   compose as composeTransform,
   create as createTransform,
 } from '../../transform.js';
+import WebGLHelper from '../../webgl/Helper.js';
+import LayerRenderer from '../Layer.js';
 
 /**
  * @typedef {Object} PostProcessesOptions

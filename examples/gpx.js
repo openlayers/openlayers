@@ -1,10 +1,14 @@
-import GPX from '../src/ol/format/GPX.js';
-import ImageTile from '../src/ol/source/ImageTile.js';
 import Map from '../src/ol/Map.js';
-import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
-import {Circle as CircleStyle, Fill, Stroke, Style} from '../src/ol/style.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import GPX from '../src/ol/format/GPX.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
+import ImageTile from '../src/ol/source/ImageTile.js';
+import VectorSource from '../src/ol/source/Vector.js';
+import CircleStyle from '../src/ol/style/Circle.js';
+import Fill from '../src/ol/style/Fill.js';
+import Stroke from '../src/ol/style/Stroke.js';
+import Style from '../src/ol/style/Style.js';
 
 const key = 'get_your_own_D6rA4zTHduk6KOKTXzGB';
 const attributions =
@@ -78,10 +82,10 @@ const displayFeatureInfo = function (pixel) {
       info.push(features[i].get('desc'));
     }
     document.getElementById('info').innerHTML = info.join(', ') || '(unknown)';
-    map.getTarget().style.cursor = 'pointer';
+    map.getTargetElement().style.cursor = 'pointer';
   } else {
     document.getElementById('info').innerHTML = '&nbsp;';
-    map.getTarget().style.cursor = '';
+    map.getTargetElement().style.cursor = '';
   }
 };
 
@@ -89,8 +93,7 @@ map.on('pointermove', function (evt) {
   if (evt.dragging) {
     return;
   }
-  const pixel = map.getEventPixel(evt.originalEvent);
-  displayFeatureInfo(pixel);
+  displayFeatureInfo(evt.pixel);
 });
 
 map.on('click', function (evt) {

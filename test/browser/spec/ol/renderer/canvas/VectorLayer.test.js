@@ -1,22 +1,23 @@
-import CanvasVectorLayerRenderer from '../../../../../../src/ol/renderer/canvas/VectorLayer.js';
+import {spy as sinonSpy} from 'sinon';
 import Feature from '../../../../../../src/ol/Feature.js';
-import GeoJSON from '../../../../../../src/ol/format/GeoJSON.js';
 import Map from '../../../../../../src/ol/Map.js';
-import Point from '../../../../../../src/ol/geom/Point.js';
-import Style from '../../../../../../src/ol/style/Style.js';
-import Text from '../../../../../../src/ol/style/Text.js';
-import VectorLayer from '../../../../../../src/ol/layer/Vector.js';
-import VectorSource from '../../../../../../src/ol/source/Vector.js';
 import View from '../../../../../../src/ol/View.js';
-import {bbox as bboxStrategy} from '../../../../../../src/ol/loadingstrategy.js';
 import {
   buffer as bufferExtent,
   getCenter,
   getWidth,
 } from '../../../../../../src/ol/extent.js';
-import {checkedFonts} from '../../../../../../src/ol/render/canvas.js';
-import {createFontStyle} from '../../../util.js';
+import GeoJSON from '../../../../../../src/ol/format/GeoJSON.js';
+import Point from '../../../../../../src/ol/geom/Point.js';
+import VectorLayer from '../../../../../../src/ol/layer/Vector.js';
+import {bbox as bboxStrategy} from '../../../../../../src/ol/loadingstrategy.js';
 import {get as getProjection} from '../../../../../../src/ol/proj.js';
+import {checkedFonts} from '../../../../../../src/ol/render/canvas.js';
+import CanvasVectorLayerRenderer from '../../../../../../src/ol/renderer/canvas/VectorLayer.js';
+import VectorSource from '../../../../../../src/ol/source/Vector.js';
+import Style from '../../../../../../src/ol/style/Style.js';
+import Text from '../../../../../../src/ol/style/Text.js';
+import {createFontStyle} from '../../../util.js';
 
 describe('ol/renderer/canvas/VectorLayer', function () {
   describe('constructor', function () {
@@ -29,17 +30,20 @@ describe('ol/renderer/canvas/VectorLayer', function () {
       },
     });
 
-    let target;
+    let map;
 
     beforeEach(function () {
-      target = document.createElement('div');
-      target.style.width = '256px';
-      target.style.height = '256px';
-      document.body.appendChild(target);
+      map = new Map({
+        view: new View({
+          center: [0, 0],
+          zoom: 0,
+        }),
+        target: createMapDiv(256, 256),
+      });
     });
 
     afterEach(function () {
-      target.remove();
+      disposeMap(map);
     });
 
     it('creates a new instance', function () {
@@ -51,17 +55,6 @@ describe('ol/renderer/canvas/VectorLayer', function () {
     });
 
     it('gives precedence to feature styles over layer styles', function () {
-      const target = document.createElement('div');
-      target.style.width = '256px';
-      target.style.height = '256px';
-      document.body.appendChild(target);
-      const map = new Map({
-        view: new View({
-          center: [0, 0],
-          zoom: 0,
-        }),
-        target: target,
-      });
       const layerStyle = [
         new Style({
           text: new Text({
@@ -86,7 +79,7 @@ describe('ol/renderer/canvas/VectorLayer', function () {
         style: layerStyle,
       });
       map.addLayer(layer);
-      const spy = sinon.spy(layer.getRenderer(), 'renderFeature');
+      const spy = sinonSpy(layer.getRenderer(), 'renderFeature');
       map.renderSync();
       expect(spy.getCall(0).args[2]).to.eql(layerStyle);
       expect(spy.getCall(1).args[2]).to.be(featureStyle);
@@ -95,14 +88,6 @@ describe('ol/renderer/canvas/VectorLayer', function () {
     });
 
     it('does not re-render for unavailable fonts', function (done) {
-      checkedFonts.values_ = {};
-      const map = new Map({
-        view: new View({
-          center: [0, 0],
-          zoom: 0,
-        }),
-        target: target,
-      });
       const layerStyle = new Style({
         text: new Text({
           text: 'layer',
@@ -120,20 +105,16 @@ describe('ol/renderer/canvas/VectorLayer', function () {
       map.addLayer(layer);
       const revision = layer.getRevision();
       setTimeout(function () {
-        expect(layer.getRevision()).to.be(revision);
-        done();
-      }, 800);
+        try {
+          expect(layer.getRevision()).to.be(revision);
+          done();
+        } catch (e) {
+          done(e);
+        }
+      }, 1000);
     });
 
     it('does not re-render for available fonts', function (done) {
-      checkedFonts.values_ = {};
-      const map = new Map({
-        view: new View({
-          center: [0, 0],
-          zoom: 0,
-        }),
-        target: target,
-      });
       const layerStyle = new Style({
         text: new Text({
           text: 'layer',
@@ -151,21 +132,17 @@ describe('ol/renderer/canvas/VectorLayer', function () {
       map.addLayer(layer);
       const revision = layer.getRevision();
       setTimeout(function () {
-        expect(layer.getRevision()).to.be(revision);
-        done();
-      }, 800);
+        try {
+          expect(layer.getRevision()).to.be(revision);
+          done();
+        } catch (e) {
+          done(e);
+        }
+      }, 1000);
     });
 
     it('re-renders for fonts that become available', function (done) {
-      checkedFonts.values_ = {};
       font.add();
-      const map = new Map({
-        view: new View({
-          center: [0, 0],
-          zoom: 0,
-        }),
-        target: target,
-      });
       const layerStyle = new Style({
         text: new Text({
           text: 'layer',
@@ -182,15 +159,19 @@ describe('ol/renderer/canvas/VectorLayer', function () {
       });
       map.addLayer(layer);
       const revision = layer.getRevision();
-      setTimeout(function () {
-        try {
-          font.remove();
-          expect(layer.getRevision()).to.be(revision + 1);
-          done();
-        } catch (e) {
-          done(e);
-        }
-      }, 1600);
+      checkedFonts.addEventListener(
+        'propertychange',
+        function onPropertyChange() {
+          checkedFonts.removeEventListener('propertychange', onPropertyChange);
+          try {
+            font.remove();
+            expect(layer.getRevision()).to.be(revision + 1);
+            done();
+          } catch (e) {
+            done(e);
+          }
+        },
+      );
     });
   });
 
@@ -207,6 +188,10 @@ describe('ol/renderer/canvas/VectorLayer', function () {
     });
 
     this.afterEach(function () {
+      checkedFonts.getListeners('propertychange').forEach((listener) => {
+        checkedFonts.removeEventListener('propertychange', listener);
+      });
+      checkedFonts.setProperties({}, true);
       disposeMap(map);
     });
 
@@ -252,7 +237,7 @@ describe('ol/renderer/canvas/VectorLayer', function () {
     });
 
     it('calls callback once per feature with a layer as 2nd arg', function () {
-      const spy = sinon.spy();
+      const spy = sinonSpy();
       const coordinate = [0, 0];
       const matches = [];
       const frameState = {
@@ -273,6 +258,30 @@ describe('ol/renderer/canvas/VectorLayer', function () {
       expect(spy.callCount).to.be(1);
       expect(spy.getCall(0).args[1]).to.be(layer);
       expect(matches).to.be.empty();
+    });
+
+    it('works with declutter: true when source has no features', () => {
+      layer.setDeclutter(true);
+      const spy = sinonSpy();
+      const coordinate = [0, 0];
+      const matches = [];
+      const frameState = {
+        layerStatesArray: [{}],
+        viewState: {
+          center: [0, 0],
+          resolution: 1,
+          rotation: 0,
+        },
+      };
+      expect(() =>
+        renderer.forEachFeatureAtCoordinate(
+          coordinate,
+          frameState,
+          0,
+          spy,
+          matches,
+        ),
+      ).to.not.throwException();
     });
   });
 
@@ -448,12 +457,15 @@ describe('ol/renderer/canvas/VectorLayer', function () {
       frameState.declutter = {};
       renderer.prepareFrame(frameState);
       expect(renderer.replayGroupChanged).to.be(true);
+      frameState.pixelRatio = 2;
+      renderer.prepareFrame(frameState);
+      expect(renderer.replayGroupChanged).to.be(true);
     });
 
     it('dispatches a postrender event when rendering', function () {
       const layer = renderer.getLayer();
       layer.getSource().addFeature(new Feature(new Point([0, 0])));
-      const postrenderSpy = sinon.spy();
+      const postrenderSpy = sinonSpy();
       layer.once('postrender', postrenderSpy);
       frameState.layerStatesArray = [layer.getLayerState()];
       frameState.layerIndex = 0;
@@ -468,7 +480,7 @@ describe('ol/renderer/canvas/VectorLayer', function () {
     });
     it('renders an empty source if a postrender event listener is added', function () {
       const layer = renderer.getLayer();
-      const postrenderSpy = sinon.spy();
+      const postrenderSpy = sinonSpy();
       layer.once('postrender', postrenderSpy);
       frameState.layerStatesArray = [layer.getLayerState()];
       frameState.layerIndex = 0;
@@ -552,8 +564,8 @@ describe('ol/renderer/canvas/VectorLayer', function () {
         extent: extent,
       });
       renderer = layer.getRenderer();
-      renderer.renderWorlds = sinon.spy();
-      renderer.clipUnrotated = sinon.spy();
+      renderer.renderWorlds = sinonSpy();
+      renderer.clipUnrotated = sinonSpy();
       return {
         pixelRatio: 1,
         time: 1000000000000,

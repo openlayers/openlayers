@@ -1,15 +1,17 @@
 /**
  * @module ol/source/GeoTIFF
  */
-import DataTile from './DataTile.js';
-import TileGrid from '../tilegrid/TileGrid.js';
 import {
   Pool,
-  globals as geotiffGlobals,
   fromBlob as tiffFromBlob,
   fromUrl as tiffFromUrl,
   fromUrls as tiffFromUrls,
+  globals as geotiffGlobals,
 } from 'geotiff';
+import {error as logError} from '../console.js';
+import {applyTransform, getCenter, getIntersection} from '../extent.js';
+import {clamp} from '../math.js';
+import {fromCode as unitsFromCode} from '../proj/Units.js';
 import {
   Projection,
   createTransformFromCoordinateTransform,
@@ -17,16 +19,14 @@ import {
   toUserCoordinate,
   toUserExtent,
 } from '../proj.js';
+import TileGrid from '../tilegrid/TileGrid.js';
 import {
   apply as applyMatrix,
   create as createMatrix,
   makeInverse,
   multiply as multiplyTransform,
 } from '../transform.js';
-import {applyTransform, getCenter, getIntersection} from '../extent.js';
-import {clamp} from '../math.js';
-import {error as logError} from '../console.js';
-import {fromCode as unitsFromCode} from '../proj/Units.js';
+import DataTile from './DataTile.js';
 
 /**
  * Determine if an image type is a mask.
@@ -139,7 +139,7 @@ function getWorkerPool() {
 function getBoundingBox(image) {
   try {
     return image.getBoundingBox(true);
-  } catch (_) {
+  } catch {
     return [0, 0, image.getWidth(), image.getHeight()];
   }
 }
@@ -153,7 +153,7 @@ function getBoundingBox(image) {
 function getOrigin(image) {
   try {
     return image.getOrigin().slice(0, 2);
-  } catch (_) {
+  } catch {
     return [0, image.getHeight()];
   }
 }
@@ -168,7 +168,7 @@ function getOrigin(image) {
 function getResolutions(image, referenceImage) {
   try {
     return image.getResolution(referenceImage);
-  } catch (_) {
+  } catch {
     return [
       referenceImage.getWidth() / image.getWidth(),
       referenceImage.getHeight() / image.getHeight(),
@@ -348,6 +348,7 @@ function getMaxForDataType(array) {
 
 /**
  * @typedef {Object} Options
+ * @property {import("./Source.js").AttributionLike} [attributions] Attributions.
  * @property {Array<SourceInfo>} sources List of information about GeoTIFF sources.
  * Multiple sources can be combined when their resolution sets are equal after applying a scale.
  * The list of sources defines a mapping between input bands as they are read from each GeoTIFF and
@@ -388,6 +389,7 @@ class GeoTIFFSource extends DataTile {
    */
   constructor(options) {
     super({
+      attributions: options.attributions,
       state: 'loading',
       tileGrid: null,
       projection: options.projection || null,

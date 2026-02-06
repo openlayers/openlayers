@@ -2,16 +2,18 @@
  * @module ol/source/UTFGrid
  */
 
-import EventType from '../events/EventType.js';
 import Tile from '../Tile.js';
-import TileSource from './Tile.js';
 import TileState from '../TileState.js';
-import {applyTransform, intersects} from '../extent.js';
-import {createFromTemplates, nullTileUrlFunction} from '../tileurlfunction.js';
-import {createXYZ, extentFromProjection} from '../tilegrid.js';
-import {get as getProjection, getTransformFromProjections} from '../proj.js';
+import EventType from '../events/EventType.js';
 import {listenOnce} from '../events.js';
+import {applyTransform, intersects} from '../extent.js';
 import {jsonp as requestJSONP} from '../net.js';
+import {get as getProjection, getTransformFromProjections} from '../proj.js';
+import LRUCache from '../structs/LRUCache.js';
+import {getKeyZXY} from '../tilecoord.js';
+import {createXYZ, extentFromProjection} from '../tilegrid.js';
+import {createFromTemplates, nullTileUrlFunction} from '../tileurlfunction.js';
+import TileSource from './Tile.js';
 
 /**
  * @typedef {Object} UTFGridJSON
@@ -215,7 +217,7 @@ export class CustomTile extends Tile {
         response = /** @type {!UTFGridJSON} */ (
           JSON.parse(client.responseText)
         );
-      } catch (err) {
+      } catch {
         this.handleError_();
         return;
       }
@@ -307,6 +309,12 @@ class UTFGrid extends TileSource {
      */
     this.jsonp_ = options.jsonp || false;
 
+    /**
+     * @private
+     * @type {LRUCache}
+     */
+    this.tileCache_ = new LRUCache(512);
+
     if (options.url) {
       if (this.jsonp_) {
         requestJSONP(
@@ -341,7 +349,7 @@ class UTFGrid extends TileSource {
         response = /** @type {import("./TileJSON.js").Config} */ (
           JSON.parse(client.responseText)
         );
-      } catch (err) {
+      } catch {
         this.handleTileJSONError();
         return;
       }
@@ -392,6 +400,9 @@ class UTFGrid extends TileSource {
           this.getProjection(),
         )
       );
+      if (tile.getState() == TileState.IDLE) {
+        tile.load();
+      }
       tile.forDataAtCoordinate(coordinate, callback, request);
     } else {
       if (request === true) {
@@ -478,6 +489,11 @@ class UTFGrid extends TileSource {
       projection,
     );
     const tileUrl = this.tileUrlFunction_(urlTileCoord, pixelRatio, projection);
+    const tileKey = `${this.getKey()},${getKeyZXY(z, x, y)}`;
+    if (this.tileCache_.containsKey(tileKey)) {
+      return this.tileCache_.get(tileKey);
+    }
+    this.tileCache_.expireCache();
     const tile = new CustomTile(
       tileCoord,
       tileUrl !== undefined ? TileState.IDLE : TileState.EMPTY,
@@ -486,6 +502,7 @@ class UTFGrid extends TileSource {
       this.preemptive_,
       this.jsonp_,
     );
+    this.tileCache_.set(tileKey, tile);
     return tile;
   }
 }

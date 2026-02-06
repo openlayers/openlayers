@@ -1,5 +1,5 @@
-import expect from '../../expect.js';
 import {zoneFromCode} from '../../../../src/ol/proj/utm.js';
+import expect from '../../expect.js';
 
 describe('ol/proj/utm.js', () => {
   describe('zoneFromCode', () => {

@@ -2,22 +2,22 @@
  * @module ol/style/IconImage
  */
 
-import EventTarget from '../events/Target.js';
-import EventType from '../events/EventType.js';
+import {decodeFallback} from '../Image.js';
 import ImageState from '../ImageState.js';
 import {asString} from '../color.js';
 import {createCanvasContext2D} from '../dom.js';
-import {decodeFallback} from '../Image.js';
+import EventType from '../events/EventType.js';
+import EventTarget from '../events/Target.js';
 import {shared as iconImageCache} from './IconImageCache.js';
 
 /**
- * @type {CanvasRenderingContext2D}
+ * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D}
  */
 let taintedTestContext = null;
 
 class IconImage extends EventTarget {
   /**
-   * @param {HTMLImageElement|HTMLCanvasElement|ImageBitmap|null} image Image.
+   * @param {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas|ImageBitmap|null} image Image.
    * @param {string|undefined} src Src.
    * @param {?string} crossOrigin Cross origin.
    * @param {import("../ImageState.js").default|undefined} imageState Image state.
@@ -28,13 +28,13 @@ class IconImage extends EventTarget {
 
     /**
      * @private
-     * @type {HTMLImageElement|HTMLCanvasElement|ImageBitmap}
+     * @type {HTMLImageElement|OffscreenCanvas|HTMLCanvasElement|ImageBitmap}
      */
     this.hitDetectionImage_ = null;
 
     /**
      * @private
-     * @type {HTMLImageElement|HTMLCanvasElement|ImageBitmap|null}
+     * @type {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas|ImageBitmap|null}
      */
     this.image_ = image;
 
@@ -46,7 +46,7 @@ class IconImage extends EventTarget {
 
     /**
      * @private
-     * @type {Object<number, HTMLCanvasElement>}
+     * @type {Object<number, HTMLCanvasElement|OffscreenCanvas>}
      */
     this.canvas_ = {};
 
@@ -112,7 +112,7 @@ class IconImage extends EventTarget {
       try {
         taintedTestContext.getImageData(0, 0, 1, 1);
         this.tainted_ = false;
-      } catch (e) {
+      } catch {
         taintedTestContext = null;
         this.tainted_ = true;
       }
@@ -146,7 +146,7 @@ class IconImage extends EventTarget {
 
   /**
    * @param {number} pixelRatio Pixel ratio.
-   * @return {HTMLImageElement|HTMLCanvasElement|ImageBitmap} Image or Canvas element or image bitmap.
+   * @return {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas|ImageBitmap} Image or Canvas element or image bitmap.
    */
   getImage(pixelRatio) {
     if (!this.image_) {
@@ -154,6 +154,13 @@ class IconImage extends EventTarget {
     }
     this.replaceColor_(pixelRatio);
     return this.canvas_[pixelRatio] ? this.canvas_[pixelRatio] : this.image_;
+  }
+
+  /**
+   * @param {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas|ImageBitmap} image Image.
+   */
+  setImage(image) {
+    this.image_ = image;
   }
 
   /**
@@ -173,7 +180,7 @@ class IconImage extends EventTarget {
   }
 
   /**
-   * @return {HTMLImageElement|HTMLCanvasElement|ImageBitmap} Image element.
+   * @return {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas|ImageBitmap} Image element.
    */
   getHitDetectionImage() {
     if (!this.image_) {
@@ -224,7 +231,7 @@ class IconImage extends EventTarget {
       if (this.src_ !== undefined) {
         /** @type {HTMLImageElement} */ (this.image_).src = this.src_;
       }
-    } catch (e) {
+    } catch {
       this.handleImageError_();
     }
     if (this.image_ instanceof HTMLImageElement) {
@@ -300,7 +307,7 @@ class IconImage extends EventTarget {
 }
 
 /**
- * @param {HTMLImageElement|HTMLCanvasElement|ImageBitmap|null} image Image.
+ * @param {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas|ImageBitmap|null} image Image.
  * @param {string|undefined} cacheKey Src.
  * @param {?string} crossOrigin Cross origin.
  * @param {import("../ImageState.js").default|undefined} imageState Image state.

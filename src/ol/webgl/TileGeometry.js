@@ -2,14 +2,14 @@
  * @module ol/webgl/TileGeometry
  */
 
-import BaseTileRepresentation from './BaseTileRepresentation.js';
 import MixedGeometryBatch from '../render/webgl/MixedGeometryBatch.js';
-import WebGLArrayBuffer from './Buffer.js';
-import {ARRAY_BUFFER, STATIC_DRAW} from '../webgl.js';
 import {
   create as createTransform,
   translate as translateTransform,
 } from '../transform.js';
+import {ARRAY_BUFFER, STATIC_DRAW} from '../webgl.js';
+import BaseTileRepresentation from './BaseTileRepresentation.js';
+import WebGLArrayBuffer from './Buffer.js';
 
 /**
  * @typedef {import("../VectorRenderTile").default} TileType
@@ -21,9 +21,9 @@ import {
 class TileGeometry extends BaseTileRepresentation {
   /**
    * @param {import("./BaseTileRepresentation.js").TileRepresentationOptions<TileType>} options The tile texture options.
-   * @param {Array<import("../render/webgl/VectorStyleRenderer.js").default>} styleRenderers Array of vector style renderers
+   * @param {import("../render/webgl/VectorStyleRenderer.js").default} styleRenderer Vector style renderer
    */
-  constructor(options, styleRenderers) {
+  constructor(options, styleRenderer) {
     super(options);
 
     /**
@@ -34,12 +34,12 @@ class TileGeometry extends BaseTileRepresentation {
     /**
      * @private
      */
-    this.styleRenderers_ = styleRenderers;
+    this.styleRenderer_ = styleRenderer;
 
     /**
-     * @type {Array<import("../render/webgl/VectorStyleRenderer.js").WebGLBuffers>}
+     * @type {import("../render/webgl/VectorStyleRenderer.js").WebGLBuffers}
      */
-    this.buffers = [];
+    this.buffers = null;
 
     /**
      * Each geometry tile also has a mask which consisted of a quad (two triangles); this mask is intended to
@@ -91,14 +91,37 @@ class TileGeometry extends BaseTileRepresentation {
       -tileOriginY,
     );
 
-    const generatePromises = this.styleRenderers_.map((renderer, i) =>
-      renderer.generateBuffers(this.batch_, transform).then((buffers) => {
-        this.buffers[i] = buffers;
-      }),
-    );
-    Promise.all(generatePromises).then(() => {
-      this.setReady();
-    });
+    this.styleRenderer_
+      .generateBuffers(this.batch_, transform)
+      .then((buffers) => {
+        this.buffers = buffers;
+        this.setReady();
+      });
+  }
+
+  /**
+   * @override
+   */
+  disposeInternal() {
+    if (this.buffers) {
+      /**
+       * @param {Array<WebGLArrayBuffer>} typeBuffers Buffers
+       */
+      const disposeBuffersOfType = (typeBuffers) => {
+        for (const buffer of typeBuffers) {
+          if (buffer) {
+            this.helper.deleteBuffer(buffer);
+          }
+        }
+      };
+      this.buffers.pointBuffers &&
+        disposeBuffersOfType(this.buffers.pointBuffers);
+      this.buffers.lineStringBuffers &&
+        disposeBuffersOfType(this.buffers.lineStringBuffers);
+      this.buffers.polygonBuffers &&
+        disposeBuffersOfType(this.buffers.polygonBuffers);
+    }
+    super.disposeInternal();
   }
 }
 

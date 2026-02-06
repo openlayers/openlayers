@@ -3,12 +3,11 @@
  */
 import Feature from '../Feature.js';
 import LineString from '../geom/LineString.js';
-import TextFeature from './TextFeature.js';
+import {getStrideForLayout} from '../geom/SimpleGeometry.js';
 import {flipXY} from '../geom/flat/flip.js';
 import {get as getProjection} from '../proj.js';
-import {getStrideForLayout} from '../geom/SimpleGeometry.js';
-import {inflateCoordinates} from '../geom/flat/inflate.js';
 import {transformGeometryWithOptions} from './Feature.js';
+import TextFeature from './TextFeature.js';
 
 /**
  * @typedef {Object} Options
@@ -95,13 +94,7 @@ class Polyline extends TextFeature {
     const stride = getStrideForLayout(this.geometryLayout_);
     const flatCoordinates = decodeDeltas(text, stride, this.factor_);
     flipXY(flatCoordinates, 0, flatCoordinates.length, stride, flatCoordinates);
-    const coordinates = inflateCoordinates(
-      flatCoordinates,
-      0,
-      flatCoordinates.length,
-      stride,
-    );
-    const lineString = new LineString(coordinates, this.geometryLayout_);
+    const lineString = new LineString(flatCoordinates, this.geometryLayout_);
 
     return transformGeometryWithOptions(
       lineString,
@@ -144,11 +137,9 @@ class Polyline extends TextFeature {
    * @override
    */
   writeGeometryText(geometry, options) {
-    geometry =
-      /** @type {LineString} */
-      (
-        transformGeometryWithOptions(geometry, true, this.adaptOptions(options))
-      );
+    geometry = /** @type {LineString} */ (
+      transformGeometryWithOptions(geometry, true, this.adaptOptions(options))
+    );
     const flatCoordinates = geometry.getFlatCoordinates();
     const stride = geometry.getStride();
     flipXY(flatCoordinates, 0, flatCoordinates.length, stride, flatCoordinates);
@@ -168,19 +159,17 @@ class Polyline extends TextFeature {
  *     Default is `1e5`.
  * @return {string} The encoded string.
  * @api
+ * @deprecated
  */
 export function encodeDeltas(numbers, stride, factor) {
   factor = factor ? factor : 1e5;
-  let d;
 
-  const lastNumbers = new Array(stride);
-  for (d = 0; d < stride; ++d) {
-    lastNumbers[d] = 0;
-  }
+  const lastNumbers = new Array(stride).fill(0);
 
   for (let i = 0, ii = numbers.length; i < ii; ) {
-    for (d = 0; d < stride; ++d, ++i) {
-      const num = numbers[i];
+    for (let d = 0; d < stride; ++d, ++i) {
+      const value = numbers[i] * factor;
+      const num = value < 0 ? Math.ceil(value - 0.5) : Math.round(value);
       const delta = num - lastNumbers[d];
       lastNumbers[d] = num;
 
@@ -188,7 +177,7 @@ export function encodeDeltas(numbers, stride, factor) {
     }
   }
 
-  return encodeFloats(numbers, factor);
+  return encodeSignedIntegers(numbers);
 }
 
 /**
@@ -201,24 +190,19 @@ export function encodeDeltas(numbers, stride, factor) {
  *     be divided. Default is `1e5`.
  * @return {Array<number>} A list of n-dimensional points.
  * @api
+ * @deprecated
  */
 export function decodeDeltas(encoded, stride, factor) {
   factor = factor ? factor : 1e5;
-  let d;
 
   /** @type {Array<number>} */
-  const lastNumbers = new Array(stride);
-  for (d = 0; d < stride; ++d) {
-    lastNumbers[d] = 0;
-  }
-
-  const numbers = decodeFloats(encoded, factor);
+  const lastNumbers = new Array(stride).fill(0);
+  const numbers = decodeSignedIntegers(encoded);
 
   for (let i = 0, ii = numbers.length; i < ii; ) {
-    for (d = 0; d < stride; ++d, ++i) {
+    for (let d = 0; d < stride; ++d, ++i) {
       lastNumbers[d] += numbers[i];
-
-      numbers[i] = lastNumbers[d];
+      numbers[i] = lastNumbers[d] / factor;
     }
   }
 
@@ -235,6 +219,7 @@ export function decodeDeltas(encoded, stride, factor) {
  *     multiplied. The remaining decimal places will get rounded away.
  *     Default is `1e5`.
  * @return {string} The encoded string.
+ * @deprecated
  * @api
  */
 export function encodeFloats(numbers, factor) {
@@ -253,6 +238,7 @@ export function encodeFloats(numbers, factor) {
  * @param {number} [factor] The factor by which the result will be divided.
  *     Default is `1e5`.
  * @return {Array<number>} A list of floating point numbers.
+ * @deprecated
  * @api
  */
 export function decodeFloats(encoded, factor) {

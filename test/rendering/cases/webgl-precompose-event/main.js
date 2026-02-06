@@ -1,7 +1,7 @@
-import DataTileSource from '../../../../src/ol/source/DataTile.js';
 import Map from '../../../../src/ol/Map.js';
-import TileLayer from '../../../../src/ol/layer/WebGLTile.js';
 import View from '../../../../src/ol/View.js';
+import TileLayer from '../../../../src/ol/layer/WebGLTile.js';
+import DataTileSource from '../../../../src/ol/source/DataTile.js';
 
 const high = new Uint8Array(256 * 256).fill(255);
 const low = new Uint8Array(256 * 256).fill(0);

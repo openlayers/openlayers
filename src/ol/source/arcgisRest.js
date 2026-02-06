@@ -2,13 +2,13 @@
  * @module ol/source/arcgisRest
  */
 
-import {DECIMALS} from './common.js';
-import {appendParams} from '../uri.js';
 import {decode} from '../Image.js';
 import {getHeight, getWidth} from '../extent.js';
-import {get as getProjection} from '../proj.js';
-import {getRequestExtent} from './Image.js';
 import {round} from '../math.js';
+import {get as getProjection} from '../proj.js';
+import {appendParams} from '../uri.js';
+import {getRequestExtent} from './Image.js';
+import {DECIMALS} from './common.js';
 
 /**
  * @param {string} baseUrl Base URL for the ArcGIS Rest service.
@@ -93,7 +93,6 @@ export function createLoader(options) {
   const ratio = options.ratio ?? 1.5;
   const crossOrigin = options.crossOrigin ?? null;
 
-  /** @type {import('../Image.js').ImageObjectPromiseLoader} */
   return function (extent, resolution, pixelRatio) {
     pixelRatio = options.hidpi ? pixelRatio : 1;
 

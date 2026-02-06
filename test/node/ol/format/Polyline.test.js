@@ -1,8 +1,16 @@
 import Feature from '../../../../src/ol/Feature.js';
+import Polyline, {
+  decodeDeltas,
+  decodeSignedIntegers,
+  decodeUnsignedIntegers,
+  encodeDeltas,
+  encodeSignedIntegers,
+  encodeUnsignedInteger,
+  encodeUnsignedIntegers,
+} from '../../../../src/ol/format/Polyline.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
-import Polyline, * as polyline from '../../../../src/ol/format/Polyline.js';
-import expect from '../../expect.js';
 import {get as getProjection, transform} from '../../../../src/ol/proj.js';
+import expect from '../../expect.js';
 
 describe('ol/format/Polyline.js', function () {
   let format;
@@ -52,47 +60,64 @@ describe('ol/format/Polyline.js', function () {
 
   describe('encodeDeltas', function () {
     it('returns expected value', function () {
-      const encodeDeltas = polyline.encodeDeltas;
-
       expect(encodeDeltas(flippedFlatPoints, 2)).to.eql(encodedFlatPoints);
+    });
+    it('rounds positive numbers in the python 2 way', function () {
+      expect(decodeDeltas(encodeDeltas([0.000005, 0], 2), 2)).to.eql([
+        0.00001, 0,
+      ]);
+    });
+    it('rounds negative numbers in the python 2 way', function () {
+      expect(decodeDeltas(encodeDeltas([-0.000005, 0], 2), 2)).to.eql([
+        -0.00001, 0,
+      ]);
+    });
+    it('encodes changes smaller than the configured precision', function () {
+      const coordinates = [0.04, 0, 0.08, 0, 0.12, 0];
+      expect(decodeDeltas(encodeDeltas(coordinates, 2, 1e1), 2, 1e1)).to.eql([
+        0.0, 0.0, 0.1, 0.0, 0.1, 0.0,
+      ]);
     });
   });
 
   describe('decodeDeltas', function () {
     it('returns expected value', function () {
-      const decodeDeltas = polyline.decodeDeltas;
-
       expect(decodeDeltas(encodedFlatPoints, 2)).to.eql(flippedFlatPoints);
+    });
+    it('has no rounding errors from float additions', function () {
+      expect(decodeDeltas('?A?C', 2, 1e1)).to.eql([0.0, 0.1, 0.0, 0.3]);
     });
   });
 
   describe('encodeFloats', function () {
     it('returns expected value', function () {
-      const encodeFloats = polyline.encodeFloats;
-
-      expect(encodeFloats(smallFloats)).to.eql(encodedFloats);
+      expect(encodeDeltas(smallFloats, smallFloats.length)).to.eql(
+        encodedFloats,
+      );
 
       resetTestingData();
-      expect(encodeFloats(smallFloats, 1e5)).to.eql(encodedFloats);
+      expect(encodeDeltas(smallFloats, smallFloats.length, 1e5)).to.eql(
+        encodedFloats,
+      );
 
-      expect(encodeFloats(floats, 1e2)).to.eql(encodedFloats);
+      expect(encodeDeltas(floats, floats.length, 1e2)).to.eql(encodedFloats);
     });
   });
 
   describe('decodeFloats', function () {
     it('returns expected value', function () {
-      const decodeFloats = polyline.decodeFloats;
-
-      expect(decodeFloats(encodedFloats)).to.eql(smallFloats);
-      expect(decodeFloats(encodedFloats, 1e5)).to.eql(smallFloats);
-      expect(decodeFloats(encodedFloats, 1e2)).to.eql(floats);
+      expect(decodeDeltas(encodedFloats, smallFloats.length)).to.eql(
+        smallFloats,
+      );
+      expect(decodeDeltas(encodedFloats, smallFloats.length, 1e5)).to.eql(
+        smallFloats,
+      );
+      expect(decodeDeltas(encodedFloats, floats.length, 1e2)).to.eql(floats);
     });
   });
 
   describe('encodeSignedIntegers', function () {
     it('returns expected value', function () {
-      const encodeSignedIntegers = polyline.encodeSignedIntegers;
-
       expect(encodeSignedIntegers(signedIntegers)).to.eql(
         encodedSignedIntegers,
       );
@@ -101,8 +126,6 @@ describe('ol/format/Polyline.js', function () {
 
   describe('decodeSignedIntegers', function () {
     it('returns expected value', function () {
-      const decodeSignedIntegers = polyline.decodeSignedIntegers;
-
       expect(decodeSignedIntegers(encodedSignedIntegers)).to.eql(
         signedIntegers,
       );
@@ -111,8 +134,6 @@ describe('ol/format/Polyline.js', function () {
 
   describe('encodeUnsignedIntegers', function () {
     it('returns expected value', function () {
-      const encodeUnsignedIntegers = polyline.encodeUnsignedIntegers;
-
       expect(encodeUnsignedIntegers(unsignedIntegers)).to.eql(
         encodedUnsignedIntegers,
       );
@@ -121,8 +142,6 @@ describe('ol/format/Polyline.js', function () {
 
   describe('decodeUnsignedIntegers', function () {
     it('returns expected value', function () {
-      const decodeUnsignedIntegers = polyline.decodeUnsignedIntegers;
-
       expect(decodeUnsignedIntegers(encodedUnsignedIntegers)).to.eql(
         unsignedIntegers,
       );
@@ -131,54 +150,48 @@ describe('ol/format/Polyline.js', function () {
 
   describe('encodeFloat', function () {
     it('returns expected value', function () {
-      const encodeFloats = polyline.encodeFloats;
+      expect(encodeDeltas([0.0], 1)).to.eql('?');
+      expect(encodeDeltas([-0.00001], 1)).to.eql('@');
+      expect(encodeDeltas([0.00001], 1)).to.eql('A');
+      expect(encodeDeltas([-0.00002], 1)).to.eql('B');
+      expect(encodeDeltas([0.00002], 1)).to.eql('C');
+      expect(encodeDeltas([0.00015], 1)).to.eql(']');
+      expect(encodeDeltas([-0.00016], 1)).to.eql('^');
 
-      expect(encodeFloats([0.0])).to.eql('?');
-      expect(encodeFloats([-0.00001])).to.eql('@');
-      expect(encodeFloats([0.00001])).to.eql('A');
-      expect(encodeFloats([-0.00002])).to.eql('B');
-      expect(encodeFloats([0.00002])).to.eql('C');
-      expect(encodeFloats([0.00015])).to.eql(']');
-      expect(encodeFloats([-0.00016])).to.eql('^');
+      expect(encodeDeltas([-0.1], 1, 10)).to.eql('@');
+      expect(encodeDeltas([0.1], 1, 10)).to.eql('A');
 
-      expect(encodeFloats([-0.1], 10)).to.eql('@');
-      expect(encodeFloats([0.1], 10)).to.eql('A');
-
-      expect(encodeFloats([(16 * 32) / 1e5])).to.eql('__@');
-      expect(encodeFloats([(16 * 32 * 32) / 1e5])).to.eql('___@');
+      expect(encodeDeltas([(16 * 32) / 1e5], 1)).to.eql('__@');
+      expect(encodeDeltas([(16 * 32 * 32) / 1e5], 1)).to.eql('___@');
 
       // from the "Encoded Polyline Algorithm Format" page at Google
-      expect(encodeFloats([-179.9832104])).to.eql('`~oia@');
+      expect(encodeDeltas([-179.9832104], 1)).to.eql('`~oia@');
     });
   });
 
   describe('decodeFloat', function () {
     it('returns expected value', function () {
-      const decodeFloats = polyline.decodeFloats;
+      expect(decodeDeltas('?', 1)).to.eql([0.0]);
+      expect(decodeDeltas('@', 1)).to.eql([-0.00001]);
+      expect(decodeDeltas('A', 1)).to.eql([0.00001]);
+      expect(decodeDeltas('B', 1)).to.eql([-0.00002]);
+      expect(decodeDeltas('C', 1)).to.eql([0.00002]);
+      expect(decodeDeltas(']', 1)).to.eql([0.00015]);
+      expect(decodeDeltas('^', 1)).to.eql([-0.00016]);
 
-      expect(decodeFloats('?')).to.eql([0.0]);
-      expect(decodeFloats('@')).to.eql([-0.00001]);
-      expect(decodeFloats('A')).to.eql([0.00001]);
-      expect(decodeFloats('B')).to.eql([-0.00002]);
-      expect(decodeFloats('C')).to.eql([0.00002]);
-      expect(decodeFloats(']')).to.eql([0.00015]);
-      expect(decodeFloats('^')).to.eql([-0.00016]);
+      expect(decodeDeltas('@', 1, 10)).to.eql([-0.1]);
+      expect(decodeDeltas('A', 1, 10)).to.eql([0.1]);
 
-      expect(decodeFloats('@', 10)).to.eql([-0.1]);
-      expect(decodeFloats('A', 10)).to.eql([0.1]);
-
-      expect(decodeFloats('__@')).to.eql([(16 * 32) / 1e5]);
-      expect(decodeFloats('___@')).to.eql([(16 * 32 * 32) / 1e5]);
+      expect(decodeDeltas('__@', 1)).to.eql([(16 * 32) / 1e5]);
+      expect(decodeDeltas('___@', 1)).to.eql([(16 * 32 * 32) / 1e5]);
 
       // from the "Encoded Polyline Algorithm Format" page at Google
-      expect(decodeFloats('`~oia@')).to.eql([-179.98321]);
+      expect(decodeDeltas('`~oia@', 1)).to.eql([-179.98321]);
     });
   });
 
   describe('encodeSignedInteger', function () {
     it('returns expected value', function () {
-      const encodeSignedIntegers = polyline.encodeSignedIntegers;
-
       expect(encodeSignedIntegers([0])).to.eql('?');
       expect(encodeSignedIntegers([-1])).to.eql('@');
       expect(encodeSignedIntegers([1])).to.eql('A');
@@ -195,8 +208,6 @@ describe('ol/format/Polyline.js', function () {
 
   describe('decodeSignedInteger', function () {
     it('returns expected value', function () {
-      const decodeSignedIntegers = polyline.decodeSignedIntegers;
-
       expect(decodeSignedIntegers('?')).to.eql([0]);
       expect(decodeSignedIntegers('@')).to.eql([-1]);
       expect(decodeSignedIntegers('A')).to.eql([1]);
@@ -213,8 +224,6 @@ describe('ol/format/Polyline.js', function () {
 
   describe('encodeUnsignedInteger', function () {
     it('returns expected value', function () {
-      const encodeUnsignedInteger = polyline.encodeUnsignedInteger;
-
       expect(encodeUnsignedInteger(0)).to.eql('?');
       expect(encodeUnsignedInteger(1)).to.eql('@');
       expect(encodeUnsignedInteger(2)).to.eql('A');
@@ -233,8 +242,6 @@ describe('ol/format/Polyline.js', function () {
 
   describe('decodeUnsignedInteger', function () {
     it('returns expected value', function () {
-      const decodeUnsignedIntegers = polyline.decodeUnsignedIntegers;
-
       expect(decodeUnsignedIntegers('?')).to.eql([0]);
       expect(decodeUnsignedIntegers('@')).to.eql([1]);
       expect(decodeUnsignedIntegers('A')).to.eql([2]);
@@ -305,7 +312,7 @@ describe('ol/format/Polyline.js', function () {
     });
 
     it('parses XYZ linestring', function () {
-      const xyz = polyline.encodeDeltas(
+      const xyz = encodeDeltas(
         [38.5, -120.2, 100, 40.7, -120.95, 200, 43.252, -126.453, 20],
         3,
       );

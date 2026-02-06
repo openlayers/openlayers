@@ -1,8 +1,4 @@
-import WebGLArrayBuffer from '../../../../../src/ol/webgl/Buffer.js';
-import WebGLHelper, {
-  DefaultUniform,
-} from '../../../../../src/ol/webgl/Helper.js';
-import {ARRAY_BUFFER, FLOAT, STATIC_DRAW} from '../../../../../src/ol/webgl.js';
+import {spy as sinonSpy, stub as sinonStub} from 'sinon';
 import {
   create as createTransform,
   rotate as rotateTransform,
@@ -10,6 +6,11 @@ import {
   translate as translateTransform,
 } from '../../../../../src/ol/transform.js';
 import {getUid} from '../../../../../src/ol/util.js';
+import WebGLArrayBuffer from '../../../../../src/ol/webgl/Buffer.js';
+import WebGLHelper, {
+  DefaultUniform,
+} from '../../../../../src/ol/webgl/Helper.js';
+import {ARRAY_BUFFER, FLOAT, STATIC_DRAW} from '../../../../../src/ol/webgl.js';
 
 const VERTEX_SHADER = `
   precision mediump float;
@@ -184,8 +185,8 @@ describe('ol/webgl/WebGLHelper', function () {
       describe('avoid resizing the canvas if not required', () => {
         let widthSpy, heightSpy;
         beforeEach(function () {
-          widthSpy = sinon.spy(h.getCanvas(), 'width', ['set']);
-          heightSpy = sinon.spy(h.getCanvas(), 'height', ['set']);
+          widthSpy = sinonSpy(h.getCanvas(), 'width', ['set']);
+          heightSpy = sinonSpy(h.getCanvas(), 'height', ['set']);
           // same size and pixel ratio
           h.prepareDraw({
             pixelRatio: 2,
@@ -426,7 +427,7 @@ describe('ol/webgl/WebGLHelper', function () {
     });
 
     it('enables attributes based on the given array (FLOAT)', function () {
-      const spy = sinon.spy(h, 'enableAttributeArray_');
+      const spy = sinonSpy(h, 'enableAttributeArray_');
       h.enableAttributes(baseAttrs);
       const bytesPerFloat = Float32Array.BYTES_PER_ELEMENT;
 
@@ -447,16 +448,105 @@ describe('ol/webgl/WebGLHelper', function () {
       expect(spy.getCall(2).args[3]).to.eql(6 * bytesPerFloat);
       expect(spy.getCall(2).args[4]).to.eql(5 * bytesPerFloat);
     });
+
+    it('enables attributes including padding (empty slots)', function () {
+      const spy = sinonSpy(h, 'enableAttributeArray_');
+      h.enableAttributes([
+        {
+          name: 'attr1',
+          size: 3,
+        },
+        {
+          name: null,
+          size: 2,
+        },
+        {
+          name: 'attr3',
+          size: 1,
+        },
+      ]);
+      const bytesPerFloat = Float32Array.BYTES_PER_ELEMENT;
+
+      expect(spy.callCount).to.eql(2);
+      expect(spy.getCall(0).args[0]).to.eql('attr1');
+      expect(spy.getCall(0).args[1]).to.eql(3);
+      expect(spy.getCall(0).args[2]).to.eql(FLOAT);
+      expect(spy.getCall(0).args[3]).to.eql(6 * bytesPerFloat);
+      expect(spy.getCall(0).args[4]).to.eql(0);
+      expect(spy.getCall(1).args[0]).to.eql('attr3');
+      expect(spy.getCall(1).args[1]).to.eql(1);
+      expect(spy.getCall(1).args[2]).to.eql(FLOAT);
+      expect(spy.getCall(1).args[3]).to.eql(6 * bytesPerFloat);
+      expect(spy.getCall(1).args[4]).to.eql(5 * bytesPerFloat);
+    });
+  });
+
+  describe('#enableAttributesInstanced', function () {
+    let baseAttrs;
+
+    beforeEach(function () {
+      h = new WebGLHelper();
+      baseAttrs = [
+        {
+          name: 'attr1',
+          size: 3,
+        },
+      ];
+      h.useProgram(
+        h.getProgram(
+          FRAGMENT_SHADER,
+          `
+        precision mediump float;
+
+        uniform mat4 u_projectionMatrix;
+        uniform mat4 u_offsetScaleMatrix;
+        uniform mat4 u_offsetRotateMatrix;
+
+        attribute vec3 attr1;
+
+        void main(void) {
+          gl_Position = vec4(attr1, 1.0);
+        }`,
+        ),
+        SAMPLE_FRAMESTATE,
+      );
+    });
+
+    it('enables attributes based on the given array (FLOAT)', function () {
+      const spy = sinonSpy(h, 'enableAttributeArray_');
+      const extSpy = sinonSpy(
+        h.getInstancedRenderingExtension_(),
+        'vertexAttribDivisorANGLE',
+      );
+      h.enableAttributesInstanced(baseAttrs);
+      const bytesPerFloat = Float32Array.BYTES_PER_ELEMENT;
+
+      expect(spy.callCount).to.eql(1);
+      expect(spy.firstCall.args).to.eql([
+        'attr1',
+        3,
+        FLOAT,
+        3 * bytesPerFloat,
+        0,
+        true,
+      ]);
+
+      expect(extSpy.callCount).to.eql(1);
+      expect(extSpy.firstCall.args).to.eql([
+        h.getAttributeLocation('attr1'),
+        1,
+      ]);
+    });
   });
 
   describe('#applyFrameState', function () {
     let stubFloat, stubVec2, stubTime;
     beforeEach(function () {
-      stubTime = sinon.stub(Date, 'now');
+      stubTime = sinonStub(Date, 'now');
       stubTime.returns(1000);
       h = new WebGLHelper();
-      stubFloat = sinon.stub(h, 'setUniformFloatValue');
-      stubVec2 = sinon.stub(h, 'setUniformFloatVec2');
+      stubFloat = sinonStub(h, 'setUniformFloatValue');
+      stubVec2 = sinonStub(h, 'setUniformFloatVec2');
 
       stubTime.returns(2000);
       h.applyFrameState({...SAMPLE_FRAMESTATE, pixelRatio: 2});
@@ -476,6 +566,63 @@ describe('ol/webgl/WebGLHelper', function () {
         DefaultUniform.VIEWPORT_SIZE_PX,
         [100, 150],
       ]);
+    });
+  });
+
+  describe('#drawElementsInstanced', () => {
+    let drawSpy, divisorSpy;
+    beforeEach(() => {
+      h = new WebGLHelper();
+      h.useProgram(
+        h.getProgram(FRAGMENT_SHADER, VERTEX_SHADER),
+        SAMPLE_FRAMESTATE,
+      );
+      drawSpy = sinonSpy(
+        h.getInstancedRenderingExtension_(),
+        'drawElementsInstancedANGLE',
+      );
+      divisorSpy = sinonSpy(
+        h.getInstancedRenderingExtension_(),
+        'vertexAttribDivisorANGLE',
+      );
+      h.drawElementsInstanced(0, 8, 20);
+    });
+    it('calls drawElementsInstancedANGLE', () => {
+      const gl = h.getGL();
+      expect(drawSpy.callCount).to.eql(1);
+      expect(drawSpy.firstCall.args).to.eql([
+        gl.TRIANGLES,
+        8,
+        gl.UNSIGNED_INT,
+        0,
+        20,
+      ]);
+    });
+    it('resets the divisors after rendering', () => {
+      const gl = h.getGL();
+      const max = gl.getParameter(gl.MAX_VERTEX_ATTRIBS);
+      expect(divisorSpy.getCalls().length).to.eql(max); // each possible attribute is disabled
+      for (let i = 0; i < max; i++) {
+        expect(divisorSpy.getCall(i).args).to.eql([i, 0]);
+      }
+    });
+  });
+
+  describe('attributes disabling', () => {
+    let disableAttribSpy;
+    beforeEach(() => {
+      h = new WebGLHelper();
+      disableAttribSpy = sinonSpy(h.getGL(), 'disableVertexAttribArray');
+      const program = h.getProgram(FRAGMENT_SHADER, VERTEX_SHADER);
+      h.useProgram(program, SAMPLE_FRAMESTATE);
+    });
+    it('all active attributes are disabled when enabling programs, disregarding of previous state', () => {
+      const gl = h.getGL();
+      const max = gl.getParameter(gl.MAX_VERTEX_ATTRIBS);
+      expect(disableAttribSpy.getCalls().length).to.eql(max); // each possible attribute is disabled
+      for (let i = 0; i < max; i++) {
+        expect(disableAttribSpy.getCall(i).args[0]).to.eql(i);
+      }
     });
   });
 });

@@ -1,20 +1,10 @@
 /**
  * @module ol/renderer/canvas/VectorLayer
  */
-import CanvasBuilderGroup from '../../render/canvas/BuilderGroup.js';
-import CanvasLayerRenderer, {canvasPool} from './Layer.js';
-import ExecutorGroup, {
-  ALL,
-  DECLUTTER,
-  NON_DECLUTTER,
-} from '../../render/canvas/ExecutorGroup.js';
-import RenderEventType from '../../render/EventType.js';
 import ViewHint from '../../ViewHint.js';
-import {
-  HIT_DETECT_RESOLUTION,
-  createHitDetectionImageData,
-  hitDetect,
-} from '../../render/canvas/hitdetect.js';
+import {equals} from '../../array.js';
+import {wrapX as wrapCoordinateX} from '../../coordinate.js';
+import {createCanvasContext2D, releaseCanvas} from '../../dom.js';
 import {
   buffer,
   containsExtent,
@@ -22,16 +12,9 @@ import {
   getHeight,
   getWidth,
   intersects as intersectsExtent,
+  isEmpty,
   wrapX as wrapExtentX,
 } from '../../extent.js';
-import {createCanvasContext2D, releaseCanvas} from '../../dom.js';
-import {
-  defaultOrder as defaultRenderOrder,
-  getTolerance as getRenderTolerance,
-  getSquaredTolerance as getSquaredRenderTolerance,
-  renderFeature,
-} from '../vector.js';
-import {equals} from '../../array.js';
 import {
   fromUserExtent,
   getTransformFromProjections,
@@ -39,8 +22,26 @@ import {
   toUserExtent,
   toUserResolution,
 } from '../../proj.js';
+import RenderEventType from '../../render/EventType.js';
+import CanvasBuilderGroup from '../../render/canvas/BuilderGroup.js';
+import ExecutorGroup, {
+  ALL,
+  DECLUTTER,
+  NON_DECLUTTER,
+} from '../../render/canvas/ExecutorGroup.js';
+import {
+  HIT_DETECT_RESOLUTION,
+  createHitDetectionImageData,
+  hitDetect,
+} from '../../render/canvas/hitdetect.js';
 import {getUid} from '../../util.js';
-import {wrapX as wrapCoordinateX} from '../../coordinate.js';
+import {
+  defaultOrder as defaultRenderOrder,
+  getSquaredTolerance as getSquaredRenderTolerance,
+  getTolerance as getRenderTolerance,
+  renderFeature,
+} from '../vector.js';
+import CanvasLayerRenderer, {canvasPool} from './Layer.js';
 
 /**
  * @classdesc
@@ -71,9 +72,17 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     /**
      * @private
+     * @type {import("../../extent.js").Extent}
+     */
+    this.clipExtent_ = null;
+
+    /**
+     * Do we need to extend the rendered area on the x-axis to handle
+     * features that cross the antimeridian?
+     * @private
      * @type {boolean}
      */
-    this.clipped_ = false;
+    this.extendX_ = false;
 
     /**
      * @private
@@ -131,7 +140,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     /**
      * @private
-     * @type {function(import("../../Feature.js").default, import("../../Feature.js").default): number|null}
+     * @type {import("../../render.js").OrderFunction|null}
      */
     this.renderedRenderOrder_ = null;
 
@@ -161,7 +170,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     /**
      * @private
-     * @type {CanvasRenderingContext2D}
+     * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D}
      */
     this.targetContext_ = null;
 
@@ -200,10 +209,12 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const multiWorld = vectorSource.getWrapX() && projection.canWrapX();
     const worldWidth = multiWorld ? getWidth(projectionExtent) : null;
     const endWorld = multiWorld
-      ? Math.ceil((extent[2] - projectionExtent[2]) / worldWidth) + 1
+      ? Math.ceil((extent[2] - projectionExtent[2]) / worldWidth) +
+        (this.extendX_ ? 2 : 1)
       : 1;
     let world = multiWorld
-      ? Math.floor((extent[0] - projectionExtent[0]) / worldWidth)
+      ? Math.floor((extent[0] - projectionExtent[0]) / worldWidth) -
+        (this.extendX_ ? 1 : 0)
       : 0;
     do {
       let transform = this.getRenderTransform(
@@ -254,7 +265,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
    * @private
    */
   resetDrawContext_() {
-    if (this.opacity_ !== 1) {
+    if (this.opacity_ !== 1 && this.targetContext_) {
       const alpha = this.targetContext_.globalAlpha;
       this.targetContext_.globalAlpha = this.opacity_;
       this.targetContext_.drawImage(this.context.canvas, 0, 0);
@@ -286,9 +297,13 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     if (!this.replayGroup_) {
       return;
     }
+    if (this.clipExtent_) {
+      this.clipUnrotated(this.context, frameState, this.clipExtent_);
+    }
     this.replayGroup_.renderDeferred();
-    if (this.clipped_) {
+    if (this.clipExtent_) {
       this.context.restore();
+      this.clipExtent_ = null;
     }
     this.resetDrawContext_();
   }
@@ -297,7 +312,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
    * Render the layer.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @param {HTMLElement|null} target Target that may be used to render content to.
-   * @return {HTMLElement|null} The rendered element.
+   * @return {HTMLElement} The rendered element.
    * @override
    */
   renderFrame(frameState, target) {
@@ -315,7 +330,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
         this.getLayer().hasListener(RenderEventType.PRERENDER) ||
         this.getLayer().hasListener(RenderEventType.POSTRENDER);
       if (!hasRenderListeners) {
-        return null;
+        return this.container;
       }
     }
 
@@ -326,13 +341,22 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const projection = viewState.projection;
 
     // clipped rendering if layer extent is set
-    this.clipped_ = false;
+    this.clipExtent_ = null;
+    let clipped = false;
     if (render && layerState.extent && this.clipping) {
       const layerExtent = fromUserExtent(layerState.extent, projection);
       render = intersectsExtent(layerExtent, frameState.extent);
-      this.clipped_ = render && !containsExtent(layerExtent, frameState.extent);
-      if (this.clipped_) {
-        this.clipUnrotated(context, frameState, layerExtent);
+      const needsClip =
+        render && !containsExtent(layerExtent, frameState.extent);
+      if (needsClip) {
+        if (frameState.declutter) {
+          // Store extent for deferred clipping
+          this.clipExtent_ = layerExtent;
+        } else {
+          // Apply clipping immediately for non-declutter rendering
+          this.clipUnrotated(context, frameState, layerExtent);
+          clipped = true;
+        }
       }
     }
 
@@ -344,7 +368,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       );
     }
 
-    if (!frameState.declutter && this.clipped_) {
+    if (clipped) {
       context.restore();
     }
 
@@ -522,23 +546,17 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       return undefined;
     };
 
-    let result;
-    const executorGroups = [this.replayGroup_];
     const declutter = this.getLayer().getDeclutter();
-    executorGroups.some((executorGroup) => {
-      return (result = executorGroup.forEachFeatureAtCoordinate(
-        coordinate,
-        resolution,
-        rotation,
-        hitTolerance,
-        featureCallback,
-        declutter && frameState.declutter[declutter]
-          ? frameState.declutter[declutter].all().map((item) => item.value)
-          : null,
-      ));
-    });
-
-    return result;
+    return this.replayGroup_.forEachFeatureAtCoordinate(
+      coordinate,
+      resolution,
+      rotation,
+      hitTolerance,
+      featureCallback,
+      declutter
+        ? frameState.declutter?.[declutter]?.all().map((item) => item.value)
+        : null,
+    );
   }
 
   /**
@@ -610,10 +628,20 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const loadExtents = [extent.slice()];
     const projectionExtent = projection.getExtent();
 
+    const canWrapX = vectorSource.getWrapX() && projection.canWrapX();
+    this.extendX_ = false;
+    if (canWrapX) {
+      const sourceExtent = vectorSource.getExtent();
+      if (sourceExtent && !isEmpty(sourceExtent)) {
+        this.extendX_ =
+          sourceExtent[0] < projectionExtent[0] ||
+          sourceExtent[2] > projectionExtent[2];
+      }
+    }
+
     if (
-      vectorSource.getWrapX() &&
-      projection.canWrapX() &&
-      !containsExtent(projectionExtent, frameState.extent)
+      canWrapX &&
+      (!containsExtent(projectionExtent, frameState.extent) || this.extendX_)
     ) {
       // For the replay group, we need an extent that intersects the real world
       // (-180° to +180°). To support geometries in a coordinate range from -540°
@@ -622,8 +650,14 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       // the viewport width to make sure we cover the whole viewport.
       const worldWidth = getWidth(projectionExtent);
       const gutter = Math.max(getWidth(extent) / 2, worldWidth);
-      extent[0] = projectionExtent[0] - gutter;
-      extent[2] = projectionExtent[2] + gutter;
+      let projMinX = projectionExtent[0];
+      let projMaxX = projectionExtent[2];
+      if (this.extendX_) {
+        projMinX -= worldWidth;
+        projMaxX += worldWidth;
+      }
+      extent[0] = projMinX - gutter;
+      extent[2] = projMaxX + gutter;
       wrapCoordinateX(center, projection);
       const loadExtent = wrapExtentX(loadExtents[0], projection);
       // If the extent crosses the date line, we load data for both edges of the worlds
@@ -653,6 +687,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     if (
       this.ready &&
       this.renderedResolution_ == resolution &&
+      this.renderedPixelRatio_ === pixelRatio &&
       this.renderedRevision_ == vectorLayerRevision &&
       this.renderedRenderOrder_ == vectorLayerRenderOrder &&
       this.renderedFrameDeclutter_ === !!frameState.declutter &&

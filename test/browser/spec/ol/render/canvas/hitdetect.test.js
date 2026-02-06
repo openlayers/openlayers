@@ -1,18 +1,18 @@
-import Circle from '../../../../../../src/ol/style/Circle.js';
 import Feature from '../../../../../../src/ol/Feature.js';
-import {Fill, Stroke, Style} from '../../../../../../src/ol/style.js';
-import {
-  GeometryCollection,
-  LineString,
-  Point,
-  Polygon,
-} from '../../../../../../src/ol/geom.js';
-import {create} from '../../../../../../src/ol/transform.js';
 import {createCanvasContext2D} from '../../../../../../src/ol/dom.js';
+import GeometryCollection from '../../../../../../src/ol/geom/GeometryCollection.js';
+import LineString from '../../../../../../src/ol/geom/LineString.js';
+import Point from '../../../../../../src/ol/geom/Point.js';
+import Polygon from '../../../../../../src/ol/geom/Polygon.js';
 import {
   createHitDetectionImageData,
   hitDetect,
 } from '../../../../../../src/ol/render/canvas/hitdetect.js';
+import Circle from '../../../../../../src/ol/style/Circle.js';
+import Fill from '../../../../../../src/ol/style/Fill.js';
+import Stroke from '../../../../../../src/ol/style/Stroke.js';
+import Style from '../../../../../../src/ol/style/Style.js';
+import {create} from '../../../../../../src/ol/transform.js';
 
 describe('hitdetect', function () {
   let features, styleFunction;

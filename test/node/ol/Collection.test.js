@@ -1,8 +1,8 @@
+import {spy as sinonSpy} from 'sinon';
 import Collection from '../../../src/ol/Collection.js';
 import CollectionEventType from '../../../src/ol/CollectionEventType.js';
-import expect from '../expect.js';
-import sinon from 'sinon';
 import {listen} from '../../../src/ol/events.js';
+import expect from '../expect.js';
 
 describe('ol/Collection.js', function () {
   /** @type {Collection} */
@@ -104,7 +104,7 @@ describe('ol/Collection.js', function () {
   describe('forEach', function () {
     let cb;
     beforeEach(function () {
-      cb = sinon.spy();
+      cb = sinonSpy();
     });
     describe('on an empty collection', function () {
       it('does not call the callback', function () {
@@ -131,7 +131,7 @@ describe('ol/Collection.js', function () {
     });
     it('fires a remove event', function () {
       const collection = new Collection([0, 1, 2]);
-      const cb = sinon.spy();
+      const cb = sinonSpy();
       listen(collection, CollectionEventType.REMOVE, cb);
       expect(collection.remove(1)).to.eql(1);
       expect(cb.called).to.be(true);
@@ -203,7 +203,7 @@ describe('ol/Collection.js', function () {
     it('does not allow setting invalid index', function () {
       try {
         collection.setAt(1, 1);
-      } catch (e) {
+      } catch {
         return;
       }
       throw new Error('Collection should throw');
@@ -233,7 +233,7 @@ describe('ol/Collection.js', function () {
     let collection, cb;
     beforeEach(function () {
       collection = new Collection([0, 1, 2]);
-      cb = sinon.spy();
+      cb = sinonSpy();
       listen(collection, 'change:length', cb);
     });
 
@@ -277,8 +277,8 @@ describe('ol/Collection.js', function () {
     let collection, cb1, cb2;
     beforeEach(function () {
       collection = new Collection([1]);
-      cb1 = sinon.spy();
-      cb2 = sinon.spy();
+      cb1 = sinonSpy();
+      cb2 = sinonSpy();
     });
     describe('setAt', function () {
       it('triggers remove', function () {
@@ -386,6 +386,13 @@ describe('ol/Collection.js', function () {
         unique.setAt(1, item);
       };
       expect(call).to.throwException();
+
+      const item2 = {};
+      unique.setAt(1, item2);
+      const call2 = function () {
+        unique.setAt(0, item2);
+      };
+      expect(call2).to.throwException();
     });
   });
 });

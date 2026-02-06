@@ -1,10 +1,10 @@
-import Map from '../src/ol/Map.js';
-import SentinelHub from '../src/ol/source/SentinelHub.js';
-import TileLayer from '../src/ol/layer/WebGLTile.js';
-import View from '../src/ol/View.js';
-import {EditorView, basicSetup} from 'codemirror';
 import {javascript} from '@codemirror/lang-javascript';
+import {EditorView, basicSetup} from 'codemirror';
+import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
+import TileLayer from '../src/ol/layer/WebGLTile.js';
 import {useGeographic} from '../src/ol/proj.js';
+import SentinelHub from '../src/ol/source/SentinelHub.js';
 
 useGeographic();
 

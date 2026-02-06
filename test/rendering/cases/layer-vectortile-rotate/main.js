@@ -1,8 +1,8 @@
-import MVT from '../../../../src/ol/format/MVT.js';
 import Map from '../../../../src/ol/Map.js';
+import View from '../../../../src/ol/View.js';
+import MVT from '../../../../src/ol/format/MVT.js';
 import VectorTileLayer from '../../../../src/ol/layer/VectorTile.js';
 import VectorTileSource from '../../../../src/ol/source/VectorTile.js';
-import View from '../../../../src/ol/View.js';
 import {createXYZ} from '../../../../src/ol/tilegrid.js';
 
 const map = new Map({

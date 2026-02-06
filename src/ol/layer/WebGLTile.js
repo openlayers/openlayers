@@ -1,12 +1,6 @@
 /**
  * @module ol/layer/WebGLTile
  */
-import BaseTileLayer from './BaseTile.js';
-import LayerProperty from '../layer/Property.js';
-import WebGLTileLayerRenderer, {
-  Attributes,
-  Uniforms,
-} from '../renderer/webgl/TileLayer.js';
 import {ColorType, NumberType} from '../expr/expression.js';
 import {
   PALETTE_TEXTURE_ARRAY,
@@ -14,7 +8,13 @@ import {
   newCompilationContext,
   uniformNameForVariable,
 } from '../expr/gpu.js';
-import {expressionToGlsl} from '../webgl/styleparser.js';
+import LayerProperty from '../layer/Property.js';
+import {expressionToGlsl} from '../render/webgl/compileUtil.js';
+import WebGLTileLayerRenderer, {
+  Attributes,
+  Uniforms,
+} from '../renderer/webgl/TileLayer.js';
+import BaseTileLayer from './BaseTile.js';
 
 /**
  * @typedef {import("../source/DataTile.js").default<import("../DataTile.js").default|import("../ImageTile.js").default>} SourceType
@@ -121,9 +121,7 @@ function parseStyle(style, bandCount) {
    */
   const context = {
     ...newCompilationContext(),
-    inFragmentShader: true,
     bandCount: bandCount,
-    style: style,
   };
 
   const pipeline = [];
@@ -285,7 +283,7 @@ function parseStyle(style, bandCount) {
  */
 class WebGLTileLayer extends BaseTileLayer {
   /**
-   * @param {Options} options Tile layer options.
+   * @param {Options} [options] Tile layer options.
    */
   constructor(options) {
     options = options ? Object.assign({}, options) : {};
@@ -325,6 +323,7 @@ class WebGLTileLayer extends BaseTileLayer {
      */
     this.styleVariables_ = this.style_.variables || {};
 
+    this.handleSourceUpdate_();
     this.addChangeListener(LayerProperty.SOURCE, this.handleSourceUpdate_);
   }
 

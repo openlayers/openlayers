@@ -1,19 +1,17 @@
-import $ from 'jquery';
-import EsriJSON from '../src/ol/format/EsriJSON.js';
-import ImageTile from '../src/ol/source/ImageTile.js';
 import Map from '../src/ol/Map.js';
-import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
-import {
-  Draw,
-  Modify,
-  Select,
-  defaults as defaultInteractions,
-} from '../src/ol/interaction.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
-import {createXYZ} from '../src/ol/tilegrid.js';
-import {fromLonLat} from '../src/ol/proj.js';
+import EsriJSON from '../src/ol/format/EsriJSON.js';
+import Draw from '../src/ol/interaction/Draw.js';
+import Modify from '../src/ol/interaction/Modify.js';
+import Select from '../src/ol/interaction/Select.js';
+import {defaults as defaultInteractions} from '../src/ol/interaction/defaults.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import {tile as tileStrategy} from '../src/ol/loadingstrategy.js';
+import {fromLonLat} from '../src/ol/proj.js';
+import ImageTile from '../src/ol/source/ImageTile.js';
+import VectorSource from '../src/ol/source/Vector.js';
+import {createXYZ} from '../src/ol/tilegrid.js';
 
 const serviceUrl =
   'https://sampleserver6.arcgisonline.com/arcgis/rest/services/Wildfire/FeatureServer/';
@@ -41,10 +39,9 @@ const vectorSource = new VectorSource({
       ) +
       '&geometryType=esriGeometryEnvelope&inSR=102100&outFields=*' +
       '&outSR=102100';
-    $.ajax({
-      url: url,
-      dataType: 'jsonp',
-      success: function (response) {
+    fetch(url)
+      .then((response) => response.json())
+      .then(function (response) {
         if (response.error) {
           alert(
             response.error.message + '\n' + response.error.details.join('\n'),
@@ -58,8 +55,7 @@ const vectorSource = new VectorSource({
             vectorSource.addFeatures(features);
           }
         }
-      },
-    });
+      });
   },
   strategy: tileStrategy(
     createXYZ({
@@ -138,17 +134,23 @@ selected.on('remove', function (evt) {
       }) +
       ']';
     const url = serviceUrl + layer + '/updateFeatures';
-    $.post(url, {f: 'json', features: payload}).done(function (data) {
-      const result = typeof data === 'string' ? JSON.parse(data) : data;
-      if (result.updateResults && result.updateResults.length > 0) {
-        if (result.updateResults[0].success !== true) {
-          const error = result.updateResults[0].error;
-          alert(error.description + ' (' + error.code + ')');
-        } else {
-          delete dirty[fid];
+    fetch(url, {
+      method: 'POST',
+      body: new URLSearchParams({f: 'json', features: payload}),
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        const result = typeof data === 'string' ? JSON.parse(data) : data;
+        if (result.updateResults && result.updateResults.length > 0) {
+          if (result.updateResults[0].success !== true) {
+            const error = result.updateResults[0].error;
+            alert(error.description + ' (' + error.code + ')');
+          } else {
+            delete dirty[fid];
+          }
         }
-      }
-    });
+      });
   }
 });
 
@@ -161,15 +163,21 @@ draw.on('drawend', function (evt) {
     }) +
     ']';
   const url = serviceUrl + layer + '/addFeatures';
-  $.post(url, {f: 'json', features: payload}).done(function (data) {
-    const result = typeof data === 'string' ? JSON.parse(data) : data;
-    if (result.addResults && result.addResults.length > 0) {
-      if (result.addResults[0].success === true) {
-        feature.set('objectid', result.addResults[0]['objectId']);
-      } else {
-        const error = result.addResults[0].error;
-        alert(error.description + ' (' + error.code + ')');
+  fetch(url, {
+    method: 'POST',
+    body: new URLSearchParams({f: 'json', features: payload}),
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      const result = typeof data === 'string' ? JSON.parse(data) : data;
+      if (result.addResults && result.addResults.length > 0) {
+        if (result.addResults[0].success === true) {
+          feature.set('objectid', result.addResults[0]['objectId']);
+        } else {
+          const error = result.addResults[0].error;
+          alert(error.description + ' (' + error.code + ')');
+        }
       }
-    }
-  });
+    });
 });

@@ -1,7 +1,9 @@
-import ExtentInteraction from '../../../../../src/ol/interaction/Extent.js';
+import {spy as sinonSpy} from 'sinon';
 import Map from '../../../../../src/ol/Map.js';
 import MapBrowserEvent from '../../../../../src/ol/MapBrowserEvent.js';
 import View from '../../../../../src/ol/View.js';
+import {never} from '../../../../../src/ol/events/condition.js';
+import ExtentInteraction from '../../../../../src/ol/interaction/Extent.js';
 
 describe('ol.interaction.Extent', function () {
   let map, interaction;
@@ -91,6 +93,14 @@ describe('ol.interaction.Extent', function () {
   });
 
   describe('draw extent', function () {
+    let spy;
+    beforeEach(function () {
+      spy = sinonSpy(interaction, 'handleEvent');
+    });
+    afterEach(function () {
+      interaction.handleEvent.restore();
+    });
+
     it('drawing extent works', function () {
       simulateEvent('pointerdown', -50, -50, false, 0);
       simulateEvent('pointerdrag', 50, 50, false, 0);
@@ -106,6 +116,18 @@ describe('ol.interaction.Extent', function () {
       simulateEvent('pointerup', -10, -10, false, 0);
 
       expect(interaction.getExtent()).to.equal(null);
+      expect(spy.lastCall.returnValue).to.be(false);
+    });
+
+    it('clicking off extent does not null extent if createCondition is false', function () {
+      interaction.setExtent([-50, -50, 50, 50]);
+      interaction.createCondition_ = never;
+
+      simulateEvent('pointerdown', -10, -10, false, 0);
+      simulateEvent('pointerup', -10, -10, false, 0);
+
+      expect(interaction.getExtent()).to.eql([-50, -50, 50, 50]);
+      expect(spy.lastCall.returnValue).to.be(true);
     });
 
     it('clicking on extent does not null extent', function () {
@@ -135,6 +157,17 @@ describe('ol.interaction.Extent', function () {
       simulateEvent('pointerup', 20, -30, false, 0);
 
       expect(interaction.getExtent()).to.eql([-50, -50, 20, 50]);
+    });
+
+    it('drag extent works', function () {
+      interaction.setExtent([-50, -50, 50, 50]);
+      interaction.drag_ = true;
+
+      simulateEvent('pointerdown', 0, 0, false, 0);
+      simulateEvent('pointerdrag', -100, -100, false, 0);
+      simulateEvent('pointerup', -100, -100, false, 0);
+
+      expect(interaction.getExtent()).to.eql([-150, -150, -50, -50]);
     });
   });
 });

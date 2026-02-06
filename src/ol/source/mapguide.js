@@ -2,9 +2,9 @@
  * @module ol/source/mapguide
  */
 
-import {appendParams} from '../uri.js';
 import {decode} from '../Image.js';
 import {getCenter, getHeight, getWidth} from '../extent.js';
+import {appendParams} from '../uri.js';
 import {getRequestExtent} from './Image.js';
 
 /**
@@ -97,7 +97,6 @@ export function createLoader(options) {
   const ratio = options.ratio ?? 1;
   const crossOrigin = options.crossOrigin ?? null;
 
-  /** @type {import('../Image.js').ImageObjectPromiseLoader} */
   return function (extent, resolution, pixelRatio) {
     const image = new Image();
     image.crossOrigin = crossOrigin;

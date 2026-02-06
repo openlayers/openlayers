@@ -1,6 +1,7 @@
 /**
  * @module ol/reproj
  */
+import {createCanvasContext2D, releaseCanvas} from './dom.js';
 import {
   containsCoordinate,
   createEmpty,
@@ -11,14 +12,13 @@ import {
   getTopLeft,
   getWidth,
 } from './extent.js';
-import {createCanvasContext2D, releaseCanvas} from './dom.js';
-import {getPointResolution, transform} from './proj.js';
 import {solveLinearSystem} from './math.js';
+import {getPointResolution, transform} from './proj.js';
 
 let brokenDiagonalRendering_;
 
 /**
- * @type {Array<HTMLCanvasElement>}
+ * @type {Array<HTMLCanvasElement|OffscreenCanvas>}
  */
 export const canvasPool = [];
 
@@ -26,7 +26,7 @@ export const canvasPool = [];
  * This draws a small triangle into a canvas by setting the triangle as the clip region
  * and then drawing a (too large) rectangle
  *
- * @param {CanvasRenderingContext2D} ctx The context in which to draw the triangle
+ * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} ctx The context in which to draw the triangle
  * @param {number} u1 The x-coordinate of the second point. The first point is 0,0.
  * @param {number} v1 The y-coordinate of the second point.
  * @param {number} u2 The x-coordinate of the third point.
@@ -207,7 +207,7 @@ export function calculateSourceExtentResolution(
  * @param {boolean} [interpolate] Use linear interpolation when resampling.
  * @param {boolean} [drawSingle] Draw single source images directly without stitchContext.
  * @param {boolean} [clipExtent] Clip stitchContext to sourceExtent.
- * @return {HTMLCanvasElement} Canvas with reprojected data.
+ * @return {HTMLCanvasElement|OffscreenCanvas} Canvas with reprojected data.
  */
 export function render(
   width,

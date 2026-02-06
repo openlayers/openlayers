@@ -1,6 +1,6 @@
 import {WebGLWorkerMessageType} from '../../../../../src/ol/render/webgl/constants.js';
-import {create} from '../../../../../src/ol/worker/webgl.js';
 import {create as createTransform} from '../../../../../src/ol/transform.js';
+import {create} from '../../../../../src/ol/worker/webgl.js';
 
 describe('ol/worker/webgl', () => {
   let worker;
@@ -51,15 +51,16 @@ describe('ol/worker/webgl', () => {
         expect(responseData.testString).to.be('abcd');
       });
       it('responds with buffer data', () => {
-        const indices = Array.from(new Uint32Array(responseData.indexBuffer));
+        const indices = Array.from(new Uint32Array(responseData.indicesBuffer));
         const vertices = Array.from(
-          new Float32Array(responseData.vertexBuffer),
+          new Float32Array(responseData.vertexAttributesBuffer),
         );
-        expect(indices).to.eql([0, 1, 3, 1, 2, 3, 4, 5, 7, 5, 6, 7]);
-        expect(vertices).to.eql([
-          0, 10, 0, 111, 0, 10, 1, 111, 0, 10, 2, 111, 0, 10, 3, 111, 20, 30, 0,
-          222, 20, 30, 1, 222, 20, 30, 2, 222, 20, 30, 3, 222,
-        ]);
+        const instanceAttrs = Array.from(
+          new Float32Array(responseData.instanceAttributesBuffer),
+        );
+        expect(indices).to.eql([0, 1, 3, 1, 2, 3]);
+        expect(vertices).to.eql([-1, -1, 1, -1, 1, 1, -1, 1]);
+        expect(instanceAttrs).to.eql([0, 10, 111, 20, 30, 222]);
       });
     });
 
@@ -67,6 +68,7 @@ describe('ol/worker/webgl', () => {
       let responseData;
       let indices;
       let vertices;
+      let instanceAttrs;
       beforeEach((done) => {
         const renderInstructions = Float32Array.from([
           111, 4, 20, 30, -1, 40, 50, -2, 6, 7, -3, 80, 90, -4,
@@ -88,8 +90,13 @@ describe('ol/worker/webgl', () => {
         worker.addEventListener('message', (event) => {
           if (event.data.id === id) {
             responseData = event.data;
-            indices = Array.from(new Uint32Array(responseData.indexBuffer));
-            vertices = Array.from(new Float32Array(responseData.vertexBuffer));
+            indices = Array.from(new Uint32Array(responseData.indicesBuffer));
+            vertices = Array.from(
+              new Float32Array(responseData.vertexAttributesBuffer),
+            );
+            instanceAttrs = Array.from(
+              new Float32Array(responseData.instanceAttributesBuffer),
+            );
             done();
           }
         });
@@ -103,22 +110,21 @@ describe('ol/worker/webgl', () => {
         expect(responseData.testString).to.be('abcd');
       });
       it('responds with buffer data', () => {
-        expect(indices).to.eql([
-          0, 1, 2, 1, 3, 2, 4, 5, 6, 5, 7, 6, 8, 9, 10, 9, 11, 10,
-        ]);
-        expect(vertices.length).to.eql(132); // 3 segments, 4 vertices each, 10 attributes each + 1 custom attr
+        expect(indices).to.eql([0, 1, 3, 1, 2, 3]);
+        expect(vertices).to.eql([-1, -1, 1, -1, 1, 1, -1, 1]);
+        expect(instanceAttrs.length).to.eql(36); // 3 segments, 11 attributes each + 1 custom attr
       });
       it('computes join angles for an open line', () => {
         // join angles for first and last segments; the line is not a loop so it starts and ends with -1 angles
-        expect(vertices.slice(6, 8)).to.eql([-1, 0.11635516583919525]);
-        expect(vertices.slice(6 + 88, 8 + 88)).to.eql([
+        expect(instanceAttrs.slice(6, 8)).to.eql([-1, 0.11635516583919525]);
+        expect(instanceAttrs.slice(6 + 24, 8 + 24)).to.eql([
           0.05909299477934837, -1,
         ]);
       });
       it('computes the base length for each segment', () => {
-        expect(vertices[8]).to.eql(0);
-        expect(vertices[8 + 44]).to.eql(28.284271240234375);
-        expect(vertices[8 + 88]).to.eql(83.1021499633789);
+        expect(instanceAttrs[8]).to.eql(0);
+        expect(instanceAttrs[8 + 12]).to.eql(28.284271240234375);
+        expect(instanceAttrs[8 + 24]).to.eql(83.1021499633789);
       });
 
       describe('closed line', () => {
@@ -144,7 +150,10 @@ describe('ol/worker/webgl', () => {
             if (event.data.id === id) {
               responseData = event.data;
               vertices = Array.from(
-                new Float32Array(responseData.vertexBuffer),
+                new Float32Array(responseData.vertexAttributesBuffer),
+              );
+              instanceAttrs = Array.from(
+                new Float32Array(responseData.instanceAttributesBuffer),
               );
               done();
             }
@@ -152,10 +161,10 @@ describe('ol/worker/webgl', () => {
         });
         it('computes join angles for a closed loop', () => {
           // the sum of the first and last join angle should be 2PI
-          expect(vertices.slice(6, 8)).to.eql([
+          expect(instanceAttrs.slice(6, 8)).to.eql([
             3.380202054977417, 0.11635516583919525,
           ]);
-          expect(vertices.slice(6 + 88, 8 + 88)).to.eql([
+          expect(instanceAttrs.slice(6 + 24, 8 + 24)).to.eql([
             6.16093111038208, 2.9029834270477295,
           ]);
         });
@@ -197,12 +206,16 @@ describe('ol/worker/webgl', () => {
         expect(responseData.testString).to.be('abcd');
       });
       it('responds with buffer data', () => {
-        const indices = Array.from(new Uint32Array(responseData.indexBuffer));
+        const indices = Array.from(new Uint32Array(responseData.indicesBuffer));
         const vertices = Array.from(
-          new Float32Array(responseData.vertexBuffer),
+          new Float32Array(responseData.vertexAttributesBuffer),
+        );
+        const instanceAttrs = Array.from(
+          new Float32Array(responseData.instanceAttributesBuffer),
         );
         expect(indices).to.have.length(27);
         expect(vertices).to.have.length(33);
+        expect(instanceAttrs).to.eql([]); // no instance attributes for polygons
       });
     });
   });

@@ -2,7 +2,12 @@
  * @module ol/format/Feature
  */
 import Feature from '../Feature.js';
-import RenderFeature from '../render/Feature.js';
+import {
+  linearRingsAreOriented,
+  linearRingssAreOriented,
+  orientLinearRings,
+  orientLinearRingsArray,
+} from '../geom/flat/orient.js';
 import {
   GeometryCollection,
   LineString,
@@ -12,19 +17,14 @@ import {
   Point,
   Polygon,
 } from '../geom.js';
-import {abstract} from '../util.js';
 import {
   equivalent as equivalentProjection,
   get as getProjection,
   getTransform,
   transformExtent,
 } from '../proj.js';
-import {
-  linearRingsAreOriented,
-  linearRingssAreOriented,
-  orientLinearRings,
-  orientLinearRingsArray,
-} from '../geom/flat/orient.js';
+import RenderFeature from '../render/Feature.js';
+import {abstract} from '../util.js';
 
 /**
  * @typedef {Object} ReadOptions
@@ -445,7 +445,7 @@ export function createGeometry(object, options) {
   }
   const Geometry = GeometryConstructor[object.type];
   return transformGeometryWithOptions(
-    new Geometry(object.flatCoordinates, object.layout, object.ends),
+    new Geometry(object.flatCoordinates, object.layout || 'XY', object.ends),
     false,
     options,
   );

@@ -1,10 +1,10 @@
 /**
  * @module ol/layer/VectorTile
  */
-import BaseVectorLayer from './BaseVector.js';
-import CanvasVectorTileLayerRenderer from '../renderer/canvas/VectorTileLayer.js';
-import TileProperty from './TileProperty.js';
 import {assert} from '../asserts.js';
+import CanvasVectorTileLayerRenderer from '../renderer/canvas/VectorTileLayer.js';
+import BaseVectorLayer from './BaseVector.js';
+import TileProperty from './TileProperty.js';
 
 /***
  * @template Return
@@ -55,10 +55,10 @@ import {assert} from '../asserts.js';
  * the largest possible buffer of the used tiles. It should be at least the size of the largest
  * point symbol or line width.
  * @property {VectorTileRenderType} [renderMode='hybrid'] Render mode for vector tiles:
- *  * `'hybrid'`: Polygon and line elements are rendered as images, so pixels are scaled during zoom
+ *  `'hybrid'`: Polygon and line elements are rendered as images, so pixels are scaled during zoom
  *    animations. Point symbols and texts are accurately rendered as vectors and can stay upright on
  *    rotated views, but get lifted above all polygon and line elements.
- *  * `'vector'`: Everything is rendered as vectors and the original render order is maintained. Use
+ *  `'vector'`: Everything is rendered as vectors and the original render order is maintained. Use
  *    this mode for improved performance and visual epxerience on vector tile layers with not too many
  *    rendered features (e.g. for highlighting a subset of features of another layer with the same
  *    source).
@@ -72,7 +72,8 @@ import {assert} from '../asserts.js';
  * same `declutter` value will be decluttered together. The priority is determined by the drawing order of the
  * layers with the same `declutter` value. Higher in the layer stack means higher priority. To declutter distinct
  * layers or groups of layers separately, use different truthy values for `declutter`.
- * @property {import("../style/Style.js").StyleLike|null} [style] Layer style. When set to `null`, only
+ * @property {import("../style/Style.js").StyleLike|import("../style/flat.js").FlatStyleLike|null} [style] Layer
+ * style. When set to `null`, only
  * features that have their own style will be rendered. See {@link module:ol/style/Style~Style} for the default style
  * which will be used if this is not set.
  * @property {import("./Base.js").BackgroundColor} [background] Background color for the layer. If not specified, no

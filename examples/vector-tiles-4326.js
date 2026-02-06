@@ -1,7 +1,8 @@
+import {applyBackground, applyStyle} from 'ol-mapbox-style';
+import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
 import VectorTileLayer from '../src/ol/layer/VectorTile.js';
 import VectorTileSource from '../src/ol/source/VectorTile.js';
-import {Map, View} from '../src/ol/index.js';
-import {applyBackground, applyStyle} from 'ol-mapbox-style';
 import {createXYZ} from '../src/ol/tilegrid.js';
 
 const key = 'get_your_own_D6rA4zTHduk6KOKTXzGB';

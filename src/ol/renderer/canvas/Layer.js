@@ -1,20 +1,9 @@
 /**
  * @module ol/renderer/canvas/Layer
  */
-import LayerRenderer from '../Layer.js';
-import RenderEvent from '../../render/Event.js';
-import RenderEventType from '../../render/EventType.js';
-import ZIndexContext from '../../render/canvas/ZIndexContext.js';
-import {
-  apply as applyTransform,
-  compose as composeTransform,
-  create as createTransform,
-  makeInverse,
-  toString as toTransformString,
-} from '../../transform.js';
-import {asArray} from '../../color.js';
-import {createCanvasContext2D} from '../../dom.js';
 import {equals} from '../../array.js';
+import {asArray} from '../../color.js';
+import {createCanvasContext2D, createMockDiv, isCanvas} from '../../dom.js';
 import {
   getBottomLeft,
   getBottomRight,
@@ -23,14 +12,27 @@ import {
   getTopRight,
   getWidth,
 } from '../../extent.js';
+import {WORKER_OFFSCREEN_CANVAS} from '../../has.js';
+import RenderEvent from '../../render/Event.js';
+import RenderEventType from '../../render/EventType.js';
+import ZIndexContext from '../../render/canvas/ZIndexContext.js';
+import {
+  apply as applyTransform,
+  compose as composeTransform,
+  create as createTransform,
+  equivalent,
+  makeInverse,
+  toString as toTransformString,
+} from '../../transform.js';
+import LayerRenderer from '../Layer.js';
 
 /**
- * @type {Array<HTMLCanvasElement>}
+ * @type {Array<HTMLCanvasElement|OffscreenCanvas>}
  */
 export const canvasPool = [];
 
 /**
- * @type {CanvasRenderingContext2D}
+ * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D}
  */
 let pixelContext = null;
 
@@ -53,6 +55,7 @@ class CanvasLayerRenderer extends LayerRenderer {
     super(layer);
 
     /**
+     * HTMLElement container for the layer to be rendered in.
      * @protected
      * @type {HTMLElement}
      */
@@ -89,7 +92,7 @@ class CanvasLayerRenderer extends LayerRenderer {
     this.inversePixelTransform = createTransform();
 
     /**
-     * @type {CanvasRenderingContext2D}
+     * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D}
      */
     this.context = null;
 
@@ -100,6 +103,7 @@ class CanvasLayerRenderer extends LayerRenderer {
     this.deferredContext_ = null;
 
     /**
+     * true if the container has been reused from the previous renderer
      * @type {boolean}
      */
     this.containerReused = false;
@@ -127,7 +131,7 @@ class CanvasLayerRenderer extends LayerRenderer {
     try {
       pixelContext.drawImage(image, col, row, 1, 1, 0, 0, 1, 1);
       data = pixelContext.getImageData(0, 0, 1, 1).data;
-    } catch (err) {
+    } catch {
       pixelContext = null;
       return null;
     }
@@ -150,10 +154,11 @@ class CanvasLayerRenderer extends LayerRenderer {
   /**
    * Get a rendering container from an existing target, if compatible.
    * @param {HTMLElement} target Potential render target.
-   * @param {string} transform CSS Transform.
+   * @param {string} transform CSS transform matrix.
    * @param {string} [backgroundColor] Background color.
    */
   useContainer(target, transform, backgroundColor) {
+    // renderer canvas to target canvas
     const layerClassName = this.getLayer().getClassName();
     let container, context;
     if (
@@ -168,11 +173,11 @@ class CanvasLayerRenderer extends LayerRenderer {
           )))
     ) {
       const canvas = target.firstElementChild;
-      if (canvas instanceof HTMLCanvasElement) {
+      if (isCanvas(canvas)) {
         context = canvas.getContext('2d');
       }
     }
-    if (context && context.canvas.style.transform === transform) {
+    if (context && equivalent(context.canvas.style.transform, transform)) {
       // Container of the previous layer renderer can be used.
       this.container = target;
       this.context = context;
@@ -186,14 +191,16 @@ class CanvasLayerRenderer extends LayerRenderer {
       this.container.style.backgroundColor = null;
     }
     if (!this.container) {
-      container = document.createElement('div');
+      container = WORKER_OFFSCREEN_CANVAS
+        ? createMockDiv()
+        : document.createElement('div');
       container.className = layerClassName;
       let style = container.style;
       style.position = 'absolute';
       style.width = '100%';
       style.height = '100%';
       context = createCanvasContext2D();
-      const canvas = context.canvas;
+      const canvas = /** @type {HTMLCanvasElement} */ (context.canvas);
       container.appendChild(canvas);
       style = canvas.style;
       style.position = 'absolute';
@@ -212,7 +219,7 @@ class CanvasLayerRenderer extends LayerRenderer {
   }
 
   /**
-   * @param {CanvasRenderingContext2D} context Context.
+   * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @param {import("../../extent.js").Extent} extent Clip extent.
    * @protected
@@ -270,7 +277,6 @@ class CanvasLayerRenderer extends LayerRenderer {
 
     const canvasTransform = toTransformString(this.pixelTransform);
     this.useContainer(target, canvasTransform, this.getBackground(frameState));
-
     if (!this.containerReused) {
       const canvas = this.context.canvas;
       if (canvas.width != width || canvas.height != height) {
@@ -279,15 +285,19 @@ class CanvasLayerRenderer extends LayerRenderer {
       } else {
         this.context.clearRect(0, 0, width, height);
       }
-      if (canvasTransform !== canvas.style.transform) {
-        canvas.style.transform = canvasTransform;
+      if (
+        canvasTransform !==
+        /** @type {HTMLCanvasElement} */ (canvas).style.transform
+      ) {
+        /** @type {HTMLCanvasElement} */ (canvas).style.transform =
+          canvasTransform;
       }
     }
   }
 
   /**
    * @param {import("../../render/EventType.js").default} type Event type.
-   * @param {CanvasRenderingContext2D} context Context.
+   * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @private
    */
@@ -305,7 +315,7 @@ class CanvasLayerRenderer extends LayerRenderer {
   }
 
   /**
-   * @param {CanvasRenderingContext2D} context Context.
+   * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @protected
    */
@@ -318,7 +328,7 @@ class CanvasLayerRenderer extends LayerRenderer {
   }
 
   /**
-   * @param {CanvasRenderingContext2D} context Context.
+   * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @protected
    */

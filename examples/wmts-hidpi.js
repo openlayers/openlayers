@@ -1,11 +1,12 @@
 import Map from '../src/ol/Map.js';
-import TileLayer from '../src/ol/layer/Tile.js';
 import View from '../src/ol/View.js';
-import WMTS, {optionsFromCapabilities} from '../src/ol/source/WMTS.js';
 import WMTSCapabilities from '../src/ol/format/WMTSCapabilities.js';
 import {DEVICE_PIXEL_RATIO} from '../src/ol/has.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import WMTS, {optionsFromCapabilities} from '../src/ol/source/WMTS.js';
 
-const capabilitiesUrl = 'https://basemap.at/wmts/1.0.0/WMTSCapabilities.xml';
+const capabilitiesUrl =
+  'https://mapsneu.wien.gv.at/basemapneu/1.0.0/WMTSCapabilities.xml';
 
 // HiDPI support:
 // * Use 'bmaphidpi' layer (pixel ratio 2) for device pixel ratio > 1

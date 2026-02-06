@@ -2,20 +2,21 @@
  * @module ol/source/DataTile
  */
 import DataTile from '../DataTile.js';
-import EventType from '../events/EventType.js';
-import ReprojDataTile from '../reproj/DataTile.js';
-import TileEventType from './TileEventType.js';
-import TileSource, {TileSourceEvent} from './Tile.js';
 import TileState from '../TileState.js';
+import EventType from '../events/EventType.js';
+import {toPromise} from '../functions.js';
+import {equivalent, get as getProjection} from '../proj.js';
+import ReprojDataTile from '../reproj/DataTile.js';
+import {toSize} from '../size.js';
+import {getCacheKey} from '../tilecoord.js';
 import {
   createXYZ,
   extentFromProjection,
   getForProjection as getTileGridForProjection,
 } from '../tilegrid.js';
-import {equivalent, get as getProjection} from '../proj.js';
 import {getUid} from '../util.js';
-import {toPromise} from '../functions.js';
-import {toSize} from '../size.js';
+import TileSource, {TileSourceEvent} from './Tile.js';
+import TileEventType from './TileEventType.js';
 
 /**
  * @typedef {'anonymous'|'use-credentials'} CrossOriginAttribute
@@ -159,8 +160,7 @@ class DataTileSource extends TileSource {
     this.crossOrigin_ = options.crossOrigin || 'anonymous';
 
     /**
-     * @protected
-     * @type {import("../transform.js").Transform}
+     * @type {import("../transform.js").Transform|null}
      */
     this.transformMatrix = null;
   }
@@ -224,9 +224,10 @@ class DataTileSource extends TileSource {
    * @param {number} y Tile coordinate y.
    * @param {import("../proj/Projection.js").default} targetProj The output projection.
    * @param {import("../proj/Projection.js").default} sourceProj The input projection.
+   * @param {import("../structs/LRUCache.js").default<import("../Tile.js").default>} [tileCache] Tile cache.
    * @return {!TileType} Tile.
    */
-  getReprojTile_(z, x, y, targetProj, sourceProj) {
+  getReprojTile_(z, x, y, targetProj, sourceProj, tileCache) {
     const sourceTileGrid =
       this.tileGrid || this.getTileGridForProjection(sourceProj || targetProj);
     const reprojTilePixelRatio = Math.max.apply(
@@ -259,7 +260,7 @@ class DataTileSource extends TileSource {
         pixelRatio: reprojTilePixelRatio,
         gutter: this.gutter_,
         getTileFunction: (z, x, y, pixelRatio) =>
-          this.getTile(z, x, y, pixelRatio),
+          this.getTile(z, x, y, pixelRatio, undefined, tileCache),
         transformMatrix: this.transformMatrix,
       },
       /** @type {import("../reproj/DataTile.js").Options} */ (this.tileOptions),
@@ -277,17 +278,25 @@ class DataTileSource extends TileSource {
    * @param {number} y Tile coordinate y.
    * @param {number} pixelRatio Pixel ratio.
    * @param {import("../proj/Projection.js").default} [projection] Projection.
+   * @param {import("../structs/LRUCache.js").default<import("../Tile.js").default>} [tileCache] Tile cache.
    * @return {TileType|null} Tile (or null if outside source extent).
    * @override
    */
-  getTile(z, x, y, pixelRatio, projection) {
+  getTile(z, x, y, pixelRatio, projection, tileCache) {
     const sourceProjection = this.getProjection();
     if (
       projection &&
       ((sourceProjection && !equivalent(sourceProjection, projection)) ||
         this.transformMatrix)
     ) {
-      return this.getReprojTile_(z, x, y, projection, sourceProjection);
+      return this.getReprojTile_(
+        z,
+        x,
+        y,
+        projection,
+        sourceProjection,
+        tileCache,
+      );
     }
 
     const size = this.getTileSize(z);
@@ -307,6 +316,12 @@ class DataTileSource extends TileSource {
     const tileCoord = this.getTileCoordForTileUrlFunction([z, x, y]);
     if (!tileCoord) {
       return null;
+    }
+
+    const key = this.getKey();
+    const cacheKey = getCacheKey(this, key, z, x, y);
+    if (tileCache && tileCache.containsKey(cacheKey)) {
+      return /** @type {TileType} */ (tileCache.get(cacheKey));
     }
 
     const requestZ = tileCoord[0];
@@ -341,6 +356,7 @@ class DataTileSource extends TileSource {
     tile.key = this.getKey();
     tile.addEventListener(EventType.CHANGE, this.handleTileChange_);
 
+    tileCache?.set(cacheKey, tile);
     return tile;
   }
 

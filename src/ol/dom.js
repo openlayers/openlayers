@@ -9,9 +9,9 @@ import {WORKER_OFFSCREEN_CANVAS} from './has.js';
  * Create an html canvas element and returns its 2d context.
  * @param {number} [width] Canvas width.
  * @param {number} [height] Canvas height.
- * @param {Array<HTMLCanvasElement>} [canvasPool] Canvas pool to take existing canvas from.
+ * @param {Array<HTMLCanvasElement|OffscreenCanvas>} [canvasPool] Canvas pool to take existing canvas from.
  * @param {CanvasRenderingContext2DSettings} [settings] CanvasRenderingContext2DSettings
- * @return {CanvasRenderingContext2D} The context.
+ * @return {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} The context.
  */
 export function createCanvasContext2D(width, height, canvasPool, settings) {
   /** @type {HTMLCanvasElement|OffscreenCanvas} */
@@ -19,7 +19,9 @@ export function createCanvasContext2D(width, height, canvasPool, settings) {
   if (canvasPool && canvasPool.length) {
     canvas = /** @type {HTMLCanvasElement} */ (canvasPool.shift());
   } else if (WORKER_OFFSCREEN_CANVAS) {
-    canvas = new OffscreenCanvas(width || 300, height || 300);
+    canvas = new (class extends OffscreenCanvas {
+      style = {};
+    })(width ?? 300, height ?? 150);
   } else {
     canvas = document.createElement('canvas');
   }
@@ -29,17 +31,18 @@ export function createCanvasContext2D(width, height, canvasPool, settings) {
   if (height) {
     canvas.height = height;
   }
-  //FIXME Allow OffscreenCanvasRenderingContext2D as return type
-  return /** @type {CanvasRenderingContext2D} */ (
+  return /** @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} */ (
     canvas.getContext('2d', settings)
   );
 }
 
-/** @type {CanvasRenderingContext2D} */
+/**
+ * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D}
+ */
 let sharedCanvasContext;
 
 /**
- * @return {CanvasRenderingContext2D} Shared canvas context.
+ * @return {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} Shared canvas context.
  */
 export function getSharedCanvasContext2D() {
   if (!sharedCanvasContext) {
@@ -51,7 +54,7 @@ export function getSharedCanvasContext2D() {
 /**
  * Releases canvas memory to avoid exceeding memory limits in Safari.
  * See https://pqina.nl/blog/total-canvas-memory-use-exceeds-the-maximum-limit/
- * @param {CanvasRenderingContext2D} context Context.
+ * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
  */
 export function releaseCanvas(context) {
   const canvas = context.canvas;
@@ -151,4 +154,79 @@ export function replaceChildren(node, children) {
     // reorder
     node.insertBefore(newChild, oldChild);
   }
+}
+
+/**
+ * Creates a minimal structure that mocks a DIV to be used by the composite and
+ * layer renderer in a worker environment
+ * @return {HTMLDivElement} mocked DIV
+ */
+export function createMockDiv() {
+  const mockedDiv = new Proxy(
+    {
+      /**
+       * @type {Array<HTMLElement>}
+       */
+      childNodes: [],
+      /**
+       * @param {HTMLElement} node html node.
+       * @return {HTMLElement} html node.
+       */
+      appendChild: function (node) {
+        this.childNodes.push(node);
+        return node;
+      },
+      /**
+       * dummy function, as this structure is not supposed to have a parent.
+       */
+      remove: function () {},
+      /**
+       * @param {HTMLElement} node html node.
+       * @return {HTMLElement} html node.
+       */
+      removeChild: function (node) {
+        const index = this.childNodes.indexOf(node);
+        if (index === -1) {
+          throw new Error('Node to remove was not found');
+        }
+        this.childNodes.splice(index, 1);
+        return node;
+      },
+      /**
+       * @param {HTMLElement} newNode new html node.
+       * @param {HTMLElement} referenceNode reference html node.
+       * @return {HTMLElement} new html node.
+       */
+      insertBefore: function (newNode, referenceNode) {
+        const index = this.childNodes.indexOf(referenceNode);
+        if (index === -1) {
+          throw new Error('Reference node not found');
+        }
+        this.childNodes.splice(index, 0, newNode);
+        return newNode;
+      },
+      style: {},
+    },
+    {
+      get(target, prop, receiver) {
+        if (prop === 'firstElementChild') {
+          return target.childNodes.length > 0 ? target.childNodes[0] : null;
+        }
+        return Reflect.get(target, prop, receiver);
+      },
+    },
+  );
+  return /** @type {HTMLDivElement} */ (/** @type {*} */ (mockedDiv));
+}
+
+/***
+ * @param {*} obj The object to check.
+ * @return {obj is (HTMLCanvasElement | OffscreenCanvas)} The object is a canvas.
+ */
+export function isCanvas(obj) {
+  return (
+    (typeof HTMLCanvasElement !== 'undefined' &&
+      obj instanceof HTMLCanvasElement) ||
+    (typeof OffscreenCanvas !== 'undefined' && obj instanceof OffscreenCanvas)
+  );
 }

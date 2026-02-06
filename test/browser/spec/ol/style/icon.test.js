@@ -1,10 +1,10 @@
+import ImageState from '../../../../../src/ol/ImageState.js';
 import Icon from '../../../../../src/ol/style/Icon.js';
 import IconImage, {
   get as getIconImage,
 } from '../../../../../src/ol/style/IconImage.js';
-import ImageState from '../../../../../src/ol/ImageState.js';
-import {getUid} from '../../../../../src/ol/util.js';
 import {shared as iconImageCache} from '../../../../../src/ol/style/IconImageCache.js';
+import {getUid} from '../../../../../src/ol/util.js';
 
 describe('ol.style.Icon', function () {
   const size = [36, 48];
@@ -179,6 +179,33 @@ describe('ol.style.Icon', function () {
       expect(original.getWidth()).to.eql(clone.getWidth());
       expect(original.getHeight()).to.eql(clone.getHeight());
       expect(original.getScale()).to.eql(clone.getScale());
+    });
+  });
+
+  describe('#setSrc', function () {
+    const newSrc = 'spec/ol/data/dot.png';
+
+    it('changes the source of the icon (by changing the whole image)', function () {
+      const icon = new Icon({
+        src,
+      });
+      const oldIconImage = icon.iconImage_;
+      icon.setSrc(newSrc);
+      expect(icon.getSrc()).to.be(newSrc);
+      expect(icon.iconImage_).to.not.be(oldIconImage);
+    });
+
+    it('loads the new image', function (done) {
+      const icon = new Icon({
+        src,
+      });
+      icon.setSrc(newSrc);
+      expect(icon.getImageState()).to.be(ImageState.IDLE);
+      icon.load();
+      icon.listenImageChange(() => {
+        expect(icon.getImageState()).to.be(ImageState.LOADED);
+        done();
+      });
     });
   });
 

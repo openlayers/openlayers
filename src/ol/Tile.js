@@ -1,11 +1,11 @@
 /**
  * @module ol/Tile
  */
-import EventTarget from './events/Target.js';
-import EventType from './events/EventType.js';
 import TileState from './TileState.js';
-import {abstract} from './util.js';
 import {easeIn} from './easing.js';
+import EventType from './events/EventType.js';
+import EventTarget from './events/Target.js';
+import {abstract} from './util.js';
 
 /**
  * A function that takes a {@link module:ol/Tile~Tile} for the tile and a
@@ -136,10 +136,8 @@ class Tile extends EventTarget {
    * Called by the tile cache when the tile is removed from the cache due to expiry
    */
   release() {
-    if (this.state === TileState.ERROR) {
-      // to remove the `change` listener on this tile in `ol/TileQueue#handleTileChange`
-      this.setState(TileState.EMPTY);
-    }
+    // to remove the `change` listener on this tile in `ol/TileQueue#handleTileChange`
+    this.setState(TileState.EMPTY);
   }
 
   /**
@@ -174,6 +172,10 @@ class Tile extends EventTarget {
    * @api
    */
   setState(state) {
+    if (this.state === TileState.EMPTY) {
+      // no more state changes
+      return;
+    }
     if (this.state !== TileState.ERROR && this.state > state) {
       throw new Error('Tile load sequence violation');
     }

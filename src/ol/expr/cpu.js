@@ -2,15 +2,14 @@
  * @module ol/expr/cpu
  */
 
-import {ColorType, LiteralExpression, Ops, parse} from './expression.js';
 import {
   fromString,
   lchaToRgba,
-  normalize,
   rgbaToLcha,
   toString,
   withAlpha,
 } from '../color.js';
+import {ColorType, LiteralExpression, Ops, parse} from './expression.js';
 
 /**
  * @fileoverview This module includes functions to build expressions for evaluation on the CPU.
@@ -503,7 +502,7 @@ function compileMatchExpression(expression, context) {
   }
   return (context) => {
     const value = args[0](context);
-    for (let i = 1; i < length; i += 2) {
+    for (let i = 1; i < length - 1; i += 2) {
       if (value === args[i](context)) {
         return args[i + 1](context);
       }
@@ -646,5 +645,5 @@ function interpolateColor(base, value, input1, rgba1, input2, rgba2) {
     lcha1[2] + interpolateNumber(base, value, input1, 0, input2, deltaHue),
     interpolateNumber(base, value, input1, rgba1[3], input2, rgba2[3]),
   ];
-  return normalize(lchaToRgba(lcha));
+  return lchaToRgba(lcha);
 }

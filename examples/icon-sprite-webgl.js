@@ -1,12 +1,12 @@
 import Feature from '../src/ol/Feature.js';
-import ImageTile from '../src/ol/source/ImageTile.js';
 import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
 import Point from '../src/ol/geom/Point.js';
 import TileLayer from '../src/ol/layer/WebGLTile.js';
-import VectorSource from '../src/ol/source/Vector.js';
-import View from '../src/ol/View.js';
-import WebGLPointsLayer from '../src/ol/layer/WebGLPoints.js';
+import WebGLVectorLayer from '../src/ol/layer/WebGLVector.js';
 import {fromLonLat} from '../src/ol/proj.js';
+import ImageTile from '../src/ol/source/ImageTile.js';
+import VectorSource from '../src/ol/source/Vector.js';
 
 const key = 'get_your_own_D6rA4zTHduk6KOKTXzGB';
 const attributions =
@@ -34,14 +34,6 @@ const oldColor = [255, 160, 110];
 const newColor = [180, 255, 200];
 
 const style = {
-  variables: {
-    filterShape: 'all',
-  },
-  filter: [
-    'any',
-    ['==', ['var', 'filterShape'], 'all'],
-    ['==', ['var', 'filterShape'], ['get', 'shape']],
-  ],
   'icon-src': 'data/ufo_shapes.png',
   'icon-width': 128,
   'icon-height': 64,
@@ -77,9 +69,29 @@ const style = {
   'icon-scale': 0.5,
 };
 
+const pointsLayer = new WebGLVectorLayer({
+  variables: {
+    filterShape: 'all',
+  },
+  source: new VectorSource({
+    features: [],
+    attributions: 'National UFO Reporting Center',
+  }),
+  style: [
+    {
+      style,
+      filter: [
+        'any',
+        ['==', ['var', 'filterShape'], 'all'],
+        ['==', ['var', 'filterShape'], ['get', 'shape']],
+      ],
+    },
+  ],
+});
+
 const shapeSelect = document.getElementById('shape-filter');
 shapeSelect.addEventListener('input', function () {
-  style.variables.filterShape = shapeSelect.value;
+  pointsLayer.updateStyleVariables({filterShape: shapeSelect.value});
   map.render();
 });
 function fillShapeSelect(shapeTypes) {
@@ -127,15 +139,8 @@ client.addEventListener('load', function () {
     );
   }
   shapeTypes['all'] = features.length;
-  map.addLayer(
-    new WebGLPointsLayer({
-      source: new VectorSource({
-        features: features,
-        attributions: 'National UFO Reporting Center',
-      }),
-      style: style,
-    }),
-  );
+  pointsLayer.getSource().addFeatures(features);
+  map.addLayer(pointsLayer);
   fillShapeSelect(shapeTypes);
 });
 client.send();

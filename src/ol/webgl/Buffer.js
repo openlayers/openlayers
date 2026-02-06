@@ -1,6 +1,7 @@
 /**
  * @module ol/webgl/Buffer
  */
+import {assert} from '../asserts.js';
 import {
   ARRAY_BUFFER,
   DYNAMIC_DRAW,
@@ -8,7 +9,6 @@ import {
   STATIC_DRAW,
   STREAM_DRAW,
 } from '../webgl.js';
-import {assert} from '../asserts.js';
 
 /**
  * Used to describe the intended usage for the data: `STATIC_DRAW`, `STREAM_DRAW`
@@ -28,9 +28,9 @@ export const BufferUsage = {
  * the buffer type (ARRAY_BUFFER or ELEMENT_ARRAY_BUFFER) and available extensions.
  *
  * To populate the array, you can either use:
- * * A size using `#ofSize(buffer)`
- * * An `ArrayBuffer` object using `#fromArrayBuffer(buffer)`
- * * A plain array using `#fromArray(array)`
+ * A size using `#ofSize(buffer)`
+ * An `ArrayBuffer` object using `#fromArrayBuffer(buffer)`
+ * A plain array using `#fromArray(array)`
  *
  * Note:
  * See the documentation of [WebGLRenderingContext.bufferData](https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext/bufferData)

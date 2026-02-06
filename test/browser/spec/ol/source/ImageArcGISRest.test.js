@@ -1,9 +1,9 @@
-import ImageArcGISRest from '../../../../../src/ol/source/ImageArcGISRest.js';
-import ImageLayer from '../../../../../src/ol/layer/Image.js';
 import ImageState from '../../../../../src/ol/ImageState.js';
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
+import ImageLayer from '../../../../../src/ol/layer/Image.js';
 import {get as getProjection} from '../../../../../src/ol/proj.js';
+import ImageArcGISRest from '../../../../../src/ol/source/ImageArcGISRest.js';
 
 describe('ol/source/ImageArcGISRest', function () {
   let pixelRatio, options, projection, proj3857, resolution;
@@ -200,6 +200,19 @@ describe('ol/source/ImageArcGISRest', function () {
           done();
         });
       });
+    });
+  });
+
+  describe('#setParams', function () {
+    it('allows params to be set', function () {
+      const before = {test: 'before', foo: 'bar'};
+      const source = new ImageArcGISRest({params: before});
+      source.setParams({test: 'after'});
+
+      const params = source.getParams();
+      expect(params).to.eql({test: 'after'});
+
+      expect(before).to.eql({test: 'before', foo: 'bar'});
     });
   });
 

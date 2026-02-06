@@ -1,8 +1,9 @@
+import proj4 from 'proj4';
 import Map from '../../../../src/ol/Map.js';
 import TileLayer from '../../../../src/ol/layer/WebGLTile.js';
-import proj4 from 'proj4';
-import {GeoTIFF, TileDebug} from '../../../../src/ol/source.js';
 import {register} from '../../../../src/ol/proj/proj4.js';
+import GeoTIFF from '../../../../src/ol/source/GeoTIFF.js';
+import TileDebug from '../../../../src/ol/source/TileDebug.js';
 
 proj4.defs(
   'EPSG:32759',

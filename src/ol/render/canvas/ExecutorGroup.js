@@ -2,16 +2,16 @@
  * @module ol/render/canvas/ExecutorGroup
  */
 
-import Executor from './Executor.js';
-import {ascending} from '../../array.js';
+import {ascending, descending} from '../../array.js';
+import {createCanvasContext2D} from '../../dom.js';
 import {buffer, createEmpty, extendCoordinate} from '../../extent.js';
+import {transform2D} from '../../geom/flat/transform.js';
+import {isEmpty} from '../../obj.js';
 import {
   compose as composeTransform,
   create as createTransform,
 } from '../../transform.js';
-import {createCanvasContext2D} from '../../dom.js';
-import {isEmpty} from '../../obj.js';
-import {transform2D} from '../../geom/flat/transform.js';
+import Executor from './Executor.js';
 
 /**
  * @const
@@ -39,6 +39,41 @@ export const DECLUTTER = ['Image', 'Text'];
 export const NON_DECLUTTER = ALL.filter(
   (builderType) => !DECLUTTER.includes(builderType),
 );
+
+/** @type {boolean|undefined} */
+let willReadFrequently = false;
+
+/** @type {boolean|undefined} */
+let canvasReadsBenchmarked = false;
+
+/** Determine if canvas read operations are faster with willReadFrequently set to true or false */
+function benchmarkCanvasReads() {
+  let bestResult = 0;
+  /**
+   * @param {boolean} willReadFrequently Will read frequently.
+   * @return {number} Operation count.
+   */
+  const measure = (willReadFrequently) => {
+    const context = createCanvasContext2D(1, 1, null, {willReadFrequently});
+    let count = 0;
+    const start = performance.now();
+    for (; performance.now() - start < 50; ++count) {
+      context.fillStyle = `rgba(255,0,${count % 256},1)`;
+      context.fillRect(0, 0, 1, 1);
+      context.getImageData(0, 0, 1, 1);
+    }
+    bestResult = count > bestResult ? count : bestResult;
+    return count;
+  };
+
+  const measures = {
+    [measure(true)]: true,
+    [measure(false)]: false,
+    [measure(undefined)]: undefined,
+  };
+  willReadFrequently = measures[bestResult];
+  canvasReadsBenchmarked = true;
+}
 
 class ExecutorGroup {
   /**
@@ -101,7 +136,7 @@ class ExecutorGroup {
 
     /**
      * @private
-     * @type {CanvasRenderingContext2D}
+     * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D}
      */
     this.hitDetectionContext_ = null;
 
@@ -113,7 +148,7 @@ class ExecutorGroup {
 
     /**
      * @private
-     * @type {CanvasRenderingContext2D}
+     * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D}
      */
     this.renderedContext_ = null;
 
@@ -127,7 +162,7 @@ class ExecutorGroup {
   }
 
   /**
-   * @param {CanvasRenderingContext2D} context Context.
+   * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
    * @param {import("../../transform.js").Transform} transform Transform.
    */
   clip(context, transform) {
@@ -201,6 +236,10 @@ class ExecutorGroup {
     callback,
     declutteredFeatures,
   ) {
+    if (canvasReadsBenchmarked === false) {
+      benchmarkCanvasReads();
+    }
+
     hitTolerance = Math.round(hitTolerance);
     const contextSize = hitTolerance * 2 + 1;
     const transform = composeTransform(
@@ -219,8 +258,8 @@ class ExecutorGroup {
       this.hitDetectionContext_ = createCanvasContext2D(
         contextSize,
         contextSize,
-        undefined,
-        {willReadFrequently: true},
+        null,
+        {willReadFrequently},
       );
     }
     const context = this.hitDetectionContext_;
@@ -235,9 +274,7 @@ class ExecutorGroup {
       context.clearRect(0, 0, contextSize, contextSize);
     }
 
-    /**
-     * @type {import("../../extent.js").Extent}
-     */
+    /** @type {import("../../extent.js").Extent|undefined} */
     let hitExtent;
     if (this.renderBuffer_ !== undefined) {
       hitExtent = createEmpty();
@@ -251,6 +288,7 @@ class ExecutorGroup {
 
     const indexes = getPixelIndexArray(hitTolerance);
 
+    /** @type {import("../canvas.js").BuilderType} */
     let builderType;
 
     /**
@@ -343,7 +381,7 @@ class ExecutorGroup {
   }
 
   /**
-   * @param {CanvasRenderingContext2D} targetContext Context.
+   * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} targetContext Context.
    * @param {import('../../size.js').Size} scaledCanvasSize Scale of the context.
    * @param {import("../../transform.js").Transform} transform Transform.
    * @param {number} viewRotation View rotation.
@@ -362,20 +400,15 @@ class ExecutorGroup {
     builderTypes,
     declutterTree,
   ) {
-    /** @type {Array<number>} */
     const zs = Object.keys(this.executorsByZIndex_).map(Number);
-    zs.sort(ascending);
+    zs.sort(declutterTree ? descending : ascending);
 
     builderTypes = builderTypes ? builderTypes : ALL;
     const maxBuilderTypes = ALL.length;
-    let i, ii, j, jj, replays;
-    if (declutterTree) {
-      zs.reverse();
-    }
-    for (i = 0, ii = zs.length; i < ii; ++i) {
+    for (let i = 0, ii = zs.length; i < ii; ++i) {
       const zIndexKey = zs[i].toString();
-      replays = this.executorsByZIndex_[zIndexKey];
-      for (j = 0, jj = builderTypes.length; j < jj; ++j) {
+      const replays = this.executorsByZIndex_[zIndexKey];
+      for (let j = 0, jj = builderTypes.length; j < jj; ++j) {
         const builderType = builderTypes[j];
         const replay = replays[builderType];
         if (replay !== undefined) {
@@ -424,7 +457,7 @@ class ExecutorGroup {
           }
           if (zIndexContext) {
             zIndexContext.offset();
-            const index = zs[i] * maxBuilderTypes + j;
+            const index = zs[i] * maxBuilderTypes + ALL.indexOf(builderType);
             if (!this.deferredZIndexContexts_[index]) {
               this.deferredZIndexContexts_[index] = [];
             }

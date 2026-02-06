@@ -2,9 +2,131 @@
 
 ### Next Release
 
+### 10.7.0
+
+#### Deprecation of ol/array's stableSort
+
+Sorting is guaranteed to be stable since [ECMAScript 2019](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort#sort_stability).
+```js
+// Before
+stableSort(arr, compareFnc);
+```
+```js
+// After
+arr.sort(compareFnc);
+```
+
+#### Deprecation of functions in ol/format/Polyline
+
+The following functions have been deprecated without replacement:
+- decodeDeltas
+- encodeDeltas
+- decodeFloats
+- encodeFloats
+
+### 10.4.0
+
+#### Deprecation of ol/layer/WebGLPoints
+
+Use `ol/layer/WebGLVector` instead. Besides rendering points it will also render lines and polygons.
+In most cases this is a drop-in replacement. To use filtering the style and filter have to be in a nested object.
+```js
+// Before
+new WebGLPointsLayer({
+  filter: ['between', ['get', 'year'], ['var', 'minYear'], ['var', 'maxYear']],
+  style: {
+    'circle-radius': 8,
+    'circle-fill-color': 'blue',
+  },
+  source: vectorSource,
+})
+
+// After
+new WebGLVectorLayer({
+  style: [{
+    filter: ['between', ['get', 'year'], ['var', 'minYear'], ['var', 'maxYear']],
+    style: {
+      'circle-radius': 8,
+      'circle-fill-color': 'blue',
+    },
+  }],
+  source: vectorSource,
+})
+```
+
+#### ol-mapbox-style compatibility
+
+This version of OpenLayers is only compatible with `ol-mapbox-style@12.4.0` or higher.
+
+#### Returning false from a one-time listener added with `once`
+
+Returning false from the listener function will now stop propagation, when the listener is added with `once`.
+Previously this only worked with the `on` method.
+
+#### The `filter` option for `WebGLPointsLayer` has changed
+
+The filter option for the `WebGLPointsLayer` must now be specified alongside other options instead of being part of the `style` object. Note that the `WebGLPointsLayer` is not part of the stable API and is subject to breaking changes between major releases.
+
+```js
+// Before
+new WebGLPointsLayer({
+  style: {
+    filter: ['between', ['get', 'year'], ['var', 'minYear'], ['var', 'maxYear']],
+    'circle-radius': 8,
+    'circle-fill-color': 'blue',
+  },
+  source: vectorSource,
+})
+
+// Now
+new WebGLPointsLayer({
+  filter: ['between', ['get', 'year'], ['var', 'minYear'], ['var', 'maxYear']],
+  style: {
+    'circle-radius': 8,
+    'circle-fill-color': 'blue',
+  },
+  source: vectorSource,
+})
+```
+
+### 10.3.0
+
 #### The `transform` function throws for unknown projections
 
 Previously, the `transform()` function from the `ol/proj` module would apply the identity transform if either the source or the destination projections were unrecognized. Now this function will throw an error if it cannot perform the transform. You can check whether a projection is registered by calling the `get()` function from `ol/proj` - this function returns `null` if the projection definition for a provided identifier is not known.
+
+#### The format of the style for `WebGLPointsLayer` has changed
+
+Such a layer would previously be created this way:
+```js
+// Before
+new WebGLPointsLayer({
+  style: {
+    // variables were part of the `style` object
+    variables: {
+      minYear: 1850,
+      maxYear: 2015,
+    },
+    filter: ['between', ['get', 'year'], ['var', 'minYear'], ['var', 'maxYear']],
+  },
+  source: vectorSource,
+})
+```
+
+From this release on, **variables are now set as a separate object** at the root of the options object:
+```js
+// Now
+new WebGLPointsLayer({
+  style: {
+    filter: ['between', ['get', 'year'], ['var', 'minYear'], ['var', 'maxYear']],
+  },
+  variables: {
+    minYear: 1850,
+    maxYear: 2015,
+  },
+  source: vectorSource,
+})
+```
 
 ### 10.2.0
 

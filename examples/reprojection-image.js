@@ -1,12 +1,13 @@
-import Map from '../src/ol/Map.js';
-import OSM from '../src/ol/source/OSM.js';
-import Static from '../src/ol/source/ImageStatic.js';
-import View from '../src/ol/View.js';
 import proj4 from 'proj4';
-import {Image as ImageLayer, Tile as TileLayer} from '../src/ol/layer.js';
+import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
 import {getCenter} from '../src/ol/extent.js';
+import ImageLayer from '../src/ol/layer/Image.js';
+import TileLayer from '../src/ol/layer/Tile.js';
 import {register} from '../src/ol/proj/proj4.js';
 import {transform} from '../src/ol/proj.js';
+import Static from '../src/ol/source/ImageStatic.js';
+import OSM from '../src/ol/source/OSM.js';
 
 proj4.defs(
   'EPSG:27700',

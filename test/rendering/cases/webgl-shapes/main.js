@@ -1,11 +1,10 @@
 import Feature from '../../../../src/ol/Feature.js';
-import Layer from '../../../../src/ol/layer/Layer.js';
 import Map from '../../../../src/ol/Map.js';
+import View from '../../../../src/ol/View.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import TileLayer from '../../../../src/ol/layer/Tile.js';
+import WebGLVectorLayer from '../../../../src/ol/layer/WebGLVector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
-import View from '../../../../src/ol/View.js';
-import WebGLVectorLayerRenderer from '../../../../src/ol/renderer/webgl/VectorLayer.js';
 import XYZ from '../../../../src/ol/source/XYZ.js';
 
 const blueStar = {
@@ -49,15 +48,7 @@ const scaledRotateWithView = {
 };
 const style = [blueStar, dataDriven, scaledRotated, scaledRotateWithView];
 
-class WebGLLayer extends Layer {
-  createRenderer() {
-    return new WebGLVectorLayerRenderer(this, {
-      style,
-    });
-  }
-}
-
-const vector = new WebGLLayer({
+const vector = new WebGLVectorLayer({
   source: new VectorSource({
     features: [
       new Feature({
@@ -66,6 +57,7 @@ const vector = new WebGLLayer({
       }),
     ],
   }),
+  style,
 });
 
 const raster = new TileLayer({

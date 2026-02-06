@@ -1,6 +1,7 @@
-import Event from '../../../../src/ol/events/Event.js';
+import Map from '../../../../src/ol/Map.js';
 import MapBrowserEvent from '../../../../src/ol/MapBrowserEvent.js';
-import {Map, View} from '../../../../src/ol/index.js';
+import View from '../../../../src/ol/View.js';
+import Event from '../../../../src/ol/events/Event.js';
 import {clearUserProjection, useGeographic} from '../../../../src/ol/proj.js';
 
 function createMap() {

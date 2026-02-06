@@ -2,11 +2,11 @@
  * @module ol/source/SentinelHub
  */
 
-import DataTileSource from './DataTile.js';
 import {
   equivalent as equivalentProjections,
   get as getProjection,
 } from '../proj.js';
+import DataTileSource from './DataTile.js';
 
 const defaultProcessUrl = 'https://services.sentinel-hub.com/api/v1/process';
 
@@ -542,12 +542,17 @@ class SentinelHub extends DataTileSource {
     if (!this.token_ || !this.evalscript_ || !this.inputData_) {
       return;
     }
+    this.setKey(this.getKeyForConfig_());
     const state = this.getState();
     if (state === 'ready') {
       this.changed();
       return;
     }
     this.setState('ready');
+  }
+
+  getKeyForConfig_() {
+    return this.token_ + this.evalscript_ + JSON.stringify(this.inputData_);
   }
 
   /**

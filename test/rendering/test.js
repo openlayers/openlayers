@@ -1,21 +1,21 @@
 #! /usr/bin/env node
-import config from './webpack.config.js';
+import fs from 'fs';
+import path, {dirname} from 'path';
+import {fileURLToPath} from 'url';
 import esMain from 'es-main';
 import express from 'express';
-import fs from 'fs';
 import fse from 'fs-extra';
-import path, {dirname} from 'path';
+import {globby} from 'globby';
+import {LogLevel} from 'loglevelnext';
 import pixelmatch from 'pixelmatch';
 import png from 'pngjs';
-import puppeteer from 'puppeteer';
+import {launch} from 'puppeteer';
 import serveStatic from 'serve-static';
 import webpack from 'webpack';
 import webpackMiddleware from 'webpack-dev-middleware';
 import yargs from 'yargs';
-import {LogLevel} from 'loglevelnext';
-import {fileURLToPath} from 'url';
-import {globby} from 'globby';
-import {hideBin} from 'yargs/helpers';
+import {hideBin} from 'yargs/helpers'; //eslint-disable-line import/no-unresolved
+import config from './webpack.config.js';
 
 const baseDir = dirname(fileURLToPath(import.meta.url));
 
@@ -238,7 +238,7 @@ async function renderEach(page, entries, options) {
 }
 
 async function render(entries, options) {
-  const browser = await puppeteer.launch({
+  const browser = await launch({
     args: options.puppeteerArgs,
     headless: options.headless ? 'new' : false,
   });

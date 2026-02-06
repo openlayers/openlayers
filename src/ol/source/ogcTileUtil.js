@@ -2,11 +2,11 @@
  * @module ol/source/ogcTileUtil
  */
 
-import TileGrid from '../tilegrid/TileGrid.js';
+import {error as logError} from '../console.js';
+import {getIntersection as intersectExtents} from '../extent.js';
 import {getJSON, resolveUrl} from '../net.js';
 import {get as getProjection} from '../proj.js';
-import {getIntersection as intersectExtents} from '../extent.js';
-import {error as logError} from '../console.js';
+import TileGrid from '../tilegrid/WMTS.js';
 
 /**
  * See https://ogcapi.ogc.org/tiles/.
@@ -100,18 +100,18 @@ const knownVectorMediaTypes = {
 
 /**
  * @typedef {Object} TileSetInfo
- * @property {string} urlTemplate The tile URL template.
+ * @property {string} [urlTemplate] The tile URL template.
  * @property {import("../proj/Projection.js").default} projection The source projection.
- * @property {import("../tilegrid/TileGrid.js").default} grid The tile grid.
- * @property {import("../Tile.js").UrlFunction} urlFunction The tile URL function.
+ * @property {import("../tilegrid/WMTS.js").default} grid The tile grid.
+ * @property {import("../Tile.js").UrlFunction} [urlFunction] The tile URL function.
  */
 
 /**
  * @typedef {Object} SourceInfo
- * @property {string} url The tile set URL.
- * @property {string} mediaType The preferred tile media type.
+ * @property {string} [url] The tile set URL.
+ * @property {string} [mediaType] The preferred tile media type.
  * @property {Array<string>} [supportedMediaTypes] The supported media types.
- * @property {import("../proj/Projection.js").default} projection The source projection.
+ * @property {import("../proj/Projection.js").default} [projection] The source projection.
  * @property {Object} [context] Optional context for constructing the URL.
  * @property {Array<string>} [collections] Optional collections to append the URL with.
  */
@@ -253,11 +253,11 @@ export function getVectorTileUrlTemplate(
 /**
  * @param {SourceInfo} sourceInfo The source info.
  * @param {TileMatrixSet} tileMatrixSet Tile matrix set.
- * @param {string} tileUrlTemplate Tile URL template.
+ * @param {string} [tileUrlTemplate] Tile URL template.
  * @param {Array<TileMatrixSetLimit>} [tileMatrixSetLimits] Tile matrix set limits.
  * @return {TileSetInfo} Tile set info.
  */
-function parseTileMatrixSet(
+export function parseTileMatrixSet(
   sourceInfo,
   tileMatrixSet,
   tileUrlTemplate,
@@ -283,7 +283,9 @@ function parseTileMatrixSet(
     : projection.getAxisOrientation();
   const backwards = !axisOrientation.startsWith('en');
 
-  const matrices = tileMatrixSet.tileMatrices;
+  const matrices = tileMatrixSet.tileMatrices.sort(function (a, b) {
+    return b.cellSize - a.cellSize;
+  });
 
   /**
    * @type {Object<string, TileMatrix>}
@@ -308,7 +310,9 @@ function parseTileMatrixSet(
     for (let i = 0; i < tileMatrixSetLimits.length; ++i) {
       const limit = tileMatrixSetLimits[i];
       const id = limit.tileMatrix;
-      matrixIds.push(id);
+      const matrix = matrixLookup[id];
+      const zoomLevel = matrices.indexOf(matrix);
+      matrixIds[zoomLevel] = id;
       limitLookup[id] = limit;
     }
   } else {
@@ -361,12 +365,20 @@ function parseTileMatrixSet(
   }
 
   const tileGrid = new TileGrid({
-    origins: origins,
-    resolutions: resolutions,
-    sizes: sizes,
-    tileSizes: tileSizes,
+    origins,
+    resolutions,
+    sizes,
+    tileSizes,
     extent: tileMatrixSetLimits ? extent : undefined,
+    matrixIds,
   });
+
+  if (!tileUrlTemplate) {
+    return {
+      grid: tileGrid,
+      projection: projection,
+    };
+  }
 
   const context = sourceInfo.context;
   const base = sourceInfo.url;
@@ -399,7 +411,15 @@ function parseTileMatrixSet(
       }
     }
 
-    Object.assign(localContext, context);
+    Object.assign(
+      localContext,
+      {
+        z: localContext.tileMatrix,
+        x: localContext.tileCol,
+        y: localContext.tileRow,
+      },
+      context,
+    );
 
     const url = tileUrlTemplate.replace(/\{(\w+?)\}/g, function (m, p) {
       return localContext[p];

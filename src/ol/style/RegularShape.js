@@ -2,9 +2,7 @@
  * @module ol/style/RegularShape
  */
 
-import IconImage from './IconImage.js';
 import ImageState from '../ImageState.js';
-import ImageStyle from './Image.js';
 import {asArray} from '../color.js';
 import {asColorLike} from '../colorlike.js';
 import {createCanvasContext2D} from '../dom.js';
@@ -16,7 +14,9 @@ import {
   defaultMiterLimit,
   defaultStrokeStyle,
 } from '../render/canvas.js';
+import IconImage from './IconImage.js';
 import {shared as iconImageCache} from './IconImageCache.js';
+import ImageStyle from './Image.js';
 
 /**
  * Specify radius for regular polygons, or both radius and radius2 for stars.
@@ -74,7 +74,7 @@ class RegularShape extends ImageStyle {
 
     /**
      * @private
-     * @type {HTMLCanvasElement|null}
+     * @type {HTMLCanvasElement|OffscreenCanvas|null}
      */
     this.hitDetectionCanvas_ = null;
 
@@ -218,7 +218,7 @@ class RegularShape extends ImageStyle {
   }
 
   /**
-   * @return {HTMLCanvasElement} Image element.
+   * @return {HTMLCanvasElement|OffscreenCanvas} Image element.
    * @override
    */
   getHitDetectionImage() {
@@ -233,7 +233,7 @@ class RegularShape extends ImageStyle {
   /**
    * Get the image icon.
    * @param {number} pixelRatio Pixel ratio.
-   * @return {HTMLCanvasElement} Image or Canvas element.
+   * @return {HTMLCanvasElement|OffscreenCanvas} Image or Canvas element.
    * @api
    * @override
    */
@@ -242,7 +242,7 @@ class RegularShape extends ImageStyle {
     const cacheKey =
       `${pixelRatio},${this.angle_},${this.radius},${this.radius2_},${this.points_},${fillKey}` +
       Object.values(this.renderOptions_).join(',');
-    let image = /** @type {HTMLCanvasElement} */ (
+    let image = /** @type {HTMLCanvasElement|OffscreenCanvas} */ (
       iconImageCache.get(cacheKey, null, null)?.getImage(1)
     );
     if (!image) {
@@ -252,12 +252,18 @@ class RegularShape extends ImageStyle {
       this.draw_(renderOptions, context, pixelRatio);
 
       image = context.canvas;
-      iconImageCache.set(
-        cacheKey,
+      const iconImage = new IconImage(
+        image,
+        undefined,
         null,
+        ImageState.LOADED,
         null,
-        new IconImage(image, undefined, null, ImageState.LOADED, null),
       );
+      iconImageCache.set(cacheKey, null, null, iconImage);
+      // Update the image in place to an ImageBitmap for better performance and lower memory usage
+      createImageBitmap(image).then((imageBitmap) => {
+        iconImage.setImage(imageBitmap);
+      });
     }
     return image;
   }
@@ -317,12 +323,38 @@ class RegularShape extends ImageStyle {
   }
 
   /**
+   * Set the (primary) radius for the shape.
+   * @param {number} radius Radius.
+   * @api
+   */
+  setRadius(radius) {
+    if (this.radius === radius) {
+      return;
+    }
+    this.radius = radius;
+    this.render();
+  }
+
+  /**
    * Get the secondary radius for the shape.
    * @return {number|undefined} Radius2.
    * @api
    */
   getRadius2() {
     return this.radius2_;
+  }
+
+  /**
+   * Set the secondary radius for the shape.
+   * @param {number|undefined} radius2 Radius2.
+   * @api
+   */
+  setRadius2(radius2) {
+    if (this.radius2_ === radius2) {
+      return;
+    }
+    this.radius2_ = radius2;
+    this.render();
   }
 
   /**
@@ -514,7 +546,7 @@ class RegularShape extends ImageStyle {
   /**
    * @private
    * @param {RenderOptions} renderOptions Render options.
-   * @param {CanvasRenderingContext2D} context The rendering context.
+   * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context The rendering context.
    * @param {number} pixelRatio The pixel ratio.
    */
   draw_(renderOptions, context, pixelRatio) {
@@ -549,7 +581,7 @@ class RegularShape extends ImageStyle {
   /**
    * @private
    * @param {RenderOptions} renderOptions Render options.
-   * @return {HTMLCanvasElement} Canvas containing the icon
+   * @return {HTMLCanvasElement|OffscreenCanvas} Canvas containing the icon
    */
   createHitDetectionCanvas_(renderOptions) {
     let context;
@@ -578,7 +610,7 @@ class RegularShape extends ImageStyle {
 
   /**
    * @private
-   * @param {CanvasRenderingContext2D} context The context to draw in.
+   * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context The context to draw in.
    */
   createPath_(context) {
     let points = this.points_;
@@ -604,7 +636,7 @@ class RegularShape extends ImageStyle {
   /**
    * @private
    * @param {RenderOptions} renderOptions Render options.
-   * @param {CanvasRenderingContext2D} context The context.
+   * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context The context.
    */
   drawHitDetectionCanvas_(renderOptions, context) {
     // set origin to canvas center

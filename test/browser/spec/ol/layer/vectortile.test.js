@@ -1,18 +1,19 @@
 import Feature from '../../../../../src/ol/Feature.js';
-import GeoJSON from '../../../../../src/ol/format/GeoJSON.js';
 import ImageState from '../../../../../src/ol/ImageState.js';
 import Map from '../../../../../src/ol/Map.js';
-import VectorTileLayer from '../../../../../src/ol/layer/VectorTile.js';
-import VectorTileSource from '../../../../../src/ol/source/VectorTile.js';
 import View from '../../../../../src/ol/View.js';
-import {Icon, Style} from '../../../../../src/ol/style.js';
-import {Point} from '../../../../../src/ol/geom.js';
-import {create as createTransform} from '../../../../../src/ol/transform.js';
-import {createXYZ} from '../../../../../src/ol/tilegrid.js';
+import GeoJSON from '../../../../../src/ol/format/GeoJSON.js';
+import Point from '../../../../../src/ol/geom/Point.js';
 import {fromExtent} from '../../../../../src/ol/geom/Polygon.js';
-import {fromLonLat, get as getProjection} from '../../../../../src/ol/proj.js';
-import {getUid} from '../../../../../src/ol/util.js';
+import VectorTileLayer from '../../../../../src/ol/layer/VectorTile.js';
 import {isEmpty} from '../../../../../src/ol/obj.js';
+import {fromLonLat, get as getProjection} from '../../../../../src/ol/proj.js';
+import VectorTileSource from '../../../../../src/ol/source/VectorTile.js';
+import Icon from '../../../../../src/ol/style/Icon.js';
+import Style from '../../../../../src/ol/style/Style.js';
+import {createXYZ} from '../../../../../src/ol/tilegrid.js';
+import {create as createTransform} from '../../../../../src/ol/transform.js';
+import {getUid} from '../../../../../src/ol/util.js';
 
 describe('ol.layer.VectorTile', function () {
   describe('constructor (defaults)', function () {
@@ -159,11 +160,15 @@ describe('ol.layer.VectorTile', function () {
           .then(function (result) {
             const tile = layer
               .getRenderer()
-              .tileCache_.get(objectURL + ',0/0/0');
+              .tileCache_.get(
+                `${getUid(layer.getSource())},${objectURL},0/0/0`,
+              );
             expect(Object.keys(tile.hitDetectionImageData).length).to.be(1);
             const tile2 = layer2
               .getRenderer()
-              .tileCache_.get(objectURL + ',0/0/0');
+              .tileCache_.get(
+                `${getUid(layer.getSource())},${objectURL},0/0/0`,
+              );
             expect(Object.keys(tile2.hitDetectionImageData).length).to.be(1);
             done();
           })

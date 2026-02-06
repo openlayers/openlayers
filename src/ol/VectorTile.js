@@ -39,7 +39,7 @@ class VectorTile extends Tile {
 
     /**
      * @private
-     * @type {import("./featureloader.js").FeatureLoader<FeatureType>}
+     * @type {import("./featureloader.js").FeatureLoader}
      */
     this.loader_;
 

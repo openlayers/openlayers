@@ -1,8 +1,9 @@
 /**
  * @module ol/render/webgl/renderinstructions
  */
-import {apply as applyTransform} from '../../transform.js';
+import {UNDEFINED_PROP_VALUE} from '../../expr/gpu.js';
 import {transform2D} from '../../geom/flat/transform.js';
+import {apply as applyTransform} from '../../transform.js';
 
 /**
  * @param {Float32Array} renderInstructions Render instructions
@@ -21,7 +22,16 @@ function pushCustomAttributesInRenderInstructions(
   for (const key in customAttributes) {
     const attr = customAttributes[key];
     const value = attr.callback.call(batchEntry, batchEntry.feature);
-    renderInstructions[currentIndex + shift++] = value[0] ?? value;
+    let first = value?.[0] ?? value;
+    if (first === UNDEFINED_PROP_VALUE) {
+      console.warn('The "has" operator might return false positives.'); // eslint-disable-line no-console
+    }
+    if (first === undefined) {
+      first = UNDEFINED_PROP_VALUE;
+    } else if (first === null) {
+      first = 0;
+    }
+    renderInstructions[currentIndex + shift++] = first;
     if (!attr.size || attr.size === 1) {
       continue;
     }

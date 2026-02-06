@@ -1,26 +1,30 @@
-import GeoJSON from '../src/ol/format/GeoJSON.js';
-import Layer from '../src/ol/layer/Layer.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import WebGLVectorLayerRenderer from '../src/ol/renderer/webgl/VectorLayer.js';
-import {Draw, Modify, Snap} from '../src/ol/interaction.js';
-import {OSM, Vector as VectorSource} from '../src/ol/source.js';
-import {Tile as TileLayer} from '../src/ol/layer.js';
+import GeoJSON from '../src/ol/format/GeoJSON.js';
+import Draw from '../src/ol/interaction/Draw.js';
+import Modify from '../src/ol/interaction/Modify.js';
+import Snap from '../src/ol/interaction/Snap.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import WebGLVectorLayer from '../src/ol/layer/WebGLVector.js';
 import {fromLonLat} from '../src/ol/proj.js';
+import OSM from '../src/ol/source/OSM.js';
+import VectorSource from '../src/ol/source/Vector.js';
 
-/**
- * @type {import('../src/ol/style/webgl.js').WebGLStyle}
- */
-let style;
-
-class WebGLLayer extends Layer {
-  createRenderer() {
-    return new WebGLVectorLayerRenderer(this, {
-      className: this.getClassName(),
-      style,
-    });
-  }
-}
+/** @type {import('../src/ol/style/flat.js').StyleVariables} */
+const styleVariables = {
+  width: 12,
+  offset: 0,
+  capType: 'butt',
+  joinType: 'miter',
+  miterLimit: 10, // ratio
+  dashLength1: 25,
+  dashLength2: 15,
+  dashLength3: 15,
+  dashLength4: 15,
+  dashOffset: 0,
+  patternSpacing: 0,
+  patternOffset: 0,
+};
 
 const source = new VectorSource({
   url: 'data/geojson/switzerland.geojson',
@@ -30,25 +34,10 @@ const source = new VectorSource({
 /**
  * @param {boolean} dash Include line dash
  * @param {boolean} pattern Include image pattern
- * @return {import('../src/ol/style/webgl.js').WebGLStyle} Generated style
+ * @return {import('../src/ol/style/flat.js').FlatStyle} Generated style
  */
 const getStyle = (dash, pattern) => {
   let newStyle = {
-    variables: style
-      ? style.variables
-      : {
-          width: 12,
-          offset: 0,
-          capType: 'butt',
-          joinType: 'miter',
-          miterLimit: 10, // ratio
-          dashLength1: 25,
-          dashLength2: 15,
-          dashLength3: 15,
-          dashLength4: 15,
-          dashOffset: 0,
-          patternSpacing: 0,
-        },
     'stroke-width': ['var', 'width'],
     'stroke-color': 'rgba(24,86,34,0.7)',
     'stroke-offset': ['var', 'offset'],
@@ -74,15 +63,19 @@ const getStyle = (dash, pattern) => {
       ...newStyle,
       'stroke-pattern-src': 'data/dot.svg',
       'stroke-pattern-spacing': ['var', 'patternSpacing'],
+      'stroke-pattern-start-offset': ['var', 'patternOffset'],
     };
   }
   return newStyle;
 };
 
-style = getStyle(false, false);
+/** @type {import('../src/ol/style/flat.js').FlatStyle} */
+let style = getStyle(false, false);
 
-let vector = new WebGLLayer({
+let vector = new WebGLVectorLayer({
   source,
+  style,
+  variables: {...styleVariables},
 });
 
 const map = new Map({
@@ -104,8 +97,10 @@ const rebuildStyle = () => {
   const pattern = document.getElementById('patternEnable').checked;
   style = getStyle(dash, pattern);
   map.removeLayer(vector);
-  vector = new WebGLLayer({
+  vector = new WebGLVectorLayer({
     source,
+    style,
+    variables: {...styleVariables},
   });
   map.addLayer(vector);
 };
@@ -128,16 +123,16 @@ function addInteractions() {
 addInteractions();
 
 const inputListener = (event) => {
-  const variables = style.variables;
   const variableName = event.target.name;
   if (event.target.type === 'radio') {
-    variables[variableName] = event.target.value;
+    styleVariables[variableName] = event.target.value;
   } else {
-    variables[variableName] = parseFloat(event.target.value);
+    styleVariables[variableName] = parseFloat(event.target.value);
   }
+  vector.updateStyleVariables(styleVariables);
   const valueSpan = document.getElementById(`value-${variableName}`);
   if (valueSpan) {
-    valueSpan.textContent = variables[variableName];
+    valueSpan.textContent = String(styleVariables[variableName]);
   }
   map.render();
 };

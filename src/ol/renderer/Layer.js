@@ -1,9 +1,9 @@
 /**
  * @module ol/renderer/Layer
  */
-import EventType from '../events/EventType.js';
 import ImageState from '../ImageState.js';
 import Observable from '../Observable.js';
+import EventType from '../events/EventType.js';
 import {abstract} from '../util.js';
 
 const maxStaleKeys = 5;
@@ -96,7 +96,7 @@ class LayerRenderer extends Observable {
    * @abstract
    * @param {import("../Map.js").FrameState} frameState Frame state.
    * @param {HTMLElement|null} target Target that may be used to render content to.
-   * @return {HTMLElement|null} The rendered element.
+   * @return {HTMLElement} The rendered element.
    */
   renderFrame(frameState, target) {
     return abstract();

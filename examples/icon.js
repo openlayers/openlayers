@@ -1,11 +1,14 @@
 import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
 import Overlay from '../src/ol/Overlay.js';
-import Point from '../src/ol/geom/Point.js';
 import View from '../src/ol/View.js';
-import {Icon, Style} from '../src/ol/style.js';
-import {OGCMapTile, Vector as VectorSource} from '../src/ol/source.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import Point from '../src/ol/geom/Point.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
+import OGCMapTile from '../src/ol/source/OGCMapTile.js';
+import VectorSource from '../src/ol/source/Vector.js';
+import Icon from '../src/ol/style/Icon.js';
+import Style from '../src/ol/style/Style.js';
 
 const iconFeature = new Feature({
   geometry: new Point([0, 0]),
@@ -85,9 +88,8 @@ map.on('click', function (evt) {
 
 // change mouse cursor when over marker
 map.on('pointermove', function (e) {
-  const pixel = map.getEventPixel(e.originalEvent);
-  const hit = map.hasFeatureAtPixel(pixel);
-  map.getTarget().style.cursor = hit ? 'pointer' : '';
+  const hit = map.hasFeatureAtPixel(e.pixel);
+  map.getTargetElement().style.cursor = hit ? 'pointer' : '';
 });
 // Close the popup when the map is moved
 map.on('movestart', disposePopover);

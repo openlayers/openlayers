@@ -1,29 +1,27 @@
+import proj4 from 'proj4';
 import Collection from '../../../../../src/ol/Collection.js';
 import Feature from '../../../../../src/ol/Feature.js';
-import Interaction from '../../../../../src/ol/interaction/Interaction.js';
 import Map from '../../../../../src/ol/Map.js';
 import MapBrowserEvent from '../../../../../src/ol/MapBrowserEvent.js';
+import View from '../../../../../src/ol/View.js';
+import {shiftKeyOnly} from '../../../../../src/ol/events/condition.js';
+import Circle from '../../../../../src/ol/geom/Circle.js';
+import GeometryCollection from '../../../../../src/ol/geom/GeometryCollection.js';
+import Point from '../../../../../src/ol/geom/Point.js';
+import Polygon from '../../../../../src/ol/geom/Polygon.js';
+import Interaction from '../../../../../src/ol/interaction/Interaction.js';
 import Translate, {
   TranslateEvent,
 } from '../../../../../src/ol/interaction/Translate.js';
 import VectorLayer from '../../../../../src/ol/layer/Vector.js';
-import VectorSource from '../../../../../src/ol/source/Vector.js';
-import View from '../../../../../src/ol/View.js';
-import proj4 from 'proj4';
-import {
-  Circle,
-  GeometryCollection,
-  Point,
-  Polygon,
-} from '../../../../../src/ol/geom.js';
+import {register} from '../../../../../src/ol/proj/proj4.js';
 import {
   addCommon,
   clearAllProjections,
   clearUserProjection,
   setUserProjection,
 } from '../../../../../src/ol/proj.js';
-import {register} from '../../../../../src/ol/proj/proj4.js';
-import {shiftKeyOnly} from '../../../../../src/ol/events/condition.js';
+import VectorSource from '../../../../../src/ol/source/Vector.js';
 
 describe('ol.interaction.Translate', function () {
   let target, map, source, features;
@@ -101,8 +99,8 @@ describe('ol.interaction.Translate', function () {
   /**
    * Tracks events triggered by the interaction as well as feature
    * modifications. Helper function to
-   * @param {ol.Feature} feature Translated feature.
-   * @param {ol.interaction.Translate} interaction The interaction.
+   * @param {Feature} feature Translated feature.
+   * @param {Translate} interaction The interaction.
    * @return {Array<TranslateEvent|string>} events
    */
   function trackEvents(feature, interaction) {
@@ -124,7 +122,7 @@ describe('ol.interaction.Translate', function () {
    * that first and last event are correct TranslateEvents and that feature
    * modifications event are in between.
    * @param {Array<TranslateEvent|string>} events The events.
-   * @param {Array<ol.Feature>} features The features.
+   * @param {Array<Feature>} features The features.
    */
   function validateEvents(events, features) {
     const startevent = events[0];

@@ -1,21 +1,15 @@
-import Fill from '../src/ol/style/Fill.js';
-import GeoJSON from '../src/ol/format/GeoJSON.js';
 import Map from '../src/ol/Map.js';
-import Stroke from '../src/ol/style/Stroke.js';
-import Style from '../src/ol/style/Style.js';
-import VectorLayer from '../src/ol/layer/Vector.js';
-import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
+import {always} from '../src/ol/events/condition.js';
+import GeoJSON from '../src/ol/format/GeoJSON.js';
+import Select from '../src/ol/interaction/Select.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import {fromLonLat} from '../src/ol/proj.js';
+import VectorSource from '../src/ol/source/Vector.js';
 
-const highlightStyle = new Style({
-  fill: new Fill({
-    color: '#EEE',
-  }),
-  stroke: new Stroke({
-    color: '#3399CC',
-    width: 2,
-  }),
+const select = new Select({
+  toggleCondition: always,
+  multi: true,
 });
 
 const vector = new VectorLayer({
@@ -35,22 +29,11 @@ const map = new Map({
     multiWorld: true,
   }),
 });
-
-const selected = [];
+map.addInteraction(select);
 
 const status = document.getElementById('status');
 
-map.on('singleclick', function (e) {
-  map.forEachFeatureAtPixel(e.pixel, function (f) {
-    const selIndex = selected.indexOf(f);
-    if (selIndex < 0) {
-      selected.push(f);
-      f.setStyle(highlightStyle);
-    } else {
-      selected.splice(selIndex, 1);
-      f.setStyle(undefined);
-    }
-  });
-
-  status.innerHTML = '&nbsp;' + selected.length + ' selected features';
+select.on('select', function () {
+  status.innerHTML =
+    '&nbsp;' + select.getFeatures().getLength() + ' selected features';
 });

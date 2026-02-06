@@ -2,14 +2,13 @@
  * @module ol/geom/flat/intersectsextent
  */
 import {
-  containsExtent,
   createEmpty,
   extendFlatCoordinates,
   intersects,
   intersectsSegment,
 } from '../../extent.js';
-import {forEach as forEachSegment} from './segments.js';
 import {linearRingContainsExtent, linearRingContainsXY} from './contains.js';
+import {forEach as forEachSegment} from './segments.js';
 
 /**
  * @param {Array<number>} flatCoordinates Flat coordinates.
@@ -17,6 +16,7 @@ import {linearRingContainsExtent, linearRingContainsXY} from './contains.js';
  * @param {number} end End.
  * @param {number} stride Stride.
  * @param {import("../../extent.js").Extent} extent Extent.
+ * @param {import('../../extent.js').Extent} [coordinatesExtent] Coordinates extent
  * @return {boolean} True if the geometry and the extent intersect.
  */
 export function intersectsLineString(
@@ -25,24 +25,18 @@ export function intersectsLineString(
   end,
   stride,
   extent,
+  coordinatesExtent,
 ) {
-  const coordinatesExtent = extendFlatCoordinates(
-    createEmpty(),
-    flatCoordinates,
-    offset,
-    end,
-    stride,
-  );
+  coordinatesExtent =
+    coordinatesExtent ??
+    extendFlatCoordinates(createEmpty(), flatCoordinates, offset, end, stride);
   if (!intersects(extent, coordinatesExtent)) {
     return false;
   }
-  if (containsExtent(extent, coordinatesExtent)) {
-    return true;
-  }
-  if (coordinatesExtent[0] >= extent[0] && coordinatesExtent[2] <= extent[2]) {
-    return true;
-  }
-  if (coordinatesExtent[1] >= extent[1] && coordinatesExtent[3] <= extent[3]) {
+  if (
+    (coordinatesExtent[0] >= extent[0] && coordinatesExtent[2] <= extent[2]) ||
+    (coordinatesExtent[1] >= extent[1] && coordinatesExtent[3] <= extent[3])
+  ) {
     return true;
   }
   return forEachSegment(

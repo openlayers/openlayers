@@ -1,10 +1,9 @@
 import Feature from '../../../../src/ol/Feature.js';
-import Layer from '../../../../src/ol/layer/Layer.js';
-import LineString from '../../../../src/ol/geom/LineString.js';
 import Map from '../../../../src/ol/Map.js';
-import VectorSource from '../../../../src/ol/source/Vector.js';
 import View from '../../../../src/ol/View.js';
-import WebGLVectorLayerRenderer from '../../../../src/ol/renderer/webgl/VectorLayer.js';
+import LineString from '../../../../src/ol/geom/LineString.js';
+import WebGLVectorLayer from '../../../../src/ol/layer/WebGLVector.js';
+import VectorSource from '../../../../src/ol/source/Vector.js';
 
 const line = new Feature({
   geometry: new LineString([
@@ -32,7 +31,8 @@ context.fill();
 
 const srcPattern = {
   'stroke-pattern-src': '/data/fish.png',
-  'stroke-pattern-spacing': 4,
+  'stroke-pattern-spacing': 10,
+  'stroke-pattern-start-offset': 10,
   'stroke-width': 20,
   'stroke-offset': -32,
 };
@@ -59,18 +59,11 @@ const subImage = {
 };
 const style = [srcPattern, imagePattern, withTint, subImage];
 
-class WebGLLayer extends Layer {
-  createRenderer() {
-    return new WebGLVectorLayerRenderer(this, {
-      style,
-    });
-  }
-}
-
-const vector = new WebGLLayer({
+const vector = new WebGLVectorLayer({
   source: new VectorSource({
     features: [line],
   }),
+  style,
 });
 
 const map = new Map({

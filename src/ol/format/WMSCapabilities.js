@@ -1,7 +1,6 @@
 /**
  * @module ol/format/WMSCapabilities
  */
-import XML from './XML.js';
 import {compareVersions} from '../string.js';
 import {
   makeArrayPusher,
@@ -10,6 +9,8 @@ import {
   makeStructureNS,
   pushParseAndPop,
 } from '../xml.js';
+import XML from './XML.js';
+import {readHref} from './xlink.js';
 import {
   readBooleanString,
   readDecimal,
@@ -18,13 +19,16 @@ import {
   readPositiveInteger,
   readString,
 } from './xsd.js';
-import {readHref} from './xlink.js';
 
 /**
  * @const
  * @type {Array<null|string>}
  */
-const NAMESPACE_URIS = [null, 'http://www.opengis.net/wms'];
+const NAMESPACE_URIS = [
+  null,
+  'http://www.opengis.net/wms',
+  'http://www.opengis.net/sld',
+];
 
 function isV13(objectStack) {
   return compareVersions(objectStack[0].version, '1.3') >= 0;
@@ -40,33 +44,19 @@ const PARSERS = makeStructureNS(NAMESPACE_URIS, {
   'Capability': makeObjectPropertySetter(readCapability),
 });
 
-const COMMON_CAPABILITY_PARSERS = {
-  'Request': makeObjectPropertySetter(readRequest),
-  'Exception': makeObjectPropertySetter(readException),
-  'Layer': makeObjectPropertySetter(readCapabilityLayer),
-};
-
 /**
  * @const
  * @type {Object<string, Object<string, import("../xml.js").Parser>>}
  */
 // @ts-ignore
 const CAPABILITY_PARSERS = makeStructureNS(NAMESPACE_URIS, {
-  ...COMMON_CAPABILITY_PARSERS,
+  'Request': makeObjectPropertySetter(readRequest),
+  'Exception': makeObjectPropertySetter(readException),
+  'Layer': makeObjectPropertySetter(readCapabilityLayer),
   'UserDefinedSymbolization': makeObjectPropertySetter(
     readUserDefinedSymbolization,
   ),
 });
-
-/**
- * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
- */
-// @ts-ignore
-const CAPABILITY_PARSERS_V13 = makeStructureNS(
-  NAMESPACE_URIS,
-  COMMON_CAPABILITY_PARSERS,
-);
 
 /**
  * @typedef {Object} RootObject
@@ -267,6 +257,8 @@ const REQUEST_PARSERS = makeStructureNS(NAMESPACE_URIS, {
   'GetCapabilities': makeObjectPropertySetter(readOperationType),
   'GetMap': makeObjectPropertySetter(readOperationType),
   'GetFeatureInfo': makeObjectPropertySetter(readOperationType),
+  'DescribeLayer': makeObjectPropertySetter(readOperationType),
+  'GetLegendGraphic': makeObjectPropertySetter(readOperationType),
 });
 
 /**
@@ -342,12 +334,14 @@ function readAttribution(node, objectStack) {
 
 function readUserDefinedSymbolization(node, objectStack) {
   return {
-    'SupportSLD': !!readBooleanString(
-      node.getAttribute('UserDefinedSymbolization'),
-    ),
+    'SupportSLD': !!readBooleanString(node.getAttribute('SupportSLD')),
     'UserLayer': !!readBooleanString(node.getAttribute('UserLayer')),
     'UserStyle': !!readBooleanString(node.getAttribute('UserStyle')),
     'RemoteWFS': !!readBooleanString(node.getAttribute('RemoteWFS')),
+    'InlineFeatureData': !!readBooleanString(
+      node.getAttribute('InlineFeatureData'),
+    ),
+    'RemoteWCS': !!readBooleanString(node.getAttribute('RemoteWCS')),
   };
 }
 
@@ -436,13 +430,9 @@ function readEXGeographicBoundingBox(node, objectStack) {
  * @param {Array<*>} objectStack Object stack.
  * @return {Object|undefined} Capability object.
  */
+//ts-ignore
 function readCapability(node, objectStack) {
-  return pushParseAndPop(
-    {},
-    isV13(objectStack) ? CAPABILITY_PARSERS_V13 : CAPABILITY_PARSERS,
-    node,
-    objectStack,
-  );
+  return pushParseAndPop({}, CAPABILITY_PARSERS, node, objectStack);
 }
 
 /**

@@ -1,17 +1,17 @@
-import Projection from '../../../../../src/ol/proj/Projection.js';
-import Source from '../../../../../src/ol/source/Source.js';
 import Tile from '../../../../../src/ol/Tile.js';
-import TileGrid from '../../../../../src/ol/tilegrid/TileGrid.js';
+import Projection from '../../../../../src/ol/proj/Projection.js';
+import {get as getProjection} from '../../../../../src/ol/proj.js';
+import Source from '../../../../../src/ol/source/Source.js';
 import TileSource from '../../../../../src/ol/source/Tile.js';
 import {getKeyZXY} from '../../../../../src/ol/tilecoord.js';
-import {get as getProjection} from '../../../../../src/ol/proj.js';
+import TileGrid from '../../../../../src/ol/tilegrid/TileGrid.js';
 import {getUid} from '../../../../../src/ol/util.js';
 
 /**
  * Tile source for tests that uses a EPSG:4326 based grid with 4 resolutions and
  * 256x256 tiles.
  *
- * @param {Object<string, ol.TileState>} tileStates Lookup of tile key to
+ * @param {Object<string, import('../../../../../src/ol/TileState.js').default>} tileStates Lookup of tile key to
  *     tile state.
  */
 class MockTile extends TileSource {

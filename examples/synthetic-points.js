@@ -1,11 +1,15 @@
 import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
-import VectorLayer from '../src/ol/layer/Vector.js';
-import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
-import {Circle as CircleStyle, Fill, Stroke, Style} from '../src/ol/style.js';
-import {LineString, Point} from '../src/ol/geom.js';
+import LineString from '../src/ol/geom/LineString.js';
+import Point from '../src/ol/geom/Point.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import {getVectorContext} from '../src/ol/render.js';
+import VectorSource from '../src/ol/source/Vector.js';
+import CircleStyle from '../src/ol/style/Circle.js';
+import Fill from '../src/ol/style/Fill.js';
+import Stroke from '../src/ol/style/Stroke.js';
+import Style from '../src/ol/style/Style.js';
 
 const count = 20000;
 const features = new Array(count);
@@ -121,11 +125,6 @@ map.on('pointermove', function (evt) {
   if (evt.dragging) {
     return;
   }
-  const pixel = map.getEventPixel(evt.originalEvent);
-  const hit = map.hasFeatureAtPixel(pixel);
-  if (hit) {
-    map.getTarget().style.cursor = 'pointer';
-  } else {
-    map.getTarget().style.cursor = '';
-  }
+  const hit = map.hasFeatureAtPixel(evt.pixel);
+  map.getTargetElement().style.cursor = hit ? 'pointer' : '';
 });

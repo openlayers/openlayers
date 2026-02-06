@@ -1,7 +1,7 @@
-import Layer from '../../../../../src/ol/layer/Tile.js';
-import Link from '../../../../../src/ol/interaction/Link.js';
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
+import Link from '../../../../../src/ol/interaction/Link.js';
+import Layer from '../../../../../src/ol/layer/Tile.js';
 
 describe('ol/interaction/Link', () => {
   let map;
@@ -46,6 +46,13 @@ describe('ol/interaction/Link', () => {
       view.setZoom(2);
       view.setCenter([3, 4]);
       view.setRotation(0.5);
+    });
+
+    it('works with a view that is not fully defined', () => {
+      map.setView(new View({}));
+      expect(() => {
+        map.addInteraction(new Link());
+      }).to.not.throwError();
     });
 
     it('accepts a prefix', (done) => {

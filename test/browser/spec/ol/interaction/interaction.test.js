@@ -1,9 +1,11 @@
+import {spy as sinonSpy} from 'sinon';
+import Map from '../../../../../src/ol/Map.js';
+import View from '../../../../../src/ol/View.js';
 import EventTarget from '../../../../../src/ol/events/Target.js';
+import {FALSE} from '../../../../../src/ol/functions.js';
 import Interaction, {
   zoomByDelta,
 } from '../../../../../src/ol/interaction/Interaction.js';
-import {FALSE} from '../../../../../src/ol/functions.js';
-import {Map, View} from '../../../../../src/ol/index.js';
 import {
   clearUserProjection,
   useGeographic,
@@ -95,7 +97,7 @@ describe('zoomByDelta - useGeographic', () => {
       zoom: 0,
     });
 
-    const spy = sinon.spy(view, 'animate');
+    const spy = sinonSpy(view, 'animate');
 
     const anchor = [90, 45];
     const duration = 10;

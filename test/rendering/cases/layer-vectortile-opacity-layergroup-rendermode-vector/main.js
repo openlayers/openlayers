@@ -1,9 +1,9 @@
-import MVT from '../../../../src/ol/format/MVT.js';
 import Map from '../../../../src/ol/Map.js';
+import View from '../../../../src/ol/View.js';
+import MVT from '../../../../src/ol/format/MVT.js';
+import Group from '../../../../src/ol/layer/Group.js';
 import VectorTileLayer from '../../../../src/ol/layer/VectorTile.js';
 import VectorTileSource from '../../../../src/ol/source/VectorTile.js';
-import View from '../../../../src/ol/View.js';
-import {Group} from '../../../../src/ol/layer.js';
 import {createXYZ} from '../../../../src/ol/tilegrid.js';
 
 new Map({

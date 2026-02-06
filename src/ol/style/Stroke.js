@@ -12,6 +12,8 @@
  * @property {Array<number>} [lineDash] Line dash pattern. Default is `null` (no dash).
  * @property {number} [lineDashOffset=0] Line dash offset.
  * @property {number} [miterLimit=10] Miter limit.
+ * @property {number} [offset] Line offset in pixels along the normal. A positive value offsets the line to the right,
+ * relative to the direction of the line. Default is `null` (no offset).
  * @property {number} [width] Width.
  */
 
@@ -70,6 +72,12 @@ class Stroke {
      * @private
      * @type {number|undefined}
      */
+    this.offset_ = options.offset;
+
+    /**
+     * @private
+     * @type {number|undefined}
+     */
     this.width_ = options.width;
   }
 
@@ -87,6 +95,7 @@ class Stroke {
       lineDashOffset: this.getLineDashOffset(),
       lineJoin: this.getLineJoin(),
       miterLimit: this.getMiterLimit(),
+      offset: this.getOffset(),
       width: this.getWidth(),
     });
   }
@@ -143,6 +152,15 @@ class Stroke {
    */
   getMiterLimit() {
     return this.miterLimit_;
+  }
+
+  /**
+   * Get the line offset in pixels.
+   * @return {number|undefined} Offset.
+   * @api
+   */
+  getOffset() {
+    return this.offset_;
   }
 
   /**
@@ -212,6 +230,16 @@ class Stroke {
    */
   setMiterLimit(miterLimit) {
     this.miterLimit_ = miterLimit;
+  }
+
+  /**
+   * Set the line offset in pixels.
+   *
+   * @param {number|undefined} offset Offset.
+   * @api
+   */
+  setOffset(offset) {
+    this.offset_ = offset;
   }
 
   /**

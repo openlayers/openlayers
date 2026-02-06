@@ -2,12 +2,12 @@
  * @module ol/source/WMTS
  */
 
-import TileImage from './TileImage.js';
-import {appendParams, expandUrl} from '../uri.js';
 import {containsExtent} from '../extent.js';
+import {equivalent, get as getProjection, transformExtent} from '../proj.js';
 import {createFromCapabilitiesMatrixSet} from '../tilegrid/WMTS.js';
 import {createFromTileUrlFunctions} from '../tileurlfunction.js';
-import {equivalent, get as getProjection, transformExtent} from '../proj.js';
+import {appendParams, expandUrl} from '../uri.js';
+import TileImage from './TileImage.js';
 
 /**
  * Request encoding. One of 'KVP', 'REST'.
@@ -325,7 +325,7 @@ class WMTS extends TileImage {
           url = appendParams(url, localContext);
         } else {
           url = url.replace(/\{(\w+?)\}/g, function (m, p) {
-            return localContext[p];
+            return encodeURIComponent(localContext[p]);
           });
         }
         return url;
@@ -476,6 +476,12 @@ export function optionsFromCapabilities(wmtsCap, config) {
     }
   }
 
+  const layerExtent = l['BoundingBox']?.find(
+    (bbox) =>
+      getProjection(bbox.crs) &&
+      equivalent(getProjection(bbox.crs), projection),
+  );
+
   const resolution =
     (matrix.ScaleDenominator * 0.00028) / projection.getMetersPerUnit(); // WMTS 1.0.0: standardized rendering pixel size
   const origin = switchXY
@@ -483,7 +489,7 @@ export function optionsFromCapabilities(wmtsCap, config) {
     : matrix.TopLeftCorner;
   const tileSpanX = matrix.TileWidth * resolution;
   const tileSpanY = matrix.TileHeight * resolution;
-  let matrixSetExtent = matrixSetObj['BoundingBox'];
+  let matrixSetExtent = layerExtent?.extent ?? matrixSetObj['BoundingBox'];
   if (matrixSetExtent && switchXY) {
     matrixSetExtent = [
       matrixSetExtent[1],

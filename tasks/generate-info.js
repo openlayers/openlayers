@@ -1,8 +1,8 @@
-import esMain from 'es-main';
-import fse from 'fs-extra';
+import {spawn} from 'child_process';
 import path, {dirname} from 'path';
 import {fileURLToPath} from 'url';
-import {spawn} from 'child_process';
+import esMain from 'es-main';
+import fse from 'fs-extra';
 import {walk} from 'walk';
 
 const isWindows = process.platform.startsWith('win');
@@ -107,7 +107,7 @@ function parseOutput(output) {
   let info;
   try {
     info = JSON.parse(String(output));
-  } catch (err) {
+  } catch {
     throw new Error('Failed to parse output as JSON: ' + output);
   }
   if (!Array.isArray(info.symbols)) {
@@ -131,7 +131,10 @@ function spawnJSDoc(paths) {
     let output = '';
     let errors = '';
     const cwd = path.join(baseDir, '..');
-    const child = spawn(jsdoc, ['-c', jsdocConfig].concat(paths), {cwd: cwd});
+    const child = spawn(jsdoc, ['-c', jsdocConfig].concat(paths), {
+      cwd,
+      shell: isWindows,
+    });
 
     child.stdout.on('data', (data) => {
       output += String(data);

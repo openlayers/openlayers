@@ -2,14 +2,14 @@
  * @module ol/webgl/TileTexture
  */
 
-import BaseTileRepresentation from './BaseTileRepresentation.js';
 import DataTile, {asArrayLike, asImageLike} from '../DataTile.js';
 import ImageTile from '../ImageTile.js';
-import ReprojTile from '../reproj/Tile.js';
-import WebGLArrayBuffer from './Buffer.js';
-import {ARRAY_BUFFER, STATIC_DRAW} from '../webgl.js';
 import {createCanvasContext2D} from '../dom.js';
+import ReprojTile from '../reproj/Tile.js';
 import {toSize} from '../size.js';
+import {ARRAY_BUFFER, STATIC_DRAW} from '../webgl.js';
+import BaseTileRepresentation from './BaseTileRepresentation.js';
+import WebGLArrayBuffer from './Buffer.js';
 
 /**
  * @param {WebGLRenderingContext} gl The WebGL context.
@@ -117,7 +117,7 @@ function uploadDataTexture(
 }
 
 /**
- * @type {CanvasRenderingContext2D}
+ * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D}
  */
 let pixelContext = null;
 
@@ -343,7 +343,7 @@ class TileTexture extends BaseTileRepresentation {
     try {
       pixelContext.drawImage(image, sourceCol, sourceRow, 1, 1, 0, 0, 1, 1);
       data = pixelContext.getImageData(0, 0, 1, 1).data;
-    } catch (err) {
+    } catch {
       pixelContext = null;
       return null;
     }

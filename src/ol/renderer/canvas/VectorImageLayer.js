@@ -1,16 +1,16 @@
 /**
  * @module ol/renderer/canvas/VectorImageLayer
  */
-import CanvasImageLayerRenderer from './ImageLayer.js';
-import CanvasVectorLayerRenderer from './VectorLayer.js';
-import EventType from '../../events/EventType.js';
+import RBush from 'rbush';
 import ImageCanvas from '../../ImageCanvas.js';
 import ImageState from '../../ImageState.js';
-import RBush from 'rbush';
 import ViewHint from '../../ViewHint.js';
-import {apply, compose, create} from '../../transform.js';
-import {fromResolutionLike} from '../../resolution.js';
+import EventType from '../../events/EventType.js';
 import {getHeight, getWidth, isEmpty, scaleFromCenter} from '../../extent.js';
+import {fromResolutionLike} from '../../resolution.js';
+import {apply, compose, create} from '../../transform.js';
+import CanvasImageLayerRenderer from './ImageLayer.js';
+import CanvasVectorLayerRenderer from './VectorLayer.js';
 
 /**
  * @classdesc
@@ -133,7 +133,6 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
           [declutter]: new RBush(9),
         };
       }
-      let emptyImage = true;
       const image = new ImageCanvas(
         renderedExtent,
         viewResolution,
@@ -145,11 +144,9 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
             vectorRenderer.replayGroupChanged
           ) {
             vectorRenderer.clipping = false;
-            if (vectorRenderer.renderFrame(imageFrameState, null)) {
-              vectorRenderer.renderDeclutter(imageFrameState);
-              vectorRenderer.renderDeferred(imageFrameState);
-              emptyImage = false;
-            }
+            vectorRenderer.renderFrame(imageFrameState, null);
+            vectorRenderer.renderDeclutter(imageFrameState);
+            vectorRenderer.renderDeferred(imageFrameState);
             callback();
           }
         },
@@ -159,7 +156,7 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
         if (image.getState() !== ImageState.LOADED) {
           return;
         }
-        this.image = emptyImage ? null : image;
+        this.image = image;
         const imagePixelRatio = image.getPixelRatio();
         const renderedResolution =
           (fromResolutionLike(image.getResolution()) * pixelRatio) /
@@ -184,7 +181,7 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
         frameState.pixelToCoordinateTransform.slice();
     }
 
-    return !!this.image;
+    return !this.getLayer().getSource()?.loading && !!this.image;
   }
 
   /**

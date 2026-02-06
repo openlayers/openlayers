@@ -1,10 +1,10 @@
-import $ from 'jquery';
 import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
+import LayerGroup from '../src/ol/layer/Group.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import {fromLonLat} from '../src/ol/proj.js';
 import OSM from '../src/ol/source/OSM.js';
 import TileJSON from '../src/ol/source/TileJSON.js';
-import View from '../src/ol/View.js';
-import {Group as LayerGroup, Tile as TileLayer} from '../src/ol/layer.js';
-import {fromLonLat} from '../src/ol/proj.js';
 
 const key =
   'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiY2t0cGdwMHVnMGdlbzMxbDhwazBic2xrNSJ9.WbcTL9uj8JPAsnT9mgb7oQ';
@@ -43,17 +43,20 @@ const map = new Map({
 });
 
 function bindInputs(layerid, layer) {
-  const visibilityInput = $(layerid + ' input.visible');
-  visibilityInput.on('change', function () {
+  const visibilityInput = document.querySelector(layerid + ' input.visible');
+  visibilityInput.addEventListener('change', function () {
     layer.setVisible(this.checked);
   });
-  visibilityInput.prop('checked', layer.getVisible());
+  visibilityInput.addEventListener('change', function () {
+    layer.setVisible(this.checked);
+  });
+  visibilityInput.checked = layer.getVisible();
 
-  const opacityInput = $(layerid + ' input.opacity');
-  opacityInput.on('input', function () {
+  const opacityInput = document.querySelector(layerid + ' input.opacity');
+  opacityInput.addEventListener('input', function () {
     layer.setOpacity(parseFloat(this.value));
   });
-  opacityInput.val(String(layer.getOpacity()));
+  opacityInput.value = String(layer.getOpacity());
 }
 function setup(id, group) {
   group.getLayers().forEach(function (layer, i) {
@@ -66,9 +69,12 @@ function setup(id, group) {
 }
 setup('#layer', map.getLayerGroup());
 
-$('#layertree li > span')
-  .click(function () {
-    $(this).siblings('fieldset').toggle();
-  })
-  .siblings('fieldset')
-  .hide();
+document.querySelectorAll('#layertree li > span').forEach(function (element) {
+  element.addEventListener('click', function () {
+    this.parentNode.querySelector('fieldset').style.display =
+      this.parentNode.querySelector('fieldset').style.display === 'none'
+        ? ''
+        : 'none';
+  });
+  element.parentNode.querySelector('fieldset').style.display = 'none';
+});

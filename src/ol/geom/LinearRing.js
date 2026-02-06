@@ -1,13 +1,13 @@
 /**
  * @module ol/geom/LinearRing
  */
-import SimpleGeometry from './SimpleGeometry.js';
-import {assignClosestPoint, maxSquaredDelta} from './flat/closest.js';
 import {closestSquaredDistanceXY} from '../extent.js';
-import {deflateCoordinates} from './flat/deflate.js';
-import {douglasPeucker} from './flat/simplify.js';
-import {inflateCoordinates} from './flat/inflate.js';
+import SimpleGeometry from './SimpleGeometry.js';
 import {linearRing as linearRingArea} from './flat/area.js';
+import {assignClosestPoint, maxSquaredDelta} from './flat/closest.js';
+import {deflateCoordinates} from './flat/deflate.js';
+import {inflateCoordinates} from './flat/inflate.js';
+import {douglasPeucker} from './flat/simplify.js';
 
 /**
  * @classdesc

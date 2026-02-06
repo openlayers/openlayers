@@ -1,8 +1,8 @@
 /**
  * @module ol/Collection
  */
-import BaseObject from './Object.js';
 import CollectionEventType from './CollectionEventType.js';
+import BaseObject from './Object.js';
 import Event from './events/Event.js';
 
 /**
@@ -108,10 +108,10 @@ class Collection extends BaseObject {
      * @private
      * @type {!Array<T>}
      */
-    this.array_ = array ? array : [];
+    this.array_ = array ?? [];
 
     if (this.unique_) {
-      for (let i = 0, ii = this.array_.length; i < ii; ++i) {
+      for (let i = 1, ii = this.array_.length; i < ii; ++i) {
         this.assertUnique_(this.array_[i], i);
       }
     }
@@ -226,9 +226,6 @@ class Collection extends BaseObject {
    * @api
    */
   push(elem) {
-    if (this.unique_) {
-      this.assertUnique_(elem);
-    }
     const n = this.getLength();
     this.insertAt(n, elem);
     return this.getLength();
@@ -317,8 +314,9 @@ class Collection extends BaseObject {
    * @param {number} [except] Optional index to ignore.
    */
   assertUnique_(elem, except) {
-    for (let i = 0, ii = this.array_.length; i < ii; ++i) {
-      if (this.array_[i] === elem && i !== except) {
+    const array = this.array_;
+    for (let i = 0, ii = array.length; i < ii; ++i) {
+      if (array[i] === elem && i !== except) {
         throw new Error('Duplicate item added to a unique collection');
       }
     }

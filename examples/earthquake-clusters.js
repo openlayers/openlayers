@@ -1,21 +1,20 @@
-import KML from '../src/ol/format/KML.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {
-  Circle as CircleStyle,
-  Fill,
-  RegularShape,
-  Stroke,
-  Style,
-  Text,
-} from '../src/ol/style.js';
-import {Cluster, StadiaMaps, Vector as VectorSource} from '../src/ol/source.js';
-import {
-  Select,
-  defaults as defaultInteractions,
-} from '../src/ol/interaction.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
 import {createEmpty, extend, getHeight, getWidth} from '../src/ol/extent.js';
+import KML from '../src/ol/format/KML.js';
+import Select from '../src/ol/interaction/Select.js';
+import {defaults as defaultInteractions} from '../src/ol/interaction/defaults.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
+import Cluster from '../src/ol/source/Cluster.js';
+import StadiaMaps from '../src/ol/source/StadiaMaps.js';
+import VectorSource from '../src/ol/source/Vector.js';
+import CircleStyle from '../src/ol/style/Circle.js';
+import Fill from '../src/ol/style/Fill.js';
+import RegularShape from '../src/ol/style/RegularShape.js';
+import Stroke from '../src/ol/style/Stroke.js';
+import Style from '../src/ol/style/Style.js';
+import Text from '../src/ol/style/Text.js';
 
 const earthquakeFill = new Fill({
   color: 'rgba(255, 153, 0, 0.8)',

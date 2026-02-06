@@ -1,13 +1,15 @@
 import Feature from '../src/ol/Feature.js';
-import LineString from '../src/ol/geom/LineString.js';
 import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
+import {getWidth} from '../src/ol/extent.js';
+import LineString from '../src/ol/geom/LineString.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
+import {getVectorContext} from '../src/ol/render.js';
 import StadiaMaps from '../src/ol/source/StadiaMaps.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import View from '../src/ol/View.js';
-import {Stroke, Style} from '../src/ol/style.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
-import {getVectorContext} from '../src/ol/render.js';
-import {getWidth} from '../src/ol/extent.js';
+import Stroke from '../src/ol/style/Stroke.js';
+import Style from '../src/ol/style/Style.js';
 
 const tileLayer = new TileLayer({
   source: new StadiaMaps({

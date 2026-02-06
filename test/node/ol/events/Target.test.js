@@ -1,8 +1,8 @@
 import Disposable from '../../../../src/ol/Disposable.js';
 import Event from '../../../../src/ol/events/Event.js';
 import EventTarget from '../../../../src/ol/events/Target.js';
-import expect from '../../expect.js';
 import {listen} from '../../../../src/ol/events.js';
+import expect from '../../expect.js';
 
 describe('ol/events/Target.js', function () {
   let called, events, eventTarget, spy1, spy2, spy3;

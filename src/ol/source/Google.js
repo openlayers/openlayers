@@ -2,15 +2,12 @@
  * @module ol/source/Google
  */
 
-import TileImage from './TileImage.js';
 import ViewHint from '../ViewHint.js';
-import {createXYZ, extentFromProjection} from '../tilegrid.js';
 import {getBottomLeft, getTopRight} from '../extent.js';
 import {toLonLat} from '../proj.js';
+import {createXYZ, extentFromProjection} from '../tilegrid.js';
+import TileImage from './TileImage.js';
 
-const createSessionUrl = 'https://tile.googleapis.com/v1/createSession';
-const tileUrl = 'https://tile.googleapis.com/v1/2dtiles';
-const attributionUrl = 'https://tile.googleapis.com/tile/v1/viewport';
 const maxZoom = 22;
 
 /**
@@ -44,6 +41,7 @@ const maxZoom = 22;
  * @property {number|import("../array.js").NearestDirectionFunction} [zDirection=0]
  * Choose whether to use tiles with a higher or lower zoom level when between integer
  * zoom levels. See {@link module:ol/tilegrid/TileGrid~TileGrid#getZForResolution}.
+ * @property {string} [url='https://tile.googleapis.com/'] The Google Tile server URL.
  */
 
 /**
@@ -171,6 +169,26 @@ class Google extends TileImage {
      */
     this.previousViewportExtent_;
 
+    const baseUrl = options.url || 'https://tile.googleapis.com/';
+
+    /**
+     * @type {string}
+     * @private
+     */
+    this.createSessionUrl_ = baseUrl + 'v1/createSession';
+
+    /**
+     * @type {string}
+     * @private
+     */
+    this.tileUrl_ = baseUrl + 'v1/2dtiles';
+
+    /**
+     * @type {string}
+     * @private
+     */
+    this.attributionUrl_ = baseUrl + 'tile/v1/viewport';
+
     this.createSession_();
   }
 
@@ -205,7 +223,7 @@ class Google extends TileImage {
    * @private
    */
   async createSession_() {
-    const url = createSessionUrl + '?key=' + this.apiKey_;
+    const url = this.createSessionUrl_ + '?key=' + this.apiKey_;
     const config = {
       method: 'POST',
       headers: {
@@ -246,6 +264,7 @@ class Google extends TileImage {
     const session = sessionTokenResponse.session;
     this.sessionTokenValue_ = session;
     const key = this.apiKey_;
+    const tileUrl = this.tileUrl_;
     this.tileUrlFunction = function (tileCoord, pixelRatio, projection) {
       const z = tileCoord[0];
       const x = tileCoord[1];
@@ -297,6 +316,7 @@ class Google extends TileImage {
     this.previousViewportExtent_ = viewportExtent;
     const session = this.sessionTokenValue_;
     const key = this.apiKey_;
+    const attributionUrl = this.attributionUrl_;
     const url = `${attributionUrl}?session=${session}&key=${key}&${viewportExtent}`;
     this.previousViewportAttribution_ = await fetch(url)
       .then((response) => response.json())

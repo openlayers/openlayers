@@ -1,36 +1,37 @@
-import Circle from '../../../../../src/ol/geom/Circle.js';
-import Draw, {
-  createBox,
-  createRegularPolygon,
-} from '../../../../../src/ol/interaction/Draw.js';
+import proj4 from 'proj4';
+import {spy as sinonSpy} from 'sinon';
 import Feature from '../../../../../src/ol/Feature.js';
-import Interaction from '../../../../../src/ol/interaction/Interaction.js';
-import LineString from '../../../../../src/ol/geom/LineString.js';
 import Map from '../../../../../src/ol/Map.js';
 import MapBrowserEvent from '../../../../../src/ol/MapBrowserEvent.js';
-import MultiLineString from '../../../../../src/ol/geom/MultiLineString.js';
-import MultiPoint from '../../../../../src/ol/geom/MultiPoint.js';
-import MultiPolygon from '../../../../../src/ol/geom/MultiPolygon.js';
-import Point from '../../../../../src/ol/geom/Point.js';
-import Polygon from '../../../../../src/ol/geom/Polygon.js';
-import VectorLayer from '../../../../../src/ol/layer/Vector.js';
-import VectorSource from '../../../../../src/ol/source/Vector.js';
+import {unByKey} from '../../../../../src/ol/Observable.js';
 import View from '../../../../../src/ol/View.js';
-import proj4 from 'proj4';
+import {equals} from '../../../../../src/ol/array.js';
 import {
   altKeyOnly,
   always,
   shiftKeyOnly,
 } from '../../../../../src/ol/events/condition.js';
+import {listen} from '../../../../../src/ol/events.js';
+import Circle from '../../../../../src/ol/geom/Circle.js';
+import LineString from '../../../../../src/ol/geom/LineString.js';
+import MultiLineString from '../../../../../src/ol/geom/MultiLineString.js';
+import MultiPoint from '../../../../../src/ol/geom/MultiPoint.js';
+import MultiPolygon from '../../../../../src/ol/geom/MultiPolygon.js';
+import Point from '../../../../../src/ol/geom/Point.js';
+import Polygon from '../../../../../src/ol/geom/Polygon.js';
+import Draw, {
+  createBox,
+  createRegularPolygon,
+} from '../../../../../src/ol/interaction/Draw.js';
+import Interaction from '../../../../../src/ol/interaction/Interaction.js';
+import VectorLayer from '../../../../../src/ol/layer/Vector.js';
+import {register} from '../../../../../src/ol/proj/proj4.js';
 import {
   clearUserProjection,
   setUserProjection,
   transform,
 } from '../../../../../src/ol/proj.js';
-import {equals} from '../../../../../src/ol/array.js';
-import {listen} from '../../../../../src/ol/events.js';
-import {register} from '../../../../../src/ol/proj/proj4.js';
-import {unByKey} from '../../../../../src/ol/Observable.js';
+import VectorSource from '../../../../../src/ol/source/Vector.js';
 
 describe('ol/interaction/Draw', function () {
   /**
@@ -355,9 +356,9 @@ describe('ol/interaction/Draw', function () {
     });
 
     it('triggers draw events', function () {
-      const ds = sinon.spy();
-      const de = sinon.spy();
-      const da = sinon.spy();
+      const ds = sinonSpy();
+      const de = sinonSpy();
+      const da = sinonSpy();
       listen(draw, 'drawstart', ds);
       listen(draw, 'drawend', de);
       listen(draw, 'drawabort', da);
@@ -621,9 +622,9 @@ describe('ol/interaction/Draw', function () {
     });
 
     it('triggers draw events', function () {
-      const ds = sinon.spy();
-      const de = sinon.spy();
-      const da = sinon.spy();
+      const ds = sinonSpy();
+      const de = sinonSpy();
+      const da = sinonSpy();
       listen(draw, 'drawstart', ds);
       listen(draw, 'drawend', de);
       listen(draw, 'drawabort', da);
@@ -710,8 +711,8 @@ describe('ol/interaction/Draw', function () {
         type: type,
         finishCondition: finishCondition,
       });
-      draw.atFinish_ = sinon.spy(Draw.prototype.atFinish_);
-      draw.finishDrawing = sinon.spy(Draw.prototype.finishDrawing);
+      draw.atFinish_ = sinonSpy(Draw.prototype.atFinish_);
+      draw.finishDrawing = sinonSpy(Draw.prototype.finishDrawing);
       map.addInteraction(draw);
     }
 
@@ -738,7 +739,7 @@ describe('ol/interaction/Draw', function () {
     }
 
     function testFinishConditionTrue(type, amount) {
-      const finishCondition = sinon.spy(() => true);
+      const finishCondition = sinonSpy(() => true);
       drawType(type, amount, finishCondition);
       expect(draw.atFinish_.called).to.be(true);
       expect(finishCondition.callCount).to.be(1);
@@ -768,7 +769,7 @@ describe('ol/interaction/Draw', function () {
     });
 
     function testFinishConditionFalse(type, amount) {
-      const finishCondition = sinon.spy(() => false);
+      const finishCondition = sinonSpy(() => false);
       drawType(type, amount, finishCondition);
       expect(draw.atFinish_.called).to.be(true);
       expect(finishCondition.callCount).to.be(1);
@@ -1054,9 +1055,9 @@ describe('ol/interaction/Draw', function () {
     });
 
     it('triggers draw events', function () {
-      const ds = sinon.spy();
-      const de = sinon.spy();
-      const da = sinon.spy();
+      const ds = sinonSpy();
+      const de = sinonSpy();
+      const da = sinonSpy();
       listen(draw, 'drawstart', ds);
       listen(draw, 'drawend', de);
       listen(draw, 'drawabort', da);
@@ -1393,9 +1394,9 @@ describe('ol/interaction/Draw', function () {
     });
 
     it('triggers draw events', function () {
-      const ds = sinon.spy();
-      const de = sinon.spy();
-      const da = sinon.spy();
+      const ds = sinonSpy();
+      const de = sinonSpy();
+      const da = sinonSpy();
       listen(draw, 'drawstart', ds);
       listen(draw, 'drawend', de);
       listen(draw, 'drawabort', da);
@@ -1448,9 +1449,9 @@ describe('ol/interaction/Draw', function () {
     });
 
     it('triggers draw events', function () {
-      const ds = sinon.spy();
-      const de = sinon.spy();
-      const da = sinon.spy();
+      const ds = sinonSpy();
+      const de = sinonSpy();
+      const da = sinonSpy();
       listen(draw, 'drawstart', ds);
       listen(draw, 'drawend', de);
       listen(draw, 'drawabort', da);
@@ -1529,7 +1530,7 @@ describe('ol/interaction/Draw', function () {
 
     describe('#setActive(false)', function () {
       it('unsets the map from the feature overlay', function () {
-        const spy = sinon.spy(interaction.overlay_, 'setMap');
+        const spy = sinonSpy(interaction.overlay_, 'setMap');
         interaction.setActive(false);
         expect(spy.getCall(0).args[0]).to.be(null);
       });
@@ -1538,8 +1539,8 @@ describe('ol/interaction/Draw', function () {
         expect(interaction.sketchFeature_).to.be(null);
       });
       it('fires change:active', function () {
-        const spy = sinon.spy(interaction.overlay_, 'setMap');
-        const listenerSpy = sinon.spy(function () {
+        const spy = sinonSpy(interaction.overlay_, 'setMap');
+        const listenerSpy = sinonSpy(function () {
           // test that the interaction's change:active listener is called first
           expect(spy.getCall(0).args[0]).to.be(null);
         });
@@ -1554,13 +1555,13 @@ describe('ol/interaction/Draw', function () {
         interaction.setActive(false);
       });
       it('sets the map into the feature overlay', function () {
-        const spy = sinon.spy(interaction.overlay_, 'setMap');
+        const spy = sinonSpy(interaction.overlay_, 'setMap');
         interaction.setActive(true);
         expect(spy.getCall(0).args[0]).to.be(map);
       });
       it('fires change:active', function () {
-        const spy = sinon.spy(interaction.overlay_, 'setMap');
-        const listenerSpy = sinon.spy(function () {
+        const spy = sinonSpy(interaction.overlay_, 'setMap');
+        const listenerSpy = sinonSpy(function () {
           // test that the interaction's change:active listener is called first
           expect(spy.getCall(0).args[0]).to.be(map);
         });
@@ -1595,7 +1596,7 @@ describe('ol/interaction/Draw', function () {
       });
       describe('#setMap(null) when interaction is active', function () {
         it('unsets the map from the feature overlay', function () {
-          const spy = sinon.spy(interaction.overlay_, 'setMap');
+          const spy = sinonSpy(interaction.overlay_, 'setMap');
           interaction.setMap(null);
           expect(spy.getCall(0).args[0]).to.be(null);
         });
@@ -1627,7 +1628,7 @@ describe('ol/interaction/Draw', function () {
     describe('#setMap(map)', function () {
       describe('#setMap(map) when interaction is active', function () {
         it('sets the map into the feature overlay', function () {
-          const spy = sinon.spy(interaction.overlay_, 'setMap');
+          const spy = sinonSpy(interaction.overlay_, 'setMap');
           interaction.setMap(map);
           expect(spy.getCall(0).args[0]).to.be(map);
         });
@@ -1635,11 +1636,53 @@ describe('ol/interaction/Draw', function () {
       describe('#setMap(map) when interaction is not active', function () {
         it('does not set the map into the feature overlay', function () {
           interaction.setActive(false);
-          const spy = sinon.spy(interaction.overlay_, 'setMap');
+          const spy = sinonSpy(interaction.overlay_, 'setMap');
           interaction.setMap(map);
           expect(spy.getCall(0).args[0]).to.be(null);
         });
       });
+    });
+  });
+
+  describe('#setFreehand()', function () {
+    let interaction;
+
+    beforeEach(function () {
+      interaction = new Draw({
+        type: 'LineString',
+      });
+
+      expect(interaction.getActive()).to.be(true);
+
+      map.addInteraction(interaction);
+
+      // first point
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
+
+      expect(interaction.sketchFeature_).not.to.be(null);
+    });
+
+    afterEach(function () {
+      map.removeInteraction(interaction);
+    });
+
+    describe('#setFreehand()', function () {
+      it('sets freehand property', function () {
+        interaction.setFreehand(true);
+        expect(interaction.getFreehand()).to.be(true);
+
+        interaction.setFreehand(false);
+        expect(interaction.getFreehand()).to.be(false);
+      });
+    });
+  });
+
+  describe('#getFreehand()', function () {
+    it('returns the freehand mode', function () {
+      const draw = new Draw({type: 'LineString'});
+      expect(draw.getFreehand()).to.eql(draw.freehand_);
     });
   });
 
@@ -1927,7 +1970,7 @@ describe('ol/interaction/Draw', function () {
     });
 
     it('dispatches a drawstart event', function () {
-      const spy = sinon.spy();
+      const spy = sinonSpy();
       listen(draw, 'drawstart', spy);
       draw.extend(feature);
       expect(spy.callCount).to.be(1);

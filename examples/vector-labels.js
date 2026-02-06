@@ -1,15 +1,15 @@
-import GeoJSON from '../src/ol/format/GeoJSON.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {
-  Circle as CircleStyle,
-  Fill,
-  Stroke,
-  Style,
-  Text,
-} from '../src/ol/style.js';
-import {OSM, Vector as VectorSource} from '../src/ol/source.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import GeoJSON from '../src/ol/format/GeoJSON.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
+import OSM from '../src/ol/source/OSM.js';
+import VectorSource from '../src/ol/source/Vector.js';
+import CircleStyle from '../src/ol/style/Circle.js';
+import Fill from '../src/ol/style/Fill.js';
+import Stroke from '../src/ol/style/Stroke.js';
+import Style from '../src/ol/style/Style.js';
+import Text from '../src/ol/style/Text.js';
 
 let openSansAdded = false;
 
@@ -80,7 +80,7 @@ const getText = function (feature, resolution, dom) {
   } else if (type == 'hide') {
     text = '';
   } else if (type == 'shorten') {
-    text = text.trunc(12);
+    text = truncate(text, 12);
   } else if (
     type == 'wrap' &&
     (!dom.placement || dom.placement.value != 'line')
@@ -225,14 +225,13 @@ document
   });
 
 /**
+ * @param {string} string String
  * @param {number} n The max number of characters to keep.
  * @return {string} Truncated string.
  */
-String.prototype.trunc =
-  String.prototype.trunc ||
-  function (n) {
-    return this.length > n ? this.substr(0, n - 1) + '...' : this.substr(0);
-  };
+function truncate(string, n) {
+  return string.length > n ? string.slice(0, n - 1) + '…' : string.slice();
+}
 
 // https://stackoverflow.com/questions/14484787/wrap-text-in-javascript
 function stringDivider(str, width, spaceReplacer) {

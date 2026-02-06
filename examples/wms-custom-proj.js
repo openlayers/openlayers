@@ -1,14 +1,15 @@
 import Map from '../src/ol/Map.js';
-import Projection from '../src/ol/proj/Projection.js';
-import TileLayer from '../src/ol/layer/Tile.js';
-import TileWMS from '../src/ol/source/TileWMS.js';
 import View from '../src/ol/View.js';
-import {ScaleLine, defaults as defaultControls} from '../src/ol/control.js';
+import ScaleLine from '../src/ol/control/ScaleLine.js';
+import {defaults as defaultControls} from '../src/ol/control/defaults.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import Projection from '../src/ol/proj/Projection.js';
 import {
   addCoordinateTransforms,
   addProjection,
   transform,
 } from '../src/ol/proj.js';
+import TileWMS from '../src/ol/source/TileWMS.js';
 
 // By default OpenLayers does not know about the EPSG:21781 (Swiss) projection.
 // So we create a projection instance for EPSG:21781 and pass it to
@@ -18,7 +19,7 @@ import {
 const projection = new Projection({
   code: 'EPSG:21781',
   // The extent is used to determine zoom level 0. Recommended values for a
-  // projection's validity extent can be found at https://epsg.io/.
+  // projection's validity extent can be found at https://spatialreference.org/.
   extent: [485869.5728, 76443.1884, 837076.5648, 299941.7864],
   units: 'm',
 });

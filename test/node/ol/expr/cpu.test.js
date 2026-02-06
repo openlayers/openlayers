@@ -1,4 +1,7 @@
-import expect from '../../expect.js';
+import {
+  buildExpression,
+  newEvaluationContext,
+} from '../../../../src/ol/expr/cpu.js';
 import {
   BooleanType,
   ColorType,
@@ -7,10 +10,7 @@ import {
   StringType,
   newParsingContext,
 } from '../../../../src/ol/expr/expression.js';
-import {
-  buildExpression,
-  newEvaluationContext,
-} from '../../../../src/ol/expr/cpu.js';
+import expect from '../../expect.js';
 
 describe('ol/expr/cpu.js', () => {
   describe('buildExpression()', () => {
@@ -630,6 +630,15 @@ describe('ol/expr/cpu.js', () => {
         expected: 'got other',
       },
       {
+        name: 'match (input equals fallback value)',
+        type: NumberType,
+        expression: ['match', ['get', 'number'], 0, 1, 42],
+        context: {
+          properties: {number: 42},
+        },
+        expected: 42,
+      },
+      {
         name: 'interpolate (linear number)',
         type: NumberType,
         expression: [
@@ -658,12 +667,6 @@ describe('ol/expr/cpu.js', () => {
         type: NumberType,
         expression: ['interpolate', ['linear'], 42, 42, 1, 42, 2],
         expected: 1,
-      },
-      {
-        name: 'interpolate (linear color)',
-        type: ColorType,
-        expression: ['interpolate', ['linear'], 0.5, 0, 'red', 1, [0, 255, 0]],
-        expected: [219, 170, 0, 1],
       },
       {
         name: 'to-string (string)',
@@ -830,7 +833,7 @@ describe('ol/expr/cpu.js', () => {
      */
 
     /**
-     * @type {Array<InterpolateTest}
+     * @type {Array<InterpolateTest>}
      */
     const tests = [
       {

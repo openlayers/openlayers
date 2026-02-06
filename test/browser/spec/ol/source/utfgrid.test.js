@@ -1,11 +1,11 @@
-import TileGrid from '../../../../../src/ol/tilegrid/TileGrid.js';
-import TileSource from '../../../../../src/ol/source/Tile.js';
-import UTFGrid, {CustomTile} from '../../../../../src/ol/source/UTFGrid.js';
 import {
   fromLonLat,
   get as getProjection,
   transformExtent,
 } from '../../../../../src/ol/proj.js';
+import TileSource from '../../../../../src/ol/source/Tile.js';
+import UTFGrid, {CustomTile} from '../../../../../src/ol/source/UTFGrid.js';
+import TileGrid from '../../../../../src/ol/tilegrid/TileGrid.js';
 
 describe('ol.source.UTFGrid', function () {
   const url = 'spec/ol/data/utfgrid.json';

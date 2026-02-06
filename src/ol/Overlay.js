@@ -1,12 +1,12 @@
 /**
  * @module ol/Overlay
  */
-import BaseObject from './Object.js';
 import MapEventType from './MapEventType.js';
+import BaseObject from './Object.js';
 import {CLASS_SELECTABLE} from './css.js';
-import {containsExtent} from './extent.js';
-import {listen, unlistenByKey} from './events.js';
 import {outerHeight, outerWidth, removeChildren} from './dom.js';
+import {listen, unlistenByKey} from './events.js';
+import {containsExtent} from './extent.js';
 
 /**
  * @typedef {'bottom-left' | 'bottom-center' | 'bottom-right' | 'center-left' | 'center-center' | 'center-right' | 'top-left' | 'top-center' | 'top-right'} Positioning
@@ -533,8 +533,8 @@ class Overlay extends BaseObject {
 
     this.setVisible(true);
 
-    const x = Math.round(pixel[0] + offset[0]) + 'px';
-    const y = Math.round(pixel[1] + offset[1]) + 'px';
+    const x = `${pixel[0] + offset[0]}px`;
+    const y = `${pixel[1] + offset[1]}px`;
     let posX = '0%';
     let posY = '0%';
     if (

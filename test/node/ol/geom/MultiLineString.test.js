@@ -1,7 +1,7 @@
+import {isEmpty} from '../../../../src/ol/extent.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
 import expect from '../../expect.js';
-import {isEmpty} from '../../../../src/ol/extent.js';
 
 describe('ol/geom/MultiLineString.js', function () {
   it('cannot be constructed with a null geometry', function () {
@@ -547,6 +547,25 @@ describe('ol/geom/MultiLineString.js', function () {
       expect(multiLineString.containsXY(1, 3)).to.be(false);
       expect(multiLineString.containsXY(2, 11)).to.be(false);
       expect(multiLineString.containsXY(-2, 3)).to.be(false);
+    });
+  });
+
+  describe('#getLength', function () {
+    it('sums up the length of all linestrings', function () {
+      const multiLineString = new MultiLineString([
+        [
+          [0, 0],
+          [1, 0],
+          [1, 1],
+        ],
+        [
+          [0.5, 0.5],
+          [0, 0.5],
+          [0, 0],
+        ],
+      ]);
+      const length = multiLineString.getLength();
+      expect(length).to.be(3);
     });
   });
 });

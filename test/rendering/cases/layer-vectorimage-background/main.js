@@ -1,9 +1,11 @@
-import GeoJSON from '../../../../src/ol/format/GeoJSON.js';
 import Map from '../../../../src/ol/Map.js';
+import View from '../../../../src/ol/View.js';
+import GeoJSON from '../../../../src/ol/format/GeoJSON.js';
 import VectorImageLayer from '../../../../src/ol/layer/VectorImage.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
-import View from '../../../../src/ol/View.js';
-import {Fill, Stroke, Style} from '../../../../src/ol/style.js';
+import Fill from '../../../../src/ol/style/Fill.js';
+import Stroke from '../../../../src/ol/style/Stroke.js';
+import Style from '../../../../src/ol/style/Style.js';
 
 new Map({
   target: 'map',

@@ -2,8 +2,8 @@
  * @module ol/interaction/Interaction
  */
 import BaseObject from '../Object.js';
-import InteractionProperty from './Property.js';
 import {easeOut, linear} from '../easing.js';
+import InteractionProperty from './Property.js';
 
 /***
  * @template Return

@@ -1,17 +1,17 @@
 /**
  * @module ol/layer/Flow
  */
-import BaseTileLayer from './BaseTile.js';
-import FlowLayerRenderer, {A, U, V} from '../renderer/webgl/FlowLayer.js';
-import LayerProperty from './Property.js';
-import {Attributes as BA, Uniforms as BU} from '../renderer/webgl/TileLayer.js';
 import {ColorType} from '../expr/expression.js';
-import {expressionToGlsl} from '../webgl/styleparser.js';
 import {
   getStringNumberEquivalent,
   newCompilationContext,
   uniformNameForVariable,
 } from '../expr/gpu.js';
+import {expressionToGlsl} from '../render/webgl/compileUtil.js';
+import FlowLayerRenderer, {A, U, V} from '../renderer/webgl/FlowLayer.js';
+import {Attributes as BA, Uniforms as BU} from '../renderer/webgl/TileLayer.js';
+import BaseTileLayer from './BaseTile.js';
+import LayerProperty from './Property.js';
 
 /**
  * @typedef {import("../source/DataTile.js").default} SourceType
@@ -293,7 +293,6 @@ const particleColorVertexShader = `
  */
 function parseStyle(style) {
   const context = newCompilationContext();
-  context.inFragmentShader = true;
   const pipeline = [];
 
   if (style.color !== undefined) {
@@ -364,7 +363,7 @@ function parseStyle(style) {
         vx * ${U.ROTATION}.y + vy * ${U.ROTATION}.x
       );
 
-      float v_prop_speed = length(velocity);
+      float a_prop_speed = length(velocity);
 
       vec4 color;
 

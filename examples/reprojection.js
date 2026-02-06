@@ -1,15 +1,17 @@
-import Map from '../src/ol/Map.js';
-import TileGrid from '../src/ol/tilegrid/TileGrid.js';
-import TileLayer from '../src/ol/layer/WebGLTile.js';
-import View from '../src/ol/View.js';
-import WMTS, {optionsFromCapabilities} from '../src/ol/source/WMTS.js';
-import WMTSCapabilities from '../src/ol/format/WMTSCapabilities.js';
 import proj4 from 'proj4';
-import {OSM, TileImage, TileWMS} from '../src/ol/source.js';
-import {createXYZ} from '../src/ol/tilegrid.js';
+import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
 import {getCenter, getWidth} from '../src/ol/extent.js';
-import {get as getProjection, transformExtent} from '../src/ol/proj.js';
+import WMTSCapabilities from '../src/ol/format/WMTSCapabilities.js';
+import TileLayer from '../src/ol/layer/WebGLTile.js';
 import {register} from '../src/ol/proj/proj4.js';
+import {get as getProjection, transformExtent} from '../src/ol/proj.js';
+import OSM from '../src/ol/source/OSM.js';
+import TileImage from '../src/ol/source/TileImage.js';
+import TileWMS from '../src/ol/source/TileWMS.js';
+import WMTS, {optionsFromCapabilities} from '../src/ol/source/WMTS.js';
+import TileGrid from '../src/ol/tilegrid/TileGrid.js';
+import {createXYZ} from '../src/ol/tilegrid.js';
 
 proj4.defs(
   'EPSG:27700',

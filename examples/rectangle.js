@@ -1,12 +1,11 @@
+import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
-import OSM from '../src/ol/source/OSM.js';
-import TileLayer from '../src/ol/layer/Tile.js';
 import View from '../src/ol/View.js';
-
-import Feature from 'ol/Feature.js';
-import {Vector as VectorLayer} from 'ol/layer.js';
-import {Vector as VectorSource} from 'ol/source.js';
-import {fromExtent} from 'ol/geom/Polygon.js';
+import {fromExtent} from '../src/ol/geom/Polygon.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
+import OSM from '../src/ol/source/OSM.js';
+import VectorSource from '../src/ol/source/Vector.js';
 
 const map = new Map({
   layers: [

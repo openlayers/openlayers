@@ -1,32 +1,26 @@
 /**
  * @module ol/Map
  */
-import BaseObject from './Object.js';
 import Collection from './Collection.js';
 import CollectionEventType from './CollectionEventType.js';
-import CompositeMapRenderer from './renderer/Composite.js';
-import EventType from './events/EventType.js';
-import Layer from './layer/Layer.js';
-import LayerGroup, {GroupEvent} from './layer/Group.js';
 import MapBrowserEvent from './MapBrowserEvent.js';
 import MapBrowserEventHandler from './MapBrowserEventHandler.js';
 import MapBrowserEventType from './MapBrowserEventType.js';
 import MapEvent from './MapEvent.js';
 import MapEventType from './MapEventType.js';
 import MapProperty from './MapProperty.js';
+import BaseObject from './Object.js';
 import ObjectEventType from './ObjectEventType.js';
-import PointerEventType from './pointer/EventType.js';
-import RenderEventType from './render/EventType.js';
 import TileQueue, {getTilePriority} from './TileQueue.js';
 import View from './View.js';
 import ViewHint from './ViewHint.js';
-import {DEVICE_PIXEL_RATIO, PASSIVE_EVENT_LISTENERS} from './has.js';
-import {TRUE} from './functions.js';
-import {
-  apply as applyTransform,
-  create as createTransform,
-} from './transform.js';
+import {equals} from './array.js';
 import {assert} from './asserts.js';
+import {warn} from './console.js';
+import {defaults as defaultControls} from './control/defaults.js';
+import {isCanvas} from './dom.js';
+import EventType from './events/EventType.js';
+import {listen, unlistenByKey} from './events.js';
 import {
   clone,
   createOrUpdateEmpty,
@@ -34,14 +28,25 @@ import {
   getForViewAndSize,
   isEmpty,
 } from './extent.js';
-import {defaults as defaultControls} from './control/defaults.js';
+import {TRUE} from './functions.js';
+import {
+  DEVICE_PIXEL_RATIO,
+  PASSIVE_EVENT_LISTENERS,
+  WORKER_OFFSCREEN_CANVAS,
+} from './has.js';
 import {defaults as defaultInteractions} from './interaction/defaults.js';
-import {equals} from './array.js';
+import LayerGroup, {GroupEvent} from './layer/Group.js';
+import Layer from './layer/Layer.js';
+import PointerEventType from './pointer/EventType.js';
 import {fromUserCoordinate, toUserCoordinate} from './proj.js';
-import {getUid} from './util.js';
+import RenderEventType from './render/EventType.js';
+import CompositeMapRenderer from './renderer/Composite.js';
 import {hasArea} from './size.js';
-import {listen, unlistenByKey} from './events.js';
-import {warn} from './console.js';
+import {
+  apply as applyTransform,
+  create as createTransform,
+} from './transform.js';
+import {getUid} from './util.js';
 
 /**
  * State of the current frame. Only `pixelRatio`, `time` and `viewState` should
@@ -72,7 +77,7 @@ import {warn} from './console.js';
  */
 
 /**
- * @typedef {function(Map, ?FrameState): any} PostRenderFunction
+ * @typedef {function(Map, FrameState): any} PostRenderFunction
  */
 
 /**
@@ -118,12 +123,12 @@ import {warn} from './console.js';
  * @typedef {Object} MapOptions
  * @property {Collection<import("./control/Control.js").default>|Array<import("./control/Control.js").default>} [controls]
  * Controls initially added to the map. If not specified,
- * {@link module:ol/control/defaults.defaults} is used.
+ * {@link module:ol/control/defaults.defaults} is used. In a worker, no controls are added by default.
  * @property {number} [pixelRatio=window.devicePixelRatio] The ratio between
  * physical pixels and device-independent pixels (dips) on the device.
  * @property {Collection<import("./interaction/Interaction.js").default>|Array<import("./interaction/Interaction.js").default>} [interactions]
  * Interactions that are initially added to the map. If not specified,
- * {@link module:ol/interaction/defaults.defaults} is used.
+ * {@link module:ol/interaction/defaults.defaults} is used. In a worker, no interactions are added by default.
  * @property {HTMLElement|Document|string} [keyboardEventTarget] The element to
  * listen to keyboard events on. This determines when the `KeyboardPan` and
  * `KeyboardZoom` interactions trigger. For example, if this option is set to
@@ -144,10 +149,13 @@ import {warn} from './console.js';
  * Increasing this value can make it easier to click on the map.
  * @property {Collection<import("./Overlay.js").default>|Array<import("./Overlay.js").default>} [overlays]
  * Overlays initially added to the map. By default, no overlays are added.
- * @property {HTMLElement|string} [target] The container for the map, either the
+ * @property {HTMLElement|string|HTMLCanvasElement|OffscreenCanvas} [target] The container for the map, either the
  * element itself or the `id` of the element. If not specified at construction
  * time, {@link module:ol/Map~Map#setTarget} must be called for the map to be
  * rendered. If passed by element, the container can be in a secondary document.
+ * For use in workers or when exporting a map, use an `OffscreenCanvas` or `HTMLCanvasElement` as target,
+ * with a width and height in physical pixels, optionally multiplied by and a scale transform matching
+ * the map's pixel ratio.
  * For accessibility (focus and keyboard events for map navigation), the `target` element must have a
  *  properly configured `tabindex` attribute. If the `target` element is inside a Shadow DOM, the
  *  `tabindex` atribute must be set on the custom element's host element.
@@ -366,39 +374,42 @@ class Map extends BaseObject {
      * @private
      * @type {!HTMLElement}
      */
-    this.viewport_ = document.createElement('div');
-    this.viewport_.className =
-      'ol-viewport' + ('ontouchstart' in window ? ' ol-touch' : '');
-    this.viewport_.style.position = 'relative';
-    this.viewport_.style.overflow = 'hidden';
-    this.viewport_.style.width = '100%';
-    this.viewport_.style.height = '100%';
+    if (!WORKER_OFFSCREEN_CANVAS) {
+      this.viewport_ = document.createElement('div');
+      this.viewport_.className =
+        'ol-viewport' + ('ontouchstart' in window ? ' ol-touch' : '');
+      this.viewport_.style.position = 'relative';
+      this.viewport_.style.overflow = 'hidden';
+      this.viewport_.style.width = '100%';
+      this.viewport_.style.height = '100%';
 
-    /**
-     * @private
-     * @type {!HTMLElement}
-     */
-    this.overlayContainer_ = document.createElement('div');
-    this.overlayContainer_.style.position = 'absolute';
-    this.overlayContainer_.style.zIndex = '0';
-    this.overlayContainer_.style.width = '100%';
-    this.overlayContainer_.style.height = '100%';
-    this.overlayContainer_.style.pointerEvents = 'none';
-    this.overlayContainer_.className = 'ol-overlaycontainer';
-    this.viewport_.appendChild(this.overlayContainer_);
+      /**
+       * @private
+       * @type {!HTMLElement}
+       */
+      this.overlayContainer_ = document.createElement('div');
+      this.overlayContainer_.style.position = 'absolute';
+      this.overlayContainer_.style.zIndex = '0';
+      this.overlayContainer_.style.width = '100%';
+      this.overlayContainer_.style.height = '100%';
+      this.overlayContainer_.style.pointerEvents = 'none';
+      this.overlayContainer_.className = 'ol-overlaycontainer';
+      this.viewport_.appendChild(this.overlayContainer_);
 
-    /**
-     * @private
-     * @type {!HTMLElement}
-     */
-    this.overlayContainerStopEvent_ = document.createElement('div');
-    this.overlayContainerStopEvent_.style.position = 'absolute';
-    this.overlayContainerStopEvent_.style.zIndex = '0';
-    this.overlayContainerStopEvent_.style.width = '100%';
-    this.overlayContainerStopEvent_.style.height = '100%';
-    this.overlayContainerStopEvent_.style.pointerEvents = 'none';
-    this.overlayContainerStopEvent_.className = 'ol-overlaycontainer-stopevent';
-    this.viewport_.appendChild(this.overlayContainerStopEvent_);
+      /**
+       * @private
+       * @type {!HTMLElement}
+       */
+      this.overlayContainerStopEvent_ = document.createElement('div');
+      this.overlayContainerStopEvent_.style.position = 'absolute';
+      this.overlayContainerStopEvent_.style.zIndex = '0';
+      this.overlayContainerStopEvent_.style.width = '100%';
+      this.overlayContainerStopEvent_.style.height = '100%';
+      this.overlayContainerStopEvent_.style.pointerEvents = 'none';
+      this.overlayContainerStopEvent_.className =
+        'ol-overlaycontainer-stopevent';
+      this.viewport_.appendChild(this.overlayContainerStopEvent_);
+    }
 
     /**
      * @private
@@ -430,17 +441,21 @@ class Map extends BaseObject {
      */
     this.targetElement_ = null;
 
-    /**
-     * @private
-     * @type {ResizeObserver}
-     */
-    this.resizeObserver_ = new ResizeObserver(() => this.updateSize());
+    if (!WORKER_OFFSCREEN_CANVAS) {
+      /**
+       * @private
+       * @type {ResizeObserver}
+       */
+      this.resizeObserver_ = new ResizeObserver(() => this.updateSize());
+    }
 
     /**
      * @type {Collection<import("./control/Control.js").default>}
      * @protected
      */
-    this.controls = optionsInternal.controls || defaultControls();
+    this.controls =
+      optionsInternal.controls ||
+      (WORKER_OFFSCREEN_CANVAS ? new Collection() : defaultControls());
 
     /**
      * @type {Collection<import("./interaction/Interaction.js").default>}
@@ -448,9 +463,11 @@ class Map extends BaseObject {
      */
     this.interactions =
       optionsInternal.interactions ||
-      defaultInteractions({
-        onFocusOnly: true,
-      });
+      (WORKER_OFFSCREEN_CANVAS
+        ? new Collection()
+        : defaultInteractions({
+            onFocusOnly: true,
+          }));
 
     /**
      * @type {Collection<import("./Overlay.js").default>}
@@ -663,7 +680,7 @@ class Map extends BaseObject {
     this.controls.clear();
     this.interactions.clear();
     this.overlays_.clear();
-    this.resizeObserver_.disconnect();
+    this.resizeObserver_?.disconnect();
     this.setTarget(null);
     super.disposeInternal();
   }
@@ -672,6 +689,9 @@ class Map extends BaseObject {
    * Detect features that intersect a pixel on the viewport, and execute a
    * callback with each intersecting feature. Layers included in the detection can
    * be configured through the `layerFilter` option in `options`.
+   * For polygons without a fill, only the stroke will be used for hit detection.
+   * Polygons must have a fill style applied to ensure that pixels inside a polygon are detected.
+   * The fill can be transparent.
    * @param {import("./pixel.js").Pixel} pixel Pixel.
    * @param {function(import("./Feature.js").FeatureLike, import("./layer/Layer.js").default<import("./source/Source").default>, import("./geom/SimpleGeometry.js").default): T} callback Feature callback. The callback will be
    *     called with two arguments. The first argument is one
@@ -711,6 +731,9 @@ class Map extends BaseObject {
 
   /**
    * Get all features that intersect a pixel on the viewport.
+   * For polygons without a fill, only the stroke will be used for hit detection.
+   * Polygons must have a fill style applied to ensure that pixels inside a polygon are detected.
+   * The fill can be transparent.
    * @param {import("./pixel.js").Pixel} pixel Pixel.
    * @param {AtPixelOptions} [options] Optional options.
    * @return {Array<import("./Feature.js").FeatureLike>} The detected features or
@@ -752,6 +775,9 @@ class Map extends BaseObject {
   /**
    * Detect if features intersect a pixel on the viewport. Layers included in the
    * detection can be configured through the `layerFilter` option.
+   * For polygons without a fill, only the stroke will be used for hit detection.
+   * Polygons must have a fill style applied to ensure that pixels inside a polygon are detected.
+   * The fill can be transparent.
    * @param {import("./pixel.js").Pixel} pixel Pixel.
    * @param {AtPixelOptions} [options] Optional options.
    * @return {boolean} Is there a feature at the given pixel?
@@ -1012,6 +1038,28 @@ class Map extends BaseObject {
   }
 
   /**
+   * Get the pixel ratio of the rendered map.
+   * @return {number} Pixel ratio.
+   * @api
+   */
+  getPixelRatio() {
+    return this.pixelRatio_;
+  }
+
+  /**
+   * Set the pixel ratio of the rendered map.
+   * @param {number} pixelRatio Pixel ratio.
+   * @api
+   */
+  setPixelRatio(pixelRatio) {
+    if (this.pixelRatio_ === pixelRatio) {
+      return;
+    }
+    this.pixelRatio_ = pixelRatio;
+    this.render();
+  }
+
+  /**
    * Get the map renderer.
    * @return {import("./renderer/Map.js").default|null} Renderer
    */
@@ -1099,7 +1147,7 @@ class Map extends BaseObject {
   }
 
   /**
-   * @param {UIEvent} browserEvent Browser event.
+   * @param {PointerEvent|KeyboardEvent|WheelEvent} browserEvent Browser event.
    * @param {string} [type] Type.
    */
   handleBrowserEvent(browserEvent, type) {
@@ -1117,9 +1165,7 @@ class Map extends BaseObject {
       // coordinates so interactions cannot be used.
       return;
     }
-    const originalEvent = /** @type {PointerEvent} */ (
-      mapBrowserEvent.originalEvent
-    );
+    const originalEvent = mapBrowserEvent.originalEvent;
     const eventType = originalEvent.type;
     if (
       eventType === PointerEventType.POINTERDOWN ||
@@ -1270,8 +1316,8 @@ class Map extends BaseObject {
       this.viewport_.remove();
     }
 
-    if (this.targetElement_) {
-      this.resizeObserver_.unobserve(this.targetElement_);
+    if (this.targetElement_ && !isCanvas(this.targetElement_)) {
+      this.resizeObserver_?.unobserve(this.targetElement_);
       const rootNode = this.targetElement_.getRootNode();
       if (rootNode instanceof ShadowRoot) {
         this.resizeObserver_.unobserve(rootNode.host);
@@ -1301,65 +1347,71 @@ class Map extends BaseObject {
         this.animationDelayKey_ = undefined;
       }
     } else {
-      targetElement.appendChild(this.viewport_);
+      if (!isCanvas(targetElement)) {
+        targetElement.appendChild(this.viewport_);
+      }
       if (!this.renderer_) {
         this.renderer_ = new CompositeMapRenderer(this);
       }
 
-      this.mapBrowserEventHandler_ = new MapBrowserEventHandler(
-        this,
-        this.moveTolerance_,
-      );
-      for (const key in MapBrowserEventType) {
-        this.mapBrowserEventHandler_.addEventListener(
-          MapBrowserEventType[key],
-          this.handleMapBrowserEvent.bind(this),
+      if (!isCanvas(targetElement)) {
+        this.mapBrowserEventHandler_ = new MapBrowserEventHandler(
+          this,
+          this.moveTolerance_,
         );
-      }
-      this.viewport_.addEventListener(
-        EventType.CONTEXTMENU,
-        this.boundHandleBrowserEvent_,
-        false,
-      );
-      this.viewport_.addEventListener(
-        EventType.WHEEL,
-        this.boundHandleBrowserEvent_,
-        PASSIVE_EVENT_LISTENERS ? {passive: false} : false,
-      );
+        for (const key in MapBrowserEventType) {
+          this.mapBrowserEventHandler_.addEventListener(
+            MapBrowserEventType[key],
+            this.handleMapBrowserEvent.bind(this),
+          );
+        }
+        this.viewport_.addEventListener(
+          EventType.CONTEXTMENU,
+          this.boundHandleBrowserEvent_,
+          false,
+        );
+        this.viewport_.addEventListener(
+          EventType.WHEEL,
+          this.boundHandleBrowserEvent_,
+          PASSIVE_EVENT_LISTENERS ? {passive: false} : false,
+        );
 
-      let keyboardEventTarget;
-      if (!this.keyboardEventTarget_) {
-        // check if map target is in shadowDOM, if yes use host element as target
-        const targetRoot = targetElement.getRootNode();
-        const targetCandidate =
-          targetRoot instanceof ShadowRoot ? targetRoot.host : targetElement;
-        keyboardEventTarget = targetCandidate;
-      } else {
-        keyboardEventTarget = this.keyboardEventTarget_;
+        let keyboardEventTarget;
+        if (!this.keyboardEventTarget_) {
+          // check if map target is in shadowDOM, if yes use host element as target
+          const targetRoot = targetElement.getRootNode();
+          const targetCandidate =
+            targetRoot instanceof ShadowRoot ? targetRoot.host : targetElement;
+          keyboardEventTarget = targetCandidate;
+        } else {
+          keyboardEventTarget = this.keyboardEventTarget_;
+        }
+
+        this.targetChangeHandlerKeys_ = [
+          listen(
+            keyboardEventTarget,
+            EventType.KEYDOWN,
+            this.handleBrowserEvent,
+            this,
+          ),
+          listen(
+            keyboardEventTarget,
+            EventType.KEYPRESS,
+            this.handleBrowserEvent,
+            this,
+          ),
+        ];
+        if (targetElement instanceof HTMLElement) {
+          const rootNode = targetElement.getRootNode();
+          if (rootNode instanceof ShadowRoot) {
+            this.resizeObserver_.observe(rootNode.host);
+          }
+          this.resizeObserver_?.observe(targetElement);
+        }
       }
 
-      this.targetChangeHandlerKeys_ = [
-        listen(
-          keyboardEventTarget,
-          EventType.KEYDOWN,
-          this.handleBrowserEvent,
-          this,
-        ),
-        listen(
-          keyboardEventTarget,
-          EventType.KEYPRESS,
-          this.handleBrowserEvent,
-          this,
-        ),
-      ];
-      const rootNode = targetElement.getRootNode();
-      if (rootNode instanceof ShadowRoot) {
-        this.resizeObserver_.observe(rootNode.host);
-      }
-      this.resizeObserver_.observe(targetElement);
+      this.updateSize();
     }
-
-    this.updateSize();
     // updateSize calls setSize, so no need to call this.render
     // ourselves here.
   }
@@ -1463,7 +1515,10 @@ class Map extends BaseObject {
    * Redraws all text after new fonts have loaded
    */
   redrawText() {
-    const layerStates = this.getLayerGroup().getLayerStatesArray();
+    if (!this.frameState_) {
+      return;
+    }
+    const layerStates = this.frameState_.layerStatesArray;
     for (let i = 0, ii = layerStates.length; i < ii; ++i) {
       const layer = layerStates[i].layer;
       if (layer.hasRenderer()) {
@@ -1687,7 +1742,7 @@ class Map extends BaseObject {
 
   /**
    * Set the view for this map.
-   * @param {View|Promise<import("./View.js").ViewOptions>} view The view that controls this map.
+   * @param {View|Promise<import("./View.js").ViewOptions>|null} view The view that controls this map.
    * It is also possible to pass a promise that resolves to options for constructing a view.  This
    * alternative allows view properties to be resolved by sources or other components that load
    * view-related metadata.
@@ -1717,19 +1772,27 @@ class Map extends BaseObject {
 
     let size = undefined;
     if (targetElement) {
-      const computedStyle = getComputedStyle(targetElement);
-      const width =
-        targetElement.offsetWidth -
-        parseFloat(computedStyle['borderLeftWidth']) -
-        parseFloat(computedStyle['paddingLeft']) -
-        parseFloat(computedStyle['paddingRight']) -
-        parseFloat(computedStyle['borderRightWidth']);
-      const height =
-        targetElement.offsetHeight -
-        parseFloat(computedStyle['borderTopWidth']) -
-        parseFloat(computedStyle['paddingTop']) -
-        parseFloat(computedStyle['paddingBottom']) -
-        parseFloat(computedStyle['borderBottomWidth']);
+      let width, height;
+      if (isCanvas(targetElement)) {
+        const transform = targetElement.getContext('2d').getTransform();
+        // Use scale components of the transform to calculate the size in CSS pixels
+        width = targetElement.width / transform.a;
+        height = targetElement.height / transform.d;
+      } else {
+        const computedStyle = getComputedStyle(targetElement);
+        width =
+          targetElement.offsetWidth -
+          parseFloat(computedStyle['borderLeftWidth']) -
+          parseFloat(computedStyle['paddingLeft']) -
+          parseFloat(computedStyle['paddingRight']) -
+          parseFloat(computedStyle['borderRightWidth']);
+        height =
+          targetElement.offsetHeight -
+          parseFloat(computedStyle['borderTopWidth']) -
+          parseFloat(computedStyle['paddingTop']) -
+          parseFloat(computedStyle['paddingBottom']) -
+          parseFloat(computedStyle['borderBottomWidth']);
+      }
       if (!isNaN(width) && !isNaN(height)) {
         size = [Math.max(0, width), Math.max(0, height)];
         if (

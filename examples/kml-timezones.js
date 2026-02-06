@@ -1,10 +1,13 @@
-import KML from '../src/ol/format/KML.js';
 import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
+import KML from '../src/ol/format/KML.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import StadiaMaps from '../src/ol/source/StadiaMaps.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import View from '../src/ol/View.js';
-import {Fill, Stroke, Style} from '../src/ol/style.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import Fill from '../src/ol/style/Fill.js';
+import Stroke from '../src/ol/style/Stroke.js';
+import Style from '../src/ol/style/Style.js';
 
 /*
  * Compute the style of the feature.  Here we want the opacity of polygons to
@@ -122,8 +125,7 @@ map.on('pointermove', function (evt) {
     currentFeature = undefined;
     return;
   }
-  const pixel = map.getEventPixel(evt.originalEvent);
-  displayFeatureInfo(pixel, evt.originalEvent.target);
+  displayFeatureInfo(evt.pixel, evt.originalEvent.target);
 });
 
 map.on('click', function (evt) {

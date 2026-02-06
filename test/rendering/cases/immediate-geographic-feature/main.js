@@ -1,10 +1,13 @@
+import Feature from '../../../../src/ol/Feature.js';
+import Map from '../../../../src/ol/Map.js';
+import View from '../../../../src/ol/View.js';
+import Circle from '../../../../src/ol/geom/Circle.js';
 import TileLayer from '../../../../src/ol/layer/Tile.js';
-import XYZ from '../../../../src/ol/source/XYZ.js';
-import {Circle} from '../../../../src/ol/geom.js';
-import {Feature, Map, View} from '../../../../src/ol/index.js';
-import {Stroke, Style} from '../../../../src/ol/style.js';
-import {getVectorContext} from '../../../../src/ol/render.js';
 import {useGeographic} from '../../../../src/ol/proj.js';
+import {getVectorContext} from '../../../../src/ol/render.js';
+import XYZ from '../../../../src/ol/source/XYZ.js';
+import Stroke from '../../../../src/ol/style/Stroke.js';
+import Style from '../../../../src/ol/style/Style.js';
 
 useGeographic();
 

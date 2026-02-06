@@ -23,7 +23,7 @@ describe('ol.webgl.Buffer', function () {
     it('raises an error if an incorrect type is used', function (done) {
       try {
         new WebGLArrayBuffer(1234);
-      } catch (e) {
+      } catch {
         done();
       }
       done(true);

@@ -1,9 +1,9 @@
-import ImageTile from '../src/ol/source/ImageTile.js';
 import Map from '../src/ol/Map.js';
-import OSM from '../src/ol/source/OSM.js';
-import TileLayer from '../src/ol/layer/WebGLTile.js';
 import View from '../src/ol/View.js';
+import TileLayer from '../src/ol/layer/WebGLTile.js';
 import {getRenderPixel} from '../src/ol/render.js';
+import ImageTile from '../src/ol/source/ImageTile.js';
+import OSM from '../src/ol/source/OSM.js';
 
 const osm = new TileLayer({
   source: new OSM({wrapX: true}),
@@ -42,7 +42,9 @@ imagery.on('prerender', function (event) {
   const bottomLeft = getRenderPixel(event, [0, mapSize[1]]);
   const topRight = getRenderPixel(event, [mapSize[0], 0]);
 
-  const width = Math.round((topRight[0] - bottomLeft[0]) * (swipe.value / 100));
+  const width = Math.round(
+    (topRight[0] - bottomLeft[0]) * (Number(swipe.value) / 100),
+  );
   const height = topRight[1] - bottomLeft[1];
 
   gl.scissor(bottomLeft[0], bottomLeft[1], width, height);

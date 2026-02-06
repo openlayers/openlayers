@@ -2,14 +2,14 @@
  * @module ol/source/Tile
  */
 import Event from '../events/Event.js';
-import Source from './Source.js';
-import {abstract, getUid} from '../util.js';
+import {scale as scaleSize, toSize} from '../size.js';
+import {withinExtentAndZ} from '../tilecoord.js';
 import {
   getForProjection as getTileGridForProjection,
   wrapX,
 } from '../tilegrid.js';
-import {scale as scaleSize, toSize} from '../size.js';
-import {withinExtentAndZ} from '../tilecoord.js';
+import {abstract, getUid} from '../util.js';
+import Source from './Source.js';
 
 /***
  * @template Return
@@ -175,9 +175,10 @@ class TileSource extends Source {
    * @param {number} y Tile coordinate y.
    * @param {number} pixelRatio Pixel ratio.
    * @param {import("../proj/Projection.js").default} projection Projection.
+   * @param {import("../structs/LRUCache.js").default<import("../Tile.js").default>} [tileCache] Tile cache.
    * @return {TileType|null} Tile.
    */
-  getTile(z, x, y, pixelRatio, projection) {
+  getTile(z, x, y, pixelRatio, projection, tileCache) {
     return abstract();
   }
 

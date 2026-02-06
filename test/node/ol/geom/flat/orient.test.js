@@ -1,6 +1,4 @@
-import RenderFeature from '../../../../../src/ol/render/Feature.js';
-import expect from '../../../expect.js';
-import {GeoJSON} from '../../../../../src/ol/format.js';
+import GeoJSON from '../../../../../src/ol/format/GeoJSON.js';
 import {
   inflateEnds,
   linearRingIsClockwise,
@@ -9,6 +7,8 @@ import {
   orientLinearRings,
   orientLinearRingsArray,
 } from '../../../../../src/ol/geom/flat/orient.js';
+import RenderFeature from '../../../../../src/ol/render/Feature.js';
+import expect from '../../../expect.js';
 
 describe('ol/geom/flat/orient.js', function () {
   describe('linearRingIsClockwise', function () {

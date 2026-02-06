@@ -1,8 +1,8 @@
 import Map from '../src/ol/Map.js';
-import StadiaMaps from '../src/ol/source/StadiaMaps.js';
-import TileLayer from '../src/ol/layer/Tile.js';
 import View from '../src/ol/View.js';
+import TileLayer from '../src/ol/layer/Tile.js';
 import {fromLonLat} from '../src/ol/proj.js';
+import StadiaMaps from '../src/ol/source/StadiaMaps.js';
 
 const map = new Map({
   layers: [

@@ -1,9 +1,6 @@
 /**
  * @module ol/reproj/glreproj
  */
-import * as mat4 from '../vec/mat4.js';
-import {WORKER_OFFSCREEN_CANVAS} from '../has.js';
-import {Canvas as WebGLCanvas, createProgram} from '../webgl/Canvas.js';
 import {
   createEmpty,
   extend,
@@ -11,6 +8,9 @@ import {
   getTopLeft,
   getWidth,
 } from '../extent.js';
+import {WORKER_OFFSCREEN_CANVAS} from '../has.js';
+import * as mat4 from '../vec/mat4.js';
+import {Canvas as WebGLCanvas, createProgram} from '../webgl/Canvas.js';
 
 const EDGE_VERTEX_SHADER = `
   attribute vec4 a_position;

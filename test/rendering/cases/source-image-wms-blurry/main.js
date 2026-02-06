@@ -1,12 +1,12 @@
-import Image from '../../../../src/ol/source/Image.js';
-import ImageLayer from '../../../../src/ol/layer/Image.js';
+import proj4 from 'proj4';
 import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
-import proj4 from 'proj4';
 import {createCanvasContext2D} from '../../../../src/ol/dom.js';
-import {createLoader as createWMSLoader} from '../../../../src/ol/source/wms.js';
 import {memoizeOne} from '../../../../src/ol/functions.js';
+import ImageLayer from '../../../../src/ol/layer/Image.js';
 import {register} from '../../../../src/ol/proj/proj4.js';
+import Image from '../../../../src/ol/source/Image.js';
+import {createLoader as createWMSLoader} from '../../../../src/ol/source/wms.js';
 
 proj4.defs(
   'EPSG:2056',

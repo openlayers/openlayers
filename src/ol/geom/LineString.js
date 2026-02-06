@@ -1,17 +1,17 @@
 /**
  * @module ol/geom/LineString
  */
+import {extend} from '../array.js';
+import {closestSquaredDistanceXY} from '../extent.js';
 import SimpleGeometry from './SimpleGeometry.js';
 import {assignClosestPoint, maxSquaredDelta} from './flat/closest.js';
-import {closestSquaredDistanceXY} from '../extent.js';
 import {deflateCoordinates} from './flat/deflate.js';
-import {douglasPeucker} from './flat/simplify.js';
-import {extend} from '../array.js';
-import {forEach as forEachSegment} from './flat/segments.js';
 import {inflateCoordinates} from './flat/inflate.js';
 import {interpolatePoint, lineStringCoordinateAtM} from './flat/interpolate.js';
 import {intersectsLineString} from './flat/intersectsextent.js';
 import {lineStringLength} from './flat/length.js';
+import {forEach as forEachSegment} from './flat/segments.js';
+import {douglasPeucker} from './flat/simplify.js';
 
 /**
  * @classdesc
@@ -290,6 +290,7 @@ class LineString extends SimpleGeometry {
       this.flatCoordinates.length,
       this.stride,
       extent,
+      this.getExtent(),
     );
   }
 

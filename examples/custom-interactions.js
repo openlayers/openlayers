@@ -1,13 +1,15 @@
 import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import {LineString, Point, Polygon} from '../src/ol/geom.js';
-import {OGCMapTile, Vector as VectorSource} from '../src/ol/source.js';
-import {
-  Pointer as PointerInteraction,
-  defaults as defaultInteractions,
-} from '../src/ol/interaction.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import LineString from '../src/ol/geom/LineString.js';
+import Point from '../src/ol/geom/Point.js';
+import Polygon from '../src/ol/geom/Polygon.js';
+import PointerInteraction from '../src/ol/interaction/Pointer.js';
+import {defaults as defaultInteractions} from '../src/ol/interaction/defaults.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
+import OGCMapTile from '../src/ol/source/OGCMapTile.js';
+import VectorSource from '../src/ol/source/Vector.js';
 
 class Drag extends PointerInteraction {
   constructor() {
@@ -19,7 +21,7 @@ class Drag extends PointerInteraction {
     });
 
     /**
-     * @type {import("../src/ol/coordinate.js").Coordinate}
+     * @type {import('../src/ol/coordinate.js').Coordinate}
      * @private
      */
     this.coordinate_ = null;
@@ -45,7 +47,7 @@ class Drag extends PointerInteraction {
 }
 
 /**
- * @param {import("../src/ol/MapBrowserEvent.js").default} evt Map browser event.
+ * @param {import('../src/ol/MapBrowserEvent.js').default} evt Map browser event.
  * @return {boolean} `true` to start the drag sequence.
  */
 function handleDownEvent(evt) {
@@ -64,7 +66,7 @@ function handleDownEvent(evt) {
 }
 
 /**
- * @param {import("../src/ol/MapBrowserEvent.js").default} evt Map browser event.
+ * @param {import('../src/ol/MapBrowserEvent.js').default} evt Map browser event.
  */
 function handleDragEvent(evt) {
   const deltaX = evt.coordinate[0] - this.coordinate_[0];
@@ -78,7 +80,7 @@ function handleDragEvent(evt) {
 }
 
 /**
- * @param {import("../src/ol/MapBrowserEvent.js").default} evt Event.
+ * @param {import('../src/ol/MapBrowserEvent.js').default} evt Event.
  */
 function handleMoveEvent(evt) {
   if (this.cursor_) {

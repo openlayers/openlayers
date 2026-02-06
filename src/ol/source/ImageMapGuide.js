@@ -2,9 +2,9 @@
  * @module ol/source/ImageMapGuide
  */
 
+import {decode} from '../Image.js';
 import ImageSource, {defaultImageLoadFunction} from './Image.js';
 import {createLoader} from './mapguide.js';
-import {decode} from '../Image.js';
 
 /**
  * @typedef {Object} Options
@@ -171,6 +171,16 @@ class ImageMapGuide extends ImageSource {
    */
   getImageLoadFunction() {
     return this.imageLoadFunction_;
+  }
+
+  /**
+   * Set the user-provided params.
+   * @param {Object} params Params.
+   * @api
+   */
+  setParams(params) {
+    this.params_ = Object.assign({}, params);
+    this.changed();
   }
 
   /**

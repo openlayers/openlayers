@@ -2,10 +2,9 @@
  * @module ol/interaction/MouseWheelZoom
  */
 import EventType from '../events/EventType.js';
-import Interaction, {zoomByDelta} from './Interaction.js';
-import {DEVICE_PIXEL_RATIO, FIREFOX} from '../has.js';
 import {all, always, focusWithTabindex} from '../events/condition.js';
 import {clamp} from '../math.js';
+import Interaction, {zoomByDelta} from './Interaction.js';
 
 /**
  * @typedef {'trackpad' | 'wheel'} Mode
@@ -29,6 +28,18 @@ import {clamp} from '../math.js';
  * event will always animate to the closest zoom level after an interaction;
  * false means intermediary zoom levels are allowed.
  */
+
+/**
+ * Mutliplier for the DOM_DELTA_LINE delta value.
+ * @type {number}
+ */
+const DELTA_LINE_MULTIPLIER = 40;
+
+/**
+ * Mutliplier for the DOM_DELTA_PAGE delta value.
+ * @type {number}
+ */
+const DELTA_PAGE_MULTIPLIER = 300;
 
 /**
  * @classdesc
@@ -193,15 +204,17 @@ class MouseWheelZoom extends Interaction {
 
     // Delta normalisation inspired by
     // https://github.com/mapbox/mapbox-gl-js/blob/001c7b9/js/ui/handler/scroll_zoom.js
-    let delta;
-    if (mapBrowserEvent.type == EventType.WHEEL) {
-      delta = wheelEvent.deltaY;
-      if (FIREFOX && wheelEvent.deltaMode === WheelEvent.DOM_DELTA_PIXEL) {
-        delta /= DEVICE_PIXEL_RATIO;
-      }
-      if (wheelEvent.deltaMode === WheelEvent.DOM_DELTA_LINE) {
-        delta *= 40;
-      }
+    let delta = wheelEvent.deltaY;
+
+    switch (wheelEvent.deltaMode) {
+      case WheelEvent.DOM_DELTA_LINE:
+        delta *= DELTA_LINE_MULTIPLIER;
+        break;
+      case WheelEvent.DOM_DELTA_PAGE:
+        delta *= DELTA_PAGE_MULTIPLIER;
+        break;
+      default:
+      // pass
     }
 
     if (delta === 0) {

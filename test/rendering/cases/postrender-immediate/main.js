@@ -1,10 +1,13 @@
-import {Map, View} from '../../../../src/ol/index.js';
-import {Point} from '../../../../src/ol/geom.js';
-import {RegularShape, Stroke, Style} from '../../../../src/ol/style.js';
-import {Tile as TileLayer} from '../../../../src/ol/layer.js';
-import {XYZ} from '../../../../src/ol/source.js';
-import {getVectorContext} from '../../../../src/ol/render.js';
+import Map from '../../../../src/ol/Map.js';
+import View from '../../../../src/ol/View.js';
+import Point from '../../../../src/ol/geom/Point.js';
+import TileLayer from '../../../../src/ol/layer/Tile.js';
 import {useGeographic} from '../../../../src/ol/proj.js';
+import {getVectorContext} from '../../../../src/ol/render.js';
+import XYZ from '../../../../src/ol/source/XYZ.js';
+import RegularShape from '../../../../src/ol/style/RegularShape.js';
+import Stroke from '../../../../src/ol/style/Stroke.js';
+import Style from '../../../../src/ol/style/Style.js';
 
 useGeographic();
 

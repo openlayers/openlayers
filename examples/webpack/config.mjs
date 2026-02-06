@@ -1,13 +1,14 @@
-import CopyPlugin from 'copy-webpack-plugin';
-import ExampleBuilder from './example-builder.js';
-import TerserPlugin from 'terser-webpack-plugin';
 import fs from 'fs';
 import path, {dirname} from 'path';
 import {fileURLToPath} from 'url';
+import CopyPlugin from 'copy-webpack-plugin';
+import TerserPlugin from 'terser-webpack-plugin';
+import ExampleBuilder from './example-builder.js';
 
 const src = path.join(dirname(fileURLToPath(import.meta.url)), '..');
 const root = path.join(src, '..');
 
+/** @type {import('webpack').Configuration} */
 export default {
   context: src,
   target: ['browserslist'],
@@ -37,7 +38,9 @@ export default {
     minimizer: [
       new TerserPlugin({
         // Do not minify examples that inject code into workers
-        exclude: [/(color-manipulation|region-growing|raster)\.js/],
+        exclude: [
+          /(color-manipulation|region-growing|raster|contour-interpolation)\.js/,
+        ],
         extractComments: false,
       }),
     ],

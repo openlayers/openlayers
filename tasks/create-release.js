@@ -1,9 +1,9 @@
+import {readFile, stat} from 'node:fs/promises';
+import {basename} from 'node:path';
+import {Octokit} from '@octokit/rest';
 import esMain from 'es-main';
 import yargs from 'yargs';
-import {Octokit} from '@octokit/rest';
-import {basename} from 'node:path';
-import {hideBin} from 'yargs/helpers';
-import {readFile, stat} from 'node:fs/promises';
+import {hideBin} from 'yargs/helpers'; //eslint-disable-line import/no-unresolved
 
 /**
  * @typedef {Object} Options

@@ -1,8 +1,8 @@
-import ImageLayer from '../../../../../src/ol/layer/Image.js';
-import ImageMapGuide from '../../../../../src/ol/source/ImageMapGuide.js';
 import ImageState from '../../../../../src/ol/ImageState.js';
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
+import ImageLayer from '../../../../../src/ol/layer/Image.js';
+import ImageMapGuide from '../../../../../src/ol/source/ImageMapGuide.js';
 
 describe('ol/source/ImageMapGuide', function () {
   let options;
@@ -57,6 +57,19 @@ describe('ol/source/ImageMapGuide', function () {
           done();
         });
       });
+    });
+  });
+
+  describe('#setParams', function () {
+    it('allows params to be set', function () {
+      const before = {test: 'before', foo: 'bar'};
+      const source = new ImageMapGuide({params: before});
+      source.setParams({test: 'after'});
+
+      const params = source.getParams();
+      expect(params).to.eql({test: 'after'});
+
+      expect(before).to.eql({test: 'before', foo: 'bar'});
     });
   });
 

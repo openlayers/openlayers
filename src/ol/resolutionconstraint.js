@@ -1,9 +1,9 @@
 /**
  * @module ol/resolutionconstraint
  */
-import {clamp} from './math.js';
-import {getHeight, getWidth} from './extent.js';
 import {linearFindNearest} from './array.js';
+import {getHeight, getWidth} from './extent.js';
+import {clamp} from './math.js';
 
 /**
  * @typedef {function((number|undefined), number, import("./size.js").Size, boolean=): (number|undefined)} Type

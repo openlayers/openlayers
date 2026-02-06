@@ -1,8 +1,8 @@
 /**
  * @module ol/interaction/DblClickDragZoom
  */
-import Interaction from './Interaction.js';
 import MapBrowserEventType from '../MapBrowserEventType.js';
+import Interaction from './Interaction.js';
 
 /**
  * @typedef {Object} Options
@@ -71,6 +71,12 @@ class DblClickDragZoom extends Interaction {
     this.trackedPointers_ = {};
 
     /**
+     * @type {PointerEvent|null}
+     * @private
+     */
+    this.down_ = null;
+
+    /**
      * @type {Array<PointerEvent>}
      * @protected
      */
@@ -81,7 +87,7 @@ class DblClickDragZoom extends Interaction {
    * Handles the {@link module:ol/MapBrowserEvent~MapBrowserEvent  map browser event} and may call into
    * other functions, if event sequences like e.g. 'drag' or 'down-up' etc. are
    * detected.
-   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
+   * @param {import("../MapBrowserEvent.js").default<PointerEvent>} mapBrowserEvent Map browser event.
    * @return {boolean} `false` to stop event propagation.
    * @api
    * @override
@@ -120,13 +126,13 @@ class DblClickDragZoom extends Interaction {
 
   /**
    * Handle pointer drag events.
-   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
+   * @param {import("../MapBrowserEvent.js").default<PointerEvent>} mapBrowserEvent Event.
    */
   handleDragEvent(mapBrowserEvent) {
     let scaleDelta = 1.0;
 
     const touch0 = this.targetPointers[0];
-    const touch1 = this.down_.originalEvent;
+    const touch1 = this.down_;
     const distance = touch0.clientY - touch1.clientY;
 
     if (this.lastDistance_ !== undefined) {
@@ -148,7 +154,7 @@ class DblClickDragZoom extends Interaction {
 
   /**
    * Handle pointer down events.
-   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
+   * @param {import("../MapBrowserEvent.js").default<PointerEvent>} mapBrowserEvent Event.
    * @return {boolean} If the event was consumed.
    */
   handleDownEvent(mapBrowserEvent) {
@@ -157,7 +163,7 @@ class DblClickDragZoom extends Interaction {
       this.anchor_ = null;
       this.lastDistance_ = undefined;
       this.lastScaleDelta_ = 1;
-      this.down_ = mapBrowserEvent;
+      this.down_ = mapBrowserEvent.originalEvent;
       if (!this.handlingDownUpSequence_) {
         map.getView().beginInteraction();
       }
@@ -195,7 +201,7 @@ class DblClickDragZoom extends Interaction {
   }
 
   /**
-   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Event.
+   * @param {import("../MapBrowserEvent.js").default<PointerEvent>} mapBrowserEvent Event.
    * @private
    */
   updateTrackedPointers_(mapBrowserEvent) {

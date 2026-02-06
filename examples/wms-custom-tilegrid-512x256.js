@@ -1,11 +1,11 @@
 import Map from '../src/ol/Map.js';
-import OSM from '../src/ol/source/OSM.js';
-import TileGrid from '../src/ol/tilegrid/TileGrid.js';
-import TileLayer from '../src/ol/layer/Tile.js';
-import TileWMS from '../src/ol/source/TileWMS.js';
 import View from '../src/ol/View.js';
-import {get as getProjection} from '../src/ol/proj.js';
 import {getWidth} from '../src/ol/extent.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import {get as getProjection} from '../src/ol/proj.js';
+import OSM from '../src/ol/source/OSM.js';
+import TileWMS from '../src/ol/source/TileWMS.js';
+import TileGrid from '../src/ol/tilegrid/TileGrid.js';
 
 const projExtent = getProjection('EPSG:3857').getExtent();
 const startResolution = getWidth(projExtent) / 256;

@@ -2,12 +2,12 @@
  * @module ol/source/BingMaps
  */
 
-import TileImage from './TileImage.js';
 import {applyTransform, intersects} from '../extent.js';
-import {createFromTileUrlFunctions} from '../tileurlfunction.js';
+import {get as getProjection, getTransformFromProjections} from '../proj.js';
 import {createOrUpdate} from '../tilecoord.js';
 import {createXYZ, extentFromProjection} from '../tilegrid.js';
-import {get as getProjection, getTransformFromProjections} from '../proj.js';
+import {createFromTileUrlFunctions} from '../tileurlfunction.js';
+import TileImage from './TileImage.js';
 
 /**
  * @param {import('../tilecoord.js').TileCoord} tileCoord Tile coord.
@@ -71,6 +71,7 @@ const TOS_ATTRIBUTION =
  * @property {boolean} [placeholderTiles] Whether to show BingMaps placeholder tiles when zoomed past the maximum level provided in an area. When `false`, requests beyond
  * the maximum zoom level will return no tile. When `true`, the placeholder tile will be returned. When not set, the default behaviour of the imagery set takes place,
  * which is unique for each imagery set in BingMaps.
+ * @property {string} [url='https://dev.virtualearth.net/REST/v1/Imagery/Metadata/'] The Bing Map Metadata API URL.
  */
 
 /**
@@ -173,7 +174,8 @@ class BingMaps extends TileImage {
     this.placeholderTiles_ = options.placeholderTiles;
 
     const url =
-      'https://dev.virtualearth.net/REST/v1/Imagery/Metadata/' +
+      (options.url ||
+        'https://dev.virtualearth.net/REST/v1/Imagery/Metadata/') +
       this.imagerySet_ +
       '?uriScheme=https&include=ImageryProviders&key=' +
       this.apiKey_ +

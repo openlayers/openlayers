@@ -1,10 +1,9 @@
 import Feature from '../../../../src/ol/Feature.js';
-import Layer from '../../../../src/ol/layer/Layer.js';
-import LineString from '../../../../src/ol/geom/LineString.js';
 import Map from '../../../../src/ol/Map.js';
-import VectorSource from '../../../../src/ol/source/Vector.js';
 import View from '../../../../src/ol/View.js';
-import WebGLVectorLayerRenderer from '../../../../src/ol/renderer/webgl/VectorLayer.js';
+import LineString from '../../../../src/ol/geom/LineString.js';
+import WebGLVectorLayer from '../../../../src/ol/layer/WebGLVector.js';
+import VectorSource from '../../../../src/ol/source/Vector.js';
 
 const openLine = new Feature({
   geometry: new LineString([
@@ -19,6 +18,7 @@ const openLine = new Feature({
     [-60, -50],
   ]),
   lineColor: 'rgba(80,0,0,0.75)',
+  firstDashDistance: 18,
 });
 
 const closedLine = new Feature({
@@ -33,6 +33,18 @@ const closedLine = new Feature({
     [90, -80],
   ]),
   lineColor: 'rgba(255,243,177,0.75)',
+  firstDashDistance: 18,
+});
+
+const lineWithUnusualGeometry = new Feature({
+  geometry: new LineString([
+    [-70, -110],
+    [-70, -110], // first segment has 0-width
+    [70, -110],
+    [-20, -110], // last segment is colinear with the previous one
+  ]),
+  lineColor: 'rgba(177,228,255,0.5)',
+  firstDashDistance: 18,
 });
 
 const dataDriven = {
@@ -56,23 +68,16 @@ const dashed = {
   'stroke-color': 'rgb(0,104,218)',
   'stroke-offset': -10,
   'stroke-width': 4,
-  'stroke-line-dash': [18, 10, 10, 10],
+  'stroke-line-dash': [['get', 'firstDashDistance'], 10, 10, 10],
   'stroke-line-dash-offset': 10,
 };
 const style = [bevelJoins, dataDriven, miterJoins, dashed];
 
-class WebGLLayer extends Layer {
-  createRenderer() {
-    return new WebGLVectorLayerRenderer(this, {
-      style,
-    });
-  }
-}
-
-const vector = new WebGLLayer({
+const vector = new WebGLVectorLayer({
   source: new VectorSource({
-    features: [openLine, closedLine],
+    features: [openLine, closedLine, lineWithUnusualGeometry],
   }),
+  style,
 });
 
 new Map({

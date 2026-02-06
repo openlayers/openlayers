@@ -1,15 +1,15 @@
-import Layer from '../src/ol/layer/Layer.js';
 import Map from '../src/ol/Map.js';
-import Source from '../src/ol/source/Source.js';
 import View from '../src/ol/View.js';
+import FullScreen from '../src/ol/control/FullScreen.js';
+import Layer from '../src/ol/layer/Layer.js';
+import Source from '../src/ol/source/Source.js';
 import Worker from 'worker-loader!./offscreen-canvas.worker.js'; //eslint-disable-line
-import {FullScreen} from '../src/ol/control.js';
+import {createXYZ} from '../src/ol/tilegrid.js';
 import {
   compose,
   create,
   toString as toTransformString,
 } from '../src/ol/transform.js';
-import {createXYZ} from '../src/ol/tilegrid.js';
 
 const worker = new Worker();
 
@@ -102,7 +102,6 @@ const map = new Map({
                 extent: l.extent,
                 maxResolution: l.maxResolution,
                 minResolution: l.minResolution,
-                sourceState: l.sourceState,
                 managed: l.managed,
               })),
             },
@@ -129,14 +128,20 @@ const map = new Map({
 });
 map.addControl(new FullScreen());
 
+let pointerOutside = true;
+const mapTarget = map.getTargetElement();
+mapTarget.addEventListener('pointerleave', () => {
+  pointerOutside = true;
+  showInfo([]);
+});
 map.on('pointermove', function (evt) {
   if (evt.dragging) {
     return;
   }
-  const pixel = map.getEventPixel(evt.originalEvent);
+  pointerOutside = false;
   worker.postMessage({
     action: 'requestFeatures',
-    pixel: pixel,
+    pixel: evt.pixel,
   });
 });
 
@@ -183,9 +188,9 @@ worker.addEventListener('message', (message) => {
 
 const info = document.getElementById('info');
 function showInfo(propertiesFromFeatures) {
-  if (propertiesFromFeatures.length == 0) {
+  if (propertiesFromFeatures.length == 0 || pointerOutside) {
     info.innerText = '';
-    info.style.opacity = 0;
+    info.style.opacity = '0';
     return;
   }
   const properties = propertiesFromFeatures.map((e) =>
@@ -197,5 +202,5 @@ function showInfo(propertiesFromFeatures) {
       ),
   );
   info.innerText = JSON.stringify(properties, null, 2);
-  info.style.opacity = 1;
+  info.style.opacity = '1';
 }

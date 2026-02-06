@@ -1,14 +1,16 @@
 /**
  * @module ol/source/TileImage
  */
-import EventType from '../events/EventType.js';
 import ImageTile from '../ImageTile.js';
-import ReprojTile from '../reproj/Tile.js';
 import TileState from '../TileState.js';
-import UrlTile from './UrlTile.js';
+import EventType from '../events/EventType.js';
+import {WORKER_OFFSCREEN_CANVAS} from '../has.js';
 import {equivalent, get as getProjection} from '../proj.js';
+import ReprojTile from '../reproj/Tile.js';
+import {getCacheKey} from '../tilecoord.js';
 import {getForProjection as getTileGridForProjection} from '../tilegrid.js';
 import {getUid} from '../util.js';
+import UrlTile from './UrlTile.js';
 
 /**
  * @typedef {Object} Options
@@ -213,10 +215,11 @@ class TileImage extends UrlTile {
    * @param {number} y Tile coordinate y.
    * @param {number} pixelRatio Pixel ratio.
    * @param {import("../proj/Projection.js").default} projection Projection.
+   * @param {import("../structs/LRUCache.js").default<import("../Tile.js").default>} [tileCache] Tile cache.
    * @return {!(ImageTile|ReprojTile)} Tile.
    * @override
    */
-  getTile(z, x, y, pixelRatio, projection) {
+  getTile(z, x, y, pixelRatio, projection, tileCache) {
     const sourceProjection = this.getProjection();
     if (
       !sourceProjection ||
@@ -249,7 +252,7 @@ class TileImage extends UrlTile {
       this.getTilePixelRatio(pixelRatio),
       this.getGutter(),
       (z, x, y, pixelRatio) =>
-        this.getTileInternal(z, x, y, pixelRatio, sourceProjection),
+        this.getTileInternal(z, x, y, pixelRatio, sourceProjection, tileCache),
       this.reprojectionErrorThreshold_,
       this.renderReprojectionEdges_,
       this.tileOptions,
@@ -264,12 +267,20 @@ class TileImage extends UrlTile {
    * @param {number} y Tile coordinate y.
    * @param {number} pixelRatio Pixel ratio.
    * @param {!import("../proj/Projection.js").default} projection Projection.
+   * @param {import("../structs/LRUCache.js").default<import("../Tile.js").default>} [tileCache] Tile cache.
    * @return {!ImageTile} Tile.
    * @protected
    */
-  getTileInternal(z, x, y, pixelRatio, projection) {
+  getTileInternal(z, x, y, pixelRatio, projection, tileCache) {
     const key = this.getKey();
-    return this.createTile_(z, x, y, pixelRatio, projection, key);
+    const cacheKey = getCacheKey(this, key, z, x, y);
+    if (tileCache && tileCache.containsKey(cacheKey)) {
+      const tile = /** @type {!ImageTile} */ (tileCache.get(cacheKey));
+      return tile;
+    }
+    const tile = this.createTile_(z, x, y, pixelRatio, projection, key);
+    tileCache?.set(cacheKey, tile);
+    return tile;
   }
 
   /**
@@ -312,7 +323,53 @@ class TileImage extends UrlTile {
  * @param {ImageTile} imageTile Image tile.
  * @param {string} src Source.
  */
-function defaultTileLoadFunction(imageTile, src) {
+export function defaultTileLoadFunction(imageTile, src) {
+  if (WORKER_OFFSCREEN_CANVAS) {
+    // special treatment for offscreen canvas
+    const crossOrigin = imageTile.getCrossOrigin();
+
+    /** @type {RequestMode} */
+    let mode = 'same-origin';
+    /** @type {RequestCredentials} */
+    let credentials = 'same-origin';
+    if (crossOrigin === 'anonymous' || crossOrigin === '') {
+      mode = 'cors';
+      credentials = 'omit';
+    } else if (crossOrigin === 'use-credentials') {
+      mode = 'cors';
+      credentials = 'include';
+    }
+
+    fetch(src, {
+      mode,
+      credentials,
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+        return response.blob();
+      })
+      .then((blob) => {
+        return createImageBitmap(blob);
+      })
+      .then((imageBitmap) => {
+        const canvas = imageTile.getImage();
+        canvas.width = imageBitmap.width;
+        canvas.height = imageBitmap.height;
+        const ctx = /** @type {OffscreenCanvas} */ (canvas).getContext('2d');
+        ctx.drawImage(imageBitmap, 0, 0);
+        imageBitmap.close?.();
+        // mock the image 'load' event
+        canvas.dispatchEvent(new Event('load'));
+      })
+      .catch(() => {
+        const canvas = imageTile.getImage();
+        canvas.dispatchEvent(new Event('error'));
+      });
+    return;
+  }
+
   /** @type {HTMLImageElement|HTMLVideoElement} */ (imageTile.getImage()).src =
     src;
 }

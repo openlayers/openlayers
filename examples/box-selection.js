@@ -1,12 +1,15 @@
-import GeoJSON from '../src/ol/format/GeoJSON.js';
 import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
+import {platformModifierKeyOnly} from '../src/ol/events/condition.js';
+import {getWidth} from '../src/ol/extent.js';
+import GeoJSON from '../src/ol/format/GeoJSON.js';
+import DragBox from '../src/ol/interaction/DragBox.js';
+import Select from '../src/ol/interaction/Select.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import View from '../src/ol/View.js';
-import {DragBox, Select} from '../src/ol/interaction.js';
-import {Fill, Stroke, Style} from '../src/ol/style.js';
-import {getWidth} from '../src/ol/extent.js';
-import {platformModifierKeyOnly} from '../src/ol/events/condition.js';
+import Fill from '../src/ol/style/Fill.js';
+import Stroke from '../src/ol/style/Stroke.js';
+import Style from '../src/ol/style/Style.js';
 
 const vectorSource = new VectorSource({
   url: 'https://openlayers.org/data/vector/ecoregions.json',
@@ -51,6 +54,9 @@ const selectedStyle = new Style({
 
 // a normal select interaction to handle click
 const select = new Select({
+  filter: function (feature) {
+    return !(feature.get('COLOR_BIO') === '#CC6767');
+  },
   style: function (feature) {
     const color = feature.get('COLOR_BIO') || '#eeeeee';
     selectedStyle.getFill().setColor(color);
@@ -58,8 +64,6 @@ const select = new Select({
   },
 });
 map.addInteraction(select);
-
-const selectedFeatures = select.getFeatures();
 
 // a DragBox interaction used to select features by drawing boxes
 const dragBox = new DragBox({
@@ -84,11 +88,7 @@ dragBox.on('boxend', function () {
 
     const boxFeatures = vectorSource
       .getFeaturesInExtent(extent)
-      .filter(
-        (feature) =>
-          !selectedFeatures.getArray().includes(feature) &&
-          feature.getGeometry().intersectsExtent(extent),
-      );
+      .filter((feature) => feature.getGeometry().intersectsExtent(extent));
 
     // features that intersect the box geometry are added to the
     // collection of selected features
@@ -114,26 +114,29 @@ dragBox.on('boxend', function () {
         const geometry = feature.getGeometry().clone();
         geometry.rotate(-rotation, anchor);
         if (geometry.intersectsExtent(extent)) {
-          selectedFeatures.push(feature);
+          select.selectFeature(feature);
         }
       });
     } else {
-      selectedFeatures.extend(boxFeatures);
+      boxFeatures.forEach(select.selectFeature.bind(select));
     }
   }
 });
 
 // clear selection when drawing a new box and when clicking on the map
 dragBox.on('boxstart', function () {
-  selectedFeatures.clear();
+  select.clearSelection();
 });
 
 const infoBox = document.getElementById('info');
 
-selectedFeatures.on(['add', 'remove'], function () {
-  const names = selectedFeatures.getArray().map((feature) => {
-    return feature.get('ECO_NAME');
-  });
+select.on('select', function () {
+  const names = select
+    .getFeatures()
+    .getArray()
+    .map((feature) => {
+      return feature.get('ECO_NAME');
+    });
   if (names.length > 0) {
     infoBox.innerHTML = names.join(', ');
   } else {

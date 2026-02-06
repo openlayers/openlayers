@@ -4,6 +4,14 @@
 import {METERS_PER_UNIT} from './Units.js';
 
 /**
+ * The function is called with a `number` view resolution and a
+ * {@link module:ol/coordinate~Coordinate} as arguments, and returns the `number` resolution
+ * in projection units at the passed coordinate.
+ * @typedef {function(number, import("../coordinate.js").Coordinate):number} GetPointResolution
+ * @api
+ */
+
+/**
  * @typedef {Object} Options
  * @property {string} code The SRS identifier code, e.g. `EPSG:4326`.
  * @property {import("./Units.js").Units} [units] Units. Required unless a
@@ -15,7 +23,7 @@ import {METERS_PER_UNIT} from './Units.js';
  * If not provided, the `units` are used to get the meters per unit from the {@link METERS_PER_UNIT}
  * lookup table.
  * @property {import("../extent.js").Extent} [worldExtent] The world extent for the SRS.
- * @property {function(number, import("../coordinate.js").Coordinate):number} [getPointResolution]
+ * @property {GetPointResolution} [getPointResolution]
  * Function to determine resolution at a point. The function is called with a
  * `number` view resolution and a {@link module:ol/coordinate~Coordinate} as arguments, and returns
  * the `number` resolution in projection units at the passed coordinate. If this is `undefined`,
@@ -32,12 +40,12 @@ import {METERS_PER_UNIT} from './Units.js';
  * The library includes support for transforming coordinates between the following
  * projections:
  *
- *  * WGS 84 / Geographic - Using codes `EPSG:4326`, `CRS:84`, `urn:ogc:def:crs:EPSG:6.6:4326`,
+ *  WGS 84 / Geographic - Using codes `EPSG:4326`, `CRS:84`, `urn:ogc:def:crs:EPSG:6.6:4326`,
  *    `urn:ogc:def:crs:OGC:1.3:CRS84`, `urn:ogc:def:crs:OGC:2:84`, `http://www.opengis.net/gml/srs/epsg.xml#4326`,
  *    or `urn:x-ogc:def:crs:EPSG:4326`
- *  * WGS 84 / Spherical Mercator - Using codes `EPSG:3857`, `EPSG:102100`, `EPSG:102113`, `EPSG:900913`,
+ *  WGS 84 / Spherical Mercator - Using codes `EPSG:3857`, `EPSG:102100`, `EPSG:102113`, `EPSG:900913`,
  *    `urn:ogc:def:crs:EPSG:6.18:3:3857`, or `http://www.opengis.net/gml/srs/epsg.xml#3857`
- *  * WGS 84 / UTM zones - Using codes `EPSG:32601` through `EPSG:32660` for northern zones
+ *  WGS 84 / UTM zones - Using codes `EPSG:32601` through `EPSG:32660` for northern zones
  *    and `EPSG:32701` through `EPSG:32760` for southern zones. Note that the built-in UTM transforms
  *    are lower accuracy (with errors on the order of 0.1 m) than those that you might get in a
  *    library like [proj4js](https://github.com/proj4js/proj4js).
@@ -111,7 +119,7 @@ class Projection {
 
     /**
      * @private
-     * @type {function(number, import("../coordinate.js").Coordinate):number|undefined}
+     * @type {GetPointResolution|undefined}
      */
     this.getPointResolutionFunc_ = options.getPointResolution;
 
@@ -262,7 +270,7 @@ class Projection {
 
   /**
    * Get the custom point resolution function for this projection (if set).
-   * @return {function(number, import("../coordinate.js").Coordinate):number|undefined} The custom point
+   * @return {GetPointResolution|undefined} The custom point
    * resolution function (if set).
    */
   getPointResolutionFunc() {

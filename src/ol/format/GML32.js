@@ -1,16 +1,16 @@
 /**
  * @module ol/format/GML32
  */
-import GML2 from './GML2.js';
-import GML3 from './GML3.js';
-import GMLBase from './GMLBase.js';
+import {writeStringTextNode} from '../format/xsd.js';
 import {
   makeArrayExtender,
   makeArrayPusher,
   makeChildAppender,
   makeReplacer,
 } from '../xml.js';
-import {writeStringTextNode} from '../format/xsd.js';
+import GML2 from './GML2.js';
+import GML3 from './GML3.js';
+import GMLBase from './GMLBase.js';
 
 /**
  * @classdesc Feature format for reading and writing data in the GML format

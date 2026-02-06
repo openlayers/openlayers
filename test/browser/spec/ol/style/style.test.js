@@ -1,7 +1,7 @@
-import CircleStyle from '../../../../../src/ol/style/Circle.js';
 import Feature from '../../../../../src/ol/Feature.js';
-import Fill from '../../../../../src/ol/style/Fill.js';
 import Point from '../../../../../src/ol/geom/Point.js';
+import CircleStyle from '../../../../../src/ol/style/Circle.js';
+import Fill from '../../../../../src/ol/style/Fill.js';
 import Stroke from '../../../../../src/ol/style/Stroke.js';
 import Style, {toFunction} from '../../../../../src/ol/style/Style.js';
 import Text from '../../../../../src/ol/style/Text.js';

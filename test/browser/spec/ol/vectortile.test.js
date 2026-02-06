@@ -1,10 +1,10 @@
+import VectorTile from '../../../../src/ol/VectorTile.js';
+import {listen} from '../../../../src/ol/events.js';
 import GeoJSON from '../../../../src/ol/format/GeoJSON.js';
 import MVT from '../../../../src/ol/format/MVT.js';
-import VectorTile from '../../../../src/ol/VectorTile.js';
-import {createXYZ} from '../../../../src/ol/tilegrid.js';
-import {defaultLoadFunction} from '../../../../src/ol/source/VectorTile.js';
 import {get as getProjection} from '../../../../src/ol/proj.js';
-import {listen} from '../../../../src/ol/events.js';
+import {defaultLoadFunction} from '../../../../src/ol/source/VectorTile.js';
+import {createXYZ} from '../../../../src/ol/tilegrid.js';
 
 describe('ol.VectorTile', function () {
   it('loader reprojects GeoJSON features', function (done) {

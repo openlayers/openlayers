@@ -1,5 +1,3 @@
-/* eslint-disable import/no-commonjs */
-
 const path = require('path');
 const puppeteer = require('puppeteer');
 
@@ -12,6 +10,7 @@ if (process.env.CI) {
 
 module.exports = function (karma) {
   karma.set({
+    hostname: '127.0.0.1',
     browsers: ['ChromeHeadless'],
     customLaunchers: {
       ChromeHeadless: {
@@ -29,28 +28,7 @@ module.exports = function (karma) {
     },
     files: [
       {
-        pattern: path.resolve(
-          __dirname,
-          require.resolve('jquery/dist/jquery.js'),
-        ),
-        watched: false,
-      },
-      {
         pattern: path.resolve(__dirname, require.resolve('expect.js/index.js')),
-        watched: false,
-      },
-      {
-        pattern: path.resolve(
-          __dirname,
-          require.resolve('../../node_modules/sinon/pkg/sinon.js'),
-        ),
-        watched: false,
-      },
-      {
-        pattern: path.resolve(
-          __dirname,
-          require.resolve('proj4/dist/proj4.js'),
-        ),
         watched: false,
       },
       {
@@ -69,6 +47,7 @@ module.exports = function (karma) {
     proxies: {
       '/spec/': '/base/spec/',
       '/wms': '/base/spec/ol/data/blank.png',
+      '/ogcapi/map': '/base/spec/ol/data/blank.png',
       '/ImageServer/exportImage': '/base/spec/ol/data/blank.png',
       '/MapServer/export': '/base/spec/ol/data/blank.png',
     },

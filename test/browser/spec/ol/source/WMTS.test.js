@@ -1,11 +1,11 @@
+import {getBottomLeft, getTopRight} from '../../../../../src/ol/extent.js';
+import WMTSCapabilities from '../../../../../src/ol/format/WMTSCapabilities.js';
 import Projection from '../../../../../src/ol/proj/Projection.js';
+import {get as getProjection} from '../../../../../src/ol/proj.js';
 import WMTS, {
   optionsFromCapabilities,
 } from '../../../../../src/ol/source/WMTS.js';
-import WMTSCapabilities from '../../../../../src/ol/format/WMTSCapabilities.js';
 import WMTSTileGrid from '../../../../../src/ol/tilegrid/WMTS.js';
-import {getBottomLeft, getTopRight} from '../../../../../src/ol/extent.js';
-import {get as getProjection} from '../../../../../src/ol/proj.js';
 
 describe('ol/source/WMTS', function () {
   describe('when creating options from capabilities', function () {
@@ -319,6 +319,33 @@ describe('ol/source/WMTS', function () {
         'http://host/{Layer}/{Style}/{Time}/{tilematrixset}/{TileMatrix}/{TileCol}/{TileRow}.jpg/Time-42',
       );
     });
+
+    it('properly encodes values from dimensions', function () {
+      const source = new WMTS({
+        layer: 'layer',
+        style: 'default',
+        dimensions: {'Time': '2010/2020'},
+        urls: [
+          'http://host/{Layer}/{Style}/{Time}/{tilematrixset}/{TileMatrix}/{TileCol}/{TileRow}.jpg',
+        ],
+        matrixSet: 'EPSG:3857',
+        requestEncoding: 'REST',
+        tileGrid: defaultTileGrid,
+      });
+
+      const projection = getProjection('EPSG:3857');
+      const url = source.tileUrlFunction(
+        source.getTileCoordForTileUrlFunction([1, 1, 1]),
+        1,
+        projection,
+      );
+      expect(url).to.be.eql(
+        'http://host/layer/default/2010%2F2020/EPSG:3857/1/1/1.jpg',
+      );
+      expect(source.getKey()).to.be.eql(
+        'http://host/{Layer}/{Style}/{Time}/{tilematrixset}/{TileMatrix}/{TileCol}/{TileRow}.jpg/Time-2010/2020',
+      );
+    });
   });
 
   describe('when creating options from Esri capabilities', function () {
@@ -498,6 +525,37 @@ describe('ol/source/WMTS', function () {
 
       const extent = options.tileGrid.getExtent();
       expect(extent).to.eql([-180, -90, 180, 90]);
+    });
+  });
+
+  describe('when creating options from capabilities with layer BoundingBox', function () {
+    const parser = new WMTSCapabilities();
+    let capabilities;
+    before(function (done) {
+      afterLoadText(
+        'spec/ol/format/wmts/capabilities_with_layer_boundingbox.xml',
+        function (xml) {
+          try {
+            capabilities = parser.read(xml);
+          } catch (e) {
+            done(e);
+          }
+          done();
+        },
+      );
+    });
+
+    it('returns correct projection bounding box when the layer has BoundingBox in the right projection', function () {
+      const options = optionsFromCapabilities(capabilities, {
+        layer: 'overlay_3857',
+        projection: 'EPSG:387',
+      });
+
+      const extent = options.tileGrid.getExtent();
+      expect(extent).to.eql([
+        -20037508.3427892, -20037508.3427892, 20037508.3427892,
+        20037508.3427892,
+      ]);
     });
   });
 

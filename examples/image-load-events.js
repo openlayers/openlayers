@@ -1,7 +1,7 @@
-import ImageLayer from '../src/ol/layer/Image.js';
-import ImageWMS from '../src/ol/source/ImageWMS.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
+import ImageLayer from '../src/ol/layer/Image.js';
+import ImageWMS from '../src/ol/source/ImageWMS.js';
 
 /**
  * Renders a progress bar.
@@ -52,7 +52,7 @@ Progress.prototype.hide = function () {
   const style = this.el.style;
   setTimeout(function () {
     style.visibility = 'hidden';
-    style.width = 0;
+    style.width = '0px';
   }, 250);
 };
 

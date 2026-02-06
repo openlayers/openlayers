@@ -1,11 +1,11 @@
-import DataTileSource from '../../../../../../src/ol/source/DataTile.js';
-import Layer from '../../../../../../src/ol/layer/Layer.js';
 import Map from '../../../../../../src/ol/Map.js';
-import TileLayer from '../../../../../../src/ol/layer/WebGLTile.js';
-import VectorLayer from '../../../../../../src/ol/layer/Vector.js';
-import VectorSource from '../../../../../../src/ol/source/Vector.js';
 import View from '../../../../../../src/ol/View.js';
+import Layer from '../../../../../../src/ol/layer/Layer.js';
+import VectorLayer from '../../../../../../src/ol/layer/Vector.js';
+import TileLayer from '../../../../../../src/ol/layer/WebGLTile.js';
 import WebGLLayerRenderer from '../../../../../../src/ol/renderer/webgl/Layer.js';
+import DataTileSource from '../../../../../../src/ol/source/DataTile.js';
+import VectorSource from '../../../../../../src/ol/source/Vector.js';
 import {getUid} from '../../../../../../src/ol/util.js';
 
 describe('ol/renderer/webgl/Layer', function () {

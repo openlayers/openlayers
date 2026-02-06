@@ -1,6 +1,9 @@
 /**
  * @module ol/expr/gpu
  */
+import {asArray} from '../color.js';
+import {Uniforms} from '../renderer/webgl/TileLayer.js';
+import {toSize} from '../size.js';
 import PaletteTexture from '../webgl/PaletteTexture.js';
 import {
   BooleanType,
@@ -11,13 +14,10 @@ import {
   Ops,
   SizeType,
   StringType,
-  computeGeometryType,
+  isType,
   parse,
   typeName,
 } from './expression.js';
-import {Uniforms} from '../renderer/webgl/TileLayer.js';
-import {asArray} from '../color.js';
-import {toSize} from '../size.js';
 
 /**
  * @param {string} operator Operator
@@ -127,25 +127,23 @@ export function uniformNameForVariable(variableName) {
  * @typedef {Object} CompilationContextProperty
  * @property {string} name Name
  * @property {number} type Resolved property type
- * @property {function(import("../Feature.js").FeatureLike): *} [evaluator] Function used for evaluating the value;
  */
 
 /**
  * @typedef {Object} CompilationContextVariable
  * @property {string} name Name
  * @property {number} type Resolved variable type
- * @property {function(Object): *} [evaluator] Function used for evaluating the value; argument is the style variables object
  */
 
 /**
  * @typedef {Object} CompilationContext
- * @property {boolean} [inFragmentShader] If false, means the expression output should be made for a vertex shader
  * @property {Object<string, CompilationContextProperty>} properties The values for properties used in 'get' expressions.
  * @property {Object<string, CompilationContextVariable>} variables The values for variables used in 'var' expressions.
  * @property {Object<string, string>} functions Lookup of functions used by the style.
  * @property {number} [bandCount] Number of bands per pixel.
  * @property {Array<PaletteTexture>} [paletteTextures] List of palettes used by the style.
- * @property {import("../style/webgl.js").WebGLStyle} style Literal style.
+ * @property {boolean} featureId Whether the feature ID is used in the expression
+ * @property {boolean} geometryType Whether the geometry type is used in the expression
  */
 
 /**
@@ -153,18 +151,26 @@ export function uniformNameForVariable(variableName) {
  */
 export function newCompilationContext() {
   return {
-    inFragmentShader: false,
     variables: {},
     properties: {},
     functions: {},
     bandCount: 0,
-    style: {},
+    featureId: false,
+    geometryType: false,
   };
 }
 
 const GET_BAND_VALUE_FUNC = 'getBandValue';
 
 export const PALETTE_TEXTURE_ARRAY = 'u_paletteTextures';
+
+export const FEATURE_ID_PROPERTY_NAME = 'featureId';
+export const GEOMETRY_TYPE_PROPERTY_NAME = 'geometryType';
+
+/**
+ * The value `-9999999` will be used to indicate that a property on a feature is not defined, similar to a "no data" value.
+ */
+export const UNDEFINED_PROP_VALUE = -9999999;
 
 /**
  * @typedef {string} CompiledExpression
@@ -221,23 +227,19 @@ const compilers = {
         type: expression.type,
       };
     }
-    const prefix = context.inFragmentShader ? 'v_prop_' : 'a_prop_';
-    return prefix + propName;
-  },
-  [Ops.GeometryType]: (context, expression, type) => {
-    const propName = 'geometryType';
-    const isExisting = propName in context.properties;
-    if (!isExisting) {
-      context.properties[propName] = {
-        name: propName,
-        type: StringType,
-        evaluator: (feature) => {
-          return computeGeometryType(feature.getGeometry());
-        },
-      };
+    let result = 'a_prop_' + propName;
+    if (isType(expression.type, BooleanType)) {
+      result = `(${result} > 0.0)`;
     }
-    const prefix = context.inFragmentShader ? 'v_prop_' : 'a_prop_';
-    return prefix + propName;
+    return result;
+  },
+  [Ops.Id]: (context) => {
+    context.featureId = true;
+    return 'a_' + FEATURE_ID_PROPERTY_NAME;
+  },
+  [Ops.GeometryType]: (context) => {
+    context.geometryType = true;
+    return 'a_' + GEOMETRY_TYPE_PROPERTY_NAME;
   },
   [Ops.LineMetric]: () => 'currentLineMetric', // this variable is assumed to always be present in shaders, default is 0.
   [Ops.Var]: (context, expression) => {
@@ -250,7 +252,23 @@ const compilers = {
         type: expression.type,
       };
     }
-    return uniformNameForVariable(varName);
+    let result = uniformNameForVariable(varName);
+    if (isType(expression.type, BooleanType)) {
+      result = `(${result} > 0.0)`;
+    }
+    return result;
+  },
+  [Ops.Has]: (context, expression) => {
+    const firstArg = /** @type {LiteralExpression} */ (expression.args[0]);
+    const propName = /** @type {string} */ (firstArg.value);
+    const isExisting = propName in context.properties;
+    if (!isExisting) {
+      context.properties[propName] = {
+        name: propName,
+        type: expression.type,
+      };
+    }
+    return `(a_prop_${propName} != ${numberToGlsl(UNDEFINED_PROP_VALUE)})`;
   },
   [Ops.Resolution]: () => 'u_resolution',
   [Ops.Zoom]: () => 'u_zoom',

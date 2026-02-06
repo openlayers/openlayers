@@ -1,8 +1,8 @@
-import GeoJSON from '../src/ol/format/GeoJSON.js';
 import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
+import GeoJSON from '../src/ol/format/GeoJSON.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import View from '../src/ol/View.js';
 
 const vector = new VectorLayer({
   source: new VectorSource({
@@ -52,8 +52,7 @@ map.on('pointermove', function (evt) {
     currentFeature = undefined;
     return;
   }
-  const pixel = map.getEventPixel(evt.originalEvent);
-  displayFeatureInfo(pixel, evt.originalEvent.target);
+  displayFeatureInfo(evt.pixel, evt.originalEvent.target);
 });
 
 map.on('click', function (evt) {

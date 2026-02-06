@@ -1,12 +1,12 @@
-import MVT from '../src/ol/format/MVT.js';
+import {stylefunction} from 'ol-mapbox-style';
 import TileQueue, {
   getTilePriority as tilePriorityFunction,
 } from '../src/ol/TileQueue.js';
-import VectorTileLayer from '../src/ol/layer/VectorTile.js';
-import VectorTileSource from '../src/ol/source/VectorTile.js';
-import {get} from '../src/ol/proj.js';
+import MVT from '../src/ol/format/MVT.js';
 import {inView} from '../src/ol/layer/Layer.js';
-import {stylefunction} from 'ol-mapbox-style';
+import VectorTileLayer from '../src/ol/layer/VectorTile.js';
+import {get} from '../src/ol/proj.js';
+import VectorTileSource from '../src/ol/source/VectorTile.js';
 
 const key = 'get_your_own_D6rA4zTHduk6KOKTXzGB';
 
@@ -20,19 +20,8 @@ canvas.style = {};
 const context = canvas.getContext('2d');
 
 const sources = {
-  landcover: new VectorTileSource({
-    maxZoom: 9,
-    format: new MVT(),
-    url: 'https://api.maptiler.com/tiles/landcover/{z}/{x}/{y}.pbf?key=' + key,
-  }),
-  contours: new VectorTileSource({
-    minZoom: 9,
-    maxZoom: 14,
-    format: new MVT(),
-    url: 'https://api.maptiler.com/tiles/contours/{z}/{x}/{y}.pbf?key=' + key,
-  }),
   maptiler_planet: new VectorTileSource({
-    format: new MVT(),
+    format: new MVT({layerName: 'mvt:layer'}),
     maxZoom: 14,
     url: 'https://api.maptiler.com/tiles/v3/{z}/{x}/{y}.pbf?key=' + key,
   }),
@@ -91,7 +80,7 @@ function loadStyles() {
               this.container = {
                 firstElementChild: canvas,
                 style: {
-                  opacity: layer.getOpacity(),
+                  opacity: String(layer.getOpacity()),
                 },
               };
               rendererTransform = transform;
@@ -159,10 +148,13 @@ worker.addEventListener('message', (event) => {
   frameState.layerStatesArray = layers.map((l) => l.getLayerState());
   layers.forEach((layer) => {
     if (inView(layer.getLayerState(), frameState.viewState)) {
-      if (layer.getDeclutter() && !frameState.declutterTree) {
+      const renderer = layer.getRenderer();
+      if (!renderer.prepareFrame(frameState)) {
+        return;
+      }
+      if (layer.getDeclutter() && !frameState.declutter) {
         frameState.declutter = {};
       }
-      const renderer = layer.getRenderer();
       renderer.renderFrame(frameState, canvas);
     }
   });

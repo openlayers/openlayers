@@ -1,13 +1,14 @@
 import Map from '../src/ol/Map.js';
-import OSM from '../src/ol/source/OSM.js';
-import TileLayer from '../src/ol/layer/Tile.js';
 import View from '../src/ol/View.js';
-import {ScaleLine, defaults as defaultControls} from '../src/ol/control.js';
+import ScaleLine from '../src/ol/control/ScaleLine.js';
+import {defaults as defaultControls} from '../src/ol/control/defaults.js';
+import TileLayer from '../src/ol/layer/Tile.js';
 import {
-  getPointResolution,
   get as getProjection,
+  getPointResolution,
   transform,
 } from '../src/ol/proj.js';
+import OSM from '../src/ol/source/OSM.js';
 
 const viewProjSelect = document.getElementById('view-projection');
 const projection = getProjection(viewProjSelect.value);

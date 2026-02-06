@@ -1,8 +1,8 @@
-import expect from '../../../expect.js';
 import {
   lineStringLength,
   linearRingLength,
 } from '../../../../../src/ol/geom/flat/length.js';
+import expect from '../../../expect.js';
 
 describe('ol/geom/flat/length.js', function () {
   describe('lineStringLength', function () {

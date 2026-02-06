@@ -1,10 +1,10 @@
 import Map from '../src/ol/Map.js';
-import OSM from '../src/ol/source/OSM.js';
 import Overlay from '../src/ol/Overlay.js';
-import TileLayer from '../src/ol/layer/Tile.js';
 import View from '../src/ol/View.js';
-import {fromLonLat, toLonLat} from '../src/ol/proj.js';
 import {toStringHDMS} from '../src/ol/coordinate.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import {fromLonLat, toLonLat} from '../src/ol/proj.js';
+import OSM from '../src/ol/source/OSM.js';
 
 const layer = new TileLayer({
   source: new OSM(),

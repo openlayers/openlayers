@@ -1,10 +1,9 @@
 import Feature from '../../../../src/ol/Feature.js';
-import Layer from '../../../../src/ol/layer/Layer.js';
 import Map from '../../../../src/ol/Map.js';
-import Polygon from 'ol/geom/Polygon.js';
-import VectorSource from '../../../../src/ol/source/Vector.js';
 import View from '../../../../src/ol/View.js';
-import WebGLVectorLayerRenderer from '../../../../src/ol/renderer/webgl/VectorLayer.js';
+import Polygon from '../../../../src/ol/geom/Polygon.js';
+import WebGLVectorLayer from '../../../../src/ol/layer/WebGLVector.js';
+import VectorSource from '../../../../src/ol/source/Vector.js';
 
 const polygon1 = new Feature({
   geometry: new Polygon([
@@ -67,27 +66,19 @@ const subImageTint = {
   'fill-color': 'red',
 };
 
-class WebGLLayer extends Layer {
-  createRenderer() {
-    return new WebGLVectorLayerRenderer(this, {
-      style: this.get('style'),
-    });
-  }
-}
-
-const vector1 = new WebGLLayer({
+const vector1 = new WebGLVectorLayer({
   style: srcPattern,
   source: new VectorSource({
     features: [polygon1],
   }),
 });
-const vector2 = new WebGLLayer({
+const vector2 = new WebGLVectorLayer({
   style: imagePattern,
   source: new VectorSource({
     features: [polygon2],
   }),
 });
-const vector3 = new WebGLLayer({
+const vector3 = new WebGLVectorLayer({
   style: subImageTint,
   source: new VectorSource({
     features: [polygon3],

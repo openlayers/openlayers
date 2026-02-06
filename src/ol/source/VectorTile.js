@@ -2,22 +2,27 @@
  * @module ol/source/VectorTile
  */
 
-import EventType from '../events/EventType.js';
-import Tile from '../VectorTile.js';
-import TileGrid from '../tilegrid/TileGrid.js';
 import TileState from '../TileState.js';
-import UrlTile from './UrlTile.js';
 import VectorRenderTile from '../VectorRenderTile.js';
-import {DEFAULT_MAX_ZOOM} from '../tilegrid/common.js';
+import Tile from '../VectorTile.js';
+import EventType from '../events/EventType.js';
 import {
   buffer as bufferExtent,
   getIntersection,
   intersects,
 } from '../extent.js';
-import {createXYZ, extentFromProjection} from '../tilegrid.js';
-import {isEmpty} from '../obj.js';
 import {loadFeaturesXhr} from '../featureloader.js';
+import {isEmpty} from '../obj.js';
+import {equivalent, transformExtent} from '../proj.js';
 import {toSize} from '../size.js';
+import TileGrid from '../tilegrid/TileGrid.js';
+import {DEFAULT_MAX_ZOOM} from '../tilegrid/common.js';
+import {
+  createXYZ,
+  extentFromProjection,
+  getForProjection,
+} from '../tilegrid.js';
+import UrlTile from './UrlTile.js';
 
 /**
  * @template {import("../Feature.js").FeatureLike} [FeatureType=import("../render/Feature.js").default]
@@ -31,7 +36,7 @@ import {toSize} from '../size.js';
  * to `false` (e.g. for sources with polygons that represent administrative
  * boundaries or TopoJSON sources) allows the renderer to optimise fill and
  * stroke operations.
- * @property {import("../proj.js").ProjectionLike} [projection='EPSG:3857'] Projection of the tile grid.
+ * @property {import("../proj.js").ProjectionLike} [projection='EPSG:3857'] Projection of the tile source.
  * @property {import("./Source.js").State} [state] Source state.
  * @property {typeof import("../VectorTile.js").default} [tileClass] Class used to instantiate tiles.
  * Default is {@link module:ol/VectorTile~VectorTile}.
@@ -191,18 +196,37 @@ class VectorTile extends UrlTile {
       tile.setState(TileState.LOADING);
       const urlTileCoord = tile.wrappedTileCoord;
       const tileGrid = this.getTileGridForProjection(projection);
-      const extent = tileGrid.getTileCoordExtent(urlTileCoord);
+      let extent = tileGrid.getTileCoordExtent(urlTileCoord);
       const z = urlTileCoord[0];
       const resolution = tileGrid.getResolution(z);
       // make extent 1 pixel smaller so we don't load tiles for < 0.5 pixel render space
       bufferExtent(extent, -resolution, extent);
+      const sourceProjection = this.projection;
+      if (
+        projection &&
+        this.projection &&
+        !equivalent(projection, sourceProjection)
+      ) {
+        extent = transformExtent(extent, projection, sourceProjection);
+      }
       const sourceTileGrid = this.tileGrid;
       const sourceExtent = sourceTileGrid.getExtent();
       if (sourceExtent) {
         getIntersection(extent, sourceExtent, extent);
       }
+      let sourceResolution = resolution;
+      if (
+        projection &&
+        sourceProjection &&
+        !equivalent(projection, sourceProjection)
+      ) {
+        sourceResolution =
+          resolution /
+          sourceProjection.getMetersPerUnit() /
+          projection.getMetersPerUnit();
+      }
       const sourceZ = sourceTileGrid.getZForResolution(
-        resolution,
+        sourceResolution,
         this.zDirection,
       );
 
@@ -261,7 +285,7 @@ class VectorTile extends UrlTile {
         if (sourceTileState === TileState.IDLE) {
           sourceTile.extent =
             sourceTileGrid.getTileCoordExtent(sourceTileCoord);
-          sourceTile.projection = projection;
+          sourceTile.projection = this.projection;
           sourceTile.resolution = sourceTileGrid.getResolution(
             sourceTileCoord[0],
           );
@@ -286,14 +310,15 @@ class VectorTile extends UrlTile {
    * @param {VectorRenderTile} tile Vector render tile.
    */
   removeSourceTiles(tile) {
+    const tileKey = tile.getKey();
     const sourceTiles = tile.sourceTiles;
     for (let i = 0, ii = sourceTiles.length; i < ii; ++i) {
       const sourceTileUrl = sourceTiles[i].getTileUrl();
-      const tileKey = this.getKey();
       if (!this.tileKeysBySourceTileUrl_[sourceTileUrl]) {
         return;
       }
-      const index = this.tileKeysBySourceTileUrl_[sourceTileUrl][tileKey];
+      const index =
+        this.tileKeysBySourceTileUrl_[sourceTileUrl].indexOf(tileKey);
       if (index === -1) {
         continue;
       }
@@ -321,12 +346,22 @@ class VectorTile extends UrlTile {
       projection,
     );
     const sourceExtent = this.getTileGrid().getExtent();
+    const sourceProjection = this.projection;
     const tileGrid = this.getTileGridForProjection(projection);
     if (urlTileCoord && sourceExtent) {
       const tileExtent = tileGrid.getTileCoordExtent(urlTileCoord);
       // make extent 1 pixel smaller so we don't load tiles for < 0.5 pixel render space
       bufferExtent(tileExtent, -tileGrid.getResolution(z), tileExtent);
-      if (!intersects(sourceExtent, tileExtent)) {
+      if (
+        !intersects(
+          sourceExtent,
+          !projection ||
+            !sourceProjection ||
+            equivalent(projection, sourceProjection)
+            ? tileExtent
+            : transformExtent(tileExtent, projection, sourceProjection),
+        )
+      ) {
         urlTileCoord = null;
       }
     }
@@ -334,15 +369,38 @@ class VectorTile extends UrlTile {
     if (urlTileCoord !== null) {
       const sourceTileGrid = this.tileGrid;
       const resolution = tileGrid.getResolution(z);
-      const sourceZ = sourceTileGrid.getZForResolution(resolution, 1);
+      let sourceResolution = resolution;
+      if (
+        projection &&
+        sourceProjection &&
+        !equivalent(projection, sourceProjection)
+      ) {
+        sourceResolution =
+          resolution /
+          sourceProjection.getMetersPerUnit() /
+          projection.getMetersPerUnit();
+      }
+      const sourceZ = sourceTileGrid.getZForResolution(sourceResolution, 1);
       // make extent 1 pixel smaller so we don't load tiles for < 0.5 pixel render space
       const extent = tileGrid.getTileCoordExtent(urlTileCoord);
       bufferExtent(extent, -resolution, extent);
-      sourceTileGrid.forEachTileCoord(extent, sourceZ, (sourceTileCoord) => {
-        empty =
-          empty &&
-          !this.tileUrlFunction(sourceTileCoord, pixelRatio, projection);
-      });
+      sourceTileGrid.forEachTileCoord(
+        !projection ||
+          !sourceProjection ||
+          equivalent(projection, sourceProjection)
+          ? extent
+          : transformExtent(extent, projection, sourceProjection),
+        sourceZ,
+        (sourceTileCoord) => {
+          empty =
+            empty &&
+            !this.tileUrlFunction(
+              sourceTileCoord,
+              pixelRatio,
+              sourceProjection,
+            );
+        },
+      );
     }
     const newTile = new VectorRenderTile(
       tileCoord,
@@ -364,6 +422,14 @@ class VectorTile extends UrlTile {
     const code = projection.getCode();
     let tileGrid = this.tileGrids_[code];
     if (!tileGrid) {
+      const sourceProjection = this.projection;
+      if (
+        sourceProjection !== null &&
+        !equivalent(sourceProjection, projection)
+      ) {
+        return getForProjection(projection);
+      }
+
       // A tile grid that matches the tile size of the source tile grid is more
       // likely to have 1:1 relationships between source tiles and rendered tiles.
       const sourceTileGrid = this.tileGrid;

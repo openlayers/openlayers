@@ -1,11 +1,14 @@
 import Feature from '../../../../src/ol/Feature.js';
 import Map from '../../../../src/ol/Map.js';
+import View from '../../../../src/ol/View.js';
+import {containsCoordinate} from '../../../../src/ol/extent.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import VectorTileLayer from '../../../../src/ol/layer/VectorTile.js';
 import VectorTileSource from '../../../../src/ol/source/VectorTile.js';
-import View from '../../../../src/ol/View.js';
-import {Circle, Fill, Stroke, Style} from '../../../../src/ol/style.js';
-import {containsCoordinate} from '../../../../src/ol/extent.js';
+import Circle from '../../../../src/ol/style/Circle.js';
+import Fill from '../../../../src/ol/style/Fill.js';
+import Stroke from '../../../../src/ol/style/Stroke.js';
+import Style from '../../../../src/ol/style/Style.js';
 
 const offset = 1380000;
 const points = [

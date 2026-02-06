@@ -1,14 +1,13 @@
 /**
  * @module ol/renderer/webgl/TileLayerBase
  */
-import LRUCache from '../../structs/LRUCache.js';
-import ReprojDataTile from '../../reproj/DataTile.js';
-import ReprojTile from '../../reproj/Tile.js';
 import TileRange from '../../TileRange.js';
 import TileState from '../../TileState.js';
-import WebGLLayerRenderer from './Layer.js';
-import {abstract, getUid} from '../../util.js';
-import {create as createMat4} from '../../vec/mat4.js';
+import {descending} from '../../array.js';
+import {getIntersection, getRotatedViewport, isEmpty} from '../../extent.js';
+import {fromUserExtent} from '../../proj.js';
+import {toSize} from '../../size.js';
+import LRUCache from '../../structs/LRUCache.js';
 import {
   createOrUpdate as createTileCoord,
   getKey as getTileCoordKey,
@@ -20,10 +19,9 @@ import {
   scale as scaleTransform,
   translate as translateTransform,
 } from '../../transform.js';
-import {descending} from '../../array.js';
-import {fromUserExtent} from '../../proj.js';
-import {getIntersection, isEmpty} from '../../extent.js';
-import {toSize} from '../../size.js';
+import {abstract, getUid} from '../../util.js';
+import {create as createMat4} from '../../vec/mat4.js';
+import WebGLLayerRenderer from './Layer.js';
 
 export const Uniforms = {
   TILE_TRANSFORM: 'u_tileTransform',
@@ -126,7 +124,7 @@ function getRenderExtent(frameState, extent) {
  * @return {string} The cache key.
  */
 export function getCacheKey(source, tileCoord) {
-  return `${source.getKey()},${source.getRevision()},${getTileCoordKey(tileCoord)}`;
+  return `${getUid(source)},${source.getKey()},${getTileCoordKey(tileCoord)}`;
 }
 
 /**
@@ -307,6 +305,15 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
         tileSource.zDirection,
       ),
     );
+    const rotation = viewState.rotation;
+    const viewport = rotation
+      ? getRotatedViewport(
+          viewState.center,
+          viewState.resolution,
+          rotation,
+          frameState.size,
+        )
+      : undefined;
     for (let z = initialZ; z >= minZ; --z) {
       const tileRange = tileGrid.getTileRangeForExtentAndZ(
         extent,
@@ -318,6 +325,12 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
 
       for (let x = tileRange.minX; x <= tileRange.maxX; ++x) {
         for (let y = tileRange.minY; y <= tileRange.maxY; ++y) {
+          if (
+            rotation &&
+            !tileGrid.tileCoordIntersectsViewport([z, x, y], viewport)
+          ) {
+            continue;
+          }
           const tileCoord = createTileCoord(z, x, y, this.tempTileCoord_);
           const cacheKey = getCacheKey(tileSource, tileCoord);
 
@@ -580,20 +593,16 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
      */
     const alphaLookup = {};
 
-    const uid = getUid(this);
-    const time = frameState.time;
     let blend = false;
-
     const representationsByZ = tileRepresentationLookup.representationsByZ;
 
     // look for cached tiles to use if a target tile is not ready
     if (z in representationsByZ) {
+      const uid = getUid(this);
+      const time = frameState.time;
       for (const tileRepresentation of representationsByZ[z]) {
         const tile = tileRepresentation.tile;
-        if (
-          (tile instanceof ReprojTile || tile instanceof ReprojDataTile) &&
-          tile.getState() === TileState.EMPTY
-        ) {
+        if (tile.getState() === TileState.EMPTY) {
           continue;
         }
         const tileCoord = tile.tileCoord;
@@ -716,10 +725,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
     const canvas = this.helper.getCanvas();
 
     const tileRepresentationCache = this.tileRepresentationCache;
-    while (tileRepresentationCache.canExpireCache()) {
-      const tileRepresentation = tileRepresentationCache.pop();
-      tileRepresentation.dispose();
-    }
+    tileRepresentationCache.expireCache();
 
     this.postRender(gl, frameState);
     return canvas;

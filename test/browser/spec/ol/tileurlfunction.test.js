@@ -1,10 +1,10 @@
 import TileGrid from '../../../../src/ol/tilegrid/TileGrid.js';
+import {createXYZ} from '../../../../src/ol/tilegrid.js';
 import {
   createFromTemplate,
   createFromTemplates,
   createFromTileUrlFunctions,
 } from '../../../../src/ol/tileurlfunction.js';
-import {createXYZ} from '../../../../src/ol/tilegrid.js';
 
 describe('ol.TileUrlFunction', function () {
   describe('createFromTemplate', function () {

@@ -74,7 +74,7 @@ const fontRegEx = new RegExp(
     '(?:(?:normal|\\1|\\2|\\3)\\s*){0,3}((?:xx?-)?',
     '(?:small|large)|medium|smaller|larger|[\\.\\d]+(?:\\%|in|[cem]m|ex|p[ctx]))',
     '(?:\\s*\\/\\s*(normal|[\\.\\d]+(?:\\%|in|[cem]m|ex|p[ctx])?))',
-    '?\\s*([-,\\"\\\'\\sa-z]+?)\\s*$',
+    '?\\s*([-,\\"\\\'\\sa-z0-9]+?)\\s*$',
   ].join(''),
   'i',
 );
@@ -87,6 +87,12 @@ const fontRegExMatchIndex = [
   'lineHeight',
   'family',
 ];
+
+/** @type {Object<string|number, number>} */
+export const fontWeights = {
+  normal: 400,
+  bold: 700,
+};
 
 /**
  * Get the list of font families from a font spec.  Note that this doesn't work
@@ -103,15 +109,21 @@ export const getFontParameters = function (fontSpec) {
     lineHeight: 'normal',
     size: '1.2em',
     style: 'normal',
-    weight: 'normal',
+    weight: '400',
     variant: 'normal',
   });
   for (let i = 0, ii = fontRegExMatchIndex.length; i < ii; ++i) {
     const value = match[i + 1];
     if (value !== undefined) {
-      style[fontRegExMatchIndex[i]] = value;
+      style[fontRegExMatchIndex[i]] =
+        typeof value === 'string' ? value.trim() : value;
     }
   }
-  style.families = style.family.split(/,\s?/);
+  if (isNaN(Number(style.weight)) && style.weight in fontWeights) {
+    style.weight = fontWeights[style.weight];
+  }
+  style.families = style.family
+    .split(/,\s?/)
+    .map((f) => f.trim().replace(/^['"]|['"]$/g, ''));
   return style;
 };

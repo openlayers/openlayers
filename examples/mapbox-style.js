@@ -1,5 +1,5 @@
-import FullScreen from '../src/ol/control/FullScreen.js';
 import olms from 'ol-mapbox-style';
+import FullScreen from '../src/ol/control/FullScreen.js';
 
 olms(
   'map',

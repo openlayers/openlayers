@@ -1,12 +1,12 @@
 /**
  * @module ol/source/UrlTile
  */
-import TileEventType from './TileEventType.js';
-import TileSource, {TileSourceEvent} from './Tile.js';
 import TileState from '../TileState.js';
 import {createFromTemplates} from '../tileurlfunction.js';
 import {expandUrl} from '../uri.js';
 import {getUid} from '../util.js';
+import TileSource, {TileSourceEvent} from './Tile.js';
+import TileEventType from './TileEventType.js';
 
 /**
  * @typedef {Object} Options

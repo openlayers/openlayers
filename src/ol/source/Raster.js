@@ -2,19 +2,19 @@
  * @module ol/source/Raster
  */
 import Disposable from '../Disposable.js';
+import ImageCanvas from '../ImageCanvas.js';
+import TileQueue from '../TileQueue.js';
+import {createCanvasContext2D} from '../dom.js';
 import Event from '../events/Event.js';
 import EventType from '../events/EventType.js';
-import ImageCanvas from '../ImageCanvas.js';
+import {equals, getCenter, getHeight, getWidth} from '../extent.js';
 import ImageLayer from '../layer/Image.js';
+import TileLayer from '../layer/Tile.js';
+import {create as createTransform} from '../transform.js';
+import {getUid} from '../util.js';
 import ImageSource from './Image.js';
 import Source from './Source.js';
-import TileLayer from '../layer/Tile.js';
-import TileQueue from '../TileQueue.js';
 import TileSource from './Tile.js';
-import {createCanvasContext2D} from '../dom.js';
-import {create as createTransform} from '../transform.js';
-import {equals, getCenter, getHeight, getWidth} from '../extent.js';
-import {getUid} from '../util.js';
 
 /**
  * @typedef {Object} MinionData
@@ -832,7 +832,10 @@ class RasterSource extends ImageSource {
 
     let context;
     if (this.renderedImageCanvas_) {
-      context = this.renderedImageCanvas_.getImage().getContext('2d');
+      context =
+        /** @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} */ (
+          this.renderedImageCanvas_.getImage().getContext('2d')
+        );
     } else {
       const width = Math.round(getWidth(extent) / resolution);
       const height = Math.round(getHeight(extent) / resolution);
@@ -900,7 +903,7 @@ RasterSource.prototype.dispose;
 
 /**
  * A reusable canvas context.
- * @type {CanvasRenderingContext2D}
+ * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D}
  * @private
  */
 let sharedContext = null;

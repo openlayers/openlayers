@@ -1,23 +1,23 @@
 /**
  * @module ol/reproj/DataTile
  */
-import {ERROR_THRESHOLD} from './common.js';
 
 import DataTile, {asArrayLike, asImageLike, toArray} from '../DataTile.js';
-import EventType from '../events/EventType.js';
 import TileState from '../TileState.js';
-import Triangulation from './Triangulation.js';
+import {createCanvasContext2D} from '../dom.js';
+import EventType from '../events/EventType.js';
+import {listen, unlistenByKey} from '../events.js';
+import {getArea, getIntersection, getWidth, wrapAndSliceX} from '../extent.js';
+import {clamp} from '../math.js';
 import {calculateSourceExtentResolution} from '../reproj.js';
+import Triangulation from './Triangulation.js';
+import {ERROR_THRESHOLD} from './common.js';
 import {
   canvasGLPool,
   createCanvasContextWebGL,
   releaseGLCanvas,
   render as renderReprojected,
 } from './glreproj.js';
-import {clamp} from '../math.js';
-import {createCanvasContext2D} from '../dom.js';
-import {getArea, getIntersection, getWidth, wrapAndSliceX} from '../extent.js';
-import {listen, unlistenByKey} from '../events.js';
 
 /**
  * @typedef {function(number, number, number, number) : import("../DataTile.js").default} TileGetter
@@ -339,7 +339,9 @@ class ReprojDataTile extends DataTile {
       const isFloat = tileData instanceof Float32Array;
       const pixelCount = pixelSize[0] * pixelSize[1];
       const DataType = isFloat ? Float32Array : Uint8ClampedArray;
-      const tileDataR = new DataType(tileData.buffer);
+      const tileDataR = new DataType(
+        /** @type {ArrayBuffer} */ (tileData.buffer),
+      );
       const bytesPerElement = DataType.BYTES_PER_ELEMENT;
       const bytesPerPixel = (bytesPerElement * tileDataR.length) / pixelCount;
       const bytesPerRow = tileDataR.byteLength / pixelSize[1];
@@ -376,8 +378,8 @@ class ReprojDataTile extends DataTile {
     const size = this.targetTileGrid_.getTileSize(z);
     const targetWidth = typeof size === 'number' ? size : size[0];
     const targetHeight = typeof size === 'number' ? size : size[1];
-    const outWidth = targetWidth * this.pixelRatio_;
-    const outHeight = targetHeight * this.pixelRatio_;
+    const outWidth = Math.round(targetWidth * this.pixelRatio_);
+    const outHeight = Math.round(targetHeight * this.pixelRatio_);
     const targetResolution = this.targetTileGrid_.getResolution(z);
     const sourceResolution = this.sourceTileGrid_.getResolution(this.sourceZ_);
 
@@ -510,7 +512,7 @@ class ReprojDataTile extends DataTile {
     } else {
       this.reprojData_ = dataR;
     }
-    this.reprojSize_ = [Math.round(outWidth), Math.round(outHeight)];
+    this.reprojSize_ = [outWidth, outHeight];
     this.state = TileState.LOADED;
     this.changed();
   }

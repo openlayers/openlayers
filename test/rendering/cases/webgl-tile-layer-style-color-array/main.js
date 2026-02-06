@@ -1,6 +1,6 @@
 import Map from '../../../../src/ol/Map.js';
-import TileLayer from '../../../../src/ol/layer/WebGLTile.js';
 import View from '../../../../src/ol/View.js';
+import TileLayer from '../../../../src/ol/layer/WebGLTile.js';
 import XYZ from '../../../../src/ol/source/XYZ.js';
 
 new Map({

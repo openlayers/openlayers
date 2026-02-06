@@ -1,34 +1,34 @@
+import {spy as sinonSpy, stub as sinonStub} from 'sinon';
 import Collection from '../../../../src/ol/Collection.js';
-import Control from '../../../../src/ol/control/Control.js';
-import DoubleClickZoom from '../../../../src/ol/interaction/DoubleClickZoom.js';
-import DragPan from '../../../../src/ol/interaction/DragPan.js';
 import Feature from '../../../../src/ol/Feature.js';
-import GeoJSON from '../../../../src/ol/format/GeoJSON.js';
-import ImageLayer from '../../../../src/ol/layer/Image.js';
 import ImageState from '../../../../src/ol/ImageState.js';
-import ImageStatic from '../../../../src/ol/source/ImageStatic.js';
-import Interaction from '../../../../src/ol/interaction/Interaction.js';
-import Layer from '../../../../src/ol/layer/Layer.js';
-import LayerGroup from '../../../../src/ol/layer/Group.js';
 import Map from '../../../../src/ol/Map.js';
 import MapBrowserEvent from '../../../../src/ol/MapBrowserEvent.js';
 import MapEvent from '../../../../src/ol/MapEvent.js';
-import MouseWheelZoom from '../../../../src/ol/interaction/MouseWheelZoom.js';
 import Overlay from '../../../../src/ol/Overlay.js';
+import View from '../../../../src/ol/View.js';
+import Control from '../../../../src/ol/control/Control.js';
+import GeoJSON from '../../../../src/ol/format/GeoJSON.js';
+import {TRUE} from '../../../../src/ol/functions.js';
+import LineString from '../../../../src/ol/geom/LineString.js';
+import Point from '../../../../src/ol/geom/Point.js';
+import Polygon from '../../../../src/ol/geom/Polygon.js';
+import DoubleClickZoom from '../../../../src/ol/interaction/DoubleClickZoom.js';
+import DragPan from '../../../../src/ol/interaction/DragPan.js';
+import Interaction from '../../../../src/ol/interaction/Interaction.js';
+import MouseWheelZoom from '../../../../src/ol/interaction/MouseWheelZoom.js';
 import PinchZoom from '../../../../src/ol/interaction/PinchZoom.js';
-import Property from '../../../../src/ol/layer/Property.js';
 import Select from '../../../../src/ol/interaction/Select.js';
+import {defaults as defaultInteractions} from '../../../../src/ol/interaction/defaults.js';
+import LayerGroup from '../../../../src/ol/layer/Group.js';
+import ImageLayer from '../../../../src/ol/layer/Image.js';
+import Layer from '../../../../src/ol/layer/Layer.js';
+import Property from '../../../../src/ol/layer/Property.js';
 import TileLayer from '../../../../src/ol/layer/Tile.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
-import VectorSource from '../../../../src/ol/source/Vector.js';
 import VectorTileLayer from '../../../../src/ol/layer/VectorTile.js';
-import VectorTileSource from '../../../../src/ol/source/VectorTile.js';
-import View from '../../../../src/ol/View.js';
-import WebGLPointsLayer from '../../../../src/ol/layer/WebGLPoints.js';
-import XYZ from '../../../../src/ol/source/XYZ.js';
-import {Icon, Style} from '../../../../src/ol/style.js';
-import {LineString, Point, Polygon} from '../../../../src/ol/geom.js';
-import {TRUE} from '../../../../src/ol/functions.js';
+import WebGLVectorLayer from '../../../../src/ol/layer/WebGLVector.js';
+import {tile as tileStrategy} from '../../../../src/ol/loadingstrategy.js';
 import {
   clearUserProjection,
   fromLonLat,
@@ -36,10 +36,14 @@ import {
   transform,
   useGeographic,
 } from '../../../../src/ol/proj.js';
-import {createXYZ} from '../../../../src/ol/tilegrid.js';
-import {defaults as defaultInteractions} from '../../../../src/ol/interaction.js';
+import ImageStatic from '../../../../src/ol/source/ImageStatic.js';
+import VectorSource from '../../../../src/ol/source/Vector.js';
+import VectorTileSource from '../../../../src/ol/source/VectorTile.js';
+import XYZ from '../../../../src/ol/source/XYZ.js';
+import Icon from '../../../../src/ol/style/Icon.js';
 import {shared as iconImageCache} from '../../../../src/ol/style/IconImageCache.js';
-import {tile as tileStrategy} from '../../../../src/ol/loadingstrategy.js';
+import Style from '../../../../src/ol/style/Style.js';
+import {createXYZ} from '../../../../src/ol/tilegrid.js';
 
 describe('ol/Map', function () {
   describe('constructor', function () {
@@ -462,7 +466,7 @@ describe('ol/Map', function () {
                 },
               }),
             }),
-            new WebGLPointsLayer({
+            new WebGLVectorLayer({
               source: new VectorSource({
                 features: [new Feature(new Point([0, 0]))],
               }),
@@ -693,7 +697,7 @@ describe('ol/Map', function () {
               },
             }),
           }),
-          new WebGLPointsLayer({
+          new WebGLVectorLayer({
             source: new VectorSource({
               features: [new Feature(new Point([0, 0]))],
             }),
@@ -1052,7 +1056,7 @@ describe('ol/Map', function () {
     it('is called when the view.changed() is called', function () {
       const view = map.getView();
 
-      const spy = sinon.spy(map, 'render');
+      const spy = sinonSpy(map, 'render');
       view.changed();
       expect(spy.callCount).to.be(1);
     });
@@ -1061,13 +1065,13 @@ describe('ol/Map', function () {
       const view = map.getView();
       map.setView(null);
 
-      const spy = sinon.spy(map, 'render');
+      const spy = sinonSpy(map, 'render');
       view.changed();
       expect(spy.callCount).to.be(0);
     });
 
     it('calls renderFrame_ and results in a postrender event', function (done) {
-      const spy = sinon.spy(map, 'renderFrame_');
+      const spy = sinonSpy(map, 'renderFrame_');
       map.render();
       map.once('postrender', function (event) {
         expect(event).to.be.a(MapEvent);
@@ -1082,10 +1086,7 @@ describe('ol/Map', function () {
       const layer = new VectorLayer({source: new VectorSource()});
       let prerender = false;
       let postrender = false;
-      const renderDeferredSpy = sinon.spy(
-        layer.getRenderer(),
-        'renderDeferred',
-      );
+      const renderDeferredSpy = sinonSpy(layer.getRenderer(), 'renderDeferred');
       layer.on('prerender', () => (prerender = true));
       layer.on('postrender', () => {
         expect(renderDeferredSpy.callCount).to.be(0);
@@ -1112,10 +1113,7 @@ describe('ol/Map', function () {
       });
       let prerender = false;
       let postrender = false;
-      const renderDeferredSpy = sinon.spy(
-        layer.getRenderer(),
-        'renderDeferred',
-      );
+      const renderDeferredSpy = sinonSpy(layer.getRenderer(), 'renderDeferred');
       layer.on('prerender', () => (prerender = true));
       layer.on('postrender', () => {
         expect(renderDeferredSpy.callCount).to.be(1);
@@ -1282,25 +1280,74 @@ describe('ol/Map', function () {
     });
   });
 
-  describe('create interactions', function () {
-    let options, event, hasTabIndex, hasFocus, isPrimary;
+  describe('#getPixelRatio() and #setPixelRatio()', function () {
+    let map;
 
     beforeEach(function () {
-      options = {
-        altShiftDragRotate: false,
-        doubleClickZoom: false,
-        keyboard: false,
-        mouseWheelZoom: false,
-        shiftDragZoom: false,
-        dragPan: false,
-        pinchRotate: false,
-        pinchZoom: false,
-      };
-      hasTabIndex = true;
-      hasFocus = true;
-      isPrimary = true;
-      event = {
-        map: {
+      map = new Map({
+        target: document.createElement('div'),
+      });
+    });
+
+    afterEach(function () {
+      disposeMap(map);
+    });
+
+    it('gets the pixel ratio', function () {
+      expect(map.getPixelRatio()).to.be(window.devicePixelRatio || 1);
+    });
+
+    it('sets the pixel ratio and re-renders the map', function () {
+      const spy = sinonSpy(map, 'render');
+      map.setPixelRatio(2);
+      expect(map.getPixelRatio()).to.be(2);
+      expect(spy.called).to.be(true);
+      spy.restore();
+    });
+  });
+
+  describe('create interactions', function () {
+    let options;
+
+    function createEvent(
+      type,
+      {altKey, button, hasTabIndex, hasFocus, isPrimary} = {},
+    ) {
+      if (altKey === undefined) {
+        altKey = false;
+      }
+      if (button === undefined) {
+        button = 0;
+      }
+      if (hasTabIndex === undefined) {
+        hasTabIndex = true;
+      }
+      if (hasFocus === undefined) {
+        hasFocus = true;
+      }
+      if (isPrimary === undefined) {
+        isPrimary = true;
+      }
+      const originalEvent = new PointerEvent(type, {
+        altKey,
+        button,
+        isPrimary,
+      });
+      Object.defineProperty(originalEvent, 'target', {
+        writable: false,
+        value: {
+          getTargetElement: function () {
+            return {
+              contains: function () {
+                return hasFocus;
+              },
+            };
+          },
+        },
+      });
+      return new MapBrowserEvent(
+        type,
+        {
           getTargetElement: function () {
             return {
               hasAttribute: function (attribute) {
@@ -1318,19 +1365,20 @@ describe('ol/Map', function () {
             return {};
           },
         },
-        originalEvent: {
-          isPrimary: isPrimary,
-          button: 0,
-        },
-        target: {
-          getTargetElement: function () {
-            return {
-              contains: function () {
-                return hasFocus;
-              },
-            };
-          },
-        },
+        originalEvent,
+      );
+    }
+
+    beforeEach(function () {
+      options = {
+        altShiftDragRotate: false,
+        doubleClickZoom: false,
+        keyboard: false,
+        mouseWheelZoom: false,
+        shiftDragZoom: false,
+        dragPan: false,
+        pinchRotate: false,
+        pinchZoom: false,
       };
     });
 
@@ -1350,13 +1398,14 @@ describe('ol/Map', function () {
         options.mouseWheelZoom = true;
         const interactions = defaultInteractions(options);
         expect(interactions.item(0).condition_).to.not.be(TRUE);
-        hasTabIndex = true;
-        hasFocus = true;
+        let event = createEvent('pointerdown');
         expect(interactions.item(0).condition_(event)).to.be(true);
-        hasTabIndex = true;
-        hasFocus = false;
+        event = createEvent('pointerdown', {hasFocus: false});
         expect(interactions.item(0).condition_(event)).to.be(false);
-        hasTabIndex = false;
+        event = createEvent('pointerdown', {
+          hasTabIndex: false,
+          hasFocus: false,
+        });
         expect(interactions.item(0).condition_(event)).to.be(true);
       });
     });
@@ -1367,27 +1416,27 @@ describe('ol/Map', function () {
         const interactions = defaultInteractions(options);
         expect(interactions.getLength()).to.eql(1);
         expect(interactions.item(0)).to.be.a(DragPan);
+        let event = createEvent('pointerdown');
         expect(interactions.item(0).condition_(event)).to.be(true);
-        hasTabIndex = true;
-        hasFocus = false;
+        event = createEvent('pointerdown', {hasFocus: false});
         expect(interactions.item(0).condition_(event)).to.be(true);
-        event.originalEvent.altKey = true;
+        event = createEvent('pointerdown', {altKey: true, hasFocus: false});
         expect(interactions.item(0).condition_(event)).to.be(false);
-        delete event.originalEvent.altKey;
-        event.originalEvent.button = 1;
+        event = createEvent('pointerdown', {button: 1, hasFocus: false});
         expect(interactions.item(0).condition_(event)).to.be(false);
       });
       it('does not use the default condition when onFocusOnly option is set', function () {
         options.onFocusOnly = true;
         options.dragPan = true;
         const interactions = defaultInteractions(options);
-        hasTabIndex = true;
-        hasFocus = true;
+        let event = createEvent('pointerdown');
         expect(interactions.item(0).condition_(event)).to.be(true);
-        hasTabIndex = true;
-        hasFocus = false;
+        event = createEvent('pointerdown', {hasFocus: false});
         expect(interactions.item(0).condition_(event)).to.be(false);
-        hasTabIndex = false;
+        event = createEvent('pointerdown', {
+          hasTabIndex: false,
+          hasFocus: false,
+        });
         expect(interactions.item(0).condition_(event)).to.be(true);
       });
     });
@@ -1643,7 +1692,7 @@ describe('ol/Map', function () {
     });
 
     it('calls handleEvent on interaction', function () {
-      const spy = sinon.spy(dragpan, 'handleEvent');
+      const spy = sinonSpy(dragpan, 'handleEvent');
       map.handleMapBrowserEvent(
         new MapBrowserEvent(
           'pointermove',
@@ -1657,7 +1706,7 @@ describe('ol/Map', function () {
 
     it('does not call handleEvent on interaction when map has no target', function () {
       map.setTarget(null);
-      const spy = sinon.spy(dragpan, 'handleEvent');
+      const spy = sinonSpy(dragpan, 'handleEvent');
       map.handleMapBrowserEvent(
         new MapBrowserEvent(
           'pointermove',
@@ -1670,7 +1719,7 @@ describe('ol/Map', function () {
     });
 
     it('does not call handleEvent on interaction that has been removed', function () {
-      const spy = sinon.spy(dragpan, 'handleEvent');
+      const spy = sinonSpy(dragpan, 'handleEvent');
       let callCount = 0;
       const interaction = new Interaction({
         handleEvent: function () {
@@ -1694,13 +1743,13 @@ describe('ol/Map', function () {
 
     it('does not call handleEvent on interaction when MapBrowserEvent propagation stopped', function () {
       const select = new Select();
-      const selectStub = sinon.stub(select, 'handleEvent');
+      const selectStub = sinonStub(select, 'handleEvent');
       selectStub.callsFake(function (e) {
         e.stopPropagation();
         return true;
       });
       map.addInteraction(select);
-      const spy = sinon.spy(dragpan, 'handleEvent');
+      const spy = sinonSpy(dragpan, 'handleEvent');
       map.handleMapBrowserEvent(
         new MapBrowserEvent(
           'pointermove',
@@ -1712,6 +1761,38 @@ describe('ol/Map', function () {
       expect(selectStub.callCount).to.be(1);
       spy.restore();
       selectStub.restore();
+    });
+
+    describe('external map', () => {
+      let iframe, spy;
+
+      beforeEach(() => {
+        iframe = document.createElement('iframe');
+        iframe.width = '100';
+        iframe.height = '100';
+        iframe.src = 'spec/ol/data/external-map.html';
+        document.body.appendChild(iframe);
+        spy = sinonSpy(dragpan, 'handleDownEvent');
+      });
+      afterEach(() => {
+        map.setTarget(null);
+        document.body.removeChild(iframe);
+        spy.restore();
+      });
+      it('handles events from a map in a separate window', (done) => {
+        document.body.removeChild(map.getTargetElement());
+        map.setTarget(null);
+        const win = iframe.contentWindow;
+        win.addEventListener('DOMContentLoaded', () => {
+          map.setTarget(iframe.contentDocument.getElementById('map'));
+          win.postMessage('test');
+          setTimeout(() => {
+            expect(spy.callCount).to.be(1);
+            expect(spy.firstCall.returnValue).to.be(true);
+            done();
+          }, 100);
+        });
+      });
     });
   });
 });

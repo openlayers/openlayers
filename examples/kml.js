@@ -1,9 +1,10 @@
-import ImageTile from '../src/ol/source/ImageTile.js';
-import KML from '../src/ol/format/KML.js';
 import Map from '../src/ol/Map.js';
-import VectorSource from '../src/ol/source/Vector.js';
 import View from '../src/ol/View.js';
-import {Tile as TileLayer, Vector as VectorLayer} from '../src/ol/layer.js';
+import KML from '../src/ol/format/KML.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
+import ImageTile from '../src/ol/source/ImageTile.js';
+import VectorSource from '../src/ol/source/Vector.js';
 
 const key = 'get_your_own_D6rA4zTHduk6KOKTXzGB';
 const attributions =
@@ -48,10 +49,10 @@ const displayFeatureInfo = function (pixel) {
       info.push(features[i].get('name'));
     }
     document.getElementById('info').innerHTML = info.join(', ') || '(unknown)';
-    map.getTarget().style.cursor = 'pointer';
+    map.getTargetElement().style.cursor = 'pointer';
   } else {
     document.getElementById('info').innerHTML = '&nbsp;';
-    map.getTarget().style.cursor = '';
+    map.getTargetElement().style.cursor = '';
   }
 };
 
@@ -59,8 +60,7 @@ map.on('pointermove', function (evt) {
   if (evt.dragging) {
     return;
   }
-  const pixel = map.getEventPixel(evt.originalEvent);
-  displayFeatureInfo(pixel);
+  displayFeatureInfo(evt.pixel);
 });
 
 map.on('click', function (evt) {

@@ -1,12 +1,14 @@
-import DataTile from '../../../../src/ol/source/DataTile.js';
-import KML from '../../../../src/ol/format/KML.js';
 import Map from '../../../../src/ol/Map.js';
-import TileLayer from '../../../../src/ol/layer/WebGLTile.js';
-import VectorLayer from '../../../../src/ol/layer/Vector.js';
-import VectorSource from '../../../../src/ol/source/Vector.js';
 import View from '../../../../src/ol/View.js';
+import KML from '../../../../src/ol/format/KML.js';
+import VectorLayer from '../../../../src/ol/layer/Vector.js';
+import TileLayer from '../../../../src/ol/layer/WebGLTile.js';
+import DataTile from '../../../../src/ol/source/DataTile.js';
+import VectorSource from '../../../../src/ol/source/Vector.js';
 import XYZ from '../../../../src/ol/source/XYZ.js';
-import {Circle as CircleStyle, Fill, Style} from '../../../../src/ol/style.js';
+import CircleStyle from '../../../../src/ol/style/Circle.js';
+import Fill from '../../../../src/ol/style/Fill.js';
+import Style from '../../../../src/ol/style/Style.js';
 
 const labelCanvasSize = 256;
 

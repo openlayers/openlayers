@@ -1,10 +1,6 @@
-import CircleStyle from '../../../../../src/ol/style/Circle.js';
 import Feature from '../../../../../src/ol/Feature.js';
-import Fill from '../../../../../src/ol/style/Fill.js';
-import GeoJSON from '../../../../../src/ol/format/GeoJSON.js';
-import GeometryCollection from '../../../../../src/ol/geom/GeometryCollection.js';
-import Icon from '../../../../../src/ol/style/Icon.js';
 import ImageState from '../../../../../src/ol/ImageState.js';
+import GeoJSON from '../../../../../src/ol/format/GeoJSON.js';
 import KML, {
   getDefaultFillStyle,
   getDefaultImageStyle,
@@ -14,6 +10,7 @@ import KML, {
   getDefaultTextStyle,
   readFlatCoordinates,
 } from '../../../../../src/ol/format/KML.js';
+import GeometryCollection from '../../../../../src/ol/geom/GeometryCollection.js';
 import LineString from '../../../../../src/ol/geom/LineString.js';
 import LinearRing from '../../../../../src/ol/geom/LinearRing.js';
 import MultiLineString from '../../../../../src/ol/geom/MultiLineString.js';
@@ -22,17 +19,20 @@ import MultiPolygon from '../../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../../src/ol/geom/Polygon.js';
 import Projection from '../../../../../src/ol/proj/Projection.js';
-import Stroke from '../../../../../src/ol/style/Stroke.js';
-import Style from '../../../../../src/ol/style/Style.js';
-import Text from '../../../../../src/ol/style/Text.js';
+import {remove as removeTransform} from '../../../../../src/ol/proj/transforms.js';
 import {
   addCoordinateTransforms,
   addProjection,
   get as getProjection,
   transform,
 } from '../../../../../src/ol/proj.js';
+import CircleStyle from '../../../../../src/ol/style/Circle.js';
+import Fill from '../../../../../src/ol/style/Fill.js';
+import Icon from '../../../../../src/ol/style/Icon.js';
+import Stroke from '../../../../../src/ol/style/Stroke.js';
+import Style from '../../../../../src/ol/style/Style.js';
+import Text from '../../../../../src/ol/style/Text.js';
 import {parse} from '../../../../../src/ol/xml.js';
-import {remove as removeTransform} from '../../../../../src/ol/proj/transforms.js';
 
 describe('ol.format.KML', function () {
   let format;
@@ -2051,7 +2051,7 @@ describe('ol.format.KML', function () {
             '  <Placemark>' +
             '    <ExtendedData>' +
             '      <Data name="foo">' +
-            '        <displayName><![CDATA[display name]]></displayName>' +
+            '        <displayName>display name</displayName>' +
             '        <value>bar</value>' +
             '      </Data>' +
             '    </ExtendedData>' +

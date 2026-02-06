@@ -1,6 +1,6 @@
+import {spy as sinonSpy} from 'sinon';
 import Circle from '../../../../src/ol/geom/Circle.js';
 import expect from '../../expect.js';
-import sinon from 'sinon';
 
 describe('ol/geom/Circle.js', function () {
   describe('with a unit circle', function () {
@@ -146,7 +146,7 @@ describe('ol/geom/Circle.js', function () {
       });
 
       it('fires a change event', function () {
-        const spy = sinon.spy();
+        const spy = sinonSpy();
         circle.on('change', spy);
         circle.setCenter([1, 2]);
         expect(spy.calledOnce).to.be(true);
@@ -168,7 +168,7 @@ describe('ol/geom/Circle.js', function () {
       });
 
       it('fires a change event', function () {
-        const spy = sinon.spy();
+        const spy = sinonSpy();
         circle.on('change', spy);
         circle.setRadius(2);
         expect(spy.calledOnce).to.be(true);

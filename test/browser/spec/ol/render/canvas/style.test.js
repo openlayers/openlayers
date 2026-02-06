@@ -1,14 +1,16 @@
-import Fill from '../../../../../../src/ol/style/Fill.js';
-import Icon from '../../../../../../src/ol/style/Icon.js';
-import Image from '../../../../../../src/ol/style/Image.js';
-import Stroke from '../../../../../../src/ol/style/Stroke.js';
-import Style from '../../../../../../src/ol/style/Style.js';
+import {newEvaluationContext} from '../../../../../../src/ol/expr/cpu.js';
+import {newParsingContext} from '../../../../../../src/ol/expr/expression.js';
 import {
   buildRuleSet,
   buildStyle,
 } from '../../../../../../src/ol/render/canvas/style.js';
-import {newEvaluationContext} from '../../../../../../src/ol/expr/cpu.js';
-import {newParsingContext} from '../../../../../../src/ol/expr/expression.js';
+import Fill from '../../../../../../src/ol/style/Fill.js';
+import Icon from '../../../../../../src/ol/style/Icon.js';
+import Image from '../../../../../../src/ol/style/Image.js';
+import RegularShape from '../../../../../../src/ol/style/RegularShape.js';
+import Stroke from '../../../../../../src/ol/style/Stroke.js';
+import Style from '../../../../../../src/ol/style/Style.js';
+import Text from '../../../../../../src/ol/style/Text.js';
 
 /**
  * @param {Style} style The style to test.
@@ -40,6 +42,14 @@ function expectStyleEquals(style, expected) {
   } else {
     expect(gotImage).to.be(null);
   }
+
+  const gotText = style.getText();
+  const expectedText = expected.getText();
+  if (expectedText) {
+    expectTextEquals(gotText, expectedText);
+  } else {
+    expect(gotText).to.be(null);
+  }
 }
 
 /**
@@ -65,6 +75,21 @@ function expectStrokeEquals(stroke, expected) {
 
   const expectedWidth = expected.getWidth();
   expect(stroke.getWidth()).to.eql(expectedWidth);
+
+  const expectedLineCap = expected.getLineCap();
+  expect(stroke.getLineCap()).to.eql(expectedLineCap);
+
+  const expectedLineJoin = expected.getLineJoin();
+  expect(stroke.getLineJoin()).to.eql(expectedLineJoin);
+
+  const expectedMiterLimit = expected.getMiterLimit();
+  expect(stroke.getMiterLimit()).to.eql(expectedMiterLimit);
+
+  const expectedLineDash = expected.getLineDash();
+  expect(stroke.getLineDash()).to.eql(expectedLineDash);
+
+  const expectedLineDashOffset = expected.getLineDashOffset();
+  expect(stroke.getLineDashOffset()).to.eql(expectedLineDashOffset);
 }
 
 /**
@@ -83,12 +108,72 @@ function expectImageEquals(image, expected) {
     }
     const expectedSrc = expected.getSrc();
     expect(image.getSrc()).to.eql(expectedSrc);
+    expect(image.getColor()).to.eql(expected.getColor());
+    return;
+  }
+  if (expected instanceof RegularShape) {
+    if (!(image instanceof RegularShape)) {
+      throw new Error('Expected image to be a RegularShape');
+    }
+    expect(image.getPoints()).to.eql(expected.getPoints());
+    expect(image.getRadius()).to.eql(expected.getRadius());
+    expect(image.getRadius2()).to.eql(expected.getRadius2());
+    expect(image.getAngle()).to.eql(expected.getAngle());
+    expect(image.getRotateWithView()).to.eql(expected.getRotateWithView());
+    expect(image.getScale()).to.eql(expected.getScale());
+    expect(image.getDisplacement()).to.eql(expected.getDisplacement());
+    const expectedFill = expected.getFill();
+    if (expectedFill) {
+      expectFillEquals(image.getFill(), expectedFill);
+    } else {
+      expect(image.getFill()).to.be(null);
+    }
+    const expectedStroke = expected.getStroke();
+    if (expectedStroke) {
+      expectStrokeEquals(image.getStroke(), expectedStroke);
+    } else {
+      expect(image.getStroke()).to.be(null);
+    }
     return;
   }
 
   throw new Error(
     `Comparison not implemented for ${expected.constructor.name}`,
   );
+}
+
+/**
+ * @param {Text} text The text symbolizer to test.
+ * @param {Text} expected The expected text symbolizer.
+ */
+function expectTextEquals(text, expected) {
+  expect(text).to.be.a(Text);
+
+  expect(text.getText()).to.eql(expected.getText());
+  expect(text.getScale()).to.eql(expected.getScale());
+  expect(text.getRotation()).to.eql(expected.getRotation());
+  expect(text.getRotateWithView()).to.eql(expected.getRotateWithView());
+  expect(text.getOffsetX()).to.eql(expected.getOffsetX());
+  expect(text.getOffsetY()).to.eql(expected.getOffsetY());
+  expect(text.getPadding()).to.eql(expected.getPadding());
+  expect(text.getKeepUpright()).to.eql(expected.getKeepUpright());
+  expect(text.getTextAlign()).to.eql(expected.getTextAlign());
+  expect(text.getJustify()).to.eql(expected.getJustify());
+  expect(text.getTextBaseline()).to.eql(expected.getTextBaseline());
+
+  const expectedFill = expected.getFill();
+  if (expectedFill) {
+    expectFillEquals(text.getFill(), expectedFill);
+  } else {
+    expect(text.getFill()).to.be(null);
+  }
+
+  const expectedStroke = expected.getStroke();
+  if (expectedStroke) {
+    expectStrokeEquals(text.getStroke(), expectedStroke);
+  } else {
+    expect(text.getStroke()).to.be(null);
+  }
 }
 
 describe('ol/render/canvas/style.js', () => {
@@ -300,7 +385,337 @@ describe('ol/render/canvas/style.js', () => {
         expected: new Style({
           text: new Text({
             text: 'test',
-            keepTextUpright: false,
+            keepUpright: false,
+          }),
+        }),
+      },
+      {
+        name: 'dynamic stroke-color',
+        style: {
+          'stroke-color': ['get', 'color'],
+          'stroke-width': 2,
+        },
+        context: {
+          properties: {
+            color: [1, 2, 3, 0.5],
+          },
+        },
+        expected: new Style({
+          stroke: new Stroke({
+            color: [1, 2, 3, 0.5],
+            width: 2,
+          }),
+        }),
+      },
+      {
+        name: 'dynamic stroke-width',
+        style: {
+          'stroke-color': [0, 0, 0, 1],
+          'stroke-width': ['*', ['var', 'width'], 4],
+        },
+        context: {
+          variables: {
+            width: 1.5,
+          },
+        },
+        expected: new Style({
+          stroke: new Stroke({
+            color: [0, 0, 0, 1],
+            width: 6,
+          }),
+        }),
+      },
+      {
+        name: 'dynamic stroke-line-join',
+        style: {
+          'stroke-color': [0, 0, 0, 1],
+          'stroke-width': 2,
+          'stroke-line-join': ['var', 'joinType'],
+        },
+        context: {
+          variables: {
+            joinType: 'bevel',
+          },
+        },
+        expected: new Style({
+          stroke: new Stroke({
+            color: [0, 0, 0, 1],
+            width: 2,
+            lineJoin: 'bevel',
+          }),
+        }),
+      },
+      {
+        name: 'dynamic stroke-line-cap',
+        style: {
+          'stroke-color': [0, 0, 0, 1],
+          'stroke-width': 2,
+          'stroke-line-cap': ['var', 'capType'],
+        },
+        context: {
+          variables: {
+            capType: 'square',
+          },
+        },
+        expected: new Style({
+          stroke: new Stroke({
+            color: [0, 0, 0, 1],
+            width: 2,
+            lineCap: 'square',
+          }),
+        }),
+      },
+      {
+        name: 'dynamic stroke-miter-limit',
+        style: {
+          'stroke-color': [0, 0, 0, 1],
+          'stroke-width': 2,
+          'stroke-miter-limit': ['+', ['get', 'limit'], 2],
+        },
+        context: {
+          properties: {
+            limit: 4,
+          },
+        },
+        expected: new Style({
+          stroke: new Stroke({
+            color: [0, 0, 0, 1],
+            width: 2,
+            miterLimit: 6,
+          }),
+        }),
+      },
+      {
+        name: 'dynamic stroke-line-dash',
+        style: {
+          'stroke-color': [0, 0, 0, 1],
+          'stroke-width': 2,
+          'stroke-line-dash': [
+            ['*', ['var', 'factor'], 2],
+            10,
+            ['+', ['get', 'extra'], 1],
+          ],
+        },
+        context: {
+          properties: {
+            extra: 4,
+          },
+          variables: {
+            factor: 3,
+          },
+        },
+        expected: new Style({
+          stroke: new Stroke({
+            color: [0, 0, 0, 1],
+            width: 2,
+            lineDash: [6, 10, 5],
+          }),
+        }),
+      },
+      {
+        name: 'dynamic stroke-line-dash-offset',
+        style: {
+          'stroke-color': [0, 0, 0, 1],
+          'stroke-width': 2,
+          'stroke-line-dash': [1, 2],
+          'stroke-line-dash-offset': ['+', ['get', 'offset'], 0.5],
+        },
+        context: {
+          properties: {
+            offset: 1.5,
+          },
+        },
+        expected: new Style({
+          stroke: new Stroke({
+            color: [0, 0, 0, 1],
+            width: 2,
+            lineDash: [1, 2],
+            lineDashOffset: 2,
+          }),
+        }),
+      },
+      {
+        name: 'stroke-line-dash undefined value',
+        style: {
+          'stroke-color': 'black',
+          'stroke-width': 2,
+          'stroke-line-dash': undefined,
+        },
+        expected: new Style({
+          stroke: new Stroke({
+            color: [0, 0, 0, 1],
+            width: 2,
+          }),
+        }),
+      },
+      {
+        name: 'stroke-width undefined value',
+        style: {
+          'stroke-color': 'black',
+          'stroke-width': undefined,
+        },
+        expected: new Style({
+          stroke: new Stroke({
+            color: [0, 0, 0, 1],
+          }),
+        }),
+      },
+      {
+        name: 'stroke-line-cap undefined value',
+        style: {
+          'stroke-color': 'black',
+          'stroke-width': 3,
+          'stroke-line-cap': undefined,
+        },
+        expected: new Style({
+          stroke: new Stroke({
+            color: [0, 0, 0, 1],
+            width: 3,
+          }),
+        }),
+      },
+      {
+        name: 'text-keep-upright undefined value',
+        style: {
+          'text-value': 'test',
+          'text-keep-upright': undefined,
+        },
+        expected: new Style({
+          text: new Text({
+            text: 'test',
+          }),
+        }),
+      },
+      {
+        name: 'text-padding undefined value',
+        style: {
+          'text-value': 'test',
+          'text-padding': undefined,
+        },
+        expected: new Style({
+          text: new Text({
+            text: 'test',
+          }),
+        }),
+      },
+      {
+        name: 'shape-rotate-with-view undefined value',
+        style: {
+          'shape-points': 3,
+          'shape-radius': 4,
+          'shape-rotate-with-view': undefined,
+        },
+        expected: new Style({
+          image: new RegularShape({
+            points: 3,
+            radius: 4,
+          }),
+        }),
+      },
+      {
+        name: 'shape-displacement undefined value',
+        style: {
+          'shape-points': 3,
+          'shape-radius': 4,
+          'shape-displacement': undefined,
+        },
+        expected: new Style({
+          image: new RegularShape({
+            points: 3,
+            radius: 4,
+            displacement: [0, 0],
+          }),
+        }),
+      },
+      {
+        name: 'icon-scale undefined value',
+        style: {
+          'icon-src': 'icon.svg',
+          'icon-scale': undefined,
+        },
+        expected: new Style({
+          image: new Icon({
+            src: 'icon.svg',
+            scale: 1,
+          }),
+        }),
+      },
+      {
+        name: 'icon color static',
+        style: {
+          'icon-src': 'icon.svg',
+          'icon-color': 'red',
+        },
+        expected: new Style({
+          image: new Icon({
+            src: 'icon.svg',
+            color: 'red',
+          }),
+        }),
+      },
+      {
+        name: 'icon color dynamic expression',
+        style: {
+          'icon-src': 'icon.svg',
+          'icon-color': ['get', 'iconColor'],
+        },
+        context: {
+          properties: {
+            iconColor: [0, 128, 255, 0.4],
+          },
+        },
+        expected: new Style({
+          image: new Icon({
+            src: 'icon.svg',
+            color: [0, 128, 255, 0.4],
+          }),
+        }),
+      },
+      {
+        name: 'dynamic shape-radius',
+        style: {
+          'shape-points': 4,
+          'shape-radius': ['*', ['get', 'size'], 2],
+          'shape-fill-color': 'red',
+        },
+        context: {
+          properties: {
+            size: 3,
+          },
+        },
+        expected: new Style({
+          image: new RegularShape({
+            points: 4,
+            radius: 6,
+            fill: new Fill({
+              color: [255, 0, 0, 1],
+            }),
+          }),
+        }),
+      },
+      {
+        name: 'dynamic shape-radius2',
+        style: {
+          'shape-points': 5,
+          'shape-radius': 6,
+          'shape-radius2': ['get', 'ratio'],
+          'shape-stroke-color': 'blue',
+          'shape-stroke-width': 2,
+        },
+        context: {
+          properties: {
+            ratio: 4,
+          },
+        },
+        expected: new Style({
+          image: new RegularShape({
+            points: 5,
+            radius: 6,
+            radius2: 4,
+            stroke: new Stroke({
+              color: [0, 0, 255, 1],
+              width: 2,
+            }),
           }),
         }),
       },

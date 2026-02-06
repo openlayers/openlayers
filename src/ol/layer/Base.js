@@ -2,10 +2,10 @@
  * @module ol/layer/Base
  */
 import BaseObject from '../Object.js';
-import LayerProperty from './Property.js';
-import {abstract} from '../util.js';
 import {assert} from '../asserts.js';
 import {clamp} from '../math.js';
+import {abstract} from '../util.js';
+import LayerProperty from './Property.js';
 
 /**
  * A css color, or a function called with a view resolution returning a css color.
@@ -27,6 +27,7 @@ import {clamp} from '../math.js';
  */
 
 /**
+ * @template {Object<string, *>} [Properties=Object<string, *>]
  * @typedef {Object} Options
  * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
  * @property {number} [opacity=1] Opacity (0, 1).
@@ -47,7 +48,7 @@ import {clamp} from '../math.js';
  * be visible.
  * @property {BackgroundColor} [background] Background color for the layer. If not specified, no background
  * will be rendered.
- * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
+ * @property {Properties} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
  */
 
 /**
@@ -59,10 +60,12 @@ import {clamp} from '../math.js';
  * is observable, and has get/set accessors.
  *
  * @api
+ * @template {Object<string, *>} [Properties=Object<string, *>]
+ * @extends {BaseObject<NoInfer<Properties> & Object<string, *>>}
  */
 class BaseLayer extends BaseObject {
   /**
-   * @param {Options} options Layer options.
+   * @param {Options<NoInfer<Properties>>} options Layer options.
    */
   constructor(options) {
     super();
@@ -89,7 +92,7 @@ class BaseLayer extends BaseObject {
     this.background_ = options.background;
 
     /**
-     * @type {Object<string, *>}
+     * @type {?}
      */
     const properties = Object.assign({}, options);
     if (typeof options.properties === 'object') {

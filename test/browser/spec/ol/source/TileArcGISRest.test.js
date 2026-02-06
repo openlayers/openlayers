@@ -1,8 +1,8 @@
 import ImageTile from '../../../../../src/ol/ImageTile.js';
-import TileArcGISRest from '../../../../../src/ol/source/TileArcGISRest.js';
 import {get as getProjection} from '../../../../../src/ol/proj.js';
+import TileArcGISRest from '../../../../../src/ol/source/TileArcGISRest.js';
 
-describe('ol.source.TileArcGISRest', function () {
+describe('ol/source/TileArcGISRest', function () {
   let options;
   beforeEach(function () {
     options = {
@@ -117,6 +117,19 @@ describe('ol.source.TileArcGISRest', function () {
       const uri = new URL(tile.src_);
       const queryData = uri.searchParams;
       expect(queryData.get('LAYERS')).to.be('show:1,3,4');
+    });
+  });
+
+  describe('#setParams', function () {
+    it('allows params to be set', function () {
+      const before = {test: 'before', foo: 'bar'};
+      const source = new TileArcGISRest({params: before});
+      source.setParams({test: 'after'});
+
+      const params = source.getParams();
+      expect(params).to.eql({test: 'after'});
+
+      expect(before).to.eql({test: 'before', foo: 'bar'});
     });
   });
 

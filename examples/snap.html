@@ -6,10 +6,14 @@ docs: >
   Example of using the snap interaction together with
   draw and modify interactions. The snap interaction must be added
   last, as it needs to be the first to handle the
-  <code>pointermove</code> event.</p>
+  <code>pointermove</code> event.</p> By default, the Snap interaction snaps to edges
+  (<code>edge: true</code>) and vertices (<code>vertex: true</code>).
+  It can also be configured to snap to intersections between edges, which is done here with the
+  <code>intersection: true</code> option.
 tags: "draw, edit, modify, vector, snap"
 ---
 <div id="map" class="map"></div>
+<span id="snapped">Snapped: false</span>
 <form id="options-form" autocomplete="off">
   <div class="radio">
     <label>

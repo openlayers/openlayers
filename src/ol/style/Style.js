@@ -2,17 +2,17 @@
  * @module ol/style/Style
  */
 
+import {assert} from '../asserts.js';
 import CircleStyle from './Circle.js';
 import Fill from './Fill.js';
 import Stroke from './Stroke.js';
-import {assert} from '../asserts.js';
 
 /**
  * Defines how symbols and text are decluttered on layers ith `declutter` set to `true`
- * * **declutter**: Overlapping symbols and text are decluttered.
- * * **obstacle**: Symbols and text are rendered, but serve as obstacle for subsequent attempts
+ * **declutter**: Overlapping symbols and text are decluttered.
+ * **obstacle**: Symbols and text are rendered, but serve as obstacle for subsequent attempts
  *   to place a symbol or text at the same location.
- * * **none**: No decluttering is done.
+ * **none**: No decluttering is done.
  *
  * @typedef {"declutter"|"obstacle"|"none"} DeclutterMode
  */
@@ -396,7 +396,7 @@ class Style {
   /**
    * Set a geometry that is rendered instead of the feature's geometry.
    *
-   * @param {string|import("../geom/Geometry.js").default|GeometryFunction} geometry
+   * @param {string|import("../geom/Geometry.js").default|GeometryFunction|null} geometry
    *     Feature property or geometry or function returning a geometry to render
    *     for this style.
    * @api

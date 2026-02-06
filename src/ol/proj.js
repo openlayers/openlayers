@@ -4,9 +4,9 @@
 
 /**
  * The ol/proj module stores:
- * * a list of {@link module:ol/proj/Projection~Projection}
+ * a list of {@link module:ol/proj/Projection~Projection}
  * objects, one for each projection supported by the application
- * * a list of transform functions needed to convert coordinates in one projection
+ * a list of transform functions needed to convert coordinates in one projection
  * into another.
  *
  * The static functions are the methods used to maintain these.
@@ -23,8 +23,8 @@
  * Proj4js, or create a custom build to support those projections you need; see
  * the Proj4js website for how to do this. You also need the Proj4js definitions
  * for the required projections. These definitions can be obtained from
- * https://epsg.io/, and are a JS function, so can be loaded in a script
- * tag (as in the examples) or pasted into your application.
+ * https://spatialreference.org/, and are a JS function, so can be loaded in a
+ * script tag (as in the examples) or pasted into your application.
  *
  * After all required projection definitions are added to proj4's registry (by
  * using `proj4.defs()`), simply call `register(proj4)` from the `ol/proj/proj4`
@@ -53,14 +53,18 @@
  * {@link module:ol/proj.addProjection}. See examples/wms-no-proj for an example of
  * this.
  */
+import {warn} from './console.js';
+import {equals, getWorldsAway} from './coordinate.js';
+import {applyTransform, getWidth} from './extent.js';
+import {clamp, modulo} from './math.js';
 import Projection from './proj/Projection.js';
+import {METERS_PER_UNIT} from './proj/Units.js';
 import {
   PROJECTIONS as EPSG3857_PROJECTIONS,
   fromEPSG4326,
   toEPSG4326,
 } from './proj/epsg3857.js';
 import {PROJECTIONS as EPSG4326_PROJECTIONS} from './proj/epsg4326.js';
-import {METERS_PER_UNIT} from './proj/Units.js';
 import {
   add as addProj,
   clear as clearProj,
@@ -71,15 +75,11 @@ import {
   clear as clearTransformFuncs,
   get as getTransformFunc,
 } from './proj/transforms.js';
-import {applyTransform, getWidth} from './extent.js';
-import {clamp, modulo} from './math.js';
-import {equals, getWorldsAway} from './coordinate.js';
-import {getDistance} from './sphere.js';
 import {
   makeProjection as makeUTMProjection,
   makeTransforms as makeUTMTransforms,
 } from './proj/utm.js';
-import {warn} from './console.js';
+import {getDistance} from './sphere.js';
 
 /**
  * A projection as {@link module:ol/proj/Projection~Projection}, SRS identifier
@@ -127,7 +127,7 @@ export {Projection};
 let showCoordinateWarning = true;
 
 /**
- * @param {boolean} [disable = true] Disable console info about `useGeographic()`
+ * @param {boolean} [disable] Disable console info about `useGeographic()`
  */
 export function disableCoordinateWarning(disable) {
   const hide = disable === undefined ? true : disable;

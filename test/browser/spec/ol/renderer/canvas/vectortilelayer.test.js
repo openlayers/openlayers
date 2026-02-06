@@ -1,28 +1,30 @@
-import CanvasVectorTileLayerRenderer from '../../../../../../src/ol/renderer/canvas/VectorTileLayer.js';
+import {spy as sinonSpy} from 'sinon';
 import Feature from '../../../../../../src/ol/Feature.js';
-import MVT from '../../../../../../src/ol/format/MVT.js';
 import Map from '../../../../../../src/ol/Map.js';
-import Point from '../../../../../../src/ol/geom/Point.js';
-import RenderFeature from '../../../../../../src/ol/render/Feature.js';
-import Style from '../../../../../../src/ol/style/Style.js';
-import Text from '../../../../../../src/ol/style/Text.js';
-import TileLayer from '../../../../../../src/ol/layer/Tile.js';
 import TileState from '../../../../../../src/ol/TileState.js';
 import VectorRenderTile from '../../../../../../src/ol/VectorRenderTile.js';
 import VectorTile from '../../../../../../src/ol/VectorTile.js';
-import VectorTileLayer from '../../../../../../src/ol/layer/VectorTile.js';
-import VectorTileSource from '../../../../../../src/ol/source/VectorTile.js';
 import View from '../../../../../../src/ol/View.js';
-import XYZ from '../../../../../../src/ol/source/XYZ.js';
-import {Circle, Fill} from '../../../../../../src/ol/style.js';
-import {VOID} from '../../../../../../src/ol/functions.js';
-import {checkedFonts} from '../../../../../../src/ol/render/canvas.js';
-import {create} from '../../../../../../src/ol/transform.js';
-import {createFontStyle} from '../../../util.js';
-import {createXYZ} from '../../../../../../src/ol/tilegrid.js';
 import {getCenter} from '../../../../../../src/ol/extent.js';
+import MVT from '../../../../../../src/ol/format/MVT.js';
+import {VOID} from '../../../../../../src/ol/functions.js';
+import Point from '../../../../../../src/ol/geom/Point.js';
+import TileLayer from '../../../../../../src/ol/layer/Tile.js';
+import VectorTileLayer from '../../../../../../src/ol/layer/VectorTile.js';
 import {get as getProjection} from '../../../../../../src/ol/proj.js';
+import RenderFeature from '../../../../../../src/ol/render/Feature.js';
+import {checkedFonts} from '../../../../../../src/ol/render/canvas.js';
+import CanvasVectorTileLayerRenderer from '../../../../../../src/ol/renderer/canvas/VectorTileLayer.js';
+import VectorTileSource from '../../../../../../src/ol/source/VectorTile.js';
+import XYZ from '../../../../../../src/ol/source/XYZ.js';
+import Circle from '../../../../../../src/ol/style/Circle.js';
+import Fill from '../../../../../../src/ol/style/Fill.js';
+import Style from '../../../../../../src/ol/style/Style.js';
+import Text from '../../../../../../src/ol/style/Text.js';
+import {createXYZ} from '../../../../../../src/ol/tilegrid.js';
+import {create} from '../../../../../../src/ol/transform.js';
 import {getUid} from '../../../../../../src/ol/util.js';
+import {createFontStyle} from '../../../util.js';
 
 describe('ol/renderer/canvas/VectorTileLayer', function () {
   describe('constructor', function () {
@@ -130,7 +132,7 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
       });
       map.removeLayer(layer);
       map.addLayer(testLayer);
-      const spy = sinon.spy(
+      const spy = sinonSpy(
         CanvasVectorTileLayerRenderer.prototype,
         'renderTileImage_',
       );
@@ -140,11 +142,11 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
     });
 
     it('renders both replays and images for hybrid rendering', function () {
-      const spy1 = sinon.spy(
+      const spy1 = sinonSpy(
         CanvasVectorTileLayerRenderer.prototype,
         'getRenderTransform',
       );
-      const spy2 = sinon.spy(
+      const spy2 = sinonSpy(
         CanvasVectorTileLayerRenderer.prototype,
         'renderTileImage_',
       );
@@ -161,7 +163,7 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
           renderer: function () {},
         }),
       );
-      const spy = sinon.spy(
+      const spy = sinonSpy(
         CanvasVectorTileLayerRenderer.prototype,
         'getRenderTransform',
       );
@@ -171,7 +173,7 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
     });
 
     it('gives precedence to feature styles over layer styles', function () {
-      const spy = sinon.spy(layer.getRenderer(), 'renderFeature');
+      const spy = sinonSpy(layer.getRenderer(), 'renderFeature');
       map.renderSync();
       expect(spy.getCall(0).args[2]).to.be(layer.getStyleFunction()(feature1));
       expect(spy.getCall(1).args[2]).to.be(
@@ -182,44 +184,53 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
 
     it('does not re-render for unavailable fonts', function (done) {
       map.renderSync();
-      checkedFonts.values_ = {};
       layerStyle[0].getText().setFont('12px "Unavailable font",sans-serif');
       layer.changed();
       const revision = layer.getRevision();
       setTimeout(function () {
-        expect(layer.getRevision()).to.be(revision);
-        done();
-      }, 800);
-    });
-
-    it('does not re-render for available fonts', function (done) {
-      map.renderSync();
-      checkedFonts.values_ = {};
-      layerStyle[0].getText().setFont('12px sans-serif');
-      layer.changed();
-      const revision = layer.getRevision();
-      setTimeout(function () {
-        expect(layer.getRevision()).to.be(revision);
-        done();
-      }, 800);
-    });
-
-    it('re-renders for fonts that become available', function (done) {
-      map.renderSync();
-      checkedFonts.values_ = {};
-      font.add();
-      layerStyle[0].getText().setFont(`12px "${fontFamily}",sans-serif`);
-      layer.changed();
-      const revision = layer.getRevision();
-      setTimeout(function () {
         try {
-          font.remove();
-          expect(layer.getRevision()).to.be(revision + 1);
+          expect(layer.getRevision()).to.be(revision);
           done();
         } catch (e) {
           done(e);
         }
-      }, 1600);
+      }, 1000);
+    });
+
+    it('does not re-render for available fonts', function (done) {
+      map.renderSync();
+      layerStyle[0].getText().setFont('12px sans-serif');
+      layer.changed();
+      const revision = layer.getRevision();
+      setTimeout(function () {
+        try {
+          expect(layer.getRevision()).to.be(revision);
+          done();
+        } catch (e) {
+          done(e);
+        }
+      }, 1000);
+    });
+
+    it('re-renders for fonts that become available', function (done) {
+      map.renderSync();
+      font.add();
+      layerStyle[0].getText().setFont(`12px "${fontFamily}",sans-serif`);
+      layer.changed();
+      const revision = layer.getRevision();
+      checkedFonts.addEventListener(
+        'propertychange',
+        function onPropertyChange(e) {
+          checkedFonts.removeEventListener('propertychange', onPropertyChange);
+          try {
+            font.remove();
+            expect(layer.getRevision()).to.be(revision + 1);
+            done();
+          } catch (e) {
+            done(e);
+          }
+        },
+      );
     });
 
     it('works for multiple layers that use the same source', function () {
@@ -238,6 +249,34 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
       expect(Object.keys(tile.executorGroups)).to.have.length(1);
       const tile2 = layer2.getRenderer().getTile(0, 0, 0, map.frameState_);
       expect(Object.keys(tile2.executorGroups)).to.have.length(1);
+    });
+
+    it('sets the correct `wantedResolution`', (done) => {
+      map.getView().setZoom(0.1);
+      map.renderSync();
+      map.frameState_;
+      const resolution = map.frameState_.viewState.resolution;
+      const tile = layer.getRenderer().getTile(0, 0, 0, map.frameState_);
+      // hifi - use exact view resolution
+      expect(tile.wantedResolution).to.be(resolution);
+      map.getView().animate({zoom: 0.6, duration: 200}, () => {
+        setTimeout(() => {
+          try {
+            // hifi - use exact view resolution
+            expect(tile.wantedResolution).to.be(
+              map.frameState_.viewState.resolution,
+            );
+            done();
+          } catch (e) {
+            done(e);
+          }
+        }, 100);
+      });
+      setTimeout(
+        // not hifi - use previous resolution
+        () => expect(tile.wantedResolution).to.be(resolution),
+        100,
+      );
     });
 
     it('reuses render container and adds and removes overlay context', function (done) {
@@ -416,6 +455,60 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
       layer.changed();
       renderer.renderFrame(frameState, null);
       expect(replayState.renderedTileRevision).to.be(revision + 1);
+    });
+
+    it('re-renders when pixelRatio changed', function () {
+      const layer = new VectorTileLayer({
+        source: new VectorTileSource({
+          tileGrid: createXYZ(),
+          transition: 0,
+        }),
+      });
+      const sourceTile = new VectorTile([0, 0, 0], 2);
+      sourceTile.features_ = [];
+      sourceTile.getImage = function () {
+        return document.createElement('canvas');
+      };
+      const tile = new VectorRenderTile(
+        [0, 0, 0],
+        1,
+        [0, 0, 0],
+        function () {
+          return sourceTile;
+        },
+        () => {},
+      );
+      tile.transition_ = 0;
+      tile.setState(TileState.LOADED);
+      layer.getSource().getTile = function () {
+        return tile;
+      };
+      const renderer = new CanvasVectorTileLayerRenderer(layer);
+      const proj = getProjection('EPSG:3857');
+      const frameState = {
+        layerStatesArray: [layer.getLayerState()],
+        layerIndex: 0,
+        extent: proj.getExtent(),
+        pixelRatio: 1,
+        pixelToCoordinateTransform: create(),
+        postRenderFunctions: [],
+        time: Date.now(),
+        viewHints: [],
+        viewState: {
+          center: [0, 0],
+          resolution: 156543.03392804097,
+          projection: proj,
+        },
+        size: [256, 256],
+        usedTiles: {},
+        wantedTiles: {},
+      };
+      renderer.renderFrame(frameState);
+      const replayState = renderer.renderedTiles[0].getReplayState(layer);
+      expect(replayState.renderedPixelRatio).to.be(1);
+      frameState.pixelRatio = 2;
+      renderer.renderFrame(frameState, null);
+      expect(replayState.renderedPixelRatio).to.be(2);
     });
   });
 
@@ -604,10 +697,108 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
         'postrender',
       ]);
     });
+
+    it('renders text background correctly', () => {
+      // like the test above, but only with a point feature and a style with a textBackground
+      const layer = new VectorTileLayer({
+        source: new VectorTileSource({
+          tileGrid: createXYZ(),
+        }),
+        style: {
+          'text-value': 'text',
+          'text-background-fill-color': 'red',
+        },
+      });
+      const sourceTile = new VectorTile([0, 0, 0], 2);
+      sourceTile.features_ = [new RenderFeature('Point', [0, 0], [], 2)];
+      sourceTile.getImage = function () {
+        return document.createElement('canvas');
+      };
+      layer.getSource().getSourceTiles = () => [sourceTile];
+      const tile = new VectorRenderTile(
+        [0, 0, 0],
+        1,
+        [0, 0, 0],
+        function () {
+          return sourceTile;
+        },
+        () => {},
+      );
+      tile.transition_ = 0;
+      tile.replayState_[getUid(layer)] = [{dirty: true}];
+      tile.setState(TileState.LOADED);
+      layer.getSource().getTile = function () {
+        return tile;
+      };
+      const renderer = new CanvasVectorTileLayerRenderer(layer);
+      const proj = getProjection('EPSG:3857');
+      const frameState = {
+        layerStatesArray: [layer.getLayerState()],
+        layerIndex: 0,
+        extent: proj.getExtent(),
+        pixelRatio: 1,
+        pixelToCoordinateTransform: create(),
+        postRenderFunctions: [],
+        time: Date.now(),
+        viewHints: [],
+        viewState: {
+          center: [0, 0],
+          resolution: 156543.03392804097,
+          rotation: 0,
+          projection: proj,
+        },
+        size: [256, 256],
+        usedTiles: {},
+        wantedTiles: {},
+      };
+
+      renderer.container = document.createElement('div');
+      const sequence = [];
+      renderer.context = {
+        save: () => sequence.push('save'),
+        restore: () => sequence.push('restore'),
+        beginPath: () => sequence.push('beginPath'),
+        moveTo: () => sequence.push('moveTo'),
+        lineTo: () => sequence.push('lineTo'),
+        stroke: () => sequence.push('stroke'),
+        drawImage: () => sequence.push('drawImage'),
+        fill: () => sequence.push('fill'),
+        fillText: () => sequence.push('fillText'),
+        canvas: {
+          style: {
+            transform: '',
+          },
+        },
+      };
+      Object.defineProperty(renderer.context, 'fillStyle', {
+        set: (value) => {
+          sequence.push('fillStyle');
+        },
+      });
+
+      renderer.renderFrame(frameState);
+      expect(sequence).to.eql([
+        'save',
+        'drawImage',
+        'restore',
+        'beginPath',
+        'moveTo',
+        'lineTo',
+        'lineTo',
+        'lineTo',
+        'lineTo',
+        'fillStyle',
+        'fill',
+        'save',
+        'fillStyle',
+        'fillText',
+        'restore',
+      ]);
+    });
   });
 
   describe('#forEachFeatureAtCoordinate', function () {
-    /** @type {VectorTileLayer] */ let layer;
+    /** @type {VectorTileLayer} */ let layer;
     /** @type {CanvasVectorTileLayerRenderer} */ let renderer;
     /** @type {VectorTileSource} */ let source;
     let executorGroup;
@@ -656,7 +847,7 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
     });
 
     it('calls callback once per feature with a layer as 2nd arg', function () {
-      const spy = sinon.spy();
+      const spy = sinonSpy();
       const coordinate = [0, 0];
       const matches = [];
       const frameState = {
@@ -849,6 +1040,10 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
     });
 
     afterEach(() => {
+      checkedFonts.getListeners('propertychange').forEach((listener) => {
+        checkedFonts.removeEventListener('propertychange', listener);
+      });
+      checkedFonts.setProperties({}, true);
       disposeMap(map);
     });
 

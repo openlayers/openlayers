@@ -2,15 +2,15 @@
  * @module ol/source/TileWMS
  */
 
-import TileImage from './TileImage.js';
-import {DEFAULT_VERSION, getImageSrc, getRequestParams} from './wms.js';
-import {appendParams} from '../uri.js';
 import {buffer, createEmpty} from '../extent.js';
+import {modulo} from '../math.js';
+import {get as getProjection, transform} from '../proj.js';
 import {calculateSourceResolution} from '../reproj.js';
 import {compareVersions} from '../string.js';
-import {get as getProjection, transform} from '../proj.js';
-import {modulo} from '../math.js';
 import {hash as tileCoordHash} from '../tilecoord.js';
+import {appendParams} from '../uri.js';
+import TileImage from './TileImage.js';
+import {DEFAULT_VERSION, getImageSrc, getRequestParams} from './wms.js';
 
 /**
  * @typedef {Object} Options
@@ -341,14 +341,32 @@ class TileWMS extends TileImage {
   }
 
   /**
-   * Update the user-provided params.
-   * @param {Object} params Params.
+   * @param {Object} params New URL paremeters.
+   * @private
+   */
+  setParams_(params) {
+    this.params_ = params;
+    this.updateV13_();
+    this.setKey(this.getKeyForParams_());
+  }
+
+  /**
+   * Set the URL parameters passed to the WMS source.
+   * @param {Object} params New URL paremeters.
+   * @api
+   */
+  setParams(params) {
+    this.setParams_(Object.assign({}, params));
+  }
+
+  /**
+   * Update the URL parameters. This method can be used to update a subset of the WMS
+   * parameters. Call `setParams` to set all of the parameters.
+   * @param {Object} params Updated URL parameters.
    * @api
    */
   updateParams(params) {
-    Object.assign(this.params_, params);
-    this.updateV13_();
-    this.setKey(this.getKeyForParams_());
+    this.setParams_(Object.assign(this.params_, params));
   }
 
   /**

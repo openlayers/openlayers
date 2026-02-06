@@ -1,10 +1,10 @@
 import Feature from '../../../../src/ol/Feature.js';
 import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
-import {Polygon} from '../../../../src/ol/geom.js';
-import {Vector as VectorLayer} from '../../../../src/ol/layer.js';
-import {Vector as VectorSource} from '../../../../src/ol/source.js';
+import Polygon from '../../../../src/ol/geom/Polygon.js';
+import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import {fromLonLat} from '../../../../src/ol/proj.js';
+import VectorSource from '../../../../src/ol/source/Vector.js';
 
 const center = fromLonLat([8.6, 50.2]);
 

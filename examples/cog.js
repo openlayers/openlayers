@@ -1,6 +1,11 @@
-import GeoTIFF from '../src/ol/source/GeoTIFF.js';
 import Map from '../src/ol/Map.js';
+import {
+  getView,
+  withExtentCenter,
+  withHigherResolutions,
+} from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/WebGLTile.js';
+import GeoTIFF from '../src/ol/source/GeoTIFF.js';
 
 const source = new GeoTIFF({
   sources: [
@@ -17,5 +22,5 @@ const map = new Map({
       source: source,
     }),
   ],
-  view: source.getView(),
+  view: getView(source, withHigherResolutions(1), withExtentCenter()),
 });

@@ -1,13 +1,10 @@
-import Circle from '../../../src/ol/geom/Circle.js';
-import Projection from '../../../src/ol/proj/Projection.js';
-import expect from '../expect.js';
 import {
   add as addCoordinate,
   closestOnCircle,
   closestOnSegment,
-  equals as coordinatesEqual,
   createStringXY,
   degreesToStringHDMS,
+  equals as coordinatesEqual,
   format as formatCoordinate,
   rotate as rotateCoordinate,
   scale as scaleCoordinate,
@@ -16,7 +13,10 @@ import {
   toStringXY,
   wrapX,
 } from '../../../src/ol/coordinate.js';
+import Circle from '../../../src/ol/geom/Circle.js';
+import Projection from '../../../src/ol/proj/Projection.js';
 import {get} from '../../../src/ol/proj.js';
+import expect from '../expect.js';
 
 describe('ol/coordinate.js', function () {
   describe('#add', function () {

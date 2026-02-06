@@ -1,8 +1,8 @@
-import Group from '../../../../src/ol/layer/Group.js';
 import Map from '../../../../src/ol/Map.js';
-import OSM from '../../../../src/ol/source/OSM.js';
-import TileLayer from '../../../../src/ol/layer/WebGLTile.js';
 import View from '../../../../src/ol/View.js';
+import Group from '../../../../src/ol/layer/Group.js';
+import TileLayer from '../../../../src/ol/layer/WebGLTile.js';
+import OSM from '../../../../src/ol/source/OSM.js';
 
 new Map({
   layers: [

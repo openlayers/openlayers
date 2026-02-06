@@ -1,10 +1,10 @@
+import Map from '../../../../src/ol/Map.js';
+import View from '../../../../src/ol/View.js';
+import LayerGroup from '../../../../src/ol/layer/Group.js';
+import VectorLayer from '../../../../src/ol/layer/Vector.js';
+import TileLayer from '../../../../src/ol/layer/WebGLTile.js';
 import DataTile from '../../../../src/ol/source/DataTile.js';
 import ImageTile from '../../../../src/ol/source/ImageTile.js';
-import LayerGroup from '../../../../src/ol/layer/Group.js';
-import Map from '../../../../src/ol/Map.js';
-import TileLayer from '../../../../src/ol/layer/WebGLTile.js';
-import VectorLayer from '../../../../src/ol/layer/Vector.js';
-import View from '../../../../src/ol/View.js';
 
 const canvasSize = 256;
 

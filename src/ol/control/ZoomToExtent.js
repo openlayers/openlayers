@@ -1,11 +1,11 @@
 /**
  * @module ol/control/ZoomToExtent
  */
-import Control from './Control.js';
-import EventType from '../events/EventType.js';
 import {CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
-import {fromUserExtent} from '../proj.js';
+import EventType from '../events/EventType.js';
 import {fromExtent as polygonFromExtent} from '../geom/Polygon.js';
+import {fromUserExtent} from '../proj.js';
+import Control from './Control.js';
 
 /**
  * @typedef {Object} Options
@@ -17,6 +17,8 @@ import {fromExtent as polygonFromExtent} from '../geom/Polygon.js';
  * @property {string} [tipLabel='Fit to extent'] Text label to use for the button tip.
  * @property {import("../extent.js").Extent} [extent] The extent to zoom to. If undefined the validity
  * extent of the view projection is used.
+ * @property {import("../View.js").FitOptions} [fitOptions] Options to pass to the view when fitting
+ * the extent (e.g. `padding`, `duration`, `minResolution`, `maxZoom`, `easing`, `callback`).
  */
 
 /**
@@ -43,6 +45,12 @@ class ZoomToExtent extends Control {
      * @protected
      */
     this.extent = options.extent ? options.extent : null;
+
+    /**
+     * @type {import("../View.js").FitOptions}
+     * @protected
+     */
+    this.fitOptions = options.fitOptions || {};
 
     const className =
       options.className !== undefined ? options.className : 'ol-zoom-extent';
@@ -88,7 +96,8 @@ class ZoomToExtent extends Control {
     const extent = !this.extent
       ? view.getProjection().getExtent()
       : fromUserExtent(this.extent, view.getProjection());
-    view.fitInternal(polygonFromExtent(extent));
+
+    view.fitInternal(polygonFromExtent(extent), this.fitOptions);
   }
 }
 
