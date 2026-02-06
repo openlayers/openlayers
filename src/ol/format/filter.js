@@ -296,6 +296,13 @@ export function during(propertyName, begin, end) {
   return new During(propertyName, begin, end);
 }
 
+/**
+ * Create a `<ResourceId>` comparison operator.
+ *
+ * @param {!string} rid Resource ID.
+ * @return {!ResourceId} `<ResourceId>` operator.
+ * @api
+ */
 export function resourceId(rid) {
   return new ResourceId(rid);
 }
