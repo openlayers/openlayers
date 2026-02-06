@@ -298,10 +298,24 @@ class ReprojTile extends Tile {
     if (sources.length === 0) {
       this.state = TileState.ERROR;
     } else {
+      const gutter = this.gutter_;
+      const tileSize = this.sourceTileGrid_.getTileSize(this.sourceZ_);
+      const width = typeof tileSize === 'number' ? tileSize : tileSize[0];
+      const height = typeof tileSize === 'number' ? tileSize : tileSize[1];
+      const pixelRatio = Math.max.apply(
+        null,
+        sources.map((s) =>
+          Math.max(
+            (s.image.width - 2 * gutter) / width,
+            (s.image.height - 2 * gutter) / height,
+          ),
+        ),
+      );
+
       const z = this.wrappedTileCoord_[0];
       const size = this.targetTileGrid_.getTileSize(z);
-      const width = typeof size === 'number' ? size : size[0];
-      const height = typeof size === 'number' ? size : size[1];
+      const targetWidth = typeof size === 'number' ? size : size[0];
+      const targetHeight = typeof size === 'number' ? size : size[1];
       const targetResolution = this.targetTileGrid_.getResolution(z);
       const sourceResolution = this.sourceTileGrid_.getResolution(
         this.sourceZ_,
@@ -312,16 +326,16 @@ class ReprojTile extends Tile {
       );
 
       this.canvas_ = renderReprojected(
-        width,
-        height,
-        this.pixelRatio_,
+        targetWidth,
+        targetHeight,
+        pixelRatio,
         sourceResolution,
         this.sourceTileGrid_.getExtent(),
         targetResolution,
         targetExtent,
         this.triangulation_,
         sources,
-        this.gutter_,
+        gutter,
         this.renderEdges_,
         this.interpolate,
       );

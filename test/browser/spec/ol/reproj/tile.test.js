@@ -1,5 +1,6 @@
 import proj4 from 'proj4';
 import ImageTile from '../../../../../src/ol/ImageTile.js';
+import {createCanvasContext2D} from '../../../../../src/ol/dom.js';
 import {listen} from '../../../../../src/ol/events.js';
 import {register} from '../../../../../src/ol/proj/proj4.js';
 import {
@@ -33,6 +34,7 @@ describe('ol.reproj.Tile', function () {
   function createTile(pixelRatio, opt_tileSize) {
     const proj4326 = getProjection('EPSG:4326');
     const proj3857 = getProjection('EPSG:3857');
+    const mapPixelRatio = 1;
     return new ReprojTile(
       proj3857,
       createForProjection(proj3857),
@@ -40,14 +42,16 @@ describe('ol.reproj.Tile', function () {
       createForProjection(proj4326, 3, opt_tileSize),
       [3, 2, 1],
       null,
-      pixelRatio,
+      mapPixelRatio,
       0,
-      function (z, x, y, pixelRatio) {
+      function (z, x, y, mapPixelRatio) {
         return new ImageTile(
           [z, x, y],
           0, // IDLE
-          'data:image/gif;base64,' +
-            'R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=',
+          createCanvasContext2D(
+            256 * pixelRatio,
+            256 * pixelRatio,
+          ).canvas.toDataURL(),
           null,
           function (tile, src) {
             tile.getImage().src = src;
