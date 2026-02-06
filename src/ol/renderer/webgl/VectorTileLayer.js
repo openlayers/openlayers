@@ -355,7 +355,8 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     tileOrigin,
     tileExtent,
     depth,
-    gutter,
+    gutterX,
+    gutterY,
     alpha,
   ) {
     const gutterExtent = getIntersection(tileExtent, renderExtent, tileExtent);
