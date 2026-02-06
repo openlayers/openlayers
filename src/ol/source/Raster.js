@@ -403,7 +403,7 @@ export class Processor extends Disposable {
 /**
  * @enum {string}
  */
-const RasterEventType = {
+export const RasterEventType = {
   /**
    * Triggered before operations are run.  Listeners will receive an event object with
    * a `data` property that can be used to make data available to operations.
