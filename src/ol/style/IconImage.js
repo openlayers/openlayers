@@ -4,7 +4,7 @@
 
 import {decodeFallback} from '../Image.js';
 import ImageState from '../ImageState.js';
-import {asString} from '../color.js';
+import {asArray, asString} from '../color.js';
 import {createCanvasContext2D} from '../dom.js';
 import EventType from '../events/EventType.js';
 import EventTarget from '../events/Target.js';
@@ -258,23 +258,53 @@ class IconImage extends EventTarget {
     }
 
     const image = this.image_;
-    const ctx = createCanvasContext2D(
-      Math.ceil(image.width * pixelRatio),
-      Math.ceil(image.height * pixelRatio),
-    );
-    const canvas = ctx.canvas;
+    const width = Math.ceil(image.width * pixelRatio);
+    const height = Math.ceil(image.height * pixelRatio);
+    const ctx = createCanvasContext2D(width, height);
 
     ctx.scale(pixelRatio, pixelRatio);
     ctx.drawImage(image, 0, 0);
 
-    ctx.globalCompositeOperation = 'multiply';
-    ctx.fillStyle = asString(this.color_);
-    ctx.fillRect(0, 0, canvas.width / pixelRatio, canvas.height / pixelRatio);
+    const color = asArray(this.color_);
+    const alpha = color[3];
 
-    ctx.globalCompositeOperation = 'destination-in';
-    ctx.drawImage(image, 0, 0);
+    if (!this.isTainted_()) {
+      // Using ImageData is faster when canvas is not tainted
+      const imgData = ctx.getImageData(0, 0, width, height);
+      const data = imgData.data;
+      const r = color[0] / 255.0;
+      const g = color[1] / 255.0;
+      const b = color[2] / 255.0;
 
-    this.canvas_[pixelRatio] = canvas;
+      for (let i = 0, ii = data.length; i < ii; i += 4) {
+        data[i] *= r;
+        data[i + 1] *= g;
+        data[i + 2] *= b;
+        data[i + 3] *= alpha;
+      }
+      ctx.putImageData(imgData, 0, 0);
+    } else {
+      // Tainted canvas requires multiple drawImage calls to achieve same result
+      // Increase any non-zero alpha until 100%
+      for (let a = 1; a < 255; a += Math.round(a * (1 - a / 255))) {
+        ctx.drawImage(
+          ctx.canvas,
+          0,
+          0,
+          width / pixelRatio,
+          height / pixelRatio,
+        );
+      }
+
+      ctx.fillStyle = asString(color.slice(0, 3));
+      ctx.globalCompositeOperation = 'multiply';
+      ctx.fillRect(0, 0, width / pixelRatio, height / pixelRatio);
+
+      ctx.globalAlpha = alpha;
+      ctx.globalCompositeOperation = 'destination-in';
+      ctx.drawImage(image, 0, 0);
+    }
+    this.canvas_[pixelRatio] = ctx.canvas;
   }
 
   /**
