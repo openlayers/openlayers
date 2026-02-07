@@ -7,6 +7,8 @@ import {angleBetween} from '../../coordinate.js';
  *
  * Coordinates and the offset should be in the same units — either pixels or the same spatial reference system as the input line coordinates.
  *
+ * Attention: this function deduplicates consecutive coordinates before processing, so the resulting line might contain fewer vertices than the input one.
+ *
  * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} stride Stride.
  * @param {number} offset Offset distance along the segment normal direction.
@@ -28,8 +30,10 @@ export function offsetLineString(
   dest = dest ?? [];
   destinationStride = destinationStride ?? stride;
 
-  const firstPointX = flatCoordinates[0];
-  const firstPointY = flatCoordinates[1];
+  flatCoordinates = removeDuplicateCoordinates(flatCoordinates, stride);
+
+  const secondPointX = flatCoordinates[2];
+  const secondPointY = flatCoordinates[3];
   const secondToLastPointX = flatCoordinates[flatCoordinates.length - 4];
   const secondToLastPointY = flatCoordinates[flatCoordinates.length - 3];
   let x, y, prevX, prevY, nextX, nextY, offsetX, offsetY;
@@ -37,8 +41,10 @@ export function offsetLineString(
   let i = 0;
   for (let j = 0; j < flatCoordinates.length; j += stride) {
     // 1. Detect previous and next coordinates of a current vertex
-    prevX = x;
-    prevY = y;
+    if (!(x === flatCoordinates[j] && y === flatCoordinates[j + 1])) {
+      prevX = x;
+      prevY = y;
+    }
     nextX = undefined;
     nextY = undefined;
     if (j + stride < flatCoordinates.length) {
@@ -50,11 +56,10 @@ export function offsetLineString(
       prevX = secondToLastPointX;
       prevY = secondToLastPointY;
     }
-    // Last coordinate of a closed ring -> next coordinate is the first vertex of a line string
-    if (isClosedRing && j === flatCoordinates.length - 2) {
-      // last coordinate
-      nextX = firstPointX;
-      nextY = firstPointY;
+    // Last coordinate of a closed ring -> next coordinate is the second vertex of a line string (the last one is same as the first one for a closed ring)
+    if (isClosedRing && j === flatCoordinates.length - stride) {
+      nextX = secondPointX;
+      nextY = secondPointY;
     }
 
     // 2. Current vertex to offset
@@ -112,6 +117,17 @@ export function offsetLineString(
  * @return {import("../../coordinate.js").Coordinate} Offset vertex coordinate as `[x, y]`.
  */
 export function offsetLineVertex(x, y, prevX, prevY, nextX, nextY, offset) {
+  // Validation: if previous point is same as the current one, treat it as no previous point given
+  if (prevX === x && prevY === y) {
+    prevX = undefined;
+    prevY = undefined;
+  }
+  // Validation: if next point is same as the current one, treat it as no next point given
+  if (nextX === x && nextY === y) {
+    nextX = undefined;
+    nextY = undefined;
+  }
+
   // Compute segment direction
   let nx, ny;
   if (prevX !== undefined && prevY !== undefined) {
@@ -170,4 +186,45 @@ export function offsetLineVertex(x, y, prevX, prevY, nextX, nextY, offset) {
 
   // Offset final vertex along miter direction
   return [x + dx * offset, y + dy * offset];
+}
+
+/**
+ * Removes consecutive duplicate coordinates from a flat coordinate array.
+ *
+ * @param {Array<number>} flatCoordinates Flat array of coordinates (e.g., [x1, y1, x2, y2, ...])
+ * @param {number} stride Number of values per coordinate tuple (e.g., 2 for 2D, 3 for 3D)
+ * @return {Array<number>} Deduplicated array, or the original array if no duplicates found
+ */
+function removeDuplicateCoordinates(flatCoordinates, stride) {
+  if (flatCoordinates.length === 0) {
+    return flatCoordinates;
+  }
+
+  let result = null;
+
+  for (let i = stride; i < flatCoordinates.length; i += stride) {
+    let isDuplicate = true;
+
+    for (let j = 0; j < stride; j++) {
+      if (flatCoordinates[i + j] !== flatCoordinates[i - stride + j]) {
+        isDuplicate = false;
+        break;
+      }
+    }
+
+    if (isDuplicate) {
+      // First duplicate found - initialize result with all coordinates up to this point
+      if (result === null) {
+        result = flatCoordinates.slice(0, i);
+      }
+      // Skip this duplicate
+    } else if (result !== null) {
+      // We're in "copying mode" - add this non-duplicate coordinate
+      for (let j = 0; j < stride; j++) {
+        result.push(flatCoordinates[i + j]);
+      }
+    }
+  }
+
+  return result ?? flatCoordinates;
 }
