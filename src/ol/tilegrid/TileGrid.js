@@ -469,8 +469,8 @@ class TileGrid {
     const tileSize = toSize(this.getTileSize(tileCoord[0]), this.tmpSize_);
     const minX = origin[0] + tileCoord[1] * tileSize[0] * resolution;
     const minY = origin[1] - (tileCoord[2] + 1) * tileSize[1] * resolution;
-    const maxX = minX + tileSize[0] * resolution;
-    const maxY = minY + tileSize[1] * resolution;
+    const maxX = origin[0] + (tileCoord[1] + 1) * tileSize[0] * resolution;
+    const maxY = origin[1] - tileCoord[2] * tileSize[1] * resolution;
     return createOrUpdate(minX, minY, maxX, maxY, tempExtent);
   }
 
