@@ -431,10 +431,11 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       expect(calls.length).to.be(6 * withHit);
       expect(calls[1].args).to.eql([
         'u_patternOrigin',
-        // combination of:
-        //   [ 0, 16 ]  ->  initial view center
-        //   scale( 2 / (0.25 * 200px), 2 / (0.25 * 100px) )  ->  divide by initial resolution & viewport size
-        [0, -1.28],
+        // pixel position of world [0,0] computed on CPU:
+        //   clip space: [-0.32, 0]  (via currentFrameStateTransform_ with center=[16,0], res=0.5)
+        //   offsetX = -0.32 * 200/2 = -32, offsetY = 0
+        //   x = 100 + (-32 mod 1048576) = 1048644, y = 50
+        [1048644, 50],
       ]);
     });
     it('calls render once for each renderer', () => {
