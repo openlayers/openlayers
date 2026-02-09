@@ -18,7 +18,7 @@ import WebGLVectorTileLayerRenderer, {
 } from '../../../../../../src/ol/renderer/webgl/VectorTileLayer.js';
 import VectorTileSource from '../../../../../../src/ol/source/VectorTile.js';
 import {createXYZ} from '../../../../../../src/ol/tilegrid.js';
-import {create} from '../../../../../../src/ol/transform.js';
+import {compose as composeTransform, create} from '../../../../../../src/ol/transform.js';
 import WebGLHelper from '../../../../../../src/ol/webgl/Helper.js';
 import WebGLRenderTarget from '../../../../../../src/ol/webgl/RenderTarget.js';
 import TileGeometry from '../../../../../../src/ol/webgl/TileGeometry.js';
@@ -409,6 +409,85 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
     });
     it('calls render for each tile on each renderer', () => {
       expect(renderer.styleRenderer_.render.callCount).to.be(2);
+    });
+  });
+
+  describe('#forEachFeatureAtCoordinate', () => {
+    beforeEach(async () => {
+      renderer.dispose();
+
+      renderer = new WebGLVectorTileLayerRenderer(vectorTileLayer, {
+        style: [
+          {
+            'fill-color': 'red',
+            'stroke-color': 'blue',
+            'stroke-width': 2,
+            'circle-radius': 10,
+            'circle-fill-color': 'green',
+          },
+        ],
+      });
+
+      const transform = composeTransform(
+        create(),
+        100, // size[0] / 2
+        50, // size[1] / 2
+        4, // 1 / resolution
+        -4, // -1 / resolution
+        0, // -rotation
+        0, // -center[0]
+        -16, // -center[1]
+      );
+      frameState = {
+        ...frameState,
+        coordinateToPixelTransform: transform,
+      };
+
+      renderer.prepareFrame(frameState);
+      renderer.renderFrame(frameState);
+      frameState.tileQueue.loadMoreTiles(Infinity, Infinity);
+      await new Promise((resolve) => setTimeout(resolve, 150));
+      renderer.renderFrame(frameState);
+    });
+
+    it('detects a polygon feature at the correct coordinate', () => {
+      const spy = sinonSpy();
+      renderer.forEachFeatureAtCoordinate([5, 5], frameState, 0, spy, []);
+      expect(spy.callCount).to.be(1);
+      expect(spy.getCall(0).args[0].getId()).to.be(3);
+    });
+
+    it('detects a point feature at the correct coordinate', () => {
+      const spy = sinonSpy();
+      renderer.forEachFeatureAtCoordinate([1, 16], frameState, 0, spy, []);
+      expect(spy.callCount).to.be(1);
+      expect(spy.getCall(0).args[0].getId()).to.be(1);
+    });
+
+    it('returns undefined when clicking empty space', () => {
+      const spy = sinonSpy();
+      renderer.forEachFeatureAtCoordinate([-15, 20], frameState, 0, spy, []);
+      expect(spy.callCount).to.be(0);
+    });
+
+    it('does not detect features when hit detection is disabled', () => {
+      renderer.dispose();
+      renderer = new WebGLVectorTileLayerRenderer(vectorTileLayer, {
+        style: [
+          {
+            'fill-color': 'red',
+            'stroke-color': 'blue',
+            'stroke-width': 2,
+            'circle-radius': 10,
+            'circle-fill-color': 'green',
+          },
+        ],
+        disableHitDetection: true,
+      });
+
+      const spy = sinonSpy();
+      renderer.forEachFeatureAtCoordinate([5, 5], frameState, 0, spy, []);
+      expect(spy.callCount).to.be(0);
     });
   });
 });
