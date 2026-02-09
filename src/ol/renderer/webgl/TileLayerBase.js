@@ -419,6 +419,14 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
   }
 
   /**
+   * Called after tiles have been rendered for a given pass.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @param {boolean} forHitDetection Whether the pass was for hit detection
+   * @protected
+   */
+  afterTilesRender(frameState, forHitDetection) {}
+
+  /**
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @return {boolean} If returns false, tile mask rendering will be skipped
    * @protected
@@ -728,6 +736,8 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
             );
           }
         }
+
+        this.afterTilesRender(frameState, forHitDetection);
       },
     );
 
