@@ -1,11 +1,12 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import MVT from '../src/ol/format/MVT.js';
-import VectorTile from '../src/ol/layer/VectorTile.js';
 import VectorTileLayer from '../src/ol/layer/VectorTile.js';
-import VectorTileSource from '../src/ol/source/VectorTile.js';
 import WebGLVectorTileLayerRenderer from '../src/ol/renderer/webgl/VectorTileLayer.js';
+import VectorTileSource from '../src/ol/source/VectorTile.js';
 import {Fill, Stroke, Style} from '../src/ol/style.js';
+
+const VectorTile = VectorTileLayer;
 
 // lookup for selection objects
 let selection = {};

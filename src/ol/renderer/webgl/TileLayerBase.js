@@ -454,7 +454,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
     depth,
     gutter,
     alpha,
-    forHitDetection
+    forHitDetection,
   ) {}
 
   /**
@@ -474,7 +474,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
     extent,
     alphaLookup,
     tileGrid,
-    forHitDetection
+    forHitDetection,
   ) {
     if (!tileRepresentation.ready) {
       return;
@@ -537,7 +537,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
       depth,
       gutter,
       alpha,
-      forHitDetection
+      forHitDetection,
     );
   }
 
@@ -707,7 +707,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
               extent,
               alphaLookup,
               tileGrid,
-              forHitDetection
+              forHitDetection,
             );
           }
         }
@@ -724,11 +724,11 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
               extent,
               alphaLookup,
               tileGrid,
-              forHitDetection
+              forHitDetection,
             );
           }
         }
-      }
+      },
     );
 
     this.beforeFinalize(frameState);

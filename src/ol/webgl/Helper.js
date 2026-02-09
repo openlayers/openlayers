@@ -849,7 +849,7 @@ class WebGLHelper extends Disposable {
     if (enabled) {
       this.setUniformFloatValue(
         DefaultUniform.PIXEL_RATIO,
-        HIT_FIXED_PIXEL_RATIO
+        HIT_FIXED_PIXEL_RATIO,
       );
     }
   }
