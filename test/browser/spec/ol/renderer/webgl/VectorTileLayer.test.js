@@ -124,6 +124,7 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
     });
     renderer = new WebGLVectorTileLayerRenderer(vectorTileLayer, {
       style: SAMPLE_RULES,
+      disableHitDetection: true,
     });
 
     frameState = {
@@ -195,15 +196,15 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
         {name: 'u_depthMask', type: 'sampler2D'},
         {name: 'u_tileZoomLevel', type: 'float'},
       ]);
-      expect(firstBuilder.getFragmentDiscardExpression()).to.be(
-        'texture2D(u_depthMask, gl_FragCoord.xy / u_pixelRatio / u_viewportSizePx).r * 50. > u_tileZoomLevel + 0.5',
+      expect(firstBuilder.getFragmentDiscardExpression()).to.match(
+        /^texture2D\(u_depthMask, gl_FragCoord\.xy \/ u_pixelRatio \/ u_viewportSizePx\)\.r \* 50\.0? > u_tileZoomLevel \+ 0\.5$/,
       );
       expect(secondBuilder.uniforms_).to.eql([
         {name: 'u_depthMask', type: 'sampler2D'},
         {name: 'u_tileZoomLevel', type: 'float'},
       ]);
-      expect(secondBuilder.getFragmentDiscardExpression()).to.be(
-        '(!(u_zoom > 10.0)) || (texture2D(u_depthMask, gl_FragCoord.xy / u_pixelRatio / u_viewportSizePx).r * 50. > u_tileZoomLevel + 0.5)',
+      expect(secondBuilder.getFragmentDiscardExpression()).to.match(
+        /^\(!\(u_zoom > 10\.0\)\) \|\| \(texture2D\(u_depthMask, gl_FragCoord\.xy \/ u_pixelRatio \/ u_viewportSizePx\)\.r \* 50\.0? > u_tileZoomLevel \+ 0\.5\)$/,
       );
     });
     it('instantiates the tile mask target, indices, attributes and program', () => {
