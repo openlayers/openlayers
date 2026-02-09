@@ -1,13 +1,15 @@
 /**
  * @module ol/renderer/webgl/VectorTileLayer
  */
+import TileState from '../../TileState.js';
 import EventType from '../../events/EventType.js';
-import {containsCoordinate, getIntersection} from '../../extent.js';
+import {containsCoordinate, getIntersection, intersects} from '../../extent.js';
 import {ShaderBuilder} from '../../render/webgl/ShaderBuilder.js';
 import VectorStyleRenderer, {
   convertStyleToShaders,
 } from '../../render/webgl/VectorStyleRenderer.js';
 import {colorDecodeId} from '../../render/webgl/encodeUtil.js';
+import {createOrUpdate as createTileCoord} from '../../tilecoord.js';
 import {
   apply as applyTransform,
   create as createTransform,
@@ -26,6 +28,7 @@ import TileGeometry from '../../webgl/TileGeometry.js';
 import {ELEMENT_ARRAY_BUFFER, STATIC_DRAW} from '../../webgl.js';
 import WebGLBaseTileLayerRenderer, {
   Uniforms as BaseUniforms,
+  getCacheKey,
 } from './TileLayerBase.js';
 
 export const Uniforms = {
@@ -460,6 +463,76 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
    */
   disposeInternal() {
     super.disposeInternal();
+  }
+
+  /**
+   * @param {import("../../extent.js").Extent} extent Extent.
+   * @return {Array<import("../../Feature.js").FeatureLike>} Features.
+   */
+  getFeaturesInExtent(extent) {
+    /** @type {Array<import("../../Feature.js").FeatureLike>} */
+    const features = [];
+    const frameState = this.frameState;
+    if (!frameState) {
+      return features;
+    }
+    const tileRepresentationCache = this.tileRepresentationCache;
+    if (tileRepresentationCache.getCount() === 0) {
+      return features;
+    }
+    const tileLayer = this.getLayer();
+    const source = tileLayer.getRenderSource();
+    const viewState = frameState.viewState;
+    const tileGrid = source.getTileGridForProjection(viewState.projection);
+    const z = tileGrid.getZForResolution(
+      viewState.resolution,
+      source.zDirection,
+    );
+    const tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
+    if (!tileRange) {
+      return features;
+    }
+    /** @type {Object<string, true>} */
+    const visitedSourceTiles = {};
+    const tempTileCoord = createTileCoord(z, 0, 0);
+    for (let x = tileRange.minX; x <= tileRange.maxX; ++x) {
+      for (let y = tileRange.minY; y <= tileRange.maxY; ++y) {
+        createTileCoord(z, x, y, tempTileCoord);
+        const cacheKey = getCacheKey(source, tempTileCoord);
+        if (!tileRepresentationCache.containsKey(cacheKey)) {
+          continue;
+        }
+        const tileRepresentation = tileRepresentationCache.get(cacheKey);
+        const tile = tileRepresentation.tile;
+        if (tile.getState() !== TileState.LOADED) {
+          continue;
+        }
+        const sourceTiles = tile.getSourceTiles();
+        for (let i = 0, ii = sourceTiles.length; i < ii; ++i) {
+          const sourceTile = sourceTiles[i];
+          const key = sourceTile.getKey();
+          if (key in visitedSourceTiles) {
+            continue;
+          }
+          visitedSourceTiles[key] = true;
+          const tileCoord = sourceTile.tileCoord;
+          if (!intersects(extent, tileGrid.getTileCoordExtent(tileCoord))) {
+            continue;
+          }
+          const tileFeatures = sourceTile.getFeatures();
+          if (tileFeatures) {
+            for (let j = 0, jj = tileFeatures.length; j < jj; ++j) {
+              const candidate = tileFeatures[j];
+              const geometry = candidate.getGeometry();
+              if (geometry && intersects(extent, geometry.getExtent())) {
+                features.push(candidate);
+              }
+            }
+          }
+        }
+      }
+    }
+    return features;
   }
 
   /**

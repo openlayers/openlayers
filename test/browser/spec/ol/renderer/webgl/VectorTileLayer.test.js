@@ -18,7 +18,10 @@ import WebGLVectorTileLayerRenderer, {
 } from '../../../../../../src/ol/renderer/webgl/VectorTileLayer.js';
 import VectorTileSource from '../../../../../../src/ol/source/VectorTile.js';
 import {createXYZ} from '../../../../../../src/ol/tilegrid.js';
-import {compose as composeTransform, create} from '../../../../../../src/ol/transform.js';
+import {
+  compose as composeTransform,
+  create,
+} from '../../../../../../src/ol/transform.js';
 import WebGLHelper from '../../../../../../src/ol/webgl/Helper.js';
 import WebGLRenderTarget from '../../../../../../src/ol/webgl/RenderTarget.js';
 import TileGeometry from '../../../../../../src/ol/webgl/TileGeometry.js';
@@ -488,6 +491,73 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
       const spy = sinonSpy();
       renderer.forEachFeatureAtCoordinate([5, 5], frameState, 0, spy, []);
       expect(spy.callCount).to.be(0);
+    });
+  });
+
+  describe('#getFeaturesInExtent', () => {
+    it('returns an empty array when frameState is not set', () => {
+      const freshRenderer = new WebGLVectorTileLayerRenderer(vectorTileLayer, {
+        style: SAMPLE_RULES,
+        disableHitDetection: true,
+      });
+      const extent = [-31, 1, 31, 31];
+      expect(freshRenderer.getFeaturesInExtent(extent)).to.eql([]);
+      freshRenderer.dispose();
+    });
+
+    it('returns an empty array when no tiles are in the cache', () => {
+      renderer.prepareFrame(frameState);
+      renderer.renderFrame(frameState);
+      renderer.clearCache();
+      const extent = frameState.extent.slice();
+      expect(renderer.getFeaturesInExtent(extent)).to.eql([]);
+    });
+
+    describe('with loaded tiles', () => {
+      beforeEach(async () => {
+        renderer.dispose();
+        renderer = new WebGLVectorTileLayerRenderer(vectorTileLayer, {
+          style: SAMPLE_RULES,
+          disableHitDetection: true,
+        });
+        renderer.prepareFrame(frameState);
+        renderer.renderFrame(frameState);
+        frameState.tileQueue.loadMoreTiles(Infinity, Infinity);
+        await new Promise((resolve) => setTimeout(resolve, 150));
+        renderer.renderFrame(frameState);
+      });
+
+      it('returns features in extent for the last rendered zoom', () => {
+        const extent = frameState.extent.slice();
+        const features = renderer.getFeaturesInExtent(extent);
+        // Features may be duplicated if they appear in multiple source tiles
+        expect(features.length).to.be.greaterThan(0);
+        const ids = new Set(features.map((f) => f.getId()));
+        expect(ids.size).to.be(3);
+        expect(Array.from(ids).sort()).to.eql([1, 2, 3]);
+      });
+
+      it('returns only features whose geometry intersects the extent', () => {
+        const extentOutside = [-100, -100, -90, -90];
+        const features = renderer.getFeaturesInExtent(extentOutside);
+        expect(features.length).to.be(0);
+      });
+
+      it('returns a subset of features when extent partially overlaps', () => {
+        const partialExtent = [5, 5, 15, 15];
+        const features = renderer.getFeaturesInExtent(partialExtent);
+        expect(features.length).to.be.greaterThan(0);
+        features.forEach((feature) => {
+          const geom = feature.getGeometry();
+          expect(geom).to.be.ok();
+          expect(
+            geom.getExtent()[0] <= partialExtent[2] &&
+              geom.getExtent()[2] >= partialExtent[0] &&
+              geom.getExtent()[1] <= partialExtent[3] &&
+              geom.getExtent()[3] >= partialExtent[1],
+          ).to.be(true);
+        });
+      });
     });
   });
 });
