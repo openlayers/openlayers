@@ -26,8 +26,6 @@ class IconImage extends EventTarget {
   constructor(image, src, imageAttributes, imageState, color) {
     super();
 
-    const {crossOrigin, referrerPolicy} = imageAttributes || {};
-
     /**
      * @private
      * @type {HTMLImageElement|OffscreenCanvas|HTMLCanvasElement|ImageBitmap}
@@ -44,13 +42,13 @@ class IconImage extends EventTarget {
      * @private
      * @type {string|null}
      */
-    this.crossOrigin_ = crossOrigin;
+    this.crossOrigin_ = imageAttributes?.crossOrigin;
 
     /**
      * @private
      * @type {ReferrerPolicy}
      */
-    this.referrerPolicy_ = referrerPolicy;
+    this.referrerPolicy_ = imageAttributes?.referrerPolicy;
 
     /**
      * @private

@@ -22,6 +22,17 @@ describe('ol.style.Icon', function () {
       });
       expect(getIconImage(canvas, getUid(canvas)).getImage()).to.eql(canvas);
     });
+
+    it('set referrerPolicy on image elements', function () {
+      const referrerPolicy = 'no-referrer';
+      const iconStyle = new Icon({
+        src,
+        referrerPolicy,
+      });
+      expect(iconStyle.iconImage_.getImage().referrerPolicy).to.be(
+        referrerPolicy,
+      );
+    });
   });
 
   describe('#clone', function () {
