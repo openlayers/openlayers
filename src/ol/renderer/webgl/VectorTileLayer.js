@@ -476,6 +476,10 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     callback,
     matches,
   ) {
+    if (!this.hitDetectionEnabled_ || !this.hitRenderTarget_) {
+      return;
+    }
+
     const pixel = applyTransform(
       frameState.coordinateToPixelTransform,
       coordinate.slice(),
