@@ -20,6 +20,7 @@ import UrlTile from './UrlTile.js';
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
+ * @property {ReferrerPolicy} [referrerPolicy] The `referrerPolicy` property for loaded images.
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
  * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
  * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is the view projection.
@@ -96,6 +97,12 @@ class TileImage extends UrlTile {
      */
     this.crossOrigin =
       options.crossOrigin !== undefined ? options.crossOrigin : null;
+
+    /**
+     * @protected
+     * @type {ReferrerPolicy}
+     */
+    this.referrerPolicy = options.referrerPolicy;
 
     /**
      * @protected
@@ -200,7 +207,10 @@ class TileImage extends UrlTile {
       tileCoord,
       tileUrl !== undefined ? TileState.IDLE : TileState.EMPTY,
       tileUrl !== undefined ? tileUrl : '',
-      this.crossOrigin,
+      {
+        crossOrigin: this.crossOrigin,
+        referrerPolicy: this.referrerPolicy,
+      },
       this.tileLoadFunction,
       this.tileOptions,
     );
@@ -340,10 +350,13 @@ export function defaultTileLoadFunction(imageTile, src) {
       credentials = 'include';
     }
 
-    fetch(src, {
+    const options = {
       mode,
       credentials,
-    })
+      referrerPolicy: imageTile.getReferrerPolicy(),
+    };
+
+    fetch(src, options)
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}`);

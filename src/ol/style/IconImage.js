@@ -19,11 +19,11 @@ class IconImage extends EventTarget {
   /**
    * @param {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas|ImageBitmap|null} image Image.
    * @param {string|undefined} src Src.
-   * @param {?string} crossOrigin Cross origin.
+   * @param {import('../dom').ImageAttributes} imageAttributes Image attributes options.
    * @param {import("../ImageState.js").default|undefined} imageState Image state.
    * @param {import("../color.js").Color|string|null} color Color.
    */
-  constructor(image, src, crossOrigin, imageState, color) {
+  constructor(image, src, imageAttributes, imageState, color) {
     super();
 
     /**
@@ -42,7 +42,13 @@ class IconImage extends EventTarget {
      * @private
      * @type {string|null}
      */
-    this.crossOrigin_ = crossOrigin;
+    this.crossOrigin_ = imageAttributes?.crossOrigin;
+
+    /**
+     * @private
+     * @type {ReferrerPolicy}
+     */
+    this.referrerPolicy_ = imageAttributes?.referrerPolicy;
 
     /**
      * @private
@@ -94,6 +100,9 @@ class IconImage extends EventTarget {
     this.image_ = new Image();
     if (this.crossOrigin_ !== null) {
       this.image_.crossOrigin = this.crossOrigin_;
+    }
+    if (this.referrerPolicy_ !== undefined) {
+      this.image_.referrerPolicy = this.referrerPolicy_;
     }
   }
 
@@ -308,34 +317,28 @@ class IconImage extends EventTarget {
 
 /**
  * @param {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas|ImageBitmap|null} image Image.
- * @param {string|undefined} cacheKey Src.
- * @param {?string} crossOrigin Cross origin.
+ * @param {string|undefined} src Src.
+ * @param {import('../dom.js').ImageAttributes} imageAttributes Image attributes options.
  * @param {import("../ImageState.js").default|undefined} imageState Image state.
  * @param {import("../color.js").Color|string|null} color Color.
  * @param {boolean} [pattern] Also cache a `repeat` pattern with the icon image.
  * @return {IconImage} Icon image.
  */
-export function get(image, cacheKey, crossOrigin, imageState, color, pattern) {
+export function get(image, src, imageAttributes, imageState, color, pattern) {
   let iconImage =
-    cacheKey === undefined
-      ? undefined
-      : iconImageCache.get(cacheKey, crossOrigin, color);
+    src === undefined ? undefined : iconImageCache.get(src, color);
   if (!iconImage) {
     iconImage = new IconImage(
       image,
-      image && 'src' in image ? image.src || undefined : cacheKey,
-      crossOrigin,
+      image && 'src' in image ? image.src || undefined : src,
+      imageAttributes,
       imageState,
       color,
     );
-    iconImageCache.set(cacheKey, crossOrigin, color, iconImage, pattern);
+    iconImageCache.set(src, color, iconImage, pattern);
   }
-  if (
-    pattern &&
-    iconImage &&
-    !iconImageCache.getPattern(cacheKey, crossOrigin, color)
-  ) {
-    iconImageCache.set(cacheKey, crossOrigin, color, iconImage, pattern);
+  if (pattern && iconImage && !iconImageCache.getPattern(src, color)) {
+    iconImageCache.set(src, color, iconImage, pattern);
   }
   return iconImage;
 }
