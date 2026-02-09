@@ -12,6 +12,12 @@ import BaseTileRepresentation from './BaseTileRepresentation.js';
 import WebGLArrayBuffer from './Buffer.js';
 
 /**
+ * @typedef {import("../Feature.js").default} Feature
+ */
+/**
+ * @typedef {import("../render/Feature.js").default} RenderFeature
+ */
+/**
  * @typedef {import("../VectorRenderTile").default} TileType
  */
 
@@ -127,7 +133,7 @@ class TileGeometry extends BaseTileRepresentation {
   /**
    * Get hit detected feature.
    * @param {number} ref the feature reference
-   * @return {import('ol/Feature.js').default | import('ol/render/Feature.js').default } the matching feature
+   * @return {Feature|import("../render/Feature.js").default} the matching feature
    */
   getFeatureFromRef(ref) {
     return this.batch_.getFeatureFromRef(ref);
