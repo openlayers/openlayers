@@ -243,7 +243,7 @@ class RegularShape extends ImageStyle {
       `${pixelRatio},${this.angle_},${this.radius},${this.radius2_},${this.points_},${fillKey}` +
       Object.values(this.renderOptions_).join(',');
     let image = /** @type {HTMLCanvasElement|OffscreenCanvas} */ (
-      iconImageCache.get(cacheKey, null, null)?.getImage(1)
+      iconImageCache.get(cacheKey, null)?.getImage(1)
     );
     if (!image) {
       const renderOptions = this.renderOptions_;
@@ -259,7 +259,7 @@ class RegularShape extends ImageStyle {
         ImageState.LOADED,
         null,
       );
-      iconImageCache.set(cacheKey, null, null, iconImage);
+      iconImageCache.set(cacheKey, null, iconImage);
       // Update the image in place to an ImageBitmap for better performance and lower memory usage
       createImageBitmap(image).then((imageBitmap) => {
         iconImage.setImage(imageBitmap);

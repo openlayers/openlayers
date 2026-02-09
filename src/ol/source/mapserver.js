@@ -13,6 +13,7 @@ import {getRequestExtent} from './Image.js';
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
+ * @property {ReferrerPolicy} [referrerPolicy] The `referrerPolicy` property for loaded images.
  * the image from the remote server.
  * @property {number} [ratio=1] Ratio. `1` means image requests are the size of the map viewport, `2` means
  * twice the width and height of the map viewport, and so on. Must be `1` or higher.
@@ -66,6 +67,9 @@ export function createLoader(options) {
   return function (extent, resolution, pixelRatio) {
     const image = new Image();
     image.crossOrigin = crossOrigin;
+    if (options.referrerPolicy !== undefined) {
+      image.referrerPolicy = options.referrerPolicy;
+    }
     extent = getRequestExtent(extent, resolution, pixelRatio, ratio);
     const width = getWidth(extent) / resolution;
     const height = getHeight(extent) / resolution;
