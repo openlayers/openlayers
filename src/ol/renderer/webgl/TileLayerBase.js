@@ -133,6 +133,8 @@ export function getCacheKey(source, tileCoord) {
  * made available to shaders.
  * @property {number} [cacheSize=512] The tile representation cache size.
  * @property {Array<import('./Layer.js').PostProcessesOptions>} [postProcesses] Post-processes definitions.
+ * @property {boolean} [disableHitDetection=false] Setting this to true will provide a slight performance boost, but will
+ * prevent all hit detection on the layer.
  */
 
 /**
@@ -213,6 +215,12 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
      * @type {import("../../proj/Projection.js").default}
      */
     this.renderedProjection_ = undefined;
+
+    /**
+     * Whether hit detection is enabled.
+     * @type {boolean}
+     */
+    this.hitDetectionEnabled_ = !options.disableHitDetection;
   }
 
   /**
@@ -403,11 +411,20 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
   /**
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @param {boolean} tilesWithAlpha True if at least one of the rendered tiles has alpha
+   * @param {boolean} [forHitDetection] Whether to render for hit detection
    * @protected
    */
-  beforeTilesRender(frameState, tilesWithAlpha) {
+  beforeTilesRender(frameState, tilesWithAlpha, forHitDetection) {
     this.helper.prepareDraw(this.frameState, !tilesWithAlpha, true);
   }
+
+  /**
+   * Called after tiles have been rendered for a given pass.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @param {boolean} forHitDetection Whether the pass was for hit detection
+   * @protected
+   */
+  afterTilesRender(frameState, forHitDetection) {}
 
   /**
    * @param {import("../../Map.js").FrameState} frameState Frame state.
@@ -430,6 +447,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
    * @param {number} depth Depth
    * @param {number} gutter Gutter
    * @param {number} alpha Alpha
+   * @param {boolean} [forHitDetection] Whether to render for hit detection, or not
    * @protected
    */
   renderTile(
@@ -444,6 +462,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
     depth,
     gutter,
     alpha,
+    forHitDetection,
   ) {}
 
   /**
@@ -463,6 +482,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
     extent,
     alphaLookup,
     tileGrid,
+    forHitDetection,
   ) {
     if (!tileRepresentation.ready) {
       return;
@@ -525,6 +545,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
       depth,
       gutter,
       alpha,
+      forHitDetection,
     );
   }
 
@@ -674,46 +695,51 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
       }
     }
 
-    this.beforeTilesRender(frameState, blend);
+    (this.hitDetectionEnabled_ ? [true, false] : [false]).forEach(
+      (forHitDetection) => {
+        this.beforeTilesRender(frameState, blend, forHitDetection);
+        for (let j = 0, jj = zs.length; j < jj; ++j) {
+          const tileZ = zs[j];
+          for (const tileRepresentation of representationsByZ[tileZ]) {
+            const tileCoord = tileRepresentation.tile.tileCoord;
+            const tileCoordKey = getTileCoordKey(tileCoord);
+            if (tileCoordKey in alphaLookup) {
+              continue;
+            }
 
-    for (let j = 0, jj = zs.length; j < jj; ++j) {
-      const tileZ = zs[j];
-      for (const tileRepresentation of representationsByZ[tileZ]) {
-        const tileCoord = tileRepresentation.tile.tileCoord;
-        const tileCoordKey = getTileCoordKey(tileCoord);
-        if (tileCoordKey in alphaLookup) {
-          continue;
+            this.drawTile_(
+              frameState,
+              tileRepresentation,
+              tileZ,
+              gutter,
+              extent,
+              alphaLookup,
+              tileGrid,
+              forHitDetection,
+            );
+          }
         }
 
-        this.drawTile_(
-          frameState,
-          tileRepresentation,
-          tileZ,
-          gutter,
-          extent,
-          alphaLookup,
-          tileGrid,
-        );
-      }
-    }
-
-    if (z in representationsByZ) {
-      for (const tileRepresentation of representationsByZ[z]) {
-        const tileCoord = tileRepresentation.tile.tileCoord;
-        const tileCoordKey = getTileCoordKey(tileCoord);
-        if (tileCoordKey in alphaLookup) {
-          this.drawTile_(
-            frameState,
-            tileRepresentation,
-            z,
-            gutter,
-            extent,
-            alphaLookup,
-            tileGrid,
-          );
+        for (const tileRepresentation of representationsByZ[z]) {
+          const tileCoord = tileRepresentation.tile.tileCoord;
+          const tileCoordKey = getTileCoordKey(tileCoord);
+          if (tileCoordKey in alphaLookup) {
+            this.drawTile_(
+              frameState,
+              tileRepresentation,
+              z,
+              gutter,
+              extent,
+              alphaLookup,
+              tileGrid,
+              forHitDetection,
+            );
+          }
         }
-      }
-    }
+
+        this.afterTilesRender(frameState, forHitDetection);
+      },
+    );
 
     this.beforeFinalize(frameState);
     this.helper.finalizeDraw(
