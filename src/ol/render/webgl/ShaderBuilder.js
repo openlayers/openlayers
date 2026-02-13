@@ -984,7 +984,7 @@ ${this.attributes_
   )
   .join('\n')}
   vec2 pxPos = gl_FragCoord.xy / u_pixelRatio;
-  vec2 pxOrigin = worldToPx(u_patternOrigin);
+  vec2 pxOrigin = u_patternOrigin;
   #ifdef GL_FRAGMENT_PRECISION_HIGH
   vec2 worldPos = pxToWorld(pxPos);
   if (
