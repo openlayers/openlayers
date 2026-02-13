@@ -23,6 +23,7 @@ uniform float u_resolution;
 uniform float u_rotation;
 uniform vec4 u_renderExtent;
 uniform vec2 u_patternOrigin;
+uniform vec2 u_patternOrigin_low;
 uniform float u_depth;
 uniform mediump int u_hitDetection;
 
@@ -984,7 +985,8 @@ ${this.attributes_
   )
   .join('\n')}
   vec2 pxPos = gl_FragCoord.xy / u_pixelRatio;
-  vec2 pxOrigin = worldToPx(u_patternOrigin);
+  vec2 pxOrigin = u_patternOrigin;
+  vec2 pxOriginLow = u_patternOrigin_low;
   #ifdef GL_FRAGMENT_PRECISION_HIGH
   vec2 worldPos = pxToWorld(pxPos);
   if (

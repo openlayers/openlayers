@@ -720,7 +720,8 @@ void main(void) {
   vec3 a_test = v_test; // assign to original attribute name
   vec2 a_myAttr = v_myAttr; // assign to original attribute name
   vec2 pxPos = gl_FragCoord.xy / u_pixelRatio;
-  vec2 pxOrigin = worldToPx(u_patternOrigin);
+  vec2 pxOrigin = u_patternOrigin;
+  vec2 pxOriginLow = u_patternOrigin_low;
   #ifdef GL_FRAGMENT_PRECISION_HIGH
   vec2 worldPos = pxToWorld(pxPos);
   if (

@@ -745,14 +745,104 @@ function parseFillProperties(style, builder, uniforms, context) {
       );
     }
     context.functions['sampleFillPattern'] =
-      `vec4 sampleFillPattern(sampler2D texture, vec2 textureSize, vec2 textureOffset, vec2 sampleSize, vec2 pxOrigin, vec2 pxPosition) {
+      `// Double-float arithmetic library for float64 emulation in float32 shaders.
+// A double-float value is stored as vec2(hi, lo) where hi + lo = value exactly.
+// This prevents fill-pattern corruption at high zoom levels where pixel
+// coordinates exceed float32's ~7 significant digits.
+
+// Error-free sum: returns vec2(sum, error) such that a + b = sum + error exactly.
+vec2 ds_add(float a, float b) {
+  float s = a + b;
+  float v = s - a;
+  float e = (a - (s - v)) + (b - v);
+  return vec2(s, e);
+}
+
+// Error-free product using Veltkamp splitting (constant 4097 = 2^12+1 for float32).
+// Returns vec2(product, error) such that a * b = product + error exactly.
+vec2 ds_mul(float a, float b) {
+  float p = a * b;
+  float ca = 4097.0 * a;
+  float ah = ca - (ca - a);
+  float al = a - ah;
+  float cb = 4097.0 * b;
+  float bh = cb - (cb - b);
+  float bl = b - bh;
+  float e = ((ah * bh - p) + ah * bl + al * bh) + al * bl;
+  return vec2(p, e);
+}
+
+// float - double-float: a - (b.x + b.y) as double-float
+vec2 f_sub_df(float a, vec2 b) {
+  vec2 s = ds_add(a, -b.x);
+  s.y -= b.y;
+  return ds_add(s.x, s.y);
+}
+
+// double-float + double-float
+vec2 df_add(vec2 a, vec2 b) {
+  vec2 s = ds_add(a.x, b.x);
+  s.y += a.y + b.y;
+  return ds_add(s.x, s.y);
+}
+
+// double-float - double-float
+vec2 df_sub(vec2 a, vec2 b) {
+  vec2 s = ds_add(a.x, -b.x);
+  s.y += a.y - b.y;
+  return ds_add(s.x, s.y);
+}
+
+// double-float * float
+vec2 df_mul_f(vec2 a, float b) {
+  vec2 p = ds_mul(a.x, b);
+  p.y += a.y * b;
+  return ds_add(p.x, p.y);
+}
+
+// double-float / float
+vec2 df_div_f(vec2 a, float b) {
+  float q = a.x / b;
+  vec2 p = ds_mul(q, b);
+  float residual = ((a.x - p.x) - p.y + a.y) / b;
+  return ds_add(q, residual);
+}
+
+// double-float mod float (result is small, returned as single float)
+float df_mod_f(vec2 a, float m) {
+  vec2 q = df_div_f(a, m);
+  float qf = floor(q.x);
+  float frac = q.x - qf + q.y;
+  if (frac < 0.0) qf -= 1.0;
+  if (frac >= 1.0) qf += 1.0;
+  vec2 prod = ds_mul(qf, m);
+  vec2 rem = ds_add(a.x, -prod.x);
+  rem.y += a.y - prod.y;
+  return rem.x + rem.y;
+}
+
+vec4 sampleFillPattern(sampler2D texture, vec2 textureSize, vec2 textureOffset, vec2 sampleSize, vec2 pxOriginHi, vec2 pxOriginLo, vec2 pxPosition) {
   float scaleRatio = pow(2., mod(u_zoom + 0.5, 1.) - 0.5);
-  vec2 pxRelativePos = pxPosition - pxOrigin;
-  // rotate the relative position from origin by the current view rotation
-  pxRelativePos = vec2(pxRelativePos.x * cos(u_rotation) - pxRelativePos.y * sin(u_rotation), pxRelativePos.x * sin(u_rotation) + pxRelativePos.y * cos(u_rotation));
-  // sample position is computed according to the sample offset & size
-  vec2 samplePos = mod(pxRelativePos / scaleRatio, sampleSize);
-  // also make sure that we're not sampling too close to the borders to avoid interpolation with outside pixels
+
+  // Double-float subtraction: pxPosition - pxOrigin per component.
+  // pxOrigin is Dekker-split on the CPU into (hi, lo) float32 pairs.
+  vec2 diffX = f_sub_df(pxPosition.x, vec2(pxOriginHi.x, pxOriginLo.x));
+  vec2 diffY = f_sub_df(pxPosition.y, vec2(pxOriginHi.y, pxOriginLo.y));
+
+  // Rotate by view rotation using double-float precision
+  float cosR = cos(u_rotation);
+  float sinR = sin(u_rotation);
+  vec2 rotX = df_sub(df_mul_f(diffX, cosR), df_mul_f(diffY, sinR));
+  vec2 rotY = df_add(df_mul_f(diffX, sinR), df_mul_f(diffY, cosR));
+
+  // Divide by scaleRatio and mod by sampleSize using double-float precision
+  vec2 scaledX = df_div_f(rotX, scaleRatio);
+  vec2 scaledY = df_div_f(rotY, scaleRatio);
+  float samplePosX = df_mod_f(scaledX, sampleSize.x);
+  float samplePosY = df_mod_f(scaledY, sampleSize.y);
+  vec2 samplePos = vec2(samplePosX, samplePosY);
+
+  // clamp to avoid interpolation with outside pixels
   samplePos = clamp(samplePos, vec2(0.5), sampleSize - vec2(0.5));
   samplePos.y = sampleSize.y - samplePos.y; // invert y axis so that images appear upright
   return texture2D(texture, (samplePos + textureOffset) / textureSize);
@@ -763,7 +853,7 @@ function parseFillProperties(style, builder, uniforms, context) {
       tintExpression = builder.getFillColorExpression();
     }
     builder.setFillColorExpression(
-      `${tintExpression} * sampleFillPattern(${textureName}, ${sizeExpression}, ${offsetExpression}, ${sampleSizeExpression}, pxOrigin, pxPos)`,
+      `${tintExpression} * sampleFillPattern(${textureName}, ${sizeExpression}, ${offsetExpression}, ${sampleSizeExpression}, pxOrigin, pxOriginLow, pxPos)`,
     );
   }
 }

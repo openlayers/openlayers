@@ -29,6 +29,7 @@ export const Uniforms = {
   DEPTH: 'u_depth',
   RENDER_EXTENT: 'u_renderExtent', // intersection of layer, source, and view extent
   PATTERN_ORIGIN: 'u_patternOrigin',
+  PATTERN_ORIGIN_LOW: 'u_patternOrigin_low',
   RESOLUTION: 'u_resolution',
   ZOOM: 'u_zoom',
   GLOBAL_ALPHA: 'u_globalAlpha',
