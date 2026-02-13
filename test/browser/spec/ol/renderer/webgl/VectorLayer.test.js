@@ -128,6 +128,7 @@ describe('ol/renderer/webgl/VectorLayer', () => {
         center: [0, 16],
         resolution: 0.25,
         rotation: 0,
+        zoom: 0,
         projection: proj,
       },
       size: [200, 100],
@@ -434,8 +435,9 @@ describe('ol/renderer/webgl/VectorLayer', () => {
         // pixel position of world [0,0] computed on CPU:
         //   clip space: [-0.32, 0]  (via currentFrameStateTransform_ with center=[16,0], res=0.5)
         //   offsetX = -0.32 * 200/2 = -32, offsetY = 0
-        //   x = 100 + (-32 mod 1048576) = 1048644, y = 50
-        [1048644, 50],
+        //   scaleRatio = pow(2, mod(0+0.5,1)-0.5) = 1, K = 65536
+        //   x = 100 + (-32 mod 65536) = 65604, y = 50
+        [65604, 50],
       ]);
     });
     it('calls render once for each renderer', () => {

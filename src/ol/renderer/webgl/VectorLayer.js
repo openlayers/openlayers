@@ -345,8 +345,14 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     const size = frameState.size;
     const offsetX = this.tmpCoords_[0] * size[0] * 0.5;
     const offsetY = this.tmpCoords_[1] * size[1] * 0.5;
-    // reduce offset modulo 2^20 to keep values small for float32 precision
-    const K = 1048576;
+    // reduce offset modulo K to keep values small for float32 precision;
+    // K must be proportional to scaleRatio so that K/scaleRatio is a fixed
+    // integer — otherwise the pattern drifts as scaleRatio changes with zoom
+    const scaleRatio = Math.pow(
+      2,
+      ((frameState.viewState.zoom + 0.5) % 1) - 0.5,
+    );
+    const K = 65536 * scaleRatio;
     this.tmpCoords_[0] = size[0] * 0.5 + offsetX - K * Math.floor(offsetX / K);
     this.tmpCoords_[1] = size[1] * 0.5 + offsetY - K * Math.floor(offsetY / K);
     this.helper.setUniformFloatVec2(Uniforms.PATTERN_ORIGIN, this.tmpCoords_);
