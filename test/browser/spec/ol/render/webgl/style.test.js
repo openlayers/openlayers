@@ -1059,7 +1059,7 @@ describe('ol/render/webgl/style', () => {
             'vec4 sampleFillPattern',
           );
           expect(result.builder.fillColorExpression_).to.eql(
-            `1. * sampleFillPattern(u_texture${uid}, u_texture${uid}_size, vec2(0.), u_texture${uid}_size, pxOrigin, pxPos)`,
+            `1. * sampleFillPattern(u_texture${uid}, u_texture${uid}_size, vec2(0.), u_texture${uid}_size, pxOrigin, pxOriginLow, pxPos)`,
           );
         });
       });
@@ -1081,7 +1081,7 @@ describe('ol/render/webgl/style', () => {
             'vec4 sampleFillPattern',
           );
           expect(result.builder.fillColorExpression_).to.eql(
-            `vec4(1.0, 0.0, 0.0, 1.0) * sampleFillPattern(u_texture${uid}, u_texture${uid}_size, vec2(0., u_texture${uid}_size.y) + vec2(5.0, 5.0) * vec2(0., -1.) + vec2(5.0, 10.0) * vec2(1., -1.), vec2(5.0, 5.0), pxOrigin, pxPos)`,
+            `vec4(1.0, 0.0, 0.0, 1.0) * sampleFillPattern(u_texture${uid}, u_texture${uid}_size, vec2(0., u_texture${uid}_size.y) + vec2(5.0, 5.0) * vec2(0., -1.) + vec2(5.0, 10.0) * vec2(1., -1.), vec2(5.0, 5.0), pxOrigin, pxOriginLow, pxPos)`,
           );
         });
       });

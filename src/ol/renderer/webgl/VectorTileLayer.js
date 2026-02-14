@@ -8,6 +8,7 @@ import VectorStyleRenderer, {
   convertStyleToShaders,
 } from '../../render/webgl/VectorStyleRenderer.js';
 import {
+  apply as applyTransform,
   create as createTransform,
   makeInverse as makeInverseTransform,
   multiply as multiplyTransform,
@@ -73,6 +74,7 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
       cacheSize: options.cacheSize,
       uniforms: {
         [Uniforms.PATTERN_ORIGIN]: [0, 0],
+        [Uniforms.PATTERN_ORIGIN_LOW]: [0, 0],
         [Uniforms.TILE_MASK_TEXTURE]: () => this.tileMaskTarget_.getTexture(),
       },
     });
@@ -118,6 +120,11 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
      * @private
      */
     this.tmpMat4_ = createMat4();
+    /**
+     * @type {Array<number>}
+     * @private
+     */
+    this.tmpCoords_ = [0, 0];
 
     /**
      * @type {WebGLRenderTarget}
@@ -318,9 +325,17 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
    * @param {import("../../transform.js").Transform} batchInvertTransform Inverse of the transformation in which tile geometries are expressed
    * @param {number} tileZ Tile zoom level
    * @param {number} depth Depth of the tile
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @private
    */
-  applyUniforms_(alpha, renderExtent, batchInvertTransform, tileZ, depth) {
+  applyUniforms_(
+    alpha,
+    renderExtent,
+    batchInvertTransform,
+    tileZ,
+    depth,
+    frameState,
+  ) {
     // world to screen matrix
     setFromTransform(this.tmpTransform_, this.currentFrameStateTransform_);
     multiplyTransform(this.tmpTransform_, batchInvertTransform);
@@ -335,6 +350,27 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
       Uniforms.SCREEN_TO_WORLD_MATRIX,
       mat4FromTransform(this.tmpMat4_, this.tmpTransform_),
     );
+
+    // Compute the pixel position of world origin [0,0] using float64 (CPU-side).
+    // Dekker splitting encodes the value as two float32 components (hi + lo)
+    // so the shader's double-float arithmetic can reconstruct full precision.
+    this.tmpCoords_[0] = 0;
+    this.tmpCoords_[1] = 0;
+    applyTransform(this.currentFrameStateTransform_, this.tmpCoords_);
+    const size = frameState.size;
+    const pxOriginX = (1 + this.tmpCoords_[0]) * size[0] * 0.5;
+    const pxOriginY = (1 + this.tmpCoords_[1]) * size[1] * 0.5;
+
+    // Dekker splitting: decompose float64 into two float32 components (hi + lo)
+    const hiX = Math.fround(pxOriginX);
+    const loX = pxOriginX - hiX;
+    const hiY = Math.fround(pxOriginY);
+    const loY = pxOriginY - hiY;
+
+    this.tmpCoords_[0] = hiX;
+    this.tmpCoords_[1] = hiY;
+    this.helper.setUniformFloatVec2(Uniforms.PATTERN_ORIGIN, this.tmpCoords_);
+    this.helper.setUniformFloatVec2(Uniforms.PATTERN_ORIGIN_LOW, [loX, loY]);
 
     this.helper.setUniformFloatValue(Uniforms.GLOBAL_ALPHA, alpha);
     this.helper.setUniformFloatValue(Uniforms.DEPTH, depth);
@@ -371,6 +407,7 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
         buffers.invertVerticesTransform,
         tileZ,
         depth,
+        frameState,
       );
     });
   }

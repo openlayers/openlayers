@@ -129,6 +129,7 @@ describe('ol/renderer/webgl/VectorLayer', () => {
         resolution: 0.25,
         rotation: 0,
         projection: proj,
+        zoom: 0,
       },
       size: [200, 100],
       renderTargets: {},
@@ -431,10 +432,21 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       expect(calls.length).to.be(6 * withHit);
       expect(calls[1].args).to.eql([
         'u_patternOrigin',
-        // combination of:
-        //   [ 0, 16 ]  ->  initial view center
-        //   scale( 2 / (0.25 * 200px), 2 / (0.25 * 100px) )  ->  divide by initial resolution & viewport size
-        [0, -1.28],
+        // pixel position of world [0,0], Dekker split hi part
+        // clipX=-0.32 → pxX = (1-0.32)*200*0.5 = 68
+        // clipY=0     → pxY = (1+0)*100*0.5 = 50
+        [68, 50],
+      ]);
+    });
+    it('sets PATTERN_ORIGIN_LOW vec2 uniform once for each geometry type', () => {
+      const calls = renderer.helper.setUniformFloatVec2
+        .getCalls()
+        .filter((c) => c.args[0] === 'u_patternOrigin_low');
+      expect(calls.length).to.be(6 * withHit);
+      expect(calls[1].args).to.eql([
+        'u_patternOrigin_low',
+        // Dekker splitting lo part (fractional remainder)
+        [0, 0],
       ]);
     });
     it('calls render once for each renderer', () => {

@@ -37,6 +37,7 @@ export const Uniforms = {
   ...DefaultUniform,
   RENDER_EXTENT: 'u_renderExtent', // intersection of layer, source, and view extent
   PATTERN_ORIGIN: 'u_patternOrigin',
+  PATTERN_ORIGIN_LOW: 'u_patternOrigin_low',
   GLOBAL_ALPHA: 'u_globalAlpha',
 };
 
@@ -84,6 +85,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     const uniforms = {
       [Uniforms.RENDER_EXTENT]: [0, 0, 0, 0],
       [Uniforms.PATTERN_ORIGIN]: [0, 0],
+      [Uniforms.PATTERN_ORIGIN_LOW]: [0, 0],
       [Uniforms.GLOBAL_ALPHA]: 1,
     };
 
@@ -315,9 +317,10 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
 
   /**
    * @param {import("../../transform.js").Transform} batchInvertTransform Inverse of the transformation in which geometries are expressed
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @private
    */
-  applyUniforms_(batchInvertTransform) {
+  applyUniforms_(batchInvertTransform, frameState) {
     // world to screen matrix
     setFromTransform(this.tmpTransform_, this.currentFrameStateTransform_);
     multiplyTransform(this.tmpTransform_, batchInvertTransform);
@@ -333,12 +336,28 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
       mat4FromTransform(this.tmpMat4_, this.tmpTransform_),
     );
 
-    // pattern origin should always be [0, 0] in world coordinates
+    // Compute the pixel position of world origin [0,0] using float64 (CPU-side).
+    // At high zoom levels this can be tens of millions of pixels, exceeding
+    // float32's ~7 significant digits. Dekker splitting encodes the float64
+    // value as two float32 components (hi + lo) so the shader's double-float
+    // arithmetic library can reconstruct full precision.
     this.tmpCoords_[0] = 0;
     this.tmpCoords_[1] = 0;
-    makeInverseTransform(this.tmpTransform_, batchInvertTransform);
-    applyTransform(this.tmpTransform_, this.tmpCoords_);
+    applyTransform(this.currentFrameStateTransform_, this.tmpCoords_);
+    const size = frameState.size;
+    const pxOriginX = (1 + this.tmpCoords_[0]) * size[0] * 0.5;
+    const pxOriginY = (1 + this.tmpCoords_[1]) * size[1] * 0.5;
+
+    // Dekker splitting: decompose float64 into two float32 components (hi + lo)
+    const hiX = Math.fround(pxOriginX);
+    const loX = pxOriginX - hiX;
+    const hiY = Math.fround(pxOriginY);
+    const loY = pxOriginY - hiY;
+
+    this.tmpCoords_[0] = hiX;
+    this.tmpCoords_[1] = hiY;
     this.helper.setUniformFloatVec2(Uniforms.PATTERN_ORIGIN, this.tmpCoords_);
+    this.helper.setUniformFloatVec2(Uniforms.PATTERN_ORIGIN_LOW, [loX, loY]);
   }
 
   /**
@@ -482,7 +501,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
         continue;
       }
       this.styleRenderer_.render(this.buffers_, frameState, () => {
-        this.applyUniforms_(this.buffers_.invertVerticesTransform);
+        this.applyUniforms_(this.buffers_.invertVerticesTransform, frameState);
         this.helper.applyHitDetectionUniform(forHitDetection);
       });
     } while (++world < endWorld);
