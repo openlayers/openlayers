@@ -94,7 +94,7 @@
     "d3-selection": "^3.0.0",
     "d3-transition": "^3.0.1",
     "es-main": "^1.0.2",
-    "eslint": "^9.16.0",
+    "eslint": "^10.0.0",
     "eslint-config-openlayers": "^20.0.0",
     "espree": "^11.0.0",
     "expect.js": "0.3.1",
