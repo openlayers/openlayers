@@ -413,7 +413,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
       const userProjection = getUserProjection();
       if (userProjection) {
         vectorSource.loadFeatures(
-          toUserExtent(extent, userProjection),
+          toUserExtent(extent, projection),
           toUserResolution(resolution, projection),
           userProjection,
         );
