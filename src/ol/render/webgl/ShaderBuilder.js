@@ -36,6 +36,15 @@ const float PI = 3.141592653589793238;
 const float TWO_PI = 2.0 * PI;
 float currentLineMetric = 0.; // an actual value will be used in the stroke shaders
 
+vec2 pxToWorld(vec2 pxPos) {
+  vec2 screenPos = 2.0 * pxPos / u_viewportSizePx - 1.0;
+  return (u_screenToWorldMatrix * vec4(screenPos, 0.0, 1.0)).xy;
+}
+
+vec2 worldToPx(vec2 worldPos) {
+  vec4 screenPos = u_projectionMatrix * vec4(worldPos, 0.0, 1.0);
+  return (0.5 * screenPos.xy + 0.5) * u_viewportSizePx;
+}
 ${UNPACK_COLOR_FN}
 ${FLOAT64_ARITHMETIC_FN}
 `;
@@ -676,10 +685,6 @@ varying ${attribute.varyingType} ${attribute.varyingName};`,
   )
   .join('\n')}
 ${this.vertexShaderFunctions_.join('\n')}
-vec2 worldToPx(vec2 worldPos) {
-  vec4 screenPos = u_projectionMatrix * vec4(worldPos, 0.0, 1.0);
-  return (0.5 * screenPos.xy + 0.5) * u_viewportSizePx;
-}
 
 vec4 pxToScreen(vec2 pxPos) {
   vec2 screenPos = 2.0 * pxPos / u_viewportSizePx - 1.0;
@@ -794,11 +799,6 @@ ${this.attributes_
   )
   .join('\n')}
 ${this.fragmentShaderFunctions_.join('\n')}
-
-vec2 pxToWorld(vec2 pxPos) {
-  vec2 screenPos = 2.0 * pxPos / u_viewportSizePx - 1.0;
-  return (u_screenToWorldMatrix * vec4(screenPos, 0.0, 1.0)).xy;
-}
 
 bool isCap(float joinAngle) {
   return joinAngle < -0.1;
@@ -961,6 +961,7 @@ attribute vec2 a_hitColor;
 
 varying vec4 v_hitColor;
 varying vec2 v_patternOriginPx;
+varying vec2 v_patternSizePx;
 
 ${this.attributes_
   .map(
@@ -977,9 +978,9 @@ ${
   this.fillPatternSizeExpression_ !== null
     ? `
   // this computes the pattern offset in screenspace using double-float arithmetics
-  vec2 patternSize = ${this.fillPatternSizeExpression_};
-  vec2 patternSizeScaledX = df_mul(df_from(patternSize.x), u_dp_patternScaleRatio);
-  vec2 patternSizeScaledY = df_mul(df_from(patternSize.y), u_dp_patternScaleRatio);
+  v_patternSizePx = ${this.fillPatternSizeExpression_};
+  vec2 patternSizeScaledX = df_mul(df_from(v_patternSizePx.x), u_dp_patternScaleRatio);
+  vec2 patternSizeScaledY = df_mul(df_from(v_patternSizePx.y), u_dp_patternScaleRatio);
   v_patternOriginPx = vec2(
     df_mod(u_dp_patternOriginX, patternSizeScaledX),
     df_mod(u_dp_patternOriginY, patternSizeScaledY)
@@ -1008,21 +1009,14 @@ ${this.attributes_
     return `${COMMON_HEADER}
 ${this.uniforms_.map((uniform) => `uniform ${uniform.type} ${uniform.name};`).join('\n')}
 varying vec4 v_hitColor;
+varying vec2 v_patternOriginPx;
+varying vec2 v_patternSizePx;
 ${this.attributes_
   .map(
     (attribute) => `varying ${attribute.varyingType} ${attribute.varyingName};`,
   )
   .join('\n')}
 ${this.fragmentShaderFunctions_.join('\n')}
-vec2 pxToWorld(vec2 pxPos) {
-  vec2 screenPos = 2.0 * pxPos / u_viewportSizePx - 1.0;
-  return (u_screenToWorldMatrix * vec4(screenPos, 0.0, 1.0)).xy;
-}
-
-vec2 worldToPx(vec2 worldPos) {
-  vec4 screenPos = u_projectionMatrix * vec4(worldPos, 0.0, 1.0);
-  return (0.5 * screenPos.xy + 0.5) * u_viewportSizePx;
-}
 
 void main(void) {
 ${this.attributes_
