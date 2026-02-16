@@ -6,24 +6,28 @@ import WebGLVectorLayer from '../src/ol/layer/WebGLVector.js';
 import OSM from '../src/ol/source/OSM.js';
 import VectorSource from '../src/ol/source/Vector.js';
 
+// create pattern
+const canvasFill = document.createElement('canvas');
+canvasFill.width = 32;
+canvasFill.height = 32;
+const context = canvasFill.getContext('2d');
+context.fillStyle = 'rgba(255, 0, 0, 0.5)';
+context.fillRect(0, 0, 8, 32);
+context.fillStyle = 'rgba(94, 255, 0, 0.5)';
+context.fillRect(0, 0, 32, 8);
+context.fillStyle = 'rgba(255, 213, 0, 0.5)';
+context.fillRect(32 - 8, 0, 8, 32);
+context.fillStyle = 'rgba(51,206,255,0.5)';
+context.fillRect(0, 32 - 8, 32, 8);
+
 /** @type {import('../src/ol/style/flat.js').FlatStyleLike} */
 const style = [
   {
-    filter: ['==', ['var', 'highlightedId'], ['id']],
-    style: {
-      'stroke-color': 'white',
-      'stroke-width': 3,
-      'stroke-offset': -1,
-      'fill-color': [255, 255, 255, 0.4],
-    },
-  },
-  {
-    else: true,
     style: {
       'stroke-color': ['*', ['get', 'COLOR'], [220, 220, 220]],
       'stroke-width': 2,
       'stroke-offset': -1,
-      'fill-color': ['*', ['get', 'COLOR'], [255, 255, 255, 0.6]],
+      'fill-pattern-src': canvasFill.toDataURL('png'),
     },
   },
 ];
