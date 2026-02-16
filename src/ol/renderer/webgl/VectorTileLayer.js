@@ -10,7 +10,6 @@ import VectorStyleRenderer, {
 import {
   create as createTransform,
   makeInverse as makeInverseTransform,
-  multiply as multiplyTransform,
   setFromArray as setFromTransform,
 } from '../../transform.js';
 import {
@@ -25,9 +24,11 @@ import {ELEMENT_ARRAY_BUFFER, STATIC_DRAW} from '../../webgl.js';
 import WebGLBaseTileLayerRenderer, {
   Uniforms as BaseUniforms,
 } from './TileLayerBase.js';
+import {VectorUniforms, applyVectorUniforms} from './vectorUtil.js';
 
 export const Uniforms = {
   ...BaseUniforms,
+  ...VectorUniforms,
   TILE_MASK_TEXTURE: 'u_depthMask',
   TILE_ZOOM_LEVEL: 'u_tileZoomLevel',
 };
@@ -72,8 +73,8 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     super(tileLayer, {
       cacheSize: options.cacheSize,
       uniforms: {
-        [Uniforms.PATTERN_ORIGIN]: [0, 0],
         [Uniforms.TILE_MASK_TEXTURE]: () => this.tileMaskTarget_.getTexture(),
+        [Uniforms.ONE]: 1,
       },
     });
 
@@ -318,22 +319,22 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
    * @param {import("../../transform.js").Transform} batchInvertTransform Inverse of the transformation in which tile geometries are expressed
    * @param {number} tileZ Tile zoom level
    * @param {number} depth Depth of the tile
+   * @param {import("../../Map.js").FrameState} frameState Frame state
    * @private
    */
-  applyUniforms_(alpha, renderExtent, batchInvertTransform, tileZ, depth) {
-    // world to screen matrix
-    setFromTransform(this.tmpTransform_, this.currentFrameStateTransform_);
-    multiplyTransform(this.tmpTransform_, batchInvertTransform);
-    this.helper.setUniformMatrixValue(
-      Uniforms.PROJECTION_MATRIX,
-      mat4FromTransform(this.tmpMat4_, this.tmpTransform_),
-    );
-
-    // screen to world matrix
-    makeInverseTransform(this.tmpTransform_, this.currentFrameStateTransform_);
-    this.helper.setUniformMatrixValue(
-      Uniforms.SCREEN_TO_WORLD_MATRIX,
-      mat4FromTransform(this.tmpMat4_, this.tmpTransform_),
+  applyUniforms_(
+    alpha,
+    renderExtent,
+    batchInvertTransform,
+    tileZ,
+    depth,
+    frameState,
+  ) {
+    applyVectorUniforms(
+      this.helper,
+      this.currentFrameStateTransform_,
+      batchInvertTransform,
+      frameState,
     );
 
     this.helper.setUniformFloatValue(Uniforms.GLOBAL_ALPHA, alpha);
@@ -371,6 +372,7 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
         buffers.invertVerticesTransform,
         tileZ,
         depth,
+        frameState,
       );
     });
   }
