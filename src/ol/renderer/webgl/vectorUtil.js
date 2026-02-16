@@ -92,9 +92,12 @@ export function applyVectorUniforms(
     VectorUniforms.PATTERN_ORIGIN_X_DOUBLE,
     tmpCoords2,
   );
-  tmpCoords[0] = getHighPart(tmpCoords[1]);
-  tmpCoords[1] = getLowPart(tmpCoords[1]);
-  helper.setUniformFloatVec2(VectorUniforms.PATTERN_ORIGIN_Y_DOUBLE, tmpCoords);
+  tmpCoords2[0] = getHighPart(tmpCoords[1]);
+  tmpCoords2[1] = getLowPart(tmpCoords[1]);
+  helper.setUniformFloatVec2(
+    VectorUniforms.PATTERN_ORIGIN_Y_DOUBLE,
+    tmpCoords2,
+  );
 
   // we're also computing the scale ratio of the pattern so that we don't encounter
   // precision issues on the GPU

@@ -2,7 +2,6 @@
  * @module ol/renderer/webgl/VectorTileLayer
  */
 import EventType from '../../events/EventType.js';
-import {getIntersection} from '../../extent.js';
 import {ShaderBuilder} from '../../render/webgl/ShaderBuilder.js';
 import VectorStyleRenderer, {
   convertStyleToShaders,
@@ -358,8 +357,8 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
   }
 
   /**
-   * Apply the render extent as a uniform; the render extent is expressed in the same coordinate space as the geometries in the render buffers,
-   * whereas the render extent is expressed in full world coordinates.
+   * Apply the render extent as a uniform; the render extent uniform is expressed in the same coordinate space as the geometries in the render buffers,
+   * whereas the input render extent is expressed in full world coordinates.
    * @private
    * @param {import("../../extent.js").Extent} renderExtent Render extent in map units (world coordinates)
    * @param {import('../../transform.js').Transform} geometryInvertTransform Transform.
@@ -401,7 +400,6 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     gutter,
     alpha,
   ) {
-    const gutterExtent = getIntersection(tileExtent, renderExtent, tileExtent);
     const tileZ = tileRepresentation.tile.getTileCoord()[0];
     const buffers = tileRepresentation.buffers;
     if (!buffers) {
@@ -410,7 +408,7 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     this.styleRenderer_.render(buffers, frameState, () => {
       this.applyUniforms_(
         alpha,
-        gutterExtent,
+        tileExtent,
         buffers.invertVerticesTransform,
         tileZ,
         depth,
