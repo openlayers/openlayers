@@ -15,7 +15,7 @@ precision mediump float;
 #endif
 uniform float u_one;
 uniform mat4 u_projectionMatrix;
-uniform mat4 u_screenToWorldMatrix;
+uniform mat4 u_invertProjectionMatrix;
 uniform vec2 u_viewportSizePx;
 uniform float u_pixelRatio;
 uniform float u_globalAlpha;
@@ -28,9 +28,9 @@ uniform float u_depth;
 uniform mediump int u_hitDetection;
 
 // these 64-bits floats are split into high/low
-uniform vec2 u_dp_patternOriginX;
-uniform vec2 u_dp_patternOriginY;
-uniform vec2 u_dp_patternScaleRatio;
+uniform vec2 u_df_patternOriginX;
+uniform vec2 u_df_patternOriginY;
+uniform vec2 u_df_patternScaleRatio;
 
 const float PI = 3.141592653589793238;
 const float TWO_PI = 2.0 * PI;
@@ -38,7 +38,7 @@ float currentLineMetric = 0.; // an actual value will be used in the stroke shad
 
 vec2 pxToWorld(vec2 pxPos) {
   vec2 screenPos = 2.0 * pxPos / u_viewportSizePx - 1.0;
-  return (u_screenToWorldMatrix * vec4(screenPos, 0.0, 1.0)).xy;
+  return (u_invertProjectionMatrix * vec4(screenPos, 0.0, 1.0)).xy;
 }
 
 vec2 worldToPx(vec2 worldPos) {
@@ -932,7 +932,6 @@ ${this.attributes_
   .join('\n')}
 
   vec2 currentPointPx = gl_FragCoord.xy / u_pixelRatio;
-  #ifdef GL_FRAGMENT_PRECISION_HIGH
   vec2 worldPos = pxToWorld(currentPointPx);
   if (
     abs(u_renderExtent[0] - u_renderExtent[2]) > 0.0 && (
@@ -944,7 +943,6 @@ ${this.attributes_
   ) {
     discard;
   }
-  #endif
 
   float segmentLengthPx = length(v_segmentEndPx - v_segmentStartPx);
   segmentLengthPx = max(segmentLengthPx, 1.17549429e-38); // avoid divide by zero
@@ -1016,14 +1014,22 @@ ${
     ? `
   // this computes the pattern offset in screenspace using double-float arithmetics
   v_patternSizePx = ${this.fillPatternSizeExpression_};
-  vec2 patternSizeScaledX = df_mul(df_from(v_patternSizePx.x), u_dp_patternScaleRatio);
-  vec2 patternSizeScaledY = df_mul(df_from(v_patternSizePx.y), u_dp_patternScaleRatio);
+  vec2 patternSizeScaledX = df_mul(df_from(v_patternSizePx.x), u_df_patternScaleRatio);
+  vec2 patternSizeScaledY = df_mul(df_from(v_patternSizePx.y), u_df_patternScaleRatio);
   v_patternOriginPx = vec2(
-    df_mod(u_dp_patternOriginX, patternSizeScaledX),
-    df_mod(u_dp_patternOriginY, patternSizeScaledY)
+    df_mod(u_df_patternOriginX, patternSizeScaledX),
+    df_mod(u_df_patternOriginY, patternSizeScaledY)
   );
+  
+  // reapply rotation to the pattern origin
+  v_patternOriginPx -= u_viewportSizePx / 2.; // translate to viewport center
+  v_patternOriginPx = vec2(
+    cos(-u_rotation) * v_patternOriginPx.x - sin(-u_rotation) * v_patternOriginPx.y,
+    sin(-u_rotation) * v_patternOriginPx.x + cos(-u_rotation) * v_patternOriginPx.y
+  );
+  v_patternOriginPx += u_viewportSizePx / 2.; // translate back
   `
-    : 'v_patternOriginPx = vec2(df_float(u_dp_patternOriginX), df_float(u_dp_patternOriginY));'
+    : 'v_patternOriginPx = vec2(0.);'
 }
 ${this.attributes_
   .map(
@@ -1068,7 +1074,6 @@ ${this.attributes_
   )
   .join('\n')}
   vec2 pxPos = gl_FragCoord.xy / u_pixelRatio;
-  #ifdef GL_FRAGMENT_PRECISION_HIGH
   vec2 worldPos = pxToWorld(pxPos);
   if (
     abs(u_renderExtent[0] - u_renderExtent[2]) > 0.0 && (
@@ -1080,7 +1085,6 @@ ${this.attributes_
   ) {
     discard;
   }
-  #endif
 ${this.fragmentDiscardExpression_ ? `  if (${this.fragmentDiscardExpression_}) { discard; }` : ''}
   gl_FragColor = ${this.fillColorExpression_};
   gl_FragColor.a *= u_globalAlpha;
