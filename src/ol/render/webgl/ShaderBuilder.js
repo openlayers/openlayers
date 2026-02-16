@@ -971,7 +971,6 @@ ${this.vertexShaderFunctions_.join('\n')}
 void main(void) {
   gl_Position = u_projectionMatrix * vec4(a_position, u_depth, 1.0);
   v_hitColor = unpackColor(a_hitColor);
-  
 ${
   this.fillPatternSizeExpression_ !== null
     ? `
@@ -983,7 +982,7 @@ ${
     df_mod(u_df_patternOriginX, patternSizeScaledX),
     df_mod(u_df_patternOriginY, patternSizeScaledY)
   );
-  
+
   // reapply rotation to the pattern origin
   v_patternOriginPx -= u_viewportSizePx / 2.; // translate to viewport center
   v_patternOriginPx = vec2(
@@ -991,8 +990,8 @@ ${
     sin(-u_rotation) * v_patternOriginPx.x + cos(-u_rotation) * v_patternOriginPx.y
   );
   v_patternOriginPx += u_viewportSizePx / 2.; // translate back
-  `
-    : 'v_patternOriginPx = vec2(0.);'
+`
+    : '  v_patternOriginPx = vec2(0.);'
 }
 ${this.attributes_
   .map(

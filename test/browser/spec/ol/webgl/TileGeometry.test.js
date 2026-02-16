@@ -126,9 +126,9 @@ describe('ol/webgl/TileGeometry', function () {
       await new Promise((resolve) => setTimeout(resolve));
       expect(tileGeometry.ready).to.be(true);
     });
-    it('fills the mask buffer with the tile extent', () => {
+    it('fills the mask buffer with the tile extent (expressed relative to the tile origin)', () => {
       expect(tileGeometry.maskVertices.getArray()).to.eql([
-        -100, -200, 300, -200, 300, 400, -100, 400,
+        0, 0, 400, 0, 400, 600, 0, 600,
       ]);
     });
 
