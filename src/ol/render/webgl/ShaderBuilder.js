@@ -6,12 +6,14 @@ import {colorToGlsl, numberToGlsl, stringToGlsl} from '../../expr/gpu.js';
 import {createDefaultStyle} from '../../style/flat.js';
 import {LINESTRING_ANGLE_COSINE_CUTOFF} from './bufferUtil.js';
 import {UNPACK_COLOR_FN} from './compileUtil.js';
+import {FLOAT64_ARITHMETIC_FN} from './float64Util.js';
 
 export const COMMON_HEADER = `#ifdef GL_FRAGMENT_PRECISION_HIGH
 precision highp float;
 #else
 precision mediump float;
 #endif
+uniform float u_one;
 uniform mat4 u_projectionMatrix;
 uniform mat4 u_screenToWorldMatrix;
 uniform vec2 u_viewportSizePx;
@@ -22,15 +24,20 @@ uniform float u_zoom;
 uniform float u_resolution;
 uniform float u_rotation;
 uniform vec4 u_renderExtent;
-uniform vec2 u_patternOrigin;
 uniform float u_depth;
 uniform mediump int u_hitDetection;
+
+// these 64-bits floats are split into high/low
+uniform vec2 u_dp_patternOriginX;
+uniform vec2 u_dp_patternOriginY;
+uniform vec2 u_dp_patternScaleRatio;
 
 const float PI = 3.141592653589793238;
 const float TWO_PI = 2.0 * PI;
 float currentLineMetric = 0.; // an actual value will be used in the stroke shaders
 
 ${UNPACK_COLOR_FN}
+${FLOAT64_ARITHMETIC_FN}
 `;
 
 const DEFAULT_STYLE = createDefaultStyle();
@@ -206,6 +213,12 @@ export class ShaderBuilder {
     this.fillColorExpression_ = colorToGlsl(
       /** @type {string} */ (DEFAULT_STYLE['fill-color']),
     );
+
+    /**
+     * @private
+     * @type {string}
+     */
+    this.fillPatternSizeExpression_ = null;
 
     /**
      * @type {Array<string>}
@@ -503,6 +516,25 @@ export class ShaderBuilder {
    */
   getFillColorExpression() {
     return this.fillColorExpression_;
+  }
+
+  /**
+   * Defining a pattern size for a fill pattern lets us avoid having visual artifacts that typically appear
+   * when zoomed in above zoom levels 14~15. If we can compute the fill pattern size we can more efficiently
+   * compute the offset of the pattern on screen, thus avoiding precision issues.
+   * @param {string} expression Size expression that evaluates to a `vec2` in pixels
+   * @return {ShaderBuilder} the builder object
+   */
+  setFillPatternSizeExpression(expression) {
+    this.fillPatternSizeExpression_ = expression;
+    return this;
+  }
+
+  /**
+   * @return {string} The current fill pattern size expression.
+   */
+  getFillPatternSizeExpression() {
+    return this.fillPatternSizeExpression_;
   }
 
   addVertexShaderFunction(code) {
@@ -965,6 +997,7 @@ attribute vec2 a_position;
 attribute vec2 a_hitColor;
 
 varying vec4 v_hitColor;
+varying vec2 v_patternOriginPx;
 
 ${this.attributes_
   .map(
@@ -976,6 +1009,21 @@ ${this.vertexShaderFunctions_.join('\n')}
 void main(void) {
   gl_Position = u_projectionMatrix * vec4(a_position, u_depth, 1.0);
   v_hitColor = unpackColor(a_hitColor);
+  
+${
+  this.fillPatternSizeExpression_ !== null
+    ? `
+  // this computes the pattern offset in screenspace using double-float arithmetics
+  vec2 patternSize = ${this.fillPatternSizeExpression_};
+  vec2 patternSizeScaledX = df_mul(df_from(patternSize.x), u_dp_patternScaleRatio);
+  vec2 patternSizeScaledY = df_mul(df_from(patternSize.y), u_dp_patternScaleRatio);
+  v_patternOriginPx = vec2(
+    df_mod(u_dp_patternOriginX, patternSizeScaledX),
+    df_mod(u_dp_patternOriginY, patternSizeScaledY)
+  );
+  `
+    : 'v_patternOriginPx = vec2(df_float(u_dp_patternOriginX), df_float(u_dp_patternOriginY));'
+}
 ${this.attributes_
   .map(
     (attribute) =>
@@ -1026,7 +1074,6 @@ ${this.attributes_
   )
   .join('\n')}
   vec2 pxPos = gl_FragCoord.xy / u_pixelRatio;
-  vec2 pxOrigin = worldToPx(u_patternOrigin);
   #ifdef GL_FRAGMENT_PRECISION_HIGH
   vec2 worldPos = pxToWorld(pxPos);
   if (
