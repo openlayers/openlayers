@@ -8,8 +8,10 @@ import VectorStyleRenderer, {
   convertStyleToShaders,
 } from '../../render/webgl/VectorStyleRenderer.js';
 import {
+  apply as applyTransform,
   create as createTransform,
   makeInverse as makeInverseTransform,
+  multiply as multiplyTransform,
   setFromArray as setFromTransform,
 } from '../../transform.js';
 import {
@@ -103,14 +105,23 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     this.styleRenderer_ = null;
 
     /**
-     * This transform is updated on every frame and is the composition of:
-     * - invert of the world->screen transform that was used when rebuilding buffers (see `this.renderTransform_`)
-     * - current world->screen transform
-     * @type {import("../../transform.js").Transform}
+     * Transform that projects from world to viewport [-1,1]
      * @private
      */
     this.currentFrameStateTransform_ = createTransform();
 
+    /**
+     * @private
+     */
+    this.tmpCoords_ = [0, 0];
+    /**
+     * @private
+     */
+    this.tmpCoords2_ = [0, 0];
+    /**
+     * @private
+     */
+    this.tmpExtent_ = [0, 0, 0, 0];
     /**
      * @private
      */
@@ -280,16 +291,6 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
       true,
     );
     this.helper.useProgram(this.tileMaskProgram_, frameState);
-    setFromTransform(this.tmpTransform_, this.currentFrameStateTransform_);
-    this.helper.setUniformMatrixValue(
-      Uniforms.PROJECTION_MATRIX,
-      mat4FromTransform(this.tmpMat4_, this.tmpTransform_),
-    );
-    makeInverseTransform(this.tmpTransform_, this.currentFrameStateTransform_);
-    this.helper.setUniformMatrixValue(
-      Uniforms.SCREEN_TO_WORLD_MATRIX,
-      mat4FromTransform(this.tmpMat4_, this.tmpTransform_),
-    );
     return true;
   }
 
@@ -300,10 +301,23 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     if (!tileRepresentation.ready) {
       return;
     }
+    const geomTile = /** @type {TileGeometry} */ (tileRepresentation);
+    const invertTransform = geomTile.buffers.invertVerticesTransform;
+    setFromTransform(this.tmpTransform_, this.currentFrameStateTransform_);
+    multiplyTransform(this.tmpTransform_, invertTransform);
+    this.helper.setUniformMatrixValue(
+      Uniforms.PROJECTION_MATRIX,
+      mat4FromTransform(this.tmpMat4_, this.tmpTransform_),
+    );
+    makeInverseTransform(this.tmpTransform_, this.tmpTransform_);
+    this.helper.setUniformMatrixValue(
+      Uniforms.INVERT_PROJECTION_MATRIX,
+      mat4FromTransform(this.tmpMat4_, this.tmpTransform_),
+    );
     this.helper.setUniformFloatValue(Uniforms.DEPTH, depth);
     this.helper.setUniformFloatValue(Uniforms.TILE_ZOOM_LEVEL, tileZ);
-    this.helper.setUniformFloatVec4(Uniforms.RENDER_EXTENT, extent);
     this.helper.setUniformFloatValue(Uniforms.GLOBAL_ALPHA, 1);
+    this.applyRenderExtentUniform(extent, invertTransform);
     this.helper.bindBuffer(
       /** @type {TileGeometry} */ (tileRepresentation).maskVertices,
     );
@@ -340,7 +354,35 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     this.helper.setUniformFloatValue(Uniforms.GLOBAL_ALPHA, alpha);
     this.helper.setUniformFloatValue(Uniforms.DEPTH, depth);
     this.helper.setUniformFloatValue(Uniforms.TILE_ZOOM_LEVEL, tileZ);
-    this.helper.setUniformFloatVec4(Uniforms.RENDER_EXTENT, renderExtent);
+    this.applyRenderExtentUniform(renderExtent, batchInvertTransform);
+  }
+
+  /**
+   * Apply the render extent as a uniform; the render extent is expressed in the same coordinate space as the geometries in the render buffers,
+   * whereas the render extent is expressed in full world coordinates.
+   * @private
+   * @param {import("../../extent.js").Extent} renderExtent Render extent in map units (world coordinates)
+   * @param {import('../../transform.js').Transform} geometryInvertTransform Transform.
+   */
+  applyRenderExtentUniform(renderExtent, geometryInvertTransform) {
+    setFromTransform(this.tmpTransform_, geometryInvertTransform);
+    makeInverseTransform(this.tmpTransform_, this.tmpTransform_);
+
+    // minx, miny
+    this.tmpCoords_[0] = renderExtent[0];
+    this.tmpCoords_[1] = renderExtent[1];
+    applyTransform(this.tmpTransform_, this.tmpCoords_);
+
+    // maxx, maxy
+    this.tmpCoords2_[0] = renderExtent[2];
+    this.tmpCoords2_[1] = renderExtent[3];
+    applyTransform(this.tmpTransform_, this.tmpCoords2_);
+
+    this.tmpExtent_[0] = this.tmpCoords_[0];
+    this.tmpExtent_[1] = this.tmpCoords_[1];
+    this.tmpExtent_[2] = this.tmpCoords2_[0];
+    this.tmpExtent_[3] = this.tmpCoords2_[1];
+    this.helper.setUniformFloatVec4(Uniforms.RENDER_EXTENT, this.tmpExtent_);
   }
 
   /**

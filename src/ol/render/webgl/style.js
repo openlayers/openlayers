@@ -765,7 +765,7 @@ function parseFillProperties(style, builder, uniforms, context) {
     }
 
     builder.setFillColorExpression(
-      `${tintExpression} * sampleFillPattern(${textureName}, ${sizeExpression}, ${offsetExpression}, v_patternSizePx, v_patternOriginPx, pxPos, df_float(u_dp_patternScaleRatio))`,
+      `${tintExpression} * sampleFillPattern(${textureName}, ${sizeExpression}, ${offsetExpression}, v_patternSizePx, v_patternOriginPx, pxPos, df_float(u_df_patternScaleRatio))`,
     );
   }
 }
