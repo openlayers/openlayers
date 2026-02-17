@@ -7,16 +7,12 @@ import VectorStyleRenderer, {
   convertStyleToShaders,
 } from '../../render/webgl/VectorStyleRenderer.js';
 import {
-  apply as applyTransform,
   create as createTransform,
   makeInverse as makeInverseTransform,
   multiply as multiplyTransform,
   setFromArray as setFromTransform,
 } from '../../transform.js';
-import {
-  create as createMat4,
-  fromTransform as mat4FromTransform,
-} from '../../vec/mat4.js';
+import {fromTransform as mat4FromTransform} from '../../vec/mat4.js';
 import WebGLArrayBuffer from '../../webgl/Buffer.js';
 import {AttributeType} from '../../webgl/Helper.js';
 import WebGLRenderTarget from '../../webgl/RenderTarget.js';
@@ -108,27 +104,6 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
      * @private
      */
     this.currentFrameStateTransform_ = createTransform();
-
-    /**
-     * @private
-     */
-    this.tmpCoords_ = [0, 0];
-    /**
-     * @private
-     */
-    this.tmpCoords2_ = [0, 0];
-    /**
-     * @private
-     */
-    this.tmpExtent_ = [0, 0, 0, 0];
-    /**
-     * @private
-     */
-    this.tmpTransform_ = createTransform();
-    /**
-     * @private
-     */
-    this.tmpMat4_ = createMat4();
 
     /**
      * @type {WebGLRenderTarget}
@@ -316,7 +291,10 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     this.helper.setUniformFloatValue(Uniforms.DEPTH, depth);
     this.helper.setUniformFloatValue(Uniforms.TILE_ZOOM_LEVEL, tileZ);
     this.helper.setUniformFloatValue(Uniforms.GLOBAL_ALPHA, 1);
-    this.applyRenderExtentUniform(extent, invertTransform);
+    this.applyRenderExtentUniform(
+      extent,
+      makeInverseTransform(this.tmpTransform_, invertTransform),
+    );
     this.helper.bindBuffer(
       /** @type {TileGeometry} */ (tileRepresentation).maskVertices,
     );
@@ -353,35 +331,10 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     this.helper.setUniformFloatValue(Uniforms.GLOBAL_ALPHA, alpha);
     this.helper.setUniformFloatValue(Uniforms.DEPTH, depth);
     this.helper.setUniformFloatValue(Uniforms.TILE_ZOOM_LEVEL, tileZ);
-    this.applyRenderExtentUniform(renderExtent, batchInvertTransform);
-  }
-
-  /**
-   * Apply the render extent as a uniform; the render extent uniform is expressed in the same coordinate space as the geometries in the render buffers,
-   * whereas the input render extent is expressed in full world coordinates.
-   * @private
-   * @param {import("../../extent.js").Extent} renderExtent Render extent in map units (world coordinates)
-   * @param {import('../../transform.js').Transform} geometryInvertTransform Transform.
-   */
-  applyRenderExtentUniform(renderExtent, geometryInvertTransform) {
-    setFromTransform(this.tmpTransform_, geometryInvertTransform);
-    makeInverseTransform(this.tmpTransform_, this.tmpTransform_);
-
-    // minx, miny
-    this.tmpCoords_[0] = renderExtent[0];
-    this.tmpCoords_[1] = renderExtent[1];
-    applyTransform(this.tmpTransform_, this.tmpCoords_);
-
-    // maxx, maxy
-    this.tmpCoords2_[0] = renderExtent[2];
-    this.tmpCoords2_[1] = renderExtent[3];
-    applyTransform(this.tmpTransform_, this.tmpCoords2_);
-
-    this.tmpExtent_[0] = this.tmpCoords_[0];
-    this.tmpExtent_[1] = this.tmpCoords_[1];
-    this.tmpExtent_[2] = this.tmpCoords2_[0];
-    this.tmpExtent_[3] = this.tmpCoords2_[1];
-    this.helper.setUniformFloatVec4(Uniforms.RENDER_EXTENT, this.tmpExtent_);
+    this.applyRenderExtentUniform(
+      renderExtent,
+      makeInverseTransform(this.tmpTransform_, batchInvertTransform),
+    );
   }
 
   /**
