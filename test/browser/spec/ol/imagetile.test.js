@@ -31,6 +31,15 @@ describe('ol.ImageTile', function () {
       tile.load();
     });
 
+    it('can load tile with referrerPolicy', () => {
+      const tileCoord = [0, 0, 0];
+      const state = TileState.IDLE;
+      const src = 'spec/ol/data/osm-0-0-0.png';
+      const referrerPolicy = 'no-referrer';
+      const tile = new ImageTile(tileCoord, state, src, {referrerPolicy});
+      expect(tile.getImage().referrerPolicy).to.be(referrerPolicy);
+    });
+
     it('can load error tile', function (done) {
       const tileCoord = [0, 0, 0];
       const state = TileState.ERROR;

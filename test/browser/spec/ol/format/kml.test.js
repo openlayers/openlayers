@@ -29,6 +29,7 @@ import {
 import CircleStyle from '../../../../../src/ol/style/Circle.js';
 import Fill from '../../../../../src/ol/style/Fill.js';
 import Icon from '../../../../../src/ol/style/Icon.js';
+import {shared} from '../../../../../src/ol/style/IconImageCache.js';
 import Stroke from '../../../../../src/ol/style/Stroke.js';
 import Style from '../../../../../src/ol/style/Style.js';
 import Text from '../../../../../src/ol/style/Text.js';
@@ -2206,6 +2207,10 @@ describe('ol.format.KML', function () {
       });
 
       describe('styles', function () {
+        beforeEach(() => {
+          shared.clear(); // clear shared cache as different `crossOrigin`-attributes are not part of the generated cache key
+        });
+
         it('applies the default style if no style is defined', function () {
           const text =
             '<kml xmlns="http://earth.google.com/kml/2.2">' +

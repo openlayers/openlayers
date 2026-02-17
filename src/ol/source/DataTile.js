@@ -26,6 +26,7 @@ import TileEventType from './TileEventType.js';
  * @typedef {Object} LoaderOptions
  * @property {AbortSignal} signal An abort controller signal.
  * @property {CrossOriginAttribute} [crossOrigin] The cross-origin attribute for images.
+ * @property {ReferrerPolicy} [referrerPolicy] The `referrerPolicy` property for images.
  * @property {number} [maxY] The maximum y coordinate at the given z level.  Will be undefined if the
  * underlying tile grid does not have a known extent.
  */
@@ -60,6 +61,7 @@ import TileEventType from './TileEventType.js';
  * @property {boolean} [interpolate=false] Use interpolated values when resampling.  By default,
  * the nearest neighbor is used when resampling.
  * @property {CrossOriginAttribute} [crossOrigin='anonymous'] The crossOrigin property to pass to loaders for image data.
+ * @property {ReferrerPolicy} [referrerPolicy] The `referrerPolicy` property for loaded images.
  * @property {string} [key] Key for use in caching tiles.
  * @property {number|import("../array.js").NearestDirectionFunction} [zDirection=0]
  * Choose whether to use tiles with a higher or lower zoom level when between integer
@@ -158,6 +160,12 @@ class DataTileSource extends TileSource {
      * @type {CrossOriginAttribute}
      */
     this.crossOrigin_ = options.crossOrigin || 'anonymous';
+
+    /**
+     * @private
+     * @type {ReferrerPolicy}
+     */
+    this.referrerPolicy_ = options.referrerPolicy;
 
     /**
      * @type {import("../transform.js").Transform|null}
@@ -311,6 +319,7 @@ class DataTileSource extends TileSource {
     const loaderOptions = {
       signal: controller.signal,
       crossOrigin: this.crossOrigin_,
+      referrerPolicy: this.referrerPolicy_,
     };
 
     const tileCoord = this.getTileCoordForTileUrlFunction([z, x, y]);

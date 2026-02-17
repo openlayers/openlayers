@@ -4,6 +4,12 @@ import {WORKER_OFFSCREEN_CANVAS} from './has.js';
  * @module ol/dom
  */
 
+/**
+ * @typedef {Object} ImageAttributes
+ * @property {string|null} [crossOrigin] Cross origin.
+ * @property {ReferrerPolicy} [referrerPolicy]  Referrer policy.
+ */
+
 //FIXME Move this function to the canvas module
 /**
  * Create an html canvas element and returns its 2d context.

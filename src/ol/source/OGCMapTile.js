@@ -20,6 +20,7 @@ import {getTileSetInfo} from './ogcTileUtil.js';
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
+ * @property {ReferrerPolicy} [referrerPolicy] The `referrerPolicy` property for loaded images.
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
  * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
  * @property {number} [reprojectionErrorThreshold=0.5] Maximum allowed reprojection error (in pixels).
@@ -55,6 +56,7 @@ class OGCMapTile extends TileImage {
       attributions: options.attributions,
       cacheSize: options.cacheSize,
       crossOrigin: options.crossOrigin,
+      referrerPolicy: options.referrerPolicy,
       interpolate: options.interpolate,
       projection: options.projection,
       reprojectionErrorThreshold: options.reprojectionErrorThreshold,

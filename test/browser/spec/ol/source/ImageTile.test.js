@@ -116,12 +116,16 @@ describe('ol/source/ImageTile', () => {
       const assert = getAssert(done);
 
       const crossOriginValue = 'foo';
+      const referrerPolicyValue = 'bar';
 
-      let got;
+      let gotCrossOrigin;
+      let gotReferrerPolicy;
       const source = new ImageTile({
         crossOrigin: crossOriginValue,
-        loader: (x, y, z, {crossOrigin}) => {
-          got = crossOrigin;
+        referrerPolicy: referrerPolicyValue,
+        loader: (x, y, z, {crossOrigin, referrerPolicy}) => {
+          gotCrossOrigin = crossOrigin;
+          gotReferrerPolicy = referrerPolicy;
           return loadImage(emptyUrl);
         },
       });
@@ -129,8 +133,12 @@ describe('ol/source/ImageTile', () => {
       const tile = source.getTile(3, 2, 1);
       source.on('tileloadend', () => {
         assert(
-          got === crossOriginValue,
-          `expected ${crossOriginValue}, got ${got}`,
+          gotCrossOrigin === crossOriginValue,
+          `expected ${crossOriginValue}, got ${gotCrossOrigin}`,
+        );
+        assert(
+          gotReferrerPolicy === referrerPolicyValue,
+          `expected ${referrerPolicyValue}, got ${gotReferrerPolicy}`,
         );
         done();
       });

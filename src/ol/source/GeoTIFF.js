@@ -35,8 +35,7 @@ import DataTile from './DataTile.js';
  * @return {boolean} The image is a mask.
  */
 function isMask(image) {
-  const fileDirectory = image.fileDirectory;
-  const type = fileDirectory.NewSubfileType || 0;
+  const type = image.fileDirectory.getValue('NewSubfileType') || 0;
   return (type & 4) === 4;
 }
 
@@ -55,7 +54,9 @@ function readRGB(preference, image) {
   if (image.getSamplesPerPixel() !== 3) {
     return false;
   }
-  const interpretation = image.fileDirectory.PhotometricInterpretation;
+  const interpretation = image.fileDirectory.getValue(
+    'PhotometricInterpretation',
+  );
   const interpretations = geotiffGlobals.photometricInterpretations;
   return (
     interpretation === interpretations.CMYK ||
@@ -181,7 +182,7 @@ function getResolutions(image, referenceImage) {
  * @return {import("../proj/Projection.js").default} The image projection.
  */
 function getProjection(image) {
-  const geoKeys = image.geoKeys;
+  const geoKeys = image.getGeoKeys();
   if (!geoKeys) {
     return null;
   }
@@ -238,7 +239,7 @@ function getImagesForTIFF(tiff) {
 
 /**
  * @param {SourceInfo} source The GeoTIFF source.
- * @param {Object} options Options for the GeoTIFF source.
+ * @param {import('geotiff').RemoteSourceOptions} options Options for the GeoTIFF source.
  * @return {Promise<Array<GeoTIFFImage>>} Resolves to a list of images.
  */
 function getImagesForSource(source, options) {
@@ -443,7 +444,7 @@ class GeoTIFFSource extends DataTile {
     this.nodataValues_;
 
     /**
-     * @type {Array<Array<GDALMetadata>>}
+     * @type {Array<Array<Promise<GDALMetadata>>>}
      * @private
      */
     this.metadata_;
@@ -540,7 +541,9 @@ class GeoTIFFSource extends DataTile {
     const firstSource = sources[0];
     for (let i = firstSource.length - 1; i >= 0; --i) {
       const image = firstSource[i];
-      const modelTransformation = image.fileDirectory.ModelTransformation;
+      const modelTransformation = image.fileDirectory.getValue(
+        'ModelTransformation',
+      );
       if (modelTransformation) {
         // eslint-disable-next-line no-unused-vars
         const [a, b, c, d, e, f, g, h] = modelTransformation;
@@ -907,10 +910,10 @@ class GeoTIFFSource extends DataTile {
   /**
    * @param {import("../size.js").Size} sourceTileSize The source tile size.
    * @param {Array} sourceSamples The source samples.
-   * @return {import("../DataTile.js").Data} The composed tile data.
+   * @return {Promise<import("../DataTile.js").Data>} The composed tile data.
    * @private
    */
-  composeTile_(sourceTileSize, sourceSamples) {
+  async composeTile_(sourceTileSize, sourceSamples) {
     const metadata = this.metadata_;
     const sourceInfo = this.sourceInfo_;
     const sourceCount = this.sourceImagery_.length;
@@ -941,7 +944,7 @@ class GeoTIFFSource extends DataTile {
         let max = source.max;
         let gain, bias;
         if (normalize) {
-          const stats = metadata[sourceIndex][0];
+          const stats = await metadata[sourceIndex][0];
           if (min === undefined) {
             if (stats && STATISTICS_MINIMUM in stats) {
               min = parseFloat(stats[STATISTICS_MINIMUM]);

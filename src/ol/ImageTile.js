@@ -12,18 +12,31 @@ class ImageTile extends Tile {
    * @param {import("./tilecoord.js").TileCoord} tileCoord Tile coordinate.
    * @param {import("./TileState.js").default} state State.
    * @param {string} src Image source URI.
-   * @param {?string} crossOrigin Cross origin.
+   * @param {import('./dom.js').ImageAttributes} imageAttributes Image attributes options.
    * @param {import("./Tile.js").LoadFunction} tileLoadFunction Tile load function.
    * @param {import("./Tile.js").Options} [options] Tile options.
    */
-  constructor(tileCoord, state, src, crossOrigin, tileLoadFunction, options) {
+  constructor(
+    tileCoord,
+    state,
+    src,
+    imageAttributes,
+    tileLoadFunction,
+    options,
+  ) {
     super(tileCoord, state, options);
 
     /**
      * @private
      * @type {?string}
      */
-    this.crossOrigin_ = crossOrigin;
+    this.crossOrigin_ = imageAttributes?.crossOrigin;
+
+    /**
+     * @private
+     * @type {ReferrerPolicy}
+     */
+    this.referrerPolicy_ = imageAttributes?.referrerPolicy;
 
     /**
      * Image URI
@@ -45,8 +58,11 @@ class ImageTile extends Tile {
       this.image_ = new OffscreenCanvas(1, 1);
     } else {
       this.image_ = new Image();
-      if (crossOrigin !== null) {
-        this.image_.crossOrigin = crossOrigin;
+      if (this.crossOrigin_ !== null) {
+        this.image_.crossOrigin = this.crossOrigin_;
+      }
+      if (this.referrerPolicy_ !== undefined) {
+        this.image_.referrerPolicy = this.referrerPolicy_;
       }
     }
 
@@ -89,6 +105,14 @@ class ImageTile extends Tile {
    */
   getCrossOrigin() {
     return this.crossOrigin_;
+  }
+
+  /**
+   * Get the referrer policy of the ImageTile.
+   * @return {ReferrerPolicy} Referrer policy.
+   */
+  getReferrerPolicy() {
+    return this.referrerPolicy_;
   }
 
   /**
@@ -167,6 +191,9 @@ class ImageTile extends Tile {
       this.image_ = new Image();
       if (this.crossOrigin_ !== null) {
         this.image_.crossOrigin = this.crossOrigin_;
+      }
+      if (this.referrerPolicy_ !== undefined) {
+        this.image_.referrerPolicy = this.referrerPolicy_;
       }
     }
     if (this.state == TileState.IDLE) {

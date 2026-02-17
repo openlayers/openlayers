@@ -71,35 +71,34 @@ class IconImageCache {
 
   /**
    * @param {string} src Src.
-   * @param {?string} crossOrigin Cross origin.
    * @param {import("../color.js").Color|string|null} color Color.
    * @return {import("./IconImage.js").default} Icon image.
    */
-  get(src, crossOrigin, color) {
-    const key = getCacheKey(src, crossOrigin, color);
-    return key in this.cache_ ? this.cache_[key] : null;
+  get(src, color) {
+    const key = getCacheKey(src, color);
+
+    const icon = key in this.cache_ ? this.cache_[key] : null;
+    return icon;
   }
 
   /**
    * @param {string} src Src.
-   * @param {?string} crossOrigin Cross origin.
    * @param {import("../color.js").Color|string|null} color Color.
    * @return {CanvasPattern} Icon image.
    */
-  getPattern(src, crossOrigin, color) {
-    const key = getCacheKey(src, crossOrigin, color);
+  getPattern(src, color) {
+    const key = getCacheKey(src, color);
     return key in this.patternCache_ ? this.patternCache_[key] : null;
   }
 
   /**
    * @param {string} src Src.
-   * @param {?string} crossOrigin Cross origin.
    * @param {import("../color.js").Color|string|null} color Color.
    * @param {import("./IconImage.js").default|null} iconImage Icon image.
    * @param {boolean} [pattern] Also cache a `'repeat'` pattern with this `iconImage`.
    */
-  set(src, crossOrigin, color, iconImage, pattern) {
-    const key = getCacheKey(src, crossOrigin, color);
+  set(src, color, iconImage, pattern) {
+    const key = getCacheKey(src, color);
     const update = key in this.cache_;
     this.cache_[key] = iconImage;
     if (pattern) {
@@ -140,13 +139,12 @@ class IconImageCache {
 
 /**
  * @param {string} src Src.
- * @param {?string} crossOrigin Cross origin.
  * @param {import("../color.js").Color|string|null} color Color.
  * @return {string} Cache key.
  */
-export function getCacheKey(src, crossOrigin, color) {
+export function getCacheKey(src, color) {
   const colorString = color ? asArray(color) : 'null';
-  return crossOrigin + ':' + src + ':' + colorString;
+  return src + ':' + colorString;
 }
 
 export default IconImageCache;
