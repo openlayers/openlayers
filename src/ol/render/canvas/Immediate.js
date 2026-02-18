@@ -449,13 +449,13 @@ class CanvasImmediateRenderer extends VectorContext {
     );
     pixelCoordinates = deduplicateCoordinates(
       pixelCoordinates,
-      stride,
+      2,
       pixelCoordinates,
     );
     if (Math.abs(strokeOffset) > 0) {
       pixelCoordinates = offsetLineString(
         pixelCoordinates,
-        stride,
+        2,
         strokeOffset,
         close,
         pixelCoordinates,
