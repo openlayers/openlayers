@@ -135,33 +135,6 @@ describe('ol/geom/flat/lineoffset.js', () => {
       expect(result[9]).to.roughlyEqual(2, 1e-6);
     });
 
-    it('handles line string with duplicate consecutive coordinates', () => {
-      // This tests that the algorithm doesn't crash with equal coordinates
-      const flatCoords = [0, 10, 5, 10, 5, 10, 5, 10, 10, 10];
-      const offset = 2;
-      const result = offsetLineString(flatCoords, 2, offset, false);
-
-      expect(result.length).to.be(6);
-      // Duplicate consecutive coordinates should have been removed
-      expect(result[0]).to.be(0);
-      expect(result[1]).to.be(12);
-      expect(result[2]).to.be(5);
-      expect(result[3]).to.be(12);
-      expect(result[4]).to.be(10);
-      expect(result[5]).to.be(12);
-    });
-
-    it('handles line string with all duplicate coordinates', () => {
-      const flatCoords = [5, 5, 5, 5, 5, 5];
-      const offset = 2;
-      const result = offsetLineString(flatCoords, 2, offset, false);
-
-      expect(result.length).to.be(2);
-      // All points should have same offset (default horizontal direction)
-      expect(result[0]).to.be(5);
-      expect(result[1]).to.be(7);
-    });
-
     it('handles negative offset', () => {
       const flatCoords = [0, 0, 10, 0, 10, 10];
       const offset = -2;
@@ -235,36 +208,6 @@ describe('ol/geom/flat/lineoffset.js', () => {
       expect(result.length).to.be(2);
       expect(result[0]).to.be(5);
       expect(result[1]).to.be(7);
-    });
-
-    it('handles line with duplicate at start', () => {
-      const flatCoords = [0, 0, 0, 0, 10, 0, 10, 10];
-      const offset = 5;
-      const stride = 2;
-      const result = offsetLineString(flatCoords, stride, offset, false);
-
-      expect(result.length).to.be(6);
-      expect(result[0]).to.roughlyEqual(0, 1e-6);
-      expect(result[1]).to.roughlyEqual(5, 1e-6);
-      expect(result[2]).to.roughlyEqual(5, 1e-6);
-      expect(result[3]).to.roughlyEqual(5, 1e-6);
-      expect(result[4]).to.roughlyEqual(5, 1e-6);
-      expect(result[5]).to.roughlyEqual(10, 1e-6);
-    });
-
-    it('handles line with duplicate at end', () => {
-      const flatCoords = [0, 0, 10, 0, 10, 10, 10, 10];
-      const offset = 5;
-      const stride = 2;
-      const result = offsetLineString(flatCoords, stride, offset, false);
-
-      expect(result.length).to.be(6);
-      expect(result[0]).to.roughlyEqual(0, 1e-6);
-      expect(result[1]).to.roughlyEqual(5, 1e-6);
-      expect(result[2]).to.roughlyEqual(5, 1e-6);
-      expect(result[3]).to.roughlyEqual(5, 1e-6);
-      expect(result[4]).to.roughlyEqual(5, 1e-6);
-      expect(result[5]).to.roughlyEqual(10, 1e-6);
     });
   });
 });

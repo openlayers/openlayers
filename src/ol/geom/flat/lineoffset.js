@@ -7,7 +7,7 @@ import {angleBetween} from '../../coordinate.js';
  *
  * Coordinates and the offset should be in the same units — either pixels or the same spatial reference system as the input line coordinates.
  *
- * Attention: this function deduplicates consecutive coordinates before processing, so the resulting line might contain fewer vertices than the input one.
+ * Attention: this function doesn't produce good results for the input with duplicate consecutive coordinates. It is advisable to first deduplicate the coordinates before calling this function.
  *
  * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} stride Stride.
@@ -29,8 +29,6 @@ export function offsetLineString(
 ) {
   dest = dest ?? [];
   destinationStride = destinationStride ?? stride;
-
-  flatCoordinates = removeDuplicateCoordinates(flatCoordinates, stride);
 
   const secondPointX = flatCoordinates[2];
   const secondPointY = flatCoordinates[3];
@@ -186,45 +184,4 @@ export function offsetLineVertex(x, y, prevX, prevY, nextX, nextY, offset) {
 
   // Offset final vertex along miter direction
   return [x + dx * offset, y + dy * offset];
-}
-
-/**
- * Removes consecutive duplicate coordinates from a flat coordinate array.
- *
- * @param {Array<number>} flatCoordinates Flat array of coordinates (e.g., [x1, y1, x2, y2, ...])
- * @param {number} stride Number of values per coordinate tuple (e.g., 2 for 2D, 3 for 3D)
- * @return {Array<number>} Deduplicated array, or the original array if no duplicates found
- */
-function removeDuplicateCoordinates(flatCoordinates, stride) {
-  if (flatCoordinates.length === 0) {
-    return flatCoordinates;
-  }
-
-  let result = null;
-
-  for (let i = stride; i < flatCoordinates.length; i += stride) {
-    let isDuplicate = true;
-
-    for (let j = 0; j < stride; j++) {
-      if (flatCoordinates[i + j] !== flatCoordinates[i - stride + j]) {
-        isDuplicate = false;
-        break;
-      }
-    }
-
-    if (isDuplicate) {
-      // First duplicate found - initialize result with all coordinates up to this point
-      if (result === null) {
-        result = flatCoordinates.slice(0, i);
-      }
-      // Skip this duplicate
-    } else if (result !== null) {
-      // We're in "copying mode" - add this non-duplicate coordinate
-      for (let j = 0; j < stride; j++) {
-        result.push(flatCoordinates[i + j]);
-      }
-    }
-  }
-
-  return result ?? flatCoordinates;
 }
