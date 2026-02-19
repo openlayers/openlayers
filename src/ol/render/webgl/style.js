@@ -11,6 +11,7 @@ import {
   SizeType,
   StringType,
   computeGeometryType,
+  newParsingContext,
 } from '../../expr/expression.js';
 import {
   FEATURE_ID_PROPERTY_NAME,
@@ -809,8 +810,18 @@ export function parseLiteralStyle(style, variables, filter) {
   // note that the style filter may have already been applied earlier when building the rendering instructions
   // this is still needed in case a filter cannot be evaluated statically beforehand (e.g. depending on time)
   if (filter) {
-    const parsedFilter = expressionToGlsl(context, filter, BooleanType);
-    builder.setFragmentDiscardExpression(`!${parsedFilter}`);
+    const filterContext = newParsingContext();
+    const parsedFilter = expressionToGlsl(
+      context,
+      filter,
+      BooleanType,
+      filterContext,
+    );
+    if (filterContext.mCoordinate) {
+      builder.setFragmentDiscardExpression(`!${parsedFilter}`);
+    } else {
+      builder.setShapeDiscardExpression(`!${parsedFilter}`);
+    }
   }
 
   /**
