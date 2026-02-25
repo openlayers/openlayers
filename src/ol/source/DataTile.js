@@ -150,6 +150,11 @@ class DataTileSource extends TileSource {
     this.bandCount = options.bandCount === undefined ? 4 : options.bandCount; // assume RGBA if undefined
 
     /**
+     * @type {number|undefined} The 1-based band index for the nodata alpha band.
+     */
+    this.nodataBandIndex;
+
+    /**
      * @private
      * @type {!Object<string, import("../tilegrid/TileGrid.js").default>}
      */

@@ -45,21 +45,7 @@ const layer = new TileLayer({
       ['/', ['band', ['var', 'red']], ['var', 'redMax']],
       ['/', ['band', ['var', 'green']], ['var', 'greenMax']],
       ['/', ['band', ['var', 'blue']], ['var', 'blueMax']],
-      [
-        'case',
-        [
-          '==',
-          [
-            '+',
-            ['band', ['var', 'red']],
-            ['band', ['var', 'green']],
-            ['band', ['var', 'blue']],
-          ],
-          0,
-        ],
-        0,
-        1,
-      ],
+      1,
     ],
   },
   source,

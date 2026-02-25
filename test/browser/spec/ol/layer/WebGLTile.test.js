@@ -562,6 +562,171 @@ describe('ol/layer/WebGLTile', function () {
     });
   });
 
+  describe('nodata band index', () => {
+    it('generates getBandValue and discard for source with nodataBandIndex', function () {
+      const source = new DataTileSource({
+        bandCount: 4,
+        loader(z, x, y) {
+          return new Float32Array(256 * 256 * 4);
+        },
+      });
+      source.nodataBandIndex = 4;
+
+      const nodataLayer = new WebGLTileLayer({
+        source: source,
+        style: {
+          color: ['color', 128, 128, 128],
+        },
+      });
+
+      map.addLayer(nodataLayer);
+
+      const compileShaderSpy = sinonSpy(WebGLHelper.prototype, 'compileShader');
+      const renderer = nodataLayer.getRenderer();
+      const viewState = map.getView().getState();
+      const size = map.getSize();
+      const frameState = {
+        viewState: viewState,
+        extent: getForViewAndSize(
+          viewState.center,
+          viewState.resolution,
+          viewState.rotation,
+          size,
+        ),
+        layerStatesArray: map.getLayerGroup().getLayerStatesArray(),
+        layerIndex: 0,
+      };
+      renderer.prepareFrame(frameState);
+      compileShaderSpy.restore();
+
+      const fragmentShader = compileShaderSpy.getCall(0).args[0];
+      expect(fragmentShader).to.contain('getBandValue');
+      expect(fragmentShader).to.contain(
+        'if (getBandValue(4.0, 0.0, 0.0) == 0.0) { discard; }',
+      );
+
+      nodataLayer.dispose();
+    });
+
+    it('does not add discard when source has no nodataBandIndex', function () {
+      const source = new DataTileSource({
+        bandCount: 3,
+        loader(z, x, y) {
+          return new Float32Array(256 * 256 * 3);
+        },
+      });
+
+      const normalLayer = new WebGLTileLayer({
+        source: source,
+        style: {
+          color: ['color', 128, 128, 128],
+        },
+      });
+
+      map.addLayer(normalLayer);
+
+      const compileShaderSpy = sinonSpy(WebGLHelper.prototype, 'compileShader');
+      const renderer = normalLayer.getRenderer();
+      const viewState = map.getView().getState();
+      const size = map.getSize();
+      const frameState = {
+        viewState: viewState,
+        extent: getForViewAndSize(
+          viewState.center,
+          viewState.resolution,
+          viewState.rotation,
+          size,
+        ),
+        layerStatesArray: map.getLayerGroup().getLayerStatesArray(),
+        layerIndex: 0,
+      };
+      renderer.prepareFrame(frameState);
+      compileShaderSpy.restore();
+
+      const fragmentShader = compileShaderSpy.getCall(0).args[0];
+      expect(fragmentShader).not.to.contain(
+        'getBandValue(4.0, 0.0, 0.0) == 0.0',
+      );
+
+      normalLayer.dispose();
+    });
+
+    it('uses existing getBandValue when style has band expressions', function () {
+      const source = new DataTileSource({
+        bandCount: 4,
+        loader(z, x, y) {
+          return new Float32Array(256 * 256 * 4);
+        },
+      });
+      source.nodataBandIndex = 4;
+
+      const nodataLayer = new WebGLTileLayer({
+        source: source,
+        style: {
+          color: [
+            'array',
+            ['/', ['band', 1], 3000],
+            ['/', ['band', 2], 3000],
+            ['/', ['band', 3], 3000],
+            1,
+          ],
+        },
+      });
+
+      map.addLayer(nodataLayer);
+
+      const compileShaderSpy = sinonSpy(WebGLHelper.prototype, 'compileShader');
+      const renderer = nodataLayer.getRenderer();
+      const viewState = map.getView().getState();
+      const size = map.getSize();
+      const frameState = {
+        viewState: viewState,
+        extent: getForViewAndSize(
+          viewState.center,
+          viewState.resolution,
+          viewState.rotation,
+          size,
+        ),
+        layerStatesArray: map.getLayerGroup().getLayerStatesArray(),
+        layerIndex: 0,
+      };
+      renderer.prepareFrame(frameState);
+      compileShaderSpy.restore();
+
+      const fragmentShader = compileShaderSpy.getCall(0).args[0];
+      // getBandValue should exist (from the band expressions)
+      expect(fragmentShader).to.contain('getBandValue');
+      // discard line should still be present
+      expect(fragmentShader).to.contain(
+        'if (getBandValue(4.0, 0.0, 0.0) == 0.0) { discard; }',
+      );
+      // getBandValue should only be defined once
+      const matches = fragmentShader.match(/float getBandValue\(float band/g);
+      expect(matches.length).to.be(1);
+
+      nodataLayer.dispose();
+    });
+
+    it('returns nodataBandIndex from the source', () => {
+      const source = new DataTileSource({
+        bandCount: 4,
+      });
+      source.nodataBandIndex = 4;
+
+      const testLayer = new WebGLTileLayer({source: source});
+      expect(testLayer.getSourceNodataBandIndex_()).to.be(4);
+      testLayer.dispose();
+    });
+
+    it('returns undefined when source has no nodataBandIndex', () => {
+      const testLayer = new WebGLTileLayer({
+        source: new DataTileSource({bandCount: 3}),
+      });
+      expect(testLayer.getSourceNodataBandIndex_()).to.be(undefined);
+      testLayer.dispose();
+    });
+  });
+
   it('dispatches a precompose event with WebGL context', (done) => {
     let called = false;
     layer.on('precompose', (event) => {
