@@ -39,10 +39,8 @@ export function offsetLineString(
   let i = 0;
   for (let j = 0; j < flatCoordinates.length; j += stride) {
     // 1. Detect previous and next coordinates of a current vertex
-    if (!(x === flatCoordinates[j] && y === flatCoordinates[j + 1])) {
-      prevX = x;
-      prevY = y;
-    }
+    prevX = x;
+    prevY = y;
     nextX = undefined;
     nextY = undefined;
     if (j + stride < flatCoordinates.length) {
