@@ -509,6 +509,166 @@ describe('ol.interaction.Modify', function () {
       expect(lineFeature.getGeometry().getCoordinates()[4][2]).to.equal(50);
     });
 
+    it('preserves different Z values across geometries at shared vertex with sharedVerticesEqual', function () {
+      const lineZ1 = new Feature({
+        geometry: new LineString([
+          [0, 0, 100],
+          [10, 20, 200],
+        ]),
+      });
+      const lineZ2 = new Feature({
+        geometry: new LineString([
+          [0, 0, 999],
+          [10, 20, 888],
+        ]),
+      });
+      features.length = 0;
+      features.push(lineZ1, lineZ2);
+
+      const modify = new Modify({
+        features: new Collection(features),
+        sharedVerticesEqual: function (a, b) {
+          return a[0] === b[0] && a[1] === b[1];
+        },
+      });
+      map.addInteraction(modify);
+
+      // Drag the first shared vertex from [0, 0] to [-10, -10]
+      simulateEvent('pointermove', 0, 0, null, 0);
+      simulateEvent('pointerdown', 0, 0, null, 0);
+      simulateEvent('pointermove', -10, 10, null, 0);
+      simulateEvent('pointerdrag', -10, 10, null, 0);
+      simulateEvent('pointerup', -10, 10, null, 0);
+
+      let coordsZ1 = lineZ1.getGeometry().getCoordinates();
+      let coordsZ2 = lineZ2.getGeometry().getCoordinates();
+
+      // Each line should preserve its own Z; non-dragged vertices unchanged
+      expect(coordsZ1[0]).to.eql([-10, -10, 100]);
+      expect(coordsZ1[1]).to.eql([10, 20, 200]);
+
+      expect(coordsZ2[0]).to.eql([-10, -10, 999]);
+      expect(coordsZ2[1]).to.eql([10, 20, 888]);
+
+      // Second drag: move the second shared vertex from [10, 20] to [15, 25]
+      simulateEvent('pointermove', 10, -20, null, 0);
+      simulateEvent('pointerdown', 10, -20, null, 0);
+      simulateEvent('pointermove', 15, -25, null, 0);
+      simulateEvent('pointerdrag', 15, -25, null, 0);
+      simulateEvent('pointerup', 15, -25, null, 0);
+
+      coordsZ1 = lineZ1.getGeometry().getCoordinates();
+      coordsZ2 = lineZ2.getGeometry().getCoordinates();
+
+      expect(coordsZ1[0]).to.eql([-10, -10, 100]);
+      expect(coordsZ1[1]).to.eql([15, 25, 200]);
+
+      expect(coordsZ2[0]).to.eql([-10, -10, 999]);
+      expect(coordsZ2[1]).to.eql([15, 25, 888]);
+    });
+
+    it('matches XY and XYZ vertices with sharedVerticesEqual', function () {
+      const lineXYZ = new Feature({
+        geometry: new LineString([
+          [0, 0, 100],
+          [10, 20, 200],
+          [0, 40, 300],
+        ]),
+      });
+      const lineXY = new Feature({
+        geometry: new LineString([
+          [0, 0],
+          [10, 20],
+          [0, 40],
+        ]),
+      });
+      features.length = 0;
+      features.push(lineXYZ, lineXY);
+
+      const modify = new Modify({
+        features: new Collection(features),
+        sharedVerticesEqual: function (a, b) {
+          return a[0] === b[0] && a[1] === b[1];
+        },
+      });
+      map.addInteraction(modify);
+
+      // Drag the first shared vertex from [0, 0] to [-10, -10]
+      simulateEvent('pointermove', 0, 0, null, 0);
+      simulateEvent('pointerdown', 0, 0, null, 0);
+      simulateEvent('pointermove', -10, 10, null, 0);
+      simulateEvent('pointerdrag', -10, 10, null, 0);
+      simulateEvent('pointerup', -10, 10, null, 0);
+
+      let coordsXYZ = lineXYZ.getGeometry().getCoordinates();
+      let coordsXY = lineXY.getGeometry().getCoordinates();
+
+      // XYZ line: dragged vertex should move, preserve Z; others unchanged
+      expect(coordsXYZ[0]).to.eql([-10, -10, 100]);
+      expect(coordsXYZ[1]).to.eql([10, 20, 200]);
+      expect(coordsXYZ[2]).to.eql([0, 40, 300]);
+
+      // XY line: dragged vertex should move, stay 2D; others unchanged
+      expect(coordsXY[0]).to.eql([-10, -10]);
+      expect(coordsXY[1]).to.eql([10, 20]);
+      expect(coordsXY[2]).to.eql([0, 40]);
+
+      // Second drag: move the second shared vertex from [10, 20] to [15, 25]
+      simulateEvent('pointermove', 10, -20, null, 0);
+      simulateEvent('pointerdown', 10, -20, null, 0);
+      simulateEvent('pointermove', 15, -25, null, 0);
+      simulateEvent('pointerdrag', 15, -25, null, 0);
+      simulateEvent('pointerup', 15, -25, null, 0);
+
+      coordsXYZ = lineXYZ.getGeometry().getCoordinates();
+      coordsXY = lineXY.getGeometry().getCoordinates();
+
+      expect(coordsXYZ[0]).to.eql([-10, -10, 100]);
+      expect(coordsXYZ[1]).to.eql([15, 25, 200]);
+      expect(coordsXYZ[2]).to.eql([0, 40, 300]);
+
+      expect(coordsXY[0]).to.eql([-10, -10]);
+      expect(coordsXY[1]).to.eql([15, 25]);
+      expect(coordsXY[2]).to.eql([0, 40]);
+    });
+
+    it('does not match vertices with different Z without sharedVerticesEqual', function () {
+      const lineZ1 = new Feature({
+        geometry: new LineString([
+          [0, 0, 100],
+          [10, 20, 200],
+        ]),
+      });
+      const lineZ2 = new Feature({
+        geometry: new LineString([
+          [0, 0, 999],
+          [10, 20, 888],
+        ]),
+      });
+      features.length = 0;
+      features.push(lineZ1, lineZ2);
+
+      const modify = new Modify({
+        features: new Collection(features),
+      });
+      map.addInteraction(modify);
+
+      // Drag from [0, 0] — without sharedVerticesEqual, only one line should move
+      simulateEvent('pointermove', 0, 0, null, 0);
+      simulateEvent('pointerdown', 0, 0, null, 0);
+      simulateEvent('pointermove', -10, 10, null, 0);
+      simulateEvent('pointerdrag', -10, 10, null, 0);
+      simulateEvent('pointerup', -10, 10, null, 0);
+
+      const coordsZ1 = lineZ1.getGeometry().getCoordinates();
+      const coordsZ2 = lineZ2.getGeometry().getCoordinates();
+
+      // Only one line should have moved (default behavior compares all dimensions)
+      const z1Moved = coordsZ1[0][0] === -10 && coordsZ1[0][1] === -10;
+      const z2Moved = coordsZ2[0][0] === -10 && coordsZ2[0][1] === -10;
+      expect(z1Moved !== z2Moved).to.be(true);
+    });
+
     it('keeps polygon geometries valid', function () {
       const overlappingVertexFeature = new Feature({
         geometry: new Polygon([

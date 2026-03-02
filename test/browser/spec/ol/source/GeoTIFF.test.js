@@ -136,6 +136,48 @@ describe('ol/source/GeoTIFF', function () {
           });
         });
     });
+
+    it('loads from a custom loader', (done) => {
+      const fetchUrl = 'spec/ol/source/images/0-0-0.tif';
+      let called = false;
+      const source = new GeoTIFFSource({
+        sources: [
+          {
+            url: fetchUrl,
+            loader: (url, headers, abortSignal) => {
+              called = true;
+              return fetch(url, {headers, signal: abortSignal});
+            },
+          },
+        ],
+      });
+      source.on('change', () => {
+        if (source.getState() !== 'ready') {
+          return;
+        }
+        expect(called).to.be(true);
+        done();
+      });
+    });
+
+    it('errors when overviews are configured with a custom loader', () => {
+      expect(
+        () =>
+          new GeoTIFFSource({
+            sources: [
+              {
+                url: 'spec/ol/source/images/0-0-0.tif',
+                loader: () => Promise.reject(),
+                overviews: ['spec/ol/source/images/0-0-0.tif'],
+              },
+            ],
+          }),
+      ).to.throwError((error) =>
+        expect(error.message).to.be(
+          'Source overviews are not supported when using a custom loader',
+        ),
+      );
+    });
   });
 
   describe('loading', function () {

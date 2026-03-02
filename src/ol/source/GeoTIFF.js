@@ -4,6 +4,7 @@
 import {
   Pool,
   fromBlob as tiffFromBlob,
+  fromCustomClient as tiffFromCustomClient,
   fromUrl as tiffFromUrl,
   fromUrls as tiffFromUrls,
   globals as geotiffGlobals,
@@ -69,7 +70,9 @@ function readRGB(preference, image) {
 /**
  * @typedef {Object} SourceInfo
  * @property {string} [url] URL for the source GeoTIFF.
- * @property {Array<string>} [overviews] List of any overview URLs, only applies if the url parameter is given.
+ * @property {function(string, HeadersInit, AbortSignal): Promise<Response>} [loader] Custom loader function for URL based sources.
+ * Called with the URL, request headers, and an abort signal. Expected to resolve with a `Response`.
+ * @property {Array<string>} [overviews] List of any overview URLs, only applies if the url parameter is given and no loader is specified.
  * @property {Blob} [blob] Blob containing the source GeoTIFF. `blob` and `url` are mutually exclusive.
  * @property {number} [min=0] The minimum source data value.  Rendered values are scaled from 0 to 1 based on
  * the configured min and max.  If not provided and raster statistics are available, those will be used instead.
@@ -238,6 +241,25 @@ function getImagesForTIFF(tiff) {
 }
 
 /**
+ * @param {string} url The URL.
+ * @param {function(string, HeadersInit, AbortSignal): Promise<Response>} loader The loader function.
+ * @return {import('geotiff').BaseClient} The custom loader client.
+ */
+const createCustomClient = (url, loader) => ({
+  url,
+  request: async (options) => {
+    const response = Object.assign(
+      await loader(url, options?.headers, options?.signal),
+      {
+        getHeader: (name) => response.headers.get(name),
+        getData: () => response.arrayBuffer(),
+      },
+    );
+    return response;
+  },
+});
+
+/**
  * @param {SourceInfo} source The GeoTIFF source.
  * @param {import('geotiff').RemoteSourceOptions} options Options for the GeoTIFF source.
  * @return {Promise<Array<GeoTIFFImage>>} Resolves to a list of images.
@@ -246,6 +268,14 @@ function getImagesForSource(source, options) {
   let request;
   if (source.blob) {
     request = tiffFromBlob(source.blob);
+  } else if (source.loader) {
+    if (source.overviews) {
+      throw new Error(
+        'Source overviews are not supported when using a custom loader',
+      );
+    }
+    const client = createCustomClient(source.url, source.loader);
+    request = tiffFromCustomClient(client, options);
   } else if (source.overviews) {
     request = tiffFromUrls(source.url, source.overviews, options);
   } else {

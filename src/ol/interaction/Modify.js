@@ -162,6 +162,12 @@ const ModifyEventType = {
  * overlay.
  * @property {boolean} [snapToPointer=!hitDetection] The vertex, point or segment being modified snaps to the
  * pointer coordinate when clicked within the `pixelTolerance`.
+ * @property {function(import("../coordinate.js").Coordinate, import("../coordinate.js").Coordinate): boolean} [sharedVerticesEqual]
+ * A function that takes two coordinates and returns whether they should be
+ * considered equal for vertex matching purposes. By default, all coordinate
+ * dimensions are compared. This is useful when features have mixed coordinate
+ * dimensions (e.g., XY and XYZ) but should still be treated as sharing vertices
+ * at the same 2D position.
  */
 
 function getCoordinatesArray(coordinates, geometryType, depth) {
@@ -467,6 +473,14 @@ class Modify extends PointerInteraction {
      * @type {FilterFunction}
      */
     this.filter_ = options.filter ? options.filter : () => true;
+
+    /**
+     * @private
+     * @type {function(import("../coordinate.js").Coordinate, import("../coordinate.js").Coordinate): boolean}
+     */
+    this.coordinatesEqual_ = options.sharedVerticesEqual
+      ? options.sharedVerticesEqual
+      : coordinatesEqual;
 
     if (!(options.features || options.source)) {
       throw new Error(
@@ -1109,7 +1123,7 @@ class Modify extends PointerInteraction {
           projection,
         );
         if (
-          coordinatesEqual(closestVertex, vertex) &&
+          this.coordinatesEqual_(closestVertex, vertex) &&
           !componentSegments[uid][0]
         ) {
           this.dragSegments_.push([segmentDataMatch, 0]);
@@ -1118,13 +1132,19 @@ class Modify extends PointerInteraction {
         continue;
       }
 
-      if (coordinatesEqual(segment[0], vertex) && !componentSegments[uid][0]) {
+      if (
+        this.coordinatesEqual_(segment[0], vertex) &&
+        !componentSegments[uid][0]
+      ) {
         this.dragSegments_.push([segmentDataMatch, 0]);
         componentSegments[uid][0] = segmentDataMatch;
         continue;
       }
 
-      if (coordinatesEqual(segment[1], vertex) && !componentSegments[uid][1]) {
+      if (
+        this.coordinatesEqual_(segment[1], vertex) &&
+        !componentSegments[uid][1]
+      ) {
         if (
           componentSegments[uid][0] &&
           componentSegments[uid][0].index === 0
@@ -1456,9 +1476,11 @@ class Modify extends PointerInteraction {
     const geometry = segmentData.geometry;
     const index = dragSegment[1];
 
-    while (vertex.length < geometry.getStride()) {
-      vertex.push(segment[index][vertex.length]);
+    const stride = geometry.getStride();
+    for (let i = 2; i < stride; ++i) {
+      vertex[i] = segment[index][i];
     }
+    vertex.length = stride;
     switch (geometry.getType()) {
       case 'Point':
         coordinates = vertex;
@@ -1848,10 +1870,10 @@ class Modify extends PointerInteraction {
           for (let i = 1, ii = nodes.length; i < ii; ++i) {
             const segment = nodes[i].segment;
             if (
-              (coordinatesEqual(closestSegment[0], segment[0]) &&
-                coordinatesEqual(closestSegment[1], segment[1])) ||
-              (coordinatesEqual(closestSegment[0], segment[1]) &&
-                coordinatesEqual(closestSegment[1], segment[0]))
+              (this.coordinatesEqual_(closestSegment[0], segment[0]) &&
+                this.coordinatesEqual_(closestSegment[1], segment[1])) ||
+              (this.coordinatesEqual_(closestSegment[0], segment[1]) &&
+                this.coordinatesEqual_(closestSegment[1], segment[0]))
             ) {
               const geometryUid = getUid(nodes[i].geometry);
               if (!(geometryUid in geometries)) {
@@ -1996,8 +2018,8 @@ class Modify extends PointerInteraction {
     const segments = this.rBush_.getInExtent(boundingExtent([coordinate]));
     return segments.some(
       ({segment}) =>
-        coordinatesEqual(segment[0], coordinate) ||
-        coordinatesEqual(segment[1], coordinate),
+        this.coordinatesEqual_(segment[0], coordinate) ||
+        this.coordinatesEqual_(segment[1], coordinate),
     );
   }
 
@@ -2189,8 +2211,8 @@ class Modify extends PointerInteraction {
     return segments.some(
       ({segment}) =>
         !(
-          coordinatesEqual(segment[0], coordinate) ||
-          coordinatesEqual(segment[1], coordinate)
+          this.coordinatesEqual_(segment[0], coordinate) ||
+          this.coordinatesEqual_(segment[1], coordinate)
         ),
     );
   }

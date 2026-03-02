@@ -11,7 +11,7 @@ import DataTileSource from './DataTile.js';
 import {parseTileMatrixSet} from './ogcTileUtil.js';
 
 const REQUIRED_ZARR_CONVENTIONS = [
-  'd35379db-88df-4056-af3a-620245f8e347', // multisacles
+  'd35379db-88df-4056-af3a-620245f8e347', // multiscales
   'f17cb550-5864-4468-aeb7-f3180cfb622f', // proj:
   '689b58e2-cf7b-45e0-9fff-9cfc0883d6b4', // spatial:
 ];
@@ -25,7 +25,7 @@ const REQUIRED_ZARR_CONVENTIONS = [
  * @property {string} url The Zarr URL.
  * @property {string} group The group with arrays to render.
  * @property {Array<string>} bands The band names to render.
- * @property {import("../proj.js").ProjectionLike} [projection] Source projection.  If not provided, the GeoTIFF metadata
+ * @property {import("../proj.js").ProjectionLike} [projection] Source projection.  If not provided, the GeoZarr metadata
  * will be read for projection information.
  * @property {number} [transition=250] Duration of the opacity transition for rendering.
  * To disable the opacity transition, pass `transition: 0`.

@@ -317,6 +317,23 @@ describe('ol/expr/expression.js', () => {
         expect(isType(expression.args[3].type, NumberType)).to.be(true);
       });
 
+      it('respects the return type (number haystack using literal operator)', () => {
+        const context = newParsingContext();
+        const expression = parse(
+          ['in', ['get', 'attr'], ['literal', [0, 50, 100]]],
+          BooleanType,
+          context,
+        );
+        expect(expression).to.be.a(CallExpression);
+        expect(expression.operator).to.be('in');
+        expect(isType(expression.type, BooleanType)).to.be(true);
+        expect(expression.args).to.have.length(4);
+        expect(isType(expression.args[0].type, NumberType)).to.be(true);
+        expect(isType(expression.args[1].type, NumberType)).to.be(true);
+        expect(isType(expression.args[2].type, NumberType)).to.be(true);
+        expect(isType(expression.args[3].type, NumberType)).to.be(true);
+      });
+
       it('respects the return types (string haystack)', () => {
         const context = newParsingContext();
         const expression = parse(
