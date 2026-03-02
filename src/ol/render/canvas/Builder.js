@@ -627,7 +627,10 @@ class CanvasBuilder extends VectorContext {
    */
   updateFillStyle(state, createFill) {
     const fillStyle = state.fillStyle;
-    if (typeof fillStyle !== 'string' || state.currentFillStyle != fillStyle) {
+    if (
+      (fillStyle !== undefined && typeof fillStyle !== 'string') ||
+      state.currentFillStyle != fillStyle
+    ) {
       this.instructions.push(createFill.call(this, state));
       state.currentFillStyle = fillStyle;
     }
