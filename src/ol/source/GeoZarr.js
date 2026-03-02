@@ -152,8 +152,7 @@ export default class GeoZarr extends DataTileSource {
       this.tileGrid = tileGrid;
       this.projection = projection;
       this.fillValue_ = fillValue;
-    }
-    if ('tile_matrix_set' in attributes.multiscales) {
+    } else if ('tile_matrix_set' in attributes.multiscales) {
       // If available, use tile_matrix_set (legacy attributes) to get a tile grid, because it
       // provides a better mapping of tiles to zarr chunks.
       const {tileGrid, projection} = getTileGridInfoFromLegacyAttributes(
@@ -290,6 +289,80 @@ export default class GeoZarr extends DataTileSource {
  */
 
 /**
+ * Maximum tile size for rendering.
+ * @type {number}
+ */
+const MAX_TILE_SIZE = 512;
+
+/**
+ * Minimum tile size when sharding is used.
+ * @type {number}
+ */
+const MIN_TILE_SIZE = 64;
+
+/**
+ * @typedef {Object} ShardInfo
+ * @property {Array<number>} shardShape The shard (outer chunk) shape [rows, cols].
+ * @property {Array<number>} innerChunkShape The inner chunk shape [rows, cols].
+ */
+
+/**
+ * Get the shard and inner chunk shapes from the Zarr v3 array metadata.
+ * Only returns info when a `sharding_indexed` codec is present, meaning
+ * `chunk_grid.configuration.chunk_shape` represents the shard (outer chunk) size.
+ * @param {Object} arrayMeta The Zarr v3 array metadata from consolidated metadata.
+ * @return {ShardInfo|undefined} The shard info, or undefined.
+ */
+function getShardInfo(arrayMeta) {
+  const chunkGrid = arrayMeta['chunk_grid'];
+  if (!chunkGrid || chunkGrid['name'] !== 'regular') {
+    return undefined;
+  }
+  const codecs = arrayMeta['codecs'];
+  if (!Array.isArray(codecs)) {
+    return undefined;
+  }
+  const shardingCodec = codecs.find((c) => c['name'] === 'sharding_indexed');
+  if (!shardingCodec) {
+    return undefined;
+  }
+  return {
+    shardShape: chunkGrid['configuration']['chunk_shape'],
+    innerChunkShape: shardingCodec['configuration']['chunk_shape'],
+  };
+}
+
+/**
+ * Compute a tile size that is a multiple of the inner chunk size, evenly divides
+ * the shard size, is at most MAX_TILE_SIZE, and is at least MIN_TILE_SIZE.
+ * Aligning with inner chunk boundaries avoids fetching the same inner chunk
+ * data for adjacent tiles.
+ * @param {number} shardSize The shard size in pixels along one dimension.
+ * @param {number} innerChunkSize The inner chunk size in pixels along one dimension.
+ * @return {number} The tile size.
+ */
+function getTileSizeForShard(shardSize, innerChunkSize) {
+  // Find the largest multiple of innerChunkSize that divides shardSize
+  // and is within [MIN_TILE_SIZE, MAX_TILE_SIZE].
+  const maxChunks = Math.floor(MAX_TILE_SIZE / innerChunkSize);
+  for (let n = maxChunks; n >= 1; --n) {
+    const candidate = n * innerChunkSize;
+    if (candidate >= MIN_TILE_SIZE && shardSize % candidate === 0) {
+      return candidate;
+    }
+  }
+  // No ideal size found. Use shard size itself when it fits, otherwise
+  // use the largest chunk-aligned size that fits within MAX_TILE_SIZE.
+  if (shardSize <= MAX_TILE_SIZE && shardSize >= MIN_TILE_SIZE) {
+    return shardSize;
+  }
+  if (shardSize < MIN_TILE_SIZE) {
+    return MIN_TILE_SIZE;
+  }
+  return Math.max(maxChunks * innerChunkSize, MIN_TILE_SIZE);
+}
+
+/**
  * @param {DatasetAttributes} attributes The dataset attributes.
  * @param {any} consolidatedMetadata The consolidated metadata.
  * @param {string} wantedGroup The path to the wanted group.
@@ -305,7 +378,7 @@ function getTileGridInfoFromAttributes(
   const multiscales = attributes.multiscales;
   const extent = attributes['spatial:bbox'];
   const projection = getProjection(attributes['proj:code']);
-  /** @type {Array<{matrixId: string, resolution: number, origin: import("ol/coordinate").Coordinate}>} */
+  /** @type {Array<{matrixId: string, resolution: number, origin: import("ol/coordinate").Coordinate, tileSize: import("../size.js").Size|undefined}>} */
   const groupInfo = [];
   const bandsByLevel = consolidatedMetadata ? {} : null;
   let fillValue;
@@ -315,11 +388,8 @@ function getTileGridInfoFromAttributes(
     const resolution = transform[0];
     const origin = [transform[2], transform[5]];
     const matrixId = groupMetadata.asset;
-    groupInfo.push({
-      matrixId,
-      resolution,
-      origin,
-    });
+    /** @type {import("../size.js").Size|undefined} */
+    let tileSize;
     if (consolidatedMetadata) {
       const availableBands = [];
       for (const band of wantedBands) {
@@ -330,17 +400,43 @@ function getTileGridInfoFromAttributes(
           if (fillValue === undefined) {
             fillValue = bandArray['fill_value'];
           }
+          if (!tileSize) {
+            const shardInfo = getShardInfo(bandArray);
+            if (shardInfo) {
+              tileSize = [
+                getTileSizeForShard(
+                  shardInfo.shardShape[1],
+                  shardInfo.innerChunkShape[1],
+                ),
+                getTileSizeForShard(
+                  shardInfo.shardShape[0],
+                  shardInfo.innerChunkShape[0],
+                ),
+              ];
+            }
+          }
         }
       }
       bandsByLevel[matrixId] = availableBands;
     }
+    groupInfo.push({
+      matrixId,
+      resolution,
+      origin,
+      tileSize,
+    });
   }
   groupInfo.sort((a, b) => b.resolution - a.resolution);
+
+  const tileSizes = groupInfo.map((g) => g.tileSize);
+  const hasTileSizes = tileSizes.some((s) => s !== undefined);
+
   const tileGrid = new WMTSTileGrid({
     extent: extent,
     origins: groupInfo.map((g) => g.origin),
     resolutions: groupInfo.map((g) => g.resolution),
     matrixIds: groupInfo.map((g) => g.matrixId),
+    ...(hasTileSizes ? {tileSizes: tileSizes.map((s) => s || [256, 256])} : {}),
   });
 
   return {tileGrid, projection, bandsByLevel, fillValue};
