@@ -6,6 +6,7 @@ import {
   defaultFillStyle,
   defaultLineDash,
   defaultLineDashOffset,
+  defaultStrokeStyle,
 } from '../canvas.js';
 import CanvasBuilder from './Builder.js';
 import CanvasInstruction, {
@@ -119,7 +120,7 @@ class CanvasPolygonBuilder extends CanvasBuilder {
     if (state.strokeStyle !== undefined) {
       this.hitDetectionInstructions.push([
         CanvasInstruction.SET_STROKE_STYLE,
-        state.strokeStyle,
+        defaultStrokeStyle,
         state.lineWidth,
         state.lineCap,
         state.lineJoin,
@@ -186,7 +187,7 @@ class CanvasPolygonBuilder extends CanvasBuilder {
     if (state.strokeStyle !== undefined) {
       this.hitDetectionInstructions.push([
         CanvasInstruction.SET_STROKE_STYLE,
-        state.strokeStyle,
+        defaultStrokeStyle,
         state.lineWidth,
         state.lineCap,
         state.lineJoin,
@@ -240,7 +241,7 @@ class CanvasPolygonBuilder extends CanvasBuilder {
     if (state.strokeStyle !== undefined) {
       this.hitDetectionInstructions.push([
         CanvasInstruction.SET_STROKE_STYLE,
-        state.strokeStyle,
+        defaultStrokeStyle,
         state.lineWidth,
         state.lineCap,
         state.lineJoin,
