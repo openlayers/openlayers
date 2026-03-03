@@ -443,6 +443,130 @@ describe('ol/renderer/Map.js', function () {
         expect(hit.geometry).to.be(geometry);
       });
 
+      it('hits lines even if they are transparent', function () {
+        map.getView().setResolution(1);
+        let geometry, hit;
+        const feature = new Feature();
+        const layer = new VectorLayer({
+          source: new VectorSource({
+            features: [feature],
+          }),
+          style: new Style({
+            stroke: new Stroke({
+              color: 'rgba(0, 0, 0, 0)',
+              width: 8,
+            }),
+          }),
+        });
+        map.addLayer(layer);
+
+        geometry = new LineString([
+          [-20, 0],
+          [20, 0],
+        ]);
+        feature.setGeometry(geometry);
+        map.renderSync();
+        hit = map.forEachFeatureAtPixel(
+          [50, 50],
+          (feature, layer, geometry) => ({
+            feature,
+            layer,
+            geometry,
+          }),
+        );
+        expect(hit).to.be.ok();
+        expect(hit.feature).to.be(feature);
+        expect(hit.layer).to.be(layer);
+        expect(hit.geometry).to.be(geometry);
+
+        geometry = new MultiLineString([
+          [
+            [-20, 0],
+            [20, 0],
+          ],
+        ]);
+        feature.setGeometry(geometry);
+        map.renderSync();
+        hit = map.forEachFeatureAtPixel(
+          [50, 50],
+          (feature, layer, geometry) => ({
+            feature,
+            layer,
+            geometry,
+          }),
+        );
+        expect(hit).to.be.ok();
+        expect(hit.feature).to.be(feature);
+        expect(hit.layer).to.be(layer);
+        expect(hit.geometry).to.be(geometry);
+
+        geometry = new Polygon([
+          [
+            [-20, 0],
+            [20, 0],
+            [20, -20],
+            [-20, -20],
+            [-20, 0],
+          ],
+        ]);
+        feature.setGeometry(geometry);
+        map.renderSync();
+        hit = map.forEachFeatureAtPixel(
+          [50, 50],
+          (feature, layer, geometry) => ({
+            feature,
+            layer,
+            geometry,
+          }),
+        );
+        expect(hit).to.be.ok();
+        expect(hit.feature).to.be(feature);
+        expect(hit.layer).to.be(layer);
+        expect(hit.geometry).to.be(geometry);
+
+        geometry = new MultiPolygon([
+          [
+            [
+              [-20, 0],
+              [20, 0],
+              [20, -20],
+              [-20, -20],
+              [-20, 0],
+            ],
+          ],
+        ]);
+        feature.setGeometry(geometry);
+        map.renderSync();
+        hit = map.forEachFeatureAtPixel(
+          [50, 50],
+          (feature, layer, geometry) => ({
+            feature,
+            layer,
+            geometry,
+          }),
+        );
+        expect(hit).to.be.ok();
+        expect(hit.feature).to.be(feature);
+        expect(hit.layer).to.be(layer);
+        expect(hit.geometry).to.be(geometry);
+
+        geometry = new CircleGeometry([0, -40 / Math.PI], 40 / Math.PI);
+        feature.setGeometry(geometry);
+        map.renderSync();
+        hit = map.forEachFeatureAtPixel(
+          [50, 50],
+          (feature, layer, geometry) => ({
+            feature,
+            layer,
+            geometry,
+          }),
+        );
+        expect(hit).to.be.ok();
+        expect(hit.feature).to.be(feature);
+        expect(hit.layer).to.be(layer);
+        expect(hit.geometry).to.be(geometry);
+      });
+
       it('hits Text stroke, transparent fill and background fill', function () {
         let hit;
         const geometry = new Point([0, 0]);
