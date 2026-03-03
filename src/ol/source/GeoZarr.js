@@ -92,6 +92,11 @@ export default class GeoZarr extends DataTileSource {
     this.resampleMethod_ = options.resample || 'linear';
 
     /**
+     * @type {Map<string, Promise<import('zarrita').Array<import('zarrita').DataType, any>>>}
+     */
+    this.arrayCache_ = new Map();
+
+    /**
      * @type {number} Number of bands.
      */
     this.bandCount = this.bands_.length;
@@ -237,7 +242,13 @@ export default class GeoZarr extends DataTileSource {
       const maxRow = Math.round((origin[1] - tileExtent[1]) / bandResolution);
 
       const path = `${this.group_}/${bandMatrixId}/${band}`;
-      const array = await open(this.root_.resolve(path), {kind: 'array'});
+      if (!this.arrayCache_.has(path)) {
+        this.arrayCache_.set(
+          path,
+          open(this.root_.resolve(path), {kind: 'array'}),
+        );
+      }
+      const array = await this.arrayCache_.get(path);
       bandPromises.push(
         get(array, [slice(minRow, maxRow), slice(minCol, maxCol)]),
       );
