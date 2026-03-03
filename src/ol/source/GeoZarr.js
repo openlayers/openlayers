@@ -48,11 +48,13 @@ export default class GeoZarr extends DataTileSource {
 
     /**
      * @type {string}
+     * @private
      */
     this.url_ = options.url;
 
     /**
      * @type {string}
+     * @private
      */
     this.group_ = options.group;
 
@@ -63,31 +65,37 @@ export default class GeoZarr extends DataTileSource {
 
     /**
      * @type {import('zarrita').Group<any>}
+     * @private
      */
     this.root_ = null;
 
     /**
      * @type {any|null}
+     * @private
      */
     this.consolidatedMetadata_ = null;
 
     /**
      * @type {Array<string>}
+     * @private
      */
     this.bands_ = options.bands;
 
     /**
      * @type {Object<string, Array<string>> | null}
+     * @private
      */
     this.bandsByLevel_ = null;
 
     /**
      * @type {number|undefined}
+     * @private
      */
     this.fillValue_;
 
     /**
      * @type {ResampleMethod}
+     * @private
      */
     this.resampleMethod_ = options.resample || 'linear';
 
@@ -101,12 +109,13 @@ export default class GeoZarr extends DataTileSource {
      */
     this.bandCount = this.bands_.length;
 
-    this.setLoader(this.loadTile_.bind(this));
-
     /**
      * @type {import("../tilegrid/WMTS.js").default}
+     * @override
      */
     this.tileGrid;
+
+    this.setLoader(this.loadTile_.bind(this));
 
     this.configure_()
       .then(() => {
@@ -168,6 +177,10 @@ export default class GeoZarr extends DataTileSource {
         // If there were no required zarr conventions, we don't have a projection yet
         this.projection = projection;
       }
+    }
+    if (this.fillValue_ !== null && this.fillValue_ !== undefined) {
+      this.bandCount = this.bands_.length + 1;
+      this.nodataBandIndex = this.bandCount;
     }
     if (!this.tileGrid) {
       throw new Error('Could not determine tile grid');
@@ -264,7 +277,7 @@ export default class GeoZarr extends DataTileSource {
       tileRowCount,
       tileResolution,
       this.resampleMethod_,
-      this.fillValue_ || 0,
+      this.fillValue_,
     );
   }
 }
@@ -409,7 +422,7 @@ function getTileGridInfoFromAttributes(
         if (bandArray) {
           availableBands.push(band);
           if (fillValue === undefined) {
-            fillValue = bandArray['fill_value'];
+            fillValue = Number(bandArray['fill_value']);
           }
           if (!tileSize) {
             const shardInfo = getShardInfo(bandArray);
@@ -516,18 +529,26 @@ function composeData(
   resampleMethod,
   fillValue,
 ) {
-  const bandCount = chunks.length;
+  const chunkCount = chunks.length;
+  const addAlpha = fillValue !== null && fillValue !== undefined;
+  const isNoDataValue = isNaN(fillValue)
+    ? (v) => isNaN(v)
+    : (v) => v === fillValue;
+  const bandCount = chunkCount + (addAlpha ? 1 : 0);
   const tileData = new Float32Array(tileColCount * tileRowCount * bandCount);
   for (let tileRow = 0; tileRow < tileRowCount; tileRow++) {
     for (let tileCol = 0; tileCol < tileColCount; tileCol++) {
-      for (let band = 0; band < bandCount; ++band) {
-        const chunk = chunks[band];
+      let hasData = false;
+      for (let chunkIndex = 0; chunkIndex < chunkCount; ++chunkIndex) {
+        const chunk = chunks[chunkIndex];
         const chunkRowCount = chunk.shape[0];
         const chunkColCount = chunk.shape[1];
-        const scaleFactor = tileResolution / chunkResolutions[band];
-        let value = fillValue;
+        const scaleFactor = tileResolution / chunkResolutions[chunkIndex];
+        let value = 0;
+        let inBounds = false;
         if (scaleFactor === 1) {
           if (tileRow < chunkRowCount && tileCol < chunkColCount) {
+            inBounds = true;
             value = chunk.data[tileRow * chunkColCount + tileCol];
           }
         } else {
@@ -538,6 +559,7 @@ function composeData(
               const valueRow = Math.round(chunkRow);
               const valueCol = Math.round(chunkCol);
               if (valueRow < chunkRowCount && valueCol < chunkColCount) {
+                inBounds = true;
                 value = chunk.data[valueRow * chunkColCount + valueCol];
               }
               break;
@@ -546,6 +568,7 @@ function composeData(
               const row0 = Math.floor(chunkRow);
               const col0 = Math.floor(chunkCol);
               if (row0 < chunkRowCount && col0 < chunkColCount) {
+                inBounds = true;
                 const row1 = Math.min(row0 + 1, chunkRowCount - 1);
                 const col1 = Math.min(col0 + 1, chunkColCount - 1);
 
@@ -568,10 +591,18 @@ function composeData(
             }
           }
         }
-        if (isNaN(value)) {
-          value = fillValue;
+        if (inBounds && !isNoDataValue(value)) {
+          hasData = true;
         }
-        tileData[bandCount * (tileRow * tileColCount + tileCol) + band] = value;
+        if (isNaN(value)) {
+          value = 0;
+        }
+        tileData[bandCount * (tileRow * tileColCount + tileCol) + chunkIndex] =
+          value;
+      }
+      if (addAlpha) {
+        tileData[bandCount * (tileRow * tileColCount + tileCol) + chunkCount] =
+          hasData ? 1 : 0;
       }
     }
   }

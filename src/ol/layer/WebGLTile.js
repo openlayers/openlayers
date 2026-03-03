@@ -90,9 +90,10 @@ import BaseTileLayer from './BaseTile.js';
 /**
  * @param {Style} style The layer style.
  * @param {number} [bandCount] The number of bands.
+ * @param {number} [nodataBandIndex] The 1-based band index for the nodata alpha band.
  * @return {ParsedStyle} Shaders and uniforms generated from the style.
  */
-function parseStyle(style, bandCount) {
+function parseStyle(style, bandCount, nodataBandIndex) {
   const vertexShader = `
     attribute vec2 ${Attributes.TEXTURE_COORD};
     uniform mat4 ${Uniforms.TILE_TRANSFORM};
@@ -213,6 +214,23 @@ function parseStyle(style, bandCount) {
     );
   }
 
+  // Ensure getBandValue function exists when nodata discard is needed
+  if (nodataBandIndex > 0 && !('getBandValue' in context.functions)) {
+    let ifBlocks = '';
+    for (let i = 0; i < bandCount; i++) {
+      const colorIndex = Math.floor(i / 4);
+      let bandIndex = i % 4;
+      if (i === bandCount - 1 && bandIndex === 1) {
+        // LUMINANCE_ALPHA - band 1 assigned to rgb and band 2 assigned to alpha
+        bandIndex = 3;
+      }
+      const textureName = `${Uniforms.TILE_TEXTURE_ARRAY}[${colorIndex}]`;
+      ifBlocks += `  if (band == ${i + 1}.0) {\n    return texture2D(${textureName}, v_textureCoord + vec2(dx, dy))[${bandIndex}];\n  }\n`;
+    }
+    context.functions['getBandValue'] =
+      `float getBandValue(float band, float xOffset, float yOffset) {\n  float dx = xOffset / ${Uniforms.TEXTURE_PIXEL_WIDTH};\n  float dy = yOffset / ${Uniforms.TEXTURE_PIXEL_HEIGHT};\n${ifBlocks}\n}`;
+  }
+
   const functionDefintions = Object.keys(context.functions).map(
     function (name) {
       return context.functions[name];
@@ -252,6 +270,8 @@ function parseStyle(style, bandCount) {
       vec4 color = texture2D(${
         Uniforms.TILE_TEXTURE_ARRAY
       }[0],  v_textureCoord);
+
+      ${nodataBandIndex ? `if (getBandValue(${nodataBandIndex}.0, 0.0, 0.0) == 0.0) { discard; }` : ''}
 
       ${pipeline.join('\n')}
 
@@ -397,10 +417,26 @@ class WebGLTileLayer extends BaseTileLayer {
   }
 
   /**
+   * @private
+   * @return {number|undefined} The 1-based band index for the nodata alpha band.
+   */
+  getSourceNodataBandIndex_() {
+    const max = Number.MAX_SAFE_INTEGER;
+    const sources = this.getSources([-max, -max, max, max], max);
+    return sources && sources.length && 'nodataBandIndex' in sources[0]
+      ? sources[0].nodataBandIndex
+      : undefined;
+  }
+
+  /**
    * @override
    */
   createRenderer() {
-    const parsedStyle = parseStyle(this.style_, this.getSourceBandCount_());
+    const parsedStyle = parseStyle(
+      this.style_,
+      this.getSourceBandCount_(),
+      this.getSourceNodataBandIndex_(),
+    );
 
     return new WebGLTileLayerRenderer(this, {
       vertexShader: parsedStyle.vertexShader,
@@ -485,7 +521,11 @@ class WebGLTileLayer extends BaseTileLayer {
     this.styleVariables_ = style.variables || {};
     this.style_ = style;
     if (this.hasRenderer()) {
-      const parsedStyle = parseStyle(this.style_, this.getSourceBandCount_());
+      const parsedStyle = parseStyle(
+        this.style_,
+        this.getSourceBandCount_(),
+        this.getSourceNodataBandIndex_(),
+      );
       const renderer = this.getRenderer();
       renderer.reset({
         vertexShader: parsedStyle.vertexShader,

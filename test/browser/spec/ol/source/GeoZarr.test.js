@@ -180,6 +180,63 @@ describe('ol/source/GeoZarr', function () {
     });
   });
 
+  describe('nodataBandIndex', function () {
+    let fetchStub;
+
+    afterEach(function () {
+      if (fetchStub) {
+        fetchStub.restore();
+        fetchStub = null;
+      }
+    });
+
+    it('is undefined before configure_() runs', function () {
+      fetchStub = stubFetch(null);
+      const source = new GeoZarr({
+        url: ZARR_URL,
+        group: GROUP,
+        bands: ['band1'],
+      });
+      expect(source.nodataBandIndex).to.be(undefined);
+      expect(source.bandCount).to.be(1);
+    });
+
+    it('sets nodataBandIndex and increments bandCount when fillValue is present', function (done) {
+      fetchStub = stubFetch({
+        [`${GROUP}/level0/b04`]: {fill_value: 'NaN'},
+        [`${GROUP}/level0/b03`]: {fill_value: 'NaN'},
+      });
+      const source = new GeoZarr({
+        url: ZARR_URL,
+        group: GROUP,
+        bands: ['b04', 'b03'],
+      });
+      source.on('change', function () {
+        if (source.getState() === 'ready') {
+          expect(source.bandCount).to.be(3);
+          expect(source.nodataBandIndex).to.be(3);
+          done();
+        }
+      });
+    });
+
+    it('does not set nodataBandIndex when there is no consolidated metadata', function (done) {
+      fetchStub = stubFetch(null);
+      const source = new GeoZarr({
+        url: ZARR_URL,
+        group: GROUP,
+        bands: ['b04'],
+      });
+      source.on('change', function () {
+        if (source.getState() === 'ready') {
+          expect(source.bandCount).to.be(1);
+          expect(source.nodataBandIndex).to.be(undefined);
+          done();
+        }
+      });
+    });
+  });
+
   describe('error handling', function () {
     it('should handle configuration errors gracefully', function () {
       const source = new GeoZarr({

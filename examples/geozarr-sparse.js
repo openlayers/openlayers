@@ -28,12 +28,6 @@ const map = new Map({
           ['interpolate', ['linear'], ['band', 1], 0, 0, 0.5, 255],
           ['interpolate', ['linear'], ['band', 2], 0, 0, 0.5, 255],
           ['interpolate', ['linear'], ['band', 3], 0, 0, 0.5, 255],
-          [
-            'case',
-            ['==', ['+', ['band', 1], ['band', 2], ['band', 3]], 0],
-            0,
-            1,
-          ],
         ],
       },
       source,
