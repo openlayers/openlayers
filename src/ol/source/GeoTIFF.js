@@ -474,7 +474,7 @@ class GeoTIFFSource extends DataTile {
     this.nodataValues_;
 
     /**
-     * @type {Array<Array<Promise<GDALMetadata>>>}
+     * @type {Array<Array<GDALMetadata>>}
      * @private
      */
     this.metadata_;
@@ -605,7 +605,7 @@ class GeoTIFFSource extends DataTile {
    * from a single GeoTIFF.
    * @private
    */
-  configure_(sources) {
+  async configure_(sources) {
     let extent;
     let origin;
     let commonRenderTileSizes;
@@ -647,7 +647,7 @@ class GeoTIFFSource extends DataTile {
       for (let imageIndex = 0; imageIndex < imageCount; ++imageIndex) {
         const image = images[imageIndex];
         const nodataValue = image.getGDALNoData();
-        metadata[sourceIndex][imageIndex] = image.getGDALMetadata(0);
+        metadata[sourceIndex][imageIndex] = await image.getGDALMetadata(0);
         nodataValues[sourceIndex][imageIndex] = nodataValue;
 
         const wantedSamples = this.sourceInfo_[sourceIndex].bands;
@@ -940,10 +940,10 @@ class GeoTIFFSource extends DataTile {
   /**
    * @param {import("../size.js").Size} sourceTileSize The source tile size.
    * @param {Array} sourceSamples The source samples.
-   * @return {Promise<import("../DataTile.js").Data>} The composed tile data.
+   * @return {import("../DataTile.js").Data} The composed tile data.
    * @private
    */
-  async composeTile_(sourceTileSize, sourceSamples) {
+  composeTile_(sourceTileSize, sourceSamples) {
     const metadata = this.metadata_;
     const sourceInfo = this.sourceInfo_;
     const sourceCount = this.sourceImagery_.length;
@@ -974,7 +974,7 @@ class GeoTIFFSource extends DataTile {
         let max = source.max;
         let gain, bias;
         if (normalize) {
-          const stats = await metadata[sourceIndex][0];
+          const stats = metadata[sourceIndex][0];
           if (min === undefined) {
             if (stats && STATISTICS_MINIMUM in stats) {
               min = parseFloat(stats[STATISTICS_MINIMUM]);
