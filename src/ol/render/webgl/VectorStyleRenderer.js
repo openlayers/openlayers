@@ -336,10 +336,11 @@ class VectorStyleRenderer extends Disposable {
       this.renderPasses_.some((pass) => pass.symbolRenderPass) || true; // TODO: check for text
 
     /**
-     * @type {HTMLCanvasElement}
      * @private
      */
-    this.textOverlayCanvas_ = createCanvasContext2D().canvas;
+    this.textOverlayCanvas_ = /** @type {HTMLCanvasElement} */ (
+      createCanvasContext2D().canvas
+    );
 
     /**
      * @type {import("../../Map.js").FrameState}
