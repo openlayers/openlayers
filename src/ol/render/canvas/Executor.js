@@ -1267,6 +1267,9 @@ class Executor {
               context.stroke();
               pendingStroke = 0;
             }
+          } else if (pendingStroke && instruction[1]) {
+            context.stroke();
+            pendingStroke = 0;
           }
 
           /** @type {import("../../colorlike.js").ColorLike} */
@@ -1274,6 +1277,10 @@ class Executor {
           ++i;
           break;
         case CanvasInstruction.SET_STROKE_STYLE:
+          if (pendingFill && instruction[1]) {
+            this.fill_(context);
+            pendingFill = 0;
+          }
           if (pendingStroke) {
             context.stroke();
             pendingStroke = 0;
