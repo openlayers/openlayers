@@ -120,6 +120,9 @@ describe('ol/renderer/canvas/ImageLayer', function () {
             done();
           }
         });
+        source.once('imageloaderror', function () {
+          done(new Error('Image failed to load'));
+        });
       });
     });
 
