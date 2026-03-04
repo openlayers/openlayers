@@ -2,7 +2,7 @@
  * @module ol/source/GeoZarr
  */
 
-import {FetchStore, get, open, slice} from 'zarrita';
+import {FetchStore, get, open, slice, withRangeCoalescing} from 'zarrita';
 import {warn} from '../console.js';
 import {getCenter} from '../extent.js';
 import {get as getProjection, toUserCoordinate, toUserExtent} from '../proj.js';
@@ -195,7 +195,9 @@ export default class GeoZarr extends DataTileSource {
   }
 
   async configure_() {
-    const store = new FetchStore(this.url_);
+    const store = /** @type {FetchStore} */ (
+      withRangeCoalescing(new FetchStore(this.url_))
+    );
 
     // Fetch group zarr.json once for both opening the group and extracting
     // consolidated metadata. Without this, open() and the manual metadata
