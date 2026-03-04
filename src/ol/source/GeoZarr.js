@@ -147,6 +147,7 @@ export default class GeoZarr extends DataTileSource {
     const attributes =
       /** @type {LegacyDatasetAttributes | DatasetAttributes} */ (group.attrs);
 
+    let hasTileSizes = false;
     if (
       'zarr_conventions' in attributes &&
       Array.isArray(attributes.zarr_conventions) &&
@@ -155,7 +156,7 @@ export default class GeoZarr extends DataTileSource {
       ) &&
       'layout' in attributes.multiscales
     ) {
-      const {tileGrid, projection, bandsByLevel, fillValue} =
+      const {tileGrid, projection, bandsByLevel, fillValue, tileSizes} =
         getTileGridInfoFromAttributes(
           /** @type {DatasetAttributes} */ (attributes),
           this.consolidatedMetadata_,
@@ -166,9 +167,11 @@ export default class GeoZarr extends DataTileSource {
       this.tileGrid = tileGrid;
       this.projection = projection;
       this.fillValue_ = fillValue;
-    } else if ('tile_matrix_set' in attributes.multiscales) {
+      hasTileSizes = !!tileSizes;
+    }
+    if (!hasTileSizes && 'tile_matrix_set' in attributes.multiscales) {
       // If available, use tile_matrix_set (legacy attributes) to get a tile grid, because it
-      // provides a better mapping of tiles to zarr chunks.
+      // should provide a better mapping of tiles to zarr chunks.
       const {tileGrid, projection} = getTileGridInfoFromLegacyAttributes(
         /** @type {LegacyDatasetAttributes} */ (attributes),
       );
@@ -310,6 +313,7 @@ export default class GeoZarr extends DataTileSource {
  * @property {import("../proj/Projection.js").default} projection The projection.
  * @property {Object<string, Array<string>>} [bandsByLevel] Available bands by level.
  * @property {number} [fillValue] The fill value.
+ * @property {Array<import("../size.js").Size>|undefined} [tileSizes] The tile sizes for each level, if available.
  */
 
 /**
@@ -331,6 +335,8 @@ const MIN_TILE_SIZE = 64;
  */
 
 /**
+ * FIXME Remove this when GeoZarr datasets provide correct TileMatrixSet info or similar.
+ *
  * Get the shard and inner chunk shapes from the Zarr v3 array metadata.
  * Only returns info when a `sharding_indexed` codec is present, meaning
  * `chunk_grid.configuration.chunk_shape` represents the shard (outer chunk) size.
@@ -357,6 +363,8 @@ function getShardInfo(arrayMeta) {
 }
 
 /**
+ * FIXME Remove this when GeoZarr datasets provide correct TileMatrixSet info or similar.
+ *
  * Compute a tile size that is a multiple of the inner chunk size, evenly divides
  * the shard size, is at most MAX_TILE_SIZE, and is at least MIN_TILE_SIZE.
  * Aligning with inner chunk boundaries avoids fetching the same inner chunk
@@ -424,6 +432,7 @@ function getTileGridInfoFromAttributes(
           if (fillValue === undefined) {
             fillValue = Number(bandArray['fill_value']);
           }
+          //FIXME Remove this when GeoZarr datasets provide correct TileMatrixSet info or similar
           if (!tileSize) {
             const shardInfo = getShardInfo(bandArray);
             if (shardInfo) {
@@ -463,7 +472,7 @@ function getTileGridInfoFromAttributes(
     ...(hasTileSizes ? {tileSizes: tileSizes.map((s) => s || [256, 256])} : {}),
   });
 
-  return {tileGrid, projection, bandsByLevel, fillValue};
+  return {tileGrid, projection, bandsByLevel, fillValue, tileSizes};
 }
 
 /**
