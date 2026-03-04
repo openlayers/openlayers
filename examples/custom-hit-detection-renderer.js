@@ -15,14 +15,14 @@ const labelText = 'Columbus Circle';
 
 let pointerOverFeature = null;
 
-const renderLabelText = (ctx, x, y, stroke) => {
+const renderLabelText = (ctx, x, y, stroke, pixelRatio) => {
   ctx.fillStyle = 'rgba(255,0,0,1)';
   ctx.strokeStyle = stroke;
-  ctx.lineWidth = 1;
+  ctx.lineWidth = pixelRatio;
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.font = `bold 30px verdana`;
-  ctx.filter = 'drop-shadow(7px 7px 2px #e81)';
+  ctx.font = `bold ${30 * pixelRatio}px verdana`;
+  ctx.filter = `drop-shadow(${7 * pixelRatio}px ${7 * pixelRatio}px ${2 * pixelRatio}px #e81)`;
   ctx.fillText(labelText, x, y);
   ctx.strokeText(labelText, x, y);
 };
@@ -61,14 +61,20 @@ circleFeature.setStyle(
       ctx.fillStyle = gradient;
       ctx.fill();
       ctx.strokeStyle = 'rgba(255,0,0,1)';
+      ctx.lineWidth = state.pixelRatio;
       ctx.stroke();
 
-      renderLabelText(ctx, x, y, circleFeature.get('label-color'));
+      renderLabelText(
+        ctx,
+        x,
+        y,
+        circleFeature.get('label-color'),
+        state.pixelRatio,
+      );
     },
     hitDetectionRenderer(coordinates, state) {
       const [x, y] = coordinates[0];
-      const ctx = state.context;
-      renderLabelText(ctx, x, y, circleFeature.get('label-color'));
+      renderLabelText(state.context, x, y, labelTextStroke, state.pixelRatio);
     },
   }),
 );
