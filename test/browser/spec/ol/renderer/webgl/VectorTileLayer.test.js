@@ -18,7 +18,10 @@ import WebGLVectorTileLayerRenderer, {
 } from '../../../../../../src/ol/renderer/webgl/VectorTileLayer.js';
 import VectorTileSource from '../../../../../../src/ol/source/VectorTile.js';
 import {createXYZ} from '../../../../../../src/ol/tilegrid.js';
-import {create} from '../../../../../../src/ol/transform.js';
+import {
+  compose as composeTransform,
+  create,
+} from '../../../../../../src/ol/transform.js';
 import WebGLHelper from '../../../../../../src/ol/webgl/Helper.js';
 import WebGLRenderTarget from '../../../../../../src/ol/webgl/RenderTarget.js';
 import TileGeometry from '../../../../../../src/ol/webgl/TileGeometry.js';
@@ -124,6 +127,7 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
     });
     renderer = new WebGLVectorTileLayerRenderer(vectorTileLayer, {
       style: SAMPLE_RULES,
+      disableHitDetection: true,
     });
 
     frameState = {
@@ -195,15 +199,15 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
         {name: 'u_depthMask', type: 'sampler2D'},
         {name: 'u_tileZoomLevel', type: 'float'},
       ]);
-      expect(firstBuilder.getFragmentDiscardExpression()).to.be(
-        'texture2D(u_depthMask, gl_FragCoord.xy / u_pixelRatio / u_viewportSizePx).r * 50. > u_tileZoomLevel + 0.5',
+      expect(firstBuilder.getFragmentDiscardExpression()).to.match(
+        /^texture2D\(u_depthMask, gl_FragCoord\.xy \/ u_pixelRatio \/ u_viewportSizePx\)\.r \* 50\.0? > u_tileZoomLevel \+ 0\.5$/,
       );
       expect(secondBuilder.uniforms_).to.eql([
         {name: 'u_depthMask', type: 'sampler2D'},
         {name: 'u_tileZoomLevel', type: 'float'},
       ]);
-      expect(secondBuilder.getFragmentDiscardExpression()).to.be(
-        '(!(u_zoom > 10.0)) || (texture2D(u_depthMask, gl_FragCoord.xy / u_pixelRatio / u_viewportSizePx).r * 50. > u_tileZoomLevel + 0.5)',
+      expect(secondBuilder.getFragmentDiscardExpression()).to.match(
+        /^\(!\(u_zoom > 10\.0\)\) \|\| \(texture2D\(u_depthMask, gl_FragCoord\.xy \/ u_pixelRatio \/ u_viewportSizePx\)\.r \* 50\.0? > u_tileZoomLevel \+ 0\.5\)$/,
       );
     });
     it('instantiates the tile mask target, indices, attributes and program', () => {
@@ -408,6 +412,152 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
     });
     it('calls render for each tile on each renderer', () => {
       expect(renderer.styleRenderer_.render.callCount).to.be(2);
+    });
+  });
+
+  describe('#forEachFeatureAtCoordinate', () => {
+    beforeEach(async () => {
+      renderer.dispose();
+
+      renderer = new WebGLVectorTileLayerRenderer(vectorTileLayer, {
+        style: [
+          {
+            'fill-color': 'red',
+            'stroke-color': 'blue',
+            'stroke-width': 2,
+            'circle-radius': 10,
+            'circle-fill-color': 'green',
+          },
+        ],
+      });
+
+      const transform = composeTransform(
+        create(),
+        100, // size[0] / 2
+        50, // size[1] / 2
+        4, // 1 / resolution
+        -4, // -1 / resolution
+        0, // -rotation
+        0, // -center[0]
+        -16, // -center[1]
+      );
+      frameState = {
+        ...frameState,
+        coordinateToPixelTransform: transform,
+      };
+
+      renderer.prepareFrame(frameState);
+      renderer.renderFrame(frameState);
+      frameState.tileQueue.loadMoreTiles(Infinity, Infinity);
+      await new Promise((resolve) => setTimeout(resolve, 150));
+      renderer.renderFrame(frameState);
+    });
+
+    it('detects a polygon feature at the correct coordinate', () => {
+      const spy = sinonSpy();
+      renderer.forEachFeatureAtCoordinate([5, 5], frameState, 0, spy, []);
+      expect(spy.callCount).to.be(1);
+      expect(spy.getCall(0).args[0].getId()).to.be(3);
+    });
+
+    it('detects a point feature at the correct coordinate', () => {
+      const spy = sinonSpy();
+      renderer.forEachFeatureAtCoordinate([1, 16], frameState, 0, spy, []);
+      expect(spy.callCount).to.be(1);
+      expect(spy.getCall(0).args[0].getId()).to.be(1);
+    });
+
+    it('returns undefined when clicking empty space', () => {
+      const spy = sinonSpy();
+      renderer.forEachFeatureAtCoordinate([-15, 20], frameState, 0, spy, []);
+      expect(spy.callCount).to.be(0);
+    });
+
+    it('does not detect features when hit detection is disabled', () => {
+      renderer.dispose();
+      renderer = new WebGLVectorTileLayerRenderer(vectorTileLayer, {
+        style: [
+          {
+            'fill-color': 'red',
+            'stroke-color': 'blue',
+            'stroke-width': 2,
+            'circle-radius': 10,
+            'circle-fill-color': 'green',
+          },
+        ],
+        disableHitDetection: true,
+      });
+
+      const spy = sinonSpy();
+      renderer.forEachFeatureAtCoordinate([5, 5], frameState, 0, spy, []);
+      expect(spy.callCount).to.be(0);
+    });
+  });
+
+  describe('#getFeaturesInExtent', () => {
+    it('returns an empty array when frameState is not set', () => {
+      const freshRenderer = new WebGLVectorTileLayerRenderer(vectorTileLayer, {
+        style: SAMPLE_RULES,
+        disableHitDetection: true,
+      });
+      const extent = [-31, 1, 31, 31];
+      expect(freshRenderer.getFeaturesInExtent(extent)).to.eql([]);
+      freshRenderer.dispose();
+    });
+
+    it('returns an empty array when no tiles are in the cache', () => {
+      renderer.prepareFrame(frameState);
+      renderer.renderFrame(frameState);
+      renderer.clearCache();
+      const extent = frameState.extent.slice();
+      expect(renderer.getFeaturesInExtent(extent)).to.eql([]);
+    });
+
+    describe('with loaded tiles', () => {
+      beforeEach(async () => {
+        renderer.dispose();
+        renderer = new WebGLVectorTileLayerRenderer(vectorTileLayer, {
+          style: SAMPLE_RULES,
+          disableHitDetection: true,
+        });
+        renderer.prepareFrame(frameState);
+        renderer.renderFrame(frameState);
+        frameState.tileQueue.loadMoreTiles(Infinity, Infinity);
+        await new Promise((resolve) => setTimeout(resolve, 150));
+        renderer.renderFrame(frameState);
+      });
+
+      it('returns features in extent for the last rendered zoom', () => {
+        const extent = frameState.extent.slice();
+        const features = renderer.getFeaturesInExtent(extent);
+        // Features may be duplicated if they appear in multiple source tiles
+        expect(features.length).to.be.greaterThan(0);
+        const ids = new Set(features.map((f) => f.getId()));
+        expect(ids.size).to.be(3);
+        expect(Array.from(ids).sort()).to.eql([1, 2, 3]);
+      });
+
+      it('returns only features whose geometry intersects the extent', () => {
+        const extentOutside = [-100, -100, -90, -90];
+        const features = renderer.getFeaturesInExtent(extentOutside);
+        expect(features.length).to.be(0);
+      });
+
+      it('returns a subset of features when extent partially overlaps', () => {
+        const partialExtent = [5, 5, 15, 15];
+        const features = renderer.getFeaturesInExtent(partialExtent);
+        expect(features.length).to.be.greaterThan(0);
+        features.forEach((feature) => {
+          const geom = feature.getGeometry();
+          expect(geom).to.be.ok();
+          expect(
+            geom.getExtent()[0] <= partialExtent[2] &&
+              geom.getExtent()[2] >= partialExtent[0] &&
+              geom.getExtent()[1] <= partialExtent[3] &&
+              geom.getExtent()[3] >= partialExtent[1],
+          ).to.be(true);
+        });
+      });
     });
   });
 });
