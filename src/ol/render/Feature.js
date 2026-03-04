@@ -160,7 +160,7 @@ class RenderFeature {
               this.flatCoordinates_,
               0,
               this.flatCoordinates_.length,
-              2,
+              this.stride_,
             );
     }
     return this.extent_;
@@ -176,7 +176,7 @@ class RenderFeature {
         this.flatCoordinates_,
         0,
         this.ends_,
-        2,
+        this.stride_,
         flatCenter,
         0,
       );
@@ -190,12 +190,17 @@ class RenderFeature {
   getFlatInteriorPoints() {
     if (!this.flatInteriorPoints_) {
       const ends = inflateEnds(this.flatCoordinates_, this.ends_);
-      const flatCenters = linearRingssCenter(this.flatCoordinates_, 0, ends, 2);
+      const flatCenters = linearRingssCenter(
+        this.flatCoordinates_,
+        0,
+        ends,
+        this.stride_,
+      );
       this.flatInteriorPoints_ = getInteriorPointsOfMultiArray(
         this.flatCoordinates_,
         0,
         ends,
-        2,
+        this.stride_,
         flatCenters,
       );
     }
@@ -211,7 +216,7 @@ class RenderFeature {
         this.flatCoordinates_,
         0,
         this.flatCoordinates_.length,
-        2,
+        this.stride_,
         0.5,
       );
     }
@@ -229,7 +234,13 @@ class RenderFeature {
       const ends = /** @type {Array<number>} */ (this.ends_);
       for (let i = 0, ii = ends.length; i < ii; ++i) {
         const end = ends[i];
-        const midpoint = interpolatePoint(flatCoordinates, offset, end, 2, 0.5);
+        const midpoint = interpolatePoint(
+          flatCoordinates,
+          offset,
+          end,
+          this.stride_,
+          0.5,
+        );
         extend(this.flatMidpoints_, midpoint);
         offset = end;
       }
@@ -348,7 +359,7 @@ class RenderFeature {
         this.flatCoordinates_,
         0,
         this.flatCoordinates_.length,
-        2,
+        this.stride_,
         tmpTransform,
         this.flatCoordinates_,
       );
@@ -449,7 +460,7 @@ class RenderFeature {
           this.type_,
           simplifiedFlatCoordinates,
           simplifiedEnds,
-          2,
+          this.stride_,
           this.properties_,
           this.id_,
         );
