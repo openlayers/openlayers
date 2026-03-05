@@ -7,6 +7,8 @@ import {angleBetween} from '../../coordinate.js';
  *
  * Coordinates and the offset should be in the same units — either pixels or the same spatial reference system as the input line coordinates.
  *
+ * Attention: this function doesn't produce good results for the input with duplicate consecutive coordinates. It is advisable to first deduplicate the coordinates before calling this function.
+ *
  * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} stride Stride.
  * @param {number} offset Offset distance along the segment normal direction.
@@ -28,8 +30,8 @@ export function offsetLineString(
   dest = dest ?? [];
   destinationStride = destinationStride ?? stride;
 
-  const firstPointX = flatCoordinates[0];
-  const firstPointY = flatCoordinates[1];
+  const secondPointX = flatCoordinates[2];
+  const secondPointY = flatCoordinates[3];
   const secondToLastPointX = flatCoordinates[flatCoordinates.length - 4];
   const secondToLastPointY = flatCoordinates[flatCoordinates.length - 3];
   let x, y, prevX, prevY, nextX, nextY, offsetX, offsetY;
@@ -50,11 +52,10 @@ export function offsetLineString(
       prevX = secondToLastPointX;
       prevY = secondToLastPointY;
     }
-    // Last coordinate of a closed ring -> next coordinate is the first vertex of a line string
-    if (isClosedRing && j === flatCoordinates.length - 2) {
-      // last coordinate
-      nextX = firstPointX;
-      nextY = firstPointY;
+    // Last coordinate of a closed ring -> next coordinate is the second vertex of a line string (the last one is same as the first one for a closed ring)
+    if (isClosedRing && j === flatCoordinates.length - stride) {
+      nextX = secondPointX;
+      nextY = secondPointY;
     }
 
     // 2. Current vertex to offset
@@ -112,6 +113,17 @@ export function offsetLineString(
  * @return {import("../../coordinate.js").Coordinate} Offset vertex coordinate as `[x, y]`.
  */
 export function offsetLineVertex(x, y, prevX, prevY, nextX, nextY, offset) {
+  // Validation: if previous point is same as the current one, treat it as no previous point given
+  if (prevX === x && prevY === y) {
+    prevX = undefined;
+    prevY = undefined;
+  }
+  // Validation: if next point is same as the current one, treat it as no next point given
+  if (nextX === x && nextY === y) {
+    nextX = undefined;
+    nextY = undefined;
+  }
+
   // Compute segment direction
   let nx, ny;
   if (prevX !== undefined && prevY !== undefined) {
