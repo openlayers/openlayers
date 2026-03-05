@@ -109,11 +109,6 @@ export default class GeoZarr extends DataTileSource {
     this.resampleMethod_ = options.resample || 'linear';
 
     /**
-     * @type {Map<string, Promise<import('zarrita').Array<import('zarrita').DataType, any>>>}
-     */
-    this.arrayCache_ = new Map();
-
-    /**
      * @type {number} Number of bands.
      */
     this.bandCount = this.bands_.length;
@@ -139,17 +134,27 @@ export default class GeoZarr extends DataTileSource {
   async configure_() {
     const store = new FetchStore(this.url_);
 
-    this.root_ = await open(store, {kind: 'group'});
-
-    try {
-      this.consolidatedMetadata_ = JSON.parse(
-        new TextDecoder().decode(
-          await store.get(this.root_.resolve('zarr.json').path),
-        ),
-      ).consolidated_metadata.metadata;
-    } catch {
-      // empty catch block
+    // Fetch root zarr.json once for both opening the root and extracting
+    // consolidated metadata. Without this, open() and the manual metadata
+    // read would each make a separate HTTP request for the same file.
+    const rootBytes = await store.get('/zarr.json');
+    if (rootBytes) {
+      try {
+        this.consolidatedMetadata_ = JSON.parse(
+          new TextDecoder().decode(rootBytes),
+        ).consolidated_metadata.metadata;
+      } catch {
+        // no consolidated metadata
+      }
     }
+
+    // Wrap the store so that child metadata (groups, arrays) is served from
+    // the consolidated metadata instead of making per-child HTTP requests.
+    const cachedStore = this.consolidatedMetadata_
+      ? createCachedStore(store, rootBytes, this.consolidatedMetadata_)
+      : store;
+
+    this.root_ = await open(cachedStore, {kind: 'group'});
 
     const group = await open(this.root_.resolve(this.group_), {kind: 'group'});
 
@@ -315,6 +320,32 @@ export default class GeoZarr extends DataTileSource {
       this.fillValue_,
     );
   }
+}
+
+/**
+ * Create a store wrapper that serves Zarr v3 metadata from consolidated
+ * metadata, avoiding per-child HTTP requests.
+ * @param {import('zarrita').FetchStore} store The underlying store.
+ * @param {Uint8Array} rootBytes The already-fetched root zarr.json bytes.
+ * @param {Object} consolidatedMetadata The parsed consolidated_metadata.metadata entries.
+ * @return {Object} A store-compatible object.
+ */
+function createCachedStore(store, rootBytes, consolidatedMetadata) {
+  const cache = new Map();
+  cache.set('/zarr.json', rootBytes);
+  const encoder = new TextEncoder();
+  for (const [key, value] of Object.entries(consolidatedMetadata)) {
+    cache.set(`/${key}/zarr.json`, encoder.encode(JSON.stringify(value)));
+  }
+  return {
+    async get(key, opts) {
+      if (cache.has(key)) {
+        return cache.get(key);
+      }
+      return store.get(key, opts);
+    },
+    getRange: store.getRange?.bind(store),
+  };
 }
 
 /**
