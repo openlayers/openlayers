@@ -217,8 +217,8 @@ export default class GeoZarr extends DataTileSource {
     const tileResolution = this.tileGrid.getResolution(z);
     const tileExtent = this.tileGrid.getTileCoordExtent([z, x, y]);
 
-    const bandPromises = [];
-    const bandResolutions = [];
+    // First pass: resolve band metadata (no async)
+    const bandInfos = [];
     for (const band of this.bands_) {
       let bandMatrixId;
       let bandResolution;
@@ -255,28 +255,48 @@ export default class GeoZarr extends DataTileSource {
       const origin = this.tileGrid.getOrigin(bandZ);
       const minCol = Math.round((tileExtent[0] - origin[0]) / bandResolution);
       const maxCol = Math.round((tileExtent[2] - origin[0]) / bandResolution);
-
       const minRow = Math.round((origin[1] - tileExtent[3]) / bandResolution);
       const maxRow = Math.round((origin[1] - tileExtent[1]) / bandResolution);
 
-      const path = `${this.group_}/${bandMatrixId}/${band}`;
-      if (!this.arrayCache_.has(path)) {
-        this.arrayCache_.set(
-          path,
-          open(this.root_.resolve(path), {kind: 'array'}).catch((err) => {
-            this.arrayCache_.delete(path);
-            throw err;
-          }),
-        );
-      }
-      const array = await this.arrayCache_.get(path);
-      bandPromises.push(
-        get(array, [slice(minRow, maxRow), slice(minCol, maxCol)]),
-      );
-      bandResolutions.push(bandResolution);
+      bandInfos.push({
+        path: `${this.group_}/${bandMatrixId}/${band}`,
+        minRow,
+        maxRow,
+        minCol,
+        maxCol,
+        bandResolution,
+      });
     }
 
-    const bandChunks = await Promise.all(bandPromises);
+    // Open all band arrays in parallel (not sequentially)
+    const arrays = await Promise.all(
+      bandInfos.map((info) => {
+        const path = info.path;
+        if (!this.arrayCache_.has(path)) {
+          this.arrayCache_.set(
+            path,
+            open(this.root_.resolve(path), {kind: 'array'}).catch((err) => {
+              this.arrayCache_.delete(path);
+              throw err;
+            }),
+          );
+        }
+        return this.arrayCache_.get(path);
+      }),
+    );
+
+    // Fire all get() calls synchronously so getRange() calls from all bands
+    // land in the same macrotask tick and can be batched together.
+    const bandResolutions = bandInfos.map((info) => info.bandResolution);
+    const bandChunks = await Promise.all(
+      arrays.map((array, i) => {
+        const info = bandInfos[i];
+        return get(array, [
+          slice(info.minRow, info.maxRow),
+          slice(info.minCol, info.maxCol),
+        ]);
+      }),
+    );
     const [tileColCount, tileRowCount] = toSize(this.tileGrid.getTileSize(z));
     return composeData(
       bandChunks,
