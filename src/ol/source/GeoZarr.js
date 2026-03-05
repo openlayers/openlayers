@@ -76,6 +76,15 @@ export default class GeoZarr extends DataTileSource {
     this.consolidatedMetadata_ = null;
 
     /**
+     * Cache of opened zarrita arrays keyed by path. Caching the Promise
+     * (not the resolved value) deduplicates concurrent opens for the same
+     * array path across tiles at the same zoom level.
+     * @type {Map<string, Promise<import('zarrita').Array<import('zarrita').DataType, any>>>}
+     * @private
+     */
+    this.arrayCache_ = new Map();
+
+    /**
      * @type {Array<string>}
      * @private
      */
@@ -261,9 +270,19 @@ export default class GeoZarr extends DataTileSource {
 
     // Open all band arrays in parallel (not sequentially)
     const arrays = await Promise.all(
-      bandInfos.map((info) =>
-        open(this.root_.resolve(info.path), {kind: 'array'}),
-      ),
+      bandInfos.map((info) => {
+        const path = info.path;
+        if (!this.arrayCache_.has(path)) {
+          this.arrayCache_.set(
+            path,
+            open(this.root_.resolve(path), {kind: 'array'}).catch((err) => {
+              this.arrayCache_.delete(path);
+              throw err;
+            }),
+          );
+        }
+        return this.arrayCache_.get(path);
+      }),
     );
 
     // Fire all get() calls synchronously so getRange() calls from all bands
