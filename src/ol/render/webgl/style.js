@@ -728,30 +728,31 @@ function parseFillProperties(style, builder, uniforms, context) {
       'fill-pattern-',
       textureId,
     );
-    let sampleSizeExpression = sizeExpression;
+    builder.setFillPatternSizeExpression(sizeExpression);
     let offsetExpression = 'vec2(0.)';
     if ('fill-pattern-offset' in style && 'fill-pattern-size' in style) {
-      sampleSizeExpression = expressionToGlsl(
+      const specifiedSizeExpression = expressionToGlsl(
         context,
         style[`fill-pattern-size`],
         NumberArrayType,
       );
+      builder.setFillPatternSizeExpression(specifiedSizeExpression);
       offsetExpression = parseImageOffsetProperties(
         style,
         'fill-pattern-',
         context,
         sizeExpression,
-        sampleSizeExpression,
+        `v_patternSizePx`,
       );
     }
     context.functions['sampleFillPattern'] =
-      `vec4 sampleFillPattern(sampler2D texture, vec2 textureSize, vec2 textureOffset, vec2 sampleSize, vec2 pxOrigin, vec2 pxPosition) {
-  float scaleRatio = pow(2., mod(u_zoom + 0.5, 1.) - 0.5);
-  vec2 pxRelativePos = pxPosition - pxOrigin;
+      `vec4 sampleFillPattern(sampler2D texture, vec2 textureSize, vec2 textureOffset, vec2 sampleSize, vec2 patternOriginPx, vec2 pxPosition, float sampleScaleRatio) {
+  vec2 pxRelativePos = pxPosition - patternOriginPx;
+
   // rotate the relative position from origin by the current view rotation
   pxRelativePos = vec2(pxRelativePos.x * cos(u_rotation) - pxRelativePos.y * sin(u_rotation), pxRelativePos.x * sin(u_rotation) + pxRelativePos.y * cos(u_rotation));
   // sample position is computed according to the sample offset & size
-  vec2 samplePos = mod(pxRelativePos / scaleRatio, sampleSize);
+  vec2 samplePos = mod(pxRelativePos / sampleScaleRatio, sampleSize);
   // also make sure that we're not sampling too close to the borders to avoid interpolation with outside pixels
   samplePos = clamp(samplePos, vec2(0.5), sampleSize - vec2(0.5));
   samplePos.y = sampleSize.y - samplePos.y; // invert y axis so that images appear upright
@@ -762,8 +763,9 @@ function parseFillProperties(style, builder, uniforms, context) {
     if ('fill-color' in style) {
       tintExpression = builder.getFillColorExpression();
     }
+
     builder.setFillColorExpression(
-      `${tintExpression} * sampleFillPattern(${textureName}, ${sizeExpression}, ${offsetExpression}, ${sampleSizeExpression}, pxOrigin, pxPos)`,
+      `${tintExpression} * sampleFillPattern(${textureName}, ${sizeExpression}, ${offsetExpression}, v_patternSizePx, v_patternOriginPx, pxPos, df_float(u_df_patternScaleRatio))`,
     );
   }
 }

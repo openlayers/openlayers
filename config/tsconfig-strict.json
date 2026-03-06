@@ -210,6 +210,7 @@
     "../src/ol/renderer/webgl/TileLayerBase.js",
     "../src/ol/renderer/webgl/VectorLayer.js",
     "../src/ol/renderer/webgl/VectorTileLayer.js",
+    "../src/ol/renderer/webgl/vectorUtil.js",
     "../src/ol/renderer/webgl/worldUtil.js",
     "../src/ol/reproj.js",
     "../src/ol/reproj/DataTile.js",

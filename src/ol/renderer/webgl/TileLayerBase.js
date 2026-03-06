@@ -13,6 +13,7 @@ import {
   getKey as getTileCoordKey,
 } from '../../tilecoord.js';
 import {
+  apply as applyTransform,
   create as createTransform,
   reset as resetTransform,
   rotate as rotateTransform,
@@ -21,19 +22,16 @@ import {
 } from '../../transform.js';
 import {abstract, getUid} from '../../util.js';
 import {create as createMat4} from '../../vec/mat4.js';
+import {DefaultUniform} from '../../webgl/Helper.js';
 import WebGLLayerRenderer from './Layer.js';
 
 export const Uniforms = {
+  ...DefaultUniform,
   TILE_TRANSFORM: 'u_tileTransform',
   TRANSITION_ALPHA: 'u_transitionAlpha',
   DEPTH: 'u_depth',
   RENDER_EXTENT: 'u_renderExtent', // intersection of layer, source, and view extent
-  PATTERN_ORIGIN: 'u_patternOrigin',
-  RESOLUTION: 'u_resolution',
-  ZOOM: 'u_zoom',
   GLOBAL_ALPHA: 'u_globalAlpha',
-  PROJECTION_MATRIX: 'u_projectionMatrix',
-  SCREEN_TO_WORLD_MATRIX: 'u_screenToWorldMatrix',
 };
 
 /**
@@ -172,10 +170,25 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
     this.tileTransform_ = createTransform();
 
     /**
-     * @type {Array<number>}
      * @protected
      */
-    this.tempMat4 = createMat4();
+    this.tmpCoords_ = [0, 0];
+    /**
+     * @protected
+     */
+    this.tmpCoords2_ = [0, 0];
+    /**
+     * @protected
+     */
+    this.tmpExtent_ = [0, 0, 0, 0];
+    /**
+     * @protected
+     */
+    this.tmpTransform_ = createTransform();
+    /**
+     * @protected
+     */
+    this.tmpMat4_ = createMat4();
 
     /**
      * @type {import("../../TileRange.js").default}
@@ -821,6 +834,31 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
   disposeInternal() {
     super.disposeInternal();
     delete this.frameState;
+  }
+
+  /**
+   * Apply the render extent as a uniform; the render extent uniform is expressed in the same coordinate space as the geometries in the render buffers,
+   * whereas the input render extent is expressed in full world coordinates.
+   * @protected
+   * @param {import("../../extent.js").Extent} renderExtent Render extent in map units (world coordinates)
+   * @param {import('../../transform.js').Transform} worldToLocalTransform Transform.
+   */
+  applyRenderExtentUniform(renderExtent, worldToLocalTransform) {
+    // minx, miny
+    this.tmpCoords_[0] = renderExtent[0];
+    this.tmpCoords_[1] = renderExtent[1];
+    applyTransform(worldToLocalTransform, this.tmpCoords_);
+
+    // maxx, maxy
+    this.tmpCoords2_[0] = renderExtent[2];
+    this.tmpCoords2_[1] = renderExtent[3];
+    applyTransform(worldToLocalTransform, this.tmpCoords2_);
+
+    this.tmpExtent_[0] = this.tmpCoords_[0];
+    this.tmpExtent_[1] = this.tmpCoords_[1];
+    this.tmpExtent_[2] = this.tmpCoords2_[0];
+    this.tmpExtent_[3] = this.tmpCoords2_[1];
+    this.helper.setUniformFloatVec4(Uniforms.RENDER_EXTENT, this.tmpExtent_);
   }
 }
 
