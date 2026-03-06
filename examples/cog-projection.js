@@ -1,7 +1,7 @@
 import proj4 from 'proj4';
 import Map from '../src/ol/Map.js';
 import TileLayer from '../src/ol/layer/WebGLTile.js';
-import {fromProjectionCode, register} from '../src/ol/proj/proj4.js';
+import {register} from '../src/ol/proj/proj4.js';
 import GeoTIFF from '../src/ol/source/GeoTIFF.js';
 import XYZ from '../src/ol/source/XYZ.js';
 
@@ -19,6 +19,7 @@ const cogSource = new GeoTIFF({
       nodata: 0,
     },
   ],
+  loadMissingProjection: true,
 });
 
 cogSource.setAttributions(
@@ -46,11 +47,5 @@ const map = new Map({
       style: {gamma: 0.7},
     }),
   ],
-  view: cogSource
-    .getView()
-    .then((viewConfig) =>
-      fromProjectionCode(viewConfig.projection.getCode()).then(
-        () => viewConfig,
-      ),
-    ),
+  view: cogSource.getView(),
 });
