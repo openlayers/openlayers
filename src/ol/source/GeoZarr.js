@@ -7,6 +7,7 @@ import {getCenter} from '../extent.js';
 import {get as getProjection, toUserCoordinate, toUserExtent} from '../proj.js';
 import {toSize} from '../size.js';
 import WMTSTileGrid from '../tilegrid/WMTS.js';
+import BatchedFetchStore from '@zarrita/storage/batched-fetch';
 import DataTileSource from './DataTile.js';
 import {parseTileMatrixSet} from './ogcTileUtil.js';
 
@@ -132,7 +133,7 @@ export default class GeoZarr extends DataTileSource {
   }
 
   async configure_() {
-    const store = new FetchStore(this.url_);
+    const store = new BatchedFetchStore(new FetchStore(this.url_));
 
     // Fetch root zarr.json once for both opening the root and extracting
     // consolidated metadata. Without this, open() and the manual metadata
