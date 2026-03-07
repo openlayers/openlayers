@@ -1,12 +1,16 @@
 /**
  * @module ol/render/webgl/renderinstructions
  */
-import {UNDEFINED_PROP_VALUE} from '../../expr/gpu.js';
+import {
+  UNDEFINED_PROP_VALUE,
+  getStringNumberEquivalent,
+} from '../../expr/gpu.js';
 import {transform2D} from '../../geom/flat/transform.js';
 import {apply as applyTransform} from '../../transform.js';
 
 /**
  * @param {Float32Array} renderInstructions Render instructions
+ * @param {import('../../webgl/LabelsArray.js').default} labels Typed array of the values of string attributes, encoded as UTF-8 and appended next to each other
  * @param {import('./VectorStyleRenderer.js').AttributeDefinitions} customAttributes Custom attributes
  * @param {import("./MixedGeometryBatch.js").GeometryBatchItem} batchEntry Batch item
  * @param {number} currentIndex Current index
@@ -14,6 +18,7 @@ import {apply as applyTransform} from '../../transform.js';
  */
 function pushCustomAttributesInRenderInstructions(
   renderInstructions,
+  labels,
   customAttributes,
   batchEntry,
   currentIndex,
@@ -22,6 +27,13 @@ function pushCustomAttributesInRenderInstructions(
   for (const key in customAttributes) {
     const attr = customAttributes[key];
     const value = attr.callback.call(batchEntry, batchEntry.feature);
+    if (typeof value === 'string') {
+      renderInstructions[currentIndex + shift++] =
+        getStringNumberEquivalent(value);
+      renderInstructions[currentIndex + shift++] = labels.push(value);
+      renderInstructions[currentIndex + shift++] = value.length;
+      continue;
+    }
     let first = value?.[0] ?? value;
     if (first === UNDEFINED_PROP_VALUE) {
       console.warn('The "has" operator might return false positives.'); // eslint-disable-line no-console
@@ -35,15 +47,18 @@ function pushCustomAttributesInRenderInstructions(
     if (!attr.size || attr.size === 1) {
       continue;
     }
-    renderInstructions[currentIndex + shift++] = value[1];
+    renderInstructions[currentIndex + shift++] =
+      value?.[1] ?? UNDEFINED_PROP_VALUE;
     if (attr.size < 3) {
       continue;
     }
-    renderInstructions[currentIndex + shift++] = value[2];
+    renderInstructions[currentIndex + shift++] =
+      value?.[2] ?? UNDEFINED_PROP_VALUE;
     if (attr.size < 4) {
       continue;
     }
-    renderInstructions[currentIndex + shift++] = value[3];
+    renderInstructions[currentIndex + shift++] =
+      value?.[3] ?? UNDEFINED_PROP_VALUE;
   }
   return shift;
 }
@@ -64,6 +79,7 @@ export function getCustomAttributesSize(customAttributes) {
  * [ x0, y0, customAttr0, ... , xN, yN, customAttrN ]
  * @param {import("./MixedGeometryBatch.js").PointGeometryBatch} batch Point geometry batch
  * @param {Float32Array} renderInstructions Render instructions
+ * @param {import('../../webgl/LabelsArray.js').default} labels Typed array of the values of string attributes, encoded as UTF-8 and appended next to each other
  * @param {import('./VectorStyleRenderer.js').AttributeDefinitions} customAttributes Custom attributes
  * @param {import("../../transform.js").Transform} transform Transform to apply to coordinates
  * @return {Float32Array} Generated render instructions
@@ -71,6 +87,7 @@ export function getCustomAttributesSize(customAttributes) {
 export function generatePointRenderInstructions(
   batch,
   renderInstructions,
+  labels,
   customAttributes,
   transform,
 ) {
@@ -100,6 +117,7 @@ export function generatePointRenderInstructions(
       renderInstructions[renderIndex++] = tmpCoords[1];
       renderIndex += pushCustomAttributesInRenderInstructions(
         renderInstructions,
+        labels,
         customAttributes,
         batchEntry,
         renderIndex,
@@ -114,6 +132,7 @@ export function generatePointRenderInstructions(
  * [ customAttr0, ... , customAttrN, numberOfVertices0, x0, y0, ... , xN, yN, numberOfVertices1, ... ]
  * @param {import("./MixedGeometryBatch.js").LineStringGeometryBatch} batch Line String geometry batch
  * @param {Float32Array} renderInstructions Render instructions
+ * @param {import('../../webgl/LabelsArray.js').default} labels Typed array of the values of string attributes, encoded as UTF-8 and appended next to each other
  * @param {import('./VectorStyleRenderer.js').AttributeDefinitions} customAttributes Custom attributes
  * @param {import("../../transform.js").Transform} transform Transform to apply to coordinates
  * @return {Float32Array} Generated render instructions
@@ -121,6 +140,7 @@ export function generatePointRenderInstructions(
 export function generateLineStringRenderInstructions(
   batch,
   renderInstructions,
+  labels,
   customAttributes,
   transform,
 ) {
@@ -156,6 +176,7 @@ export function generateLineStringRenderInstructions(
       );
       renderIndex += pushCustomAttributesInRenderInstructions(
         renderInstructions,
+        labels,
         customAttributes,
         batchEntry,
         renderIndex,
@@ -180,6 +201,7 @@ export function generateLineStringRenderInstructions(
  * [ customAttr0, ..., customAttrN, numberOfRings, numberOfVerticesInRing0, ..., numberOfVerticesInRingN, x0, y0, ..., xN, yN, numberOfRings,... ]
  * @param {import("./MixedGeometryBatch.js").PolygonGeometryBatch} batch Polygon geometry batch
  * @param {Float32Array} renderInstructions Render instructions
+ * @param {import('../../webgl/LabelsArray.js').default} labels Typed array of the values of string attributes, encoded as UTF-8 and appended next to each other
  * @param {import('./VectorStyleRenderer.js').AttributeDefinitions} customAttributes Custom attributes
  * @param {import("../../transform.js").Transform} transform Transform to apply to coordinates
  * @return {Float32Array} Generated render instructions
@@ -187,6 +209,7 @@ export function generateLineStringRenderInstructions(
 export function generatePolygonRenderInstructions(
   batch,
   renderInstructions,
+  labels,
   customAttributes,
   transform,
 ) {
@@ -223,6 +246,7 @@ export function generatePolygonRenderInstructions(
       );
       renderIndex += pushCustomAttributesInRenderInstructions(
         renderInstructions,
+        labels,
         customAttributes,
         batchEntry,
         renderIndex,

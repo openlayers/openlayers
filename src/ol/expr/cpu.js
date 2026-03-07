@@ -12,6 +12,10 @@ import {
 import {ColorType, LiteralExpression, Ops, parse} from './expression.js';
 
 /**
+ * @typedef {import('./expression.js').ValueType} ValueType
+ */
+
+/**
  * @fileoverview This module includes functions to build expressions for evaluation on the CPU.
  * Building is composed of two steps: parsing and compiling.  The parsing step takes an encoded
  * expression and returns an instance of one of the expression classes.  The compiling step takes
@@ -79,7 +83,7 @@ export function newEvaluationContext() {
 
 /**
  * @param {import('./expression.js').EncodedExpression} encoded The encoded expression.
- * @param {number} type The expected type.
+ * @param {ValueType} type The expected type.
  * @param {import('./expression.js').ParsingContext} context The parsing context.
  * @return {ExpressionEvaluator} The expression evaluator.
  */

@@ -7,6 +7,7 @@ import {ShaderBuilder} from '../../render/webgl/ShaderBuilder.js';
 import VectorStyleRenderer, {
   convertStyleToShaders,
 } from '../../render/webgl/VectorStyleRenderer.js';
+import {createPostProcessDefinition} from '../../render/webgl/textUtil.js';
 import {
   create as createTransform,
   makeInverse as makeInverseTransform,
@@ -75,6 +76,12 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
         [Uniforms.PATTERN_ORIGIN]: [0, 0],
         [Uniforms.TILE_MASK_TEXTURE]: () => this.tileMaskTarget_.getTexture(),
       },
+      postProcesses: [
+        createPostProcessDefinition(
+          () => this.styleRenderer_.getTextOverlayCanvas(),
+          () => this.styleRenderer_.getTextOverlayFrameState(),
+        ),
+      ],
     });
 
     /**
@@ -151,6 +158,12 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
      * @private
      */
     this.tileMaskProgram_;
+
+    /**
+     * @type {Array<string>}
+     * @private
+     */
+    this.tilesToRender_ = [];
 
     this.applyOptions_(options);
   }
@@ -259,6 +272,7 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
       frameState,
       this.currentFrameStateTransform_,
     );
+    this.tilesToRender_.length = 0;
   }
 
   /**
@@ -290,6 +304,13 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
       mat4FromTransform(this.tmpMat4_, this.tmpTransform_),
     );
     return true;
+  }
+
+  /**
+   * @override
+   */
+  beforeFinalize(frameState) {
+    this.styleRenderer_.finalizeTextRender(frameState); //TODO use this to trigger a rerender
   }
 
   /**
@@ -373,6 +394,16 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
         depth,
       );
     });
+    this.tilesToRender_.push(tileRepresentation.tile.getKey());
+  }
+
+  /**
+   * @override
+   */
+  beforeTileDispose(tileRepresentation) {
+    this.tilesToRender_.slice(
+      this.tilesToRender_.indexOf(tileRepresentation.tile.getKey()),
+    );
   }
 
   /**
