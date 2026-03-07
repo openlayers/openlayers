@@ -1,7 +1,11 @@
 /**
  * @module ol/render/canvas/LineStringBuilder
  */
-import {defaultLineDash, defaultLineDashOffset} from '../canvas.js';
+import {
+  defaultLineDash,
+  defaultLineDashOffset,
+  defaultStrokeStyle,
+} from '../canvas.js';
 import CanvasBuilder from './Builder.js';
 import CanvasInstruction, {
   beginPathInstruction,
@@ -72,7 +76,7 @@ class CanvasLineStringBuilder extends CanvasBuilder {
     this.hitDetectionInstructions.push(
       [
         CanvasInstruction.SET_STROKE_STYLE,
-        state.strokeStyle,
+        defaultStrokeStyle,
         state.lineWidth,
         state.lineCap,
         state.lineJoin,
@@ -114,7 +118,7 @@ class CanvasLineStringBuilder extends CanvasBuilder {
     this.hitDetectionInstructions.push(
       [
         CanvasInstruction.SET_STROKE_STYLE,
-        state.strokeStyle,
+        defaultStrokeStyle,
         state.lineWidth,
         state.lineCap,
         state.lineJoin,
