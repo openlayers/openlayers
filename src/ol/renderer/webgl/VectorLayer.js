@@ -315,9 +315,10 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
 
   /**
    * @param {import("../../transform.js").Transform} batchInvertTransform Inverse of the transformation in which geometries are expressed
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @private
    */
-  applyUniforms_(batchInvertTransform) {
+  applyUniforms_(batchInvertTransform, frameState) {
     // world to screen matrix
     setFromTransform(this.tmpTransform_, this.currentFrameStateTransform_);
     multiplyTransform(this.tmpTransform_, batchInvertTransform);
@@ -333,11 +334,27 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
       mat4FromTransform(this.tmpMat4_, this.tmpTransform_),
     );
 
-    // pattern origin should always be [0, 0] in world coordinates
+    // pattern origin: compute pixel position of world [0,0] using double
+    // precision on the CPU to avoid float32 precision loss in the shader
+    // (see https://github.com/openlayers/openlayers/issues/16705)
     this.tmpCoords_[0] = 0;
     this.tmpCoords_[1] = 0;
-    makeInverseTransform(this.tmpTransform_, batchInvertTransform);
-    applyTransform(this.tmpTransform_, this.tmpCoords_);
+    applyTransform(this.currentFrameStateTransform_, this.tmpCoords_);
+    // tmpCoords_ is now the clip-space position of world [0,0]
+    // convert to pixel offset from viewport center (double precision)
+    const size = frameState.size;
+    const offsetX = this.tmpCoords_[0] * size[0] * 0.5;
+    const offsetY = this.tmpCoords_[1] * size[1] * 0.5;
+    // reduce offset modulo K to keep values small for float32 precision;
+    // K must be proportional to scaleRatio so that K/scaleRatio is a fixed
+    // integer — otherwise the pattern drifts as scaleRatio changes with zoom
+    const scaleRatio = Math.pow(
+      2,
+      ((frameState.viewState.zoom + 0.5) % 1) - 0.5,
+    );
+    const K = 65536 * scaleRatio;
+    this.tmpCoords_[0] = size[0] * 0.5 + offsetX - K * Math.floor(offsetX / K);
+    this.tmpCoords_[1] = size[1] * 0.5 + offsetY - K * Math.floor(offsetY / K);
     this.helper.setUniformFloatVec2(Uniforms.PATTERN_ORIGIN, this.tmpCoords_);
   }
 
@@ -482,7 +499,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
         continue;
       }
       this.styleRenderer_.render(this.buffers_, frameState, () => {
-        this.applyUniforms_(this.buffers_.invertVerticesTransform);
+        this.applyUniforms_(this.buffers_.invertVerticesTransform, frameState);
         this.helper.applyHitDetectionUniform(forHitDetection);
       });
     } while (++world < endWorld);
