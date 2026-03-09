@@ -307,7 +307,7 @@ function parseStyle(style) {
     );
   }
 
-  /** @type {Object<string,import("../webgl/Helper").UniformValue>} */
+  /** @type {Object<string,import("../webgl/Helper.js").UniformValue>} */
   const uniforms = {};
 
   for (const variableName of variableNames) {

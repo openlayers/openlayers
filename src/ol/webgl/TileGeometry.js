@@ -12,7 +12,7 @@ import BaseTileRepresentation from './BaseTileRepresentation.js';
 import WebGLArrayBuffer from './Buffer.js';
 
 /**
- * @typedef {import("../VectorRenderTile").default} TileType
+ * @typedef {import("../VectorRenderTile.js").default} TileType
  */
 
 /**

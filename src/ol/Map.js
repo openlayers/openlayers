@@ -82,7 +82,7 @@ import {getUid} from './util.js';
 
 /**
  * @typedef {Object} AtPixelOptions
- * @property {undefined|function(import("./layer/Layer.js").default<import("./source/Source").default>): boolean} [layerFilter] Layer filter
+ * @property {undefined|function(import("./layer/Layer.js").default<import("./source/Source.js").default>): boolean} [layerFilter] Layer filter
  * function. The filter function will receive one argument, the
  * {@link module:ol/layer/Layer~Layer layer-candidate} and it should return a boolean value.
  * Only layers which are visible and for which this function returns `true`
@@ -103,19 +103,19 @@ import {getUid} from './util.js';
  */
 
 /**
- * @typedef {import("./ObjectEventType").Types|'change:layergroup'|'change:size'|'change:target'|'change:view'} MapObjectEventTypes
+ * @typedef {import("./ObjectEventType.js").Types|'change:layergroup'|'change:size'|'change:target'|'change:view'} MapObjectEventTypes
  */
 
 /***
  * @template Return
- * @typedef {import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default, Return> &
- *    import("./Observable").OnSignature<MapObjectEventTypes, import("./Object").ObjectEvent, Return> &
- *    import("./Observable").OnSignature<import("./MapBrowserEventType").Types, import("./MapBrowserEvent").default, Return> &
- *    import("./Observable").OnSignature<import("./MapEventType").Types, import("./MapEvent").default, Return> &
- *    import("./Observable").OnSignature<import("./render/EventType").MapRenderEventTypes, import("./render/Event").default, Return> &
- *    import("./Observable").CombinedOnSignature<import("./Observable").EventTypes|MapObjectEventTypes|
- *      import("./MapBrowserEventType").Types|import("./MapEventType").Types|
- *      import("./render/EventType").MapRenderEventTypes, Return>} MapEventHandler
+ * @typedef {import("./Observable.js").OnSignature<import("./Observable.js").EventTypes, import("./events/Event.js").default, Return> &
+ *    import("./Observable.js").OnSignature<MapObjectEventTypes, import("./Object.js").ObjectEvent, Return> &
+ *    import("./Observable.js").OnSignature<import("./MapBrowserEventType.js").Types, import("./MapBrowserEvent.js").default, Return> &
+ *    import("./Observable.js").OnSignature<import("./MapEventType.js").Types, import("./MapEvent.js").default, Return> &
+ *    import("./Observable.js").OnSignature<import("./render/EventType.js").MapRenderEventTypes, import("./render/Event.js").default, Return> &
+ *    import("./Observable.js").CombinedOnSignature<import("./Observable.js").EventTypes|MapObjectEventTypes|
+ *      import("./MapBrowserEventType.js").Types|import("./MapEventType.js").Types|
+ *      import("./render/EventType.js").MapRenderEventTypes, Return>} MapEventHandler
  */
 
 /**
@@ -257,12 +257,12 @@ class Map extends BaseObject {
     options = options || {};
 
     /***
-     * @type {MapEventHandler<import("./events").EventsKey>}
+     * @type {MapEventHandler<import("./events.js").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {MapEventHandler<import("./events").EventsKey>}
+     * @type {MapEventHandler<import("./events.js").EventsKey>}
      */
     this.once;
 
@@ -693,7 +693,7 @@ class Map extends BaseObject {
    * Polygons must have a fill style applied to ensure that pixels inside a polygon are detected.
    * The fill can be transparent.
    * @param {import("./pixel.js").Pixel} pixel Pixel.
-   * @param {function(import("./Feature.js").FeatureLike, import("./layer/Layer.js").default<import("./source/Source").default>, import("./geom/SimpleGeometry.js").default): T} callback Feature callback. The callback will be
+   * @param {function(import("./Feature.js").FeatureLike, import("./layer/Layer.js").default<import("./source/Source.js").default>, import("./geom/SimpleGeometry.js").default): T} callback Feature callback. The callback will be
    *     called with two arguments. The first argument is one
    *     {@link module:ol/Feature~Feature feature} or
    *     {@link module:ol/render/Feature~RenderFeature render feature} at the pixel, the second is
@@ -1882,7 +1882,7 @@ function createOptionsInternal(options) {
     }
   }
 
-  /** @type {Collection<import("./interaction/Interaction").default>} */
+  /** @type {Collection<import("./interaction/Interaction.js").default>} */
   let interactions;
   if (options.interactions !== undefined) {
     if (Array.isArray(options.interactions)) {

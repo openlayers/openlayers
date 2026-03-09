@@ -11,7 +11,7 @@ import {
   getUserProjection,
   toUserExtent,
 } from '../../proj.js';
-import {Icon} from '../../style.js';
+import Icon from '../../style/Icon.js';
 import CanvasImmediateRenderer from './Immediate.js';
 
 export const HIT_DETECT_RESOLUTION = 0.5;
@@ -174,7 +174,7 @@ export function createHitDetectionImageData(
 }
 
 /**
- * @param {import("../../pixel").Pixel} pixel Pixel coordinate on the hit
+ * @param {import("../../pixel.js").Pixel} pixel Pixel coordinate on the hit
  * detection canvas in css pixels.
  * @param {Array<F>} features Features. Has to
  * match the `features` array that was passed to `createHitDetectionImageData()`.

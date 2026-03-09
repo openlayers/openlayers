@@ -21,12 +21,12 @@ import BaseVector from './BaseVector.js';
 
 /***
  * @template Return
- * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
- *   import("../Observable").OnSignature<import("./Base").BaseLayerObjectEventTypes|
- *     import("./Layer.js").LayerEventType|HeatmapEventTypes, import("../Object").ObjectEvent, Return> &
- *   import("../Observable").OnSignature<import("../render/EventType").LayerRenderEventTypes, import("../render/Event").default, Return> &
- *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("./Base").BaseLayerObjectEventTypes|
- *     import("./Layer.js").LayerEventType|HeatmapEventTypes|import("../render/EventType").LayerRenderEventTypes, Return>} HeatmapOnSignature
+ * @typedef {import("../Observable.js").OnSignature<import("../Observable.js").EventTypes, import("../events/Event.js").default, Return> &
+ *   import("../Observable.js").OnSignature<import("./Base.js").BaseLayerObjectEventTypes|
+ *     import("./Layer.js").LayerEventType|HeatmapEventTypes, import("../Object.js").ObjectEvent, Return> &
+ *   import("../Observable.js").OnSignature<import("../render/EventType.js").LayerRenderEventTypes, import("../render/Event.js").default, Return> &
+ *   import("../Observable.js").CombinedOnSignature<import("../Observable.js").EventTypes|import("./Base.js").BaseLayerObjectEventTypes|
+ *     import("./Layer.js").LayerEventType|HeatmapEventTypes|import("../render/EventType.js").LayerRenderEventTypes, Return>} HeatmapOnSignature
  */
 
 /**
@@ -115,12 +115,12 @@ class Heatmap extends BaseVector {
     super(baseOptions);
 
     /***
-     * @type {HeatmapOnSignature<import("../events").EventsKey>}
+     * @type {HeatmapOnSignature<import("../events.js").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {HeatmapOnSignature<import("../events").EventsKey>}
+     * @type {HeatmapOnSignature<import("../events.js").EventsKey>}
      */
     this.once;
 

@@ -174,7 +174,7 @@ function parseStyle(style, bandCount, nodataBandIndex) {
     );
   }
 
-  /** @type {Object<string,import("../webgl/Helper").UniformValue>} */
+  /** @type {Object<string,import("../webgl/Helper.js").UniformValue>} */
   const uniforms = {};
 
   const numVariables = Object.keys(context.variables).length;
@@ -448,7 +448,7 @@ class WebGLTileLayer extends BaseTileLayer {
   }
 
   /**
-   * @param {import("../Map").FrameState} frameState Frame state.
+   * @param {import("../Map.js").FrameState} frameState Frame state.
    * @param {Array<SourceType>} sources Sources.
    * @return {HTMLElement} Canvas.
    */

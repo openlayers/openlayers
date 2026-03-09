@@ -228,14 +228,14 @@ import {DEFAULT_TILE_SIZE} from './tilegrid/common.js';
 const DEFAULT_MIN_ZOOM = 0;
 
 /**
- * @typedef {import("./ObjectEventType").Types|'change:center'|'change:resolution'|'change:rotation'} ViewObjectEventTypes
+ * @typedef {import("./ObjectEventType.js").Types|'change:center'|'change:resolution'|'change:rotation'} ViewObjectEventTypes
  */
 
 /***
  * @template Return
- * @typedef {import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default, Return> &
- *   import("./Observable").OnSignature<ViewObjectEventTypes, import("./Object").ObjectEvent, Return> &
- *   import("./Observable").CombinedOnSignature<import("./Observable").EventTypes|ViewObjectEventTypes, Return>} ViewOnSignature
+ * @typedef {import("./Observable.js").OnSignature<import("./Observable.js").EventTypes, import("./events/Event.js").default, Return> &
+ *   import("./Observable.js").OnSignature<ViewObjectEventTypes, import("./Object.js").ObjectEvent, Return> &
+ *   import("./Observable.js").CombinedOnSignature<import("./Observable.js").EventTypes|ViewObjectEventTypes, Return>} ViewOnSignature
  */
 
 /**
@@ -319,12 +319,12 @@ class View extends BaseObject {
     super();
 
     /***
-     * @type {ViewOnSignature<import("./events").EventsKey>}
+     * @type {ViewOnSignature<import("./events.js").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {ViewOnSignature<import("./events").EventsKey>}
+     * @type {ViewOnSignature<import("./events.js").EventsKey>}
      */
     this.once;
 
@@ -1384,7 +1384,7 @@ class View extends BaseObject {
   /**
    * Calculate rotated extent
    * @param {import("./geom/SimpleGeometry.js").default} geometry The geometry.
-   * @return {import("./extent").Extent} The rotated extent for the geometry.
+   * @return {import("./extent.js").Extent} The rotated extent for the geometry.
    */
   rotatedExtentForGeometry(geometry) {
     const rotation = this.getRotation();

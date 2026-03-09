@@ -28,7 +28,7 @@ const SelectEventType = {
 /**
  * A function that takes a {@link module:ol/Feature~Feature} and returns `true` if the feature may be
  * selected or `false` otherwise.
- * @typedef {function(import("../Feature.js").default, import("../layer/Layer.js").default<import("../source/Source").default>):boolean} FilterFunction
+ * @typedef {function(import("../Feature.js").default, import("../layer/Layer.js").default<import("../source/Source.js").default>):boolean} FilterFunction
  */
 
 /**
@@ -47,7 +47,7 @@ const SelectEventType = {
  * feature removes all from the selection.
  * See `toggle`, `add`, `remove` options for adding/removing extra features to/
  * from the selection.
- * @property {Array<import("../layer/Layer.js").default>|function(import("../layer/Layer.js").default<import("../source/Source").default>): boolean} [layers]
+ * @property {Array<import("../layer/Layer.js").default>|function(import("../layer/Layer.js").default<import("../source/Source.js").default>): boolean} [layers]
  * A list of layers from which features should be selected. Alternatively, a
  * filter function can be provided. The function will be called for each layer
  * in the map and should return `true` for layers that you want to be
@@ -134,11 +134,11 @@ const originalFeatureStyles = {};
 
 /***
  * @template Return
- * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
- *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
- *     'change:active', import("../Object").ObjectEvent, Return> &
- *   import("../Observable").OnSignature<'select', SelectEvent, Return> &
- *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
+ * @typedef {import("../Observable.js").OnSignature<import("../Observable.js").EventTypes, import("../events/Event.js").default, Return> &
+ *   import("../Observable.js").OnSignature<import("../ObjectEventType.js").Types|
+ *     'change:active', import("../Object.js").ObjectEvent, Return> &
+ *   import("../Observable.js").OnSignature<'select', SelectEvent, Return> &
+ *   import("../Observable.js").CombinedOnSignature<import("../Observable.js").EventTypes|import("../ObjectEventType.js").Types|
  *     'change:active'|'select', Return>} SelectOnSignature
  */
 
@@ -163,12 +163,12 @@ class Select extends Interaction {
     super();
 
     /***
-     * @type {SelectOnSignature<import("../events").EventsKey>}
+     * @type {SelectOnSignature<import("../events.js").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {SelectOnSignature<import("../events").EventsKey>}
+     * @type {SelectOnSignature<import("../events.js").EventsKey>}
      */
     this.once;
 
@@ -248,7 +248,7 @@ class Select extends Interaction {
      */
     this.features_ = options.features || new Collection();
 
-    /** @type {function(import("../layer/Layer.js").default<import("../source/Source").default>): boolean} */
+    /** @type {function(import("../layer/Layer.js").default<import("../source/Source.js").default>): boolean} */
     let layerFilter;
     if (options.layers) {
       if (typeof options.layers === 'function') {
@@ -265,7 +265,7 @@ class Select extends Interaction {
 
     /**
      * @private
-     * @type {function(import("../layer/Layer.js").default<import("../source/Source").default>): boolean}
+     * @type {function(import("../layer/Layer.js").default<import("../source/Source.js").default>): boolean}
      */
     this.layerFilter_ = layerFilter;
 

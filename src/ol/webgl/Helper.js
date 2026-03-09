@@ -75,7 +75,7 @@ export const AttributeType = {
  */
 
 /**
- * @typedef {number|Array<number>|HTMLCanvasElement|HTMLImageElement|ImageData|WebGLTexture|import("../transform").Transform} UniformLiteralValue
+ * @typedef {number|Array<number>|HTMLCanvasElement|HTMLImageElement|ImageData|WebGLTexture|import("../transform.js").Transform} UniformLiteralValue
  */
 
 /**
@@ -517,7 +517,7 @@ class WebGLHelper extends Disposable {
    * Just bind the buffer if it's in the cache. Otherwise create
    * the WebGL buffer, bind it, populate it, and add an entry to
    * the cache.
-   * @param {import("./Buffer").default} buffer Buffer.
+   * @param {import("./Buffer.js").default} buffer Buffer.
    */
   bindBuffer(buffer) {
     const gl = this.gl_;
@@ -537,7 +537,7 @@ class WebGLHelper extends Disposable {
   /**
    * Update the data contained in the buffer array; this is required for the
    * new data to be rendered
-   * @param {import("./Buffer").default} buffer Buffer.
+   * @param {import("./Buffer.js").default} buffer Buffer.
    */
   flushBufferData(buffer) {
     const gl = this.gl_;
@@ -670,7 +670,7 @@ class WebGLHelper extends Disposable {
 
   /**
    * Set up an attribute array buffer for use in the vertex shader.
-   * @param {import("./Buffer").default} buffer The buffer.
+   * @param {import("./Buffer.js").default} buffer The buffer.
    * @param {string} attributeName The attribute name.
    * @param {number} size The number of components per attribute vertex.
    */
@@ -1062,8 +1062,8 @@ class WebGLHelper extends Disposable {
    * Sets the given transform to apply the rotation/translation/scaling of the given frame state.
    * The resulting transform can be used to convert world space coordinates to view coordinates in the [-1, 1] range.
    * @param {import("../Map.js").FrameState} frameState Frame state.
-   * @param {import("../transform").Transform} transform Transform to update.
-   * @return {import("../transform").Transform} The updated transform object.
+   * @param {import("../transform.js").Transform} transform Transform to update.
+   * @return {import("../transform.js").Transform} The updated transform object.
    */
   makeProjectionTransform(frameState, transform) {
     const size = frameState.size;

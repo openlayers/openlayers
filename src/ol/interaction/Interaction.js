@@ -7,10 +7,10 @@ import InteractionProperty from './Property.js';
 
 /***
  * @template Return
- * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
- *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
- *     'change:active', import("../Object").ObjectEvent, Return> &
- *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
+ * @typedef {import("../Observable.js").OnSignature<import("../Observable.js").EventTypes, import("../events/Event.js").default, Return> &
+ *   import("../Observable.js").OnSignature<import("../ObjectEventType.js").Types|
+ *     'change:active', import("../Object.js").ObjectEvent, Return> &
+ *   import("../Observable.js").CombinedOnSignature<import("../Observable.js").EventTypes|import("../ObjectEventType.js").Types|
  *     'change:active', Return>} InteractionOnSignature
  */
 
@@ -46,12 +46,12 @@ class Interaction extends BaseObject {
     super();
 
     /***
-     * @type {InteractionOnSignature<import("../events").EventsKey>}
+     * @type {InteractionOnSignature<import("../events.js").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {InteractionOnSignature<import("../events").EventsKey>}
+     * @type {InteractionOnSignature<import("../events.js").EventsKey>}
      */
     this.once;
 

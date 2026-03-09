@@ -1,8 +1,8 @@
-import Map from 'ol/Map.js';
-import View from 'ol/View.js';
-import TileLayer from 'ol/layer/Tile.js';
-import {useGeographic} from 'ol/proj.js';
-import ImageTile from 'ol/source/ImageTile.js';
+import Map from '../src/ol/Map.js';
+import View from '../src/ol/View.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import {useGeographic} from '../src/ol/proj.js';
+import ImageTile from '../src/ol/source/ImageTile.js';
 
 useGeographic();
 

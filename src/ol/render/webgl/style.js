@@ -136,7 +136,7 @@ function getColorFromDistanceField(
  * The image size expression in GLSL will be returned
  * @param {import("../../style/flat.js").FlatStyle} style Style
  * @param {ShaderBuilder} builder Shader builder
- * @param {Object<string,import("../../webgl/Helper").UniformValue>} uniforms Uniforms
+ * @param {Object<string,import("../../webgl/Helper.js").UniformValue>} uniforms Uniforms
  * @param {'icon-'|'fill-pattern-'|'stroke-pattern-'} prefix Property prefix
  * @param {string} textureId A identifier that will be used in the generated uniforms: `sample2d u_texture<id>` and `vec2 u_texture<id>_size`
  * @return {string} The image size expression
@@ -206,7 +206,7 @@ function parseImageOffsetProperties(
 /**
  * @param {import("../../style/flat.js").FlatStyle} style Style
  * @param {ShaderBuilder} builder Shader builder
- * @param {Object<string,import("../../webgl/Helper").UniformValue>} uniforms Uniforms
+ * @param {Object<string,import("../../webgl/Helper.js").UniformValue>} uniforms Uniforms
  * @param {import("../../expr/gpu.js").CompilationContext} context Shader compilation context
  */
 function parseCircleProperties(style, builder, uniforms, context) {
@@ -281,7 +281,7 @@ function parseCircleProperties(style, builder, uniforms, context) {
 /**
  * @param {import("../../style/flat.js").FlatStyle} style Style
  * @param {ShaderBuilder} builder Shader builder
- * @param {Object<string,import("../../webgl/Helper").UniformValue>} uniforms Uniforms
+ * @param {Object<string,import("../../webgl/Helper.js").UniformValue>} uniforms Uniforms
  * @param {import("../../expr/gpu.js").CompilationContext} context Shader compilation context
  */
 function parseShapeProperties(style, builder, uniforms, context) {
@@ -404,7 +404,7 @@ function parseShapeProperties(style, builder, uniforms, context) {
 /**
  * @param {import("../../style/flat.js").FlatStyle} style Style
  * @param {ShaderBuilder} builder Shader builder
- * @param {Object<string,import("../../webgl/Helper").UniformValue>} uniforms Uniforms
+ * @param {Object<string,import("../../webgl/Helper.js").UniformValue>} uniforms Uniforms
  * @param {import("../../expr/gpu.js").CompilationContext} context Shader compilation context
  */
 function parseIconProperties(style, builder, uniforms, context) {
@@ -520,7 +520,7 @@ function parseIconProperties(style, builder, uniforms, context) {
 /**
  * @param {import("../../style/flat.js").FlatStyle} style Style
  * @param {ShaderBuilder} builder Shader Builder
- * @param {Object<string,import("../../webgl/Helper").UniformValue>} uniforms Uniforms
+ * @param {Object<string,import("../../webgl/Helper.js").UniformValue>} uniforms Uniforms
  * @param {import("../../expr/gpu.js").CompilationContext} context Shader compilation context
  */
 function parseStrokeProperties(style, builder, uniforms, context) {
@@ -710,7 +710,7 @@ function parseStrokeProperties(style, builder, uniforms, context) {
 /**
  * @param {import("../../style/flat.js").FlatStyle} style Style
  * @param {ShaderBuilder} builder Shader Builder
- * @param {Object<string,import("../../webgl/Helper").UniformValue>} uniforms Uniforms
+ * @param {Object<string,import("../../webgl/Helper.js").UniformValue>} uniforms Uniforms
  * @param {import("../../expr/gpu.js").CompilationContext} context Shader compilation context
  */
 function parseFillProperties(style, builder, uniforms, context) {
@@ -793,7 +793,7 @@ export function parseLiteralStyle(style, variables, filter) {
 
   const builder = new ShaderBuilder();
 
-  /** @type {Object<string,import("../../webgl/Helper").UniformValue>} */
+  /** @type {Object<string,import("../../webgl/Helper.js").UniformValue>} */
   const uniforms = {};
 
   if ('icon-src' in style) {

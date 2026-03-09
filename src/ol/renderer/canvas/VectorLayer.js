@@ -122,13 +122,13 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     /**
      * @private
-     * @type {import("../../coordinate").Coordinate}
+     * @type {import("../../coordinate.js").Coordinate}
      */
     this.renderedCenter_ = null;
 
     /**
      * @private
-     * @type {import("../../proj/Projection").default}
+     * @type {import("../../proj/Projection.js").default}
      */
     this.renderedProjection_ = null;
 
@@ -152,7 +152,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     /**
      * @private
-     * @type {import("../../render/canvas/ExecutorGroup").default}
+     * @type {import("../../render/canvas/ExecutorGroup.js").default}
      */
     this.replayGroup_ = null;
 
@@ -387,7 +387,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
   /**
    * Asynchronous layer level hit detection.
    * @param {import("../../pixel.js").Pixel} pixel Pixel.
-   * @return {Promise<Array<import("../../Feature").default>>} Promise
+   * @return {Promise<Array<import("../../Feature.js").default>>} Promise
    * that resolves with an array of features.
    * @override
    */

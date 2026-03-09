@@ -24,5 +24,5 @@ export const WebGLWorkerMessageType = {
  * @property {ArrayBuffer} [indicesBuffer] Indices array raw binary buffer (sent by the worker).
  * @property {ArrayBuffer} [vertexAttributesBuffer] Vertex attributes array raw binary buffer (sent by the worker).
  * @property {ArrayBuffer} [instanceAttributesBuffer] Instance attributes array raw binary buffer (sent by the worker).
- * @property {import("../../transform").Transform} [renderInstructionsTransform] Transformation matrix used to project the instructions coordinates
+ * @property {import("../../transform.js").Transform} [renderInstructionsTransform] Transformation matrix used to project the instructions coordinates
  */

@@ -144,7 +144,7 @@ const ModifyEventType = {
  * @property {VectorSource} [source] The vector source with
  * features to modify.  If a vector source is not provided, a feature collection
  * must be provided with the `features` option.
- * @property {boolean|import("../layer/BaseVector").default} [hitDetection] When configured, point
+ * @property {boolean|import("../layer/BaseVector.js").default} [hitDetection] When configured, point
  * features will be considered for modification based on their visual appearance, instead of being within
  * the `pixelTolerance` from the pointer location. When a {@link module:ol/layer/BaseVector~BaseVectorLayer} is
  * provided, only the rendered representation of the features on that layer will be considered.
@@ -223,11 +223,11 @@ export class ModifyEvent extends Event {
 
 /***
  * @template Return
- * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
- *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
- *     'change:active', import("../Object").ObjectEvent, Return> &
- *   import("../Observable").OnSignature<'modifyend'|'modifystart', ModifyEvent, Return> &
- *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
+ * @typedef {import("../Observable.js").OnSignature<import("../Observable.js").EventTypes, import("../events/Event.js").default, Return> &
+ *   import("../Observable.js").OnSignature<import("../ObjectEventType.js").Types|
+ *     'change:active', import("../Object.js").ObjectEvent, Return> &
+ *   import("../Observable.js").OnSignature<'modifyend'|'modifystart', ModifyEvent, Return> &
+ *   import("../Observable.js").CombinedOnSignature<import("../Observable.js").EventTypes|import("../ObjectEventType.js").Types|
  *     'change:active'|'modifyend'|'modifystart', Return>} ModifyOnSignature
  */
 
@@ -278,12 +278,12 @@ class Modify extends PointerInteraction {
     this.handleFeatureChange_ = this.handleFeatureChange_.bind(this);
 
     /***
-     * @type {ModifyOnSignature<import("../events").EventsKey>}
+     * @type {ModifyOnSignature<import("../events.js").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {ModifyOnSignature<import("../events").EventsKey>}
+     * @type {ModifyOnSignature<import("../events.js").EventsKey>}
      */
     this.once;
 
@@ -455,7 +455,7 @@ class Modify extends PointerInteraction {
     this.traceSegments_ = null;
 
     /**
-     * @type {boolean|import("../layer/BaseVector").default}
+     * @type {boolean|import("../layer/BaseVector.js").default}
      * @private
      */
     this.hitDetection_ = null;
@@ -796,7 +796,7 @@ class Modify extends PointerInteraction {
   /**
    * Listener for features in external source or features collection.  Ensures the feature filter
    * is re-run and segment data is updated.
-   * @param {import("../events/Event.js").default | import("../Object").ObjectEvent} evt Event.
+   * @param {import("../events/Event.js").default | import("../Object.js").ObjectEvent} evt Event.
    * @private
    */
   handleFeatureChange_(evt) {

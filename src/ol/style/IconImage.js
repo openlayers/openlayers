@@ -19,7 +19,7 @@ class IconImage extends EventTarget {
   /**
    * @param {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas|ImageBitmap|null} image Image.
    * @param {string|undefined} src Src.
-   * @param {import('../dom').ImageAttributes} imageAttributes Image attributes options.
+   * @param {import('../dom.js').ImageAttributes} imageAttributes Image attributes options.
    * @param {import("../ImageState.js").default|undefined} imageState Image state.
    * @param {import("../color.js").Color|string|null} color Color.
    */

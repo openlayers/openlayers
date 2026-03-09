@@ -413,7 +413,7 @@ class Graticule extends VectorLayer {
 
       /**
        * @private
-       * @param {import("../Feature").default} feature Feature
+       * @param {import("../Feature.js").default} feature Feature
        * @return {Style} style
        */
       this.lonLabelStyle_ = (feature) => {
@@ -445,7 +445,7 @@ class Graticule extends VectorLayer {
 
       /**
        * @private
-       * @param {import("../Feature").default} feature Feature
+       * @param {import("../Feature.js").default} feature Feature
        * @return {Style} style
        */
       this.latLabelStyle_ = (feature) => {
@@ -544,7 +544,7 @@ class Graticule extends VectorLayer {
 
   /**
    * Update geometries in the source based on current view
-   * @param {import("../extent").Extent} extent Extent
+   * @param {import("../extent.js").Extent} extent Extent
    * @param {number} resolution Resolution
    * @param {import("../proj/Projection.js").default} projection Projection
    */

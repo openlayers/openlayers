@@ -15,15 +15,15 @@ import LayerProperty from './Property.js';
  */
 
 /**
- * @typedef {import("../ObjectEventType").Types|'change:extent'|'change:maxResolution'|'change:maxZoom'|
+ * @typedef {import("../ObjectEventType.js").Types|'change:extent'|'change:maxResolution'|'change:maxZoom'|
  *    'change:minResolution'|'change:minZoom'|'change:opacity'|'change:visible'|'change:zIndex'} BaseLayerObjectEventTypes
  */
 
 /***
  * @template Return
- * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
- *   import("../Observable").OnSignature<BaseLayerObjectEventTypes, import("../Object").ObjectEvent, Return> &
- *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|BaseLayerObjectEventTypes, Return>} BaseLayerOnSignature
+ * @typedef {import("../Observable.js").OnSignature<import("../Observable.js").EventTypes, import("../events/Event.js").default, Return> &
+ *   import("../Observable.js").OnSignature<BaseLayerObjectEventTypes, import("../Object.js").ObjectEvent, Return> &
+ *   import("../Observable.js").CombinedOnSignature<import("../Observable.js").EventTypes|BaseLayerObjectEventTypes, Return>} BaseLayerOnSignature
  */
 
 /**
@@ -71,12 +71,12 @@ class BaseLayer extends BaseObject {
     super();
 
     /***
-     * @type {BaseLayerOnSignature<import("../events").EventsKey>}
+     * @type {BaseLayerOnSignature<import("../events.js").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {BaseLayerOnSignature<import("../events").EventsKey>}
+     * @type {BaseLayerOnSignature<import("../events.js").EventsKey>}
      */
     this.once;
 

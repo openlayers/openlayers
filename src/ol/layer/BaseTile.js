@@ -6,12 +6,12 @@ import TileProperty from './TileProperty.js';
 
 /***
  * @template Return
- * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
- *   import("../Observable").OnSignature<import("./Base").BaseLayerObjectEventTypes|
- *     import("./Layer.js").LayerEventType|'change:preload'|'change:useInterimTilesOnError', import("../Object").ObjectEvent, Return> &
- *   import("../Observable").OnSignature<import("../render/EventType").LayerRenderEventTypes, import("../render/Event").default, Return> &
- *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("./Base").BaseLayerObjectEventTypes|
- *   import("./Layer.js").LayerEventType|'change:preload'|'change:useInterimTilesOnError'|import("../render/EventType").LayerRenderEventTypes, Return>} BaseTileLayerOnSignature
+ * @typedef {import("../Observable.js").OnSignature<import("../Observable.js").EventTypes, import("../events/Event.js").default, Return> &
+ *   import("../Observable.js").OnSignature<import("./Base.js").BaseLayerObjectEventTypes|
+ *     import("./Layer.js").LayerEventType|'change:preload'|'change:useInterimTilesOnError', import("../Object.js").ObjectEvent, Return> &
+ *   import("../Observable.js").OnSignature<import("../render/EventType.js").LayerRenderEventTypes, import("../render/Event.js").default, Return> &
+ *   import("../Observable.js").CombinedOnSignature<import("../Observable.js").EventTypes|import("./Base.js").BaseLayerObjectEventTypes|
+ *   import("./Layer.js").LayerEventType|'change:preload'|'change:useInterimTilesOnError'|import("../render/EventType.js").LayerRenderEventTypes, Return>} BaseTileLayerOnSignature
  */
 
 /**
@@ -79,12 +79,12 @@ class BaseTileLayer extends Layer {
     super(baseOptions);
 
     /***
-     * @type {BaseTileLayerOnSignature<import("../events").EventsKey>}
+     * @type {BaseTileLayerOnSignature<import("../events.js").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {BaseTileLayerOnSignature<import("../events").EventsKey>}
+     * @type {BaseTileLayerOnSignature<import("../events.js").EventsKey>}
      */
     this.once;
 
@@ -169,7 +169,7 @@ class BaseTileLayer extends Layer {
    *   console.log(layer.getData(event.pixel));
    * });
    * ```
-   * @param {import("../pixel").Pixel} pixel Pixel.
+   * @param {import("../pixel.js").Pixel} pixel Pixel.
    * @return {Uint8ClampedArray|Uint8Array|Float32Array|DataView|null} Pixel data.
    * @api
    * @override

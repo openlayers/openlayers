@@ -39,7 +39,7 @@ const TranslateEventType = {
  * {@link module:ol/render/Feature~RenderFeature} and a
  * {@link module:ol/layer/Layer~Layer} and returns `true` if the feature may be
  * translated or `false` otherwise.
- * @typedef {function(Feature, import("../layer/Layer.js").default<import("../source/Source").default>):boolean} FilterFunction
+ * @typedef {function(Feature, import("../layer/Layer.js").default<import("../source/Source.js").default>):boolean} FilterFunction
  */
 
 /**
@@ -49,7 +49,7 @@ const TranslateEventType = {
  * boolean to indicate whether that event should be handled.
  * Default is {@link module:ol/events/condition.always}.
  * @property {Collection<Feature>} [features] Features contained in this collection will be able to be translated together.
- * @property {Array<import("../layer/Layer.js").default>|function(import("../layer/Layer.js").default<import("../source/Source").default>): boolean} [layers] A list of layers from which features should be
+ * @property {Array<import("../layer/Layer.js").default>|function(import("../layer/Layer.js").default<import("../source/Source.js").default>): boolean} [layers] A list of layers from which features should be
  * translated. Alternatively, a filter function can be provided. The
  * function will be called for each layer in the map and should return
  * `true` for layers that you want to be translatable. If the option is
@@ -113,11 +113,11 @@ export class TranslateEvent extends Event {
 
 /***
  * @template Return
- * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
- *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
- *     'change:active', import("../Object").ObjectEvent, Return> &
- *   import("../Observable").OnSignature<'translateend'|'translatestart'|'translating', TranslateEvent, Return> &
- *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
+ * @typedef {import("../Observable.js").OnSignature<import("../Observable.js").EventTypes, import("../events/Event.js").default, Return> &
+ *   import("../Observable.js").OnSignature<import("../ObjectEventType.js").Types|
+ *     'change:active', import("../Object.js").ObjectEvent, Return> &
+ *   import("../Observable.js").OnSignature<'translateend'|'translatestart'|'translating', TranslateEvent, Return> &
+ *   import("../Observable.js").CombinedOnSignature<import("../Observable.js").EventTypes|import("../ObjectEventType.js").Types|
  *     'change:active'|'translateend'|'translatestart'|'translating', Return>} TranslateOnSignature
  */
 
@@ -141,12 +141,12 @@ class Translate extends PointerInteraction {
     super(/** @type {import("./Pointer.js").Options} */ (options));
 
     /***
-     * @type {TranslateOnSignature<import("../events").EventsKey>}
+     * @type {TranslateOnSignature<import("../events.js").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {TranslateOnSignature<import("../events").EventsKey>}
+     * @type {TranslateOnSignature<import("../events.js").EventsKey>}
      */
     this.once;
 
@@ -175,7 +175,7 @@ class Translate extends PointerInteraction {
      */
     this.features_ = options.features !== undefined ? options.features : null;
 
-    /** @type {function(import("../layer/Layer.js").default<import("../source/Source").default>): boolean} */
+    /** @type {function(import("../layer/Layer.js").default<import("../source/Source.js").default>): boolean} */
     let layerFilter;
     if (options.layers && !this.features_) {
       if (typeof options.layers === 'function') {
@@ -192,7 +192,7 @@ class Translate extends PointerInteraction {
 
     /**
      * @private
-     * @type {function(import("../layer/Layer.js").default<import("../source/Source").default>): boolean}
+     * @type {function(import("../layer/Layer.js").default<import("../source/Source.js").default>): boolean}
      */
     this.layerFilter_ = layerFilter;
 
