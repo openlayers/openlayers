@@ -37,7 +37,6 @@ function render() {
 
   const source = new GeoZarr({
     url: url,
-    group: 'measurements/reflectance',
     bands: ['b04', 'b03', 'b02'],
   });
 

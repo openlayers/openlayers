@@ -2,8 +2,7 @@ import {stub as sinonStub} from 'sinon';
 import {get} from '../../../../../src/ol/proj.js';
 import GeoZarr from '../../../../../src/ol/source/GeoZarr.js';
 
-const ZARR_URL = 'http://test-zarr/test.zarr';
-const GROUP = 'data';
+const ZARR_URL = 'http://test-zarr/test.zarr/data';
 
 /**
  * Create a Zarr v3 array metadata object with optional sharding codec.
@@ -54,17 +53,6 @@ function createArrayMeta({fillValue, shardShape, innerChunkShape} = {}) {
  * @return {import('sinon').SinonStub} The fetch stub.
  */
 function stubFetch(consolidatedMetadata) {
-  const rootZarrJson = {
-    zarr_format: 3,
-    node_type: 'group',
-    attributes: {},
-  };
-  if (consolidatedMetadata) {
-    rootZarrJson.consolidated_metadata = {
-      metadata: consolidatedMetadata,
-    };
-  }
-
   const groupZarrJson = {
     zarr_format: 3,
     node_type: 'group',
@@ -86,10 +74,14 @@ function stubFetch(consolidatedMetadata) {
       'proj:code': 'EPSG:4326',
     },
   };
+  if (consolidatedMetadata) {
+    groupZarrJson.consolidated_metadata = {
+      metadata: consolidatedMetadata,
+    };
+  }
 
   const responses = {
-    [`${ZARR_URL}/zarr.json`]: JSON.stringify(rootZarrJson),
-    [`${ZARR_URL}/${GROUP}/zarr.json`]: JSON.stringify(groupZarrJson),
+    [`${ZARR_URL}/zarr.json`]: JSON.stringify(groupZarrJson),
   };
 
   return sinonStub(window, 'fetch').callsFake(function (url) {
@@ -105,8 +97,7 @@ describe('ol/source/GeoZarr', function () {
   describe('constructor', function () {
     it('can be constructed with basic options', function () {
       const source = new GeoZarr({
-        url: 'https://example.com/test.zarr',
-        group: 'measurements/reflectance',
+        url: 'https://example.com/test.zarr/measurements/reflectance',
         bands: ['b04', 'b03', 'b02'],
       });
       expect(source).to.be.a(GeoZarr);
@@ -115,8 +106,7 @@ describe('ol/source/GeoZarr', function () {
 
     it('defaults to wrapX: false', function () {
       const source = new GeoZarr({
-        url: 'https://example.com/test.zarr',
-        group: 'measurements/reflectance',
+        url: 'https://example.com/test.zarr/measurements/reflectance',
         bands: ['b04', 'b03'],
       });
       expect(source.getWrapX()).to.be(false);
@@ -124,8 +114,7 @@ describe('ol/source/GeoZarr', function () {
 
     it('respects the wrapX option', function () {
       const source = new GeoZarr({
-        url: 'https://example.com/test.zarr',
-        group: 'measurements/reflectance',
+        url: 'https://example.com/test.zarr/measurements/reflectance',
         bands: ['b04', 'b03'],
         wrapX: true,
       });
@@ -135,8 +124,7 @@ describe('ol/source/GeoZarr', function () {
     it('accepts projection option', function () {
       const projection = 'EPSG:3857';
       const source = new GeoZarr({
-        url: 'https://example.com/test.zarr',
-        group: 'measurements/reflectance',
+        url: 'https://example.com/test.zarr/measurements/reflectance',
         bands: ['b04', 'b03'],
         projection: projection,
       });
@@ -146,8 +134,7 @@ describe('ol/source/GeoZarr', function () {
     it('stores band configuration and sets bandCount', function () {
       const bands = ['b05', 'b04'];
       const source = new GeoZarr({
-        url: 'https://example.com/test.zarr',
-        group: 'measurements/reflectance',
+        url: 'https://example.com/test.zarr/measurements/reflectance',
         bands: bands,
       });
       expect(source.bands_).to.eql(bands);
@@ -160,8 +147,7 @@ describe('ol/source/GeoZarr', function () {
 
     beforeEach(function () {
       source = new GeoZarr({
-        url: 'https://example.com/test.zarr',
-        group: 'measurements/reflectance',
+        url: 'https://example.com/test.zarr/measurements/reflectance',
         bands: ['b05', 'b04'], // NIR, Red for NDVI testing
       });
     });
@@ -194,7 +180,6 @@ describe('ol/source/GeoZarr', function () {
       fetchStub = stubFetch(null);
       const source = new GeoZarr({
         url: ZARR_URL,
-        group: GROUP,
         bands: ['band1'],
       });
       expect(source.nodataBandIndex).to.be(undefined);
@@ -203,12 +188,11 @@ describe('ol/source/GeoZarr', function () {
 
     it('sets nodataBandIndex and increments bandCount when fillValue is present', function (done) {
       fetchStub = stubFetch({
-        [`${GROUP}/level0/b04`]: {fill_value: 'NaN'},
-        [`${GROUP}/level0/b03`]: {fill_value: 'NaN'},
+        ['level0/b04']: {fill_value: 'NaN'},
+        ['level0/b03']: {fill_value: 'NaN'},
       });
       const source = new GeoZarr({
         url: ZARR_URL,
-        group: GROUP,
         bands: ['b04', 'b03'],
       });
       source.on('change', function () {
@@ -224,7 +208,6 @@ describe('ol/source/GeoZarr', function () {
       fetchStub = stubFetch(null);
       const source = new GeoZarr({
         url: ZARR_URL,
-        group: GROUP,
         bands: ['b04'],
       });
       source.on('change', function () {
@@ -240,8 +223,7 @@ describe('ol/source/GeoZarr', function () {
   describe('error handling', function () {
     it('should handle configuration errors gracefully', function () {
       const source = new GeoZarr({
-        url: 'https://invalid-url.com/nonexistent.zarr',
-        group: 'measurements/reflectance',
+        url: 'https://invalid-url.com/nonexistent.zarr/measurements/reflectance',
         bands: ['b04'],
       });
 
@@ -264,14 +246,13 @@ describe('ol/source/GeoZarr', function () {
 
     it('uses shard shape for tile size when ≤ 512', function (done) {
       fetchStub = stubFetch({
-        [`${GROUP}/level0/b04`]: createArrayMeta({
+        ['level0/b04']: createArrayMeta({
           shardShape: [512, 512],
           innerChunkShape: [128, 128],
         }),
       });
       const source = new GeoZarr({
         url: ZARR_URL,
-        group: GROUP,
         bands: ['b04'],
       });
       source.on('change', function () {
@@ -285,14 +266,13 @@ describe('ol/source/GeoZarr', function () {
 
     it('caps tile size at 512 for large shards', function (done) {
       fetchStub = stubFetch({
-        [`${GROUP}/level0/b04`]: createArrayMeta({
+        ['level0/b04']: createArrayMeta({
           shardShape: [2048, 2048],
           innerChunkShape: [256, 256],
         }),
       });
       const source = new GeoZarr({
         url: ZARR_URL,
-        group: GROUP,
         bands: ['b04'],
       });
       source.on('change', function () {
@@ -306,14 +286,13 @@ describe('ol/source/GeoZarr', function () {
 
     it('finds largest divisor ≤ 512 for non-power-of-two shards', function (done) {
       fetchStub = stubFetch({
-        [`${GROUP}/level0/b04`]: createArrayMeta({
+        ['level0/b04']: createArrayMeta({
           shardShape: [1000, 1000],
           innerChunkShape: [100, 100],
         }),
       });
       const source = new GeoZarr({
         url: ZARR_URL,
-        group: GROUP,
         bands: ['b04'],
       });
       source.on('change', function () {
@@ -330,7 +309,6 @@ describe('ol/source/GeoZarr', function () {
       fetchStub = stubFetch(null);
       const source = new GeoZarr({
         url: ZARR_URL,
-        group: GROUP,
         bands: ['b04'],
       });
       source.on('change', function () {
@@ -346,14 +324,13 @@ describe('ol/source/GeoZarr', function () {
       // Arrays without sharding_indexed codec should not affect tile size,
       // even when consolidated metadata has chunk_grid info
       fetchStub = stubFetch({
-        [`${GROUP}/level0/b04`]: createArrayMeta({
+        ['level0/b04']: createArrayMeta({
           shardShape: [64, 64],
           // no innerChunkShape → no sharding_indexed codec
         }),
       });
       const source = new GeoZarr({
         url: ZARR_URL,
-        group: GROUP,
         bands: ['b04'],
       });
       source.on('change', function () {
@@ -367,14 +344,13 @@ describe('ol/source/GeoZarr', function () {
 
     it('floors tile size to 64 for small shards', function (done) {
       fetchStub = stubFetch({
-        [`${GROUP}/level0/b04`]: createArrayMeta({
+        ['level0/b04']: createArrayMeta({
           shardShape: [32, 32],
           innerChunkShape: [8, 8],
         }),
       });
       const source = new GeoZarr({
         url: ZARR_URL,
-        group: GROUP,
         bands: ['b04'],
       });
       source.on('change', function () {
@@ -393,14 +369,13 @@ describe('ol/source/GeoZarr', function () {
       // No exact divisor → falls back to shardSize which is > MAX_TILE_SIZE,
       // so uses maxChunks*384 = 1*384 = 384.
       fetchStub = stubFetch({
-        [`${GROUP}/level0/b04`]: createArrayMeta({
+        ['level0/b04']: createArrayMeta({
           shardShape: [2048, 2048],
           innerChunkShape: [384, 384],
         }),
       });
       const source = new GeoZarr({
         url: ZARR_URL,
-        group: GROUP,
         bands: ['b04'],
       });
       source.on('change', function () {

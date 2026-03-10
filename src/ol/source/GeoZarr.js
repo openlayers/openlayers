@@ -22,8 +22,7 @@ const REQUIRED_ZARR_CONVENTIONS = [
 
 /**
  * @typedef {Object} Options
- * @property {string} url The Zarr URL.
- * @property {string} group The group with arrays to render.
+ * @property {string} url The Zarr URL including the multiscales group path (e.g. `'https://example.com/store.zarr/measurements/reflectance'`).
  * @property {Array<string>} bands The band names to render.
  * @property {import("../proj.js").ProjectionLike} [projection] Source projection.  If not provided, the GeoZarr metadata
  * will be read for projection information.
@@ -33,6 +32,12 @@ const REQUIRED_ZARR_CONVENTIONS = [
  * @property {ResampleMethod} [resample='nearest'] Resamplilng method if bands are not available for all multi-scale levels.
  */
 
+/**
+ * Source that supports GeoZarr stores with metadata for the following conventions:
+ * - Zarr multiscales convention (https://github.com/zarr-conventions/multiscales)
+ * - Geospatial projection convention (https://github.com/zarr-conventions/geo-proj)
+ * - Spatial convention (https://github.com/zarr-conventions/spatial)
+ */
 export default class GeoZarr extends DataTileSource {
   /**
    * @param {Options} options The options.
@@ -53,12 +58,6 @@ export default class GeoZarr extends DataTileSource {
     this.url_ = options.url;
 
     /**
-     * @type {string}
-     * @private
-     */
-    this.group_ = options.group;
-
-    /**
      * @type {Error|null}
      */
     this.error_ = null;
@@ -67,7 +66,7 @@ export default class GeoZarr extends DataTileSource {
      * @type {import('zarrita').Group<any>}
      * @private
      */
-    this.root_ = null;
+    this.group_ = null;
 
     /**
      * @type {any|null}
@@ -134,14 +133,14 @@ export default class GeoZarr extends DataTileSource {
   async configure_() {
     const store = new FetchStore(this.url_);
 
-    // Fetch root zarr.json once for both opening the root and extracting
+    // Fetch group zarr.json once for both opening the group and extracting
     // consolidated metadata. Without this, open() and the manual metadata
     // read would each make a separate HTTP request for the same file.
-    const rootBytes = await store.get('/zarr.json');
-    if (rootBytes) {
+    const groupBytes = await store.get('/zarr.json');
+    if (groupBytes) {
       try {
         this.consolidatedMetadata_ = JSON.parse(
-          new TextDecoder().decode(rootBytes),
+          new TextDecoder().decode(groupBytes),
         ).consolidated_metadata.metadata;
       } catch {
         // no consolidated metadata
@@ -151,15 +150,15 @@ export default class GeoZarr extends DataTileSource {
     // Wrap the store so that child metadata (groups, arrays) is served from
     // the consolidated metadata instead of making per-child HTTP requests.
     const cachedStore = this.consolidatedMetadata_
-      ? createCachedStore(store, rootBytes, this.consolidatedMetadata_)
+      ? createCachedStore(store, groupBytes, this.consolidatedMetadata_)
       : store;
 
-    this.root_ = await open(cachedStore, {kind: 'group'});
-
-    const group = await open(this.root_.resolve(this.group_), {kind: 'group'});
+    this.group_ = await open(cachedStore, {kind: 'group'});
 
     const attributes =
-      /** @type {LegacyDatasetAttributes | DatasetAttributes} */ (group.attrs);
+      /** @type {LegacyDatasetAttributes | DatasetAttributes} */ (
+        this.group_.attrs
+      );
 
     let hasTileSizes = false;
     if (
@@ -174,7 +173,6 @@ export default class GeoZarr extends DataTileSource {
         getTileGridInfoFromAttributes(
           /** @type {DatasetAttributes} */ (attributes),
           this.consolidatedMetadata_,
-          this.group_,
           this.bands_,
         );
       this.bandsByLevel_ = bandsByLevel;
@@ -271,7 +269,7 @@ export default class GeoZarr extends DataTileSource {
       const maxRow = Math.round((origin[1] - tileExtent[1]) / bandResolution);
 
       bandInfos.push({
-        path: `${this.group_}/${bandMatrixId}/${band}`,
+        path: `${bandMatrixId}/${band}`,
         minRow,
         maxRow,
         minCol,
@@ -287,7 +285,7 @@ export default class GeoZarr extends DataTileSource {
         if (!this.arrayCache_.has(path)) {
           this.arrayCache_.set(
             path,
-            open(this.root_.resolve(path), {kind: 'array'}).catch((err) => {
+            open(this.group_.resolve(path), {kind: 'array'}).catch((err) => {
               this.arrayCache_.delete(path);
               throw err;
             }),
@@ -326,13 +324,13 @@ export default class GeoZarr extends DataTileSource {
  * Create a store wrapper that serves Zarr v3 metadata from consolidated
  * metadata, avoiding per-child HTTP requests.
  * @param {import('zarrita').FetchStore} store The underlying store.
- * @param {Uint8Array} rootBytes The already-fetched root zarr.json bytes.
+ * @param {Uint8Array} groupBytes The already-fetched group zarr.json bytes.
  * @param {Object} consolidatedMetadata The parsed consolidated_metadata.metadata entries.
  * @return {Object} A store-compatible object.
  */
-function createCachedStore(store, rootBytes, consolidatedMetadata) {
+function createCachedStore(store, groupBytes, consolidatedMetadata) {
   const cache = new Map();
-  cache.set('/zarr.json', rootBytes);
+  cache.set('/zarr.json', groupBytes);
   const encoder = new TextEncoder();
   for (const [key, value] of Object.entries(consolidatedMetadata)) {
     cache.set(`/${key}/zarr.json`, encoder.encode(JSON.stringify(value)));
@@ -460,14 +458,12 @@ function getTileSizeForShard(shardSize, innerChunkSize) {
 /**
  * @param {DatasetAttributes} attributes The dataset attributes.
  * @param {any} consolidatedMetadata The consolidated metadata.
- * @param {string} wantedGroup The path to the wanted group.
  * @param {Array<string>} wantedBands The wanted bands.
  * @return {TileGridInfo} The tile grid info.
  */
 function getTileGridInfoFromAttributes(
   attributes,
   consolidatedMetadata,
-  wantedGroup,
   wantedBands,
 ) {
   const multiscales = attributes.multiscales;
@@ -488,8 +484,7 @@ function getTileGridInfoFromAttributes(
     if (consolidatedMetadata) {
       const availableBands = [];
       for (const band of wantedBands) {
-        const bandArray =
-          consolidatedMetadata[`${wantedGroup}/${matrixId}/${band}`];
+        const bandArray = consolidatedMetadata[`${matrixId}/${band}`];
         if (bandArray) {
           availableBands.push(band);
           if (fillValue === undefined) {
