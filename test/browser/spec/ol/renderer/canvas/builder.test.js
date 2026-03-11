@@ -183,6 +183,15 @@ describe('ol.render.canvas.BuilderGroup', function () {
       expect(moveToCount).to.be(2);
     });
 
+    it('does not fill when fill pattern is not loaded', function () {
+      const patternFill = new Style({
+        fill: new Fill({color: {src: 'not-loaded-pattern.png'}}),
+      });
+      renderFeature(builder, feature1, patternFill, 1);
+      execute(builder);
+      expect(fillCount).to.be(0);
+    });
+
     it('batches fill and stroke instructions for same style', function () {
       renderFeature(builder, feature1, style1, 1);
       renderFeature(builder, feature2, style1, 1);
