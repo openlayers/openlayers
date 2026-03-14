@@ -12,6 +12,12 @@ import BaseTileRepresentation from './BaseTileRepresentation.js';
 import WebGLArrayBuffer from './Buffer.js';
 
 /**
+ * @typedef {import("../Feature.js").default} Feature
+ */
+/**
+ * @typedef {import("../render/Feature.js").default} RenderFeature
+ */
+/**
  * @typedef {import("../VectorRenderTile").default} TileType
  */
 
@@ -122,6 +128,15 @@ class TileGeometry extends BaseTileRepresentation {
         disposeBuffersOfType(this.buffers.polygonBuffers);
     }
     super.disposeInternal();
+  }
+
+  /**
+   * Get hit detected feature.
+   * @param {number} ref the feature reference
+   * @return {Feature|import("../render/Feature.js").default} the matching feature
+   */
+  getFeatureFromRef(ref) {
+    return this.batch_.getFeatureFromRef(ref);
   }
 }
 

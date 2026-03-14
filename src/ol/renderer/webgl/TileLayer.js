@@ -54,6 +54,8 @@ const attributeDescriptions = [
  * @property {Array<import("../../webgl/PaletteTexture.js").default>} [paletteTextures] Palette textures.
  * @property {number} [cacheSize=512] The texture cache size.
  * @property {Array<import('./Layer.js').PostProcessesOptions>} [postProcesses] Post-processes definitions.
+ * @property {boolean} [disableHitDetection=false] Setting this to true will provide a slight performance boost, but will
+ * prevent all hit detection on the layer.
  */
 
 /**

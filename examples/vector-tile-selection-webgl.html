@@ -1,0 +1,26 @@
+---
+layout: example.html
+title: Vector Tile Selection (WebGL)
+shortdesc: Select features from vector tiles rendered with WebGL.
+docs: >
+  <p>
+    Click a rendered vector-tile feature to highlight it on the map. Click on an empty spot (ocean) to reset the selection.
+    By changing the action type to "Multi Select" you can select multiple features at a time. With "Single Select on hover",
+    features will be highlighted when the pointer is above them.
+  </p><p>
+    This example uses WebGL rendering for the vector tiles. Hit detection on the WebGL layer identifies the clicked
+    feature, and a canvas-based <code>VectorTileLayer</code> sharing the same source highlights all instances of the
+    selected feature across tile boundaries using <code>renderMode: 'vector'</code>.
+  </p>
+tags: "vector tiles, selection, webgl"
+experimental: true
+---
+<div id="map" class="map"></div>
+<form>
+  <label for="type">Action type &nbsp;</label>
+  <select id="type">
+    <option value="singleselect" selected>Single Select</option>
+    <option value="multiselect">Multi Select</option>
+    <option value="singleselect-hover">Single Select on hover</option>
+  </select>
+</form>
