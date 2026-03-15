@@ -436,5 +436,26 @@ describe('ol/source/VectorTile', function () {
       map.renderSync();
       expect(Object.keys(source.sourceTiles_).length).to.be(0);
     });
+
+    it('uses the tileUrlFunction from tile creation time', function () {
+      // Simulates the race condition where a tile enqueued for key A
+      // is loaded after the source URL changed to B.
+      const testSource = new VectorTileSource({
+        format: new MVT(),
+        url: '{z}/{x}/{y}/A',
+      });
+      const projection = testSource.getProjection();
+      const tile = testSource.getTile(0, 0, 0, 1, projection);
+      expect(tile.getState()).to.be(TileState.IDLE);
+
+      // Change URL, which changes the source key
+      testSource.setUrl('{z}/{x}/{y}/B');
+
+      // When the tile loads, it should use the original URL function (A),
+      // not the current one (B).
+      tile.load();
+      expect(tile.sourceTiles.length).to.be(1);
+      expect(tile.sourceTiles[0].getTileUrl()).to.contain('/A');
+    });
   });
 });

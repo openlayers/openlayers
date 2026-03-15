@@ -189,9 +189,10 @@ class VectorTile extends UrlTile {
    * @param {number} pixelRatio Pixel ratio.
    * @param {import("../proj/Projection").default} projection Projection.
    * @param {VectorRenderTile} tile Vector render tile.
+   * @param {import("../Tile.js").UrlFunction} [tileUrlFunction] Tile URL function.
    * @return {Array<import("../VectorTile").default>} Tile keys.
    */
-  getSourceTiles(pixelRatio, projection, tile) {
+  getSourceTiles(pixelRatio, projection, tile, tileUrlFunction) {
     if (tile.getState() === TileState.IDLE) {
       tile.setState(TileState.LOADING);
       const urlTileCoord = tile.wrappedTileCoord;
@@ -230,12 +231,9 @@ class VectorTile extends UrlTile {
         this.zDirection,
       );
 
+      const urlFunction = tileUrlFunction || this.tileUrlFunction;
       sourceTileGrid.forEachTileCoord(extent, sourceZ, (sourceTileCoord) => {
-        const tileUrl = this.tileUrlFunction(
-          sourceTileCoord,
-          pixelRatio,
-          projection,
-        );
+        const tileUrl = urlFunction(sourceTileCoord, pixelRatio, projection);
         if (!this.sourceTiles_[tileUrl]) {
           this.sourceTiles_[tileUrl] = new this.tileClass(
             sourceTileCoord,
@@ -402,11 +400,13 @@ class VectorTile extends UrlTile {
         },
       );
     }
+    const tileUrlFunction = this.tileUrlFunction;
     const newTile = new VectorRenderTile(
       tileCoord,
       empty ? TileState.EMPTY : TileState.IDLE,
       urlTileCoord,
-      this.getSourceTiles.bind(this, pixelRatio, projection),
+      (tile) =>
+        this.getSourceTiles(pixelRatio, projection, tile, tileUrlFunction),
       this.removeSourceTiles.bind(this),
     );
     newTile.key = this.getKey();
