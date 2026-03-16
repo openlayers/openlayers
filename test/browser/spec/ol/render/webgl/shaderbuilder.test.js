@@ -70,6 +70,7 @@ void main(void) {
   v_centerPx = screenToPx(center.xy) + centerOffsetPx;
   v_opacity = 0.4;
   v_test = vec3(1.0, 2.0, 3.0);
+
 }`);
     });
     it('generates a symbol vertex shader (with uniforms and attributes)', () => {
@@ -80,6 +81,7 @@ void main(void) {
       builder.setSymbolOffsetExpression(arrayToGlsl([5, -7]));
       builder.setSymbolColorExpression(colorToGlsl([80, 0, 255, 1]));
       builder.setTextureCoordinateExpression(arrayToGlsl([0, 0.5, 0.5, 1]));
+      builder.setShapeDiscardExpression('u_myUniform > 0.5');
 
       expect(builder.getSymbolVertexShader()).to.eql(`${COMMON_HEADER}
 uniform float u_myUniform;
@@ -128,6 +130,7 @@ void main(void) {
   centerOffsetPx = vec2(c * centerOffsetPx.x - s * centerOffsetPx.y, s * centerOffsetPx.x + c * centerOffsetPx.y);
   v_centerPx = screenToPx(center.xy) + centerOffsetPx;
   v_myAttr = a_myAttr;
+  if (u_myUniform > 0.5) { gl_Position = vec4(2.0, 2.0, 0.0, 0.0); }
 }`);
     });
     it('generates a symbol vertex shader (with rotateWithView)', () => {
@@ -184,6 +187,7 @@ void main(void) {
   centerOffsetPx = vec2(c * centerOffsetPx.x - s * centerOffsetPx.y, s * centerOffsetPx.x + c * centerOffsetPx.y);
   v_centerPx = screenToPx(center.xy) + centerOffsetPx;
 
+
 }`);
     });
 
@@ -239,6 +243,7 @@ void main(void) {
   centerOffsetPx = vec2(c * centerOffsetPx.x - s * centerOffsetPx.y, s * centerOffsetPx.x + c * centerOffsetPx.y);
   v_centerPx = screenToPx(center.xy) + centerOffsetPx;
 
+
 }`);
     });
 
@@ -274,7 +279,7 @@ varying vec3 v_test;
 void main(void) {
   float a_opacity = v_opacity; // assign to original attribute name
   vec3 a_test = v_test; // assign to original attribute name
-  if (false) { discard; }
+
   vec2 coordsPx = gl_FragCoord.xy / u_pixelRatio - v_centerPx; // relative to center
   float c = cos(v_angle);
   float s = sin(v_angle);
@@ -347,6 +352,7 @@ void main(void) {
       builder.setStrokeMiterLimitExpression('12.34');
       builder.setStrokeDistanceFieldExpression('cos(currentLengthPx)');
       builder.setFragmentDiscardExpression('u_myUniform > 0.5');
+      builder.setShapeDiscardExpression('u_myUniform > 0.5');
     });
 
     describe('getStrokeVertexShader', () => {
@@ -460,6 +466,7 @@ void main(void) {
   v_opacity = 0.4;
   v_test = vec3(1.0, 2.0, 3.0);
   v_myAttr = a_myAttr;
+  if (u_myUniform > 0.5) { gl_Position = vec4(2.0, 2.0, 0.0, 0.0); }
 }`);
       });
 
@@ -659,6 +666,7 @@ void main(void) {
       builder.addUniform('u_myUniform', 'float');
       builder.setFillColorExpression(colorToGlsl([80, 0, 255, 1]));
       builder.setFragmentDiscardExpression('u_myUniform > 0.5');
+      builder.setShapeDiscardExpression('u_myUniform > 0.5');
 
       expect(builder.getFillVertexShader()).to.eql(`${COMMON_HEADER}
 uniform float u_myUniform;
@@ -680,6 +688,7 @@ void main(void) {
   v_opacity = 0.4;
   v_test = vec3(1.0, 2.0, 3.0);
   v_myAttr = a_myAttr;
+  if (u_myUniform > 0.5) { gl_Position = vec4(2.0, 2.0, 0.0, 0.0); }
 }`);
     });
 

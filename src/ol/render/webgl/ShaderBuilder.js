@@ -128,7 +128,13 @@ export class ShaderBuilder {
      * @type {string}
      * @private
      */
-    this.discardExpression_ = 'false';
+    this.fragmentDiscardExpression_ = null;
+
+    /**
+     * @type {string}
+     * @private
+     */
+    this.shapeDiscardExpression_ = null;
 
     /**
      * @type {boolean}
@@ -337,7 +343,7 @@ export class ShaderBuilder {
 
   /**
    * Sets an expression to determine whether a fragment (pixel) should be discarded,
-   * i.e. not drawn at all.
+   * i.e. not drawn at all. If the expression evaluates to `true`, the fragment is discarded.
    * This expression can use all the uniforms, varyings and attributes available
    * in the fragment shader, and should evaluate to a `bool` value (it will be
    * used in an `if` statement)
@@ -345,15 +351,36 @@ export class ShaderBuilder {
    * @return {ShaderBuilder} the builder object
    */
   setFragmentDiscardExpression(expression) {
-    this.discardExpression_ = expression;
+    this.fragmentDiscardExpression_ = expression;
     return this;
   }
 
   /**
-   * @return {string} The current fragment discard expression
+   * @return {string} The current fragment discard expression; null if none has been set
    */
   getFragmentDiscardExpression() {
-    return this.discardExpression_;
+    return this.fragmentDiscardExpression_;
+  }
+
+  /**
+   * Sets an expression to determine whether a whole shape (triangle) should be filtered out
+   * and not rasterized at all. If the expression evaluates to `true`, the shape is discarded.
+   * This is more performant than the fragment discard expression because the fragment shader will not run at all.
+   * This expression can use all the uniforms, varyings and attributes available
+   * in the vertex shader, and should evaluate to a `bool` value.
+   * @param {string} expression Shape discard expression
+   * @return {ShaderBuilder} the builder object
+   */
+  setShapeDiscardExpression(expression) {
+    this.shapeDiscardExpression_ = expression;
+    return this;
+  }
+
+  /**
+   * @return {string} The current shape discard expression; null if none has been set
+   */
+  getShapeDiscardExpression() {
+    return this.shapeDiscardExpression_;
   }
 
   /**
@@ -558,6 +585,11 @@ ${this.attributes_
       `  ${attribute.varyingName} = ${attribute.varyingExpression};`,
   )
   .join('\n')}
+${
+  this.shapeDiscardExpression_
+    ? `  if (${this.shapeDiscardExpression_}) { gl_Position = vec4(2.0, 2.0, 0.0, 0.0); }`
+    : ''
+}
 }`;
   }
 
@@ -591,7 +623,7 @@ ${this.attributes_
       `  ${attribute.varyingType} ${attribute.name} = ${attribute.varyingName}; // assign to original attribute name`,
   )
   .join('\n')}
-  if (${this.discardExpression_}) { discard; }
+${this.fragmentDiscardExpression_ ? `  if (${this.fragmentDiscardExpression_}) { discard; }` : ''}
   vec2 coordsPx = gl_FragCoord.xy / u_pixelRatio - v_centerPx; // relative to center
   float c = cos(v_angle);
   float s = sin(v_angle);
@@ -732,6 +764,11 @@ ${this.attributes_
       `  ${attribute.varyingName} = ${attribute.varyingExpression};`,
   )
   .join('\n')}
+${
+  this.shapeDiscardExpression_
+    ? `  if (${this.shapeDiscardExpression_}) { gl_Position = vec4(2.0, 2.0, 0.0, 0.0); }`
+    : ''
+}
 }`;
   }
 
@@ -888,7 +925,7 @@ ${this.attributes_
   float currentRadiusRatio = dot(segmentNormal, startToPointPx) * 2. / v_width;
   currentLineMetric = mix(v_measureStart, v_measureEnd, lengthToPointPx / segmentLengthPx);
 
-  if (${this.discardExpression_}) { discard; }
+${this.fragmentDiscardExpression_ ? `  if (${this.fragmentDiscardExpression_}) { discard; }` : ''}
 
   float capType = ${this.strokeCapExpression_};
   float joinType = ${this.strokeJoinExpression_};
@@ -945,6 +982,11 @@ ${this.attributes_
       `  ${attribute.varyingName} = ${attribute.varyingExpression};`,
   )
   .join('\n')}
+${
+  this.shapeDiscardExpression_
+    ? `  if (${this.shapeDiscardExpression_}) { gl_Position = vec4(2.0, 2.0, 0.0, 0.0); }`
+    : ''
+}
 }`;
   }
 
@@ -998,7 +1040,7 @@ ${this.attributes_
     discard;
   }
   #endif
-  if (${this.discardExpression_}) { discard; }
+${this.fragmentDiscardExpression_ ? `  if (${this.fragmentDiscardExpression_}) { discard; }` : ''}
   gl_FragColor = ${this.fillColorExpression_};
   gl_FragColor.a *= u_globalAlpha;
   gl_FragColor.rgb *= gl_FragColor.a;
