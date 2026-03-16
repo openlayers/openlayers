@@ -296,7 +296,34 @@ function getImagesForSource(source, options) {
   } else {
     request = tiffFromUrl(source.url, options);
   }
-  return request.then(getImagesForTIFF);
+  return request.then(getImagesForTIFF).then(function (images) {
+    // For non-tiled (strip-encoded) images served over HTTP, re-open with a
+    // blockSize large enough to cover all strips needed for one render tile.
+    // This coalesces what would be thousands of individual HTTP range requests
+    // into roughly one per tile.
+    const image = images[0];
+    if (
+      source.url &&
+      !source.blob &&
+      image.getTileWidth() !== image.getTileHeight() &&
+      image.getTileHeight() < defaultTileSize
+    ) {
+      const bytesPerPixel = image.getBytesPerPixel();
+      const blockSize = image.getWidth() * bytesPerPixel * defaultTileSize;
+      const reopenOptions = Object.assign({}, options, {blockSize});
+      let reopened;
+      if (source.loader) {
+        const client = createCustomClient(source.url, source.loader);
+        reopened = tiffFromCustomClient(client, reopenOptions);
+      } else if (source.overviews) {
+        reopened = tiffFromUrls(source.url, source.overviews, reopenOptions);
+      } else {
+        reopened = tiffFromUrl(source.url, reopenOptions);
+      }
+      return reopened.then(getImagesForTIFF);
+    }
+    return images;
+  });
 }
 
 /**

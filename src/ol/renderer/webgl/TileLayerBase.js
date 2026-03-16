@@ -5,7 +5,7 @@ import TileRange from '../../TileRange.js';
 import TileState from '../../TileState.js';
 import {descending} from '../../array.js';
 import {getIntersection, getRotatedViewport, isEmpty} from '../../extent.js';
-import {fromUserExtent} from '../../proj.js';
+import {equivalent, fromUserExtent} from '../../proj.js';
 import {toSize} from '../../size.js';
 import LRUCache from '../../structs/LRUCache.js';
 import {
@@ -213,6 +213,12 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
      * @type {import("../../proj/Projection.js").default}
      */
     this.renderedProjection_ = undefined;
+
+    /**
+     * @private
+     * @type {import("../../structs/LRUCache.js").default<import("../../Tile.js").default>|null}
+     */
+    this.sourceTileCache_ = null;
   }
 
   /**
@@ -348,12 +354,19 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
             !tileRepresentation ||
             tileRepresentation.tile.key !== tileSource.getKey()
           ) {
+            const sourceProjection = tileSource.getProjection();
+            const sourceTileCache =
+              sourceProjection &&
+              !equivalent(sourceProjection, viewState.projection)
+                ? this.getSourceTileCache_()
+                : undefined;
             tile = tileSource.getTile(
               z,
               x,
               y,
               frameState.pixelRatio,
               viewState.projection,
+              sourceTileCache,
             );
             if (!tile) {
               continue;
@@ -793,6 +806,20 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
   /**
    * @override
    */
+  /**
+   * @return {import("../../structs/LRUCache.js").default<import("../../Tile.js").default>} Source tile cache.
+   * @private
+   */
+  getSourceTileCache_() {
+    if (!this.sourceTileCache_) {
+      this.sourceTileCache_ = new LRUCache(512);
+    }
+    return this.sourceTileCache_;
+  }
+
+  /**
+   * @override
+   */
   clearCache() {
     super.clearCache();
 
@@ -801,6 +828,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
       tileRepresentation.dispose(),
     );
     tileRepresentationCache.clear();
+    this.sourceTileCache_?.clear();
   }
 
   /**
