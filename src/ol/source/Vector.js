@@ -270,6 +270,13 @@ class VectorSource extends Source {
     this.loadingExtentsCount_ = 0;
 
     /**
+     * Extent keys that just failed and were removed from the loaded extents cache.
+     * @private
+     * @type {Set<string>}
+     */
+    this.pendingFailedExtents_ = new Set();
+
+    /**
      * @private
      * @type {!Object<string, FeatureType>}
      */
@@ -991,21 +998,16 @@ class VectorSource extends Source {
    * @param {import("../proj/Projection.js").default} projection Projection.
    */
   loadFeatures(extent, resolution, projection) {
-    const loadedExtentsRtree = this.loadedExtentsRtree_;
     const extentsToLoad = this.strategy_(extent, resolution, projection);
     for (let i = 0, ii = extentsToLoad.length; i < ii; ++i) {
       const extentToLoad = extentsToLoad[i];
-      const alreadyLoaded = loadedExtentsRtree.forEachInExtent(
-        extentToLoad,
-        /**
-         * @param {{extent: import("../extent.js").Extent}} object Object.
-         * @return {boolean} Contains.
-         */
-        function (object) {
-          return containsExtent(object.extent, extentToLoad);
-        },
-      );
+      const alreadyLoaded = this.isExtentLoaded_(extentToLoad);
       if (!alreadyLoaded) {
+        if (this.pendingFailedExtents_.delete(extentToLoad.join(','))) {
+          // This extent just failed to load in a previous render cycle, and was removed from the loaded extents cache to allow retry.
+          // Skip loading it again immediately to prevent a tight retry loop.
+          continue;
+        }
         ++this.loadingExtentsCount_;
         this.dispatchEvent(
           new VectorSourceEvent(VectorEventType.FEATURESLOADSTART),
@@ -1020,6 +1022,8 @@ class VectorSource extends Source {
            */
           (features) => {
             --this.loadingExtentsCount_;
+            // Update before dispatching so listeners observe the correct state.
+            this.loading = this.loadingExtentsCount_ > 0;
             this.dispatchEvent(
               new VectorSourceEvent(
                 VectorEventType.FEATURESLOADEND,
@@ -1027,19 +1031,59 @@ class VectorSource extends Source {
                 features,
               ),
             );
+            // Trigger a render cycle so the map re-evaluates its loading state
+            // and fires loadend even if loader returned an empty response.
+            this.changed();
           },
           () => {
             --this.loadingExtentsCount_;
+            // Update before dispatching so listeners observe the correct state.
+            this.loading = this.loadingExtentsCount_ > 0;
             this.dispatchEvent(
               new VectorSourceEvent(VectorEventType.FEATURESLOADERROR),
             );
+
+            const isExtentLoaded = this.isExtentLoaded_(extentToLoad);
+            if (!isExtentLoaded) {
+              // If the extent was removed (e.g. via removeLoadedExtent to allow
+              // retry), record it so the immediate render triggered by changed()
+              // skips this extent once, preventing a reload loop.
+              // Subsequent renders will retry.
+              this.pendingFailedExtents_.add(extentToLoad.join(','));
+            }
+            // Trigger a render cycle so the map re-evaluates its loading state
+            // and fires loadend.
+            this.changed();
           },
         );
-        loadedExtentsRtree.insert(extentToLoad, {extent: extentToLoad.slice()});
+        this.loadedExtentsRtree_.insert(extentToLoad, {
+          extent: extentToLoad.slice(),
+        });
       }
     }
     this.loading =
       this.loader_.length < 4 ? false : this.loadingExtentsCount_ > 0;
+    this.pendingFailedExtents_.clear();
+  }
+
+  /**
+   * Returns true if the provided extent is already loaded.
+   * @return {boolean} True if the extent was loaded, false if it was not.
+   *
+   * @param {import("../extent.js").Extent} extentToLoad Extent.
+   * @private
+   */
+  isExtentLoaded_(extentToLoad) {
+    return this.loadedExtentsRtree_.forEachInExtent(
+      extentToLoad,
+      /**
+       * @param {{extent: import("../extent.js").Extent}} object Object.
+       * @return {boolean} Contains.
+       */
+      function (object) {
+        return containsExtent(object.extent, extentToLoad);
+      },
+    );
   }
 
   /**
@@ -1048,6 +1092,7 @@ class VectorSource extends Source {
   refresh() {
     this.clear(true);
     this.loadedExtentsRtree_.clear();
+    this.pendingFailedExtents_.clear();
     super.refresh();
   }
 

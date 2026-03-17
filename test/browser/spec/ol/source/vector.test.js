@@ -852,6 +852,103 @@ describe('ol/source/Vector', function () {
           getProjection('EPSG:3857'),
         );
       });
+      it('clears loading state and map fires loadend after failure', function (done) {
+        const source = new VectorSource();
+        source.on('featuresloaderror', function () {
+          expect(source.loading).to.be(false);
+        });
+        source.setLoader(
+          function (bbox, resolution, projection, success, failure) {
+            setTimeout(failure, 0);
+          },
+        );
+
+        const target = document.createElement('div');
+        target.style.width = '100px';
+        target.style.height = '100px';
+        document.body.appendChild(target);
+        const map = new Map({
+          target: target,
+          layers: [new VectorLayer({source: source})],
+          view: new View({center: [0, 0], zoom: 0}),
+        });
+
+        map.once('loadend', function () {
+          expect(source.loading).to.be(false);
+          disposeMap(map);
+          done();
+        });
+      });
+
+      it('retries and fires loadend after removeLoadedExtent and failure', function (done) {
+        const source = new VectorSource();
+        let loadCount = 0;
+        source.setLoader(
+          function (bbox, resolution, projection, success, failure) {
+            loadCount++;
+            if (loadCount === 1) {
+              setTimeout(function () {
+                source.removeLoadedExtent(bbox);
+                failure();
+              }, 0);
+            } else {
+              setTimeout(function () {
+                success([]);
+              }, 0);
+            }
+          },
+        );
+
+        const target = document.createElement('div');
+        target.style.width = '100px';
+        target.style.height = '100px';
+        document.body.appendChild(target);
+        const map = new Map({
+          target: target,
+          layers: [new VectorLayer({source: source})],
+          view: new View({center: [0, 0], zoom: 0}),
+        });
+
+        map.once('loadend', function () {
+          // First loadend fires after the failure, no immediate retry
+          expect(loadCount).to.be(1);
+          expect(source.loading).to.be(false);
+
+          // Trigger a new render cycle (e.g. user interaction) to retry
+          map.once('loadend', function () {
+            expect(loadCount).to.be(2);
+            disposeMap(map);
+            done();
+          });
+          source.changed();
+        });
+      });
+
+      it('clears loading state and map fires loadend with empty success', function (done) {
+        const source = new VectorSource();
+        source.on('featuresloadend', function () {
+          expect(source.loading).to.be(false);
+        });
+        source.setLoader(function (bbox, resolution, projection, success) {
+          setTimeout(() => success([]), 0);
+        });
+
+        const target = document.createElement('div');
+        target.style.width = '100px';
+        target.style.height = '100px';
+        document.body.appendChild(target);
+        const map = new Map({
+          target: target,
+          layers: [new VectorLayer({source: source})],
+          view: new View({center: [0, 0], zoom: 0}),
+        });
+
+        map.once('loadend', function () {
+          expect(source.loading).to.be(false);
+          disposeMap(map);
+          done();
+        });
+      });
     });
   });
 
