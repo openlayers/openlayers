@@ -75,18 +75,23 @@ function readRGB(preference, image) {
  * Called with the URL, request headers, and an abort signal. Expected to resolve with a `Response`.
  * @property {Array<string>} [overviews] List of any overview URLs, only applies if the url parameter is given and no loader is specified.
  * @property {Blob} [blob] Blob containing the source GeoTIFF. `blob` and `url` are mutually exclusive.
- * @property {number} [min=0] The minimum source data value.  Rendered values are scaled from 0 to 1 based on
- * the configured min and max.  If not provided and raster statistics are available, those will be used instead.
- * If neither are available, the minimum for the data type will be used.  To disable this behavior, set
- * the `normalize` option to `false` in the constructor.
- * @property {number} [max] The maximum source data value.  Rendered values are scaled from 0 to 1 based on
- * the configured min and max.  If not provided and raster statistics are available, those will be used instead.
- * If neither are available, the maximum for the data type will be used.  To disable this behavior, set
- * the `normalize` option to `false` in the constructor.
- * @property {number} [nodata] Values to discard (overriding any nodata values in the metadata).
- * When provided, an additional alpha band will be added to the data.  Often the GeoTIFF metadata
+ * @property {number|Array<number|undefined>} [min=0] The minimum source data value.  Rendered values are
+ * scaled from 0 to 1 based on the configured min and max.  If not provided and raster statistics are available,
+ * those will be used instead.  If neither are available, the minimum for the data type will be used.  To disable
+ * this behavior, set the `normalize` option to `false` in the constructor.  If an array is provided, values
+ * correspond to the bands in the file (not the `bands` option).  Array values can be left `undefined` to trigger
+ * the default behavior.
+ * @property {number|Array<number|undefined>} [max] The maximum source data value.  Rendered values are
+ * scaled from 0 to 1 based on the configured min and max.  If not provided and raster statistics are available,
+ * those will be used instead.  If neither are available, the maximum for the data type will be used.  To disable
+ * this behavior, set the `normalize` option to `false` in the constructor.  If an array is provided, values
+ * correspond to the bands in the file (not the `bands` option).  Array values can be left `undefined` to to trigger
+ * the default behavior.
+ * @property {number|Array<number|undefined>} [nodata] Values to discard (overriding any nodata values in the
+ * metadata).  When provided, an additional alpha band will be added to the data.  Often the GeoTIFF metadata
  * will include information about nodata values, so you should only need to set this property if
- * you find that it is not already extracted from the metadata.
+ * you find that it is not already extracted from the metadata.  If an array is provided, values correspond to
+ * the bands in the file (not the `bands` option).  Array values can be left `undefined` to trigger the default behavior.
  * @property {Array<number>} [bands] Band numbers to be read from (where the first band is `1`). If not provided, all bands will
  * be read. For example, if a GeoTIFF has blue (1), green (2), red (3), and near-infrared (4) bands, and you only need the
  * near-infrared band, configure `bands: [4]`.
@@ -824,9 +829,15 @@ class GeoTIFFSource extends DataTile {
     // decide if we need to add an alpha band to handle nodata
     outer: for (let sourceIndex = 0; sourceIndex < sourceCount; ++sourceIndex) {
       // option 1: source is configured with a nodata value
-      if (this.sourceInfo_[sourceIndex].nodata !== undefined) {
-        this.addAlpha_ = true;
-        break;
+      const sourceNodata = this.sourceInfo_[sourceIndex].nodata;
+      if (sourceNodata !== undefined) {
+        if (
+          !Array.isArray(sourceNodata) ||
+          sourceNodata.some((v) => v !== undefined)
+        ) {
+          this.addAlpha_ = true;
+          break;
+        }
       }
       if (this.sourceMasks_[sourceIndex].length) {
         this.addAlpha_ = true;
@@ -937,7 +948,22 @@ class GeoTIFFSource extends DataTile {
       /** @type {number|Array<number>} */
       let fillValue;
       if ('nodata' in source && source.nodata !== null) {
-        fillValue = source.nodata;
+        if (Array.isArray(source.nodata)) {
+          if (samples) {
+            fillValue = samples.map(function (sampleIndex) {
+              const v = source.nodata[sampleIndex];
+              return v !== undefined
+                ? v
+                : nodataValues[sourceIndex][sampleIndex];
+            });
+          } else {
+            fillValue = source.nodata.map(function (v, i) {
+              return v !== undefined ? v : nodataValues[sourceIndex][i];
+            });
+          }
+        } else {
+          fillValue = source.nodata;
+        }
       } else {
         if (!samples) {
           fillValue = nodataValues[sourceIndex];
@@ -1017,17 +1043,33 @@ class GeoTIFFSource extends DataTile {
       data = new Float32Array(dataLength);
     }
 
-    let dataIndex = 0;
-    for (let pixelIndex = 0; pixelIndex < pixelCount; ++pixelIndex) {
-      let transparent = addAlpha;
-      for (let sourceIndex = 0; sourceIndex < sourceCount; ++sourceIndex) {
-        const source = sourceInfo[sourceIndex];
+    // Precompute per-source, per-sample normalization and nodata values
+    const sourceGains = new Array(sourceCount);
+    const sourceBiases = new Array(sourceCount);
+    const sourceNodatas = new Array(sourceCount);
+    for (let sourceIndex = 0; sourceIndex < sourceCount; ++sourceIndex) {
+      const source = sourceInfo[sourceIndex];
+      const numSamples = samplesPerPixel[sourceIndex];
 
-        let min = source.min;
-        let max = source.max;
-        let gain, bias;
-        if (normalize) {
-          const stats = metadata[sourceIndex][0];
+      if (normalize) {
+        const gains = new Array(numSamples);
+        const biases = new Array(numSamples);
+        const stats = metadata[sourceIndex][0];
+        for (let sampleIndex = 0; sampleIndex < numSamples; ++sampleIndex) {
+          let bandIndex;
+          if (source.bands) {
+            bandIndex = source.bands[sampleIndex] - 1;
+          } else {
+            bandIndex = sampleIndex;
+          }
+
+          let min = Array.isArray(source.min)
+            ? source.min[bandIndex]
+            : source.min;
+          let max = Array.isArray(source.max)
+            ? source.max[bandIndex]
+            : source.max;
+
           if (min === undefined) {
             if (stats && STATISTICS_MINIMUM in stats) {
               min = parseFloat(stats[STATISTICS_MINIMUM]);
@@ -1043,10 +1085,41 @@ class GeoTIFFSource extends DataTile {
             }
           }
 
-          gain = 255 / (max - min);
-          bias = -min * gain;
+          gains[sampleIndex] = 255 / (max - min);
+          biases[sampleIndex] = -min * gains[sampleIndex];
         }
+        sourceGains[sourceIndex] = gains;
+        sourceBiases[sourceIndex] = biases;
+      }
 
+      if (addAlpha) {
+        const nodatas = new Array(numSamples);
+        for (let sampleIndex = 0; sampleIndex < numSamples; ++sampleIndex) {
+          let bandIndex;
+          if (source.bands) {
+            bandIndex = source.bands[sampleIndex] - 1;
+          } else {
+            bandIndex = sampleIndex;
+          }
+
+          if (Array.isArray(source.nodata)) {
+            const nd = source.nodata[bandIndex];
+            nodatas[sampleIndex] =
+              nd !== undefined ? nd : nodataValues[sourceIndex][bandIndex];
+          } else if (source.nodata !== undefined) {
+            nodatas[sampleIndex] = source.nodata;
+          } else {
+            nodatas[sampleIndex] = nodataValues[sourceIndex][bandIndex];
+          }
+        }
+        sourceNodatas[sourceIndex] = nodatas;
+      }
+    }
+
+    let dataIndex = 0;
+    for (let pixelIndex = 0; pixelIndex < pixelCount; ++pixelIndex) {
+      let transparent = addAlpha;
+      for (let sourceIndex = 0; sourceIndex < sourceCount; ++sourceIndex) {
         for (
           let sampleIndex = 0;
           sampleIndex < samplesPerPixel[sourceIndex];
@@ -1057,7 +1130,12 @@ class GeoTIFFSource extends DataTile {
 
           let value;
           if (normalize) {
-            value = clamp(gain * sourceValue + bias, 0, 255);
+            value = clamp(
+              sourceGains[sourceIndex][sampleIndex] * sourceValue +
+                sourceBiases[sourceIndex][sampleIndex],
+              0,
+              255,
+            );
           } else {
             value = sourceValue;
           }
@@ -1065,17 +1143,7 @@ class GeoTIFFSource extends DataTile {
           if (!addAlpha) {
             data[dataIndex] = value;
           } else {
-            let nodata = source.nodata;
-            if (nodata === undefined) {
-              let bandIndex;
-              if (source.bands) {
-                bandIndex = source.bands[sampleIndex] - 1;
-              } else {
-                bandIndex = sampleIndex;
-              }
-              nodata = nodataValues[sourceIndex][bandIndex];
-            }
-
+            const nodata = sourceNodatas[sourceIndex][sampleIndex];
             const nodataIsNaN = isNaN(nodata);
             if (
               (!nodataIsNaN && sourceValue !== nodata) ||
