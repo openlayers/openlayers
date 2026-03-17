@@ -2,7 +2,11 @@
  * @module ol/layer/Heatmap
  */
 import {createCanvasContext2D} from '../dom.js';
-import {BooleanType, NumberType} from '../expr/expression.js';
+import {
+  BooleanType,
+  NumberType,
+  newParsingContext,
+} from '../expr/expression.js';
 import {newCompilationContext} from '../expr/gpu.js';
 import {clamp} from '../math.js';
 import {ShaderBuilder} from '../render/webgl/ShaderBuilder.js';
@@ -277,7 +281,13 @@ class Heatmap extends BaseVector {
     const builder = new ShaderBuilder();
 
     const context = newCompilationContext();
-    const filterCompiled = expressionToGlsl(context, this.filter_, BooleanType);
+    const filterParsingContext = newParsingContext();
+    const filterCompiled = expressionToGlsl(
+      context,
+      this.filter_,
+      BooleanType,
+      filterParsingContext,
+    );
     let radiusCompiled = expressionToGlsl(
       context,
       this.getRadius(),
@@ -339,8 +349,13 @@ class Heatmap extends BaseVector {
         `vec4(smoothstep(0., 1., (1. - length(currentRadiusPx * 2. / v_width)) * getBlurSlope()) * ${weightExpression})`,
       )
       .setStrokeWidthExpression(`(${radiusCompiled} + ${blurCompiled}) * 2.`)
-      .setFillColorExpression(`vec4(${weightExpression})`)
-      .setFragmentDiscardExpression(`!${filterCompiled}`);
+      .setFillColorExpression(`vec4(${weightExpression})`);
+
+    if (filterParsingContext.mCoordinate) {
+      builder.setFragmentDiscardExpression(`!${filterCompiled}`);
+    } else {
+      builder.setShapeDiscardExpression(`!${filterCompiled}`);
+    }
 
     applyContextToBuilder(builder, context);
     const attributes = generateAttributesFromContext(context);

@@ -203,7 +203,7 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
         {name: 'u_tileZoomLevel', type: 'float'},
       ]);
       expect(secondBuilder.getFragmentDiscardExpression()).to.be(
-        '(!(u_zoom > 10.0)) || (texture2D(u_depthMask, gl_FragCoord.xy / u_pixelRatio / u_viewportSizePx).r * 50. > u_tileZoomLevel + 0.5)',
+        'texture2D(u_depthMask, gl_FragCoord.xy / u_pixelRatio / u_viewportSizePx).r * 50. > u_tileZoomLevel + 0.5',
       );
     });
     it('instantiates the tile mask target, indices, attributes and program', () => {
@@ -249,6 +249,12 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
       it('passes the correct styles to renderer', () => {
         const builder = renderer.styleRenderer_.styleShaders[0].builder;
         expect(builder.getSymbolColorExpression()).to.contain('vec4(1.0)');
+      });
+      it('adds the mask discard expression to the existing fragment discard', () => {
+        const builder = renderer.styleRenderer_.styleShaders[0].builder;
+        expect(builder.getFragmentDiscardExpression()).to.be(
+          '(u_zoom > 10.0) || (texture2D(u_depthMask, gl_FragCoord.xy / u_pixelRatio / u_viewportSizePx).r * 50. > u_tileZoomLevel + 0.5)',
+        );
       });
     });
   });

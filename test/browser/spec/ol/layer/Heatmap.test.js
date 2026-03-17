@@ -248,7 +248,7 @@ describe('ol/layer/Heatmap', function () {
         source: new VectorSource(),
       });
     });
-    it('is applied as a fragment filter if provided', () => {
+    it('is applied as a shape filter if provided', () => {
       layer = new HeatmapLayer({
         source: new VectorSource(),
         filter: ['>', ['get', 'sizeAttr'], 10],
@@ -260,8 +260,24 @@ describe('ol/layer/Heatmap', function () {
       expect(attrs).to.have.key('prop_sizeAttr');
 
       const builder = rendererOpts.style.builder;
-      expect(builder.getFragmentDiscardExpression()).to.eql(
+      expect(builder.getShapeDiscardExpression()).to.eql(
         '!(a_prop_sizeAttr > 10.0)',
+      );
+    });
+    it('is applied as a fragment filter if provided and depends on the line-metric operator', () => {
+      layer = new HeatmapLayer({
+        source: new VectorSource(),
+        filter: ['>', ['get', 'sizeAttr'], ['line-metric']],
+      });
+      layer.getRenderer();
+
+      const rendererOpts = rendererSpy.getCall(0).args[1];
+      const attrs = rendererOpts.style.attributes;
+      expect(attrs).to.have.key('prop_sizeAttr');
+
+      const builder = rendererOpts.style.builder;
+      expect(builder.getFragmentDiscardExpression()).to.eql(
+        '!(a_prop_sizeAttr > currentLineMetric)',
       );
     });
     describe('setFilter', () => {

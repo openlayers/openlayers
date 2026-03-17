@@ -1238,16 +1238,19 @@ class Map extends BaseObject {
     if (!tileQueue.isEmpty()) {
       let maxTotalLoading = this.maxTilesLoading_;
       let maxNewLoads = maxTotalLoading;
-      if (frameState) {
-        const hints = frameState.viewHints;
-        if (hints[ViewHint.ANIMATING] || hints[ViewHint.INTERACTING]) {
-          const lowOnFrameBudget = Date.now() - frameState.time > 8;
-          maxTotalLoading = lowOnFrameBudget ? 0 : 8;
-          maxNewLoads = lowOnFrameBudget ? 0 : 2;
-        }
+      const hints = frameState ? frameState.viewHints : undefined;
+      const animatingOrInteracting = hints
+        ? hints[ViewHint.ANIMATING] || hints[ViewHint.INTERACTING]
+        : false;
+      if (animatingOrInteracting) {
+        const lowOnFrameBudget = Date.now() - frameState.time > 8;
+        maxTotalLoading = lowOnFrameBudget ? 0 : 8;
+        maxNewLoads = lowOnFrameBudget ? 0 : 2;
       }
       if (tileQueue.getTilesLoading() < maxTotalLoading) {
-        tileQueue.reprioritize(); // FIXME only call if view has changed
+        if (animatingOrInteracting) {
+          tileQueue.reprioritize();
+        }
         tileQueue.loadMoreTiles(maxTotalLoading, maxNewLoads);
       }
     }
