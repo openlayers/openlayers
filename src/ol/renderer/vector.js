@@ -84,7 +84,7 @@ function renderCircleGeometry(builderGroup, geometry, style, feature, index) {
   if (textStyle && textStyle.getText()) {
     const textReplay = builderGroup.getBuilder(style.getZIndex(), 'Text');
     textReplay.setTextStyle(textStyle);
-    textReplay.drawText(geometry, feature);
+    textReplay.drawText(geometry, feature, index);
   }
 }
 
