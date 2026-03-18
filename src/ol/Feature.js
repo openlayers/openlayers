@@ -156,14 +156,22 @@ class Feature extends BaseObject {
    * @api
    */
   clone() {
-    const clone = /** @type {Feature<Geometry>} */ (
-      new Feature(this.hasProperties() ? this.getProperties() : null)
-    );
-    clone.setGeometryName(this.getGeometryName());
-    const geometry = this.getGeometry();
-    if (geometry) {
-      clone.setGeometry(/** @type {Geometry} */ (geometry.clone()));
+    const clone = /** @type {Feature<Geometry>} */ (new Feature());
+    const geometryName = this.geometryName_;
+    clone.setGeometryName(geometryName);
+
+    const properties = this.getPropertiesInternal();
+    if (properties) {
+      const geometry = this.getGeometry();
+      for (const key in properties) {
+        if (key === geometryName && geometry) {
+          clone.set(key, geometry.clone());
+        } else {
+          clone.set(key, properties[key], true);
+        }
+      }
     }
+
     const style = this.getStyle();
     if (style) {
       clone.setStyle(style);
@@ -300,6 +308,9 @@ class Feature extends BaseObject {
    * @api
    */
   setGeometryName(name) {
+    if (name === this.geometryName_) {
+      return;
+    }
     this.removeChangeListener(this.geometryName_, this.handleGeometryChanged_);
     this.geometryName_ = name;
     this.addChangeListener(this.geometryName_, this.handleGeometryChanged_);
