@@ -408,6 +408,19 @@ describe('ol/Feature.js', function () {
       expect(clone.get('barkey')).to.be('barval');
     });
 
+    it('clones features where the default geometry propetry is not a geometry', function () {
+      const f = new Feature();
+      f.setGeometryName('__geometry');
+      f.setGeometry(new Point([1, 1]));
+      f.setProperties({
+        geometry: {lat: 1, lon: 1},
+      });
+      const clone = f.clone();
+      expect(f.getGeometryName()).to.be(clone.getGeometryName());
+      expect(clone.getGeometry()).to.be.a(Point);
+      expect(clone.get('geometry')).to.eql({lat: 1, lon: 1});
+    });
+
     it('correctly clones features with no geometry and no style', function () {
       const feature = new Feature();
       feature.set('fookey', 'fooval');
