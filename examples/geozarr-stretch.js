@@ -31,8 +31,7 @@ function getVariables() {
 }
 
 const source = new GeoZarr({
-  url: 'https://s3.explorer.eopf.copernicus.eu/esa-zarr-sentinel-explorer-fra/tests-output/sentinel-2-l2a/S2B_MSIL2A_20260120T125339_N0511_R138_T27VWL_20260120T131151.zarr',
-  group: 'measurements/reflectance',
+  url: 'https://s3.explorer.eopf.copernicus.eu/esa-zarr-sentinel-explorer-fra/tests-output/sentinel-2-l2a/S2B_MSIL2A_20260120T125339_N0511_R138_T27VWL_20260120T131151.zarr/measurements/reflectance',
   bands: ['b04', 'b03', 'b02', 'b11'],
 });
 
