@@ -469,7 +469,7 @@ function getTileGridInfoFromAttributes(
   const multiscales = attributes.multiscales;
   const extent = attributes['spatial:bbox'];
   const projection = getProjection(attributes['proj:code']);
-  /** @type {Array<{matrixId: string, resolution: number, origin: import("ol/coordinate").Coordinate, tileSize: import("../size.js").Size|undefined}>} */
+  /** @type {Array<{matrixId: string, resolution: number, origin: import("../coordinate.js").Coordinate, tileSize: import("../size.js").Size|undefined}>} */
   const groupInfo = [];
   const bandsByLevel = consolidatedMetadata ? {} : null;
   let fillValue;

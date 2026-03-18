@@ -2004,7 +2004,7 @@ function readStyle(node, objectStack) {
           const type = geometry.getType();
           if (type === 'GeometryCollection') {
             const collection =
-              /** @type {import("../geom/GeometryCollection").default} */ (
+              /** @type {import("../geom/GeometryCollection.js").default} */ (
                 geometry
               );
             return new GeometryCollection(
@@ -2032,7 +2032,7 @@ function readStyle(node, objectStack) {
           const type = geometry.getType();
           if (type === 'GeometryCollection') {
             const collection =
-              /** @type {import("../geom/GeometryCollection").default} */ (
+              /** @type {import("../geom/GeometryCollection.js").default} */ (
                 geometry
               );
             return new GeometryCollection(

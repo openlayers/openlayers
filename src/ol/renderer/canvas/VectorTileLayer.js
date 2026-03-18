@@ -84,7 +84,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
     /**
      * @private
-     * @type {import("../../transform").Transform}
+     * @type {import("../../transform.js").Transform}
      */
     this.renderedPixelToCoordinateTransform_ = null;
 
@@ -960,7 +960,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
 
   /**
    * @param {import("../../VectorRenderTile.js").default} tile Tile.
-   * @param {import("../../Map").FrameState} frameState Frame state.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @private
    */
   renderTileImage_(tile, frameState) {

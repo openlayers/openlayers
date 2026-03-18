@@ -187,10 +187,10 @@ class VectorTile extends UrlTile {
 
   /**
    * @param {number} pixelRatio Pixel ratio.
-   * @param {import("../proj/Projection").default} projection Projection.
+   * @param {import("../proj/Projection.js").default} projection Projection.
    * @param {VectorRenderTile} tile Vector render tile.
    * @param {import("../Tile.js").UrlFunction} [tileUrlFunction] Tile URL function.
-   * @return {Array<import("../VectorTile").default>} Tile keys.
+   * @return {Array<import("../VectorTile.js").default>} Tile keys.
    */
   getSourceTiles(pixelRatio, projection, tile, tileUrlFunction) {
     if (tile.getState() === TileState.IDLE) {

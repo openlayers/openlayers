@@ -129,7 +129,7 @@ export function getCacheKey(source, tileCoord) {
 
 /**
  * @typedef {Object} Options
- * @property {Object<string, import("../../webgl/Helper").UniformValue>} [uniforms] Additional uniforms
+ * @property {Object<string, import("../../webgl/Helper.js").UniformValue>} [uniforms] Additional uniforms
  * made available to shaders.
  * @property {number} [cacheSize=512] The tile representation cache size.
  * @property {Array<import('./Layer.js').PostProcessesOptions>} [postProcesses] Post-processes definitions.

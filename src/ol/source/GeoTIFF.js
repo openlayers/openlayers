@@ -109,13 +109,7 @@ function readRGB(preference, image) {
  * @property {number} ProjectedCSTypeGeoKey Projected coordinate system code.
  */
 
-/**
- * @typedef {import("geotiff").GeoTIFF} GeoTIFF
- */
-
-/**
- * @typedef {import("geotiff").MultiGeoTIFF} MultiGeoTIFF
- */
+/** @import {GeoTIFF, GeoTIFFImage, MultiGeoTIFF} from 'geotiff' */
 
 /**
  * @typedef {Object} GDALMetadata
@@ -127,10 +121,6 @@ const STATISTICS_MAXIMUM = 'STATISTICS_MAXIMUM';
 const STATISTICS_MINIMUM = 'STATISTICS_MINIMUM';
 
 const defaultTileSize = 256;
-
-/**
- * @typedef {import("geotiff").GeoTIFFImage} GeoTIFFImage
- */
 
 let workerPool;
 function getWorkerPool() {

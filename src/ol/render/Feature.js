@@ -10,6 +10,12 @@ import {
   getHeight,
 } from '../extent.js';
 import {memoizeOne} from '../functions.js';
+import LineString from '../geom/LineString.js';
+import MultiLineString from '../geom/MultiLineString.js';
+import MultiPoint from '../geom/MultiPoint.js';
+import MultiPolygon from '../geom/MultiPolygon.js';
+import Point from '../geom/Point.js';
+import Polygon from '../geom/Polygon.js';
 import {linearRingss as linearRingssCenter} from '../geom/flat/center.js';
 import {
   getInteriorPointOfArray,
@@ -23,14 +29,6 @@ import {
   quantizeArray,
 } from '../geom/flat/simplify.js';
 import {transform2D} from '../geom/flat/transform.js';
-import {
-  LineString,
-  MultiLineString,
-  MultiPoint,
-  MultiPolygon,
-  Point,
-  Polygon,
-} from '../geom.js';
 import {get as getProjection} from '../proj.js';
 import {
   compose as composeTransform,

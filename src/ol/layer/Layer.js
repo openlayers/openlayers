@@ -20,12 +20,12 @@ import LayerProperty from './Property.js';
 
 /***
  * @template Return
- * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
- *   import("../Observable").OnSignature<import("./Base").BaseLayerObjectEventTypes|
- *     LayerEventType, import("../Object").ObjectEvent, Return> &
- *   import("../Observable").OnSignature<import("../render/EventType").LayerRenderEventTypes, import("../render/Event").default, Return> &
- *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("./Base").BaseLayerObjectEventTypes|LayerEventType|
- *     import("../render/EventType").LayerRenderEventTypes, Return>} LayerOnSignature
+ * @typedef {import("../Observable.js").OnSignature<import("../Observable.js").EventTypes, import("../events/Event.js").default, Return> &
+ *   import("../Observable.js").OnSignature<import("./Base.js").BaseLayerObjectEventTypes|
+ *     LayerEventType, import("../Object.js").ObjectEvent, Return> &
+ *   import("../Observable.js").OnSignature<import("../render/EventType.js").LayerRenderEventTypes, import("../render/Event.js").default, Return> &
+ *   import("../Observable.js").CombinedOnSignature<import("../Observable.js").EventTypes|import("./Base.js").BaseLayerObjectEventTypes|LayerEventType|
+ *     import("../render/EventType.js").LayerRenderEventTypes, Return>} LayerOnSignature
  */
 
 /**
@@ -111,12 +111,12 @@ class Layer extends BaseLayer {
     super(baseOptions);
 
     /***
-     * @type {LayerOnSignature<import("../events").EventsKey>}
+     * @type {LayerOnSignature<import("../events.js").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {LayerOnSignature<import("../events").EventsKey>}
+     * @type {LayerOnSignature<import("../events.js").EventsKey>}
      */
     this.once;
 
@@ -269,8 +269,8 @@ class Layer extends BaseLayer {
   }
 
   /**
-   * @param {import("../pixel").Pixel} pixel Pixel.
-   * @return {Promise<Array<import("../Feature").FeatureLike>>} Promise that resolves with
+   * @param {import("../pixel.js").Pixel} pixel Pixel.
+   * @return {Promise<Array<import("../Feature.js").FeatureLike>>} Promise that resolves with
    * an array of features.
    */
   getFeatures(pixel) {
@@ -281,7 +281,7 @@ class Layer extends BaseLayer {
   }
 
   /**
-   * @param {import("../pixel").Pixel} pixel Pixel.
+   * @param {import("../pixel.js").Pixel} pixel Pixel.
    * @return {Uint8ClampedArray|Uint8Array|Float32Array|DataView|null} Pixel data.
    */
   getData(pixel) {

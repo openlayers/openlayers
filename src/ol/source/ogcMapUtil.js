@@ -34,7 +34,7 @@ export function getRequestUrl(baseUrl, extent, size, projection, params) {
 }
 
 /**
- * @param {import("../extent").Extent} extent Extent.
+ * @param {import("../extent.js").Extent} extent Extent.
  * @param {number} resolution Resolution.
  * @param {number} pixelRatio pixel ratio.
  * @param {import("../proj.js").Projection} projection Projection.

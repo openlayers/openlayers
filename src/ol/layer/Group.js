@@ -56,11 +56,11 @@ export class GroupEvent extends Event {
 
 /***
  * @template Return
- * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
- *   import("../Observable").OnSignature<import("./Base").BaseLayerObjectEventTypes|
- *     'change:layers', import("../Object").ObjectEvent, Return> &
- *   import("../Observable").OnSignature<'addlayer'|'removelayer', GroupEvent, Return> &
- *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("./Base").BaseLayerObjectEventTypes|'addlayer'|'removelayer'|'change:layers', Return>} GroupOnSignature
+ * @typedef {import("../Observable.js").OnSignature<import("../Observable.js").EventTypes, import("../events/Event.js").default, Return> &
+ *   import("../Observable.js").OnSignature<import("./Base.js").BaseLayerObjectEventTypes|
+ *     'change:layers', import("../Object.js").ObjectEvent, Return> &
+ *   import("../Observable.js").OnSignature<'addlayer'|'removelayer', GroupEvent, Return> &
+ *   import("../Observable.js").CombinedOnSignature<import("../Observable.js").EventTypes|import("./Base.js").BaseLayerObjectEventTypes|'addlayer'|'removelayer'|'change:layers', Return>} GroupOnSignature
  */
 
 /**
@@ -116,12 +116,12 @@ class LayerGroup extends BaseLayer {
     super(baseOptions);
 
     /***
-     * @type {GroupOnSignature<import("../events").EventsKey>}
+     * @type {GroupOnSignature<import("../events.js").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {GroupOnSignature<import("../events").EventsKey>}
+     * @type {GroupOnSignature<import("../events.js").EventsKey>}
      */
     this.once;
 

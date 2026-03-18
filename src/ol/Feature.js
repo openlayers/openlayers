@@ -16,9 +16,9 @@ import {listen, unlistenByKey} from './events.js';
 
 /***
  * @template Return
- * @typedef {import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default, Return> &
- *   import("./Observable").OnSignature<import("./ObjectEventType").Types|'change:geometry', import("./Object").ObjectEvent, Return> &
- *   import("./Observable").CombinedOnSignature<import("./Observable").EventTypes|import("./ObjectEventType").Types
+ * @typedef {import("./Observable.js").OnSignature<import("./Observable.js").EventTypes, import("./events/Event.js").default, Return> &
+ *   import("./Observable.js").OnSignature<import("./ObjectEventType.js").Types|'change:geometry', import("./Object.js").ObjectEvent, Return> &
+ *   import("./Observable.js").CombinedOnSignature<import("./Observable.js").EventTypes|import("./ObjectEventType.js").Types
  *     |'change:geometry', Return>} FeatureOnSignature
  */
 
@@ -86,12 +86,12 @@ class Feature extends BaseObject {
     super();
 
     /***
-     * @type {FeatureOnSignature<import("./events").EventsKey>}
+     * @type {FeatureOnSignature<import("./events.js").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {FeatureOnSignature<import("./events").EventsKey>}
+     * @type {FeatureOnSignature<import("./events.js").EventsKey>}
      */
     this.once;
 

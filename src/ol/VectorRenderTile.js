@@ -27,7 +27,7 @@ class VectorRenderTile extends Tile {
    * @param {import("./tilecoord.js").TileCoord} tileCoord Tile coordinate.
    * @param {import("./TileState.js").default} state State.
    * @param {import("./tilecoord.js").TileCoord} urlTileCoord Wrapped tile coordinate for source urls.
-   * @param {function(VectorRenderTile):Array<import("./VectorTile").default>} getSourceTiles Function.
+   * @param {function(VectorRenderTile):Array<import("./VectorTile.js").default>} getSourceTiles Function.
    * @param {function(VectorRenderTile):void} removeSourceTiles Function.
    */
   constructor(

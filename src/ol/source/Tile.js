@@ -13,11 +13,11 @@ import Source from './Source.js';
 
 /***
  * @template Return
- * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
- *   import("../Observable").OnSignature<import("../ObjectEventType").Types, import("../Object").ObjectEvent, Return> &
- *   import("../Observable").OnSignature<import("./TileEventType").TileSourceEventTypes, TileSourceEvent, Return> &
- *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
- *     import("./TileEventType").TileSourceEventTypes, Return>} TileSourceOnSignature
+ * @typedef {import("../Observable.js").OnSignature<import("../Observable.js").EventTypes, import("../events/Event.js").default, Return> &
+ *   import("../Observable.js").OnSignature<import("../ObjectEventType.js").Types, import("../Object.js").ObjectEvent, Return> &
+ *   import("../Observable.js").OnSignature<import("./TileEventType.js").TileSourceEventTypes, TileSourceEvent, Return> &
+ *   import("../Observable.js").CombinedOnSignature<import("../Observable.js").EventTypes|import("../ObjectEventType.js").Types|
+ *     import("./TileEventType.js").TileSourceEventTypes, Return>} TileSourceOnSignature
  */
 
 /**
@@ -62,12 +62,12 @@ class TileSource extends Source {
     });
 
     /***
-     * @type {TileSourceOnSignature<import("../events").EventsKey>}
+     * @type {TileSourceOnSignature<import("../events.js").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {TileSourceOnSignature<import("../events").EventsKey>}
+     * @type {TileSourceOnSignature<import("../events.js").EventsKey>}
      */
     this.once;
 
@@ -154,7 +154,7 @@ class TileSource extends Source {
   }
 
   /**
-   * @param {import("../proj/Projection").default} [projection] Projection.
+   * @param {import("../proj/Projection.js").default} [projection] Projection.
    * @return {Array<number>|null} Resolutions.
    * @override
    */

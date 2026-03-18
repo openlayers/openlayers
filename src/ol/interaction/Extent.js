@@ -84,11 +84,11 @@ export class ExtentEvent extends Event {
 
 /***
  * @template Return
- * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
- *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
- *     'change:active', import("../Object").ObjectEvent, Return> &
- *   import("../Observable").OnSignature<'extentchanged', ExtentEvent, Return> &
- *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
+ * @typedef {import("../Observable.js").OnSignature<import("../Observable.js").EventTypes, import("../events/Event.js").default, Return> &
+ *   import("../Observable.js").OnSignature<import("../ObjectEventType.js").Types|
+ *     'change:active', import("../Object.js").ObjectEvent, Return> &
+ *   import("../Observable.js").OnSignature<'extentchanged', ExtentEvent, Return> &
+ *   import("../Observable.js").CombinedOnSignature<import("../Observable.js").EventTypes|import("../ObjectEventType.js").Types|
  *     'change:active'|'extentchanged', Return>} ExtentOnSignature
  */
 
@@ -112,12 +112,12 @@ class Extent extends PointerInteraction {
     super(/** @type {import("./Pointer.js").Options} */ (options));
 
     /***
-     * @type {ExtentOnSignature<import("../events").EventsKey>}
+     * @type {ExtentOnSignature<import("../events.js").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {ExtentOnSignature<import("../events").EventsKey>}
+     * @type {ExtentOnSignature<import("../events.js").EventsKey>}
      */
     this.once;
 

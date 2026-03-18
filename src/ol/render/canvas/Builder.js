@@ -426,7 +426,7 @@ class CanvasBuilder extends VectorContext {
 
   /**
    * @protected
-   * @param {import("../../geom/Geometry").default|import("../Feature.js").default} geometry The geometry.
+   * @param {import("../../geom/Geometry.js").default|import("../Feature.js").default} geometry The geometry.
    * @param {import("../../Feature.js").FeatureLike} feature Feature.
    * @param {number} index Render order index
    */

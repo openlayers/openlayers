@@ -54,7 +54,7 @@ export const Uniforms = {
  * @property {Object<string, number|Array<number>|string|boolean>} variables Style variables
  * @property {boolean} [disableHitDetection=false] Setting this to true will provide a slight performance boost, but will
  * prevent all hit detection on the layer.
- * @property {Array<import("./Layer").PostProcessesOptions>} [postProcesses] Post-processes definitions
+ * @property {Array<import("./Layer.js").PostProcessesOptions>} [postProcesses] Post-processes definitions
  */
 
 /**
