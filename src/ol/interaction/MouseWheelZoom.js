@@ -42,6 +42,11 @@ const DELTA_LINE_MULTIPLIER = 40;
 const DELTA_PAGE_MULTIPLIER = 300;
 
 /**
+ * Mutliplier for the delta value when using pinch-to-zoom
+ * @type {number}
+ */
+const DELTA_TRACKPAD_PINCH_TO_ZOOM_MULTIPLIER = 3; // 5 = google maps. 3 = apple maps, MapLibre.
+/**
  * @classdesc
  * Allows the user to zoom the map by scrolling the mouse wheel.
  * @api
@@ -249,6 +254,10 @@ class MouseWheelZoom extends Interaction {
         this.endInteraction_.bind(this),
         this.timeout_,
       );
+      if (mapBrowserEvent?.originalEvent?.ctrlKey === true) {
+        // it's pinch-to-zoom
+        delta = delta * DELTA_TRACKPAD_PINCH_TO_ZOOM_MULTIPLIER;
+      }
       view.adjustZoom(
         -delta / this.deltaPerZoom_,
         this.lastAnchor_ ? map.getCoordinateFromPixel(this.lastAnchor_) : null,
