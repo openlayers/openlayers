@@ -62,6 +62,58 @@ describe('ol.interaction.MouseWheelZoom', function () {
     });
   });
 
+  describe('pinch-to-zoom vs ctrl+scroll', function () {
+    /** @type {View} */
+    let view;
+
+    beforeEach(function () {
+      view = map.getView();
+      sinonSpy(view, 'adjustZoom');
+    });
+
+    afterEach(function () {
+      view.adjustZoom.restore();
+    });
+
+    /**
+     * @param {boolean} ctrlKey Whether the ctrl key is pressed.
+     * @return {MapBrowserEvent} A trackpad wheel event.
+     */
+    function makeTrackpadWheelEvent(ctrlKey) {
+      const event = new MapBrowserEvent('wheel', map, {
+        type: 'wheel',
+        deltaMode: WheelEvent.DOM_DELTA_PIXEL,
+        deltaY: 1,
+        ctrlKey: ctrlKey,
+        target: map.getViewport(),
+        preventDefault: Event.prototype.preventDefault,
+      });
+      event.coordinate = map.getView().getCenter();
+      event.pixel = map.getPixelFromCoordinate(event.coordinate);
+      return event;
+    }
+
+    it('applies 3x multiplier for pinch-to-zoom (ctrlKey synthesized by browser)', function () {
+      map.handleMapBrowserEvent(makeTrackpadWheelEvent(true));
+      expect(view.adjustZoom.calledOnce).to.be(true);
+      expect(view.adjustZoom.getCall(0).args[0]).to.roughlyEqual(
+        -3 / 300,
+        1e-10,
+      );
+    });
+
+    it('does not apply 3x multiplier when ctrl key is physically pressed', function () {
+      document.dispatchEvent(new KeyboardEvent('keydown', {key: 'Control'}));
+      map.handleMapBrowserEvent(makeTrackpadWheelEvent(true));
+      document.dispatchEvent(new KeyboardEvent('keyup', {key: 'Control'}));
+      expect(view.adjustZoom.calledOnce).to.be(true);
+      expect(view.adjustZoom.getCall(0).args[0]).to.roughlyEqual(
+        -1 / 300,
+        1e-10,
+      );
+    });
+  });
+
   describe('handleEvent()', function () {
     it('works in DOM_DELTA_PIXEL mode (trackpad)', function (done) {
       map.once('postrender', function () {
