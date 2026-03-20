@@ -3,6 +3,7 @@
  */
 import EventType from '../events/EventType.js';
 import {all, always, focusWithTabindex} from '../events/condition.js';
+import {listen, unlistenByKey} from '../events.js';
 import {clamp} from '../math.js';
 import Interaction, {zoomByDelta} from './Interaction.js';
 
@@ -162,6 +163,46 @@ class MouseWheelZoom extends Interaction {
      * @type {number}
      */
     this.deltaPerZoom_ = 300;
+
+    /**
+     * Tracks whether the Ctrl key is physically held down (as opposed to the
+     * browser synthesizing ctrlKey=true for pinch-to-zoom trackpad gestures).
+     * @private
+     * @type {boolean}
+     */
+    this.ctrlKeyPressed_ = false;
+
+    /**
+     * @private
+     * @type {Array<import('../events.js').EventsKey>}
+     */
+    this.ctrlKeyListenerKeys_ = [];
+  }
+
+  /**
+   * @param {import('../Map.js').default|null} map Map.
+   * @override
+   */
+  setMap(map) {
+    this.ctrlKeyListenerKeys_.forEach(unlistenByKey);
+    this.ctrlKeyListenerKeys_.length = 0;
+    this.ctrlKeyPressed_ = false;
+    super.setMap(map);
+    if (map) {
+      const doc = map.getOwnerDocument();
+      this.ctrlKeyListenerKeys_.push(
+        listen(doc, 'keydown', (/** @type {KeyboardEvent} */ e) => {
+          if (e.key === 'Control') {
+            this.ctrlKeyPressed_ = true;
+          }
+        }),
+        listen(doc, 'keyup', (/** @type {KeyboardEvent} */ e) => {
+          if (e.key === 'Control') {
+            this.ctrlKeyPressed_ = false;
+          }
+        }),
+      );
+    }
   }
 
   /**
@@ -202,6 +243,11 @@ class MouseWheelZoom extends Interaction {
       mapBrowserEvent.originalEvent
     );
     wheelEvent.preventDefault();
+
+    const isPinchToZoom = wheelEvent.ctrlKey && !this.ctrlKeyPressed_;
+    if (!wheelEvent.ctrlKey) {
+      this.ctrlKeyPressed_ = false;
+    }
 
     if (this.useAnchor_) {
       this.lastAnchor_ = mapBrowserEvent.pixel;
@@ -254,8 +300,7 @@ class MouseWheelZoom extends Interaction {
         this.endInteraction_.bind(this),
         this.timeout_,
       );
-      if (mapBrowserEvent?.originalEvent?.ctrlKey === true) {
-        // it's pinch-to-zoom
+      if (isPinchToZoom) {
         delta = delta * DELTA_TRACKPAD_PINCH_TO_ZOOM_MULTIPLIER;
       }
       view.adjustZoom(
