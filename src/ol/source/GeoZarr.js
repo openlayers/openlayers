@@ -469,16 +469,15 @@ function getTileGridInfoFromAttributes(
   const multiscales = attributes.multiscales;
   const extent = attributes['spatial:bbox'];
   const projection = getProjection(attributes['proj:code']);
+  const extentWidth = extent[2] - extent[0];
+  const origin = [extent[0], extent[3]];
   /** @type {Array<{matrixId: string, resolution: number, origin: import("../coordinate.js").Coordinate, tileSize: import("../size.js").Size|undefined}>} */
   const groupInfo = [];
   const bandsByLevel = consolidatedMetadata ? {} : null;
   let fillValue;
   for (const groupMetadata of multiscales.layout) {
-    //TODO Handle the complete transform (rotation and different x/y resolutions)
-    const transform = groupMetadata['spatial:transform'];
-    const resolution = transform[0];
-    const origin = [transform[2], transform[5]];
     const matrixId = groupMetadata.asset;
+    const resolution = extentWidth / groupMetadata['spatial:shape'][1];
     /** @type {import("../size.js").Size|undefined} */
     let tileSize;
     if (consolidatedMetadata) {
