@@ -48,31 +48,35 @@ function createArrayMeta({fillValue, shardShape, innerChunkShape} = {}) {
 }
 
 /**
- * Stub fetch for a minimal v3 Zarr store with the given consolidated metadata.
+ * Stub fetch for a minimal v3 Zarr store with the given consolidated metadata
+ * and custom group attributes (layout, bbox, etc.).
  * @param {Object|null} consolidatedMetadata Consolidated metadata, or null for none.
+ * @param {Object} [groupAttrs] Custom group attributes to merge/override defaults.
  * @return {import('sinon').SinonStub} The fetch stub.
  */
-function stubFetch(consolidatedMetadata) {
+function stubFetchWithAttrs(consolidatedMetadata, groupAttrs) {
+  const defaultAttrs = {
+    zarr_conventions: [
+      {uuid: 'd35379db-88df-4056-af3a-620245f8e347'},
+      {uuid: 'f17cb550-5864-4468-aeb7-f3180cfb622f'},
+      {uuid: '689b58e2-cf7b-45e0-9fff-9cfc0883d6b4'},
+    ],
+    multiscales: {
+      layout: [
+        {
+          asset: 'level0',
+          'spatial:shape': [256, 256],
+          'spatial:transform': [1, 0, 0, 0, -1, 256],
+        },
+      ],
+    },
+    'spatial:bbox': [0, 0, 256, 256],
+    'proj:code': 'EPSG:4326',
+  };
   const groupZarrJson = {
     zarr_format: 3,
     node_type: 'group',
-    attributes: {
-      zarr_conventions: [
-        {uuid: 'd35379db-88df-4056-af3a-620245f8e347'},
-        {uuid: 'f17cb550-5864-4468-aeb7-f3180cfb622f'},
-        {uuid: '689b58e2-cf7b-45e0-9fff-9cfc0883d6b4'},
-      ],
-      multiscales: {
-        layout: [
-          {
-            asset: 'level0',
-            'spatial:transform': [1, 0, 0, 0, -1, 256],
-          },
-        ],
-      },
-      'spatial:bbox': [0, 0, 256, 256],
-      'proj:code': 'EPSG:4326',
-    },
+    attributes: Object.assign(defaultAttrs, groupAttrs),
   };
   if (consolidatedMetadata) {
     groupZarrJson.consolidated_metadata = {
@@ -91,6 +95,15 @@ function stubFetch(consolidatedMetadata) {
     }
     return Promise.resolve(new Response('', {status: 404}));
   });
+}
+
+/**
+ * Stub fetch for a minimal v3 Zarr store with the given consolidated metadata.
+ * @param {Object|null} consolidatedMetadata Consolidated metadata, or null for none.
+ * @return {import('sinon').SinonStub} The fetch stub.
+ */
+function stubFetch(consolidatedMetadata) {
+  return stubFetchWithAttrs(consolidatedMetadata);
 }
 
 describe('ol/source/GeoZarr', function () {
@@ -383,6 +396,79 @@ describe('ol/source/GeoZarr', function () {
           const tileSize = source.tileGrid.getTileSize(0);
           // Tile must be a multiple of 384 (inner chunk), so 384
           expect(tileSize).to.eql([384, 384]);
+          done();
+        }
+      });
+    });
+
+    it('computes resolutions from extent and shape', function (done) {
+      fetchStub = stubFetchWithAttrs(
+        {
+          ['r10m/b04']: createArrayMeta(),
+          ['r20m/b04']: createArrayMeta(),
+          ['r60m/b04']: createArrayMeta(),
+          ['r120m/b04']: createArrayMeta(),
+          ['r360m/b04']: createArrayMeta(),
+        },
+        {
+          multiscales: {
+            layout: [
+              {
+                asset: 'r10m',
+                'spatial:shape': [10980, 10980],
+                'spatial:transform': [10, 0, 399960, 0, -10, 8000040],
+              },
+              {
+                asset: 'r20m',
+                derived_from: 'r10m',
+                transform: {scale: [2, 2], translation: [0, 0]},
+                'spatial:shape': [5490, 5490],
+                // spatial:transform resolution is correct here
+                'spatial:transform': [20, 0, 399960, 0, -20, 8000040],
+              },
+              {
+                asset: 'r60m',
+                derived_from: 'r10m',
+                transform: {scale: [6, 6], translation: [0, 0]},
+                'spatial:shape': [1830, 1830],
+                'spatial:transform': [60, 0, 399960, 0, -60, 8000040],
+              },
+              {
+                asset: 'r120m',
+                derived_from: 'r60m',
+                transform: {scale: [2, 2], translation: [0, 0]},
+                'spatial:shape': [915, 915],
+                // spatial:transform is WRONG (60 instead of 120) - as seen in real datasets
+                'spatial:transform': [60, 0, 399990, 0, -60, 8000010],
+              },
+              {
+                asset: 'r360m',
+                derived_from: 'r120m',
+                transform: {scale: [3, 3], translation: [0, 0]},
+                'spatial:shape': [305, 305],
+                // spatial:transform is WRONG (60 instead of 360)
+                'spatial:transform': [60, 0, 400110, 0, -60, 7999890],
+              },
+            ],
+          },
+          'spatial:bbox': [399960, 7890240, 509760, 8000040],
+          'proj:code': 'EPSG:32626',
+        },
+      );
+      const source = new GeoZarr({
+        url: ZARR_URL,
+        bands: ['b04'],
+      });
+      source.on('change', function () {
+        if (source.getState() === 'ready') {
+          const resolutions = source.tileGrid.getResolutions();
+          // Should be sorted descending
+          expect(resolutions).to.eql([360, 120, 60, 20, 10]);
+          // Origins should all inherit from the base level
+          const origins = source.tileGrid.getOrigins();
+          for (const origin of origins) {
+            expect(origin).to.eql([399960, 8000040]);
+          }
           done();
         }
       });
