@@ -178,7 +178,7 @@ describe('ol/layer/Heatmap', function () {
       const builder = rendererOpts.style.builder;
       // weight expression is clamped between 0 and 1
       expect(builder.getSymbolColorExpression()).to.eql(
-        'vec4(smoothstep(0., 1., (1. - length(coordsPx * 2. / v_quadSizePx)) * getBlurSlope()) * a_prop_weight)',
+        'vec4(smoothstep(0., 1., (1. - length(coordsPx * 2. / v_quadSizePx)) * (a_radius / max(1., a_blur))) * a_prop_weight)',
       );
     });
     it('supports a function as weight', () => {
@@ -198,7 +198,7 @@ describe('ol/layer/Heatmap', function () {
 
       const builder = rendererOpts.style.builder;
       expect(builder.getSymbolColorExpression()).to.eql(
-        'vec4(smoothstep(0., 1., (1. - length(coordsPx * 2. / v_quadSizePx)) * getBlurSlope()) * a_prop_weight)',
+        'vec4(smoothstep(0., 1., (1. - length(coordsPx * 2. / v_quadSizePx)) * (a_radius / max(1., a_blur))) * a_prop_weight)',
       );
     });
     it('supports an expression as weight', () => {
@@ -219,7 +219,7 @@ describe('ol/layer/Heatmap', function () {
       const builder = rendererOpts.style.builder;
       // weight expression is clamped between 0 and 1
       expect(builder.getSymbolColorExpression()).to.eql(
-        'vec4(smoothstep(0., 1., (1. - length(coordsPx * 2. / v_quadSizePx)) * getBlurSlope()) * clamp((a_prop_sizeAttr / 10.0), 0.0, 1.0))',
+        'vec4(smoothstep(0., 1., (1. - length(coordsPx * 2. / v_quadSizePx)) * (a_radius / max(1., a_blur))) * clamp((a_prop_sizeAttr / 10.0), 0.0, 1.0))',
       );
     });
     describe('setWeight', () => {
@@ -292,6 +292,27 @@ describe('ol/layer/Heatmap', function () {
         layer.getRenderer();
         expect(layer.createRenderer.calledOnce).to.be(true);
       });
+    });
+  });
+
+  describe('expression-based blur and radius', () => {
+    it('compiles correctly when blur and radius use get expressions', () => {
+      layer = new HeatmapLayer({
+        source: new VectorSource(),
+        blur: ['get', 'myBlur'],
+        radius: ['get', 'myRadius'],
+      });
+      layer.getRenderer();
+
+      const rendererOpts = rendererSpy.getCall(0).args[1];
+      const attrs = rendererOpts.style.attributes;
+      expect(attrs).to.have.key('prop_myBlur');
+      expect(attrs).to.have.key('prop_myRadius');
+
+      const builder = rendererOpts.style.builder;
+      expect(builder.getSymbolColorExpression()).to.eql(
+        'vec4(smoothstep(0., 1., (1. - length(coordsPx * 2. / v_quadSizePx)) * (a_prop_myRadius / max(1., a_prop_myBlur))) * a_prop_weight)',
+      );
     });
   });
 

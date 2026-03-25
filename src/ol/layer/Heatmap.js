@@ -333,20 +333,15 @@ class Heatmap extends BaseVector {
       weightExpression = expressionToGlsl(context, clampedWeight, NumberType);
     }
 
+    const blurSlopeExpr = `(${radiusCompiled} / max(1., ${blurCompiled}))`;
+
     builder
-      .addFragmentShaderFunction(
-        `float getBlurSlope() {
-  float blur = max(1., ${blurCompiled});
-  float radius = ${radiusCompiled};
-  return radius / blur;
-}`,
-      )
       .setSymbolSizeExpression(`vec2(${radiusCompiled} + ${blurCompiled}) * 2.`)
       .setSymbolColorExpression(
-        `vec4(smoothstep(0., 1., (1. - length(coordsPx * 2. / v_quadSizePx)) * getBlurSlope()) * ${weightExpression})`,
+        `vec4(smoothstep(0., 1., (1. - length(coordsPx * 2. / v_quadSizePx)) * ${blurSlopeExpr}) * ${weightExpression})`,
       )
       .setStrokeColorExpression(
-        `vec4(smoothstep(0., 1., (1. - length(currentRadiusPx * 2. / v_width)) * getBlurSlope()) * ${weightExpression})`,
+        `vec4(smoothstep(0., 1., (1. - length(currentRadiusPx * 2. / v_width)) * ${blurSlopeExpr}) * ${weightExpression})`,
       )
       .setStrokeWidthExpression(`(${radiusCompiled} + ${blurCompiled}) * 2.`)
       .setFillColorExpression(`vec4(${weightExpression})`);
