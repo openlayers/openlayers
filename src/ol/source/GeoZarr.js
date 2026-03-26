@@ -3,6 +3,7 @@
  */
 
 import {FetchStore, get, open, slice} from 'zarrita';
+import {warn} from '../console.js';
 import {getCenter} from '../extent.js';
 import {get as getProjection, toUserCoordinate, toUserExtent} from '../proj.js';
 import {toSize} from '../size.js';
@@ -21,22 +22,39 @@ const REQUIRED_ZARR_CONVENTIONS = [
  */
 
 /**
+ * @typedef {Object} Band
+ * @property {string} name The band name.
+ * @property {string} group The group path relative to the `url`, containing this band
+ * (e.g. `'measurements/reflectance'`).
+ */
+
+/**
  * @typedef {Object} Options
- * @property {string} url The Zarr URL including the multiscales group path (e.g. `'https://example.com/store.zarr/measurements/reflectance'`).
- * @property {Array<string>} bands The band names to render.
+ * @property {string} url When `bands` contains plain strings, this must be the full URL to the
+ * multiscales group (e.g. `'https://example.com/store.zarr/measurements/reflectance'`).
+ * When `bands` contains {@link Band} objects, this is the base URL from which each band's
+ * `group` path is resolved (e.g. `'https://example.com/store.zarr/satellite/sentinel2'`).
+ * @property {Array<string|Band>} bands The bands to render.  Each entry is either a band name
+ * string (single-group mode) or a {@link Band} object specifying both the band name and the
+ * group it belongs to (multi-group mode).  In multi-group mode, the first band's group
+ * determines the tile grid and must follow all three conventions.
+ * Bands from additional groups do not need to follow any convention; they can be multi-scale
+ * (array located at `<matrixId>/<bandName>`) or single-scale (array at the group root).
  * @property {import("../proj.js").ProjectionLike} [projection] Source projection.  If not provided, the GeoZarr metadata
  * will be read for projection information.
  * @property {number} [transition=250] Duration of the opacity transition for rendering.
  * To disable the opacity transition, pass `transition: 0`.
  * @property {boolean} [wrapX=false] Render tiles beyond the tile grid extent.
- * @property {ResampleMethod} [resample='nearest'] Resamplilng method if bands are not available for all multi-scale levels.
+ * @property {ResampleMethod} [resample='nearest'] Resampling method if bands are not available for all multi-scale levels.
  */
 
 /**
- * Source that supports GeoZarr stores with metadata for the following conventions:
- * - Zarr multiscales convention (https://github.com/zarr-conventions/multiscales)
- * - Geospatial projection convention (https://github.com/zarr-conventions/geo-proj)
- * - Spatial convention (https://github.com/zarr-conventions/spatial)
+ * Source for GeoZarr stores conforming to the following conventions:
+ * - [Zarr multiscales convention](https://github.com/zarr-conventions/multiscales)
+ * - [Geospatial projection convention](https://github.com/zarr-conventions/geo-proj)
+ * - [Spatial convention](https://github.com/zarr-conventions/spatial)
+ *
+ * The legacy `tile_matrix_set` attribute is also supported.
  */
 export default class GeoZarr extends DataTileSource {
   /**
@@ -63,10 +81,10 @@ export default class GeoZarr extends DataTileSource {
     this.error_ = null;
 
     /**
-     * @type {import('zarrita').Group<any>}
+     * @type {Array<import('zarrita').Group<any>>}
      * @private
      */
-    this.group_ = null;
+    this.groups_ = [];
 
     /**
      * @type {any|null}
@@ -83,11 +101,50 @@ export default class GeoZarr extends DataTileSource {
      */
     this.arrayCache_ = new Map();
 
+    const groupOrder = /** @type {Array<string>} */ ([]);
+    const bandGroupIndex = /** @type {Array<number>} */ ([]);
+    const bands = options.bands.map((b) => {
+      if (typeof b === 'string') {
+        bandGroupIndex.push(0);
+        return b;
+      }
+      let gi = groupOrder.indexOf(b.group);
+      if (gi === -1) {
+        gi = groupOrder.length;
+        groupOrder.push(b.group);
+      }
+      bandGroupIndex.push(gi);
+      return b.name;
+    });
+
+    /**
+     * @type {Array<string>|undefined}
+     * @private
+     */
+    this.groupPaths_ = groupOrder.length > 0 ? groupOrder : undefined;
+
+    /**
+     * Maps each band index to the index of the group it belongs to in `this.groups_`.
+     * @type {Array<number>}
+     * @private
+     */
+    this.bandGroupIndex_ = bandGroupIndex;
+
+    /**
+     * Pixel resolution for single-scale bands.  When set, indicates that the
+     * band lives directly at its group root (no matrixId subdirectory) and
+     * provides the pixel resolution to use for coordinate calculations.
+     * Undefined for multi-scale bands.
+     * @type {Array<number|undefined>}
+     * @private
+     */
+    this.bandSingleScaleResolution_ = new Array(bands.length).fill(undefined);
+
     /**
      * @type {Array<string>}
      * @private
      */
-    this.bands_ = options.bands;
+    this.bands_ = bands;
 
     /**
      * @type {Object<string, Array<string>> | null}
@@ -154,12 +211,30 @@ export default class GeoZarr extends DataTileSource {
       ? createCachedStore(store, groupBytes, this.consolidatedMetadata_)
       : store;
 
-    this.group_ = await open(cachedStore, {kind: 'group'});
+    if (this.groupPaths_) {
+      // Multi-group mode: open root, then each sub-group
+      const rootGroup = await open(cachedStore, {kind: 'group'});
+      for (const groupPath of this.groupPaths_) {
+        this.groups_.push(
+          await open(rootGroup.resolve(groupPath), {kind: 'group'}),
+        );
+      }
+    } else {
+      // Single group mode
+      this.groups_.push(await open(cachedStore, {kind: 'group'}));
+    }
 
     const attributes =
       /** @type {LegacyDatasetAttributes | DatasetAttributes} */ (
-        this.group_.attrs
+        this.groups_[0].attrs
       );
+
+    // For multi-group mode, use sub-metadata for the first group so that
+    // consolidated metadata keys match the expected relative paths.
+    const consolidatedMetadata =
+      this.groupPaths_ && this.consolidatedMetadata_
+        ? getSubMetadata(this.consolidatedMetadata_, this.groupPaths_[0])
+        : this.consolidatedMetadata_;
 
     let hasTileSizes = false;
     if (
@@ -173,7 +248,7 @@ export default class GeoZarr extends DataTileSource {
       const {tileGrid, projection, bandsByLevel, fillValue, tileSizes} =
         getTileGridInfoFromAttributes(
           /** @type {DatasetAttributes} */ (attributes),
-          this.consolidatedMetadata_,
+          consolidatedMetadata,
           this.bands_,
         );
       this.bandsByLevel_ = bandsByLevel;
@@ -182,7 +257,11 @@ export default class GeoZarr extends DataTileSource {
       this.fillValue_ = fillValue;
       hasTileSizes = !!tileSizes;
     }
-    if (!hasTileSizes && 'tile_matrix_set' in attributes.multiscales) {
+    if (
+      !hasTileSizes &&
+      attributes.multiscales &&
+      'tile_matrix_set' in attributes.multiscales
+    ) {
       // If available, use tile_matrix_set (legacy attributes) to get a tile grid, because it
       // should provide a better mapping of tiles to zarr chunks.
       const {tileGrid, projection} = getTileGridInfoFromLegacyAttributes(
@@ -193,6 +272,11 @@ export default class GeoZarr extends DataTileSource {
         // If there were no required zarr conventions, we don't have a projection yet
         this.projection = projection;
       }
+    }
+    // For multi-group: determine which group owns each band and supplement
+    // bandsByLevel with bands from additional groups.
+    if (this.groupPaths_ && this.consolidatedMetadata_ && this.bandsByLevel_) {
+      this.resolveBandOwnership_();
     }
     if (this.fillValue_ !== null && this.fillValue_ !== undefined) {
       this.bandCount = this.bands_.length + 1;
@@ -230,7 +314,9 @@ export default class GeoZarr extends DataTileSource {
 
     // First pass: resolve band metadata (no async)
     const bandInfos = [];
-    for (const band of this.bands_) {
+    for (let i = 0, ii = this.bands_.length; i < ii; ++i) {
+      const band = this.bands_[i];
+      const groupIndex = this.bandGroupIndex_[i];
       let bandMatrixId;
       let bandResolution;
       let bandZ = 0;
@@ -263,6 +349,14 @@ export default class GeoZarr extends DataTileSource {
         throw new Error(`Could not find available resolution for band ${band}`);
       }
 
+      const isSingleScale = this.bandSingleScaleResolution_[i] !== undefined;
+      // For single-scale bands, use the band's own pixel resolution (derived
+      // from array shape or spatial metadata) rather than the tile grid level
+      // resolution, which may give wrong pixel coordinates.
+      if (isSingleScale) {
+        bandResolution = this.bandSingleScaleResolution_[i];
+      }
+
       const origin = this.tileGrid.getOrigin(bandZ);
       const minCol = Math.round((tileExtent[0] - origin[0]) / bandResolution);
       const maxCol = Math.round((tileExtent[2] - origin[0]) / bandResolution);
@@ -270,7 +364,8 @@ export default class GeoZarr extends DataTileSource {
       const maxRow = Math.round((origin[1] - tileExtent[1]) / bandResolution);
 
       bandInfos.push({
-        path: `${bandMatrixId}/${band}`,
+        path: isSingleScale ? band : `${bandMatrixId}/${band}`,
+        groupIndex,
         minRow,
         maxRow,
         minCol,
@@ -282,17 +377,19 @@ export default class GeoZarr extends DataTileSource {
     // Open all band arrays in parallel (not sequentially)
     const arrays = await Promise.all(
       bandInfos.map((info) => {
-        const path = info.path;
-        if (!this.arrayCache_.has(path)) {
+        const cacheKey = `${info.groupIndex}:${info.path}`;
+        if (!this.arrayCache_.has(cacheKey)) {
           this.arrayCache_.set(
-            path,
-            open(this.group_.resolve(path), {kind: 'array'}).catch((err) => {
-              this.arrayCache_.delete(path);
+            cacheKey,
+            open(this.groups_[info.groupIndex].resolve(info.path), {
+              kind: 'array',
+            }).catch((err) => {
+              this.arrayCache_.delete(cacheKey);
               throw err;
             }),
           );
         }
-        return this.arrayCache_.get(path);
+        return this.arrayCache_.get(cacheKey);
       }),
     );
 
@@ -319,6 +416,86 @@ export default class GeoZarr extends DataTileSource {
       this.fillValue_,
     );
   }
+
+  /**
+   * For multi-group mode: determine which group owns each band and supplement
+   * bandsByLevel with bands from additional groups.
+   * @private
+   */
+  resolveBandOwnership_() {
+    const subMetadatas = this.groupPaths_.map((gp) =>
+      getSubMetadata(this.consolidatedMetadata_, gp),
+    );
+
+    for (let i = 0, ii = this.bands_.length; i < ii; ++i) {
+      const band = this.bands_[i];
+      const g = this.bandGroupIndex_[i];
+      if (g === 0) {
+        continue; // primary group bands are already in bandsByLevel_
+      }
+      let foundAtAnyLevel = false;
+      for (const matrixId of Object.keys(this.bandsByLevel_)) {
+        const bandMeta = subMetadatas[g][`${matrixId}/${band}`];
+        if (bandMeta) {
+          foundAtAnyLevel = true;
+          if (!this.bandsByLevel_[matrixId].includes(band)) {
+            this.bandsByLevel_[matrixId].push(band);
+          }
+          if (this.fillValue_ === undefined) {
+            this.fillValue_ = Number(bandMeta['fill_value']);
+          }
+        }
+      }
+      if (!foundAtAnyLevel) {
+        // Try single-scale: band lives directly at the group root (no matrixId prefix).
+        const bandMeta = subMetadatas[g][band];
+        if (bandMeta) {
+          for (const matrixId of Object.keys(this.bandsByLevel_)) {
+            if (!this.bandsByLevel_[matrixId].includes(band)) {
+              this.bandsByLevel_[matrixId].push(band);
+            }
+          }
+          if (this.fillValue_ === undefined) {
+            this.fillValue_ = Number(bandMeta['fill_value']);
+          }
+          // Derive the band's actual pixel resolution from its array shape so
+          // that loadTile_ can use correct coordinates regardless of the tile
+          // grid zoom level.
+          const shape = bandMeta['shape'];
+          if (shape && shape[1] > 0) {
+            const extent = this.tileGrid.getExtent();
+            this.bandSingleScaleResolution_[i] =
+              (extent[2] - extent[0]) / shape[1];
+          }
+          foundAtAnyLevel = true;
+        }
+      }
+      if (!foundAtAnyLevel) {
+        warn(
+          `Band "${band}" from group "${this.groupPaths_[g]}" is not available at any ` +
+            `resolution level compatible with the tile grid.`,
+        );
+      }
+    }
+  }
+}
+
+/**
+ * Extract a sub-view of consolidated metadata for a specific group path.
+ * Keys in the returned object are relative to the group path.
+ * @param {Object} rootMetadata The root consolidated metadata.
+ * @param {string} groupPath The group path (e.g. 'measurements/reflectance').
+ * @return {Object} Sub-metadata with paths relative to the group.
+ */
+function getSubMetadata(rootMetadata, groupPath) {
+  const prefix = groupPath + '/';
+  const sub = {};
+  for (const key of Object.keys(rootMetadata)) {
+    if (key.startsWith(prefix)) {
+      sub[key.substring(prefix.length)] = rootMetadata[key];
+    }
+  }
+  return sub;
 }
 
 /**
