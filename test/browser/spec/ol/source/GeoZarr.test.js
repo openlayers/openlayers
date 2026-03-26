@@ -468,6 +468,107 @@ describe('ol/source/GeoZarr', function () {
     });
   });
 
+  describe('standalone single-scale group', function () {
+    let fetchStub;
+
+    /**
+     * Stub fetch for a single-scale group (no multiscales layout).
+     * Bands live directly at the group root, not under a matrixId subfolder.
+     * @param {Object} bandMeta Consolidated metadata entries keyed by band name.
+     * @param {Object} [groupAttrs] Attributes to merge into the group zarr.json.
+     * @return {import('sinon').SinonStub} The fetch stub.
+     */
+    function stubFetchSingleScale(bandMeta, groupAttrs) {
+      const defaultAttrs = {
+        'spatial:bbox': [0, 0, 256, 256],
+        'proj:code': 'EPSG:4326',
+        'spatial:shape': [256, 256],
+      };
+      const groupZarrJson = {
+        zarr_format: 3,
+        node_type: 'group',
+        attributes: Object.assign({}, defaultAttrs, groupAttrs),
+        consolidated_metadata: {
+          metadata: bandMeta || {},
+        },
+      };
+      return sinonStub(window, 'fetch').callsFake(function (url) {
+        if (url === `${ZARR_URL}/zarr.json`) {
+          return Promise.resolve(
+            new Response(JSON.stringify(groupZarrJson), {status: 200}),
+          );
+        }
+        return Promise.resolve(new Response('', {status: 404}));
+      });
+    }
+
+    afterEach(function () {
+      if (fetchStub) {
+        fetchStub.restore();
+        fetchStub = null;
+      }
+    });
+
+    it('derives a single-resolution tile grid from spatial:shape', function (done) {
+      fetchStub = stubFetchSingleScale({
+        b04: createArrayMeta({fillValue: 0}),
+        b03: createArrayMeta({fillValue: 0}),
+      });
+      const source = new GeoZarr({
+        url: ZARR_URL,
+        bands: ['b04', 'b03'],
+      });
+      source.on('change', function () {
+        if (source.getState() === 'ready') {
+          expect(source.tileGrid.getResolutions()).to.eql([1]);
+          expect(source.bandSingleScaleResolution_[0]).to.be(1);
+          expect(source.bandSingleScaleResolution_[1]).to.be(1);
+          expect(source.bandsByLevel_['level0']).to.contain('b04');
+          expect(source.bandsByLevel_['level0']).to.contain('b03');
+          done();
+        }
+      });
+    });
+
+    it('derives resolution from array shape when spatial:shape is absent', function (done) {
+      fetchStub = stubFetchSingleScale(
+        {b04: createArrayMeta({fillValue: 0})},
+        {'spatial:shape': undefined},
+      );
+      const source = new GeoZarr({
+        url: ZARR_URL,
+        bands: ['b04'],
+      });
+      source.on('change', function () {
+        if (source.getState() === 'ready') {
+          // extent width = 256, array cols = 10980 → resolution ≈ 256/10980
+          expect(source.tileGrid.getResolutions()[0]).to.be.greaterThan(0);
+          expect(source.bandSingleScaleResolution_[0]).to.be(
+            source.tileGrid.getResolutions()[0],
+          );
+          done();
+        }
+      });
+    });
+
+    it('sets nodataBandIndex when fill value is present', function (done) {
+      fetchStub = stubFetchSingleScale({
+        b04: createArrayMeta({fillValue: 'NaN'}),
+      });
+      const source = new GeoZarr({
+        url: ZARR_URL,
+        bands: ['b04'],
+      });
+      source.on('change', function () {
+        if (source.getState() === 'ready') {
+          expect(source.bandCount).to.be(2); // 1 band + alpha
+          expect(source.nodataBandIndex).to.be(2);
+          done();
+        }
+      });
+    });
+  });
+
   describe('Band object API (multi-group)', function () {
     let fetchStub;
 
