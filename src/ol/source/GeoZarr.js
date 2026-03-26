@@ -37,7 +37,10 @@ const REQUIRED_ZARR_CONVENTIONS = [
  * @property {Array<string|Band>} bands The bands to render.  Each entry is either a band name
  * string (single-group mode) or a {@link Band} object specifying both the band name and the
  * group it belongs to (multi-group mode).  In multi-group mode, the first band's group
- * determines the tile grid and must follow all three conventions.
+ * determines the tile grid and must follow at least the proj: and spatial: conventions.
+ * If it also has a multiscales layout (all three conventions), multiple resolution levels are
+ * supported.  Otherwise a single-resolution tile grid is derived from `spatial:bbox`,
+ * `proj:code`, and `spatial:shape` (or the array shape from consolidated metadata).
  * Bands from additional groups do not need to follow any convention; they can be multi-scale
  * (array located at `<matrixId>/<bandName>`) or single-scale (array at the group root).
  * @property {import("../proj.js").ProjectionLike} [projection] Source projection.  If not provided, the GeoZarr metadata
@@ -54,6 +57,9 @@ const REQUIRED_ZARR_CONVENTIONS = [
  * - [Geospatial projection convention](https://github.com/zarr-conventions/geo-proj)
  * - [Spatial convention](https://github.com/zarr-conventions/spatial)
  *
+ * When all three conventions are present, multiple resolution levels are supported.
+ * When only proj: and spatial: are present, a single-resolution tile grid is derived
+ * from `spatial:bbox`, `proj:code`, and `spatial:shape`.
  * The legacy `tile_matrix_set` attribute is also supported.
  */
 export default class GeoZarr extends DataTileSource {
@@ -271,6 +277,55 @@ export default class GeoZarr extends DataTileSource {
       if (!this.projection) {
         // If there were no required zarr conventions, we don't have a projection yet
         this.projection = projection;
+      }
+    }
+    if (!this.tileGrid && 'spatial:bbox' in attributes) {
+      // Standalone single-scale group: synthesize a multiscales layout so we
+      // can reuse getTileGridInfoFromAttributes.
+      let shape = attributes['spatial:shape'];
+      if (!shape && consolidatedMetadata) {
+        for (const band of this.bands_) {
+          if (consolidatedMetadata[band]?.shape) {
+            shape = consolidatedMetadata[band].shape;
+            break;
+          }
+        }
+      }
+      if (shape) {
+        // Prefix metadata keys with 'level0/' so
+        // getTileGridInfoFromAttributes can resolve bands.
+        let prefixedMeta = null;
+        if (consolidatedMetadata) {
+          prefixedMeta = {};
+          for (const key of Object.keys(consolidatedMetadata)) {
+            prefixedMeta[`level0/${key}`] = consolidatedMetadata[key];
+          }
+        }
+        const {tileGrid, projection, bandsByLevel, fillValue, tileSizes} =
+          getTileGridInfoFromAttributes(
+            /** @type {DatasetAttributes} */ ({
+              ...attributes,
+              multiscales: {
+                layout: [{asset: 'level0', 'spatial:shape': shape}],
+              },
+            }),
+            prefixedMeta,
+            this.bands_,
+          );
+        this.tileGrid = tileGrid;
+        if (!this.projection) {
+          this.projection = projection;
+        }
+        this.bandsByLevel_ = bandsByLevel;
+        this.fillValue_ = fillValue;
+        hasTileSizes = !!tileSizes;
+        // All primary-group bands live directly at the group root.
+        const singleScaleRes = tileGrid.getResolutions()[0];
+        for (let i = 0; i < this.bands_.length; ++i) {
+          if (this.bandGroupIndex_[i] === 0) {
+            this.bandSingleScaleResolution_[i] = singleScaleRes;
+          }
+        }
       }
     }
     // For multi-group: determine which group owns each band and supplement
