@@ -16,6 +16,21 @@ const defaultTokenUrl =
 const defaultEvalscriptVersion = '3';
 
 /**
+ * @type {Object<string, boolean>}
+ */
+const knownImageMediaTypes = {
+  'image/png': true,
+  'image/jpeg': true,
+  'image/webp': true,
+};
+
+/**
+ * Default process API tile MIME type (`responses[].format.type`).
+ * @type {string}
+ */
+const defaultFormat = 'image/png';
+
+/**
  * @type {import('../size.js').Size}
  */
 const defaultTileSize = [512, 512];
@@ -372,6 +387,7 @@ export function serializeFunction(name, func) {
  * @property {boolean} [wrapX=true] Wrap the world horizontally.
  * @property {number} [transition] Duration of the opacity transition for rendering.
  * To disable the opacity transition, pass `transition: 0`.
+ * @property {string} [format='image/png'] MIME type for each process response (`responses[].format.type`), for example `image/png` or `image/jpeg`.
  */
 
 /**
@@ -392,6 +408,12 @@ class SentinelHub extends DataTileSource {
    * @param {Options} [options] Sentinel Hub options.
    */
   constructor(options) {
+    if (!knownImageMediaTypes[options.format]) {
+      throw new Error(
+        `Unsupported format: ${options.format}. Supported formats are: ${Object.keys(knownImageMediaTypes).join(', ')}`,
+      );
+    }
+
     /**
      * @type {Options}
      */
@@ -431,6 +453,12 @@ class SentinelHub extends DataTileSource {
      * @private
      */
     this.processUrl_ = config.url || defaultProcessUrl;
+
+    /**
+     * @type {string}
+     * @private
+     */
+    this.format_ = config.format || defaultFormat;
 
     /**
      * @type {string}
@@ -512,6 +540,22 @@ class SentinelHub extends DataTileSource {
   }
 
   /**
+   * Set the MIME type for process API tile responses (`responses[].format.type`).
+   *
+   * @param {string} format Format type (for example `image/png` or `image/jpeg`).
+   * @api
+   */
+  setFormat(format) {
+    if (!knownImageMediaTypes[format]) {
+      throw new Error(
+        `Unsupported format: ${format}. Supported formats are: ${Object.keys(knownImageMediaTypes).join(', ')}`,
+      );
+    }
+    this.format_ = format;
+    this.fireWhenReady_();
+  }
+
+  /**
    * Set or update the Evalscript used to process the data.  Either a process object or a string
    * Evalscript can be provided.  If a process object is provided, it will be serialized to produce the
    * Evalscript string.  Because these functions will be serialized and executed by the Processing API,
@@ -552,7 +596,12 @@ class SentinelHub extends DataTileSource {
   }
 
   getKeyForConfig_() {
-    return this.token_ + this.evalscript_ + JSON.stringify(this.inputData_);
+    return (
+      this.token_ +
+      this.evalscript_ +
+      JSON.stringify(this.inputData_) +
+      this.format_
+    );
   }
 
   /**
@@ -583,6 +632,14 @@ class SentinelHub extends DataTileSource {
       output: {
         width: tileSize[0],
         height: tileSize[1],
+        responses: [
+          {
+            identifier: 'default',
+            format: {
+              type: this.format_,
+            },
+          },
+        ],
       },
       evalscript: this.evalscript_,
     };
