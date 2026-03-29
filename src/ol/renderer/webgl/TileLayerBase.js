@@ -21,19 +21,16 @@ import {
 } from '../../transform.js';
 import {abstract, getUid} from '../../util.js';
 import {create as createMat4} from '../../vec/mat4.js';
+import {DefaultUniform} from '../../webgl/Helper.js';
 import WebGLLayerRenderer from './Layer.js';
 
 export const Uniforms = {
+  ...DefaultUniform,
   TILE_TRANSFORM: 'u_tileTransform',
   TRANSITION_ALPHA: 'u_transitionAlpha',
   DEPTH: 'u_depth',
   RENDER_EXTENT: 'u_renderExtent', // intersection of layer, source, and view extent
-  PATTERN_ORIGIN: 'u_patternOrigin',
-  RESOLUTION: 'u_resolution',
-  ZOOM: 'u_zoom',
   GLOBAL_ALPHA: 'u_globalAlpha',
-  PROJECTION_MATRIX: 'u_projectionMatrix',
-  SCREEN_TO_WORLD_MATRIX: 'u_screenToWorldMatrix',
 };
 
 /**
