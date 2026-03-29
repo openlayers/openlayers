@@ -406,7 +406,9 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
           this.getLayer().changed();
         });
 
-      this.previousExtent_ = frameState.extent.slice();
+      this.previousExtent_ = /** @type {import('../../extent.js').Extent} */ (
+        frameState.extent.slice()
+      );
     }
 
     return true;

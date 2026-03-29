@@ -52,13 +52,17 @@ class ReprojImage extends ImageWrapper {
   ) {
     let maxSourceExtent = sourceProj.getExtent();
     if (maxSourceExtent && sourceProj.canWrapX()) {
-      maxSourceExtent = maxSourceExtent.slice();
+      maxSourceExtent = /** @type {import('../extent.js').Extent} */ (
+        maxSourceExtent.slice()
+      );
       maxSourceExtent[0] = -Infinity;
       maxSourceExtent[2] = Infinity;
     }
     let maxTargetExtent = targetProj.getExtent();
     if (maxTargetExtent && targetProj.canWrapX()) {
-      maxTargetExtent = maxTargetExtent.slice();
+      maxTargetExtent = /** @type {import('../extent.js').Extent} */ (
+        maxTargetExtent.slice()
+      );
       maxTargetExtent[0] = -Infinity;
       maxTargetExtent[2] = Infinity;
     }
