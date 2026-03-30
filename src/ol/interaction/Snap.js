@@ -478,7 +478,10 @@ class Snap extends PointerInteraction {
             // neighbors
             for (let k = 0, kk = j - 1; k < kk; ++k) {
               const otherSegment = segments[k];
-              if (!intersectsExtent(extent, tempExtents[k])) {
+              if (
+                otherSegment.length === 1 ||
+                !intersectsExtent(extent, tempExtents[k])
+              ) {
                 continue;
               }
               const intersection = getIntersectionPoint(segment, otherSegment);
