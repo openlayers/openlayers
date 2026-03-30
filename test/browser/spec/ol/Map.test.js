@@ -1843,4 +1843,37 @@ describe('ol/Map', function () {
       });
     });
   });
+
+  describe('resize', function () {
+    const width = 256;
+    const height = 256;
+    /** @type {Map} */
+    let map;
+    /** @type {HTMLElement} */
+    let target;
+
+    beforeEach(function () {
+      target = document.createElement('div');
+      target.style.height = `${width}px`;
+      target.style.width = `${height}px`;
+    });
+    afterEach(function () {
+      disposeMap(map, target);
+    });
+
+    it('has updated the viewport when the change:size event is being dispatched', function (done) {
+      map = new Map({
+        target: target,
+        view: new View(),
+        layers: [],
+        controls: [],
+        interactions: [],
+      });
+      map.on('change:size', () => {
+        expect(map.getView().getViewportSize_()).to.eql([width, height]);
+        done();
+      });
+      document.body.appendChild(target);
+    });
+  });
 });
