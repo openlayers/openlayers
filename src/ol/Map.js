@@ -1815,8 +1815,8 @@ class Map extends BaseObject {
 
     const oldSize = this.getSize();
     if (size && (!oldSize || !equals(size, oldSize))) {
-      this.setSize(size);
       this.updateViewportSize_(size);
+      this.setSize(size);
     }
   }
 
