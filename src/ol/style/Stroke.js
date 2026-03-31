@@ -13,7 +13,7 @@
  * @property {number} [lineDashOffset=0] Line dash offset.
  * @property {number} [miterLimit=10] Miter limit.
  * @property {number} [offset] Line offset in pixels along the normal. A positive value offsets the line to the right,
- * relative to the direction of the line. Default is `null` (no offset).
+ * relative to the direction of the line. Default is undefined (no offset).
  * @property {number} [width] Width.
  */
 
