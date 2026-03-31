@@ -32,8 +32,8 @@ export function offsetLineString(
   dest = dest ?? [];
   destinationStride = destinationStride ?? stride;
 
-  const firstPointX = flatCoordinates[start];
-  const firstPointY = flatCoordinates[start + 1];
+  const secondPointX = flatCoordinates[start + stride];
+  const secondPointY = flatCoordinates[start + stride + 1];
   const secondToLastPointX = flatCoordinates[end - 2 * stride];
   const secondToLastPointY = flatCoordinates[end - 2 * stride + 1];
   let x, y, prevX, prevY, nextX, nextY, offsetX, offsetY;
@@ -54,10 +54,10 @@ export function offsetLineString(
       prevX = secondToLastPointX;
       prevY = secondToLastPointY;
     }
-    // Second to last coordinate of a closed ring -> next coordinate is the first vertex
-    if (isClosedRing && j === end - 2 * stride) {
-      nextX = firstPointX;
-      nextY = firstPointY;
+    // Last coordinate of a closed ring -> next coordinate is the second vertex of a line string (the last one is same as the first one for a closed ring)
+    if (isClosedRing && j === end - stride) {
+      nextX = secondPointX;
+      nextY = secondPointY;
     }
 
     // 2. Current vertex to offset
