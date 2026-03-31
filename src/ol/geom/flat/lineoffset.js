@@ -207,9 +207,7 @@ export function removeOffsetCycles(coords, stride) {
         const iy = p1y + t * (p2y - p1y);
         coords[i + stride] = ix;
         coords[i + stride + 1] = iy;
-        coords[j] = ix;
-        coords[j + 1] = iy;
-        coords.splice(i + 2 * stride, j - i - 2 * stride);
+        coords.splice(i + 2 * stride, j - i - stride);
         break;
       }
     }

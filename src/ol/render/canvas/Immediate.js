@@ -454,7 +454,7 @@ class CanvasImmediateRenderer extends VectorContext {
         pixelCoordinates,
         0,
         pixelCoordinates.length,
-        stride,
+        2,
         strokeOffset,
         close,
         pixelCoordinates,
