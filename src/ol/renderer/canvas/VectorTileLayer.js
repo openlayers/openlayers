@@ -691,6 +691,9 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       }
     }
     const zIndexKeys = Object.keys(usedZIndices).map(Number).sort(ascending);
+    if (this.layerExtent) {
+      this.clipUnrotated(this.context, frameState, this.layerExtent);
+    }
     zIndexKeys.forEach((zIndex) => {
       executorGroupZIndexContexts.forEach((zIndexContexts, i) => {
         if (!zIndexContexts[zIndex]) {
@@ -715,6 +718,9 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         zIndexContexts[zIndex].length = 0;
       });
     });
+    if (this.layerExtent) {
+      this.context.restore();
+    }
   }
 
   /**
@@ -786,6 +792,10 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       : VECTOR_REPLAYS[renderMode];
     const viewState = frameState.viewState;
     const rotation = viewState.rotation;
+    // clipped rendering if layer extent is set
+    if (this.layerExtent) {
+      this.clipUnrotated(context, frameState, this.layerExtent);
+    }
     const tileSource = layer.getSource();
     const tileGrid = tileSource.getTileGridForProjection(viewState.projection);
     const z = tileGrid.getZForResolution(
@@ -876,6 +886,9 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
           tileClipContexts[i] = tileClipContext;
         }
       }
+    }
+    if (this.layerExtent) {
+      context.restore();
     }
     context.globalAlpha = alpha;
     this.ready = ready;

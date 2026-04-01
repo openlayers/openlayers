@@ -198,6 +198,12 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
      */
     this.sourceTileCache_ = null;
 
+    /**
+     * @protected
+     * @type {import("../../extent.js").Extent|null}
+     */
+    this.layerExtent = null;
+
     this.maxStaleKeys = cacheSize * 0.5;
   }
 
@@ -617,13 +623,11 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     const width = this.context.canvas.width;
     const height = this.context.canvas.height;
 
-    const layerExtent =
-      layerState.extent && fromUserExtent(layerState.extent, projection);
-    if (layerExtent) {
-      frameExtent = getIntersection(
-        frameExtent,
-        fromUserExtent(layerState.extent, projection),
-      );
+    this.layerExtent = layerState.extent
+      ? fromUserExtent(layerState.extent, projection)
+      : null;
+    if (this.layerExtent) {
+      frameExtent = getIntersection(frameExtent, this.layerExtent);
     }
 
     const dx = (tileResolution * width) / 2 / tilePixelRatio;
@@ -758,8 +762,8 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       -height / 2,
     );
 
-    if (layerState.extent) {
-      this.clipUnrotated(context, frameState, layerExtent);
+    if (this.layerExtent) {
+      this.clipUnrotated(context, frameState, this.layerExtent);
     }
 
     if (!tileSource.getInterpolate()) {
@@ -870,7 +874,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
 
     this.postRender(this.context, frameState);
 
-    if (layerState.extent) {
+    if (this.layerExtent) {
       context.restore();
     }
     context.imageSmoothingEnabled = true;
