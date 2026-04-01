@@ -30,7 +30,7 @@ let withCredentials = false;
  *           resolution: number,
  *           projection: import("./proj/Projection.js").default,
  *           success?: (features: Array<FeatureType>) => void,
- *           failure?: () => void) => void} FeatureLoader
+ *           failure?: () => void) => void|Promise<Array<FeatureType>>} FeatureLoader
  * @api
  */
 
