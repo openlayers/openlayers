@@ -9,7 +9,10 @@ import {equals} from '../../array.js';
 import {asColorLike} from '../../colorlike.js';
 import {intersects} from '../../extent.js';
 import {transformGeom2D} from '../../geom/SimpleGeometry.js';
-import {offsetLineString} from '../../geom/flat/lineoffset.js';
+import {
+  offsetLineString,
+  removeOffsetCycles,
+} from '../../geom/flat/lineoffset.js';
 import {transform2D} from '../../geom/flat/transform.js';
 import {toFixed} from '../../math.js';
 import {
@@ -449,11 +452,14 @@ class CanvasImmediateRenderer extends VectorContext {
     if (Math.abs(strokeOffset) > 0) {
       pixelCoordinates = offsetLineString(
         pixelCoordinates,
-        stride,
+        0,
+        pixelCoordinates.length,
+        2,
         strokeOffset,
         close,
         pixelCoordinates,
       );
+      removeOffsetCycles(pixelCoordinates, 2);
     }
     context.moveTo(pixelCoordinates[0], pixelCoordinates[1]);
     let length = pixelCoordinates.length;
