@@ -1,0 +1,30 @@
+---
+layout: example.html
+title: GeoZarr Multi-Group
+shortdesc: Cloud-masked Sentinel-2 imagery using bands from multiple Zarr groups.
+docs: >
+  The GeoZarr source supports loading bands from multiple groups within the same Zarr hierarchy.
+  In this example, a true-color composite is rendered from B02 (blue), B03 (green), and B04 (red)
+  reflectance values from the `measurements/reflectance` group.  The cloud probability (`cld`) from
+  the `quality/probability` group is used to fade out cloudy areas, revealing the OSM basemap
+  underneath.
+
+
+  When bands come from different groups, each band is specified as an object with a `name` and a
+  `group` path.  The `group` is resolved relative to the `url`, which can be any common ancestor in
+  the Zarr hierarchy — not necessarily the store root.
+
+
+  Since the cloud probability data is only available at 20 m resolution, it is resampled at higher
+  zoom levels to match the 10 m reflectance bands.
+
+tags: "zarr, geozarr, sentinel-2, cloud, masking"
+experimental: true
+---
+<div id="map" class="map"></div>
+<div class="row mt-2">
+  <div class="col-auto">
+    <label class="form-label" for="threshold">Cloud threshold: <span id="threshold-value">50</span>%</label>
+    <input type="range" class="form-range" id="threshold" min="0" max="100" value="50">
+  </div>
+</div>
