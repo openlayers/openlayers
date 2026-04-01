@@ -84,6 +84,17 @@ const predefinedStyles = {
       0.92,
     ],
   },
+  'circles-text': {
+    'text-value': ['get', 'city'],
+    'text-font': 'bold 11px "Open Sans", "Arial Unicode MS", sans-serif',
+    'text-fill-color': '#334',
+    'text-stroke-color': 'rgba(255,255,255,0.8)',
+    'text-stroke-width': 2,
+    'text-offset-y': -12,
+    'circle-radius': 4,
+    'circle-fill-color': ['match', ['get', 'hover'], 1, '#ff3f3f', '#006688'],
+    'circle-rotate-with-view': false,
+  },
   'circles-zoom': {
     // by using an exponential interpolation with a base of 2 we can make it so that circles will have a fixed size
     // in world coordinates between zoom level 5 and 15
