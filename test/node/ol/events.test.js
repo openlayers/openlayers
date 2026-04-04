@@ -1,6 +1,6 @@
 import {spy as sinonSpy} from 'sinon';
-import EventTarget from '../../../src/ol/events/Target.js';
 import {listen, listenOnce, unlistenByKey} from '../../../src/ol/events.js';
+import EventTarget from '../../../src/ol/events/Target.js';
 import expect from '../expect.js';
 
 describe('ol/events.js', function () {

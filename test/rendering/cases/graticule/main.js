@@ -2,8 +2,8 @@ import proj4 from 'proj4';
 import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
 import Graticule from '../../../../src/ol/layer/Graticule.js';
-import {register} from '../../../../src/ol/proj/proj4.js';
 import {fromLonLat, get, transformExtent} from '../../../../src/ol/proj.js';
+import {register} from '../../../../src/ol/proj/proj4.js';
 import Stroke from '../../../../src/ol/style/Stroke.js';
 
 proj4.defs(

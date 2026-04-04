@@ -1,9 +1,9 @@
 /**
  * @module ol/interaction/MouseWheelZoom
  */
+import {listen, unlistenByKey} from '../events.js';
 import EventType from '../events/EventType.js';
 import {all, always, focusWithTabindex} from '../events/condition.js';
-import {listen, unlistenByKey} from '../events.js';
 import {clamp} from '../math.js';
 import Interaction, {zoomByDelta} from './Interaction.js';
 

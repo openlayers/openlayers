@@ -15,10 +15,10 @@ import {
   translate as translateTransform,
 } from '../../transform.js';
 import {fromTransform as mat4FromTransform} from '../../vec/mat4.js';
+import {ELEMENT_ARRAY_BUFFER, STATIC_DRAW} from '../../webgl.js';
 import WebGLArrayBuffer from '../../webgl/Buffer.js';
 import {AttributeType} from '../../webgl/Helper.js';
 import TileTexture from '../../webgl/TileTexture.js';
-import {ELEMENT_ARRAY_BUFFER, STATIC_DRAW} from '../../webgl.js';
 import WebGLBaseTileLayerRenderer, {
   Uniforms as BaseUniforms,
   getCacheKey,

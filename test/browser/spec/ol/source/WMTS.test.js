@@ -1,7 +1,7 @@
 import {getBottomLeft, getTopRight} from '../../../../../src/ol/extent.js';
 import WMTSCapabilities from '../../../../../src/ol/format/WMTSCapabilities.js';
-import Projection from '../../../../../src/ol/proj/Projection.js';
 import {get as getProjection} from '../../../../../src/ol/proj.js';
+import Projection from '../../../../../src/ol/proj/Projection.js';
 import WMTS, {
   optionsFromCapabilities,
 } from '../../../../../src/ol/source/WMTS.js';

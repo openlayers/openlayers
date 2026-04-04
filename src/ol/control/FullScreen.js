@@ -4,8 +4,8 @@
 import MapProperty from '../MapProperty.js';
 import {CLASS_CONTROL, CLASS_UNSELECTABLE, CLASS_UNSUPPORTED} from '../css.js';
 import {replaceNode} from '../dom.js';
-import EventType from '../events/EventType.js';
 import {listen, unlistenByKey} from '../events.js';
+import EventType from '../events/EventType.js';
 import Control from './Control.js';
 
 const events = ['fullscreenchange', 'webkitfullscreenchange'];

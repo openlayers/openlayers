@@ -3,8 +3,8 @@ import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
-import {register} from '../src/ol/proj/proj4.js';
 import {fromLonLat, get as getProjection, toLonLat} from '../src/ol/proj.js';
+import {register} from '../src/ol/proj/proj4.js';
 import RenderFeature from '../src/ol/render/Feature.js';
 import VectorSource from '../src/ol/source/Vector.js';
 

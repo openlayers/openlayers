@@ -1,8 +1,8 @@
 /**
  * @module ol/geom/GeometryCollection
  */
-import EventType from '../events/EventType.js';
 import {listen, unlistenByKey} from '../events.js';
+import EventType from '../events/EventType.js';
 import {
   closestSquaredDistanceXY,
   createOrUpdateEmpty,

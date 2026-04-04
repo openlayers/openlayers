@@ -37,8 +37,8 @@ import {
 import {getUid} from '../../util.js';
 import {
   defaultOrder as defaultRenderOrder,
-  getSquaredTolerance as getSquaredRenderTolerance,
   getTolerance as getRenderTolerance,
+  getSquaredTolerance as getSquaredRenderTolerance,
   renderFeature,
 } from '../vector.js';
 import CanvasLayerRenderer, {canvasPool} from './Layer.js';

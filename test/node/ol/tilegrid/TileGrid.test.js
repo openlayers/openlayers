@@ -1,9 +1,9 @@
 import TileRange from '../../../../src/ol/TileRange.js';
 import {createOrUpdate} from '../../../../src/ol/extent.js';
+import {get as getProjection} from '../../../../src/ol/proj.js';
 import Projection from '../../../../src/ol/proj/Projection.js';
 import {METERS_PER_UNIT} from '../../../../src/ol/proj/Units.js';
 import {HALF_SIZE} from '../../../../src/ol/proj/epsg3857.js';
-import {get as getProjection} from '../../../../src/ol/proj.js';
 import TileGrid from '../../../../src/ol/tilegrid/TileGrid.js';
 import {
   DEFAULT_MAX_ZOOM,

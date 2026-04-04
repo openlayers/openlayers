@@ -1,7 +1,7 @@
 import Disposable from '../../../../src/ol/Disposable.js';
+import {listen} from '../../../../src/ol/events.js';
 import Event from '../../../../src/ol/events/Event.js';
 import EventTarget from '../../../../src/ol/events/Target.js';
-import {listen} from '../../../../src/ol/events.js';
 import expect from '../../expect.js';
 
 describe('ol/events/Target.js', function () {

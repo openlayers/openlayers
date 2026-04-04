@@ -4,8 +4,8 @@ import View from '../src/ol/View.js';
 import {getCenter} from '../src/ol/extent.js';
 import ImageLayer from '../src/ol/layer/Image.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import {register} from '../src/ol/proj/proj4.js';
 import {transform} from '../src/ol/proj.js';
+import {register} from '../src/ol/proj/proj4.js';
 import Static from '../src/ol/source/ImageStatic.js';
 import OSM from '../src/ol/source/OSM.js';
 

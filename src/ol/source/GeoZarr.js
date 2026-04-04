@@ -78,8 +78,8 @@ export default class GeoZarr extends DataTileSource {
      * Cache of opened zarrita arrays keyed by path. Caching the Promise
      * (not the resolved value) deduplicates concurrent opens for the same
      * array path across tiles at the same zoom level.
-     * @type {Map<string, Promise<import('zarrita').Array<import('zarrita').DataType, any>>>}
      * @private
+     * @type {Map<string, Promise<import('zarrita').Array<import('zarrita').DataType, any>>>}
      */
     this.arrayCache_ = new Map();
 
@@ -108,7 +108,8 @@ export default class GeoZarr extends DataTileSource {
     this.resampleMethod_ = options.resample || 'linear';
 
     /**
-     * @type {number} Number of bands.
+     * Number of bands.
+     * @type {number}
      */
     this.bandCount = this.bands_.length;
 

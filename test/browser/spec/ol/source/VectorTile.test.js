@@ -9,8 +9,8 @@ import MVT from '../../../../../src/ol/format/MVT.js';
 import VectorTileLayer from '../../../../../src/ol/layer/VectorTile.js';
 import {get as getProjection} from '../../../../../src/ol/proj.js';
 import VectorTileSource from '../../../../../src/ol/source/VectorTile.js';
-import TileGrid from '../../../../../src/ol/tilegrid/TileGrid.js';
 import {createXYZ} from '../../../../../src/ol/tilegrid.js';
+import TileGrid from '../../../../../src/ol/tilegrid/TileGrid.js';
 
 describe('ol/source/VectorTile', function () {
   let format, source;

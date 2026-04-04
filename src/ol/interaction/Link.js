@@ -2,8 +2,8 @@
  * @module ol/interaction/Link
  */
 import MapEventType from '../MapEventType.js';
-import EventType from '../events/EventType.js';
 import {listen, unlistenByKey} from '../events.js';
+import EventType from '../events/EventType.js';
 import {toFixed} from '../math.js';
 import Interaction from './Interaction.js';
 

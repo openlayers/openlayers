@@ -13,11 +13,11 @@ import {
   setFromArray as setFromTransform,
 } from '../../transform.js';
 import {fromTransform as mat4FromTransform} from '../../vec/mat4.js';
+import {ELEMENT_ARRAY_BUFFER, STATIC_DRAW} from '../../webgl.js';
 import WebGLArrayBuffer from '../../webgl/Buffer.js';
 import {AttributeType} from '../../webgl/Helper.js';
 import WebGLRenderTarget from '../../webgl/RenderTarget.js';
 import TileGeometry from '../../webgl/TileGeometry.js';
-import {ELEMENT_ARRAY_BUFFER, STATIC_DRAW} from '../../webgl.js';
 import WebGLBaseTileLayerRenderer, {
   Uniforms as BaseUniforms,
 } from './TileLayerBase.js';

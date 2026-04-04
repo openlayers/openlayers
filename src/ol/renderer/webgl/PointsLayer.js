@@ -21,10 +21,10 @@ import {
   translate as translateTransform,
 } from '../../transform.js';
 import {getUid} from '../../util.js';
+import {ARRAY_BUFFER, DYNAMIC_DRAW, ELEMENT_ARRAY_BUFFER} from '../../webgl.js';
 import WebGLArrayBuffer from '../../webgl/Buffer.js';
 import {AttributeType, DefaultUniform} from '../../webgl/Helper.js';
 import WebGLRenderTarget from '../../webgl/RenderTarget.js';
-import {ARRAY_BUFFER, DYNAMIC_DRAW, ELEMENT_ARRAY_BUFFER} from '../../webgl.js';
 import {create as createWebGLWorker} from '../../worker/webgl.js';
 import WebGLLayerRenderer from './Layer.js';
 import {getWorldParameters} from './worldUtil.js';

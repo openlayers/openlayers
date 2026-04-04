@@ -3,13 +3,13 @@
  */
 import {equals, reverseSubArray} from '../../array.js';
 import {asColorLike} from '../../colorlike.js';
-import Relationship from '../../extent/Relationship.js';
 import {
   buffer,
   clone,
   containsCoordinate,
   coordinateRelationship,
 } from '../../extent.js';
+import Relationship from '../../extent/Relationship.js';
 import {
   inflateCoordinates,
   inflateCoordinatesArray,

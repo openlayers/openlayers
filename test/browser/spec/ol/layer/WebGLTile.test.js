@@ -5,9 +5,9 @@ import {createCanvasContext2D} from '../../../../../src/ol/dom.js';
 import {getForViewAndSize} from '../../../../../src/ol/extent.js';
 import WebGLTileLayer from '../../../../../src/ol/layer/WebGLTile.js';
 import {getRenderPixel} from '../../../../../src/ol/render.js';
+import {sourcesFromTileGrid} from '../../../../../src/ol/source.js';
 import DataTileSource from '../../../../../src/ol/source/DataTile.js';
 import TileWMS from '../../../../../src/ol/source/TileWMS.js';
-import {sourcesFromTileGrid} from '../../../../../src/ol/source.js';
 import {createXYZ} from '../../../../../src/ol/tilegrid.js';
 import WebGLHelper from '../../../../../src/ol/webgl/Helper.js';
 

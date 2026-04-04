@@ -30,12 +30,12 @@ import MultiLineString from '../../../../../src/ol/geom/MultiLineString.js';
 import MultiPoint from '../../../../../src/ol/geom/MultiPoint.js';
 import MultiPolygon from '../../../../../src/ol/geom/MultiPolygon.js';
 import Polygon from '../../../../../src/ol/geom/Polygon.js';
-import {register} from '../../../../../src/ol/proj/proj4.js';
 import {
   addCommon,
   clearAllProjections,
   transform,
 } from '../../../../../src/ol/proj.js';
+import {register} from '../../../../../src/ol/proj/proj4.js';
 import {parse} from '../../../../../src/ol/xml.js';
 
 describe('ol.format.WFS', function () {
