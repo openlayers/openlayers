@@ -1,4 +1,9 @@
 import proj4 from 'proj4';
+import {
+  addCommon,
+  clearAllProjections,
+  transform,
+} from '../../../../src/ol/proj.js';
 import Projection from '../../../../src/ol/proj/Projection.js';
 import {
   fromProjectionCode,
@@ -8,11 +13,6 @@ import {
   setProjectionCodeLookup,
   unregister,
 } from '../../../../src/ol/proj/proj4.js';
-import {
-  addCommon,
-  clearAllProjections,
-  transform,
-} from '../../../../src/ol/proj.js';
 import expect from '../../expect.js';
 
 const epsgDefinitions = {

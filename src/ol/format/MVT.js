@@ -11,8 +11,8 @@ import MultiPolygon from '../geom/MultiPolygon.js';
 import Point from '../geom/Point.js';
 import Polygon from '../geom/Polygon.js';
 import {inflateEnds} from '../geom/flat/orient.js';
-import Projection from '../proj/Projection.js';
 import {get} from '../proj.js';
+import Projection from '../proj/Projection.js';
 import RenderFeature from '../render/Feature.js';
 import FeatureFormat, {transformGeometryWithOptions} from './Feature.js';
 

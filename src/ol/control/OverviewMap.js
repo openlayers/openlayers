@@ -11,8 +11,8 @@ import View from '../View.js';
 import ViewProperty from '../ViewProperty.js';
 import {CLASS_COLLAPSED, CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
 import {replaceNode} from '../dom.js';
-import EventType from '../events/EventType.js';
 import {listen, listenOnce} from '../events.js';
+import EventType from '../events/EventType.js';
 import {
   containsExtent,
   equals as equalsExtent,

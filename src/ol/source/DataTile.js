@@ -10,13 +10,13 @@ import {equivalent, get as getProjection} from '../proj.js';
 import ReprojDataTile from '../reproj/DataTile.js';
 import {toSize} from '../size.js';
 import {getCacheKey} from '../tilecoord.js';
-import {DEFAULT_TILE_SIZE} from '../tilegrid/common.js';
 import {
   createForProjection,
   createXYZ,
   extentFromProjection,
   getForProjection as getTileGridForProjection,
 } from '../tilegrid.js';
+import {DEFAULT_TILE_SIZE} from '../tilegrid/common.js';
 import {getUid} from '../util.js';
 import TileSource, {TileSourceEvent} from './Tile.js';
 import TileEventType from './TileEventType.js';
@@ -153,7 +153,8 @@ class DataTileSource extends TileSource {
     this.bandCount = options.bandCount === undefined ? 4 : options.bandCount; // assume RGBA if undefined
 
     /**
-     * @type {number|undefined} The 1-based band index for the nodata alpha band.
+     * The 1-based band index for the nodata alpha band.
+     * @type {number|undefined}
      */
     this.nodataBandIndex;
 

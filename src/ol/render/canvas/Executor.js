@@ -16,7 +16,6 @@ import {
   create as createTransform,
   setFromArray as transformSetFromArray,
 } from '../../transform.js';
-import ZIndexContext from '../canvas/ZIndexContext.js';
 import {
   defaultPadding,
   defaultTextAlign,
@@ -25,6 +24,7 @@ import {
   getTextDimensions,
   measureAndCacheTextWidth,
 } from '../canvas.js';
+import ZIndexContext from '../canvas/ZIndexContext.js';
 import CanvasInstruction from './Instruction.js';
 import {TEXT_ALIGN} from './TextBuilder.js';
 

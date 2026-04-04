@@ -1,11 +1,11 @@
 import events from 'events';
+import fse from 'fs-extra';
 import path from 'path';
 import {fileURLToPath} from 'url';
-import fse from 'fs-extra';
 import {setLevel as setLogLevel} from '../../../../src/ol/console.js';
 import {overrideXHR, restoreXHR} from '../../../../src/ol/net.js';
-import Projection from '../../../../src/ol/proj/Projection.js';
 import {get as getProjection} from '../../../../src/ol/proj.js';
+import Projection from '../../../../src/ol/proj/Projection.js';
 import {
   appendCollectionsQueryParam,
   getMapTileUrlTemplate,

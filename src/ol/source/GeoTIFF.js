@@ -3,17 +3,15 @@
  */
 import {
   Pool,
+  globals as geotiffGlobals,
   fromBlob as tiffFromBlob,
   fromCustomClient as tiffFromCustomClient,
   fromUrl as tiffFromUrl,
   fromUrls as tiffFromUrls,
-  globals as geotiffGlobals,
 } from 'geotiff';
 import {error as logError} from '../console.js';
 import {applyTransform, getCenter, getIntersection} from '../extent.js';
 import {clamp} from '../math.js';
-import {fromCode as unitsFromCode} from '../proj/Units.js';
-import {fromProjectionCode} from '../proj/proj4.js';
 import {
   Projection,
   createTransformFromCoordinateTransform,
@@ -21,6 +19,8 @@ import {
   toUserCoordinate,
   toUserExtent,
 } from '../proj.js';
+import {fromCode as unitsFromCode} from '../proj/Units.js';
+import {fromProjectionCode} from '../proj/proj4.js';
 import TileGrid from '../tilegrid/TileGrid.js';
 import {
   apply as applyMatrix,

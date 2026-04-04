@@ -1,8 +1,8 @@
 import {spy as sinonSpy, useFakeTimers} from 'sinon';
 import Map from '../../../../src/ol/Map.js';
 import MapBrowserEventHandler from '../../../../src/ol/MapBrowserEventHandler.js';
-import OlEvent from '../../../../src/ol/events/Event.js';
 import {listen} from '../../../../src/ol/events.js';
+import OlEvent from '../../../../src/ol/events/Event.js';
 import {DEVICE_PIXEL_RATIO} from '../../../../src/ol/has.js';
 
 describe('ol/MapBrowserEventHandler', function () {

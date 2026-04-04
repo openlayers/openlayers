@@ -7,9 +7,9 @@ import {
   closestOnSegment,
   squaredDistance,
 } from '../coordinate.js';
+import {listen, unlistenByKey} from '../events.js';
 import EventType from '../events/EventType.js';
 import {SnapEvent, SnapEventType} from '../events/SnapEvent.js';
-import {listen, unlistenByKey} from '../events.js';
 import {
   boundingExtent,
   buffer,

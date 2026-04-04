@@ -26,8 +26,8 @@ import {
   get as getProjection,
   getTransform,
 } from '../proj.js';
-import EventType from '../render/EventType.js';
 import {getVectorContext} from '../render.js';
+import EventType from '../render/EventType.js';
 import VectorSource from '../source/Vector.js';
 import Fill from '../style/Fill.js';
 import Stroke from '../style/Stroke.js';

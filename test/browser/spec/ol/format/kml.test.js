@@ -18,14 +18,14 @@ import MultiPoint from '../../../../../src/ol/geom/MultiPoint.js';
 import MultiPolygon from '../../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../../src/ol/geom/Polygon.js';
-import Projection from '../../../../../src/ol/proj/Projection.js';
-import {remove as removeTransform} from '../../../../../src/ol/proj/transforms.js';
 import {
   addCoordinateTransforms,
   addProjection,
   get as getProjection,
   transform,
 } from '../../../../../src/ol/proj.js';
+import Projection from '../../../../../src/ol/proj/Projection.js';
+import {remove as removeTransform} from '../../../../../src/ol/proj/transforms.js';
 import CircleStyle from '../../../../../src/ol/style/Circle.js';
 import Fill from '../../../../../src/ol/style/Fill.js';
 import Icon from '../../../../../src/ol/style/Icon.js';

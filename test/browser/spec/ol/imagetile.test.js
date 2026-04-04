@@ -1,7 +1,7 @@
 import ImageTile from '../../../../src/ol/ImageTile.js';
 import TileState from '../../../../src/ol/TileState.js';
-import EventType from '../../../../src/ol/events/EventType.js';
 import {listen, unlistenByKey} from '../../../../src/ol/events.js';
+import EventType from '../../../../src/ol/events/EventType.js';
 import {defaultImageLoadFunction} from '../../../../src/ol/source/Image.js';
 
 describe('ol.ImageTile', function () {

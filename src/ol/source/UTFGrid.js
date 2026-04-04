@@ -4,8 +4,8 @@
 
 import Tile from '../Tile.js';
 import TileState from '../TileState.js';
-import EventType from '../events/EventType.js';
 import {listenOnce} from '../events.js';
+import EventType from '../events/EventType.js';
 import {applyTransform, intersects} from '../extent.js';
 import {jsonp as requestJSONP} from '../net.js';
 import {get as getProjection, getTransformFromProjections} from '../proj.js';
