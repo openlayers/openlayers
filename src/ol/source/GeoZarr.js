@@ -217,18 +217,18 @@ export default class GeoZarr extends DataTileSource {
       ? createCachedStore(store, groupBytes, this.consolidatedMetadata_)
       : store;
 
+    const groupPromises = [];
     if (this.groupPaths_) {
       // Multi-group mode: open root, then each sub-group
       const rootGroup = await open(cachedStore, {kind: 'group'});
       for (const groupPath of this.groupPaths_) {
-        this.groups_.push(
-          await open(rootGroup.resolve(groupPath), {kind: 'group'}),
-        );
+        groupPromises.push(open(rootGroup.resolve(groupPath), {kind: 'group'}));
       }
     } else {
       // Single group mode
-      this.groups_.push(await open(cachedStore, {kind: 'group'}));
+      groupPromises.push(open(cachedStore, {kind: 'group'}));
     }
+    this.groups_.push(...(await Promise.all(groupPromises)));
 
     const attributes =
       /** @type {LegacyDatasetAttributes | DatasetAttributes} */ (
