@@ -1024,15 +1024,20 @@ class VectorSource extends Source {
           );
         };
 
+        //TODO Remove this when the deprecatedsuccess and failure arguments are removed
+        let disableCallbacks = false;
+
         const loaded = this.loader_.call(
           this,
           extentToLoad,
           resolution,
           projection,
-          success,
-          failure,
+          (features) => disableCallbacks || success(features),
+          () => disableCallbacks || failure(),
         );
         if (loaded instanceof Promise) {
+          //TODO Remove this when the deprecatedsuccess and failure arguments are removed
+          disableCallbacks = true;
           loaded
             .then((features) => {
               this.addFeatures(features);

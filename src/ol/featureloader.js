@@ -13,13 +13,14 @@ let withCredentials = false;
  * {@link module:ol/source/Vector~VectorSource} sources use a function of this type to
  * load features.
  *
- * This function takes up to 5 arguments. These are an {@link module:ol/extent~Extent} representing
- * the area to be loaded, a `{number}` representing the resolution (map units per pixel), a
- * {@link module:ol/proj/Projection~Projection} for the projection, an optional success callback that should get
- * the loaded features passed as an argument and an optional failure callback with no arguments. If
- * the callbacks are not used, the corresponding vector source will not fire `'featuresloadend'` and
- * `'featuresloaderror'` events. `this` within the function is bound to the
- * {@link module:ol/source/Vector~VectorSource} it's called from.
+ * This function takes 3 arguments: an {@link module:ol/extent~Extent} representing
+ * the area to be loaded, a `{number}` representing the resolution (map units per pixel), and a
+ * {@link module:ol/proj/Projection~Projection} for the projection. The function is expeced to return
+ * a promise that resolves to an array of features.
+ *
+ * There are also a deprecated signature, with `void` as
+ * return, and two additional arguments: an optional success callback that should get
+ * the loaded features passed as an argument and an optional failure callback with no arguments.
  *
  * The function is responsible for loading the features and adding them to the
  * source.
