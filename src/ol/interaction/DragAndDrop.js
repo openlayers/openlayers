@@ -3,9 +3,9 @@
  */
 // FIXME should handle all geo-referenced data, not just vector data
 
+import {listen, unlistenByKey} from '../events.js';
 import Event from '../events/Event.js';
 import EventType from '../events/EventType.js';
-import {listen, unlistenByKey} from '../events.js';
 import {TRUE} from '../functions.js';
 import {get as getProjection, getUserProjection} from '../proj.js';
 import Interaction from './Interaction.js';

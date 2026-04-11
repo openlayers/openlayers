@@ -1,8 +1,8 @@
 import proj4 from 'proj4';
 import {spy as sinonSpy} from 'sinon';
 import * as _ol_extent_ from '../../../src/ol/extent.js';
-import {register} from '../../../src/ol/proj/proj4.js';
 import {get, getTransform} from '../../../src/ol/proj.js';
+import {register} from '../../../src/ol/proj/proj4.js';
 import expect from '../expect.js';
 
 describe('ol/extent.js', function () {

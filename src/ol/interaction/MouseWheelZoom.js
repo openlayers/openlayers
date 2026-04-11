@@ -1,9 +1,9 @@
 /**
  * @module ol/interaction/MouseWheelZoom
  */
+import {listen, unlistenByKey} from '../events.js';
 import EventType from '../events/EventType.js';
 import {all, always, focusWithTabindex} from '../events/condition.js';
-import {listen, unlistenByKey} from '../events.js';
 import {clamp} from '../math.js';
 import Interaction, {zoomByDelta} from './Interaction.js';
 
@@ -215,9 +215,12 @@ class MouseWheelZoom extends Interaction {
       return;
     }
     const view = map.getView();
+    const direction = this.lastDelta_ ? (this.lastDelta_ > 0 ? 1 : -1) : 0;
     view.endInteraction(
-      undefined,
-      this.lastDelta_ ? (this.lastDelta_ > 0 ? 1 : -1) : 0,
+      this.constrainResolution_ || view.getConstrainResolution()
+        ? 100
+        : undefined,
+      direction,
       this.lastAnchor_ ? map.getCoordinateFromPixel(this.lastAnchor_) : null,
     );
   }
@@ -284,10 +287,7 @@ class MouseWheelZoom extends Interaction {
     }
 
     const view = map.getView();
-    if (
-      this.mode_ === 'trackpad' &&
-      !(view.getConstrainResolution() || this.constrainResolution_)
-    ) {
+    if (this.mode_ === 'trackpad') {
       if (this.trackpadTimeoutId_) {
         clearTimeout(this.trackpadTimeoutId_);
       } else {

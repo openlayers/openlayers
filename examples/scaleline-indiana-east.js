@@ -3,8 +3,8 @@ import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import ScaleLine from '../src/ol/control/ScaleLine.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import {register} from '../src/ol/proj/proj4.js';
 import {fromLonLat, transformExtent} from '../src/ol/proj.js';
+import {register} from '../src/ol/proj/proj4.js';
 import OSM from '../src/ol/source/OSM.js';
 
 proj4.defs(

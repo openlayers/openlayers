@@ -1,12 +1,12 @@
-import WebGLArrayBuffer, {
-  getArrayClassForType,
-} from '../../../../../src/ol/webgl/Buffer.js';
 import {
   ARRAY_BUFFER,
   ELEMENT_ARRAY_BUFFER,
   STATIC_DRAW,
   STREAM_DRAW,
 } from '../../../../../src/ol/webgl.js';
+import WebGLArrayBuffer, {
+  getArrayClassForType,
+} from '../../../../../src/ol/webgl/Buffer.js';
 
 describe('ol.webgl.Buffer', function () {
   describe('constructor', function () {

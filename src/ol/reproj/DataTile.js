@@ -5,8 +5,8 @@
 import DataTile, {asArrayLike, asImageLike, toArray} from '../DataTile.js';
 import TileState from '../TileState.js';
 import {createCanvasContext2D} from '../dom.js';
-import EventType from '../events/EventType.js';
 import {listen, unlistenByKey} from '../events.js';
+import EventType from '../events/EventType.js';
 import {getArea, getIntersection, getWidth, wrapAndSliceX} from '../extent.js';
 import {clamp} from '../math.js';
 import {calculateSourceExtentResolution} from '../reproj.js';

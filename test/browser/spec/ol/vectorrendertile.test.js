@@ -1,6 +1,6 @@
 import TileState from '../../../../src/ol/TileState.js';
-import EventType from '../../../../src/ol/events/EventType.js';
 import {listen, unlistenByKey} from '../../../../src/ol/events.js';
+import EventType from '../../../../src/ol/events/EventType.js';
 import GeoJSON from '../../../../src/ol/format/GeoJSON.js';
 import VectorTileSource, {
   defaultLoadFunction,

@@ -9,13 +9,13 @@ import LinearRing from '../../../../src/ol/geom/LinearRing.js';
 import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
-import Projection from '../../../../src/ol/proj/Projection.js';
 import {
   fromLonLat,
   get as getProjection,
   toLonLat,
   transform,
 } from '../../../../src/ol/proj.js';
+import Projection from '../../../../src/ol/proj/Projection.js';
 import RenderFeature from '../../../../src/ol/render/Feature.js';
 import expect from '../../expect.js';
 

@@ -1,5 +1,5 @@
-import TileGrid from '../../../../src/ol/tilegrid/TileGrid.js';
 import {createXYZ} from '../../../../src/ol/tilegrid.js';
+import TileGrid from '../../../../src/ol/tilegrid/TileGrid.js';
 import {
   createFromTemplate,
   createFromTemplates,

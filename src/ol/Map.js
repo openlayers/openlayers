@@ -19,8 +19,8 @@ import {assert} from './asserts.js';
 import {warn} from './console.js';
 import {defaults as defaultControls} from './control/defaults.js';
 import {isCanvas} from './dom.js';
-import EventType from './events/EventType.js';
 import {listen, unlistenByKey} from './events.js';
+import EventType from './events/EventType.js';
 import {
   clone,
   createOrUpdateEmpty,

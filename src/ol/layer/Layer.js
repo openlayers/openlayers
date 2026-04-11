@@ -3,8 +3,8 @@
  */
 import View from '../View.js';
 import {assert} from '../asserts.js';
-import EventType from '../events/EventType.js';
 import {listen, unlistenByKey} from '../events.js';
+import EventType from '../events/EventType.js';
 import {intersects} from '../extent.js';
 import RenderEventType from '../render/EventType.js';
 import BaseLayer from './Base.js';

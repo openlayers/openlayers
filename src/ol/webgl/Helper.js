@@ -10,7 +10,6 @@ import {
 } from '../transform.js';
 import {getUid} from '../util.js';
 import {create, fromTransform} from '../vec/mat4.js';
-import ContextEventType from '../webgl/ContextEventType.js';
 import {
   FLOAT,
   UNSIGNED_BYTE,
@@ -18,6 +17,7 @@ import {
   UNSIGNED_SHORT,
   getContext,
 } from '../webgl.js';
+import ContextEventType from '../webgl/ContextEventType.js';
 import WebGLPostProcessingPass from './PostProcessingPass.js';
 
 /**

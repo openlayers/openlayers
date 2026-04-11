@@ -3,8 +3,8 @@ import proj4 from 'proj4';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import VectorTileLayer from '../src/ol/layer/VectorTile.js';
-import {register} from '../src/ol/proj/proj4.js';
 import {fromLonLat} from '../src/ol/proj.js';
+import {register} from '../src/ol/proj/proj4.js';
 import VectorTileSource from '../src/ol/source/VectorTile.js';
 import {createXYZ} from '../src/ol/tilegrid.js';
 

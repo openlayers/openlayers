@@ -6,11 +6,11 @@ import ViewHint from './ViewHint.js';
 import ViewProperty from './ViewProperty.js';
 import {linearFindNearest} from './array.js';
 import {assert} from './asserts.js';
-import {createExtent, none as centerNone} from './centerconstraint.js';
+import {none as centerNone, createExtent} from './centerconstraint.js';
 import {
   add as addCoordinate,
-  equals,
   equals as coordinatesEqual,
+  equals,
   rotate as rotateCoordinate,
 } from './coordinate.js';
 import {easeOut, inAndOut} from './easing.js';

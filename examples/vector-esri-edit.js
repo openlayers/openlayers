@@ -20,7 +20,7 @@ const layer = '2';
 const esrijsonFormat = new EsriJSON();
 
 const vectorSource = new VectorSource({
-  loader: function (extent, resolution, projection) {
+  loader: async (extent, resolution, projection) => {
     const url =
       serviceUrl +
       layer +
@@ -39,23 +39,18 @@ const vectorSource = new VectorSource({
       ) +
       '&geometryType=esriGeometryEnvelope&inSR=102100&outFields=*' +
       '&outSR=102100';
-    fetch(url)
-      .then((response) => response.json())
-      .then(function (response) {
-        if (response.error) {
-          alert(
-            response.error.message + '\n' + response.error.details.join('\n'),
-          );
-        } else {
-          // dataProjection will be read from document
-          const features = esrijsonFormat.readFeatures(response, {
-            featureProjection: projection,
-          });
-          if (features.length > 0) {
-            vectorSource.addFeatures(features);
-          }
-        }
+    const response = await fetch(url);
+    const json = await response.json();
+    if (json.error) {
+      alert(json.error.message + '\n' + json.error.details.join('\n'));
+      throw new Error(json.error.message);
+    } else {
+      // dataProjection will be read from document
+      const features = esrijsonFormat.readFeatures(json, {
+        featureProjection: projection,
       });
+      return features;
+    }
   },
   strategy: tileStrategy(
     createXYZ({

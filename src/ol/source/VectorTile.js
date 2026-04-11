@@ -15,13 +15,13 @@ import {loadFeaturesXhr} from '../featureloader.js';
 import {isEmpty} from '../obj.js';
 import {equivalent, transformExtent} from '../proj.js';
 import {toSize} from '../size.js';
-import TileGrid from '../tilegrid/TileGrid.js';
-import {DEFAULT_MAX_ZOOM} from '../tilegrid/common.js';
 import {
   createXYZ,
   extentFromProjection,
   getForProjection,
 } from '../tilegrid.js';
+import TileGrid from '../tilegrid/TileGrid.js';
+import {DEFAULT_MAX_ZOOM} from '../tilegrid/common.js';
 import UrlTile from './UrlTile.js';
 
 /**
