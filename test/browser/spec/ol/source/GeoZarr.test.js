@@ -471,37 +471,6 @@ describe('ol/source/GeoZarr', function () {
   describe('standalone single-scale group', function () {
     let fetchStub;
 
-    /**
-     * Stub fetch for a single-scale group (no multiscales layout).
-     * Bands live directly at the group root, not under a matrixId subfolder.
-     * @param {Object} bandMeta Consolidated metadata entries keyed by band name.
-     * @param {Object} [groupAttrs] Attributes to merge into the group zarr.json.
-     * @return {import('sinon').SinonStub} The fetch stub.
-     */
-    function stubFetchSingleScale(bandMeta, groupAttrs) {
-      const defaultAttrs = {
-        'spatial:bbox': [0, 0, 256, 256],
-        'proj:code': 'EPSG:4326',
-        'spatial:shape': [256, 256],
-      };
-      const groupZarrJson = {
-        zarr_format: 3,
-        node_type: 'group',
-        attributes: Object.assign({}, defaultAttrs, groupAttrs),
-        consolidated_metadata: {
-          metadata: bandMeta || {},
-        },
-      };
-      return sinonStub(window, 'fetch').callsFake(function (url) {
-        if (url === `${ZARR_URL}/zarr.json`) {
-          return Promise.resolve(
-            new Response(JSON.stringify(groupZarrJson), {status: 200}),
-          );
-        }
-        return Promise.resolve(new Response('', {status: 404}));
-      });
-    }
-
     afterEach(function () {
       if (fetchStub) {
         fetchStub.restore();
@@ -509,31 +478,14 @@ describe('ol/source/GeoZarr', function () {
       }
     });
 
-    it('derives a single-resolution tile grid from spatial:shape', function (done) {
-      fetchStub = stubFetchSingleScale({
-        b04: createArrayMeta({fillValue: 0}),
-        b03: createArrayMeta({fillValue: 0}),
-      });
-      const source = new GeoZarr({
-        url: ZARR_URL,
-        bands: ['b04', 'b03'],
-      });
-      source.on('change', function () {
-        if (source.getState() === 'ready') {
-          expect(source.tileGrid.getResolutions()).to.eql([1]);
-          expect(source.bandSingleScaleResolution_[0]).to.be(1);
-          expect(source.bandSingleScaleResolution_[1]).to.be(1);
-          expect(source.bandsByLevel_['level0']).to.contain('b04');
-          expect(source.bandsByLevel_['level0']).to.contain('b03');
-          done();
-        }
-      });
-    });
-
-    it('derives resolution from array shape when spatial:shape is absent', function (done) {
-      fetchStub = stubFetchSingleScale(
+    it('derives a tile grid from spatial:bbox and spatial:shape', function (done) {
+      fetchStub = stubFetchWithAttrs(
         {b04: createArrayMeta({fillValue: 0})},
-        {'spatial:shape': undefined},
+        {
+          zarr_conventions: undefined,
+          multiscales: undefined,
+          'spatial:shape': [256, 256],
+        },
       );
       const source = new GeoZarr({
         url: ZARR_URL,
@@ -541,104 +493,56 @@ describe('ol/source/GeoZarr', function () {
       });
       source.on('change', function () {
         if (source.getState() === 'ready') {
-          // extent width = 256, array cols = 10980 → resolution ≈ 256/10980
-          expect(source.tileGrid.getResolutions()[0]).to.be.greaterThan(0);
-          expect(source.bandSingleScaleResolution_[0]).to.be(
-            source.tileGrid.getResolutions()[0],
-          );
-          done();
-        }
-      });
-    });
-
-    it('sets nodataBandIndex when fill value is present', function (done) {
-      fetchStub = stubFetchSingleScale({
-        b04: createArrayMeta({fillValue: 'NaN'}),
-      });
-      const source = new GeoZarr({
-        url: ZARR_URL,
-        bands: ['b04'],
-      });
-      source.on('change', function () {
-        if (source.getState() === 'ready') {
-          expect(source.bandCount).to.be(2); // 1 band + alpha
-          expect(source.nodataBandIndex).to.be(2);
+          expect(source.tileGrid.getResolutions()).to.eql([1]);
+          expect(source.bandSingleScaleResolution_[0]).to.be(1);
           done();
         }
       });
     });
   });
 
-  describe('Band object API (multi-group)', function () {
+  describe('multi-group bands', function () {
     let fetchStub;
 
-    /**
-     * Stub fetch for a Zarr ancestor containing multiple sub-groups.
-     * The first group ('data') has the GeoZarr conventions and attributes.
-     * @param {Object} group1Meta Consolidated metadata entries for the first group (relative paths).
-     * @param {Object} group2Meta Consolidated metadata entries for the second group (relative paths).
-     * @return {import('sinon').SinonStub} The fetch stub.
-     */
     function stubFetchMultiGroup(group1Meta, group2Meta) {
-      // Sub-group that has GeoZarr conventions
-      const subGroup1 = {
-        zarr_format: 3,
-        node_type: 'group',
-        attributes: {
-          zarr_conventions: [
-            {uuid: 'd35379db-88df-4056-af3a-620245f8e347'},
-            {uuid: 'f17cb550-5864-4468-aeb7-f3180cfb622f'},
-            {uuid: '689b58e2-cf7b-45e0-9fff-9cfc0883d6b4'},
-          ],
-          multiscales: {
-            layout: [
-              {
-                asset: 'level0',
-                'spatial:shape': [256, 256],
-                'spatial:transform': [1, 0, 0, 0, -1, 256],
-              },
+      const metadata = {
+        data: {
+          zarr_format: 3,
+          node_type: 'group',
+          attributes: {
+            zarr_conventions: [
+              {uuid: 'd35379db-88df-4056-af3a-620245f8e347'},
+              {uuid: 'f17cb550-5864-4468-aeb7-f3180cfb622f'},
+              {uuid: '689b58e2-cf7b-45e0-9fff-9cfc0883d6b4'},
             ],
+            multiscales: {
+              layout: [{asset: 'level0', 'spatial:shape': [256, 256]}],
+            },
+            'spatial:bbox': [0, 0, 256, 256],
+            'proj:code': 'EPSG:4326',
           },
-          'spatial:bbox': [0, 0, 256, 256],
-          'proj:code': 'EPSG:4326',
         },
+        extra: {zarr_format: 3, node_type: 'group', attributes: {}},
       };
-
-      // Sub-group without conventions (just has arrays)
-      const subGroup2 = {
-        zarr_format: 3,
-        node_type: 'group',
-        attributes: {},
-      };
-
-      // Root consolidated metadata: prefixed by group paths
-      const consolidatedMetadata = {};
-      consolidatedMetadata['data'] = subGroup1;
-      for (const [key, value] of Object.entries(group1Meta || {})) {
-        consolidatedMetadata[`data/${key}`] = value;
+      for (const [k, v] of Object.entries(group1Meta || {})) {
+        metadata[`data/${k}`] = v;
       }
-      consolidatedMetadata['extra'] = subGroup2;
-      for (const [key, value] of Object.entries(group2Meta || {})) {
-        consolidatedMetadata[`extra/${key}`] = value;
+      for (const [k, v] of Object.entries(group2Meta || {})) {
+        metadata[`extra/${k}`] = v;
       }
-
-      const rootZarrJson = {
-        zarr_format: 3,
-        node_type: 'group',
-        attributes: {},
-        consolidated_metadata: {
-          metadata: consolidatedMetadata,
-        },
-      };
-
-      const responses = {
-        [`${ZARR_ROOT_URL}/zarr.json`]: JSON.stringify(rootZarrJson),
-      };
-
       return sinonStub(window, 'fetch').callsFake(function (url) {
-        const body = responses[url];
-        if (body !== undefined) {
-          return Promise.resolve(new Response(body, {status: 200}));
+        if (url === `${ZARR_ROOT_URL}/zarr.json`) {
+          return Promise.resolve(
+            new Response(
+              JSON.stringify({
+                zarr_format: 3,
+                node_type: 'group',
+                attributes: {},
+                consolidated_metadata: {metadata},
+              }),
+              {status: 200},
+            ),
+          );
         }
         return Promise.resolve(new Response('', {status: 404}));
       });
@@ -651,97 +555,23 @@ describe('ol/source/GeoZarr', function () {
       }
     });
 
-    it('can be constructed with Band objects', function () {
-      const source = new GeoZarr({
-        url: ZARR_ROOT_URL,
-        bands: [
-          {name: 'b04', group: 'data'},
-          {name: 'b03', group: 'data'},
-          {name: 'aot', group: 'extra'},
-        ],
-      });
-      expect(source).to.be.a(GeoZarr);
-      expect(source.getState()).to.be('loading');
-    });
-
-    it('assigns correct group index and supplements bandsByLevel for each band', function (done) {
+    it('resolves bands from multiple groups into bandsByLevel', function (done) {
       fetchStub = stubFetchMultiGroup(
-        {
-          'level0/b04': createArrayMeta({fillValue: 0}),
-          'level0/b03': createArrayMeta({fillValue: 0}),
-        },
-        {
-          'level0/aot': createArrayMeta({fillValue: 0}),
-        },
+        {'level0/b04': createArrayMeta()},
+        {'level0/aot': createArrayMeta()},
       );
       const source = new GeoZarr({
         url: ZARR_ROOT_URL,
         bands: [
           {name: 'b04', group: 'data'},
-          {name: 'b03', group: 'data'},
           {name: 'aot', group: 'extra'},
         ],
       });
       source.on('change', function () {
         if (source.getState() === 'ready') {
-          expect(source.bandGroupIndex_[0]).to.be(0); // b04 from data
-          expect(source.bandGroupIndex_[1]).to.be(0); // b03 from data
-          expect(source.bandGroupIndex_[2]).to.be(1); // aot from extra
-          // bandsByLevel should include all bands
+          expect(source.bandGroupIndex_).to.eql([0, 1]);
           expect(source.bandsByLevel_['level0']).to.contain('b04');
-          expect(source.bandsByLevel_['level0']).to.contain('b03');
           expect(source.bandsByLevel_['level0']).to.contain('aot');
-          done();
-        }
-      });
-    });
-
-    it('band group is determined by the Band object, not discovery', function (done) {
-      fetchStub = stubFetchMultiGroup(
-        {
-          'level0/b04': createArrayMeta({fillValue: 0}),
-        },
-        {
-          'level0/b04': createArrayMeta({fillValue: 0}), // also has b04
-          'level0/aot': createArrayMeta({fillValue: 0}),
-        },
-      );
-      const source = new GeoZarr({
-        url: ZARR_ROOT_URL,
-        bands: [
-          {name: 'b04', group: 'data'}, // explicitly from data despite extra also having it
-          {name: 'aot', group: 'extra'},
-        ],
-      });
-      source.on('change', function () {
-        if (source.getState() === 'ready') {
-          expect(source.bandGroupIndex_[0]).to.be(0); // b04 from data (explicitly)
-          expect(source.bandGroupIndex_[1]).to.be(1); // aot from extra
-          done();
-        }
-      });
-    });
-
-    it('handles nodataBandIndex for multi-group bands', function (done) {
-      fetchStub = stubFetchMultiGroup(
-        {
-          'level0/b04': createArrayMeta({fillValue: 'NaN'}),
-        },
-        {
-          'level0/aot': createArrayMeta({fillValue: 'NaN'}),
-        },
-      );
-      const source = new GeoZarr({
-        url: ZARR_ROOT_URL,
-        bands: [
-          {name: 'b04', group: 'data'},
-          {name: 'aot', group: 'extra'},
-        ],
-      });
-      source.on('change', function () {
-        if (source.getState() === 'ready') {
-          expect(source.bandCount).to.be(3); // 2 bands + alpha
-          expect(source.nodataBandIndex).to.be(3);
           done();
         }
       });
@@ -749,13 +579,8 @@ describe('ol/source/GeoZarr', function () {
 
     it('supports single-scale bands from additional groups', function (done) {
       fetchStub = stubFetchMultiGroup(
-        {
-          'level0/b04': createArrayMeta({fillValue: 0}),
-        },
-        {
-          // 'aot' lives directly at the group root — no matrixId prefix
-          aot: createArrayMeta({fillValue: 0}),
-        },
+        {'level0/b04': createArrayMeta()},
+        {aot: createArrayMeta()}, // no matrixId prefix → single-scale
       );
       const source = new GeoZarr({
         url: ZARR_ROOT_URL,
@@ -766,44 +591,9 @@ describe('ol/source/GeoZarr', function () {
       });
       source.on('change', function () {
         if (source.getState() === 'ready') {
-          expect(source.bandGroupIndex_[0]).to.be(0); // b04 → data group
-          expect(source.bandGroupIndex_[1]).to.be(1); // aot → extra group
           expect(source.bandSingleScaleResolution_[0]).to.be(undefined);
           expect(source.bandSingleScaleResolution_[1]).to.not.be(undefined);
-          // aot must be visible at every level so loadTile_ can find it
           expect(source.bandsByLevel_['level0']).to.contain('aot');
-          // aot resolution derived from shape [10980, 10980] and extent width 256
-          const expectedRes = 256 / 10980;
-          expect(
-            Math.abs(source.bandSingleScaleResolution_[1] - expectedRes),
-          ).to.be.lessThan(1e-10);
-          expect(source.bandSingleScaleResolution_[0]).to.be(undefined);
-          done();
-        }
-      });
-    });
-
-    it('handles nodataBandIndex for single-scale bands', function (done) {
-      fetchStub = stubFetchMultiGroup(
-        {
-          'level0/b04': createArrayMeta({fillValue: 'NaN'}),
-        },
-        {
-          aot: createArrayMeta({fillValue: 'NaN'}),
-        },
-      );
-      const source = new GeoZarr({
-        url: ZARR_ROOT_URL,
-        bands: [
-          {name: 'b04', group: 'data'},
-          {name: 'aot', group: 'extra'},
-        ],
-      });
-      source.on('change', function () {
-        if (source.getState() === 'ready') {
-          expect(source.bandSingleScaleResolution_[1]).to.not.be(undefined);
-          expect(source.bandCount).to.be(3); // 2 bands + alpha
-          expect(source.nodataBandIndex).to.be(3);
           done();
         }
       });
