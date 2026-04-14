@@ -280,8 +280,8 @@ export default class GeoZarr extends DataTileSource {
       }
     }
     if (!this.tileGrid && 'spatial:bbox' in attributes) {
-      // Standalone single-scale group: synthesize a multiscales layout so we
-      // can reuse getTileGridInfoFromAttributes.
+      // Standalone single-scale group: build tile grid directly from
+      // spatial:bbox and spatial:shape (or the array shape from metadata).
       let shape = attributes['spatial:shape'];
       if (!shape && consolidatedMetadata) {
         for (const band of this.bands_) {
@@ -292,38 +292,33 @@ export default class GeoZarr extends DataTileSource {
         }
       }
       if (shape) {
-        // Prefix metadata keys with 'level0/' so
-        // getTileGridInfoFromAttributes can resolve bands.
-        let prefixedMeta = null;
+        const extent = attributes['spatial:bbox'];
+        const resolution = (extent[2] - extent[0]) / shape[1];
+        if (!this.projection) {
+          this.projection = getProjection(attributes['proj:code']);
+        }
         if (consolidatedMetadata) {
-          prefixedMeta = {};
-          for (const key of Object.keys(consolidatedMetadata)) {
-            prefixedMeta[`level0/${key}`] = consolidatedMetadata[key];
+          this.bandsByLevel_ = {level0: []};
+          for (const band of this.bands_) {
+            if (consolidatedMetadata[band]) {
+              this.bandsByLevel_['level0'].push(band);
+              if (this.fillValue_ === undefined) {
+                this.fillValue_ = Number(
+                  consolidatedMetadata[band]['fill_value'],
+                );
+              }
+            }
           }
         }
-        const {tileGrid, projection, bandsByLevel, fillValue, tileSizes} =
-          getTileGridInfoFromAttributes(
-            /** @type {DatasetAttributes} */ ({
-              ...attributes,
-              multiscales: {
-                layout: [{asset: 'level0', 'spatial:shape': shape}],
-              },
-            }),
-            prefixedMeta,
-            this.bands_,
-          );
-        this.tileGrid = tileGrid;
-        if (!this.projection) {
-          this.projection = projection;
-        }
-        this.bandsByLevel_ = bandsByLevel;
-        this.fillValue_ = fillValue;
-        hasTileSizes = !!tileSizes;
-        // All primary-group bands live directly at the group root.
-        const singleScaleRes = tileGrid.getResolutions()[0];
+        this.tileGrid = new WMTSTileGrid({
+          extent: extent,
+          origins: [[extent[0], extent[3]]],
+          resolutions: [resolution],
+          matrixIds: ['level0'],
+        });
         for (let i = 0; i < this.bands_.length; ++i) {
           if (this.bandGroupIndex_[i] === 0) {
-            this.bandSingleScaleResolution_[i] = singleScaleRes;
+            this.bandSingleScaleResolution_[i] = resolution;
           }
         }
       }
@@ -579,10 +574,14 @@ function createCachedStore(store, groupBytes, consolidatedMetadata) {
   };
 }
 
-/**
- * @typedef {Object} DatasetAttributes
- * @property {Multiscales} multiscales The multiscales attribute.
- * @property {Array<{uuid: string}>} zarr_conventions The zarr conventions attribute.
+/***
+ * @typedef {{
+ *   multiscales: Multiscales,
+ *   zarr_conventions: Array<{uuid: string}>,
+ *   'spatial:bbox': import("../extent.js").Extent,
+ *   'spatial:shape': Array<number>,
+ *   'proj:code': string,
+ * }} DatasetAttributes
  */
 
 /**

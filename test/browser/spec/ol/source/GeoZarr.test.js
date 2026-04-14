@@ -499,6 +499,26 @@ describe('ol/source/GeoZarr', function () {
         }
       });
     });
+
+    it('works without consolidated metadata', function (done) {
+      fetchStub = stubFetchWithAttrs(null, {
+        zarr_conventions: undefined,
+        multiscales: undefined,
+        'spatial:shape': [256, 256],
+      });
+      const source = new GeoZarr({
+        url: ZARR_URL,
+        bands: ['b04'],
+      });
+      source.on('change', function () {
+        if (source.getState() === 'ready') {
+          expect(source.tileGrid.getResolutions()).to.eql([1]);
+          expect(source.bandsByLevel_).to.be(null);
+          expect(source.bandSingleScaleResolution_[0]).to.be(1);
+          done();
+        }
+      });
+    });
   });
 
   describe('multi-group bands', function () {
