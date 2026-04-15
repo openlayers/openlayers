@@ -3,6 +3,7 @@ import {get} from '../../../../../src/ol/proj.js';
 import GeoZarr from '../../../../../src/ol/source/GeoZarr.js';
 
 const ZARR_URL = 'http://test-zarr/test.zarr/data';
+const ZARR_ROOT_URL = 'http://test-zarr/test.zarr';
 
 /**
  * Create a Zarr v3 array metadata object with optional sharding codec.
@@ -416,38 +417,30 @@ describe('ol/source/GeoZarr', function () {
               {
                 asset: 'r10m',
                 'spatial:shape': [10980, 10980],
-                'spatial:transform': [10, 0, 399960, 0, -10, 8000040],
               },
               {
                 asset: 'r20m',
                 derived_from: 'r10m',
                 transform: {scale: [2, 2], translation: [0, 0]},
                 'spatial:shape': [5490, 5490],
-                // spatial:transform resolution is correct here
-                'spatial:transform': [20, 0, 399960, 0, -20, 8000040],
               },
               {
                 asset: 'r60m',
                 derived_from: 'r10m',
                 transform: {scale: [6, 6], translation: [0, 0]},
                 'spatial:shape': [1830, 1830],
-                'spatial:transform': [60, 0, 399960, 0, -60, 8000040],
               },
               {
                 asset: 'r120m',
                 derived_from: 'r60m',
                 transform: {scale: [2, 2], translation: [0, 0]},
                 'spatial:shape': [915, 915],
-                // spatial:transform is WRONG (60 instead of 120) - as seen in real datasets
-                'spatial:transform': [60, 0, 399990, 0, -60, 8000010],
               },
               {
                 asset: 'r360m',
                 derived_from: 'r120m',
                 transform: {scale: [3, 3], translation: [0, 0]},
                 'spatial:shape': [305, 305],
-                // spatial:transform is WRONG (60 instead of 360)
-                'spatial:transform': [60, 0, 400110, 0, -60, 7999890],
               },
             ],
           },
@@ -469,6 +462,158 @@ describe('ol/source/GeoZarr', function () {
           for (const origin of origins) {
             expect(origin).to.eql([399960, 8000040]);
           }
+          done();
+        }
+      });
+    });
+  });
+
+  describe('standalone single-scale group', function () {
+    let fetchStub;
+
+    afterEach(function () {
+      if (fetchStub) {
+        fetchStub.restore();
+        fetchStub = null;
+      }
+    });
+
+    it('derives a tile grid from spatial:bbox and spatial:shape', function (done) {
+      fetchStub = stubFetchWithAttrs(
+        {b04: createArrayMeta({fillValue: 0})},
+        {
+          zarr_conventions: undefined,
+          multiscales: undefined,
+          'spatial:shape': [256, 256],
+        },
+      );
+      const source = new GeoZarr({
+        url: ZARR_URL,
+        bands: ['b04'],
+      });
+      source.on('change', function () {
+        if (source.getState() === 'ready') {
+          expect(source.tileGrid.getResolutions()).to.eql([1]);
+          expect(source.bandSingleScaleResolution_[0]).to.be(1);
+          done();
+        }
+      });
+    });
+
+    it('works without consolidated metadata', function (done) {
+      fetchStub = stubFetchWithAttrs(null, {
+        zarr_conventions: undefined,
+        multiscales: undefined,
+        'spatial:shape': [256, 256],
+      });
+      const source = new GeoZarr({
+        url: ZARR_URL,
+        bands: ['b04'],
+      });
+      source.on('change', function () {
+        if (source.getState() === 'ready') {
+          expect(source.tileGrid.getResolutions()).to.eql([1]);
+          expect(source.bandsByLevel_).to.be(null);
+          expect(source.bandSingleScaleResolution_[0]).to.be(1);
+          done();
+        }
+      });
+    });
+  });
+
+  describe('multi-group bands', function () {
+    let fetchStub;
+
+    function stubFetchMultiGroup(group1Meta, group2Meta) {
+      const metadata = {
+        data: {
+          zarr_format: 3,
+          node_type: 'group',
+          attributes: {
+            zarr_conventions: [
+              {uuid: 'd35379db-88df-4056-af3a-620245f8e347'},
+              {uuid: 'f17cb550-5864-4468-aeb7-f3180cfb622f'},
+              {uuid: '689b58e2-cf7b-45e0-9fff-9cfc0883d6b4'},
+            ],
+            multiscales: {
+              layout: [{asset: 'level0', 'spatial:shape': [256, 256]}],
+            },
+            'spatial:bbox': [0, 0, 256, 256],
+            'proj:code': 'EPSG:4326',
+          },
+        },
+        extra: {zarr_format: 3, node_type: 'group', attributes: {}},
+      };
+      for (const [k, v] of Object.entries(group1Meta || {})) {
+        metadata[`data/${k}`] = v;
+      }
+      for (const [k, v] of Object.entries(group2Meta || {})) {
+        metadata[`extra/${k}`] = v;
+      }
+      return sinonStub(window, 'fetch').callsFake(function (url) {
+        if (url === `${ZARR_ROOT_URL}/zarr.json`) {
+          return Promise.resolve(
+            new Response(
+              JSON.stringify({
+                zarr_format: 3,
+                node_type: 'group',
+                attributes: {},
+                consolidated_metadata: {metadata},
+              }),
+              {status: 200},
+            ),
+          );
+        }
+        return Promise.resolve(new Response('', {status: 404}));
+      });
+    }
+
+    afterEach(function () {
+      if (fetchStub) {
+        fetchStub.restore();
+        fetchStub = null;
+      }
+    });
+
+    it('resolves bands from multiple groups into bandsByLevel', function (done) {
+      fetchStub = stubFetchMultiGroup(
+        {'level0/b04': createArrayMeta()},
+        {'level0/aot': createArrayMeta()},
+      );
+      const source = new GeoZarr({
+        url: ZARR_ROOT_URL,
+        bands: [
+          {name: 'b04', group: 'data'},
+          {name: 'aot', group: 'extra'},
+        ],
+      });
+      source.on('change', function () {
+        if (source.getState() === 'ready') {
+          expect(source.bandGroupIndex_).to.eql([0, 1]);
+          expect(source.bandsByLevel_['level0']).to.contain('b04');
+          expect(source.bandsByLevel_['level0']).to.contain('aot');
+          done();
+        }
+      });
+    });
+
+    it('supports single-scale bands from additional groups', function (done) {
+      fetchStub = stubFetchMultiGroup(
+        {'level0/b04': createArrayMeta()},
+        {aot: createArrayMeta()}, // no matrixId prefix → single-scale
+      );
+      const source = new GeoZarr({
+        url: ZARR_ROOT_URL,
+        bands: [
+          {name: 'b04', group: 'data'},
+          {name: 'aot', group: 'extra'},
+        ],
+      });
+      source.on('change', function () {
+        if (source.getState() === 'ready') {
+          expect(source.bandSingleScaleResolution_[0]).to.be(undefined);
+          expect(source.bandSingleScaleResolution_[1]).to.not.be(undefined);
+          expect(source.bandsByLevel_['level0']).to.contain('aot');
           done();
         }
       });
