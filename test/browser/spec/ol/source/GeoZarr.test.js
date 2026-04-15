@@ -89,7 +89,8 @@ function stubFetchWithAttrs(consolidatedMetadata, groupAttrs) {
     [`${ZARR_URL}/zarr.json`]: JSON.stringify(groupZarrJson),
   };
 
-  return sinonStub(window, 'fetch').callsFake(function (url) {
+  return sinonStub(window, 'fetch').callsFake(function (input) {
+    const url = input instanceof Request ? input.url : input;
     const body = responses[url];
     if (body !== undefined) {
       return Promise.resolve(new Response(body, {status: 200}));
@@ -550,7 +551,8 @@ describe('ol/source/GeoZarr', function () {
       for (const [k, v] of Object.entries(group2Meta || {})) {
         metadata[`extra/${k}`] = v;
       }
-      return sinonStub(window, 'fetch').callsFake(function (url) {
+      return sinonStub(window, 'fetch').callsFake(function (input) {
+        const url = input instanceof Request ? input.url : input;
         if (url === `${ZARR_ROOT_URL}/zarr.json`) {
           return Promise.resolve(
             new Response(
