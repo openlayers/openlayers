@@ -115,14 +115,17 @@
         <div id="docs">{{ md docs }}</div>
       </div>
 
-      <div class="row-fluid">
-        <h5 class="source-heading">main.js</h5>
-        <pre><code id="example-js-source" class="language-js">{{ js.source }}</code></pre>
-      </div>
+      <details open>
+        <summary class="source-heading">main.js</summary>
+        <div class="row-fluid">
+          <pre><code id="example-js-source" class="language-js">{{ js.source }}</code></pre>
+        </div>
+      </details>
 
-      <div class="row-fluid">
-        <h5 class="source-heading">index.html</h5>
-        <pre><code id="example-html-source" class="language-markup">&lt;!DOCTYPE html&gt;
+      <details open>
+        <summary class="source-heading">index.html</summary>
+        <div class="row-fluid">
+          <pre><code id="example-html-source" class="language-markup">&lt;!DOCTYPE html&gt;
 &lt;html lang="en"&gt;
   &lt;head&gt;
     &lt;meta charset="UTF-8"&gt;
@@ -146,18 +149,24 @@
     &lt;script type="module" src="main.js"&gt;&lt;/script&gt;
   &lt;/body&gt;
 &lt;/html&gt;</code></pre>
-      </div>
+        </div>
+      </details>
 
-{{#each extraSources}}
-      <div class="row-fluid extra-source">
-        <h5 class="source-heading">{{./name}}</h5>
-        <pre><code class="language-{{./type}}">{{ ./source }}</code></pre>
-      </div>
-{{/each}}
-      <div class="row-fluid">
-        <h5 class="source-heading">package.json</h5>
-        <pre><code id="example-pkg-source" class="language-json">{{ pkgJson }}</code></pre>
-      </div>
+      {{#each extraSources}}
+      <details open>
+        <summary class="source-heading">{{./name}}</summary>
+        <div class="row-fluid extra-source">
+          <pre><code class="language-{{./type}}">{{ ./source }}</code></pre>
+        </div>
+      </details>
+      {{/each}}
+
+      <details open>
+        <summary class="source-heading">package.json</summary>
+        <div class="row-fluid">
+          <pre><code id="example-pkg-source" class="language-json">{{ pkgJson }}</code></pre>
+        </div>
+      </details>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
