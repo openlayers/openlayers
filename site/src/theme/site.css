@@ -247,6 +247,8 @@ ol.inline>li {
   margin-bottom: 0;
   padding-left: .6em;
   font-weight: bold;
+  cursor: pointer;
+  font-size: x-large;
 }
 
 #tags,
