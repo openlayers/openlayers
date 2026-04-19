@@ -228,6 +228,20 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function () {
       view.setCenter([0, 0]);
       view.setZoom(0);
     });
+
+    it('passes the interpolate option to the parent source', function () {
+      const source = new RasterSource({
+        threads: 0,
+        interpolate: false,
+        sources: [redSource],
+        operation: function (inputs) {
+          return inputs[0];
+        },
+      });
+
+      expect(source.getInterpolate()).to.be(false);
+      source.dispose();
+    });
   });
 
   describe('config option `attributions`', function () {
@@ -434,6 +448,66 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function () {
         expect(event.data).to.have.length(threads);
         expect(event.data[0].prop).to.equal('value');
         done();
+      });
+
+      const view = map.getView();
+      view.setCenter([0, 0]);
+      view.setZoom(0);
+    });
+
+    it('discards stale worker results when a source changes mid-pass', function (done) {
+      const vectorSource = new VectorSource();
+      const source = new RasterSource({
+        threads: 0,
+        sources: [
+          new VectorImageLayer({
+            source: vectorSource,
+            style: new Style({
+              image: new Circle({
+                radius: 3,
+                fill: new Fill({color: 'blue'}),
+              }),
+            }),
+          }),
+        ],
+        operation: function (inputs) {
+          return inputs[0];
+        },
+      });
+
+      layer.setSource(source);
+
+      const worker = source.processor_.workers_[0];
+      const postMessage = worker.postMessage;
+      let workerCompleteCount = 0;
+      worker.postMessage = function () {
+        const args = arguments;
+        setTimeout(function () {
+          ++workerCompleteCount;
+          postMessage.apply(worker, args);
+        }, 32);
+      };
+
+      let afterCount = 0;
+      source.on('afteroperations', function () {
+        ++afterCount;
+      });
+
+      setTimeout(function () {
+        vectorSource.addFeature(new Feature(new Point([0, 0])));
+      }, 16);
+
+      source.once('afteroperations', function () {
+        setTimeout(function () {
+          expect(workerCompleteCount).to.be(2);
+          expect(afterCount).to.be(1);
+          const image = source.renderedImageCanvas_.getImage();
+          const context = image.getContext('2d');
+          expect(Array.from(context.getImageData(1, 1, 1, 1).data)).to.eql([
+            0, 0, 255, 255,
+          ]);
+          done();
+        }, 80);
       });
 
       const view = map.getView();

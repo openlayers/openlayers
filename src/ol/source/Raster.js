@@ -478,6 +478,8 @@ export class RasterSourceEvent extends Event {
  * @property {Operation} [operation] Raster operation.
  * The operation will be called with data from input sources
  * and the output will be assigned to the raster source.
+ * @property {boolean} [interpolate=true] Use interpolated values when resampling. By default,
+ * linear interpolation is used when resampling. Set to `false` to use the nearest neighbor instead.
  * @property {Object} [lib] Functions that will be made available to operations run in a worker.
  * @property {number} [threads] By default, operations will be run in a single worker thread.
  * To avoid using workers altogether, set `threads: 0`.  For pixel operations, operations can
@@ -519,6 +521,7 @@ class RasterSource extends ImageSource {
    */
   constructor(options) {
     super({
+      interpolate: options.interpolate,
       projection: null,
     });
 
@@ -785,8 +788,11 @@ class RasterSource extends ImageSource {
   processSources_() {
     const frameState = this.requestedFrameState_;
     const len = this.layers_.length;
+    const sourceRevisions = new Array(len);
     const imageDatas = new Array(len);
     for (let i = 0; i < len; ++i) {
+      const source = this.layers_[i].getSource();
+      sourceRevisions[i] = source.getRevision();
       frameState.layerIndex = i;
       frameState.renderTargets = {};
       const imageData = getImageData(this.layers_[i], frameState);
@@ -804,19 +810,20 @@ class RasterSource extends ImageSource {
     this.processor_.process(
       imageDatas,
       data,
-      this.onWorkerComplete_.bind(this, frameState),
+      this.onWorkerComplete_.bind(this, frameState, sourceRevisions),
     );
   }
 
   /**
    * Called when pixel processing is complete.
    * @param {import("../Map.js").FrameState} frameState The frame state.
+   * @param {Array<number>} sourceRevisions Source revisions when processing started.
    * @param {Error} err Any error during processing.
    * @param {ImageData} output The output image data.
    * @param {Object|Array<Object>} data The user data (or an array if more than one thread).
    * @private
    */
-  onWorkerComplete_(frameState, err, output, data) {
+  onWorkerComplete_(frameState, sourceRevisions, err, output, data) {
     if (err || !output) {
       return;
     }
@@ -829,6 +836,13 @@ class RasterSource extends ImageSource {
       !equals(extent, this.requestedFrameState_.extent)
     ) {
       return;
+    }
+    // do nothing if any input source's revision changed
+    for (let i = 0; i < this.layers_.length; ++i) {
+      const source = this.layers_[i].getSource();
+      if (sourceRevisions[i] !== source.getRevision()) {
+        return;
+      }
     }
 
     let context;
