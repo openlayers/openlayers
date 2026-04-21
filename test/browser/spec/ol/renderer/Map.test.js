@@ -982,5 +982,33 @@ describe('ol/renderer/Map.js', function () {
       expect(secondRender[3]).to.be(firstRender[3]);
       map.dispose();
     });
+
+    [1, 2].forEach((pixelRatio) => {
+      it(`renders layers directly onto the canvas when dimensions match (pixelRatio=${pixelRatio})`, function () {
+        const canvas = document.createElement('canvas');
+        // Size the canvas at physical pixels and pre-scale the context so
+        // updateSize() reports 100 CSS pixels, matching what prepareContainer expects
+        canvas.width = 100 * pixelRatio;
+        canvas.height = 100 * pixelRatio;
+        canvas.getContext('2d').scale(pixelRatio, pixelRatio);
+        const feature = new Feature(fromExtent([-1e6, -1e6, 1e6, 1e6]));
+        const layer = new VectorLayer({
+          source: new VectorSource({features: [feature]}),
+          style: new Style({fill: new Fill({color: 'red'})}),
+        });
+        const map = new Map({
+          target: canvas,
+          pixelRatio,
+          layers: [layer],
+          view: new View({center: [0, 0], zoom: 1, rotation: 0}),
+        });
+        const spy = sinonSpy(CanvasRenderingContext2D.prototype, 'drawImage');
+        map.renderSync();
+        // No drawImage call means the layer drew directly onto the target canvas
+        expect(spy.callCount).to.be(0);
+        spy.restore();
+        map.dispose();
+      });
+    });
   });
 });

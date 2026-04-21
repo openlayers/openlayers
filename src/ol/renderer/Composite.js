@@ -126,8 +126,20 @@ class CompositeMapRenderer extends MapRenderer {
 
     this.children_.length = 0;
 
+    const map = this.getMap();
+    const mapCanvas = map.getTargetElement();
+    /** @type {CanvasRenderingContext2D|undefined} */
+    let mapContext;
+    if (isCanvas(mapCanvas)) {
+      mapContext = /** @type {CanvasRenderingContext2D} */ (
+        mapCanvas.getContext('2d')
+      );
+      mapContext.setTransform(1, 0, 0, 1, 0, 0);
+      mapContext.clearRect(0, 0, mapCanvas.width, mapCanvas.height);
+    }
+
     const renderedLayerStates = [];
-    let previousElement = null;
+    let previousElement = mapContext ? mapCanvas : null;
     for (let i = 0, ii = layerStatesArray.length; i < ii; ++i) {
       const layerState = layerStatesArray[i];
       frameState.layerIndex = i;
@@ -158,40 +170,39 @@ class CompositeMapRenderer extends MapRenderer {
 
     replaceChildren(this.element_, this.children_);
 
-    const map = this.getMap();
-    const mapCanvas = map.getTargetElement();
-    if (isCanvas(mapCanvas)) {
-      // Canvas composition when container is a canvas
-      const mapContext = mapCanvas.getContext('2d');
-      mapContext.clearRect(0, 0, mapCanvas.width, mapCanvas.height);
-      for (const container of this.children_) {
-        const canvas = container.firstElementChild || container;
-        const backgroundColor = container.style.backgroundColor;
-        if (backgroundColor && (!isCanvas(canvas) || canvas.width > 0)) {
-          mapContext.fillStyle = backgroundColor;
-          mapContext.fillRect(0, 0, mapCanvas.width, mapCanvas.height);
-        }
-        if (isCanvas(canvas) && canvas.width > 0) {
-          mapContext.save();
-          const opacity = container.style.opacity || canvas.style.opacity;
-          mapContext.globalAlpha = opacity === '' ? 1 : Number(opacity);
-          const transform = canvas.style.transform;
-          if (transform) {
-            // Get the transform parameters from the style's transform matrix
-            mapContext.transform(
-              .../** @type {[number, number, number, number, number, number]} */ (
-                fromString(transform)
-              ),
-            );
-          } else {
-            const w = parseFloat(canvas.style.width) / canvas.width;
-            const h = parseFloat(canvas.style.height) / canvas.height;
-            mapContext.transform(w, 0, 0, h, 0, 0);
-          }
-          mapContext.drawImage(canvas, 0, 0);
-          mapContext.restore();
-        }
+    for (const container of mapContext ? this.children_ : []) {
+      const canvas = container.firstElementChild || container;
+      const backgroundColor = container.style.backgroundColor;
+      if (backgroundColor && (!isCanvas(canvas) || canvas.width > 0)) {
+        mapContext.fillStyle = backgroundColor;
+        mapContext.fillRect(
+          0,
+          0,
+          mapContext.canvas.width,
+          mapContext.canvas.height,
+        );
       }
+      if (!isCanvas(canvas) || canvas.width === 0) {
+        continue;
+      }
+      mapContext.save();
+      const opacity = container.style.opacity || canvas.style.opacity;
+      mapContext.globalAlpha = opacity === '' ? 1 : Number(opacity);
+      const transform = canvas.style.transform;
+      if (transform) {
+        // Get the transform parameters from the style's transform matrix
+        mapContext.transform(
+          .../** @type {[number, number, number, number, number, number]} */ (
+            fromString(transform)
+          ),
+        );
+      } else {
+        const w = parseFloat(canvas.style.width) / canvas.width;
+        const h = parseFloat(canvas.style.height) / canvas.height;
+        mapContext.transform(w, 0, 0, h, 0, 0);
+      }
+      mapContext.drawImage(canvas, 0, 0);
+      mapContext.restore();
     }
 
     this.dispatchRenderEvent(RenderEventType.POSTCOMPOSE, frameState);
