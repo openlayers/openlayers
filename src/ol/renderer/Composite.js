@@ -163,6 +163,7 @@ class CompositeMapRenderer extends MapRenderer {
     if (isCanvas(mapCanvas)) {
       // Canvas composition when container is a canvas
       const mapContext = mapCanvas.getContext('2d');
+      mapContext.clearRect(0, 0, mapCanvas.width, mapCanvas.height);
       for (const container of this.children_) {
         const canvas = container.firstElementChild || container;
         const backgroundColor = container.style.backgroundColor;

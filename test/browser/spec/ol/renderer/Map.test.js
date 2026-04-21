@@ -954,4 +954,33 @@ describe('ol/renderer/Map.js', function () {
       spy.restore();
     });
   });
+
+  describe('canvas target', function () {
+    it('clears the canvas before each render when target is a canvas element', function () {
+      const canvas = document.createElement('canvas');
+      canvas.width = 100;
+      canvas.height = 100;
+      const feature = new Feature(fromExtent([-1e6, -1e6, 1e6, 1e6]));
+      const layer = new VectorLayer({
+        source: new VectorSource({features: [feature]}),
+        style: new Style({
+          fill: new Fill({color: 'rgba(255, 0, 0, 0.5)'}),
+        }),
+      });
+      const map = new Map({
+        target: canvas,
+        pixelRatio: 1,
+        layers: [layer],
+        view: new View({center: [0, 0], zoom: 1}),
+      });
+      map.renderSync();
+      const ctx = canvas.getContext('2d');
+      const firstRender = ctx.getImageData(50, 50, 1, 1).data;
+      // Render again — alpha should not accumulate
+      map.renderSync();
+      const secondRender = ctx.getImageData(50, 50, 1, 1).data;
+      expect(secondRender[3]).to.be(firstRender[3]);
+      map.dispose();
+    });
+  });
 });
