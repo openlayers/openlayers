@@ -15,6 +15,8 @@ import {get as getProjection} from '../../../../../../src/ol/proj.js';
 import {checkedFonts} from '../../../../../../src/ol/render/canvas.js';
 import CanvasVectorLayerRenderer from '../../../../../../src/ol/renderer/canvas/VectorLayer.js';
 import VectorSource from '../../../../../../src/ol/source/Vector.js';
+import Circle from '../../../../../../src/ol/style/Circle.js';
+import Fill from '../../../../../../src/ol/style/Fill.js';
 import Style from '../../../../../../src/ol/style/Style.js';
 import Text from '../../../../../../src/ol/style/Text.js';
 import {createFontStyle} from '../../../util.js';
@@ -456,7 +458,7 @@ describe('ol/renderer/canvas/VectorLayer', function () {
       expect(renderer.replayGroupChanged).to.be(false);
       frameState.declutter = {};
       renderer.prepareFrame(frameState);
-      expect(renderer.replayGroupChanged).to.be(true);
+      expect(renderer.replayGroupChanged).to.be(false);
       frameState.pixelRatio = 2;
       renderer.prepareFrame(frameState);
       expect(renderer.replayGroupChanged).to.be(true);
@@ -609,6 +611,47 @@ describe('ol/renderer/canvas/VectorLayer', function () {
       }
       expect(renderer.renderWorlds.callCount).to.be(1);
       expect(renderer.clipUnrotated.callCount).to.be(0);
+    });
+
+    it('does not enter deferred rendering for non-declutter layers when the frame declutters', function () {
+      const layer = new VectorLayer({
+        source: new VectorSource({
+          features: [new Feature(new Point([0, 0]))],
+        }),
+        style: new Style({
+          image: new Circle({
+            radius: 8,
+            fill: new Fill({color: 'rgba(255, 0, 0, 1)'}),
+          }),
+        }),
+      });
+      renderer = layer.getRenderer();
+      const frameState = {
+        pixelRatio: 1,
+        time: 1000000000000,
+        viewState: {
+          center: [0, 0],
+          projection: projection,
+          resolution: 1,
+          rotation: 0,
+        },
+        animate: false,
+        coordinateToPixelTransform: [1, 0, 0, 1, 0, 0],
+        declutter: {},
+        extent: [-50, -50, 50, 50],
+        index: 0,
+        layerStatesArray: [layer.getLayerState()],
+        layerIndex: 0,
+        pixelToCoordinateTransform: [1, 0, 0, 1, 0, 0],
+        size: [100, 100],
+        viewHints: [],
+      };
+
+      if (renderer.prepareFrame(frameState)) {
+        renderer.renderFrame(frameState, null);
+      }
+
+      expect(renderer.replayGroup_.getDeferredZIndexContexts()).to.eql({});
     });
   });
 

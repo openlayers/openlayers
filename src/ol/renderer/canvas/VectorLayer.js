@@ -182,6 +182,17 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
   }
 
   /**
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @return {import("../../Map.js").FrameState} Frame state for this layer.
+   */
+  getLayerFrameState(frameState) {
+    if (!frameState.declutter || this.getLayer().getDeclutter()) {
+      return frameState;
+    }
+    return Object.assign({}, frameState, {declutter: null});
+  }
+
+  /**
    * @param {ExecutorGroup} executorGroup Executor group.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @param {boolean} [declutterable] `true` to only render declutterable items,
@@ -316,6 +327,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
    * @override
    */
   renderFrame(frameState, target) {
+    frameState = this.getLayerFrameState(frameState);
     const layerState = frameState.layerStatesArray[frameState.layerIndex];
     this.opacity_ = layerState.opacity;
     const viewState = frameState.viewState;
@@ -586,6 +598,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
    * @override
    */
   prepareFrame(frameState) {
+    frameState = this.getLayerFrameState(frameState);
     const vectorLayer = this.getLayer();
     const vectorSource = vectorLayer.getSource();
     if (!vectorSource) {
