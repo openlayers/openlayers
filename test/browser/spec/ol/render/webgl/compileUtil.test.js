@@ -8,10 +8,7 @@ import {
   SizeType,
   StringType,
 } from '../../../../../../src/ol/expr/expression.js';
-import {
-  newCompilationContext,
-  stringToGlsl,
-} from '../../../../../../src/ol/expr/gpu.js';
+import {newCompilationContext} from '../../../../../../src/ol/expr/gpu.js';
 import {
   applyContextToBuilder,
   expressionToGlsl,
@@ -58,7 +55,7 @@ describe('ol/render/webgl/compileUtil', () => {
       expect(getGlslSizeFromType(SizeType)).to.equal(2);
       expect(getGlslSizeFromType(NumberArrayType)).to.equal(4);
       expect(getGlslSizeFromType(NumberType)).to.equal(1);
-      expect(getGlslSizeFromType(StringType)).to.equal(1);
+      expect(getGlslSizeFromType(StringType)).to.equal(3);
     });
   });
 
@@ -145,7 +142,7 @@ describe('ol/render/webgl/compileUtil', () => {
       expect(uniforms).to.have.property('u_var_booleanVar');
       expect(uniforms.u_var_colorVar()).to.eql([1, 1, 1, 1]);
       expect(uniforms.u_var_anotherColorVar()).to.eql([0.2, 0.4, 0, 0.4]);
-      expect(uniforms.u_var_stringVar()).to.eql(stringToGlsl('hello world'));
+      expect(uniforms.u_var_stringVar()).to.eql('hello world');
       expect(uniforms.u_var_arrayVar()).to.eql([1, 2, 3]);
       expect(uniforms.u_var_booleanVar()).to.eql(1);
     });
@@ -175,9 +172,9 @@ describe('ol/render/webgl/compileUtil', () => {
       expect(attributes.prop_colorProp.callback(feature)).to.eql([255, 255]);
 
       expect(attributes).to.have.property('prop_stringProp');
-      expect(attributes.prop_stringProp.size).to.eql(1);
+      expect(attributes.prop_stringProp.size).to.eql(3);
       expect(attributes.prop_stringProp.callback(feature)).to.eql(
-        stringToGlsl('hello world'),
+        'hello world',
       );
 
       expect(attributes).to.have.property('prop_arrayProp');
