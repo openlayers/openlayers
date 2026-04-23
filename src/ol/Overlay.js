@@ -68,7 +68,7 @@ import {containsExtent} from './extent.js';
  * @enum {string}
  * @protected
  */
-const Property = {
+export const Property = {
   ELEMENT: 'element',
   MAP: 'map',
   OFFSET: 'offset',
