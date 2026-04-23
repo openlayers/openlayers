@@ -1,9 +1,9 @@
+import {assert} from 'chai';
 import {get as getProjection} from '../../../../../src/ol/proj.js';
 import {
   deserializeFrameState,
   serializeFrameState,
 } from '../../../../../src/ol/render/webgl/serialize.js';
-import expect from '../../../expect.js';
 
 describe('ol/render/webgl/serialize.js', function () {
   describe('serializeFrameState and deserializeFrameState', () => {
@@ -53,7 +53,7 @@ describe('ol/render/webgl/serialize.js', function () {
           ...frameStateWithoutUnsupportedProps
         } = frameState;
 
-        expect(roundTripResult).to.eql(frameStateWithoutUnsupportedProps);
+        assert.equal(roundTripResult, frameStateWithoutUnsupportedProps);
       });
       it('generates a cloneable object in between', () => {
         const serialized = serializeFrameState(frameState);

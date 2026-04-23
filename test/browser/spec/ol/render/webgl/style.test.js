@@ -1285,8 +1285,8 @@ describe('ol/render/webgl/style', () => {
           `!((a_geometryType == ${stringToGlsl('LineString')}) && operator_in_0(a_prop_type))`,
         );
         assertAttributeDescriptors(result.attributes, {
-          geometryType: {size: 1},
-          prop_type: {size: 1},
+          geometryType: {size: 3, callback: {}},
+          prop_type: {size: 3, callback: {}},
         });
       });
     });
@@ -1364,12 +1364,12 @@ describe('ol/render/webgl/style', () => {
       });
       it('returns attributes with their callbacks in the result', () => {
         assertAttributeDescriptors(parseResult.attributes, {
-          prop_iconSize: {size: 2},
-          prop_color: {size: 2},
-          prop_lineType: {size: 1},
-          prop_lineWidth: {size: 1},
-          prop_transparent: {size: 1},
-          prop_fillColor: {size: 2},
+          prop_iconSize: {size: 2, callback: {}},
+          prop_color: {size: 2, callback: {}},
+          prop_lineType: {size: 3, callback: {}},
+          prop_lineWidth: {size: 1, callback: {}},
+          prop_transparent: {size: 1, callback: {}},
+          prop_fillColor: {size: 2, callback: {}},
         });
       });
       it('processes the feature attributes according to their types', () => {

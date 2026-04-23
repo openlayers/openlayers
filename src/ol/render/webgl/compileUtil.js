@@ -95,6 +95,9 @@ export function getGlslSizeFromType(type) {
   if (type === NumberArrayType) {
     return 4;
   }
+  if (type === StringType) {
+    return 3;
+  }
   return 1;
 }
 
@@ -103,6 +106,9 @@ export function getGlslSizeFromType(type) {
  * @return {'float'|'vec2'|'vec3'|'vec4'} The corresponding GLSL type for this value
  */
 export function getGlslTypeFromType(type) {
+  if (type === StringType) {
+    return 'float'; // strings take 3 floats in the attributes but only the first is used in the shader
+  }
   const size = getGlslSizeFromType(type);
   if (size > 1) {
     return /** @type {'vec2'|'vec3'|'vec4'} */ (`vec${size}`);
@@ -217,9 +223,6 @@ export function generateAttributesFromContext(context) {
       }
       if (propType === BooleanType) {
         return value ? 1 : 0;
-      }
-      if (propType === StringType) {
-        return getStringNumberEquivalent(/** @type {string} */ (value));
       }
       return value;
     };

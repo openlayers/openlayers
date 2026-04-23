@@ -60,7 +60,7 @@ describe('ol/render/webgl/compileUtil', () => {
       assert.equal(getGlslSizeFromType(SizeType), 2);
       assert.equal(getGlslSizeFromType(NumberArrayType), 4);
       assert.equal(getGlslSizeFromType(NumberType), 1);
-      assert.equal(getGlslSizeFromType(StringType), 1);
+      assert.equal(getGlslSizeFromType(StringType), 3);
     });
   });
 
@@ -154,7 +154,7 @@ describe('ol/render/webgl/compileUtil', () => {
       assert.deepEqual(uniforms.u_var_anotherColorVar(), [0.2, 0.4, 0, 0.4]);
       assert.equal(uniforms.u_var_stringVar(), stringToGlsl('hello world'));
       assert.deepEqual(uniforms.u_var_arrayVar(), [1, 2, 3]);
-      assert.deepEqual(uniforms.u_var_booleanVar(), 1);
+      assert.equal(uniforms.u_var_booleanVar(), 1);
     });
   });
 
@@ -182,10 +182,10 @@ describe('ol/render/webgl/compileUtil', () => {
       assert.deepEqual(attributes.prop_colorProp.callback(feature), [255, 255]);
 
       assert.property(attributes, 'prop_stringProp');
-      assert.deepEqual(attributes.prop_stringProp.size, 1);
-      assert.equal(
+      assert.strictEqual(attributes.prop_stringProp.size, 3);
+      assert.strictEqual(
         attributes.prop_stringProp.callback(feature),
-        stringToGlsl('hello world'),
+        'hello world',
       );
 
       assert.property(attributes, 'prop_arrayProp');
