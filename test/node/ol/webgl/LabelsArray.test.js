@@ -12,28 +12,28 @@ describe('ol/webgl/LabelsArray.js', () => {
     it('returns the start position for each label pushed', () => {
       const pos1 = labelsArray.push('hello');
       const pos2 = labelsArray.push('world');
-      expect(pos1).to.eql([0, 5]);
-      expect(pos2).to.eql([5, 5]); // 'hello' is 5 bytes
+      assert.deepEqual(pos1, [0, 5]);
+      assert.deepEqual(pos2, [5, 5]); // 'hello' is 5 bytes
     });
 
     it('returns the same position when pushing a duplicate label', () => {
       labelsArray.push('foo bar');
       const pos1 = labelsArray.push('hello');
       const pos2 = labelsArray.push('hello');
-      expect(pos1).to.eql(pos2);
+      assert.deepEqual(pos1, pos2);
     });
 
     it('handles empty string by not changing the underlying array and returning a start position of 0', () => {
       labelsArray.push('hello world');
-      expect(labelsArray.push('')).to.eql([0, 0]);
-      expect(labelsArray.push('foo')).to.eql([11, 3]);
-      expect(labelsArray.push('bar')).to.eql([14, 3]);
+      assert.deepEqual(labelsArray.push(''), [0, 0]);
+      assert.deepEqual(labelsArray.push('foo'), [11, 3]);
+      assert.deepEqual(labelsArray.push('bar'), [14, 3]);
     });
 
     it('grows the internal array when capacity is exceeded', () => {
       labelsArray.push('a'.repeat(50_000));
       labelsArray.push('b'.repeat(50_001));
-      expect(labelsArray.getArray().length).to.be(200_000);
+      assert.equal(labelsArray.getArray().length, 200_000);
     });
 
     it('handles international characters with multiple subsequent UTF-8 chars', () => {
@@ -45,22 +45,28 @@ describe('ol/webgl/LabelsArray.js', () => {
       const pos6 = labelsArray.push('Привет');
 
       const array = labelsArray.getArray();
-      expect(array.slice(pos1[0], pos1[0] + pos1[1])).to.eql(
+      assert.deepEqual(
+        array.slice(pos1[0], pos1[0] + pos1[1]),
         new TextEncoder().encode('café'),
       );
-      expect(array.slice(pos2[0], pos2[0] + pos2[1])).to.eql(
+      assert.deepEqual(
+        array.slice(pos2[0], pos2[0] + pos2[1]),
         new TextEncoder().encode('Grüße'),
       );
-      expect(array.slice(pos3[0], pos3[0] + pos3[1])).to.eql(
+      assert.deepEqual(
+        array.slice(pos3[0], pos3[0] + pos3[1]),
         new TextEncoder().encode('你好'),
       );
-      expect(array.slice(pos4[0], pos4[0] + pos4[1])).to.eql(
+      assert.deepEqual(
+        array.slice(pos4[0], pos4[0] + pos4[1]),
         new TextEncoder().encode('こんにちは'),
       );
-      expect(array.slice(pos5[0], pos5[0] + pos5[1])).to.eql(
+      assert.deepEqual(
+        array.slice(pos5[0], pos5[0] + pos5[1]),
         new TextEncoder().encode('안녕하세요'),
       );
-      expect(array.slice(pos6[0], pos6[0] + pos6[1])).to.eql(
+      assert.deepEqual(
+        array.slice(pos6[0], pos6[0] + pos6[1]),
         new TextEncoder().encode('Привет'),
       );
     });
@@ -73,12 +79,12 @@ describe('ol/webgl/LabelsArray.js', () => {
       expect(labelsArray.getArray()).to.be.a(Uint8Array);
 
       const array = labelsArray.getArray();
-      expect(array[0]).to.be('f'.charCodeAt(0));
-      expect(array[1]).to.be('o'.charCodeAt(0));
-      expect(array[2]).to.be('o'.charCodeAt(0));
-      expect(array[3]).to.be('b'.charCodeAt(0));
-      expect(array[4]).to.be('a'.charCodeAt(0));
-      expect(array[5]).to.be('r'.charCodeAt(0));
+      assert.equal(array[0], 'f'.charCodeAt(0));
+      assert.equal(array[1], 'o'.charCodeAt(0));
+      assert.equal(array[2], 'o'.charCodeAt(0));
+      assert.equal(array[3], 'b'.charCodeAt(0));
+      assert.equal(array[4], 'a'.charCodeAt(0));
+      assert.equal(array[5], 'r'.charCodeAt(0));
     });
   });
 });
