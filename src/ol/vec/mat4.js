@@ -12,6 +12,30 @@ export function create() {
 }
 
 /**
+ * @param {Mat4} out Flattened 4x4 matrix being reset.
+ * @return {Mat4} Reset 4x4 matrix
+ */
+export function reset(out) {
+  out[0] = 1;
+  out[1] = 0;
+  out[2] = 0;
+  out[3] = 0;
+  out[4] = 0;
+  out[5] = 1;
+  out[6] = 0;
+  out[7] = 0;
+  out[8] = 0;
+  out[9] = 0;
+  out[10] = 1;
+  out[11] = 0;
+  out[12] = 0;
+  out[13] = 0;
+  out[14] = 0;
+  out[15] = 1;
+  return out;
+}
+
+/**
  * @param {Mat4} mat4 Flattened 4x4 matrix receiving the result.
  * @param {import("../transform.js").Transform} transform Transformation matrix.
  * @return {Mat4} "2D transformation matrix as flattened 4x4 matrix."
@@ -174,6 +198,59 @@ export function translation(x, y, z, out) {
   out[13] = y;
   out[14] = z;
   out[15] = 1;
+
+  return out;
+}
+
+/**
+ * Rotate a matrix around the Z axis, only affecting X and Y components.
+ *
+ * @param {Mat4} m the matrix to rotate
+ * @param {number} angle How much to rotate (in radians).
+ * @param {Mat4} [out] the receiving matrix
+ * @return {Mat4} out
+ */
+export function rotate(m, angle, out) {
+  out = out ?? create();
+  const cos = Math.cos(angle),
+    sin = Math.sin(angle);
+
+  // rotation matrix components
+  const a11 = cos;
+  const a12 = -sin;
+  const a21 = sin;
+  const a22 = cos;
+
+  const b11 = m[0];
+  const b12 = m[1];
+  const b13 = m[2];
+  const b14 = m[3];
+  const b21 = m[4];
+  const b22 = m[5];
+  const b23 = m[6];
+  const b24 = m[7];
+
+  out[0] = a11 * b11 + a12 * b21;
+  out[1] = a11 * b12 + a12 * b22;
+  out[2] = a11 * b13 + a12 * b23;
+  out[3] = a11 * b14 + a12 * b24;
+
+  out[4] = a21 * b11 + a22 * b21;
+  out[5] = a21 * b12 + a22 * b22;
+  out[6] = a21 * b13 + a22 * b23;
+  out[7] = a21 * b14 + a22 * b24;
+
+  if (out !== m) {
+    out[8] = m[8];
+    out[9] = m[9];
+    out[10] = m[10];
+    out[11] = m[11];
+
+    out[12] = m[12];
+    out[13] = m[13];
+    out[14] = m[14];
+    out[15] = m[15];
+  }
 
   return out;
 }
