@@ -374,10 +374,7 @@ export function convertLineStringRenderInstructionsToCanvasTextBuilder(
   styleFunction,
 ) {
   const customAttributesKeys = Object.keys(customAttributes);
-  const totalCustomAttributesSize = customAttributesKeys.reduce(
-    (prev, curr) => prev + customAttributes[curr].size,
-    0,
-  );
+  const totalCustomAttributesSize = getCustomAttributesSize(customAttributes);
   const instructionsPerVertex = 3; // x, y
   const sharedData = {};
 
@@ -447,10 +444,7 @@ export function convertPointRenderInstructionsToCanvasTextBuilder(
   styleFunction,
 ) {
   const customAttributesKeys = Object.keys(customAttributes);
-  const totalCustomAttributesSize = customAttributesKeys.reduce(
-    (prev, curr) => prev + customAttributes[curr].size,
-    0,
-  );
+  const totalCustomAttributesSize = getCustomAttributesSize(customAttributes);
   const instructionsPerVertex = 2; // x, y
   const sharedData = {};
 
