@@ -595,3 +595,9 @@ const map = new Map({
     zoom: 2,
   }),
 });
+
+// temp
+map.on('click', function (event) {
+  const feature = map.getFeaturesAtPixel(event.pixel)[0];
+  console.log(feature);
+});

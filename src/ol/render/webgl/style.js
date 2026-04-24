@@ -932,6 +932,7 @@ function parseTextProperties(style, builder, uniforms, context) {
  * @property {ShaderBuilder} builder Shader builder pre-configured according to a given style
  * @property {import("./VectorStyleRenderer.js").UniformDefinitions} uniforms Uniform definitions
  * @property {import("./VectorStyleRenderer.js").AttributeDefinitions} attributes Attribute definitions
+ * @property {import("../../style/flat.js").Rule} [sourceRule] Style and filter that was parsed (if any)
  */
 
 /**

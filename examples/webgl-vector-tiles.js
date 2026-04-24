@@ -586,6 +586,10 @@ const map = new Map({
           key,
       }),
       style,
+      // style: {
+      //   'stroke-width': 3,
+      //   'fill-color': 'rgba(0, 0, 255, 0.1)',
+      // },
     }),
   ],
   target: 'map',
