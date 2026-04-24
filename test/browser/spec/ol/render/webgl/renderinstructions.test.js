@@ -1,6 +1,9 @@
 import {spy as sinonSpy} from 'sinon';
 import Feature from '../../../../../../src/ol/Feature.js';
-import {UNDEFINED_PROP_VALUE} from '../../../../../../src/ol/expr/gpu.js';
+import {
+  getStringNumberEquivalent,
+  UNDEFINED_PROP_VALUE,
+} from '../../../../../../src/ol/expr/gpu.js';
 import LineString from '../../../../../../src/ol/geom/LineString.js';
 import Point from '../../../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../../../src/ol/geom/Polygon.js';
@@ -14,6 +17,7 @@ import {
   compose as composeTransform,
   create as createTransform,
 } from '../../../../../../src/ol/transform.js';
+import LabelsArray from '../../../../../../src/ol/webgl/LabelsArray.js';
 
 const SAMPLE_FRAMESTATE = {
   viewState: {
@@ -53,6 +57,13 @@ describe('Render instructions utilities', function () {
           return feature.get('test2');
         },
       },
+      {
+        name: 'testLabel',
+        size: 3,
+        callback: function (feature) {
+          return feature.get('test4');
+        },
+      },
     ];
 
     mixedBatch = new MixedGeometryBatch();
@@ -61,17 +72,20 @@ describe('Render instructions utilities', function () {
         test: 1000,
         test2: [22, 33, 44],
         test3: null,
+        test4: 'hello world',
         geometry: new Point([10, 20]),
       }),
       new Feature({
         test: 2000,
         test2: [44, 55, 66],
         test3: 3,
+        test4: 'hello world',
         geometry: new Point([30, 40]),
       }),
       new Feature({
         test: 3000,
         test2: [66, 77, 88],
+        test4: 'foo',
         geometry: new Polygon([
           [
             [10, 10],
@@ -85,6 +99,7 @@ describe('Render instructions utilities', function () {
       new Feature({
         test: 4000,
         test2: [88, 99, 0],
+        test4: 'bar',
         geometry: new LineString(
           [
             [100, 200, 1],
@@ -99,19 +114,45 @@ describe('Render instructions utilities', function () {
 
   let renderInstructions;
 
+  let labelsArray;
+
+  beforeEach(() => {
+    labelsArray = new LabelsArray();
+    sinonSpy(labelsArray, 'push');
+  });
+
   describe('generatePointRenderInstructions', function () {
     beforeEach(function () {
       renderInstructions = generatePointRenderInstructions(
         mixedBatch.pointBatch,
         new Float32Array(0),
+        labelsArray,
         customAttributes,
         SAMPLE_TRANSFORM,
       );
     });
     it('generates render instructions', function () {
       expect(Array.from(renderInstructions)).to.eql([
-        2, 2, 1000, 22, 33, 44, 6, 6, 2000, 44, 55, 66,
+        2,
+        2,
+        1000,
+        22,
+        33,
+        44,
+        getStringNumberEquivalent('hello world'),
+        0,
+        11,
+        6,
+        6,
+        2000,
+        44,
+        55,
+        66,
+        getStringNumberEquivalent('hello world'),
+        0,
+        11,
       ]);
+      expect(labelsArray.push.calledWith('hello world')).to.be(true);
     });
   });
 
@@ -120,15 +161,56 @@ describe('Render instructions utilities', function () {
       renderInstructions = generateLineStringRenderInstructions(
         mixedBatch.lineStringBatch,
         new Float32Array(0),
+        labelsArray,
         customAttributes,
         SAMPLE_TRANSFORM,
       );
     });
     it('generates render instructions', function () {
       expect(Array.from(renderInstructions)).to.eql([
-        3000, 66, 77, 88, 5, 2, 0, 0, 4, 0, 0, 6, 2, 0, 4, 6, 0, 2, 0, 0, 4000,
-        88, 99, 0, 3, 20, 38, 1, 60, 78, 2, 100, 118, 3,
+        3000,
+        66,
+        77,
+        88,
+        getStringNumberEquivalent('foo'),
+        0,
+        3,
+        5,
+        2,
+        0,
+        0,
+        4,
+        0,
+        0,
+        6,
+        2,
+        0,
+        4,
+        6,
+        0,
+        2,
+        0,
+        0,
+        4000,
+        88,
+        99,
+        0,
+        getStringNumberEquivalent('bar'),
+        3,
+        3,
+        3,
+        20,
+        38,
+        1,
+        60,
+        78,
+        2,
+        100,
+        118,
+        3,
       ]);
+      expect(labelsArray.push.calledWith('foo')).to.be(true);
+      expect(labelsArray.push.calledWith('bar')).to.be(true);
     });
   });
 
@@ -137,14 +219,34 @@ describe('Render instructions utilities', function () {
       renderInstructions = generatePolygonRenderInstructions(
         mixedBatch.polygonBatch,
         new Float32Array(0),
+        labelsArray,
         customAttributes,
         SAMPLE_TRANSFORM,
       );
     });
     it('generates render instructions', function () {
       expect(Array.from(renderInstructions)).to.eql([
-        3000, 66, 77, 88, 1, 5, 2, 0, 4, 0, 6, 2, 4, 6, 2, 0,
+        3000,
+        66,
+        77,
+        88,
+        getStringNumberEquivalent('foo'),
+        0,
+        3,
+        1,
+        5,
+        2,
+        0,
+        4,
+        0,
+        6,
+        2,
+        4,
+        6,
+        2,
+        0,
       ]);
+      expect(labelsArray.push.calledWith('foo')).to.be(true);
     });
   });
 
@@ -153,6 +255,7 @@ describe('Render instructions utilities', function () {
       renderInstructions = generatePointRenderInstructions(
         mixedBatch.pointBatch,
         new Float32Array(0),
+        labelsArray,
         [
           {
             name: 'test',
@@ -177,6 +280,7 @@ describe('Render instructions utilities', function () {
       renderInstructions = generatePointRenderInstructions(
         mixedBatch.pointBatch,
         new Float32Array(0),
+        labelsArray,
         [
           {
             name: 'test',
@@ -197,6 +301,7 @@ describe('Render instructions utilities', function () {
       renderInstructions = generatePointRenderInstructions(
         mixedBatch.pointBatch,
         new Float32Array(0),
+        labelsArray,
         [
           {
             name: 'test',
@@ -210,6 +315,27 @@ describe('Render instructions utilities', function () {
       );
 
       expect(Array.from(renderInstructions)).to.eql([2, 2, 0, 6, 6, 3]);
+    });
+    it('fills missing items in a array with UNDEFINED_PROP_VALUE', () => {
+      renderInstructions = generatePointRenderInstructions(
+        mixedBatch.pointBatch,
+        new Float32Array(0),
+        labelsArray,
+        [
+          {
+            name: 'testArray',
+            size: 4,
+            callback: function () {
+              return [1, 2];
+            },
+          },
+        ],
+        SAMPLE_TRANSFORM,
+      );
+
+      expect(Array.from(renderInstructions)).to.eql([
+        2, 2, 1, 2, -9999999, -9999999, 6, 6, 1, 2, -9999999, -9999999,
+      ]);
     });
 
     describe('an attribute value conflicts with UNDEFINED_PROP_VALUE', () => {
@@ -236,6 +362,7 @@ describe('Render instructions utilities', function () {
         renderInstructions = generatePointRenderInstructions(
           mixedBatch.pointBatch,
           new Float32Array(0),
+          labelsArray,
           [
             {
               name: 'test',
