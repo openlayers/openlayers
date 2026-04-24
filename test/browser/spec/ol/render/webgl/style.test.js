@@ -127,7 +127,7 @@ describe('ol/render/webgl/style', () => {
       expect(result.builder.fragmentDiscardExpression_).to.eql(null);
     });
 
-    it('correctly adds string variables to the string literals mapping', () => {
+    it('correctly adds string variables with a callback that returns their string value', () => {
       const varName = 'mySize';
       const uniformName = uniformNameForVariable(varName);
 
@@ -149,7 +149,7 @@ describe('ol/render/webgl/style', () => {
         },
       );
 
-      expect(result.uniforms[uniformName]()).to.be.greaterThan(0);
+      expect(result.uniforms[uniformName]()).to.be('abcdef');
     });
 
     describe('circle style', () => {
@@ -1199,8 +1199,8 @@ describe('ol/render/webgl/style', () => {
           `!((a_geometryType == ${stringToGlsl('LineString')}) && operator_in_0(a_prop_type))`,
         );
         expect(result.attributes).to.eql({
-          geometryType: {size: 1, callback: {}},
-          prop_type: {size: 1, callback: {}},
+          geometryType: {size: 3, callback: {}},
+          prop_type: {size: 3, callback: {}},
         });
       });
     });
@@ -1280,7 +1280,7 @@ describe('ol/render/webgl/style', () => {
         expect(parseResult.attributes).to.eql({
           prop_iconSize: {size: 2, callback: {}},
           prop_color: {size: 2, callback: {}},
-          prop_lineType: {size: 1, callback: {}},
+          prop_lineType: {size: 3, callback: {}},
           prop_lineWidth: {size: 1, callback: {}},
           prop_transparent: {size: 1, callback: {}},
           prop_fillColor: {size: 2, callback: {}},
@@ -1302,9 +1302,9 @@ describe('ol/render/webgl/style', () => {
         expect(parseResult.attributes['prop_color'].callback(feature)).to.eql(
           packColor(asArray('pink')),
         );
-        expect(
-          parseResult.attributes['prop_lineType'].callback(feature),
-        ).to.be.a('number');
+        expect(parseResult.attributes['prop_lineType'].callback(feature)).to.be(
+          'low',
+        );
         expect(
           parseResult.attributes['prop_lineWidth'].callback(feature),
         ).to.eql(0.5);
@@ -1376,7 +1376,7 @@ describe('ol/render/webgl/style', () => {
         expect(parseResult.uniforms['u_var_color']()).to.eql([
           1, 0.7529411764705882, 0.796078431372549, 1,
         ]);
-        expect(parseResult.uniforms['u_var_lineType']()).to.be.a('number');
+        expect(parseResult.uniforms['u_var_lineType']()).to.be('low');
         expect(parseResult.uniforms['u_var_lineWidth']()).to.eql(0.5);
         expect(parseResult.uniforms['u_var_fillColor']()).to.eql([
           0.2, 0.6, 0.4, 0.3,
@@ -1423,7 +1423,7 @@ describe('ol/render/webgl/style', () => {
       it('returns attributes with their callbacks in the result', () => {
         expect(parseResult.attributes).to.eql({
           featureId: {size: 1, callback: {}},
-          geometryType: {size: 1, callback: {}},
+          geometryType: {size: 3, callback: {}},
         });
       });
       it('processes the feature geometry properly', () => {
@@ -1444,6 +1444,46 @@ describe('ol/render/webgl/style', () => {
         expect(callback(feature)).to.eql(stringToGlsl('1234'));
         feature.setId(101);
         expect(callback(feature)).to.eql(101);
+      });
+    });
+
+    describe('pick up variables and properties in text properties', () => {
+      let parseResult;
+      beforeEach(() => {
+        parseResult = parseLiteralStyle({
+          'circle-radius': 4,
+          'circle-fill-color': 'orange',
+          'text-value': ['concat', 'label:', ['get', 'label']],
+          'text-font': 'bold 100px sans-serif',
+          'text-baseline': 'top',
+          'text-offset-y': ['get', 'offset_y'],
+          'text-stroke-width': 4,
+          'text-stroke-color': 'black',
+          'text-fill-color': ['var', 'textColor'],
+        });
+      });
+      it('adds attributes and uniforms to the shader builder', () => {
+        expect(parseResult.builder.uniforms_).to.eql([
+          {name: 'u_var_textColor', type: 'vec4'},
+        ]);
+      });
+      it('returns attributes and uniforms in the result', () => {
+        expect(parseResult.builder.attributes_).to.eql([
+          {
+            name: 'a_prop_label',
+            type: 'float',
+            varyingName: 'v_prop_label',
+            varyingType: 'float',
+            varyingExpression: 'a_prop_label',
+          },
+          {
+            name: 'a_prop_offset_y',
+            type: 'float',
+            varyingName: 'v_prop_offset_y',
+            varyingType: 'float',
+            varyingExpression: 'a_prop_offset_y',
+          },
+        ]);
       });
     });
   });
@@ -1482,9 +1522,10 @@ describe('ol/render/webgl/style', () => {
         ],
       });
 
-      expect(result.attributes.prop_foo.callback({get: () => 'green'})).to.be.a(
-        'number',
+      expect(result.attributes.prop_foo.callback({get: () => 'green'})).to.be(
+        'green',
       );
+      expect(result.attributes.prop_foo.size).to.be(3);
     });
   });
 
