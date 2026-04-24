@@ -1205,16 +1205,22 @@ class Executor {
           if (lineOffsetPx) {
             const isClosedRing =
               /** @type {boolean|undefined} */ (instruction[4]) ?? false;
+            const isClosedLine =
+              isClosedRing ||
+              (Math.abs(pixelCoordinates[d] - pixelCoordinates[dd - 2]) <
+                1e-6 &&
+                Math.abs(pixelCoordinates[d + 1] - pixelCoordinates[dd - 1]) <
+                  1e-6);
             offsetLineString(
               pixelCoordinates,
               d,
               dd,
               2,
               lineOffsetPx,
-              isClosedRing,
+              isClosedLine,
               offsetCoords,
             );
-            removeOffsetCycles(offsetCoords, 2);
+            removeOffsetCycles(offsetCoords, 2, isClosedLine);
             lineCoords = offsetCoords;
             lineStart = 0;
             lineEnd = lineCoords.length;

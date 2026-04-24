@@ -183,11 +183,18 @@ function offsetLineVertex(x, y, prevX, prevY, nextX, nextY, offset) {
  *
  * @param {Array<number>} coords Flat offset coordinates (modified in-place).
  * @param {number} stride Coordinate stride (typically 2).
+ * @param {boolean} [closedLine] Whether the original line is closed (first vertex === last vertex).
+ *   When true, the first and last offset segments are not compared against each other to avoid
+ *   false loop detection at the closure point.
  * @return {Array<number>} The cleaned coordinate array.
  */
-export function removeOffsetCycles(coords, stride) {
+export function removeOffsetCycles(coords, stride, closedLine = false) {
   for (let i = 0, ii = coords.length - 2; i < ii; i += stride) {
-    for (let j = coords.length - 2 * stride; j > i + stride; j -= stride) {
+    const jMax =
+      closedLine && i === 0
+        ? coords.length - 3 * stride
+        : coords.length - 2 * stride;
+    for (let j = jMax; j > i + stride; j -= stride) {
       const p1x = coords[i];
       const p1y = coords[i + 1];
       const p2x = coords[i + stride];
