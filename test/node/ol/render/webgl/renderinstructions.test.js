@@ -1,23 +1,24 @@
+import expect from 'expect.js';
 import {spy as sinonSpy} from 'sinon';
-import Feature from '../../../../../../src/ol/Feature.js';
+import Feature from '../../../../../src/ol/Feature.js';
 import {
   getStringNumberEquivalent,
   UNDEFINED_PROP_VALUE,
-} from '../../../../../../src/ol/expr/gpu.js';
-import LineString from '../../../../../../src/ol/geom/LineString.js';
-import Point from '../../../../../../src/ol/geom/Point.js';
-import Polygon from '../../../../../../src/ol/geom/Polygon.js';
-import MixedGeometryBatch from '../../../../../../src/ol/render/webgl/MixedGeometryBatch.js';
+} from '../../../../../src/ol/expr/gpu.js';
+import LineString from '../../../../../src/ol/geom/LineString.js';
+import Point from '../../../../../src/ol/geom/Point.js';
+import Polygon from '../../../../../src/ol/geom/Polygon.js';
+import MixedGeometryBatch from '../../../../../src/ol/render/webgl/MixedGeometryBatch.js';
 import {
   generateLineStringRenderInstructions,
   generatePointRenderInstructions,
   generatePolygonRenderInstructions,
-} from '../../../../../../src/ol/render/webgl/renderinstructions.js';
+} from '../../../../../src/ol/render/webgl/renderinstructions.js';
 import {
   compose as composeTransform,
   create as createTransform,
-} from '../../../../../../src/ol/transform.js';
-import LabelsArray from '../../../../../../src/ol/webgl/LabelsArray.js';
+} from '../../../../../src/ol/transform.js';
+import LabelsArray from '../../../../../src/ol/webgl/LabelsArray.js';
 
 const SAMPLE_FRAMESTATE = {
   viewState: {
@@ -38,7 +39,7 @@ const SAMPLE_TRANSFORM = composeTransform(
   -SAMPLE_FRAMESTATE.viewState.center[1],
 );
 
-describe('Render instructions utilities', function () {
+describe('ol/render/webgl/renderinstructions.js', function () {
   let mixedBatch, customAttributes;
 
   beforeEach(function () {
@@ -343,7 +344,7 @@ describe('Render instructions utilities', function () {
       beforeEach(() => {
         originalConsole = console;
         consoleSpy = sinonSpy();
-        window.console = {
+        global.console = {
           ...console,
           warn: consoleSpy,
         };
@@ -356,7 +357,7 @@ describe('Render instructions utilities', function () {
         ]);
       });
       afterEach(function () {
-        window.console = originalConsole;
+        global.console = originalConsole;
       });
       it('outputs a console warning', () => {
         renderInstructions = generatePointRenderInstructions(
