@@ -450,16 +450,21 @@ class CanvasImmediateRenderer extends VectorContext {
       this.pixelCoordinates_,
     );
     if (Math.abs(strokeOffset) > 0) {
+      const n = pixelCoordinates.length;
+      const isClosedLine =
+        close ||
+        (Math.abs(pixelCoordinates[0] - pixelCoordinates[n - 2]) < 1e-6 &&
+          Math.abs(pixelCoordinates[1] - pixelCoordinates[n - 1]) < 1e-6);
       pixelCoordinates = offsetLineString(
         pixelCoordinates,
         0,
-        pixelCoordinates.length,
+        n,
         2,
         strokeOffset,
-        close,
+        isClosedLine,
         pixelCoordinates,
       );
-      removeOffsetCycles(pixelCoordinates, 2);
+      removeOffsetCycles(pixelCoordinates, 2, isClosedLine);
     }
     context.moveTo(pixelCoordinates[0], pixelCoordinates[1]);
     let length = pixelCoordinates.length;
