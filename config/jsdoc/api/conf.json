@@ -17,6 +17,7 @@
     "jsdoc-plugin-intersection",
     "config/jsdoc/plugins/markdown.cjs",
     "jsdoc-plugin-typescript",
+    "config/jsdoc/plugins/strip-override-comments.cjs",
     "config/jsdoc/plugins/inline-options.cjs",
     "config/jsdoc/plugins/events.cjs",
     "config/jsdoc/plugins/observable.cjs",
