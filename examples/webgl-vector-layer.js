@@ -26,6 +26,16 @@ const style = [
       'fill-color': ['*', ['get', 'COLOR'], [255, 255, 255, 0.6]],
     },
   },
+  {
+    style: {
+      'text-value': ['coalesce', ['get', 'ECO_NAME'], 'unknown'],
+      'text-font': 'bold 12px "Open Sans", "Arial Unicode MS", sans-serif',
+      'text-fill-color': 'rgb(0,0,0)',
+      'text-stroke-color': 'rgba(255, 255, 255, 0.8)',
+      'text-stroke-width': 2,
+      'text-overflow': false,
+    },
+  },
 ];
 
 const osm = new TileLayer({

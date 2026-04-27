@@ -136,7 +136,6 @@ class WebGLPostProcessingPass {
     this.depthBuffer_ = gl.createRenderbuffer();
 
     // compile the program for the frame buffer
-    // TODO: make compilation errors show up
     const vertexShader = gl.createShader(gl.VERTEX_SHADER);
     gl.shaderSource(
       vertexShader,
@@ -149,6 +148,12 @@ class WebGLPostProcessingPass {
       options.fragmentShader || DEFAULT_FRAGMENT_SHADER,
     );
     gl.compileShader(fragmentShader);
+    if (!gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS)) {
+      const message = `Fragment shader compilation failed: ${gl.getShaderInfoLog(
+        fragmentShader,
+      )}`;
+      throw new Error(message);
+    }
     /**
      * @private
      */
@@ -451,6 +456,9 @@ class WebGLPostProcessingPass {
               value[2],
               value[3],
             );
+            return;
+          case 16:
+            gl.uniformMatrix4fv(uniform.location, false, value);
             return;
           default:
             return;
