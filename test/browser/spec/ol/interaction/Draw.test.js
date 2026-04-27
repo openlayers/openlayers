@@ -1682,7 +1682,7 @@ describe('ol/interaction/Draw', function () {
   describe('#getFreehand()', function () {
     it('returns the freehand mode', function () {
       const draw = new Draw({type: 'LineString'});
-      expect(draw.getFreehand()).to.eql(draw.freehand_);
+      expect(draw.getFreehand()).to.eql(draw.freehandMode_);
     });
   });
 
