@@ -7,10 +7,10 @@ import CollectionEventType from '../CollectionEventType.js';
 import ObjectEventType from '../ObjectEventType.js';
 import {extend} from '../array.js';
 import {assert} from '../asserts.js';
-import {listen, unlistenByKey} from '../events.js';
 import Event from '../events/Event.js';
 import EventType from '../events/EventType.js';
-import {containsExtent, equals, wrapAndSliceX} from '../extent.js';
+import {listen, unlistenByKey} from '../events.js';
+import {containsExtent, getDifference, wrapAndSliceX} from '../extent.js';
 import {xhr} from '../featureloader.js';
 import {TRUE, VOID} from '../functions.js';
 import {all as allStrategy} from '../loadingstrategy.js';
@@ -1062,20 +1062,28 @@ class VectorSource extends Source {
   }
 
   /**
-   * Remove an extent from the list of loaded extents.
-   * @param {import("../extent.js").Extent} extent Extent.
+   * Marks an extent as not loaded, preserving any loaded areas outside it.
+   *
+   * Any previously loaded extent overlapping the given extent is split into its
+   * remaining non-overlapping parts using {@link module:ol/extent~getDifference getDifference()},
+   * which are then re-inserted into the tree.
+   *
+   * @param {import("../extent.js").Extent} extent Extent to mark as not loaded.
    * @api
    */
   removeLoadedExtent(extent) {
     const loadedExtentsRtree = this.loadedExtentsRtree_;
-    const obj = loadedExtentsRtree.forEachInExtent(extent, function (object) {
-      if (equals(object.extent, extent)) {
-        return object;
+    const intersectingExtents = [];
+    loadedExtentsRtree.forEachInExtent(extent, function (object) {
+      intersectingExtents.push(object);
+    });
+    intersectingExtents.forEach((intersectingExtent) => {
+      loadedExtentsRtree.remove(intersectingExtent);
+      const remainders = getDifference(intersectingExtent.extent, extent);
+      for (const remainder of remainders) {
+        loadedExtentsRtree.insert(remainder, {extent: remainder});
       }
     });
-    if (obj) {
-      loadedExtentsRtree.remove(obj);
-    }
   }
 
   /**

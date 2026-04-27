@@ -1,8 +1,8 @@
 import proj4 from 'proj4';
 import {spy as sinonSpy} from 'sinon';
 import * as _ol_extent_ from '../../../src/ol/extent.js';
-import {get, getTransform} from '../../../src/ol/proj.js';
 import {register} from '../../../src/ol/proj/proj4.js';
+import {get, getTransform} from '../../../src/ol/proj.js';
 import expect from '../expect.js';
 
 describe('ol/extent.js', function () {
@@ -1046,6 +1046,60 @@ describe('ol/extent.js', function () {
       expect(
         _ol_extent_.wrapAndSliceX([-198, 48, Infinity, 49], projection),
       ).to.eql([[-180, 48, 180, 49]]);
+    });
+  });
+
+  describe('getDifference', function () {
+    it('returns a copy of extent1 when the extents do not intersect', function () {
+      const extent1 = [0, 0, 10, 10];
+      const extent2 = [20, 20, 30, 30];
+      const result = _ol_extent_.getDifference(extent1, extent2);
+      expect(result.length).to.be(1);
+      expect(result[0]).to.eql(extent1);
+      expect(result[0]).not.to.be(extent1);
+    });
+
+    it('returns an empty array when extent2 contains extent1', function () {
+      const extent1 = [5, 5, 15, 15];
+      const extent2 = [0, 0, 20, 20];
+      const result = _ol_extent_.getDifference(extent1, extent2);
+      expect(result).to.eql([]);
+    });
+
+    it('returns one strip when extent2 overlaps a single side', function () {
+      const extent1 = [0, 0, 10, 10];
+      const extent2 = [5, 0, 20, 10];
+      const result = _ol_extent_.getDifference(extent1, extent2);
+      expect(result.length).to.be(1);
+      expect(result[0]).to.eql([0, 0, 5, 10]);
+    });
+
+    it('returns two strips when extent2 overlaps a corner', function () {
+      const extent1 = [0, 0, 10, 10];
+      const extent2 = [5, 5, 20, 20];
+      const result = _ol_extent_.getDifference(extent1, extent2);
+      expect(result.length).to.be(2);
+      expect(result[0]).to.eql([0, 0, 5, 10]); // left strip
+      expect(result[1]).to.eql([5, 0, 10, 5]); // bottom strip
+    });
+
+    it('returns four strips when extent2 lies inside extent1', function () {
+      const extent1 = [0, 0, 10, 10];
+      const extent2 = [3, 3, 7, 7];
+      const result = _ol_extent_.getDifference(extent1, extent2);
+      expect(result.length).to.be(4);
+      expect(result[0]).to.eql([0, 0, 3, 10]); // left strip
+      expect(result[1]).to.eql([7, 0, 10, 10]); // right strip
+      expect(result[2]).to.eql([3, 0, 7, 3]); // bottom strip
+      expect(result[3]).to.eql([3, 7, 7, 10]); // top strip
+    });
+
+    it('returns extent1 unchanged when extent2 only touches an edge', function () {
+      const extent1 = [0, 0, 10, 10];
+      const extent2 = [10, 0, 20, 10];
+      const result = _ol_extent_.getDifference(extent1, extent2);
+      expect(result.length).to.be(1);
+      expect(result[0]).to.eql([0, 0, 10, 10]);
     });
   });
 });
