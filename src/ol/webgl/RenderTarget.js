@@ -129,14 +129,6 @@ class WebGLRenderTarget {
    * @return {Uint8Array} Integer array with one color value (4 components)
    */
   readPixel(x, y) {
-    if (x < 0 || y < 0 || x > this.size_[0] || y >= this.size_[1]) {
-      tmpArray4[0] = 0;
-      tmpArray4[1] = 0;
-      tmpArray4[2] = 0;
-      tmpArray4[3] = 0;
-      return tmpArray4;
-    }
-
     this.readAll();
     const index =
       Math.floor(x) + (this.size_[1] - Math.floor(y) - 1) * this.size_[0];
