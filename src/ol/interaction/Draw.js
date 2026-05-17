@@ -551,13 +551,13 @@ class Draw extends PointerInteraction {
      * @type {import("../events/condition.js").Condition}
      */
     this.freehandCondition_;
-    if (options.freehand) {
-      this.freehandCondition_ = always;
-    } else {
-      this.freehandCondition_ = options.freehandCondition
-        ? options.freehandCondition
-        : shiftKeyOnly;
-    }
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.freehandMode_;
+    this.setFreehand(options.freehand ?? false);
 
     /**
      * @type {import("../events/condition.js").Condition}
@@ -618,8 +618,8 @@ class Draw extends PointerInteraction {
    * @api
    */
   setFreehand(freehand) {
-    this.freehand_ = freehand;
-    if (this.freehand_) {
+    this.freehandMode_ = freehand;
+    if (freehand) {
       this.freehandCondition_ = always;
     } else {
       this.freehandCondition_ =
@@ -644,7 +644,7 @@ class Draw extends PointerInteraction {
    * @api
    */
   getFreehand() {
-    return this.freehand_;
+    return this.freehandMode_;
   }
 
   /**
