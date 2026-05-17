@@ -162,6 +162,33 @@ export async function fromProjectionCode(code) {
 }
 
 /**
+ * @param {*} def Projection definition.
+ * @return {Projection} The projection.
+ */
+export function fromProjectionDefinition(def) {
+  const proj4 = registered;
+  if (!proj4) {
+    throw new Error('Proj4 must be registered first with register(proj4)');
+  }
+  // Fallback code is the whole def...
+  let code = JSON.stringify(def);
+  proj4.defs(code, def);
+  const proj4Def = proj4.defs(code);
+  if (proj4Def.title) {
+    // ...but use authority:code if available
+    proj4.defs(code, null);
+    code = proj4Def.title;
+    const projection = getCachedProjection(code);
+    if (projection) {
+      return projection;
+    }
+    proj4.defs(code, def);
+  }
+  register(proj4);
+  return getCachedProjection(code);
+}
+
+/**
  * @param {number} code The EPSG code.
  * @return {Promise<string>} The proj4 or WKT definition.
  * @deprecated Use {@link module:ol/proj/proj4.projLookup} instead.
