@@ -1,0 +1,21 @@
+---
+layout: example.html
+title: Deferred view fitting
+shortdesc: This example demonstrates how deferred fit works.
+docs: >
+  This example demonstrates calling <code>fit()</code> before a map has a physical
+  size on screen. Part of the demonstration is how you can use the <code>Promise</code>
+  returned by <code>fit</code> to know when the view has been adjusted.
+  </p>
+tags: "fit"
+---
+<div class="mapcontainer">
+  <div id="map" class="map"></div>
+  <div class="padding-top"></div>
+  <div class="padding-left"></div>
+  <div class="padding-right"></div>
+  <div class="padding-bottom"></div>
+  <div class="center"></div>
+</div>
+<button id="setmaptarget">Set map target</button> (the map is rendered in the DOM and the view is fit).<br/>
+<div id="fitmessage" style="color: #040"></div>
