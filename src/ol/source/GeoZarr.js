@@ -6,6 +6,7 @@ import {FetchStore, get, open, slice, withRangeCoalescing} from 'zarrita';
 import {warn} from '../console.js';
 import {getCenter} from '../extent.js';
 import {get as getProjection, toUserCoordinate, toUserExtent} from '../proj.js';
+import {fromProjectionDefinition} from '../proj/proj4.js';
 import {toSize} from '../size.js';
 import WMTSTileGrid from '../tilegrid/WMTS.js';
 import DataTileSource from './DataTile.js';
@@ -297,7 +298,7 @@ export default class GeoZarr extends DataTileSource {
         const extent = attributes['spatial:bbox'];
         const resolution = (extent[2] - extent[0]) / shape[1];
         if (!this.projection) {
-          this.projection = getProjection(attributes['proj:code']);
+          this.projection = getProjectionFromAttributes(attributes);
         }
         if (consolidatedMetadata) {
           this.bandsByLevel_ = {level0: []};
@@ -582,7 +583,9 @@ function createCachedStore(store, groupBytes, consolidatedMetadata) {
  *   zarr_conventions: Array<{uuid: string}>,
  *   'spatial:bbox': import("../extent.js").Extent,
  *   'spatial:shape': Array<number>,
- *   'proj:code': string,
+ *   'proj:wkt2'?: string,
+ *   'proj:projjson'?: Object,
+ *   'proj:code'?: string | null,
  * }} DatasetAttributes
  */
 
@@ -702,7 +705,7 @@ function getTileGridInfoFromAttributes(
 ) {
   const multiscales = attributes.multiscales;
   const extent = attributes['spatial:bbox'];
-  const projection = getProjection(attributes['proj:code']);
+  const projection = getProjectionFromAttributes(attributes);
   const extentWidth = extent[2] - extent[0];
   const origin = [extent[0], extent[3]];
   /** @type {Array<{matrixId: string, resolution: number, origin: import("../coordinate.js").Coordinate, tileSize: import("../size.js").Size|undefined}>} */
@@ -907,4 +910,17 @@ function composeData(
     }
   }
   return tileData;
+}
+
+/**
+ * @param {DatasetAttributes} attributes Attriutes.
+ * @return {import("../proj/Projection.js").default} The projection.
+ */
+function getProjectionFromAttributes(attributes) {
+  const projCode = attributes['proj:code'];
+  if (projCode) {
+    return getProjection(projCode);
+  }
+  const projDef = attributes['proj:projjson'] || attributes['proj:wkt2'];
+  return fromProjectionDefinition(projDef);
 }
