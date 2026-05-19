@@ -15,6 +15,7 @@ import {
 import MixedGeometryBatch from '../../render/webgl/MixedGeometryBatch.js';
 import VectorStyleRenderer from '../../render/webgl/VectorStyleRenderer.js';
 import {colorDecodeId} from '../../render/webgl/encodeUtil.js';
+import {createPostProcessDefinition} from '../../render/webgl/textUtil.js';
 import VectorEventType from '../../source/VectorEventType.js';
 import {
   apply as applyTransform,
@@ -32,6 +33,8 @@ export const Uniforms = {
   ...VectorUniforms,
   RENDER_EXTENT: 'u_renderExtent', // intersection of layer, source, and view extent
   GLOBAL_ALPHA: 'u_globalAlpha',
+  TEXT_OVERLAY_TEXTURE: 'u_textOverlay',
+  TEXT_OVERLAY_MATRIX: 'u_textOverlayMatrix',
 };
 
 /**
@@ -83,7 +86,13 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
 
     super(layer, {
       uniforms: uniforms,
-      postProcesses: options.postProcesses,
+      postProcesses: [
+        createPostProcessDefinition(
+          () => this.styleRenderer_.getTextOverlayCanvas(),
+          () => this.styleRenderer_.getTextOverlayFrameState(),
+        ),
+        ...(options.postProcesses ?? []),
+      ],
     });
 
     /**
@@ -147,8 +156,6 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
      */
     this.buffers_ = null;
 
-    this.applyOptions_(options);
-
     /**
      * @private
      */
@@ -165,6 +172,8 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
      * @type {Array<import("../../events.js").EventsKey|null>}
      */
     this.sourceListenKeys_ = null;
+
+    this.applyOptions_(options);
   }
 
   /**
@@ -181,7 +190,8 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
         frameState.viewState.projection,
       );
     }
-    this.batch_.addFeatures(source.getFeatures(), projectionTransform);
+    const features = source.getFeatures();
+    this.batch_.addFeatures(features, projectionTransform);
     this.sourceListenKeys_ = [
       listen(
         source,
@@ -326,6 +336,9 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     // draw the normal canvas
     this.helper.prepareDraw(frameState);
     this.renderWorlds(frameState, false, startWorld, endWorld, worldWidth);
+
+    this.styleRenderer_.finalizeTextRender(frameState);
+
     this.helper.finalizeDraw(
       frameState,
       this.dispatchPreComposeEvent,
@@ -519,6 +532,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     if (buffers.polygonBuffers) {
       disposeBuffersOfType(buffers.polygonBuffers);
     }
+    this.styleRenderer_.disposeTextInstructions(buffers.textInstructionsKey);
   }
 
   /**
@@ -534,6 +548,9 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
         unlistenByKey(key);
       });
       this.sourceListenKeys_ = null;
+    }
+    if (this.styleRenderer_) {
+      this.styleRenderer_.dispose();
     }
     super.disposeInternal();
   }
