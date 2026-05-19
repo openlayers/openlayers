@@ -6,6 +6,7 @@ import {ShaderBuilder} from '../../render/webgl/ShaderBuilder.js';
 import VectorStyleRenderer, {
   convertStyleToShaders,
 } from '../../render/webgl/VectorStyleRenderer.js';
+import {createPostProcessDefinition} from '../../render/webgl/textUtil.js';
 import {
   create as createTransform,
   makeInverse as makeInverseTransform,
@@ -73,6 +74,12 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
         [Uniforms.TILE_MASK_TEXTURE]: () => this.tileMaskTarget_.getTexture(),
         [Uniforms.ONE]: 1,
       },
+      postProcesses: [
+        createPostProcessDefinition(
+          () => this.styleRenderer_.getTextOverlayCanvas(),
+          () => this.styleRenderer_.getTextOverlayFrameState(),
+        ),
+      ],
     });
 
     /**
@@ -137,6 +144,12 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
      * @private
      */
     this.tileMaskProgram_;
+
+    /**
+     * @type {Array<string>}
+     * @private
+     */
+    this.tilesToRender_ = [];
 
     this.applyOptions_(options);
   }
@@ -245,6 +258,7 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
       frameState,
       this.currentFrameStateTransform_,
     );
+    this.tilesToRender_.length = 0;
   }
 
   /**
@@ -266,6 +280,13 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     );
     this.helper.useProgram(this.tileMaskProgram_, frameState);
     return true;
+  }
+
+  /**
+   * @override
+   */
+  beforeFinalize(frameState) {
+    this.styleRenderer_.finalizeTextRender(frameState); //TODO use this to trigger a rerender
   }
 
   /**
@@ -368,6 +389,16 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
         frameState,
       );
     });
+    this.tilesToRender_.push(tileRepresentation.tile.getKey());
+  }
+
+  /**
+   * @override
+   */
+  beforeTileDispose(tileRepresentation) {
+    this.tilesToRender_.slice(
+      this.tilesToRender_.indexOf(tileRepresentation.tile.getKey()),
+    );
   }
 
   /**

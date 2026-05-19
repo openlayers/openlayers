@@ -69,10 +69,11 @@ function always(context) {
  * and pass a more complete evaluation context (variables, zoom, time, etc.).
  *
  * @param {Array<import('../../style/flat.js').Rule>} rules The rules.
+ * @param {ParsingContext} [parsingContext] Optional parsing context; will create a new one if not provided
  * @return {import('../../style/Style.js').StyleFunction} A style function.
  */
-export function rulesToStyleFunction(rules) {
-  const parsingContext = newParsingContext();
+export function rulesToStyleFunction(rules, parsingContext) {
+  parsingContext = parsingContext ?? newParsingContext();
   const evaluator = buildRuleSet(rules, parsingContext);
   const evaluationContext = newEvaluationContext();
   return function (feature, resolution) {
@@ -101,10 +102,11 @@ export function rulesToStyleFunction(rules) {
  * and pass a more complete evaluation context (variables, zoom, time, etc.).
  *
  * @param {Array<import('../../style/flat.js').FlatStyle>} flatStyles The flat styles.
+ * @param {ParsingContext} [parsingContext] Optional parsing context; will create a new one if not provided
  * @return {import('../../style/Style.js').StyleFunction} A style function.
  */
-export function flatStylesToStyleFunction(flatStyles) {
-  const parsingContext = newParsingContext();
+export function flatStylesToStyleFunction(flatStyles, parsingContext) {
+  parsingContext = parsingContext ?? newParsingContext();
   const length = flatStyles.length;
 
   /**
@@ -132,6 +134,11 @@ export function flatStylesToStyleFunction(flatStyles) {
         evaluationContext.featureId = null;
       }
     }
+    if (parsingContext.geometryType) {
+      evaluationContext.geometryType = computeGeometryType(
+        feature.getGeometry(),
+      );
+    }
     let nonNullCount = 0;
     for (let i = 0; i < length; ++i) {
       const style = evaluators[i](evaluationContext);
@@ -143,6 +150,50 @@ export function flatStylesToStyleFunction(flatStyles) {
     styles.length = nonNullCount;
     return styles;
   };
+}
+
+/**
+ * This function handles any kind of style that matches the FlatStyleLike type.
+ *
+ * @param {import('../../style/flat.js').FlatStyleLike} flatStyleLike The flat style.
+ * @param {ParsingContext} [parsingContext] Optional parsing context; will create a new one if not provided
+ * @return {import('../../style/Style.js').StyleFunction} A style function.
+ */
+export function flatStyleLikeToStyleFunction(flatStyleLike, parsingContext) {
+  parsingContext = parsingContext ?? newParsingContext();
+
+  // FlatStyle|Array<FlatStyle>|Array<Rule>
+
+  // single FlatStyle
+  if (!Array.isArray(flatStyleLike)) {
+    return flatStylesToStyleFunction([flatStyleLike], parsingContext);
+  }
+
+  const length = flatStyleLike.length;
+  const first = flatStyleLike[0];
+
+  // array of Rule
+  if ('style' in first) {
+    /**
+     * @type {Array<import("../../style/flat.js").Rule>}
+     */
+    const rules = new Array(length);
+    for (let i = 0; i < length; ++i) {
+      const candidate = flatStyleLike[i];
+      if (!('style' in candidate)) {
+        throw new Error('Expected a list of rules with a style property');
+      }
+      rules[i] = candidate;
+    }
+    return rulesToStyleFunction(rules, parsingContext);
+  }
+
+  // array of FlatStyle
+  const flatStyles =
+    /** @type {Array<import("../../style/flat.js").FlatStyle>} */ (
+      flatStyleLike
+    );
+  return flatStylesToStyleFunction(flatStyles, parsingContext);
 }
 
 /**

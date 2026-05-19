@@ -6,12 +6,12 @@ import {assert} from '../../asserts.js';
 import {
   BooleanType,
   ColorType,
+  computeGeometryType,
+  newParsingContext,
   NumberArrayType,
   NumberType,
   SizeType,
   StringType,
-  computeGeometryType,
-  newParsingContext,
 } from '../../expr/expression.js';
 import {
   FEATURE_ID_PROPERTY_NAME,
@@ -772,10 +772,167 @@ function parseFillProperties(style, builder, uniforms, context) {
 }
 
 /**
+ * This only compiles the expressions used in the text style properties; this has no impact on the
+ * shaders but the properties and variables used there will be collected
+ * @param {import("../../style/flat.js").FlatStyle} style Style
+ * @param {ShaderBuilder} builder Shader Builder
+ * @param {Object<string,import("../../webgl/Helper.js").UniformValue>} uniforms Uniforms
+ * @param {import("../../expr/gpu.js").CompilationContext} context Shader compilation context
+ */
+function parseTextProperties(style, builder, uniforms, context) {
+  function safeExpressionToGlsl(...args) {
+    try {
+      // @ts-ignore
+      expressionToGlsl(...args);
+    } catch (e) {
+      // do nothing, expressions unsuppported in webgl might be encountered since the etxt is rendered un canvas down the line
+    }
+  }
+
+  if ('text-value' in style) {
+    safeExpressionToGlsl(context, style['text-value'], StringType);
+  }
+  if ('text-font' in style) {
+    safeExpressionToGlsl(context, style['text-font'], StringType);
+  }
+  if ('text-max-angle' in style) {
+    safeExpressionToGlsl(context, style['text-max-angle'], NumberType);
+  }
+  if ('text-offset-x' in style) {
+    safeExpressionToGlsl(context, style['text-offset-x'], NumberType);
+  }
+  if ('text-offset-y' in style) {
+    safeExpressionToGlsl(context, style['text-offset-y'], NumberType);
+  }
+  if ('text-overflow' in style) {
+    safeExpressionToGlsl(context, style['text-overflow'], BooleanType);
+  }
+  if ('text-placement' in style) {
+    safeExpressionToGlsl(context, style['text-placement'], StringType);
+  }
+  if ('text-repeat' in style) {
+    safeExpressionToGlsl(context, style['text-repeat'], NumberType);
+  }
+  if ('text-scale' in style) {
+    safeExpressionToGlsl(context, style['text-scale'], SizeType);
+  }
+  if ('text-rotate-with-view' in style) {
+    safeExpressionToGlsl(context, style['text-rotate-with-view'], BooleanType);
+  }
+  if ('text-rotation' in style) {
+    safeExpressionToGlsl(context, style['text-rotation'], NumberType);
+  }
+  if ('text-align' in style) {
+    safeExpressionToGlsl(context, style['text-align'], StringType);
+  }
+  if ('text-justify' in style) {
+    safeExpressionToGlsl(context, style['text-justify'], StringType);
+  }
+  if ('text-baseline' in style) {
+    safeExpressionToGlsl(context, style['text-baseline'], StringType);
+  }
+  if ('text-padding' in style) {
+    safeExpressionToGlsl(context, style['text-padding'], NumberArrayType);
+  }
+  if ('text-fill-color' in style) {
+    safeExpressionToGlsl(context, style['text-fill-color'], ColorType);
+  }
+  if ('text-stroke-color' in style) {
+    safeExpressionToGlsl(context, style['text-stroke-color'], ColorType);
+  }
+  if ('text-stroke-line-cap' in style) {
+    safeExpressionToGlsl(context, style['text-stroke-line-cap'], StringType);
+  }
+  if ('text-stroke-line-join' in style) {
+    safeExpressionToGlsl(context, style['text-stroke-line-join'], StringType);
+  }
+  if ('text-stroke-line-dash' in style) {
+    safeExpressionToGlsl(
+      context,
+      style['text-stroke-line-dash'],
+      NumberArrayType,
+    );
+  }
+  if ('text-stroke-line-dash-offset' in style) {
+    safeExpressionToGlsl(
+      context,
+      style['text-stroke-line-dash-offset'],
+      NumberType,
+    );
+  }
+  if ('text-stroke-miter-limit' in style) {
+    safeExpressionToGlsl(context, style['text-stroke-miter-limit'], NumberType);
+  }
+  if ('text-stroke-width' in style) {
+    safeExpressionToGlsl(context, style['text-stroke-width'], NumberType);
+  }
+  if ('text-background-fill-color' in style) {
+    safeExpressionToGlsl(
+      context,
+      style['text-background-fill-color'],
+      ColorType,
+    );
+  }
+  if ('text-background-stroke-color' in style) {
+    safeExpressionToGlsl(
+      context,
+      style['text-background-stroke-color'],
+      ColorType,
+    );
+  }
+  if ('text-background-stroke-line-cap' in style) {
+    safeExpressionToGlsl(
+      context,
+      style['text-background-stroke-line-cap'],
+      StringType,
+    );
+  }
+  if ('text-background-stroke-line-join' in style) {
+    safeExpressionToGlsl(
+      context,
+      style['text-background-stroke-line-join'],
+      StringType,
+    );
+  }
+  if ('text-background-stroke-line-dash' in style) {
+    safeExpressionToGlsl(
+      context,
+      style['text-background-stroke-line-dash'],
+      NumberArrayType,
+    );
+  }
+  if ('text-background-stroke-line-dash-offset' in style) {
+    safeExpressionToGlsl(
+      context,
+      style['text-background-stroke-line-dash-offset'],
+      NumberType,
+    );
+  }
+  if ('text-background-stroke-miter-limit' in style) {
+    safeExpressionToGlsl(
+      context,
+      style['text-background-stroke-miter-limit'],
+      NumberType,
+    );
+  }
+  if ('text-background-stroke-width' in style) {
+    safeExpressionToGlsl(
+      context,
+      style['text-background-stroke-width'],
+      NumberType,
+    );
+  }
+  if ('z-index' in style) {
+    safeExpressionToGlsl(context, style['z-index'], NumberType);
+  }
+}
+
+/**
  * @typedef {Object} StyleParseResult
  * @property {ShaderBuilder} builder Shader builder pre-configured according to a given style
  * @property {import("./VectorStyleRenderer.js").UniformDefinitions} uniforms Uniform definitions
  * @property {import("./VectorStyleRenderer.js").AttributeDefinitions} attributes Attribute definitions
+ * @property {import("../../style/flat.js").Rule} [sourceRule] Style and filter that was parsed (if any)
  */
 
 /**
@@ -808,6 +965,8 @@ export function parseLiteralStyle(style, variables, filter) {
   }
   parseStrokeProperties(style, builder, uniforms, context);
   parseFillProperties(style, builder, uniforms, context);
+  // this will not change the shaders but still collect the properties
+  parseTextProperties(style, builder, uniforms, context);
 
   // note that the style filter may have already been applied earlier when building the rendering instructions
   // this is still needed in case a filter cannot be evaluated statically beforehand (e.g. depending on time)
