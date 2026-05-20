@@ -13,8 +13,15 @@ import {
   toUserResolution,
 } from '../../proj.js';
 import MixedGeometryBatch from '../../render/webgl/MixedGeometryBatch.js';
-import VectorStyleRenderer from '../../render/webgl/VectorStyleRenderer.js';
+import VectorStyleRenderer, {
+  toFlatStyleLike,
+} from '../../render/webgl/VectorStyleRenderer.js';
 import {colorDecodeId} from '../../render/webgl/encodeUtil.js';
+import {
+  createPostProcessDefinition,
+  hasTextStyle,
+  TextUniforms,
+} from '../../render/webgl/textUtil.js';
 import VectorEventType from '../../source/VectorEventType.js';
 import {
   apply as applyTransform,
@@ -24,12 +31,13 @@ import {
 import {DefaultUniform} from '../../webgl/Helper.js';
 import WebGLRenderTarget from '../../webgl/RenderTarget.js';
 import WebGLLayerRenderer from './Layer.js';
-import {VectorUniforms, applyVectorUniforms} from './vectorUtil.js';
+import {applyVectorUniforms, VectorUniforms} from './vectorUtil.js';
 import {getWorldParameters} from './worldUtil.js';
 
 export const Uniforms = {
   ...DefaultUniform,
   ...VectorUniforms,
+  ...TextUniforms,
   RENDER_EXTENT: 'u_renderExtent', // intersection of layer, source, and view extent
   GLOBAL_ALPHA: 'u_globalAlpha',
 };
@@ -83,7 +91,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
 
     super(layer, {
       uniforms: uniforms,
-      postProcesses: options.postProcesses,
+      postProcesses: options.postProcesses ?? [],
     });
 
     /**
@@ -136,6 +144,11 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     this.style_ = [];
 
     /**
+     * @private
+     */
+    this.hasText_ = false;
+
+    /**
      * @type {VectorStyleRenderer}
      * @public
      */
@@ -146,8 +159,6 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
      * @private
      */
     this.buffers_ = null;
-
-    this.applyOptions_(options);
 
     /**
      * @private
@@ -165,6 +176,8 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
      * @type {Array<import("../../events.js").EventsKey|null>}
      */
     this.sourceListenKeys_ = null;
+
+    this.applyOptions_(options);
   }
 
   /**
@@ -216,6 +229,26 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
   applyOptions_(options) {
     this.styleVariables_ = options.variables;
     this.style_ = options.style;
+
+    // add text rendering post process if needed
+    const flatStyle = toFlatStyleLike(this.style_);
+    const newHasText = !!flatStyle && hasTextStyle(flatStyle);
+
+    if (newHasText && !this.hasText_) {
+      // add the text overlay post-process
+      this.setPostProcesses([
+        createPostProcessDefinition(
+          () => this.styleRenderer_.getTextOverlayCanvas(),
+          () => this.styleRenderer_.getTextOverlayFrameState(),
+        ),
+        ...this.getPostProcesses(),
+      ]);
+    } else if (!newHasText && this.hasText_) {
+      // remove the text overlay post-process (always in first place)
+      this.setPostProcesses(this.getPostProcesses().slice(1));
+    }
+
+    this.hasText_ = newHasText;
   }
 
   /**
@@ -326,6 +359,9 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     // draw the normal canvas
     this.helper.prepareDraw(frameState);
     this.renderWorlds(frameState, false, startWorld, endWorld, worldWidth);
+
+    this.styleRenderer_.finalizeTextRender(frameState);
+
     this.helper.finalizeDraw(
       frameState,
       this.dispatchPreComposeEvent,
@@ -519,6 +555,9 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     if (buffers.polygonBuffers) {
       disposeBuffersOfType(buffers.polygonBuffers);
     }
+    if (buffers.textInstructionsKey) {
+      this.styleRenderer_.disposeTextInstructions(buffers.textInstructionsKey);
+    }
   }
 
   /**
@@ -534,6 +573,9 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
         unlistenByKey(key);
       });
       this.sourceListenKeys_ = null;
+    }
+    if (this.styleRenderer_) {
+      this.styleRenderer_.dispose();
     }
     super.disposeInternal();
   }
