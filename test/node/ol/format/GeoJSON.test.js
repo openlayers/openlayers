@@ -19,6 +19,8 @@ import Projection from '../../../../src/ol/proj/Projection.js';
 import RenderFeature from '../../../../src/ol/render/Feature.js';
 import expect from '../../expect.js';
 
+class TestFeature extends Feature {}
+
 describe('ol/format/GeoJSON.js', function () {
   let format;
   beforeEach(function () {
@@ -201,6 +203,15 @@ describe('ol/format/GeoJSON.js', function () {
       const geometry = feature.getGeometry();
       expect(geometry).to.be.an(Point);
       expect(geometry.getCoordinates()).to.eql([102.0, 0.5]);
+      expect(feature.get('prop0')).to.be('value0');
+    });
+
+    it('uses the configured featureClass', function () {
+      const feature = new GeoJSON({featureClass: TestFeature}).readFeature(
+        pointGeoJSON,
+      );
+      expect(feature).to.be.a(TestFeature);
+      expect(feature.getGeometry()).to.be.a(Point);
       expect(feature.get('prop0')).to.be('value0');
     });
 
