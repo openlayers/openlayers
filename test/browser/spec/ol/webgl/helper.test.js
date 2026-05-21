@@ -115,6 +115,18 @@ describe('ol/webgl/WebGLHelper', function () {
         expect(h.postProcessPasses_[1].uniforms_[0].value).to.eql(4);
       });
     });
+
+    describe('with empty post process array', function () {
+      beforeEach(function () {
+        h = new WebGLHelper({
+          postProcesses: [],
+        });
+      });
+
+      it('has a default rendering pass as well', function () {
+        expect(h.postProcessPasses_.length).to.eql(1);
+      });
+    });
   });
 
   describe('operations', function () {
