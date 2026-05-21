@@ -17,6 +17,7 @@ class MockRenderer {
     () => new Promise((resolve) => (this.endGenerate_ = resolve)),
   );
   endGenerate_ = null;
+  disposeTextInstructions = sinonStub();
 }
 
 describe('ol/webgl/TileGeometry', function () {
@@ -155,6 +156,9 @@ describe('ol/webgl/TileGeometry', function () {
       });
       it('deletes webgl buffers', () => {
         assert.strictEqual(deleteBufferSpy.mock.calls.length, 4);
+      });
+      it('disposes text instructions', () => {
+        expect(styleRenderer.disposeTextInstructions.calledOnce).to.be(true);
       });
     });
   });
