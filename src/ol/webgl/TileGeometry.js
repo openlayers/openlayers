@@ -115,6 +115,9 @@ class TileGeometry extends BaseTileRepresentation {
         disposeBuffersOfType(this.buffers.lineStringBuffers);
       this.buffers.polygonBuffers &&
         disposeBuffersOfType(this.buffers.polygonBuffers);
+      this.styleRenderer_.disposeTextInstructions(
+        this.buffers.textInstructionsKey,
+      );
     }
     super.disposeInternal();
   }
