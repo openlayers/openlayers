@@ -49,13 +49,15 @@ document.getElementById('auth-form').addEventListener('submit', (event) => {
   source.setAuth({clientId, clientSecret});
 });
 
-const format = document.getElementById('format');
+const formatDropdown = document.getElementById('format');
 
 function updateInputData() {
-  source.setFormat(format.value);
+  const newFormat =
+    formatDropdown.value === '' ? undefined : formatDropdown.value;
+  source.setFormat(newFormat);
 }
 
-format.addEventListener('change', () => updateInputData());
+formatDropdown.addEventListener('change', () => updateInputData());
 updateInputData();
 
 source.on('change', () => {
