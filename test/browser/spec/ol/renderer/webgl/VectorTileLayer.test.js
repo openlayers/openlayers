@@ -12,6 +12,7 @@ import Projection from '../../../../../../src/ol/proj/Projection.js';
 import RenderFeature from '../../../../../../src/ol/render/Feature.js';
 import {ShaderBuilder} from '../../../../../../src/ol/render/webgl/ShaderBuilder.js';
 import VectorStyleRenderer from '../../../../../../src/ol/render/webgl/VectorStyleRenderer.js';
+import {createPostProcessDefinition} from '../../../../../../src/ol/render/webgl/textUtil.js';
 import WebGLVectorTileLayerRenderer, {
   Attributes,
   Uniforms,
@@ -169,6 +170,10 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
     assert.deepEqual(renderer.styleRenderer_, null);
   });
 
+  it('does include the post processing step for text rendering', () => {
+    expect(renderer.postProcesses_).to.eql([]);
+  });
+
   describe('#afterHelperCreated', () => {
     beforeEach(() => {
       renderer.helper = new WebGLHelper();
@@ -225,16 +230,12 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
   });
 
   describe('#reset', () => {
-    beforeEach(() => {
-      // first call prepareFrame to initialize the helper
-      renderer.prepareFrame(frameState);
-    });
-
     describe('use a single style', () => {
       beforeEach(() => {
         renderer.reset({
           style: SAMPLE_STYLE,
         });
+        renderer.prepareFrame(frameState);
       });
 
       it('recreates renderer', () => {
@@ -244,6 +245,9 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
         const builder = renderer.styleRenderer_.styleShaders[0].builder;
         assert.include(builder.getSymbolColorExpression(), 'a_prop_size');
       });
+      it('does not include the post processing step for text rendering', () => {
+        expect(renderer.postProcesses_).to.eql([]);
+      });
     });
 
     describe('use shaders', () => {
@@ -251,6 +255,7 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
         renderer.reset({
           style: SAMPLE_SHADERS(),
         });
+        renderer.prepareFrame(frameState);
       });
 
       it('recreates renderer', () => {
@@ -266,6 +271,55 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
           builder.getFragmentDiscardExpression(),
           '(u_zoom > 10.0) || (texture2D(u_depthMask, gl_FragCoord.xy / u_pixelRatio / u_viewportSizePx).r * 50. > u_tileZoomLevel + 0.5)',
         );
+      });
+      it('does not include the post processing step for text rendering', () => {
+        expect(renderer.postProcesses_).to.eql([]);
+      });
+    });
+  });
+
+  describe('style with text & with post processes', () => {
+    const POST_PROCESS = {
+      hello: 'world',
+    };
+    beforeEach(() => {
+      renderer = new WebGLVectorTileLayerRenderer(vectorTileLayer, {
+        style: [
+          {
+            style: {
+              'circle-radius': 4,
+              'text-value': 'hello world',
+            },
+          },
+        ],
+        postProcesses: [POST_PROCESS],
+      });
+    });
+
+    it('does include the post processing step for text rendering', () => {
+      const mockPostProcess = createPostProcessDefinition(
+        () => null,
+        () => null,
+      );
+      expect(renderer.postProcesses_.length).to.be(2);
+      expect(renderer.postProcesses_[0].fragmentShader).to.eql(
+        mockPostProcess.fragmentShader,
+      );
+      expect(renderer.postProcesses_[0].vertexShader).to.eql(
+        mockPostProcess.vertexShader,
+      );
+      expect(renderer.postProcesses_[1]).to.eql(POST_PROCESS);
+    });
+
+    describe('when a style without text is set later on', () => {
+      beforeEach(() => {
+        renderer.reset({
+          style: SAMPLE_RULES,
+        });
+      });
+
+      it('does not include the text post processing step', () => {
+        expect(renderer.postProcesses_).to.eql([POST_PROCESS]);
       });
     });
   });
@@ -315,6 +369,7 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
       vi.spyOn(renderer.helper, 'setUniformMatrixValue');
       vi.spyOn(renderer.helper, 'bindTexture');
       vi.spyOn(renderer.styleRenderer_, 'render');
+      sinonSpy(renderer.styleRenderer_, 'finalizeTextRender');
 
       // this is required to keep a "snapshot" of the input matrix
       // (since the same object is reused for various calls)
@@ -425,6 +480,9 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
     });
     it('calls render for each tile on each renderer', () => {
       assert.strictEqual(renderer.styleRenderer_.render.mock.calls.length, 2);
+    });
+    it('calls styleRenderer.finalizeTextRender once', () => {
+      expect(renderer.styleRenderer_.finalizeTextRender.calledOnce).to.be(true);
     });
   });
 });
