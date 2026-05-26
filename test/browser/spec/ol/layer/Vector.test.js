@@ -203,6 +203,47 @@ describe('ol.layer.Vector', function () {
       assert.deepEqual(secondStroke.getColor(), [255, 255, 0, 1]);
       assert.strictEqual(secondStroke.getWidth(), 5);
     });
+
+    it('accepts an array of flat style rules', () => {
+      const layer = new VectorLayer();
+      layer.setStyle([
+        {
+          style: {
+            'stroke-color': 'red',
+            'stroke-width': 10,
+          },
+        },
+        {
+          style: {
+            'stroke-color': 'yellow',
+            'stroke-width': 5,
+          },
+        },
+      ]);
+
+      const styleFunction = layer.getStyleFunction();
+      assert.instanceOf(styleFunction, Function);
+
+      const styles = styleFunction(new Feature(), 1);
+      assert.instanceOf(styles, Array);
+      assert.lengthOf(styles, 2);
+
+      const first = styles[0];
+      assert.instanceOf(first, Style);
+
+      const firstStroke = first.getStroke();
+      assert.instanceOf(firstStroke, Stroke);
+      assert.deepEqual(firstStroke.getColor(), [255, 0, 0, 1]);
+      assert.strictEqual(firstStroke.getWidth(), 10);
+
+      const second = styles[1];
+      assert.instanceOf(second, Style);
+
+      const secondStroke = second.getStroke();
+      assert.instanceOf(secondStroke, Stroke);
+      assert.deepEqual(secondStroke.getColor(), [255, 255, 0, 1]);
+      assert.strictEqual(secondStroke.getWidth(), 5);
+    });
   });
 
   describe('#getFeatures()', function () {
