@@ -1247,13 +1247,6 @@ describe('ol/render/webgl/style', () => {
             varyingExpression: 'unpackColor(a_prop_color)',
           },
           {
-            name: 'a_prop_lineType',
-            type: 'float',
-            varyingName: 'v_prop_lineType',
-            varyingType: 'float',
-            varyingExpression: 'a_prop_lineType',
-          },
-          {
             name: 'a_prop_lineWidth',
             type: 'float',
             varyingName: 'v_prop_lineWidth',
@@ -1261,11 +1254,11 @@ describe('ol/render/webgl/style', () => {
             varyingExpression: 'a_prop_lineWidth',
           },
           {
-            name: 'a_prop_transparent',
+            name: 'a_prop_lineType',
             type: 'float',
-            varyingName: 'v_prop_transparent',
+            varyingName: 'v_prop_lineType',
             varyingType: 'float',
-            varyingExpression: 'a_prop_transparent',
+            varyingExpression: 'a_prop_lineType',
           },
           {
             name: 'a_prop_fillColor',
@@ -1273,6 +1266,13 @@ describe('ol/render/webgl/style', () => {
             varyingName: 'v_prop_fillColor',
             varyingType: 'vec4',
             varyingExpression: 'unpackColor(a_prop_fillColor)',
+          },
+          {
+            name: 'a_prop_transparent',
+            type: 'float',
+            varyingName: 'v_prop_transparent',
+            varyingType: 'float',
+            varyingExpression: 'a_prop_transparent',
           },
         ]);
       });
@@ -1355,20 +1355,20 @@ describe('ol/render/webgl/style', () => {
         expect(parseResult.builder.uniforms_).to.eql([
           {name: 'u_var_iconSize', type: 'vec2'},
           {name: 'u_var_color', type: 'vec4'},
-          {name: 'u_var_lineType', type: 'float'},
           {name: 'u_var_lineWidth', type: 'float'},
-          {name: 'u_var_transparent', type: 'float'},
+          {name: 'u_var_lineType', type: 'float'},
           {name: 'u_var_fillColor', type: 'vec4'},
+          {name: 'u_var_transparent', type: 'float'},
         ]);
       });
       it('returns uniforms in the result', () => {
         expect(Object.keys(parseResult.uniforms)).to.eql([
           'u_var_iconSize',
           'u_var_color',
-          'u_var_lineType',
           'u_var_lineWidth',
-          'u_var_transparent',
+          'u_var_lineType',
           'u_var_fillColor',
+          'u_var_transparent',
         ]);
       });
       it('processes uniforms according to their types', () => {
