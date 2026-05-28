@@ -42,6 +42,41 @@ function getWebGLWorker() {
 let workerMessageCounter = 0;
 
 /**
+ *
+ * @param {Worker} worker Worker to send the message to
+ * @param {Object} message Message
+ * @param {Array<Transferable>} [transferables] Transferables
+ * @return {Promise<Object>} Response received by the worker
+ */
+function messageWorker(worker, message, transferables) {
+  const messageId = workerMessageCounter++;
+
+  if (transferables) {
+    worker.postMessage({...message, id: messageId}, transferables);
+  } else {
+    worker.postMessage({...message, id: messageId});
+  }
+
+  return new Promise((resolve) => {
+    const handleMessage = (event) => {
+      const received = event.data;
+
+      // this is not the response to our request: skip
+      if (received.id !== messageId) {
+        return;
+      }
+
+      // we've received our response: stop listening
+      worker.removeEventListener('message', handleMessage);
+
+      resolve(received);
+    };
+
+    worker.addEventListener('message', handleMessage);
+  });
+}
+
+/**
  * Names of attributes made available to the vertex shader.
  * Please note: changing these *will* break custom shaders!
  * @enum {string}
@@ -502,7 +537,6 @@ class VectorStyleRenderer extends Disposable {
       return null;
     }
 
-    const messageId = workerMessageCounter++;
     let messageType;
     switch (geometryType) {
       case 'Polygon':
@@ -520,63 +554,43 @@ class VectorStyleRenderer extends Disposable {
 
     /** @type {import('./constants.js').WebGLWorkerGenerateBuffersMessage} */
     const message = {
-      id: messageId,
       type: messageType,
       renderInstructions: renderInstructions.buffer,
       renderInstructionsTransform: transform,
       customAttributesSize: getCustomAttributesSize(this.customAttributes_),
     };
-    const WEBGL_WORKER = getWebGLWorker();
-    WEBGL_WORKER.postMessage(message, [renderInstructions.buffer]);
 
-    // leave ownership of render instructions
-    renderInstructions = null;
+    return messageWorker(getWebGLWorker(), message, [
+      renderInstructions.buffer,
+    ]).then((data) => {
+      // the helper has disposed in the meantime; the promise will not be resolved
+      if (!this.helper_.getGL()) {
+        return;
+      }
 
-    return new Promise((resolve) => {
-      /**
-       * @param {{data: import('./constants.js').WebGLWorkerGenerateBuffersMessage}} event Event.
-       */
-      const handleMessage = (event) => {
-        const received = event.data;
+      const received =
+        /** @type {import('./constants.js').WebGLWorkerGenerateBuffersMessage} */ (
+          data
+        );
 
-        // this is not the response to our request: skip
-        if (received.id !== messageId) {
-          return;
-        }
+      // copy & flush received buffers to GPU
+      const indicesBuffer = new WebGLArrayBuffer(
+        ELEMENT_ARRAY_BUFFER,
+        DYNAMIC_DRAW,
+      ).fromArrayBuffer(received.indicesBuffer);
+      const vertexAttributesBuffer = new WebGLArrayBuffer(
+        ARRAY_BUFFER,
+        DYNAMIC_DRAW,
+      ).fromArrayBuffer(received.vertexAttributesBuffer);
+      const instanceAttributesBuffer = new WebGLArrayBuffer(
+        ARRAY_BUFFER,
+        DYNAMIC_DRAW,
+      ).fromArrayBuffer(received.instanceAttributesBuffer);
+      this.helper_.flushBufferData(indicesBuffer);
+      this.helper_.flushBufferData(vertexAttributesBuffer);
+      this.helper_.flushBufferData(instanceAttributesBuffer);
 
-        // we've received our response: stop listening
-        WEBGL_WORKER.removeEventListener('message', handleMessage);
-
-        // the helper has disposed in the meantime; the promise will not be resolved
-        if (!this.helper_.getGL()) {
-          return;
-        }
-
-        // copy & flush received buffers to GPU
-        const indicesBuffer = new WebGLArrayBuffer(
-          ELEMENT_ARRAY_BUFFER,
-          DYNAMIC_DRAW,
-        ).fromArrayBuffer(received.indicesBuffer);
-        const vertexAttributesBuffer = new WebGLArrayBuffer(
-          ARRAY_BUFFER,
-          DYNAMIC_DRAW,
-        ).fromArrayBuffer(received.vertexAttributesBuffer);
-        const instanceAttributesBuffer = new WebGLArrayBuffer(
-          ARRAY_BUFFER,
-          DYNAMIC_DRAW,
-        ).fromArrayBuffer(received.instanceAttributesBuffer);
-        this.helper_.flushBufferData(indicesBuffer);
-        this.helper_.flushBufferData(vertexAttributesBuffer);
-        this.helper_.flushBufferData(instanceAttributesBuffer);
-
-        resolve([
-          indicesBuffer,
-          vertexAttributesBuffer,
-          instanceAttributesBuffer,
-        ]);
-      };
-
-      WEBGL_WORKER.addEventListener('message', handleMessage);
+      return [indicesBuffer, vertexAttributesBuffer, instanceAttributesBuffer];
     });
   }
 
@@ -617,43 +631,31 @@ class VectorStyleRenderer extends Disposable {
       }),
       {},
     );
-    const messageId = workerMessageCounter++;
-    const textOverlayWorker = this.textOverlayWorker_;
 
     // load render instructions in text overlay worker
-    textOverlayWorker.postMessage(
-      {
-        type: TextOverlayWorkerMessageType.BUILD_INSTRUCTIONS,
-        polygonRenderInstructions,
-        lineStringRenderInstructions,
-        pointRenderInstructions,
-        labelsArray: labelsArray.getArray(),
-        style: this.flatStyle,
-        customAttributesSizes,
-        renderInstructionsTransform: transform,
-        id: messageId,
-      },
-      transferables,
-    );
+    /** @type {import('./constants.js').TextOverlayWorkerMessage} */
+    const message = {
+      type: TextOverlayWorkerMessageType.BUILD_INSTRUCTIONS,
+      polygonRenderInstructions,
+      lineStringRenderInstructions,
+      pointRenderInstructions,
+      labelsArray: labelsArray.getArray(),
+      style: this.flatStyle,
+      customAttributesSizes,
+      renderInstructionsTransform: transform,
+    };
 
-    return new Promise((resolve) => {
-      /**
-       * @param {{data: import('./constants.js').TextOverlayWorkerMessage}} event Event.
-       */
-      const handleMessage = (event) => {
-        const received = event.data;
-
-        // this is not the response to our request: skip
-        if (received.id !== messageId) {
-          return;
-        }
+    return messageWorker(this.textOverlayWorker_, message, transferables).then(
+      (data) => {
+        const received =
+          /** @type {import('./constants.js').TextOverlayWorkerMessage} */ (
+            data
+          );
 
         // we're getting a key from the worker: these will be used later on to ask for render or disposal
-        resolve(received.instructionsSetKey);
-      };
-
-      textOverlayWorker.addEventListener('message', handleMessage);
-    });
+        return received.instructionsSetKey;
+      },
+    );
   }
 
   /**
@@ -767,45 +769,38 @@ class VectorStyleRenderer extends Disposable {
     if (!this.hasText_) {
       return Promise.resolve();
     }
-    const messageId = workerMessageCounter++;
-    this.textOverlayWorker_.postMessage({
+
+    const message = {
       type: TextOverlayWorkerMessageType.RENDER,
       frameState: serializeFrameState(frameState),
       batchesToRender: this.textOverlayRenderList_,
-      id: messageId,
-    });
-    // todo: unsubscribe
-    return new Promise((resolve) => {
-      this.textOverlayWorker_.addEventListener('message', (message) => {
-        const received = message.data;
-        // this is not the response to our request: skip
-        if (received.id !== messageId) {
-          return;
-        }
+    };
 
-        this.textOverlayRenderFrameState_ = message.data.frameState;
+    return messageWorker(this.textOverlayWorker_, message).then((data) => {
+      const received =
+        /** @type {import('./constants.js').TextOverlayWorkerMessage} */ (data);
 
-        // the rendered image data is copied to the canvas and then given back to the worker
-        const imageData = message.data.imageData;
-        if (
-          imageData.width !== this.textOverlayCanvas_.width ||
-          imageData.height !== this.textOverlayCanvas_.height
-        ) {
-          this.textOverlayCanvas_.width = imageData.width;
-          this.textOverlayCanvas_.height = imageData.height;
-        } else {
-          this.textOverlayContext_.clearRect(
-            0,
-            0,
-            this.textOverlayCanvas_.width,
-            this.textOverlayCanvas_.height,
-          );
-        }
-        this.textOverlayContext_.drawImage(imageData, 0, 0);
-        imageData.close();
-        this.textOverlayRenderList_.clear();
-        resolve();
-      });
+      this.textOverlayRenderFrameState_ = received.frameState;
+
+      // the rendered image data is copied to the canvas and then given back to the worker
+      const imageData = received.imageData;
+      if (
+        imageData.width !== this.textOverlayCanvas_.width ||
+        imageData.height !== this.textOverlayCanvas_.height
+      ) {
+        this.textOverlayCanvas_.width = imageData.width;
+        this.textOverlayCanvas_.height = imageData.height;
+      } else {
+        this.textOverlayContext_.clearRect(
+          0,
+          0,
+          this.textOverlayCanvas_.width,
+          this.textOverlayCanvas_.height,
+        );
+      }
+      this.textOverlayContext_.drawImage(imageData, 0, 0);
+      imageData.close();
+      this.textOverlayRenderList_.clear();
     });
   }
 
