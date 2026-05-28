@@ -3,9 +3,9 @@
  */
 import {ColorType, NumberType} from '../expr/expression.js';
 import {
-  PALETTE_TEXTURE_ARRAY,
   getStringNumberEquivalent,
   newCompilationContext,
+  PALETTE_TEXTURE_ARRAY,
   uniformNameForVariable,
 } from '../expr/gpu.js';
 import LayerProperty from '../layer/Property.js';
@@ -175,21 +175,20 @@ function parseStyle(style, bandCount, nodataBandIndex) {
   /** @type {Object<string,import("../webgl/Helper.js").UniformValue>} */
   const uniforms = {};
 
-  const numVariables = Object.keys(context.variables).length;
+  const numVariables = context.variables.size;
   if (numVariables > 1 && !style.variables) {
     throw new Error(
-      `Missing variables in style (expected ${context.variables})`,
+      `Missing variables in style (expected ${Array.from(context.variables.keys())})`,
     );
   }
 
-  for (let i = 0; i < numVariables; ++i) {
-    const variable = context.variables[Object.keys(context.variables)[i]];
-    if (!(variable.name in style.variables)) {
-      throw new Error(`Missing '${variable.name}' in style variables`);
+  for (const [variableName] of context.variables.entries()) {
+    if (!(variableName in style.variables)) {
+      throw new Error(`Missing '${variableName}' in style variables`);
     }
-    const uniformName = uniformNameForVariable(variable.name);
+    const uniformName = uniformNameForVariable(variableName);
     uniforms[uniformName] = function () {
-      let value = style.variables[variable.name];
+      let value = style.variables[variableName];
       if (typeof value === 'string') {
         value = getStringNumberEquivalent(value);
       }

@@ -135,6 +135,10 @@ import {toSize} from '../size.js';
  * @api
  */
 
+/**
+ * @typedef {number} ValueType
+ */
+
 let numTypes = 0;
 export const NoneType = 0;
 export const BooleanType = 1 << numTypes++;
@@ -157,7 +161,7 @@ const typeNames = {
 const namedTypes = Object.keys(typeNames).map(Number).sort(ascending);
 
 /**
- * @param {number} type The type.
+ * @param {ValueType} type The type.
  * @return {boolean} The type is one of the specific types (not any or a union type).
  */
 function isSpecific(type) {
@@ -166,7 +170,7 @@ function isSpecific(type) {
 
 /**
  * Get a string representation for a type.
- * @param {number} type The type.
+ * @param {ValueType} type The type.
  * @return {string} The type name.
  */
 export function typeName(type) {
@@ -186,8 +190,8 @@ export function typeName(type) {
 }
 
 /**
- * @param {number} broad The broad type.
- * @param {number} specific The specific type.
+ * @param {ValueType} broad The broad type.
+ * @param {ValueType} specific The specific type.
  * @return {boolean} The broad type includes the specific type.
  */
 export function includesType(broad, specific) {
@@ -195,8 +199,8 @@ export function includesType(broad, specific) {
 }
 
 /**
- * @param {number} oneType One type.
- * @param {number} otherType Another type.
+ * @param {ValueType} oneType One type.
+ * @param {ValueType} otherType Another type.
  * @return {boolean} The set of types overlap (share a common specific type)
  */
 export function overlapsType(oneType, otherType) {
@@ -204,8 +208,8 @@ export function overlapsType(oneType, otherType) {
 }
 
 /**
- * @param {number} type The type.
- * @param {number} expected The expected type.
+ * @param {ValueType} type The type.
+ * @param {ValueType} expected The expected type.
  * @return {boolean} The given type is exactly the expected type.
  */
 export function isType(type, expected) {
@@ -218,7 +222,7 @@ export function isType(type, expected) {
 
 export class LiteralExpression {
   /**
-   * @param {number} type The value type.
+   * @param {ValueType} type The value type.
    * @param {LiteralValue} value The literal value.
    */
   constructor(type, value) {
@@ -234,7 +238,7 @@ export class LiteralExpression {
 
 export class CallExpression {
   /**
-   * @param {number} type The return type.
+   * @param {ValueType} type The return type.
    * @param {string} operator The operator.
    * @param {...Expression} args The arguments.
    */
@@ -251,8 +255,8 @@ export class CallExpression {
 
 /**
  * @typedef {Object} ParsingContext
- * @property {Set<string>} variables Variables referenced with the 'var' operator.
- * @property {Set<string>} properties Properties referenced with the 'get' operator.
+ * @property {Map<string, ValueType>} variables Variables referenced with the 'var' operator; key is name, value is type.
+ * @property {Map<string, ValueType>} properties Properties referenced with the 'get' operator; key is name, value is type.
  * @property {boolean} featureId The style uses the feature id.
  * @property {boolean} geometryType The style uses the feature geometry type.
  * @property {boolean} mCoordinate The style uses the M coordinate of geometries
@@ -264,8 +268,8 @@ export class CallExpression {
  */
 export function newParsingContext() {
   return {
-    variables: new Set(),
-    properties: new Set(),
+    variables: new Map(),
+    properties: new Map(),
     featureId: false,
     geometryType: false,
     mCoordinate: false,
@@ -279,7 +283,7 @@ export function newParsingContext() {
 
 /**
  * @param {EncodedExpression} encoded The encoded expression.
- * @param {number} expectedType The expected type.
+ * @param {ValueType} expectedType The expected type.
  * @param {ParsingContext} context The parsing context.
  * @return {Expression} The parsed expression result.
  */
@@ -603,7 +607,7 @@ const parsers = {
 };
 
 /**
- * @typedef {function(Array<EncodedExpression>, number, ParsingContext):Array<Expression>|void} ArgValidator
+ * @typedef {function(Array<EncodedExpression>, ValueType, ParsingContext):Array<Expression>|void} ArgValidator
  *
  * An argument validator applies various checks to an encoded expression arguments and
  * returns the parsed arguments if any.  The second argument is the return type of the call expression.
@@ -633,7 +637,7 @@ function withGetArgs(encoded, returnType, context) {
       }
     }
     if (i === 0) {
-      context.properties.add(String(key));
+      context.properties.set(String(key), returnType);
     }
   }
   return args;
@@ -647,7 +651,7 @@ function withVarArgs(encoded, returnType, context) {
   if (typeof name !== 'string') {
     throw new Error('expected a string argument for var operation');
   }
-  context.variables.add(name);
+  context.variables.set(name, returnType);
 
   return [new LiteralExpression(StringType, name)];
 }
@@ -736,7 +740,7 @@ function withArgsOfReturnType(encoded, returnType, context) {
 }
 
 /**
- * @param {number} argType The argument type.
+ * @param {ValueType} argType The argument type.
  * @return {ArgValidator} The argument validator
  */
 function withArgsOfType(argType) {
@@ -919,7 +923,7 @@ function withInArgs(encoded, returnType, context) {
     );
   }
   /**
-   * @type {number}
+   * @type {ValueType}
    */
   let needleType;
 
@@ -1025,7 +1029,7 @@ function createCallExpressionParser(...validators) {
 
 /**
  * @param {Array} encoded The encoded expression.
- * @param {number} returnType The expected return type of the call expression.
+ * @param {ValueType} returnType The expected return type of the call expression.
  * @param {ParsingContext} context The parsing context.
  * @return {Expression} The parsed expression.
  */
