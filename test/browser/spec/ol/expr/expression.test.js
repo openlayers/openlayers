@@ -3,12 +3,11 @@ import {
   BooleanType,
   CallExpression,
   ColorType,
-  LiteralExpression,
-  NumberType,
-  StringType,
   includesType,
   isType,
+  LiteralExpression,
   newParsingContext,
+  NumberType,
   parse,
   typeName,
 } from '../../../../../src/ol/expr/expression.js';
@@ -86,9 +85,7 @@ describe('ol/expr/expression.js', () => {
         expect(expression.operator).to.be('match');
         expect(isType(expression.type, ColorType)).to.be(true);
         expect(expression.args).to.have.length(6);
-        expect(typeName(expression.args[0].type)).to.be(
-          typeName(BooleanType | StringType | NumberType),
-        );
+        expect(typeName(expression.args[0].type)).to.be(typeName(NumberType));
         expect(isType(expression.args[1].type, NumberType)).to.be(true);
         expect(isType(expression.args[2].type, ColorType)).to.be(true);
         expect(isType(expression.args[3].type, NumberType)).to.be(true);

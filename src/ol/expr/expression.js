@@ -470,11 +470,11 @@ const parsers = {
   ),
   [Ops.Equal]: createCallExpressionParser(
     hasArgsCount(2, 2),
-    withArgsOfType(AnyType),
+    withArgsOfIdenticalType(),
   ),
   [Ops.NotEqual]: createCallExpressionParser(
     hasArgsCount(2, 2),
-    withArgsOfType(AnyType),
+    withArgsOfIdenticalType(),
   ),
   [Ops.GreaterThan]: createCallExpressionParser(
     hasArgsCount(2, 2),
@@ -759,6 +759,36 @@ function withArgsOfType(argType) {
 }
 
 /**
+ * @return {ArgValidator} The argument validator
+ */
+function withArgsOfIdenticalType() {
+  return function (encoded, returnType, context) {
+    const operation = encoded[0];
+    const argCount = encoded.length - 1;
+    /**
+     * @type {Array<Expression>}
+     */
+    const args = new Array(argCount);
+    let commonType = AnyType;
+    for (let i = 0; i < argCount; ++i) {
+      const expression = parse(encoded[i + 1], commonType, context);
+      commonType &= expression.type;
+    }
+    if (commonType === NoneType) {
+      throw new Error(
+        `no common type was found among the arguments of ${operation}`,
+      );
+    }
+    // second loop to compile actual args
+    for (let i = 0; i < argCount; ++i) {
+      const expression = parse(encoded[i + 1], commonType, context);
+      args[i] = expression;
+    }
+    return args;
+  };
+}
+
+/**
  * @type {ArgValidator}
  */
 function hasOddArgs(encoded, returnType, context) {
@@ -790,16 +820,31 @@ function hasEvenArgs(encoded, returnType, context) {
 function withMatchArgs(encoded, returnType, context) {
   const argsCount = encoded.length - 1;
 
-  const inputType = StringType | NumberType | BooleanType;
-
-  const input = parse(encoded[1], inputType, context);
-
   const fallback = parse(encoded[encoded.length - 1], returnType, context);
 
+  let inputType = StringType | NumberType | BooleanType;
   const args = new Array(argsCount - 2);
+
+  // first round to determine input type
   for (let i = 0; i < argsCount - 2; i += 2) {
     try {
-      const match = parse(encoded[i + 2], input.type, context);
+      const match = parse(encoded[i + 2], inputType, context);
+      inputType &= match.type;
+    } catch (err) {
+      throw new Error(
+        `failed to parse argument ${i + 1} of match expression: ${err.message}`,
+      );
+    }
+    if (inputType === NoneType) {
+      throw new Error(
+        `no common type was found among the arguments of match expression`,
+      );
+    }
+  }
+
+  for (let i = 0; i < argsCount - 2; i += 2) {
+    try {
+      const match = parse(encoded[i + 2], inputType, context);
       args[i] = match;
     } catch (err) {
       throw new Error(
@@ -815,6 +860,8 @@ function withMatchArgs(encoded, returnType, context) {
       );
     }
   }
+
+  const input = parse(encoded[1], inputType, context);
 
   return [input, ...args, fallback];
 }

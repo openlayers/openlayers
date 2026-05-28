@@ -5,10 +5,10 @@ import {
 import {
   BooleanType,
   ColorType,
+  newParsingContext,
   NumberArrayType,
   NumberType,
   StringType,
-  newParsingContext,
 } from '../../../../src/ol/expr/expression.js';
 import expect from '../../expect.js';
 
