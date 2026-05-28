@@ -48,7 +48,7 @@ jobs:
           node-version: '24'
 
       - name: Install Dependencies
-        run: npm ci
+        run: npm ci --foreground-scripts
 
       - name: Run Tests
         run: npm run test-browser
