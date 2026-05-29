@@ -816,4 +816,29 @@ void main(void) {
       expect(builder.getSymbolFragmentShader()).to.contain(FN2);
     });
   });
+
+  describe('text shaders', function () {
+    it('returns null text shaders by default', function () {
+      const builder = new ShaderBuilder();
+      expect(builder.getTextVertexShader()).to.be(null);
+    });
+
+    it('produces a text vertex+fragment shader once a text color is set', function () {
+      const builder = new ShaderBuilder();
+      builder.setTextColorExpression('vec4(1.0)');
+      expect(builder.getTextVertexShader()).to.be.a('string');
+      expect(builder.getTextFragmentShader()).to.contain('u_atlasTexture');
+      expect(builder.getTextFragmentShader()).to.contain('vec4(1.0)');
+    });
+
+    it('includes glyph instance attributes in the text vertex shader', function () {
+      const builder = new ShaderBuilder();
+      builder.setTextColorExpression('vec4(1.0)');
+      const vs = builder.getTextVertexShader();
+      expect(vs).to.contain('a_glyphOffset');
+      expect(vs).to.contain('a_glyphSize');
+      expect(vs).to.contain('a_glyphUv');
+      expect(vs).to.contain('a_anchor');
+    });
+  });
 });
