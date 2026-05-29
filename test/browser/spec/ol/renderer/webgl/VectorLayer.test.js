@@ -6,8 +6,8 @@ import LineString from '../../../../../../src/ol/geom/LineString.js';
 import Point from '../../../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../../../src/ol/geom/Polygon.js';
 import VectorLayer from '../../../../../../src/ol/layer/Vector.js';
-import {get as getProjection} from '../../../../../../src/ol/proj.js';
 import Projection from '../../../../../../src/ol/proj/Projection.js';
+import {get as getProjection} from '../../../../../../src/ol/proj.js';
 import {ShaderBuilder} from '../../../../../../src/ol/render/webgl/ShaderBuilder.js';
 import VectorStyleRenderer, * as ol_render_webgl_vectorstylerenderer from '../../../../../../src/ol/render/webgl/VectorStyleRenderer.js';
 import WebGLVectorLayerRenderer from '../../../../../../src/ol/renderer/webgl/VectorLayer.js';
@@ -637,6 +637,38 @@ describe('ol/renderer/webgl/VectorLayer', () => {
           checkHit(-15, 25, null, done);
           checkHit(15, 20, null, done);
           checkHit(-15, 5, null, done);
+          checkHit(20, 5, null, done);
+          done();
+        });
+      });
+    });
+
+    describe('with a text style on a point feature', () => {
+      beforeEach(() => {
+        centerPoint = new Feature({
+          id: 'centerPoint',
+          label: 'Hello',
+          geometry: new Point([0, 16]),
+        });
+        vectorSource.clear();
+        vectorSource.addFeature(centerPoint);
+        renderer = new WebGLVectorLayerRenderer(vectorLayer, {
+          style: [
+            {
+              'circle-radius': 40,
+              'circle-fill-color': 'blue',
+              'text-value': ['get', 'label'],
+              'text-fill-color': '#000000',
+            },
+          ],
+        });
+      });
+      it('hit detects the text-labelled point feature', (done) => {
+        renderer.prepareFrame(frameState);
+        // this will trigger when the rendering buffers are ready
+        vectorLayer.once('change', () => {
+          renderer.renderFrame(frameState);
+          checkHit(0, 16, centerPoint, done);
           checkHit(20, 5, null, done);
           done();
         });
