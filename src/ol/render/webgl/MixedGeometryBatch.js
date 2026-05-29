@@ -52,7 +52,7 @@ import {getUid} from '../../util.js';
 
 /**
  * @classdesc This class is used to group several geometries of various types together for faster rendering.
- * Three inner batches are maintained for polygons, lines and points. Each time a feature is added, changed or removed
+ * Four inner batches are maintained for polygons, lines, points and text. Each time a feature is added, changed or removed
  * from the batch, these inner batches are modified accordingly in order to keep them up-to-date.
  *
  * A feature can be present in several inner batches, for example a polygon geometry will be present in the polygon batch

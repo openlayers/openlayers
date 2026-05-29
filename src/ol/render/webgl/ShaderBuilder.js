@@ -230,7 +230,7 @@ export class ShaderBuilder {
     this.fillPatternSizeExpression_ = null;
 
     /**
-     * @type {string}
+     * @type {string|null}
      * @private
      */
     this.textColorExpression_ = null; // null => no text pass
@@ -584,7 +584,7 @@ export class ShaderBuilder {
   }
 
   /**
-   * @return {string} The current text color expression; null if none has been set
+   * @return {string|null} The current text color expression; null if none has been set
    */
   getTextColorExpression() {
     return this.textColorExpression_;
@@ -1191,8 +1191,10 @@ attribute vec2 a_anchor;
 attribute vec2 a_glyphOffset;
 attribute vec2 a_glyphSize;
 attribute vec4 a_glyphUv;
+attribute vec2 a_hitColor;
 
 varying vec2 v_texCoord;
+varying vec4 v_hitColor;
 
 ${this.attributes_
   .map(
@@ -1212,6 +1214,7 @@ void main(void) {
   vec2 offsetNdc = cornerPx / u_viewportSizePx * 2.0;
   gl_Position = anchorClip + vec4(offsetNdc.x, offsetNdc.y, 0.0, 0.0);
   v_texCoord = vec2(mix(a_glyphUv.x, a_glyphUv.z, local01.x), mix(a_glyphUv.w, a_glyphUv.y, local01.y));
+  v_hitColor = unpackColor(a_hitColor);
 ${this.attributes_
   .map(
     (attribute) =>
@@ -1234,6 +1237,7 @@ ${this.attributes_
 ${this.uniforms_.map((uniform) => `uniform ${uniform.type} ${uniform.name};`).join('\n')}
 uniform sampler2D u_atlasTexture;
 varying vec2 v_texCoord;
+varying vec4 v_hitColor;
 ${this.attributes_
   .map(
     (attribute) => `varying ${attribute.varyingType} ${attribute.varyingName};`,
@@ -1260,6 +1264,10 @@ ${this.attributes_
   vec4 color = mix(outlineColor, fillColor, fillAlpha);
   float a = color.a * borderAlpha;
   gl_FragColor = vec4(color.rgb * a, a);
+  if (u_hitDetection > 0) {
+    if (a < 0.05) { discard; }
+    gl_FragColor = v_hitColor;
+  }
 }`;
   }
 }

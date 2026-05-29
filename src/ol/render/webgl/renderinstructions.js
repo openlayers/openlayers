@@ -291,17 +291,25 @@ export function generateTextRenderInstructions(
     const anchorY = tmpAnchor[1];
 
     // gather custom attribute values once per feature
+    // This mirrors the coercion done by pushCustomAttributesInRenderInstructions
+    // (used by the point/line/polygon paths): undefined -> UNDEFINED_PROP_VALUE,
+    // null -> 0, and scalar returns are padded with zeros up to the attribute's
+    // declared `size`, so that the per-glyph record stays aligned with the GPU
+    // attribute layout.
     /** @type {Array<number>} */
     const customValues = [];
     for (let n = 0; n < customAttrNames.length; n++) {
       const def = customAttributes[customAttrNames[n]];
+      const size = def.size || 1;
       const value = def.callback.call(entry, feature);
-      if (Array.isArray(value)) {
-        for (let k = 0; k < value.length; k++) {
-          customValues.push(value[k]);
+      for (let k = 0; k < size; k++) {
+        let component = Array.isArray(value) ? value[k] : k === 0 ? value : 0;
+        if (component === undefined) {
+          component = UNDEFINED_PROP_VALUE;
+        } else if (component === null) {
+          component = 0;
         }
-      } else {
-        customValues.push(value);
+        customValues.push(component);
       }
     }
 
