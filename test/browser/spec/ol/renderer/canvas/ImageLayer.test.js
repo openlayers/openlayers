@@ -7,8 +7,8 @@ import View from '../../../../../../src/ol/View.js';
 import Point from '../../../../../../src/ol/geom/Point.js';
 import ImageLayer from '../../../../../../src/ol/layer/Image.js';
 import VectorImageLayer from '../../../../../../src/ol/layer/VectorImage.js';
-import Projection from '../../../../../../src/ol/proj/Projection.js';
 import {get as getProj} from '../../../../../../src/ol/proj.js';
+import Projection from '../../../../../../src/ol/proj/Projection.js';
 import CanvasImageLayerRenderer from '../../../../../../src/ol/renderer/canvas/ImageLayer.js';
 import Static from '../../../../../../src/ol/source/ImageStatic.js';
 import VectorSource from '../../../../../../src/ol/source/Vector.js';
@@ -119,6 +119,9 @@ describe('ol/renderer/canvas/ImageLayer', function () {
           if (loadedCount === 2) {
             done();
           }
+        });
+        source.once('imageloaderror', function () {
+          done(new Error('Image failed to load'));
         });
       });
     });
@@ -365,6 +368,135 @@ describe('ol/renderer/canvas/ImageLayer', function () {
           done(e);
         }
       });
+    });
+  });
+
+  describe('cache invalidation on visibility change', function () {
+    /** @type {Map} */
+    let map;
+
+    /** @type {ImageLayer} */
+    let layer;
+
+    /** @type {Static} */
+    let source;
+
+    /** @type {HTMLDivElement} */
+    let target;
+
+    const projection = new Projection({
+      code: 'custom-image',
+      units: 'pixels',
+      extent: [0, 0, 256, 256],
+    });
+
+    beforeEach(function (done) {
+      target = document.createElement('div');
+      target.style.width = '100px';
+      target.style.height = '100px';
+      document.body.appendChild(target);
+
+      source = new Static({
+        url: 'spec/ol/data/osm-0-0-0.png',
+        projection: projection,
+        imageExtent: [0, 0, 256, 256],
+      });
+
+      layer = new ImageLayer({
+        source: source,
+      });
+
+      map = new Map({
+        target: target,
+        layers: [layer],
+        view: new View({
+          projection: projection,
+          center: [128, 128],
+          zoom: 0,
+        }),
+      });
+
+      source.on('imageloadend', function () {
+        done();
+      });
+    });
+
+    afterEach(function () {
+      disposeMap(map);
+    });
+
+    it('tracks source revision during rendering', function () {
+      const renderer = layer.getRenderer();
+      map.renderSync();
+
+      const revision = source.getRevision();
+      expect(renderer.renderedSourceRevision_).to.be(revision);
+
+      source.changed();
+      const newRevision = source.getRevision();
+      expect(newRevision).to.be.greaterThan(revision);
+
+      map.renderSync();
+      expect(renderer.renderedSourceRevision_).to.be(newRevision);
+    });
+
+    it('clears cached image when source changed while hidden', function () {
+      const renderer = layer.getRenderer();
+      map.renderSync();
+      expect(renderer.image).to.not.be(null);
+
+      layer.setVisible(false);
+      map.renderSync();
+
+      source.changed();
+
+      let imageWasCleared = false;
+      const originalImage = renderer.image;
+      Object.defineProperty(renderer, 'image', {
+        get: function () {
+          return this._image;
+        },
+        set: function (value) {
+          if (value === null && this._image === originalImage) {
+            imageWasCleared = true;
+          }
+          this._image = value;
+        },
+        configurable: true,
+      });
+      renderer._image = originalImage;
+
+      layer.setVisible(true);
+      map.renderSync();
+      expect(imageWasCleared).to.be(true);
+    });
+
+    it('preserves cached image when source unchanged while hidden', function () {
+      const renderer = layer.getRenderer();
+      map.renderSync();
+
+      const cachedImage = renderer.image;
+      expect(cachedImage).to.not.be(null);
+
+      layer.setVisible(false);
+      map.renderSync();
+
+      layer.setVisible(true);
+      map.renderSync();
+      expect(renderer.image).to.be(cachedImage);
+    });
+
+    it('keeps cached image when source changes while visible', function () {
+      const renderer = layer.getRenderer();
+      map.renderSync();
+
+      const cachedImage = renderer.image;
+      expect(cachedImage).to.not.be(null);
+
+      source.changed();
+      map.renderSync();
+
+      expect(renderer.image).to.be(cachedImage);
     });
   });
 });

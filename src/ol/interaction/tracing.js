@@ -4,13 +4,11 @@
  */
 
 import {distance} from '../coordinate.js';
-import {
-  GeometryCollection,
-  LineString,
-  MultiLineString,
-  MultiPolygon,
-  Polygon,
-} from '../geom.js';
+import GeometryCollection from '../geom/GeometryCollection.js';
+import LineString from '../geom/LineString.js';
+import MultiLineString from '../geom/MultiLineString.js';
+import MultiPolygon from '../geom/MultiPolygon.js';
+import Polygon from '../geom/Polygon.js';
 import {clamp, squaredDistance, toFixed} from '../math.js';
 
 /**

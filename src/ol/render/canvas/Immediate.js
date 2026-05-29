@@ -9,6 +9,10 @@ import {equals} from '../../array.js';
 import {asColorLike} from '../../colorlike.js';
 import {intersects} from '../../extent.js';
 import {transformGeom2D} from '../../geom/SimpleGeometry.js';
+import {
+  offsetLineString,
+  removeOffsetCycles,
+} from '../../geom/flat/lineoffset.js';
 import {transform2D} from '../../geom/flat/transform.js';
 import {toFixed} from '../../math.js';
 import {
@@ -431,12 +435,13 @@ class CanvasImmediateRenderer extends VectorContext {
    * @param {number} end End.
    * @param {number} stride Stride.
    * @param {boolean} close Close.
+   * @param {number} [strokeOffset] Stroke Offset.
    * @private
    * @return {number} end End.
    */
-  moveToLineTo_(flatCoordinates, offset, end, stride, close) {
+  moveToLineTo_(flatCoordinates, offset, end, stride, close, strokeOffset) {
     const context = this.context_;
-    const pixelCoordinates = transform2D(
+    let pixelCoordinates = transform2D(
       flatCoordinates,
       offset,
       end,
@@ -444,6 +449,23 @@ class CanvasImmediateRenderer extends VectorContext {
       this.transform_,
       this.pixelCoordinates_,
     );
+    if (Math.abs(strokeOffset) > 0) {
+      const n = pixelCoordinates.length;
+      const isClosedLine =
+        close ||
+        (Math.abs(pixelCoordinates[0] - pixelCoordinates[n - 2]) < 1e-6 &&
+          Math.abs(pixelCoordinates[1] - pixelCoordinates[n - 1]) < 1e-6);
+      pixelCoordinates = offsetLineString(
+        pixelCoordinates,
+        0,
+        n,
+        2,
+        strokeOffset,
+        isClosedLine,
+        pixelCoordinates,
+      );
+      removeOffsetCycles(pixelCoordinates, 2, isClosedLine);
+    }
     context.moveTo(pixelCoordinates[0], pixelCoordinates[1]);
     let length = pixelCoordinates.length;
     if (close) {
@@ -463,10 +485,11 @@ class CanvasImmediateRenderer extends VectorContext {
    * @param {number} offset Offset.
    * @param {Array<number>} ends Ends.
    * @param {number} stride Stride.
+   * @param {number} [strokeOffset] Stroke Offset.
    * @private
    * @return {number} End.
    */
-  drawRings_(flatCoordinates, offset, ends, stride) {
+  drawRings_(flatCoordinates, offset, ends, stride, strokeOffset) {
     for (let i = 0, ii = ends.length; i < ii; ++i) {
       offset = this.moveToLineTo_(
         flatCoordinates,
@@ -474,6 +497,7 @@ class CanvasImmediateRenderer extends VectorContext {
         ends[i],
         stride,
         true,
+        strokeOffset,
       );
     }
     return offset;
@@ -733,6 +757,7 @@ class CanvasImmediateRenderer extends VectorContext {
         flatCoordinates.length,
         geometry.getStride(),
         false,
+        this.strokeState_.strokeOffset,
       );
       context.stroke();
     }
@@ -778,6 +803,7 @@ class CanvasImmediateRenderer extends VectorContext {
           ends[i],
           stride,
           false,
+          this.strokeState_.strokeOffset,
         );
       }
       context.stroke();
@@ -821,6 +847,7 @@ class CanvasImmediateRenderer extends VectorContext {
         0,
         /** @type {Array<number>} */ (geometry.getEnds()),
         geometry.getStride(),
+        this.strokeState_?.strokeOffset,
       );
       if (this.fillState_) {
         context.fill();
@@ -868,7 +895,13 @@ class CanvasImmediateRenderer extends VectorContext {
       context.beginPath();
       for (let i = 0, ii = endss.length; i < ii; ++i) {
         const ends = endss[i];
-        offset = this.drawRings_(flatCoordinates, offset, ends, stride);
+        offset = this.drawRings_(
+          flatCoordinates,
+          offset,
+          ends,
+          stride,
+          this.strokeState_?.strokeOffset,
+        );
       }
       if (this.fillState_) {
         context.fill();
@@ -1027,6 +1060,7 @@ class CanvasImmediateRenderer extends VectorContext {
       const lineDash = strokeStyleLineDash
         ? strokeStyleLineDash
         : defaultLineDash;
+      const strokeOffset = strokeStyle.getOffset();
       this.strokeState_ = {
         lineCap:
           strokeStyleLineCap !== undefined
@@ -1055,6 +1089,7 @@ class CanvasImmediateRenderer extends VectorContext {
         strokeStyle: asColorLike(
           strokeStyleColor ? strokeStyleColor : defaultStrokeStyle,
         ),
+        strokeOffset: (strokeOffset ?? 0) * this.pixelRatio_,
       };
     }
   }

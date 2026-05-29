@@ -1,0 +1,35 @@
+---
+layout: example.html
+title: Sentinel Hub Custom Format
+shortdesc: Updating the format used by the Sentinel Hub source.
+docs: >
+  This example demonstrates how a custom format can be used to render tiles from Sentinel Hub.
+  Select a format from the dropdown and click the update button to change the format.
+  See the Sentinel Hub [Examples](https://docs.sentinel-hub.com/api/latest/data/sentinel-2-l2a/examples/#true-color-multi-part-reponse-different-formats-and-sampletype) for more information.
+tags: "Sentinel Hub, process"
+---
+<div id="map" class="map"></div>
+<form id="format-form">
+  <label>Image format:
+    <br>
+    <select name="format" id="format">
+      <option value="image/png">image/png</option>
+      <option value="image/jpeg">image/jpeg</option>
+      <option value="image/webp">image/webp</option>
+    </select>
+  </label>
+  <input type="submit" value="update">
+</form>
+<dialog id="auth-dialog" open>
+  <form method="dialog" id="auth-form">
+    <label>Client id
+      <br>
+      <input type="text" name="id" autofocus value="fa02a066-fc80-4cb4-af26-aae0af26cbf1">
+    </label>
+    <label>Client secret
+      <br>
+      <input type="password" name="secret" value="rate_limit_secret">
+    </label>
+    <input type="submit" value="show map">
+  </form>
+</dialog>

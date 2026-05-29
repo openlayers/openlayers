@@ -2,8 +2,8 @@ import proj4 from 'proj4';
 import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
 import TileLayer from '../../../../src/ol/layer/Tile.js';
-import {register} from '../../../../src/ol/proj/proj4.js';
 import {get, transform} from '../../../../src/ol/proj.js';
+import {register} from '../../../../src/ol/proj/proj4.js';
 import XYZ from '../../../../src/ol/source/XYZ.js';
 
 proj4.defs('merc_180', '+proj=merc +lon_0=180 +units=m +no_defs');

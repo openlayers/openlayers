@@ -2,21 +2,19 @@
  * @module ol/format/Feature
  */
 import Feature from '../Feature.js';
+import GeometryCollection from '../geom/GeometryCollection.js';
+import LineString from '../geom/LineString.js';
+import MultiLineString from '../geom/MultiLineString.js';
+import MultiPoint from '../geom/MultiPoint.js';
+import MultiPolygon from '../geom/MultiPolygon.js';
+import Point from '../geom/Point.js';
+import Polygon from '../geom/Polygon.js';
 import {
   linearRingsAreOriented,
   linearRingssAreOriented,
   orientLinearRings,
   orientLinearRingsArray,
 } from '../geom/flat/orient.js';
-import {
-  GeometryCollection,
-  LineString,
-  MultiLineString,
-  MultiPoint,
-  MultiPolygon,
-  Point,
-  Polygon,
-} from '../geom.js';
 import {
   equivalent as equivalentProjection,
   get as getProjection,

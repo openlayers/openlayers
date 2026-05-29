@@ -7,8 +7,8 @@ import ScaleLine from '../src/ol/control/ScaleLine.js';
 import {defaults as defaultControls} from '../src/ol/control/defaults.js';
 import WMTSCapabilities from '../src/ol/format/WMTSCapabilities.js';
 import TileLayer from '../src/ol/layer/Tile.js';
+import {getPointResolution, get as getProjection} from '../src/ol/proj.js';
 import {register} from '../src/ol/proj/proj4.js';
-import {get as getProjection, getPointResolution} from '../src/ol/proj.js';
 import WMTS, {optionsFromCapabilities} from '../src/ol/source/WMTS.js';
 
 proj4.defs(

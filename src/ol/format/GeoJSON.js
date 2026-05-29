@@ -2,7 +2,6 @@
  * @module ol/format/GeoJSON
  */
 
-import Feature from '../Feature.js';
 import {getLayoutForStride} from '../geom/SimpleGeometry.js';
 import {
   deflateCoordinatesArray,
@@ -141,7 +140,10 @@ class GeoJSON extends JSONFeature {
       );
     }
 
-    const feature = new Feature();
+    const FeatureClass = /** @type {typeof import("../Feature.js").default} */ (
+      this.featureClass
+    );
+    const feature = new FeatureClass();
     if (this.geometryName_) {
       feature.setGeometryName(this.geometryName_);
     } else if (this.extractGeometryName_ && geoJSONFeature['geometry_name']) {

@@ -14,14 +14,14 @@ import {
   create as createTransform,
   makeInverse as makeInverseTransform,
 } from '../../../../../../src/ol/transform.js';
-import WebGLArrayBuffer from '../../../../../../src/ol/webgl/Buffer.js';
-import WebGLHelper from '../../../../../../src/ol/webgl/Helper.js';
 import {
   ARRAY_BUFFER,
   DYNAMIC_DRAW,
   ELEMENT_ARRAY_BUFFER,
   FLOAT,
 } from '../../../../../../src/ol/webgl.js';
+import WebGLArrayBuffer from '../../../../../../src/ol/webgl/Buffer.js';
+import WebGLHelper from '../../../../../../src/ol/webgl/Helper.js';
 
 /**
  * @type {import('../../../../../../src/ol/render/webgl/VectorStyleRenderer.js').StyleShaders}
@@ -761,7 +761,7 @@ describe('VectorStyleRenderer', () => {
         new ShaderBuilder()
           .addAttribute('a_prop_size', 'float')
           .setFillColorExpression('vec4(1.0, 0.0, 0.0, 1.0)')
-          .setFragmentDiscardExpression('!(a_prop_size > 10.0)'),
+          .setShapeDiscardExpression('!(a_prop_size > 10.0)'),
       );
 
       expect(result[1].attributes).to.only.have.key('prop_size');
@@ -769,7 +769,7 @@ describe('VectorStyleRenderer', () => {
         new ShaderBuilder()
           .addAttribute('a_prop_size', 'float')
           .setFillColorExpression('vec4(0.0, 0.5019607843137255, 0.0, 1.0)')
-          .setFragmentDiscardExpression('!(a_prop_size > 10.0)'),
+          .setShapeDiscardExpression('!(a_prop_size > 10.0)'),
       );
 
       expect(result[2].attributes).to.only.have.key('prop_size');
@@ -786,7 +786,7 @@ describe('VectorStyleRenderer', () => {
           .addVertexShaderFunction(
             'float circleDistanceField(vec2 point, float radius) {\n  return length(point) - radius;\n}',
           )
-          .setFragmentDiscardExpression('!(!(a_prop_size > 10.0))'),
+          .setShapeDiscardExpression('!(!(a_prop_size > 10.0))'),
       );
 
       expect(result[3].attributes).to.only.have.keys([
@@ -799,7 +799,7 @@ describe('VectorStyleRenderer', () => {
           .addAttribute('a_prop_type', 'float')
           .setStrokeColorExpression('vec4(0.0, 0.0, 1.0, 1.0)')
           .setStrokeWidthExpression('2.0')
-          .setFragmentDiscardExpression(
+          .setShapeDiscardExpression(
             `!((!(a_prop_size > 10.0)) && (a_prop_type == ${stringToGlsl('road')}))`,
           ),
       );
@@ -814,7 +814,7 @@ describe('VectorStyleRenderer', () => {
           .addAttribute('a_prop_type', 'float')
           .setStrokeColorExpression('vec4(0.0, 0.5019607843137255, 0.0, 1.0)')
           .setStrokeWidthExpression('2.0')
-          .setFragmentDiscardExpression(
+          .setShapeDiscardExpression(
             `!((!(a_prop_size > 10.0)) && (!(a_prop_type == ${stringToGlsl('road')})))`,
           ),
       );
@@ -826,7 +826,7 @@ describe('VectorStyleRenderer', () => {
           .addAttribute('a_prop_type', 'float')
           .setStrokeColorExpression('vec4(1.0, 1.0, 1.0, 1.0)')
           .setStrokeWidthExpression('1.0')
-          .setFragmentDiscardExpression(
+          .setShapeDiscardExpression(
             `!((!(a_prop_size > 10.0)) && (!(a_prop_type == ${stringToGlsl('road')})))`,
           ),
       );
@@ -844,7 +844,7 @@ describe('VectorStyleRenderer', () => {
           .addAttribute('a_prop_type', 'float')
           .setStrokeColorExpression('vec4(0.0, 0.0, 0.0, 1.0)')
           .setStrokeWidthExpression('2.0')
-          .setFragmentDiscardExpression(
+          .setShapeDiscardExpression(
             `!(a_prop_type == ${stringToGlsl('street')})`,
           ),
       );

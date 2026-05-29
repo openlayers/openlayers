@@ -14,13 +14,13 @@ import Translate, {
   TranslateEvent,
 } from '../../../../../src/ol/interaction/Translate.js';
 import VectorLayer from '../../../../../src/ol/layer/Vector.js';
-import {register} from '../../../../../src/ol/proj/proj4.js';
 import {
   addCommon,
   clearAllProjections,
   clearUserProjection,
   setUserProjection,
 } from '../../../../../src/ol/proj.js';
+import {register} from '../../../../../src/ol/proj/proj4.js';
 import VectorSource from '../../../../../src/ol/source/Vector.js';
 
 describe('ol.interaction.Translate', function () {

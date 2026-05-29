@@ -5,8 +5,8 @@
 import Tile from '../Tile.js';
 import TileState from '../TileState.js';
 import {releaseCanvas} from '../dom.js';
-import EventType from '../events/EventType.js';
 import {listen, unlistenByKey} from '../events.js';
+import EventType from '../events/EventType.js';
 import {getArea, getIntersection, getWidth, wrapAndSliceX} from '../extent.js';
 import {clamp} from '../math.js';
 import {

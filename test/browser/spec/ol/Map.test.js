@@ -1176,6 +1176,54 @@ describe('ol/Map', function () {
     });
   });
 
+  describe('#handlePostRender()', function () {
+    let map, target;
+
+    beforeEach(function () {
+      target = document.createElement('div');
+      target.style.width = '100px';
+      target.style.height = '100px';
+      document.body.appendChild(target);
+      map = new Map({
+        target: target,
+        view: new View({center: [0, 0], zoom: 1}),
+      });
+      map.renderSync();
+    });
+
+    afterEach(function () {
+      disposeMap(map, target);
+    });
+
+    it('loads tiles when animating with calling reprioritize', function () {
+      const reprioritizeSpy = sinonSpy(map.tileQueue_, 'reprioritize');
+      const loadSpy = sinonSpy(map.tileQueue_, 'loadMoreTiles');
+      sinonStub(map.tileQueue_, 'isEmpty').returns(false);
+      sinonStub(map.tileQueue_, 'getTilesLoading').returns(0);
+
+      map.frameState_.viewHints = [1, 0];
+      map.frameState_.time = Infinity; // guarantee lowOnFrameBudget is false
+      map.handlePostRender();
+
+      expect(loadSpy.callCount).to.be(1);
+      expect(reprioritizeSpy.callCount).to.be(1);
+    });
+
+    it('loads tiles after animation ends without calling reprioritize', function () {
+      const reprioritizeSpy = sinonSpy(map.tileQueue_, 'reprioritize');
+      const loadSpy = sinonSpy(map.tileQueue_, 'loadMoreTiles');
+      sinonStub(map.tileQueue_, 'isEmpty').returns(false);
+      sinonStub(map.tileQueue_, 'getTilesLoading').returns(0);
+
+      map.frameState_.viewHints = [0, 0];
+      map.frameState_.time = Infinity; // guarantee lowOnFrameBudget is false
+      map.handlePostRender();
+
+      expect(loadSpy.callCount).to.be(1);
+      expect(reprioritizeSpy.callCount).to.be(0);
+    });
+  });
+
   describe('dispose', function () {
     let map;
 
@@ -1793,6 +1841,39 @@ describe('ol/Map', function () {
           }, 100);
         });
       });
+    });
+  });
+
+  describe('resize', function () {
+    const width = 256;
+    const height = 256;
+    /** @type {Map} */
+    let map;
+    /** @type {HTMLElement} */
+    let target;
+
+    beforeEach(function () {
+      target = document.createElement('div');
+      target.style.height = `${width}px`;
+      target.style.width = `${height}px`;
+    });
+    afterEach(function () {
+      disposeMap(map, target);
+    });
+
+    it('has updated the viewport when the change:size event is being dispatched', function (done) {
+      map = new Map({
+        target: target,
+        view: new View(),
+        layers: [],
+        controls: [],
+        interactions: [],
+      });
+      map.on('change:size', () => {
+        expect(map.getView().getViewportSize_()).to.eql([width, height]);
+        done();
+      });
+      document.body.appendChild(target);
     });
   });
 });

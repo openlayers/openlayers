@@ -4,9 +4,9 @@
 
 import {CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
 import {easeOut} from '../easing.js';
+import {listen, unlistenByKey} from '../events.js';
 import {stopPropagation} from '../events/Event.js';
 import EventType from '../events/EventType.js';
-import {listen, unlistenByKey} from '../events.js';
 import {clamp} from '../math.js';
 import PointerEventType from '../pointer/EventType.js';
 import Control from './Control.js';

@@ -660,6 +660,21 @@ describe('ol/source/Vector', function () {
   });
 
   describe('#loadFeatures', function () {
+    let map;
+    beforeEach(() => {
+      map = new Map({
+        target: createMapDiv(100, 100),
+        layers: [],
+        view: new View({
+          center: [0, 0],
+          zoom: 0,
+        }),
+      });
+    });
+    afterEach(() => {
+      disposeMap(map);
+    });
+
     it('fires the FEATURESLOADSTART event', function (done) {
       const source = new VectorSource();
       source.on('featuresloadstart', function () {
@@ -809,6 +824,30 @@ describe('ol/source/Vector', function () {
         );
       });
 
+      it('removes infinite extent from loadedExtentsRtree after multiple load requests', function (done) {
+        const source = new VectorSource();
+        source.setLoader(async () => []);
+
+        // Make multiple load requests with different extents
+        source.loadFeatures([-10, -10, 10, 10], 1, getProjection('EPSG:3857'));
+        source.loadFeatures([0, 0, 10, 10], 1, getProjection('EPSG:3857'));
+        source.loadFeatures([10, 10, 20, 20], 1, getProjection('EPSG:3857'));
+
+        // Wait for all loader callbacks to complete
+        setTimeout(() => {
+          // Verify we have loaded extents in the tree
+          const initialExtents = source.loadedExtentsRtree_.getAll();
+          expect(initialExtents.length).to.be.greaterThan(0);
+
+          // Remove the infinite extent
+          source.removeLoadedExtent([-Infinity, -Infinity, Infinity, Infinity]);
+
+          // Verify the tree is empty after removal
+          expect(source.loadedExtentsRtree_.getAll()).to.have.length(0);
+          done();
+        }, 0);
+      });
+
       it('fires the FEATURESLOADEND event if the load function uses the callback', function (done) {
         const source = new VectorSource();
         const spy = sinonSpy();
@@ -851,6 +890,155 @@ describe('ol/source/Vector', function () {
           1,
           getProjection('EPSG:3857'),
         );
+      });
+
+      it('clears loading state and map fires loadend after failure [Promise]', function (done) {
+        const source = new VectorSource();
+        let error = false;
+        source.on('featuresloaderror', () => {
+          error = true;
+          expect(!!source.loading).to.be(false);
+        });
+        source.setLoader(
+          (extent, resolution, projection) =>
+            new Promise((_, reject) => setTimeout(reject, 0)),
+        );
+        map.addLayer(new VectorLayer({source}));
+
+        map.once('loadend', () => {
+          expect(!!source.loading).to.be(false);
+          expect(error).to.be(true);
+          done();
+        });
+      });
+
+      it('retries and fires loadend after removeLoadedExtent and failure [Promise]', function (done) {
+        const source = new VectorSource();
+        let failures = 0;
+        let successes = 0;
+        source.on('featuresloaderror', () => {
+          ++failures;
+        });
+        source.on('featuresloadend', () => {
+          ++successes;
+        });
+        map.addLayer(new VectorLayer({source}));
+        let loadCount = 0;
+        source.setLoader((extent, resolution, projection) => {
+          loadCount++;
+          return new Promise((resolve, reject) => {
+            setTimeout(() => {
+              if (loadCount === 1) {
+                source.removeLoadedExtent(extent);
+                reject();
+              } else {
+                const features = [new Feature(new Point([0, 0]))];
+                resolve(features);
+              }
+            }, 0);
+          });
+        });
+
+        map.on('loadend', function onloadend() {
+          expect(loadCount).to.be(2);
+          expect(failures).to.be(1);
+          expect(successes).to.be(1);
+          expect(source.getFeatures()).to.have.length(1);
+          done();
+        });
+      });
+
+      it('clears loading state and map fires loadend with empty success [Promise]', function (done) {
+        const source = new VectorSource();
+        source.on('featuresloadend', function () {
+          expect(!!source.loading).to.be(false);
+        });
+        source.setLoader(function (bbox, resolution, projection, success) {
+          return new Promise((resolve) => setTimeout(() => resolve([]), 0));
+        });
+        map.addLayer(new VectorLayer({source}));
+
+        map.once('loadend', function () {
+          expect(!!source.loading).to.be(false);
+          done();
+        });
+      });
+
+      it('clears loading state and map fires loadend after failure [callback]', function (done) {
+        const source = new VectorSource();
+        let error = false;
+        source.on('featuresloaderror', () => {
+          error = true;
+          expect(!!source.loading).to.be(false);
+        });
+        source.setLoader((extent, resolution, projection, success, failure) => {
+          setTimeout(failure, 0);
+        });
+        map.addLayer(new VectorLayer({source}));
+
+        map.once('loadend', () => {
+          expect(!!source.loading).to.be(false);
+          expect(error).to.be(true);
+          done();
+        });
+      });
+
+      it('retries and fires loadend after removeLoadedExtent and failure [callback]', function (done) {
+        const source = new VectorSource();
+        let failures = 0;
+        let successes = 0;
+        source.on('featuresloaderror', () => {
+          ++failures;
+        });
+        source.on('featuresloadend', () => {
+          ++successes;
+        });
+        map.addLayer(new VectorLayer({source}));
+        let loadCount = 0;
+        source.setLoader(
+          function (extent, resolution, projection, success, failure) {
+            loadCount++;
+            if (loadCount === 1) {
+              setTimeout(function () {
+                source.removeLoadedExtent(extent);
+                failure();
+              }, 0);
+            } else {
+              setTimeout(function () {
+                const features = [];
+                source.addFeatures(features);
+                success(features);
+              }, 0);
+            }
+          },
+        );
+
+        map.once('loadend', function () {
+          expect(loadCount).to.be(2);
+          expect(failures).to.be(1);
+          expect(successes).to.be(1);
+          done();
+        });
+      });
+
+      it('clears loading state and map fires loadend with empty success [callback]', function (done) {
+        const source = new VectorSource();
+        source.on('featuresloadend', function () {
+          expect(!!source.loading).to.be(false);
+        });
+        source.setLoader(function (bbox, resolution, projection, success) {
+          setTimeout(() => {
+            const features = [];
+            source.addFeatures(features);
+            success(features);
+          }, 0);
+        });
+        map.addLayer(new VectorLayer({source}));
+
+        map.once('loadend', function () {
+          expect(!!source.loading).to.be(false);
+          done();
+        });
       });
     });
   });

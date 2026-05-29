@@ -1,9 +1,9 @@
 import TileRange from '../../../../src/ol/TileRange.js';
 import {createOrUpdate} from '../../../../src/ol/extent.js';
+import {get as getProjection} from '../../../../src/ol/proj.js';
 import Projection from '../../../../src/ol/proj/Projection.js';
 import {METERS_PER_UNIT} from '../../../../src/ol/proj/Units.js';
 import {HALF_SIZE} from '../../../../src/ol/proj/epsg3857.js';
-import {get as getProjection} from '../../../../src/ol/proj.js';
 import TileGrid from '../../../../src/ol/tilegrid/TileGrid.js';
 import {
   DEFAULT_MAX_ZOOM,
@@ -377,6 +377,16 @@ describe('ol/tilegrid/TileGrid.js', function () {
         expect(tileRange.containsXY(tileCoord[1], tileCoord[2])).to.be(false);
       });
     });
+  });
+
+  it('calculates implicit minZoom from resolutions', function () {
+    resolutions.unshift(undefined, undefined);
+    const tileGrid = new TileGrid({
+      resolutions,
+      origin,
+      tileSize,
+    });
+    expect(tileGrid.getMinZoom()).to.be(2);
   });
 
   describe('createForExtent', function () {

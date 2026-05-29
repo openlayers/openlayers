@@ -7,10 +7,10 @@ import CollectionEventType from '../CollectionEventType.js';
 import ObjectEventType from '../ObjectEventType.js';
 import {extend} from '../array.js';
 import {assert} from '../asserts.js';
+import {listen, unlistenByKey} from '../events.js';
 import Event from '../events/Event.js';
 import EventType from '../events/EventType.js';
-import {listen, unlistenByKey} from '../events.js';
-import {containsExtent, equals, wrapAndSliceX} from '../extent.js';
+import {containsExtent, getDifference, wrapAndSliceX} from '../extent.js';
 import {xhr} from '../featureloader.js';
 import {TRUE, VOID} from '../functions.js';
 import {all as allStrategy} from '../loadingstrategy.js';
@@ -69,11 +69,11 @@ export class VectorSourceEvent extends Event {
 /***
  * @template Return
  * @template {import("../Feature.js").FeatureLike} [FeatureType=import("../Feature.js").default]
- * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
- *   import("../Observable").OnSignature<import("../ObjectEventType").Types, import("../Object").ObjectEvent, Return> &
- *   import("../Observable").OnSignature<import("./VectorEventType").VectorSourceEventTypes, VectorSourceEvent<FeatureType>, Return> &
- *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
- *     import("./VectorEventType").VectorSourceEventTypes, Return>} VectorSourceOnSignature
+ * @typedef {import("../Observable.js").OnSignature<import("../Observable.js").EventTypes, import("../events/Event.js").default, Return> &
+ *   import("../Observable.js").OnSignature<import("../ObjectEventType.js").Types, import("../Object.js").ObjectEvent, Return> &
+ *   import("../Observable.js").OnSignature<import("./VectorEventType.js").VectorSourceEventTypes, VectorSourceEvent<FeatureType>, Return> &
+ *   import("../Observable.js").CombinedOnSignature<import("../Observable.js").EventTypes|import("../ObjectEventType.js").Types|
+ *     import("./VectorEventType.js").VectorSourceEventTypes, Return>} VectorSourceOnSignature
  */
 
 /**
@@ -99,34 +99,31 @@ export class VectorSourceEvent extends Event {
  * import {bbox} from 'ol/loadingstrategy.js';
  *
  * const vectorSource = new Vector({
- *   format: new GeoJSON(),
- *   loader: function(extent, resolution, projection, success, failure) {
- *      const proj = projection.getCode();
+ *   loader: async (extent, resolution, projection) => {
  *      const url = 'https://ahocevar.com/geoserver/wfs?service=WFS&' +
  *          'version=1.1.0&request=GetFeature&typename=osm:water_areas&' +
- *          'outputFormat=application/json&srsname=' + proj + '&' +
- *          'bbox=' + extent.join(',') + ',' + proj;
- *      const xhr = new XMLHttpRequest();
- *      xhr.open('GET', url);
- *      const onError = function() {
- *        vectorSource.removeLoadedExtent(extent);
- *        failure();
+ *          'outputFormat=application/json' +
+ *          'bbox=' + extent.join(',') + ',' + projection.getCode();
+ *      const response = await fetch(url);
+ *      if (!response.ok) {
+ *        throw new Error('Network response was not ok');
  *      }
- *      xhr.onerror = onError;
- *      xhr.onload = function() {
- *        if (xhr.status == 200) {
- *          const features = vectorSource.getFormat().readFeatures(xhr.responseText);
- *          vectorSource.addFeatures(features);
- *          success(features);
- *        } else {
- *          onError();
- *        }
- *      }
- *      xhr.send();
+ *      const json = await response.json();
+ *      const features = new GeoJSON().readFeatures(json, {
+ *        featureProjection: projection,
+ *      });
+ *      return features;
  *    },
  *    strategy: bbox,
  *  });
  * ```
+ *
+ * When you want to retry a failed request, use
+ * ```js
+ * vectorSource.removeLoadedExtent(extent);
+ * vectorSource.changed();
+ * ```
+ *
  * @property {boolean} [overlaps=true] This source may have overlapping geometries.
  * Setting this to `false` (e.g. for sources with polygons that represent administrative
  * boundaries or TopoJSON sources) allows the renderer to optimise fill and
@@ -195,12 +192,12 @@ class VectorSource extends Source {
     });
 
     /***
-     * @type {VectorSourceOnSignature<import("../events").EventsKey, FeatureType>}
+     * @type {VectorSourceOnSignature<import("../events.js").EventsKey, FeatureType>}
      */
     this.on;
 
     /***
-     * @type {VectorSourceOnSignature<import("../events").EventsKey, FeatureType>}
+     * @type {VectorSourceOnSignature<import("../events.js").EventsKey, FeatureType>}
      */
     this.once;
 
@@ -262,12 +259,6 @@ class VectorSource extends Source {
      * @type {RBush<{extent: import("../extent.js").Extent}>}
      */
     this.loadedExtentsRtree_ = new RBush();
-
-    /**
-     * @type {number}
-     * @private
-     */
-    this.loadingExtentsCount_ = 0;
 
     /**
      * @private
@@ -1006,40 +997,59 @@ class VectorSource extends Source {
         },
       );
       if (!alreadyLoaded) {
-        ++this.loadingExtentsCount_;
+        this.loading = Number(this.loading) + 1;
         this.dispatchEvent(
           new VectorSourceEvent(VectorEventType.FEATURESLOADSTART),
         );
-        this.loader_.call(
+
+        /**
+         * @param {Array<FeatureType>} features Loaded features
+         */
+        const success = (features) => {
+          this.loading = Number(this.loading) - 1;
+          this.dispatchEvent(
+            new VectorSourceEvent(
+              VectorEventType.FEATURESLOADEND,
+              undefined,
+              features,
+            ),
+          );
+        };
+
+        const failure = () => {
+          this.changed();
+          this.loading = Number(this.loading) - 1;
+          this.dispatchEvent(
+            new VectorSourceEvent(VectorEventType.FEATURESLOADERROR),
+          );
+        };
+
+        //TODO Remove this when the deprecatedsuccess and failure arguments are removed
+        let disableCallbacks = false;
+
+        const loaded = this.loader_.call(
           this,
           extentToLoad,
           resolution,
           projection,
-          /**
-           * @param {Array<FeatureType>} features Loaded features
-           */
-          (features) => {
-            --this.loadingExtentsCount_;
-            this.dispatchEvent(
-              new VectorSourceEvent(
-                VectorEventType.FEATURESLOADEND,
-                undefined,
-                features,
-              ),
-            );
-          },
-          () => {
-            --this.loadingExtentsCount_;
-            this.dispatchEvent(
-              new VectorSourceEvent(VectorEventType.FEATURESLOADERROR),
-            );
-          },
+          (features) => disableCallbacks || success(features),
+          () => disableCallbacks || failure(),
         );
+        if (loaded instanceof Promise) {
+          //TODO Remove this when the deprecatedsuccess and failure arguments are removed
+          disableCallbacks = true;
+          loaded
+            .then((features) => {
+              this.addFeatures(features);
+              success(features);
+            })
+            .catch(failure);
+        } else if (this.loader_.length < 4) {
+          this.loading = false;
+        }
         loadedExtentsRtree.insert(extentToLoad, {extent: extentToLoad.slice()});
       }
     }
-    this.loading =
-      this.loader_.length < 4 ? false : this.loadingExtentsCount_ > 0;
   }
 
   /**
@@ -1052,20 +1062,28 @@ class VectorSource extends Source {
   }
 
   /**
-   * Remove an extent from the list of loaded extents.
-   * @param {import("../extent.js").Extent} extent Extent.
+   * Marks an extent as not loaded, preserving any loaded areas outside it.
+   *
+   * Any previously loaded extent overlapping the given extent is split into its
+   * remaining non-overlapping parts using {@link module:ol/extent~getDifference getDifference()},
+   * which are then re-inserted into the tree.
+   *
+   * @param {import("../extent.js").Extent} extent Extent to mark as not loaded.
    * @api
    */
   removeLoadedExtent(extent) {
     const loadedExtentsRtree = this.loadedExtentsRtree_;
-    const obj = loadedExtentsRtree.forEachInExtent(extent, function (object) {
-      if (equals(object.extent, extent)) {
-        return object;
+    const intersectingExtents = [];
+    loadedExtentsRtree.forEachInExtent(extent, function (object) {
+      intersectingExtents.push(object);
+    });
+    intersectingExtents.forEach((intersectingExtent) => {
+      loadedExtentsRtree.remove(intersectingExtent);
+      const remainders = getDifference(intersectingExtent.extent, extent);
+      for (const remainder of remainders) {
+        loadedExtentsRtree.insert(remainder, {extent: remainder});
       }
     });
-    if (obj) {
-      loadedExtentsRtree.remove(obj);
-    }
   }
 
   /**

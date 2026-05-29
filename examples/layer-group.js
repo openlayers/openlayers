@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import LayerGroup from '../src/ol/layer/Group.js';
@@ -44,17 +43,20 @@ const map = new Map({
 });
 
 function bindInputs(layerid, layer) {
-  const visibilityInput = $(layerid + ' input.visible');
-  visibilityInput.on('change', function () {
+  const visibilityInput = document.querySelector(layerid + ' input.visible');
+  visibilityInput.addEventListener('change', function () {
     layer.setVisible(this.checked);
   });
-  visibilityInput.prop('checked', layer.getVisible());
+  visibilityInput.addEventListener('change', function () {
+    layer.setVisible(this.checked);
+  });
+  visibilityInput.checked = layer.getVisible();
 
-  const opacityInput = $(layerid + ' input.opacity');
-  opacityInput.on('input', function () {
+  const opacityInput = document.querySelector(layerid + ' input.opacity');
+  opacityInput.addEventListener('input', function () {
     layer.setOpacity(parseFloat(this.value));
   });
-  opacityInput.val(String(layer.getOpacity()));
+  opacityInput.value = String(layer.getOpacity());
 }
 function setup(id, group) {
   group.getLayers().forEach(function (layer, i) {
@@ -67,9 +69,12 @@ function setup(id, group) {
 }
 setup('#layer', map.getLayerGroup());
 
-$('#layertree li > span')
-  .click(function () {
-    $(this).siblings('fieldset').toggle();
-  })
-  .siblings('fieldset')
-  .hide();
+document.querySelectorAll('#layertree li > span').forEach(function (element) {
+  element.addEventListener('click', function () {
+    this.parentNode.querySelector('fieldset').style.display =
+      this.parentNode.querySelector('fieldset').style.display === 'none'
+        ? ''
+        : 'none';
+  });
+  element.parentNode.querySelector('fieldset').style.display = 'none';
+});

@@ -9,12 +9,16 @@ import {
 } from '../../extent.js';
 import {fromUserExtent} from '../../proj.js';
 import {toSize} from '../../size.js';
-import {apply as applyTransform} from '../../transform.js';
+import {
+  apply as applyTransform,
+  reset as resetTransform,
+  translate as translateTransform,
+} from '../../transform.js';
 import {fromTransform as mat4FromTransform} from '../../vec/mat4.js';
+import {ELEMENT_ARRAY_BUFFER, STATIC_DRAW} from '../../webgl.js';
 import WebGLArrayBuffer from '../../webgl/Buffer.js';
 import {AttributeType} from '../../webgl/Helper.js';
 import TileTexture from '../../webgl/TileTexture.js';
-import {ELEMENT_ARRAY_BUFFER, STATIC_DRAW} from '../../webgl.js';
 import WebGLBaseTileLayerRenderer, {
   Uniforms as BaseUniforms,
   getCacheKey,
@@ -26,8 +30,6 @@ export const Uniforms = {
   TEXTURE_PIXEL_WIDTH: 'u_texturePixelWidth',
   TEXTURE_PIXEL_HEIGHT: 'u_texturePixelHeight',
   TEXTURE_RESOLUTION: 'u_textureResolution', // map units per texture pixel
-  TEXTURE_ORIGIN_X: 'u_textureOriginX', // map x coordinate of left edge of texture
-  TEXTURE_ORIGIN_Y: 'u_textureOriginY', // map y coordinate of top edge of texture
 };
 
 export const Attributes = {
@@ -49,7 +51,7 @@ const attributeDescriptions = [
  * @typedef {Object} Options
  * @property {string} vertexShader Vertex shader source.
  * @property {string} fragmentShader Fragment shader source.
- * @property {Object<string, import("../../webgl/Helper").UniformValue>} [uniforms] Additional uniforms
+ * @property {Object<string, import("../../webgl/Helper.js").UniformValue>} [uniforms] Additional uniforms
  * made available to shaders.
  * @property {Array<import("../../webgl/PaletteTexture.js").default>} [paletteTextures] Palette textures.
  * @property {number} [cacheSize=512] The texture cache size.
@@ -256,7 +258,7 @@ class WebGLTileLayerRenderer extends WebGLBaseTileLayerRenderer {
 
     this.helper.setUniformMatrixValue(
       Uniforms.TILE_TRANSFORM,
-      mat4FromTransform(this.tempMat4, tileTransform),
+      mat4FromTransform(this.tmpMat4_, tileTransform),
     );
 
     this.helper.setUniformFloatValue(Uniforms.TRANSITION_ALPHA, alpha);
@@ -267,7 +269,20 @@ class WebGLTileLayerRenderer extends WebGLBaseTileLayerRenderer {
       gutterExtent = tileExtent;
       getIntersection(gutterExtent, renderExtent, gutterExtent);
     }
-    this.helper.setUniformFloatVec4(Uniforms.RENDER_EXTENT, gutterExtent);
+    const textureOriginX =
+      tileOrigin[0] +
+      tileCenterI * tileSize[0] * tileResolution -
+      gutter * tileResolution;
+    const textureOriginY =
+      tileOrigin[1] -
+      tileCenterJ * tileSize[1] * tileResolution +
+      gutter * tileResolution;
+    const extentTransform = translateTransform(
+      resetTransform(this.tmpTransform_),
+      -textureOriginX,
+      -textureOriginY,
+    );
+    this.applyRenderExtentUniform(gutterExtent, extentTransform);
 
     this.helper.setUniformFloatValue(Uniforms.RESOLUTION, viewState.resolution);
     this.helper.setUniformFloatValue(Uniforms.ZOOM, viewState.zoom);
@@ -283,18 +298,6 @@ class WebGLTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     this.helper.setUniformFloatValue(
       Uniforms.TEXTURE_RESOLUTION,
       tileResolution,
-    );
-    this.helper.setUniformFloatValue(
-      Uniforms.TEXTURE_ORIGIN_X,
-      tileOrigin[0] +
-        tileCenterI * tileSize[0] * tileResolution -
-        gutter * tileResolution,
-    );
-    this.helper.setUniformFloatValue(
-      Uniforms.TEXTURE_ORIGIN_Y,
-      tileOrigin[1] -
-        tileCenterJ * tileSize[1] * tileResolution +
-        gutter * tileResolution,
     );
 
     this.helper.drawElements(0, this.indices_.getSize());

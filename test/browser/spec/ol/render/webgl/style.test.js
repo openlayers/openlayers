@@ -67,6 +67,7 @@ describe('ol/render/webgl/style', () => {
         {
           'circle-radius': 6,
           'circle-fill-color': '#336699',
+          'stroke-width': ['line-metric'],
         },
         undefined,
         ['between', ['get', 'attr0'], 0, 10],
@@ -87,11 +88,43 @@ describe('ol/render/webgl/style', () => {
       expect(result.builder.symbolSizeExpression_).to.eql(
         'vec2(6.0 * 2. + 0.5)',
       );
-      expect(result.builder.discardExpression_).to.eql(
+      expect(result.builder.shapeDiscardExpression_).to.eql(
         '!(a_prop_attr0 >= 0.0 && a_prop_attr0 <= 10.0)',
       );
+      expect(result.builder.fragmentDiscardExpression_).to.eql(null);
       expect(Object.keys(result.attributes).length).to.eql(1);
       expect(result.attributes).to.have.property('prop_attr0');
+    });
+
+    it('parses a style with a filter (involving a line-metric)', () => {
+      const result = parseLiteralStyle(
+        {
+          'circle-radius': 6,
+          'circle-fill-color': '#336699',
+        },
+        undefined,
+        ['between', ['line-metric'], 0, 10],
+      );
+
+      expect(result.builder.shapeDiscardExpression_).to.eql(null);
+      expect(result.builder.fragmentDiscardExpression_).to.eql(
+        '!(currentLineMetric >= 0.0 && currentLineMetric <= 10.0)',
+      );
+    });
+
+    it('parses a style with a filter not relying on the line-metric, even though line-metric is used somewhere else in the style', () => {
+      const result = parseLiteralStyle(
+        {
+          'stroke-width': ['line-metric'],
+        },
+        undefined,
+        ['between', ['get', 'attr0'], 0, 10],
+      );
+
+      expect(result.builder.shapeDiscardExpression_).to.eql(
+        '!(a_prop_attr0 >= 0.0 && a_prop_attr0 <= 10.0)',
+      );
+      expect(result.builder.fragmentDiscardExpression_).to.eql(null);
     });
 
     it('correctly adds string variables to the string literals mapping', () => {
@@ -1059,7 +1092,7 @@ describe('ol/render/webgl/style', () => {
             'vec4 sampleFillPattern',
           );
           expect(result.builder.fillColorExpression_).to.eql(
-            `1. * sampleFillPattern(u_texture${uid}, u_texture${uid}_size, vec2(0.), u_texture${uid}_size, pxOrigin, pxPos)`,
+            `1. * sampleFillPattern(u_texture${uid}, u_texture${uid}_size, vec2(0.), v_patternSizePx, v_patternOriginPx, pxPos, df_float(u_df_patternScaleRatio))`,
           );
         });
       });
@@ -1081,7 +1114,7 @@ describe('ol/render/webgl/style', () => {
             'vec4 sampleFillPattern',
           );
           expect(result.builder.fillColorExpression_).to.eql(
-            `vec4(1.0, 0.0, 0.0, 1.0) * sampleFillPattern(u_texture${uid}, u_texture${uid}_size, vec2(0., u_texture${uid}_size.y) + vec2(5.0, 5.0) * vec2(0., -1.) + vec2(5.0, 10.0) * vec2(1., -1.), vec2(5.0, 5.0), pxOrigin, pxPos)`,
+            `vec4(1.0, 0.0, 0.0, 1.0) * sampleFillPattern(u_texture${uid}, u_texture${uid}_size, vec2(0., u_texture${uid}_size.y) + v_patternSizePx * vec2(0., -1.) + vec2(5.0, 10.0) * vec2(1., -1.), v_patternSizePx, v_patternOriginPx, pxPos, df_float(u_df_patternScaleRatio))`,
           );
         });
       });
@@ -1162,7 +1195,7 @@ describe('ol/render/webgl/style', () => {
         expect(result.builder.fragmentShaderFunctions_[0]).to.contain(
           'bool operator_in_0',
         );
-        expect(result.builder.getFragmentDiscardExpression()).to.be(
+        expect(result.builder.shapeDiscardExpression_).to.be(
           `!((a_geometryType == ${stringToGlsl('LineString')}) && operator_in_0(a_prop_type))`,
         );
         expect(result.attributes).to.eql({

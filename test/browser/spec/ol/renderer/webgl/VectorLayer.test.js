@@ -6,8 +6,8 @@ import LineString from '../../../../../../src/ol/geom/LineString.js';
 import Point from '../../../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../../../src/ol/geom/Polygon.js';
 import VectorLayer from '../../../../../../src/ol/layer/Vector.js';
-import Projection from '../../../../../../src/ol/proj/Projection.js';
 import {get as getProjection} from '../../../../../../src/ol/proj.js';
+import Projection from '../../../../../../src/ol/proj/Projection.js';
 import {ShaderBuilder} from '../../../../../../src/ol/render/webgl/ShaderBuilder.js';
 import VectorStyleRenderer, * as ol_render_webgl_vectorstylerenderer from '../../../../../../src/ol/render/webgl/VectorStyleRenderer.js';
 import WebGLVectorLayerRenderer from '../../../../../../src/ol/renderer/webgl/VectorLayer.js';
@@ -374,6 +374,17 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       sinonSpy(renderer.helper, 'deleteBuffer');
       sinonSpy(renderer.styleRenderer_, 'render');
 
+      // this is required to keep a "snapshot" of the input vec2
+      // (since the same object is reused for various calls)
+      renderer.helper.setUniformFloatVec2 = new Proxy(
+        renderer.helper.setUniformFloatVec2,
+        {
+          apply(target, thisArg, [uniform, value]) {
+            return target.call(thisArg, uniform, [...value]);
+          },
+        },
+      );
+
       // this is required to keep a "snapshot" of the input matrix
       // (since the same object is reused for various calls)
       renderer.helper.setUniformMatrixValue = new Proxy(
@@ -410,13 +421,13 @@ describe('ol/renderer/webgl/VectorLayer', () => {
         [0.5, 0, 0, 0, 0, 0.5, 0, 0, 0, 0, 1, 0, -0.32, 0.64, 0, 1],
       ]);
     });
-    it('sets SCREEN_TO_WORLD matrix uniform once for each geometry type', () => {
+    it('sets INVERT_PROJECTION_MATRIX matrix uniform once for each geometry type', () => {
       const calls = renderer.helper.setUniformMatrixValue
         .getCalls()
-        .filter((c) => c.args[0] === 'u_screenToWorldMatrix');
+        .filter((c) => c.args[0] === 'u_invertProjectionMatrix');
       expect(calls.length).to.be(6 * withHit);
       expect(calls[1].args).to.eql([
-        'u_screenToWorldMatrix',
+        'u_invertProjectionMatrix',
         // 2     0     0     0      invert of u_projectionMatrix
         // 0     2     0     0
         // 0     0     1     0
@@ -424,17 +435,36 @@ describe('ol/renderer/webgl/VectorLayer', () => {
         [2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 1, 0, 0.64, -1.28, 0, 1],
       ]);
     });
-    it('sets PATTERN_ORIGIN vec2 uniform once for each geometry type', () => {
+    it('sets PATTERN_ORIGIN_X_DOUBLE vec2 uniform once for each geometry type', () => {
       const calls = renderer.helper.setUniformFloatVec2
         .getCalls()
-        .filter((c) => c.args[0] === 'u_patternOrigin');
+        .filter((c) => c.args[0] === 'u_df_patternOriginX');
       expect(calls.length).to.be(6 * withHit);
       expect(calls[1].args).to.eql([
-        'u_patternOrigin',
+        'u_df_patternOriginX',
         // combination of:
-        //   [ 0, 16 ]  ->  initial view center
-        //   scale( 2 / (0.25 * 200px), 2 / (0.25 * 100px) )  ->  divide by initial resolution & viewport size
-        [0, -1.28],
+        //   0          -> pattern origin X in world coordinates
+        //   - 16       -> center X coordinate
+        //   / 0.5      -> divide by resolution
+        //   + 100px    -> add half viewport size
+        //              -> split in high part/low part for double-float precision
+        [68, 0],
+      ]);
+    });
+    it('sets PATTERN_ORIGIN_Y_DOUBLE vec2 uniform once for each geometry type', () => {
+      const calls = renderer.helper.setUniformFloatVec2
+        .getCalls()
+        .filter((c) => c.args[0] === 'u_df_patternOriginY');
+      expect(calls.length).to.be(6 * withHit);
+      expect(calls[1].args).to.eql([
+        'u_df_patternOriginY',
+        // combination of:
+        //   0          -> pattern origin Y in world coordinates
+        //   - 0        -> center Y coordinate
+        //   / 0.5      -> divide by resolution
+        //   + 50px    -> add half viewport size
+        //              -> split in high part/low part for double-float precision
+        [50, 0],
       ]);
     });
     it('calls render once for each renderer', () => {

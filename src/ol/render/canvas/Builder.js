@@ -3,13 +3,13 @@
  */
 import {equals, reverseSubArray} from '../../array.js';
 import {asColorLike} from '../../colorlike.js';
-import Relationship from '../../extent/Relationship.js';
 import {
   buffer,
   clone,
   containsCoordinate,
   coordinateRelationship,
 } from '../../extent.js';
+import Relationship from '../../extent/Relationship.js';
 import {
   inflateCoordinates,
   inflateCoordinatesArray,
@@ -24,6 +24,7 @@ import {
   defaultLineJoin,
   defaultLineWidth,
   defaultMiterLimit,
+  defaultStrokeOffset,
   defaultStrokeStyle,
 } from '../canvas.js';
 import CanvasInstruction from './Instruction.js';
@@ -425,7 +426,7 @@ class CanvasBuilder extends VectorContext {
 
   /**
    * @protected
-   * @param {import("../../geom/Geometry").default|import("../Feature.js").default} geometry The geometry.
+   * @param {import("../../geom/Geometry.js").default|import("../Feature.js").default} geometry The geometry.
    * @param {import("../../Feature.js").FeatureLike} feature Feature.
    * @param {number} index Render order index
    */
@@ -502,9 +503,9 @@ class CanvasBuilder extends VectorContext {
         'src' in fillStyleColor
           ? this.pixelRatio
           : 1;
-      state.fillStyle = asColorLike(
-        fillStyleColor ? fillStyleColor : defaultFillStyle,
-      );
+      state.fillStyle =
+        asColorLike(fillStyleColor ? fillStyleColor : defaultFillStyle) ??
+        undefined;
     } else {
       state.fillStyle = undefined;
     }
@@ -549,6 +550,8 @@ class CanvasBuilder extends VectorContext {
         strokeStyleMiterLimit !== undefined
           ? strokeStyleMiterLimit
           : defaultMiterLimit;
+      const strokeStyleOffset = strokeStyle.getOffset();
+      state.strokeOffset = strokeStyleOffset ?? defaultStrokeOffset;
 
       if (state.lineWidth > this.maxLineWidth) {
         this.maxLineWidth = state.lineWidth;
@@ -563,6 +566,7 @@ class CanvasBuilder extends VectorContext {
       state.lineJoin = undefined;
       state.lineWidth = undefined;
       state.miterLimit = undefined;
+      state.strokeOffset = undefined;
     }
     return state;
   }
@@ -623,7 +627,10 @@ class CanvasBuilder extends VectorContext {
    */
   updateFillStyle(state, createFill) {
     const fillStyle = state.fillStyle;
-    if (typeof fillStyle !== 'string' || state.currentFillStyle != fillStyle) {
+    if (
+      (fillStyle !== undefined && typeof fillStyle !== 'string') ||
+      state.currentFillStyle != fillStyle
+    ) {
       this.instructions.push(createFill.call(this, state));
       state.currentFillStyle = fillStyle;
     }
@@ -641,6 +648,7 @@ class CanvasBuilder extends VectorContext {
     const lineJoin = state.lineJoin;
     const lineWidth = state.lineWidth;
     const miterLimit = state.miterLimit;
+    const strokeOffset = state.strokeOffset;
     if (
       state.currentStrokeStyle != strokeStyle ||
       state.currentLineCap != lineCap ||
@@ -649,7 +657,8 @@ class CanvasBuilder extends VectorContext {
       state.currentLineDashOffset != lineDashOffset ||
       state.currentLineJoin != lineJoin ||
       state.currentLineWidth != lineWidth ||
-      state.currentMiterLimit != miterLimit
+      state.currentMiterLimit != miterLimit ||
+      state.currentStrokeOffset != strokeOffset
     ) {
       applyStroke.call(this, state);
       state.currentStrokeStyle = strokeStyle;
@@ -659,6 +668,7 @@ class CanvasBuilder extends VectorContext {
       state.currentLineJoin = lineJoin;
       state.currentLineWidth = lineWidth;
       state.currentMiterLimit = miterLimit;
+      state.currentStrokeOffset = strokeOffset;
     }
   }
 

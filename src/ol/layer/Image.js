@@ -42,7 +42,7 @@ class ImageLayer extends BaseImageLayer {
    *   console.log(layer.getData(event.pixel));
    * });
    * ```
-   * @param {import("../pixel").Pixel} pixel Pixel.
+   * @param {import("../pixel.js").Pixel} pixel Pixel.
    * @return {Uint8ClampedArray|Uint8Array|Float32Array|DataView|null} Pixel data.
    * @api
    * @override

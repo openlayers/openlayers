@@ -1,8 +1,8 @@
+import CopyPlugin from 'copy-webpack-plugin';
 import fs from 'fs';
 import path, {dirname} from 'path';
-import {fileURLToPath} from 'url';
-import CopyPlugin from 'copy-webpack-plugin';
 import TerserPlugin from 'terser-webpack-plugin';
+import {fileURLToPath} from 'url';
 import ExampleBuilder from './example-builder.js';
 
 const src = path.join(dirname(fileURLToPath(import.meta.url)), '..');

@@ -19,24 +19,18 @@ import VectorEventType from '../../source/VectorEventType.js';
 import {
   apply as applyTransform,
   create as createTransform,
-  makeInverse as makeInverseTransform,
-  multiply as multiplyTransform,
-  setFromArray as setFromTransform,
   translate as translateTransform,
 } from '../../transform.js';
-import {
-  create as createMat4,
-  fromTransform as mat4FromTransform,
-} from '../../vec/mat4.js';
 import {DefaultUniform} from '../../webgl/Helper.js';
 import WebGLRenderTarget from '../../webgl/RenderTarget.js';
 import WebGLLayerRenderer from './Layer.js';
+import {VectorUniforms, applyVectorUniforms} from './vectorUtil.js';
 import {getWorldParameters} from './worldUtil.js';
 
 export const Uniforms = {
   ...DefaultUniform,
+  ...VectorUniforms,
   RENDER_EXTENT: 'u_renderExtent', // intersection of layer, source, and view extent
-  PATTERN_ORIGIN: 'u_patternOrigin',
   GLOBAL_ALPHA: 'u_globalAlpha',
 };
 
@@ -54,7 +48,7 @@ export const Uniforms = {
  * @property {Object<string, number|Array<number>|string|boolean>} variables Style variables
  * @property {boolean} [disableHitDetection=false] Setting this to true will provide a slight performance boost, but will
  * prevent all hit detection on the layer.
- * @property {Array<import("./Layer").PostProcessesOptions>} [postProcesses] Post-processes definitions
+ * @property {Array<import("./Layer.js").PostProcessesOptions>} [postProcesses] Post-processes definitions
  */
 
 /**
@@ -83,8 +77,8 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
   constructor(layer, options) {
     const uniforms = {
       [Uniforms.RENDER_EXTENT]: [0, 0, 0, 0],
-      [Uniforms.PATTERN_ORIGIN]: [0, 0],
       [Uniforms.GLOBAL_ALPHA]: 1,
+      [Uniforms.ONE]: 1,
     };
 
     super(layer, {
@@ -122,19 +116,6 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
      * @private
      */
     this.currentTransform_ = createTransform();
-
-    /**
-     * @private
-     */
-    this.tmpCoords_ = [0, 0];
-    /**
-     * @private
-     */
-    this.tmpTransform_ = createTransform();
-    /**
-     * @private
-     */
-    this.tmpMat4_ = createMat4();
 
     /**
      * @type {import("../../transform.js").Transform}
@@ -315,30 +296,16 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
 
   /**
    * @param {import("../../transform.js").Transform} batchInvertTransform Inverse of the transformation in which geometries are expressed
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @private
    */
-  applyUniforms_(batchInvertTransform) {
-    // world to screen matrix
-    setFromTransform(this.tmpTransform_, this.currentFrameStateTransform_);
-    multiplyTransform(this.tmpTransform_, batchInvertTransform);
-    this.helper.setUniformMatrixValue(
-      Uniforms.PROJECTION_MATRIX,
-      mat4FromTransform(this.tmpMat4_, this.tmpTransform_),
+  applyUniforms_(batchInvertTransform, frameState) {
+    applyVectorUniforms(
+      this.helper,
+      this.currentFrameStateTransform_,
+      batchInvertTransform,
+      frameState,
     );
-
-    // screen to world matrix
-    makeInverseTransform(this.tmpTransform_, this.tmpTransform_);
-    this.helper.setUniformMatrixValue(
-      Uniforms.SCREEN_TO_WORLD_MATRIX,
-      mat4FromTransform(this.tmpMat4_, this.tmpTransform_),
-    );
-
-    // pattern origin should always be [0, 0] in world coordinates
-    this.tmpCoords_[0] = 0;
-    this.tmpCoords_[1] = 0;
-    makeInverseTransform(this.tmpTransform_, batchInvertTransform);
-    applyTransform(this.tmpTransform_, this.tmpCoords_);
-    this.helper.setUniformFloatVec2(Uniforms.PATTERN_ORIGIN, this.tmpCoords_);
   }
 
   /**
@@ -482,7 +449,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
         continue;
       }
       this.styleRenderer_.render(this.buffers_, frameState, () => {
-        this.applyUniforms_(this.buffers_.invertVerticesTransform);
+        this.applyUniforms_(this.buffers_.invertVerticesTransform, frameState);
         this.helper.applyHitDetectionUniform(forHitDetection);
       });
     } while (++world < endWorld);

@@ -4,8 +4,8 @@
 import MapProperty from '../MapProperty.js';
 import {CLASS_CONTROL, CLASS_UNSELECTABLE, CLASS_UNSUPPORTED} from '../css.js';
 import {replaceNode} from '../dom.js';
-import EventType from '../events/EventType.js';
 import {listen, unlistenByKey} from '../events.js';
+import EventType from '../events/EventType.js';
 import Control from './Control.js';
 
 const events = ['fullscreenchange', 'webkitfullscreenchange'];
@@ -31,11 +31,11 @@ const FullScreenEventType = {
 
 /***
  * @template Return
- * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes|
+ * @typedef {import("../Observable.js").OnSignature<import("../Observable.js").EventTypes|
  *     'enterfullscreen'|'leavefullscreen', import("../events/Event.js").default, Return> &
- *   import("../Observable").OnSignature<import("../ObjectEventType").Types, import("../Object").ObjectEvent, Return> &
- *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|
- *     'enterfullscreen'|'leavefullscreen'|import("../ObjectEventType").Types, Return>} FullScreenOnSignature
+ *   import("../Observable.js").OnSignature<import("../ObjectEventType.js").Types, import("../Object.js").ObjectEvent, Return> &
+ *   import("../Observable.js").CombinedOnSignature<import("../Observable.js").EventTypes|
+ *     'enterfullscreen'|'leavefullscreen'|import("../ObjectEventType.js").Types, Return>} FullScreenOnSignature
  */
 
 /**
@@ -87,12 +87,12 @@ class FullScreen extends Control {
     });
 
     /***
-     * @type {FullScreenOnSignature<import("../events").EventsKey>}
+     * @type {FullScreenOnSignature<import("../events.js").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {FullScreenOnSignature<import("../events").EventsKey>}
+     * @type {FullScreenOnSignature<import("../events.js").EventsKey>}
      */
     this.once;
 

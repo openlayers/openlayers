@@ -1,6 +1,6 @@
 import Tile from '../../../../../src/ol/Tile.js';
-import Projection from '../../../../../src/ol/proj/Projection.js';
 import {get as getProjection} from '../../../../../src/ol/proj.js';
+import Projection from '../../../../../src/ol/proj/Projection.js';
 import Source from '../../../../../src/ol/source/Source.js';
 import TileSource from '../../../../../src/ol/source/Tile.js';
 import {getKeyZXY} from '../../../../../src/ol/tilecoord.js';

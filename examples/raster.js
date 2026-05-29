@@ -1,7 +1,7 @@
-import 'd3-transition';
 import {max} from 'd3-array';
 import {scaleLinear} from 'd3-scale';
 import {select} from 'd3-selection';
+import 'd3-transition';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import ImageLayer from '../src/ol/layer/Image.js';

@@ -70,6 +70,7 @@ void main(void) {
   v_centerPx = screenToPx(center.xy) + centerOffsetPx;
   v_opacity = 0.4;
   v_test = vec3(1.0, 2.0, 3.0);
+
 }`);
     });
     it('generates a symbol vertex shader (with uniforms and attributes)', () => {
@@ -80,6 +81,7 @@ void main(void) {
       builder.setSymbolOffsetExpression(arrayToGlsl([5, -7]));
       builder.setSymbolColorExpression(colorToGlsl([80, 0, 255, 1]));
       builder.setTextureCoordinateExpression(arrayToGlsl([0, 0.5, 0.5, 1]));
+      builder.setShapeDiscardExpression('u_myUniform > 0.5');
 
       expect(builder.getSymbolVertexShader()).to.eql(`${COMMON_HEADER}
 uniform float u_myUniform;
@@ -128,6 +130,7 @@ void main(void) {
   centerOffsetPx = vec2(c * centerOffsetPx.x - s * centerOffsetPx.y, s * centerOffsetPx.x + c * centerOffsetPx.y);
   v_centerPx = screenToPx(center.xy) + centerOffsetPx;
   v_myAttr = a_myAttr;
+  if (u_myUniform > 0.5) { gl_Position = vec4(2.0, 2.0, 0.0, 0.0); }
 }`);
     });
     it('generates a symbol vertex shader (with rotateWithView)', () => {
@@ -184,6 +187,7 @@ void main(void) {
   centerOffsetPx = vec2(c * centerOffsetPx.x - s * centerOffsetPx.y, s * centerOffsetPx.x + c * centerOffsetPx.y);
   v_centerPx = screenToPx(center.xy) + centerOffsetPx;
 
+
 }`);
     });
 
@@ -239,6 +243,7 @@ void main(void) {
   centerOffsetPx = vec2(c * centerOffsetPx.x - s * centerOffsetPx.y, s * centerOffsetPx.x + c * centerOffsetPx.y);
   v_centerPx = screenToPx(center.xy) + centerOffsetPx;
 
+
 }`);
     });
 
@@ -274,7 +279,7 @@ varying vec3 v_test;
 void main(void) {
   float a_opacity = v_opacity; // assign to original attribute name
   vec3 a_test = v_test; // assign to original attribute name
-  if (false) { discard; }
+
   vec2 coordsPx = gl_FragCoord.xy / u_pixelRatio - v_centerPx; // relative to center
   float c = cos(v_angle);
   float s = sin(v_angle);
@@ -347,6 +352,7 @@ void main(void) {
       builder.setStrokeMiterLimitExpression('12.34');
       builder.setStrokeDistanceFieldExpression('cos(currentLengthPx)');
       builder.setFragmentDiscardExpression('u_myUniform > 0.5');
+      builder.setShapeDiscardExpression('u_myUniform > 0.5');
     });
 
     describe('getStrokeVertexShader', () => {
@@ -381,10 +387,6 @@ varying vec3 v_test;
 attribute vec2 a_myAttr;
 varying vec2 v_myAttr;
 
-vec2 worldToPx(vec2 worldPos) {
-  vec4 screenPos = u_projectionMatrix * vec4(worldPos, 0.0, 1.0);
-  return (0.5 * screenPos.xy + 0.5) * u_viewportSizePx;
-}
 
 vec4 pxToScreen(vec2 pxPos) {
   vec2 screenPos = 2.0 * pxPos / u_viewportSizePx - 1.0;
@@ -460,6 +462,7 @@ void main(void) {
   v_opacity = 0.4;
   v_test = vec3(1.0, 2.0, 3.0);
   v_myAttr = a_myAttr;
+  if (u_myUniform > 0.5) { gl_Position = vec4(2.0, 2.0, 0.0, 0.0); }
 }`);
       });
 
@@ -496,11 +499,6 @@ varying float v_opacity;
 varying vec3 v_test;
 varying vec2 v_myAttr;
 
-
-vec2 pxToWorld(vec2 pxPos) {
-  vec2 screenPos = 2.0 * pxPos / u_viewportSizePx - 1.0;
-  return (u_screenToWorldMatrix * vec4(screenPos, 0.0, 1.0)).xy;
-}
 
 bool isCap(float joinAngle) {
   return joinAngle < -0.1;
@@ -594,7 +592,6 @@ void main(void) {
   vec2 a_myAttr = v_myAttr; // assign to original attribute name
 
   vec2 currentPointPx = gl_FragCoord.xy / u_pixelRatio;
-  #ifdef GL_FRAGMENT_PRECISION_HIGH
   vec2 worldPos = pxToWorld(currentPointPx);
   if (
     abs(u_renderExtent[0] - u_renderExtent[2]) > 0.0 && (
@@ -606,7 +603,6 @@ void main(void) {
   ) {
     discard;
   }
-  #endif
 
   float segmentLengthPx = length(v_segmentEndPx - v_segmentStartPx);
   segmentLengthPx = max(segmentLengthPx, 1.17549429e-38); // avoid divide by zero
@@ -659,6 +655,7 @@ void main(void) {
       builder.addUniform('u_myUniform', 'float');
       builder.setFillColorExpression(colorToGlsl([80, 0, 255, 1]));
       builder.setFragmentDiscardExpression('u_myUniform > 0.5');
+      builder.setShapeDiscardExpression('u_myUniform > 0.5');
 
       expect(builder.getFillVertexShader()).to.eql(`${COMMON_HEADER}
 uniform float u_myUniform;
@@ -666,6 +663,8 @@ attribute vec2 a_position;
 attribute vec2 a_hitColor;
 
 varying vec4 v_hitColor;
+varying vec2 v_patternOriginPx;
+varying vec2 v_patternSizePx;
 
 attribute float a_opacity;
 varying float v_opacity;
@@ -677,9 +676,52 @@ varying vec2 v_myAttr;
 void main(void) {
   gl_Position = u_projectionMatrix * vec4(a_position, u_depth, 1.0);
   v_hitColor = unpackColor(a_hitColor);
+  v_patternOriginPx = vec2(0.);
   v_opacity = 0.4;
   v_test = vec3(1.0, 2.0, 3.0);
   v_myAttr = a_myAttr;
+  if (u_myUniform > 0.5) { gl_Position = vec4(2.0, 2.0, 0.0, 0.0); }
+}`);
+    });
+    it('computes the pattern origin correctly if a pattern size is provided', () => {
+      const builder = new ShaderBuilder();
+      builder.setFillPatternSizeExpression(`vec2(32., 64.)`);
+      builder.setFillColorExpression(colorToGlsl([80, 0, 255, 1]));
+
+      expect(builder.getFillVertexShader()).to.eql(`${COMMON_HEADER}
+
+attribute vec2 a_position;
+attribute vec2 a_hitColor;
+
+varying vec4 v_hitColor;
+varying vec2 v_patternOriginPx;
+varying vec2 v_patternSizePx;
+
+
+
+void main(void) {
+  gl_Position = u_projectionMatrix * vec4(a_position, u_depth, 1.0);
+  v_hitColor = unpackColor(a_hitColor);
+
+  // this computes the pattern offset in screenspace using double-float arithmetics
+  v_patternSizePx = vec2(32., 64.);
+  vec2 patternSizeScaledX = df_mul(df_from(v_patternSizePx.x), u_df_patternScaleRatio);
+  vec2 patternSizeScaledY = df_mul(df_from(v_patternSizePx.y), u_df_patternScaleRatio);
+  v_patternOriginPx = vec2(
+    df_mod(u_df_patternOriginX, patternSizeScaledX),
+    df_mod(u_df_patternOriginY, patternSizeScaledY)
+  );
+
+  // reapply rotation to the pattern origin
+  v_patternOriginPx -= u_viewportSizePx / 2.; // translate to viewport center
+  v_patternOriginPx = vec2(
+    cos(-u_rotation) * v_patternOriginPx.x - sin(-u_rotation) * v_patternOriginPx.y,
+    sin(-u_rotation) * v_patternOriginPx.x + cos(-u_rotation) * v_patternOriginPx.y
+  );
+  v_patternOriginPx += u_viewportSizePx / 2.; // translate back
+
+
+
 }`);
     });
 
@@ -701,27 +743,18 @@ void main(void) {
       expect(builder.getFillFragmentShader()).to.eql(`${COMMON_HEADER}
 uniform float u_myUniform;
 varying vec4 v_hitColor;
+varying vec2 v_patternOriginPx;
+varying vec2 v_patternSizePx;
 varying float v_opacity;
 varying vec3 v_test;
 varying vec2 v_myAttr;
 
-vec2 pxToWorld(vec2 pxPos) {
-  vec2 screenPos = 2.0 * pxPos / u_viewportSizePx - 1.0;
-  return (u_screenToWorldMatrix * vec4(screenPos, 0.0, 1.0)).xy;
-}
-
-vec2 worldToPx(vec2 worldPos) {
-  vec4 screenPos = u_projectionMatrix * vec4(worldPos, 0.0, 1.0);
-  return (0.5 * screenPos.xy + 0.5) * u_viewportSizePx;
-}
 
 void main(void) {
   float a_opacity = v_opacity; // assign to original attribute name
   vec3 a_test = v_test; // assign to original attribute name
   vec2 a_myAttr = v_myAttr; // assign to original attribute name
   vec2 pxPos = gl_FragCoord.xy / u_pixelRatio;
-  vec2 pxOrigin = worldToPx(u_patternOrigin);
-  #ifdef GL_FRAGMENT_PRECISION_HIGH
   vec2 worldPos = pxToWorld(pxPos);
   if (
     abs(u_renderExtent[0] - u_renderExtent[2]) > 0.0 && (
@@ -733,7 +766,6 @@ void main(void) {
   ) {
     discard;
   }
-  #endif
   if (u_myUniform > 0.5) { discard; }
   gl_FragColor = vec4(0.3137254901960784, 0.0, 1.0, 1.0);
   gl_FragColor.a *= u_globalAlpha;

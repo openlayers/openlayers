@@ -3,14 +3,14 @@ import {spy as sinonSpy} from 'sinon';
 import ImageTile from '../../../../../src/ol/ImageTile.js';
 import TileState from '../../../../../src/ol/TileState.js';
 import {listen} from '../../../../../src/ol/events.js';
-import Projection from '../../../../../src/ol/proj/Projection.js';
-import {WORLD_EXTENT} from '../../../../../src/ol/proj/epsg3857.js';
-import {register} from '../../../../../src/ol/proj/proj4.js';
 import {
   addCommon,
   clearAllProjections,
   get as getProjection,
 } from '../../../../../src/ol/proj.js';
+import Projection from '../../../../../src/ol/proj/Projection.js';
+import {WORLD_EXTENT} from '../../../../../src/ol/proj/epsg3857.js';
+import {register} from '../../../../../src/ol/proj/proj4.js';
 import ReprojTile from '../../../../../src/ol/reproj/Tile.js';
 import TileImage from '../../../../../src/ol/source/TileImage.js';
 import {

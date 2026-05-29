@@ -723,6 +723,32 @@ describe('ol.interaction.Snap', function () {
       });
     }
 
+    it('ignores point coordinates with mixed GeometryCollection', function () {
+      const feature = new Feature(
+        new GeometryCollection([
+          new Point([5, 5]),
+          new LineString([
+            [1, 1],
+            [3, 3],
+            [5, 5],
+            [7, 7],
+          ]),
+        ]),
+      );
+      const snapInteraction = new Snap({
+        features: new Collection([feature]),
+        intersection: true,
+        vertex: false,
+        edge: false,
+      });
+      snapInteraction.setMap(new Map());
+
+      const segments = snapInteraction.rBush_
+        .getAll()
+        .filter((item) => item.intersectionFeature);
+      expect(segments).to.have.length(0);
+    });
+
     it('only adds single self intersection point', function () {
       const line1 = new Feature(
         new LineString([

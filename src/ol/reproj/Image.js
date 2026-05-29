@@ -4,8 +4,8 @@
 
 import ImageWrapper from '../Image.js';
 import ImageState from '../ImageState.js';
-import EventType from '../events/EventType.js';
 import {listen, unlistenByKey} from '../events.js';
+import EventType from '../events/EventType.js';
 import {
   getCenter,
   getHeight,

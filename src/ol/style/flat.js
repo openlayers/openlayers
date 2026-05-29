@@ -124,7 +124,7 @@
  * @property {NumberExpression} [stroke-line-dash-offset=0] Line dash offset.
  * @property {NumberExpression} [stroke-miter-limit=10] Miter limit.
  * @property {NumberExpression} [stroke-offset] Stroke offset in pixel along the normal. A positive value offsets the line to the right,
- * relative to the direction of the line. (WebGL only)
+ * relative to the direction of the line.
  * @property {string} [stroke-pattern-src] Stroke pattern image source URI. If `stroke-color` is defined as well,
  * it will be used to tint this image. (WebGL only)
  * @property {SizeExpression} [stroke-pattern-offset=[0, 0]] Offset, which, together with the size and the offset origin,

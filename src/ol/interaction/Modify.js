@@ -144,7 +144,7 @@ const ModifyEventType = {
  * @property {VectorSource} [source] The vector source with
  * features to modify.  If a vector source is not provided, a feature collection
  * must be provided with the `features` option.
- * @property {boolean|import("../layer/BaseVector").default} [hitDetection] When configured, point
+ * @property {boolean|import("../layer/BaseVector.js").default} [hitDetection] When configured, point
  * features will be considered for modification based on their visual appearance, instead of being within
  * the `pixelTolerance` from the pointer location. When a {@link module:ol/layer/BaseVector~BaseVectorLayer} is
  * provided, only the rendered representation of the features on that layer will be considered.
@@ -162,6 +162,12 @@ const ModifyEventType = {
  * overlay.
  * @property {boolean} [snapToPointer=!hitDetection] The vertex, point or segment being modified snaps to the
  * pointer coordinate when clicked within the `pixelTolerance`.
+ * @property {function(import("../coordinate.js").Coordinate, import("../coordinate.js").Coordinate): boolean} [sharedVerticesEqual]
+ * A function that takes two coordinates and returns whether they should be
+ * considered equal for vertex matching purposes. By default, all coordinate
+ * dimensions are compared. This is useful when features have mixed coordinate
+ * dimensions (e.g., XY and XYZ) but should still be treated as sharing vertices
+ * at the same 2D position.
  */
 
 function getCoordinatesArray(coordinates, geometryType, depth) {
@@ -217,11 +223,11 @@ export class ModifyEvent extends Event {
 
 /***
  * @template Return
- * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
- *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
- *     'change:active', import("../Object").ObjectEvent, Return> &
- *   import("../Observable").OnSignature<'modifyend'|'modifystart', ModifyEvent, Return> &
- *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
+ * @typedef {import("../Observable.js").OnSignature<import("../Observable.js").EventTypes, import("../events/Event.js").default, Return> &
+ *   import("../Observable.js").OnSignature<import("../ObjectEventType.js").Types|
+ *     'change:active', import("../Object.js").ObjectEvent, Return> &
+ *   import("../Observable.js").OnSignature<'modifyend'|'modifystart', ModifyEvent, Return> &
+ *   import("../Observable.js").CombinedOnSignature<import("../Observable.js").EventTypes|import("../ObjectEventType.js").Types|
  *     'change:active'|'modifyend'|'modifystart', Return>} ModifyOnSignature
  */
 
@@ -272,12 +278,12 @@ class Modify extends PointerInteraction {
     this.handleFeatureChange_ = this.handleFeatureChange_.bind(this);
 
     /***
-     * @type {ModifyOnSignature<import("../events").EventsKey>}
+     * @type {ModifyOnSignature<import("../events.js").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {ModifyOnSignature<import("../events").EventsKey>}
+     * @type {ModifyOnSignature<import("../events.js").EventsKey>}
      */
     this.once;
 
@@ -449,7 +455,7 @@ class Modify extends PointerInteraction {
     this.traceSegments_ = null;
 
     /**
-     * @type {boolean|import("../layer/BaseVector").default}
+     * @type {boolean|import("../layer/BaseVector.js").default}
      * @private
      */
     this.hitDetection_ = null;
@@ -467,6 +473,14 @@ class Modify extends PointerInteraction {
      * @type {FilterFunction}
      */
     this.filter_ = options.filter ? options.filter : () => true;
+
+    /**
+     * @private
+     * @type {function(import("../coordinate.js").Coordinate, import("../coordinate.js").Coordinate): boolean}
+     */
+    this.coordinatesEqual_ = options.sharedVerticesEqual
+      ? options.sharedVerticesEqual
+      : coordinatesEqual;
 
     if (!(options.features || options.source)) {
       throw new Error(
@@ -782,7 +796,7 @@ class Modify extends PointerInteraction {
   /**
    * Listener for features in external source or features collection.  Ensures the feature filter
    * is re-run and segment data is updated.
-   * @param {import("../events/Event.js").default | import("../Object").ObjectEvent} evt Event.
+   * @param {import("../events/Event.js").default | import("../Object.js").ObjectEvent} evt Event.
    * @private
    */
   handleFeatureChange_(evt) {
@@ -1109,7 +1123,7 @@ class Modify extends PointerInteraction {
           projection,
         );
         if (
-          coordinatesEqual(closestVertex, vertex) &&
+          this.coordinatesEqual_(closestVertex, vertex) &&
           !componentSegments[uid][0]
         ) {
           this.dragSegments_.push([segmentDataMatch, 0]);
@@ -1118,13 +1132,19 @@ class Modify extends PointerInteraction {
         continue;
       }
 
-      if (coordinatesEqual(segment[0], vertex) && !componentSegments[uid][0]) {
+      if (
+        this.coordinatesEqual_(segment[0], vertex) &&
+        !componentSegments[uid][0]
+      ) {
         this.dragSegments_.push([segmentDataMatch, 0]);
         componentSegments[uid][0] = segmentDataMatch;
         continue;
       }
 
-      if (coordinatesEqual(segment[1], vertex) && !componentSegments[uid][1]) {
+      if (
+        this.coordinatesEqual_(segment[1], vertex) &&
+        !componentSegments[uid][1]
+      ) {
         if (
           componentSegments[uid][0] &&
           componentSegments[uid][0].index === 0
@@ -1456,9 +1476,11 @@ class Modify extends PointerInteraction {
     const geometry = segmentData.geometry;
     const index = dragSegment[1];
 
-    while (vertex.length < geometry.getStride()) {
-      vertex.push(segment[index][vertex.length]);
+    const stride = geometry.getStride();
+    for (let i = 2; i < stride; ++i) {
+      vertex[i] = segment[index][i];
     }
+    vertex.length = stride;
     switch (geometry.getType()) {
       case 'Point':
         coordinates = vertex;
@@ -1481,16 +1503,50 @@ class Modify extends PointerInteraction {
         coordinates[depth[0]][segmentData.index + index] = vertex;
         segment[index] = vertex;
         break;
-      case 'Polygon':
+      case 'Polygon': {
         coordinates = geometry.getCoordinates();
-        coordinates[depth[0]][segmentData.index + index] = vertex;
+        const ring = coordinates[depth[0]];
+        const targetIndex = segmentData.index + index;
+
+        // Prevent duplicate change events when vertex already at position
+        if (
+          ring[targetIndex][0] === vertex[0] &&
+          ring[targetIndex][1] === vertex[1]
+        ) {
+          coordinates = null;
+        } else {
+          ring[targetIndex] = vertex;
+          if (targetIndex === 0) {
+            ring[ring.length - 1] = vertex;
+          } else if (targetIndex === ring.length - 1) {
+            ring[0] = vertex;
+          }
+        }
         segment[index] = vertex;
         break;
-      case 'MultiPolygon':
+      }
+      case 'MultiPolygon': {
         coordinates = geometry.getCoordinates();
-        coordinates[depth[1]][depth[0]][segmentData.index + index] = vertex;
+        const mRing = coordinates[depth[1]][depth[0]];
+        const mTargetIndex = segmentData.index + index;
+
+        // Prevent duplicate change events when vertex already at position
+        if (
+          mRing[mTargetIndex][0] === vertex[0] &&
+          mRing[mTargetIndex][1] === vertex[1]
+        ) {
+          coordinates = null;
+        } else {
+          mRing[mTargetIndex] = vertex;
+          if (mTargetIndex === 0) {
+            mRing[mRing.length - 1] = vertex;
+          } else if (mTargetIndex === mRing.length - 1) {
+            mRing[0] = vertex;
+          }
+        }
         segment[index] = vertex;
         break;
+      }
       case 'Circle':
         const circle = /** @type {import("../geom/Circle.js").default} */ (
           geometry
@@ -1814,10 +1870,10 @@ class Modify extends PointerInteraction {
           for (let i = 1, ii = nodes.length; i < ii; ++i) {
             const segment = nodes[i].segment;
             if (
-              (coordinatesEqual(closestSegment[0], segment[0]) &&
-                coordinatesEqual(closestSegment[1], segment[1])) ||
-              (coordinatesEqual(closestSegment[0], segment[1]) &&
-                coordinatesEqual(closestSegment[1], segment[0]))
+              (this.coordinatesEqual_(closestSegment[0], segment[0]) &&
+                this.coordinatesEqual_(closestSegment[1], segment[1])) ||
+              (this.coordinatesEqual_(closestSegment[0], segment[1]) &&
+                this.coordinatesEqual_(closestSegment[1], segment[0]))
             ) {
               const geometryUid = getUid(nodes[i].geometry);
               if (!(geometryUid in geometries)) {
@@ -1962,8 +2018,8 @@ class Modify extends PointerInteraction {
     const segments = this.rBush_.getInExtent(boundingExtent([coordinate]));
     return segments.some(
       ({segment}) =>
-        coordinatesEqual(segment[0], coordinate) ||
-        coordinatesEqual(segment[1], coordinate),
+        this.coordinatesEqual_(segment[0], coordinate) ||
+        this.coordinatesEqual_(segment[1], coordinate),
     );
   }
 
@@ -2155,8 +2211,8 @@ class Modify extends PointerInteraction {
     return segments.some(
       ({segment}) =>
         !(
-          coordinatesEqual(segment[0], coordinate) ||
-          coordinatesEqual(segment[1], coordinate)
+          this.coordinatesEqual_(segment[0], coordinate) ||
+          this.coordinatesEqual_(segment[1], coordinate)
         ),
     );
   }

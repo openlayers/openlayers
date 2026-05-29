@@ -1,7 +1,11 @@
 /**
  * @module ol/render/canvas/LineStringBuilder
  */
-import {defaultLineDash, defaultLineDashOffset} from '../canvas.js';
+import {
+  defaultLineDash,
+  defaultLineDashOffset,
+  defaultStrokeStyle,
+} from '../canvas.js';
 import CanvasBuilder from './Builder.js';
 import CanvasInstruction, {
   beginPathInstruction,
@@ -24,10 +28,11 @@ class CanvasLineStringBuilder extends CanvasBuilder {
    * @param {number} offset Offset.
    * @param {number} end End.
    * @param {number} stride Stride.
+   * @param {number} [strokeOffset] Stroke Offset in pixels.
    * @private
    * @return {number} end.
    */
-  drawFlatCoordinates_(flatCoordinates, offset, end, stride) {
+  drawFlatCoordinates_(flatCoordinates, offset, end, stride, strokeOffset) {
     const myBegin = this.coordinates.length;
     const myEnd = this.appendFlatLineCoordinates(
       flatCoordinates,
@@ -37,13 +42,18 @@ class CanvasLineStringBuilder extends CanvasBuilder {
       false,
       false,
     );
-    const moveToLineToInstruction = [
+    this.instructions.push([
       CanvasInstruction.MOVE_TO_LINE_TO,
       myBegin,
       myEnd,
-    ];
-    this.instructions.push(moveToLineToInstruction);
-    this.hitDetectionInstructions.push(moveToLineToInstruction);
+      strokeOffset * this.pixelRatio,
+    ]);
+    this.hitDetectionInstructions.push([
+      CanvasInstruction.MOVE_TO_LINE_TO,
+      myBegin,
+      myEnd,
+      strokeOffset,
+    ]);
     return end;
   }
 
@@ -57,6 +67,7 @@ class CanvasLineStringBuilder extends CanvasBuilder {
     const state = this.state;
     const strokeStyle = state.strokeStyle;
     const lineWidth = state.lineWidth;
+    const strokeOffset = state.strokeOffset;
     if (strokeStyle === undefined || lineWidth === undefined) {
       return;
     }
@@ -65,7 +76,7 @@ class CanvasLineStringBuilder extends CanvasBuilder {
     this.hitDetectionInstructions.push(
       [
         CanvasInstruction.SET_STROKE_STYLE,
-        state.strokeStyle,
+        defaultStrokeStyle,
         state.lineWidth,
         state.lineCap,
         state.lineJoin,
@@ -82,6 +93,7 @@ class CanvasLineStringBuilder extends CanvasBuilder {
       0,
       flatCoordinates.length,
       stride,
+      strokeOffset,
     );
     this.hitDetectionInstructions.push(strokeInstruction);
     this.endGeometry(feature);
@@ -97,6 +109,7 @@ class CanvasLineStringBuilder extends CanvasBuilder {
     const state = this.state;
     const strokeStyle = state.strokeStyle;
     const lineWidth = state.lineWidth;
+    const strokeOffset = state.strokeOffset;
     if (strokeStyle === undefined || lineWidth === undefined) {
       return;
     }
@@ -105,7 +118,7 @@ class CanvasLineStringBuilder extends CanvasBuilder {
     this.hitDetectionInstructions.push(
       [
         CanvasInstruction.SET_STROKE_STYLE,
-        state.strokeStyle,
+        defaultStrokeStyle,
         state.lineWidth,
         state.lineCap,
         state.lineJoin,
@@ -125,6 +138,7 @@ class CanvasLineStringBuilder extends CanvasBuilder {
         offset,
         /** @type {number} */ (ends[i]),
         stride,
+        strokeOffset,
       );
     }
     this.hitDetectionInstructions.push(strokeInstruction);

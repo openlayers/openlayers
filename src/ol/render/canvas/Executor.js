@@ -4,6 +4,10 @@
 import {equals} from '../../array.js';
 import {createEmpty, createOrUpdate, intersects} from '../../extent.js';
 import {lineStringLength} from '../../geom/flat/length.js';
+import {
+  offsetLineString,
+  removeOffsetCycles,
+} from '../../geom/flat/lineoffset.js';
 import {drawTextOnPath} from '../../geom/flat/textpath.js';
 import {transform2D} from '../../geom/flat/transform.js';
 import {
@@ -12,7 +16,6 @@ import {
   create as createTransform,
   setFromArray as transformSetFromArray,
 } from '../../transform.js';
-import ZIndexContext from '../canvas/ZIndexContext.js';
 import {
   defaultPadding,
   defaultTextAlign,
@@ -21,6 +24,7 @@ import {
   getTextDimensions,
   measureAndCacheTextWidth,
 } from '../canvas.js';
+import ZIndexContext from '../canvas/ZIndexContext.js';
 import CanvasInstruction from './Instruction.js';
 import {TEXT_ALIGN} from './TextBuilder.js';
 
@@ -705,8 +709,10 @@ class Executor {
     const ii = instructions.length; // end of instructions
     let d = 0; // data index
     let dd; // end of per-instruction data
+    const offsetCoords = [];
     let anchorX,
       anchorY,
+      lineOffsetPx,
       /** @type {import('../../style/Style.js').DeclutterMode} */
       declutterMode,
       prevX,
@@ -781,10 +787,11 @@ class Executor {
           break;
         case CanvasInstruction.CIRCLE:
           d = /** @type {number} */ (instruction[1]);
+          lineOffsetPx = /** @type {number} */ instruction[2] ?? 0;
           const x1 = pixelCoordinates[d];
           const y1 = pixelCoordinates[d + 1];
-          const x2 = pixelCoordinates[d + 2];
-          const y2 = pixelCoordinates[d + 3];
+          const x2 = pixelCoordinates[d + 2] - lineOffsetPx;
+          const y2 = pixelCoordinates[d + 3] - lineOffsetPx;
           const dx = x2 - x1;
           const dy = y2 - y1;
           const r = Math.sqrt(dx * dx + dy * dy);
@@ -1192,17 +1199,47 @@ class Executor {
         case CanvasInstruction.MOVE_TO_LINE_TO:
           d = /** @type {number} */ (instruction[1]);
           dd = /** @type {number} */ (instruction[2]);
-          x = pixelCoordinates[d];
-          y = pixelCoordinates[d + 1];
+          lineOffsetPx = /** @type {number|undefined} */ (instruction[3]);
+
+          let lineCoords, lineStart, lineEnd;
+          if (lineOffsetPx) {
+            const isClosedRing =
+              /** @type {boolean|undefined} */ (instruction[4]) ?? false;
+            const isClosedLine =
+              isClosedRing ||
+              (Math.abs(pixelCoordinates[d] - pixelCoordinates[dd - 2]) <
+                1e-6 &&
+                Math.abs(pixelCoordinates[d + 1] - pixelCoordinates[dd - 1]) <
+                  1e-6);
+            offsetLineString(
+              pixelCoordinates,
+              d,
+              dd,
+              2,
+              lineOffsetPx,
+              isClosedLine,
+              offsetCoords,
+            );
+            removeOffsetCycles(offsetCoords, 2, isClosedLine);
+            lineCoords = offsetCoords;
+            lineStart = 0;
+            lineEnd = lineCoords.length;
+          } else {
+            lineCoords = pixelCoordinates;
+            lineStart = d;
+            lineEnd = dd;
+          }
+          x = lineCoords[lineStart];
+          y = lineCoords[lineStart + 1];
           context.moveTo(x, y);
           prevX = (x + 0.5) | 0;
           prevY = (y + 0.5) | 0;
-          for (d += 2; d < dd; d += 2) {
-            x = pixelCoordinates[d];
-            y = pixelCoordinates[d + 1];
+          for (let k = lineStart + 2; k < lineEnd; k += 2) {
+            x = lineCoords[k];
+            y = lineCoords[k + 1];
             roundX = (x + 0.5) | 0;
             roundY = (y + 0.5) | 0;
-            if (d == dd - 2 || roundX !== prevX || roundY !== prevY) {
+            if (k == lineEnd - 2 || roundX !== prevX || roundY !== prevY) {
               context.lineTo(x, y);
               prevX = roundX;
               prevY = roundY;
@@ -1220,6 +1257,9 @@ class Executor {
               context.stroke();
               pendingStroke = 0;
             }
+          } else if (pendingStroke && instruction[1]) {
+            context.stroke();
+            pendingStroke = 0;
           }
 
           /** @type {import("../../colorlike.js").ColorLike} */
@@ -1227,6 +1267,10 @@ class Executor {
           ++i;
           break;
         case CanvasInstruction.SET_STROKE_STYLE:
+          if (pendingFill && instruction[1]) {
+            this.fill_(context);
+            pendingFill = 0;
+          }
           if (pendingStroke) {
             context.stroke();
             pendingStroke = 0;

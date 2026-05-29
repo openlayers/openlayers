@@ -1,13 +1,13 @@
 import assert from 'assert';
-import fs from 'fs';
-import path, {dirname} from 'path';
-import {fileURLToPath} from 'url';
 import eslint from 'eslint';
 import {parse} from 'espree';
 import frontMatter from 'front-matter';
+import fs from 'fs';
 import fse from 'fs-extra';
 import handlebars from 'handlebars';
 import {marked} from 'marked';
+import path, {dirname} from 'path';
+import {fileURLToPath} from 'url';
 import sources from 'webpack-sources';
 import flatConfig from '../../eslint.config.js';
 
@@ -350,7 +350,7 @@ export default class ExampleBuilder {
   }
 
   /**
-   * Remove `/** @type {...} *` comments
+   * Remove `@type {...}` comments
    * @param {string} cacheKey Cache key
    * @param {string} sourceCode Source code
    * @return {string} Cleaned up source code

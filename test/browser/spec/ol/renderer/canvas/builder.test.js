@@ -183,6 +183,15 @@ describe('ol.render.canvas.BuilderGroup', function () {
       expect(moveToCount).to.be(2);
     });
 
+    it('does not fill when fill pattern is not loaded', function () {
+      const patternFill = new Style({
+        fill: new Fill({color: {src: 'not-loaded-pattern.png'}}),
+      });
+      renderFeature(builder, feature1, patternFill, 1);
+      execute(builder);
+      expect(fillCount).to.be(0);
+    });
+
     it('batches fill and stroke instructions for same style', function () {
       renderFeature(builder, feature1, style1, 1);
       renderFeature(builder, feature2, style1, 1);
@@ -271,6 +280,82 @@ describe('ol.render.canvas.BuilderGroup', function () {
         'lineTo',
         'lineTo',
         'closePath',
+        'stroke',
+      ]);
+    });
+
+    it('overlaps: false - batches fill and stroke instructions for changing from no stroke to stroke', function () {
+      renderFeature(builder, feature1, style3, 1);
+      renderFeature(builder, feature2, style1, 1);
+      renderFeature(builder, feature3, style1, 1);
+      execute(builder, 1, false);
+      expect(sequence).to.eql([
+        'beginPath',
+        'moveTo',
+        'lineTo',
+        'lineTo',
+        'lineTo',
+        'clip',
+        'beginPath',
+        'moveTo',
+        'lineTo',
+        'lineTo',
+        'lineTo',
+        'fill',
+        'setLineDash',
+        'beginPath',
+        'moveTo',
+        'lineTo',
+        'lineTo',
+        'lineTo',
+        'lineTo',
+        'closePath',
+        'moveTo',
+        'lineTo',
+        'lineTo',
+        'lineTo',
+        'lineTo',
+        'closePath',
+        'fill',
+        'stroke',
+      ]);
+    });
+
+    it('overlaps: false - batches fill and stroke instructions for changing from no fill to fill', function () {
+      renderFeature(builder, feature1, style4, 1);
+      renderFeature(builder, feature2, style1, 1);
+      renderFeature(builder, feature3, style1, 1);
+      execute(builder, 1, false);
+      expect(sequence).to.eql([
+        'beginPath',
+        'moveTo',
+        'lineTo',
+        'lineTo',
+        'lineTo',
+        'clip',
+        'setLineDash',
+        'beginPath',
+        'moveTo',
+        'lineTo',
+        'lineTo',
+        'lineTo',
+        'lineTo',
+        'closePath',
+        'stroke',
+        'beginPath',
+        'moveTo',
+        'lineTo',
+        'lineTo',
+        'lineTo',
+        'lineTo',
+        'closePath',
+        'moveTo',
+        'lineTo',
+        'lineTo',
+        'lineTo',
+        'lineTo',
+        'closePath',
+        'fill',
         'stroke',
       ]);
     });

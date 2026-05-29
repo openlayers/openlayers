@@ -630,6 +630,73 @@ export function getIntersection(extent1, extent2, dest) {
 }
 
 /**
+ * Get the difference between two extents, i.e. the area(s) of `extent1` that
+ * are not covered by `extent2`.  Returns an array of between 0 and 4 extents.
+ *
+ * When the extents do not intersect the returned array contains `extent1` as
+ * its only element.  When `extent2` completely contains `extent1` the returned
+ * array is empty.  Otherwise up to four non-overlapping extents are returned
+ * that together cover exactly the parts of `extent1` outside `extent2`.
+ *
+ * The decomposition used is:
+ *
+ * ```
+ * ┌────┬─────────┬────┐  ← y2
+ * │    │   top   │    │
+ * │    ├─────────┤    │  ← iy2
+ * │left│ (gone)  │right│
+ * │    ├─────────┤    │  ← iy1
+ * │    │ bottom  │    │
+ * └────┴─────────┴────┘  ← y1
+ * x1  ix1       ix2   x2
+ * ```
+ *
+ * The left and right strips span the full height of `extent1` while the top
+ * and bottom strips are clamped horizontally to the intersection, so the four
+ * rectangles tile perfectly without overlap or gaps.
+ *
+ * @param {Extent} extent1 Extent to subtract from.
+ * @param {Extent} extent2 Extent to subtract.
+ * @return {Array<Extent>} Remaining extents (0–4 elements).
+ * @api
+ */
+export function getDifference(extent1, extent2) {
+  if (!intersects(extent1, extent2)) {
+    return [extent1.slice()];
+  }
+  if (containsExtent(extent2, extent1)) {
+    return [];
+  }
+
+  const [x1, y1, x2, y2] = extent1;
+  const ix1 = Math.max(x1, extent2[0]);
+  const iy1 = Math.max(y1, extent2[1]);
+  const ix2 = Math.min(x2, extent2[2]);
+  const iy2 = Math.min(y2, extent2[3]);
+
+  const result = [];
+
+  // Left strip  (full height of extent1)
+  if (ix1 > x1) {
+    result.push([x1, y1, ix1, y2]);
+  }
+  // Right strip (full height of extent1)
+  if (ix2 < x2) {
+    result.push([ix2, y1, x2, y2]);
+  }
+  // Bottom strip (between the left and right strips)
+  if (iy1 > y1) {
+    result.push([ix1, y1, ix2, iy1]);
+  }
+  // Top strip (between the left and right strips)
+  if (iy2 < y2) {
+    result.push([ix1, iy2, ix2, y2]);
+  }
+
+  return result;
+}
+
+/**
  * @param {Extent} extent Extent.
  * @return {number} Margin.
  */

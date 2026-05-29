@@ -5,9 +5,9 @@ import {createCanvasContext2D} from '../../../../../src/ol/dom.js';
 import {getForViewAndSize} from '../../../../../src/ol/extent.js';
 import WebGLTileLayer from '../../../../../src/ol/layer/WebGLTile.js';
 import {getRenderPixel} from '../../../../../src/ol/render.js';
+import {sourcesFromTileGrid} from '../../../../../src/ol/source.js';
 import DataTileSource from '../../../../../src/ol/source/DataTile.js';
 import TileWMS from '../../../../../src/ol/source/TileWMS.js';
-import {sourcesFromTileGrid} from '../../../../../src/ol/source.js';
 import {createXYZ} from '../../../../../src/ol/tilegrid.js';
 import WebGLHelper from '../../../../../src/ol/webgl/Helper.js';
 
@@ -295,7 +295,7 @@ describe('ol/layer/WebGLTile', function () {
       #endif
 
       varying vec2 v_textureCoord;
-      varying vec2 v_mapCoord;
+      varying vec2 v_localMapCoord;
 
       uniform vec4 u_renderExtent;
       uniform float u_transitionAlpha;
@@ -310,10 +310,10 @@ describe('ol/layer/WebGLTile', function () {
 
       void main() {
         if (
-          v_mapCoord[0] < u_renderExtent[0] ||
-          v_mapCoord[1] < u_renderExtent[1] ||
-          v_mapCoord[0] > u_renderExtent[2] ||
-          v_mapCoord[1] > u_renderExtent[3]
+          v_localMapCoord[0] < u_renderExtent[0] ||
+          v_localMapCoord[1] < u_renderExtent[1] ||
+          v_localMapCoord[0] > u_renderExtent[2] ||
+          v_localMapCoord[1] > u_renderExtent[3]
         ) {
           discard;
         }
@@ -328,23 +328,20 @@ describe('ol/layer/WebGLTile', function () {
     expect(compileShaderSpy.getCall(1).args[0].replace(/[ \n]+/g, ' ')).to.be(
       `
       attribute vec2 a_textureCoord;
-
       uniform mat4 u_tileTransform;
       uniform float u_texturePixelWidth;
       uniform float u_texturePixelHeight;
       uniform float u_textureResolution;
-      uniform float u_textureOriginX;
-      uniform float u_textureOriginY;
       uniform float u_depth;
 
       varying vec2 v_textureCoord;
-      varying vec2 v_mapCoord;
+      varying vec2 v_localMapCoord;
 
       void main() {
         v_textureCoord = a_textureCoord;
-        v_mapCoord = vec2(
-          u_textureOriginX + u_textureResolution * u_texturePixelWidth * v_textureCoord[0],
-          u_textureOriginY - u_textureResolution * u_texturePixelHeight * v_textureCoord[1]
+        v_localMapCoord = vec2(
+          u_texturePixelWidth * u_textureResolution * v_textureCoord[0],
+          -1. * u_texturePixelHeight * u_textureResolution * v_textureCoord[1]
         );
         gl_Position = u_tileTransform * vec4(a_textureCoord, u_depth, 1.0);
       }
@@ -392,7 +389,7 @@ describe('ol/layer/WebGLTile', function () {
       precision mediump float;
       #endif varying vec2 v_textureCoord;
 
-      varying vec2 v_mapCoord;
+      varying vec2 v_localMapCoord;
 
       uniform vec4 u_renderExtent;
       uniform float u_transitionAlpha;
@@ -421,10 +418,10 @@ describe('ol/layer/WebGLTile', function () {
 
       void main() {
         if (
-          v_mapCoord[0] < u_renderExtent[0] ||
-          v_mapCoord[1] < u_renderExtent[1] ||
-          v_mapCoord[0] > u_renderExtent[2] ||
-          v_mapCoord[1] > u_renderExtent[3]
+          v_localMapCoord[0] < u_renderExtent[0] ||
+          v_localMapCoord[1] < u_renderExtent[1] ||
+          v_localMapCoord[0] > u_renderExtent[2] ||
+          v_localMapCoord[1] > u_renderExtent[3]
         ) {
           discard;
         }
@@ -559,6 +556,171 @@ describe('ol/layer/WebGLTile', function () {
         ),
       });
       expect(layer.getSourceBandCount_()).to.be(7);
+    });
+  });
+
+  describe('nodata band index', () => {
+    it('generates getBandValue and discard for source with nodataBandIndex', function () {
+      const source = new DataTileSource({
+        bandCount: 4,
+        loader(z, x, y) {
+          return new Float32Array(256 * 256 * 4);
+        },
+      });
+      source.nodataBandIndex = 4;
+
+      const nodataLayer = new WebGLTileLayer({
+        source: source,
+        style: {
+          color: ['color', 128, 128, 128],
+        },
+      });
+
+      map.addLayer(nodataLayer);
+
+      const compileShaderSpy = sinonSpy(WebGLHelper.prototype, 'compileShader');
+      const renderer = nodataLayer.getRenderer();
+      const viewState = map.getView().getState();
+      const size = map.getSize();
+      const frameState = {
+        viewState: viewState,
+        extent: getForViewAndSize(
+          viewState.center,
+          viewState.resolution,
+          viewState.rotation,
+          size,
+        ),
+        layerStatesArray: map.getLayerGroup().getLayerStatesArray(),
+        layerIndex: 0,
+      };
+      renderer.prepareFrame(frameState);
+      compileShaderSpy.restore();
+
+      const fragmentShader = compileShaderSpy.getCall(0).args[0];
+      expect(fragmentShader).to.contain('getBandValue');
+      expect(fragmentShader).to.contain(
+        'if (getBandValue(4.0, 0.0, 0.0) == 0.0) { discard; }',
+      );
+
+      nodataLayer.dispose();
+    });
+
+    it('does not add discard when source has no nodataBandIndex', function () {
+      const source = new DataTileSource({
+        bandCount: 3,
+        loader(z, x, y) {
+          return new Float32Array(256 * 256 * 3);
+        },
+      });
+
+      const normalLayer = new WebGLTileLayer({
+        source: source,
+        style: {
+          color: ['color', 128, 128, 128],
+        },
+      });
+
+      map.addLayer(normalLayer);
+
+      const compileShaderSpy = sinonSpy(WebGLHelper.prototype, 'compileShader');
+      const renderer = normalLayer.getRenderer();
+      const viewState = map.getView().getState();
+      const size = map.getSize();
+      const frameState = {
+        viewState: viewState,
+        extent: getForViewAndSize(
+          viewState.center,
+          viewState.resolution,
+          viewState.rotation,
+          size,
+        ),
+        layerStatesArray: map.getLayerGroup().getLayerStatesArray(),
+        layerIndex: 0,
+      };
+      renderer.prepareFrame(frameState);
+      compileShaderSpy.restore();
+
+      const fragmentShader = compileShaderSpy.getCall(0).args[0];
+      expect(fragmentShader).not.to.contain(
+        'getBandValue(4.0, 0.0, 0.0) == 0.0',
+      );
+
+      normalLayer.dispose();
+    });
+
+    it('uses existing getBandValue when style has band expressions', function () {
+      const source = new DataTileSource({
+        bandCount: 4,
+        loader(z, x, y) {
+          return new Float32Array(256 * 256 * 4);
+        },
+      });
+      source.nodataBandIndex = 4;
+
+      const nodataLayer = new WebGLTileLayer({
+        source: source,
+        style: {
+          color: [
+            'array',
+            ['/', ['band', 1], 3000],
+            ['/', ['band', 2], 3000],
+            ['/', ['band', 3], 3000],
+            1,
+          ],
+        },
+      });
+
+      map.addLayer(nodataLayer);
+
+      const compileShaderSpy = sinonSpy(WebGLHelper.prototype, 'compileShader');
+      const renderer = nodataLayer.getRenderer();
+      const viewState = map.getView().getState();
+      const size = map.getSize();
+      const frameState = {
+        viewState: viewState,
+        extent: getForViewAndSize(
+          viewState.center,
+          viewState.resolution,
+          viewState.rotation,
+          size,
+        ),
+        layerStatesArray: map.getLayerGroup().getLayerStatesArray(),
+        layerIndex: 0,
+      };
+      renderer.prepareFrame(frameState);
+      compileShaderSpy.restore();
+
+      const fragmentShader = compileShaderSpy.getCall(0).args[0];
+      // getBandValue should exist (from the band expressions)
+      expect(fragmentShader).to.contain('getBandValue');
+      // discard line should still be present
+      expect(fragmentShader).to.contain(
+        'if (getBandValue(4.0, 0.0, 0.0) == 0.0) { discard; }',
+      );
+      // getBandValue should only be defined once
+      const matches = fragmentShader.match(/float getBandValue\(float band/g);
+      expect(matches.length).to.be(1);
+
+      nodataLayer.dispose();
+    });
+
+    it('returns nodataBandIndex from the source', () => {
+      const source = new DataTileSource({
+        bandCount: 4,
+      });
+      source.nodataBandIndex = 4;
+
+      const testLayer = new WebGLTileLayer({source: source});
+      expect(testLayer.getSourceNodataBandIndex_()).to.be(4);
+      testLayer.dispose();
+    });
+
+    it('returns undefined when source has no nodataBandIndex', () => {
+      const testLayer = new WebGLTileLayer({
+        source: new DataTileSource({bandCount: 3}),
+      });
+      expect(testLayer.getSourceNodataBandIndex_()).to.be(undefined);
+      testLayer.dispose();
     });
   });
 

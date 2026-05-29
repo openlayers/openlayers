@@ -2,7 +2,8 @@
  * @module ol/source/GeoZarr
  */
 
-import {FetchStore, get, open, slice} from 'zarrita';
+import {FetchStore, get, open, slice, withRangeCoalescing} from 'zarrita';
+import {warn} from '../console.js';
 import {getCenter} from '../extent.js';
 import {get as getProjection, toUserCoordinate, toUserExtent} from '../proj.js';
 import {toSize} from '../size.js';
@@ -11,7 +12,7 @@ import DataTileSource from './DataTile.js';
 import {parseTileMatrixSet} from './ogcTileUtil.js';
 
 const REQUIRED_ZARR_CONVENTIONS = [
-  'd35379db-88df-4056-af3a-620245f8e347', // multisacles
+  'd35379db-88df-4056-af3a-620245f8e347', // multiscales
   'f17cb550-5864-4468-aeb7-f3180cfb622f', // proj:
   '689b58e2-cf7b-45e0-9fff-9cfc0883d6b4', // spatial:
 ];
@@ -21,18 +22,46 @@ const REQUIRED_ZARR_CONVENTIONS = [
  */
 
 /**
+ * @typedef {Object} Band
+ * @property {string} name The band name.
+ * @property {string} group The group path relative to the `url`, containing this band
+ * (e.g. `'measurements/reflectance'`).
+ */
+
+/**
  * @typedef {Object} Options
- * @property {string} url The Zarr URL.
- * @property {string} group The group with arrays to render.
- * @property {Array<string>} bands The band names to render.
- * @property {import("../proj.js").ProjectionLike} [projection] Source projection.  If not provided, the GeoTIFF metadata
+ * @property {string} url When `bands` contains plain strings, this must be the full URL to the
+ * multiscales group (e.g. `'https://example.com/store.zarr/measurements/reflectance'`).
+ * When `bands` contains {@link Band} objects, this is the base URL from which each band's
+ * `group` path is resolved (e.g. `'https://example.com/store.zarr/satellite/sentinel2'`).
+ * @property {Array<string|Band>} bands The bands to render.  Each entry is either a band name
+ * string (single-group mode) or a {@link Band} object specifying both the band name and the
+ * group it belongs to (multi-group mode).  In multi-group mode, the first band's group
+ * determines the tile grid and must follow at least the proj: and spatial: conventions.
+ * If it also has a multiscales layout (all three conventions), multiple resolution levels are
+ * supported.  Otherwise a single-resolution tile grid is derived from `spatial:bbox`,
+ * `proj:code`, and `spatial:shape` (or the array shape from consolidated metadata).
+ * Bands from additional groups do not need to follow any convention; they can be multi-scale
+ * (array located at `<matrixId>/<bandName>`) or single-scale (array at the group root).
+ * @property {import("../proj.js").ProjectionLike} [projection] Source projection.  If not provided, the GeoZarr metadata
  * will be read for projection information.
  * @property {number} [transition=250] Duration of the opacity transition for rendering.
  * To disable the opacity transition, pass `transition: 0`.
  * @property {boolean} [wrapX=false] Render tiles beyond the tile grid extent.
- * @property {ResampleMethod} [resample='nearest'] Resamplilng method if bands are not available for all multi-scale levels.
+ * @property {ResampleMethod} [resample='nearest'] Resampling method if bands are not available for all multi-scale levels.
  */
 
+/**
+ * Source for GeoZarr stores conforming to the following conventions:
+ * - [Zarr multiscales convention](https://github.com/zarr-conventions/multiscales)
+ * - [Geospatial projection convention](https://github.com/zarr-conventions/geo-proj)
+ * - [Spatial convention](https://github.com/zarr-conventions/spatial)
+ *
+ * When all three conventions are present, multiple resolution levels are supported.
+ * When only proj: and spatial: are present, a single-resolution tile grid is derived
+ * from `spatial:bbox`, `proj:code`, and `spatial:shape`.
+ * The legacy `tile_matrix_set` attribute is also supported.
+ */
 export default class GeoZarr extends DataTileSource {
   /**
    * @param {Options} options The options.
@@ -48,13 +77,9 @@ export default class GeoZarr extends DataTileSource {
 
     /**
      * @type {string}
+     * @private
      */
     this.url_ = options.url;
-
-    /**
-     * @type {string}
-     */
-    this.group_ = options.group;
 
     /**
      * @type {Error|null}
@@ -62,41 +87,102 @@ export default class GeoZarr extends DataTileSource {
     this.error_ = null;
 
     /**
-     * @type {import('zarrita').Group<any>}
+     * @type {Array<import('zarrita').Group<any>>}
+     * @private
      */
-    this.root_ = null;
+    this.groups_ = [];
 
     /**
      * @type {any|null}
+     * @private
      */
     this.consolidatedMetadata_ = null;
 
     /**
-     * @type {Array<string>}
+     * Cache of opened zarrita arrays keyed by path. Caching the Promise
+     * (not the resolved value) deduplicates concurrent opens for the same
+     * array path across tiles at the same zoom level.
+     * @private
+     * @type {Map<string, Promise<import('zarrita').Array<import('zarrita').DataType, any>>>}
      */
-    this.bands_ = options.bands;
+    this.arrayCache_ = new Map();
+
+    const groupOrder = /** @type {Array<string>} */ ([]);
+    const bandGroupIndex = /** @type {Array<number>} */ ([]);
+    const bands = options.bands.map((b) => {
+      if (typeof b === 'string') {
+        bandGroupIndex.push(0);
+        return b;
+      }
+      let gi = groupOrder.indexOf(b.group);
+      if (gi === -1) {
+        gi = groupOrder.length;
+        groupOrder.push(b.group);
+      }
+      bandGroupIndex.push(gi);
+      return b.name;
+    });
+
+    /**
+     * @type {Array<string>|undefined}
+     * @private
+     */
+    this.groupPaths_ = groupOrder.length > 0 ? groupOrder : undefined;
+
+    /**
+     * Maps each band index to the index of the group it belongs to in `this.groups_`.
+     * @type {Array<number>}
+     * @private
+     */
+    this.bandGroupIndex_ = bandGroupIndex;
+
+    /**
+     * Pixel resolution for single-scale bands.  When set, indicates that the
+     * band lives directly at its group root (no matrixId subdirectory) and
+     * provides the pixel resolution to use for coordinate calculations.
+     * Undefined for multi-scale bands.
+     * @type {Array<number|undefined>}
+     * @private
+     */
+    this.bandSingleScaleResolution_ = new Array(bands.length).fill(undefined);
+
+    /**
+     * @type {Array<string>}
+     * @private
+     */
+    this.bands_ = bands;
 
     /**
      * @type {Object<string, Array<string>> | null}
+     * @private
      */
     this.bandsByLevel_ = null;
 
     /**
      * @type {number|undefined}
+     * @private
      */
     this.fillValue_;
 
     /**
      * @type {ResampleMethod}
+     * @private
      */
     this.resampleMethod_ = options.resample || 'linear';
 
-    this.setLoader(this.loadTile_.bind(this));
+    /**
+     * Number of bands.
+     * @type {number}
+     */
+    this.bandCount = this.bands_.length;
 
     /**
      * @type {import("../tilegrid/WMTS.js").default}
+     * @override
      */
     this.tileGrid;
+
+    this.setLoader(this.loadTile_.bind(this));
 
     this.configure_()
       .then(() => {
@@ -109,25 +195,56 @@ export default class GeoZarr extends DataTileSource {
   }
 
   async configure_() {
-    const store = new FetchStore(this.url_);
+    const store = /** @type {FetchStore} */ (
+      withRangeCoalescing(new FetchStore(this.url_))
+    );
 
-    this.root_ = await open(store, {kind: 'group'});
-
-    try {
-      this.consolidatedMetadata_ = JSON.parse(
-        new TextDecoder().decode(
-          await store.get(this.root_.resolve('zarr.json').path),
-        ),
-      ).consolidated_metadata.metadata;
-    } catch {
-      // empty catch block
+    // Fetch group zarr.json once for both opening the group and extracting
+    // consolidated metadata. Without this, open() and the manual metadata
+    // read would each make a separate HTTP request for the same file.
+    const groupBytes = await store.get('/zarr.json');
+    if (groupBytes) {
+      try {
+        this.consolidatedMetadata_ = JSON.parse(
+          new TextDecoder().decode(groupBytes),
+        ).consolidated_metadata.metadata;
+      } catch {
+        // no consolidated metadata
+      }
     }
 
-    const group = await open(this.root_.resolve(this.group_), {kind: 'group'});
+    // Wrap the store so that child metadata (groups, arrays) is served from
+    // the consolidated metadata instead of making per-child HTTP requests.
+    const cachedStore = this.consolidatedMetadata_
+      ? createCachedStore(store, groupBytes, this.consolidatedMetadata_)
+      : store;
+
+    const groupPromises = [];
+    if (this.groupPaths_) {
+      // Multi-group mode: open root, then each sub-group
+      const rootGroup = await open(cachedStore, {kind: 'group'});
+      for (const groupPath of this.groupPaths_) {
+        groupPromises.push(open(rootGroup.resolve(groupPath), {kind: 'group'}));
+      }
+    } else {
+      // Single group mode
+      groupPromises.push(open(cachedStore, {kind: 'group'}));
+    }
+    this.groups_.push(...(await Promise.all(groupPromises)));
 
     const attributes =
-      /** @type {LegacyDatasetAttributes | DatasetAttributes} */ (group.attrs);
+      /** @type {LegacyDatasetAttributes | DatasetAttributes} */ (
+        this.groups_[0].attrs
+      );
 
+    // For multi-group mode, use sub-metadata for the first group so that
+    // consolidated metadata keys match the expected relative paths.
+    const consolidatedMetadata =
+      this.groupPaths_ && this.consolidatedMetadata_
+        ? getSubMetadata(this.consolidatedMetadata_, this.groupPaths_[0])
+        : this.consolidatedMetadata_;
+
+    let hasTileSizes = false;
     if (
       'zarr_conventions' in attributes &&
       Array.isArray(attributes.zarr_conventions) &&
@@ -136,23 +253,89 @@ export default class GeoZarr extends DataTileSource {
       ) &&
       'layout' in attributes.multiscales
     ) {
-      const {tileGrid, projection, bandsByLevel, fillValue} =
+      const {tileGrid, projection, bandsByLevel, fillValue, tileSizes} =
         getTileGridInfoFromAttributes(
           /** @type {DatasetAttributes} */ (attributes),
-          this.consolidatedMetadata_,
-          this.group_,
+          consolidatedMetadata,
           this.bands_,
         );
       this.bandsByLevel_ = bandsByLevel;
       this.tileGrid = tileGrid;
       this.projection = projection;
       this.fillValue_ = fillValue;
-    } else if ('tile_matrix_set' in attributes.multiscales) {
+      hasTileSizes = !!tileSizes;
+    }
+    if (
+      !hasTileSizes &&
+      attributes.multiscales &&
+      'tile_matrix_set' in attributes.multiscales
+    ) {
+      // If available, use tile_matrix_set (legacy attributes) to get a tile grid, because it
+      // should provide a better mapping of tiles to zarr chunks.
       const {tileGrid, projection} = getTileGridInfoFromLegacyAttributes(
         /** @type {LegacyDatasetAttributes} */ (attributes),
       );
       this.tileGrid = tileGrid;
-      this.projection = projection;
+      if (!this.projection) {
+        // If there were no required zarr conventions, we don't have a projection yet
+        this.projection = projection;
+      }
+    }
+    if (!this.tileGrid && 'spatial:bbox' in attributes) {
+      // Standalone single-scale group: build tile grid directly from
+      // spatial:bbox and spatial:shape (or the array shape from metadata).
+      let shape = attributes['spatial:shape'];
+      if (!shape && consolidatedMetadata) {
+        for (const band of this.bands_) {
+          if (consolidatedMetadata[band]?.shape) {
+            shape = consolidatedMetadata[band].shape;
+            break;
+          }
+        }
+      }
+      if (shape) {
+        const extent = attributes['spatial:bbox'];
+        const resolution = (extent[2] - extent[0]) / shape[1];
+        if (!this.projection) {
+          this.projection = getProjection(attributes['proj:code']);
+        }
+        if (consolidatedMetadata) {
+          this.bandsByLevel_ = {level0: []};
+          for (const band of this.bands_) {
+            if (consolidatedMetadata[band]) {
+              this.bandsByLevel_['level0'].push(band);
+              if (this.fillValue_ === undefined) {
+                this.fillValue_ = Number(
+                  consolidatedMetadata[band]['fill_value'],
+                );
+              }
+            }
+          }
+        }
+        this.tileGrid = new WMTSTileGrid({
+          extent: extent,
+          origins: [[extent[0], extent[3]]],
+          resolutions: [resolution],
+          matrixIds: ['level0'],
+        });
+        for (let i = 0; i < this.bands_.length; ++i) {
+          if (this.bandGroupIndex_[i] === 0) {
+            this.bandSingleScaleResolution_[i] = resolution;
+          }
+        }
+      }
+    }
+    // For multi-group: determine which group owns each band and supplement
+    // bandsByLevel with bands from additional groups.
+    if (this.groupPaths_ && this.consolidatedMetadata_ && this.bandsByLevel_) {
+      this.resolveBandOwnership_();
+    }
+    if (this.fillValue_ !== null && this.fillValue_ !== undefined) {
+      this.bandCount = this.bands_.length + 1;
+      this.nodataBandIndex = this.bandCount;
+    }
+    if (!this.tileGrid) {
+      throw new Error('Could not determine tile grid');
     }
 
     const extent = this.tileGrid.getExtent();
@@ -181,9 +364,11 @@ export default class GeoZarr extends DataTileSource {
     const tileResolution = this.tileGrid.getResolution(z);
     const tileExtent = this.tileGrid.getTileCoordExtent([z, x, y]);
 
-    const bandPromises = [];
-    const bandResolutions = [];
-    for (const band of this.bands_) {
+    // First pass: resolve band metadata (no async)
+    const bandInfos = [];
+    for (let i = 0, ii = this.bands_.length; i < ii; ++i) {
+      const band = this.bands_[i];
+      const groupIndex = this.bandGroupIndex_[i];
       let bandMatrixId;
       let bandResolution;
       let bandZ = 0;
@@ -216,22 +401,62 @@ export default class GeoZarr extends DataTileSource {
         throw new Error(`Could not find available resolution for band ${band}`);
       }
 
+      const isSingleScale = this.bandSingleScaleResolution_[i] !== undefined;
+      // For single-scale bands, use the band's own pixel resolution (derived
+      // from array shape or spatial metadata) rather than the tile grid level
+      // resolution, which may give wrong pixel coordinates.
+      if (isSingleScale) {
+        bandResolution = this.bandSingleScaleResolution_[i];
+      }
+
       const origin = this.tileGrid.getOrigin(bandZ);
       const minCol = Math.round((tileExtent[0] - origin[0]) / bandResolution);
       const maxCol = Math.round((tileExtent[2] - origin[0]) / bandResolution);
-
       const minRow = Math.round((origin[1] - tileExtent[3]) / bandResolution);
       const maxRow = Math.round((origin[1] - tileExtent[1]) / bandResolution);
 
-      const path = `${this.group_}/${bandMatrixId}/${band}`;
-      const array = await open(this.root_.resolve(path), {kind: 'array'});
-      bandPromises.push(
-        get(array, [slice(minRow, maxRow), slice(minCol, maxCol)]),
-      );
-      bandResolutions.push(bandResolution);
+      bandInfos.push({
+        path: isSingleScale ? band : `${bandMatrixId}/${band}`,
+        groupIndex,
+        minRow,
+        maxRow,
+        minCol,
+        maxCol,
+        bandResolution,
+      });
     }
 
-    const bandChunks = await Promise.all(bandPromises);
+    // Open all band arrays in parallel (not sequentially)
+    const arrays = await Promise.all(
+      bandInfos.map((info) => {
+        const cacheKey = `${info.groupIndex}:${info.path}`;
+        if (!this.arrayCache_.has(cacheKey)) {
+          this.arrayCache_.set(
+            cacheKey,
+            open(this.groups_[info.groupIndex].resolve(info.path), {
+              kind: 'array',
+            }).catch((err) => {
+              this.arrayCache_.delete(cacheKey);
+              throw err;
+            }),
+          );
+        }
+        return this.arrayCache_.get(cacheKey);
+      }),
+    );
+
+    // Fire all get() calls synchronously so getRange() calls from all bands
+    // land in the same macrotask tick and can be batched together.
+    const bandResolutions = bandInfos.map((info) => info.bandResolution);
+    const bandChunks = await Promise.all(
+      arrays.map((array, i) => {
+        const info = bandInfos[i];
+        return get(array, [
+          slice(info.minRow, info.maxRow),
+          slice(info.minCol, info.maxCol),
+        ]);
+      }),
+    );
     const [tileColCount, tileRowCount] = toSize(this.tileGrid.getTileSize(z));
     return composeData(
       bandChunks,
@@ -240,15 +465,125 @@ export default class GeoZarr extends DataTileSource {
       tileRowCount,
       tileResolution,
       this.resampleMethod_,
-      this.fillValue_ || 0,
+      this.fillValue_,
     );
+  }
+
+  /**
+   * For multi-group mode: determine which group owns each band and supplement
+   * bandsByLevel with bands from additional groups.
+   * @private
+   */
+  resolveBandOwnership_() {
+    const subMetadatas = this.groupPaths_.map((gp) =>
+      getSubMetadata(this.consolidatedMetadata_, gp),
+    );
+
+    for (let i = 0, ii = this.bands_.length; i < ii; ++i) {
+      const band = this.bands_[i];
+      const g = this.bandGroupIndex_[i];
+      if (g === 0) {
+        continue; // primary group bands are already in bandsByLevel_
+      }
+      let foundAtAnyLevel = false;
+      for (const matrixId of Object.keys(this.bandsByLevel_)) {
+        const bandMeta = subMetadatas[g][`${matrixId}/${band}`];
+        if (bandMeta) {
+          foundAtAnyLevel = true;
+          if (!this.bandsByLevel_[matrixId].includes(band)) {
+            this.bandsByLevel_[matrixId].push(band);
+          }
+          if (this.fillValue_ === undefined) {
+            this.fillValue_ = Number(bandMeta['fill_value']);
+          }
+        }
+      }
+      if (!foundAtAnyLevel) {
+        // Try single-scale: band lives directly at the group root (no matrixId prefix).
+        const bandMeta = subMetadatas[g][band];
+        if (bandMeta) {
+          for (const matrixId of Object.keys(this.bandsByLevel_)) {
+            if (!this.bandsByLevel_[matrixId].includes(band)) {
+              this.bandsByLevel_[matrixId].push(band);
+            }
+          }
+          if (this.fillValue_ === undefined) {
+            this.fillValue_ = Number(bandMeta['fill_value']);
+          }
+          // Derive the band's actual pixel resolution from its array shape so
+          // that loadTile_ can use correct coordinates regardless of the tile
+          // grid zoom level.
+          const shape = bandMeta['shape'];
+          if (shape && shape[1] > 0) {
+            const extent = this.tileGrid.getExtent();
+            this.bandSingleScaleResolution_[i] =
+              (extent[2] - extent[0]) / shape[1];
+          }
+          foundAtAnyLevel = true;
+        }
+      }
+      if (!foundAtAnyLevel) {
+        warn(
+          `Band "${band}" from group "${this.groupPaths_[g]}" is not available at any ` +
+            `resolution level compatible with the tile grid.`,
+        );
+      }
+    }
   }
 }
 
 /**
- * @typedef {Object} DatasetAttributes
- * @property {Multiscales} multiscales The multiscales attribute.
- * @property {Array<{uuid: string}>} zarr_conventions The zarr conventions attribute.
+ * Extract a sub-view of consolidated metadata for a specific group path.
+ * Keys in the returned object are relative to the group path.
+ * @param {Object} rootMetadata The root consolidated metadata.
+ * @param {string} groupPath The group path (e.g. 'measurements/reflectance').
+ * @return {Object} Sub-metadata with paths relative to the group.
+ */
+function getSubMetadata(rootMetadata, groupPath) {
+  const prefix = groupPath + '/';
+  const sub = {};
+  for (const key of Object.keys(rootMetadata)) {
+    if (key.startsWith(prefix)) {
+      sub[key.substring(prefix.length)] = rootMetadata[key];
+    }
+  }
+  return sub;
+}
+
+/**
+ * Create a store wrapper that serves Zarr v3 metadata from consolidated
+ * metadata, avoiding per-child HTTP requests.
+ * @param {import('zarrita').FetchStore} store The underlying store.
+ * @param {Uint8Array} groupBytes The already-fetched group zarr.json bytes.
+ * @param {Object} consolidatedMetadata The parsed consolidated_metadata.metadata entries.
+ * @return {Object} A store-compatible object.
+ */
+function createCachedStore(store, groupBytes, consolidatedMetadata) {
+  const cache = new Map();
+  cache.set('/zarr.json', groupBytes);
+  const encoder = new TextEncoder();
+  for (const [key, value] of Object.entries(consolidatedMetadata)) {
+    cache.set(`/${key}/zarr.json`, encoder.encode(JSON.stringify(value)));
+  }
+  return {
+    async get(key, opts) {
+      if (cache.has(key)) {
+        return cache.get(key);
+      }
+      return store.get(key, opts);
+    },
+    getRange: store.getRange?.bind(store),
+  };
+}
+
+/***
+ * @typedef {{
+ *   multiscales: Multiscales,
+ *   zarr_conventions: Array<{uuid: string}>,
+ *   'spatial:bbox': import("../extent.js").Extent,
+ *   'spatial:shape': Array<number>,
+ *   'proj:code': string,
+ * }} DatasetAttributes
  */
 
 /**
@@ -273,63 +608,162 @@ export default class GeoZarr extends DataTileSource {
  * @property {import("../proj/Projection.js").default} projection The projection.
  * @property {Object<string, Array<string>>} [bandsByLevel] Available bands by level.
  * @property {number} [fillValue] The fill value.
+ * @property {Array<import("../size.js").Size>|undefined} [tileSizes] The tile sizes for each level, if available.
  */
+
+/**
+ * Maximum tile size for rendering.
+ * @type {number}
+ */
+const MAX_TILE_SIZE = 512;
+
+/**
+ * Minimum tile size when sharding is used.
+ * @type {number}
+ */
+const MIN_TILE_SIZE = 64;
+
+/**
+ * @typedef {Object} ShardInfo
+ * @property {Array<number>} shardShape The shard (outer chunk) shape [rows, cols].
+ * @property {Array<number>} innerChunkShape The inner chunk shape [rows, cols].
+ */
+
+/**
+ * FIXME Remove this when GeoZarr datasets provide correct TileMatrixSet info or similar.
+ *
+ * Get the shard and inner chunk shapes from the Zarr v3 array metadata.
+ * Only returns info when a `sharding_indexed` codec is present, meaning
+ * `chunk_grid.configuration.chunk_shape` represents the shard (outer chunk) size.
+ * @param {Object} arrayMeta The Zarr v3 array metadata from consolidated metadata.
+ * @return {ShardInfo|undefined} The shard info, or undefined.
+ */
+function getShardInfo(arrayMeta) {
+  const chunkGrid = arrayMeta['chunk_grid'];
+  if (!chunkGrid || chunkGrid['name'] !== 'regular') {
+    return undefined;
+  }
+  const codecs = arrayMeta['codecs'];
+  if (!Array.isArray(codecs)) {
+    return undefined;
+  }
+  const shardingCodec = codecs.find((c) => c['name'] === 'sharding_indexed');
+  if (!shardingCodec) {
+    return undefined;
+  }
+  return {
+    shardShape: chunkGrid['configuration']['chunk_shape'],
+    innerChunkShape: shardingCodec['configuration']['chunk_shape'],
+  };
+}
+
+/**
+ * FIXME Remove this when GeoZarr datasets provide correct TileMatrixSet info or similar.
+ *
+ * Compute a tile size that is a multiple of the inner chunk size, evenly divides
+ * the shard size, is at most MAX_TILE_SIZE, and is at least MIN_TILE_SIZE.
+ * Aligning with inner chunk boundaries avoids fetching the same inner chunk
+ * data for adjacent tiles.
+ * @param {number} shardSize The shard size in pixels along one dimension.
+ * @param {number} innerChunkSize The inner chunk size in pixels along one dimension.
+ * @return {number} The tile size.
+ */
+function getTileSizeForShard(shardSize, innerChunkSize) {
+  // Find the largest multiple of innerChunkSize that divides shardSize
+  // and is within [MIN_TILE_SIZE, MAX_TILE_SIZE].
+  const maxChunks = Math.floor(MAX_TILE_SIZE / innerChunkSize);
+  for (let n = maxChunks; n >= 1; --n) {
+    const candidate = n * innerChunkSize;
+    if (candidate >= MIN_TILE_SIZE && shardSize % candidate === 0) {
+      return candidate;
+    }
+  }
+  // No ideal size found. Use shard size itself when it fits, otherwise
+  // use the largest chunk-aligned size that fits within MAX_TILE_SIZE.
+  if (shardSize <= MAX_TILE_SIZE && shardSize >= MIN_TILE_SIZE) {
+    return shardSize;
+  }
+  if (shardSize < MIN_TILE_SIZE) {
+    return MIN_TILE_SIZE;
+  }
+  return Math.max(maxChunks * innerChunkSize, MIN_TILE_SIZE);
+}
 
 /**
  * @param {DatasetAttributes} attributes The dataset attributes.
  * @param {any} consolidatedMetadata The consolidated metadata.
- * @param {string} wantedGroup The path to the wanted group.
  * @param {Array<string>} wantedBands The wanted bands.
  * @return {TileGridInfo} The tile grid info.
  */
 function getTileGridInfoFromAttributes(
   attributes,
   consolidatedMetadata,
-  wantedGroup,
   wantedBands,
 ) {
   const multiscales = attributes.multiscales;
   const extent = attributes['spatial:bbox'];
   const projection = getProjection(attributes['proj:code']);
-  /** @type {Array<{matrixId: string, resolution: number, origin: import("ol/coordinate").Coordinate}>} */
+  const extentWidth = extent[2] - extent[0];
+  const origin = [extent[0], extent[3]];
+  /** @type {Array<{matrixId: string, resolution: number, origin: import("../coordinate.js").Coordinate, tileSize: import("../size.js").Size|undefined}>} */
   const groupInfo = [];
   const bandsByLevel = consolidatedMetadata ? {} : null;
   let fillValue;
   for (const groupMetadata of multiscales.layout) {
-    //TODO Handle the complete transform (rotation and different x/y resolutions)
-    const transform = groupMetadata['spatial:transform'];
-    const resolution = transform[0];
-    const origin = [transform[2], transform[5]];
     const matrixId = groupMetadata.asset;
-    groupInfo.push({
-      matrixId,
-      resolution,
-      origin,
-    });
+    const resolution = extentWidth / groupMetadata['spatial:shape'][1];
+    /** @type {import("../size.js").Size|undefined} */
+    let tileSize;
     if (consolidatedMetadata) {
       const availableBands = [];
       for (const band of wantedBands) {
-        const bandArray =
-          consolidatedMetadata[`${wantedGroup}/${matrixId}/${band}`];
+        const bandArray = consolidatedMetadata[`${matrixId}/${band}`];
         if (bandArray) {
           availableBands.push(band);
           if (fillValue === undefined) {
-            fillValue = bandArray['fill_value'];
+            fillValue = Number(bandArray['fill_value']);
+          }
+          //FIXME Remove this when GeoZarr datasets provide correct TileMatrixSet info or similar
+          if (!tileSize) {
+            const shardInfo = getShardInfo(bandArray);
+            if (shardInfo) {
+              tileSize = [
+                getTileSizeForShard(
+                  shardInfo.shardShape[1],
+                  shardInfo.innerChunkShape[1],
+                ),
+                getTileSizeForShard(
+                  shardInfo.shardShape[0],
+                  shardInfo.innerChunkShape[0],
+                ),
+              ];
+            }
           }
         }
       }
       bandsByLevel[matrixId] = availableBands;
     }
+    groupInfo.push({
+      matrixId,
+      resolution,
+      origin,
+      tileSize,
+    });
   }
   groupInfo.sort((a, b) => b.resolution - a.resolution);
+
+  const tileSizes = groupInfo.map((g) => g.tileSize);
+  const hasTileSizes = tileSizes.some((s) => s !== undefined);
+
   const tileGrid = new WMTSTileGrid({
     extent: extent,
     origins: groupInfo.map((g) => g.origin),
     resolutions: groupInfo.map((g) => g.resolution),
     matrixIds: groupInfo.map((g) => g.matrixId),
+    ...(hasTileSizes ? {tileSizes: tileSizes.map((s) => s || [256, 256])} : {}),
   });
 
-  return {tileGrid, projection, bandsByLevel, fillValue};
+  return {tileGrid, projection, bandsByLevel, fillValue, tileSizes};
 }
 
 /**
@@ -395,18 +829,26 @@ function composeData(
   resampleMethod,
   fillValue,
 ) {
-  const bandCount = chunks.length;
+  const chunkCount = chunks.length;
+  const addAlpha = fillValue !== null && fillValue !== undefined;
+  const isNoDataValue = isNaN(fillValue)
+    ? (v) => isNaN(v)
+    : (v) => v === fillValue;
+  const bandCount = chunkCount + (addAlpha ? 1 : 0);
   const tileData = new Float32Array(tileColCount * tileRowCount * bandCount);
   for (let tileRow = 0; tileRow < tileRowCount; tileRow++) {
     for (let tileCol = 0; tileCol < tileColCount; tileCol++) {
-      for (let band = 0; band < bandCount; ++band) {
-        const chunk = chunks[band];
+      let hasData = false;
+      for (let chunkIndex = 0; chunkIndex < chunkCount; ++chunkIndex) {
+        const chunk = chunks[chunkIndex];
         const chunkRowCount = chunk.shape[0];
         const chunkColCount = chunk.shape[1];
-        const scaleFactor = tileResolution / chunkResolutions[band];
-        let value = fillValue;
+        const scaleFactor = tileResolution / chunkResolutions[chunkIndex];
+        let value = 0;
+        let inBounds = false;
         if (scaleFactor === 1) {
           if (tileRow < chunkRowCount && tileCol < chunkColCount) {
+            inBounds = true;
             value = chunk.data[tileRow * chunkColCount + tileCol];
           }
         } else {
@@ -417,7 +859,30 @@ function composeData(
               const valueRow = Math.round(chunkRow);
               const valueCol = Math.round(chunkCol);
               if (valueRow < chunkRowCount && valueCol < chunkColCount) {
+                inBounds = true;
                 value = chunk.data[valueRow * chunkColCount + valueCol];
+              }
+              break;
+            }
+            case 'linear': {
+              const row0 = Math.floor(chunkRow);
+              const col0 = Math.floor(chunkCol);
+              if (row0 < chunkRowCount && col0 < chunkColCount) {
+                inBounds = true;
+                const row1 = Math.min(row0 + 1, chunkRowCount - 1);
+                const col1 = Math.min(col0 + 1, chunkColCount - 1);
+
+                const v00 = chunk.data[row0 * chunkColCount + col0];
+                const v01 = chunk.data[row0 * chunkColCount + col1];
+                const v10 = chunk.data[row1 * chunkColCount + col0];
+                const v11 = chunk.data[row1 * chunkColCount + col1];
+
+                const dx = chunkCol - col0;
+                const dy = chunkRow - row0;
+
+                value =
+                  (1 - dy) * ((1 - dx) * v00 + dx * v01) +
+                  dy * ((1 - dx) * v10 + dx * v11);
               }
               break;
             }
@@ -426,10 +891,18 @@ function composeData(
             }
           }
         }
-        if (isNaN(value)) {
-          value = fillValue;
+        if (inBounds && !isNoDataValue(value)) {
+          hasData = true;
         }
-        tileData[bandCount * (tileRow * tileColCount + tileCol) + band] = value;
+        if (isNaN(value)) {
+          value = 0;
+        }
+        tileData[bandCount * (tileRow * tileColCount + tileCol) + chunkIndex] =
+          value;
+      }
+      if (addAlpha) {
+        tileData[bandCount * (tileRow * tileColCount + tileCol) + chunkCount] =
+          hasData ? 1 : 0;
       }
     }
   }

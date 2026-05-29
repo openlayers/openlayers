@@ -142,9 +142,9 @@ export function overrideXHR(xhr) {
   if (typeof XMLHttpRequest !== 'undefined') {
     originalXHR = XMLHttpRequest;
   }
-  global.XMLHttpRequest = xhr;
+  globalThis.XMLHttpRequest = xhr;
 }
 
 export function restoreXHR() {
-  global.XMLHttpRequest = originalXHR;
+  globalThis.XMLHttpRequest = originalXHR;
 }

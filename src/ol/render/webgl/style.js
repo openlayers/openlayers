@@ -11,6 +11,7 @@ import {
   SizeType,
   StringType,
   computeGeometryType,
+  newParsingContext,
 } from '../../expr/expression.js';
 import {
   FEATURE_ID_PROPERTY_NAME,
@@ -136,7 +137,7 @@ function getColorFromDistanceField(
  * The image size expression in GLSL will be returned
  * @param {import("../../style/flat.js").FlatStyle} style Style
  * @param {ShaderBuilder} builder Shader builder
- * @param {Object<string,import("../../webgl/Helper").UniformValue>} uniforms Uniforms
+ * @param {Object<string,import("../../webgl/Helper.js").UniformValue>} uniforms Uniforms
  * @param {'icon-'|'fill-pattern-'|'stroke-pattern-'} prefix Property prefix
  * @param {string} textureId A identifier that will be used in the generated uniforms: `sample2d u_texture<id>` and `vec2 u_texture<id>_size`
  * @return {string} The image size expression
@@ -206,7 +207,7 @@ function parseImageOffsetProperties(
 /**
  * @param {import("../../style/flat.js").FlatStyle} style Style
  * @param {ShaderBuilder} builder Shader builder
- * @param {Object<string,import("../../webgl/Helper").UniformValue>} uniforms Uniforms
+ * @param {Object<string,import("../../webgl/Helper.js").UniformValue>} uniforms Uniforms
  * @param {import("../../expr/gpu.js").CompilationContext} context Shader compilation context
  */
 function parseCircleProperties(style, builder, uniforms, context) {
@@ -281,7 +282,7 @@ function parseCircleProperties(style, builder, uniforms, context) {
 /**
  * @param {import("../../style/flat.js").FlatStyle} style Style
  * @param {ShaderBuilder} builder Shader builder
- * @param {Object<string,import("../../webgl/Helper").UniformValue>} uniforms Uniforms
+ * @param {Object<string,import("../../webgl/Helper.js").UniformValue>} uniforms Uniforms
  * @param {import("../../expr/gpu.js").CompilationContext} context Shader compilation context
  */
 function parseShapeProperties(style, builder, uniforms, context) {
@@ -404,7 +405,7 @@ function parseShapeProperties(style, builder, uniforms, context) {
 /**
  * @param {import("../../style/flat.js").FlatStyle} style Style
  * @param {ShaderBuilder} builder Shader builder
- * @param {Object<string,import("../../webgl/Helper").UniformValue>} uniforms Uniforms
+ * @param {Object<string,import("../../webgl/Helper.js").UniformValue>} uniforms Uniforms
  * @param {import("../../expr/gpu.js").CompilationContext} context Shader compilation context
  */
 function parseIconProperties(style, builder, uniforms, context) {
@@ -520,7 +521,7 @@ function parseIconProperties(style, builder, uniforms, context) {
 /**
  * @param {import("../../style/flat.js").FlatStyle} style Style
  * @param {ShaderBuilder} builder Shader Builder
- * @param {Object<string,import("../../webgl/Helper").UniformValue>} uniforms Uniforms
+ * @param {Object<string,import("../../webgl/Helper.js").UniformValue>} uniforms Uniforms
  * @param {import("../../expr/gpu.js").CompilationContext} context Shader compilation context
  */
 function parseStrokeProperties(style, builder, uniforms, context) {
@@ -710,7 +711,7 @@ function parseStrokeProperties(style, builder, uniforms, context) {
 /**
  * @param {import("../../style/flat.js").FlatStyle} style Style
  * @param {ShaderBuilder} builder Shader Builder
- * @param {Object<string,import("../../webgl/Helper").UniformValue>} uniforms Uniforms
+ * @param {Object<string,import("../../webgl/Helper.js").UniformValue>} uniforms Uniforms
  * @param {import("../../expr/gpu.js").CompilationContext} context Shader compilation context
  */
 function parseFillProperties(style, builder, uniforms, context) {
@@ -728,30 +729,31 @@ function parseFillProperties(style, builder, uniforms, context) {
       'fill-pattern-',
       textureId,
     );
-    let sampleSizeExpression = sizeExpression;
+    builder.setFillPatternSizeExpression(sizeExpression);
     let offsetExpression = 'vec2(0.)';
     if ('fill-pattern-offset' in style && 'fill-pattern-size' in style) {
-      sampleSizeExpression = expressionToGlsl(
+      const specifiedSizeExpression = expressionToGlsl(
         context,
         style[`fill-pattern-size`],
         NumberArrayType,
       );
+      builder.setFillPatternSizeExpression(specifiedSizeExpression);
       offsetExpression = parseImageOffsetProperties(
         style,
         'fill-pattern-',
         context,
         sizeExpression,
-        sampleSizeExpression,
+        `v_patternSizePx`,
       );
     }
     context.functions['sampleFillPattern'] =
-      `vec4 sampleFillPattern(sampler2D texture, vec2 textureSize, vec2 textureOffset, vec2 sampleSize, vec2 pxOrigin, vec2 pxPosition) {
-  float scaleRatio = pow(2., mod(u_zoom + 0.5, 1.) - 0.5);
-  vec2 pxRelativePos = pxPosition - pxOrigin;
+      `vec4 sampleFillPattern(sampler2D texture, vec2 textureSize, vec2 textureOffset, vec2 sampleSize, vec2 patternOriginPx, vec2 pxPosition, float sampleScaleRatio) {
+  vec2 pxRelativePos = pxPosition - patternOriginPx;
+
   // rotate the relative position from origin by the current view rotation
   pxRelativePos = vec2(pxRelativePos.x * cos(u_rotation) - pxRelativePos.y * sin(u_rotation), pxRelativePos.x * sin(u_rotation) + pxRelativePos.y * cos(u_rotation));
   // sample position is computed according to the sample offset & size
-  vec2 samplePos = mod(pxRelativePos / scaleRatio, sampleSize);
+  vec2 samplePos = mod(pxRelativePos / sampleScaleRatio, sampleSize);
   // also make sure that we're not sampling too close to the borders to avoid interpolation with outside pixels
   samplePos = clamp(samplePos, vec2(0.5), sampleSize - vec2(0.5));
   samplePos.y = sampleSize.y - samplePos.y; // invert y axis so that images appear upright
@@ -762,8 +764,9 @@ function parseFillProperties(style, builder, uniforms, context) {
     if ('fill-color' in style) {
       tintExpression = builder.getFillColorExpression();
     }
+
     builder.setFillColorExpression(
-      `${tintExpression} * sampleFillPattern(${textureName}, ${sizeExpression}, ${offsetExpression}, ${sampleSizeExpression}, pxOrigin, pxPos)`,
+      `${tintExpression} * sampleFillPattern(${textureName}, ${sizeExpression}, ${offsetExpression}, v_patternSizePx, v_patternOriginPx, pxPos, df_float(u_df_patternScaleRatio))`,
     );
   }
 }
@@ -793,7 +796,7 @@ export function parseLiteralStyle(style, variables, filter) {
 
   const builder = new ShaderBuilder();
 
-  /** @type {Object<string,import("../../webgl/Helper").UniformValue>} */
+  /** @type {Object<string,import("../../webgl/Helper.js").UniformValue>} */
   const uniforms = {};
 
   if ('icon-src' in style) {
@@ -809,8 +812,18 @@ export function parseLiteralStyle(style, variables, filter) {
   // note that the style filter may have already been applied earlier when building the rendering instructions
   // this is still needed in case a filter cannot be evaluated statically beforehand (e.g. depending on time)
   if (filter) {
-    const parsedFilter = expressionToGlsl(context, filter, BooleanType);
-    builder.setFragmentDiscardExpression(`!${parsedFilter}`);
+    const filterContext = newParsingContext();
+    const parsedFilter = expressionToGlsl(
+      context,
+      filter,
+      BooleanType,
+      filterContext,
+    );
+    if (filterContext.mCoordinate) {
+      builder.setFragmentDiscardExpression(`!${parsedFilter}`);
+    } else {
+      builder.setShapeDiscardExpression(`!${parsedFilter}`);
+    }
   }
 
   /**

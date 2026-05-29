@@ -76,7 +76,7 @@ class Fill {
       const patternImage = getIconImage(
         null,
         color.src,
-        'anonymous',
+        {crossOrigin: 'anonymous'},
         undefined,
         color.offset ? null : color.color ? color.color : null,
         !(color.offset && color.size),

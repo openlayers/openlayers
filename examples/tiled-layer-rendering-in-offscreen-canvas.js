@@ -1,8 +1,8 @@
+import Worker from 'worker-loader!./tiled-layer-rendering-in-offscreen-canvas.worker.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import ImageTileSource from '../src/ol/source/ImageTile.js';
-import Worker from 'worker-loader!./tiled-layer-rendering-in-offscreen-canvas.worker.js'; //eslint-disable-line
 const worker = new Worker();
 
 const tileQueue = [];

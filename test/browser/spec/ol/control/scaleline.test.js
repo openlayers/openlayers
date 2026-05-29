@@ -3,13 +3,13 @@ import {spy as sinonSpy} from 'sinon';
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
 import ScaleLine from '../../../../../src/ol/control/ScaleLine.js';
-import Projection from '../../../../../src/ol/proj/Projection.js';
-import {register} from '../../../../../src/ol/proj/proj4.js';
 import {
   addCommon,
   clearAllProjections,
   fromLonLat,
 } from '../../../../../src/ol/proj.js';
+import Projection from '../../../../../src/ol/proj/Projection.js';
+import {register} from '../../../../../src/ol/proj/proj4.js';
 
 describe('ol.control.ScaleLine', function () {
   let map;

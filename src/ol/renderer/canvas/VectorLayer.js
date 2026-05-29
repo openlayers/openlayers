@@ -37,8 +37,8 @@ import {
 import {getUid} from '../../util.js';
 import {
   defaultOrder as defaultRenderOrder,
-  getSquaredTolerance as getSquaredRenderTolerance,
   getTolerance as getRenderTolerance,
+  getSquaredTolerance as getSquaredRenderTolerance,
   renderFeature,
 } from '../vector.js';
 import CanvasLayerRenderer, {canvasPool} from './Layer.js';
@@ -72,9 +72,9 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     /**
      * @private
-     * @type {boolean}
+     * @type {import("../../extent.js").Extent}
      */
-    this.clipped_ = false;
+    this.clipExtent_ = null;
 
     /**
      * Do we need to extend the rendered area on the x-axis to handle
@@ -122,13 +122,13 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     /**
      * @private
-     * @type {import("../../coordinate").Coordinate}
+     * @type {import("../../coordinate.js").Coordinate}
      */
     this.renderedCenter_ = null;
 
     /**
      * @private
-     * @type {import("../../proj/Projection").default}
+     * @type {import("../../proj/Projection.js").default}
      */
     this.renderedProjection_ = null;
 
@@ -152,7 +152,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     /**
      * @private
-     * @type {import("../../render/canvas/ExecutorGroup").default}
+     * @type {import("../../render/canvas/ExecutorGroup.js").default}
      */
     this.replayGroup_ = null;
 
@@ -297,9 +297,13 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     if (!this.replayGroup_) {
       return;
     }
+    if (this.clipExtent_) {
+      this.clipUnrotated(this.context, frameState, this.clipExtent_);
+    }
     this.replayGroup_.renderDeferred();
-    if (this.clipped_) {
+    if (this.clipExtent_) {
       this.context.restore();
+      this.clipExtent_ = null;
     }
     this.resetDrawContext_();
   }
@@ -337,13 +341,22 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const projection = viewState.projection;
 
     // clipped rendering if layer extent is set
-    this.clipped_ = false;
+    this.clipExtent_ = null;
+    let clipped = false;
     if (render && layerState.extent && this.clipping) {
       const layerExtent = fromUserExtent(layerState.extent, projection);
       render = intersectsExtent(layerExtent, frameState.extent);
-      this.clipped_ = render && !containsExtent(layerExtent, frameState.extent);
-      if (this.clipped_) {
-        this.clipUnrotated(context, frameState, layerExtent);
+      const needsClip =
+        render && !containsExtent(layerExtent, frameState.extent);
+      if (needsClip) {
+        if (frameState.declutter) {
+          // Store extent for deferred clipping
+          this.clipExtent_ = layerExtent;
+        } else {
+          // Apply clipping immediately for non-declutter rendering
+          this.clipUnrotated(context, frameState, layerExtent);
+          clipped = true;
+        }
       }
     }
 
@@ -355,7 +368,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       );
     }
 
-    if (!frameState.declutter && this.clipped_) {
+    if (clipped) {
       context.restore();
     }
 
@@ -374,7 +387,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
   /**
    * Asynchronous layer level hit detection.
    * @param {import("../../pixel.js").Pixel} pixel Pixel.
-   * @return {Promise<Array<import("../../Feature").default>>} Promise
+   * @return {Promise<Array<import("../../Feature.js").default>>} Promise
    * that resolves with an array of features.
    * @override
    */

@@ -545,6 +545,21 @@ describe('ol/expr/gpu.js', () => {
         },
       },
       {
+        name: 'in (number haystack using literal operator)',
+        expression: ['in', ['get', 'attr'], ['literal', [0, 20, 50]]],
+        type: AnyType,
+        expected: 'operator_in_0(a_prop_attr)',
+        contextAssertion: (context) => {
+          expect(context.functions['operator_in_0']).to
+            .equal(`bool operator_in_0(float inputValue) {
+  if (inputValue == 0.0) { return true; }
+  if (inputValue == 20.0) { return true; }
+  if (inputValue == 50.0) { return true; }
+  return false;
+}`);
+        },
+      },
+      {
         name: 'in (string haystack)',
         expression: ['in', ['get', 'attr'], ['literal', ['abc', 'def', 'ghi']]],
         type: AnyType,

@@ -2,9 +2,9 @@
  * @module ol/Image
  */
 import ImageState from './ImageState.js';
+import {listenOnce, unlistenByKey} from './events.js';
 import EventType from './events/EventType.js';
 import EventTarget from './events/Target.js';
-import {listenOnce, unlistenByKey} from './events.js';
 import {toPromise} from './functions.js';
 import {CREATE_IMAGE_BITMAP, IMAGE_DECODE} from './has.js';
 

@@ -106,6 +106,7 @@ import {toSize} from '../size.js';
  *     * Only literal arrays are supported as `haystack` for now; this means that `haystack` cannot be the result of an
  *     expression. If `haystack` is an array of strings, use the `literal` operator to disambiguate from an expression:
  *     `['literal', ['abc', 'def', 'ghi']]`
+ *     This works as well for number arrays although it is not required. Mixing types (numbers and strings) will produce undefined results.
  *
  * * Conversion operators:
  *   * `['array', value1, ...valueN]` creates a numerical array from `number` values; please note that the amount of
@@ -254,6 +255,7 @@ export class CallExpression {
  * @property {Set<string>} properties Properties referenced with the 'get' operator.
  * @property {boolean} featureId The style uses the feature id.
  * @property {boolean} geometryType The style uses the feature geometry type.
+ * @property {boolean} mCoordinate The style uses the M coordinate of geometries
  * @property {boolean} mapState The style uses the map state (view state or time elapsed).
  */
 
@@ -266,6 +268,7 @@ export function newParsingContext() {
     properties: new Set(),
     featureId: false,
     geometryType: false,
+    mCoordinate: false,
     mapState: false,
   };
 }
@@ -445,7 +448,7 @@ const parsers = {
     withArgsOfType(StringType),
   ),
   [Ops.GeometryType]: createCallExpressionParser(usesGeometryType, withNoArgs),
-  [Ops.LineMetric]: createCallExpressionParser(withNoArgs),
+  [Ops.LineMetric]: createCallExpressionParser(usesMCoordinate, withNoArgs),
   [Ops.Resolution]: createCallExpressionParser(usesMapState, withNoArgs),
   [Ops.Zoom]: createCallExpressionParser(usesMapState, withNoArgs),
   [Ops.Time]: createCallExpressionParser(usesMapState, withNoArgs),
@@ -661,6 +664,13 @@ function usesFeatureId(encoded, returnType, context) {
  */
 function usesGeometryType(encoded, returnType, context) {
   context.geometryType = true;
+}
+
+/**
+ * @type {ArgValidator}
+ */
+function usesMCoordinate(encoded, returnType, context) {
+  context.mCoordinate = true;
 }
 
 /**
@@ -912,18 +922,22 @@ function withInArgs(encoded, returnType, context) {
    * @type {number}
    */
   let needleType;
-  if (typeof haystack[0] === 'string') {
-    if (haystack[0] !== 'literal') {
-      throw new Error(
-        `for the "in" operator, a string array should be wrapped in a "literal" operator to disambiguate from expressions`,
-      );
-    }
-    if (!Array.isArray(haystack[1])) {
+
+  // check if we're using the 'literal' operator for the haystack
+  if (haystack[0] === 'literal') {
+    haystack = haystack[1];
+    if (!Array.isArray(haystack)) {
       throw new Error(
         `failed to parse "in" expression: the literal operator must be followed by an array`,
       );
     }
-    haystack = haystack[1];
+  } else if (typeof haystack[0] === 'string') {
+    throw new Error(
+      `for the "in" operator, a string array should be wrapped in a "literal" operator to disambiguate from expressions`,
+    );
+  }
+
+  if (typeof haystack[0] === 'string') {
     needleType = StringType;
   } else {
     needleType = NumberType;

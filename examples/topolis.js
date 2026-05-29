@@ -203,7 +203,7 @@ function onDrawend(e) {
     }
     topo.addEdgeNewFaces(start, end, edgeGeom);
   } catch (e) {
-    toastr.warning(e.toString());
+    alert(e.toString());
   }
 }
 

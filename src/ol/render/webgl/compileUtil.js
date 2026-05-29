@@ -22,14 +22,19 @@ import {
  * @param {import("../../expr/gpu.js").CompilationContext} compilationContext Compilation context
  * @param {import("../../expr/expression.js").EncodedExpression} value Value
  * @param {number} [expectedType] Expected final type (can be several types combined)
+ * @param {import("../../expr/expression.js").ParsingContext} [parsingContext] Optional parsing context to be used
  * @return {string} GLSL-compatible output
  */
-export function expressionToGlsl(compilationContext, value, expectedType) {
-  const parsingContext = newParsingContext();
+export function expressionToGlsl(
+  compilationContext,
+  value,
+  expectedType,
+  parsingContext,
+) {
   return buildExpression(
     value,
     expectedType,
-    parsingContext,
+    parsingContext ?? newParsingContext(),
     compilationContext,
   );
 }
@@ -151,10 +156,10 @@ export function applyContextToBuilder(builder, context) {
  * to be fed to a WebGLHelper instance
  * @param {import("../../expr/gpu.js").CompilationContext} context Compilation context
  * @param {import('../../style/flat.js').StyleVariables} [variables] Style variables.
- * @return {Object<string,import("../../webgl/Helper").UniformValue>} Uniforms
+ * @return {Object<string,import("../../webgl/Helper.js").UniformValue>} Uniforms
  */
 export function generateUniformsFromContext(context, variables) {
-  /** @type {Object<string,import("../../webgl/Helper").UniformValue>} */
+  /** @type {Object<string,import("../../webgl/Helper.js").UniformValue>} */
   const uniforms = {};
 
   // define one uniform per variable

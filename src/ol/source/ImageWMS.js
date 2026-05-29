@@ -14,6 +14,7 @@ import {createLoader, getFeatureInfoUrl, getLegendUrl} from './wms.js';
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
+ * @property {ReferrerPolicy} [referrerPolicy] The `referrerPolicy` property for loaded images.
  * @property {boolean} [hidpi=true] Use the `ol/Map#pixelRatio` value when requesting
  * the image from the remote server.
  * @property {import("./wms.js").ServerType} [serverType] The type of
@@ -61,6 +62,12 @@ class ImageWMS extends ImageSource {
      */
     this.crossOrigin_ =
       options.crossOrigin !== undefined ? options.crossOrigin : null;
+
+    /**
+     * @private
+     * @type {ReferrerPolicy}
+     */
+    this.referrerPolicy_ = options.referrerPolicy;
 
     /**
      * @private
@@ -207,6 +214,7 @@ class ImageWMS extends ImageSource {
       this.loaderProjection_ = projection;
       this.loader = createLoader({
         crossOrigin: this.crossOrigin_,
+        referrerPolicy: this.referrerPolicy_,
         params: this.params_,
         projection: projection,
         serverType: this.serverType_,

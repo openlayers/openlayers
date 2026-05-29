@@ -1,6 +1,6 @@
 import Feature from '../../../build/ol/Feature.js';
+import Geometry from '../../../build/ol/geom/Geometry.js';
 import Point from '../../../build/ol/geom/Point.js';
-import {Geometry} from '../../../build/ol/geom.js';
 import Snap from '../../../build/ol/interaction/Snap.js';
 import VectorLayer from '../../../build/ol/layer/Vector.js';
 import VectorSource from '../../../build/ol/source/Vector.js';

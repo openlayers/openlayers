@@ -1,0 +1,12 @@
+---
+layout: example.html
+title: Cloud Optimized GeoTIFF (COG) with Custom Loader
+shortdesc: Rendering a COG with a custom loader function.
+docs: >
+  Tiled data from a Cloud Optimized GeoTIFF (COG) can be rendered as a layer.  In this
+  example, a custom loader function is provided to handle requests with custom headers
+  or authentication logic. The loader receives the URL, headers, and an abort signal,
+  and must return a Response object.
+tags: "cog"
+---
+<div id="map" class="map"></div>
