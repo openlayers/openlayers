@@ -21,34 +21,34 @@ describe('ol/source/TileArcGISRest', function () {
       expect(uri.hostname).to.be('example.com');
       expect(uri.pathname).to.be('/MapServer/export');
       const queryData = uri.searchParams;
-      const bbox = queryData.get('BBOX').split(',').map(parseFloat);
+      const bbox = queryData.get('bbox').split(',').map(parseFloat);
       expect(bbox[0]).roughlyEqual(-10018754.171394622, 1e-9);
       expect(bbox[1]).roughlyEqual(-15028131.257091936, 1e-9);
       expect(bbox[2]).roughlyEqual(-5009377.085697311, 1e-9);
       expect(bbox[3]).roughlyEqual(-10018754.171394624, 1e-9);
-      expect(queryData.get('FORMAT')).to.be('PNG32');
-      expect(queryData.get('SIZE')).to.be('256,256');
-      expect(queryData.get('IMAGESR')).to.be('3857');
-      expect(queryData.get('BBOXSR')).to.be('3857');
-      expect(queryData.get('TRANSPARENT')).to.be('true');
+      expect(queryData.get('format')).to.be('png32');
+      expect(queryData.get('size')).to.be('256,256');
+      expect(queryData.get('imageSR')).to.be('3857');
+      expect(queryData.get('bboxSR')).to.be('3857');
+      expect(queryData.get('transparent')).to.be('true');
     });
 
-    it('returns a non floating point DPI value', function () {
+    it('returns a non floating point dpi value', function () {
       const source = new TileArcGISRest(options);
       const tile = source.getTile(3, 2, 6, 1.12, getProjection('EPSG:3857'));
       const uri = new URL(tile.src_);
       const queryData = uri.searchParams;
-      expect(queryData.get('DPI')).to.be('101');
+      expect(queryData.get('dpi')).to.be('101');
     });
 
-    it('takes DPI from params if specified', function () {
-      options.params.DPI = 96;
+    it('takes dpi from params if specified', function () {
+      options.params.dpi = 96;
       const source = new TileArcGISRest(options);
       const tile = source.getTile(3, 2, 6, 1.12, getProjection('EPSG:3857'));
       const uri = new URL(tile.src_);
       const queryData = uri.searchParams;
-      expect(queryData.get('DPI')).to.be('108');
-      delete options.params.DPI;
+      expect(queryData.get('dpi')).to.be('108');
+      delete options.params.dpi;
     });
 
     it('returns a tile with the expected URL with url list', function () {
@@ -65,16 +65,16 @@ describe('ol/source/TileArcGISRest', function () {
       expect(uri.hostname).to.match(/test[12]\.com/);
       expect(uri.pathname).to.be('/MapServer/export');
       const queryData = uri.searchParams;
-      const bbox = queryData.get('BBOX').split(',').map(parseFloat);
+      const bbox = queryData.get('bbox').split(',').map(parseFloat);
       expect(bbox[0]).roughlyEqual(-10018754.171394622, 1e-9);
       expect(bbox[1]).roughlyEqual(-15028131.257091936, 1e-9);
       expect(bbox[2]).roughlyEqual(-5009377.085697311, 1e-9);
       expect(bbox[3]).roughlyEqual(-10018754.171394624, 1e-9);
-      expect(queryData.get('FORMAT')).to.be('PNG32');
-      expect(queryData.get('SIZE')).to.be('256,256');
-      expect(queryData.get('IMAGESR')).to.be('3857');
-      expect(queryData.get('BBOXSR')).to.be('3857');
-      expect(queryData.get('TRANSPARENT')).to.be('true');
+      expect(queryData.get('format')).to.be('png32');
+      expect(queryData.get('size')).to.be('256,256');
+      expect(queryData.get('imageSR')).to.be('3857');
+      expect(queryData.get('bboxSR')).to.be('3857');
+      expect(queryData.get('transparent')).to.be('true');
     });
 
     it('returns a tile with the expected URL for ImageServer', function () {
@@ -87,36 +87,36 @@ describe('ol/source/TileArcGISRest', function () {
       expect(uri.hostname).to.be('example.com');
       expect(uri.pathname).to.be('/ImageServer/exportImage');
       const queryData = uri.searchParams;
-      const bbox = queryData.get('BBOX').split(',').map(parseFloat);
+      const bbox = queryData.get('bbox').split(',').map(parseFloat);
       expect(bbox[0]).roughlyEqual(-10018754.171394622, 1e-9);
       expect(bbox[1]).roughlyEqual(-15028131.257091936, 1e-9);
       expect(bbox[2]).roughlyEqual(-5009377.085697311, 1e-9);
       expect(bbox[3]).roughlyEqual(-10018754.171394624, 1e-9);
-      expect(queryData.get('FORMAT')).to.be('PNG32');
-      expect(queryData.get('SIZE')).to.be('256,256');
-      expect(queryData.get('IMAGESR')).to.be('3857');
-      expect(queryData.get('BBOXSR')).to.be('3857');
-      expect(queryData.get('TRANSPARENT')).to.be('true');
+      expect(queryData.get('format')).to.be('png32');
+      expect(queryData.get('size')).to.be('256,256');
+      expect(queryData.get('imageSR')).to.be('3857');
+      expect(queryData.get('bboxSR')).to.be('3857');
+      expect(queryData.get('transparent')).to.be('true');
     });
 
     it('allows various parameters to be overridden', function () {
-      options.params.FORMAT = 'png';
-      options.params.TRANSPARENT = false;
+      options.params.format = 'png';
+      options.params.transparent = false;
       const source = new TileArcGISRest(options);
       const tile = source.getTile(3, 2, 2, 1, getProjection('EPSG:4326'));
       const uri = new URL(tile.src_);
       const queryData = uri.searchParams;
-      expect(queryData.get('FORMAT')).to.be('png');
-      expect(queryData.get('TRANSPARENT')).to.be('false');
+      expect(queryData.get('format')).to.be('png');
+      expect(queryData.get('transparent')).to.be('false');
     });
 
     it('allows adding rest option', function () {
-      options.params.LAYERS = 'show:1,3,4';
+      options.params.layers = 'show:1,3,4';
       const source = new TileArcGISRest(options);
       const tile = source.getTile(3, 2, 2, 1, getProjection('EPSG:4326'));
       const uri = new URL(tile.src_);
       const queryData = uri.searchParams;
-      expect(queryData.get('LAYERS')).to.be('show:1,3,4');
+      expect(queryData.get('layers')).to.be('show:1,3,4');
     });
   });
 

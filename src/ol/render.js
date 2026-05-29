@@ -81,7 +81,15 @@ export function toContext(context, options) {
   }
   const extent = [0, 0, canvas.width, canvas.height];
   const transform = scaleTransform(createTransform(), pixelRatio, pixelRatio);
-  return new CanvasImmediateRenderer(context, pixelRatio, extent, transform, 0);
+  const squaredTolerance = getSquaredTolerance(1, pixelRatio);
+  return new CanvasImmediateRenderer(
+    context,
+    pixelRatio,
+    extent,
+    transform,
+    0,
+    squaredTolerance,
+  );
 }
 
 /**

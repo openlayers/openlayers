@@ -21,16 +21,16 @@ import {
   translate as translateTransform,
 } from '../../transform.js';
 import {getUid} from '../../util.js';
+import {ARRAY_BUFFER, DYNAMIC_DRAW, ELEMENT_ARRAY_BUFFER} from '../../webgl.js';
 import WebGLArrayBuffer from '../../webgl/Buffer.js';
 import {AttributeType, DefaultUniform} from '../../webgl/Helper.js';
 import WebGLRenderTarget from '../../webgl/RenderTarget.js';
-import {ARRAY_BUFFER, DYNAMIC_DRAW, ELEMENT_ARRAY_BUFFER} from '../../webgl.js';
 import {create as createWebGLWorker} from '../../worker/webgl.js';
 import WebGLLayerRenderer from './Layer.js';
 import {getWorldParameters} from './worldUtil.js';
 
 /** @typedef {import("../../geom/Point.js").default} Point */
-/** @typedef {import("../../Feature").default<Point>} PointFeature */
+/** @typedef {import("../../Feature.js").default<Point>} PointFeature */
 
 /**
  * @typedef {Object} CustomAttribute A description of a custom attribute to be passed on to the GPU, with a value different
@@ -59,9 +59,9 @@ import {getWorldParameters} from './worldUtil.js';
  * @property {string} vertexShader Vertex shader source, mandatory.
  * @property {string} fragmentShader Fragment shader source, mandatory.
  * @property {boolean} [hitDetectionEnabled] Whether shader is hit detection aware.
- * @property {Object<string,import("../../webgl/Helper").UniformValue>} [uniforms] Uniform definitions for the post process steps
+ * @property {Object<string,import("../../webgl/Helper.js").UniformValue>} [uniforms] Uniform definitions for the post process steps
  * Please note that `u_texture` is reserved for the main texture slot and `u_opacity` is reserved for the layer opacity.
- * @property {Array<import("./Layer").PostProcessesOptions>} [postProcesses] Post-processes definitions
+ * @property {Array<import("./Layer.js").PostProcessesOptions>} [postProcesses] Post-processes definitions
  */
 
 /**
@@ -547,7 +547,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
 
   /**
    * Rebuild internal webgl buffers based on current view extent; costly, should not be called too much
-   * @param {import("../../Map").FrameState} frameState Frame state.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @private
    */
   rebuildBuffers_(frameState) {

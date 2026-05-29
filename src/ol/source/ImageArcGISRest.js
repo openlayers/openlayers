@@ -12,6 +12,7 @@ import {createLoader} from './arcgisRest.js';
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
+ * @property {ReferrerPolicy} [referrerPolicy] The `referrerPolicy` property for loaded images.
  * @property {boolean} [hidpi=true] Use the `ol/Map#pixelRatio` value when requesting the image from
  * the remote server.
  * @property {import("../Image.js").LoadFunction} [imageLoadFunction] Optional function to load an image given
@@ -19,9 +20,9 @@ import {createLoader} from './arcgisRest.js';
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
  * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
  * @property {Object<string,*>} [params] ArcGIS Rest parameters. This field is optional. Service
- * defaults will be used for any fields not specified. `FORMAT` is `PNG32` by default. `F` is
- * `IMAGE` by default. `TRANSPARENT` is `true` by default.  `BBOX`, `SIZE`, `BBOXSR`, and `IMAGESR`
- * will be set dynamically. Set `LAYERS` to override the default service layer visibility. See
+ * defaults will be used for any fields not specified. `format` is `png32` by default. `f` is
+ * `image` by default. `transparent` is `true` by default.  `bbox`, `size`, `bboxSR`, and `imageSR`
+ * will be set dynamically. Set `layers` to override the default service layer visibility. See
  * https://developers.arcgis.com/rest/services-reference/export-map.htm
  * for further reference.
  * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is the view projection.
@@ -67,6 +68,12 @@ class ImageArcGISRest extends ImageSource {
      */
     this.crossOrigin_ =
       options.crossOrigin !== undefined ? options.crossOrigin : null;
+
+    /**
+     * @private
+     * @type {ReferrerPolicy}
+     */
+    this.referrerPolicy_ = options.referrerPolicy;
 
     /**
      * @private
@@ -147,6 +154,7 @@ class ImageArcGISRest extends ImageSource {
       this.loaderProjection_ = projection;
       this.loader = createLoader({
         crossOrigin: this.crossOrigin_,
+        referrerPolicy: this.referrerPolicy_,
         params: this.params_,
         projection: projection,
         hidpi: this.hidpi_,

@@ -10,6 +10,12 @@ import {
   getHeight,
 } from '../extent.js';
 import {memoizeOne} from '../functions.js';
+import LineString from '../geom/LineString.js';
+import MultiLineString from '../geom/MultiLineString.js';
+import MultiPoint from '../geom/MultiPoint.js';
+import MultiPolygon from '../geom/MultiPolygon.js';
+import Point from '../geom/Point.js';
+import Polygon from '../geom/Polygon.js';
 import {linearRingss as linearRingssCenter} from '../geom/flat/center.js';
 import {
   getInteriorPointOfArray,
@@ -23,14 +29,6 @@ import {
   quantizeArray,
 } from '../geom/flat/simplify.js';
 import {transform2D} from '../geom/flat/transform.js';
-import {
-  LineString,
-  MultiLineString,
-  MultiPoint,
-  MultiPolygon,
-  Point,
-  Polygon,
-} from '../geom.js';
 import {get as getProjection} from '../proj.js';
 import {
   compose as composeTransform,
@@ -160,7 +158,7 @@ class RenderFeature {
               this.flatCoordinates_,
               0,
               this.flatCoordinates_.length,
-              2,
+              this.stride_,
             );
     }
     return this.extent_;
@@ -176,7 +174,7 @@ class RenderFeature {
         this.flatCoordinates_,
         0,
         this.ends_,
-        2,
+        this.stride_,
         flatCenter,
         0,
       );
@@ -190,12 +188,17 @@ class RenderFeature {
   getFlatInteriorPoints() {
     if (!this.flatInteriorPoints_) {
       const ends = inflateEnds(this.flatCoordinates_, this.ends_);
-      const flatCenters = linearRingssCenter(this.flatCoordinates_, 0, ends, 2);
+      const flatCenters = linearRingssCenter(
+        this.flatCoordinates_,
+        0,
+        ends,
+        this.stride_,
+      );
       this.flatInteriorPoints_ = getInteriorPointsOfMultiArray(
         this.flatCoordinates_,
         0,
         ends,
-        2,
+        this.stride_,
         flatCenters,
       );
     }
@@ -211,7 +214,7 @@ class RenderFeature {
         this.flatCoordinates_,
         0,
         this.flatCoordinates_.length,
-        2,
+        this.stride_,
         0.5,
       );
     }
@@ -229,7 +232,13 @@ class RenderFeature {
       const ends = /** @type {Array<number>} */ (this.ends_);
       for (let i = 0, ii = ends.length; i < ii; ++i) {
         const end = ends[i];
-        const midpoint = interpolatePoint(flatCoordinates, offset, end, 2, 0.5);
+        const midpoint = interpolatePoint(
+          flatCoordinates,
+          offset,
+          end,
+          this.stride_,
+          0.5,
+        );
         extend(this.flatMidpoints_, midpoint);
         offset = end;
       }
@@ -348,7 +357,7 @@ class RenderFeature {
         this.flatCoordinates_,
         0,
         this.flatCoordinates_.length,
-        2,
+        this.stride_,
         tmpTransform,
         this.flatCoordinates_,
       );
@@ -449,7 +458,7 @@ class RenderFeature {
           this.type_,
           simplifiedFlatCoordinates,
           simplifiedEnds,
-          2,
+          this.stride_,
           this.properties_,
           this.id_,
         );

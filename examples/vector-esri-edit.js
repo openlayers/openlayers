@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import EsriJSON from '../src/ol/format/EsriJSON.js';
@@ -21,7 +20,7 @@ const layer = '2';
 const esrijsonFormat = new EsriJSON();
 
 const vectorSource = new VectorSource({
-  loader: function (extent, resolution, projection) {
+  loader: async (extent, resolution, projection) => {
     const url =
       serviceUrl +
       layer +
@@ -40,25 +39,18 @@ const vectorSource = new VectorSource({
       ) +
       '&geometryType=esriGeometryEnvelope&inSR=102100&outFields=*' +
       '&outSR=102100';
-    $.ajax({
-      url: url,
-      dataType: 'jsonp',
-      success: function (response) {
-        if (response.error) {
-          alert(
-            response.error.message + '\n' + response.error.details.join('\n'),
-          );
-        } else {
-          // dataProjection will be read from document
-          const features = esrijsonFormat.readFeatures(response, {
-            featureProjection: projection,
-          });
-          if (features.length > 0) {
-            vectorSource.addFeatures(features);
-          }
-        }
-      },
-    });
+    const response = await fetch(url);
+    const json = await response.json();
+    if (json.error) {
+      alert(json.error.message + '\n' + json.error.details.join('\n'));
+      throw new Error(json.error.message);
+    } else {
+      // dataProjection will be read from document
+      const features = esrijsonFormat.readFeatures(json, {
+        featureProjection: projection,
+      });
+      return features;
+    }
   },
   strategy: tileStrategy(
     createXYZ({
@@ -137,17 +129,23 @@ selected.on('remove', function (evt) {
       }) +
       ']';
     const url = serviceUrl + layer + '/updateFeatures';
-    $.post(url, {f: 'json', features: payload}).done(function (data) {
-      const result = typeof data === 'string' ? JSON.parse(data) : data;
-      if (result.updateResults && result.updateResults.length > 0) {
-        if (result.updateResults[0].success !== true) {
-          const error = result.updateResults[0].error;
-          alert(error.description + ' (' + error.code + ')');
-        } else {
-          delete dirty[fid];
+    fetch(url, {
+      method: 'POST',
+      body: new URLSearchParams({f: 'json', features: payload}),
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        const result = typeof data === 'string' ? JSON.parse(data) : data;
+        if (result.updateResults && result.updateResults.length > 0) {
+          if (result.updateResults[0].success !== true) {
+            const error = result.updateResults[0].error;
+            alert(error.description + ' (' + error.code + ')');
+          } else {
+            delete dirty[fid];
+          }
         }
-      }
-    });
+      });
   }
 });
 
@@ -160,15 +158,21 @@ draw.on('drawend', function (evt) {
     }) +
     ']';
   const url = serviceUrl + layer + '/addFeatures';
-  $.post(url, {f: 'json', features: payload}).done(function (data) {
-    const result = typeof data === 'string' ? JSON.parse(data) : data;
-    if (result.addResults && result.addResults.length > 0) {
-      if (result.addResults[0].success === true) {
-        feature.set('objectid', result.addResults[0]['objectId']);
-      } else {
-        const error = result.addResults[0].error;
-        alert(error.description + ' (' + error.code + ')');
+  fetch(url, {
+    method: 'POST',
+    body: new URLSearchParams({f: 'json', features: payload}),
+    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      const result = typeof data === 'string' ? JSON.parse(data) : data;
+      if (result.addResults && result.addResults.length > 0) {
+        if (result.addResults[0].success === true) {
+          feature.set('objectid', result.addResults[0]['objectId']);
+        } else {
+          const error = result.addResults[0].error;
+          alert(error.description + ' (' + error.code + ')');
+        }
       }
-    }
-  });
+    });
 });

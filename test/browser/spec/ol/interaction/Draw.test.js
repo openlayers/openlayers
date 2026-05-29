@@ -6,12 +6,12 @@ import MapBrowserEvent from '../../../../../src/ol/MapBrowserEvent.js';
 import {unByKey} from '../../../../../src/ol/Observable.js';
 import View from '../../../../../src/ol/View.js';
 import {equals} from '../../../../../src/ol/array.js';
+import {listen} from '../../../../../src/ol/events.js';
 import {
   altKeyOnly,
   always,
   shiftKeyOnly,
 } from '../../../../../src/ol/events/condition.js';
-import {listen} from '../../../../../src/ol/events.js';
 import Circle from '../../../../../src/ol/geom/Circle.js';
 import LineString from '../../../../../src/ol/geom/LineString.js';
 import MultiLineString from '../../../../../src/ol/geom/MultiLineString.js';
@@ -25,12 +25,12 @@ import Draw, {
 } from '../../../../../src/ol/interaction/Draw.js';
 import Interaction from '../../../../../src/ol/interaction/Interaction.js';
 import VectorLayer from '../../../../../src/ol/layer/Vector.js';
-import {register} from '../../../../../src/ol/proj/proj4.js';
 import {
   clearUserProjection,
   setUserProjection,
   transform,
 } from '../../../../../src/ol/proj.js';
+import {register} from '../../../../../src/ol/proj/proj4.js';
 import VectorSource from '../../../../../src/ol/source/Vector.js';
 
 describe('ol/interaction/Draw', function () {

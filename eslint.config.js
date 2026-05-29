@@ -18,12 +18,8 @@ export default [
   {
     name: 'common-config',
     rules: {
-      'import/no-unresolved': [
-        'error',
-        {
-          'ignore': ['@octokit/rest', '@typescript-eslint/parser'],
-        },
-      ],
+      'jsdoc/reject-any-type': ['off'], //TODO: make codebase work with 'error' instead of 'off'
+      'jsdoc/reject-function-type': ['off'], //TODO: make codebase work with 'error' instead of 'off'
     },
   },
   {

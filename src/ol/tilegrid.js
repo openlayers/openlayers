@@ -13,8 +13,8 @@ import {toSize} from './size.js';
 import TileGrid from './tilegrid/TileGrid.js';
 import {DEFAULT_MAX_ZOOM, DEFAULT_TILE_SIZE} from './tilegrid/common.js';
 
-export {TileGrid};
 export {default as WMTS} from './tilegrid/WMTS.js';
+export {TileGrid};
 
 /**
  * @param {import("./proj/Projection.js").default} projection Projection.

@@ -108,6 +108,7 @@ function createWorker(config, onMessage) {
   const worker = new Worker(
     typeof Blob === 'undefined'
       ? 'data:text/javascript;base64,' +
+        //@ts-expect-error
         Buffer.from(lines.join('\n'), 'binary').toString('base64')
       : URL.createObjectURL(new Blob(lines, {type: 'text/javascript'})),
   );
@@ -473,10 +474,12 @@ export class RasterSourceEvent extends Event {
 /**
  * @typedef {Object} Options
  * @property {Array<import("./Source.js").default|import("../layer/Layer.js").default>} sources Input
- * sources or layers.  For vector data, use an VectorImage layer.
+ * sources or layers.
  * @property {Operation} [operation] Raster operation.
  * The operation will be called with data from input sources
  * and the output will be assigned to the raster source.
+ * @property {boolean} [interpolate=true] Use interpolated values when resampling. By default,
+ * linear interpolation is used when resampling. Set to `false` to use the nearest neighbor instead.
  * @property {Object} [lib] Functions that will be made available to operations run in a worker.
  * @property {number} [threads] By default, operations will be run in a single worker thread.
  * To avoid using workers altogether, set `threads: 0`.  For pixel operations, operations can
@@ -495,11 +498,11 @@ export class RasterSourceEvent extends Event {
 
 /***
  * @template Return
- * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
- *   import("../Observable").OnSignature<import("../ObjectEventType").Types, import("../Object").ObjectEvent, Return> &
- *   import("../Observable").OnSignature<import("./Image.js").ImageSourceEventTypes, import("./Image.js").ImageSourceEvent, Return> &
- *   import("../Observable").OnSignature<RasterSourceEventTypes, RasterSourceEvent, Return> &
- *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types
+ * @typedef {import("../Observable.js").OnSignature<import("../Observable.js").EventTypes, import("../events/Event.js").default, Return> &
+ *   import("../Observable.js").OnSignature<import("../ObjectEventType.js").Types, import("../Object.js").ObjectEvent, Return> &
+ *   import("../Observable.js").OnSignature<import("./Image.js").ImageSourceEventTypes, import("./Image.js").ImageSourceEvent, Return> &
+ *   import("../Observable.js").OnSignature<RasterSourceEventTypes, RasterSourceEvent, Return> &
+ *   import("../Observable.js").CombinedOnSignature<import("../Observable.js").EventTypes|import("../ObjectEventType.js").Types
  *     |RasterSourceEventTypes, Return>} RasterSourceOnSignature
  */
 
@@ -518,16 +521,17 @@ class RasterSource extends ImageSource {
    */
   constructor(options) {
     super({
+      interpolate: options.interpolate,
       projection: null,
     });
 
     /***
-     * @type {RasterSourceOnSignature<import("../events").EventsKey>}
+     * @type {RasterSourceOnSignature<import("../events.js").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {RasterSourceOnSignature<import("../events").EventsKey>}
+     * @type {RasterSourceOnSignature<import("../events.js").EventsKey>}
      */
     this.once;
 
@@ -784,8 +788,11 @@ class RasterSource extends ImageSource {
   processSources_() {
     const frameState = this.requestedFrameState_;
     const len = this.layers_.length;
+    const sourceRevisions = new Array(len);
     const imageDatas = new Array(len);
     for (let i = 0; i < len; ++i) {
+      const source = this.layers_[i].getSource();
+      sourceRevisions[i] = source.getRevision();
       frameState.layerIndex = i;
       frameState.renderTargets = {};
       const imageData = getImageData(this.layers_[i], frameState);
@@ -803,19 +810,20 @@ class RasterSource extends ImageSource {
     this.processor_.process(
       imageDatas,
       data,
-      this.onWorkerComplete_.bind(this, frameState),
+      this.onWorkerComplete_.bind(this, frameState, sourceRevisions),
     );
   }
 
   /**
    * Called when pixel processing is complete.
    * @param {import("../Map.js").FrameState} frameState The frame state.
+   * @param {Array<number>} sourceRevisions Source revisions when processing started.
    * @param {Error} err Any error during processing.
    * @param {ImageData} output The output image data.
    * @param {Object|Array<Object>} data The user data (or an array if more than one thread).
    * @private
    */
-  onWorkerComplete_(frameState, err, output, data) {
+  onWorkerComplete_(frameState, sourceRevisions, err, output, data) {
     if (err || !output) {
       return;
     }
@@ -828,6 +836,13 @@ class RasterSource extends ImageSource {
       !equals(extent, this.requestedFrameState_.extent)
     ) {
       return;
+    }
+    // do nothing if any input source's revision changed
+    for (let i = 0; i < this.layers_.length; ++i) {
+      const source = this.layers_[i].getSource();
+      if (sourceRevisions[i] !== source.getRevision()) {
+        return;
+      }
     }
 
     let context;
@@ -862,7 +877,7 @@ class RasterSource extends ImageSource {
   }
 
   /**
-   * @param {import("../proj/Projection").default} [projection] Projection.
+   * @param {import("../proj/Projection.js").default} [projection] Projection.
    * @return {Array<number>|null} Resolutions.
    * @override
    */

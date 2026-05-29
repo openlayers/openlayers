@@ -4,8 +4,8 @@ import ScaleLine from '../src/ol/control/ScaleLine.js';
 import {defaults as defaultControls} from '../src/ol/control/defaults.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {
-  get as getProjection,
   getPointResolution,
+  get as getProjection,
   transform,
 } from '../src/ol/proj.js';
 import OSM from '../src/ol/source/OSM.js';

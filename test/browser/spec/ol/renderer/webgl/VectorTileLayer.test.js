@@ -203,7 +203,7 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
         {name: 'u_tileZoomLevel', type: 'float'},
       ]);
       expect(secondBuilder.getFragmentDiscardExpression()).to.be(
-        '(!(u_zoom > 10.0)) || (texture2D(u_depthMask, gl_FragCoord.xy / u_pixelRatio / u_viewportSizePx).r * 50. > u_tileZoomLevel + 0.5)',
+        'texture2D(u_depthMask, gl_FragCoord.xy / u_pixelRatio / u_viewportSizePx).r * 50. > u_tileZoomLevel + 0.5',
       );
     });
     it('instantiates the tile mask target, indices, attributes and program', () => {
@@ -249,6 +249,12 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
       it('passes the correct styles to renderer', () => {
         const builder = renderer.styleRenderer_.styleShaders[0].builder;
         expect(builder.getSymbolColorExpression()).to.contain('vec4(1.0)');
+      });
+      it('adds the mask discard expression to the existing fragment discard', () => {
+        const builder = renderer.styleRenderer_.styleShaders[0].builder;
+        expect(builder.getFragmentDiscardExpression()).to.be(
+          '(u_zoom > 10.0) || (texture2D(u_depthMask, gl_FragCoord.xy / u_pixelRatio / u_viewportSizePx).r * 50. > u_tileZoomLevel + 0.5)',
+        );
       });
     });
   });
@@ -335,30 +341,23 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
       expect(calls[2].args).to.eql([Uniforms.GLOBAL_ALPHA, 1]);
       expect(calls[8].args).to.eql([Uniforms.GLOBAL_ALPHA, 1]);
     });
-    it('sets RENDER_EXTENT uniform (intersection of tile and view extent) three times for each tile and style renderer, plus two times for tile masks', () => {
+    it('sets RENDER_EXTENT uniform three times for each tile and style renderer, plus two times for tile masks', () => {
       const calls = renderer.helper.setUniformFloatVec4
         .getCalls()
         .filter((c) => c.args[0] === Uniforms.RENDER_EXTENT);
       expect(calls.length).to.be(14);
-      expect(calls[0].args).to.eql([Uniforms.RENDER_EXTENT, [-64, 0, 0, 64]]); // tile mask
+      expect(calls[0].args).to.eql([Uniforms.RENDER_EXTENT, [0, 0, 64, 64]]); // tile mask
       expect(calls[1].args).to.eql([Uniforms.RENDER_EXTENT, [0, 0, 64, 64]]); // tile mask
-      expect(calls[2].args).to.eql([Uniforms.RENDER_EXTENT, [-31, 1, 0, 31]]);
-      expect(calls[8].args).to.eql([Uniforms.RENDER_EXTENT, [0, 1, 31, 31]]);
+      expect(calls[2].args).to.eql([Uniforms.RENDER_EXTENT, [0, 0, 64, 64]]);
+      expect(calls[8].args).to.eql([Uniforms.RENDER_EXTENT, [0, 0, 64, 64]]);
     });
-    it('sets PROJECTION matrix uniform three times for each tile and style renderer, plus one time before rendering tile masks', () => {
+    it('sets PROJECTION matrix uniform three times for each tile and style renderer, plus one time per tiles for their mask', () => {
       const calls = renderer.helper.setUniformMatrixValue
         .getCalls()
         .filter((c) => c.args[0] === Uniforms.PROJECTION_MATRIX);
-      expect(calls.length).to.be(13);
+      expect(calls.length).to.be(14);
+      // first tile mask
       expect(calls[0].args).to.eql([
-        Uniforms.PROJECTION_MATRIX,
-        // 0.04   0     0     0      combination of:
-        // 0      0.08  0     0        translate( 0 , -16 )  ->  subtract view center
-        // 0      0     1     0        scale( 2 / ( 0.25 * 200px ) , 2 / ( 0.25 * 100px ) )  ->  divide by resolution and viewport size
-        // -2.56 -1.28  0     1
-        [0.04, 0, 0, 0, 0, 0.08, 0, 0, 0, 0, 1, 0, 0, -1.28, 0, 1],
-      ]);
-      expect(calls[1].args).to.eql([
         Uniforms.PROJECTION_MATRIX,
         // 0.04   0     0     0      combination of:
         // 0      0.08  0     0        translate( 0 , -16 )  ->  subtract view center
@@ -366,7 +365,17 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
         // -2.56 -1.28  0     1        scale( 2 / ( 0.25 * 200px ) , 2 / ( 0.25 * 100px ) )  ->  divide by resolution and viewport size
         [0.04, 0, 0, 0, 0, 0.08, 0, 0, 0, 0, 1, 0, -2.56, -1.28, 0, 1],
       ]);
-      expect(calls[7].args).to.eql([
+      // first tile geometry
+      expect(calls[2].args).to.eql([
+        Uniforms.PROJECTION_MATRIX,
+        // 0.04   0     0     0      combination of:
+        // 0      0.08  0     0        translate( 0 , -16 )  ->  subtract view center
+        // 0      0     1     0        translate( -64 , 0 )  ->  add tile origin
+        // -2.56 -1.28  0     1        scale( 2 / ( 0.25 * 200px ) , 2 / ( 0.25 * 100px ) )  ->  divide by resolution and viewport size
+        [0.04, 0, 0, 0, 0, 0.08, 0, 0, 0, 0, 1, 0, -2.56, -1.28, 0, 1],
+      ]);
+      // second tile geometry
+      expect(calls[8].args).to.eql([
         Uniforms.PROJECTION_MATRIX,
         // 0.04   0     0     0      combination of:
         // 0      0.08  0     0        translate( 0 , -16 )  ->  subtract view center
@@ -375,25 +384,28 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
         [0.04, 0, 0, 0, 0, 0.08, 0, 0, 0, 0, 1, 0, 0, -1.28, 0, 1],
       ]);
     });
-    it('sets SCREEN_TO_WORLD matrix uniform three times for each tile and style renderer, plus one time before rendering tile masks', () => {
+    it('sets INVERT_PROJECTION_MATRIX matrix uniform three times for each tile and style renderer, plus one time per tiles for their mask', () => {
       const calls = renderer.helper.setUniformMatrixValue
         .getCalls()
-        .filter((c) => c.args[0] === Uniforms.SCREEN_TO_WORLD_MATRIX);
-      expect(calls.length).to.be(13);
+        .filter((c) => c.args[0] === Uniforms.INVERT_PROJECTION_MATRIX);
+      expect(calls.length).to.be(14);
+      // first tile mask
       expect(calls[0].args).to.eql([
-        Uniforms.SCREEN_TO_WORLD_MATRIX,
+        Uniforms.INVERT_PROJECTION_MATRIX,
         // 25     0     0     0      combination of:
         // 0      12.5  0     0      * scale( 0.25 * 200px / 2 , 0.25 * 100px / 2 )  ->  view resolution and viewport size
-        // 0      0     1     0      * translate( 0 , 16 )  ->  view center
-        // 0      16    0     1
-        [25, 0, 0, 0, 0, 12.5, 0, 0, 0, 0, 1, 0, 0, 16, 0, 1],
+        // 0      0     1     0      * translate( 64 , 0 )  ->  subtract add tile origin
+        // 64     16    0     1      * translate( 0 , 16 )  ->  add view center
+        [25, 0, 0, 0, 0, 12.5, 0, 0, 0, 0, 1, 0, 64, 16, 0, 1],
       ]);
-      expect(calls[1].args).to.eql([
-        Uniforms.SCREEN_TO_WORLD_MATRIX,
-        [25, 0, 0, 0, 0, 12.5, 0, 0, 0, 0, 1, 0, 0, 16, 0, 1],
+      // first tile geometry
+      expect(calls[2].args).to.eql([
+        Uniforms.INVERT_PROJECTION_MATRIX,
+        [25, 0, 0, 0, 0, 12.5, 0, 0, 0, 0, 1, 0, 64, 16, 0, 1],
       ]);
-      expect(calls[7].args).to.eql([
-        Uniforms.SCREEN_TO_WORLD_MATRIX,
+      // second tile geometry
+      expect(calls[8].args).to.eql([
+        Uniforms.INVERT_PROJECTION_MATRIX,
         [25, 0, 0, 0, 0, 12.5, 0, 0, 0, 0, 1, 0, 0, 16, 0, 1],
       ]);
     });

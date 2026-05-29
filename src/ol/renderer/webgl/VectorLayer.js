@@ -19,25 +19,20 @@ import VectorEventType from '../../source/VectorEventType.js';
 import {
   apply as applyTransform,
   create as createTransform,
-  makeInverse as makeInverseTransform,
-  multiply as multiplyTransform,
-  setFromArray as setFromTransform,
   translate as translateTransform,
 } from '../../transform.js';
-import {
-  create as createMat4,
-  fromTransform as mat4FromTransform,
-} from '../../vec/mat4.js';
 import {DefaultUniform} from '../../webgl/Helper.js';
 import WebGLRenderTarget from '../../webgl/RenderTarget.js';
 import WebGLLayerRenderer from './Layer.js';
+import {VectorUniforms, applyVectorUniforms} from './vectorUtil.js';
 import {getWorldParameters} from './worldUtil.js';
 
 export const Uniforms = {
   ...DefaultUniform,
+  ...VectorUniforms,
   RENDER_EXTENT: 'u_renderExtent', // intersection of layer, source, and view extent
-  PATTERN_ORIGIN: 'u_patternOrigin',
   GLOBAL_ALPHA: 'u_globalAlpha',
+  ATLAS_TEXTURE: 'u_atlasTexture',
 };
 
 /**
@@ -54,7 +49,7 @@ export const Uniforms = {
  * @property {Object<string, number|Array<number>|string|boolean>} variables Style variables
  * @property {boolean} [disableHitDetection=false] Setting this to true will provide a slight performance boost, but will
  * prevent all hit detection on the layer.
- * @property {Array<import("./Layer").PostProcessesOptions>} [postProcesses] Post-processes definitions
+ * @property {Array<import("./Layer.js").PostProcessesOptions>} [postProcesses] Post-processes definitions
  */
 
 /**
@@ -83,8 +78,14 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
   constructor(layer, options) {
     const uniforms = {
       [Uniforms.RENDER_EXTENT]: [0, 0, 0, 0],
-      [Uniforms.PATTERN_ORIGIN]: [0, 0],
       [Uniforms.GLOBAL_ALPHA]: 1,
+      [Uniforms.ONE]: 1,
+      // Declarative function uniform: returns the glyph atlas texture once it
+      // has been created (see prepareFrameInternal). Returning null before the
+      // texture exists is a safe no-op in the helper's uniform loop (the value
+      // matches none of its type branches), and the sampler is absent from the
+      // fill/stroke/symbol programs so registering it there is harmless too.
+      [Uniforms.ATLAS_TEXTURE]: () => this.atlasTexture_,
     };
 
     super(layer, {
@@ -124,19 +125,6 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     this.currentTransform_ = createTransform();
 
     /**
-     * @private
-     */
-    this.tmpCoords_ = [0, 0];
-    /**
-     * @private
-     */
-    this.tmpTransform_ = createTransform();
-    /**
-     * @private
-     */
-    this.tmpMat4_ = createMat4();
-
-    /**
      * @type {import("../../transform.js").Transform}
      * @private
      */
@@ -165,6 +153,14 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
      * @private
      */
     this.buffers_ = null;
+
+    /**
+     * GL texture holding the glyph atlas used by the text pass. Owned by this
+     * renderer; (re)uploaded from the atlas canvas whenever the atlas is dirty.
+     * @type {WebGLTexture|null}
+     * @private
+     */
+    this.atlasTexture_ = null;
 
     this.applyOptions_(options);
 
@@ -315,30 +311,16 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
 
   /**
    * @param {import("../../transform.js").Transform} batchInvertTransform Inverse of the transformation in which geometries are expressed
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @private
    */
-  applyUniforms_(batchInvertTransform) {
-    // world to screen matrix
-    setFromTransform(this.tmpTransform_, this.currentFrameStateTransform_);
-    multiplyTransform(this.tmpTransform_, batchInvertTransform);
-    this.helper.setUniformMatrixValue(
-      Uniforms.PROJECTION_MATRIX,
-      mat4FromTransform(this.tmpMat4_, this.tmpTransform_),
+  applyUniforms_(batchInvertTransform, frameState) {
+    applyVectorUniforms(
+      this.helper,
+      this.currentFrameStateTransform_,
+      batchInvertTransform,
+      frameState,
     );
-
-    // screen to world matrix
-    makeInverseTransform(this.tmpTransform_, this.tmpTransform_);
-    this.helper.setUniformMatrixValue(
-      Uniforms.SCREEN_TO_WORLD_MATRIX,
-      mat4FromTransform(this.tmpMat4_, this.tmpTransform_),
-    );
-
-    // pattern origin should always be [0, 0] in world coordinates
-    this.tmpCoords_[0] = 0;
-    this.tmpCoords_[1] = 0;
-    makeInverseTransform(this.tmpTransform_, batchInvertTransform);
-    applyTransform(this.tmpTransform_, this.tmpCoords_);
-    this.helper.setUniformFloatVec2(Uniforms.PATTERN_ORIGIN, this.tmpCoords_);
   }
 
   /**
@@ -387,6 +369,37 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     if (!this.initialFeaturesAdded_) {
       this.addInitialFeatures_(frameState);
       this.initialFeaturesAdded_ = true;
+    }
+
+    // (Re)upload the glyph atlas whenever it is dirty. The atlas is filled with
+    // glyphs while render instructions are generated, which happens inside the
+    // async generateBuffers().then() below; that callback calls layer.changed()
+    // and triggers another frame. Checking isDirty() every prepareFrameInternal
+    // (cheap) therefore guarantees the texture contains every glyph the current
+    // buffers reference before the text pass draws in renderFrame.
+    const glyphAtlas =
+      this.styleRenderer_ && this.styleRenderer_.getGlyphAtlas
+        ? this.styleRenderer_.getGlyphAtlas()
+        : null;
+    if (glyphAtlas && glyphAtlas.isDirty()) {
+      const gl = this.helper.getGL();
+      if (!this.atlasTexture_) {
+        this.atlasTexture_ = gl.createTexture();
+      }
+      gl.bindTexture(gl.TEXTURE_2D, this.atlasTexture_);
+      gl.texImage2D(
+        gl.TEXTURE_2D,
+        0,
+        gl.RGBA,
+        gl.RGBA,
+        gl.UNSIGNED_BYTE,
+        glyphAtlas.getCanvas(),
+      );
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      glyphAtlas.markUploaded();
     }
 
     const layer = this.getLayer();
@@ -481,10 +494,18 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
       if (!this.buffers_) {
         continue;
       }
-      this.styleRenderer_.render(this.buffers_, frameState, () => {
-        this.applyUniforms_(this.buffers_.invertVerticesTransform);
-        this.helper.applyHitDetectionUniform(forHitDetection);
-      });
+      this.styleRenderer_.render(
+        this.buffers_,
+        frameState,
+        () => {
+          this.applyUniforms_(
+            this.buffers_.invertVerticesTransform,
+            frameState,
+          );
+          this.helper.applyHitDetectionUniform(forHitDetection);
+        },
+        forHitDetection,
+      );
     } while (++world < endWorld);
   }
 
@@ -552,6 +573,9 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     if (buffers.polygonBuffers) {
       disposeBuffersOfType(buffers.polygonBuffers);
     }
+    if (buffers.textBuffers) {
+      disposeBuffersOfType(buffers.textBuffers);
+    }
   }
 
   /**
@@ -567,6 +591,10 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
         unlistenByKey(key);
       });
       this.sourceListenKeys_ = null;
+    }
+    if (this.atlasTexture_) {
+      this.helper.getGL().deleteTexture(this.atlasTexture_);
+      this.atlasTexture_ = null;
     }
     super.disposeInternal();
   }

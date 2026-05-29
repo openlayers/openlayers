@@ -1,0 +1,22 @@
+#line-style-options-form {
+  display: grid;
+  grid-template-columns: 140px auto;
+  grid-template-rows: repeat(8, 1fr);
+  gap: 6px 10px;
+  align-items: center;
+}
+
+#line-style-options-form input[type="text"],
+#line-style-options-form input[type="number"] {
+  padding: 2px 4px;
+  width: 100px;
+}
+
+.radios {
+  display: flex;
+  gap: 10px;
+}
+
+.radios input {
+  margin-right: 3px;
+}

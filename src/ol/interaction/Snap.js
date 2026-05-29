@@ -7,9 +7,9 @@ import {
   closestOnSegment,
   squaredDistance,
 } from '../coordinate.js';
+import {listen, unlistenByKey} from '../events.js';
 import EventType from '../events/EventType.js';
 import {SnapEvent, SnapEventType} from '../events/SnapEvent.js';
-import {listen, unlistenByKey} from '../events.js';
 import {
   boundingExtent,
   buffer,
@@ -285,11 +285,11 @@ const tempSegmentData = [];
 
 /***
  * @template Return
- * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
- *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
- *     'change:active', import("../Object").ObjectEvent, Return> &
- *   import("../Observable").OnSignature<'snap'|'unsnap', SnapEvent, Return> &
- *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
+ * @typedef {import("../Observable.js").OnSignature<import("../Observable.js").EventTypes, import("../events/Event.js").default, Return> &
+ *   import("../Observable.js").OnSignature<import("../ObjectEventType.js").Types|
+ *     'change:active', import("../Object.js").ObjectEvent, Return> &
+ *   import("../Observable.js").OnSignature<'snap'|'unsnap', SnapEvent, Return> &
+ *   import("../Observable.js").CombinedOnSignature<import("../Observable.js").EventTypes|import("../ObjectEventType.js").Types|
  *     'change:active'|'snap'|'unsnap', Return>} SnapOnSignature
  */
 
@@ -330,12 +330,12 @@ class Snap extends PointerInteraction {
     });
 
     /***
-     * @type {SnapOnSignature<import("../events").EventsKey>}
+     * @type {SnapOnSignature<import("../events.js").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {SnapOnSignature<import("../events").EventsKey>}
+     * @type {SnapOnSignature<import("../events.js").EventsKey>}
      */
     this.once;
 
@@ -478,7 +478,10 @@ class Snap extends PointerInteraction {
             // neighbors
             for (let k = 0, kk = j - 1; k < kk; ++k) {
               const otherSegment = segments[k];
-              if (!intersectsExtent(extent, tempExtents[k])) {
+              if (
+                otherSegment.length === 1 ||
+                !intersectsExtent(extent, tempExtents[k])
+              ) {
                 continue;
               }
               const intersection = getIntersectionPoint(segment, otherSegment);

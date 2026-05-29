@@ -1,0 +1,16 @@
+dialog {
+  top: 13rem;
+}
+
+#auth-form {
+  display: flex;
+  flex-direction: column;
+}
+
+#auth-form > label {
+  margin-bottom: 1rem;
+}
+
+#auth-form > input[type=submit] {
+  margin-top: 1rem;
+}

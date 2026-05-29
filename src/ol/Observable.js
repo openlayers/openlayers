@@ -1,9 +1,9 @@
 /**
  * @module ol/Observable
  */
+import {listen, listenOnce, unlistenByKey} from './events.js';
 import EventType from './events/EventType.js';
 import EventTarget from './events/Target.js';
-import {listen, listenOnce, unlistenByKey} from './events.js';
 
 /***
  * @template {string} Type
@@ -15,7 +15,7 @@ import {listen, listenOnce, unlistenByKey} from './events.js';
 /***
  * @template {string} Type
  * @template Return
- * @typedef {(type: Type[], listener: (event: Event|import("./events/Event").default) => ?) => Return extends void ? void : Return[]} CombinedOnSignature
+ * @typedef {(type: Type[], listener: (event: Event|import("./events/Event.js").default) => ?) => Return extends void ? void : Return[]} CombinedOnSignature
  */
 
 /**
@@ -43,12 +43,12 @@ class Observable extends EventTarget {
     super();
 
     this.on =
-      /** @type {ObservableOnSignature<import("./events").EventsKey>} */ (
+      /** @type {ObservableOnSignature<import("./events.js").EventsKey>} */ (
         this.onInternal
       );
 
     this.once =
-      /** @type {ObservableOnSignature<import("./events").EventsKey>} */ (
+      /** @type {ObservableOnSignature<import("./events.js").EventsKey>} */ (
         this.onceInternal
       );
 
@@ -82,7 +82,7 @@ class Observable extends EventTarget {
 
   /**
    * @param {string|Array<string>} type Type.
-   * @param {function((Event|import("./events/Event").default)): ?} listener Listener.
+   * @param {function((Event|import("./events/Event.js").default)): ?} listener Listener.
    * @return {import("./events.js").EventsKey|Array<import("./events.js").EventsKey>} Event key.
    * @protected
    */
@@ -100,7 +100,7 @@ class Observable extends EventTarget {
 
   /**
    * @param {string|Array<string>} type Type.
-   * @param {function((Event|import("./events/Event").default)): ?} listener Listener.
+   * @param {function((Event|import("./events/Event.js").default)): ?} listener Listener.
    * @return {import("./events.js").EventsKey|Array<import("./events.js").EventsKey>} Event key.
    * @protected
    */
@@ -122,7 +122,7 @@ class Observable extends EventTarget {
   /**
    * Unlisten for a certain type of event.
    * @param {string|Array<string>} type Type.
-   * @param {function((Event|import("./events/Event").default)): ?} listener Listener.
+   * @param {function((Event|import("./events/Event.js").default)): ?} listener Listener.
    * @protected
    */
   unInternal(type, listener) {
@@ -143,7 +143,7 @@ class Observable extends EventTarget {
  * Listen for a certain type of event.
  * @function
  * @param {string|Array<string>} type The event type or array of event types.
- * @param {function((Event|import("./events/Event").default)): ?} listener The listener function.
+ * @param {function((Event|import("./events/Event.js").default)): ?} listener The listener function.
  * @return {import("./events.js").EventsKey|Array<import("./events.js").EventsKey>} Unique key for the listener. If
  *     called with an array of event types as the first argument, the return
  *     will be an array of keys.
@@ -155,7 +155,7 @@ Observable.prototype.on;
  * Listen once for a certain type of event.
  * @function
  * @param {string|Array<string>} type The event type or array of event types.
- * @param {function((Event|import("./events/Event").default)): ?} listener The listener function.
+ * @param {function((Event|import("./events/Event.js").default)): ?} listener The listener function.
  * @return {import("./events.js").EventsKey|Array<import("./events.js").EventsKey>} Unique key for the listener. If
  *     called with an array of event types as the first argument, the return
  *     will be an array of keys.
@@ -167,7 +167,7 @@ Observable.prototype.once;
  * Unlisten for a certain type of event.
  * @function
  * @param {string|Array<string>} type The event type or array of event types.
- * @param {function((Event|import("./events/Event").default)): ?} listener The listener function.
+ * @param {function((Event|import("./events/Event.js").default)): ?} listener The listener function.
  * @api
  */
 Observable.prototype.un;

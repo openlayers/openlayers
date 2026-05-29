@@ -443,6 +443,130 @@ describe('ol/renderer/Map.js', function () {
         expect(hit.geometry).to.be(geometry);
       });
 
+      it('hits lines even if they are transparent', function () {
+        map.getView().setResolution(1);
+        let geometry, hit;
+        const feature = new Feature();
+        const layer = new VectorLayer({
+          source: new VectorSource({
+            features: [feature],
+          }),
+          style: new Style({
+            stroke: new Stroke({
+              color: 'rgba(0, 0, 0, 0)',
+              width: 8,
+            }),
+          }),
+        });
+        map.addLayer(layer);
+
+        geometry = new LineString([
+          [-20, 0],
+          [20, 0],
+        ]);
+        feature.setGeometry(geometry);
+        map.renderSync();
+        hit = map.forEachFeatureAtPixel(
+          [50, 50],
+          (feature, layer, geometry) => ({
+            feature,
+            layer,
+            geometry,
+          }),
+        );
+        expect(hit).to.be.ok();
+        expect(hit.feature).to.be(feature);
+        expect(hit.layer).to.be(layer);
+        expect(hit.geometry).to.be(geometry);
+
+        geometry = new MultiLineString([
+          [
+            [-20, 0],
+            [20, 0],
+          ],
+        ]);
+        feature.setGeometry(geometry);
+        map.renderSync();
+        hit = map.forEachFeatureAtPixel(
+          [50, 50],
+          (feature, layer, geometry) => ({
+            feature,
+            layer,
+            geometry,
+          }),
+        );
+        expect(hit).to.be.ok();
+        expect(hit.feature).to.be(feature);
+        expect(hit.layer).to.be(layer);
+        expect(hit.geometry).to.be(geometry);
+
+        geometry = new Polygon([
+          [
+            [-20, 0],
+            [20, 0],
+            [20, -20],
+            [-20, -20],
+            [-20, 0],
+          ],
+        ]);
+        feature.setGeometry(geometry);
+        map.renderSync();
+        hit = map.forEachFeatureAtPixel(
+          [50, 50],
+          (feature, layer, geometry) => ({
+            feature,
+            layer,
+            geometry,
+          }),
+        );
+        expect(hit).to.be.ok();
+        expect(hit.feature).to.be(feature);
+        expect(hit.layer).to.be(layer);
+        expect(hit.geometry).to.be(geometry);
+
+        geometry = new MultiPolygon([
+          [
+            [
+              [-20, 0],
+              [20, 0],
+              [20, -20],
+              [-20, -20],
+              [-20, 0],
+            ],
+          ],
+        ]);
+        feature.setGeometry(geometry);
+        map.renderSync();
+        hit = map.forEachFeatureAtPixel(
+          [50, 50],
+          (feature, layer, geometry) => ({
+            feature,
+            layer,
+            geometry,
+          }),
+        );
+        expect(hit).to.be.ok();
+        expect(hit.feature).to.be(feature);
+        expect(hit.layer).to.be(layer);
+        expect(hit.geometry).to.be(geometry);
+
+        geometry = new CircleGeometry([0, -40 / Math.PI], 40 / Math.PI);
+        feature.setGeometry(geometry);
+        map.renderSync();
+        hit = map.forEachFeatureAtPixel(
+          [50, 50],
+          (feature, layer, geometry) => ({
+            feature,
+            layer,
+            geometry,
+          }),
+        );
+        expect(hit).to.be.ok();
+        expect(hit.feature).to.be(feature);
+        expect(hit.layer).to.be(layer);
+        expect(hit.geometry).to.be(geometry);
+      });
+
       it('hits Text stroke, transparent fill and background fill', function () {
         let hit;
         const geometry = new Point([0, 0]);
@@ -828,6 +952,63 @@ describe('ol/renderer/Map.js', function () {
       expect(features.length).to.be(1);
       expect(spy.callCount).to.be(2);
       spy.restore();
+    });
+  });
+
+  describe('canvas target', function () {
+    it('clears the canvas before each render when target is a canvas element', function () {
+      const canvas = document.createElement('canvas');
+      canvas.width = 100;
+      canvas.height = 100;
+      const feature = new Feature(fromExtent([-1e6, -1e6, 1e6, 1e6]));
+      const layer = new VectorLayer({
+        source: new VectorSource({features: [feature]}),
+        style: new Style({
+          fill: new Fill({color: 'rgba(255, 0, 0, 0.5)'}),
+        }),
+      });
+      const map = new Map({
+        target: canvas,
+        pixelRatio: 1,
+        layers: [layer],
+        view: new View({center: [0, 0], zoom: 1}),
+      });
+      map.renderSync();
+      const ctx = canvas.getContext('2d');
+      const firstRender = ctx.getImageData(50, 50, 1, 1).data;
+      // Render again — alpha should not accumulate
+      map.renderSync();
+      const secondRender = ctx.getImageData(50, 50, 1, 1).data;
+      expect(secondRender[3]).to.be(firstRender[3]);
+      map.dispose();
+    });
+
+    [1, 2].forEach((pixelRatio) => {
+      it(`renders layers directly onto the canvas when dimensions match (pixelRatio=${pixelRatio})`, function () {
+        const canvas = document.createElement('canvas');
+        // Size the canvas at physical pixels and pre-scale the context so
+        // updateSize() reports 100 CSS pixels, matching what prepareContainer expects
+        canvas.width = 100 * pixelRatio;
+        canvas.height = 100 * pixelRatio;
+        canvas.getContext('2d').scale(pixelRatio, pixelRatio);
+        const feature = new Feature(fromExtent([-1e6, -1e6, 1e6, 1e6]));
+        const layer = new VectorLayer({
+          source: new VectorSource({features: [feature]}),
+          style: new Style({fill: new Fill({color: 'red'})}),
+        });
+        const map = new Map({
+          target: canvas,
+          pixelRatio,
+          layers: [layer],
+          view: new View({center: [0, 0], zoom: 1, rotation: 0}),
+        });
+        const spy = sinonSpy(CanvasRenderingContext2D.prototype, 'drawImage');
+        map.renderSync();
+        // No drawImage call means the layer drew directly onto the target canvas
+        expect(spy.callCount).to.be(0);
+        spy.restore();
+        map.dispose();
+      });
     });
   });
 });

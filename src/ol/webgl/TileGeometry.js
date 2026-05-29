@@ -12,7 +12,7 @@ import BaseTileRepresentation from './BaseTileRepresentation.js';
 import WebGLArrayBuffer from './Buffer.js';
 
 /**
- * @typedef {import("../VectorRenderTile").default} TileType
+ * @typedef {import("../VectorRenderTile.js").default} TileType
  */
 
 /**
@@ -44,7 +44,7 @@ class TileGeometry extends BaseTileRepresentation {
     /**
      * Each geometry tile also has a mask which consisted of a quad (two triangles); this mask is intended to
      * be rendered to an offscreen buffer, and be used to correctly mask tiles according to their zoom level
-     * during rendering
+     * during rendering; these coordinates are expressed in the same coordinate system as the tile geometries
      */
     this.maskVertices = new WebGLArrayBuffer(ARRAY_BUFFER, STATIC_DRAW);
 
@@ -56,16 +56,11 @@ class TileGeometry extends BaseTileRepresentation {
    */
   generateMaskBuffer_() {
     const extent = this.tile.getSourceTiles()[0].extent;
-    this.maskVertices.fromArray([
-      extent[0],
-      extent[1],
-      extent[2],
-      extent[1],
-      extent[2],
-      extent[3],
-      extent[0],
-      extent[3],
-    ]);
+    const originX = extent[0];
+    const originY = extent[1];
+    const width = extent[2] - originX;
+    const height = extent[3] - originY;
+    this.maskVertices.fromArray([0, 0, width, 0, width, height, 0, height]);
     this.helper.flushBufferData(this.maskVertices);
   }
 

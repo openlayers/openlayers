@@ -1,8 +1,8 @@
 import {spawn} from 'child_process';
-import path, {dirname} from 'path';
-import {fileURLToPath} from 'url';
 import esMain from 'es-main';
 import fse from 'fs-extra';
+import path, {dirname} from 'path';
+import {fileURLToPath} from 'url';
 import {walk} from 'walk';
 
 const isWindows = process.platform.startsWith('win');
@@ -60,7 +60,7 @@ const jsdocConfig = path.join(
 
 /**
  * Generate a list of all .js paths in the source directory.
- * @return {Promise<Array>} Resolves to an array of source paths.
+ * @return {Promise<Array<string>>} Resolves to an array of source paths.
  */
 function getPaths() {
   return new Promise((resolve, reject) => {
@@ -68,9 +68,8 @@ function getPaths() {
 
     const walker = walk(sourceDir);
     walker.on('file', (root, stats, next) => {
-      const sourcePath = path.join(root, stats.name);
-      if (sourcePath.endsWith('.js')) {
-        paths.push(sourcePath);
+      if (stats.name.endsWith('.js')) {
+        paths.push(path.join(root, stats.name));
       }
       next();
     });
@@ -131,10 +130,20 @@ function spawnJSDoc(paths) {
     let output = '';
     let errors = '';
     const cwd = path.join(baseDir, '..');
-    const child = spawn(jsdoc, ['-c', jsdocConfig].concat(paths), {
-      cwd,
-      shell: isWindows,
-    });
+    const args = ['-c', jsdocConfig].concat(paths);
+
+    let child;
+    if (isWindows) {
+      args.unshift(jsdoc);
+      // No escaping done here as arguments are all windows path names
+      const command = args.map((arg) => `"${arg}"`).join(' ');
+      child = spawn(command, {
+        cwd,
+        shell: true,
+      });
+    } else {
+      child = spawn(jsdoc, args, {cwd});
+    }
 
     child.stdout.on('data', (data) => {
       output += String(data);

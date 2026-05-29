@@ -22,6 +22,7 @@ import TileImage from './TileImage.js';
  * @property {null|string} [crossOrigin] The `crossOrigin` attribute for loaded images.  Note that
  * you must provide a `crossOrigin` value if you want to access pixel data with the Canvas renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
+ * @property {ReferrerPolicy} [referrerPolicy] The `referrerPolicy` property for loaded images.
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
  * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
  * @property {import("../tilegrid/WMTS.js").default} tileGrid Tile grid.
@@ -91,6 +92,7 @@ class WMTS extends TileImage {
       attributionsCollapsible: options.attributionsCollapsible,
       cacheSize: options.cacheSize,
       crossOrigin: options.crossOrigin,
+      referrerPolicy: options.referrerPolicy,
       interpolate: options.interpolate,
       projection: options.projection,
       reprojectionErrorThreshold: options.reprojectionErrorThreshold,

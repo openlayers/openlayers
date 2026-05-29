@@ -675,6 +675,36 @@ describe('VectorStyleRenderer', () => {
     });
   });
 
+  describe('text rendering', function () {
+    it('detects text styles and creates a glyph atlas', function () {
+      const renderer = new VectorStyleRenderer(
+        {'text-value': ['get', 'label'], 'text-fill-color': '#000'},
+        {},
+        helper,
+      );
+      expect(renderer.hasText_).to.be(true);
+      expect(renderer.getGlyphAtlas()).to.not.be(null);
+      const renderPass = renderer.renderPasses_[0];
+      expect(renderPass.textRenderPass).to.not.be(undefined);
+      expect(renderPass.textRenderPass.instancedAttributesDesc).to.eql([
+        {name: 'a_anchor', size: 2, type: FLOAT},
+        {name: 'a_glyphOffset', size: 2, type: FLOAT},
+        {name: 'a_glyphSize', size: 2, type: FLOAT},
+        {name: 'a_glyphUv', size: 4, type: FLOAT},
+      ]);
+    });
+    it('does not create a glyph atlas for non-text styles', function () {
+      const renderer = new VectorStyleRenderer(
+        {'fill-color': 'red'},
+        {},
+        helper,
+      );
+      expect(renderer.hasText_).to.be(false);
+      expect(renderer.getGlyphAtlas()).to.be(null);
+      expect(renderer.renderPasses_[0].textRenderPass).to.be(undefined);
+    });
+  });
+
   describe('convertStyleToShaders', function () {
     it('breaks down a single flat style', function () {
       const style = {
@@ -691,6 +721,8 @@ describe('VectorStyleRenderer', () => {
             .setStrokeWidthExpression('2.0'),
           'attributes': {},
           'uniforms': {},
+          'textValue': null,
+          'textFont': null,
         },
       ]);
     });
@@ -712,6 +744,8 @@ describe('VectorStyleRenderer', () => {
           ),
           'attributes': {},
           'uniforms': {},
+          'textValue': null,
+          'textFont': null,
         },
         {
           builder: new ShaderBuilder()
@@ -719,6 +753,8 @@ describe('VectorStyleRenderer', () => {
             .setStrokeWidthExpression('2.0'),
           'attributes': {},
           'uniforms': {},
+          'textValue': null,
+          'textFont': null,
         },
       ]);
     });
@@ -761,7 +797,7 @@ describe('VectorStyleRenderer', () => {
         new ShaderBuilder()
           .addAttribute('a_prop_size', 'float')
           .setFillColorExpression('vec4(1.0, 0.0, 0.0, 1.0)')
-          .setFragmentDiscardExpression('!(a_prop_size > 10.0)'),
+          .setShapeDiscardExpression('!(a_prop_size > 10.0)'),
       );
 
       expect(result[1].attributes).to.only.have.key('prop_size');
@@ -769,7 +805,7 @@ describe('VectorStyleRenderer', () => {
         new ShaderBuilder()
           .addAttribute('a_prop_size', 'float')
           .setFillColorExpression('vec4(0.0, 0.5019607843137255, 0.0, 1.0)')
-          .setFragmentDiscardExpression('!(a_prop_size > 10.0)'),
+          .setShapeDiscardExpression('!(a_prop_size > 10.0)'),
       );
 
       expect(result[2].attributes).to.only.have.key('prop_size');
@@ -786,7 +822,7 @@ describe('VectorStyleRenderer', () => {
           .addVertexShaderFunction(
             'float circleDistanceField(vec2 point, float radius) {\n  return length(point) - radius;\n}',
           )
-          .setFragmentDiscardExpression('!(!(a_prop_size > 10.0))'),
+          .setShapeDiscardExpression('!(!(a_prop_size > 10.0))'),
       );
 
       expect(result[3].attributes).to.only.have.keys([
@@ -799,7 +835,7 @@ describe('VectorStyleRenderer', () => {
           .addAttribute('a_prop_type', 'float')
           .setStrokeColorExpression('vec4(0.0, 0.0, 1.0, 1.0)')
           .setStrokeWidthExpression('2.0')
-          .setFragmentDiscardExpression(
+          .setShapeDiscardExpression(
             `!((!(a_prop_size > 10.0)) && (a_prop_type == ${stringToGlsl('road')}))`,
           ),
       );
@@ -814,7 +850,7 @@ describe('VectorStyleRenderer', () => {
           .addAttribute('a_prop_type', 'float')
           .setStrokeColorExpression('vec4(0.0, 0.5019607843137255, 0.0, 1.0)')
           .setStrokeWidthExpression('2.0')
-          .setFragmentDiscardExpression(
+          .setShapeDiscardExpression(
             `!((!(a_prop_size > 10.0)) && (!(a_prop_type == ${stringToGlsl('road')})))`,
           ),
       );
@@ -826,7 +862,7 @@ describe('VectorStyleRenderer', () => {
           .addAttribute('a_prop_type', 'float')
           .setStrokeColorExpression('vec4(1.0, 1.0, 1.0, 1.0)')
           .setStrokeWidthExpression('1.0')
-          .setFragmentDiscardExpression(
+          .setShapeDiscardExpression(
             `!((!(a_prop_size > 10.0)) && (!(a_prop_type == ${stringToGlsl('road')})))`,
           ),
       );
@@ -844,7 +880,7 @@ describe('VectorStyleRenderer', () => {
           .addAttribute('a_prop_type', 'float')
           .setStrokeColorExpression('vec4(0.0, 0.0, 0.0, 1.0)')
           .setStrokeWidthExpression('2.0')
-          .setFragmentDiscardExpression(
+          .setShapeDiscardExpression(
             `!(a_prop_type == ${stringToGlsl('street')})`,
           ),
       );

@@ -15,18 +15,19 @@ import LayerProperty from './Property.js';
  */
 
 /**
- * @typedef {import("../ObjectEventType").Types|'change:extent'|'change:maxResolution'|'change:maxZoom'|
+ * @typedef {import("../ObjectEventType.js").Types|'change:extent'|'change:maxResolution'|'change:maxZoom'|
  *    'change:minResolution'|'change:minZoom'|'change:opacity'|'change:visible'|'change:zIndex'} BaseLayerObjectEventTypes
  */
 
 /***
  * @template Return
- * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
- *   import("../Observable").OnSignature<BaseLayerObjectEventTypes, import("../Object").ObjectEvent, Return> &
- *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|BaseLayerObjectEventTypes, Return>} BaseLayerOnSignature
+ * @typedef {import("../Observable.js").OnSignature<import("../Observable.js").EventTypes, import("../events/Event.js").default, Return> &
+ *   import("../Observable.js").OnSignature<BaseLayerObjectEventTypes, import("../Object.js").ObjectEvent, Return> &
+ *   import("../Observable.js").CombinedOnSignature<import("../Observable.js").EventTypes|BaseLayerObjectEventTypes, Return>} BaseLayerOnSignature
  */
 
 /**
+ * @template {Object<string, *>} [Properties=Object<string, *>]
  * @typedef {Object} Options
  * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
  * @property {number} [opacity=1] Opacity (0, 1).
@@ -47,7 +48,7 @@ import LayerProperty from './Property.js';
  * be visible.
  * @property {BackgroundColor} [background] Background color for the layer. If not specified, no background
  * will be rendered.
- * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
+ * @property {Properties} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
  */
 
 /**
@@ -59,21 +60,23 @@ import LayerProperty from './Property.js';
  * is observable, and has get/set accessors.
  *
  * @api
+ * @template {Object<string, *>} [Properties=Object<string, *>]
+ * @extends {BaseObject<NoInfer<Properties> & Object<string, *>>}
  */
 class BaseLayer extends BaseObject {
   /**
-   * @param {Options} options Layer options.
+   * @param {Options<NoInfer<Properties>>} options Layer options.
    */
   constructor(options) {
     super();
 
     /***
-     * @type {BaseLayerOnSignature<import("../events").EventsKey>}
+     * @type {BaseLayerOnSignature<import("../events.js").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {BaseLayerOnSignature<import("../events").EventsKey>}
+     * @type {BaseLayerOnSignature<import("../events.js").EventsKey>}
      */
     this.once;
 
@@ -89,7 +92,7 @@ class BaseLayer extends BaseObject {
     this.background_ = options.background;
 
     /**
-     * @type {Object<string, *>}
+     * @type {?}
      */
     const properties = Object.assign({}, options);
     if (typeof options.properties === 'object') {

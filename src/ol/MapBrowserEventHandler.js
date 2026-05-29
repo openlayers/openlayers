@@ -4,9 +4,9 @@
 
 import MapBrowserEvent from './MapBrowserEvent.js';
 import MapBrowserEventType from './MapBrowserEventType.js';
+import {listen, unlistenByKey} from './events.js';
 import EventType from './events/EventType.js';
 import Target from './events/Target.js';
-import {listen, unlistenByKey} from './events.js';
 import {PASSIVE_EVENT_LISTENERS} from './has.js';
 import PointerEventType from './pointer/EventType.js';
 

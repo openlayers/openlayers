@@ -50,15 +50,15 @@ describe('ol/source/ImageArcGISRest', function () {
       expect(uri.pathname).to.be('/MapServer/export');
 
       const queryData = uri.searchParams;
-      expect(queryData.get('SIZE')).to.be('150,16');
-      expect(queryData.get('BBOX')).to.be('-9.5,0.7,5.5,2.3');
-      expect(queryData.get('FORMAT')).to.be('PNG32');
-      expect(queryData.get('IMAGESR')).to.be('3857');
-      expect(queryData.get('BBOXSR')).to.be('3857');
-      expect(queryData.get('TRANSPARENT')).to.be('true');
+      expect(queryData.get('size')).to.be('150,16');
+      expect(queryData.get('bbox')).to.be('-9.5,0.7,5.5,2.3');
+      expect(queryData.get('format')).to.be('png32');
+      expect(queryData.get('imageSR')).to.be('3857');
+      expect(queryData.get('bboxSR')).to.be('3857');
+      expect(queryData.get('transparent')).to.be('true');
     });
 
-    it('returns a non floating point DPI value', function () {
+    it('returns a non floating point dpi value', function () {
       const source = new ImageArcGISRest(options);
       const image = source.getImage(
         [3, 2, -7, 1.12],
@@ -69,7 +69,7 @@ describe('ol/source/ImageArcGISRest', function () {
       image.load();
       const uri = new URL(image.getImage().src);
       const queryData = uri.searchParams;
-      expect(queryData.get('DPI')).to.be('91');
+      expect(queryData.get('dpi')).to.be('91');
     });
 
     it('returns a image with the expected URL for ImageServer', function () {
@@ -87,16 +87,16 @@ describe('ol/source/ImageArcGISRest', function () {
       expect(uri.hostname).to.be(window.location.hostname);
       expect(uri.pathname).to.be('/ImageServer/exportImage');
       const queryData = uri.searchParams;
-      expect(queryData.get('BBOX')).to.be('-9.5,0.7,5.5,2.3');
-      expect(queryData.get('FORMAT')).to.be('PNG32');
-      expect(queryData.get('IMAGESR')).to.be('3857');
-      expect(queryData.get('BBOXSR')).to.be('3857');
-      expect(queryData.get('TRANSPARENT')).to.be('true');
+      expect(queryData.get('bbox')).to.be('-9.5,0.7,5.5,2.3');
+      expect(queryData.get('format')).to.be('png32');
+      expect(queryData.get('imageSR')).to.be('3857');
+      expect(queryData.get('bboxSR')).to.be('3857');
+      expect(queryData.get('transparent')).to.be('true');
     });
 
     it('allows various parameters to be overridden', function () {
-      options.params.FORMAT = 'png';
-      options.params.TRANSPARENT = false;
+      options.params.format = 'png';
+      options.params.transparent = false;
       const source = new ImageArcGISRest(options);
       const image = source.getImage(
         [3, 2, -3, 1],
@@ -107,8 +107,8 @@ describe('ol/source/ImageArcGISRest', function () {
       image.load();
       const uri = new URL(image.getImage().src);
       const queryData = uri.searchParams;
-      expect(queryData.get('FORMAT')).to.be('png');
-      expect(queryData.get('TRANSPARENT')).to.be('false');
+      expect(queryData.get('format')).to.be('png');
+      expect(queryData.get('transparent')).to.be('false');
     });
 
     it('allows adding rest option', function () {

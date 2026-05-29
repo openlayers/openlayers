@@ -130,7 +130,7 @@ class ExecutorGroup {
 
     /**
      * @private
-     * @type {!Object<string, !Object<string, import("./Executor").default>>}
+     * @type {!Object<string, !Object<string, import("./Executor.js").default>>}
      */
     this.executorsByZIndex_ = {};
 

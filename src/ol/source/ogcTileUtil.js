@@ -331,6 +331,9 @@ export function parseTileMatrixSet(
 
   for (let i = 0; i < length; ++i) {
     const id = matrixIds[i];
+    if (id === undefined) {
+      continue;
+    }
     const matrix = matrixLookup[id];
     const origin = matrix.pointOfOrigin;
     if (backwards) {

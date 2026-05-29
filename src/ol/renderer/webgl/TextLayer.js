@@ -2,7 +2,9 @@
  * @module ol/renderer/webgl/TextLayer
  */
 import bidiFactory from 'bidi-js';
-import {buildExpression, newEvaluationContext} from '../../expr/cpu.js';
+import ViewHint from '../../ViewHint.js';
+import { listen, unlistenByKey } from '../../events.js';
+import { buildExpression, newEvaluationContext } from '../../expr/cpu.js';
 import {
   BooleanType,
   ColorType,
@@ -10,7 +12,17 @@ import {
   StringType,
   newParsingContext,
 } from '../../expr/expression.js';
+import { buffer, createEmpty, equals } from '../../extent.js';
+import BaseVector from '../../layer/BaseVector.js';
+import {
+  getTransformFromProjections,
+  getUserProjection,
+  toUserExtent,
+  toUserResolution,
+} from '../../proj.js';
 import GlyphAtlas from '../../render/webgl/GlyphAtlas.js';
+import MixedGeometryBatch from '../../render/webgl/MixedGeometryBatch.js';
+import VectorEventType from '../../source/VectorEventType.js';
 import {
   create as createTransform,
   translate as translateTransform,
@@ -20,10 +32,10 @@ import {
   fromTransform as mat4FromTransform,
 } from '../../vec/mat4.js';
 import WebGLArrayBuffer from '../../webgl/Buffer.js';
-import {AttributeType, DefaultUniform} from '../../webgl/Helper.js';
-import {ARRAY_BUFFER, DYNAMIC_DRAW, ELEMENT_ARRAY_BUFFER} from '../../webgl.js';
+import { AttributeType, DefaultUniform } from '../../webgl/Helper.js';
+import { ARRAY_BUFFER, DYNAMIC_DRAW, ELEMENT_ARRAY_BUFFER } from '../../webgl.js';
 import WebGLLayerRenderer from './Layer.js';
-import {getWorldParameters} from './worldUtil.js';
+import { getWorldParameters } from './worldUtil.js';
 
 /**
  * @typedef {Object} Options
@@ -138,16 +150,16 @@ class WebGLTextLayerRenderer extends WebGLLayerRenderer {
     this.program_;
 
     this.attributes = [
-      {name: 'a_position', size: 2, type: AttributeType.FLOAT},
-      {name: 'a_texCoord', size: 2, type: AttributeType.FLOAT},
-      {name: 'a_offset', size: 2, type: AttributeType.FLOAT},
-      {name: 'a_opacity', size: 1, type: AttributeType.FLOAT},
-      {name: 'a_rotateWithView', size: 1, type: AttributeType.FLOAT},
-      {name: 'a_rotation', size: 1, type: AttributeType.FLOAT},
-      {name: 'a_scale', size: 1, type: AttributeType.FLOAT},
-      {name: 'a_color', size: 4, type: AttributeType.FLOAT},
-      {name: 'a_outlineColor', size: 4, type: AttributeType.FLOAT},
-      {name: 'a_outlineWidth', size: 1, type: AttributeType.FLOAT},
+      { name: 'a_position', size: 2, type: AttributeType.FLOAT },
+      { name: 'a_texCoord', size: 2, type: AttributeType.FLOAT },
+      { name: 'a_offset', size: 2, type: AttributeType.FLOAT },
+      { name: 'a_opacity', size: 1, type: AttributeType.FLOAT },
+      { name: 'a_rotateWithView', size: 1, type: AttributeType.FLOAT },
+      { name: 'a_rotation', size: 1, type: AttributeType.FLOAT },
+      { name: 'a_scale', size: 1, type: AttributeType.FLOAT },
+      { name: 'a_color', size: 4, type: AttributeType.FLOAT },
+      { name: 'a_outlineColor', size: 4, type: AttributeType.FLOAT },
+      { name: 'a_outlineWidth', size: 1, type: AttributeType.FLOAT },
     ];
 
     this.style_ = options.style || {};
@@ -162,19 +174,110 @@ class WebGLTextLayerRenderer extends WebGLLayerRenderer {
     this.invertRenderTransform_ = createTransform();
     this.renderTransform_ = createTransform();
 
-    const source = layer.getSource();
-    this.sourceChangeListener_ = source.addEventListener(
-      'change',
-      this.handleSourceChange_.bind(this),
-    );
+    /**
+     * @type {MixedGeometryBatch}
+     * @private
+     */
+    this.batch_ = new MixedGeometryBatch();
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.initialFeaturesAdded_ = false;
+
+    /**
+     * @private
+     * @type {Array<import("../../events.js").EventsKey|null>}
+     */
+    this.sourceListenKeys_ = null;
+
+    /**
+     * @private
+     */
+    this.previousExtent_ = createEmpty();
 
     const bidi = bidiFactory();
     this.bidiInstance_ = null;
     this.bidiInstance_ = bidi;
   }
 
-  handleSourceChange_() {
-    this.getLayer().changed();
+  /**
+   * @private
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   */
+  addInitialFeatures_(frameState) {
+    const source = this.getLayer().getSource();
+    const userProjection = getUserProjection();
+    let projectionTransform;
+    if (userProjection) {
+      projectionTransform = getTransformFromProjections(
+        userProjection,
+        frameState.viewState.projection,
+      );
+    }
+    this.batch_.addFeatures(source.getFeatures(), projectionTransform);
+    this.sourceListenKeys_ = [
+      listen(
+        source,
+        VectorEventType.ADDFEATURE,
+        this.handleSourceFeatureAdded_.bind(this, projectionTransform),
+      ),
+      listen(
+        source,
+        VectorEventType.CHANGEFEATURE,
+        this.handleSourceFeatureChanged_.bind(this, projectionTransform),
+        this,
+      ),
+      listen(
+        source,
+        VectorEventType.REMOVEFEATURE,
+        this.handleSourceFeatureDelete_,
+        this,
+      ),
+      listen(
+        source,
+        VectorEventType.CLEAR,
+        this.handleSourceFeatureClear_,
+        this,
+      ),
+    ];
+  }
+
+  /**
+   * @param {import("../../proj.js").TransformFunction} projectionTransform Transform function.
+   * @param {import("../../source/Vector.js").VectorSourceEvent} event Event.
+   * @private
+   */
+  handleSourceFeatureAdded_(projectionTransform, event) {
+    const feature = event.feature;
+    this.batch_.addFeature(feature, projectionTransform);
+  }
+
+  /**
+   * @param {import("../../proj.js").TransformFunction} projectionTransform Transform function.
+   * @param {import("../../source/Vector.js").VectorSourceEvent} event Event.
+   * @private
+   */
+  handleSourceFeatureChanged_(projectionTransform, event) {
+    const feature = event.feature;
+    this.batch_.changeFeature(feature, projectionTransform);
+  }
+
+  /**
+   * @param {import("../../source/Vector.js").VectorSourceEvent} event Event.
+   * @private
+   */
+  handleSourceFeatureDelete_(event) {
+    const feature = event.feature;
+    this.batch_.removeFeature(feature);
+  }
+
+  /**
+   * @private
+   */
+  handleSourceFeatureClear_() {
+    this.batch_.clear();
   }
 
   /**
@@ -188,16 +291,49 @@ class WebGLTextLayerRenderer extends WebGLLayerRenderer {
    * @override
    */
   prepareFrameInternal(frameState) {
+    if (!this.initialFeaturesAdded_) {
+      this.addInitialFeatures_(frameState);
+      this.initialFeaturesAdded_ = true;
+    }
+
     const layer = this.getLayer();
     const source = layer.getSource();
+    const viewState = frameState.viewState;
+    const viewNotMoving =
+      !frameState.viewHints[ViewHint.ANIMATING] &&
+      !frameState.viewHints[ViewHint.INTERACTING];
+    const extentChanged = !equals(this.previousExtent_, frameState.extent);
+    const sourceChanged = this.sourceRevision_ < source.getRevision();
 
     if (!this.atlasTexture_) {
       this.atlasTexture_ = this.helper.getGL().createTexture();
     }
 
-    if (source.getRevision() !== this.sourceRevision_) {
+    if (sourceChanged) {
       this.sourceRevision_ = source.getRevision();
+    }
+
+    if (viewNotMoving && (extentChanged || sourceChanged)) {
+      const projection = viewState.projection;
+      const resolution = viewState.resolution;
+
+      const renderBuffer =
+        layer instanceof BaseVector ? layer.getRenderBuffer() : 0;
+      const extent = buffer(frameState.extent, renderBuffer * resolution);
+
+      const userProjection = getUserProjection();
+      if (userProjection) {
+        source.loadFeatures(
+          toUserExtent(extent, userProjection),
+          toUserResolution(resolution, projection),
+          userProjection,
+        );
+      } else {
+        source.loadFeatures(extent, resolution, projection);
+      }
+
       this.rebuildBuffers_(frameState);
+      this.previousExtent_ = frameState.extent.slice();
     }
 
     this.helper.useProgram(this.program_, frameState);
@@ -207,8 +343,8 @@ class WebGLTextLayerRenderer extends WebGLLayerRenderer {
   }
 
   rebuildBuffers_(frameState) {
-    const source = this.getLayer().getSource();
-    const features = source.getFeatures();
+    const pointEntries = this.batch_.pointBatch.entries;
+    const features = Object.values(pointEntries).map((entry) => entry.feature);
 
     const stride = 19;
     let vCursor = 0;
@@ -298,7 +434,7 @@ class WebGLTextLayerRenderer extends WebGLLayerRenderer {
 
     features.forEach((feature) => {
       const geometry = feature.getGeometry();
-      if (!geometry || geometry.getType() !== 'Point') {
+      if (!geometry) {
         return;
       }
 
@@ -955,6 +1091,20 @@ class WebGLTextLayerRenderer extends WebGLLayerRenderer {
     this.postRender(gl, frameState);
 
     return this.helper.getCanvas();
+  }
+
+  /**
+   * Clean up.
+   * @override
+   */
+  disposeInternal() {
+    if (this.sourceListenKeys_) {
+      this.sourceListenKeys_.forEach(function (key) {
+        unlistenByKey(key);
+      });
+      this.sourceListenKeys_ = null;
+    }
+    super.disposeInternal();
   }
 }
 

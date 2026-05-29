@@ -3,8 +3,8 @@
  */
 import BaseObject from './Object.js';
 import {assert} from './asserts.js';
-import EventType from './events/EventType.js';
 import {listen, unlistenByKey} from './events.js';
+import EventType from './events/EventType.js';
 
 /**
  * @typedef {typeof Feature|typeof import("./render/Feature.js").default} FeatureClass
@@ -16,15 +16,16 @@ import {listen, unlistenByKey} from './events.js';
 
 /***
  * @template Return
- * @typedef {import("./Observable").OnSignature<import("./Observable").EventTypes, import("./events/Event.js").default, Return> &
- *   import("./Observable").OnSignature<import("./ObjectEventType").Types|'change:geometry', import("./Object").ObjectEvent, Return> &
- *   import("./Observable").CombinedOnSignature<import("./Observable").EventTypes|import("./ObjectEventType").Types
+ * @typedef {import("./Observable.js").OnSignature<import("./Observable.js").EventTypes, import("./events/Event.js").default, Return> &
+ *   import("./Observable.js").OnSignature<import("./ObjectEventType.js").Types|'change:geometry', import("./Object.js").ObjectEvent, Return> &
+ *   import("./Observable.js").CombinedOnSignature<import("./Observable.js").EventTypes|import("./ObjectEventType.js").Types
  *     |'change:geometry', Return>} FeatureOnSignature
  */
 
 /***
  * @template {import("./geom/Geometry.js").default} [Geometry=import("./geom/Geometry.js").default]
- * @typedef {Object<string, *> & { geometry?: Geometry }} ObjectWithGeometry
+ * @template {Object<string, *>} [Properties=Object<string, *>]
+ * @typedef {Properties & { geometry?: Geometry }} ObjectWithGeometry
  */
 
 /**
@@ -71,10 +72,12 @@ import {listen, unlistenByKey} from './events.js';
  *
  * @api
  * @template {import("./geom/Geometry.js").default} [Geometry=import("./geom/Geometry.js").default]
+ * @template {Object<string, *>} [Properties=Object<string, *>]
+ * @extends {BaseObject<NoInfer<Properties>>}
  */
 class Feature extends BaseObject {
   /**
-   * @param {Geometry|ObjectWithGeometry<Geometry>} [geometryOrProperties]
+   * @param {Geometry|ObjectWithGeometry<Geometry, NoInfer<Properties>>} [geometryOrProperties]
    *     You may pass a Geometry object directly, or an object literal containing
    *     properties. If you pass an object literal, you may include a Geometry
    *     associated with a `geometry` key.
@@ -83,12 +86,12 @@ class Feature extends BaseObject {
     super();
 
     /***
-     * @type {FeatureOnSignature<import("./events").EventsKey>}
+     * @type {FeatureOnSignature<import("./events.js").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {FeatureOnSignature<import("./events").EventsKey>}
+     * @type {FeatureOnSignature<import("./events.js").EventsKey>}
      */
     this.once;
 
@@ -139,7 +142,7 @@ class Feature extends BaseObject {
         const geometry = /** @type {Geometry} */ (geometryOrProperties);
         this.setGeometry(geometry);
       } else {
-        /** @type {Object<string, *>} */
+        /** @type {?} */
         const properties = geometryOrProperties;
         this.setProperties(properties);
       }
@@ -153,14 +156,22 @@ class Feature extends BaseObject {
    * @api
    */
   clone() {
-    const clone = /** @type {Feature<Geometry>} */ (
-      new Feature(this.hasProperties() ? this.getProperties() : null)
-    );
-    clone.setGeometryName(this.getGeometryName());
-    const geometry = this.getGeometry();
-    if (geometry) {
-      clone.setGeometry(/** @type {Geometry} */ (geometry.clone()));
+    const clone = /** @type {Feature<Geometry>} */ (new Feature());
+    const geometryName = this.geometryName_;
+    clone.setGeometryName(geometryName);
+
+    const properties = this.getPropertiesInternal();
+    if (properties) {
+      const geometry = this.getGeometry();
+      for (const key in properties) {
+        if (key === geometryName && geometry) {
+          clone.set(key, geometry.clone());
+        } else {
+          clone.set(key, properties[key], true);
+        }
+      }
     }
+
     const style = this.getStyle();
     if (style) {
       clone.setStyle(style);
@@ -297,6 +308,9 @@ class Feature extends BaseObject {
    * @api
    */
   setGeometryName(name) {
+    if (name === this.geometryName_) {
+      return;
+    }
     this.removeChangeListener(this.geometryName_, this.handleGeometryChanged_);
     this.geometryName_ = name;
     this.addChangeListener(this.geometryName_, this.handleGeometryChanged_);

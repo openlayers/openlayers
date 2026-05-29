@@ -87,6 +87,17 @@ describe('ol.render.Feature', function () {
       );
       expect(feature.getExtent()).to.eql([-1, -2, 2, 1]);
     });
+
+    it('returns the correct extent for an XYZ linestring', function () {
+      const feature = new RenderFeature(
+        'LineString',
+        [-1, -2, 0, 2, 1, 1],
+        null,
+        3,
+        {},
+      );
+      expect(feature.getExtent()).to.eql([-1, -2, 2, 1]);
+    });
   });
 
   describe('#getFlatCoordinates()', function () {

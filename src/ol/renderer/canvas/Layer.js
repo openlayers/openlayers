@@ -156,9 +156,34 @@ class CanvasLayerRenderer extends LayerRenderer {
    * @param {HTMLElement} target Potential render target.
    * @param {string} transform CSS transform matrix.
    * @param {string} [backgroundColor] Background color.
+   * @param {number} [width] Physical pixel width of the rendering canvas.
+   * @param {number} [height] Physical pixel height of the rendering canvas.
    */
-  useContainer(target, transform, backgroundColor) {
-    // renderer canvas to target canvas
+  useContainer(target, transform, backgroundColor, width, height) {
+    // Render directly into the target canvas when there is no rotation or
+    // offset (no CSS transform needed) and the physical dimensions match.
+    if (
+      isCanvas(target) &&
+      this.pixelTransform[1] === 0 &&
+      this.pixelTransform[2] === 0 &&
+      this.pixelTransform[4] === 0 &&
+      this.pixelTransform[5] === 0 &&
+      target.width === width &&
+      target.height === height
+    ) {
+      const targetCanvas = /** @type {HTMLCanvasElement} */ (target);
+      const context = targetCanvas.getContext('2d');
+      if (context) {
+        this.container = target;
+        this.context = context;
+        this.containerReused = true;
+        if (backgroundColor) {
+          context.fillStyle = backgroundColor;
+          context.fillRect(0, 0, targetCanvas.width, targetCanvas.height);
+        }
+        return;
+      }
+    }
     const layerClassName = this.getLayer().getClassName();
     let container, context;
     if (
@@ -276,7 +301,8 @@ class CanvasLayerRenderer extends LayerRenderer {
     makeInverse(this.inversePixelTransform, this.pixelTransform);
 
     const canvasTransform = toTransformString(this.pixelTransform);
-    this.useContainer(target, canvasTransform, this.getBackground(frameState));
+    const backgroundColor = this.getBackground(frameState);
+    this.useContainer(target, canvasTransform, backgroundColor, width, height);
     if (!this.containerReused) {
       const canvas = this.context.canvas;
       if (canvas.width != width || canvas.height != height) {

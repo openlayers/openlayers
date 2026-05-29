@@ -1,6 +1,8 @@
 /**
  * @module ol/render/webgl/VectorStyleRenderer
  */
+import {buildExpression, newEvaluationContext} from '../../expr/cpu.js';
+import {StringType, newParsingContext} from '../../expr/expression.js';
 import {
   create as createTransform,
   makeInverse as makeInverseTransform,
@@ -9,12 +11,14 @@ import WebGLArrayBuffer from '../../webgl/Buffer.js';
 import {AttributeType} from '../../webgl/Helper.js';
 import {ARRAY_BUFFER, DYNAMIC_DRAW, ELEMENT_ARRAY_BUFFER} from '../../webgl.js';
 import {create as createWebGLWorker} from '../../worker/webgl.js';
+import GlyphAtlas from './GlyphAtlas.js';
 import {WebGLWorkerMessageType} from './constants.js';
 import {colorEncodeIdAndPack} from './encodeUtil.js';
 import {
   generateLineStringRenderInstructions,
   generatePointRenderInstructions,
   generatePolygonRenderInstructions,
+  generateTextRenderInstructions,
   getCustomAttributesSize,
 } from './renderinstructions.js';
 import {parseLiteralStyle} from './style.js';
@@ -53,13 +57,13 @@ export const Attributes = {
  * for each feature.
  * @property {number} [size] Amount of numerical values composing the attribute, either 1, 2, 3 or 4; in case size is > 1, the return value
  * of the callback should be an array; if unspecified, assumed to be a single float value
- * @property {function(this:import("./MixedGeometryBatch.js").GeometryBatchItem, import("../../Feature").FeatureLike):number|Array<number>} callback This callback computes the numerical value of the
+ * @property {function(this:import("./MixedGeometryBatch.js").GeometryBatchItem, import("../../Feature.js").FeatureLike):number|Array<number>} callback This callback computes the numerical value of the
  * attribute for a given feature.
  */
 
 /**
  * @typedef {Object<string, AttributeDefinition>} AttributeDefinitions
- * @typedef {Object<string, import("../../webgl/Helper").UniformValue>} UniformDefinitions
+ * @typedef {Object<string, import("../../webgl/Helper.js").UniformValue>} UniformDefinitions
  */
 
 /**
@@ -71,6 +75,7 @@ export const Attributes = {
  * @property {WebGLArrayBufferSet} polygonBuffers Array containing indices and vertices buffers for polygons
  * @property {WebGLArrayBufferSet} lineStringBuffers Array containing indices and vertices buffers for line strings
  * @property {WebGLArrayBufferSet} pointBuffers Array containing indices and vertices buffers for points
+ * @property {WebGLArrayBufferSet} [textBuffers] Array containing indices and vertices buffers for text; undefined/null if no text
  * @property {import("../../transform.js").Transform} invertVerticesTransform Inverse of the transform applied when generating buffers
  */
 
@@ -79,6 +84,7 @@ export const Attributes = {
  * @property {Float32Array|null} polygonInstructions Polygon instructions; null if nothing to render
  * @property {Float32Array|null} lineStringInstructions LineString instructions; null if nothing to render
  * @property {Float32Array|null} pointInstructions Point instructions; null if nothing to render
+ * @property {Float32Array|null} textInstructions Text instructions; null if nothing to render
  */
 
 /**
@@ -116,6 +122,7 @@ export const Attributes = {
  * @property {SubRenderPass} [fillRenderPass] Fill render pass; undefined if no fill in pass
  * @property {SubRenderPass} [strokeRenderPass] Stroke render pass; undefined if no stroke in pass
  * @property {SubRenderPass} [symbolRenderPass] Symbol render pass; undefined if no symbol in pass
+ * @property {SubRenderPass} [textRenderPass] Text render pass; undefined if no text in pass
  */
 
 /**
@@ -311,15 +318,86 @@ class VectorStyleRenderer {
           instancePrimitiveVertexCount: 6,
         };
       }
+      if (styleShader.builder.getTextVertexShader()) {
+        renderPass.textRenderPass = {
+          vertexShader: styleShader.builder.getTextVertexShader(),
+          fragmentShader: styleShader.builder.getTextFragmentShader(),
+          attributesDesc: [
+            {
+              name: Attributes.LOCAL_POSITION,
+              size: 2,
+              type: AttributeType.FLOAT,
+            },
+          ],
+          instancedAttributesDesc: [
+            {name: 'a_anchor', size: 2, type: AttributeType.FLOAT},
+            {name: 'a_glyphOffset', size: 2, type: AttributeType.FLOAT},
+            {name: 'a_glyphSize', size: 2, type: AttributeType.FLOAT},
+            {name: 'a_glyphUv', size: 4, type: AttributeType.FLOAT},
+            ...customAttributesDesc,
+          ],
+          instancePrimitiveVertexCount: 6,
+        };
+      }
       return renderPass;
     });
 
     this.hasFill_ = this.renderPasses_.some((pass) => pass.fillRenderPass);
     this.hasStroke_ = this.renderPasses_.some((pass) => pass.strokeRenderPass);
     this.hasSymbol_ = this.renderPasses_.some((pass) => pass.symbolRenderPass);
+    this.hasText_ = this.styleShaders.some(
+      (styleShader) => !!styleShader.builder.getTextVertexShader(),
+    );
+
+    const textShader = this.styleShaders.find(
+      (styleShader) =>
+        styleShader.textValue !== null && styleShader.textValue !== undefined,
+    );
+
+    const textFont = textShader ? textShader.textFont : null;
+    /**
+     * @type {import('./GlyphAtlas.js').default|null}
+     * @private
+     */
+    this.glyphAtlas_ = this.hasText_
+      ? new GlyphAtlas(
+          textFont ? textFont.family : 'sans-serif',
+          textFont ? textFont.weight : 'normal',
+        )
+      : null;
+    if (this.hasText_ && textShader) {
+      const textEvaluator = buildExpression(
+        textShader.textValue,
+        StringType,
+        newParsingContext(),
+      );
+      const evalContext = newEvaluationContext();
+      /**
+       * @param {import('../../Feature.js').FeatureLike} feature Feature.
+       * @return {string} Resolved label.
+       */
+      this.resolveText_ = (feature) => {
+        evalContext.properties = feature.getProperties();
+        try {
+          const value = textEvaluator(evalContext);
+          return value === null || value === undefined ? '' : String(value);
+        } catch {
+          return '';
+        }
+      };
+    } else {
+      this.resolveText_ = () => '';
+    }
 
     // this will initialize render passes with the given helper
     this.setHelper(helper);
+  }
+
+  /**
+   * @return {import('./GlyphAtlas.js').default|null} The glyph atlas, if this style renders text.
+   */
+  getGlyphAtlas() {
+    return this.glyphAtlas_;
   }
 
   /**
@@ -335,8 +413,8 @@ class VectorStyleRenderer {
       geometryBatch,
       transform,
     );
-    const [polygonBuffers, lineStringBuffers, pointBuffers] = await Promise.all(
-      [
+    const [polygonBuffers, lineStringBuffers, pointBuffers, textBuffers] =
+      await Promise.all([
         this.generateBuffersForType_(
           renderInstructions.polygonInstructions,
           'Polygon',
@@ -352,8 +430,12 @@ class VectorStyleRenderer {
           'Point',
           transform,
         ),
-      ],
-    );
+        this.generateBuffersForType_(
+          renderInstructions.textInstructions,
+          'Text',
+          transform,
+        ),
+      ]);
     // also return the inverse of the transform that was applied when generating buffers
     const invertVerticesTransform = makeInverseTransform(
       createTransform(),
@@ -363,6 +445,7 @@ class VectorStyleRenderer {
       polygonBuffers: polygonBuffers,
       lineStringBuffers: lineStringBuffers,
       pointBuffers: pointBuffers,
+      textBuffers: textBuffers,
       invertVerticesTransform: invertVerticesTransform,
     };
   }
@@ -399,16 +482,27 @@ class VectorStyleRenderer {
         )
       : null;
 
+    const textInstructions = this.hasText_
+      ? generateTextRenderInstructions(
+          geometryBatch.textBatch,
+          this.glyphAtlas_,
+          this.resolveText_,
+          this.customAttributes_,
+          transform,
+        )
+      : null;
+
     return {
       polygonInstructions,
       lineStringInstructions,
       pointInstructions,
+      textInstructions,
     };
   }
 
   /**
    * @param {Float32Array|null} renderInstructions Render instructions
-   * @param {import("../../geom/Geometry.js").Type} geometryType Geometry type
+   * @param {import("../../geom/Geometry.js").Type|'Text'} geometryType Geometry type
    * @param {import("../../transform.js").Transform} transform Transform to apply to coordinates
    * @return {Promise<WebGLArrayBufferSet>|null} Indices buffer and vertices buffer; null if nothing to render
    * @private
@@ -429,6 +523,9 @@ class VectorStyleRenderer {
         break;
       case 'Point':
         messageType = WebGLWorkerMessageType.GENERATE_POINT_BUFFERS;
+        break;
+      case 'Text':
+        messageType = WebGLWorkerMessageType.GENERATE_TEXT_BUFFERS;
         break;
       default:
       // pass
@@ -501,8 +598,10 @@ class VectorStyleRenderer {
    * @param {WebGLBuffers} buffers WebGL Buffers to draw
    * @param {import("../../Map.js").FrameState} frameState Frame state
    * @param {function(): void} preRenderCallback This callback will be called right before drawing, and can be used to set uniforms
+   * @param {boolean} [skipText] When truthy, the text pass is not executed (e.g. during hit detection, since
+   * the text shaders do not write to the hit detection buffer); fill/stroke/symbol passes still run.
    */
-  render(buffers, frameState, preRenderCallback) {
+  render(buffers, frameState, preRenderCallback, skipText) {
     for (const renderPass of this.renderPasses_) {
       renderPass.fillRenderPass &&
         this.renderInternal_(
@@ -528,6 +627,16 @@ class VectorStyleRenderer {
           buffers.pointBuffers[1],
           buffers.pointBuffers[2],
           renderPass.symbolRenderPass,
+          frameState,
+          preRenderCallback,
+        );
+      !skipText &&
+        renderPass.textRenderPass &&
+        this.renderInternal_(
+          buffers.textBuffers[0],
+          buffers.textBuffers[1],
+          buffers.textBuffers[2],
+          renderPass.textRenderPass,
           frameState,
           preRenderCallback,
         );
@@ -610,6 +719,12 @@ class VectorStyleRenderer {
           renderPass.symbolRenderPass.vertexShader,
         );
       }
+      if (renderPass.textRenderPass) {
+        renderPass.textRenderPass.program = this.helper_.getProgram(
+          renderPass.textRenderPass.fragmentShader,
+          renderPass.textRenderPass.vertexShader,
+        );
+      }
     }
     this.helper_.addUniforms(this.uniforms_);
 
@@ -628,6 +743,11 @@ class VectorStyleRenderer {
         this.helper_.flushBufferData(buffers.pointBuffers[0]);
         this.helper_.flushBufferData(buffers.pointBuffers[1]);
         this.helper_.flushBufferData(buffers.pointBuffers[2]);
+      }
+      if (buffers.textBuffers) {
+        this.helper_.flushBufferData(buffers.textBuffers[0]);
+        this.helper_.flushBufferData(buffers.textBuffers[1]);
+        this.helper_.flushBufferData(buffers.textBuffers[2]);
       }
     }
   }

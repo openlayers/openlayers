@@ -68,18 +68,16 @@ const tileVertexShader = `
   uniform float ${BU.TEXTURE_PIXEL_WIDTH};
   uniform float ${BU.TEXTURE_PIXEL_HEIGHT};
   uniform float ${BU.TEXTURE_RESOLUTION};
-  uniform float ${BU.TEXTURE_ORIGIN_X};
-  uniform float ${BU.TEXTURE_ORIGIN_Y};
   uniform float ${BU.DEPTH};
 
   varying vec2 v_textureCoord;
-  varying vec2 v_mapCoord;
+  varying vec2 v_localMapCoord;
 
   void main() {
     v_textureCoord = ${BA.TEXTURE_COORD};
-    v_mapCoord = vec2(
-      ${BU.TEXTURE_ORIGIN_X} + ${BU.TEXTURE_RESOLUTION} * ${BU.TEXTURE_PIXEL_WIDTH} * v_textureCoord[0],
-      ${BU.TEXTURE_ORIGIN_Y} - ${BU.TEXTURE_RESOLUTION} * ${BU.TEXTURE_PIXEL_HEIGHT} * v_textureCoord[1]
+    v_localMapCoord = vec2(
+      ${BU.TEXTURE_RESOLUTION} * ${BU.TEXTURE_PIXEL_WIDTH} * v_textureCoord[0],
+      -1. * ${BU.TEXTURE_RESOLUTION} * ${BU.TEXTURE_PIXEL_HEIGHT} * v_textureCoord[1]
     );
     gl_Position = ${BU.TILE_TRANSFORM} * vec4(${BA.TEXTURE_COORD}, ${BU.DEPTH}, 1.0);
   }
@@ -97,14 +95,14 @@ const tileFragmentShader = `
   uniform sampler2D ${BU.TILE_TEXTURE_ARRAY}[1];
 
   varying vec2 v_textureCoord;
-  varying vec2 v_mapCoord;
+  varying vec2 v_localMapCoord;
 
   void main() {
     if (
-      v_mapCoord[0] < ${BU.RENDER_EXTENT}[0] ||
-      v_mapCoord[1] < ${BU.RENDER_EXTENT}[1] ||
-      v_mapCoord[0] > ${BU.RENDER_EXTENT}[2] ||
-      v_mapCoord[1] > ${BU.RENDER_EXTENT}[3]
+      v_localMapCoord[0] < ${BU.RENDER_EXTENT}[0] ||
+      v_localMapCoord[1] < ${BU.RENDER_EXTENT}[1] ||
+      v_localMapCoord[0] > ${BU.RENDER_EXTENT}[2] ||
+      v_localMapCoord[1] > ${BU.RENDER_EXTENT}[3]
     ) {
       discard;
     }
@@ -307,7 +305,7 @@ function parseStyle(style) {
     );
   }
 
-  /** @type {Object<string,import("../webgl/Helper").UniformValue>} */
+  /** @type {Object<string,import("../webgl/Helper.js").UniformValue>} */
   const uniforms = {};
 
   for (const variableName of variableNames) {

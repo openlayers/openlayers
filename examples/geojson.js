@@ -89,12 +89,6 @@ const styleFunction = function (feature) {
 
 const geojsonObject = {
   'type': 'FeatureCollection',
-  'crs': {
-    'type': 'name',
-    'properties': {
-      'name': 'EPSG:3857',
-    },
-  },
   'features': [
     {
       'type': 'Feature',

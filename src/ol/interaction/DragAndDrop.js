@@ -3,9 +3,9 @@
  */
 // FIXME should handle all geo-referenced data, not just vector data
 
+import {listen, unlistenByKey} from '../events.js';
 import Event from '../events/Event.js';
 import EventType from '../events/EventType.js';
-import {listen, unlistenByKey} from '../events.js';
 import {TRUE} from '../functions.js';
 import {get as getProjection, getUserProjection} from '../proj.js';
 import Interaction from './Interaction.js';
@@ -75,11 +75,11 @@ export class DragAndDropEvent extends Event {
 
 /***
  * @template Return
- * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
- *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
- *     'change:active', import("../Object").ObjectEvent, Return> &
- *   import("../Observable").OnSignature<'addfeatures', DragAndDropEvent, Return> &
- *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
+ * @typedef {import("../Observable.js").OnSignature<import("../Observable.js").EventTypes, import("../events/Event.js").default, Return> &
+ *   import("../Observable.js").OnSignature<import("../ObjectEventType.js").Types|
+ *     'change:active', import("../Object.js").ObjectEvent, Return> &
+ *   import("../Observable.js").OnSignature<'addfeatures', DragAndDropEvent, Return> &
+ *   import("../Observable.js").CombinedOnSignature<import("../Observable.js").EventTypes|import("../ObjectEventType.js").Types|
  *     'change:active'|'addfeatures', Return>} DragAndDropOnSignature
  */
 
@@ -103,12 +103,12 @@ class DragAndDrop extends Interaction {
     });
 
     /***
-     * @type {DragAndDropOnSignature<import("../events").EventsKey>}
+     * @type {DragAndDropOnSignature<import("../events.js").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {DragAndDropOnSignature<import("../events").EventsKey>}
+     * @type {DragAndDropOnSignature<import("../events.js").EventsKey>}
      */
     this.once;
 

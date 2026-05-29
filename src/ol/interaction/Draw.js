@@ -200,11 +200,11 @@ export class DrawEvent extends Event {
 
 /***
  * @template Return
- * @typedef {import("../Observable").OnSignature<import("../Observable").EventTypes, import("../events/Event.js").default, Return> &
- *   import("../Observable").OnSignature<import("../ObjectEventType").Types|
- *     'change:active', import("../Object").ObjectEvent, Return> &
- *   import("../Observable").OnSignature<'drawabort'|'drawend'|'drawstart', DrawEvent, Return> &
- *   import("../Observable").CombinedOnSignature<import("../Observable").EventTypes|import("../ObjectEventType").Types|
+ * @typedef {import("../Observable.js").OnSignature<import("../Observable.js").EventTypes, import("../events/Event.js").default, Return> &
+ *   import("../Observable.js").OnSignature<import("../ObjectEventType.js").Types|
+ *     'change:active', import("../Object.js").ObjectEvent, Return> &
+ *   import("../Observable.js").OnSignature<'drawabort'|'drawend'|'drawstart', DrawEvent, Return> &
+ *   import("../Observable.js").CombinedOnSignature<import("../Observable.js").EventTypes|import("../ObjectEventType.js").Types|
  *     'change:active'|'drawabort'|'drawend'|'drawstart', Return>} DrawOnSignature
  */
 
@@ -230,12 +230,12 @@ class Draw extends PointerInteraction {
     super(pointerOptions);
 
     /***
-     * @type {DrawOnSignature<import("../events").EventsKey>}
+     * @type {DrawOnSignature<import("../events.js").EventsKey>}
      */
     this.on;
 
     /***
-     * @type {DrawOnSignature<import("../events").EventsKey>}
+     * @type {DrawOnSignature<import("../events.js").EventsKey>}
      */
     this.once;
 
@@ -1119,7 +1119,7 @@ class Draw extends PointerInteraction {
   }
 
   /**
-   * @param {import("../coordinate").Coordinate} coordinates Coordinate.
+   * @param {import("../coordinate.js").Coordinate} coordinates Coordinate.
    * @private
    */
   createOrUpdateSketchPoint_(coordinates) {

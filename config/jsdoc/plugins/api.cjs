@@ -1,5 +1,5 @@
 /**
- * Define an @api tag
+ * Define an `@api` tag
  * @param {Object} dictionary The tag dictionary.
  */
 exports.defineTags = function (dictionary) {

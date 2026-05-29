@@ -9,6 +9,7 @@ import {
   generateLineStringRenderInstructions,
   generatePointRenderInstructions,
   generatePolygonRenderInstructions,
+  generateTextRenderInstructions,
 } from '../../../../../../src/ol/render/webgl/renderinstructions.js';
 import {
   compose as composeTransform,
@@ -254,6 +255,46 @@ describe('Render instructions utilities', function () {
           ),
         ).to.be(true);
       });
+    });
+  });
+
+  describe('generateTextRenderInstructions', function () {
+    it('emits one record per glyph with the base layout', function () {
+      const atlas = {
+        getWidth: () => 100,
+        getHeight: () => 100,
+        addChar: (c) => ({
+          id: c.charCodeAt(0),
+          x: 0,
+          y: 0,
+          width: 10,
+          height: 20,
+          advance: 12,
+          top: 16,
+          left: 1,
+        }),
+        getKerning: () => 0,
+      };
+      const feature = new Feature(new Point([5, 6]));
+      feature.set('label', 'ab');
+      const batch = new MixedGeometryBatch();
+      batch.addFeature(feature);
+
+      const resolveText = () => 'ab';
+      const customAttributes = {}; // none
+      const transform = createTransform(); // identity
+      const instructions = generateTextRenderInstructions(
+        batch.textBatch,
+        atlas,
+        resolveText,
+        customAttributes,
+        transform,
+      );
+      // 2 glyphs * 10 floats each
+      expect(instructions.length).to.be(20);
+      // first glyph anchor (identity transform => unchanged)
+      expect(instructions[0]).to.be(5);
+      expect(instructions[1]).to.be(6);
     });
   });
 });

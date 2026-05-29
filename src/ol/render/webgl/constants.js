@@ -9,6 +9,7 @@ export const WebGLWorkerMessageType = {
   GENERATE_POLYGON_BUFFERS: 'GENERATE_POLYGON_BUFFERS',
   GENERATE_POINT_BUFFERS: 'GENERATE_POINT_BUFFERS',
   GENERATE_LINE_STRING_BUFFERS: 'GENERATE_LINE_STRING_BUFFERS',
+  GENERATE_TEXT_BUFFERS: 'GENERATE_TEXT_BUFFERS',
 };
 
 /**
@@ -24,5 +25,5 @@ export const WebGLWorkerMessageType = {
  * @property {ArrayBuffer} [indicesBuffer] Indices array raw binary buffer (sent by the worker).
  * @property {ArrayBuffer} [vertexAttributesBuffer] Vertex attributes array raw binary buffer (sent by the worker).
  * @property {ArrayBuffer} [instanceAttributesBuffer] Instance attributes array raw binary buffer (sent by the worker).
- * @property {import("../../transform").Transform} [renderInstructionsTransform] Transformation matrix used to project the instructions coordinates
+ * @property {import("../../transform.js").Transform} [renderInstructionsTransform] Transformation matrix used to project the instructions coordinates
  */

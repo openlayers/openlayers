@@ -1,6 +1,6 @@
 import Feature, {FeatureLike} from '../../../build/ol/Feature.js';
+import LineString from '../../../build/ol/geom/LineString.js';
 import Point from '../../../build/ol/geom/Point.js';
-import {LineString} from '../../../build/ol/geom.js';
 import VectorImageLayer, {
   Options as VectorImageLayerOptions,
 } from '../../../build/ol/layer/VectorImage.js';

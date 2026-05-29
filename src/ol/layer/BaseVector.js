@@ -18,7 +18,7 @@ import Layer from './Layer.js';
  */
 
 /**
- * @template {import('../Feature').FeatureLike} FeatureType
+ * @template {import('../Feature.js').FeatureLike} FeatureType
  * @template {import("../source/Vector.js").default<FeatureType>|import("../source/VectorTile.js").default<FeatureType>} VectorSourceType<FeatureType>
  * @typedef {Object} Options
  * @property {string} [className='ol-layer'] A CSS class name to set to the layer element.
@@ -83,7 +83,7 @@ const Property = {
  * property on the layer object; for example, setting `title: 'My Title'` in the
  * options means that `title` is observable, and has get/set accessors.
  *
- * @template {import('../Feature').FeatureLike} FeatureType
+ * @template {import('../Feature.js').FeatureLike} FeatureType
  * @template {import("../source/Vector.js").default<FeatureType>|import("../source/VectorTile.js").default<FeatureType>} VectorSourceType<FeatureType>
  * @extends {Layer<VectorSourceType, RendererType>}
  * @template {import("../renderer/canvas/VectorLayer.js").default|import("../renderer/canvas/VectorTileLayer.js").default|import("../renderer/canvas/VectorImageLayer.js").default|import("../renderer/webgl/VectorLayer.js").default|import("../renderer/webgl/PointsLayer.js").default} RendererType
@@ -171,7 +171,7 @@ class BaseVectorLayer extends Layer {
    * image.
    *
    * @param {import("../pixel.js").Pixel} pixel Pixel.
-   * @return {Promise<Array<import("../Feature").FeatureLike>>} Promise that resolves with an array of features.
+   * @return {Promise<Array<import("../Feature.js").FeatureLike>>} Promise that resolves with an array of features.
    * @api
    * @override
    */

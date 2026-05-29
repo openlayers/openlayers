@@ -28,6 +28,8 @@ import Layer from './Layer.js';
  * temporary layers. The standard way to add a layer to a map and have it managed by the map is to
  * use {@link import("../Map.js").default#addLayer map.addLayer()}.
  * @property {ImageSourceType} [source] Source for this layer.
+ * @property {import('./Base.js').BackgroundColor} [background] Background color for the layer. If not specified, no background
+ * will be rendered.
  * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
  */
 

@@ -1,0 +1,13 @@
+---
+layout: example.html
+title: WebGL Text with Extent-Loaded Source
+shortdesc: WebGLVectorLayer text labels with a source that loads features by extent.
+experimental: true
+docs: >
+  This example shows that text labels on a `WebGLVectorLayer` work with sources that load
+  features on demand. The source uses a bbox loading strategy, so the layer calls
+  `source.loadFeatures()` as the view extent changes and labels appear for the loaded features.
+tags: "webgl, text, vector, bbox, loading"
+---
+<div id="map" class="map"></div>
+<div id="info">Pan / zoom to load labels for the current extent</div>

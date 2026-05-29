@@ -2,7 +2,6 @@ import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import WebGLTextLayer from '../src/ol/layer/WebGLText.js';
 import WebGLVectorLayer from '../src/ol/layer/WebGLVector.js';
 import OSM from '../src/ol/source/OSM.js';
 import VectorSource from '../src/ol/source/Vector.js';
@@ -12,6 +11,8 @@ const source = new VectorSource({
   format: new GeoJSON(),
 });
 
+// A single WebGLVectorLayer draws both the city symbol and its name: the
+// `circle-*` and `text-*` properties live in one flat style on one source.
 const map = new Map({
   layers: [
     new TileLayer({
@@ -38,26 +39,11 @@ const map = new Map({
         ],
         'circle-stroke-color': [255, 255, 255, 1],
         'circle-stroke-width': 1,
-      },
-    }),
-    new WebGLTextLayer({
-      source: source,
-      style: {
-        'text': ['get', 'accentcity'],
-        'font-family': 'Arial',
-        'font-size': [
-          'interpolate',
-          ['linear'],
-          ['get', 'population'],
-          0,
-          10,
-          200000,
-          24,
-        ],
-        'fill-color': '#000000',
-        'stroke-color': [1.0, 1.0, 1.0, 0.3],
-        'stroke-width': 2,
-        'font-weight': 'bold',
+        'text-value': ['get', 'accentcity'],
+        'text-font': 'bold 14px Arial',
+        'text-fill-color': '#000000',
+        'text-stroke-color': 'rgba(255, 255, 255, 0.6)',
+        'text-stroke-width': 2,
       },
     }),
   ],

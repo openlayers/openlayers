@@ -6,11 +6,11 @@ import {
   translate as translateTransform,
 } from '../../../../../src/ol/transform.js';
 import {getUid} from '../../../../../src/ol/util.js';
+import {ARRAY_BUFFER, FLOAT, STATIC_DRAW} from '../../../../../src/ol/webgl.js';
 import WebGLArrayBuffer from '../../../../../src/ol/webgl/Buffer.js';
 import WebGLHelper, {
   DefaultUniform,
 } from '../../../../../src/ol/webgl/Helper.js';
-import {ARRAY_BUFFER, FLOAT, STATIC_DRAW} from '../../../../../src/ol/webgl.js';
 
 const VERTEX_SHADER = `
   precision mediump float;

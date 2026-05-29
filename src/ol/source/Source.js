@@ -75,8 +75,8 @@ class Source extends BaseObject {
 
     /**
      * This source is currently loading data. Sources that defer loading to the
-     * map's tile queue never set this to `true`.
-     * @type {boolean}
+     * map's tile queue never set this to a `truthy` value.
+     * @type {boolean|number}
      */
     this.loading = false;
 
@@ -148,7 +148,7 @@ class Source extends BaseObject {
   }
 
   /**
-   * @param {import("../proj/Projection").default} [projection] Projection.
+   * @param {import("../proj/Projection.js").default} [projection] Projection.
    * @return {Array<number>|null} Resolutions.
    */
   getResolutions(projection) {

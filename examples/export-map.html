@@ -1,15 +1,25 @@
 ---
 layout: example.html
 title: Map Export
-shortdesc: Export a map as a PNG image.
+shortdesc: Export a map as a GeoTIFF or PNG image.
 docs: >
-  Example of exporting a map as a PNG image, using a HTMLCanvasElement as temporary map target.
-tags: "export, png, openstreetmap"
+  Example of exporting a map, using a HTMLCanvasElement as temporary map target. PNG is easy to export,
+  without using an external library. The GeoTIFF export is georeferenced with the correct projection.
+  The PNG + <a href="https://web.archive.org/web/20230304183331/https://support.esri.com/en/technical-article/000002860">worldfile</a> ZIP is also georeferenced, but users of the image will have to know (or guess)
+  the projection.
+tags: "export, png, geotiff, worldfile"
 resources:
   - https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css
   - https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.2/css/fontawesome.min.css
   - https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.2/css/solid.css
 ---
 <div id="map" class="map"></div>
-<a id="export-png" class="btn btn-outline-dark" role="button"><i class="fa fa-download"></i> Download PNG</a>
+<div class="btn-group">
+  <a id="export-map" class="btn btn-outline-dark" role="button"><i class="fa fa-download"></i> Download</a>
+  <select id="export-format" class="form-select" style="max-width: 180px;">
+    <option value="geotiff">GeoTIFF</option>
+    <option value="png">PNG</option>
+    <option value="png-world">PNG + Worldfile (ZIP)</option>
+  </select>
+</div>
 <a id="image-download" download="map.png"></a>

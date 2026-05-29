@@ -67,17 +67,22 @@ class TileGrid {
    * @param {Options} options Tile grid options.
    */
   constructor(options) {
+    let minZoom = options.minZoom;
+    const resolutions = options.resolutions;
+    if (minZoom === undefined && resolutions) {
+      minZoom = resolutions.findIndex((resolution) => resolution !== undefined);
+    }
     /**
      * @protected
      * @type {number}
      */
-    this.minZoom = options.minZoom !== undefined ? options.minZoom : 0;
+    this.minZoom = minZoom !== undefined ? minZoom : 0;
 
     /**
      * @private
      * @type {!Array<number>}
      */
-    this.resolutions_ = options.resolutions;
+    this.resolutions_ = resolutions;
     assert(
       isSorted(
         this.resolutions_,

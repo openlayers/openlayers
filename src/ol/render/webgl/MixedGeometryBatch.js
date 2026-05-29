@@ -1,6 +1,8 @@
 /**
  * @module ol/render/webgl/MixedGeometryBatch
  */
+import {createOrUpdateFromFlatCoordinates} from '../../extent.js';
+import {interpolatePoint} from '../../geom/flat/interpolate.js';
 import {inflateEnds} from '../../geom/flat/orient.js';
 import RenderFeature from '../../render/Feature.js';
 import {getUid} from '../../util.js';
@@ -52,7 +54,7 @@ import {getUid} from '../../util.js';
 
 /**
  * @classdesc This class is used to group several geometries of various types together for faster rendering.
- * Three inner batches are maintained for polygons, lines and points. Each time a feature is added, changed or removed
+ * Four inner batches are maintained for polygons, lines, points and text. Each time a feature is added, changed or removed
  * from the batch, these inner batches are modified accordingly in order to keep them up-to-date.
  *
  * A feature can be present in several inner batches, for example a polygon geometry will be present in the polygon batch
@@ -123,6 +125,15 @@ class MixedGeometryBatch {
       entries: {},
       geometriesCount: 0,
       verticesCount: 0,
+    };
+
+    /**
+     * One entry per feature that can carry a label (Phase 1: point features).
+     * @type {PointGeometryBatch}
+     */
+    this.textBatch = {
+      entries: {},
+      geometriesCount: 0,
     };
   }
 
@@ -200,6 +211,22 @@ class MixedGeometryBatch {
     this.polygonBatch.ringsCount -= entry.ringsCount;
     this.polygonBatch.geometriesCount -= entry.flatCoordss.length;
     delete this.polygonBatch.entries[featureUid];
+    return entry;
+  }
+
+  /**
+   * @param {Feature|RenderFeature} feature Feature
+   * @return {GeometryBatchItem|void} the cleared entry
+   * @private
+   */
+  clearFeatureEntryInTextBatch_(feature) {
+    const featureUid = getUid(feature);
+    const entry = this.textBatch.entries[featureUid];
+    if (!entry) {
+      return;
+    }
+    this.textBatch.geometriesCount--;
+    delete this.textBatch.entries[featureUid];
     return entry;
   }
 
@@ -430,6 +457,24 @@ class MixedGeometryBatch {
         );
         this.polygonBatch.entries[featureUid].verticesCount += verticesCount;
         this.polygonBatch.entries[featureUid].ringsCount += ringsCount;
+        const extent = createOrUpdateFromFlatCoordinates(
+          flatCoords,
+          0,
+          flatCoords.length,
+          stride,
+        );
+        const center = [
+          (extent[0] + extent[2]) / 2,
+          (extent[1] + extent[3]) / 2,
+        ];
+        if (!this.textBatch.entries[featureUid]) {
+          this.textBatch.entries[featureUid] = this.addRefToEntry_(featureUid, {
+            feature: feature,
+            flatCoordss: [],
+          });
+          this.textBatch.geometriesCount++;
+        }
+        this.textBatch.entries[featureUid].flatCoordss.push(center);
         for (let i = 0, ii = polygonEnds.length; i < ii; i++) {
           const startIndex = i > 0 ? polygonEnds[i - 1] : 0;
           this.addCoordinates_(
@@ -456,6 +501,14 @@ class MixedGeometryBatch {
         }
         this.pointBatch.geometriesCount++;
         this.pointBatch.entries[featureUid].flatCoordss.push(flatCoords);
+        if (!this.textBatch.entries[featureUid]) {
+          this.textBatch.entries[featureUid] = this.addRefToEntry_(featureUid, {
+            feature: feature,
+            flatCoordss: [],
+          });
+          this.textBatch.geometriesCount++;
+        }
+        this.textBatch.entries[featureUid].flatCoordss.push(flatCoords);
         break;
       case 'LineString':
       case 'LinearRing':
@@ -476,6 +529,26 @@ class MixedGeometryBatch {
           getFlatCoordinatesXYM(flatCoords, stride, layout),
         );
         this.lineStringBatch.entries[featureUid].verticesCount += verticesCount;
+        if (type === 'LineString') {
+          const midpoint = interpolatePoint(
+            flatCoords,
+            0,
+            flatCoords.length,
+            stride,
+            0.5,
+          );
+          if (!this.textBatch.entries[featureUid]) {
+            this.textBatch.entries[featureUid] = this.addRefToEntry_(
+              featureUid,
+              {
+                feature: feature,
+                flatCoordss: [],
+              },
+            );
+            this.textBatch.geometriesCount++;
+          }
+          this.textBatch.entries[featureUid].flatCoordss.push(midpoint);
+        }
         break;
       default:
       // pass
@@ -545,6 +618,7 @@ class MixedGeometryBatch {
     let entry = this.clearFeatureEntryInPointBatch_(feature);
     entry = this.clearFeatureEntryInPolygonBatch_(feature) || entry;
     entry = this.clearFeatureEntryInLineStringBatch_(feature) || entry;
+    this.clearFeatureEntryInTextBatch_(feature);
     if (entry) {
       this.removeRef_(entry.ref, getUid(entry.feature));
     }
@@ -560,6 +634,8 @@ class MixedGeometryBatch {
     this.lineStringBatch.verticesCount = 0;
     this.pointBatch.entries = {};
     this.pointBatch.geometriesCount = 0;
+    this.textBatch.entries = {};
+    this.textBatch.geometriesCount = 0;
     this.globalCounter_ = 0;
     this.freeGlobalRef_ = [];
     this.refToFeature_.clear();

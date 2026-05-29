@@ -90,27 +90,26 @@ import BaseTileLayer from './BaseTile.js';
 /**
  * @param {Style} style The layer style.
  * @param {number} [bandCount] The number of bands.
+ * @param {number} [nodataBandIndex] The 1-based band index for the nodata alpha band.
  * @return {ParsedStyle} Shaders and uniforms generated from the style.
  */
-function parseStyle(style, bandCount) {
+function parseStyle(style, bandCount, nodataBandIndex) {
   const vertexShader = `
     attribute vec2 ${Attributes.TEXTURE_COORD};
     uniform mat4 ${Uniforms.TILE_TRANSFORM};
     uniform float ${Uniforms.TEXTURE_PIXEL_WIDTH};
     uniform float ${Uniforms.TEXTURE_PIXEL_HEIGHT};
     uniform float ${Uniforms.TEXTURE_RESOLUTION};
-    uniform float ${Uniforms.TEXTURE_ORIGIN_X};
-    uniform float ${Uniforms.TEXTURE_ORIGIN_Y};
     uniform float ${Uniforms.DEPTH};
 
     varying vec2 v_textureCoord;
-    varying vec2 v_mapCoord;
+    varying vec2 v_localMapCoord;
 
     void main() {
       v_textureCoord = ${Attributes.TEXTURE_COORD};
-      v_mapCoord = vec2(
-        ${Uniforms.TEXTURE_ORIGIN_X} + ${Uniforms.TEXTURE_RESOLUTION} * ${Uniforms.TEXTURE_PIXEL_WIDTH} * v_textureCoord[0],
-        ${Uniforms.TEXTURE_ORIGIN_Y} - ${Uniforms.TEXTURE_RESOLUTION} * ${Uniforms.TEXTURE_PIXEL_HEIGHT} * v_textureCoord[1]
+      v_localMapCoord = vec2(
+        ${Uniforms.TEXTURE_PIXEL_WIDTH} * ${Uniforms.TEXTURE_RESOLUTION} * v_textureCoord[0],
+        -1. * ${Uniforms.TEXTURE_PIXEL_HEIGHT} * ${Uniforms.TEXTURE_RESOLUTION} * v_textureCoord[1]
       );
       gl_Position = ${Uniforms.TILE_TRANSFORM} * vec4(${Attributes.TEXTURE_COORD}, ${Uniforms.DEPTH}, 1.0);
     }
@@ -173,7 +172,7 @@ function parseStyle(style, bandCount) {
     );
   }
 
-  /** @type {Object<string,import("../webgl/Helper").UniformValue>} */
+  /** @type {Object<string,import("../webgl/Helper.js").UniformValue>} */
   const uniforms = {};
 
   const numVariables = Object.keys(context.variables).length;
@@ -213,6 +212,23 @@ function parseStyle(style, bandCount) {
     );
   }
 
+  // Ensure getBandValue function exists when nodata discard is needed
+  if (nodataBandIndex > 0 && !('getBandValue' in context.functions)) {
+    let ifBlocks = '';
+    for (let i = 0; i < bandCount; i++) {
+      const colorIndex = Math.floor(i / 4);
+      let bandIndex = i % 4;
+      if (i === bandCount - 1 && bandIndex === 1) {
+        // LUMINANCE_ALPHA - band 1 assigned to rgb and band 2 assigned to alpha
+        bandIndex = 3;
+      }
+      const textureName = `${Uniforms.TILE_TEXTURE_ARRAY}[${colorIndex}]`;
+      ifBlocks += `  if (band == ${i + 1}.0) {\n    return texture2D(${textureName}, v_textureCoord + vec2(dx, dy))[${bandIndex}];\n  }\n`;
+    }
+    context.functions['getBandValue'] =
+      `float getBandValue(float band, float xOffset, float yOffset) {\n  float dx = xOffset / ${Uniforms.TEXTURE_PIXEL_WIDTH};\n  float dy = yOffset / ${Uniforms.TEXTURE_PIXEL_HEIGHT};\n${ifBlocks}\n}`;
+  }
+
   const functionDefintions = Object.keys(context.functions).map(
     function (name) {
       return context.functions[name];
@@ -227,7 +243,7 @@ function parseStyle(style, bandCount) {
     #endif
 
     varying vec2 v_textureCoord;
-    varying vec2 v_mapCoord;
+    varying vec2 v_localMapCoord;
     uniform vec4 ${Uniforms.RENDER_EXTENT};
     uniform float ${Uniforms.TRANSITION_ALPHA};
     uniform float ${Uniforms.TEXTURE_PIXEL_WIDTH};
@@ -241,10 +257,10 @@ function parseStyle(style, bandCount) {
 
     void main() {
       if (
-        v_mapCoord[0] < ${Uniforms.RENDER_EXTENT}[0] ||
-        v_mapCoord[1] < ${Uniforms.RENDER_EXTENT}[1] ||
-        v_mapCoord[0] > ${Uniforms.RENDER_EXTENT}[2] ||
-        v_mapCoord[1] > ${Uniforms.RENDER_EXTENT}[3]
+        v_localMapCoord[0] < ${Uniforms.RENDER_EXTENT}[0] ||
+        v_localMapCoord[1] < ${Uniforms.RENDER_EXTENT}[1] ||
+        v_localMapCoord[0] > ${Uniforms.RENDER_EXTENT}[2] ||
+        v_localMapCoord[1] > ${Uniforms.RENDER_EXTENT}[3]
       ) {
         discard;
       }
@@ -252,6 +268,8 @@ function parseStyle(style, bandCount) {
       vec4 color = texture2D(${
         Uniforms.TILE_TEXTURE_ARRAY
       }[0],  v_textureCoord);
+
+      ${nodataBandIndex ? `if (getBandValue(${nodataBandIndex}.0, 0.0, 0.0) == 0.0) { discard; }` : ''}
 
       ${pipeline.join('\n')}
 
@@ -397,10 +415,26 @@ class WebGLTileLayer extends BaseTileLayer {
   }
 
   /**
+   * @private
+   * @return {number|undefined} The 1-based band index for the nodata alpha band.
+   */
+  getSourceNodataBandIndex_() {
+    const max = Number.MAX_SAFE_INTEGER;
+    const sources = this.getSources([-max, -max, max, max], max);
+    return sources && sources.length && 'nodataBandIndex' in sources[0]
+      ? sources[0].nodataBandIndex
+      : undefined;
+  }
+
+  /**
    * @override
    */
   createRenderer() {
-    const parsedStyle = parseStyle(this.style_, this.getSourceBandCount_());
+    const parsedStyle = parseStyle(
+      this.style_,
+      this.getSourceBandCount_(),
+      this.getSourceNodataBandIndex_(),
+    );
 
     return new WebGLTileLayerRenderer(this, {
       vertexShader: parsedStyle.vertexShader,
@@ -412,7 +446,7 @@ class WebGLTileLayer extends BaseTileLayer {
   }
 
   /**
-   * @param {import("../Map").FrameState} frameState Frame state.
+   * @param {import("../Map.js").FrameState} frameState Frame state.
    * @param {Array<SourceType>} sources Sources.
    * @return {HTMLElement} Canvas.
    */
@@ -485,7 +519,11 @@ class WebGLTileLayer extends BaseTileLayer {
     this.styleVariables_ = style.variables || {};
     this.style_ = style;
     if (this.hasRenderer()) {
-      const parsedStyle = parseStyle(this.style_, this.getSourceBandCount_());
+      const parsedStyle = parseStyle(
+        this.style_,
+        this.getSourceBandCount_(),
+        this.getSourceNodataBandIndex_(),
+      );
       const renderer = this.getRenderer();
       renderer.reset({
         vertexShader: parsedStyle.vertexShader,
