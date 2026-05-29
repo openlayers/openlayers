@@ -19,7 +19,7 @@ const layer = new WebGLVectorLayer({
     'text-fill-color': '#000000',
     'text-stroke-color': '#ffffff',
     'text-stroke-width': 2,
-    'font-size': 24,
+    'text-font': 'bold 24px sans-serif',
   },
 });
 
