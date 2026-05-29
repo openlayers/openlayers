@@ -519,6 +519,9 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     if (buffers.polygonBuffers) {
       disposeBuffersOfType(buffers.polygonBuffers);
     }
+    if (buffers.textBuffers) {
+      disposeBuffersOfType(buffers.textBuffers);
+    }
   }
 
   /**

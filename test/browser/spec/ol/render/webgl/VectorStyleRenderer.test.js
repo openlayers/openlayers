@@ -14,14 +14,14 @@ import {
   create as createTransform,
   makeInverse as makeInverseTransform,
 } from '../../../../../../src/ol/transform.js';
+import WebGLArrayBuffer from '../../../../../../src/ol/webgl/Buffer.js';
+import WebGLHelper from '../../../../../../src/ol/webgl/Helper.js';
 import {
   ARRAY_BUFFER,
   DYNAMIC_DRAW,
   ELEMENT_ARRAY_BUFFER,
   FLOAT,
 } from '../../../../../../src/ol/webgl.js';
-import WebGLArrayBuffer from '../../../../../../src/ol/webgl/Buffer.js';
-import WebGLHelper from '../../../../../../src/ol/webgl/Helper.js';
 
 /**
  * @type {import('../../../../../../src/ol/render/webgl/VectorStyleRenderer.js').StyleShaders}
@@ -675,6 +675,36 @@ describe('VectorStyleRenderer', () => {
     });
   });
 
+  describe('text rendering', function () {
+    it('detects text styles and creates a glyph atlas', function () {
+      const renderer = new VectorStyleRenderer(
+        {'text-value': ['get', 'label'], 'text-fill-color': '#000'},
+        {},
+        helper,
+      );
+      expect(renderer.hasText_).to.be(true);
+      expect(renderer.getGlyphAtlas()).to.not.be(null);
+      const renderPass = renderer.renderPasses_[0];
+      expect(renderPass.textRenderPass).to.not.be(undefined);
+      expect(renderPass.textRenderPass.instancedAttributesDesc).to.eql([
+        {name: 'a_anchor', size: 2, type: FLOAT},
+        {name: 'a_glyphOffset', size: 2, type: FLOAT},
+        {name: 'a_glyphSize', size: 2, type: FLOAT},
+        {name: 'a_glyphUv', size: 4, type: FLOAT},
+      ]);
+    });
+    it('does not create a glyph atlas for non-text styles', function () {
+      const renderer = new VectorStyleRenderer(
+        {'fill-color': 'red'},
+        {},
+        helper,
+      );
+      expect(renderer.hasText_).to.be(false);
+      expect(renderer.getGlyphAtlas()).to.be(null);
+      expect(renderer.renderPasses_[0].textRenderPass).to.be(undefined);
+    });
+  });
+
   describe('convertStyleToShaders', function () {
     it('breaks down a single flat style', function () {
       const style = {
@@ -691,6 +721,7 @@ describe('VectorStyleRenderer', () => {
             .setStrokeWidthExpression('2.0'),
           'attributes': {},
           'uniforms': {},
+          'textValue': null,
         },
       ]);
     });
@@ -712,6 +743,7 @@ describe('VectorStyleRenderer', () => {
           ),
           'attributes': {},
           'uniforms': {},
+          'textValue': null,
         },
         {
           builder: new ShaderBuilder()
@@ -719,6 +751,7 @@ describe('VectorStyleRenderer', () => {
             .setStrokeWidthExpression('2.0'),
           'attributes': {},
           'uniforms': {},
+          'textValue': null,
         },
       ]);
     });
