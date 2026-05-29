@@ -208,6 +208,38 @@ worker.onmessage = (event) => {
       ]);
       break;
     }
+    case WebGLWorkerMessageType.GENERATE_TEXT_BUFFERS: {
+      // Per-glyph instruction layout (anchor already transformed upstream):
+      // [anchorX, anchorY, offX, offY, sizeW, sizeH, u0, v0, u1, v1, ...custom]
+      // Each record is exactly one glyph instance; copy through unchanged
+      // (no transform applied here, mirroring writePointFeatureToBuffers).
+      const renderInstructions = new Float32Array(received.renderInstructions);
+      const instanceAttributesBuffer = Float32Array.from(renderInstructions);
+
+      const indicesBuffer = Uint32Array.from([0, 1, 3, 1, 2, 3]);
+      const vertexAttributesBuffer = Float32Array.from([
+        -1, -1, 1, -1, 1, 1, -1, 1,
+      ]); // unit quad local position
+
+      /** @type {import('../render/webgl/constants.js').WebGLWorkerGenerateBuffersMessage} */
+      const message = Object.assign(
+        {
+          indicesBuffer: indicesBuffer.buffer,
+          vertexAttributesBuffer: vertexAttributesBuffer.buffer,
+          instanceAttributesBuffer: instanceAttributesBuffer.buffer,
+          renderInstructions: renderInstructions.buffer,
+        },
+        received,
+      );
+
+      worker.postMessage(message, [
+        vertexAttributesBuffer.buffer,
+        instanceAttributesBuffer.buffer,
+        indicesBuffer.buffer,
+        renderInstructions.buffer,
+      ]);
+      break;
+    }
     default:
     // pass
   }
