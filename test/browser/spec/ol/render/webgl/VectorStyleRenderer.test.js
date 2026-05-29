@@ -722,6 +722,7 @@ describe('VectorStyleRenderer', () => {
           'attributes': {},
           'uniforms': {},
           'textValue': null,
+          'textFont': null,
         },
       ]);
     });
@@ -744,6 +745,7 @@ describe('VectorStyleRenderer', () => {
           'attributes': {},
           'uniforms': {},
           'textValue': null,
+          'textFont': null,
         },
         {
           builder: new ShaderBuilder()
@@ -752,6 +754,7 @@ describe('VectorStyleRenderer', () => {
           'attributes': {},
           'uniforms': {},
           'textValue': null,
+          'textFont': null,
         },
       ]);
     });

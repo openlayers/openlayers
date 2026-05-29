@@ -349,16 +349,22 @@ class VectorStyleRenderer {
       (styleShader) => !!styleShader.builder.getTextVertexShader(),
     );
 
-    /**
-     * @type {import('./GlyphAtlas.js').default|null}
-     * @private
-     */
-    this.glyphAtlas_ = this.hasText_ ? new GlyphAtlas('sans-serif') : null;
-
     const textShader = this.styleShaders.find(
       (styleShader) =>
         styleShader.textValue !== null && styleShader.textValue !== undefined,
     );
+
+    const textFont = textShader ? textShader.textFont : null;
+    /**
+     * @type {import('./GlyphAtlas.js').default|null}
+     * @private
+     */
+    this.glyphAtlas_ = this.hasText_
+      ? new GlyphAtlas(
+          textFont ? textFont.family : 'sans-serif',
+          textFont ? textFont.weight : 'normal',
+        )
+      : null;
     if (this.hasText_ && textShader) {
       const textEvaluator = buildExpression(
         textShader.textValue,
