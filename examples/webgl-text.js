@@ -3,38 +3,66 @@ import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import Point from '../src/ol/geom/Point.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import WebGLTextLayer from '../src/ol/layer/WebGLText.js';
+import WebGLVectorLayer from '../src/ol/layer/WebGLVector.js';
 import {fromLonLat} from '../src/ol/proj.js';
 import OSM from '../src/ol/source/OSM.js';
 import Vector from '../src/ol/source/Vector.js';
 
-const vectorSource = new Vector({
-  wrapX: true,
-});
-
-const testFeature = new Feature({
+const feature = new Feature({
   geometry: new Point(fromLonLat([0, 0])),
-  name: 'OpenLayers',
-  color: [1.0, 1.0, 0.0, 1.0],
-  outlineColor: [1.0, 0.0, 0.0, 1.0],
-  outlineWidth: 0.1,
-  textSize: 64,
-  spacing: 0,
-  rotation: Math.PI / 4,
-  backgroundColor: [0, 0, 0, 0.5],
-  backgroundOutlineColor: [1, 1, 1, 1],
-  backgroundOutlineWidth: 2,
-  visible: true,
+  label: 'OpenLayers',
 });
-vectorSource.addFeature(testFeature);
 
-let textLayer;
+const vectorSource = new Vector({wrapX: true, features: [feature]});
+
+/**
+ * @param {string} hex Hex color (#rrggbb).
+ * @param {string|number} alpha Alpha in [0, 1].
+ * @return {Array<number>} Normalized rgba in [0, 1].
+ */
+function hexToRgba(hex, alpha) {
+  const r = parseInt(hex.slice(1, 3), 16) / 255;
+  const g = parseInt(hex.slice(3, 5), 16) / 255;
+  const b = parseInt(hex.slice(5, 7), 16) / 255;
+  return [r, g, b, parseFloat(alpha)];
+}
+
+// Fill/outline color and outline width are style variables, so they update
+// live; the font (family/weight/size) is applied through `text-font` and
+// changing it rebuilds the style.
+const layer = new WebGLVectorLayer({
+  source: vectorSource,
+  variables: {
+    fillColor: [1, 1, 0, 1],
+    outlineColor: [1, 0, 0, 1],
+    outlineWidth: 2,
+  },
+  style: buildStyle('sans-serif', 'normal', 48),
+});
+
+/**
+ * @param {string} family Font family.
+ * @param {string} weight Font weight.
+ * @param {number} size Font size in px.
+ * @return {Object} Flat style.
+ */
+function buildStyle(family, weight, size) {
+  return {
+    'text-value': ['get', 'label'],
+    'text-font': `${weight} ${size}px ${family}`,
+    'text-fill-color': ['var', 'fillColor'],
+    'text-stroke-color': ['var', 'outlineColor'],
+    'text-stroke-width': ['var', 'outlineWidth'],
+  };
+}
+
 const map = new Map({
   layers: [
     new TileLayer({
       source: new OSM(),
       opacity: 0.5,
     }),
+    layer,
   ],
   target: 'map',
   view: new View({
@@ -43,91 +71,59 @@ const map = new Map({
   }),
 });
 
-function createLayer(fontFamily, fontWeight) {
-  if (textLayer) {
-    map.removeLayer(textLayer);
-  }
-
-  textLayer = new WebGLTextLayer({
-    source: vectorSource,
-    style: {
-      fontFamily: fontFamily,
-      fontWeight: fontWeight,
-      visible: ['get', 'visible'],
-    },
-  });
-
-  map.addLayer(textLayer);
+function readFont() {
+  return {
+    family: document.getElementById('fontFamily').value,
+    weight: document.getElementById('fontWeight').value,
+    size: parseFloat(document.getElementById('textSize').value),
+  };
 }
 
-createLayer('sans-serif', 'normal');
-
-function hexToRgba(hex, alpha) {
-  const r = parseInt(hex.slice(1, 3), 16) / 255;
-  const g = parseInt(hex.slice(3, 5), 16) / 255;
-  const b = parseInt(hex.slice(5, 7), 16) / 255;
-  return [r, g, b, parseFloat(alpha)];
+// Font changes require a new text-font string, which rebuilds the style.
+function updateFont() {
+  const font = readFont();
+  document.getElementById('textSizeVal').textContent = font.size;
+  layer.setStyle(buildStyle(font.family, font.weight, font.size));
 }
 
-function updateFeature() {
+// Text + visibility only change feature data, so the label updates in place.
+function updateText() {
   const text = document.getElementById('textInput').value;
-  const textSize = parseFloat(document.getElementById('textSize').value);
-  const rotationDeg = parseFloat(document.getElementById('rotation').value);
-  const spacing = parseFloat(document.getElementById('spacing').value);
   const visible = document.getElementById('visibility').checked;
-
-  const fillHex = document.getElementById('fillColor').value;
-  const fillAlpha = document.getElementById('fillAlpha').value;
-
-  const outlineHex = document.getElementById('outlineColor').value;
-  const outlineAlpha = document.getElementById('outlineAlpha').value;
-  const outlineWidth = parseFloat(
-    document.getElementById('outlineWidth').value,
-  );
-
-  const bgHex = document.getElementById('bgColor').value;
-  const bgAlpha = document.getElementById('bgAlpha').value;
-  const bgOHex = document.getElementById('bgOutlineColor').value;
-  const bgOAlpha = document.getElementById('bgOutlineAlpha').value;
-  const bgOWidth = parseFloat(document.getElementById('bgOutlineWidth').value);
-
-  document.getElementById('textSizeVal').textContent = textSize;
-  document.getElementById('rotationVal').textContent = rotationDeg;
-  document.getElementById('spacingVal').textContent = spacing;
-  document.getElementById('outlineWidthVal').textContent = outlineWidth;
-  document.getElementById('bgOutlineWidthVal').textContent = bgOWidth;
-
-  const rotationRad = rotationDeg * (Math.PI / 180);
-
-  testFeature.set('name', text);
-  testFeature.set('textSize', textSize);
-  testFeature.set('rotation', rotationRad);
-  testFeature.set('spacing', spacing);
-  testFeature.set('color', hexToRgba(fillHex, fillAlpha));
-  testFeature.set('outlineColor', hexToRgba(outlineHex, outlineAlpha));
-  testFeature.set('outlineWidth', outlineWidth);
-  testFeature.set('backgroundColor', hexToRgba(bgHex, bgAlpha));
-  testFeature.set('backgroundOutlineColor', hexToRgba(bgOHex, bgOAlpha));
-  testFeature.set('backgroundOutlineWidth', bgOWidth);
-  testFeature.set('visible', visible);
+  feature.set('label', visible ? text : '');
 }
 
-document.getElementById('fontFamily').addEventListener('change', () => {
-  const fam = document.getElementById('fontFamily').value;
-  const weight = document.getElementById('fontWeight').value;
-  createLayer(fam, weight);
+// Colors and outline width are style variables: live update, no rebuild.
+function updateColors() {
+  const fillWidth = parseFloat(document.getElementById('outlineWidth').value);
+  document.getElementById('outlineWidthVal').textContent = fillWidth;
+  layer.updateStyleVariables({
+    fillColor: hexToRgba(
+      document.getElementById('fillColor').value,
+      document.getElementById('fillAlpha').value,
+    ),
+    outlineColor: hexToRgba(
+      document.getElementById('outlineColor').value,
+      document.getElementById('outlineAlpha').value,
+    ),
+    outlineWidth: fillWidth,
+  });
+}
+
+['fontFamily', 'fontWeight', 'textSize'].forEach((id) => {
+  document.getElementById(id).addEventListener('input', updateFont);
+});
+['textInput', 'visibility'].forEach((id) => {
+  document.getElementById(id).addEventListener('input', updateText);
+});
+[
+  'fillColor',
+  'fillAlpha',
+  'outlineColor',
+  'outlineAlpha',
+  'outlineWidth',
+].forEach((id) => {
+  document.getElementById(id).addEventListener('input', updateColors);
 });
 
-document.getElementById('fontWeight').addEventListener('change', () => {
-  const fam = document.getElementById('fontFamily').value;
-  const weight = document.getElementById('fontWeight').value;
-  createLayer(fam, weight);
-});
-
-const inputs = document.querySelectorAll('input');
-inputs.forEach((input) => {
-  input.addEventListener('input', updateFeature);
-  input.addEventListener('change', updateFeature);
-});
-
-updateFeature();
+updateColors();

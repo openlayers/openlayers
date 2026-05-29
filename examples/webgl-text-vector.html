@@ -1,0 +1,18 @@
+---
+layout: example.html
+title: WebGL Text on a Vector Layer
+shortdesc: Render text labels directly on a WebGLVectorLayer using text-* style properties.
+experimental: true
+docs: >
+  This example shows text labels integrated into a `WebGLVectorLayer`: a single layer and a
+  single source render both the point symbol (`circle-*`) and its label (`text-*`) from one
+  flat style. The label content and colors are data-driven expressions, the halo width is a
+  style variable that updates live without rebuilding buffers, and the labelled features remain
+  hit-detectable. Text labels are currently supported on point geometries.
+tags: "webgl, text, vector, labels, style"
+---
+<div id="map" class="map"></div>
+<div class="controls">
+  <label>Label halo width: <input id="halo" type="range" min="0" max="6" step="0.5" value="3" /> <span id="haloValue">3</span> px</label>
+</div>
+<div id="info">Click a city to identify it</div>

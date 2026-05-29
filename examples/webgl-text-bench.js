@@ -3,7 +3,7 @@ import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import Point from '../src/ol/geom/Point.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import WebGLTextLayer from '../src/ol/layer/WebGLText.js';
+import WebGLVectorLayer from '../src/ol/layer/WebGLVector.js';
 import OSM from '../src/ol/source/OSM.js';
 import Vector from '../src/ol/source/Vector.js';
 
@@ -25,21 +25,27 @@ for (let i = 0; i < count; ++i) {
     new Feature({
       geometry: new Point([x, y]),
       name: label,
-      color: [Math.random(), Math.random(), Math.random(), 1.0],
-      outlineColor: [0.0, 0.0, 0.0, 1.0],
-      outlineWidth: 0.2,
-      textSize: 24 + Math.random() * 24,
-      rotation: Math.random() * Math.PI * 2,
     }),
   );
 }
 vectorSource.addFeatures(features);
 
-const textLayer = new WebGLTextLayer({
+// Stress test: 20000 text labels rendered by a single WebGLVectorLayer. The
+// label content and color are driven from feature data via the flat style.
+const textLayer = new WebGLVectorLayer({
   source: vectorSource,
   style: {
-    fontFamily: 'Courier New',
-    fontWeight: 'bold',
+    'text-value': ['get', 'name'],
+    'text-font': 'bold 18px Courier New',
+    'text-fill-color': [
+      'match',
+      ['get', 'name'],
+      'OpenLayers',
+      '#1a73e8',
+      '#e8710a',
+    ],
+    'text-stroke-color': 'rgba(0, 0, 0, 1)',
+    'text-stroke-width': 1,
   },
 });
 
