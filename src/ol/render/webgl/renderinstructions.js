@@ -4,6 +4,7 @@
 import {UNDEFINED_PROP_VALUE} from '../../expr/gpu.js';
 import {transform2D} from '../../geom/flat/transform.js';
 import {apply as applyTransform} from '../../transform.js';
+import layoutGlyphs from './GlyphLayout.js';
 
 /**
  * @param {Float32Array} renderInstructions Render instructions
@@ -250,4 +251,80 @@ export function generatePolygonRenderInstructions(
     }
   }
   return renderInstructions;
+}
+
+/**
+ * Generate render instructions for text labels: one record per glyph.
+ * Record layout: [anchorX, anchorY, offX, offY, sizeW, sizeH, u0, v0, u1, v1, ...custom].
+ * The anchor is transformed by `transform` (like points); glyph offset/size/uv are not.
+ * @param {import('./MixedGeometryBatch.js').PointGeometryBatch} textBatch Text batch.
+ * @param {import('./GlyphLayout.js').GlyphSource} atlas Glyph atlas.
+ * @param {function(import('../../Feature.js').FeatureLike): string} resolveText Resolves the label string for a feature.
+ * @param {import('./VectorStyleRenderer.js').AttributeDefinitions} customAttributes Custom attribute definitions.
+ * @param {import('../../transform.js').Transform} transform Transform applied to the anchor coords.
+ * @return {Float32Array} Render instructions.
+ */
+export function generateTextRenderInstructions(
+  textBatch,
+  atlas,
+  resolveText,
+  customAttributes,
+  transform,
+) {
+  const customAttrNames = Object.keys(customAttributes);
+  /** @type {Array<number>} */
+  const out = [];
+  const tmpAnchor = [];
+
+  for (const uid in textBatch.entries) {
+    const entry = textBatch.entries[uid];
+    const feature = entry.feature;
+    const text = resolveText(feature);
+    if (!text) {
+      continue;
+    }
+    const flatCoords = entry.flatCoordss[0];
+    tmpAnchor[0] = flatCoords[0];
+    tmpAnchor[1] = flatCoords[1];
+    applyTransform(transform, tmpAnchor);
+    const anchorX = tmpAnchor[0];
+    const anchorY = tmpAnchor[1];
+
+    // gather custom attribute values once per feature
+    /** @type {Array<number>} */
+    const customValues = [];
+    for (let n = 0; n < customAttrNames.length; n++) {
+      const def = customAttributes[customAttrNames[n]];
+      const value = def.callback.call(entry, feature);
+      if (Array.isArray(value)) {
+        for (let k = 0; k < value.length; k++) {
+          customValues.push(value[k]);
+        }
+      } else {
+        customValues.push(value);
+      }
+    }
+
+    const layout = layoutGlyphs(text, atlas);
+    for (let g = 0; g < layout.glyphs.length; g++) {
+      const glyph = layout.glyphs[g];
+      out.push(
+        anchorX,
+        anchorY,
+        glyph.offsetPx[0],
+        glyph.offsetPx[1],
+        glyph.sizePx[0],
+        glyph.sizePx[1],
+        glyph.atlasUv[0],
+        glyph.atlasUv[1],
+        glyph.atlasUv[2],
+        glyph.atlasUv[3],
+      );
+      for (let k = 0; k < customValues.length; k++) {
+        out.push(customValues[k]);
+      }
+    }
+  }
+
+  return Float32Array.from(out);
 }
