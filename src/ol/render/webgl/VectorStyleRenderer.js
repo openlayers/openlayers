@@ -592,8 +592,10 @@ class VectorStyleRenderer {
    * @param {WebGLBuffers} buffers WebGL Buffers to draw
    * @param {import("../../Map.js").FrameState} frameState Frame state
    * @param {function(): void} preRenderCallback This callback will be called right before drawing, and can be used to set uniforms
+   * @param {boolean} [skipText] When truthy, the text pass is not executed (e.g. during hit detection, since
+   * the text shaders do not write to the hit detection buffer); fill/stroke/symbol passes still run.
    */
-  render(buffers, frameState, preRenderCallback) {
+  render(buffers, frameState, preRenderCallback, skipText) {
     for (const renderPass of this.renderPasses_) {
       renderPass.fillRenderPass &&
         this.renderInternal_(
@@ -622,7 +624,8 @@ class VectorStyleRenderer {
           frameState,
           preRenderCallback,
         );
-      renderPass.textRenderPass &&
+      !skipText &&
+        renderPass.textRenderPass &&
         this.renderInternal_(
           buffers.textBuffers[0],
           buffers.textBuffers[1],

@@ -494,10 +494,18 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
       if (!this.buffers_) {
         continue;
       }
-      this.styleRenderer_.render(this.buffers_, frameState, () => {
-        this.applyUniforms_(this.buffers_.invertVerticesTransform, frameState);
-        this.helper.applyHitDetectionUniform(forHitDetection);
-      });
+      this.styleRenderer_.render(
+        this.buffers_,
+        frameState,
+        () => {
+          this.applyUniforms_(
+            this.buffers_.invertVerticesTransform,
+            frameState,
+          );
+          this.helper.applyHitDetectionUniform(forHitDetection);
+        },
+        forHitDetection,
+      );
     } while (++world < endWorld);
   }
 
