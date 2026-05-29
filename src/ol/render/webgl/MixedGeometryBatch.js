@@ -124,6 +124,15 @@ class MixedGeometryBatch {
       geometriesCount: 0,
       verticesCount: 0,
     };
+
+    /**
+     * One entry per feature that can carry a label (Phase 1: point features).
+     * @type {PointGeometryBatch}
+     */
+    this.textBatch = {
+      entries: {},
+      geometriesCount: 0,
+    };
   }
 
   /**
@@ -200,6 +209,22 @@ class MixedGeometryBatch {
     this.polygonBatch.ringsCount -= entry.ringsCount;
     this.polygonBatch.geometriesCount -= entry.flatCoordss.length;
     delete this.polygonBatch.entries[featureUid];
+    return entry;
+  }
+
+  /**
+   * @param {Feature|RenderFeature} feature Feature
+   * @return {GeometryBatchItem|void} the cleared entry
+   * @private
+   */
+  clearFeatureEntryInTextBatch_(feature) {
+    const featureUid = getUid(feature);
+    const entry = this.textBatch.entries[featureUid];
+    if (!entry) {
+      return;
+    }
+    this.textBatch.geometriesCount--;
+    delete this.textBatch.entries[featureUid];
     return entry;
   }
 
@@ -456,6 +481,14 @@ class MixedGeometryBatch {
         }
         this.pointBatch.geometriesCount++;
         this.pointBatch.entries[featureUid].flatCoordss.push(flatCoords);
+        if (!this.textBatch.entries[featureUid]) {
+          this.textBatch.entries[featureUid] = this.addRefToEntry_(featureUid, {
+            feature: feature,
+            flatCoordss: [],
+          });
+          this.textBatch.geometriesCount++;
+        }
+        this.textBatch.entries[featureUid].flatCoordss.push(flatCoords);
         break;
       case 'LineString':
       case 'LinearRing':
@@ -545,6 +578,7 @@ class MixedGeometryBatch {
     let entry = this.clearFeatureEntryInPointBatch_(feature);
     entry = this.clearFeatureEntryInPolygonBatch_(feature) || entry;
     entry = this.clearFeatureEntryInLineStringBatch_(feature) || entry;
+    this.clearFeatureEntryInTextBatch_(feature);
     if (entry) {
       this.removeRef_(entry.ref, getUid(entry.feature));
     }
@@ -560,6 +594,8 @@ class MixedGeometryBatch {
     this.lineStringBatch.verticesCount = 0;
     this.pointBatch.entries = {};
     this.pointBatch.geometriesCount = 0;
+    this.textBatch.entries = {};
+    this.textBatch.geometriesCount = 0;
     this.globalCounter_ = 0;
     this.freeGlobalRef_ = [];
     this.refToFeature_.clear();
