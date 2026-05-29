@@ -1,6 +1,51 @@
 /**
  * @module ol/render/webgl/GlyphLayout
  */
+import bidiFactory from 'bidi-js';
+
+/**
+ * Matches characters from right-to-left scripts (Hebrew, Arabic, Syriac, Thaana,
+ * NKo and their presentation forms). Used as a fast-path so left-to-right text
+ * skips bidi processing entirely.
+ */
+const RTL_CHARS = /[֐-ࣿיִ-﷿ﹰ-﻿]/;
+
+/** @type {ReturnType<typeof bidiFactory>|null} */
+let bidiInstance = null;
+
+/**
+ * Reorder a string from logical to visual order for display, so right-to-left
+ * runs (Hebrew, Arabic) render in the correct direction. Left-to-right-only
+ * strings are returned unchanged without invoking bidi.
+ * @param {string} text Logical-order text.
+ * @return {string} Visual-order text.
+ */
+function reorderForDisplay(text) {
+  if (!RTL_CHARS.test(text)) {
+    return text;
+  }
+  try {
+    if (!bidiInstance) {
+      bidiInstance = bidiFactory();
+    }
+    const levels = bidiInstance.getEmbeddingLevels(text);
+    const flips = bidiInstance.getReorderSegments(text, levels);
+    if (flips.length === 0) {
+      return text;
+    }
+    const chars = text.split('');
+    flips.forEach((range) => {
+      const [start, end] = range;
+      const segment = chars.slice(start, end + 1).reverse();
+      for (let i = 0; i < segment.length; i++) {
+        chars[start + i] = segment[i];
+      }
+    });
+    return chars.join('');
+  } catch {
+    return text;
+  }
+}
 
 /**
  * @typedef {Object} LaidOutGlyph
@@ -32,7 +77,8 @@
 /**
  * Lay out a single line of horizontal text into glyph quads, centered horizontally
  * around the anchor (x = 0). Coordinates are in pixels at the atlas reference size;
- * the caller applies font-size as a scale at render time.
+ * the caller applies font-size as a scale at render time. Right-to-left runs are
+ * reordered from logical to visual order before layout.
  *
  * Ported from the proven layout loop in renderer/webgl/TextLayer.js.
  *
@@ -45,6 +91,9 @@ export default function layoutGlyphs(text, atlas, options = {}) {
   const letterSpacing = options.letterSpacing ?? 0;
   const atlasWidth = atlas.getWidth();
   const atlasHeight = atlas.getHeight();
+
+  // reorder right-to-left runs from logical to visual order before layout
+  text = reorderForDisplay(text);
 
   /** @type {Array<LaidOutGlyph>} */
   const glyphs = [];

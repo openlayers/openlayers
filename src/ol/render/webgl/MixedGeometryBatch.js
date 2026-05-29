@@ -1,6 +1,8 @@
 /**
  * @module ol/render/webgl/MixedGeometryBatch
  */
+import {createOrUpdateFromFlatCoordinates} from '../../extent.js';
+import {interpolatePoint} from '../../geom/flat/interpolate.js';
 import {inflateEnds} from '../../geom/flat/orient.js';
 import RenderFeature from '../../render/Feature.js';
 import {getUid} from '../../util.js';
@@ -455,6 +457,24 @@ class MixedGeometryBatch {
         );
         this.polygonBatch.entries[featureUid].verticesCount += verticesCount;
         this.polygonBatch.entries[featureUid].ringsCount += ringsCount;
+        const extent = createOrUpdateFromFlatCoordinates(
+          flatCoords,
+          0,
+          flatCoords.length,
+          stride,
+        );
+        const center = [
+          (extent[0] + extent[2]) / 2,
+          (extent[1] + extent[3]) / 2,
+        ];
+        if (!this.textBatch.entries[featureUid]) {
+          this.textBatch.entries[featureUid] = this.addRefToEntry_(featureUid, {
+            feature: feature,
+            flatCoordss: [],
+          });
+          this.textBatch.geometriesCount++;
+        }
+        this.textBatch.entries[featureUid].flatCoordss.push(center);
         for (let i = 0, ii = polygonEnds.length; i < ii; i++) {
           const startIndex = i > 0 ? polygonEnds[i - 1] : 0;
           this.addCoordinates_(
@@ -509,6 +529,26 @@ class MixedGeometryBatch {
           getFlatCoordinatesXYM(flatCoords, stride, layout),
         );
         this.lineStringBatch.entries[featureUid].verticesCount += verticesCount;
+        if (type === 'LineString') {
+          const midpoint = interpolatePoint(
+            flatCoords,
+            0,
+            flatCoords.length,
+            stride,
+            0.5,
+          );
+          if (!this.textBatch.entries[featureUid]) {
+            this.textBatch.entries[featureUid] = this.addRefToEntry_(
+              featureUid,
+              {
+                feature: feature,
+                flatCoordss: [],
+              },
+            );
+            this.textBatch.geometriesCount++;
+          }
+          this.textBatch.entries[featureUid].flatCoordss.push(midpoint);
+        }
         break;
       default:
       // pass

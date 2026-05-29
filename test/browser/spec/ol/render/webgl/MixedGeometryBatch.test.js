@@ -1297,7 +1297,7 @@ describe('MixedGeometryBatch', function () {
     });
   });
 
-  describe('textBatch (points)', function () {
+  describe('textBatch', function () {
     let batch;
     beforeEach(function () {
       batch = new MixedGeometryBatch();
@@ -1309,6 +1309,22 @@ describe('MixedGeometryBatch', function () {
       const entries = Object.values(batch.textBatch.entries);
       expect(entries).to.have.length(1);
       expect(entries[0].flatCoordss[0]).to.eql([10, 20]);
+    });
+
+    it('adds a linestring feature to textBatch with the midpoint coords as anchor', function () {
+      const feature = new Feature(new LineString([[0, 0], [10, 20]]));
+      batch.addFeature(feature);
+      const entries = Object.values(batch.textBatch.entries);
+      expect(entries).to.have.length(1);
+      expect(entries[0].flatCoordss[0]).to.eql([5, 10]);
+    });
+
+    it('adds a polygon feature to textBatch with the bounding box center as anchor', function () {
+      const feature = new Feature(new Polygon([[[0, 0], [10, 0], [10, 20], [0, 20], [0, 0]]]));
+      batch.addFeature(feature);
+      const entries = Object.values(batch.textBatch.entries);
+      expect(entries).to.have.length(1);
+      expect(entries[0].flatCoordss[0]).to.eql([5, 10]);
     });
 
     it('shares the same ref as the feature point entry', function () {
