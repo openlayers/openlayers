@@ -41,8 +41,8 @@
  * @param {GlyphLayoutOptions} [options] Options.
  * @return {GlyphLayoutResult} Laid-out glyphs + measured size.
  */
-export default function GlyphLayout(text, atlas, options = {}) {
-  const letterSpacing = options.letterSpacing || 0;
+export default function layoutGlyphs(text, atlas, options = {}) {
+  const letterSpacing = options.letterSpacing ?? 0;
   const atlasWidth = atlas.getWidth();
   const atlasHeight = atlas.getHeight();
 
@@ -63,6 +63,7 @@ export default function GlyphLayout(text, atlas, options = {}) {
     const char = text[i];
     const glyph = atlas.addChar(char);
     if (!glyph) {
+      // reset kerning context across an unplaceable glyph (genuine gap)
       prevChar = null;
       continue;
     }
@@ -71,19 +72,20 @@ export default function GlyphLayout(text, atlas, options = {}) {
     }
     const left = cursorX + glyph.left;
     const right = left + glyph.width;
-    const top = -glyph.top;
-    const bottom = top + glyph.height;
+    // bounds tracked in y-down atlas space; output offsetPx is y-up
+    const yDownTop = -glyph.top;
+    const yDownBottom = yDownTop + glyph.height;
     if (left < minX) {
       minX = left;
     }
     if (right > maxX) {
       maxX = right;
     }
-    if (top < minY) {
-      minY = top;
+    if (yDownTop < minY) {
+      minY = yDownTop;
     }
-    if (bottom > maxY) {
-      maxY = bottom;
+    if (yDownBottom > maxY) {
+      maxY = yDownBottom;
     }
     placed.push({glyph, penX: cursorX});
     cursorX += glyph.advance + letterSpacing;
