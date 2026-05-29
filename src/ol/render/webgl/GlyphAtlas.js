@@ -68,6 +68,12 @@ class GlyphAtlas {
     this.cursorX_ = 0;
     this.cursorY_ = 0;
     this.rowHeight_ = 0;
+
+    /**
+     * @type {boolean}
+     * @private
+     */
+    this.dirty_ = true;
   }
 
   /**
@@ -75,6 +81,20 @@ class GlyphAtlas {
    */
   getCanvas() {
     return this.canvas_;
+  }
+
+  /**
+   * @return {boolean} Whether the atlas canvas changed since the last upload.
+   */
+  isDirty() {
+    return this.dirty_;
+  }
+
+  /**
+   * Mark the atlas as uploaded to the GPU (clears the dirty flag).
+   */
+  markUploaded() {
+    this.dirty_ = false;
   }
 
   /**
@@ -162,6 +182,7 @@ class GlyphAtlas {
       left: sdfData.glyphLeft,
     };
 
+    this.dirty_ = true;
     this.glyphs_.set(char, glyphInfo);
 
     this.cursorX_ += width;
@@ -207,6 +228,7 @@ class GlyphAtlas {
       left: 0,
     };
 
+    this.dirty_ = true;
     this.glyphs_.set(char, glyphInfo);
 
     this.cursorX_ += width;
