@@ -14,14 +14,14 @@ import {
   create as createTransform,
   makeInverse as makeInverseTransform,
 } from '../../../../../../src/ol/transform.js';
-import WebGLArrayBuffer from '../../../../../../src/ol/webgl/Buffer.js';
-import WebGLHelper from '../../../../../../src/ol/webgl/Helper.js';
 import {
   ARRAY_BUFFER,
   DYNAMIC_DRAW,
   ELEMENT_ARRAY_BUFFER,
   FLOAT,
 } from '../../../../../../src/ol/webgl.js';
+import WebGLArrayBuffer from '../../../../../../src/ol/webgl/Buffer.js';
+import WebGLHelper from '../../../../../../src/ol/webgl/Helper.js';
 
 /**
  * @type {import('../../../../../../src/ol/render/webgl/VectorStyleRenderer.js').StyleShaders}

@@ -8,7 +8,7 @@ import bidiFactory from 'bidi-js';
  * NKo and their presentation forms). Used as a fast-path so left-to-right text
  * skips bidi processing entirely.
  */
-const RTL_CHARS = /[֐-ࣿיִ-﷿ﹰ-﻿]/;
+const RTL_CHARS = /[\u0590-\u08FF\uFB1D-\uFDFF\uFE70-\uFEFF]/;
 
 /** @type {ReturnType<typeof bidiFactory>|null} */
 let bidiInstance = null;

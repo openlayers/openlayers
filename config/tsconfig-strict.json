@@ -306,6 +306,7 @@
     "../src/ol/xml.js",
     "../src/ol/layer/WebGLText.js",
     "../src/ol/renderer/webgl/TextLayer.js",
-    "../src/ol/render/webgl/GlyphAtlas.js"
+    "../src/ol/render/webgl/GlyphAtlas.js",
+    "../src/ol/render/webgl/GlyphLayout.js"
   ]
 }
