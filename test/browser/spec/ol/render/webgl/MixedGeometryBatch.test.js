@@ -1312,7 +1312,12 @@ describe('MixedGeometryBatch', function () {
     });
 
     it('adds a linestring feature to textBatch with the midpoint coords as anchor', function () {
-      const feature = new Feature(new LineString([[0, 0], [10, 20]]));
+      const feature = new Feature(
+        new LineString([
+          [0, 0],
+          [10, 20],
+        ]),
+      );
       batch.addFeature(feature);
       const entries = Object.values(batch.textBatch.entries);
       expect(entries).to.have.length(1);
@@ -1320,7 +1325,17 @@ describe('MixedGeometryBatch', function () {
     });
 
     it('adds a polygon feature to textBatch with the bounding box center as anchor', function () {
-      const feature = new Feature(new Polygon([[[0, 0], [10, 0], [10, 20], [0, 20], [0, 0]]]));
+      const feature = new Feature(
+        new Polygon([
+          [
+            [0, 0],
+            [10, 0],
+            [10, 20],
+            [0, 20],
+            [0, 0],
+          ],
+        ]),
+      );
       batch.addFeature(feature);
       const entries = Object.values(batch.textBatch.entries);
       expect(entries).to.have.length(1);

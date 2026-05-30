@@ -3,8 +3,8 @@
  */
 import bidiFactory from 'bidi-js';
 import ViewHint from '../../ViewHint.js';
-import { listen, unlistenByKey } from '../../events.js';
-import { buildExpression, newEvaluationContext } from '../../expr/cpu.js';
+import {listen, unlistenByKey} from '../../events.js';
+import {buildExpression, newEvaluationContext} from '../../expr/cpu.js';
 import {
   BooleanType,
   ColorType,
@@ -12,7 +12,7 @@ import {
   StringType,
   newParsingContext,
 } from '../../expr/expression.js';
-import { buffer, createEmpty, equals } from '../../extent.js';
+import {buffer, createEmpty, equals} from '../../extent.js';
 import BaseVector from '../../layer/BaseVector.js';
 import {
   getTransformFromProjections,
@@ -31,11 +31,11 @@ import {
   create as createMat4,
   fromTransform as mat4FromTransform,
 } from '../../vec/mat4.js';
+import {ARRAY_BUFFER, DYNAMIC_DRAW, ELEMENT_ARRAY_BUFFER} from '../../webgl.js';
 import WebGLArrayBuffer from '../../webgl/Buffer.js';
-import { AttributeType, DefaultUniform } from '../../webgl/Helper.js';
-import { ARRAY_BUFFER, DYNAMIC_DRAW, ELEMENT_ARRAY_BUFFER } from '../../webgl.js';
+import {AttributeType, DefaultUniform} from '../../webgl/Helper.js';
 import WebGLLayerRenderer from './Layer.js';
-import { getWorldParameters } from './worldUtil.js';
+import {getWorldParameters} from './worldUtil.js';
 
 /**
  * @typedef {Object} Options
@@ -150,16 +150,16 @@ class WebGLTextLayerRenderer extends WebGLLayerRenderer {
     this.program_;
 
     this.attributes = [
-      { name: 'a_position', size: 2, type: AttributeType.FLOAT },
-      { name: 'a_texCoord', size: 2, type: AttributeType.FLOAT },
-      { name: 'a_offset', size: 2, type: AttributeType.FLOAT },
-      { name: 'a_opacity', size: 1, type: AttributeType.FLOAT },
-      { name: 'a_rotateWithView', size: 1, type: AttributeType.FLOAT },
-      { name: 'a_rotation', size: 1, type: AttributeType.FLOAT },
-      { name: 'a_scale', size: 1, type: AttributeType.FLOAT },
-      { name: 'a_color', size: 4, type: AttributeType.FLOAT },
-      { name: 'a_outlineColor', size: 4, type: AttributeType.FLOAT },
-      { name: 'a_outlineWidth', size: 1, type: AttributeType.FLOAT },
+      {name: 'a_position', size: 2, type: AttributeType.FLOAT},
+      {name: 'a_texCoord', size: 2, type: AttributeType.FLOAT},
+      {name: 'a_offset', size: 2, type: AttributeType.FLOAT},
+      {name: 'a_opacity', size: 1, type: AttributeType.FLOAT},
+      {name: 'a_rotateWithView', size: 1, type: AttributeType.FLOAT},
+      {name: 'a_rotation', size: 1, type: AttributeType.FLOAT},
+      {name: 'a_scale', size: 1, type: AttributeType.FLOAT},
+      {name: 'a_color', size: 4, type: AttributeType.FLOAT},
+      {name: 'a_outlineColor', size: 4, type: AttributeType.FLOAT},
+      {name: 'a_outlineWidth', size: 1, type: AttributeType.FLOAT},
     ];
 
     this.style_ = options.style || {};
@@ -344,14 +344,14 @@ class WebGLTextLayerRenderer extends WebGLLayerRenderer {
 
   rebuildBuffers_(frameState) {
     const pointEntries = this.batch_.pointBatch.entries;
-    const features = Object.values(pointEntries).map((entry) => entry.feature);
+    const entries = Object.values(pointEntries);
 
     const stride = 19;
     let vCursor = 0;
     let iCursor = 0;
     let vertexIndex = 0;
-    let vertices = new Float32Array(features.length * stride * 4);
-    let indices = new Uint32Array(features.length * 6);
+    let vertices = new Float32Array(entries.length * stride * 4);
+    let indices = new Uint32Array(entries.length * 6);
 
     const resizeArrays = (minV, minI) => {
       if (vCursor + minV > vertices.length) {
@@ -432,13 +432,13 @@ class WebGLTextLayerRenderer extends WebGLLayerRenderer {
       );
     }
 
-    features.forEach((feature) => {
-      const geometry = feature.getGeometry();
-      if (!geometry) {
+    entries.forEach((entry) => {
+      const feature = entry.feature;
+      const flatCoords = entry.flatCoordss[0];
+      if (!flatCoords) {
         return;
       }
 
-      const flatCoords = geometry.getFlatCoordinates();
       const x = flatCoords[0];
       const y = flatCoords[1];
 
