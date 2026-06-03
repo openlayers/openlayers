@@ -298,17 +298,16 @@ function parseStyle(style) {
     pipeline.push(`color = ${color};`);
   }
 
-  const variableNames = Object.keys(context.variables);
-  if (variableNames.length > 1 && !style.variables) {
+  if (context.variables.size > 1 && !style.variables) {
     throw new Error(
-      `Missing variables in style (expected ${context.variables})`,
+      `Missing variables in style (expected ${Array.from(context.variables.keys())})`,
     );
   }
 
   /** @type {Object<string,import("../webgl/Helper.js").UniformValue>} */
   const uniforms = {};
 
-  for (const variableName of variableNames) {
+  for (const [variableName] of context.variables.entries()) {
     if (!(variableName in style.variables)) {
       throw new Error(`Missing '${variableName}' in style variables`);
     }

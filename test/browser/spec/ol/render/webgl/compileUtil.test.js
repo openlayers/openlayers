@@ -46,9 +46,9 @@ describe('ol/render/webgl/compileUtil', () => {
       );
 
       expect(glsl).to.be('(a_prop_size * 3.0 * u_zoom)');
-      expect(compilationContext.properties).to.eql({
-        size: {name: 'size', type: NumberType},
-      });
+      expect(Array.from(compilationContext.properties)).to.eql([
+        ['size', NumberType],
+      ]);
     });
   });
 
@@ -81,11 +81,11 @@ describe('ol/render/webgl/compileUtil', () => {
         addFragmentShaderFunction: sinonStub(),
       };
       const context = {
-        variables: {myColor: {name: 'myColor', type: ColorType}},
-        properties: {
-          colorProp: {name: 'colorProp', type: ColorType},
-          stringProp: {name: 'stringProp', type: StringType},
-        },
+        variables: new Map([['myColor', ColorType]]),
+        properties: new Map([
+          ['colorProp', ColorType],
+          ['stringProp', StringType],
+        ]),
         functions: {myFunction: 'function myFunction() { return 1.0; }'},
       };
 
@@ -121,13 +121,13 @@ describe('ol/render/webgl/compileUtil', () => {
   describe('generateUniformsFromContext', () => {
     it('generates uniforms', () => {
       const context = {
-        variables: {
-          colorVar: {name: 'colorVar', type: ColorType},
-          anotherColorVar: {name: 'anotherColorVar', type: ColorType},
-          stringVar: {name: 'stringVar', type: StringType},
-          arrayVar: {name: 'arrayVar', type: NumberArrayType},
-          booleanVar: {name: 'booleanVar', type: BooleanType},
-        },
+        variables: new Map([
+          ['colorVar', ColorType],
+          ['anotherColorVar', ColorType],
+          ['stringVar', StringType],
+          ['arrayVar', NumberArrayType],
+          ['booleanVar', BooleanType],
+        ]),
       };
       const styleVariables = {
         colorVar: '#FFF',
@@ -154,12 +154,12 @@ describe('ol/render/webgl/compileUtil', () => {
   describe('generateAttributesFromContext', () => {
     it('generates attributes', () => {
       const context = {
-        properties: {
-          colorProp: {name: 'colorProp', type: ColorType},
-          stringProp: {name: 'stringProp', type: StringType},
-          arrayProp: {name: 'arrayProp', type: NumberArrayType},
-          booleanProp: {name: 'booleanProp', type: BooleanType},
-        },
+        properties: new Map([
+          ['colorProp', ColorType],
+          ['stringProp', StringType],
+          ['arrayProp', NumberArrayType],
+          ['booleanProp', BooleanType],
+        ]),
       };
       const attributes = generateAttributesFromContext(context);
 

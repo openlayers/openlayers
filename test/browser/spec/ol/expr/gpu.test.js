@@ -2,8 +2,6 @@ import {
   AnyType,
   BooleanType,
   ColorType,
-  NumberType,
-  StringType,
   newParsingContext,
 } from '../../../../../src/ol/expr/expression.js';
 import {
@@ -162,22 +160,16 @@ describe('ol/expr/gpu', () => {
           },
         },
         expected:
-          '(u_var_selected == false ? vec4(1.0, 0.0, 0.0, 1.0) : (u_var_selected == a_prop_validValue ? vec4(0.0, 0.5019607843137255, 0.0, 1.0) : ((u_time < 10000.0) ? u_var_oldColor : u_var_newColor)))',
+          '((u_var_selected > 0.0) == false ? vec4(1.0, 0.0, 0.0, 1.0) : ((u_var_selected > 0.0) == (a_prop_validValue > 0.0) ? vec4(0.0, 0.5019607843137255, 0.0, 1.0) : ((u_time < 10000.0) ? u_var_oldColor : u_var_newColor)))',
         contextAssertion: (context) => {
-          expect(context.properties).to.eql({
-            validValue: {
-              name: 'validValue',
-              type: StringType | NumberType | BooleanType,
-            },
-          });
-          expect(context.variables).to.eql({
-            selected: {
-              name: 'selected',
-              type: StringType | NumberType | BooleanType,
-            },
-            newColor: {name: 'newColor', type: ColorType},
-            oldColor: {name: 'oldColor', type: ColorType},
-          });
+          expect(Array.from(context.properties)).to.eql([
+            ['validValue', BooleanType],
+          ]);
+          expect(Array.from(context.variables)).to.eql([
+            ['newColor', ColorType],
+            ['oldColor', ColorType],
+            ['selected', BooleanType],
+          ]);
         },
       },
     ];

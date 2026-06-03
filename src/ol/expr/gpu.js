@@ -20,6 +20,10 @@ import {
 } from './expression.js';
 
 /**
+ * @typedef {import('./expression.js').ValueType} ValueType
+ */
+
+/**
  * @param {string} operator Operator
  * @param {CompilationContext} context Compilation context
  * @return {string} A function name based on the operator, unique in the given context
@@ -124,21 +128,9 @@ export function uniformNameForVariable(variableName) {
  */
 
 /**
- * @typedef {Object} CompilationContextProperty
- * @property {string} name Name
- * @property {number} type Resolved property type
- */
-
-/**
- * @typedef {Object} CompilationContextVariable
- * @property {string} name Name
- * @property {number} type Resolved variable type
- */
-
-/**
  * @typedef {Object} CompilationContext
- * @property {Object<string, CompilationContextProperty>} properties The values for properties used in 'get' expressions.
- * @property {Object<string, CompilationContextVariable>} variables The values for variables used in 'var' expressions.
+ * @property {Map<string, ValueType>} variables Variables and their types (transferred from the parsing context)
+ * @property {Map<string, ValueType>} properties Properties and their types (transferred from the parsing context)
  * @property {Object<string, string>} functions Lookup of functions used by the style.
  * @property {number} [bandCount] Number of bands per pixel.
  * @property {Array<PaletteTexture>} [paletteTextures] List of palettes used by the style.
@@ -151,8 +143,8 @@ export function uniformNameForVariable(variableName) {
  */
 export function newCompilationContext() {
   return {
-    variables: {},
-    properties: {},
+    variables: new Map(),
+    properties: new Map(),
     functions: {},
     bandCount: 0,
     featureId: false,
@@ -195,6 +187,15 @@ export function buildExpression(
   compilationContext,
 ) {
   const expression = parse(encoded, type, parsingContext);
+  // add collected variables and properties to the compilation context
+  compilationContext.properties = new Map([
+    ...compilationContext.properties,
+    ...parsingContext.properties,
+  ]);
+  compilationContext.variables = new Map([
+    ...compilationContext.variables,
+    ...parsingContext.variables,
+  ]);
   return compile(expression, type, compilationContext);
 }
 
@@ -220,13 +221,6 @@ const compilers = {
   [Ops.Get]: (context, expression) => {
     const firstArg = /** @type {LiteralExpression} */ (expression.args[0]);
     const propName = /** @type {string} */ (firstArg.value);
-    const isExisting = propName in context.properties;
-    if (!isExisting) {
-      context.properties[propName] = {
-        name: propName,
-        type: expression.type,
-      };
-    }
     let result = 'a_prop_' + propName;
     if (isType(expression.type, BooleanType)) {
       result = `(${result} > 0.0)`;
@@ -245,13 +239,6 @@ const compilers = {
   [Ops.Var]: (context, expression) => {
     const firstArg = /** @type {LiteralExpression} */ (expression.args[0]);
     const varName = /** @type {string} */ (firstArg.value);
-    const isExisting = varName in context.variables;
-    if (!isExisting) {
-      context.variables[varName] = {
-        name: varName,
-        type: expression.type,
-      };
-    }
     let result = uniformNameForVariable(varName);
     if (isType(expression.type, BooleanType)) {
       result = `(${result} > 0.0)`;
@@ -261,13 +248,6 @@ const compilers = {
   [Ops.Has]: (context, expression) => {
     const firstArg = /** @type {LiteralExpression} */ (expression.args[0]);
     const propName = /** @type {string} */ (firstArg.value);
-    const isExisting = propName in context.properties;
-    if (!isExisting) {
-      context.properties[propName] = {
-        name: propName,
-        type: expression.type,
-      };
-    }
     return `(a_prop_${propName} != ${numberToGlsl(UNDEFINED_PROP_VALUE)})`;
   },
   [Ops.Resolution]: () => 'u_resolution',
@@ -453,11 +433,12 @@ ${ifBlocks}
   // Ops.Coalesce
   // Ops.Concat
   // Ops.ToString
+  // Ops.Has
 };
 
 /**
  * @param {Expression} expression The expression.
- * @param {number} returnType The expected return type.
+ * @param {ValueType} returnType The expected return type.
  * @param {CompilationContext} context The compilation context.
  * @return {CompiledExpression} The compiled expression
  */
