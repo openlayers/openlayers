@@ -2,6 +2,17 @@
 
 ### Next Release
 
+#### `createFromCapabilitiesMatrixSet` now respects `TileMatrixSetLimits`
+
+When a `matrixLimits` array is passed to `createFromCapabilitiesMatrixSet`, the returned
+tile grid will now restrict tile requests to the `MinTileRow`/`MaxTileRow`/`MinTileCol`/`MaxTileCol`
+bounds advertised for each zoom level. Previously those bounds were ignored and the full
+matrix extent was used, causing tile requests outside the layer's data extent.
+
+If you were passing `matrixLimits` only to filter zoom levels and relied on the full matrix
+range being loaded at each level, you can omit the `matrixLimits` argument or pass an empty
+array to restore the previous behavior.
+
 ### 10.7.0
 
 #### Deprecation of ol/array's stableSort

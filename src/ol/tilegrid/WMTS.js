@@ -2,6 +2,7 @@
  * @module ol/tilegrid/WMTS
  */
 
+import TileRange from '../TileRange.js';
 import {get as getProjection} from '../proj.js';
 import TileGrid from './TileGrid.js';
 
@@ -33,6 +34,8 @@ import TileGrid from './TileGrid.js';
  * which tile requests are made by sources. If the bottom-left corner of
  * an extent is used as `origin` or `origins`, then the `y` value must be
  * negative because OpenLayers tile coordinates use the top left as the origin.
+ * @property {Array<import("../TileRange.js").default>} [tileRanges] Pre-built tile ranges for each
+ * zoom level. When provided, used instead of `sizes` to set per-level tile index bounds.
  * @property {number|import("../size.js").Size} [tileSize] Tile size.
  * @property {Array<number|import("../size.js").Size>} [tileSizes] Tile sizes. The length of
  * this array needs to match the length of the `resolutions` array.
@@ -56,6 +59,7 @@ class WMTSTileGrid extends TileGrid {
       tileSize: options.tileSize,
       tileSizes: options.tileSizes,
       sizes: options.sizes,
+      tileRanges: options.tileRanges,
       minZoom: options.minZoom,
     });
 
@@ -113,6 +117,8 @@ export function createFromCapabilitiesMatrixSet(
   const tileSizes = [];
   /** @type {!Array<import("../size.js").Size>} */
   const sizes = [];
+  /** @type {!Array<import("../TileRange.js").default>} */
+  const tileRanges = [];
 
   matrixLimits = matrixLimits !== undefined ? matrixLimits : [];
 
@@ -176,6 +182,16 @@ export function createFromCapabilitiesMatrixSet(
         tileWidth == tileHeight ? tileWidth : [tileWidth, tileHeight],
       );
       sizes.push([elt['MatrixWidth'], elt['MatrixHeight']]);
+      if (matrixLimits.length > 0) {
+        tileRanges.push(
+          new TileRange(
+            matrixAvailable['MinTileCol'],
+            matrixAvailable['MaxTileCol'],
+            matrixAvailable['MinTileRow'],
+            matrixAvailable['MaxTileRow'],
+          ),
+        );
+      }
     }
   });
 
@@ -185,6 +201,7 @@ export function createFromCapabilitiesMatrixSet(
     resolutions: resolutions,
     matrixIds: matrixIds,
     tileSizes: tileSizes,
-    sizes: sizes,
+    sizes: tileRanges.length === 0 ? sizes : undefined,
+    tileRanges: tileRanges.length > 0 ? tileRanges : undefined,
   });
 }
