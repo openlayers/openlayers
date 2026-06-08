@@ -1,14 +1,11 @@
 const path = require('path');
-const puppeteer = require('puppeteer');
-
-process.env.CHROME_BIN = puppeteer.executablePath();
 
 const flags = ['--headless=new'];
 if (process.env.CI) {
   flags.push('--no-sandbox');
 }
 
-module.exports = function (karma) {
+module.exports = async function (karma) {
   karma.set({
     hostname: '127.0.0.1',
     browsers: ['ChromeHeadless'],
@@ -93,5 +90,5 @@ module.exports = function (karma) {
     },
   });
 
-  process.env.CHROME_BIN = require('puppeteer').executablePath();
+  process.env.CHROME_BIN = await require('puppeteer').executablePath();
 };
