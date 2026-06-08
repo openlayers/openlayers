@@ -49,6 +49,9 @@ const DECIMALS = 5;
  * for which tile requests are made by sources. If the bottom-left corner of
  * an extent is used as `origin` or `origins`, then the `y` value must be
  * negative because OpenLayers tile coordinates use the top left as the origin.
+ * @property {Array<import("../TileRange.js").default>} [tileRanges] Pre-built tile ranges for each
+ * zoom level. When provided, these are used directly as the full tile ranges instead of computing
+ * them from `sizes`. Useful for setting per-level tile index bounds (e.g. from WMTS `TileMatrixSetLimits`).
  * @property {number|import("../size.js").Size} [tileSize] Tile size.
  * Default is `[256, 256]`.
  * @property {Array<number|import("../size.js").Size>} [tileSizes] Tile sizes. If given, the array length
@@ -207,7 +210,9 @@ class TileGrid {
      */
     this.tmpExtent_ = [0, 0, 0, 0];
 
-    if (options.sizes !== undefined) {
+    if (options.tileRanges !== undefined) {
+      this.fullTileRanges_ = options.tileRanges;
+    } else if (options.sizes !== undefined) {
       this.fullTileRanges_ = options.sizes.map((size, z) => {
         const tileRange = new TileRange(
           Math.min(0, size[0]),

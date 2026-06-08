@@ -143,6 +143,11 @@ describe('ol.tilegrid.WMTS', function () {
       expect(tileGrid.tileSizes_).to.eql(
         Array.apply(null, Array(22)).map(Number.prototype.valueOf, 256),
       );
+
+      // Without limits, full matrix ranges start at [0, 0]
+      const r0 = tileGrid.getFullTileRange(0);
+      expect(r0.minX).to.equal(0);
+      expect(r0.minY).to.equal(0);
     });
 
     it('can create tileGrid for EPSG:3857 with matrixLimits', function () {
@@ -204,6 +209,34 @@ describe('ol.tilegrid.WMTS', function () {
       expect(tileGrid.tileSizes_).to.eql(
         Array.apply(null, Array(20)).map(Number.prototype.valueOf, 256),
       );
+
+      // z=0 → TileMatrix '0': all-zero minimums
+      const r0 = tileGrid.getFullTileRange(0);
+      expect(r0.minX).to.equal(0);
+      expect(r0.maxX).to.equal(1);
+      expect(r0.minY).to.equal(0);
+      expect(r0.maxY).to.equal(1);
+
+      // z=6 → TileMatrix '6': MinTileRow=1 (non-zero row minimum)
+      const r6 = tileGrid.getFullTileRange(6);
+      expect(r6.minX).to.equal(0);
+      expect(r6.maxX).to.equal(64);
+      expect(r6.minY).to.equal(1);
+      expect(r6.maxY).to.equal(64);
+
+      // z=13 → TileMatrix '13': both MinTileRow and MinTileCol non-zero
+      const r13 = tileGrid.getFullTileRange(13);
+      expect(r13.minX).to.equal(41);
+      expect(r13.maxX).to.equal(7917);
+      expect(r13.minY).to.equal(2739);
+      expect(r13.maxY).to.equal(4628);
+
+      // z=19 → TileMatrix '19': large non-zero offsets
+      const r19 = tileGrid.getFullTileRange(19);
+      expect(r19.minX).to.equal(170159);
+      expect(r19.maxX).to.equal(343473);
+      expect(r19.minY).to.equal(175302);
+      expect(r19.maxY).to.equal(294060);
     });
 
     it('can use prefixed matrixLimits', function () {
@@ -239,6 +272,20 @@ describe('ol.tilegrid.WMTS', function () {
       expect(tileGrid.tileSizes_).to.eql(
         Array.apply(null, Array(2)).map(Number.prototype.valueOf, 256),
       );
+
+      // Prefixed:0 limits
+      const r0 = tileGrid.getFullTileRange(0);
+      expect(r0.minX).to.equal(0);
+      expect(r0.maxX).to.equal(1);
+      expect(r0.minY).to.equal(0);
+      expect(r0.maxY).to.equal(1);
+
+      // Prefixed:1 limits
+      const r1 = tileGrid.getFullTileRange(1);
+      expect(r1.minX).to.equal(0);
+      expect(r1.maxX).to.equal(2);
+      expect(r1.minY).to.equal(0);
+      expect(r1.maxY).to.equal(2);
     });
   });
 });
