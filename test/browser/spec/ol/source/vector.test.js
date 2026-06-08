@@ -156,6 +156,15 @@ describe('ol/source/Vector', function () {
         const feature = new Feature();
         expect(vectorSource.hasFeature(feature)).to.be(false);
       });
+
+      it('returns false for a different feature with the same id', function () {
+        const feature = new Feature();
+        feature.setId('1');
+        vectorSource.addFeature(feature);
+        const otherFeature = new Feature();
+        otherFeature.setId('1');
+        expect(vectorSource.hasFeature(otherFeature)).to.be(false);
+      });
     });
   });
 
