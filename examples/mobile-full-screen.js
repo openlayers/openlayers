@@ -2,7 +2,7 @@ import Geolocation from '../src/ol/Geolocation.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import BingMaps from '../src/ol/source/BingMaps.js';
+import OSM from '../src/ol/source/OSM.js';
 
 const view = new View({
   center: [0, 0],
@@ -12,10 +12,7 @@ const view = new View({
 const map = new Map({
   layers: [
     new TileLayer({
-      source: new BingMaps({
-        key: 'AlEoTLTlzFB6Uf4Sy-ugXcRO21skQO7K8eObA5_L-8d20rjqZJLs2nkO1RMjGSPN',
-        imagerySet: 'RoadOnDemand',
-      }),
+      source: new OSM(),
     }),
   ],
   target: 'map',
