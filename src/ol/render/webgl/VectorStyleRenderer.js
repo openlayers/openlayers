@@ -325,7 +325,7 @@ class VectorStyleRenderer {
   /**
    * @param {import('./MixedGeometryBatch.js').default} geometryBatch Geometry batch
    * @param {import("../../transform.js").Transform} transform Transform to apply to coordinates
-   * @return {Promise<WebGLBuffers>} A promise resolving to WebGL buffers; buffer sets are empty if nothing to render
+   * @return {Promise<WebGLBuffers>} A promise resolving to WebGL buffers; buffer sets are set to `null` if nothing to render
    */
   async generateBuffers(geometryBatch, transform) {
     // also return the inverse of the transform that was applied when generating buffers
