@@ -956,7 +956,11 @@ class VectorSource extends Source {
   hasFeature(feature) {
     const id = feature.getId();
     if (id !== undefined) {
-      return id in this.idIndex_;
+      const indexed = this.idIndex_[String(id)];
+      if (Array.isArray(indexed)) {
+        return indexed.includes(feature);
+      }
+      return indexed === feature;
     }
     return getUid(feature) in this.uidIndex_;
   }

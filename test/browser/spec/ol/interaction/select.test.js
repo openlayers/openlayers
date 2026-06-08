@@ -416,6 +416,31 @@ describe('ol.interaction.Select', function () {
       expect(features.getArray()).to.be.empty();
       expect(interaction.getLayer(feature)).to.be(undefined);
     });
+
+    it('returns the correct layer when two layers have features with the same id', function () {
+      const featureA = new Feature();
+      featureA.setId('shared-id');
+      const sourceA = new VectorSource({features: [featureA]});
+      const layerA = new VectorLayer({source: sourceA});
+
+      const featureB = new Feature();
+      featureB.setId('shared-id');
+      const sourceB = new VectorSource({features: [featureB]});
+      const layerB = new VectorLayer({source: sourceB});
+
+      map.addLayer(layerA);
+      map.addLayer(layerB);
+
+      interaction.getFeatures().push(featureA);
+      expect(interaction.getLayer(featureA)).to.equal(layerA);
+
+      interaction.getFeatures().clear();
+      interaction.getFeatures().push(featureB);
+      expect(interaction.getLayer(featureB)).to.equal(layerB);
+
+      map.removeLayer(layerA);
+      map.removeLayer(layerB);
+    });
   });
 
   describe('#setActive()', function () {
