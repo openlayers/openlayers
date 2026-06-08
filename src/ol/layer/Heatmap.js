@@ -70,6 +70,8 @@ import BaseVector from './BaseVector.js';
  * @property {import("../style/flat.js").BooleanExpression} [filter] Optional filter expression.
  * @property {Object<string, number|Array<number>|string|boolean>} [variables] Variables used in expressions (optional)
  * @property {VectorSourceType} [source] Point source.
+ * @property {import("./Base.js").BackgroundColor} [background] Background color for the layer. If not specified, no background
+ * will be rendered.
  * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
  */
 
