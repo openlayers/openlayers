@@ -642,6 +642,38 @@ describe('ol/renderer/webgl/VectorLayer', () => {
         });
       });
     });
+
+    describe('with a text style on a point feature', () => {
+      beforeEach(() => {
+        centerPoint = new Feature({
+          id: 'centerPoint',
+          label: 'Hello',
+          geometry: new Point([0, 16]),
+        });
+        vectorSource.clear();
+        vectorSource.addFeature(centerPoint);
+        renderer = new WebGLVectorLayerRenderer(vectorLayer, {
+          style: [
+            {
+              'circle-radius': 40,
+              'circle-fill-color': 'blue',
+              'text-value': ['get', 'label'],
+              'text-fill-color': '#000000',
+            },
+          ],
+        });
+      });
+      it('hit detects the text-labelled point feature', (done) => {
+        renderer.prepareFrame(frameState);
+        // this will trigger when the rendering buffers are ready
+        vectorLayer.once('change', () => {
+          renderer.renderFrame(frameState);
+          checkHit(0, 16, centerPoint, done);
+          checkHit(20, 5, null, done);
+          done();
+        });
+      });
+    });
   });
 
   describe('#dispose', () => {

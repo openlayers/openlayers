@@ -3,6 +3,7 @@
  * @module ol/render/webgl/style
  */
 import {assert} from '../../asserts.js';
+import {getFontParameters} from '../../css.js';
 import {
   BooleanType,
   ColorType,
@@ -772,10 +773,68 @@ function parseFillProperties(style, builder, uniforms, context) {
 }
 
 /**
+ * @param {import("../../style/flat.js").FlatStyle} style Style
+ * @param {ShaderBuilder} builder Shader builder
+ * @param {Object<string,import("../../webgl/Helper.js").UniformValue>} uniforms Uniforms
+ * @param {import("../../expr/gpu.js").CompilationContext} context Shader compilation context
+ * @return {{family: string, weight: string}|null} The parsed font (family + weight) for the glyph atlas,
+ * or null if no `text-font` was specified.
+ */
+function parseTextProperties(style, builder, uniforms, context) {
+  if ('text-fill-color' in style) {
+    builder.setTextColorExpression(
+      expressionToGlsl(context, style['text-fill-color'], ColorType),
+    );
+  } else {
+    builder.setTextColorExpression('vec4(0.2, 0.2, 0.2, 1.0)');
+  }
+  if ('text-stroke-color' in style) {
+    builder.setTextOutlineColorExpression(
+      expressionToGlsl(context, style['text-stroke-color'], ColorType),
+    );
+  }
+  if ('text-stroke-width' in style) {
+    builder.setTextOutlineWidthExpression(
+      expressionToGlsl(context, style['text-stroke-width'], NumberType),
+    );
+  }
+
+  // Phase 1 only supports a literal `text-font` (CSS font shorthand) string,
+  // not an expression; we extract the pixel size for the GPU and the
+  // family/weight for the glyph atlas.
+  let textFont = null;
+  if ('text-font' in style) {
+    assert(
+      typeof style['text-font'] === 'string',
+      'WebGL layers do not support expressions for the text-font style property',
+    );
+    const parsed = getFontParameters(
+      /** @type {string} */ (style['text-font']),
+    );
+    let pixelSize = 16;
+    if (parsed) {
+      const sizeMatch = parsed.size.match(/([.\d]+)px/);
+      if (sizeMatch) {
+        pixelSize = parseFloat(sizeMatch[1]);
+      }
+    }
+    builder.setTextSizeExpression(pixelSize.toFixed(1));
+    textFont = {
+      family:
+        parsed && parsed.families.length ? parsed.families[0] : 'sans-serif',
+      weight: parsed && parsed.weight ? String(parsed.weight) : 'normal',
+    };
+  }
+  return textFont;
+}
+
+/**
  * @typedef {Object} StyleParseResult
  * @property {ShaderBuilder} builder Shader builder pre-configured according to a given style
  * @property {import("./VectorStyleRenderer.js").UniformDefinitions} uniforms Uniform definitions
  * @property {import("./VectorStyleRenderer.js").AttributeDefinitions} attributes Attribute definitions
+ * @property {import("../../expr/expression.js").EncodedExpression|null} [textValue] Raw text-value expression (resolved CPU-side), or null if no text.
+ * @property {{family: string, weight: string}|null} [textFont] Parsed `text-font` (family + weight) used to build the glyph atlas; null if no `text-font`.
  */
 
 /**
@@ -808,6 +867,10 @@ export function parseLiteralStyle(style, variables, filter) {
   }
   parseStrokeProperties(style, builder, uniforms, context);
   parseFillProperties(style, builder, uniforms, context);
+  let textFont = null;
+  if ('text-value' in style) {
+    textFont = parseTextProperties(style, builder, uniforms, context);
+  }
 
   // note that the style filter may have already been applied earlier when building the rendering instructions
   // this is still needed in case a filter cannot be evaluated statically beforehand (e.g. depending on time)
@@ -871,5 +934,7 @@ export function parseLiteralStyle(style, variables, filter) {
       ...uniforms,
       ...generateUniformsFromContext(context, variables),
     },
+    textValue: 'text-value' in style ? style['text-value'] : null,
+    textFont,
   };
 }

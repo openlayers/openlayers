@@ -1511,4 +1511,59 @@ describe('ol/render/webgl/style', () => {
       );
     });
   });
+
+  describe('text styles', function () {
+    it('produces a text vertex shader when text-value is present', function () {
+      const result = parseLiteralStyle({
+        'text-value': ['get', 'label'],
+        'text-fill-color': '#ff0000',
+      });
+      expect(result.builder.getTextVertexShader()).to.be.a('string');
+    });
+
+    it('compiles text-fill-color into the fragment shader', function () {
+      const result = parseLiteralStyle({
+        'text-value': ['get', 'label'],
+        'text-fill-color': '#ff0000',
+      });
+      expect(result.builder.getTextFragmentShader()).to.contain('fillColor');
+    });
+
+    it('does not produce a text shader without text-value', function () {
+      const result = parseLiteralStyle({'fill-color': '#ff0000'});
+      expect(result.builder.getTextVertexShader()).to.be(null);
+    });
+
+    it('exposes the raw text-value expression on the result', function () {
+      const result = parseLiteralStyle({
+        'text-value': ['get', 'label'],
+        'text-fill-color': '#ff0000',
+      });
+      expect(result.textValue).to.eql(['get', 'label']);
+    });
+
+    it('parses text-font into the textFont result (family + weight)', function () {
+      const result = parseLiteralStyle({
+        'text-value': ['get', 'label'],
+        'text-font': 'bold 24px sans-serif',
+      });
+      expect(result.textFont).to.eql({family: 'sans-serif', weight: '700'});
+    });
+
+    it('derives the text size expression from text-font', function () {
+      const result = parseLiteralStyle({
+        'text-value': ['get', 'label'],
+        'text-font': 'bold 24px sans-serif',
+      });
+      expect(result.builder.textSizeExpression_).to.be('24.0');
+    });
+
+    it('sets textFont to null when no text-font is given', function () {
+      const result = parseLiteralStyle({
+        'text-value': ['get', 'label'],
+        'text-fill-color': '#ff0000',
+      });
+      expect(result.textFont).to.be(null);
+    });
+  });
 });

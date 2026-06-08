@@ -230,6 +230,30 @@ export class ShaderBuilder {
     this.fillPatternSizeExpression_ = null;
 
     /**
+     * @type {string|null}
+     * @private
+     */
+    this.textColorExpression_ = null; // null => no text pass
+
+    /**
+     * @type {string}
+     * @private
+     */
+    this.textOutlineColorExpression_ = 'vec4(1.0)';
+
+    /**
+     * @type {string}
+     * @private
+     */
+    this.textOutlineWidthExpression_ = '0.0';
+
+    /**
+     * @type {string}
+     * @private
+     */
+    this.textSizeExpression_ = '16.0';
+
+    /**
      * @type {Array<string>}
      * @private
      */
@@ -544,6 +568,60 @@ export class ShaderBuilder {
    */
   getFillPatternSizeExpression() {
     return this.fillPatternSizeExpression_;
+  }
+
+  /**
+   * Sets an expression to compute the fill color of the text glyphs.
+   * Setting this expression enables the text shader pass.
+   * This expression can use all the uniforms, varyings and attributes available
+   * in the fragment shader, and should evaluate to a `vec4` value.
+   * @param {string} expression Text color expression
+   * @return {ShaderBuilder} the builder object
+   */
+  setTextColorExpression(expression) {
+    this.textColorExpression_ = expression;
+    return this;
+  }
+
+  /**
+   * @return {string|null} The current text color expression; null if none has been set
+   */
+  getTextColorExpression() {
+    return this.textColorExpression_;
+  }
+
+  /**
+   * Sets an expression to compute the outline color of the text glyphs.
+   * This expression can use all the uniforms, varyings and attributes available
+   * in the fragment shader, and should evaluate to a `vec4` value.
+   * @param {string} expression Text outline color expression
+   * @return {ShaderBuilder} the builder object
+   */
+  setTextOutlineColorExpression(expression) {
+    this.textOutlineColorExpression_ = expression;
+    return this;
+  }
+
+  /**
+   * Sets an expression to compute the outline width of the text glyphs.
+   * This expression should evaluate to a `float` value in pixels.
+   * @param {string} expression Text outline width expression
+   * @return {ShaderBuilder} the builder object
+   */
+  setTextOutlineWidthExpression(expression) {
+    this.textOutlineWidthExpression_ = expression;
+    return this;
+  }
+
+  /**
+   * Sets an expression to compute the size of the text glyphs.
+   * This expression should evaluate to a `float` value in pixels.
+   * @param {string} expression Text size expression
+   * @return {ShaderBuilder} the builder object
+   */
+  setTextSizeExpression(expression) {
+    this.textSizeExpression_ = expression;
+    return this;
   }
 
   addVertexShaderFunction(code) {
@@ -1090,6 +1168,104 @@ ${this.fragmentDiscardExpression_ ? `  if (${this.fragmentDiscardExpression_}) {
   gl_FragColor.rgb *= gl_FragColor.a;
   if (u_hitDetection > 0) {
     if (gl_FragColor.a < 0.1) { discard; };
+    gl_FragColor = v_hitColor;
+  }
+}`;
+  }
+
+  /**
+   * Generates a text vertex shader from the builder parameters.
+   * Note: `u_projectionMatrix` and `u_viewportSizePx` are already declared in
+   * `COMMON_HEADER`, so they are not redeclared here.
+   * @return {string|null} The full shader as a string; null if no text color specified
+   */
+  getTextVertexShader() {
+    if (this.textColorExpression_ === null) {
+      return null;
+    }
+
+    return `${COMMON_HEADER}
+${this.uniforms_.map((uniform) => `uniform ${uniform.type} ${uniform.name};`).join('\n')}
+attribute vec2 a_localPosition;
+attribute vec2 a_anchor;
+attribute vec2 a_glyphOffset;
+attribute vec2 a_glyphSize;
+attribute vec4 a_glyphUv;
+attribute vec2 a_hitColor;
+
+varying vec2 v_texCoord;
+varying vec4 v_hitColor;
+
+${this.attributes_
+  .map(
+    (attribute) => `attribute ${attribute.type} ${attribute.name};
+varying ${attribute.varyingType} ${attribute.varyingName};`,
+  )
+  .join('\n')}
+${this.vertexShaderFunctions_.join('\n')}
+void main(void) {
+  float refSize = 128.0; // GlyphAtlas reference em size
+  float sizeRatio = (${this.textSizeExpression_}) / refSize;
+  vec2 local01 = a_localPosition * 0.5 + 0.5;
+  vec2 cornerPx = (a_glyphOffset + a_glyphSize * local01) * sizeRatio;
+  vec4 anchorClip = u_projectionMatrix * vec4(a_anchor, 0.0, 1.0);
+  vec2 anchorScreen = floor(((anchorClip.xy / anchorClip.w) * 0.5 + 0.5) * u_viewportSizePx + 0.5);
+  anchorClip.xy = (anchorScreen / u_viewportSizePx * 2.0 - 1.0) * anchorClip.w;
+  vec2 offsetNdc = cornerPx / u_viewportSizePx * 2.0;
+  gl_Position = anchorClip + vec4(offsetNdc.x, offsetNdc.y, 0.0, 0.0);
+  v_texCoord = vec2(mix(a_glyphUv.x, a_glyphUv.z, local01.x), mix(a_glyphUv.w, a_glyphUv.y, local01.y));
+  v_hitColor = unpackColor(a_hitColor);
+${this.attributes_
+  .map(
+    (attribute) =>
+      `  ${attribute.varyingName} = ${attribute.varyingExpression};`,
+  )
+  .join('\n')}
+}`;
+  }
+
+  /**
+   * Generates a text fragment shader from the builder parameters.
+   * @return {string|null} The full shader as a string; null if no text color specified
+   */
+  getTextFragmentShader() {
+    if (this.textColorExpression_ === null) {
+      return null;
+    }
+
+    return `${COMMON_HEADER}
+${this.uniforms_.map((uniform) => `uniform ${uniform.type} ${uniform.name};`).join('\n')}
+uniform sampler2D u_atlasTexture;
+varying vec2 v_texCoord;
+varying vec4 v_hitColor;
+${this.attributes_
+  .map(
+    (attribute) => `varying ${attribute.varyingType} ${attribute.varyingName};`,
+  )
+  .join('\n')}
+${this.fragmentShaderFunctions_.join('\n')}
+
+void main(void) {
+${this.attributes_
+  .map(
+    (attribute) =>
+      `  ${attribute.varyingType} ${attribute.name} = ${attribute.varyingName}; // assign to original attribute name`,
+  )
+  .join('\n')}
+  float dist = texture2D(u_atlasTexture, v_texCoord).a;
+  float smoothing = 0.1;
+  float threshold = 0.6;
+  vec4 fillColor = ${this.textColorExpression_};
+  vec4 outlineColor = ${this.textOutlineColorExpression_};
+  float outlineWidth = (${this.textOutlineWidthExpression_}) / 24.0;
+  float fillAlpha = smoothstep(threshold - smoothing, threshold + smoothing, dist);
+  float borderThreshold = threshold - outlineWidth;
+  float borderAlpha = smoothstep(borderThreshold - smoothing, borderThreshold + smoothing, dist);
+  vec4 color = mix(outlineColor, fillColor, fillAlpha);
+  float a = color.a * borderAlpha;
+  gl_FragColor = vec4(color.rgb * a, a);
+  if (u_hitDetection > 0) {
+    if (a < 0.05) { discard; }
     gl_FragColor = v_hitColor;
   }
 }`;

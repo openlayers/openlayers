@@ -32,6 +32,7 @@ export const Uniforms = {
   ...VectorUniforms,
   RENDER_EXTENT: 'u_renderExtent', // intersection of layer, source, and view extent
   GLOBAL_ALPHA: 'u_globalAlpha',
+  ATLAS_TEXTURE: 'u_atlasTexture',
 };
 
 /**
@@ -79,6 +80,12 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
       [Uniforms.RENDER_EXTENT]: [0, 0, 0, 0],
       [Uniforms.GLOBAL_ALPHA]: 1,
       [Uniforms.ONE]: 1,
+      // Declarative function uniform: returns the glyph atlas texture once it
+      // has been created (see prepareFrameInternal). Returning null before the
+      // texture exists is a safe no-op in the helper's uniform loop (the value
+      // matches none of its type branches), and the sampler is absent from the
+      // fill/stroke/symbol programs so registering it there is harmless too.
+      [Uniforms.ATLAS_TEXTURE]: () => this.atlasTexture_,
     };
 
     super(layer, {
@@ -146,6 +153,14 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
      * @private
      */
     this.buffers_ = null;
+
+    /**
+     * GL texture holding the glyph atlas used by the text pass. Owned by this
+     * renderer; (re)uploaded from the atlas canvas whenever the atlas is dirty.
+     * @type {WebGLTexture|null}
+     * @private
+     */
+    this.atlasTexture_ = null;
 
     this.applyOptions_(options);
 
@@ -356,6 +371,37 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
       this.initialFeaturesAdded_ = true;
     }
 
+    // (Re)upload the glyph atlas whenever it is dirty. The atlas is filled with
+    // glyphs while render instructions are generated, which happens inside the
+    // async generateBuffers().then() below; that callback calls layer.changed()
+    // and triggers another frame. Checking isDirty() every prepareFrameInternal
+    // (cheap) therefore guarantees the texture contains every glyph the current
+    // buffers reference before the text pass draws in renderFrame.
+    const glyphAtlas =
+      this.styleRenderer_ && this.styleRenderer_.getGlyphAtlas
+        ? this.styleRenderer_.getGlyphAtlas()
+        : null;
+    if (glyphAtlas && glyphAtlas.isDirty()) {
+      const gl = this.helper.getGL();
+      if (!this.atlasTexture_) {
+        this.atlasTexture_ = gl.createTexture();
+      }
+      gl.bindTexture(gl.TEXTURE_2D, this.atlasTexture_);
+      gl.texImage2D(
+        gl.TEXTURE_2D,
+        0,
+        gl.RGBA,
+        gl.RGBA,
+        gl.UNSIGNED_BYTE,
+        glyphAtlas.getCanvas(),
+      );
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      glyphAtlas.markUploaded();
+    }
+
     const layer = this.getLayer();
     const vectorSource = layer.getSource();
     const viewState = frameState.viewState;
@@ -448,10 +494,18 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
       if (!this.buffers_) {
         continue;
       }
-      this.styleRenderer_.render(this.buffers_, frameState, () => {
-        this.applyUniforms_(this.buffers_.invertVerticesTransform, frameState);
-        this.helper.applyHitDetectionUniform(forHitDetection);
-      });
+      this.styleRenderer_.render(
+        this.buffers_,
+        frameState,
+        () => {
+          this.applyUniforms_(
+            this.buffers_.invertVerticesTransform,
+            frameState,
+          );
+          this.helper.applyHitDetectionUniform(forHitDetection);
+        },
+        forHitDetection,
+      );
     } while (++world < endWorld);
   }
 
@@ -519,6 +573,9 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     if (buffers.polygonBuffers) {
       disposeBuffersOfType(buffers.polygonBuffers);
     }
+    if (buffers.textBuffers) {
+      disposeBuffersOfType(buffers.textBuffers);
+    }
   }
 
   /**
@@ -534,6 +591,10 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
         unlistenByKey(key);
       });
       this.sourceListenKeys_ = null;
+    }
+    if (this.atlasTexture_) {
+      this.helper.getGL().deleteTexture(this.atlasTexture_);
+      this.atlasTexture_ = null;
     }
     super.disposeInternal();
   }
