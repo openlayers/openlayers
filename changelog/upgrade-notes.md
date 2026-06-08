@@ -2,6 +2,26 @@
 
 ### Next Release
 
+#### Deprecation of `ol/source/BingMaps`
+
+Bing Maps for Enterprise is being retired on June 30th, 2028. The `BingMaps` source
+has been deprecated. Use `ol/source/ImageTile` with the Azure Maps tile API instead.
+See the [azure-maps example](https://openlayers.org/en/latest/examples/azure-maps.html) for guidance.
+
+```js
+// Before
+new BingMaps({
+  key: 'YOUR_BING_MAPS_KEY',
+  imagerySet: 'RoadOnDemand',
+})
+
+// After
+new ImageTile({
+  url: `https://atlas.microsoft.com/map/tile?subscription-key=YOUR_AZURE_MAPS_KEY&api-version=2.0&tilesetId=microsoft.base.road&zoom={z}&x={x}&y={y}&tileSize=256`,
+  attributions: `© ${new Date().getFullYear()} TomTom, Microsoft`,
+})
+```
+
 #### `createFromCapabilitiesMatrixSet` now respects `TileMatrixSetLimits`
 
 When a `matrixLimits` array is passed to `createFromCapabilitiesMatrixSet`, the returned

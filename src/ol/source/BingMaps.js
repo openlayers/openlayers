@@ -114,6 +114,9 @@ const TOS_ATTRIBUTION =
 /**
  * @classdesc
  * Layer source for Bing Maps tile data.
+ * @deprecated Bing Maps for Enterprise is being retired on June 30th, 2028. Use
+ * `ol/source/ImageTile` with the Azure Maps tile API instead. See the azure-maps
+ * example for guidance.
  * @api
  */
 class BingMaps extends TileImage {
