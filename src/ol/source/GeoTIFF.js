@@ -865,6 +865,7 @@ class GeoTIFFSource extends DataTile {
       bandCount += samplesPerPixel[sourceIndex];
     }
     this.bandCount = bandCount;
+    this.nodataBandIndex = this.addAlpha_ ? this.bandCount : undefined;
 
     const tileGrid = new TileGrid({
       extent: extent,
