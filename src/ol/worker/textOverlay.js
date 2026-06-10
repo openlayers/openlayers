@@ -49,14 +49,13 @@ function getRenderTransform(
   center,
   resolution,
   rotation,
-  pixelRatio,
   width,
   height,
   offsetX,
 ) {
   const dx1 = width / 2;
   const dy1 = height / 2;
-  const sx = pixelRatio / resolution;
+  const sx = 1 / resolution;
   const sy = -sx;
   const dx2 = -center[0] + offsetX;
   const dy2 = -center[1];
@@ -106,8 +105,7 @@ worker.onmessage = (event) => {
           const transform = getRenderTransform(
             viewState.center,
             viewState.resolution,
-            0,
-            frameState.pixelRatio,
+            viewState.rotation,
             canvas.width,
             canvas.height,
             0,

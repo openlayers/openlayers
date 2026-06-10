@@ -132,6 +132,7 @@ export function createPostProcessDefinition(
         const resolution = viewState.resolution;
         const rotation = viewState.rotation;
         const size = frameState.size;
+        const pixelRatio = frameState.pixelRatio;
         const renderedCenter = textOverlayViewState.center;
         const renderedResolution = textOverlayViewState.resolution;
         const renderedRotation = textOverlayViewState.rotation;
@@ -142,9 +143,11 @@ export function createPostProcessDefinition(
           tmpMatrix,
           (center[0] - renderedCenter[0]) /
             renderedResolution /
+            pixelRatio /
             (renderedWidth / 2),
           (center[1] - renderedCenter[1]) /
             renderedResolution /
+            pixelRatio /
             (renderedHeight / 2),
           0,
           tmpMatrix,
@@ -163,7 +166,7 @@ export function createPostProcessDefinition(
         //   1,
         //   tmpMatrix,
         // );
-        rotateMat4(tmpMatrix, -rotation, tmpMatrix);
+        rotateMat4(tmpMatrix, renderedRotation - rotation, tmpMatrix);
         scaleMat4(tmpMatrix, size[0], size[1], 1, tmpMatrix);
         scaleMat4(
           tmpMatrix,
