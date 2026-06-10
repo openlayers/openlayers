@@ -1,4 +1,3 @@
-import {spy as sinonSpy} from 'sinon';
 import Feature from '../../../../../src/ol/Feature.js';
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
@@ -7,6 +6,10 @@ import Point from '../../../../../src/ol/geom/Point.js';
 import HeatmapLayer from '../../../../../src/ol/layer/Heatmap.js';
 import * as ol_renderer_webgl_vectorlayer from '../../../../../src/ol/renderer/webgl/VectorLayer.js';
 import VectorSource from '../../../../../src/ol/source/Vector.js';
+
+// sinon can't spy on ES module exports, so the renderer module is mocked here
+// to capture how the renderer gets constructed.
+vi.mock('../../../../../src/ol/renderer/webgl/VectorLayer.js', {spy: true});
 
 describe('ol/layer/Heatmap', function () {
   /** @type {HTMLDivElement} */
@@ -37,10 +40,11 @@ describe('ol/layer/Heatmap', function () {
 
   let rendererSpy;
   beforeEach(() => {
-    rendererSpy = sinonSpy(ol_renderer_webgl_vectorlayer, 'default');
+    rendererSpy = ol_renderer_webgl_vectorlayer.default;
+    rendererSpy.mockClear();
   });
   afterEach(() => {
-    rendererSpy.restore();
+    rendererSpy.mockClear();
   });
 
   describe('constructor', function () {
@@ -87,28 +91,28 @@ describe('ol/layer/Heatmap', function () {
       expect(layer.getBlur()).to.eql(['get', 'weight']);
     });
     it('recreates the renderer', () => {
-      sinonSpy(layer, 'createRenderer');
+      vi.spyOn(layer, 'createRenderer');
       layer.setBlur(['get', 'weight']);
       layer.getRenderer();
-      expect(layer.createRenderer.calledOnce).to.be(true);
+      expect(layer.createRenderer.mock.calls.length).to.be(1);
     });
 
     describe('numerical value', () => {
       it('adds a uniform which reads the numerical value', () => {
         layer.setBlur(12);
         layer.getRenderer();
-        const rendererOpts = rendererSpy.getCall(0).args[1];
+        const rendererOpts = rendererSpy.mock.calls[0][1];
         const uniforms = rendererOpts.style.uniforms;
         expect(uniforms).to.have.key('a_blur');
         expect(uniforms.a_blur()).to.eql(12);
       });
       it('does not recreate the renderer if called several times with a numerical value', () => {
-        sinonSpy(layer, 'createRenderer');
+        vi.spyOn(layer, 'createRenderer');
         layer.setBlur(12);
         layer.setBlur(17);
         layer.setBlur(20);
         layer.getRenderer();
-        expect(layer.createRenderer.callCount).to.be(1);
+        expect(layer.createRenderer.mock.calls.length).to.be(1);
       });
     });
   });
@@ -127,28 +131,28 @@ describe('ol/layer/Heatmap', function () {
       expect(layer.getRadius()).to.eql(['get', 'size']);
     });
     it('recreates the renderer', () => {
-      sinonSpy(layer, 'createRenderer');
+      vi.spyOn(layer, 'createRenderer');
       layer.setRadius(['get', 'size']);
       layer.getRenderer();
-      expect(layer.createRenderer.calledOnce).to.be(true);
+      expect(layer.createRenderer.mock.calls.length).to.be(1);
     });
 
     describe('numerical value', () => {
       it('adds a uniform which reads the numerical value', () => {
         layer.setRadius(12);
         layer.getRenderer();
-        const rendererOpts = rendererSpy.getCall(0).args[1];
+        const rendererOpts = rendererSpy.mock.calls[0][1];
         const uniforms = rendererOpts.style.uniforms;
         expect(uniforms).to.have.key('a_radius');
         expect(uniforms.a_radius()).to.eql(12);
       });
       it('does not recreate the renderer if called several times with a numerical value', () => {
-        sinonSpy(layer, 'createRenderer');
+        vi.spyOn(layer, 'createRenderer');
         layer.setRadius(12);
         layer.setRadius(17);
         layer.setRadius(20);
         layer.getRenderer();
-        expect(layer.createRenderer.callCount).to.be(1);
+        expect(layer.createRenderer.mock.calls.length).to.be(1);
       });
     });
   });
@@ -167,7 +171,7 @@ describe('ol/layer/Heatmap', function () {
       });
       layer.getRenderer();
 
-      const rendererOpts = rendererSpy.getCall(0).args[1];
+      const rendererOpts = rendererSpy.mock.calls[0][1];
       const attrs = rendererOpts.style.attributes;
       expect(attrs).to.have.key('prop_weight');
 
@@ -188,7 +192,7 @@ describe('ol/layer/Heatmap', function () {
       });
       layer.getRenderer();
 
-      const rendererOpts = rendererSpy.getCall(0).args[1];
+      const rendererOpts = rendererSpy.mock.calls[0][1];
       const attrs = rendererOpts.style.attributes;
       expect(attrs).to.have.key('prop_weight');
 
@@ -208,7 +212,7 @@ describe('ol/layer/Heatmap', function () {
       });
       layer.getRenderer();
 
-      const rendererOpts = rendererSpy.getCall(0).args[1];
+      const rendererOpts = rendererSpy.mock.calls[0][1];
       const attrs = rendererOpts.style.attributes;
       expect(attrs).to.have.key('prop_sizeAttr');
 
@@ -234,10 +238,10 @@ describe('ol/layer/Heatmap', function () {
         expect(layer.weight_).to.eql('bla');
       });
       it('recreates the renderer', () => {
-        sinonSpy(layer, 'createRenderer');
+        vi.spyOn(layer, 'createRenderer');
         layer.setWeight('bla');
         layer.getRenderer();
-        expect(layer.createRenderer.calledOnce).to.be(true);
+        expect(layer.createRenderer.mock.calls.length).to.be(1);
       });
     });
   });
@@ -255,7 +259,7 @@ describe('ol/layer/Heatmap', function () {
       });
       layer.getRenderer();
 
-      const rendererOpts = rendererSpy.getCall(0).args[1];
+      const rendererOpts = rendererSpy.mock.calls[0][1];
       const attrs = rendererOpts.style.attributes;
       expect(attrs).to.have.key('prop_sizeAttr');
 
@@ -271,7 +275,7 @@ describe('ol/layer/Heatmap', function () {
       });
       layer.getRenderer();
 
-      const rendererOpts = rendererSpy.getCall(0).args[1];
+      const rendererOpts = rendererSpy.mock.calls[0][1];
       const attrs = rendererOpts.style.attributes;
       expect(attrs).to.have.key('prop_sizeAttr');
 
@@ -287,10 +291,10 @@ describe('ol/layer/Heatmap', function () {
         expect(layer.filter_).to.eql(filter);
       });
       it('recreates the renderer', () => {
-        sinonSpy(layer, 'createRenderer');
+        vi.spyOn(layer, 'createRenderer');
         layer.setFilter(true);
         layer.getRenderer();
-        expect(layer.createRenderer.calledOnce).to.be(true);
+        expect(layer.createRenderer.mock.calls.length).to.be(1);
       });
     });
   });
@@ -304,7 +308,7 @@ describe('ol/layer/Heatmap', function () {
       });
       layer.getRenderer();
 
-      const rendererOpts = rendererSpy.getCall(0).args[1];
+      const rendererOpts = rendererSpy.mock.calls[0][1];
       const attrs = rendererOpts.style.attributes;
       expect(attrs).to.have.key('prop_myBlur');
       expect(attrs).to.have.key('prop_myRadius');

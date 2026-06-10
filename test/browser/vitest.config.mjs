@@ -18,6 +18,7 @@ export default defineConfig({
       'test/browser/spec/ol/featureloader.test.js',
       'test/browser/spec/ol/Map.test.js',
       'test/browser/spec/ol/format/wmtscapabilities.test.js',
+      'test/browser/spec/ol/layer/Heatmap.test.js',
     ],
     globals: true,
     setupFiles: [path.resolve(dir, 'vitest.setup.js')],
