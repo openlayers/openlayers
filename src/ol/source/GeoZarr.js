@@ -73,6 +73,7 @@ export default class GeoZarr extends DataTileSource {
       projection: options.projection || null,
       transition: options.transition,
       wrapX: options.wrapX,
+      hasAlpha: false,
     });
 
     /**
@@ -333,6 +334,7 @@ export default class GeoZarr extends DataTileSource {
     if (this.fillValue_ !== null && this.fillValue_ !== undefined) {
       this.bandCount = this.bands_.length + 1;
       this.nodataBandIndex = this.bandCount;
+      this.hasAlpha = true;
     }
     if (!this.tileGrid) {
       throw new Error('Could not determine tile grid');

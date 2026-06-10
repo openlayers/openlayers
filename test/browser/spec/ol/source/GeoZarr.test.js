@@ -199,6 +199,7 @@ describe('ol/source/GeoZarr', function () {
       });
       expect(source.nodataBandIndex).to.be(undefined);
       expect(source.bandCount).to.be(1);
+      expect(source.hasAlpha).to.be(false);
     });
 
     it('sets nodataBandIndex and increments bandCount when fillValue is present', function (done) {
@@ -214,6 +215,7 @@ describe('ol/source/GeoZarr', function () {
         if (source.getState() === 'ready') {
           expect(source.bandCount).to.be(3);
           expect(source.nodataBandIndex).to.be(3);
+          expect(source.hasAlpha).to.be(true);
           done();
         }
       });
@@ -229,6 +231,7 @@ describe('ol/source/GeoZarr', function () {
         if (source.getState() === 'ready') {
           expect(source.bandCount).to.be(1);
           expect(source.nodataBandIndex).to.be(undefined);
+          expect(source.hasAlpha).to.be(false);
           done();
         }
       });

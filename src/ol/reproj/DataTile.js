@@ -47,6 +47,9 @@ import {
  * transitions in milliseconds. A duration of 0 disables the opacity transition.
  * @property {import("../transform.js").Transform} [transformMatrix] Source transform matrix.
  * @property {boolean} [renderEdges] Render reprojection edges.
+ * @property {boolean} [hasAlpha=true] Whether the source tiles already include an
+ * alpha band.  When `false`, an alpha band marking the reprojected coverage is
+ * appended to the output so areas outside the source footprint render transparent.
  */
 
 /**
@@ -73,6 +76,14 @@ class ReprojDataTile extends DataTile {
      */
     this.renderEdges_ =
       options.renderEdges !== undefined ? options.renderEdges : false;
+
+    /**
+     * Whether the source tiles already carry an alpha band.  When `false`, a
+     * coverage alpha band is appended to the reprojected output.
+     * @private
+     * @type {boolean}
+     */
+    this.hasAlpha_ = options.hasAlpha !== undefined ? options.hasAlpha : true;
 
     /**
      * @private
@@ -388,7 +399,17 @@ class ReprojDataTile extends DataTile {
     );
 
     const bandCount = dataSources[0].bandCount;
-    const dataR = new dataSources[0].dataType(bandCount * outWidth * outHeight);
+
+    // When the source tiles have no alpha band, append a coverage band so areas
+    // outside the source footprint (out-of-bounds source pixels and the gaps a
+    // rotated/curved reprojection leaves) render transparent instead of opaque.
+    // The reprojection clears uncovered pixels to 0, so a band marked opaque for
+    // every source pixel becomes the coverage after reprojection.
+    const coverageBand = this.hasAlpha_ ? -1 : bandCount;
+    const outBandCount = this.hasAlpha_ ? bandCount : bandCount + 1;
+    const dataR = new dataSources[0].dataType(
+      outBandCount * outWidth * outHeight,
+    );
 
     const gl = createCanvasContextWebGL(outWidth, outHeight, canvasGLPool, {
       premultipliedAlpha: false,
@@ -411,10 +432,13 @@ class ReprojDataTile extends DataTile {
       willInterpolate = this.interpolate;
     }
 
+    const opaque = dataSources[0].dataType === Float32Array ? 1 : 255;
+
     const BANDS_PR_REPROJ = 4;
-    const reprojs = Math.ceil(bandCount / BANDS_PR_REPROJ);
+    const reprojs = Math.ceil(outBandCount / BANDS_PR_REPROJ);
     for (let reproj = reprojs - 1; reproj >= 0; --reproj) {
       const sources = [];
+      const groupBase = reproj * BANDS_PR_REPROJ;
       for (let i = 0, len = dataSources.length; i < len; ++i) {
         const dataSource = dataSources[i];
 
@@ -424,13 +448,20 @@ class ReprojDataTile extends DataTile {
 
         const data = new dataSource.dataType(BANDS_PR_REPROJ * width * height);
         const dataS = dataSource.data;
-        let offset = reproj * BANDS_PR_REPROJ;
-        for (let j = 0, len = data.length; j < len; j += BANDS_PR_REPROJ) {
-          data[j] = dataS[offset];
-          data[j + 1] = dataS[offset + 1];
-          data[j + 2] = dataS[offset + 2];
-          data[j + 3] = dataS[offset + 3];
-          offset += bandCount;
+        for (
+          let j = 0, p = 0, len = data.length;
+          j < len;
+          j += BANDS_PR_REPROJ
+        ) {
+          for (let c = 0; c < BANDS_PR_REPROJ; ++c) {
+            const band = groupBase + c;
+            if (band === coverageBand) {
+              data[j + c] = opaque;
+            } else if (band < bandCount) {
+              data[j + c] = dataS[p * bandCount + band];
+            }
+          }
+          ++p;
         }
 
         const texture = gl.createTexture();
@@ -489,15 +520,16 @@ class ReprojDataTile extends DataTile {
       gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
       gl.readPixels(0, 0, width, height, gl.RGBA, textureType, data);
 
-      let offset = reproj * BANDS_PR_REPROJ;
-      for (let i = 0, len = data.length; i < len; i += BANDS_PR_REPROJ) {
+      for (let i = 0, p = 0, len = data.length; i < len; i += BANDS_PR_REPROJ) {
         // The data read by `readPixels` is flipped in the y-axis so flip it again.
         const flipY = (rows - 1 - ((i / cols) | 0)) * cols + (i % cols);
-        dataR[offset] = data[flipY];
-        dataR[offset + 1] = data[flipY + 1];
-        dataR[offset + 2] = data[flipY + 2];
-        dataR[offset + 3] = data[flipY + 3];
-        offset += bandCount;
+        for (let c = 0; c < BANDS_PR_REPROJ; ++c) {
+          const band = groupBase + c;
+          if (band < outBandCount) {
+            dataR[p * outBandCount + band] = data[flipY + c];
+          }
+        }
+        ++p;
       }
     }
 

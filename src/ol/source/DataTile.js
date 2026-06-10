@@ -61,6 +61,10 @@ import TileEventType from './TileEventType.js';
  * @property {boolean} [wrapX=false] Render tiles beyond the antimeridian.
  * @property {number} [transition] Transition time when fading in new tiles (in milliseconds).
  * @property {number} [bandCount=4] Number of bands represented in the data.
+ * @property {boolean} [hasAlpha] Whether the data includes an alpha band.  Used when
+ * reprojecting to decide whether a coverage alpha band needs to be appended so areas
+ * outside the source footprint render transparent.  Defaults to `true` for 2 (luminance
+ * alpha) or 4 (RGBA) bands and `false` otherwise.
  * @property {boolean} [interpolate=false] Use interpolated values when resampling.  By default,
  * the nearest neighbor is used when resampling.
  * @property {CrossOriginAttribute} [crossOrigin='anonymous'] The crossOrigin property to pass to loaders for image data.
@@ -151,6 +155,17 @@ class DataTileSource extends TileSource {
      * @type {number}
      */
     this.bandCount = options.bandCount === undefined ? 4 : options.bandCount; // assume RGBA if undefined
+
+    /**
+     * Whether the data includes an alpha band.  When `false`, reprojection
+     * appends a coverage alpha band so areas outside the source footprint
+     * render transparent instead of opaque.
+     * @type {boolean}
+     */
+    this.hasAlpha =
+      options.hasAlpha !== undefined
+        ? options.hasAlpha
+        : this.bandCount === 2 || this.bandCount === 4;
 
     /**
      * The 1-based band index for the nodata alpha band.
@@ -276,6 +291,7 @@ class DataTileSource extends TileSource {
         wrappedTileCoord,
         pixelRatio: reprojTilePixelRatio,
         gutter: this.gutter_,
+        hasAlpha: this.hasAlpha,
         getTileFunction: (z, x, y, pixelRatio) =>
           this.getTile(z, x, y, pixelRatio, undefined, tileCache),
         transformMatrix: this.transformMatrix,
