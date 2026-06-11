@@ -233,6 +233,40 @@ describe('ol/source/VectorTile', function () {
       expect(tile.getState()).to.be(TileState.LOADING);
     });
 
+    it('uses the expected source z when reprojecting', function () {
+      const sourceTileCoords = [];
+      const source = new VectorTileSource({
+        projection: 'EPSG:3857',
+        tileUrlFunction: function (tileCoord) {
+          sourceTileCoords.push(tileCoord.slice());
+          return tileCoord.join('/');
+        },
+        tileLoadFunction: function (tile) {
+          tile.setLoader(function () {});
+        },
+      });
+      const projection = getProjection('EPSG:4326');
+      const sourceProjection = source.getProjection();
+      const z = 4;
+      const tileGrid = source.getTileGridForProjection(projection);
+      const resolution = tileGrid.getResolution(z);
+      const expectedSourceResolution =
+        (resolution / sourceProjection.getMetersPerUnit()) *
+        projection.getMetersPerUnit();
+      const expectedSourceZ = source
+        .getTileGrid()
+        .getZForResolution(expectedSourceResolution, 1);
+      const tileCoord = tileGrid.getTileCoordForCoordAndZ([0, 0], z);
+
+      const tile = source.getTile(z, tileCoord[1], tileCoord[2], 1, projection);
+
+      expect(tile.getState()).to.be(TileState.IDLE);
+      expect(sourceTileCoords.length).to.be.greaterThan(0);
+      sourceTileCoords.forEach(function (sourceTileCoord) {
+        expect(sourceTileCoord[0]).to.be(expectedSourceZ);
+      });
+    });
+
     it('creates new tile when source key changes', function () {
       source.setKey('key1');
       const tile1 = source.getTile(0, 0, 0, 1, getProjection('EPSG:3857'));
