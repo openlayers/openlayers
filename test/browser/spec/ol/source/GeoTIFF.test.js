@@ -205,6 +205,7 @@ describe('ol/source/GeoTIFF', function () {
       source.on('change', () => {
         expect(source.addAlpha_).to.be(true);
         expect(source.bandCount).to.be(4);
+        expect(source.nodataBandIndex).to.be(4);
         expect(source.nodataValues_).to.eql([[0]]);
         expect(source.getTileGrid().getResolutions().length).to.be(1);
         expect(source.projection.getCode()).to.be('EPSG:4326');

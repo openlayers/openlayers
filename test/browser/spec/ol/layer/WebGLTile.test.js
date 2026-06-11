@@ -605,6 +605,50 @@ describe('ol/layer/WebGLTile', function () {
       nodataLayer.dispose();
     });
 
+    it('uses the nodata band for default alpha when it is outside the first texture', function () {
+      const source = new DataTileSource({
+        bandCount: 5,
+        loader(z, x, y) {
+          return new Float32Array(256 * 256 * 5);
+        },
+      });
+      source.nodataBandIndex = 5;
+
+      const nodataLayer = new WebGLTileLayer({
+        source: source,
+      });
+
+      map.addLayer(nodataLayer);
+
+      const compileShaderSpy = sinonSpy(WebGLHelper.prototype, 'compileShader');
+      const renderer = nodataLayer.getRenderer();
+      const viewState = map.getView().getState();
+      const size = map.getSize();
+      const frameState = {
+        viewState: viewState,
+        extent: getForViewAndSize(
+          viewState.center,
+          viewState.resolution,
+          viewState.rotation,
+          size,
+        ),
+        layerStatesArray: map.getLayerGroup().getLayerStatesArray(),
+        layerIndex: 0,
+      };
+      renderer.prepareFrame(frameState);
+      compileShaderSpy.restore();
+
+      const fragmentShader = compileShaderSpy.getCall(0).args[0];
+      expect(fragmentShader).to.contain(
+        'color.a = getBandValue(5.0, 0.0, 0.0);',
+      );
+      expect(fragmentShader).to.contain(
+        'if (getBandValue(5.0, 0.0, 0.0) == 0.0) { discard; }',
+      );
+
+      nodataLayer.dispose();
+    });
+
     it('does not add discard when source has no nodataBandIndex', function () {
       const source = new DataTileSource({
         bandCount: 3,

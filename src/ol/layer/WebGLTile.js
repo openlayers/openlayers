@@ -268,6 +268,8 @@ function parseStyle(style, bandCount, nodataBandIndex) {
         Uniforms.TILE_TEXTURE_ARRAY
       }[0],  v_textureCoord);
 
+      ${nodataBandIndex && style.color === undefined ? `color.a = getBandValue(${nodataBandIndex}.0, 0.0, 0.0);` : ''}
+
       ${nodataBandIndex ? `if (getBandValue(${nodataBandIndex}.0, 0.0, 0.0) == 0.0) { discard; }` : ''}
 
       ${pipeline.join('\n')}
