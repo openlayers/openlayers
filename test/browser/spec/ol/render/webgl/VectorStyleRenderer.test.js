@@ -356,6 +356,21 @@ describe('VectorStyleRenderer', () => {
       );
     });
     describe('generateBuffers', () => {
+      it('returns null buffers with invertVerticesTransform when the geometry batch is empty', async () => {
+        const emptyBatch = new MixedGeometryBatch();
+        const generatedBuffers = await vectorStyleRenderer.generateBuffers(
+          emptyBatch,
+          SAMPLE_TRANSFORM,
+        );
+        expect(generatedBuffers).not.to.be(null);
+        expect(generatedBuffers.polygonBuffers).to.be(null);
+        expect(generatedBuffers.lineStringBuffers).to.be(null);
+        expect(generatedBuffers.pointBuffers).to.be(null);
+        expect(generatedBuffers.invertVerticesTransform).to.eql(
+          makeInverseTransform(createTransform(), SAMPLE_TRANSFORM),
+        );
+      });
+
       let buffers;
       beforeEach(async () => {
         buffers = await vectorStyleRenderer.generateBuffers(
