@@ -15,7 +15,8 @@ export default function olWorker() {
     name: 'ol-worker-serialize',
     enforce: 'pre',
     async transform(code, id) {
-      const file = id.split('?')[0];
+      // Vite ids use forward slashes; normalize so path checks match on Windows.
+      const file = path.normalize(id.split('?')[0]);
       if (!file.startsWith(workerDir + path.sep) || !file.endsWith('.js')) {
         return null;
       }
