@@ -1,7 +1,12 @@
 import expectjs from 'expect.js';
+import {expect as vitestExpect} from 'vitest';
+import {matchers} from './matchers.js';
 
 // OL specs use a bare global `expect` from expect.js, not Vitest's built-in.
 globalThis.expect = expectjs;
+
+// Custom matchers on Vitest's expect, for specs converted off expect.js.
+vitestExpect.extend(matchers);
 
 // Mocha compatibility: the specs use Mocha's done-callbacks and before/after,
 // which Vitest doesn't provide. Adapt a callback that declares an argument into
