@@ -878,6 +878,26 @@ describe('VectorStyleRenderer', () => {
         expect(vectorStyleRenderer.textOverlayRenderList_).to.eql(new Set());
       });
     });
+
+    describe('finalizeTextRender, with a text instructions key not built beforehand', () => {
+      beforeEach(async () => {
+        vectorStyleRenderer.textOverlayRenderList_.clear();
+        vectorStyleRenderer.textOverlayRenderList_.add('awrongkey'); // we're asking for a key that doesn't have render instructions built
+
+        sinonSpy(vectorStyleRenderer.textOverlayContext_, 'clearRect');
+        sinonSpy(vectorStyleRenderer.textOverlayContext_, 'drawImage');
+        await vectorStyleRenderer.finalizeTextRender(SAMPLE_FRAMESTATE);
+      });
+      it('does not touch the overlay canvas', async () => {
+        expect(vectorStyleRenderer.textOverlayContext_.clearRect.called).to.be(
+          false,
+        );
+        expect(vectorStyleRenderer.textOverlayContext_.drawImage.called).to.be(
+          false,
+        );
+      });
+    });
+
     describe('dispose', () => {
       it('terminates its worker', () => {
         sinonSpy(vectorStyleRenderer.textOverlayWorker_, 'terminate');

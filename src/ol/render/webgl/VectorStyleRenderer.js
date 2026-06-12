@@ -780,26 +780,30 @@ class VectorStyleRenderer extends Disposable {
       const received =
         /** @type {import('./constants.js').TextOverlayWorkerMessage} */ (data);
 
-      this.textOverlayRenderFrameState_ = received.frameState;
+      // if no render data returned, do not process it
+      if (received.imageData) {
+        this.textOverlayRenderFrameState_ = received.frameState;
 
-      // the rendered image data is copied to the canvas and then given back to the worker
-      const imageData = received.imageData;
-      if (
-        imageData.width !== this.textOverlayCanvas_.width ||
-        imageData.height !== this.textOverlayCanvas_.height
-      ) {
-        this.textOverlayCanvas_.width = imageData.width;
-        this.textOverlayCanvas_.height = imageData.height;
-      } else {
-        this.textOverlayContext_.clearRect(
-          0,
-          0,
-          this.textOverlayCanvas_.width,
-          this.textOverlayCanvas_.height,
-        );
+        // the rendered image data is copied to the canvas and then given back to the worker
+        const imageData = received.imageData;
+        if (
+          imageData.width !== this.textOverlayCanvas_.width ||
+          imageData.height !== this.textOverlayCanvas_.height
+        ) {
+          this.textOverlayCanvas_.width = imageData.width;
+          this.textOverlayCanvas_.height = imageData.height;
+        } else {
+          this.textOverlayContext_.clearRect(
+            0,
+            0,
+            this.textOverlayCanvas_.width,
+            this.textOverlayCanvas_.height,
+          );
+        }
+        this.textOverlayContext_.drawImage(imageData, 0, 0);
+        imageData.close();
       }
-      this.textOverlayContext_.drawImage(imageData, 0, 0);
-      imageData.close();
+
       this.textOverlayRenderList_.clear();
     });
   }

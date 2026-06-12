@@ -90,15 +90,19 @@ worker.onmessage = (event) => {
         }
 
         for (const renderBatchKey of batchesToRender.values()) {
-          // this can happen if a reference to an older batch was kept; we simply ignore it silently
+          // this can happen if a reference to an older batch was kept after it was disposed; in that case we skip the render to avoid an incomplete render
           if (!renderBatches.has(renderBatchKey)) {
-            continue;
+            /** @type {import('../render/webgl/constants.js').TextOverlayWorkerMessage} */
+            const message = {
+              type: TextOverlayWorkerMessageType.RENDER,
+              imageData: null,
+              frameState: received.frameState,
+              id: received.id,
+            };
+            worker.postMessage(message);
+            return;
           }
           const renderBatch = renderBatches.get(renderBatchKey);
-          if (!renderBatch) {
-            // no instructions there
-            continue;
-          }
           const transform = getRenderTransform(
             viewState.center,
             viewState.resolution,
