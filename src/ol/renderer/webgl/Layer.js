@@ -212,6 +212,23 @@ class WebGLLayerRenderer extends LayerRenderer {
   clearCache() {}
 
   /**
+   * @protected
+   * @param {Array<PostProcessesOptions>} postProcesses New post processes array
+   */
+  setPostProcesses(postProcesses) {
+    this.postProcesses_ = postProcesses;
+    this.removeHelper(); // needs a new helper for this change
+  }
+
+  /**
+   * @protected
+   * @return {Array<PostProcessesOptions>} Array of post processes
+   */
+  getPostProcesses() {
+    return this.postProcesses_;
+  }
+
+  /**
    * Clean up.
    * @override
    */

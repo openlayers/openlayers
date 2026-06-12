@@ -48,6 +48,10 @@ class TileGeometry extends BaseTileRepresentation {
      */
     this.maskVertices = new WebGLArrayBuffer(ARRAY_BUFFER, STATIC_DRAW);
 
+    this.wantedResolution = options.grid.getResolution(
+      options.tile.getTileCoord()[0],
+    );
+
     this.setTile(options.tile);
   }
 
@@ -87,7 +91,7 @@ class TileGeometry extends BaseTileRepresentation {
     );
 
     this.styleRenderer_
-      .generateBuffers(this.batch_, transform)
+      .generateBuffers(this.batch_, transform, this.wantedResolution)
       .then((buffers) => {
         this.buffers = buffers;
         this.setReady();
@@ -115,6 +119,9 @@ class TileGeometry extends BaseTileRepresentation {
         disposeBuffersOfType(this.buffers.lineStringBuffers);
       this.buffers.polygonBuffers &&
         disposeBuffersOfType(this.buffers.polygonBuffers);
+      this.styleRenderer_.disposeTextInstructions(
+        this.buffers.textInstructionsKey,
+      );
     }
     super.disposeInternal();
   }

@@ -9,10 +9,10 @@ import {getUid} from '../util.js';
 import {create, fromTransform} from '../vec/mat4.js';
 import {
   FLOAT,
+  getContext,
   UNSIGNED_BYTE,
   UNSIGNED_INT,
   UNSIGNED_SHORT,
-  getContext,
 } from '../webgl.js';
 import ContextEventType from '../webgl/ContextEventType.js';
 import WebGLPostProcessingPass from './PostProcessingPass.js';
@@ -408,7 +408,7 @@ class WebGLHelper extends Disposable {
      * @type {Array<WebGLPostProcessingPass>}
      * @private
      */
-    this.postProcessPasses_ = options.postProcesses
+    this.postProcessPasses_ = options.postProcesses?.length
       ? options.postProcesses.map(
           (options) =>
             new WebGLPostProcessingPass({

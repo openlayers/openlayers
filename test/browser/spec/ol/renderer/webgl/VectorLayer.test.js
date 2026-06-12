@@ -10,6 +10,7 @@ import {get as getProjection} from '../../../../../../src/ol/proj.js';
 import Projection from '../../../../../../src/ol/proj/Projection.js';
 import {ShaderBuilder} from '../../../../../../src/ol/render/webgl/ShaderBuilder.js';
 import VectorStyleRenderer, * as ol_render_webgl_vectorstylerenderer from '../../../../../../src/ol/render/webgl/VectorStyleRenderer.js';
+import {createPostProcessDefinition} from '../../../../../../src/ol/render/webgl/textUtil.js';
 import WebGLVectorLayerRenderer from '../../../../../../src/ol/renderer/webgl/VectorLayer.js';
 import VectorSource from '../../../../../../src/ol/source/Vector.js';
 import VectorEventType from '../../../../../../src/ol/source/VectorEventType.js';
@@ -39,6 +40,7 @@ const SAMPLE_RULES = [
       'circle-radius': 3,
       'fill-color': ['get', 'color'],
       'stroke-width': 2,
+      'text-value': 'hello world',
     },
   },
 ];
@@ -154,6 +156,20 @@ describe('ol/renderer/webgl/VectorLayer', () => {
     expect(renderer.styleRenderer_).to.eql(null);
   });
 
+  it('does include the post processing step for text rendering', () => {
+    const mockPostProcess = createPostProcessDefinition(
+      () => null,
+      () => null,
+    );
+    expect(renderer.postProcesses_.length).to.be(1);
+    expect(renderer.postProcesses_[0].fragmentShader).to.eql(
+      mockPostProcess.fragmentShader,
+    );
+    expect(renderer.postProcesses_[0].vertexShader).to.eql(
+      mockPostProcess.vertexShader,
+    );
+  });
+
   describe('#afterHelperCreated', () => {
     let spy;
     beforeEach(() => {
@@ -211,11 +227,6 @@ describe('ol/renderer/webgl/VectorLayer', () => {
   });
 
   describe('#reset', () => {
-    beforeEach(() => {
-      // first call prepareFrame to initialize the helper
-      renderer.prepareFrame(frameState);
-    });
-
     describe('use shaders', () => {
       let spy;
       beforeEach(() => {
@@ -223,6 +234,7 @@ describe('ol/renderer/webgl/VectorLayer', () => {
         renderer.reset({
           style: SAMPLE_SHADERS,
         });
+        renderer.prepareFrame(frameState);
       });
       afterEach(() => {
         spy.restore();
@@ -234,6 +246,9 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       it('passes the correct styles to renderer', () => {
         expect(spy.calledWith(SAMPLE_SHADERS)).to.be(true);
       });
+      it('does not include the post processing step for text rendering', () => {
+        expect(renderer.postProcesses_).to.eql([]);
+      });
     });
 
     describe('use a single style', () => {
@@ -243,6 +258,7 @@ describe('ol/renderer/webgl/VectorLayer', () => {
         renderer.reset({
           style: SAMPLE_STYLE,
         });
+        renderer.prepareFrame(frameState);
       });
       afterEach(() => {
         spy.restore();
@@ -253,6 +269,54 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       });
       it('passes the correct styles to renderer', () => {
         expect(spy.calledWith(SAMPLE_STYLE)).to.be(true);
+      });
+      it('does not include the post processing step for text rendering', () => {
+        expect(renderer.postProcesses_).to.eql([]);
+      });
+    });
+  });
+
+  describe('style without text & with post processes', () => {
+    const POST_PROCESS = {
+      hello: 'world',
+    };
+    beforeEach(() => {
+      renderer = new WebGLVectorLayerRenderer(vectorLayer, {
+        style: [
+          {
+            style: {
+              'circle-radius': 4,
+            },
+          },
+        ],
+        postProcesses: [POST_PROCESS],
+      });
+    });
+
+    it('does not include the text post processing step', () => {
+      expect(renderer.postProcesses_).to.eql([POST_PROCESS]);
+    });
+
+    describe('when a style with text is set later on', () => {
+      beforeEach(() => {
+        renderer.reset({
+          style: SAMPLE_RULES,
+        });
+      });
+
+      it('does include the post processing step for text rendering', () => {
+        const mockPostProcess = createPostProcessDefinition(
+          () => null,
+          () => null,
+        );
+        expect(renderer.postProcesses_.length).to.be(2);
+        expect(renderer.postProcesses_[0].fragmentShader).to.eql(
+          mockPostProcess.fragmentShader,
+        );
+        expect(renderer.postProcesses_[0].vertexShader).to.eql(
+          mockPostProcess.vertexShader,
+        );
+        expect(renderer.postProcesses_[1]).to.eql(POST_PROCESS);
       });
     });
   });
@@ -373,6 +437,7 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       sinonSpy(renderer.helper, 'finalizeDraw');
       sinonSpy(renderer.helper, 'deleteBuffer');
       sinonSpy(renderer.styleRenderer_, 'render');
+      sinonSpy(renderer.styleRenderer_, 'finalizeTextRender');
 
       // this is required to keep a "snapshot" of the input vec2
       // (since the same object is reused for various calls)
@@ -475,6 +540,9 @@ describe('ol/renderer/webgl/VectorLayer', () => {
     });
     it('calls helper.finalizeDraw once', () => {
       expect(renderer.helper.finalizeDraw.calledOnce).to.be(true);
+    });
+    it('calls styleRenderer.finalizeTextRender once', () => {
+      expect(renderer.styleRenderer_.finalizeTextRender.calledOnce).to.be(true);
     });
     it("does not delete any buffer if it's the first render", () => {
       expect(renderer.helper.deleteBuffer.calledOnce).to.be(false);
@@ -652,6 +720,8 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       await new Promise((resolve) => setTimeout(resolve, 150));
       sinonSpy(vectorSource, 'removeEventListener');
       deleteBufferSpy = sinonSpy(renderer.helper, 'deleteBuffer');
+      sinonSpy(renderer.styleRenderer_, 'dispose');
+      sinonSpy(renderer.styleRenderer_, 'disposeTextInstructions');
       renderer.dispose();
     });
     it('unlistens to source events', () => {
@@ -674,6 +744,14 @@ describe('ol/renderer/webgl/VectorLayer', () => {
     });
     it('deletes webgl buffers', () => {
       expect(deleteBufferSpy.callCount).to.be(9); // 3 buffers (index, vertex, instance) * 3 types of geometry
+    });
+    it('disposes of the style renderer', () => {
+      expect(renderer.styleRenderer_.dispose.calledOnce).to.be(true);
+    });
+    it('disposes of the text rendering instructions', () => {
+      expect(renderer.styleRenderer_.disposeTextInstructions.calledOnce).to.be(
+        true,
+      );
     });
   });
 });

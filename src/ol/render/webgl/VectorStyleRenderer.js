@@ -1,6 +1,8 @@
 /**
  * @module ol/render/webgl/VectorStyleRenderer
  */
+import Disposable from '../../Disposable.js';
+import {createCanvasContext2D} from '../../dom.js';
 import {
   create as createTransform,
   makeInverse as makeInverseTransform,
@@ -8,8 +10,13 @@ import {
 import {ARRAY_BUFFER, DYNAMIC_DRAW, ELEMENT_ARRAY_BUFFER} from '../../webgl.js';
 import WebGLArrayBuffer from '../../webgl/Buffer.js';
 import {AttributeType} from '../../webgl/Helper.js';
+import LabelsArray from '../../webgl/LabelsArray.js';
+import {create as createTextOverlayWorker} from '../../worker/textOverlay.js';
 import {create as createWebGLWorker} from '../../worker/webgl.js';
-import {WebGLWorkerMessageType} from './constants.js';
+import {
+  TextOverlayWorkerMessageType,
+  WebGLWorkerMessageType,
+} from './constants.js';
 import {colorEncodeIdAndPack} from './encodeUtil.js';
 import {
   generateLineStringRenderInstructions,
@@ -17,9 +24,12 @@ import {
   generatePolygonRenderInstructions,
   getCustomAttributesSize,
 } from './renderinstructions.js';
+import {serializeFrameState} from './serialize.js';
 import {parseLiteralStyle} from './style.js';
+import {hasTextStyle} from './textUtil.js';
 
 const tmpColor = [];
+
 /** @type {Worker|undefined} */
 let WEBGL_WORKER;
 function getWebGLWorker() {
@@ -28,7 +38,43 @@ function getWebGLWorker() {
   }
   return WEBGL_WORKER;
 }
+
 let workerMessageCounter = 0;
+
+/**
+ *
+ * @param {Worker} worker Worker to send the message to
+ * @param {Object} message Message
+ * @param {Array<Transferable>} [transferables] Transferables
+ * @return {Promise<Object>} Response received by the worker
+ */
+function messageWorker(worker, message, transferables) {
+  const messageId = workerMessageCounter++;
+
+  if (transferables) {
+    worker.postMessage({...message, id: messageId}, transferables);
+  } else {
+    worker.postMessage({...message, id: messageId});
+  }
+
+  return new Promise((resolve) => {
+    const handleMessage = (event) => {
+      const received = event.data;
+
+      // this is not the response to our request: skip
+      if (received.id !== messageId) {
+        return;
+      }
+
+      // we've received our response: stop listening
+      worker.removeEventListener('message', handleMessage);
+
+      resolve(received);
+    };
+
+    worker.addEventListener('message', handleMessage);
+  });
+}
 
 /**
  * Names of attributes made available to the vertex shader.
@@ -68,9 +114,11 @@ export const Attributes = {
 
 /**
  * @typedef {Object} WebGLBuffers
+ * Anything set to null means there's nothing to render for that category.
  * @property {WebGLArrayBufferSet|null} polygonBuffers Array containing indices and vertices buffers for polygons
  * @property {WebGLArrayBufferSet|null} lineStringBuffers Array containing indices and vertices buffers for line strings
  * @property {WebGLArrayBufferSet|null} pointBuffers Array containing indices and vertices buffers for points
+ * @property {string|null} textInstructionsKey Key corresponding to a text instructions set
  * @property {import("../../transform.js").Transform} invertVerticesTransform Inverse of the transform applied when generating buffers
  */
 
@@ -129,7 +177,7 @@ export const Attributes = {
  * The `generateBuffers` method returns a promise resolving to WebGL buffers that are intended to be rendered by the
  * same renderer.
  */
-class VectorStyleRenderer {
+class VectorStyleRenderer extends Disposable {
   /**
    * @param {FlatStyleLike|StyleShaders|Array<StyleShaders>} styles Vector styles expressed as flat styles, flat style rules or style shaders
    * @param {import('../../style/flat.js').StyleVariables} variables Style variables
@@ -137,6 +185,8 @@ class VectorStyleRenderer {
    * @param {boolean} [enableHitDetection] Whether to enable the hit detection (needs compatible shader)
    */
   constructor(styles, variables, helper, enableHitDetection) {
+    super();
+
     /**
      * @private
      * @type {import('../../webgl/Helper.js').default}
@@ -147,6 +197,13 @@ class VectorStyleRenderer {
      * @private
      */
     this.hitDetectionEnabled_ = !!enableHitDetection;
+
+    /**
+     * Flat style like; if shaders are given as input, will use the `sourceRule` property of the shaders
+     * `null` if no Flat style equivalent is available (e.g. custom-made shaders); in that case no text rendering will happen
+     * @type {FlatStyleLike|null}
+     */
+    this.flatStyle = toFlatStyleLike(styles);
 
     /**
      * @type {Array<StyleShaders>}
@@ -317,6 +374,36 @@ class VectorStyleRenderer {
     this.hasFill_ = this.renderPasses_.some((pass) => pass.fillRenderPass);
     this.hasStroke_ = this.renderPasses_.some((pass) => pass.strokeRenderPass);
     this.hasSymbol_ = this.renderPasses_.some((pass) => pass.symbolRenderPass);
+    this.hasText_ = this.flatStyle && hasTextStyle(this.flatStyle);
+
+    if (this.hasText_) {
+      /**
+       * @private
+       */
+      this.textOverlayCanvas_ = /** @type {HTMLCanvasElement} */ (
+        createCanvasContext2D().canvas
+      );
+
+      /**
+       * @private
+       */
+      this.textOverlayContext_ = this.textOverlayCanvas_.getContext('2d');
+
+      /**
+       * @type {import("../../Map.js").FrameState}
+       * @private
+       */
+      this.textOverlayRenderFrameState_ = null;
+
+      /**
+       * @type {Worker}
+       * @private
+       */
+      this.textOverlayWorker_ = createTextOverlayWorker();
+
+      /** @type {Set<string>} */
+      this.textOverlayRenderList_ = new Set();
+    }
 
     // this will initialize render passes with the given helper
     this.setHelper(helper);
@@ -325,15 +412,15 @@ class VectorStyleRenderer {
   /**
    * @param {import('./MixedGeometryBatch.js').default} geometryBatch Geometry batch
    * @param {import("../../transform.js").Transform} transform Transform to apply to coordinates
+   * @param resolution
    * @return {Promise<WebGLBuffers>} A promise resolving to WebGL buffers; buffer sets are set to `null` if nothing to render
    */
-  async generateBuffers(geometryBatch, transform) {
+  async generateBuffers(geometryBatch, transform, resolution) {
     // also return the inverse of the transform that was applied when generating buffers
     const invertVerticesTransform = makeInverseTransform(
       createTransform(),
       transform,
     );
-
     if (geometryBatch.isEmpty()) {
       return {
         polygonBuffers: null,
@@ -342,68 +429,95 @@ class VectorStyleRenderer {
         invertVerticesTransform: invertVerticesTransform,
       };
     }
+    const labelsArray = new LabelsArray();
     const renderInstructions = this.generateRenderInstructions_(
       geometryBatch,
+      labelsArray,
       transform,
     );
-    const [polygonBuffers, lineStringBuffers, pointBuffers] = await Promise.all(
-      [
-        this.generateBuffersForType_(
-          renderInstructions.polygonInstructions,
-          'Polygon',
-          transform,
-        ),
-        this.generateBuffersForType_(
-          renderInstructions.lineStringInstructions,
-          'LineString',
-          transform,
-        ),
-        this.generateBuffersForType_(
-          renderInstructions.pointInstructions,
-          'Point',
-          transform,
-        ),
-      ],
-    );
+    const [
+      textInstructionsKey,
+      polygonBuffers,
+      lineStringBuffers,
+      pointBuffers,
+    ] = await Promise.all([
+      this.hasText_
+        ? this.generateTextInstructions_(
+            renderInstructions,
+            labelsArray,
+            transform,
+            resolution,
+          )
+        : null,
+      this.hasFill_
+        ? this.generateBuffersForType_(
+            renderInstructions.polygonInstructions,
+            'Polygon',
+            transform,
+          )
+        : null,
+      this.hasStroke_
+        ? this.generateBuffersForType_(
+            renderInstructions.lineStringInstructions,
+            'LineString',
+            transform,
+          )
+        : null,
+      this.hasSymbol_
+        ? this.generateBuffersForType_(
+            renderInstructions.pointInstructions,
+            'Point',
+            transform,
+          )
+        : null,
+    ]);
     return {
       polygonBuffers: polygonBuffers,
       lineStringBuffers: lineStringBuffers,
       pointBuffers: pointBuffers,
       invertVerticesTransform: invertVerticesTransform,
+      textInstructionsKey,
     };
   }
 
   /**
    * @param {import('./MixedGeometryBatch.js').default} geometryBatch Geometry batch
+   * @param {LabelsArray} labelsArray Labels array
    * @param {import("../../transform.js").Transform} transform Transform to apply to coordinates
    * @return {RenderInstructions} Render instructions
    * @private
    */
-  generateRenderInstructions_(geometryBatch, transform) {
-    const polygonInstructions = this.hasFill_
-      ? generatePolygonRenderInstructions(
-          geometryBatch.polygonBatch,
-          new Float32Array(0),
-          this.customAttributes_,
-          transform,
-        )
-      : null;
-    const lineStringInstructions = this.hasStroke_
-      ? generateLineStringRenderInstructions(
-          geometryBatch.lineStringBatch,
-          new Float32Array(0),
-          this.customAttributes_,
-          transform,
-        )
-      : null;
-    const pointInstructions = this.hasSymbol_
-      ? generatePointRenderInstructions(
-          geometryBatch.pointBatch,
-          new Float32Array(0),
-          this.customAttributes_,
-          transform,
-        )
-      : null;
+  generateRenderInstructions_(geometryBatch, labelsArray, transform) {
+    const polygonInstructions =
+      this.hasFill_ || this.hasText_ // if we do text rendering we need render instructions for all geometry types
+        ? generatePolygonRenderInstructions(
+            geometryBatch.polygonBatch,
+            new Float32Array(0),
+            labelsArray,
+            this.customAttributes_,
+            transform,
+          )
+        : null;
+    const lineStringInstructions =
+      this.hasStroke_ || this.hasText_
+        ? generateLineStringRenderInstructions(
+            geometryBatch.lineStringBatch,
+            new Float32Array(0),
+            labelsArray,
+            this.customAttributes_,
+            transform,
+          )
+        : null;
+    const pointInstructions =
+      this.hasSymbol_ || this.hasText_
+        ? generatePointRenderInstructions(
+            geometryBatch.pointBatch,
+            new Float32Array(0),
+            labelsArray,
+            this.customAttributes_,
+            transform,
+          )
+        : null;
 
     return {
       polygonInstructions,
@@ -424,7 +538,6 @@ class VectorStyleRenderer {
       return null;
     }
 
-    const messageId = workerMessageCounter++;
     let messageType;
     switch (geometryType) {
       case 'Polygon':
@@ -442,64 +555,115 @@ class VectorStyleRenderer {
 
     /** @type {import('./constants.js').WebGLWorkerGenerateBuffersMessage} */
     const message = {
-      id: messageId,
       type: messageType,
       renderInstructions: renderInstructions.buffer,
       renderInstructionsTransform: transform,
       customAttributesSize: getCustomAttributesSize(this.customAttributes_),
     };
-    const WEBGL_WORKER = getWebGLWorker();
-    WEBGL_WORKER.postMessage(message, [renderInstructions.buffer]);
 
-    // leave ownership of render instructions
-    renderInstructions = null;
+    return messageWorker(getWebGLWorker(), message, [
+      renderInstructions.buffer,
+    ]).then((data) => {
+      // the helper has disposed in the meantime; the promise will not be resolved
+      if (!this.helper_.getGL()) {
+        return;
+      }
 
-    return new Promise((resolve) => {
-      /**
-       * @param {{data: import('./constants.js').WebGLWorkerGenerateBuffersMessage}} event Event.
-       */
-      const handleMessage = (event) => {
-        const received = event.data;
+      const received =
+        /** @type {import('./constants.js').WebGLWorkerGenerateBuffersMessage} */ (
+          data
+        );
 
-        // this is not the response to our request: skip
-        if (received.id !== messageId) {
-          return;
-        }
+      // copy & flush received buffers to GPU
+      const indicesBuffer = new WebGLArrayBuffer(
+        ELEMENT_ARRAY_BUFFER,
+        DYNAMIC_DRAW,
+      ).fromArrayBuffer(received.indicesBuffer);
+      const vertexAttributesBuffer = new WebGLArrayBuffer(
+        ARRAY_BUFFER,
+        DYNAMIC_DRAW,
+      ).fromArrayBuffer(received.vertexAttributesBuffer);
+      const instanceAttributesBuffer = new WebGLArrayBuffer(
+        ARRAY_BUFFER,
+        DYNAMIC_DRAW,
+      ).fromArrayBuffer(received.instanceAttributesBuffer);
+      this.helper_.flushBufferData(indicesBuffer);
+      this.helper_.flushBufferData(vertexAttributesBuffer);
+      this.helper_.flushBufferData(instanceAttributesBuffer);
 
-        // we've received our response: stop listening
-        WEBGL_WORKER.removeEventListener('message', handleMessage);
-
-        // the helper has disposed in the meantime; the promise will not be resolved
-        if (!this.helper_.getGL()) {
-          return;
-        }
-
-        // copy & flush received buffers to GPU
-        const indicesBuffer = new WebGLArrayBuffer(
-          ELEMENT_ARRAY_BUFFER,
-          DYNAMIC_DRAW,
-        ).fromArrayBuffer(received.indicesBuffer);
-        const vertexAttributesBuffer = new WebGLArrayBuffer(
-          ARRAY_BUFFER,
-          DYNAMIC_DRAW,
-        ).fromArrayBuffer(received.vertexAttributesBuffer);
-        const instanceAttributesBuffer = new WebGLArrayBuffer(
-          ARRAY_BUFFER,
-          DYNAMIC_DRAW,
-        ).fromArrayBuffer(received.instanceAttributesBuffer);
-        this.helper_.flushBufferData(indicesBuffer);
-        this.helper_.flushBufferData(vertexAttributesBuffer);
-        this.helper_.flushBufferData(instanceAttributesBuffer);
-
-        resolve([
-          indicesBuffer,
-          vertexAttributesBuffer,
-          instanceAttributesBuffer,
-        ]);
-      };
-
-      WEBGL_WORKER.addEventListener('message', handleMessage);
+      return [indicesBuffer, vertexAttributesBuffer, instanceAttributesBuffer];
     });
+  }
+
+  /**
+   * @param {RenderInstructions} renderInstructions Render instructions
+   * @param {import('../../webgl/LabelsArray.js').default} labelsArray Labels array
+   * @param {import("../../transform.js").Transform} transform Transform to apply to coordinates
+   * @param resolution
+   * @return {Promise<string>|null} Resolves to a key corresponding to the text draw instructions; null if no text to render
+   * @private
+   */
+  generateTextInstructions_(
+    renderInstructions,
+    labelsArray,
+    transform,
+    resolution,
+  ) {
+    const transferables = [labelsArray.getArray().buffer];
+    let polygonRenderInstructions = null;
+    let lineStringRenderInstructions = null;
+    let pointRenderInstructions = null;
+    if (renderInstructions.polygonInstructions) {
+      polygonRenderInstructions = new Float32Array(
+        renderInstructions.polygonInstructions,
+      ).buffer;
+      transferables.push(polygonRenderInstructions);
+    }
+    if (renderInstructions.lineStringInstructions) {
+      lineStringRenderInstructions = new Float32Array(
+        renderInstructions.lineStringInstructions,
+      ).buffer;
+      transferables.push(lineStringRenderInstructions);
+    }
+    if (renderInstructions.pointInstructions) {
+      pointRenderInstructions = new Float32Array(
+        renderInstructions.pointInstructions,
+      ).buffer;
+      transferables.push(pointRenderInstructions);
+    }
+    const customAttributesSizes = Object.keys(this.customAttributes_).reduce(
+      (prev, curr) => ({
+        ...prev,
+        [curr]: this.customAttributes_[curr].size || 1,
+      }),
+      {},
+    );
+
+    // load render instructions in text overlay worker
+    /** @type {import('./constants.js').TextOverlayWorkerMessage} */
+    const message = {
+      type: TextOverlayWorkerMessageType.BUILD_INSTRUCTIONS,
+      polygonRenderInstructions,
+      lineStringRenderInstructions,
+      pointRenderInstructions,
+      labelsArray: labelsArray.getArray(),
+      style: this.flatStyle,
+      customAttributesSizes,
+      renderInstructionsTransform: transform,
+      resolution,
+    };
+
+    return messageWorker(this.textOverlayWorker_, message, transferables).then(
+      (data) => {
+        const received =
+          /** @type {import('./constants.js').TextOverlayWorkerMessage} */ (
+            data
+          );
+
+        // we're getting a key from the worker: these will be used later on to ask for render or disposal
+        return received.instructionsSetKey;
+      },
+    );
   }
 
   /**
@@ -540,6 +704,9 @@ class VectorStyleRenderer {
           frameState,
           preRenderCallback,
         );
+    }
+    if (buffers.textInstructionsKey) {
+      this.renderText_(buffers);
     }
   }
 
@@ -594,6 +761,62 @@ class VectorStyleRenderer {
   }
 
   /**
+   * @param {WebGLBuffers} buffers WebGL Buffers to draw
+   * @private
+   */
+  renderText_(buffers) {
+    this.textOverlayRenderList_.add(buffers.textInstructionsKey);
+  }
+
+  /**
+   * Render the geometries in the given buffers.
+   * @param {import("../../Map.js").FrameState} frameState Frame state
+   * @return {Promise<void>} A promise resolving after the post rendering step is over
+   */
+  finalizeTextRender(frameState) {
+    if (!this.hasText_) {
+      return Promise.resolve();
+    }
+
+    const message = {
+      type: TextOverlayWorkerMessageType.RENDER,
+      frameState: serializeFrameState(frameState),
+      batchesToRender: this.textOverlayRenderList_,
+    };
+
+    return messageWorker(this.textOverlayWorker_, message).then((data) => {
+      const received =
+        /** @type {import('./constants.js').TextOverlayWorkerMessage} */ (data);
+
+      // if no render data returned, do not process it
+      if (received.imageData) {
+        this.textOverlayRenderFrameState_ = received.frameState;
+
+        // the rendered image data is copied to the canvas and then given back to the worker
+        const imageData = received.imageData;
+        if (
+          imageData.width !== this.textOverlayCanvas_.width ||
+          imageData.height !== this.textOverlayCanvas_.height
+        ) {
+          this.textOverlayCanvas_.width = imageData.width;
+          this.textOverlayCanvas_.height = imageData.height;
+        } else {
+          this.textOverlayContext_.clearRect(
+            0,
+            0,
+            this.textOverlayCanvas_.width,
+            this.textOverlayCanvas_.height,
+          );
+        }
+        this.textOverlayContext_.drawImage(imageData, 0, 0);
+        imageData.close();
+      }
+
+      this.textOverlayRenderList_.clear();
+    });
+  }
+
+  /**
    * @param {import('../../webgl/Helper.js').default} helper Helper
    * @param {WebGLBuffers} buffers WebGL Buffers to reload if any
    */
@@ -640,9 +863,61 @@ class VectorStyleRenderer {
       }
     }
   }
+
+  getTextOverlayCanvas() {
+    return this.textOverlayCanvas_;
+  }
+
+  getTextOverlayFrameState() {
+    return this.textOverlayRenderFrameState_;
+  }
+
+  /**
+   * Dispose of text instructions in worker.
+   * @param {string} key Key corresponding to the instructions set to dispose
+   */
+  disposeTextInstructions(key) {
+    this.textOverlayWorker_?.postMessage({
+      type: TextOverlayWorkerMessageType.DISPOSE_INSTRUCTIONS,
+      instructionsSetKey: key,
+    });
+  }
+
+  /**
+   * Clean up.
+   * @override
+   */
+  disposeInternal() {
+    this.textOverlayWorker_?.terminate();
+    super.disposeInternal();
+  }
 }
 
 export default VectorStyleRenderer;
+
+/**
+ * @param {FlatStyleLike|StyleShaders|Array<StyleShaders>} styleOrShaders Either a flat style or shaders
+ * @return {FlatStyleLike|null} Will return null if the original flat style could not be found
+ */
+export function toFlatStyleLike(styleOrShaders) {
+  if (Array.isArray(styleOrShaders)) {
+    // if it's an array of shaders but at least one has no source rule, we can't return a flat style like
+    if (styleOrShaders.some((s) => 'builder' in s && !('sourceRule' in s))) {
+      return null;
+    }
+    if (styleOrShaders.some((s) => 'builder' in s)) {
+      return styleOrShaders.map((style) => style.sourceRule);
+    }
+    return /** @type {FlatStyleLike} */ (styleOrShaders);
+  }
+  if ('builder' in styleOrShaders) {
+    if (!('sourceRule' in styleOrShaders)) {
+      return null;
+    }
+    return [styleOrShaders.sourceRule];
+  }
+  return styleOrShaders;
+}
 
 /**
  * Breaks down a vector style into an array of prebuilt shader builders with attributes and uniforms
@@ -686,9 +961,10 @@ export function convertStyleToShaders(style, variables) {
         previousFilters.push(rule.filter);
       }
       // parse each style and convert to shader
-      const styleShaders = ruleStyles.map((style) =>
-        parseLiteralStyle(style, variables, currentFilter),
-      );
+      const styleShaders = ruleStyles.map((style) => ({
+        ...parseLiteralStyle(style, variables, currentFilter),
+        sourceRule: rule,
+      }));
       shaders.push(...styleShaders);
     }
     return shaders;
@@ -700,7 +976,8 @@ export function convertStyleToShaders(style, variables) {
   }
 
   // array of flat styles: simply convert to shaders
-  return /** @type {Array<FlatStyle>} */ (asArray).map((style) =>
-    parseLiteralStyle(style, variables, null),
-  );
+  return /** @type {Array<FlatStyle>} */ (asArray).map((style) => ({
+    ...parseLiteralStyle(style, variables, null),
+    sourceRule: {style},
+  }));
 }

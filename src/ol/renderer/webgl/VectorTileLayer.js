@@ -3,8 +3,14 @@
  */
 import EventType from '../../events/EventType.js';
 import {ShaderBuilder} from '../../render/webgl/ShaderBuilder.js';
+import {
+  createPostProcessDefinition,
+  hasTextStyle,
+  TextUniforms,
+} from '../../render/webgl/textUtil.js';
 import VectorStyleRenderer, {
   convertStyleToShaders,
+  toFlatStyleLike,
 } from '../../render/webgl/VectorStyleRenderer.js';
 import {
   create as createTransform,
@@ -21,11 +27,12 @@ import TileGeometry from '../../webgl/TileGeometry.js';
 import WebGLBaseTileLayerRenderer, {
   Uniforms as BaseUniforms,
 } from './TileLayerBase.js';
-import {VectorUniforms, applyVectorUniforms} from './vectorUtil.js';
+import {applyVectorUniforms, VectorUniforms} from './vectorUtil.js';
 
 export const Uniforms = {
   ...BaseUniforms,
   ...VectorUniforms,
+  ...TextUniforms,
   TILE_MASK_TEXTURE: 'u_depthMask',
   TILE_ZOOM_LEVEL: 'u_tileZoomLevel',
 };
@@ -49,6 +56,7 @@ export const Attributes = {
  * using the `['var', 'varName']` operator.
  * @property {boolean} [disableHitDetection=false] Setting this to true will provide a slight performance boost, but will
  * prevent all hit detection on the layer.
+ * @property {Array<import("./Layer.js").PostProcessesOptions>} [postProcesses] Post-processes definitions
  * @property {number} [cacheSize=512] The vector tile cache size.
  */
 
@@ -73,6 +81,7 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
         [Uniforms.TILE_MASK_TEXTURE]: () => this.tileMaskTarget_.getTexture(),
         [Uniforms.ONE]: 1,
       },
+      postProcesses: options.postProcesses ?? [],
     });
 
     /**
@@ -88,10 +97,15 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     this.style_ = null;
 
     /**
+     * @private
+     */
+    this.hasText_ = false;
+
+    /**
      * @type {import('../../style/flat.js').StyleVariables}
      * @private
      */
-    this.styleVariables_ = options.variables || {};
+    this.styleVariables_ = {};
 
     /**
      * @type {VectorStyleRenderer}
@@ -160,7 +174,28 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
    * @private
    */
   applyOptions_(options) {
+    this.styleVariables_ = options.variables;
     this.style_ = options.style;
+
+    // add text rendering post process if needed
+    const flatStyle = toFlatStyleLike(this.style_);
+    const newHasText = !!flatStyle && hasTextStyle(flatStyle);
+
+    if (newHasText && !this.hasText_) {
+      // add the text overlay post-process
+      this.setPostProcesses([
+        createPostProcessDefinition(
+          () => this.styleRenderer_.getTextOverlayCanvas(),
+          () => this.styleRenderer_.getTextOverlayFrameState(),
+        ),
+        ...this.getPostProcesses(),
+      ]);
+    } else if (!newHasText && this.hasText_) {
+      // remove the text overlay post-process (always in first place)
+      this.setPostProcesses(this.getPostProcesses().slice(1));
+    }
+
+    this.hasText_ = newHasText;
   }
 
   /**
@@ -266,6 +301,13 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     );
     this.helper.useProgram(this.tileMaskProgram_, frameState);
     return true;
+  }
+
+  /**
+   * @override
+   */
+  beforeFinalize(frameState) {
+    this.styleRenderer_.finalizeTextRender(frameState); // todo: redraw layer once text overlay is ready
   }
 
   /**
@@ -381,6 +423,7 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
    * @override
    */
   disposeInternal() {
+    this.styleRenderer_?.dispose();
     super.disposeInternal();
   }
 }
