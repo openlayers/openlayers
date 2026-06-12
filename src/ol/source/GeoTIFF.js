@@ -731,6 +731,16 @@ class GeoTIFFSource extends DataTile {
 
         sourceTileSizes[level] = sourceTileSize;
 
+        // Edge tiles can include out-of-bounds pixels when image dimensions
+        // are not exact multiples of the tile size. Add alpha so these pixels
+        // can render transparent instead of opaque black.
+        if (
+          image.getWidth() % sourceTileSize[0] !== 0 ||
+          image.getHeight() % sourceTileSize[1] !== 0
+        ) {
+          this.addAlpha_ = true;
+        }
+
         const aspectRatio = imageResolutions[0] / Math.abs(imageResolutions[1]);
         renderTileSizes[level] = [
           sourceTileSize[0],
@@ -988,6 +998,36 @@ class GeoTIFFSource extends DataTile {
       const maskIndex = sourceCount + sourceIndex;
       const mask = this.sourceMasks_[sourceIndex][z];
       if (!mask) {
+        if (this.addAlpha_) {
+          const width = image.getWidth();
+          const height = image.getHeight();
+          if (
+            pixelBounds[0] < 0 ||
+            pixelBounds[1] < 0 ||
+            pixelBounds[2] > width ||
+            pixelBounds[3] > height
+          ) {
+            const syntheticMask = new Uint8Array(
+              sourceTileSize[0] * sourceTileSize[1],
+            );
+            let maskDataIndex = 0;
+            for (let row = 0; row < sourceTileSize[1]; ++row) {
+              const sourceY = pixelBounds[1] + row;
+              for (let column = 0; column < sourceTileSize[0]; ++column) {
+                const sourceX = pixelBounds[0] + column;
+                syntheticMask[maskDataIndex++] =
+                  sourceX >= 0 &&
+                  sourceX < width &&
+                  sourceY >= 0 &&
+                  sourceY < height
+                    ? 1
+                    : 0;
+              }
+            }
+            requests[maskIndex] = Promise.resolve([syntheticMask]);
+            continue;
+          }
+        }
         requests[maskIndex] = Promise.resolve(null);
         continue;
       }
