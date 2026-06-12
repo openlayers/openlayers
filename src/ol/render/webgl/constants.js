@@ -52,5 +52,6 @@ export const TextOverlayWorkerMessageType = {
  * @property {Uint8Array} [labelsArray] Labels array
  * @property {Object<string, number>} [customAttributesSizes] Size of each custom attribute (by name)
  * @property {import("../../transform.js").Transform} [renderInstructionsTransform] Transformation matrix used to project the instructions coordinates
+ * @property {number} [resolution]
  * @property {number} [id] Message id; will be used both in request and response as a means of identification
  */

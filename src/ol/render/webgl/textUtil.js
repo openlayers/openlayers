@@ -139,26 +139,19 @@ export function createPostProcessDefinition(
         const renderedWidth = textOverlayCanvas.width;
         const renderedHeight = textOverlayCanvas.height;
         resetMat4(tmpMatrix);
-        translateMat4(
-          tmpMatrix,
-          (center[0] - renderedCenter[0]) /
-            renderedResolution /
-            pixelRatio /
-            (renderedWidth / 2),
-          (center[1] - renderedCenter[1]) /
-            renderedResolution /
-            pixelRatio /
-            (renderedHeight / 2),
-          0,
-          tmpMatrix,
-        );
-        scaleMat4(
-          tmpMatrix,
-          1 / renderedWidth,
-          1 / renderedHeight,
-          1,
-          tmpMatrix,
-        );
+        // translateMat4(
+        //   tmpMatrix,
+        //   (center[0] - renderedCenter[0]) /
+        //     renderedResolution /
+        //     pixelRatio /
+        //     (renderedWidth / 2),
+        //   (center[1] - renderedCenter[1]) /
+        //     renderedResolution /
+        //     pixelRatio /
+        //     (renderedHeight / 2),
+        //   0,
+        //   tmpMatrix,
+        // );
         // scaleMat4(
         //   tmpMatrix,
         //   1 / renderedWidth,
@@ -166,15 +159,39 @@ export function createPostProcessDefinition(
         //   1,
         //   tmpMatrix,
         // );
-        rotateMat4(tmpMatrix, renderedRotation - rotation, tmpMatrix);
-        scaleMat4(tmpMatrix, size[0], size[1], 1, tmpMatrix);
+        // rotateMat4(tmpMatrix, renderedRotation - rotation, tmpMatrix);
+        // scaleMat4(tmpMatrix, size[0], size[1], 1, tmpMatrix);
+        // scaleMat4(
+        //   tmpMatrix,
+        //   resolution / renderedResolution,
+        //   resolution / renderedResolution,
+        //   1,
+        //   tmpMatrix,
+        // );
         scaleMat4(
           tmpMatrix,
-          resolution / renderedResolution,
-          resolution / renderedResolution,
+          1 / renderedResolution / (renderedWidth / 2),
+          1 / renderedResolution / (renderedHeight / 2),
           1,
           tmpMatrix,
         );
+        rotateMat4(tmpMatrix, renderedRotation, tmpMatrix);
+        translateMat4(
+          tmpMatrix,
+          center[0] - renderedCenter[0],
+          center[1] - renderedCenter[1],
+          0,
+          tmpMatrix,
+        );
+        rotateMat4(tmpMatrix, -rotation, tmpMatrix);
+        scaleMat4(
+          tmpMatrix,
+          (resolution * size[0]) / 2,
+          (resolution * size[1]) / 2,
+          1,
+          tmpMatrix,
+        );
+
         return tmpMatrix;
       },
     },
