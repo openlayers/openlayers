@@ -1404,7 +1404,7 @@ class Map extends BaseObject {
             this,
           ),
         ];
-        if (targetElement instanceof HTMLElement) {
+        if (!isCanvas(targetElement)) {
           const rootNode = targetElement.getRootNode();
           if (rootNode instanceof ShadowRoot) {
             this.resizeObserver_.observe(rootNode.host);

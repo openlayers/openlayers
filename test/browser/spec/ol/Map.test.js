@@ -1841,6 +1841,23 @@ describe('ol/Map', function () {
           }, 100);
         });
       });
+      it('observes size changes of a map in a separate window', (done) => {
+        document.body.removeChild(map.getTargetElement());
+        map.setTarget(null);
+        const win = iframe.contentWindow;
+        win.addEventListener('DOMContentLoaded', () => {
+          const externalTarget = iframe.contentDocument.getElementById('map');
+          map.setTarget(externalTarget);
+          map.once('change:size', () => {
+            expect(map.getSize()).to.eql([50, 50]);
+            done();
+          });
+          // Trigger a resize in the external window; the ResizeObserver must
+          // pick this up even though the target belongs to another realm.
+          iframe.width = '50';
+          iframe.height = '50';
+        });
+      });
     });
   });
 
