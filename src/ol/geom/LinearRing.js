@@ -7,6 +7,7 @@ import {linearRing as linearRingArea} from './flat/area.js';
 import {assignClosestPoint, maxSquaredDelta} from './flat/closest.js';
 import {deflateCoordinates} from './flat/deflate.js';
 import {inflateCoordinates} from './flat/inflate.js';
+import {intersectsLineString} from './flat/intersectsextent.js';
 import {douglasPeucker} from './flat/simplify.js';
 
 /**
@@ -161,14 +162,21 @@ class LinearRing extends SimpleGeometry {
   }
 
   /**
-   * Test if the geometry and the passed extent intersect.
+   * Test if the geometry and the passed extent intersect. A linear ring is
+   * treated as a line string for this test.
    * @param {import("../extent.js").Extent} extent Extent.
    * @return {boolean} `true` if the geometry and the extent intersect.
    * @api
    * @override
    */
   intersectsExtent(extent) {
-    return false;
+    return intersectsLineString(
+      this.flatCoordinates,
+      0,
+      this.flatCoordinates.length,
+      this.stride,
+      extent,
+    );
   }
 
   /**
