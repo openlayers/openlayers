@@ -163,8 +163,7 @@ class LinearRing extends SimpleGeometry {
 
   /**
    * Test if the geometry and the passed extent intersect. A linear ring is
-   * treated as a closed line string for this test; only the ring boundary is
-   * considered.
+   * treated as a line string for this test.
    * @param {import("../extent.js").Extent} extent Extent.
    * @return {boolean} `true` if the geometry and the extent intersect.
    * @api
