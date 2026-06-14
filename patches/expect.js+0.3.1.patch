@@ -1,0 +1,13 @@
+diff --git a/node_modules/expect.js/index.js b/node_modules/expect.js/index.js
+index b1e921d..f3e6c4d 100644
+--- a/node_modules/expect.js/index.js
++++ b/node_modules/expect.js/index.js
+@@ -70,7 +70,7 @@
+           };
+ 
+           for (var fn in Assertion.prototype) {
+-            if (Assertion.prototype.hasOwnProperty(fn) && fn != name) {
++            if (Assertion.prototype.hasOwnProperty(fn) && fn != name && fn != 'length' && fn != 'name') {
+               this[name][fn] = bind(assertion[fn], assertion);
+             }
+           }

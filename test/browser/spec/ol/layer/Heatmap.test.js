@@ -1,4 +1,4 @@
-import {spy as sinonSpy} from 'sinon';
+import {expect, vi} from 'vitest';
 import Feature from '../../../../../src/ol/Feature.js';
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
@@ -7,6 +7,10 @@ import Point from '../../../../../src/ol/geom/Point.js';
 import HeatmapLayer from '../../../../../src/ol/layer/Heatmap.js';
 import * as ol_renderer_webgl_vectorlayer from '../../../../../src/ol/renderer/webgl/VectorLayer.js';
 import VectorSource from '../../../../../src/ol/source/Vector.js';
+
+// sinon can't spy on ES module exports, so the renderer module is mocked here
+// to capture how the renderer gets constructed.
+vi.mock('../../../../../src/ol/renderer/webgl/VectorLayer.js', {spy: true});
 
 describe('ol/layer/Heatmap', function () {
   /** @type {HTMLDivElement} */
@@ -37,16 +41,17 @@ describe('ol/layer/Heatmap', function () {
 
   let rendererSpy;
   beforeEach(() => {
-    rendererSpy = sinonSpy(ol_renderer_webgl_vectorlayer, 'default');
+    rendererSpy = ol_renderer_webgl_vectorlayer.default;
+    rendererSpy.mockClear();
   });
   afterEach(() => {
-    rendererSpy.restore();
+    rendererSpy.mockClear();
   });
 
   describe('constructor', function () {
     it('can be constructed without arguments', function () {
       layer = new HeatmapLayer();
-      expect(layer).to.be.an(HeatmapLayer);
+      expect(layer).toBeInstanceOf(HeatmapLayer);
     });
 
     it('has a default className', function () {
@@ -57,7 +62,7 @@ describe('ol/layer/Heatmap', function () {
       map.renderSync();
 
       const canvas = layer.getRenderer().helper.getCanvas();
-      expect(canvas.className).to.eql('ol-layer');
+      expect(canvas.className).toEqual('ol-layer');
     });
 
     it('accepts a custom className', function () {
@@ -69,7 +74,7 @@ describe('ol/layer/Heatmap', function () {
       map.renderSync();
 
       const canvas = layer.getRenderer().helper.getCanvas();
-      expect(canvas.className).to.eql('a-class-name');
+      expect(canvas.className).toEqual('a-class-name');
     });
   });
 
@@ -80,35 +85,35 @@ describe('ol/layer/Heatmap', function () {
       });
     });
     it('default value', () => {
-      expect(layer.getBlur()).to.eql(15);
+      expect(layer.getBlur()).toEqual(15);
     });
     it('updates blur value', () => {
       layer.setBlur(['get', 'weight']);
-      expect(layer.getBlur()).to.eql(['get', 'weight']);
+      expect(layer.getBlur()).toEqual(['get', 'weight']);
     });
     it('recreates the renderer', () => {
-      sinonSpy(layer, 'createRenderer');
+      vi.spyOn(layer, 'createRenderer');
       layer.setBlur(['get', 'weight']);
       layer.getRenderer();
-      expect(layer.createRenderer.calledOnce).to.be(true);
+      expect(layer.createRenderer).toHaveBeenCalledTimes(1);
     });
 
     describe('numerical value', () => {
       it('adds a uniform which reads the numerical value', () => {
         layer.setBlur(12);
         layer.getRenderer();
-        const rendererOpts = rendererSpy.getCall(0).args[1];
+        const rendererOpts = rendererSpy.mock.calls[0][1];
         const uniforms = rendererOpts.style.uniforms;
-        expect(uniforms).to.have.key('a_blur');
-        expect(uniforms.a_blur()).to.eql(12);
+        expect(uniforms).toHaveProperty('a_blur');
+        expect(uniforms.a_blur()).toEqual(12);
       });
       it('does not recreate the renderer if called several times with a numerical value', () => {
-        sinonSpy(layer, 'createRenderer');
+        vi.spyOn(layer, 'createRenderer');
         layer.setBlur(12);
         layer.setBlur(17);
         layer.setBlur(20);
         layer.getRenderer();
-        expect(layer.createRenderer.callCount).to.be(1);
+        expect(layer.createRenderer).toHaveBeenCalledTimes(1);
       });
     });
   });
@@ -120,35 +125,35 @@ describe('ol/layer/Heatmap', function () {
       });
     });
     it('default value', () => {
-      expect(layer.getRadius()).to.eql(8);
+      expect(layer.getRadius()).toEqual(8);
     });
     it('updates blur value', () => {
       layer.setRadius(['get', 'size']);
-      expect(layer.getRadius()).to.eql(['get', 'size']);
+      expect(layer.getRadius()).toEqual(['get', 'size']);
     });
     it('recreates the renderer', () => {
-      sinonSpy(layer, 'createRenderer');
+      vi.spyOn(layer, 'createRenderer');
       layer.setRadius(['get', 'size']);
       layer.getRenderer();
-      expect(layer.createRenderer.calledOnce).to.be(true);
+      expect(layer.createRenderer).toHaveBeenCalledTimes(1);
     });
 
     describe('numerical value', () => {
       it('adds a uniform which reads the numerical value', () => {
         layer.setRadius(12);
         layer.getRenderer();
-        const rendererOpts = rendererSpy.getCall(0).args[1];
+        const rendererOpts = rendererSpy.mock.calls[0][1];
         const uniforms = rendererOpts.style.uniforms;
-        expect(uniforms).to.have.key('a_radius');
-        expect(uniforms.a_radius()).to.eql(12);
+        expect(uniforms).toHaveProperty('a_radius');
+        expect(uniforms.a_radius()).toEqual(12);
       });
       it('does not recreate the renderer if called several times with a numerical value', () => {
-        sinonSpy(layer, 'createRenderer');
+        vi.spyOn(layer, 'createRenderer');
         layer.setRadius(12);
         layer.setRadius(17);
         layer.setRadius(20);
         layer.getRenderer();
-        expect(layer.createRenderer.callCount).to.be(1);
+        expect(layer.createRenderer).toHaveBeenCalledTimes(1);
       });
     });
   });
@@ -158,7 +163,7 @@ describe('ol/layer/Heatmap', function () {
       layer = new HeatmapLayer({
         source: new VectorSource(),
       });
-      expect(layer.weight_).to.eql('weight');
+      expect(layer.weight_).toEqual('weight');
     });
     it('supports an attribute name as weight', () => {
       layer = new HeatmapLayer({
@@ -167,17 +172,17 @@ describe('ol/layer/Heatmap', function () {
       });
       layer.getRenderer();
 
-      const rendererOpts = rendererSpy.getCall(0).args[1];
+      const rendererOpts = rendererSpy.mock.calls[0][1];
       const attrs = rendererOpts.style.attributes;
-      expect(attrs).to.have.key('prop_weight');
+      expect(attrs).toHaveProperty('prop_weight');
 
       const attrCallback = attrs['prop_weight'].callback;
       const feature = new Feature({foo: 0.5});
-      expect(attrCallback(feature)).to.eql(0.5);
+      expect(attrCallback(feature)).toEqual(0.5);
 
       const builder = rendererOpts.style.builder;
       // weight expression is clamped between 0 and 1
-      expect(builder.getSymbolColorExpression()).to.eql(
+      expect(builder.getSymbolColorExpression()).toEqual(
         'vec4(smoothstep(0., 1., (1. - length(coordsPx * 2. / v_quadSizePx)) * (a_radius / max(1., a_blur))) * a_prop_weight)',
       );
     });
@@ -188,16 +193,16 @@ describe('ol/layer/Heatmap', function () {
       });
       layer.getRenderer();
 
-      const rendererOpts = rendererSpy.getCall(0).args[1];
+      const rendererOpts = rendererSpy.mock.calls[0][1];
       const attrs = rendererOpts.style.attributes;
-      expect(attrs).to.have.key('prop_weight');
+      expect(attrs).toHaveProperty('prop_weight');
 
       const attrCallback = attrs['prop_weight'].callback;
       const feature = new Feature({size: 3.75});
-      expect(attrCallback(feature)).to.eql(0.75);
+      expect(attrCallback(feature)).toEqual(0.75);
 
       const builder = rendererOpts.style.builder;
-      expect(builder.getSymbolColorExpression()).to.eql(
+      expect(builder.getSymbolColorExpression()).toEqual(
         'vec4(smoothstep(0., 1., (1. - length(coordsPx * 2. / v_quadSizePx)) * (a_radius / max(1., a_blur))) * a_prop_weight)',
       );
     });
@@ -208,17 +213,17 @@ describe('ol/layer/Heatmap', function () {
       });
       layer.getRenderer();
 
-      const rendererOpts = rendererSpy.getCall(0).args[1];
+      const rendererOpts = rendererSpy.mock.calls[0][1];
       const attrs = rendererOpts.style.attributes;
-      expect(attrs).to.have.key('prop_sizeAttr');
+      expect(attrs).toHaveProperty('prop_sizeAttr');
 
       const attrCallback = attrs['prop_sizeAttr'].callback;
       const feature = new Feature({sizeAttr: 34});
-      expect(attrCallback(feature)).to.eql(34);
+      expect(attrCallback(feature)).toEqual(34);
 
       const builder = rendererOpts.style.builder;
       // weight expression is clamped between 0 and 1
-      expect(builder.getSymbolColorExpression()).to.eql(
+      expect(builder.getSymbolColorExpression()).toEqual(
         'vec4(smoothstep(0., 1., (1. - length(coordsPx * 2. / v_quadSizePx)) * (a_radius / max(1., a_blur))) * clamp((a_prop_sizeAttr / 10.0), 0.0, 1.0))',
       );
     });
@@ -231,13 +236,13 @@ describe('ol/layer/Heatmap', function () {
       });
       it('updates weight value', () => {
         layer.setWeight('bla');
-        expect(layer.weight_).to.eql('bla');
+        expect(layer.weight_).toEqual('bla');
       });
       it('recreates the renderer', () => {
-        sinonSpy(layer, 'createRenderer');
+        vi.spyOn(layer, 'createRenderer');
         layer.setWeight('bla');
         layer.getRenderer();
-        expect(layer.createRenderer.calledOnce).to.be(true);
+        expect(layer.createRenderer).toHaveBeenCalledTimes(1);
       });
     });
   });
@@ -255,12 +260,12 @@ describe('ol/layer/Heatmap', function () {
       });
       layer.getRenderer();
 
-      const rendererOpts = rendererSpy.getCall(0).args[1];
+      const rendererOpts = rendererSpy.mock.calls[0][1];
       const attrs = rendererOpts.style.attributes;
-      expect(attrs).to.have.key('prop_sizeAttr');
+      expect(attrs).toHaveProperty('prop_sizeAttr');
 
       const builder = rendererOpts.style.builder;
-      expect(builder.getShapeDiscardExpression()).to.eql(
+      expect(builder.getShapeDiscardExpression()).toEqual(
         '!(a_prop_sizeAttr > 10.0)',
       );
     });
@@ -271,12 +276,12 @@ describe('ol/layer/Heatmap', function () {
       });
       layer.getRenderer();
 
-      const rendererOpts = rendererSpy.getCall(0).args[1];
+      const rendererOpts = rendererSpy.mock.calls[0][1];
       const attrs = rendererOpts.style.attributes;
-      expect(attrs).to.have.key('prop_sizeAttr');
+      expect(attrs).toHaveProperty('prop_sizeAttr');
 
       const builder = rendererOpts.style.builder;
-      expect(builder.getFragmentDiscardExpression()).to.eql(
+      expect(builder.getFragmentDiscardExpression()).toEqual(
         '!(a_prop_sizeAttr > currentLineMetric)',
       );
     });
@@ -284,13 +289,13 @@ describe('ol/layer/Heatmap', function () {
       it('updates filter value', () => {
         const filter = ['==', ['get', 'type'], 'foo'];
         layer.setFilter(filter);
-        expect(layer.filter_).to.eql(filter);
+        expect(layer.filter_).toEqual(filter);
       });
       it('recreates the renderer', () => {
-        sinonSpy(layer, 'createRenderer');
+        vi.spyOn(layer, 'createRenderer');
         layer.setFilter(true);
         layer.getRenderer();
-        expect(layer.createRenderer.calledOnce).to.be(true);
+        expect(layer.createRenderer).toHaveBeenCalledTimes(1);
       });
     });
   });
@@ -304,13 +309,13 @@ describe('ol/layer/Heatmap', function () {
       });
       layer.getRenderer();
 
-      const rendererOpts = rendererSpy.getCall(0).args[1];
+      const rendererOpts = rendererSpy.mock.calls[0][1];
       const attrs = rendererOpts.style.attributes;
-      expect(attrs).to.have.key('prop_myBlur');
-      expect(attrs).to.have.key('prop_myRadius');
+      expect(attrs).toHaveProperty('prop_myBlur');
+      expect(attrs).toHaveProperty('prop_myRadius');
 
       const builder = rendererOpts.style.builder;
-      expect(builder.getSymbolColorExpression()).to.eql(
+      expect(builder.getSymbolColorExpression()).toEqual(
         'vec4(smoothstep(0., 1., (1. - length(coordsPx * 2. / v_quadSizePx)) * (a_prop_myRadius / max(1., a_prop_myBlur))) * a_prop_weight)',
       );
     });
@@ -359,17 +364,17 @@ describe('ol/layer/Heatmap', function () {
         map.renderSync();
         let res;
         res = hitTest([0, 0]);
-        expect(res).to.be(feature);
+        expect(res).toBe(feature);
         res = hitTest([20, 0]);
-        expect(res).to.be(null);
+        expect(res).toBe(null);
         res = hitTest([14, 14]);
-        expect(res).to.be(feature2);
+        expect(res).toBe(feature2);
         res = hitTest([0, 14]);
-        expect(res).to.be(null);
+        expect(res).toBe(null);
         res = hitTest([-3, 10]);
-        expect(res).to.be(feature3);
+        expect(res).toBe(feature3);
         res = hitTest([3, 7]);
-        expect(res).to.be(null);
+        expect(res).toBe(null);
         done();
       });
     });
@@ -385,7 +390,7 @@ describe('ol/layer/Heatmap', function () {
       });
 
       layer.updateStyleVariables({foo: 'bam'});
-      expect(layer.styleVariables_.foo).to.be('bam');
+      expect(layer.styleVariables_.foo).toBe('bam');
     });
     it('can be called even if no initial variables are provided', function () {
       const layer = new HeatmapLayer({
@@ -393,7 +398,7 @@ describe('ol/layer/Heatmap', function () {
       });
 
       layer.updateStyleVariables({foo: 'bam'});
-      expect(layer.styleVariables_.foo).to.be('bam');
+      expect(layer.styleVariables_.foo).toBe('bam');
     });
   });
 });
