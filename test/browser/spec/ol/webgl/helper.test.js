@@ -298,6 +298,31 @@ describe('ol/webgl/WebGLHelper', function () {
           expected.map((val) => val.toFixed(15)),
         );
       });
+
+      it('gives out the correct transform (rotation ignored)', function () {
+        const scaleX =
+          2 /
+          SAMPLE_FRAMESTATE.size[0] /
+          SAMPLE_FRAMESTATE.viewState.resolution;
+        const scaleY =
+          2 /
+          SAMPLE_FRAMESTATE.size[1] /
+          SAMPLE_FRAMESTATE.viewState.resolution;
+        const given = createTransform();
+        const expected = createTransform();
+        scaleTransform(expected, scaleX, scaleY);
+        translateTransform(
+          expected,
+          -SAMPLE_FRAMESTATE.viewState.center[0],
+          -SAMPLE_FRAMESTATE.viewState.center[1],
+        );
+
+        h.makeProjectionTransform(SAMPLE_FRAMESTATE, given, true);
+
+        expect(given.map((val) => val.toFixed(15))).to.eql(
+          expected.map((val) => val.toFixed(15)),
+        );
+      });
     });
 
     describe('deleteBuffer()', function () {

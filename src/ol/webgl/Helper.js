@@ -1048,11 +1048,12 @@ class WebGLHelper extends Disposable {
    * The resulting transform can be used to convert world space coordinates to view coordinates in the [-1, 1] range.
    * @param {import("../Map.js").FrameState} frameState Frame state.
    * @param {import("../transform.js").Transform} transform Transform to update.
+   * @param {boolean} [ignoreRotation] If true, view rotation will not be added to the transform
    * @return {import("../transform.js").Transform} The updated transform object.
    */
-  makeProjectionTransform(frameState, transform) {
+  makeProjectionTransform(frameState, transform, ignoreRotation) {
     const size = frameState.size;
-    const rotation = frameState.viewState.rotation;
+    const rotation = ignoreRotation ? 0 : frameState.viewState.rotation;
     const resolution = frameState.viewState.resolution;
     const center = frameState.viewState.center;
     composeTransform(
