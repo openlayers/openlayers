@@ -429,6 +429,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
       const transform = this.helper.makeProjectionTransform(
         frameState,
         createTransform(),
+        true,
       );
 
       this.styleRenderer_
