@@ -191,7 +191,9 @@
     "../src/ol/render/webgl/compileUtil.js",
     "../src/ol/render/webgl/encodeUtil.js",
     "../src/ol/render/webgl/ShaderBuilder.js",
+    "../src/ol/render/webgl/serialize.js",
     "../src/ol/render/webgl/style.js",
+    "../src/ol/render/webgl/textUtil.js",
     "../src/ol/render/webgl/VectorStyleRenderer.js",
     "../src/ol/renderer/canvas/ImageLayer.js",
     "../src/ol/renderer/canvas/Layer.js",
@@ -302,6 +304,7 @@
     "../src/ol/webgl/RenderTarget.js",
     "../src/ol/webgl/TileGeometry.js",
     "../src/ol/webgl/TileTexture.js",
+    "../src/ol/worker/textOverlay.js",
     "../src/ol/worker/webgl.js",
     "../src/ol/xml.js"
   ]
