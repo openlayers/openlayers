@@ -412,9 +412,10 @@ class VectorStyleRenderer extends Disposable {
   /**
    * @param {import('./MixedGeometryBatch.js').default} geometryBatch Geometry batch
    * @param {import("../../transform.js").Transform} transform Transform to apply to coordinates
+   * @param {number} resolution View resolution; used for text render instructions if any
    * @return {Promise<WebGLBuffers>} A promise resolving to WebGL buffers; buffer sets are set to `null` if nothing to render
    */
-  async generateBuffers(geometryBatch, transform) {
+  async generateBuffers(geometryBatch, transform, resolution) {
     // also return the inverse of the transform that was applied when generating buffers
     const invertVerticesTransform = makeInverseTransform(
       createTransform(),
@@ -447,6 +448,7 @@ class VectorStyleRenderer extends Disposable {
             renderInstructions,
             labelsArray,
             transform,
+            resolution,
           )
         : null,
       this.hasFill_
@@ -599,10 +601,16 @@ class VectorStyleRenderer extends Disposable {
    * @param {RenderInstructions} renderInstructions Render instructions
    * @param {import('../../webgl/LabelsArray.js').default} labelsArray Labels array
    * @param {import("../../transform.js").Transform} transform Transform to apply to coordinates
+   * @param {number} resolution View resolution to be used as a basis when computing text overflow
    * @return {Promise<string>|null} Resolves to a key corresponding to the text draw instructions; null if no text to render
    * @private
    */
-  generateTextInstructions_(renderInstructions, labelsArray, transform) {
+  generateTextInstructions_(
+    renderInstructions,
+    labelsArray,
+    transform,
+    resolution,
+  ) {
     const transferables = [labelsArray.getArray().buffer];
     let polygonRenderInstructions = null;
     let lineStringRenderInstructions = null;
@@ -644,6 +652,7 @@ class VectorStyleRenderer extends Disposable {
       style: this.flatStyle,
       customAttributesSizes,
       renderInstructionsTransform: transform,
+      resolution,
     };
 
     return messageWorker(this.textOverlayWorker_, message, transferables).then(

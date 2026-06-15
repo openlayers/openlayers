@@ -432,7 +432,11 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
       );
 
       this.styleRenderer_
-        .generateBuffers(this.batch_, transform)
+        .generateBuffers(
+          this.batch_,
+          transform,
+          frameState.viewState.resolution,
+        )
         .then((buffers) => {
           if (this.buffers_) {
             this.disposeBuffers(this.buffers_);
