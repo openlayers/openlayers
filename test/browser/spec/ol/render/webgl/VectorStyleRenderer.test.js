@@ -778,6 +778,7 @@ describe('VectorStyleRenderer', () => {
         buffers = await vectorStyleRenderer.generateBuffers(
           geometryBatch,
           SAMPLE_TRANSFORM,
+          SAMPLE_FRAMESTATE.viewState.resolution,
         );
       });
       it('sends a message to worker with render instructions and style', () => {
@@ -811,6 +812,9 @@ describe('VectorStyleRenderer', () => {
           prop_label: 3,
         });
         expect(message.renderInstructionsTransform).to.eql(SAMPLE_TRANSFORM);
+        expect(message.resolution).to.eql(
+          SAMPLE_FRAMESTATE.viewState.resolution,
+        );
       });
       it('stores a text instructions key', () => {
         expect(buffers.textInstructionsKey).to.be.a('string');

@@ -156,7 +156,7 @@ describe('ol/worker/textOverlay', () => {
           style,
           customAttributesSizes,
           renderInstructionsTransform: transform,
-          frameState,
+          resolution: frameState.viewState.resolution,
         };
         let response = await postWorkerMessage(message, [
           labelsArray.getArray().buffer,
@@ -209,7 +209,7 @@ describe('ol/worker/textOverlay', () => {
           style,
           customAttributesSizes,
           renderInstructionsTransform: transform,
-          frameState,
+          resolution: frameState.viewState.resolution,
         };
         let response = await postWorkerMessage(message, [
           labelsArray.getArray().buffer,

@@ -29,6 +29,7 @@ describe('ol/webgl/TileGeometry', function () {
 
   let styleRenderer;
   let helper;
+  let grid;
 
   beforeEach(function () {
     tile = new VectorRenderTile(
@@ -40,15 +41,16 @@ describe('ol/webgl/TileGeometry', function () {
     );
     styleRenderer = new MockRenderer();
     helper = new WebGLHelper();
+    grid = createXYZ({
+      tileSize: [256, 256],
+      maxZoom: 5,
+      extent: [-128, -128, 128, 128],
+    });
 
     tileGeometry = new TileGeometry(
       {
         tile,
-        grid: createXYZ({
-          tileSize: [256, 256],
-          maxZoom: 5,
-          extent: [-128, -128, 128, 128],
-        }),
+        grid,
         helper,
       },
       styleRenderer,
@@ -64,6 +66,9 @@ describe('ol/webgl/TileGeometry', function () {
     });
     it('creates a new geometry batch', () => {
       assert.instanceOf(tileGeometry.batch_, MixedGeometryBatch);
+    });
+    it('computes the resolution of the tile content according its z coordinate', () => {
+      expect(tileGeometry.wantedResolution).to.be(grid.getResolution(3));
     });
   });
 
@@ -126,6 +131,9 @@ describe('ol/webgl/TileGeometry', function () {
       assert.deepEqual(
         styleRenderer.generateBuffers.mock.calls[0][1],
         originTransform,
+      );
+      expect(styleRenderer.generateBuffers.getCall(0).args[2]).to.eql(
+        tileGeometry.wantedResolution,
       );
     });
     it('becomes ready when each of the renderers have finished generating buffers', async () => {

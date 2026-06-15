@@ -415,6 +415,7 @@ describe('ol/renderer/webgl/VectorLayer', () => {
     });
     describe('new frame without change', () => {
       beforeEach(() => {
+        sinonSpy(renderer.styleRenderer_, 'generateBuffers');
         toRender = renderer.prepareFrame(frameState);
       });
       it('requires rendering', () => {
@@ -423,10 +424,14 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       it('does not load the data again', () => {
         assert.strictEqual(vectorSource.loadFeatures.mock.calls.length, 1);
       });
+      it('does not regenerate the buffers', () => {
+        expect(renderer.styleRenderer_.generateBuffers.called).to.be(false);
+      });
     });
     describe('on source change', () => {
       beforeEach(() => {
         vectorSource.changed();
+        sinonSpy(renderer.styleRenderer_, 'generateBuffers');
         toRender = renderer.prepareFrame(frameState);
       });
       it('requires rendering', () => {
@@ -434,11 +439,21 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       });
       it('loads the data again', () => {
         assert.strictEqual(vectorSource.loadFeatures.mock.calls.length, 2);
+      });
+      it('regenerates the buffers', () => {
+        expect(renderer.styleRenderer_.generateBuffers.callCount).to.be(1);
+        expect(
+          renderer.styleRenderer_.generateBuffers.getCall(0).args[1],
+        ).to.eql([0.04, 0, 0, 0.08, 0, -1.28]); // transform made from the current frame state
+        expect(
+          renderer.styleRenderer_.generateBuffers.getCall(0).args[2],
+        ).to.eql(frameState.viewState.resolution);
       });
     });
     describe('on view change', () => {
       beforeEach(() => {
         frameState.extent = [0, 10, 0, 10];
+        sinonSpy(renderer.styleRenderer_, 'generateBuffers');
         toRender = renderer.prepareFrame(frameState);
       });
       it('requires rendering', () => {
@@ -446,6 +461,9 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       });
       it('loads the data again', () => {
         assert.strictEqual(vectorSource.loadFeatures.mock.calls.length, 2);
+      });
+      it('regenerates the buffers', () => {
+        expect(renderer.styleRenderer_.generateBuffers.callCount).to.be(1);
       });
     });
   });

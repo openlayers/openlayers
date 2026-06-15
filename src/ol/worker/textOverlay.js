@@ -149,16 +149,18 @@ worker.onmessage = (event) => {
         customAttributesSizes,
         renderInstructionsTransform,
         id,
-        // TODO: view projection
+        resolution,
       } = received;
-      const resolution = 10000000000;
       const pixelRatio = 1;
+      // we compute the resolution in the render instructions frame of reference by using the scale X component
+      const resolutionInRenderInstructionsTransform =
+        resolution * renderInstructionsTransform[0];
       const instructionsSetKey = Date.now().toString();
       const labelsArray = new Uint8Array(received.labelsArray);
       const builder = new TextBuilder(
         1,
-        [-Infinity, -Infinity, Infinity, Infinity],
-        resolution,
+        [-Infinity, -Infinity, Infinity, Infinity], // TODO: use the actual frame extent to save up on computations
+        resolutionInRenderInstructionsTransform,
         pixelRatio,
       );
       // reconstruct the custom attributes definition obj here
@@ -173,7 +175,6 @@ worker.onmessage = (event) => {
 
       convertPolygonRenderInstructionsToCanvasTextBuilder(
         new Float32Array(polygonRenderInstructions),
-        renderInstructionsTransform,
         labelsArray,
         parsingContext.properties,
         customAttributes,
@@ -182,7 +183,6 @@ worker.onmessage = (event) => {
       );
       convertLineStringRenderInstructionsToCanvasTextBuilder(
         new Float32Array(lineStringRenderInstructions),
-        renderInstructionsTransform,
         labelsArray,
         parsingContext.properties,
         customAttributes,
@@ -191,7 +191,6 @@ worker.onmessage = (event) => {
       );
       convertPointRenderInstructionsToCanvasTextBuilder(
         new Float32Array(pointRenderInstructions),
-        renderInstructionsTransform,
         labelsArray,
         parsingContext.properties,
         customAttributes,
@@ -207,7 +206,7 @@ worker.onmessage = (event) => {
       } else {
         const inverseTransform = invertTransform(renderInstructionsTransform);
         const executor = new Executor(
-          resolution,
+          resolutionInRenderInstructionsTransform,
           pixelRatio,
           false,
           canvasInstructions,
