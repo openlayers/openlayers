@@ -114,6 +114,16 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     /**
      * @private
      */
+    this.layerRevision_ = -1;
+
+    /**
+     * @private
+     */
+    this.skipNextTextRender_ = false;
+
+    /**
+     * @private
+     */
     this.previousExtent_ = createEmpty();
 
     /**
@@ -351,16 +361,30 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     const gl = this.helper.getGL();
     this.preRender(gl, frameState);
 
+    const layer = this.getLayer();
+
     const [startWorld, endWorld, worldWidth] = getWorldParameters(
       frameState,
-      this.getLayer(),
+      layer,
     );
 
     // draw the normal canvas
     this.helper.prepareDraw(frameState);
     this.renderWorlds(frameState, false, startWorld, endWorld, worldWidth);
 
-    this.styleRenderer_.finalizeTextRender(frameState);
+    if (this.hasText_) {
+      this.styleRenderer_.finalizeTextRender(frameState).then(() => {
+        if (this.skipNextTextRender_) {
+          this.skipNextTextRender_ = false;
+          return;
+        }
+        // asking for a new render of the layer because the text overlay is now ready to be drawn;
+        // next time this happens we should skip this logic otherwise the layer enters an infinite render loop
+        this.skipNextTextRender_ = true;
+        this.layerRevision_++; // anticipating the layer revision after `layer.changed()`
+        layer.changed();
+      });
+    }
 
     this.helper.finalizeDraw(
       frameState,
@@ -400,9 +424,14 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
       !frameState.viewHints[ViewHint.INTERACTING];
     const extentChanged = !equals(this.previousExtent_, frameState.extent);
     const sourceChanged = this.sourceRevision_ < vectorSource.getRevision();
+    const layerChanged = this.layerRevision_ < layer.getRevision();
 
-    if (sourceChanged) {
-      this.sourceRevision_ = vectorSource.getRevision();
+    this.sourceRevision_ = vectorSource.getRevision();
+    this.layerRevision_ = layer.getRevision();
+
+    // if layer/extent/source changed the next text overlay render should not be skipped
+    if (layerChanged || extentChanged || sourceChanged) {
+      this.skipNextTextRender_ = false;
     }
 
     if (viewNotMoving && (extentChanged || sourceChanged)) {
