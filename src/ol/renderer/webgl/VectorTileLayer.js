@@ -152,6 +152,16 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
      */
     this.tileMaskProgram_;
 
+    /**
+     * @private
+     */
+    this.layerRevision_ = -1;
+
+    /**
+     * @private
+     */
+    this.skipNextTextRender_ = false;
+
     this.applyOptions_(options);
   }
 
@@ -276,6 +286,14 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
    */
   beforeTilesRender(frameState, tilesWithAlpha) {
     super.beforeTilesRender(frameState, true); // always consider that tiles need alpha blending
+
+    const layerChanged = this.layerRevision_ < this.getLayer().getRevision();
+    this.layerRevision_ = this.getLayer().getRevision();
+
+    if (layerChanged) {
+      this.skipNextTextRender_ = false;
+    }
+
     this.helper.makeProjectionTransform(
       frameState,
       this.currentFrameStateTransform_,
@@ -307,7 +325,19 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
    * @override
    */
   beforeFinalize(frameState) {
-    this.styleRenderer_.finalizeTextRender(frameState); // todo: redraw layer once text overlay is ready
+    if (this.hasText_) {
+      this.styleRenderer_.finalizeTextRender(frameState).then(() => {
+        if (this.skipNextTextRender_) {
+          this.skipNextTextRender_ = false;
+          return;
+        }
+        // asking for a new render of the layer because the text overlay is now ready to be drawn;
+        // next time this happens we should skip this logic otherwise the layer enters an infinite render loop
+        this.skipNextTextRender_ = true;
+        this.layerRevision_++; // anticipating the layer revision after `layer.changed()`
+        this.getLayer().changed();
+      });
+    }
   }
 
   /**

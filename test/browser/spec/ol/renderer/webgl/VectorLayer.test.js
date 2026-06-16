@@ -1,4 +1,5 @@
 import {assert} from 'chai';
+import {spy as sinonSpy, stub as sinonStub} from 'sinon';
 import Feature from '../../../../../../src/ol/Feature.js';
 import Map from '../../../../../../src/ol/Map.js';
 import View from '../../../../../../src/ol/View.js';
@@ -150,8 +151,8 @@ describe('ol/renderer/webgl/VectorLayer', () => {
   });
 
   afterEach(() => {
-    vectorLayer.dispose();
     renderer.dispose();
+    vectorLayer.dispose();
     map.dispose();
   });
 
@@ -310,6 +311,12 @@ describe('ol/renderer/webgl/VectorLayer', () => {
         ],
         postProcesses: [POST_PROCESS],
       });
+
+      // this will initialize the style renderer
+      renderer.prepareFrame(frameState);
+      renderer.renderFrame(frameState);
+
+      sinonSpy(renderer.styleRenderer_, 'finalizeTextRender');
     });
 
     it('does not include the text post processing step', () => {
@@ -337,6 +344,12 @@ describe('ol/renderer/webgl/VectorLayer', () => {
         );
         expect(renderer.postProcesses_[1]).to.eql(POST_PROCESS);
       });
+    });
+
+    it('does not call styleRenderer.finalizeTextRender after renderFrame', () => {
+      renderer.prepareFrame(frameState);
+      renderer.renderFrame(frameState);
+      expect(renderer.styleRenderer_.finalizeTextRender.called).to.be(false);
     });
   });
 
@@ -470,6 +483,8 @@ describe('ol/renderer/webgl/VectorLayer', () => {
 
   describe('#renderFrame', () => {
     const withHit = 2;
+    let newFrameState;
+    let finalizeTextRenderStub;
 
     beforeEach(async () => {
       // call once without tracking in order to initialize helper
@@ -486,7 +501,10 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       vi.spyOn(renderer.helper, 'finalizeDraw');
       vi.spyOn(renderer.helper, 'deleteBuffer');
       vi.spyOn(renderer.styleRenderer_, 'render');
-      sinonSpy(renderer.styleRenderer_, 'finalizeTextRender');
+      finalizeTextRenderStub = sinonStub(
+        renderer.styleRenderer_,
+        'finalizeTextRender',
+      ).returns(Promise.resolve());
 
       // this is required to keep a "snapshot" of the input vec2
       // (since the same object is reused for various calls)
@@ -509,8 +527,7 @@ describe('ol/renderer/webgl/VectorLayer', () => {
           },
         },
       );
-
-      renderer.renderFrame({
+      newFrameState = {
         ...frameState,
         viewState: {
           ...frameState.viewState,
@@ -518,7 +535,8 @@ describe('ol/renderer/webgl/VectorLayer', () => {
           resolution: 0.5,
           center: [16, 0],
         },
-      });
+      };
+      renderer.renderFrame(newFrameState);
     });
     it('sets PROJECTION matrix uniform once for each geometry type', () => {
       const calls = renderer.helper.setUniformMatrixValue.mock.calls.filter(
@@ -636,6 +654,52 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       });
       it('deletes previous buffers', () => {
         assert.strictEqual(renderer.helper.deleteBuffer.mock.calls.length, 9);
+      });
+    });
+
+    describe('text overlay rerender', () => {
+      let finalizeTextRenderResolver;
+
+      beforeEach(() => {
+        finalizeTextRenderStub.returns(
+          new Promise((resolve) => {
+            finalizeTextRenderResolver = resolve;
+          }),
+        );
+        sinonSpy(vectorLayer, 'changed');
+      });
+
+      it('calls layer.changed() after the text overlay is ready to be rendered', async () => {
+        renderer.renderFrame(newFrameState);
+        finalizeTextRenderResolver();
+        await new Promise((resolve) => setTimeout(resolve)); // awaiting next tick
+        expect(vectorLayer.changed.callCount).to.be(1);
+
+        // asking for an identical render: layer.changed() should not be called again
+        renderer.renderFrame(newFrameState);
+        finalizeTextRenderResolver();
+        await new Promise((resolve) => setTimeout(resolve));
+        expect(vectorLayer.changed.callCount).to.be(1);
+
+        // different extent: layer.changed should be called once more
+        renderer.renderFrame(frameState);
+        finalizeTextRenderResolver();
+        await new Promise((resolve) => setTimeout(resolve));
+        expect(vectorLayer.changed.callCount).to.be(2);
+
+        // source updated extent: layer.changed should be called once more
+        vectorSource.changed();
+        renderer.renderFrame(frameState);
+        finalizeTextRenderResolver();
+        await new Promise((resolve) => setTimeout(resolve));
+        expect(vectorLayer.changed.callCount).to.be(3);
+      });
+
+      it('does not call layer.changed() if the renderer was disposed in the meantime', () => {
+        renderer.renderFrame(frameState);
+        renderer.dispose();
+        finalizeTextRenderResolver();
+        assert.strictEqual(vectorLayer.changed.callCount, 0);
       });
     });
   });

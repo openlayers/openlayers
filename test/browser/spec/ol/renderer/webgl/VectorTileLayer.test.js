@@ -1,3 +1,4 @@
+import {spy as sinonSpy, stub as sinonStub} from 'sinon';
 import {assert} from 'chai';
 import Map from '../../../../../../src/ol/Map.js';
 import TileQueue from '../../../../../../src/ol/TileQueue.js';
@@ -282,6 +283,8 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
     const POST_PROCESS = {
       hello: 'world',
     };
+    let finalizeTextRenderStub;
+
     beforeEach(() => {
       renderer = new WebGLVectorTileLayerRenderer(vectorTileLayer, {
         style: [
@@ -294,6 +297,14 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
         ],
         postProcesses: [POST_PROCESS],
       });
+      // this will initialize the style renderer
+      renderer.prepareFrame(frameState);
+      renderer.renderFrame(frameState);
+
+      finalizeTextRenderStub = sinonStub(
+        renderer.styleRenderer_,
+        'finalizeTextRender',
+      ).returns(Promise.resolve());
     });
 
     it('does include the post processing step for text rendering', () => {
@@ -320,6 +331,51 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
 
       it('does not include the text post processing step', () => {
         expect(renderer.postProcesses_).to.eql([POST_PROCESS]);
+      });
+    });
+
+    describe('#renderFrame', () => {
+      beforeEach(async () => {
+        renderer.renderFrame(frameState);
+      });
+      it('calls styleRenderer.finalizeTextRender once', () => {
+        expect(renderer.styleRenderer_.finalizeTextRender.calledOnce).to.be(
+          true,
+        );
+      });
+    });
+
+    describe('text overlay rerender', () => {
+      let finalizeTextRenderResolver;
+
+      beforeEach(() => {
+        finalizeTextRenderStub.returns(
+          new Promise((resolve) => {
+            finalizeTextRenderResolver = resolve;
+          }),
+        );
+        sinonSpy(vectorTileLayer, 'changed');
+      });
+
+      it('calls layer.changed() after the text overlay is ready to be rendered', async () => {
+        vectorTileLayer.revision_++; // increasing the revision so a new text overlay is drawn
+        renderer.renderFrame(frameState);
+        finalizeTextRenderResolver();
+        await new Promise((resolve) => setTimeout(resolve)); // awaiting next tick
+        expect(vectorTileLayer.changed.callCount).to.be(1);
+
+        // no update to the layer in the meantime: layer.changed() should not be called again
+        renderer.renderFrame(frameState);
+        finalizeTextRenderResolver();
+        await new Promise((resolve) => setTimeout(resolve));
+        expect(vectorTileLayer.changed.callCount).to.be(1);
+
+        // after a layer update: layer.changed should be called once more
+        vectorTileLayer.revision_++;
+        renderer.renderFrame(frameState);
+        finalizeTextRenderResolver();
+        await new Promise((resolve) => setTimeout(resolve));
+        expect(vectorTileLayer.changed.callCount).to.be(2);
       });
     });
   });
@@ -481,8 +537,8 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
     it('calls render for each tile on each renderer', () => {
       assert.strictEqual(renderer.styleRenderer_.render.mock.calls.length, 2);
     });
-    it('calls styleRenderer.finalizeTextRender once', () => {
-      expect(renderer.styleRenderer_.finalizeTextRender.calledOnce).to.be(true);
+    it('does not call styleRenderer.finalizeTextRender (no text style)', () => {
+      expect(renderer.styleRenderer_.finalizeTextRender.called).to.be(false);
     });
   });
 });
