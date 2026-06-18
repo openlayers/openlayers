@@ -2,7 +2,8 @@
  * @module ol/render/canvas/TextBuilder
  */
 import {asColorLike} from '../../colorlike.js';
-import {intersects} from '../../extent.js';
+import {containsExtent, intersects} from '../../extent.js';
+import {clipFlatLineStrings} from '../../geom/flat/clip.js';
 import {lineChunk} from '../../geom/flat/linechunk.js';
 import {matchingChunk} from '../../geom/flat/straightchunk.js';
 import {getUid} from '../../util.js';
@@ -197,7 +198,8 @@ class CanvasTextBuilder extends CanvasBuilder {
         geometryType == 'Polygon' ||
         geometryType == 'MultiPolygon')
     ) {
-      if (!intersects(this.maxExtent, geometry.getExtent())) {
+      const geometryExtent = geometry.getExtent();
+      if (!intersects(this.maxExtent, geometryExtent)) {
         return;
       }
       let ends;
@@ -220,6 +222,26 @@ class CanvasTextBuilder extends CanvasBuilder {
         ends = [];
         for (let i = 0, ii = endss.length; i < ii; ++i) {
           ends.push(endss[i][0]);
+        }
+      }
+      if (
+        (geometryType == 'LineString' || geometryType == 'MultiLineString') &&
+        !containsExtent(this.getBufferedMaxExtent(), geometryExtent)
+      ) {
+        // Clip the line to the rendered extent so the label is anchored within
+        // the rendered area instead of along the full geometry, whose center
+        // can lie outside it.
+        const clipped = clipFlatLineStrings(
+          flatCoordinates,
+          ends,
+          stride,
+          this.getBufferedMaxExtent(),
+        );
+        flatCoordinates = clipped.flatCoordinates;
+        ends = clipped.ends;
+        stride = 2;
+        if (ends.length === 0) {
+          return;
         }
       }
       this.beginGeometry(geometry, feature, index);

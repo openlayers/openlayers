@@ -78,6 +78,7 @@
     "../src/ol/geom.js",
     "../src/ol/geom/Circle.js",
     "../src/ol/geom/flat/center.js",
+    "../src/ol/geom/flat/clip.js",
     "../src/ol/geom/flat/contains.js",
     "../src/ol/geom/flat/deflate.js",
     "../src/ol/geom/flat/geodesic.js",
