@@ -3,10 +3,6 @@ import View from '../../../../src/ol/View.js';
 import MVT from '../../../../src/ol/format/MVT.js';
 import VectorTileLayer from '../../../../src/ol/layer/VectorTile.js';
 import VectorTileSource from '../../../../src/ol/source/VectorTile.js';
-import Fill from '../../../../src/ol/style/Fill.js';
-import Stroke from '../../../../src/ol/style/Stroke.js';
-import Style from '../../../../src/ol/style/Style.js';
-import Text from '../../../../src/ol/style/Text.js';
 import {createXYZ} from '../../../../src/ol/tilegrid.js';
 
 // A single z14 tile rendered at a much higher zoom (overzoom). The straight
@@ -15,28 +11,20 @@ import {createXYZ} from '../../../../src/ol/tilegrid.js';
 // clipping the lines to the rendered extent first. The North-South streets in
 // particular have no vertex anywhere near the rendered area.
 
-const labelStyle = new Style({
-  stroke: new Stroke({color: '#888', width: 2}),
-  text: new Text({
-    font: 'bold 14px Ubuntu',
-    placement: 'line',
-    fill: new Fill({color: '#000'}),
-    stroke: new Stroke({color: '#FFF', width: 2}),
-  }),
-});
-
 new Map({
   pixelRatio: 1,
   layers: [
     new VectorTileLayer({
       declutter: false,
-      style: function (feature) {
-        const name = feature.get('name');
-        if (!name) {
-          return undefined;
-        }
-        labelStyle.getText().setText(name);
-        return labelStyle;
+      style: {
+        'stroke-color': '#888',
+        'stroke-width': 2,
+        'text-value': ['get', 'name'],
+        'text-font': 'bold 14px Ubuntu',
+        'text-placement': 'line',
+        'text-fill-color': '#000',
+        'text-stroke-color': '#FFF',
+        'text-stroke-width': 2,
       },
       source: new VectorTileSource({
         format: new MVT({layers: ['transportation_name']}),
