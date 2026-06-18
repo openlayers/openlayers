@@ -191,10 +191,12 @@ describe('ol/render/webgl/textUtil', function () {
           'fill-color': 'red',
           'text-value': 'foo',
           'text-font': 'bold 12px "Open Sans", "Arial Unicode MS", sans-serif',
+          'z-index': 12,
         }),
         {
           'text-value': 'foo',
           'text-font': 'bold 12px "Open Sans", "Arial Unicode MS", sans-serif',
+          'z-index': 12,
         },
       );
     });
@@ -210,6 +212,7 @@ describe('ol/render/webgl/textUtil', function () {
           {
             'fill-color': 'white',
             'text-value': ['get', 'name'],
+            'z-index': 12,
           },
           {
             'fill-color': 'red',
@@ -220,7 +223,7 @@ describe('ol/render/webgl/textUtil', function () {
         ]),
         [
           {},
-          {'text-value': ['get', 'name']},
+          {'text-value': ['get', 'name'], 'z-index': 12},
           {
             'text-value': 'foo',
             'text-font':
@@ -270,6 +273,38 @@ describe('ol/render/webgl/textUtil', function () {
               'text-font':
                 'bold 12px "Open Sans", "Arial Unicode MS", sans-serif',
             },
+          },
+        ],
+      );
+    });
+    it('only keeps the style properties relevant to text rendering (style rules with multiple styles)', function () {
+      assert.deepEqual(
+        stripNonTextStyleProperties([
+          {
+            style: [
+              {
+                'fill-color': ['get', 'color'],
+                'stroke-width': 2,
+                'circle-radius': ['get', 'size'],
+                'circle-fill-color': 'red',
+              },
+              {
+                'fill-color': 'white',
+                'text-value': ['get', 'name'],
+              },
+            ],
+            filter: ['==', ['get', 'id'], ['var', 'highlightedId']],
+          },
+        ]),
+        [
+          {
+            style: [
+              {},
+              {
+                'text-value': ['get', 'name'],
+              },
+            ],
+            filter: ['==', ['get', 'id'], ['var', 'highlightedId']],
           },
         ],
       );
