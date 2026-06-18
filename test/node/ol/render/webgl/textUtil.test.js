@@ -262,6 +262,37 @@ describe('ol/render/webgl/textUtil', function () {
         },
       ]);
     });
+    it('only keeps the style properties relevant to text rendering (style rules with multiple styles)', function () {
+      expect(
+        stripNonTextStyleProperties([
+          {
+            style: [
+              {
+                'fill-color': ['get', 'color'],
+                'stroke-width': 2,
+                'circle-radius': ['get', 'size'],
+                'circle-fill-color': 'red',
+              },
+              {
+                'fill-color': 'white',
+                'text-value': ['get', 'name'],
+              },
+            ],
+            filter: ['==', ['get', 'id'], ['var', 'highlightedId']],
+          },
+        ]),
+      ).to.eql([
+        {
+          style: [
+            {},
+            {
+              'text-value': ['get', 'name'],
+            },
+          ],
+          filter: ['==', ['get', 'id'], ['var', 'highlightedId']],
+        },
+      ]);
+    });
   });
 
   describe('createPostProcessDefinition', function () {

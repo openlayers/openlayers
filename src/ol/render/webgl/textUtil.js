@@ -73,7 +73,11 @@ export function stripNonTextStyleProperties(style) {
   if (Array.isArray(style)) {
     for (let i = 0, ii = style.length; i < ii; i++) {
       const rule = style[i];
-      if ('style' in rule) {
+      if ('style' in rule && Array.isArray(rule.style)) {
+        for (let j = 0, jj = rule.style.length; j < jj; j++) {
+          stripStyle(rule.style[j]);
+        }
+      } else if ('style' in rule) {
         stripStyle(rule.style);
       } else {
         stripStyle(rule);
