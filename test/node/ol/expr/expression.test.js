@@ -225,6 +225,23 @@ describe('ol/expr/expression.js', () => {
       expect(context.properties.get('foo')).to.be(StringType);
     });
 
+    it('propagates var type from an earlier == clause to a later == clause comparing var with get', () => {
+      // Regression: ['==', ['var', 'x'], ['get', 'y']] must inherit the StringType
+      // established for 'x' by the preceding ['==', ['var', 'x'], 'hello'] clause.
+      const context = newParsingContext();
+      parse(
+        [
+          'any',
+          ['==', ['var', 'x'], 'hello'],
+          ['==', ['var', 'x'], ['get', 'y']],
+        ],
+        BooleanType,
+        context,
+      );
+      expect(context.variables.get('x')).to.be(StringType);
+      expect(context.properties.get('y')).to.be(StringType);
+    });
+
     describe('case operation', () => {
       it('respects the return type (string)', () => {
         const expression = parse(

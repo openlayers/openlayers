@@ -769,8 +769,19 @@ function withArgsOfIdenticalType() {
      * @type {Array<Expression>}
      */
     const args = new Array(argCount);
+    // When a var/get arg has a type already established by a previous clause, seed
+    // commonType with it *before* parse() runs, so the type isn't lost to a later
+    // polymorphic clause (e.g. ['==', ['var', 'x'], ['get', 'y']]).
     let commonType = AnyType;
     for (let i = 0; i < argCount; ++i) {
+      const arg = encoded[i + 1];
+      if (Array.isArray(arg)) {
+        if (arg[0] === Ops.Var) {
+          commonType &= context.variables.get(arg[1]) ?? AnyType;
+        } else if (arg[0] === Ops.Get) {
+          commonType &= context.properties.get(arg[1]) ?? AnyType;
+        }
+      }
       const expression = parse(encoded[i + 1], commonType, context);
       commonType &= expression.type;
     }
