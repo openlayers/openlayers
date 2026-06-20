@@ -852,8 +852,8 @@ class RasterSource extends ImageSource {
           this.renderedImageCanvas_.getImage().getContext('2d')
         );
     } else {
-      const width = Math.round(getWidth(extent) / resolution);
-      const height = Math.round(getHeight(extent) / resolution);
+      const width = frameState.size[0];
+      const height = frameState.size[1];
       context = createCanvasContext2D(width, height);
       this.renderedImageCanvas_ = new ImageCanvas(
         extent,
