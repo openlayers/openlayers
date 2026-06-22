@@ -500,6 +500,10 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
    * @param {import('../../render/webgl/VectorStyleRenderer.js').WebGLBuffers} buffers Buffers
    */
   disposeBuffers(buffers) {
+    if (!this.helper) {
+      return;
+    }
+
     /**
      * @param {Array<import('../../webgl/Buffer.js').default>} typeBuffers Buffers
      */
