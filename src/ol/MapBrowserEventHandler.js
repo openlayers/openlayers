@@ -186,7 +186,8 @@ class MapBrowserEventHandler extends Target {
       }
     } else if (
       event.type == MapBrowserEventType.POINTERDOWN ||
-      event.type == MapBrowserEventType.POINTERMOVE
+      (id in this.trackedTouches_ &&
+        event.type == MapBrowserEventType.POINTERMOVE)
     ) {
       this.trackedTouches_[id] = event;
     }
