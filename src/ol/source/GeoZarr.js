@@ -50,6 +50,14 @@ const REQUIRED_ZARR_CONVENTIONS = [
  * To disable the opacity transition, pass `transition: 0`.
  * @property {boolean} [wrapX=false] Render tiles beyond the tile grid extent.
  * @property {ResampleMethod} [resample='nearest'] Resampling method if bands are not available for all multi-scale levels.
+ * @property {Object<string, number|string>} [dimensions] Fixed index for each non-spatial
+ * dimension of the band arrays, keyed by dimension name (e.g. `{time: 0}` to render the first
+ * time step of a `[time, y, x]` cube). The two trailing axes are treated as spatial (y, x); each
+ * leading axis is a selectable dimension — use the names returned by {@link getDimensions}. Names
+ * come from the array's `dimension_names` metadata; when an array has none, a dimension is keyed
+ * by its axis position as a string (e.g. `{'0': 1}`), and a single unnamed dimension also accepts
+ * any key. Only integer (positional) indices are supported; a string value (e.g. a datetime label)
+ * is reserved for a future release and currently throws. Unspecified dimensions default to `0`.
  */
 
 /**
@@ -82,6 +90,13 @@ export default class GeoZarr extends DataTileSource {
      * @private
      */
     this.url_ = options.url;
+
+    /**
+     * Fixed index per non-spatial dimension name, from the `dimensions` option.
+     * @type {Object<string, number|string>}
+     * @private
+     */
+    this.dimensions_ = options.dimensions || {};
 
     /**
      * @type {Error|null}
@@ -153,6 +168,24 @@ export default class GeoZarr extends DataTileSource {
      * @private
      */
     this.bands_ = bands;
+
+    /**
+     * Per-band template for selecting fixed indices along non-spatial dimensions.
+     * `undefined` for 2-D band arrays; otherwise an array aligned to the array
+     * rank with a fixed integer at each extra axis and `null` at the two spatial
+     * axes (e.g. `[2, null, null]` for a `[time, y, x]` array with `time: 2`).
+     * @type {Array<Array<number|null>|undefined>}
+     * @private
+     */
+    this.bandExtraSelection_ = new Array(bands.length).fill(undefined);
+
+    /**
+     * Non-spatial dimensions of the bands (`{name, size}`), discovered in
+     * `configure_` and exposed via {@link getDimensions}.
+     * @type {Array<{name: string, size: number}>}
+     * @private
+     */
+    this.extraDimensions_ = [];
 
     /**
      * @type {Object<string, Array<string>> | null}
@@ -297,7 +330,8 @@ export default class GeoZarr extends DataTileSource {
       }
       if (shape) {
         const extent = attributes['spatial:bbox'];
-        const resolution = (extent[2] - extent[0]) / shape[1];
+        // The x axis is the last dimension (arrays may be N-D, e.g. [time, y, x]).
+        const resolution = (extent[2] - extent[0]) / shape[shape.length - 1];
         if (!this.projection) {
           this.projection = getProjectionFromAttributes(attributes);
         }
@@ -339,6 +373,20 @@ export default class GeoZarr extends DataTileSource {
     }
     if (!this.tileGrid) {
       throw new Error('Could not determine tile grid');
+    }
+
+    // Resolve, per band, the fixed indices for any non-spatial dimensions so
+    // loadTile_ can slice a 2-D view out of N-D (e.g. [time, y, x]) arrays, and
+    // record the selectable dimensions for getDimensions().
+    for (let i = 0, ii = this.bands_.length; i < ii; ++i) {
+      const arrayMeta = this.getBandArrayMeta_(
+        this.bands_[i],
+        this.bandGroupIndex_[i],
+      );
+      this.bandExtraSelection_[i] = this.resolveExtraSelection_(arrayMeta);
+      if (this.extraDimensions_.length === 0) {
+        this.extraDimensions_ = this.extraDimsOf_(arrayMeta);
+      }
     }
 
     const extent = this.tileGrid.getExtent();
@@ -454,10 +502,19 @@ export default class GeoZarr extends DataTileSource {
     const bandChunks = await Promise.all(
       arrays.map((array, i) => {
         const info = bandInfos[i];
-        return get(array, [
-          slice(info.minRow, info.maxRow),
-          slice(info.minCol, info.maxCol),
-        ]);
+        const rowSlice = slice(info.minRow, info.maxRow);
+        const colSlice = slice(info.minCol, info.maxCol);
+        const extra = this.bandExtraSelection_[i];
+        if (!extra) {
+          return get(array, [rowSlice, colSlice]);
+        }
+        // `extra` fixes an integer index on each non-spatial axis followed by
+        // null at the two trailing spatial axes (e.g. [timeIndex, null, null]);
+        // keep the fixed indices and append the row/column slices. zarrita
+        // drops the integer axes, returning a 2-D chunk that composeData
+        // consumes unchanged.
+        const selection = [...extra.slice(0, -2), rowSlice, colSlice];
+        return get(array, selection);
       }),
     );
     const [tileColCount, tileRowCount] = toSize(this.tileGrid.getTileSize(z));
@@ -517,10 +574,12 @@ export default class GeoZarr extends DataTileSource {
           // that loadTile_ can use correct coordinates regardless of the tile
           // grid zoom level.
           const shape = bandMeta['shape'];
-          if (shape && shape[1] > 0) {
+          // The x axis is the last dimension (arrays may be N-D, e.g. [time, y, x]).
+          const xSize = shape && shape[shape.length - 1];
+          if (xSize > 0) {
             const extent = this.tileGrid.getExtent();
             this.bandSingleScaleResolution_[i] =
-              (extent[2] - extent[0]) / shape[1];
+              (extent[2] - extent[0]) / xSize;
           }
           foundAtAnyLevel = true;
         }
@@ -532,6 +591,138 @@ export default class GeoZarr extends DataTileSource {
         );
       }
     }
+  }
+
+  /**
+   * Look up a band's Zarr v3 array metadata from consolidated metadata, trying
+   * the multi-scale key (`<matrixId>/<band>`) first and falling back to a
+   * single-scale key (`<band>`).
+   * @param {string} band The band name.
+   * @param {number} groupIndex The index of the band's group.
+   * @return {Object|undefined} The array metadata, or undefined when unavailable.
+   * @private
+   */
+  getBandArrayMeta_(band, groupIndex) {
+    if (!this.consolidatedMetadata_) {
+      return undefined;
+    }
+    const meta = this.groupPaths_
+      ? getSubMetadata(this.consolidatedMetadata_, this.groupPaths_[groupIndex])
+      : this.consolidatedMetadata_;
+    if (this.bandsByLevel_) {
+      for (const matrixId of Object.keys(this.bandsByLevel_)) {
+        if (
+          this.bandsByLevel_[matrixId].includes(band) &&
+          meta[`${matrixId}/${band}`]
+        ) {
+          return meta[`${matrixId}/${band}`];
+        }
+      }
+    }
+    return meta[band];
+  }
+
+  /**
+   * Get the non-spatial dimensions of the bands (e.g. `time`, `band`) that can
+   * be fixed through the `dimensions` option. The two trailing axes are treated
+   * as spatial (y, x); each remaining (leading) axis is one entry, outermost
+   * first. Each `name` comes from the array's `dimension_names` metadata, or is
+   * the axis position as a string when the array has none. Returns an empty
+   * array for 2-D bands. Available once the source is `ready`.
+   * @return {Array<{name: string, size: number}>} The selectable dimensions.
+   * @api
+   */
+  getDimensions() {
+    return this.extraDimensions_.map((d) => ({name: d.name, size: d.size}));
+  }
+
+  /**
+   * Describe the non-spatial (extra) dimensions of an array: the leading axes
+   * beyond the two trailing spatial (y, x) axes. Each is named by its
+   * `dimension_names` entry, or by its axis position when there are none.
+   * @param {Object|undefined} arrayMeta Zarr v3 array metadata (`shape`, optional `dimension_names`).
+   * @return {Array<{name: string, size: number}>} The extra dimensions, outermost first.
+   * @private
+   */
+  extraDimsOf_(arrayMeta) {
+    const shape = arrayMeta && arrayMeta['shape'];
+    if (!Array.isArray(shape) || shape.length <= 2) {
+      return [];
+    }
+    const dimensionNames = arrayMeta['dimension_names'];
+    const hasNames = Array.isArray(dimensionNames);
+    const dims = [];
+    for (let axis = 0; axis < shape.length - 2; ++axis) {
+      const raw = hasNames ? dimensionNames[axis] : undefined;
+      const name =
+        raw === null || raw === undefined ? String(axis) : String(raw);
+      dims.push({name, size: shape[axis]});
+    }
+    return dims;
+  }
+
+  /**
+   * Resolve the fixed index for each non-spatial (extra) dimension of a band
+   * array from the `dimensions` option. Returns `undefined` for arrays of rank
+   * <= 2 (no extra dimensions), otherwise an array aligned to the array rank
+   * with a fixed integer at each extra axis and `null` at the two spatial axes
+   * (e.g. `[2, null, null]` for a `[time, y, x]` array with `{time: 2}`).
+   * @param {Object|undefined} arrayMeta Zarr v3 array metadata (`shape`, optional `dimension_names`).
+   * @return {Array<number|null>|undefined} The extra-axis selection template.
+   * @private
+   */
+  resolveExtraSelection_(arrayMeta) {
+    const dims = this.extraDimsOf_(arrayMeta);
+    if (dims.length === 0) {
+      return undefined;
+    }
+    const names = dims.map((d) => d.name);
+    const dimKeys = Object.keys(this.dimensions_);
+    // A single dimension without a name is lenient: any single key binds to it
+    // (convenience for cubes lacking `dimension_names`, e.g. `{time: 0}`).
+    const singleUnnamed =
+      dims.length === 1 && !Array.isArray(arrayMeta['dimension_names']);
+
+    // Fail loud on a key matching no dimension — almost certainly a typo that
+    // would otherwise silently render the wrong slice.
+    for (const key of dimKeys) {
+      if (!names.includes(key) && !singleUnnamed) {
+        throw new Error(
+          `GeoZarr: unknown dimension "${key}" in the \`dimensions\` option; ` +
+            `available: [${names.join(', ')}].`,
+        );
+      }
+    }
+
+    const selection = new Array(dims.length + 2).fill(null);
+    for (let axis = 0; axis < dims.length; ++axis) {
+      const name = names[axis];
+      let index;
+      if (name in this.dimensions_) {
+        index = this.dimensions_[name];
+      } else if (singleUnnamed && dimKeys.length === 1) {
+        index = this.dimensions_[dimKeys[0]];
+      } else {
+        index = 0; // unspecified extra dimension defaults to the first slice
+      }
+      if (typeof index === 'string') {
+        // Future: a string value will resolve a coordinate label (e.g. a
+        // datetime) to an index by reading and decoding the matching coordinate
+        // array. Only positional integer indices are supported for now.
+        throw new Error(
+          `GeoZarr: datetime-label selection for dimension "${name}" is not yet ` +
+            `implemented; pass an integer index in the \`dimensions\` option.`,
+        );
+      }
+      if (!Number.isInteger(index) || index < 0 || index >= dims[axis].size) {
+        throw new Error(
+          `GeoZarr: invalid index ${index} for dimension "${name}" ` +
+            `(size ${dims[axis].size}).`,
+        );
+      }
+      selection[axis] = index;
+    }
+    return selection;
   }
 }
 
@@ -656,9 +847,13 @@ function getShardInfo(arrayMeta) {
   if (!shardingCodec) {
     return undefined;
   }
+  // Keep only the two spatial axes (last two). For N-D arrays (e.g. a
+  // [time, y, x] cube) the chunk/shard shapes are also N-D; the leading
+  // (non-spatial) axes are irrelevant to tile sizing. `slice(-2)` is a no-op
+  // for already-2-D shapes.
   return {
-    shardShape: chunkGrid['configuration']['chunk_shape'],
-    innerChunkShape: shardingCodec['configuration']['chunk_shape'],
+    shardShape: chunkGrid['configuration']['chunk_shape'].slice(-2),
+    innerChunkShape: shardingCodec['configuration']['chunk_shape'].slice(-2),
   };
 }
 
