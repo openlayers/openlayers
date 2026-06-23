@@ -225,6 +225,28 @@ describe('ol/expr/expression.js', () => {
       expect(context.properties.get('foo')).to.be(StringType);
     });
 
+    it('narrows down types using provided style variables', () => {
+      const styleVariables = {x: 123};
+      const context = newParsingContext(styleVariables);
+      parse(['==', ['var', 'x'], ['get', 'y']], BooleanType, context);
+      expect(context.variables.get('x')).to.be(NumberType);
+      expect(context.properties.get('y')).to.be(NumberType);
+    });
+
+    it('do a more lenient type determination for style variables (string as color)', () => {
+      const styleVariables = {x: 'hello'};
+      const context = newParsingContext(styleVariables);
+      parse(['var', 'x'], ColorType, context);
+      expect(context.variables.get('x')).to.be(ColorType);
+    });
+
+    it('do a more lenient type determination for style variables (number[] as size)', () => {
+      const styleVariables = {x: [1, 2]};
+      const context = newParsingContext(styleVariables);
+      parse(['var', 'x'], SizeType, context);
+      expect(context.variables.get('x')).to.be(SizeType);
+    });
+
     describe('case operation', () => {
       it('respects the return type (string)', () => {
         const expression = parse(
@@ -504,6 +526,29 @@ describe('ol/expr/expression.js', () => {
         name: 'second argument is not an array (palette)',
         expression: ['palette', ['band', 2], 'red'],
         error: 'the second argument of palette must be an array',
+      },
+      {
+        name: 'mismatch between expected types when reading a style variables',
+        expression: [
+          '+',
+          ['var', 'myVar'],
+          10,
+          20,
+          ['match', ['var', 'myVar'], 'aa', 30, 40],
+        ],
+        error:
+          'a new type expected from the var operator (string) did not have any overlap with the previous type expected for it (number), variable name: myVar',
+      },
+      {
+        name: 'mismatch between expected type and input values when reading a style variables',
+        expression: ['+', ['var', 'myVar'], 123],
+        context: {
+          inputVariables: {
+            myVar: 'hello',
+          },
+        },
+        error:
+          'the type expected from the var operator (number) did not have any overlap with the type of the corresponding style variables (string), variable name: myVar',
       },
     ];
 

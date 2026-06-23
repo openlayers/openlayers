@@ -9,13 +9,13 @@ import {
   BooleanType,
   CallExpression,
   ColorType,
+  isType,
   NumberArrayType,
   NumberType,
   Ops,
+  parse,
   SizeType,
   StringType,
-  isType,
-  parse,
   typeName,
 } from './expression.js';
 
@@ -136,12 +136,14 @@ export function uniformNameForVariable(variableName) {
  * @property {Array<PaletteTexture>} [paletteTextures] List of palettes used by the style.
  * @property {boolean} featureId Whether the feature ID is used in the expression
  * @property {boolean} geometryType Whether the geometry type is used in the expression
+ * @property {import('../style/flat.js').StyleVariables} [inputVariables] Variable values (i.e. style variables) given as input during parsing to help with type narrowing
  */
 
 /**
+ * @param {import('../style/flat.js').StyleVariables} [inputVariables] Variable values (i.e. style variables) given as input during parsing to help with type narrowing
  * @return {CompilationContext} A new compilation context.
  */
-export function newCompilationContext() {
+export function newCompilationContext(inputVariables) {
   return {
     variables: new Map(),
     properties: new Map(),
@@ -149,6 +151,7 @@ export function newCompilationContext() {
     bandCount: 0,
     featureId: false,
     geometryType: false,
+    inputVariables,
   };
 }
 

@@ -1,11 +1,12 @@
 import {
   AnyType,
+  BooleanType,
   ColorType,
+  newParsingContext,
   NumberArrayType,
   NumberType,
   SizeType,
   StringType,
-  newParsingContext,
 } from '../../../../src/ol/expr/expression.js';
 import {
   arrayToGlsl,
@@ -130,12 +131,19 @@ describe('ol/expr/gpu.js', () => {
         expression: ['var', 'myVar'],
         expected: 'u_var_myVar',
         context: {
-          style: {
-            variables: {
-              myVar: 'abcd',
-            },
+          inputVariables: {
+            myVar: 'abcd',
           },
         },
+        contextAssertion: (context) => {
+          expect(context.variables.get('myVar')).to.equal(StringType);
+        },
+      },
+      {
+        name: 'var (without given style variables)',
+        type: AnyType,
+        expression: ['var', 'myVar'],
+        expected: 'u_var_myVar',
         contextAssertion: (context) => {
           expect(context.variables.get('myVar')).to.equal(AnyType);
         },
@@ -598,11 +606,9 @@ describe('ol/expr/gpu.js', () => {
           ],
         ],
         context: {
-          style: {
-            variables: {
-              defaultWidth: 16,
-              defaultHeight: 32,
-            },
+          inputVariables: {
+            defaultWidth: 16,
+            defaultHeight: 32,
           },
         },
         expected:
@@ -630,13 +636,11 @@ describe('ol/expr/gpu.js', () => {
         ],
         type: NumberArrayType,
         context: {
-          style: {
-            variables: {
-              fixedSize: [10, 20],
-              symbolType: 'dynamic',
-              lowHeight: 6,
-              mediumHeight: 12,
-            },
+          inputVariables: {
+            fixedSize: [10, 20],
+            symbolType: 'dynamic',
+            lowHeight: 6,
+            mediumHeight: 12,
           },
         },
         expected: `((u_var_symbolType == ${stringToGlsl('dynamic')}) ? vec2((a_prop_type == ${stringToGlsl('low')} ? u_var_lowHeight : (a_prop_type == ${stringToGlsl('medium')} ? u_var_mediumHeight : a_prop_height)), 10.0) : u_var_fixedSize)`,
@@ -667,11 +671,26 @@ describe('ol/expr/gpu.js', () => {
         expression: [1.5, 0.5],
         expected: 'vec2(1.5, 0.5)',
       },
+      {
+        name: 'narrows down types using style variables',
+        type: BooleanType,
+        expression: ['==', ['var', 'x'], ['get', 'y']],
+        expected: '(u_var_x == a_prop_y)',
+        context: {
+          inputVariables: {
+            x: 123,
+          },
+        },
+        contextAssertion: (context) => {
+          expect(context.variables.get('x')).to.eql(NumberType);
+          expect(context.properties.get('y')).to.eql(NumberType);
+        },
+      },
     ];
 
     for (const c of cases) {
       it(`works for ${c.name}`, () => {
-        const parsingContext = newParsingContext();
+        const parsingContext = newParsingContext(c.context?.inputVariables);
         const compilationContext = c.context
           ? {...newCompilationContext(), ...c.context}
           : newCompilationContext();
