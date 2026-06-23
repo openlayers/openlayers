@@ -11,15 +11,23 @@ const ZARR_ROOT_URL = 'http://test-zarr/test.zarr';
  * Create a Zarr v3 array metadata object with optional sharding codec.
  * @param {Object} options Options.
  * @param {number} [options.fillValue] The fill value.
- * @param {Array<number>} [options.shardShape] The shard (outer chunk) shape [rows, cols].
- * @param {Array<number>} [options.innerChunkShape] The inner chunk shape [rows, cols].
+ * @param {Array<number>} [options.shardShape] The shard (outer chunk) shape.
+ * @param {Array<number>} [options.innerChunkShape] The inner chunk shape.
+ * @param {Array<number>} [options.shape] The array shape (defaults to a 2-D [10980, 10980]).
+ * @param {Array<string>} [options.dimensionNames] The Zarr v3 `dimension_names`.
  * @return {Object} The array metadata.
  */
-function createArrayMeta({fillValue, shardShape, innerChunkShape} = {}) {
+function createArrayMeta({
+  fillValue,
+  shardShape,
+  innerChunkShape,
+  shape,
+  dimensionNames,
+} = {}) {
   const meta = {
     zarr_format: 3,
     node_type: 'array',
-    shape: [10980, 10980],
+    shape: shape || [10980, 10980],
     data_type: 'float32',
     fill_value: fillValue !== undefined ? fillValue : 0,
     chunk_grid: {
@@ -35,6 +43,9 @@ function createArrayMeta({fillValue, shardShape, innerChunkShape} = {}) {
     codecs: [],
     attributes: {},
   };
+  if (dimensionNames) {
+    meta.dimension_names = dimensionNames;
+  }
   if (innerChunkShape) {
     meta.codecs = [
       {
@@ -694,6 +705,244 @@ describe('ol/source/GeoZarr', function () {
             assert.strictEqual(source.bandSingleScaleResolution_[0], undefined);
             assert.notEqual(source.bandSingleScaleResolution_[1], undefined);
             assert.include(source.bandsByLevel_['level0'], 'aot');
+            resolve();
+          }
+        });
+      }));
+  });
+
+  describe('dimensions (time-slice / extra dimensions)', function () {
+    let fetchStub;
+
+    afterEach(function () {
+      if (fetchStub) {
+        fetchStub.mockRestore();
+        fetchStub = null;
+      }
+    });
+
+    it('resolves the extra-dimension index from dimension_names', () =>
+      new Promise((resolve) => {
+        fetchStub = stubFetch({
+          ['level0/vv']: createArrayMeta({
+            shape: [3, 256, 256],
+            dimensionNames: ['time', 'y', 'x'],
+          }),
+        });
+        const source = new GeoZarr({
+          url: ZARR_URL,
+          bands: ['vv'],
+          dimensions: {time: 2},
+        });
+        source.on('change', function () {
+          if (source.getState() === 'ready') {
+            assert.deepEqual(source.bandExtraSelection_[0], [2, null, null]);
+            resolve();
+          }
+        });
+      }));
+
+    it('reports the non-spatial dimensions via getDimensions()', () =>
+      new Promise((resolve) => {
+        fetchStub = stubFetch({
+          ['level0/vv']: createArrayMeta({
+            shape: [5, 256, 256],
+            dimensionNames: ['time', 'y', 'x'],
+          }),
+        });
+        const source = new GeoZarr({url: ZARR_URL, bands: ['vv']});
+        source.on('change', function () {
+          if (source.getState() === 'ready') {
+            assert.deepEqual(source.getDimensions(), [{name: 'time', size: 5}]);
+            resolve();
+          }
+        });
+      }));
+
+    it('getDimensions() is empty for 2-D bands', () =>
+      new Promise((resolve) => {
+        fetchStub = stubFetch({['level0/b04']: createArrayMeta()});
+        const source = new GeoZarr({url: ZARR_URL, bands: ['b04']});
+        source.on('change', function () {
+          if (source.getState() === 'ready') {
+            assert.deepEqual(source.getDimensions(), []);
+            resolve();
+          }
+        });
+      }));
+
+    it('getDimensions() names unnamed dimensions by axis position', () =>
+      new Promise((resolve) => {
+        fetchStub = stubFetch({
+          ['level0/vv']: createArrayMeta({shape: [3, 256, 256]}),
+        });
+        const source = new GeoZarr({url: ZARR_URL, bands: ['vv']});
+        source.on('change', function () {
+          if (source.getState() === 'ready') {
+            assert.deepEqual(source.getDimensions(), [{name: '0', size: 3}]);
+            resolve();
+          }
+        });
+      }));
+
+    it('selects unnamed dimensions by axis position', () =>
+      new Promise((resolve) => {
+        fetchStub = stubFetch({
+          ['level0/vv']: createArrayMeta({shape: [2, 3, 256, 256]}),
+        });
+        const source = new GeoZarr({
+          url: ZARR_URL,
+          bands: ['vv'],
+          dimensions: {'0': 1, '1': 2},
+        });
+        source.on('change', function () {
+          if (source.getState() === 'ready') {
+            assert.deepEqual(source.bandExtraSelection_[0], [1, 2, null, null]);
+            resolve();
+          }
+        });
+      }));
+
+    it('binds a single extra axis positionally when dimension_names is absent', () =>
+      new Promise((resolve) => {
+        fetchStub = stubFetch({
+          ['level0/vv']: createArrayMeta({shape: [3, 256, 256]}),
+        });
+        const source = new GeoZarr({
+          url: ZARR_URL,
+          bands: ['vv'],
+          dimensions: {time: 1},
+        });
+        source.on('change', function () {
+          if (source.getState() === 'ready') {
+            assert.deepEqual(source.bandExtraSelection_[0], [1, null, null]);
+            resolve();
+          }
+        });
+      }));
+
+    it('leaves 2-D arrays unselected (no behavior change)', () =>
+      new Promise((resolve) => {
+        fetchStub = stubFetch({
+          ['level0/b04']: createArrayMeta(),
+        });
+        const source = new GeoZarr({
+          url: ZARR_URL,
+          bands: ['b04'],
+          dimensions: {time: 0},
+        });
+        source.on('change', function () {
+          if (source.getState() === 'ready') {
+            assert.strictEqual(source.bandExtraSelection_[0], undefined);
+            resolve();
+          }
+        });
+      }));
+
+    it('supports band-as-dimension (forward-compat for #17474)', () =>
+      new Promise((resolve) => {
+        fetchStub = stubFetch({
+          ['level0/data']: createArrayMeta({
+            shape: [4, 256, 256],
+            dimensionNames: ['band', 'y', 'x'],
+          }),
+        });
+        const source = new GeoZarr({
+          url: ZARR_URL,
+          bands: ['data'],
+          dimensions: {band: 1},
+        });
+        source.on('change', function () {
+          if (source.getState() === 'ready') {
+            assert.deepEqual(source.bandExtraSelection_[0], [1, null, null]);
+            resolve();
+          }
+        });
+      }));
+
+    it('derives a 2-D-equivalent tile size for a sharded 3-D array', () =>
+      new Promise((resolve) => {
+        // Shard/inner-chunk shapes are 3-D ([1, 512, 512] / [1, 128, 128]); the
+        // leading (time) axis must be ignored so the tile size matches the 2-D case.
+        fetchStub = stubFetch({
+          ['level0/vv']: createArrayMeta({
+            shape: [3, 512, 512],
+            shardShape: [1, 512, 512],
+            innerChunkShape: [1, 128, 128],
+            dimensionNames: ['time', 'y', 'x'],
+          }),
+        });
+        const source = new GeoZarr({
+          url: ZARR_URL,
+          bands: ['vv'],
+          dimensions: {time: 0},
+        });
+        source.on('change', function () {
+          if (source.getState() === 'ready') {
+            assert.deepEqual(source.tileGrid.getTileSize(0), [512, 512]);
+            resolve();
+          }
+        });
+      }));
+
+    it('errors on an out-of-range index', () =>
+      new Promise((resolve) => {
+        fetchStub = stubFetch({
+          ['level0/vv']: createArrayMeta({
+            shape: [3, 256, 256],
+            dimensionNames: ['time', 'y', 'x'],
+          }),
+        });
+        const source = new GeoZarr({
+          url: ZARR_URL,
+          bands: ['vv'],
+          dimensions: {time: 5},
+        });
+        source.on('change', function () {
+          if (source.getState() === 'error') {
+            assert.include(source.error_.message, 'invalid index 5');
+            resolve();
+          }
+        });
+      }));
+
+    it('errors on a string (datetime-label) value as not yet implemented', () =>
+      new Promise((resolve) => {
+        fetchStub = stubFetch({
+          ['level0/vv']: createArrayMeta({
+            shape: [3, 256, 256],
+            dimensionNames: ['time', 'y', 'x'],
+          }),
+        });
+        const source = new GeoZarr({
+          url: ZARR_URL,
+          bands: ['vv'],
+          dimensions: {time: '2026-06-16T18:11:16Z'},
+        });
+        source.on('change', function () {
+          if (source.getState() === 'error') {
+            assert.include(source.error_.message, 'not yet implemented');
+            resolve();
+          }
+        });
+      }));
+
+    it('errors on an unknown dimension name', () =>
+      new Promise((resolve) => {
+        fetchStub = stubFetch({
+          ['level0/vv']: createArrayMeta({
+            shape: [3, 256, 256],
+            dimensionNames: ['time', 'y', 'x'],
+          }),
+        });
+        const source = new GeoZarr({
+          url: ZARR_URL,
+          bands: ['vv'],
+          dimensions: {bogus: 0},
+        });
+        source.on('change', function () {
+          if (source.getState() === 'error') {
+            assert.include(source.error_.message, 'unknown dimension "bogus"');
             resolve();
           }
         });
