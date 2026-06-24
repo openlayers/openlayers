@@ -12,6 +12,7 @@ const features = [];
 for (let i = 0; i < 16; i++) {
   const angle = (i * Math.PI) / 8;
   const myProp = (100 * (i + 1)) / 16;
+  const myPropStr = myProp.toString();
   features.push(
     new Feature({
       geometry: new LineString([
@@ -19,6 +20,7 @@ for (let i = 0; i < 16; i++) {
         [Math.cos(angle) * 15000000, Math.sin(angle) * 15000000],
       ]),
       myProp,
+      myPropStr,
     }),
   );
   features.push(
@@ -28,6 +30,7 @@ for (let i = 0; i < 16; i++) {
         Math.sin(angle) * 18000000,
       ]),
       myProp,
+      myPropStr,
     }),
   );
 }
@@ -39,7 +42,15 @@ const vector = new HeatmapLayer({
   blur: 7,
   radius: 7,
   weight: ['/', ['get', 'myProp'], 100],
-  filter: ['any', ['<', ['get', 'myProp'], 50], ['>', ['get', 'myProp'], 65]],
+  filter: [
+    'any',
+    ['<', ['get', 'myProp'], 50],
+    ['>', ['get', 'myProp'], 65],
+    ['==', ['get', 'myPropStr'], ['var', 'myVarStr']],
+  ],
+  variables: {
+    myVarStr: '56.25', // this will show a single horizontal line
+  },
 });
 
 const raster = new TileLayer({

@@ -4,8 +4,8 @@
 import {createCanvasContext2D} from '../dom.js';
 import {
   BooleanType,
-  NumberType,
   newParsingContext,
+  NumberType,
 } from '../expr/expression.js';
 import {newCompilationContext} from '../expr/gpu.js';
 import {clamp} from '../math.js';
@@ -282,8 +282,8 @@ class Heatmap extends BaseVector {
   createRenderer() {
     const builder = new ShaderBuilder();
 
-    const context = newCompilationContext();
-    const filterParsingContext = newParsingContext();
+    const context = newCompilationContext(this.styleVariables_);
+    const filterParsingContext = newParsingContext(this.styleVariables_);
     const filterCompiled = expressionToGlsl(
       context,
       this.filter_,

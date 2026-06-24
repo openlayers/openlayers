@@ -6,12 +6,12 @@ import {assert} from '../../asserts.js';
 import {
   BooleanType,
   ColorType,
+  computeGeometryType,
+  newParsingContext,
   NumberArrayType,
   NumberType,
   SizeType,
   StringType,
-  computeGeometryType,
-  newParsingContext,
 } from '../../expr/expression.js';
 import {
   FEATURE_ID_PROPERTY_NAME,
@@ -792,7 +792,7 @@ function parseFillProperties(style, builder, uniforms, context) {
  * @return {StyleParseResult} Result containing shader params, attributes and uniforms.
  */
 export function parseLiteralStyle(style, variables, filter) {
-  const context = newCompilationContext();
+  const context = newCompilationContext(variables);
 
   const builder = new ShaderBuilder();
 
@@ -812,7 +812,7 @@ export function parseLiteralStyle(style, variables, filter) {
   // note that the style filter may have already been applied earlier when building the rendering instructions
   // this is still needed in case a filter cannot be evaluated statically beforehand (e.g. depending on time)
   if (filter) {
-    const filterContext = newParsingContext();
+    const filterContext = newParsingContext(variables);
     const parsedFilter = expressionToGlsl(
       context,
       filter,

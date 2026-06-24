@@ -261,12 +261,14 @@ export class CallExpression {
  * @property {boolean} geometryType The style uses the feature geometry type.
  * @property {boolean} mCoordinate The style uses the M coordinate of geometries
  * @property {boolean} mapState The style uses the map state (view state or time elapsed).
+ * @property {import('../style/flat.js').StyleVariables} [inputVariables] Variable values (i.e. style variables) given as input during parsing to help with type narrowing
  */
 
 /**
+ * @param {import('../style/flat.js').StyleVariables} [inputVariables] Variable values (i.e. style variables) given as input during parsing to help with type narrowing
  * @return {ParsingContext} A new parsing context.
  */
-export function newParsingContext() {
+export function newParsingContext(inputVariables) {
   return {
     variables: new Map(),
     properties: new Map(),
@@ -274,6 +276,7 @@ export function newParsingContext() {
     geometryType: false,
     mCoordinate: false,
     mapState: false,
+    inputVariables,
   };
 }
 
@@ -444,7 +447,7 @@ export const Ops = {
  */
 const parsers = {
   [Ops.Get]: createCallExpressionParser(hasArgsCount(1, Infinity), withGetArgs),
-  [Ops.Var]: createCallExpressionParser(hasArgsCount(1, 1), withVarArgs),
+  [Ops.Var]: createVarExpressionParser(),
   [Ops.Has]: createCallExpressionParser(hasArgsCount(1, Infinity), withGetArgs),
   [Ops.Id]: createCallExpressionParser(usesFeatureId, withNoArgs),
   [Ops.Concat]: createCallExpressionParser(
@@ -644,16 +647,74 @@ function withGetArgs(encoded, returnType, context) {
 }
 
 /**
- * @type {ArgValidator}
+ * This special expression parser reads style variables present in the context to narrow down
+ * the expected return type of the 'var' operator
+ * @return {Parser} The parser.
  */
-function withVarArgs(encoded, returnType, context) {
-  const name = encoded[1];
-  if (typeof name !== 'string') {
-    throw new Error('expected a string argument for var operation');
-  }
-  context.variables.set(name, returnType);
+function createVarExpressionParser() {
+  return function (encoded, returnType, context) {
+    const name = encoded[1];
+    if (typeof name !== 'string') {
+      throw new Error('expected a string argument for var operation');
+    }
+    let type = returnType;
 
-  return [new LiteralExpression(StringType, name)];
+    const variableValue = context.inputVariables?.[name];
+    if (variableValue !== undefined) {
+      const parsedInput = parse(variableValue, AnyType, context);
+      if (!(parsedInput instanceof LiteralExpression)) {
+        throw new Error(
+          `style variables should only be literal values (no expressions!), variable name: ${name}`,
+        );
+      }
+      let parsedType = parsedInput.type;
+
+      // special cases (because variables are not embedded in expressions and as such are harder to figure out their types)
+      // * if the variable is a string (e.g. 'blue') and we know that the expected type is not
+      //   StringType but ColorType, assume that the variable is indeed a color and not a string
+      // * if the variable is 2-elements a number array and we know that the expected type is SizeType
+      //   and not NumberArrayType, assume that the variable is indeed a size
+      if (
+        typeof variableValue === 'string' &&
+        overlapsType(type, ColorType) &&
+        !overlapsType(type, StringType)
+      ) {
+        parsedType = ColorType;
+      } else if (
+        Array.isArray(variableValue) &&
+        variableValue.length === 2 &&
+        overlapsType(type, SizeType) &&
+        !overlapsType(type, NumberArrayType)
+      ) {
+        parsedType = SizeType;
+      }
+
+      type &= parsedType;
+      if (type === NoneType) {
+        throw new Error(
+          `the type expected from the var operator (${typeName(returnType)}) did not have any overlap with the type of the corresponding style variables (${typeName(parsedType)}), variable name: ${name}`,
+        );
+      }
+    }
+
+    if (context.variables.has(name)) {
+      const existingType = context.variables.get(name);
+      type &= existingType;
+      if (type === NoneType) {
+        throw new Error(
+          `a new type expected from the var operator (${typeName(returnType)}) did not have any overlap with the previous type expected for it (${typeName(existingType)}), variable name: ${name}`,
+        );
+      }
+    }
+
+    context.variables.set(name, type);
+
+    return new CallExpression(
+      type,
+      'var',
+      new LiteralExpression(StringType, name),
+    );
+  };
 }
 
 /**
