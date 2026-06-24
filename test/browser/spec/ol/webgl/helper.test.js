@@ -115,6 +115,18 @@ describe('ol/webgl/WebGLHelper', function () {
         expect(h.postProcessPasses_[1].uniforms_[0].value).to.eql(4);
       });
     });
+
+    describe('with empty post process array', function () {
+      beforeEach(function () {
+        h = new WebGLHelper({
+          postProcesses: [],
+        });
+      });
+
+      it('has a default rendering pass as well', function () {
+        expect(h.postProcessPasses_.length).to.eql(1);
+      });
+    });
   });
 
   describe('operations', function () {
@@ -281,6 +293,31 @@ describe('ol/webgl/WebGLHelper', function () {
         );
 
         h.makeProjectionTransform(SAMPLE_FRAMESTATE, given);
+
+        expect(given.map((val) => val.toFixed(15))).to.eql(
+          expected.map((val) => val.toFixed(15)),
+        );
+      });
+
+      it('gives out the correct transform (rotation ignored)', function () {
+        const scaleX =
+          2 /
+          SAMPLE_FRAMESTATE.size[0] /
+          SAMPLE_FRAMESTATE.viewState.resolution;
+        const scaleY =
+          2 /
+          SAMPLE_FRAMESTATE.size[1] /
+          SAMPLE_FRAMESTATE.viewState.resolution;
+        const given = createTransform();
+        const expected = createTransform();
+        scaleTransform(expected, scaleX, scaleY);
+        translateTransform(
+          expected,
+          -SAMPLE_FRAMESTATE.viewState.center[0],
+          -SAMPLE_FRAMESTATE.viewState.center[1],
+        );
+
+        h.makeProjectionTransform(SAMPLE_FRAMESTATE, given, true);
 
         expect(given.map((val) => val.toFixed(15))).to.eql(
           expected.map((val) => val.toFixed(15)),

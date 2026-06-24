@@ -16,6 +16,7 @@ class MockRenderer {
     () => new Promise((resolve) => (this.endGenerate_ = resolve)),
   );
   endGenerate_ = null;
+  disposeTextInstructions = sinonStub();
 }
 
 describe('ol/webgl/TileGeometry', function () {
@@ -27,6 +28,7 @@ describe('ol/webgl/TileGeometry', function () {
 
   let styleRenderer;
   let helper;
+  let grid;
 
   beforeEach(function () {
     tile = new VectorRenderTile(
@@ -38,15 +40,16 @@ describe('ol/webgl/TileGeometry', function () {
     );
     styleRenderer = new MockRenderer();
     helper = new WebGLHelper();
+    grid = createXYZ({
+      tileSize: [256, 256],
+      maxZoom: 5,
+      extent: [-128, -128, 128, 128],
+    });
 
     tileGeometry = new TileGeometry(
       {
         tile,
-        grid: createXYZ({
-          tileSize: [256, 256],
-          maxZoom: 5,
-          extent: [-128, -128, 128, 128],
-        }),
+        grid,
         helper,
       },
       styleRenderer,
@@ -62,6 +65,9 @@ describe('ol/webgl/TileGeometry', function () {
     });
     it('creates a new geometry batch', () => {
       expect(tileGeometry.batch_).to.be.a(MixedGeometryBatch);
+    });
+    it('computes the resolution of the tile content according its z coordinate', () => {
+      expect(tileGeometry.wantedResolution).to.be(grid.getResolution(3));
     });
   });
 
@@ -118,6 +124,9 @@ describe('ol/webgl/TileGeometry', function () {
       expect(styleRenderer.generateBuffers.getCall(0).args[1]).to.eql(
         originTransform,
       );
+      expect(styleRenderer.generateBuffers.getCall(0).args[2]).to.eql(
+        tileGeometry.wantedResolution,
+      );
     });
     it('becomes ready when each of the renderers have finished generating buffers', async () => {
       expect(tileGeometry.ready).to.be(false);
@@ -146,6 +155,9 @@ describe('ol/webgl/TileGeometry', function () {
       });
       it('deletes webgl buffers', () => {
         expect(deleteBufferSpy.callCount).to.be(4); // 2 for points, 2 for polygons
+      });
+      it('disposes text instructions', () => {
+        expect(styleRenderer.disposeTextInstructions.calledOnce).to.be(true);
       });
     });
   });

@@ -1,4 +1,4 @@
-import {spy as sinonSpy} from 'sinon';
+import {spy as sinonSpy, stub as sinonStub} from 'sinon';
 import Feature from '../../../../../../src/ol/Feature.js';
 import Map from '../../../../../../src/ol/Map.js';
 import View from '../../../../../../src/ol/View.js';
@@ -10,6 +10,7 @@ import {get as getProjection} from '../../../../../../src/ol/proj.js';
 import Projection from '../../../../../../src/ol/proj/Projection.js';
 import {ShaderBuilder} from '../../../../../../src/ol/render/webgl/ShaderBuilder.js';
 import VectorStyleRenderer, * as ol_render_webgl_vectorstylerenderer from '../../../../../../src/ol/render/webgl/VectorStyleRenderer.js';
+import {createPostProcessDefinition} from '../../../../../../src/ol/render/webgl/textUtil.js';
 import WebGLVectorLayerRenderer from '../../../../../../src/ol/renderer/webgl/VectorLayer.js';
 import VectorSource from '../../../../../../src/ol/source/Vector.js';
 import VectorEventType from '../../../../../../src/ol/source/VectorEventType.js';
@@ -39,6 +40,7 @@ const SAMPLE_RULES = [
       'circle-radius': 3,
       'fill-color': ['get', 'color'],
       'stroke-width': 2,
+      'text-value': 'hello world',
     },
   },
 ];
@@ -154,6 +156,20 @@ describe('ol/renderer/webgl/VectorLayer', () => {
     expect(renderer.styleRenderer_).to.eql(null);
   });
 
+  it('does include the post processing step for text rendering', () => {
+    const mockPostProcess = createPostProcessDefinition(
+      () => null,
+      () => null,
+    );
+    expect(renderer.postProcesses_.length).to.be(1);
+    expect(renderer.postProcesses_[0].fragmentShader).to.eql(
+      mockPostProcess.fragmentShader,
+    );
+    expect(renderer.postProcesses_[0].vertexShader).to.eql(
+      mockPostProcess.vertexShader,
+    );
+  });
+
   describe('#afterHelperCreated', () => {
     let spy;
     beforeEach(() => {
@@ -211,11 +227,6 @@ describe('ol/renderer/webgl/VectorLayer', () => {
   });
 
   describe('#reset', () => {
-    beforeEach(() => {
-      // first call prepareFrame to initialize the helper
-      renderer.prepareFrame(frameState);
-    });
-
     describe('use shaders', () => {
       let spy;
       beforeEach(() => {
@@ -223,6 +234,7 @@ describe('ol/renderer/webgl/VectorLayer', () => {
         renderer.reset({
           style: SAMPLE_SHADERS,
         });
+        renderer.prepareFrame(frameState);
       });
       afterEach(() => {
         spy.restore();
@@ -234,6 +246,9 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       it('passes the correct styles to renderer', () => {
         expect(spy.calledWith(SAMPLE_SHADERS)).to.be(true);
       });
+      it('does not include the post processing step for text rendering', () => {
+        expect(renderer.postProcesses_).to.eql([]);
+      });
     });
 
     describe('use a single style', () => {
@@ -243,6 +258,7 @@ describe('ol/renderer/webgl/VectorLayer', () => {
         renderer.reset({
           style: SAMPLE_STYLE,
         });
+        renderer.prepareFrame(frameState);
       });
       afterEach(() => {
         spy.restore();
@@ -254,6 +270,66 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       it('passes the correct styles to renderer', () => {
         expect(spy.calledWith(SAMPLE_STYLE)).to.be(true);
       });
+      it('does not include the post processing step for text rendering', () => {
+        expect(renderer.postProcesses_).to.eql([]);
+      });
+    });
+  });
+
+  describe('style without text & with post processes', () => {
+    const POST_PROCESS = {
+      hello: 'world',
+    };
+    beforeEach(() => {
+      renderer = new WebGLVectorLayerRenderer(vectorLayer, {
+        style: [
+          {
+            style: {
+              'circle-radius': 4,
+            },
+          },
+        ],
+        postProcesses: [POST_PROCESS],
+      });
+
+      // this will initialize the style renderer
+      renderer.prepareFrame(frameState);
+      renderer.renderFrame(frameState);
+
+      sinonSpy(renderer.styleRenderer_, 'finalizeTextRender');
+    });
+
+    it('does not include the text post processing step', () => {
+      expect(renderer.postProcesses_).to.eql([POST_PROCESS]);
+    });
+
+    describe('when a style with text is set later on', () => {
+      beforeEach(() => {
+        renderer.reset({
+          style: SAMPLE_RULES,
+        });
+      });
+
+      it('does include the post processing step for text rendering', () => {
+        const mockPostProcess = createPostProcessDefinition(
+          () => null,
+          () => null,
+        );
+        expect(renderer.postProcesses_.length).to.be(2);
+        expect(renderer.postProcesses_[0].fragmentShader).to.eql(
+          mockPostProcess.fragmentShader,
+        );
+        expect(renderer.postProcesses_[0].vertexShader).to.eql(
+          mockPostProcess.vertexShader,
+        );
+        expect(renderer.postProcesses_[1]).to.eql(POST_PROCESS);
+      });
+    });
+
+    it('does not call styleRenderer.finalizeTextRender after renderFrame', () => {
+      renderer.prepareFrame(frameState);
+      renderer.renderFrame(frameState);
+      expect(renderer.styleRenderer_.finalizeTextRender.called).to.be(false);
     });
   });
 
@@ -320,6 +396,7 @@ describe('ol/renderer/webgl/VectorLayer', () => {
     });
     describe('new frame without change', () => {
       beforeEach(() => {
+        sinonSpy(renderer.styleRenderer_, 'generateBuffers');
         toRender = renderer.prepareFrame(frameState);
       });
       it('requires rendering', () => {
@@ -328,10 +405,14 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       it('does not load the data again', () => {
         expect(vectorSource.loadFeatures.calledTwice).to.eql(false);
       });
+      it('does not regenerate the buffers', () => {
+        expect(renderer.styleRenderer_.generateBuffers.called).to.be(false);
+      });
     });
     describe('on source change', () => {
       beforeEach(() => {
         vectorSource.changed();
+        sinonSpy(renderer.styleRenderer_, 'generateBuffers');
         toRender = renderer.prepareFrame(frameState);
       });
       it('requires rendering', () => {
@@ -339,11 +420,21 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       });
       it('loads the data again', () => {
         expect(vectorSource.loadFeatures.calledTwice).to.eql(true);
+      });
+      it('regenerates the buffers', () => {
+        expect(renderer.styleRenderer_.generateBuffers.callCount).to.be(1);
+        expect(
+          renderer.styleRenderer_.generateBuffers.getCall(0).args[1],
+        ).to.eql([0.04, 0, 0, 0.08, 0, -1.28]); // transform made from the current frame state
+        expect(
+          renderer.styleRenderer_.generateBuffers.getCall(0).args[2],
+        ).to.eql(frameState.viewState.resolution);
       });
     });
     describe('on view change', () => {
       beforeEach(() => {
         frameState.extent = [0, 10, 0, 10];
+        sinonSpy(renderer.styleRenderer_, 'generateBuffers');
         toRender = renderer.prepareFrame(frameState);
       });
       it('requires rendering', () => {
@@ -351,12 +442,17 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       });
       it('loads the data again', () => {
         expect(vectorSource.loadFeatures.calledTwice).to.eql(true);
+      });
+      it('regenerates the buffers', () => {
+        expect(renderer.styleRenderer_.generateBuffers.callCount).to.be(1);
       });
     });
   });
 
   describe('#renderFrame', () => {
     const withHit = 2;
+    let newFrameState;
+    let finalizeTextRenderStub;
 
     beforeEach(async () => {
       // call once without tracking in order to initialize helper
@@ -373,6 +469,10 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       sinonSpy(renderer.helper, 'finalizeDraw');
       sinonSpy(renderer.helper, 'deleteBuffer');
       sinonSpy(renderer.styleRenderer_, 'render');
+      finalizeTextRenderStub = sinonStub(
+        renderer.styleRenderer_,
+        'finalizeTextRender',
+      ).returns(Promise.resolve());
 
       // this is required to keep a "snapshot" of the input vec2
       // (since the same object is reused for various calls)
@@ -395,8 +495,7 @@ describe('ol/renderer/webgl/VectorLayer', () => {
           },
         },
       );
-
-      renderer.renderFrame({
+      newFrameState = {
         ...frameState,
         viewState: {
           ...frameState.viewState,
@@ -404,7 +503,8 @@ describe('ol/renderer/webgl/VectorLayer', () => {
           resolution: 0.5,
           center: [16, 0],
         },
-      });
+      };
+      renderer.renderFrame(newFrameState);
     });
     it('sets PROJECTION matrix uniform once for each geometry type', () => {
       const calls = renderer.helper.setUniformMatrixValue
@@ -476,6 +576,9 @@ describe('ol/renderer/webgl/VectorLayer', () => {
     it('calls helper.finalizeDraw once', () => {
       expect(renderer.helper.finalizeDraw.calledOnce).to.be(true);
     });
+    it('calls styleRenderer.finalizeTextRender once', () => {
+      expect(renderer.styleRenderer_.finalizeTextRender.calledOnce).to.be(true);
+    });
     it("does not delete any buffer if it's the first render", () => {
       expect(renderer.helper.deleteBuffer.calledOnce).to.be(false);
     });
@@ -513,6 +616,45 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       });
       it('deletes previous buffers', () => {
         expect(renderer.helper.deleteBuffer.callCount).to.be(9); // 3 buffers (index, vertex, instance) * 3 types of geometry
+      });
+    });
+
+    describe('text overlay rerender', () => {
+      let finalizeTextRenderResolver;
+
+      beforeEach(() => {
+        finalizeTextRenderStub.returns(
+          new Promise((resolve) => {
+            finalizeTextRenderResolver = resolve;
+          }),
+        );
+        sinonSpy(vectorLayer, 'changed');
+      });
+
+      it('calls layer.changed() after the text overlay is ready to be rendered', async () => {
+        renderer.renderFrame(newFrameState);
+        finalizeTextRenderResolver();
+        await new Promise((resolve) => setTimeout(resolve)); // awaiting next tick
+        expect(vectorLayer.changed.callCount).to.be(1);
+
+        // asking for an identical render: layer.changed() should not be called again
+        renderer.renderFrame(newFrameState);
+        finalizeTextRenderResolver();
+        await new Promise((resolve) => setTimeout(resolve));
+        expect(vectorLayer.changed.callCount).to.be(1);
+
+        // different extent: layer.changed should be called once more
+        renderer.renderFrame(frameState);
+        finalizeTextRenderResolver();
+        await new Promise((resolve) => setTimeout(resolve));
+        expect(vectorLayer.changed.callCount).to.be(2);
+
+        // source updated extent: layer.changed should be called once more
+        vectorSource.changed();
+        renderer.renderFrame(frameState);
+        finalizeTextRenderResolver();
+        await new Promise((resolve) => setTimeout(resolve));
+        expect(vectorLayer.changed.callCount).to.be(3);
       });
     });
   });
@@ -652,6 +794,8 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       await new Promise((resolve) => setTimeout(resolve, 150));
       sinonSpy(vectorSource, 'removeEventListener');
       deleteBufferSpy = sinonSpy(renderer.helper, 'deleteBuffer');
+      sinonSpy(renderer.styleRenderer_, 'dispose');
+      sinonSpy(renderer.styleRenderer_, 'disposeTextInstructions');
       renderer.dispose();
     });
     it('unlistens to source events', () => {
@@ -674,6 +818,14 @@ describe('ol/renderer/webgl/VectorLayer', () => {
     });
     it('deletes webgl buffers', () => {
       expect(deleteBufferSpy.callCount).to.be(9); // 3 buffers (index, vertex, instance) * 3 types of geometry
+    });
+    it('disposes of the style renderer', () => {
+      expect(renderer.styleRenderer_.dispose.calledOnce).to.be(true);
+    });
+    it('disposes of the text rendering instructions', () => {
+      expect(renderer.styleRenderer_.disposeTextInstructions.calledOnce).to.be(
+        true,
+      );
     });
   });
 });
