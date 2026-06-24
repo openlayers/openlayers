@@ -186,6 +186,25 @@ class VectorTile extends UrlTile {
   }
 
   /**
+   * @param {number} resolution Resolution.
+   * @param {import("../proj/Projection.js").default} projection Projection.
+   * @param {number|import("../array.js").NearestDirectionFunction} zDirection Z direction.
+   * @return {number} Source z.
+   * @private
+   */
+  getSourceZ_(resolution, projection, zDirection) {
+    const sourceProjection = this.projection;
+    const sourceResolution =
+      projection &&
+      sourceProjection &&
+      !equivalent(projection, sourceProjection)
+        ? (resolution / sourceProjection.getMetersPerUnit()) *
+          projection.getMetersPerUnit()
+        : resolution;
+    return this.tileGrid.getZForResolution(sourceResolution, zDirection);
+  }
+
+  /**
    * @param {number} pixelRatio Pixel ratio.
    * @param {import("../proj/Projection.js").default} projection Projection.
    * @param {VectorRenderTile} tile Vector render tile.
@@ -215,21 +234,7 @@ class VectorTile extends UrlTile {
       if (sourceExtent) {
         getIntersection(extent, sourceExtent, extent);
       }
-      let sourceResolution = resolution;
-      if (
-        projection &&
-        sourceProjection &&
-        !equivalent(projection, sourceProjection)
-      ) {
-        sourceResolution =
-          resolution /
-          sourceProjection.getMetersPerUnit() /
-          projection.getMetersPerUnit();
-      }
-      const sourceZ = sourceTileGrid.getZForResolution(
-        sourceResolution,
-        this.zDirection,
-      );
+      const sourceZ = this.getSourceZ_(resolution, projection, this.zDirection);
 
       const urlFunction = tileUrlFunction || this.tileUrlFunction;
       sourceTileGrid.forEachTileCoord(extent, sourceZ, (sourceTileCoord) => {
@@ -367,18 +372,7 @@ class VectorTile extends UrlTile {
     if (urlTileCoord !== null) {
       const sourceTileGrid = this.tileGrid;
       const resolution = tileGrid.getResolution(z);
-      let sourceResolution = resolution;
-      if (
-        projection &&
-        sourceProjection &&
-        !equivalent(projection, sourceProjection)
-      ) {
-        sourceResolution =
-          resolution /
-          sourceProjection.getMetersPerUnit() /
-          projection.getMetersPerUnit();
-      }
-      const sourceZ = sourceTileGrid.getZForResolution(sourceResolution, 1);
+      const sourceZ = this.getSourceZ_(resolution, projection, 1);
       // make extent 1 pixel smaller so we don't load tiles for < 0.5 pixel render space
       const extent = tileGrid.getTileCoordExtent(urlTileCoord);
       bufferExtent(extent, -resolution, extent);
