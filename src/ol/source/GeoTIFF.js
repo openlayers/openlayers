@@ -466,6 +466,7 @@ class GeoTIFFSource extends DataTile {
       transition: options.transition,
       interpolate: options.interpolate !== false,
       wrapX: options.wrapX,
+      hasAlpha: false,
     });
 
     /**
@@ -523,12 +524,6 @@ class GeoTIFFSource extends DataTile {
      * @private
      */
     this.normalize_ = options.normalize !== false;
-
-    /**
-     * @type {boolean}
-     * @private
-     */
-    this.addAlpha_ = false;
 
     /**
      * @type {Error}
@@ -640,7 +635,7 @@ class GeoTIFFSource extends DataTile {
           [1, 0, 0, 1, -d, -h],
         );
         this.transformMatrix = matrix;
-        this.addAlpha_ = true;
+        this.hasAlpha = true;
         break;
       }
     }
@@ -828,12 +823,12 @@ class GeoTIFFSource extends DataTile {
           !Array.isArray(sourceNodata) ||
           sourceNodata.some((v) => v !== undefined)
         ) {
-          this.addAlpha_ = true;
+          this.hasAlpha = true;
           break;
         }
       }
       if (this.sourceMasks_[sourceIndex].length) {
-        this.addAlpha_ = true;
+        this.hasAlpha = true;
         break;
       }
 
@@ -844,7 +839,7 @@ class GeoTIFFSource extends DataTile {
       if (bands) {
         for (let i = 0; i < bands.length; ++i) {
           if (values[bands[i] - 1] !== null) {
-            this.addAlpha_ = true;
+            this.hasAlpha = true;
             break outer;
           }
         }
@@ -854,18 +849,18 @@ class GeoTIFFSource extends DataTile {
       // option 3: check image metadata for all bands
       for (let imageIndex = 0; imageIndex < values.length; ++imageIndex) {
         if (values[imageIndex] !== null) {
-          this.addAlpha_ = true;
+          this.hasAlpha = true;
           break outer;
         }
       }
     }
 
-    let bandCount = this.addAlpha_ ? 1 : 0;
+    let bandCount = this.hasAlpha ? 1 : 0;
     for (let sourceIndex = 0; sourceIndex < sourceCount; ++sourceIndex) {
       bandCount += samplesPerPixel[sourceIndex];
     }
     this.bandCount = bandCount;
-    this.nodataBandIndex = this.addAlpha_ ? this.bandCount : undefined;
+    this.nodataBandIndex = this.hasAlpha ? this.bandCount : undefined;
 
     const tileGrid = new TileGrid({
       extent: extent,
@@ -1024,7 +1019,7 @@ class GeoTIFFSource extends DataTile {
     const samplesPerPixel = this.samplesPerPixel_;
     const nodataValues = this.nodataValues_;
     const normalize = this.normalize_;
-    const addAlpha = this.addAlpha_;
+    const hasAlpha = this.hasAlpha;
 
     const pixelCount = sourceTileSize[0] * sourceTileSize[1];
     const dataLength = pixelCount * bandCount;
@@ -1086,7 +1081,7 @@ class GeoTIFFSource extends DataTile {
         sourceBiases[sourceIndex] = biases;
       }
 
-      if (addAlpha) {
+      if (hasAlpha) {
         const nodatas = new Array(numSamples);
         for (let sampleIndex = 0; sampleIndex < numSamples; ++sampleIndex) {
           let bandIndex;
@@ -1112,7 +1107,7 @@ class GeoTIFFSource extends DataTile {
 
     let dataIndex = 0;
     for (let pixelIndex = 0; pixelIndex < pixelCount; ++pixelIndex) {
-      let transparent = addAlpha;
+      let transparent = hasAlpha;
       for (let sourceIndex = 0; sourceIndex < sourceCount; ++sourceIndex) {
         for (
           let sampleIndex = 0;
@@ -1134,7 +1129,7 @@ class GeoTIFFSource extends DataTile {
             value = sourceValue;
           }
 
-          if (!addAlpha) {
+          if (!hasAlpha) {
             data[dataIndex] = value;
           } else {
             const nodata = sourceNodatas[sourceIndex][sampleIndex];
@@ -1157,7 +1152,7 @@ class GeoTIFFSource extends DataTile {
           }
         }
       }
-      if (addAlpha) {
+      if (hasAlpha) {
         if (!transparent) {
           data[dataIndex] = 255;
         }

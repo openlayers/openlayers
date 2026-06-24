@@ -203,7 +203,7 @@ describe('ol/source/GeoTIFF', function () {
 
     it('configures itself from source metadata', function (done) {
       source.on('change', () => {
-        expect(source.addAlpha_).to.be(true);
+        expect(source.hasAlpha).to.be(true);
         expect(source.bandCount).to.be(4);
         expect(source.nodataBandIndex).to.be(4);
         expect(source.nodataValues_).to.eql([[0]]);
