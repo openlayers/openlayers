@@ -37,8 +37,12 @@ class ZIndexContext {
             // we only accept calling functions on the proxy, not accessing properties
             return undefined;
           }
-          this.push_(property);
-          return this.pushMethodArgs_;
+          /**
+           * @param {...*} args Arguments to function with name in property
+           */
+          return (...args) => {
+            this.push_(property, args);
+          };
         },
         set: (target, property, value) => {
           this.push_(property, value);
@@ -60,14 +64,6 @@ class ZIndexContext {
     }
     instructions[index].push(...args);
   }
-
-  /**
-   * @private
-   * @param {...*} args Args.
-   */
-  pushMethodArgs_ = (...args) => {
-    this.push_(args);
-  };
 
   /**
    * Push a function that renders to the context directly.
