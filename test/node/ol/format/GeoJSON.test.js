@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import fse from 'fs-extra';
 import Feature from '../../../../src/ol/Feature.js';
 import {equals} from '../../../../src/ol/extent.js';
@@ -17,7 +18,6 @@ import {
 } from '../../../../src/ol/proj.js';
 import Projection from '../../../../src/ol/proj/Projection.js';
 import RenderFeature from '../../../../src/ol/render/Feature.js';
-import expect from '../../expect.js';
 
 class TestFeature extends Feature {}
 
@@ -174,9 +174,9 @@ describe('ol/format/GeoJSON.js', function () {
       };
       const format = new GeoJSON({extractGeometryName: true});
       const feature = format.readFeature(data);
-      expect(feature.getGeometryName()).to.be('the_geom');
-      expect(feature.getGeometry()).to.be.a(Point);
-      expect(feature.getGeometry().getCoordinates()).to.eql([0, 0]);
+      assert.strictEqual(feature.getGeometryName(), 'the_geom');
+      assert.instanceOf(feature.getGeometry(), Point);
+      assert.deepEqual(feature.getGeometry().getCoordinates(), [0, 0]);
     });
 
     it('does nothing if `geometry_name` is missing', () => {
@@ -190,60 +190,60 @@ describe('ol/format/GeoJSON.js', function () {
       };
       const format = new GeoJSON({extractGeometryName: true});
       const feature = format.readFeature(data);
-      expect(feature.getGeometryName()).to.be('geometry');
-      expect(feature.getGeometry()).to.be.a(Point);
-      expect(feature.getGeometry().getCoordinates()).to.eql([0, 0]);
+      assert.strictEqual(feature.getGeometryName(), 'geometry');
+      assert.instanceOf(feature.getGeometry(), Point);
+      assert.deepEqual(feature.getGeometry().getCoordinates(), [0, 0]);
     });
   });
 
   describe('#readFeature', function () {
     it('can read a single point feature', function () {
       const feature = format.readFeature(pointGeoJSON);
-      expect(feature).to.be.an(Feature);
+      assert.instanceOf(feature, Feature);
       const geometry = feature.getGeometry();
-      expect(geometry).to.be.an(Point);
-      expect(geometry.getCoordinates()).to.eql([102.0, 0.5]);
-      expect(feature.get('prop0')).to.be('value0');
+      assert.instanceOf(geometry, Point);
+      assert.deepEqual(geometry.getCoordinates(), [102.0, 0.5]);
+      assert.strictEqual(feature.get('prop0'), 'value0');
     });
 
     it('uses the configured featureClass', function () {
       const feature = new GeoJSON({featureClass: TestFeature}).readFeature(
         pointGeoJSON,
       );
-      expect(feature).to.be.a(TestFeature);
-      expect(feature.getGeometry()).to.be.a(Point);
-      expect(feature.get('prop0')).to.be('value0');
+      assert.instanceOf(feature, TestFeature);
+      assert.instanceOf(feature.getGeometry(), Point);
+      assert.strictEqual(feature.get('prop0'), 'value0');
     });
 
     it('can read a single point geometry as a feature', function () {
       const feature = format.readFeature(pointGeoJSON.geometry);
-      expect(feature).to.be.an(Feature);
+      assert.instanceOf(feature, Feature);
       const geometry = feature.getGeometry();
-      expect(geometry).to.be.an(Point);
-      expect(geometry.getCoordinates()).to.eql([102.0, 0.5]);
+      assert.instanceOf(geometry, Point);
+      assert.deepEqual(geometry.getCoordinates(), [102.0, 0.5]);
     });
 
     it('can read a single line string feature', function () {
       const feature = format.readFeature(lineStringGeoJSON);
-      expect(feature).to.be.an(Feature);
+      assert.instanceOf(feature, Feature);
       const geometry = feature.getGeometry();
-      expect(geometry).to.be.an(LineString);
-      expect(geometry.getCoordinates()).to.eql([
+      assert.instanceOf(geometry, LineString);
+      assert.deepEqual(geometry.getCoordinates(), [
         [102.0, 0.0],
         [103.0, 1.0],
         [104.0, 0.0],
         [105.0, 1.0],
       ]);
-      expect(feature.get('prop0')).to.be('value0');
-      expect(feature.get('prop1')).to.be(0.0);
+      assert.strictEqual(feature.get('prop0'), 'value0');
+      assert.strictEqual(feature.get('prop1'), 0.0);
     });
 
     it('can read a single polygon feature', function () {
       const feature = format.readFeature(polygonGeoJSON);
-      expect(feature).to.be.an(Feature);
+      assert.instanceOf(feature, Feature);
       const geometry = feature.getGeometry();
-      expect(geometry).to.be.an(Polygon);
-      expect(geometry.getCoordinates()).to.eql([
+      assert.instanceOf(geometry, Polygon);
+      assert.deepEqual(geometry.getCoordinates(), [
         [
           [100.0, 0.0],
           [100.0, 1.0],
@@ -251,38 +251,39 @@ describe('ol/format/GeoJSON.js', function () {
           [101.0, 0.0],
         ],
       ]);
-      expect(feature.get('prop0')).to.be('value0');
-      expect(feature.get('prop1')).to.eql({'this': 'that'});
+      assert.strictEqual(feature.get('prop0'), 'value0');
+      assert.deepEqual(feature.get('prop1'), {'this': 'that'});
     });
 
     it('can read a feature with null geometry', function () {
       const feature = format.readFeature(nullGeometryGeoJSON);
-      expect(feature).to.be.an(Feature);
+      assert.instanceOf(feature, Feature);
       const geometry = feature.getGeometry();
-      expect(geometry).to.eql(null);
-      expect(feature.get('prop0')).to.be('value0');
+      assert.deepEqual(geometry, null);
+      assert.strictEqual(feature.get('prop0'), 'value0');
     });
 
     it('can read a feature with id equal to 0', function () {
       const feature = format.readFeature(zeroIdGeoJSON);
-      expect(feature).to.be.an(Feature);
-      expect(feature.getId()).to.be(0);
+      assert.instanceOf(feature, Feature);
+      assert.strictEqual(feature.getId(), 0);
     });
 
     it('can read a feature collection', function () {
       const features = format.readFeatures(featureCollectionGeoJSON);
-      expect(features).to.have.length(3);
-      expect(features[0].getGeometry()).to.be.an(Point);
-      expect(features[1].getGeometry()).to.be.an(LineString);
-      expect(features[2].getGeometry()).to.be.an(Polygon);
+      assert.lengthOf(features, 3);
+      assert.instanceOf(features[0].getGeometry(), Point);
+      assert.instanceOf(features[1].getGeometry(), LineString);
+      assert.instanceOf(features[2].getGeometry(), Polygon);
     });
 
     it('can read and transform a point', function () {
       const feature = format.readFeatures(pointGeoJSON, {
         featureProjection: 'EPSG:3857',
       });
-      expect(feature[0].getGeometry()).to.be.an(Point);
-      expect(feature[0].getGeometry().getCoordinates()).to.eql(
+      assert.instanceOf(feature[0].getGeometry(), Point);
+      assert.deepEqual(
+        feature[0].getGeometry().getCoordinates(),
         transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857'),
       );
     });
@@ -290,8 +291,9 @@ describe('ol/format/GeoJSON.js', function () {
     it('uses featureProjection passed to the constructor', function () {
       const format = new GeoJSON({featureProjection: 'EPSG:3857'});
       const feature = format.readFeatures(pointGeoJSON);
-      expect(feature[0].getGeometry()).to.be.an(Point);
-      expect(feature[0].getGeometry().getCoordinates()).to.eql(
+      assert.instanceOf(feature[0].getGeometry(), Point);
+      assert.deepEqual(
+        feature[0].getGeometry().getCoordinates(),
         transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857'),
       );
     });
@@ -301,8 +303,9 @@ describe('ol/format/GeoJSON.js', function () {
       const feature = format.readFeatures(pointGeoJSON, {
         featureProjection: 'EPSG:3857',
       });
-      expect(feature[0].getGeometry()).to.be.an(Point);
-      expect(feature[0].getGeometry().getCoordinates()).to.eql(
+      assert.instanceOf(feature[0].getGeometry(), Point);
+      assert.deepEqual(
+        feature[0].getGeometry().getCoordinates(),
         transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857'),
       );
     });
@@ -311,17 +314,18 @@ describe('ol/format/GeoJSON.js', function () {
       const features = format.readFeatures(featureCollectionGeoJSON, {
         featureProjection: 'EPSG:3857',
       });
-      expect(features[0].getGeometry()).to.be.an(Point);
-      expect(features[0].getGeometry().getCoordinates()).to.eql(
+      assert.instanceOf(features[0].getGeometry(), Point);
+      assert.deepEqual(
+        features[0].getGeometry().getCoordinates(),
         transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857'),
       );
-      expect(features[1].getGeometry().getCoordinates()).to.eql([
+      assert.deepEqual(features[1].getGeometry().getCoordinates(), [
         transform([102.0, 0.0], 'EPSG:4326', 'EPSG:3857'),
         transform([103.0, 1.0], 'EPSG:4326', 'EPSG:3857'),
         transform([104.0, 0.0], 'EPSG:4326', 'EPSG:3857'),
         transform([105.0, 1.0], 'EPSG:4326', 'EPSG:3857'),
       ]);
-      expect(features[2].getGeometry().getCoordinates()).to.eql([
+      assert.deepEqual(features[2].getGeometry().getCoordinates(), [
         [
           transform([100.0, 0.0], 'EPSG:4326', 'EPSG:3857'),
           transform([100.0, 1.0], 'EPSG:4326', 'EPSG:3857'),
@@ -335,8 +339,8 @@ describe('ol/format/GeoJSON.js', function () {
       const feature = new GeoJSON({geometryName: 'the_geom'}).readFeature(
         pointGeoJSON,
       );
-      expect(feature.getGeometryName()).to.be('the_geom');
-      expect(feature.getGeometry()).to.be.an(Point);
+      assert.strictEqual(feature.getGeometryName(), 'the_geom');
+      assert.instanceOf(feature.getGeometry(), Point);
     });
 
     it('transforms tile pixel coordinates', function () {
@@ -358,7 +362,7 @@ describe('ol/format/GeoJSON.js', function () {
         extent: [-180, -90, 180, 90],
         featureProjection: 'EPSG:3857',
       });
-      expect(feature.getGeometry().getCoordinates()).to.eql([-135, 45]);
+      assert.deepEqual(feature.getGeometry().getCoordinates(), [-135, 45]);
     });
   });
 
@@ -367,27 +371,27 @@ describe('ol/format/GeoJSON.js', function () {
       const str = JSON.stringify(data);
       const array = format.readFeatures(str);
 
-      expect(array.length).to.be(2);
+      assert.strictEqual(array.length, 2);
 
       const first = array[0];
-      expect(first).to.be.a(Feature);
-      expect(first.get('LINK_ID')).to.be(573730499);
+      assert.instanceOf(first, Feature);
+      assert.strictEqual(first.get('LINK_ID'), 573730499);
       const firstGeom = first.getGeometry();
-      expect(firstGeom).to.be.a(LineString);
+      assert.instanceOf(firstGeom, LineString);
 
       const second = array[1];
-      expect(second).to.be.a(Feature);
-      expect(second.get('ST_NAME')).to.be('BRUNNSGATAN');
+      assert.instanceOf(second, Feature);
+      assert.strictEqual(second.get('ST_NAME'), 'BRUNNSGATAN');
       const secondGeom = second.getGeometry();
-      expect(secondGeom).to.be.a(LineString);
+      assert.instanceOf(secondGeom, LineString);
     });
 
     it('can parse a polygon geometry as an array of one feature', function () {
       const features = format.readFeatures(polygonGeoJSON);
-      expect(features).to.be.an(Array);
-      expect(features).to.have.length(1);
+      assert.instanceOf(features, Array);
+      assert.lengthOf(features, 1);
       const geometry = features[0].getGeometry();
-      expect(geometry).to.be.an(Polygon);
+      assert.instanceOf(geometry, Polygon);
     });
 
     it('parses countries.geojson', async () => {
@@ -396,33 +400,35 @@ describe('ol/format/GeoJSON.js', function () {
         {encoding: 'utf8'},
       );
       const result = format.readFeatures(text);
-      expect(result.length).to.be(179);
+      assert.strictEqual(result.length, 179);
 
       const first = result[0];
-      expect(first).to.be.a(Feature);
-      expect(first.get('name')).to.be('Afghanistan');
-      expect(first.getId()).to.be('AFG');
+      assert.instanceOf(first, Feature);
+      assert.strictEqual(first.get('name'), 'Afghanistan');
+      assert.strictEqual(first.getId(), 'AFG');
       const firstGeom = first.getGeometry();
-      expect(firstGeom).to.be.a(Polygon);
-      expect(
+      assert.instanceOf(firstGeom, Polygon);
+      assert.strictEqual(
         equals(
           firstGeom.getExtent(),
           [60.52843, 29.318572, 75.158028, 38.486282],
         ),
-      ).to.be(true);
+        true,
+      );
 
       const last = result[178];
-      expect(last).to.be.a(Feature);
-      expect(last.get('name')).to.be('Zimbabwe');
-      expect(last.getId()).to.be('ZWE');
+      assert.instanceOf(last, Feature);
+      assert.strictEqual(last.get('name'), 'Zimbabwe');
+      assert.strictEqual(last.getId(), 'ZWE');
       const lastGeom = last.getGeometry();
-      expect(lastGeom).to.be.a(Polygon);
-      expect(
+      assert.instanceOf(lastGeom, Polygon);
+      assert.strictEqual(
         equals(
           lastGeom.getExtent(),
           [25.264226, -22.271612, 32.849861, -15.507787],
         ),
-      ).to.be(true);
+        true,
+      );
     });
 
     it('generates an array of features for Feature', function () {
@@ -442,14 +448,17 @@ describe('ol/format/GeoJSON.js', function () {
       };
       const features = format.readFeatures(json);
 
-      expect(features.length).to.be(1);
+      assert.strictEqual(features.length, 1);
 
       const first = features[0];
-      expect(first).to.be.a(Feature);
-      expect(first.get('bam')).to.be('baz');
-      expect(first.getGeometry()).to.be.a(LineString);
+      assert.instanceOf(first, Feature);
+      assert.strictEqual(first.get('bam'), 'baz');
+      assert.instanceOf(first.getGeometry(), LineString);
 
-      expect(format.readProjection(json)).to.be(getProjection('EPSG:4326'));
+      assert.strictEqual(
+        format.readProjection(json),
+        getProjection('EPSG:4326'),
+      );
     });
   });
 
@@ -461,9 +470,9 @@ describe('ol/format/GeoJSON.js', function () {
       });
 
       const obj = format.readGeometry(str);
-      expect(obj).to.be.a(Point);
-      expect(obj.getCoordinates()).to.eql([10, 20]);
-      expect(obj.getLayout()).to.eql('XY');
+      assert.instanceOf(obj, Point);
+      assert.deepEqual(obj.getCoordinates(), [10, 20]);
+      assert.deepEqual(obj.getLayout(), 'XY');
     });
 
     it('parses linestring', function () {
@@ -476,12 +485,12 @@ describe('ol/format/GeoJSON.js', function () {
       });
 
       const obj = format.readGeometry(str);
-      expect(obj).to.be.a(LineString);
-      expect(obj.getCoordinates()).to.eql([
+      assert.instanceOf(obj, LineString);
+      assert.deepEqual(obj.getCoordinates(), [
         [10, 20],
         [30, 40],
       ]);
-      expect(obj.getLayout()).to.eql('XY');
+      assert.deepEqual(obj.getLayout(), 'XY');
     });
 
     it('parses XYZ linestring', function () {
@@ -494,9 +503,9 @@ describe('ol/format/GeoJSON.js', function () {
       });
 
       const obj = format.readGeometry(str);
-      expect(obj).to.be.a(LineString);
-      expect(obj.getLayout()).to.eql('XYZ');
-      expect(obj.getCoordinates()).to.eql([
+      assert.instanceOf(obj, LineString);
+      assert.deepEqual(obj.getLayout(), 'XYZ');
+      assert.deepEqual(obj.getCoordinates(), [
         [10, 20, 1534],
         [30, 40, 1420],
       ]);
@@ -530,13 +539,13 @@ describe('ol/format/GeoJSON.js', function () {
       });
 
       const obj = format.readGeometry(str);
-      expect(obj).to.be.a(Polygon);
-      expect(obj.getLayout()).to.eql('XY');
+      assert.instanceOf(obj, Polygon);
+      assert.deepEqual(obj.getLayout(), 'XY');
       const rings = obj.getLinearRings();
-      expect(rings.length).to.be(3);
-      expect(rings[0]).to.be.a(LinearRing);
-      expect(rings[1]).to.be.a(LinearRing);
-      expect(rings[2]).to.be.a(LinearRing);
+      assert.strictEqual(rings.length, 3);
+      assert.instanceOf(rings[0], LinearRing);
+      assert.instanceOf(rings[1], LinearRing);
+      assert.instanceOf(rings[2], LinearRing);
     });
 
     it('parses geometry collection', function () {
@@ -555,13 +564,13 @@ describe('ol/format/GeoJSON.js', function () {
       });
 
       const geometryCollection = format.readGeometry(str);
-      expect(geometryCollection).to.be.an(GeometryCollection);
+      assert.instanceOf(geometryCollection, GeometryCollection);
       const array = geometryCollection.getGeometries();
-      expect(array.length).to.be(2);
-      expect(array[0]).to.be.a(Point);
-      expect(array[0].getLayout()).to.eql('XY');
-      expect(array[1]).to.be.a(LineString);
-      expect(array[1].getLayout()).to.eql('XY');
+      assert.strictEqual(array.length, 2);
+      assert.instanceOf(array[0], Point);
+      assert.deepEqual(array[0].getLayout(), 'XY');
+      assert.instanceOf(array[1], LineString);
+      assert.deepEqual(array[1].getLayout(), 'XY');
     });
 
     it('works with empty coordinate subarrays', function () {
@@ -581,7 +590,7 @@ describe('ol/format/GeoJSON.js', function () {
         coordinates: coordinates,
       };
       const geometry = format.readGeometry(geojson);
-      expect(geometry.getCoordinates()).to.eql(coordinates);
+      assert.deepEqual(geometry.getCoordinates(), coordinates);
     });
 
     it('works with empty coordinate array', () => {
@@ -599,7 +608,7 @@ describe('ol/format/GeoJSON.js', function () {
           coordinates: [],
         };
         const geometry = format.readGeometry(geojson);
-        expect(geometry.getCoordinates()).to.eql([]);
+        assert.deepEqual(geometry.getCoordinates(), []);
       });
     });
 
@@ -620,7 +629,7 @@ describe('ol/format/GeoJSON.js', function () {
         const geometry = format.readGeometry(geojson, {
           featureProjection: 'EPSG:3857',
         });
-        expect(geometry.getCoordinates()).to.eql([]);
+        assert.deepEqual(geometry.getCoordinates(), []);
       });
     });
   });
@@ -663,19 +672,22 @@ describe('ol/format/GeoJSON.js', function () {
       };
       const features = format.readFeatures(json);
 
-      expect(features.length).to.be(2);
+      assert.strictEqual(features.length, 2);
 
       const first = features[0];
-      expect(first).to.be.a(Feature);
-      expect(first.get('foo')).to.be('bar');
-      expect(first.getGeometry()).to.be.a(Point);
+      assert.instanceOf(first, Feature);
+      assert.strictEqual(first.get('foo'), 'bar');
+      assert.instanceOf(first.getGeometry(), Point);
 
       const second = features[1];
-      expect(second).to.be.a(Feature);
-      expect(second.get('bam')).to.be('baz');
-      expect(second.getGeometry()).to.be.a(LineString);
+      assert.instanceOf(second, Feature);
+      assert.strictEqual(second.get('bam'), 'baz');
+      assert.instanceOf(second.getGeometry(), LineString);
 
-      expect(format.readProjection(json)).to.be(getProjection('EPSG:3857'));
+      assert.strictEqual(
+        format.readProjection(json),
+        getProjection('EPSG:3857'),
+      );
     });
 
     it('accepts null crs', function () {
@@ -710,19 +722,22 @@ describe('ol/format/GeoJSON.js', function () {
       };
       const features = format.readFeatures(json);
 
-      expect(features.length).to.be(2);
+      assert.strictEqual(features.length, 2);
 
       const first = features[0];
-      expect(first).to.be.a(Feature);
-      expect(first.get('foo')).to.be('bar');
-      expect(first.getGeometry()).to.be.a(Point);
+      assert.instanceOf(first, Feature);
+      assert.strictEqual(first.get('foo'), 'bar');
+      assert.instanceOf(first.getGeometry(), Point);
 
       const second = features[1];
-      expect(second).to.be.a(Feature);
-      expect(second.get('bam')).to.be('baz');
-      expect(second.getGeometry()).to.be.a(LineString);
+      assert.instanceOf(second, Feature);
+      assert.strictEqual(second.get('bam'), 'baz');
+      assert.instanceOf(second.getGeometry(), LineString);
 
-      expect(format.readProjection(json)).to.be(getProjection('EPSG:4326'));
+      assert.strictEqual(
+        format.readProjection(json),
+        getProjection('EPSG:4326'),
+      );
     });
   });
 
@@ -732,19 +747,20 @@ describe('ol/format/GeoJSON.js', function () {
       const array = format.readFeatures(str);
       const geojson = format.writeFeaturesObject(array);
       const result = format.readFeatures(geojson);
-      expect(array.length).to.equal(result.length);
+      assert.equal(array.length, result.length);
       let got, exp, gotProp, expProp;
       for (let i = 0, ii = array.length; i < ii; ++i) {
         got = array[i];
         exp = result[i];
-        expect(got.getGeometry().getCoordinates()).to.eql(
+        assert.deepEqual(
+          got.getGeometry().getCoordinates(),
           exp.getGeometry().getCoordinates(),
         );
         gotProp = got.getProperties();
         delete gotProp.geometry;
         expProp = exp.getProperties();
         delete expProp.geometry;
-        expect(gotProp).to.eql(expProp);
+        assert.deepEqual(gotProp, expProp);
       }
     });
 
@@ -759,12 +775,13 @@ describe('ol/format/GeoJSON.js', function () {
       for (let i = 0, ii = array.length; i < ii; ++i) {
         got = array[i];
         exp = result[i];
-        expect(
+        assert.deepEqual(
           got
             .getGeometry()
             .transform('EPSG:3857', 'EPSG:4326')
             .getCoordinates(),
-        ).to.eql(exp.getGeometry().getCoordinates());
+          exp.getGeometry().getCoordinates(),
+        );
       }
     });
 
@@ -773,42 +790,42 @@ describe('ol/format/GeoJSON.js', function () {
       feature.setGeometryName('mygeom');
       feature.setGeometry(new Point([5, 10]));
       const geojson = format.writeFeaturesObject([feature]);
-      expect(geojson.features[0].properties.mygeom).to.eql(undefined);
+      assert.deepEqual(geojson.features[0].properties.mygeom, undefined);
     });
 
     it('writes out a feature without properties correctly', function () {
       const feature = new Feature(new Point([5, 10]));
       const geojson = format.writeFeatureObject(feature);
-      expect(geojson.properties).to.eql(null);
-      expect(geojson.geometry).to.eql({type: 'Point', coordinates: [5, 10]});
+      assert.deepEqual(geojson.properties, null);
+      assert.deepEqual(geojson.geometry, {type: 'Point', coordinates: [5, 10]});
     });
 
     it('writes out a feature with only non-geometry properties correctly', function () {
       const feature = new Feature({foo: 'bar'});
       const geojson = format.writeFeatureObject(feature);
-      expect(geojson.geometry).to.eql(null);
-      expect(geojson.properties).to.eql({foo: 'bar'});
+      assert.deepEqual(geojson.geometry, null);
+      assert.deepEqual(geojson.properties, {foo: 'bar'});
     });
 
     it('writes out a feature with deleted properties correctly', function () {
       const feature = new Feature({foo: 'bar'});
       feature.unset('foo');
       const geojson = format.writeFeatureObject(feature);
-      expect(geojson.geometry).to.eql(null);
-      expect(geojson.properties).to.eql(null);
+      assert.deepEqual(geojson.geometry, null);
+      assert.deepEqual(geojson.properties, null);
     });
 
     it('writes out a feature without geometry correctly', function () {
       const feature = new Feature();
       const geojson = format.writeFeatureObject(feature);
-      expect(geojson.geometry).to.eql(null);
+      assert.deepEqual(geojson.geometry, null);
     });
 
     it('writes out a feature with id equal to 0 correctly', function () {
       const feature = new Feature();
       feature.setId(0);
       const geojson = format.writeFeatureObject(feature);
-      expect(geojson.id).to.eql(0);
+      assert.deepEqual(geojson.id, 0);
     });
   });
 
@@ -816,7 +833,8 @@ describe('ol/format/GeoJSON.js', function () {
     it('encodes point', function () {
       const point = new Point([10, 20]);
       const geojson = format.writeGeometry(point);
-      expect(point.getCoordinates()).to.eql(
+      assert.deepEqual(
+        point.getCoordinates(),
         format.readGeometry(geojson).getCoordinates(),
       );
     });
@@ -827,7 +845,7 @@ describe('ol/format/GeoJSON.js', function () {
         featureProjection: 'EPSG:3857',
       });
       const obj = JSON.parse(geojson);
-      expect(obj.coordinates).to.eql(toLonLat(point.getCoordinates()));
+      assert.deepEqual(obj.coordinates, toLonLat(point.getCoordinates()));
     });
 
     it('respects featureProjection passed to constructor', function () {
@@ -835,7 +853,7 @@ describe('ol/format/GeoJSON.js', function () {
       const point = new Point(fromLonLat([10, 20]));
       const geojson = format.writeGeometry(point);
       const obj = JSON.parse(geojson);
-      expect(obj.coordinates).to.eql(toLonLat(point.getCoordinates()));
+      assert.deepEqual(obj.coordinates, toLonLat(point.getCoordinates()));
     });
 
     it('encodes linestring', function () {
@@ -844,7 +862,8 @@ describe('ol/format/GeoJSON.js', function () {
         [30, 40],
       ]);
       const geojson = format.writeGeometry(linestring);
-      expect(linestring.getCoordinates()).to.eql(
+      assert.deepEqual(
+        linestring.getCoordinates(),
         format.readGeometry(geojson).getCoordinates(),
       );
     });
@@ -873,7 +892,8 @@ describe('ol/format/GeoJSON.js', function () {
       ];
       const polygon = new Polygon([outer, inner1, inner2]);
       const geojson = format.writeGeometry(polygon);
-      expect(polygon.getCoordinates()).to.eql(
+      assert.deepEqual(
+        polygon.getCoordinates(),
         format.readGeometry(geojson).getCoordinates(),
       );
     });
@@ -919,12 +939,16 @@ describe('ol/format/GeoJSON.js', function () {
         coordinates: [[cw, ccw]],
       };
 
-      expect(JSON.parse(format.writeGeometry(right))).to.eql(rightObj);
-      expect(JSON.parse(format.writeGeometry(rightMulti))).to.eql(
+      assert.deepEqual(JSON.parse(format.writeGeometry(right)), rightObj);
+      assert.deepEqual(
+        JSON.parse(format.writeGeometry(rightMulti)),
         rightMultiObj,
       );
-      expect(JSON.parse(format.writeGeometry(left))).to.eql(leftObj);
-      expect(JSON.parse(format.writeGeometry(leftMulti))).to.eql(leftMultiObj);
+      assert.deepEqual(JSON.parse(format.writeGeometry(left)), leftObj);
+      assert.deepEqual(
+        JSON.parse(format.writeGeometry(leftMulti)),
+        leftMultiObj,
+      );
     });
 
     it('allows serializing following the right-hand rule', function () {
@@ -958,14 +982,14 @@ describe('ol/format/GeoJSON.js', function () {
       };
 
       let json = format.writeGeometry(right, {rightHanded: true});
-      expect(JSON.parse(json)).to.eql(rightObj);
+      assert.deepEqual(JSON.parse(json), rightObj);
       json = format.writeGeometry(rightMulti, {rightHanded: true});
-      expect(JSON.parse(json)).to.eql(rightMultiObj);
+      assert.deepEqual(JSON.parse(json), rightMultiObj);
 
       json = format.writeGeometry(left, {rightHanded: true});
-      expect(JSON.parse(json)).to.eql(rightObj);
+      assert.deepEqual(JSON.parse(json), rightObj);
       json = format.writeGeometry(leftMulti, {rightHanded: true});
-      expect(JSON.parse(json)).to.eql(rightMultiObj);
+      assert.deepEqual(JSON.parse(json), rightMultiObj);
     });
 
     it('allows serializing following the left-hand rule', function () {
@@ -999,14 +1023,14 @@ describe('ol/format/GeoJSON.js', function () {
       };
 
       let json = format.writeGeometry(right, {rightHanded: false});
-      expect(JSON.parse(json)).to.eql(leftObj);
+      assert.deepEqual(JSON.parse(json), leftObj);
       json = format.writeGeometry(rightMulti, {rightHanded: false});
-      expect(JSON.parse(json)).to.eql(leftMultiObj);
+      assert.deepEqual(JSON.parse(json), leftMultiObj);
 
       json = format.writeGeometry(left, {rightHanded: false});
-      expect(JSON.parse(json)).to.eql(leftObj);
+      assert.deepEqual(JSON.parse(json), leftObj);
       json = format.writeGeometry(leftMulti, {rightHanded: false});
-      expect(JSON.parse(json)).to.eql(leftMultiObj);
+      assert.deepEqual(JSON.parse(json), leftMultiObj);
     });
 
     it('encodes geometry collection', function () {
@@ -1019,12 +1043,13 @@ describe('ol/format/GeoJSON.js', function () {
       ]);
       const geojson = format.writeGeometry(collection);
       const got = format.readGeometry(geojson);
-      expect(got).to.be.an(GeometryCollection);
+      assert.instanceOf(got, GeometryCollection);
       const gotGeometries = got.getGeometries();
       const geometries = collection.getGeometries();
-      expect(geometries.length).to.equal(gotGeometries.length);
+      assert.equal(geometries.length, gotGeometries.length);
       for (let i = 0, ii = geometries.length; i < ii; ++i) {
-        expect(geometries[i].getCoordinates()).to.eql(
+        assert.deepEqual(
+          geometries[i].getCoordinates(),
           gotGeometries[i].getCoordinates(),
         );
       }
@@ -1033,7 +1058,7 @@ describe('ol/format/GeoJSON.js', function () {
     it('encodes a circle as an empty geometry collection', function () {
       const circle = new Circle([0, 0], 1);
       const geojson = format.writeGeometryObject(circle);
-      expect(geojson).to.eql({
+      assert.deepEqual(geojson, {
         'type': 'GeometryCollection',
         'geometries': [],
       });
@@ -1047,11 +1072,13 @@ describe('ol/format/GeoJSON.js', function () {
       const newPoint = format.readGeometry(geojson, {
         featureProjection: 'EPSG:3857',
       });
-      expect(point.getCoordinates()[0]).to.roughlyEqual(
+      assert.approximately(
+        point.getCoordinates()[0],
         newPoint.getCoordinates()[0],
         1e-8,
       );
-      expect(point.getCoordinates()[1]).to.roughlyEqual(
+      assert.approximately(
+        point.getCoordinates()[1],
         newPoint.getCoordinates()[1],
         1e-8,
       );
@@ -1073,19 +1100,23 @@ describe('ol/format/GeoJSON.js', function () {
       });
       const gotGeometries = got.getGeometries();
       const geometries = collection.getGeometries();
-      expect(geometries[0].getCoordinates()[0]).to.roughlyEqual(
+      assert.approximately(
+        geometries[0].getCoordinates()[0],
         gotGeometries[0].getCoordinates()[0],
         1e-8,
       );
-      expect(geometries[0].getCoordinates()[1]).to.roughlyEqual(
+      assert.approximately(
+        geometries[0].getCoordinates()[1],
         gotGeometries[0].getCoordinates()[1],
         1e-8,
       );
-      expect(geometries[1].getCoordinates()[0][0]).to.roughlyEqual(
+      assert.approximately(
+        geometries[1].getCoordinates()[0][0],
         gotGeometries[1].getCoordinates()[0][0],
         1e-8,
       );
-      expect(geometries[1].getCoordinates()[0][1]).to.roughlyEqual(
+      assert.approximately(
+        geometries[1].getCoordinates()[0][1],
         gotGeometries[1].getCoordinates()[0][1],
         1e-8,
       );
@@ -1097,7 +1128,7 @@ describe('ol/format/GeoJSON.js', function () {
         featureProjection: 'EPSG:3857',
         decimals: 2,
       });
-      expect(format.readGeometry(geojson).getCoordinates()).to.eql([2, 3]);
+      assert.deepEqual(format.readGeometry(geojson).getCoordinates(), [2, 3]);
     });
 
     it('truncates a linestring with decimals option', function () {
@@ -1108,11 +1139,11 @@ describe('ol/format/GeoJSON.js', function () {
       const geojson = format.writeGeometry(linestring, {
         decimals: 6,
       });
-      expect(format.readGeometry(geojson).getCoordinates()).to.eql([
+      assert.deepEqual(format.readGeometry(geojson).getCoordinates(), [
         [42.123457, 38.987654],
         [43, 39],
       ]);
-      expect(linestring.getCoordinates()).to.eql([
+      assert.deepEqual(linestring.getCoordinates(), [
         [42.123456789, 38.987654321],
         [43, 39],
       ]);
@@ -1126,11 +1157,11 @@ describe('ol/format/GeoJSON.js', function () {
       const geojson = format.writeGeometry(linestring, {
         decimals: 0,
       });
-      expect(format.readGeometry(geojson).getCoordinates()).to.eql([
+      assert.deepEqual(format.readGeometry(geojson).getCoordinates(), [
         [42, 39],
         [43, 39],
       ]);
-      expect(linestring.getCoordinates()).to.eql([
+      assert.deepEqual(linestring.getCoordinates(), [
         [42.123456789, 38.987654321],
         [43, 39],
       ]);
@@ -1153,7 +1184,7 @@ describe('ol/format/GeoJSON.js', function () {
         new Polygon(coordinates[1]),
       ]);
       const geojson = format.writeGeometryObject(geometry);
-      expect(geojson).to.eql({
+      assert.deepEqual(geojson, {
         type: 'MultiPolygon',
         coordinates: coordinates,
       });
@@ -1175,7 +1206,7 @@ describe('ol/format/GeoJSON with {featureClass: RenderFeature}', function () {
       });
 
       const obj = format.readGeometry(str);
-      expect(obj).to.be.a(Point);
+      assert.instanceOf(obj, Point);
     });
   });
 
@@ -1193,11 +1224,11 @@ describe('ol/format/GeoJSON with {featureClass: RenderFeature}', function () {
       });
 
       const obj = format.readFeature(str);
-      expect(obj).to.be.a(RenderFeature);
-      expect(obj.getType()).to.be('Point');
-      expect(obj.getFlatCoordinates()).to.eql([10, 20, 30]);
-      expect(obj.getStride()).to.be(3);
-      expect(obj.get('foo')).to.be('bar');
+      assert.instanceOf(obj, RenderFeature);
+      assert.strictEqual(obj.getType(), 'Point');
+      assert.deepEqual(obj.getFlatCoordinates(), [10, 20, 30]);
+      assert.strictEqual(obj.getStride(), 3);
+      assert.strictEqual(obj.get('foo'), 'bar');
     });
     it('returns an array for geometry collections', function () {
       const str = JSON.stringify({
@@ -1226,15 +1257,15 @@ describe('ol/format/GeoJSON with {featureClass: RenderFeature}', function () {
         },
       });
       const obj = format.readFeature(str);
-      expect(obj.length).to.be(2);
-      expect(obj[0]).to.be.a(RenderFeature);
-      expect(obj[0].getFlatCoordinates()).to.eql([1, 1]);
-      expect(obj[0].getId()).to.be(1);
-      expect(obj[0].get('foo')).to.be('bar');
-      expect(obj[1]).to.be.a(RenderFeature);
-      expect(obj[1].getFlatCoordinates()).to.eql([2, 2]);
-      expect(obj[1].getId()).to.be(1);
-      expect(obj[1].get('foo')).to.be('bar');
+      assert.strictEqual(obj.length, 2);
+      assert.instanceOf(obj[0], RenderFeature);
+      assert.deepEqual(obj[0].getFlatCoordinates(), [1, 1]);
+      assert.strictEqual(obj[0].getId(), 1);
+      assert.strictEqual(obj[0].get('foo'), 'bar');
+      assert.instanceOf(obj[1], RenderFeature);
+      assert.deepEqual(obj[1].getFlatCoordinates(), [2, 2]);
+      assert.strictEqual(obj[1].getId(), 1);
+      assert.strictEqual(obj[1].get('foo'), 'bar');
     });
   });
 
@@ -1267,8 +1298,8 @@ describe('ol/format/GeoJSON with {featureClass: RenderFeature}', function () {
       });
 
       const obj = format.readFeatures(str);
-      expect(obj.length).to.be(2);
-      expect(obj[0]).to.be.a(RenderFeature);
+      assert.strictEqual(obj.length, 2);
+      assert.instanceOf(obj[0], RenderFeature);
     });
     it('returns the correct array when geometry collections are involved', function () {
       const str = JSON.stringify({
@@ -1310,9 +1341,9 @@ describe('ol/format/GeoJSON with {featureClass: RenderFeature}', function () {
         ],
       });
       const obj = format.readFeatures(str);
-      expect(obj.length).to.be(3);
-      expect(obj[0].getId()).to.be(1);
-      expect(obj[2].getId()).to.be(2);
+      assert.strictEqual(obj.length, 3);
+      assert.strictEqual(obj[0].getId(), 1);
+      assert.strictEqual(obj[2].getId(), 2);
     });
     it('ignores null geometry features', function () {
       const str = JSON.stringify({
@@ -1340,7 +1371,7 @@ describe('ol/format/GeoJSON with {featureClass: RenderFeature}', function () {
         ],
       });
       const obj = format.readFeatures(str);
-      expect(obj.length).to.be(1);
+      assert.strictEqual(obj.length, 1);
     });
   });
 });

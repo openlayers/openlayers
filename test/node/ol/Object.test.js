@@ -1,7 +1,7 @@
+import {assert} from 'chai';
 import {spy as sinonSpy} from 'sinon';
 import BaseObject from '../../../src/ol/Object.js';
 import {listen} from '../../../src/ol/events.js';
-import expect from '../expect.js';
 
 describe('ol/Object.js', function () {
   let o;
@@ -17,7 +17,7 @@ describe('ol/Object.js', function () {
       });
 
       it('returns undefined', function () {
-        expect(v).to.be(undefined);
+        assert.strictEqual(v, undefined);
       });
     });
 
@@ -29,7 +29,7 @@ describe('ol/Object.js', function () {
       });
 
       it('returns expected value', function () {
-        expect(v).to.eql(1);
+        assert.deepEqual(v, 1);
       });
     });
 
@@ -40,7 +40,7 @@ describe('ol/Object.js', function () {
 
       it('returns undefined', function () {
         const v = o.unset('k');
-        expect(v).to.be(undefined);
+        assert.strictEqual(v, undefined);
       });
     });
   });
@@ -48,13 +48,13 @@ describe('ol/Object.js', function () {
   describe('#get()', function () {
     it('does not return values that are not explicitly set', function () {
       const o = new BaseObject();
-      expect(o.get('constructor')).to.be(undefined);
-      expect(o.get('hasOwnProperty')).to.be(undefined);
-      expect(o.get('isPrototypeOf')).to.be(undefined);
-      expect(o.get('propertyIsEnumerable')).to.be(undefined);
-      expect(o.get('toLocaleString')).to.be(undefined);
-      expect(o.get('toString')).to.be(undefined);
-      expect(o.get('valueOf')).to.be(undefined);
+      assert.strictEqual(o.get('constructor'), undefined);
+      assert.strictEqual(o.get('hasOwnProperty'), undefined);
+      assert.strictEqual(o.get('isPrototypeOf'), undefined);
+      assert.strictEqual(o.get('propertyIsEnumerable'), undefined);
+      assert.strictEqual(o.get('toLocaleString'), undefined);
+      assert.strictEqual(o.get('toString'), undefined);
+      assert.strictEqual(o.get('valueOf'), undefined);
     });
   });
 
@@ -63,14 +63,14 @@ describe('ol/Object.js', function () {
       const o = new BaseObject();
 
       o.set('set', 'sat');
-      expect(o.get('set')).to.be('sat');
+      assert.strictEqual(o.get('set'), 'sat');
 
       o.set('get', 'got');
-      expect(o.get('get')).to.be('got');
+      assert.strictEqual(o.get('get'), 'got');
 
       o.set('toString', 'string');
-      expect(o.get('toString')).to.be('string');
-      expect(typeof o.toString).to.be('function');
+      assert.strictEqual(o.get('toString'), 'string');
+      assert.strictEqual(typeof o.toString, 'function');
     });
   });
 
@@ -84,8 +84,8 @@ describe('ol/Object.js', function () {
       });
 
       const keys = o.getKeys();
-      expect(keys.length).to.be(4);
-      expect(keys.sort()).to.eql(['get', 'prop1', 'prop2', 'toString']);
+      assert.strictEqual(keys.length, 4);
+      assert.deepEqual(keys.sort(), ['get', 'prop1', 'prop2', 'toString']);
     });
   });
 
@@ -95,27 +95,27 @@ describe('ol/Object.js', function () {
         k1: 1,
         k2: 2,
       });
-      expect(o.get('k1')).to.eql(1);
-      expect(o.get('k2')).to.eql(2);
+      assert.deepEqual(o.get('k1'), 1);
+      assert.deepEqual(o.get('k2'), 2);
 
       const keys = o.getKeys().sort();
-      expect(keys).to.eql(['k1', 'k2']);
+      assert.deepEqual(keys, ['k1', 'k2']);
     });
   });
 
   describe('hasProperties', function () {
     it('has no properties after creation', function () {
-      expect(o.hasProperties()).to.eql(false);
+      assert.deepEqual(o.hasProperties(), false);
     });
 
     it('has properties after set', function () {
       o.set('foo', 1);
-      expect(o.hasProperties()).to.eql(true);
+      assert.deepEqual(o.hasProperties(), true);
     });
 
     it('has no properties after unset all', function () {
       o.unset('foo');
-      expect(o.hasProperties()).to.eql(false);
+      assert.deepEqual(o.hasProperties(), false);
     });
   });
 
@@ -132,22 +132,22 @@ describe('ol/Object.js', function () {
 
     it('dispatches events', function () {
       o.notify('k', 1);
-      expect(listener1.calledOnce).to.be(true);
+      assert.strictEqual(listener1.calledOnce, true);
       const args = listener1.firstCall.args;
-      expect(args).to.have.length(1);
+      assert.lengthOf(args, 1);
       const event = args[0];
-      expect(event.key).to.be('k');
-      expect(event.oldValue).to.be(1);
+      assert.strictEqual(event.key, 'k');
+      assert.strictEqual(event.oldValue, 1);
     });
 
     it('dispatches generic change events to bound objects', function () {
       o.notify('k', 1);
-      expect(listener2.calledOnce).to.be(true);
+      assert.strictEqual(listener2.calledOnce, true);
       const args = listener2.firstCall.args;
-      expect(args).to.have.length(1);
+      assert.lengthOf(args, 1);
       const event = args[0];
-      expect(event.key).to.be('k');
-      expect(event.oldValue).to.be(1);
+      assert.strictEqual(event.key, 'k');
+      assert.strictEqual(event.oldValue, 1);
     });
   });
 
@@ -164,25 +164,25 @@ describe('ol/Object.js', function () {
 
     it('dispatches events to object', function () {
       o.set('k', 1);
-      expect(listener1.called).to.be(true);
+      assert.strictEqual(listener1.called, true);
 
-      expect(o.getKeys()).to.eql(['k']);
+      assert.deepEqual(o.getKeys(), ['k']);
     });
 
     it('dispatches generic change events to object', function () {
       o.set('k', 1);
-      expect(listener2.calledOnce).to.be(true);
+      assert.strictEqual(listener2.calledOnce, true);
       const args = listener2.firstCall.args;
-      expect(args).to.have.length(1);
+      assert.lengthOf(args, 1);
       const event = args[0];
-      expect(event.key).to.be('k');
+      assert.strictEqual(event.key, 'k');
     });
 
     it('dispatches events only if the value is different', function () {
       o.set('k', 1);
       o.set('k', 1);
-      expect(listener1.calledOnce).to.be(true);
-      expect(listener2.calledOnce).to.be(true);
+      assert.strictEqual(listener1.calledOnce, true);
+      assert.strictEqual(listener2.calledOnce, true);
     });
   });
 
@@ -196,10 +196,10 @@ describe('ol/Object.js', function () {
 
     it('does not call the setter', function () {
       o.set('x', 1);
-      expect(o.get('x')).to.eql(1);
-      expect(o.setX.called).to.be(false);
+      assert.deepEqual(o.get('x'), 1);
+      assert.strictEqual(o.setX.called, false);
 
-      expect(o.getKeys()).to.eql(['x']);
+      assert.deepEqual(o.getKeys(), ['x']);
     });
   });
 
@@ -212,17 +212,17 @@ describe('ol/Object.js', function () {
     });
 
     it('does not call the getter', function () {
-      expect(o.get('x')).to.be(undefined);
-      expect(o.getX.called).to.be(false);
+      assert.strictEqual(o.get('x'), undefined);
+      assert.strictEqual(o.getX.called, false);
     });
   });
 
   describe('create with options', function () {
     it('sets the property', function () {
       const o = new BaseObject({k: 1});
-      expect(o.get('k')).to.eql(1);
+      assert.deepEqual(o.get('k'), 1);
 
-      expect(o.getKeys()).to.eql(['k']);
+      assert.deepEqual(o.getKeys(), ['k']);
     });
   });
 
@@ -238,10 +238,10 @@ describe('ol/Object.js', function () {
 
     it('dispatches the expected event', function () {
       o.set('K', 1);
-      expect(listener1.called).to.be(false);
-      expect(listener2.called).to.be(true);
+      assert.strictEqual(listener1.called, false);
+      assert.strictEqual(listener2.called, true);
 
-      expect(o.getKeys()).to.eql(['K']);
+      assert.deepEqual(o.getKeys(), ['K']);
     });
   });
 });

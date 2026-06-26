@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import FlowLayer from '../../../../../src/ol/layer/Flow.js';
 import FlowLayerRenderer from '../../../../../src/ol/renderer/webgl/FlowLayer.js';
 import DataTileSource from '../../../../../src/ol/source/DataTile.js';
@@ -16,11 +17,11 @@ describe('ol/layer/Flow', () => {
           },
         }),
       });
-      expect(layer).to.be.a(FlowLayer);
+      assert.instanceOf(layer, FlowLayer);
     });
 
     it('throws if maxSpeed is missing', () => {
-      expect(() => {
+      assert.throws(() => {
         new FlowLayer({
           style: {
             color: 'red',
@@ -31,7 +32,7 @@ describe('ol/layer/Flow', () => {
             },
           }),
         });
-      }).to.throwError((e) => expect(e.message).to.eql('maxSpeed is required'));
+      }, 'maxSpeed is required');
     });
   });
 
@@ -50,7 +51,7 @@ describe('ol/layer/Flow', () => {
       });
 
       const renderer = layer.getRenderer();
-      expect(renderer).to.be.a(FlowLayerRenderer);
+      assert.instanceOf(renderer, FlowLayerRenderer);
     });
   });
 
@@ -69,7 +70,8 @@ describe('ol/layer/Flow', () => {
       });
 
       const renderer = layer.getRenderer();
-      expect(renderer.particleColorFragmentShader_).to.contain(
+      assert.include(
+        renderer.particleColorFragmentShader_,
         'color = vec4(1.0, 0.0, 1.0, 1.0);',
       );
     });

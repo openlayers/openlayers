@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {spy as sinonSpy} from 'sinon';
 import Feature from '../../../../../../src/ol/Feature.js';
 import ImageCanvas from '../../../../../../src/ol/ImageCanvas.js';
@@ -18,7 +19,7 @@ describe('ol/renderer/canvas/VectorImageLayer', function () {
       const renderer = new CanvasVectorImageLayerRenderer(layer);
       const spy = sinonSpy(renderer.vectorRenderer_, 'dispose');
       renderer.dispose();
-      expect(spy.called).to.be(true);
+      assert.strictEqual(spy.called, true);
     });
   });
 
@@ -57,7 +58,7 @@ describe('ol/renderer/canvas/VectorImageLayer', function () {
     });
     it('creates a new image, also when no features are rendered', function () {
       renderer.prepareFrame(frameState);
-      expect(renderer.image).to.be.a(ImageCanvas);
+      assert.instanceOf(renderer.image, ImageCanvas);
 
       layer.getSource().clear();
       renderer.prepareFrame(frameState);
@@ -65,7 +66,7 @@ describe('ol/renderer/canvas/VectorImageLayer', function () {
       const centerPixel = canvas
         .getContext('2d')
         .getImageData(canvas.width / 2, canvas.height / 2, 1, 1).data;
-      expect(Array.from(centerPixel)).to.eql([0, 0, 0, 0]);
+      assert.deepEqual(Array.from(centerPixel), [0, 0, 0, 0]);
     });
     it('sets correct extent with imageRatio = 2', function () {
       const extent = frameState.extent.slice();
@@ -73,7 +74,7 @@ describe('ol/renderer/canvas/VectorImageLayer', function () {
 
       renderer.prepareFrame(frameState);
       const imageExtent = renderer.image.getExtent();
-      expect(imageExtent).to.eql(extent);
+      assert.deepEqual(imageExtent, extent);
     });
   });
 });

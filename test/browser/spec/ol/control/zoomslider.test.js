@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
 import ZoomSlider from '../../../../../src/ol/control/ZoomSlider.js';
@@ -41,34 +42,34 @@ describe('ol.control.ZoomSlider', function () {
     it('creates the expected DOM elements', function () {
       const zoomSliderContainers = target.querySelectorAll('.ol-zoomslider');
 
-      expect(zoomSliderContainers.length).to.be(1);
+      assert.strictEqual(zoomSliderContainers.length, 1);
 
       const zoomSliderContainer = zoomSliderContainers[0];
-      expect(zoomSliderContainer instanceof HTMLDivElement).to.be(true);
+      assert.strictEqual(zoomSliderContainer instanceof HTMLDivElement, true);
 
       let hasUnselectableCls =
         zoomSliderContainer.classList.contains('ol-unselectable');
-      expect(hasUnselectableCls).to.be(true);
+      assert.strictEqual(hasUnselectableCls, true);
 
       const zoomSliderThumbs = zoomSliderContainer.querySelectorAll(
         '.ol-zoomslider-thumb',
       );
-      expect(zoomSliderThumbs.length).to.be(1);
+      assert.strictEqual(zoomSliderThumbs.length, 1);
 
       const zoomSliderThumb = zoomSliderThumbs[0];
-      expect(zoomSliderThumb instanceof HTMLButtonElement).to.be(true);
+      assert.strictEqual(zoomSliderThumb instanceof HTMLButtonElement, true);
 
       hasUnselectableCls =
         zoomSliderThumb.classList.contains('ol-unselectable');
-      expect(hasUnselectableCls).to.be(true);
+      assert.strictEqual(hasUnselectableCls, true);
     });
   });
 
   describe('#initSlider_', function () {
     it('sets limits', function () {
       zoomslider.initSlider_();
-      expect(zoomslider.widthLimit_).not.to.be(0);
-      expect(zoomslider.heightLimit_).to.be(0);
+      assert.notEqual(zoomslider.widthLimit_, 0);
+      assert.strictEqual(zoomslider.heightLimit_, 0);
     });
   });
 
@@ -81,7 +82,7 @@ describe('ol.control.ZoomSlider', function () {
       control.initSlider_();
 
       const horizontal = 1;
-      expect(control.direction_).to.be(horizontal);
+      assert.strictEqual(control.direction_, horizontal);
 
       control.dispose();
     });
@@ -94,7 +95,7 @@ describe('ol.control.ZoomSlider', function () {
       control.setMap(map);
 
       const vertical = 0;
-      expect(control.direction_).to.be(vertical);
+      assert.strictEqual(control.direction_, vertical);
 
       control.dispose();
     });
@@ -133,23 +134,23 @@ describe('ol.control.ZoomSlider', function () {
       event.clientX = control.widthLimit_;
       event.clientY = 0;
       control.element.dispatchEvent(event);
-      expect(control.currentResolution_).to.be(16);
-      expect(control.dragging_).to.be(true);
-      expect(control.dragListenerKeys_.length).to.be(2);
+      assert.strictEqual(control.currentResolution_, 16);
+      assert.strictEqual(control.dragging_, true);
+      assert.strictEqual(control.dragListenerKeys_.length, 2);
       event.type = 'pointermove';
       event.clientX = (6 * control.widthLimit_) / 8;
       event.clientY = 0;
       control.element.dispatchEvent(event);
-      expect(control.currentResolution_).to.be(4);
+      assert.strictEqual(control.currentResolution_, 4);
       event.type = 'pointermove';
       event.clientX = (4 * control.widthLimit_) / 8;
       event.clientY = 0;
       control.element.dispatchEvent(event);
       event.type = 'pointerup';
       control.element.dispatchEvent(event);
-      expect(control.currentResolution_).to.be(1);
-      expect(control.dragListenerKeys_.length).to.be(0);
-      expect(control.dragging_).to.be(false);
+      assert.strictEqual(control.currentResolution_, 1);
+      assert.strictEqual(control.dragListenerKeys_.length, 0);
+      assert.strictEqual(control.dragging_, false);
     });
     it('[horizontal] handles a drag sequence ending outside its bounds', function () {
       document.createElement = createEventElement;
@@ -168,14 +169,14 @@ describe('ol.control.ZoomSlider', function () {
       event.clientX = control.widthLimit_;
       event.clientY = 0;
       control.element.dispatchEvent(event);
-      expect(control.currentResolution_).to.be(16);
-      expect(control.dragging_).to.be(true);
-      expect(control.dragListenerKeys_.length).to.be(2);
+      assert.strictEqual(control.currentResolution_, 16);
+      assert.strictEqual(control.dragging_, true);
+      assert.strictEqual(control.dragListenerKeys_.length, 2);
       event.type = 'pointermove';
       event.clientX = (6 * control.widthLimit_) / 8;
       event.clientY = 0;
       control.element.dispatchEvent(event);
-      expect(control.currentResolution_).to.be(4);
+      assert.strictEqual(control.currentResolution_, 4);
       event.type = 'pointermove';
       event.clientX = (12 * control.widthLimit_) / 8;
       event.clientY = 0;
@@ -183,9 +184,9 @@ describe('ol.control.ZoomSlider', function () {
       event.type = 'pointerup';
       event.target = 'document';
       control.element.dispatchEvent(event);
-      expect(control.dragListenerKeys_.length).to.be(0);
-      expect(control.dragging_).to.be(false);
-      expect(control.currentResolution_).to.be(16);
+      assert.strictEqual(control.dragListenerKeys_.length, 0);
+      assert.strictEqual(control.dragging_, false);
+      assert.strictEqual(control.currentResolution_, 16);
     });
     it('[vertical] handles a drag sequence', function () {
       document.createElement = createEventElement;
@@ -204,23 +205,23 @@ describe('ol.control.ZoomSlider', function () {
       event.clientX = 0;
       event.clientY = 0;
       control.element.dispatchEvent(event);
-      expect(control.currentResolution_).to.be(0.0625);
-      expect(control.dragging_).to.be(true);
-      expect(control.dragListenerKeys_.length).to.be(2);
+      assert.strictEqual(control.currentResolution_, 0.0625);
+      assert.strictEqual(control.dragging_, true);
+      assert.strictEqual(control.dragListenerKeys_.length, 2);
       event.type = 'pointermove';
       event.clientX = 0;
       event.clientY = (2 * control.heightLimit_) / 8;
       control.element.dispatchEvent(event);
-      expect(control.currentResolution_).to.be(0.25);
+      assert.strictEqual(control.currentResolution_, 0.25);
       event.type = 'pointermove';
       event.clientX = 0;
       event.clientY = (4 * control.heightLimit_) / 8;
       control.element.dispatchEvent(event);
       event.type = 'pointerup';
       control.element.dispatchEvent(event);
-      expect(control.currentResolution_).to.be(1);
-      expect(control.dragListenerKeys_.length).to.be(0);
-      expect(control.dragging_).to.be(false);
+      assert.strictEqual(control.currentResolution_, 1);
+      assert.strictEqual(control.dragListenerKeys_.length, 0);
+      assert.strictEqual(control.dragging_, false);
     });
     it('[vertical] handles a drag sequence ending outside its bounds', function () {
       document.createElement = createEventElement;
@@ -239,23 +240,23 @@ describe('ol.control.ZoomSlider', function () {
       event.clientX = 0;
       event.clientY = 0;
       control.element.dispatchEvent(event);
-      expect(control.currentResolution_).to.be(0.0625);
-      expect(control.dragging_).to.be(true);
-      expect(control.dragListenerKeys_.length).to.be(2);
+      assert.strictEqual(control.currentResolution_, 0.0625);
+      assert.strictEqual(control.dragging_, true);
+      assert.strictEqual(control.dragListenerKeys_.length, 2);
       event.type = 'pointermove';
       event.clientX = 0;
       event.clientY = (2 * control.heightLimit_) / 8;
       control.element.dispatchEvent(event);
-      expect(control.currentResolution_).to.be(0.25);
+      assert.strictEqual(control.currentResolution_, 0.25);
       event.type = 'pointermove';
       event.clientX = 0;
       event.clientY = (12 * control.heightLimit_) / 8;
       control.element.dispatchEvent(event);
       event.type = 'pointerup';
       control.element.dispatchEvent(event);
-      expect(control.currentResolution_).to.be(16);
-      expect(control.dragListenerKeys_.length).to.be(0);
-      expect(control.dragging_).to.be(false);
+      assert.strictEqual(control.currentResolution_, 16);
+      assert.strictEqual(control.dragListenerKeys_.length, 0);
+      assert.strictEqual(control.dragging_, false);
     });
   });
 });

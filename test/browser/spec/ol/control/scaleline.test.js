@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import proj4 from 'proj4';
 import {spy as sinonSpy} from 'sinon';
 import Map from '../../../../../src/ol/Map.js';
@@ -29,7 +30,7 @@ describe('ol.control.ScaleLine', function () {
   describe('constructor', function () {
     it('can be constructed without arguments', function () {
       const ctrl = new ScaleLine();
-      expect(ctrl).to.be.an(ScaleLine);
+      assert.instanceOf(ctrl, ScaleLine);
     });
   });
 
@@ -39,8 +40,8 @@ describe('ol.control.ScaleLine', function () {
         const ctrl = new ScaleLine();
         ctrl.setMap(map);
         const element = document.querySelector('.ol-scale-line');
-        expect(element).to.not.be(null);
-        expect(element).to.be.a(HTMLDivElement);
+        assert.notEqual(element, null);
+        assert.instanceOf(element, HTMLDivElement);
       });
       it('can be configured', function () {
         const ctrl = new ScaleLine({
@@ -50,51 +51,51 @@ describe('ol.control.ScaleLine', function () {
 
         // check that the default was not chosen
         const element1 = document.querySelector('.ol-scale-line');
-        expect(element1).to.be(null);
+        assert.strictEqual(element1, null);
         // check if the configured classname was chosen
         const element2 = document.querySelector('.humpty-dumpty');
-        expect(element2).to.not.be(null);
-        expect(element2).to.be.a(HTMLDivElement);
+        assert.notEqual(element2, null);
+        assert.instanceOf(element2, HTMLDivElement);
       });
     });
 
     describe('minWidth', function () {
       it('defaults to 64', function () {
         const ctrl = new ScaleLine();
-        expect(ctrl.minWidth_).to.be(64);
+        assert.strictEqual(ctrl.minWidth_, 64);
       });
       it('can be configured', function () {
         const ctrl = new ScaleLine({
           minWidth: 4711,
         });
-        expect(ctrl.minWidth_).to.be(4711);
+        assert.strictEqual(ctrl.minWidth_, 4711);
       });
     });
 
     describe('maxWidth', function () {
       it('defaults to undefined', function () {
         const ctrl = new ScaleLine();
-        expect(ctrl.maxWidth_).to.be(undefined);
+        assert.strictEqual(ctrl.maxWidth_, undefined);
       });
       it('can be configured', function () {
         const ctrl = new ScaleLine({
           maxWidth: 4711,
         });
-        expect(ctrl.maxWidth_).to.be(4711);
+        assert.strictEqual(ctrl.maxWidth_, 4711);
       });
     });
 
     describe('render', function () {
       it('defaults to `ol.control.ScaleLine.render`', function () {
         const ctrl = new ScaleLine();
-        expect(ctrl.render).to.be(ScaleLine.prototype.render);
+        assert.strictEqual(ctrl.render, ScaleLine.prototype.render);
       });
       it('can be configured', function () {
         const myRender = function () {};
         const ctrl = new ScaleLine({
           render: myRender,
         });
-        expect(ctrl.render).to.be(myRender);
+        assert.strictEqual(ctrl.render, myRender);
       });
     });
   });
@@ -105,19 +106,19 @@ describe('ol.control.ScaleLine', function () {
       const ctrl = new ScaleLine({
         render: renderSpy,
       });
-      expect(renderSpy.called).to.be(false);
+      assert.strictEqual(renderSpy.called, false);
       ctrl.setMap(map);
-      expect(renderSpy.called).to.be(false);
+      assert.strictEqual(renderSpy.called, false);
       map.setView(
         new View({
           center: [0, 0],
           zoom: 0,
         }),
       );
-      expect(renderSpy.called).to.be(false);
+      assert.strictEqual(renderSpy.called, false);
       map.once('postrender', function () {
-        expect(renderSpy.called).to.be(true);
-        expect(renderSpy.callCount).to.be(1);
+        assert.strictEqual(renderSpy.called, true);
+        assert.strictEqual(renderSpy.callCount, 1);
         done();
       });
     });
@@ -134,11 +135,11 @@ describe('ol.control.ScaleLine', function () {
         }),
       );
       map.renderSync();
-      expect(renderSpy.callCount).to.be(1);
+      assert.strictEqual(renderSpy.callCount, 1);
       map.renderSync();
-      expect(renderSpy.callCount).to.be(2);
+      assert.strictEqual(renderSpy.callCount, 2);
       map.renderSync();
-      expect(renderSpy.callCount).to.be(3);
+      assert.strictEqual(renderSpy.callCount, 3);
     });
     it('calls `render` as when the view changes', function (done) {
       const renderSpy = sinonSpy();
@@ -154,7 +155,7 @@ describe('ol.control.ScaleLine', function () {
       );
       map.renderSync();
       map.once('postrender', function () {
-        expect(renderSpy.callCount).to.be(2);
+        assert.strictEqual(renderSpy.callCount, 2);
         done();
       });
       map.getView().setCenter([1, 1]);
@@ -164,7 +165,7 @@ describe('ol.control.ScaleLine', function () {
   describe('static method `render`', function () {
     it('updates the rendered text', function () {
       const ctrl = new ScaleLine();
-      expect(ctrl.element.innerText).to.be('');
+      assert.strictEqual(ctrl.element.innerText, '');
       ctrl.setMap(map);
       map.setView(
         new View({
@@ -174,25 +175,25 @@ describe('ol.control.ScaleLine', function () {
         }),
       );
       map.renderSync();
-      expect(ctrl.element.innerText).to.be('10000 km');
+      assert.strictEqual(ctrl.element.innerText, '10000 km');
     });
   });
 
   describe('#getUnits', function () {
     it('returns "metric" by default', function () {
       const ctrl = new ScaleLine();
-      expect(ctrl.getUnits()).to.be('metric');
+      assert.strictEqual(ctrl.getUnits(), 'metric');
     });
     it('returns what is configured via `units` property', function () {
       const ctrl = new ScaleLine({
         units: 'nautical',
       });
-      expect(ctrl.getUnits()).to.be('nautical');
+      assert.strictEqual(ctrl.getUnits(), 'nautical');
     });
     it('returns what is configured `setUnits` method', function () {
       const ctrl = new ScaleLine();
       ctrl.setUnits('nautical');
-      expect(ctrl.getUnits()).to.be('nautical');
+      assert.strictEqual(ctrl.getUnits(), 'nautical');
     });
   });
 
@@ -209,11 +210,11 @@ describe('ol.control.ScaleLine', function () {
       ctrl.setMap(map);
 
       map.renderSync();
-      expect(ctrl.element.innerText).to.be('10000 km');
+      assert.strictEqual(ctrl.element.innerText, '10000 km');
 
       ctrl.setUnits('nautical');
       map.renderSync();
-      expect(ctrl.element.innerText).to.be('10000 NM');
+      assert.strictEqual(ctrl.element.innerText, '10000 NM');
     });
   });
 
@@ -244,34 +245,32 @@ describe('ol.control.ScaleLine', function () {
     });
 
     it('renders a scaleline for "metric"', function () {
-      expect(metricHtml).to.not.be(undefined);
+      assert.notEqual(metricHtml, undefined);
     });
     it('renders a different scaleline for "nautical"', function () {
       ctrl.setUnits('nautical');
       nauticalHtml = ctrl.element.innerHTML;
-      expect(nauticalHtml).to.not.be(metricHtml);
+      assert.notEqual(nauticalHtml, metricHtml);
     });
     it('renders a different scaleline for "degrees"', function () {
       ctrl.setUnits('degrees');
       degreesHtml = ctrl.element.innerHTML;
-      expect(degreesHtml).to.not.be(metricHtml);
-      expect(degreesHtml).to.not.be(nauticalHtml);
+      assert.notEqual(degreesHtml, metricHtml);
+      assert.notEqual(degreesHtml, nauticalHtml);
     });
     it('renders a different scaleline for "imperial"', function () {
       ctrl.setUnits('imperial');
       imperialHtml = ctrl.element.innerHTML;
-      expect(imperialHtml).to.not.be(metricHtml);
-      expect(imperialHtml).to.not.be(nauticalHtml);
-      expect(imperialHtml).to.not.be(degreesHtml);
+      assert.notEqual(imperialHtml, metricHtml);
+      assert.notEqual(imperialHtml, nauticalHtml);
+      assert.notEqual(imperialHtml, degreesHtml);
     });
     it('renders a different scaleline for "us"', function () {
       ctrl.setUnits('us');
       usHtml = ctrl.element.innerHTML;
-      expect(usHtml).to.not.be(metricHtml);
-      expect(usHtml).to.not.be(nauticalHtml);
-      expect(usHtml).to.not.be(degreesHtml);
-      // it's hard to actually find a difference in rendering between
-      // usHtml and imperialHtml
+      assert.notEqual(usHtml, metricHtml);
+      assert.notEqual(usHtml, nauticalHtml);
+      assert.notEqual(usHtml, degreesHtml);
     });
   });
 
@@ -308,7 +307,7 @@ describe('ol.control.ScaleLine', function () {
         }),
       );
       map.renderSync();
-      expect(ctrl.element.innerText).to.be('2000 km');
+      assert.strictEqual(ctrl.element.innerText, '2000 km');
       map.setView(
         new View({
           center: [7, 52],
@@ -318,7 +317,7 @@ describe('ol.control.ScaleLine', function () {
         }),
       );
       map.renderSync();
-      expect(ctrl.element.innerText).to.be('5000 km');
+      assert.strictEqual(ctrl.element.innerText, '5000 km');
       map.setView(
         new View({
           center: fromLonLat([-85.685, 39.891], 'Indiana-East'),
@@ -327,7 +326,7 @@ describe('ol.control.ScaleLine', function () {
         }),
       );
       map.renderSync();
-      expect(ctrl.element.innerText).to.be('100 km');
+      assert.strictEqual(ctrl.element.innerText, '100 km');
     });
 
     it('maxWidth is applied correctly', function () {
@@ -341,8 +340,7 @@ describe('ol.control.ScaleLine', function () {
         }),
       );
       map.renderSync();
-      // without maxWidth set this would be 100 km
-      expect(ctrl.element.innerText).to.be('50 km');
+      assert.strictEqual(ctrl.element.innerText, '50 km');
     });
 
     it('shows the same scale for different projections at higher resolutions', function () {
@@ -356,7 +354,7 @@ describe('ol.control.ScaleLine', function () {
         }),
       );
       map.renderSync();
-      expect(ctrl.element.innerText).to.be('100 km');
+      assert.strictEqual(ctrl.element.innerText, '100 km');
       map.setView(
         new View({
           center: [-85.685, 39.891],
@@ -365,7 +363,7 @@ describe('ol.control.ScaleLine', function () {
         }),
       );
       map.renderSync();
-      expect(ctrl.element.innerText).to.be('100 km');
+      assert.strictEqual(ctrl.element.innerText, '100 km');
       map.setView(
         new View({
           center: fromLonLat([-85.685, 39.891], 'Indiana-East'),
@@ -374,7 +372,7 @@ describe('ol.control.ScaleLine', function () {
         }),
       );
       map.renderSync();
-      expect(ctrl.element.innerText).to.be('100 km');
+      assert.strictEqual(ctrl.element.innerText, '100 km');
     });
 
     it("Projection's metersPerUnit affect scale for non-degree units", function () {
@@ -397,16 +395,16 @@ describe('ol.control.ScaleLine', function () {
       map.renderSync();
 
       ctrl.setUnits('metric');
-      expect(ctrl.element.innerText).to.be('100 m');
+      assert.strictEqual(ctrl.element.innerText, '100 m');
 
       ctrl.setUnits('imperial');
-      expect(ctrl.element.innerText).to.be('500 ft');
+      assert.strictEqual(ctrl.element.innerText, '500 ft');
 
       ctrl.setUnits('nautical');
-      expect(ctrl.element.innerText).to.be('0.05 NM');
+      assert.strictEqual(ctrl.element.innerText, '0.05 NM');
 
       ctrl.setUnits('us');
-      expect(ctrl.element.innerText).to.be('500 ft');
+      assert.strictEqual(ctrl.element.innerText, '500 ft');
 
       map.setView(
         new View({
@@ -426,16 +424,16 @@ describe('ol.control.ScaleLine', function () {
       map.renderSync();
 
       ctrl.setUnits('metric');
-      expect(ctrl.element.innerText).to.be('100 mm');
+      assert.strictEqual(ctrl.element.innerText, '100 mm');
 
       ctrl.setUnits('imperial');
-      expect(ctrl.element.innerText).to.be('5 in');
+      assert.strictEqual(ctrl.element.innerText, '5 in');
 
       ctrl.setUnits('nautical');
-      expect(ctrl.element.innerText).to.be('0.00005 NM');
+      assert.strictEqual(ctrl.element.innerText, '0.00005 NM');
 
       ctrl.setUnits('us');
-      expect(ctrl.element.innerText).to.be('5 in');
+      assert.strictEqual(ctrl.element.innerText, '5 in');
     });
 
     it('Metric display works with Geographic (EPSG:4326) projection', function () {
@@ -450,10 +448,10 @@ describe('ol.control.ScaleLine', function () {
         }),
       );
       map.renderSync();
-      expect(ctrl.element.innerText).to.be('10000 km');
+      assert.strictEqual(ctrl.element.innerText, '10000 km');
       map.getView().setZoom(28); /* max zoom */
       map.renderSync();
-      expect(ctrl.element.innerText).to.be('50 mm');
+      assert.strictEqual(ctrl.element.innerText, '50 mm');
     });
   });
 
@@ -473,7 +471,7 @@ describe('ol.control.ScaleLine', function () {
       map.getView().setCenter([7, 52]);
       map.renderSync();
       const innerHtml52 = ctrl.element.innerHTML;
-      expect(innerHtml0).to.not.be(innerHtml52);
+      assert.notEqual(innerHtml0, innerHtml52);
     });
 
     it('is rendered the same at different latitudes for degrees', function () {
@@ -494,7 +492,7 @@ describe('ol.control.ScaleLine', function () {
       map.getView().setCenter([7, 52]);
       map.renderSync();
       const innerHtml52 = ctrl.element.innerHTML;
-      expect(innerHtml0).to.be(innerHtml52);
+      assert.strictEqual(innerHtml0, innerHtml52);
     });
   });
 
@@ -561,11 +559,11 @@ describe('ol.control.ScaleLine', function () {
         mapView.setZoom(currentZoom);
         map.renderSync();
         const currentHtml = ctrl.element.innerHTML;
-        expect(currentHtml in renderedHtmls).to.be(false);
+        assert.strictEqual(currentHtml in renderedHtmls, false);
         renderedHtmls[currentHtml] = true;
 
         const unit = ctrl.innerElement_.textContent.match(/\d+ (.+)/)[1];
-        expect(unit).to.eql(getMetricUnit(currentZoom));
+        assert.deepEqual(unit, getMetricUnit(currentZoom));
       }
     });
     it('degrees: is rendered differently for different zoomlevels', function () {
@@ -576,7 +574,7 @@ describe('ol.control.ScaleLine', function () {
         mapView.setZoom(currentZoom);
         map.renderSync();
         const currentHtml = ctrl.element.innerHTML;
-        expect(currentHtml in renderedHtmls).to.be(false);
+        assert.strictEqual(currentHtml in renderedHtmls, false);
         renderedHtmls[currentHtml] = true;
       }
     });
@@ -588,11 +586,11 @@ describe('ol.control.ScaleLine', function () {
         mapView.setZoom(currentZoom);
         map.renderSync();
         const currentHtml = ctrl.element.innerHTML;
-        expect(currentHtml in renderedHtmls).to.be(false);
+        assert.strictEqual(currentHtml in renderedHtmls, false);
         renderedHtmls[currentHtml] = true;
 
         const unit = ctrl.innerElement_.textContent.match(/\d+ (.+)/)[1];
-        expect(unit).to.eql(getImperialUnit(currentZoom));
+        assert.deepEqual(unit, getImperialUnit(currentZoom));
       }
     });
     it('nautical: is rendered differently for different zoomlevels', function () {
@@ -603,7 +601,7 @@ describe('ol.control.ScaleLine', function () {
         mapView.setZoom(currentZoom);
         map.renderSync();
         const currentHtml = ctrl.element.innerHTML;
-        expect(currentHtml in renderedHtmls).to.be(false);
+        assert.strictEqual(currentHtml in renderedHtmls, false);
         renderedHtmls[currentHtml] = true;
       }
     });
@@ -615,7 +613,7 @@ describe('ol.control.ScaleLine', function () {
         mapView.setZoom(currentZoom);
         map.renderSync();
         const currentHtml = ctrl.element.innerHTML;
-        expect(currentHtml in renderedHtmls).to.be(false);
+        assert.strictEqual(currentHtml in renderedHtmls, false);
         renderedHtmls[currentHtml] = true;
       }
     });
@@ -637,11 +635,11 @@ describe('ol.control.ScaleLine', function () {
       );
       map.renderSync();
       const element = document.querySelector('.ol-scale-text');
-      expect(element).to.not.be(null);
-      expect(element).to.be.a(HTMLDivElement);
+      assert.notEqual(element, null);
+      assert.instanceOf(element, HTMLDivElement);
       const text = element.innerText;
-      expect(text.slice(0, 4)).to.be('1 : ');
-      expect(text.replace(/^1|\D/g, '')).to.eql(139770566);
+      assert.strictEqual(text.slice(0, 4), '1 : ');
+      assert.equal(text.replace(/^1|\D/g, ''), 139770566);
     });
     it('it changes with latitude', function () {
       const ctrl = new ScaleLine({
@@ -658,11 +656,11 @@ describe('ol.control.ScaleLine', function () {
       );
       map.renderSync();
       const element = document.querySelector('.ol-scale-text');
-      expect(element).to.not.be(null);
-      expect(element).to.be.a(HTMLDivElement);
+      assert.notEqual(element, null);
+      assert.instanceOf(element, HTMLDivElement);
       const text = element.innerText;
-      expect(text.slice(0, 4)).to.be('1 : ');
-      expect(text.replace(/^1|\D/g, '')).to.eql(69885283);
+      assert.strictEqual(text.slice(0, 4), '1 : ');
+      assert.equal(text.replace(/^1|\D/g, ''), 69885283);
     });
     it('it corresponds to the resolution in EPSG:4326', function () {
       const ctrl = new ScaleLine({
@@ -680,11 +678,11 @@ describe('ol.control.ScaleLine', function () {
       );
       map.renderSync();
       const element = document.querySelector('.ol-scale-text');
-      expect(element).to.not.be(null);
-      expect(element).to.be.a(HTMLDivElement);
+      assert.notEqual(element, null);
+      assert.instanceOf(element, HTMLDivElement);
       const text = element.innerText;
-      expect(text.slice(0, 4)).to.be('1 : ');
-      expect(text.replace(/^1|\D/g, '')).to.eql(139614359);
+      assert.strictEqual(text.slice(0, 4), '1 : ');
+      assert.equal(text.replace(/^1|\D/g, ''), 139614359);
     });
     it('it changes with latitude in EPSG:4326', function () {
       const ctrl = new ScaleLine({
@@ -702,11 +700,11 @@ describe('ol.control.ScaleLine', function () {
       );
       map.renderSync();
       const element = document.querySelector('.ol-scale-text');
-      expect(element).to.not.be(null);
-      expect(element).to.be.a(HTMLDivElement);
+      assert.notEqual(element, null);
+      assert.instanceOf(element, HTMLDivElement);
       const text = element.innerText;
-      expect(text.slice(0, 4)).to.be('1 : ');
-      expect(text.replace(/^1|\D/g, '')).to.eql(104710728);
+      assert.strictEqual(text.slice(0, 4), '1 : ');
+      assert.equal(text.replace(/^1|\D/g, ''), 104710728);
     });
   });
 });

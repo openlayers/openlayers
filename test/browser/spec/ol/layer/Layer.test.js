@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {spy as sinonSpy} from 'sinon';
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
@@ -27,35 +28,35 @@ describe('ol/layer/Layer', function () {
     });
 
     it('creates an instance', function () {
-      expect(layer).to.be.a(Layer);
+      assert.instanceOf(layer, Layer);
     });
 
     it('provides default opacity', function () {
-      expect(layer.getOpacity()).to.be(1);
+      assert.strictEqual(layer.getOpacity(), 1);
     });
 
     it('provides default visibility', function () {
-      expect(layer.getVisible()).to.be(true);
+      assert.strictEqual(layer.getVisible(), true);
     });
 
     it('provides default max resolution', function () {
-      expect(layer.getMaxResolution()).to.be(Infinity);
+      assert.strictEqual(layer.getMaxResolution(), Infinity);
     });
 
     it('provides default min resolution', function () {
-      expect(layer.getMinResolution()).to.be(0);
+      assert.strictEqual(layer.getMinResolution(), 0);
     });
 
     it('provides default min zoom', function () {
-      expect(layer.getMinZoom()).to.be(-Infinity);
+      assert.strictEqual(layer.getMinZoom(), -Infinity);
     });
 
     it('provides default max zoom', function () {
-      expect(layer.getMaxZoom()).to.be(Infinity);
+      assert.strictEqual(layer.getMaxZoom(), Infinity);
     });
 
     it('provides default layerState', function () {
-      expect(layer.getLayerState()).to.eql({
+      assert.deepEqual(layer.getLayerState(), {
         layer: layer,
         opacity: 1,
         visible: true,
@@ -86,14 +87,14 @@ describe('ol/layer/Layer', function () {
         foo: 42,
       });
 
-      expect(layer.getOpacity()).to.be(0.5);
-      expect(layer.getVisible()).to.be(false);
-      expect(layer.getMaxResolution()).to.be(500);
-      expect(layer.getMinResolution()).to.be(0.25);
-      expect(layer.getMinZoom()).to.be(1);
-      expect(layer.getMaxZoom()).to.be(10);
-      expect(layer.get('foo')).to.be(42);
-      expect(layer.getLayerState()).to.eql({
+      assert.strictEqual(layer.getOpacity(), 0.5);
+      assert.strictEqual(layer.getVisible(), false);
+      assert.strictEqual(layer.getMaxResolution(), 500);
+      assert.strictEqual(layer.getMinResolution(), 0.25);
+      assert.strictEqual(layer.getMinZoom(), 1);
+      assert.strictEqual(layer.getMaxZoom(), 10);
+      assert.strictEqual(layer.get('foo'), 42);
+      assert.deepEqual(layer.getLayerState(), {
         layer: layer,
         opacity: 0.5,
         visible: false,
@@ -115,8 +116,8 @@ describe('ol/layer/Layer', function () {
           foo: 'bar',
         },
       });
-      expect(o.get('foo')).to.be('bar');
-      expect(o.get('properties')).to.be(undefined);
+      assert.strictEqual(o.get('foo'), 'bar');
+      assert.strictEqual(o.get('properties'), undefined);
     });
 
     it('can have a `properties` property', function () {
@@ -125,7 +126,7 @@ describe('ol/layer/Layer', function () {
           properties: {foo: 'bar'},
         },
       });
-      expect(o.get('properties')).to.eql({foo: 'bar'});
+      assert.deepEqual(o.get('properties'), {foo: 'bar'});
     });
 
     it('throws on non-numeric opacity', function () {
@@ -138,7 +139,7 @@ describe('ol/layer/Layer', function () {
         });
       }
 
-      expect(create).to.throwException();
+      assert.throws(create);
     });
 
     it('accepts a custom render function', function () {
@@ -149,7 +150,7 @@ describe('ol/layer/Layer', function () {
         },
       });
       layer.render();
-      expect(called).to.eql(true);
+      assert.deepEqual(called, true);
     });
   });
 
@@ -401,7 +402,7 @@ describe('ol/layer/Layer', function () {
           layer.setMaxResolution(c.maxResolution);
         }
         const layerState = layer.getLayerState();
-        expect(inView(layerState, c.view)).to.be(c.inView);
+        assert.strictEqual(inView(layerState, c.view), c.inView);
       });
     });
   });
@@ -427,7 +428,7 @@ describe('ol/layer/Layer', function () {
       layer.setMaxResolution(500);
       layer.setMinResolution(0.25);
       layer.setZIndex(10);
-      expect(layer.getLayerState()).to.eql({
+      assert.deepEqual(layer.getLayerState(), {
         layer: layer,
         opacity: 0.33,
         visible: false,
@@ -445,14 +446,14 @@ describe('ol/layer/Layer', function () {
       layer.setOpacity(-1.5);
       layer.setVisible(false);
       let state = layer.getLayerState();
-      expect(state.opacity).to.be(0);
-      expect(state.visible).to.be(false);
+      assert.strictEqual(state.opacity, 0);
+      assert.strictEqual(state.visible, false);
 
       layer.setOpacity(3);
       layer.setVisible(true);
       state = layer.getLayerState();
-      expect(state.opacity).to.be(1);
-      expect(state.visible).to.be(true);
+      assert.strictEqual(state.opacity, 1);
+      assert.strictEqual(state.visible, true);
     });
   });
 
@@ -474,23 +475,23 @@ describe('ol/layer/Layer', function () {
 
     it('returns true if the layer is visible', function () {
       layer.setVisible(true);
-      expect(layer.isVisible(view)).to.be(true);
+      assert.strictEqual(layer.isVisible(view), true);
     });
 
     it('returns false if the layer is not visible', function () {
       layer.setVisible(false);
-      expect(layer.isVisible(view)).to.be(false);
+      assert.strictEqual(layer.isVisible(view), false);
     });
 
     it('returns false if the layer is not in view', function () {
       layer.setExtent([15, 47, 16, 48]);
       view.setZoom(14);
-      expect(layer.isVisible(view)).to.be(false);
+      assert.strictEqual(layer.isVisible(view), false);
     });
 
     it('returns false if the layer is not within zoom range', function () {
       layer.setMinZoom(2);
-      expect(layer.isVisible(view)).to.be(false);
+      assert.strictEqual(layer.isVisible(view), false);
     });
 
     it('works without arguments on layers that are in a map', function () {
@@ -498,11 +499,11 @@ describe('ol/layer/Layer', function () {
         view: view,
         layers: [layer],
       });
-      expect(layer.isVisible()).to.be(true);
+      assert.strictEqual(layer.isVisible(), true);
     });
 
     it('throws when called without arguments', function () {
-      expect(() => layer.isVisible()).to.throwException();
+      assert.throws(() => layer.isVisible());
     });
   });
 
@@ -528,12 +529,12 @@ describe('ol/layer/Layer', function () {
     });
 
     it('returns the attributions', function () {
-      expect(layer.getAttributions(view)).to.be(attributions);
+      assert.strictEqual(layer.getAttributions(view), attributions);
     });
 
     it('returns an empty array when the layer is not visible', function () {
       layer.setVisible(false);
-      expect(layer.getAttributions(view)).to.eql([]);
+      assert.deepEqual(layer.getAttributions(view), []);
     });
 
     it('returns an empty array when the layer is in a hidden group', function () {
@@ -541,7 +542,7 @@ describe('ol/layer/Layer', function () {
         layers: [new Group({layers: [layer], visible: false})],
         view: view,
       });
-      expect(layer.getAttributions()).to.eql([]);
+      assert.deepEqual(layer.getAttributions(), []);
     });
   });
 
@@ -549,7 +550,7 @@ describe('ol/layer/Layer', function () {
     it('gets the layer source', function () {
       const source = new Source({projection: getProjection('EPSG:4326')});
       const layer = new Layer({source: source});
-      expect(layer.getSource()).to.be(source);
+      assert.strictEqual(layer.getSource(), source);
     });
   });
 
@@ -563,7 +564,7 @@ describe('ol/layer/Layer', function () {
 
       const source = new Source({projection: projection});
       layer.set('source', source);
-      expect(layer.getSource()).to.be(source);
+      assert.strictEqual(layer.getSource(), source);
     });
 
     it('calls changed', function () {
@@ -574,7 +575,7 @@ describe('ol/layer/Layer', function () {
 
       const source = new Source({projection: projection});
       layer.set('source', source);
-      expect(layer.changed.calledOnce).to.be(true);
+      assert.strictEqual(layer.changed.calledOnce, true);
     });
 
     it('sets up event listeners', function () {
@@ -584,14 +585,14 @@ describe('ol/layer/Layer', function () {
       const layer = new Layer({source: first});
 
       first.setState('ready');
-      expect(layer.handleSourceChange_.calledOnce).to.be(true);
+      assert.strictEqual(layer.handleSourceChange_.calledOnce, true);
 
       const second = new Source({projection: projection});
       layer.set('source', second);
 
-      expect(layer.handleSourceChange_.calledOnce).to.be(true);
+      assert.strictEqual(layer.handleSourceChange_.calledOnce, true);
       second.setState('ready');
-      expect(layer.handleSourceChange_.callCount).to.be(2);
+      assert.strictEqual(layer.handleSourceChange_.callCount, 2);
 
       // remove spy
       Layer.prototype.handleSourceChange_.restore();
@@ -608,7 +609,7 @@ describe('ol/layer/Layer', function () {
 
       const source = new Source({projection: projection});
       layer.setSource(source);
-      expect(layer.getSource()).to.be(source);
+      assert.strictEqual(layer.getSource(), source);
     });
 
     it('calls changed', function () {
@@ -619,7 +620,7 @@ describe('ol/layer/Layer', function () {
 
       const source = new Source({projection: projection});
       layer.setSource(source);
-      expect(layer.changed.calledOnce).to.be(true);
+      assert.strictEqual(layer.changed.calledOnce, true);
     });
 
     it('sets up event listeners', function () {
@@ -629,14 +630,14 @@ describe('ol/layer/Layer', function () {
       const layer = new Layer({source: first});
 
       first.setState('ready');
-      expect(layer.handleSourceChange_.calledOnce).to.be(true);
+      assert.strictEqual(layer.handleSourceChange_.calledOnce, true);
 
       const second = new Source({projection: projection});
       layer.setSource(second);
 
-      expect(layer.handleSourceChange_.calledOnce).to.be(true);
+      assert.strictEqual(layer.handleSourceChange_.calledOnce, true);
       second.setState('ready');
-      expect(layer.handleSourceChange_.callCount).to.be(2);
+      assert.strictEqual(layer.handleSourceChange_.callCount, 2);
 
       // remove spy
       Layer.prototype.handleSourceChange_.restore();
@@ -660,21 +661,21 @@ describe('ol/layer/Layer', function () {
 
     it('accepts a positive number', function () {
       layer.setOpacity(0.3);
-      expect(layer.getOpacity()).to.be(0.3);
+      assert.strictEqual(layer.getOpacity(), 0.3);
     });
 
     it('throws on types other than number', function () {
       function set() {
         layer.setOpacity('foo');
       }
-      expect(set).to.throwException();
+      assert.throws(set);
     });
 
     it('triggers a change event', function () {
       const listener = sinonSpy();
       layer.on('propertychange', listener);
       layer.setOpacity(0.4);
-      expect(listener.calledOnce).to.be(true);
+      assert.strictEqual(listener.calledOnce, true);
     });
   });
 
@@ -694,10 +695,10 @@ describe('ol/layer/Layer', function () {
 
     it('sets visible property', function () {
       layer.setVisible(false);
-      expect(layer.getVisible()).to.be(false);
+      assert.strictEqual(layer.getVisible(), false);
 
       layer.setVisible(true);
-      expect(layer.getVisible()).to.be(true);
+      assert.strictEqual(layer.getVisible(), true);
     });
 
     it('fires a change event', function () {
@@ -705,10 +706,10 @@ describe('ol/layer/Layer', function () {
       layer.on('propertychange', listener);
 
       layer.setVisible(false);
-      expect(listener.callCount).to.be(1);
+      assert.strictEqual(listener.callCount, 1);
 
       layer.setVisible(true);
-      expect(listener.callCount).to.be(2);
+      assert.strictEqual(listener.callCount, 2);
     });
   });
 
@@ -753,32 +754,32 @@ describe('ol/layer/Layer', function () {
     it('is called when a layer goes from visible to not visible', () => {
       const spy = sinonSpy(layer, 'unrender');
       map.renderSync();
-      expect(spy.callCount).to.be(0);
+      assert.strictEqual(spy.callCount, 0);
 
       layer.setVisible(false);
       map.renderSync();
-      expect(spy.callCount).to.be(1);
+      assert.strictEqual(spy.callCount, 1);
     });
 
     it('is called when a layer is removed from the map', () => {
       const spy = sinonSpy(layer, 'unrender');
       map.renderSync();
-      expect(spy.callCount).to.be(0);
+      assert.strictEqual(spy.callCount, 0);
 
       map.removeLayer(layer);
       map.renderSync();
-      expect(spy.callCount).to.be(1);
+      assert.strictEqual(spy.callCount, 1);
     });
 
     it('is called when a layer goes out of range', () => {
       const spy = sinonSpy(layer, 'unrender');
       map.renderSync();
-      expect(spy.callCount).to.be(0);
+      assert.strictEqual(spy.callCount, 0);
 
       layer.setMaxZoom(3);
       map.getView().setZoom(4);
       map.renderSync();
-      expect(spy.callCount).to.be(1);
+      assert.strictEqual(spy.callCount, 1);
     });
   });
 
@@ -788,14 +789,14 @@ describe('ol/layer/Layer', function () {
       const layer = new Layer({});
       map.addLayer(layer);
 
-      expect(layer.get(Property.MAP)).to.be(map);
+      assert.strictEqual(layer.get(Property.MAP), map);
     });
 
     it('is set when a layer is added to a map in the constructor', () => {
       const layer = new Layer({});
       const map = new Map({layers: [layer]});
 
-      expect(layer.get(Property.MAP)).to.be(map);
+      assert.strictEqual(layer.get(Property.MAP), map);
     });
 
     it('is set when a layer is added to a group', () => {
@@ -805,7 +806,7 @@ describe('ol/layer/Layer', function () {
       map.addLayer(group);
       group.getLayers().push(layer);
 
-      expect(layer.get(Property.MAP)).to.be(map);
+      assert.strictEqual(layer.get(Property.MAP), map);
     });
 
     it('is set when a layer is added to a group set in the constructor', () => {
@@ -814,7 +815,7 @@ describe('ol/layer/Layer', function () {
       const map = new Map({layers: [group]});
       group.getLayers().push(layer);
 
-      expect(layer.get(Property.MAP)).to.be(map);
+      assert.strictEqual(layer.get(Property.MAP), map);
     });
 
     it('is set when a layer already added to a group set in the constructor', () => {
@@ -822,36 +823,36 @@ describe('ol/layer/Layer', function () {
       const group = new Group({layers: [layer]});
       const map = new Map({layers: [group]});
 
-      expect(layer.get(Property.MAP)).to.be(map);
+      assert.strictEqual(layer.get(Property.MAP), map);
     });
 
     it('is removed when a layer is removed from the map', () => {
       const map = new Map({});
       const layer = new Layer({});
       map.addLayer(layer);
-      expect(layer.get(Property.MAP)).to.be(map);
+      assert.strictEqual(layer.get(Property.MAP), map);
 
       map.removeLayer(layer);
-      expect(layer.get(Property.MAP)).to.be(null);
+      assert.strictEqual(layer.get(Property.MAP), null);
     });
 
     it('is removed when a layer added in the constructor is removed from the map', () => {
       const layer = new Layer({});
       const map = new Map({layers: [layer]});
-      expect(layer.get(Property.MAP)).to.be(map);
+      assert.strictEqual(layer.get(Property.MAP), map);
 
       map.removeLayer(layer);
-      expect(layer.get(Property.MAP)).to.be(null);
+      assert.strictEqual(layer.get(Property.MAP), null);
     });
 
     it('is removed when a layer is removed from a group', () => {
       const layer = new Layer({});
       const group = new Group({layers: [layer]});
       const map = new Map({layers: [group]});
-      expect(layer.get(Property.MAP)).to.be(map);
+      assert.strictEqual(layer.get(Property.MAP), map);
 
       group.getLayers().remove(layer);
-      expect(layer.get(Property.MAP)).to.be(null);
+      assert.strictEqual(layer.get(Property.MAP), null);
     });
   });
 
@@ -873,9 +874,9 @@ describe('ol/layer/Layer', function () {
         map.dispatchEvent(
           new RenderEvent('precompose', null, frameState, null),
         );
-        expect(frameState.layerStatesArray.length).to.be(1);
+        assert.strictEqual(frameState.layerStatesArray.length, 1);
         const layerState = frameState.layerStatesArray[0];
-        expect(layerState.layer).to.equal(layer);
+        assert.equal(layerState.layer, layer);
       });
     });
 
@@ -894,13 +895,13 @@ describe('ol/layer/Layer', function () {
         const layer = new Layer({});
 
         layer.setMap(map);
-        expect(mapRenderSpy.callCount).to.be(1);
+        assert.strictEqual(mapRenderSpy.callCount, 1);
 
         layer.setMap(null);
-        expect(mapRenderSpy.callCount).to.be(2);
+        assert.strictEqual(mapRenderSpy.callCount, 2);
 
         layer.setMap(map);
-        expect(mapRenderSpy.callCount).to.be(3);
+        assert.strictEqual(mapRenderSpy.callCount, 3);
       });
     });
 
@@ -925,7 +926,7 @@ describe('ol/layer/Layer', function () {
           new RenderEvent('precompose', null, frameState, null),
         );
         const layerState = frameState.layerStatesArray[0];
-        expect(layerState.zIndex).to.be(Infinity);
+        assert.strictEqual(layerState.zIndex, Infinity);
       });
 
       it('respects the configured zIndex', function () {
@@ -936,7 +937,7 @@ describe('ol/layer/Layer', function () {
           );
           const layerState = frameState.layerStatesArray[0];
           frameState.layerStatesArray.length = 0;
-          expect(layerState.zIndex).to.be(index);
+          assert.strictEqual(layerState.zIndex, index);
         });
       });
     });

@@ -1,14 +1,14 @@
+import {assert} from 'chai';
 import {spy as sinonSpy} from 'sinon';
 import {isEmpty} from '../../../../src/ol/extent.js';
 import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
 import Point from '../../../../src/ol/geom/Point.js';
-import expect from '../../expect.js';
 
 describe('ol/geom/MultiPoint.js', function () {
   it('cannot be constructed with a null geometry', function () {
-    expect(function () {
+    assert.throws(function () {
       return new MultiPoint(null);
-    }).to.throwException();
+    });
   });
 
   describe('construct empty', function () {
@@ -18,30 +18,30 @@ describe('ol/geom/MultiPoint.js', function () {
     });
 
     it('defaults to layout XY', function () {
-      expect(multiPoint.getLayout()).to.be('XY');
+      assert.strictEqual(multiPoint.getLayout(), 'XY');
     });
 
     it('has empty coordinates', function () {
-      expect(multiPoint.getCoordinates()).to.be.empty();
+      assert.isEmpty(multiPoint.getCoordinates());
     });
 
     it('has an empty extent', function () {
-      expect(isEmpty(multiPoint.getExtent())).to.be(true);
+      assert.strictEqual(isEmpty(multiPoint.getExtent()), true);
     });
 
     it('has empty flat coordinates', function () {
-      expect(multiPoint.getFlatCoordinates()).to.be.empty();
+      assert.isEmpty(multiPoint.getFlatCoordinates());
     });
 
     it('has stride the expected stride', function () {
-      expect(multiPoint.getStride()).to.be(2);
+      assert.strictEqual(multiPoint.getStride(), 2);
     });
 
     it('can append points', function () {
       multiPoint.appendPoint(new Point([1, 2]));
-      expect(multiPoint.getCoordinates()).to.eql([[1, 2]]);
+      assert.deepEqual(multiPoint.getCoordinates(), [[1, 2]]);
       multiPoint.appendPoint(new Point([3, 4]));
-      expect(multiPoint.getCoordinates()).to.eql([
+      assert.deepEqual(multiPoint.getCoordinates(), [
         [1, 2],
         [3, 4],
       ]);
@@ -58,35 +58,35 @@ describe('ol/geom/MultiPoint.js', function () {
     });
 
     it('has the expected layout', function () {
-      expect(multiPoint.getLayout()).to.be('XY');
+      assert.strictEqual(multiPoint.getLayout(), 'XY');
     });
 
     it('has the expected coordinates', function () {
-      expect(multiPoint.getCoordinates()).to.eql([
+      assert.deepEqual(multiPoint.getCoordinates(), [
         [1, 2],
         [3, 4],
       ]);
     });
 
     it('has the expected extent', function () {
-      expect(multiPoint.getExtent()).to.eql([1, 2, 3, 4]);
+      assert.deepEqual(multiPoint.getExtent(), [1, 2, 3, 4]);
     });
 
     it('has the expected flat coordinates', function () {
-      expect(multiPoint.getFlatCoordinates()).to.eql([1, 2, 3, 4]);
+      assert.deepEqual(multiPoint.getFlatCoordinates(), [1, 2, 3, 4]);
     });
 
     it('has stride the expected stride', function () {
-      expect(multiPoint.getStride()).to.be(2);
+      assert.strictEqual(multiPoint.getStride(), 2);
     });
 
     describe('#intersectsExtent()', function () {
       it('returns true for extent covering a point', function () {
-        expect(multiPoint.intersectsExtent([1, 2, 2, 2])).to.be(true);
+        assert.strictEqual(multiPoint.intersectsExtent([1, 2, 2, 2]), true);
       });
 
       it('returns false for non-matching extent within own extent', function () {
-        expect(multiPoint.intersectsExtent([2, 3, 2, 4])).to.be(false);
+        assert.strictEqual(multiPoint.intersectsExtent([2, 3, 2, 4]), false);
       });
     });
   });
@@ -101,26 +101,26 @@ describe('ol/geom/MultiPoint.js', function () {
     });
 
     it('has the expected layout', function () {
-      expect(multiPoint.getLayout()).to.be('XYZ');
+      assert.strictEqual(multiPoint.getLayout(), 'XYZ');
     });
 
     it('has the expected coordinates', function () {
-      expect(multiPoint.getCoordinates()).to.eql([
+      assert.deepEqual(multiPoint.getCoordinates(), [
         [1, 2, 3],
         [4, 5, 6],
       ]);
     });
 
     it('has the expected extent', function () {
-      expect(multiPoint.getExtent()).to.eql([1, 2, 4, 5]);
+      assert.deepEqual(multiPoint.getExtent(), [1, 2, 4, 5]);
     });
 
     it('has the expected flat coordinates', function () {
-      expect(multiPoint.getFlatCoordinates()).to.eql([1, 2, 3, 4, 5, 6]);
+      assert.deepEqual(multiPoint.getFlatCoordinates(), [1, 2, 3, 4, 5, 6]);
     });
 
     it('has the expected stride', function () {
-      expect(multiPoint.getStride()).to.be(3);
+      assert.strictEqual(multiPoint.getStride(), 3);
     });
   });
 
@@ -137,46 +137,46 @@ describe('ol/geom/MultiPoint.js', function () {
     });
 
     it('has the expected layout', function () {
-      expect(multiPoint.getLayout()).to.be('XYM');
+      assert.strictEqual(multiPoint.getLayout(), 'XYM');
     });
 
     it('has the expected coordinates', function () {
-      expect(multiPoint.getCoordinates()).to.eql([
+      assert.deepEqual(multiPoint.getCoordinates(), [
         [1, 2, 3],
         [4, 5, 6],
       ]);
     });
 
     it('has the expected extent', function () {
-      expect(multiPoint.getExtent()).to.eql([1, 2, 4, 5]);
+      assert.deepEqual(multiPoint.getExtent(), [1, 2, 4, 5]);
     });
 
     it('has the expected flat coordinates', function () {
-      expect(multiPoint.getFlatCoordinates()).to.eql([1, 2, 3, 4, 5, 6]);
+      assert.deepEqual(multiPoint.getFlatCoordinates(), [1, 2, 3, 4, 5, 6]);
     });
 
     it('has the expected stride', function () {
-      expect(multiPoint.getStride()).to.be(3);
+      assert.strictEqual(multiPoint.getStride(), 3);
     });
 
     it('can return individual points', function () {
       const point0 = multiPoint.getPoint(0);
-      expect(point0.getLayout()).to.be('XYM');
-      expect(point0.getCoordinates()).to.eql([1, 2, 3]);
+      assert.strictEqual(point0.getLayout(), 'XYM');
+      assert.deepEqual(point0.getCoordinates(), [1, 2, 3]);
       const point1 = multiPoint.getPoint(1);
-      expect(point1.getLayout()).to.be('XYM');
-      expect(point1.getCoordinates()).to.eql([4, 5, 6]);
+      assert.strictEqual(point1.getLayout(), 'XYM');
+      assert.deepEqual(point1.getCoordinates(), [4, 5, 6]);
     });
 
     it('can return all points', function () {
       const points = multiPoint.getPoints();
-      expect(points).to.have.length(2);
-      expect(points[0]).to.be.an(Point);
-      expect(points[0].getLayout()).to.be('XYM');
-      expect(points[0].getCoordinates()).to.eql([1, 2, 3]);
-      expect(points[1]).to.be.an(Point);
-      expect(points[1].getLayout()).to.be('XYM');
-      expect(points[1].getCoordinates()).to.eql([4, 5, 6]);
+      assert.lengthOf(points, 2);
+      assert.instanceOf(points[0], Point);
+      assert.strictEqual(points[0].getLayout(), 'XYM');
+      assert.deepEqual(points[0].getCoordinates(), [1, 2, 3]);
+      assert.instanceOf(points[1], Point);
+      assert.strictEqual(points[1].getLayout(), 'XYM');
+      assert.deepEqual(points[1].getCoordinates(), [4, 5, 6]);
     });
   });
 
@@ -190,32 +190,35 @@ describe('ol/geom/MultiPoint.js', function () {
     });
 
     it('has the expected layout', function () {
-      expect(multiPoint.getLayout()).to.be('XYZM');
+      assert.strictEqual(multiPoint.getLayout(), 'XYZM');
     });
 
     it('has the expected coordinates', function () {
-      expect(multiPoint.getCoordinates()).to.eql([
+      assert.deepEqual(multiPoint.getCoordinates(), [
         [1, 2, 3, 4],
         [5, 6, 7, 8],
       ]);
     });
 
     it('has the expected extent', function () {
-      expect(multiPoint.getExtent()).to.eql([1, 2, 5, 6]);
+      assert.deepEqual(multiPoint.getExtent(), [1, 2, 5, 6]);
     });
 
     it('has the expected flat coordinates', function () {
-      expect(multiPoint.getFlatCoordinates()).to.eql([1, 2, 3, 4, 5, 6, 7, 8]);
+      assert.deepEqual(
+        multiPoint.getFlatCoordinates(),
+        [1, 2, 3, 4, 5, 6, 7, 8],
+      );
     });
 
     it('has the expected stride', function () {
-      expect(multiPoint.getStride()).to.be(4);
+      assert.strictEqual(multiPoint.getStride(), 4);
     });
 
     describe('#getClosestPoint', function () {
       it('preserves extra dimensions', function () {
         const closestPoint = multiPoint.getClosestPoint([6, 6]);
-        expect(closestPoint).to.eql([5, 6, 7, 8]);
+        assert.deepEqual(closestPoint, [5, 6, 7, 8]);
       });
     });
   });
@@ -228,7 +231,7 @@ describe('ol/geom/MultiPoint.js', function () {
       ]);
       geom.scale(10);
       const coordinates = geom.getCoordinates();
-      expect(coordinates).to.eql([
+      assert.deepEqual(coordinates, [
         [-100, -200],
         [100, 200],
       ]);
@@ -241,7 +244,7 @@ describe('ol/geom/MultiPoint.js', function () {
       ]);
       geom.scale(2, 3);
       const coordinates = geom.getCoordinates();
-      expect(coordinates).to.eql([
+      assert.deepEqual(coordinates, [
         [-20, -60],
         [20, 60],
       ]);
@@ -254,7 +257,7 @@ describe('ol/geom/MultiPoint.js', function () {
       ]);
       geom.scale(3, 2, [-10, -20]);
       const coordinates = geom.getCoordinates();
-      expect(coordinates).to.eql([
+      assert.deepEqual(coordinates, [
         [-10, -20],
         [50, 60],
       ]);
@@ -273,14 +276,14 @@ describe('ol/geom/MultiPoint.js', function () {
 
     it('calls a transform function', function () {
       multi.applyTransform(transform);
-      expect(transform.calledOnce).to.be(true);
+      assert.strictEqual(transform.calledOnce, true);
       const args = transform.firstCall.args;
-      expect(args).to.have.length(4);
+      assert.lengthOf(args, 4);
 
-      expect(args[0]).to.be(multi.getFlatCoordinates()); // input coords
-      expect(args[1]).to.be(multi.getFlatCoordinates()); // output coords
-      expect(args[2]).to.be(2); // dimension
-      expect(args[3]).to.be(2); // stride
+      assert.strictEqual(args[0], multi.getFlatCoordinates());
+      assert.strictEqual(args[1], multi.getFlatCoordinates());
+      assert.strictEqual(args[2], 2);
+      assert.strictEqual(args[3], 2);
     });
 
     it('allows for modification of coordinates', function () {
@@ -292,7 +295,7 @@ describe('ol/geom/MultiPoint.js', function () {
         }
       };
       multi.applyTransform(mod);
-      expect(multi.getCoordinates()).to.eql([
+      assert.deepEqual(multi.getCoordinates(), [
         [2, 1],
         [4, 3],
       ]);
@@ -300,7 +303,7 @@ describe('ol/geom/MultiPoint.js', function () {
 
     it('returns undefined', function () {
       const got = multi.applyTransform(transform);
-      expect(got).to.be(undefined);
+      assert.strictEqual(got, undefined);
     });
   });
 
@@ -311,15 +314,15 @@ describe('ol/geom/MultiPoint.js', function () {
         [111, -45],
       ]).transform('EPSG:4326', 'EPSG:3857');
 
-      expect(multi).to.be.a(MultiPoint);
+      assert.instanceOf(multi, MultiPoint);
 
       const coords = multi.getCoordinates();
 
-      expect(coords[0][0]).to.roughlyEqual(-12356463.47, 1e-2);
-      expect(coords[0][1]).to.roughlyEqual(5621521.48, 1e-2);
+      assert.approximately(coords[0][0], -12356463.47, 1e-2);
+      assert.approximately(coords[0][1], 5621521.48, 1e-2);
 
-      expect(coords[1][0]).to.roughlyEqual(12356463.47, 1e-2);
-      expect(coords[1][1]).to.roughlyEqual(-5621521.48, 1e-2);
+      assert.approximately(coords[1][0], 12356463.47, 1e-2);
+      assert.approximately(coords[1][1], -5621521.48, 1e-2);
     });
   });
 
@@ -330,8 +333,8 @@ describe('ol/geom/MultiPoint.js', function () {
         [10, 20],
       ]);
 
-      expect(multi.containsXY(1, 2)).to.be(true);
-      expect(multi.containsXY(10, 20)).to.be(true);
+      assert.strictEqual(multi.containsXY(1, 2), true);
+      assert.strictEqual(multi.containsXY(10, 20), true);
     });
 
     it('does not contain XY', function () {
@@ -340,13 +343,13 @@ describe('ol/geom/MultiPoint.js', function () {
         [10, 20],
       ]);
 
-      expect(multi.containsXY(1, 3)).to.be(false);
-      expect(multi.containsXY(2, 2)).to.be(false);
-      expect(multi.containsXY(2, 3)).to.be(false);
+      assert.strictEqual(multi.containsXY(1, 3), false);
+      assert.strictEqual(multi.containsXY(2, 2), false);
+      assert.strictEqual(multi.containsXY(2, 3), false);
 
-      expect(multi.containsXY(10, 30)).to.be(false);
-      expect(multi.containsXY(20, 20)).to.be(false);
-      expect(multi.containsXY(20, 30)).to.be(false);
+      assert.strictEqual(multi.containsXY(10, 30), false);
+      assert.strictEqual(multi.containsXY(20, 20), false);
+      assert.strictEqual(multi.containsXY(20, 30), false);
     });
   });
 });

@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import ImageTile from '../../../../../src/ol/ImageTile.js';
 import {get as getProjection} from '../../../../../src/ol/proj.js';
 import TileWMS from '../../../../../src/ol/source/TileWMS.js';
@@ -28,7 +29,7 @@ describe('ol/source/TileWMS', function () {
         projection: 'EPSG:3857',
         tileGrid: createXYZ({maxZoom: 6}),
       });
-      expect(source).to.be.an(TileWMS);
+      assert.instanceOf(source, TileWMS);
     });
   });
 
@@ -36,23 +37,23 @@ describe('ol/source/TileWMS', function () {
     it('verify getting a param', function () {
       const source = new TileWMS(options);
       const setParams = source.getParams();
-      expect(setParams).to.eql({'LAYERS': 'layer'});
+      assert.deepEqual(setParams, {'LAYERS': 'layer'});
     });
 
     it('verify on adding a param', function () {
       const source = new TileWMS(options);
       source.updateParams({'TEST': 'value'});
       const setParams = source.getParams();
-      expect(setParams).to.eql({'LAYERS': 'layer', TEST: 'value'});
-      expect(options.params).to.eql({'LAYERS': 'layer'});
+      assert.deepEqual(setParams, {'LAYERS': 'layer', TEST: 'value'});
+      assert.deepEqual(options.params, {'LAYERS': 'layer'});
     });
 
     it('verify on update a param', function () {
       const source = new TileWMS(options);
       source.updateParams({'LAYERS': 'newLayer'});
       const setParams = source.getParams();
-      expect(setParams).to.eql({'LAYERS': 'newLayer'});
-      expect(options.params).to.eql({'LAYERS': 'layer'});
+      assert.deepEqual(setParams, {'LAYERS': 'newLayer'});
+      assert.deepEqual(options.params, {'LAYERS': 'layer'});
     });
   });
 
@@ -73,9 +74,9 @@ describe('ol/source/TileWMS', function () {
         source.tileUrlFunction(tileCoord, 1, projection),
       );
       const paramsBefore = urlBefore.searchParams;
-      expect(paramsBefore.get('test')).to.be('before');
-      expect(paramsBefore.get('LAYERS')).to.be('layer');
-      expect(paramsBefore.get('foo')).to.be(null);
+      assert.strictEqual(paramsBefore.get('test'), 'before');
+      assert.strictEqual(paramsBefore.get('LAYERS'), 'layer');
+      assert.strictEqual(paramsBefore.get('foo'), null);
 
       source.updateParams({test: 'after', foo: 'bar'});
 
@@ -83,9 +84,9 @@ describe('ol/source/TileWMS', function () {
         source.tileUrlFunction(tileCoord, 1, projection),
       );
       const paramsAfter = urlAfter.searchParams;
-      expect(paramsAfter.get('test')).to.be('after');
-      expect(paramsAfter.get('foo')).to.be('bar');
-      expect(paramsAfter.get('LAYERS')).to.be('layer');
+      assert.strictEqual(paramsAfter.get('test'), 'after');
+      assert.strictEqual(paramsAfter.get('foo'), 'bar');
+      assert.strictEqual(paramsAfter.get('LAYERS'), 'layer');
     });
 
     it('does not modify the object passed to the constructor', function () {
@@ -96,7 +97,7 @@ describe('ol/source/TileWMS', function () {
       });
 
       source.updateParams({LAYERS: 'after'});
-      expect(params.LAYERS).to.be('layer');
+      assert.strictEqual(params.LAYERS, 'layer');
     });
 
     it('does not modify the object passed to setParams', function () {
@@ -106,7 +107,7 @@ describe('ol/source/TileWMS', function () {
       });
 
       source.setParams({LAYERS: 'after'});
-      expect(params.LAYERS).to.be('layer');
+      assert.strictEqual(params.LAYERS, 'layer');
     });
   });
 
@@ -127,9 +128,9 @@ describe('ol/source/TileWMS', function () {
         source.tileUrlFunction(tileCoord, 1, projection),
       );
       const paramsBefore = urlBefore.searchParams;
-      expect(paramsBefore.get('test')).to.be('before');
-      expect(paramsBefore.get('LAYERS')).to.be('layer');
-      expect(paramsBefore.get('foo')).to.be(null);
+      assert.strictEqual(paramsBefore.get('test'), 'before');
+      assert.strictEqual(paramsBefore.get('LAYERS'), 'layer');
+      assert.strictEqual(paramsBefore.get('foo'), null);
 
       source.setParams({test: 'after', foo: 'bar'});
 
@@ -137,21 +138,21 @@ describe('ol/source/TileWMS', function () {
         source.tileUrlFunction(tileCoord, 1, projection),
       );
       const paramsAfter = urlAfter.searchParams;
-      expect(paramsAfter.get('test')).to.be('after');
-      expect(paramsAfter.get('foo')).to.be('bar');
-      expect(paramsAfter.get('LAYERS')).to.be(null);
+      assert.strictEqual(paramsAfter.get('test'), 'after');
+      assert.strictEqual(paramsAfter.get('foo'), 'bar');
+      assert.strictEqual(paramsAfter.get('LAYERS'), null);
     });
   });
 
   describe('#getInterpolate()', function () {
     it('is true by default', function () {
       const source = new TileWMS();
-      expect(source.getInterpolate()).to.be(true);
+      assert.strictEqual(source.getInterpolate(), true);
     });
 
     it('is false if constructed with interpolate: false', function () {
       const source = new TileWMS({interpolate: false});
-      expect(source.getInterpolate()).to.be(false);
+      assert.strictEqual(source.getInterpolate(), false);
     });
   });
 
@@ -159,36 +160,36 @@ describe('ol/source/TileWMS', function () {
     it('returns a tile with the expected URL', function () {
       const source = new TileWMS(options);
       const tile = source.getTile(3, 2, 6, 1, getProjection('EPSG:3857'));
-      expect(tile).to.be.an(ImageTile);
+      assert.instanceOf(tile, ImageTile);
       const uri = new URL(tile.src_);
-      expect(uri.protocol).to.be('http:');
-      expect(uri.hostname).to.be('example.com');
-      expect(uri.pathname).to.be('/wms');
+      assert.strictEqual(uri.protocol, 'http:');
+      assert.strictEqual(uri.hostname, 'example.com');
+      assert.strictEqual(uri.pathname, '/wms');
       const queryData = uri.searchParams;
       const bbox = queryData.get('BBOX').split(',').map(parseFloat);
-      expect(bbox[0]).roughlyEqual(-10018754.171394622, 1e-9);
-      expect(bbox[1]).roughlyEqual(-15028131.257091936, 1e-9);
-      expect(bbox[2]).roughlyEqual(-5009377.085697311, 1e-9);
-      expect(bbox[3]).roughlyEqual(-10018754.171394624, 1e-9);
-      expect(queryData.get('CRS')).to.be('EPSG:3857');
-      expect(queryData.get('FORMAT')).to.be('image/png');
-      expect(queryData.get('HEIGHT')).to.be('256');
-      expect(queryData.get('LAYERS')).to.be('layer');
-      expect(queryData.get('REQUEST')).to.be('GetMap');
-      expect(queryData.get('SERVICE')).to.be('WMS');
-      expect(queryData.get('SRS')).to.be(null);
-      expect(queryData.get('STYLES')).to.be('');
-      expect(queryData.get('TRANSPARENT')).to.be('TRUE');
-      expect(queryData.get('VERSION')).to.be('1.3.0');
-      expect(queryData.get('WIDTH')).to.be('256');
-      expect(uri.hash.replace('#', '')).to.be.empty();
+      assert.approximately(bbox[0], -10018754.171394622, 1e-9);
+      assert.approximately(bbox[1], -15028131.257091936, 1e-9);
+      assert.approximately(bbox[2], -5009377.085697311, 1e-9);
+      assert.approximately(bbox[3], -10018754.171394624, 1e-9);
+      assert.strictEqual(queryData.get('CRS'), 'EPSG:3857');
+      assert.strictEqual(queryData.get('FORMAT'), 'image/png');
+      assert.strictEqual(queryData.get('HEIGHT'), '256');
+      assert.strictEqual(queryData.get('LAYERS'), 'layer');
+      assert.strictEqual(queryData.get('REQUEST'), 'GetMap');
+      assert.strictEqual(queryData.get('SERVICE'), 'WMS');
+      assert.strictEqual(queryData.get('SRS'), null);
+      assert.strictEqual(queryData.get('STYLES'), '');
+      assert.strictEqual(queryData.get('TRANSPARENT'), 'TRUE');
+      assert.strictEqual(queryData.get('VERSION'), '1.3.0');
+      assert.strictEqual(queryData.get('WIDTH'), '256');
+      assert.isEmpty(uri.hash.replace('#', ''));
     });
 
     it('returns a larger tile when a gutter is specified', function () {
       options.gutter = 16;
       const source = new TileWMS(options);
       const tile = source.getTile(3, 2, 6, 1, getProjection('EPSG:3857'));
-      expect(tile).to.be.an(ImageTile);
+      assert.instanceOf(tile, ImageTile);
       const uri = new URL(tile.src_);
       const queryData = uri.searchParams;
       const bbox = queryData.get('BBOX').split(',');
@@ -197,10 +198,10 @@ describe('ol/source/TileWMS', function () {
         -9705668.103538541,
       ];
       for (let i = 0, ii = bbox.length; i < ii; ++i) {
-        expect(parseFloat(bbox[i])).to.roughlyEqual(expected[i], 1e-9);
+        assert.approximately(parseFloat(bbox[i]), expected[i], 1e-9);
       }
-      expect(queryData.get('HEIGHT')).to.be('288');
-      expect(queryData.get('WIDTH')).to.be('288');
+      assert.strictEqual(queryData.get('HEIGHT'), '288');
+      assert.strictEqual(queryData.get('WIDTH'), '288');
     });
 
     it('sets the SRS query value instead of CRS if version < 1.3', function () {
@@ -209,8 +210,8 @@ describe('ol/source/TileWMS', function () {
       const tile = source.getTile(3, 2, 2, 1, getProjection('EPSG:4326'));
       const uri = new URL(tile.src_);
       const queryData = uri.searchParams;
-      expect(queryData.get('CRS')).to.be(null);
-      expect(queryData.get('SRS')).to.be('EPSG:4326');
+      assert.strictEqual(queryData.get('CRS'), null);
+      assert.strictEqual(queryData.get('SRS'), 'EPSG:4326');
     });
 
     it('allows various parameters to be overridden', function () {
@@ -220,8 +221,8 @@ describe('ol/source/TileWMS', function () {
       const tile = source.getTile(3, 2, 2, 1, getProjection('EPSG:4326'));
       const uri = new URL(tile.src_);
       const queryData = uri.searchParams;
-      expect(queryData.get('FORMAT')).to.be('image/jpeg');
-      expect(queryData.get('TRANSPARENT')).to.be('false');
+      assert.strictEqual(queryData.get('FORMAT'), 'image/jpeg');
+      assert.strictEqual(queryData.get('TRANSPARENT'), 'false');
     });
 
     it('valid TRANSPARENT default value', function () {
@@ -229,7 +230,7 @@ describe('ol/source/TileWMS', function () {
       const tile = source.getTile(3, 2, 2, 1, getProjection('EPSG:4326'));
       const uri = new URL(tile.src_);
       const queryData = uri.searchParams;
-      expect(queryData.get('TRANSPARENT')).to.be('TRUE');
+      assert.strictEqual(queryData.get('TRANSPARENT'), 'TRUE');
     });
 
     it('valid TRANSPARENT override value', function () {
@@ -238,7 +239,7 @@ describe('ol/source/TileWMS', function () {
       const tile = source.getTile(3, 2, 2, 1, getProjection('EPSG:4326'));
       const uri = new URL(tile.src_);
       const queryData = uri.searchParams;
-      expect(queryData.get('TRANSPARENT')).to.be('FALSE');
+      assert.strictEqual(queryData.get('TRANSPARENT'), 'FALSE');
     });
 
     it('does not add a STYLES= option if one is specified', function () {
@@ -247,7 +248,7 @@ describe('ol/source/TileWMS', function () {
       const tile = source.getTile(3, 2, 2, 1, getProjection('EPSG:4326'));
       const uri = new URL(tile.src_);
       const queryData = uri.searchParams;
-      expect(queryData.get('STYLES')).to.be('foo');
+      assert.strictEqual(queryData.get('STYLES'), 'foo');
     });
 
     it('changes the BBOX order for EN axis orientations', function () {
@@ -255,7 +256,7 @@ describe('ol/source/TileWMS', function () {
       const tile = source.getTile(3, 2, 2, 1, getProjection('EPSG:4326'));
       const uri = new URL(tile.src_);
       const queryData = uri.searchParams;
-      expect(queryData.get('BBOX')).to.be('-45,-90,0,-45');
+      assert.strictEqual(queryData.get('BBOX'), '-45,-90,0,-45');
     });
 
     it('uses EN BBOX order if version < 1.3', function () {
@@ -264,7 +265,7 @@ describe('ol/source/TileWMS', function () {
       const tile = source.getTile(3, 2, 2, 1, getProjection('CRS:84'));
       const uri = new URL(tile.src_);
       const queryData = uri.searchParams;
-      expect(queryData.get('BBOX')).to.be('-90,-45,-45,0');
+      assert.strictEqual(queryData.get('BBOX'), '-90,-45,-45,0');
     });
 
     it('sets FORMAT_OPTIONS when the server is GeoServer', function () {
@@ -273,7 +274,7 @@ describe('ol/source/TileWMS', function () {
       const tile = source.getTile(3, 2, 2, 2, getProjection('CRS:84'));
       const uri = new URL(tile.src_);
       const queryData = uri.searchParams;
-      expect(queryData.get('FORMAT_OPTIONS')).to.be('dpi:180');
+      assert.strictEqual(queryData.get('FORMAT_OPTIONS'), 'dpi:180');
     });
 
     it('extends FORMAT_OPTIONS if it is already present', function () {
@@ -283,7 +284,10 @@ describe('ol/source/TileWMS', function () {
       const tile = source.getTile(3, 2, 2, 2, getProjection('CRS:84'));
       const uri = new URL(tile.src_);
       const queryData = uri.searchParams;
-      expect(queryData.get('FORMAT_OPTIONS')).to.be('param1:value1;dpi:180');
+      assert.strictEqual(
+        queryData.get('FORMAT_OPTIONS'),
+        'param1:value1;dpi:180',
+      );
     });
 
     it('rounds FORMAT_OPTIONS to an integer when the server is GeoServer', function () {
@@ -292,7 +296,7 @@ describe('ol/source/TileWMS', function () {
       const tile = source.getTile(3, 2, 2, 1.325, getProjection('CRS:84'));
       const uri = new URL(tile.src_);
       const queryData = uri.searchParams;
-      expect(queryData.get('FORMAT_OPTIONS')).to.be('dpi:119');
+      assert.strictEqual(queryData.get('FORMAT_OPTIONS'), 'dpi:119');
     });
   });
 
@@ -301,9 +305,9 @@ describe('ol/source/TileWMS', function () {
       options.extent = [-80, -40, -50, -10];
       const source = new TileWMS(options);
       const tileCoord = [3, 2, 2];
-      expect(function () {
+      assert.doesNotThrow(function () {
         source.getTileUrlFunction()(tileCoord, 1, getProjection('EPSG:4326'));
-      }).to.not.throwException();
+      });
     });
 
     it('returns a tile if it is contained within layers extent', function () {
@@ -317,7 +321,7 @@ describe('ol/source/TileWMS', function () {
       );
       const uri = new URL(url);
       const queryData = uri.searchParams;
-      expect(queryData.get('BBOX')).to.be('-45,-90,0,-45');
+      assert.strictEqual(queryData.get('BBOX'), '-45,-90,0,-45');
     });
 
     it('returns a tile if it intersects layers extent', function () {
@@ -331,7 +335,7 @@ describe('ol/source/TileWMS', function () {
       );
       const uri = new URL(url);
       const queryData = uri.searchParams;
-      expect(queryData.get('BBOX')).to.be('-45,-45,0,0');
+      assert.strictEqual(queryData.get('BBOX'), '-45,-45,0,0');
     });
 
     it('works with non-square tiles', function () {
@@ -349,8 +353,8 @@ describe('ol/source/TileWMS', function () {
       );
       const uri = new URL(url);
       const queryData = uri.searchParams;
-      expect(queryData.get('WIDTH')).to.be('640');
-      expect(queryData.get('HEIGHT')).to.be('320');
+      assert.strictEqual(queryData.get('WIDTH'), '640');
+      assert.strictEqual(queryData.get('HEIGHT'), '320');
     });
   });
 
@@ -365,30 +369,30 @@ describe('ol/source/TileWMS', function () {
         {INFO_FORMAT: 'text/plain'},
       );
       const uri = new URL(url);
-      expect(uri.protocol).to.be('http:');
-      expect(uri.hostname).to.be('example.com');
-      expect(uri.pathname).to.be('/wms');
+      assert.strictEqual(uri.protocol, 'http:');
+      assert.strictEqual(uri.hostname, 'example.com');
+      assert.strictEqual(uri.pathname, '/wms');
       const queryData = uri.searchParams;
       const bbox = queryData.get('BBOX').split(',').map(parseFloat);
-      expect(bbox[0]).roughlyEqual(-10018754.171394622, 1e-9);
-      expect(bbox[1]).roughlyEqual(-15028131.257091936, 1e-9);
-      expect(bbox[2]).roughlyEqual(-5009377.085697311, 1e-9);
-      expect(bbox[3]).roughlyEqual(-10018754.171394624, 1e-9);
-      expect(queryData.get('CRS')).to.be('EPSG:3857');
-      expect(queryData.get('FORMAT')).to.be('image/png');
-      expect(queryData.get('HEIGHT')).to.be('256');
-      expect(queryData.get('I')).to.be('154');
-      expect(queryData.get('J')).to.be('101');
-      expect(queryData.get('LAYERS')).to.be('layer');
-      expect(queryData.get('QUERY_LAYERS')).to.be('layer');
-      expect(queryData.get('REQUEST')).to.be('GetFeatureInfo');
-      expect(queryData.get('SERVICE')).to.be('WMS');
-      expect(queryData.get('SRS')).to.be(null);
-      expect(queryData.get('STYLES')).to.be('');
-      expect(queryData.get('TRANSPARENT')).to.be('TRUE');
-      expect(queryData.get('VERSION')).to.be('1.3.0');
-      expect(queryData.get('WIDTH')).to.be('256');
-      expect(uri.hash.replace('#', '')).to.be.empty();
+      assert.approximately(bbox[0], -10018754.171394622, 1e-9);
+      assert.approximately(bbox[1], -15028131.257091936, 1e-9);
+      assert.approximately(bbox[2], -5009377.085697311, 1e-9);
+      assert.approximately(bbox[3], -10018754.171394624, 1e-9);
+      assert.strictEqual(queryData.get('CRS'), 'EPSG:3857');
+      assert.strictEqual(queryData.get('FORMAT'), 'image/png');
+      assert.strictEqual(queryData.get('HEIGHT'), '256');
+      assert.strictEqual(queryData.get('I'), '154');
+      assert.strictEqual(queryData.get('J'), '101');
+      assert.strictEqual(queryData.get('LAYERS'), 'layer');
+      assert.strictEqual(queryData.get('QUERY_LAYERS'), 'layer');
+      assert.strictEqual(queryData.get('REQUEST'), 'GetFeatureInfo');
+      assert.strictEqual(queryData.get('SERVICE'), 'WMS');
+      assert.strictEqual(queryData.get('SRS'), null);
+      assert.strictEqual(queryData.get('STYLES'), '');
+      assert.strictEqual(queryData.get('TRANSPARENT'), 'TRUE');
+      assert.strictEqual(queryData.get('VERSION'), '1.3.0');
+      assert.strictEqual(queryData.get('WIDTH'), '256');
+      assert.isEmpty(uri.hash.replace('#', ''));
     });
 
     it("returns the expected GetFeatureInfo URL when source's projection is different from the parameter", function () {
@@ -401,26 +405,26 @@ describe('ol/source/TileWMS', function () {
         {INFO_FORMAT: 'text/plain'},
       );
       const uri = new URL(url);
-      expect(uri.protocol).to.be('http:');
-      expect(uri.hostname).to.be('example.com');
-      expect(uri.pathname).to.be('/wms');
+      assert.strictEqual(uri.protocol, 'http:');
+      assert.strictEqual(uri.hostname, 'example.com');
+      assert.strictEqual(uri.pathname, '/wms');
       const queryData = uri.searchParams;
-      expect(queryData.get('BBOX')).to.be('-78.75,-67.5,-67.5,-56.25');
-      expect(queryData.get('CRS')).to.be('EPSG:4326');
-      expect(queryData.get('FORMAT')).to.be('image/png');
-      expect(queryData.get('HEIGHT')).to.be('256');
-      expect(queryData.get('I')).to.be('105');
-      expect(queryData.get('J')).to.be('117');
-      expect(queryData.get('LAYERS')).to.be('layer');
-      expect(queryData.get('QUERY_LAYERS')).to.be('layer');
-      expect(queryData.get('REQUEST')).to.be('GetFeatureInfo');
-      expect(queryData.get('SERVICE')).to.be('WMS');
-      expect(queryData.get('SRS')).to.be(null);
-      expect(queryData.get('STYLES')).to.be('');
-      expect(queryData.get('TRANSPARENT')).to.be('TRUE');
-      expect(queryData.get('VERSION')).to.be('1.3.0');
-      expect(queryData.get('WIDTH')).to.be('256');
-      expect(uri.hash.replace('#', '')).to.be.empty();
+      assert.strictEqual(queryData.get('BBOX'), '-78.75,-67.5,-67.5,-56.25');
+      assert.strictEqual(queryData.get('CRS'), 'EPSG:4326');
+      assert.strictEqual(queryData.get('FORMAT'), 'image/png');
+      assert.strictEqual(queryData.get('HEIGHT'), '256');
+      assert.strictEqual(queryData.get('I'), '105');
+      assert.strictEqual(queryData.get('J'), '117');
+      assert.strictEqual(queryData.get('LAYERS'), 'layer');
+      assert.strictEqual(queryData.get('QUERY_LAYERS'), 'layer');
+      assert.strictEqual(queryData.get('REQUEST'), 'GetFeatureInfo');
+      assert.strictEqual(queryData.get('SERVICE'), 'WMS');
+      assert.strictEqual(queryData.get('SRS'), null);
+      assert.strictEqual(queryData.get('STYLES'), '');
+      assert.strictEqual(queryData.get('TRANSPARENT'), 'TRUE');
+      assert.strictEqual(queryData.get('VERSION'), '1.3.0');
+      assert.strictEqual(queryData.get('WIDTH'), '256');
+      assert.isEmpty(uri.hash.replace('#', ''));
     });
 
     it('sets the QUERY_LAYERS param as expected', function () {
@@ -433,30 +437,30 @@ describe('ol/source/TileWMS', function () {
         {INFO_FORMAT: 'text/plain', QUERY_LAYERS: 'foo,bar'},
       );
       const uri = new URL(url);
-      expect(uri.protocol).to.be('http:');
-      expect(uri.hostname).to.be('example.com');
-      expect(uri.pathname).to.be('/wms');
+      assert.strictEqual(uri.protocol, 'http:');
+      assert.strictEqual(uri.hostname, 'example.com');
+      assert.strictEqual(uri.pathname, '/wms');
       const queryData = uri.searchParams;
       const bbox = queryData.get('BBOX').split(',').map(parseFloat);
-      expect(bbox[0]).roughlyEqual(-10018754.171394622, 1e-9);
-      expect(bbox[1]).roughlyEqual(-15028131.257091936, 1e-9);
-      expect(bbox[2]).roughlyEqual(-5009377.085697311, 1e-9);
-      expect(bbox[3]).roughlyEqual(-10018754.171394624, 1e-9);
-      expect(queryData.get('CRS')).to.be('EPSG:3857');
-      expect(queryData.get('FORMAT')).to.be('image/png');
-      expect(queryData.get('HEIGHT')).to.be('256');
-      expect(queryData.get('I')).to.be('154');
-      expect(queryData.get('J')).to.be('101');
-      expect(queryData.get('LAYERS')).to.be('layer');
-      expect(queryData.get('QUERY_LAYERS')).to.be('foo,bar');
-      expect(queryData.get('REQUEST')).to.be('GetFeatureInfo');
-      expect(queryData.get('SERVICE')).to.be('WMS');
-      expect(queryData.get('SRS')).to.be(null);
-      expect(queryData.get('STYLES')).to.be('');
-      expect(queryData.get('TRANSPARENT')).to.be('TRUE');
-      expect(queryData.get('VERSION')).to.be('1.3.0');
-      expect(queryData.get('WIDTH')).to.be('256');
-      expect(uri.hash.replace('#', '')).to.be.empty();
+      assert.approximately(bbox[0], -10018754.171394622, 1e-9);
+      assert.approximately(bbox[1], -15028131.257091936, 1e-9);
+      assert.approximately(bbox[2], -5009377.085697311, 1e-9);
+      assert.approximately(bbox[3], -10018754.171394624, 1e-9);
+      assert.strictEqual(queryData.get('CRS'), 'EPSG:3857');
+      assert.strictEqual(queryData.get('FORMAT'), 'image/png');
+      assert.strictEqual(queryData.get('HEIGHT'), '256');
+      assert.strictEqual(queryData.get('I'), '154');
+      assert.strictEqual(queryData.get('J'), '101');
+      assert.strictEqual(queryData.get('LAYERS'), 'layer');
+      assert.strictEqual(queryData.get('QUERY_LAYERS'), 'foo,bar');
+      assert.strictEqual(queryData.get('REQUEST'), 'GetFeatureInfo');
+      assert.strictEqual(queryData.get('SERVICE'), 'WMS');
+      assert.strictEqual(queryData.get('SRS'), null);
+      assert.strictEqual(queryData.get('STYLES'), '');
+      assert.strictEqual(queryData.get('TRANSPARENT'), 'TRUE');
+      assert.strictEqual(queryData.get('VERSION'), '1.3.0');
+      assert.strictEqual(queryData.get('WIDTH'), '256');
+      assert.isEmpty(uri.hash.replace('#', ''));
     });
   });
 
@@ -465,16 +469,16 @@ describe('ol/source/TileWMS', function () {
       const source = new TileWMS(options);
       const url = source.getLegendUrl(0.1);
       const uri = new URL(url);
-      expect(uri.protocol).to.be('http:');
-      expect(uri.hostname).to.be('example.com');
-      expect(uri.pathname).to.be('/wms');
+      assert.strictEqual(uri.protocol, 'http:');
+      assert.strictEqual(uri.hostname, 'example.com');
+      assert.strictEqual(uri.pathname, '/wms');
       const queryData = uri.searchParams;
-      expect(queryData.get('FORMAT')).to.be('image/png');
-      expect(queryData.get('LAYER')).to.be('layer');
-      expect(queryData.get('REQUEST')).to.be('GetLegendGraphic');
-      expect(queryData.get('SERVICE')).to.be('WMS');
-      expect(queryData.get('VERSION')).to.be('1.3.0');
-      expect(queryData.get('SCALE')).to.be('357.14285714285717');
+      assert.strictEqual(queryData.get('FORMAT'), 'image/png');
+      assert.strictEqual(queryData.get('LAYER'), 'layer');
+      assert.strictEqual(queryData.get('REQUEST'), 'GetLegendGraphic');
+      assert.strictEqual(queryData.get('SERVICE'), 'WMS');
+      assert.strictEqual(queryData.get('VERSION'), '1.3.0');
+      assert.strictEqual(queryData.get('SCALE'), '357.14285714285717');
     });
 
     it('does not include SCALE if no resolution was provided', function () {
@@ -482,7 +486,7 @@ describe('ol/source/TileWMS', function () {
       const url = source.getLegendUrl();
       const uri = new URL(url);
       const queryData = uri.searchParams;
-      expect(queryData.get('SCALE')).to.be(null);
+      assert.strictEqual(queryData.get('SCALE'), null);
     });
 
     it('adds additional params as expected', function () {
@@ -501,26 +505,26 @@ describe('ol/source/TileWMS', function () {
         LAYER: 'LAYER_VALUE',
       });
       const uri = new URL(url);
-      expect(uri.protocol).to.be('http:');
-      expect(uri.hostname).to.be('example.com');
-      expect(uri.pathname).to.be('/wms');
+      assert.strictEqual(uri.protocol, 'http:');
+      assert.strictEqual(uri.hostname, 'example.com');
+      assert.strictEqual(uri.pathname, '/wms');
       const queryData = uri.searchParams;
-      expect(queryData.get('FORMAT')).to.be('FORMAT_VALUE');
-      expect(queryData.get('LAYER')).to.be('LAYER_VALUE');
-      expect(queryData.get('REQUEST')).to.be('GetLegendGraphic');
-      expect(queryData.get('SERVICE')).to.be('WMS');
-      expect(queryData.get('VERSION')).to.be('1.3.0');
-      expect(queryData.get('SCALE')).to.be('357.14285714285717');
-      expect(queryData.get('STYLE')).to.be('STYLE_VALUE');
-      expect(queryData.get('FEATURETYPE')).to.be('FEATURETYPE_VALUE');
-      expect(queryData.get('RULE')).to.be('RULE_VALUE');
-      expect(queryData.get('SLD')).to.be('SLD_VALUE');
-      expect(queryData.get('SLD_BODY')).to.be('SLD_BODY_VALUE');
-      expect(queryData.get('FORMAT')).to.be('FORMAT_VALUE');
-      expect(queryData.get('WIDTH')).to.be('WIDTH_VALUE');
-      expect(queryData.get('HEIGHT')).to.be('HEIGHT_VALUE');
-      expect(queryData.get('EXCEPTIONS')).to.be('EXCEPTIONS_VALUE');
-      expect(queryData.get('LANGUAGE')).to.be('LANGUAGE_VALUE');
+      assert.strictEqual(queryData.get('FORMAT'), 'FORMAT_VALUE');
+      assert.strictEqual(queryData.get('LAYER'), 'LAYER_VALUE');
+      assert.strictEqual(queryData.get('REQUEST'), 'GetLegendGraphic');
+      assert.strictEqual(queryData.get('SERVICE'), 'WMS');
+      assert.strictEqual(queryData.get('VERSION'), '1.3.0');
+      assert.strictEqual(queryData.get('SCALE'), '357.14285714285717');
+      assert.strictEqual(queryData.get('STYLE'), 'STYLE_VALUE');
+      assert.strictEqual(queryData.get('FEATURETYPE'), 'FEATURETYPE_VALUE');
+      assert.strictEqual(queryData.get('RULE'), 'RULE_VALUE');
+      assert.strictEqual(queryData.get('SLD'), 'SLD_VALUE');
+      assert.strictEqual(queryData.get('SLD_BODY'), 'SLD_BODY_VALUE');
+      assert.strictEqual(queryData.get('FORMAT'), 'FORMAT_VALUE');
+      assert.strictEqual(queryData.get('WIDTH'), 'WIDTH_VALUE');
+      assert.strictEqual(queryData.get('HEIGHT'), 'HEIGHT_VALUE');
+      assert.strictEqual(queryData.get('EXCEPTIONS'), 'EXCEPTIONS_VALUE');
+      assert.strictEqual(queryData.get('LANGUAGE'), 'LANGUAGE_VALUE');
     });
   });
 
@@ -534,7 +538,7 @@ describe('ol/source/TileWMS', function () {
         1,
         getProjection('EPSG:4326'),
       );
-      expect(tileUrl.indexOf(url)).to.be(0);
+      assert.strictEqual(tileUrl.indexOf(url), 0);
     });
   });
 
@@ -545,7 +549,7 @@ describe('ol/source/TileWMS', function () {
       });
       const originalKey = source.getKey();
       source.setUrls(['u3', 'u4']);
-      expect(source.getKey() !== originalKey).to.be(true);
+      assert.strictEqual(source.getKey() !== originalKey, true);
     });
   });
 });

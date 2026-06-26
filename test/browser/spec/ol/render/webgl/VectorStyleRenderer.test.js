@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {spy as sinonSpy} from 'sinon';
 import Feature from '../../../../../../src/ol/Feature.js';
 import {stringToGlsl} from '../../../../../../src/ol/expr/gpu.js';
@@ -22,6 +23,11 @@ import {
 } from '../../../../../../src/ol/webgl.js';
 import WebGLArrayBuffer from '../../../../../../src/ol/webgl/Buffer.js';
 import WebGLHelper from '../../../../../../src/ol/webgl/Helper.js';
+import {
+  assertArrayLikeEqual,
+  assertCustomAttributes,
+  assertUniformCallbacks,
+} from '../../../../../util/equal.js';
 
 /**
  * @type {import('../../../../../../src/ol/render/webgl/VectorStyleRenderer.js').StyleShaders}
@@ -140,37 +146,30 @@ describe('VectorStyleRenderer', () => {
       );
     });
     it('creates a VectorStyleRenderer with two render passes and all attributes and uniforms combined', () => {
-      expect(vectorStyleRenderer.customAttributes_).to.eql({
-        prop_color: {
-          callback: {},
-          size: 2,
-        },
-        prop_size: {
-          callback: {},
-          size: 1,
-        },
-        prop_id: {
-          callback: {},
-          size: 1,
-        },
+      assertCustomAttributes(vectorStyleRenderer.customAttributes_, {
+        prop_color: {size: 2},
+        prop_size: {size: 1},
+        prop_id: {size: 1},
       });
-      expect(vectorStyleRenderer.uniforms_).to.eql({u_var_highlightedId: {}});
-      expect(vectorStyleRenderer.renderPasses_).to.have.length(2);
+      assertUniformCallbacks(vectorStyleRenderer.uniforms_, {
+        u_var_highlightedId: {},
+      });
+      assert.lengthOf(vectorStyleRenderer.renderPasses_, 2);
     });
     it('initializes two render passes with the proper attributes', () => {
       const firstPass = vectorStyleRenderer.renderPasses_[0];
-      expect(firstPass.fillRenderPass.program).to.be.an(WebGLProgram);
-      expect(firstPass.fillRenderPass.attributesDesc).to.eql([
+      assert.instanceOf(firstPass.fillRenderPass.program, WebGLProgram);
+      assert.deepEqual(firstPass.fillRenderPass.attributesDesc, [
         {name: 'a_position', size: 2, type: FLOAT},
         {name: 'a_prop_size', size: 1, type: FLOAT},
         {name: 'a_prop_color', size: 2, type: FLOAT},
         {name: null, size: 1, type: FLOAT}, // this is padding for the `id` attribute
       ]);
-      expect(firstPass.strokeRenderPass.program).to.be.an(WebGLProgram);
-      expect(firstPass.strokeRenderPass.attributesDesc).to.eql([
+      assert.instanceOf(firstPass.strokeRenderPass.program, WebGLProgram);
+      assert.deepEqual(firstPass.strokeRenderPass.attributesDesc, [
         {name: 'a_localPosition', size: 2, type: 5126},
       ]);
-      expect(firstPass.strokeRenderPass.instancedAttributesDesc).to.eql([
+      assert.deepEqual(firstPass.strokeRenderPass.instancedAttributesDesc, [
         {name: 'a_segmentStart', size: 2, type: FLOAT},
         {name: 'a_measureStart', size: 1, type: FLOAT},
         {name: 'a_segmentEnd', size: 2, type: FLOAT},
@@ -183,11 +182,11 @@ describe('VectorStyleRenderer', () => {
         {name: 'a_prop_color', size: 2, type: FLOAT},
         {name: null, size: 1, type: FLOAT},
       ]);
-      expect(firstPass.symbolRenderPass.program).to.be.an(WebGLProgram);
-      expect(firstPass.symbolRenderPass.attributesDesc).to.eql([
+      assert.instanceOf(firstPass.symbolRenderPass.program, WebGLProgram);
+      assert.deepEqual(firstPass.symbolRenderPass.attributesDesc, [
         {name: 'a_localPosition', size: 2, type: FLOAT},
       ]);
-      expect(firstPass.symbolRenderPass.instancedAttributesDesc).to.eql([
+      assert.deepEqual(firstPass.symbolRenderPass.instancedAttributesDesc, [
         {name: 'a_position', size: 2, type: FLOAT},
         {name: 'a_prop_size', size: 1, type: FLOAT},
         {name: 'a_prop_color', size: 2, type: FLOAT},
@@ -195,15 +194,15 @@ describe('VectorStyleRenderer', () => {
       ]);
 
       const secondPass = vectorStyleRenderer.renderPasses_[1];
-      expect(secondPass.fillRenderPass.program).to.be.an(WebGLProgram);
-      expect(secondPass.fillRenderPass.attributesDesc).to.eql([
+      assert.instanceOf(secondPass.fillRenderPass.program, WebGLProgram);
+      assert.deepEqual(secondPass.fillRenderPass.attributesDesc, [
         {name: 'a_position', size: 2, type: FLOAT},
         {name: null, size: 1, type: FLOAT},
         {name: null, size: 2, type: FLOAT},
         {name: 'a_prop_id', size: 1, type: FLOAT},
       ]);
-      expect(secondPass.strokeRenderPass).to.be(undefined);
-      expect(secondPass.symbolRenderPass).to.be(undefined);
+      assert.strictEqual(secondPass.strokeRenderPass, undefined);
+      assert.strictEqual(secondPass.symbolRenderPass, undefined);
     });
   });
   describe('constructor using style rules & hit detection enabled', () => {
@@ -216,42 +215,32 @@ describe('VectorStyleRenderer', () => {
       );
     });
     it('creates a VectorStyleRenderer with two render passes and all attributes and uniforms combined', () => {
-      expect(vectorStyleRenderer.customAttributes_).to.eql({
-        hitColor: {
-          callback: {},
-          size: 2,
-        },
-        prop_color: {
-          callback: {},
-          size: 2,
-        },
-        prop_size: {
-          callback: {},
-          size: 1,
-        },
-        prop_id: {
-          callback: {},
-          size: 1,
-        },
+      assertCustomAttributes(vectorStyleRenderer.customAttributes_, {
+        hitColor: {size: 2},
+        prop_color: {size: 2},
+        prop_size: {size: 1},
+        prop_id: {size: 1},
       });
-      expect(vectorStyleRenderer.uniforms_).to.eql({u_var_highlightedId: {}});
-      expect(vectorStyleRenderer.renderPasses_).to.have.length(2);
+      assertUniformCallbacks(vectorStyleRenderer.uniforms_, {
+        u_var_highlightedId: {},
+      });
+      assert.lengthOf(vectorStyleRenderer.renderPasses_, 2);
     });
     it('initializes two render passes with the proper attributes', () => {
       const firstPass = vectorStyleRenderer.renderPasses_[0];
-      expect(firstPass.fillRenderPass.program).to.be.an(WebGLProgram);
-      expect(firstPass.fillRenderPass.attributesDesc).to.eql([
+      assert.instanceOf(firstPass.fillRenderPass.program, WebGLProgram);
+      assert.deepEqual(firstPass.fillRenderPass.attributesDesc, [
         {name: 'a_position', size: 2, type: FLOAT},
         {name: 'a_hitColor', size: 2, type: FLOAT},
         {name: 'a_prop_size', size: 1, type: FLOAT},
         {name: 'a_prop_color', size: 2, type: FLOAT},
         {name: null, size: 1, type: FLOAT}, // this is padding for the `id` attribute
       ]);
-      expect(firstPass.strokeRenderPass.program).to.be.an(WebGLProgram);
-      expect(firstPass.strokeRenderPass.attributesDesc).to.eql([
+      assert.instanceOf(firstPass.strokeRenderPass.program, WebGLProgram);
+      assert.deepEqual(firstPass.strokeRenderPass.attributesDesc, [
         {name: 'a_localPosition', size: 2, type: FLOAT},
       ]);
-      expect(firstPass.strokeRenderPass.instancedAttributesDesc).to.eql([
+      assert.deepEqual(firstPass.strokeRenderPass.instancedAttributesDesc, [
         {name: 'a_segmentStart', size: 2, type: FLOAT},
         {name: 'a_measureStart', size: 1, type: FLOAT},
         {name: 'a_segmentEnd', size: 2, type: FLOAT},
@@ -265,11 +254,11 @@ describe('VectorStyleRenderer', () => {
         {name: 'a_prop_color', size: 2, type: FLOAT},
         {name: null, size: 1, type: FLOAT},
       ]);
-      expect(firstPass.symbolRenderPass.program).to.be.an(WebGLProgram);
-      expect(firstPass.symbolRenderPass.attributesDesc).to.eql([
+      assert.instanceOf(firstPass.symbolRenderPass.program, WebGLProgram);
+      assert.deepEqual(firstPass.symbolRenderPass.attributesDesc, [
         {name: 'a_localPosition', size: 2, type: FLOAT},
       ]);
-      expect(firstPass.symbolRenderPass.instancedAttributesDesc).to.eql([
+      assert.deepEqual(firstPass.symbolRenderPass.instancedAttributesDesc, [
         {name: 'a_position', size: 2, type: FLOAT},
         {name: 'a_hitColor', size: 2, type: FLOAT},
         {name: 'a_prop_size', size: 1, type: FLOAT},
@@ -278,16 +267,16 @@ describe('VectorStyleRenderer', () => {
       ]);
 
       const secondPass = vectorStyleRenderer.renderPasses_[1];
-      expect(secondPass.fillRenderPass.program).to.be.an(WebGLProgram);
-      expect(secondPass.fillRenderPass.attributesDesc).to.eql([
+      assert.instanceOf(secondPass.fillRenderPass.program, WebGLProgram);
+      assert.deepEqual(secondPass.fillRenderPass.attributesDesc, [
         {name: 'a_position', size: 2, type: FLOAT},
         {name: 'a_hitColor', size: 2, type: FLOAT},
         {name: null, size: 1, type: FLOAT},
         {name: null, size: 2, type: FLOAT},
         {name: 'a_prop_id', size: 1, type: FLOAT},
       ]);
-      expect(secondPass.strokeRenderPass).to.be(undefined);
-      expect(secondPass.symbolRenderPass).to.be(undefined);
+      assert.strictEqual(secondPass.strokeRenderPass, undefined);
+      assert.strictEqual(secondPass.symbolRenderPass, undefined);
     });
   });
   describe('constructor using shaders', () => {
@@ -299,32 +288,27 @@ describe('VectorStyleRenderer', () => {
       );
     });
     it('creates a VectorStyleRenderer with a single render pass', () => {
-      expect(vectorStyleRenderer.customAttributes_).to.eql({
-        prop_attr1: {
-          callback: {},
-        },
-        prop_attr2: {
-          callback: {},
-          size: 3,
-        },
+      assertCustomAttributes(vectorStyleRenderer.customAttributes_, {
+        prop_attr1: {},
+        prop_attr2: {size: 3},
       });
-      expect(vectorStyleRenderer.uniforms_).to.eql({
+      assertUniformCallbacks(vectorStyleRenderer.uniforms_, {
         custom: {},
       });
 
-      expect(vectorStyleRenderer.renderPasses_).to.have.length(1);
+      assert.lengthOf(vectorStyleRenderer.renderPasses_, 1);
       const firstPass = vectorStyleRenderer.renderPasses_[0];
-      expect(firstPass.fillRenderPass.program).to.be.an(WebGLProgram);
-      expect(firstPass.fillRenderPass.attributesDesc).to.eql([
+      assert.instanceOf(firstPass.fillRenderPass.program, WebGLProgram);
+      assert.deepEqual(firstPass.fillRenderPass.attributesDesc, [
         {name: 'a_position', size: 2, type: FLOAT},
         {name: 'a_prop_attr1', size: 1, type: FLOAT},
         {name: 'a_prop_attr2', size: 3, type: FLOAT},
       ]);
-      expect(firstPass.strokeRenderPass.program).to.be.an(WebGLProgram);
-      expect(firstPass.strokeRenderPass.attributesDesc).to.eql([
+      assert.instanceOf(firstPass.strokeRenderPass.program, WebGLProgram);
+      assert.deepEqual(firstPass.strokeRenderPass.attributesDesc, [
         {name: 'a_localPosition', size: 2, type: FLOAT},
       ]);
-      expect(firstPass.strokeRenderPass.instancedAttributesDesc).to.eql([
+      assert.deepEqual(firstPass.strokeRenderPass.instancedAttributesDesc, [
         {name: 'a_segmentStart', size: 2, type: FLOAT},
         {name: 'a_measureStart', size: 1, type: FLOAT},
         {name: 'a_segmentEnd', size: 2, type: FLOAT},
@@ -336,11 +320,11 @@ describe('VectorStyleRenderer', () => {
         {name: 'a_prop_attr1', size: 1, type: FLOAT},
         {name: 'a_prop_attr2', size: 3, type: FLOAT},
       ]);
-      expect(firstPass.symbolRenderPass.program).to.be.an(WebGLProgram);
-      expect(firstPass.symbolRenderPass.attributesDesc).to.eql([
+      assert.instanceOf(firstPass.symbolRenderPass.program, WebGLProgram);
+      assert.deepEqual(firstPass.symbolRenderPass.attributesDesc, [
         {name: 'a_localPosition', size: 2, type: FLOAT},
       ]);
-      expect(firstPass.symbolRenderPass.instancedAttributesDesc).to.eql([
+      assert.deepEqual(firstPass.symbolRenderPass.instancedAttributesDesc, [
         {name: 'a_position', size: 2, type: FLOAT},
         {name: 'a_prop_attr1', size: 1, type: FLOAT},
         {name: 'a_prop_attr2', size: 3, type: FLOAT},
@@ -362,11 +346,12 @@ describe('VectorStyleRenderer', () => {
           emptyBatch,
           SAMPLE_TRANSFORM,
         );
-        expect(generatedBuffers).not.to.be(null);
-        expect(generatedBuffers.polygonBuffers).to.be(null);
-        expect(generatedBuffers.lineStringBuffers).to.be(null);
-        expect(generatedBuffers.pointBuffers).to.be(null);
-        expect(generatedBuffers.invertVerticesTransform).to.eql(
+        assert.notEqual(generatedBuffers, null);
+        assert.strictEqual(generatedBuffers.polygonBuffers, null);
+        assert.strictEqual(generatedBuffers.lineStringBuffers, null);
+        assert.strictEqual(generatedBuffers.pointBuffers, null);
+        assert.deepEqual(
+          generatedBuffers.invertVerticesTransform,
           makeInverseTransform(createTransform(), SAMPLE_TRANSFORM),
         );
       });
@@ -379,53 +364,83 @@ describe('VectorStyleRenderer', () => {
         );
       });
       it('creates buffers for a geometry batch', () => {
-        expect(buffers.invertVerticesTransform).to.eql(
+        assert.deepEqual(
+          buffers.invertVerticesTransform,
           makeInverseTransform(createTransform(), SAMPLE_TRANSFORM),
         );
-        expect(buffers.polygonBuffers[0]).to.be.an(WebGLArrayBuffer);
-        expect(buffers.polygonBuffers[0].getType()).to.be(ELEMENT_ARRAY_BUFFER);
-        expect(buffers.polygonBuffers[0].getUsage()).to.be(DYNAMIC_DRAW);
-        expect(buffers.polygonBuffers[1]).to.be.an(WebGLArrayBuffer);
-        expect(buffers.polygonBuffers[1].getType()).to.be(ARRAY_BUFFER);
-        expect(buffers.polygonBuffers[1].getUsage()).to.be(DYNAMIC_DRAW);
-        expect(buffers.polygonBuffers[1].getArray().slice(0, 6)).to.eql([
-          -45, -47.5, 3000, 128, 255, 3,
-        ]);
-
-        expect(buffers.lineStringBuffers[0]).to.be.an(WebGLArrayBuffer);
-        expect(buffers.lineStringBuffers[0].getType()).to.be(
+        assert.instanceOf(buffers.polygonBuffers[0], WebGLArrayBuffer);
+        assert.strictEqual(
+          buffers.polygonBuffers[0].getType(),
           ELEMENT_ARRAY_BUFFER,
         );
-        expect(buffers.lineStringBuffers[0].getUsage()).to.be(DYNAMIC_DRAW);
-        expect(buffers.lineStringBuffers[1]).to.be.an(WebGLArrayBuffer);
-        expect(buffers.lineStringBuffers[1].getType()).to.be(ARRAY_BUFFER);
-        expect(buffers.lineStringBuffers[1].getUsage()).to.be(DYNAMIC_DRAW);
-        expect(buffers.lineStringBuffers[1].getArray().slice(0, 8)).to.eql([
-          -1, -1, 1, -1, 1, 1, -1, 1,
-        ]);
-        expect(buffers.lineStringBuffers[2]).to.be.an(WebGLArrayBuffer);
-        expect(buffers.lineStringBuffers[2].getType()).to.be(ARRAY_BUFFER);
-        expect(buffers.lineStringBuffers[2].getUsage()).to.be(DYNAMIC_DRAW);
-        expect(buffers.lineStringBuffers[2].getArray().slice(0, 15)).to.eql([
-          -45, -47.5, 0, -40, -47.5, 0, 1.5707963705062866, 4.71238899230957, 0,
-          0, 0, 3000, 128, 255, 3,
-        ]);
+        assert.strictEqual(buffers.polygonBuffers[0].getUsage(), DYNAMIC_DRAW);
+        assert.instanceOf(buffers.polygonBuffers[1], WebGLArrayBuffer);
+        assert.strictEqual(buffers.polygonBuffers[1].getType(), ARRAY_BUFFER);
+        assert.strictEqual(buffers.polygonBuffers[1].getUsage(), DYNAMIC_DRAW);
+        assertArrayLikeEqual(
+          buffers.polygonBuffers[1].getArray().slice(0, 6),
+          [-45, -47.5, 3000, 128, 255, 3],
+        );
 
-        expect(buffers.pointBuffers[0]).to.be.an(WebGLArrayBuffer);
-        expect(buffers.pointBuffers[0].getType()).to.be(ELEMENT_ARRAY_BUFFER);
-        expect(buffers.pointBuffers[0].getUsage()).to.be(DYNAMIC_DRAW);
-        expect(buffers.pointBuffers[1]).to.be.an(WebGLArrayBuffer);
-        expect(buffers.pointBuffers[1].getType()).to.be(ARRAY_BUFFER);
-        expect(buffers.pointBuffers[1].getUsage()).to.be(DYNAMIC_DRAW);
-        expect(buffers.pointBuffers[1].getArray().slice(0, 8)).to.eql([
-          -1, -1, 1, -1, 1, 1, -1, 1,
-        ]);
-        expect(buffers.pointBuffers[2]).to.be.an(WebGLArrayBuffer);
-        expect(buffers.pointBuffers[2].getType()).to.be(ARRAY_BUFFER);
-        expect(buffers.pointBuffers[2].getUsage()).to.be(DYNAMIC_DRAW);
-        expect(buffers.pointBuffers[2].getArray().slice(0, 6)).to.eql([
-          -45, -45, 1000, 65280, 255, 1,
-        ]);
+        assert.instanceOf(buffers.lineStringBuffers[0], WebGLArrayBuffer);
+        assert.strictEqual(
+          buffers.lineStringBuffers[0].getType(),
+          ELEMENT_ARRAY_BUFFER,
+        );
+        assert.strictEqual(
+          buffers.lineStringBuffers[0].getUsage(),
+          DYNAMIC_DRAW,
+        );
+        assert.instanceOf(buffers.lineStringBuffers[1], WebGLArrayBuffer);
+        assert.strictEqual(
+          buffers.lineStringBuffers[1].getType(),
+          ARRAY_BUFFER,
+        );
+        assert.strictEqual(
+          buffers.lineStringBuffers[1].getUsage(),
+          DYNAMIC_DRAW,
+        );
+        assertArrayLikeEqual(
+          buffers.lineStringBuffers[1].getArray().slice(0, 8),
+          [-1, -1, 1, -1, 1, 1, -1, 1],
+        );
+        assert.instanceOf(buffers.lineStringBuffers[2], WebGLArrayBuffer);
+        assert.strictEqual(
+          buffers.lineStringBuffers[2].getType(),
+          ARRAY_BUFFER,
+        );
+        assert.strictEqual(
+          buffers.lineStringBuffers[2].getUsage(),
+          DYNAMIC_DRAW,
+        );
+        assertArrayLikeEqual(
+          buffers.lineStringBuffers[2].getArray().slice(0, 15),
+          [
+            -45, -47.5, 0, -40, -47.5, 0, 1.5707963705062866, 4.71238899230957,
+            0, 0, 0, 3000, 128, 255, 3,
+          ],
+        );
+
+        assert.instanceOf(buffers.pointBuffers[0], WebGLArrayBuffer);
+        assert.strictEqual(
+          buffers.pointBuffers[0].getType(),
+          ELEMENT_ARRAY_BUFFER,
+        );
+        assert.strictEqual(buffers.pointBuffers[0].getUsage(), DYNAMIC_DRAW);
+        assert.instanceOf(buffers.pointBuffers[1], WebGLArrayBuffer);
+        assert.strictEqual(buffers.pointBuffers[1].getType(), ARRAY_BUFFER);
+        assert.strictEqual(buffers.pointBuffers[1].getUsage(), DYNAMIC_DRAW);
+        assertArrayLikeEqual(
+          buffers.pointBuffers[1].getArray().slice(0, 8),
+          [-1, -1, 1, -1, 1, 1, -1, 1],
+        );
+        assert.instanceOf(buffers.pointBuffers[2], WebGLArrayBuffer);
+        assert.strictEqual(buffers.pointBuffers[2].getType(), ARRAY_BUFFER);
+        assert.strictEqual(buffers.pointBuffers[2].getUsage(), DYNAMIC_DRAW);
+        assertArrayLikeEqual(
+          buffers.pointBuffers[2].getArray().slice(0, 6),
+          [-45, -45, 1000, 65280, 255, 1],
+        );
       });
     });
     describe('render', () => {
@@ -445,79 +460,85 @@ describe('VectorStyleRenderer', () => {
         vectorStyleRenderer.render(buffers, SAMPLE_FRAMESTATE, preRenderCb);
       });
       it('uses programs for all render passes & geometry types', function () {
-        expect(helper.useProgram.callCount).to.be(4);
+        assert.strictEqual(helper.useProgram.callCount, 4);
         const firstPass = vectorStyleRenderer.renderPasses_[0];
         const secondPass = vectorStyleRenderer.renderPasses_[1];
-        expect(helper.useProgram.getCall(0).firstArg).to.be(
+        assert.strictEqual(
+          helper.useProgram.getCall(0).firstArg,
           firstPass.fillRenderPass.program,
         );
-        expect(helper.useProgram.getCall(1).firstArg).to.be(
+        assert.strictEqual(
+          helper.useProgram.getCall(1).firstArg,
           firstPass.strokeRenderPass.program,
         );
-        expect(helper.useProgram.getCall(2).firstArg).to.be(
+        assert.strictEqual(
+          helper.useProgram.getCall(2).firstArg,
           firstPass.symbolRenderPass.program,
         );
-        expect(helper.useProgram.getCall(3).firstArg).to.be(
+        assert.strictEqual(
+          helper.useProgram.getCall(3).firstArg,
           secondPass.fillRenderPass.program,
         );
       });
       it('binds buffers for all render passes & geometry types', function () {
-        expect(helper.bindBuffer.callCount).to.be(12);
+        assert.strictEqual(helper.bindBuffer.callCount, 12);
         const args = helper.bindBuffer.getCalls().map((call) => call.firstArg);
 
-        // first pass
-        expect(args[0]).to.equal(buffers.polygonBuffers[1]);
-        expect(args[1]).to.equal(buffers.polygonBuffers[0]);
-        expect(args[2]).to.equal(buffers.polygonBuffers[2]);
-        expect(args[3]).to.equal(buffers.lineStringBuffers[1]);
-        expect(args[4]).to.equal(buffers.lineStringBuffers[0]);
-        expect(args[5]).to.equal(buffers.lineStringBuffers[2]);
-        // second pass
-        expect(args[6]).to.equal(buffers.pointBuffers[1]);
-        expect(args[7]).to.equal(buffers.pointBuffers[0]);
-        expect(args[8]).to.equal(buffers.pointBuffers[2]);
-        expect(args[9]).to.equal(buffers.polygonBuffers[1]);
-        expect(args[10]).to.equal(buffers.polygonBuffers[0]);
-        expect(args[11]).to.equal(buffers.polygonBuffers[2]);
+        assert.equal(args[0], buffers.polygonBuffers[1]);
+        assert.equal(args[1], buffers.polygonBuffers[0]);
+        assert.equal(args[2], buffers.polygonBuffers[2]);
+        assert.equal(args[3], buffers.lineStringBuffers[1]);
+        assert.equal(args[4], buffers.lineStringBuffers[0]);
+        assert.equal(args[5], buffers.lineStringBuffers[2]);
+        assert.equal(args[6], buffers.pointBuffers[1]);
+        assert.equal(args[7], buffers.pointBuffers[0]);
+        assert.equal(args[8], buffers.pointBuffers[2]);
+        assert.equal(args[9], buffers.polygonBuffers[1]);
+        assert.equal(args[10], buffers.polygonBuffers[0]);
+        assert.equal(args[11], buffers.polygonBuffers[2]);
       });
       it('enables attributes for all render passes & geometry types', function () {
-        expect(helper.enableAttributes.callCount).to.be(4);
+        assert.strictEqual(helper.enableAttributes.callCount, 4);
         const firstPass = vectorStyleRenderer.renderPasses_[0];
         const secondPass = vectorStyleRenderer.renderPasses_[1];
-        expect(helper.enableAttributes.getCall(0).firstArg).to.be(
+        assert.strictEqual(
+          helper.enableAttributes.getCall(0).firstArg,
           firstPass.fillRenderPass.attributesDesc,
         );
-        expect(helper.enableAttributes.getCall(1).firstArg).to.be(
+        assert.strictEqual(
+          helper.enableAttributes.getCall(1).firstArg,
           firstPass.strokeRenderPass.attributesDesc,
         );
-        expect(helper.enableAttributes.getCall(2).firstArg).to.be(
+        assert.strictEqual(
+          helper.enableAttributes.getCall(2).firstArg,
           firstPass.symbolRenderPass.attributesDesc,
         );
-        expect(helper.enableAttributes.getCall(3).firstArg).to.be(
+        assert.strictEqual(
+          helper.enableAttributes.getCall(3).firstArg,
           secondPass.fillRenderPass.attributesDesc,
         );
       });
       it('calls the pre render callback once per render pass & geometry type', function () {
-        expect(preRenderCb.callCount).to.be(4);
+        assert.strictEqual(preRenderCb.callCount, 4);
       });
       it('renders all render passes & geometry types', function () {
-        expect(helper.drawElements.callCount).to.be(2);
-        expect(helper.drawElementsInstanced.callCount).to.be(2);
+        assert.strictEqual(helper.drawElements.callCount, 2);
+        assert.strictEqual(helper.drawElementsInstanced.callCount, 2);
 
-        expect(helper.drawElements.getCall(0).args).to.eql([
+        assert.deepEqual(helper.drawElements.getCall(0).args, [
           0,
           buffers.polygonBuffers[0].getSize(),
         ]);
-        expect(helper.drawElements.getCall(1).args).to.eql([
+        assert.deepEqual(helper.drawElements.getCall(1).args, [
           0,
           buffers.polygonBuffers[0].getSize(),
         ]);
-        expect(helper.drawElementsInstanced.getCall(0).args).to.eql([
+        assert.deepEqual(helper.drawElementsInstanced.getCall(0).args, [
           0,
           buffers.lineStringBuffers[0].getSize(),
           6, // segments count
         ]);
-        expect(helper.drawElementsInstanced.getCall(1).args).to.eql([
+        assert.deepEqual(helper.drawElementsInstanced.getCall(1).args, [
           0,
           buffers.pointBuffers[0].getSize(),
           2, // symbols count
@@ -551,32 +572,35 @@ describe('VectorStyleRenderer', () => {
       vectorStyleRenderer.render(buffers, SAMPLE_FRAMESTATE, preRenderCb);
     });
     it('only loads buffer data for one geometry type', function () {
-      expect(helper.flushBufferData.callCount).to.be(3);
+      assert.strictEqual(helper.flushBufferData.callCount, 3);
     });
     it('only does one render', function () {
-      expect(preRenderCb.callCount).to.be(1);
+      assert.strictEqual(preRenderCb.callCount, 1);
     });
     it('only does the polygon render pass', function () {
-      expect(helper.enableAttributes.callCount).to.be(1);
+      assert.strictEqual(helper.enableAttributes.callCount, 1);
       const renderPass = vectorStyleRenderer.renderPasses_[0];
-      expect(helper.enableAttributes.firstCall.firstArg).to.be(
+      assert.strictEqual(
+        helper.enableAttributes.firstCall.firstArg,
         renderPass.fillRenderPass.attributesDesc,
       );
-      expect(helper.enableAttributesInstanced.callCount).to.be(1);
-      expect(helper.enableAttributesInstanced.firstCall.firstArg).to.be(
+      assert.strictEqual(helper.enableAttributesInstanced.callCount, 1);
+      assert.strictEqual(
+        helper.enableAttributesInstanced.firstCall.firstArg,
         renderPass.fillRenderPass.instancedAttributesDesc,
       );
-      expect(helper.useProgram.callCount).to.be(1);
-      expect(helper.useProgram.firstCall.firstArg).to.be(
+      assert.strictEqual(helper.useProgram.callCount, 1);
+      assert.strictEqual(
+        helper.useProgram.firstCall.firstArg,
         renderPass.fillRenderPass.program,
       );
-      expect(helper.drawElements.callCount).to.be(1);
-      expect(helper.drawElements.firstCall.args).to.eql([
+      assert.strictEqual(helper.drawElements.callCount, 1);
+      assert.deepEqual(helper.drawElements.firstCall.args, [
         0,
         buffers.polygonBuffers[0].getSize(),
       ]);
 
-      expect(helper.drawElementsInstanced.callCount).to.be(0);
+      assert.strictEqual(helper.drawElementsInstanced.callCount, 0);
     });
   });
   describe('rendering only stroke', () => {
@@ -605,33 +629,36 @@ describe('VectorStyleRenderer', () => {
       vectorStyleRenderer.render(buffers, SAMPLE_FRAMESTATE, preRenderCb);
     });
     it('only loads buffer data for one geometry type', function () {
-      expect(helper.flushBufferData.callCount).to.be(3);
+      assert.strictEqual(helper.flushBufferData.callCount, 3);
     });
     it('only does one render', function () {
-      expect(preRenderCb.callCount).to.be(1);
+      assert.strictEqual(preRenderCb.callCount, 1);
     });
     it('only does the line string render pass', function () {
-      expect(helper.enableAttributes.callCount).to.be(1);
+      assert.strictEqual(helper.enableAttributes.callCount, 1);
       const renderPass = vectorStyleRenderer.renderPasses_[0];
-      expect(helper.enableAttributes.firstCall.firstArg).to.be(
+      assert.strictEqual(
+        helper.enableAttributes.firstCall.firstArg,
         renderPass.strokeRenderPass.attributesDesc,
       );
-      expect(helper.enableAttributesInstanced.callCount).to.be(1);
-      expect(helper.enableAttributesInstanced.firstCall.firstArg).to.be(
+      assert.strictEqual(helper.enableAttributesInstanced.callCount, 1);
+      assert.strictEqual(
+        helper.enableAttributesInstanced.firstCall.firstArg,
         renderPass.strokeRenderPass.instancedAttributesDesc,
       );
-      expect(helper.useProgram.callCount).to.be(1);
-      expect(helper.useProgram.firstCall.firstArg).to.be(
+      assert.strictEqual(helper.useProgram.callCount, 1);
+      assert.strictEqual(
+        helper.useProgram.firstCall.firstArg,
         renderPass.strokeRenderPass.program,
       );
-      expect(helper.drawElementsInstanced.callCount).to.be(1);
-      expect(helper.drawElementsInstanced.firstCall.args).to.eql([
+      assert.strictEqual(helper.drawElementsInstanced.callCount, 1);
+      assert.deepEqual(helper.drawElementsInstanced.firstCall.args, [
         0,
         buffers.lineStringBuffers[0].getSize(),
         6, // segments count
       ]);
 
-      expect(helper.drawElements.callCount).to.be(0);
+      assert.strictEqual(helper.drawElements.callCount, 0);
     });
   });
   describe('rendering only symbol', () => {
@@ -660,33 +687,36 @@ describe('VectorStyleRenderer', () => {
       vectorStyleRenderer.render(buffers, SAMPLE_FRAMESTATE, preRenderCb);
     });
     it('only loads buffer data for one geometry type', function () {
-      expect(helper.flushBufferData.callCount).to.be(3);
+      assert.strictEqual(helper.flushBufferData.callCount, 3);
     });
     it('only does one render', function () {
-      expect(preRenderCb.callCount).to.be(1);
+      assert.strictEqual(preRenderCb.callCount, 1);
     });
     it('only does the point render pass', function () {
-      expect(helper.enableAttributes.callCount).to.be(1);
+      assert.strictEqual(helper.enableAttributes.callCount, 1);
       const renderPass = vectorStyleRenderer.renderPasses_[0];
-      expect(helper.enableAttributes.firstCall.firstArg).to.be(
+      assert.strictEqual(
+        helper.enableAttributes.firstCall.firstArg,
         renderPass.symbolRenderPass.attributesDesc,
       );
-      expect(helper.enableAttributesInstanced.callCount).to.be(1);
-      expect(helper.enableAttributesInstanced.firstCall.firstArg).to.be(
+      assert.strictEqual(helper.enableAttributesInstanced.callCount, 1);
+      assert.strictEqual(
+        helper.enableAttributesInstanced.firstCall.firstArg,
         renderPass.symbolRenderPass.instancedAttributesDesc,
       );
-      expect(helper.useProgram.callCount).to.be(1);
-      expect(helper.useProgram.firstCall.firstArg).to.be(
+      assert.strictEqual(helper.useProgram.callCount, 1);
+      assert.strictEqual(
+        helper.useProgram.firstCall.firstArg,
         renderPass.symbolRenderPass.program,
       );
-      expect(helper.drawElementsInstanced.callCount).to.be(1);
-      expect(helper.drawElementsInstanced.firstCall.args).to.eql([
+      assert.strictEqual(helper.drawElementsInstanced.callCount, 1);
+      assert.deepEqual(helper.drawElementsInstanced.firstCall.args, [
         0,
         buffers.pointBuffers[0].getSize(),
         buffers.pointBuffers[2].getSize() / 6,
       ]);
 
-      expect(helper.drawElements.callCount).to.be(0);
+      assert.strictEqual(helper.drawElements.callCount, 0);
     });
   });
 
@@ -698,7 +728,7 @@ describe('VectorStyleRenderer', () => {
         'stroke-width': 2,
       };
       const result = convertStyleToShaders(style);
-      expect(result).to.eql([
+      assert.deepEqual(result, [
         {
           builder: new ShaderBuilder()
             .setFillColorExpression('vec4(1.0, 0.0, 0.0, 1.0)')
@@ -720,7 +750,7 @@ describe('VectorStyleRenderer', () => {
         },
       ];
       const result = convertStyleToShaders(styles);
-      expect(result).to.eql([
+      assert.deepEqual(result, [
         {
           builder: new ShaderBuilder().setFillColorExpression(
             'vec4(1.0, 0.0, 0.0, 1.0)',
@@ -769,26 +799,29 @@ describe('VectorStyleRenderer', () => {
       ];
       const result = convertStyleToShaders(rules);
 
-      expect(result).to.have.length(8);
+      assert.lengthOf(result, 8);
 
-      expect(result[0].attributes).to.only.have.key('prop_size');
-      expect(result[0].builder).to.eql(
+      assert.hasAllKeys(result[0].attributes, ['prop_size']);
+      assert.deepEqual(
+        result[0].builder,
         new ShaderBuilder()
           .addAttribute('a_prop_size', 'float')
           .setFillColorExpression('vec4(1.0, 0.0, 0.0, 1.0)')
           .setShapeDiscardExpression('!(a_prop_size > 10.0)'),
       );
 
-      expect(result[1].attributes).to.only.have.key('prop_size');
-      expect(result[1].builder).to.eql(
+      assert.hasAllKeys(result[1].attributes, ['prop_size']);
+      assert.deepEqual(
+        result[1].builder,
         new ShaderBuilder()
           .addAttribute('a_prop_size', 'float')
           .setFillColorExpression('vec4(0.0, 0.5019607843137255, 0.0, 1.0)')
           .setShapeDiscardExpression('!(a_prop_size > 10.0)'),
       );
 
-      expect(result[2].attributes).to.only.have.key('prop_size');
-      expect(result[2].builder).to.eql(
+      assert.hasAllKeys(result[2].attributes, ['prop_size']);
+      assert.deepEqual(
+        result[2].builder,
         new ShaderBuilder()
           .addAttribute('a_prop_size', 'float')
           .setSymbolColorExpression(
@@ -804,11 +837,9 @@ describe('VectorStyleRenderer', () => {
           .setShapeDiscardExpression('!(!(a_prop_size > 10.0))'),
       );
 
-      expect(result[3].attributes).to.only.have.keys([
-        'prop_size',
-        'prop_type',
-      ]);
-      expect(result[3].builder).to.eql(
+      assert.hasAllKeys(result[3].attributes, ['prop_size', 'prop_type']);
+      assert.deepEqual(
+        result[3].builder,
         new ShaderBuilder()
           .addAttribute('a_prop_size', 'float')
           .addAttribute('a_prop_type', 'float')
@@ -819,11 +850,9 @@ describe('VectorStyleRenderer', () => {
           ),
       );
 
-      expect(result[4].attributes).to.only.have.keys([
-        'prop_size',
-        'prop_type',
-      ]);
-      expect(result[4].builder).to.eql(
+      assert.hasAllKeys(result[4].attributes, ['prop_size', 'prop_type']);
+      assert.deepEqual(
+        result[4].builder,
         new ShaderBuilder()
           .addAttribute('a_prop_size', 'float')
           .addAttribute('a_prop_type', 'float')
@@ -834,8 +863,9 @@ describe('VectorStyleRenderer', () => {
           ),
       );
 
-      expect(result[5].attributes).to.only.have.key('prop_size', 'prop_type');
-      expect(result[5].builder).to.eql(
+      assert.hasAllKeys(result[5].attributes, ['prop_size', 'prop_type']);
+      assert.deepEqual(
+        result[5].builder,
         new ShaderBuilder()
           .addAttribute('a_prop_size', 'float')
           .addAttribute('a_prop_type', 'float')
@@ -846,15 +876,17 @@ describe('VectorStyleRenderer', () => {
           ),
       );
 
-      expect(result[6].attributes).to.eql({});
-      expect(result[6].builder).to.eql(
+      assert.deepEqual(result[6].attributes, {});
+      assert.deepEqual(
+        result[6].builder,
         new ShaderBuilder()
           .setStrokeColorExpression('vec4(1.0, 1.0, 0.0, 1.0)')
           .setStrokeWidthExpression('2.0'),
       );
 
-      expect(result[7].attributes).to.only.have.key('prop_type');
-      expect(result[7].builder).to.eql(
+      assert.hasAllKeys(result[7].attributes, ['prop_type']);
+      assert.deepEqual(
+        result[7].builder,
         new ShaderBuilder()
           .addAttribute('a_prop_type', 'float')
           .setStrokeColorExpression('vec4(0.0, 0.0, 0.0, 1.0)')
@@ -880,7 +912,7 @@ describe('VectorStyleRenderer', () => {
         },
       ];
       const result = convertStyleToShaders(shaders);
-      expect(result).to.eql(shaders);
+      assert.deepEqual(result, shaders);
     });
     it('returns a single shader as array', function () {
       const shader = {
@@ -888,7 +920,7 @@ describe('VectorStyleRenderer', () => {
         attributes: [],
       };
       const result = convertStyleToShaders(shader);
-      expect(result).to.eql([shader]);
+      assert.deepEqual(result, [shader]);
     });
   });
 });

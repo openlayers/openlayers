@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {spy as sinonSpy} from 'sinon';
 import ImageState from '../../../../../src/ol/ImageState.js';
 import Map from '../../../../../src/ol/Map.js';
@@ -39,23 +40,23 @@ describe('ol/source/ImageWMS', function () {
     it('verify getting a param', function () {
       const source = new ImageWMS(options);
       const setParams = source.getParams();
-      expect(setParams).to.eql({'LAYERS': 'layer'});
+      assert.deepEqual(setParams, {'LAYERS': 'layer'});
     });
 
     it('verify on adding a param', function () {
       const source = new ImageWMS(options);
       source.updateParams({'TEST': 'value'});
       const setParams = source.getParams();
-      expect(setParams).to.eql({'LAYERS': 'layer', TEST: 'value'});
-      expect(options.params).to.eql({'LAYERS': 'layer'});
+      assert.deepEqual(setParams, {'LAYERS': 'layer', TEST: 'value'});
+      assert.deepEqual(options.params, {'LAYERS': 'layer'});
     });
 
     it('verify on update a param', function () {
       const source = new ImageWMS(options);
       source.updateParams({'LAYERS': 'newLayer'});
       const setParams = source.getParams();
-      expect(setParams).to.eql({'LAYERS': 'newLayer'});
-      expect(options.params).to.eql({'LAYERS': 'layer'});
+      assert.deepEqual(setParams, {'LAYERS': 'newLayer'});
+      assert.deepEqual(options.params, {'LAYERS': 'layer'});
     });
   });
 
@@ -66,9 +67,9 @@ describe('ol/source/ImageWMS', function () {
       source.setParams({test: 'after'});
 
       const params = source.getParams();
-      expect(params).to.eql({test: 'after'});
+      assert.deepEqual(params, {test: 'after'});
 
-      expect(before).to.eql({test: 'before', foo: 'bar'});
+      assert.deepEqual(before, {test: 'before', foo: 'bar'});
     });
 
     it('sets new parameters and applies them on the next image load', function () {
@@ -88,7 +89,7 @@ describe('ol/source/ImageWMS', function () {
       );
       image.load();
       let uri = new URL(image.getImage().src);
-      expect(uri.searchParams.get('FORMAT')).to.be('image/jpeg');
+      assert.strictEqual(uri.searchParams.get('FORMAT'), 'image/jpeg');
 
       source.setParams({
         ...options.params,
@@ -97,7 +98,7 @@ describe('ol/source/ImageWMS', function () {
       image = source.getImage(viewExtent, resolution, pixelRatio, projection);
       image.load();
       uri = new URL(image.getImage().src);
-      expect(uri.searchParams.get('FORMAT')).to.be('image/png');
+      assert.strictEqual(uri.searchParams.get('FORMAT'), 'image/png');
     });
   });
 
@@ -130,13 +131,15 @@ describe('ol/source/ImageWMS', function () {
           ((ratio - 1) * viewHeight) / resolution / 2,
         );
 
-        expect(imageWidth).to.be(
+        assert.strictEqual(
+          imageWidth,
           Math.round(viewWidth / resolution) + 2 * marginWidth,
         );
-        expect(imageHeight).to.be(
+        assert.strictEqual(
+          imageHeight,
           Math.round(viewHeight / resolution) + 2 * marginHeight,
         );
-        expect(bboxAspectRatio).to.roughlyEqual(imageAspectRatio, 1e-12);
+        assert.approximately(bboxAspectRatio, imageAspectRatio, 1e-12);
       });
     });
 
@@ -150,8 +153,8 @@ describe('ol/source/ImageWMS', function () {
       const queryData = uri.searchParams;
       const width = Number(queryData.get('WIDTH'));
       const height = Number(queryData.get('HEIGHT'));
-      expect(width).to.be(400);
-      expect(height).to.be(400);
+      assert.strictEqual(width, 400);
+      assert.strictEqual(height, 400);
     });
 
     it('requests integer WIDTH and HEIGHT', function () {
@@ -168,8 +171,8 @@ describe('ol/source/ImageWMS', function () {
       const queryData = uri.searchParams;
       const width = parseFloat(queryData.get('WIDTH'));
       const height = parseFloat(queryData.get('HEIGHT'));
-      expect(width).to.be(Math.round(width));
-      expect(height).to.be(Math.round(height));
+      assert.strictEqual(width, Math.round(width));
+      assert.strictEqual(height, Math.round(height));
     });
 
     it('does not request extra pixels due to floating point issues', function () {
@@ -191,8 +194,8 @@ describe('ol/source/ImageWMS', function () {
 
       const imageWidth = Number(params.get('WIDTH'));
       const imageHeight = Number(params.get('HEIGHT'));
-      expect(imageWidth).to.be(mapSize[0]);
-      expect(imageHeight).to.be(mapSize[1]);
+      assert.strictEqual(imageWidth, mapSize[0]);
+      assert.strictEqual(imageHeight, mapSize[1]);
     });
 
     it('sets WIDTH and HEIGHT to match the aspect ratio of BBOX', function () {
@@ -200,23 +203,23 @@ describe('ol/source/ImageWMS', function () {
       const image = source.getImage(extent, resolution, pixelRatio, projection);
       image.load();
       const uri = new URL(image.getImage().src);
-      expect(uri.protocol).to.be('http:');
-      expect(uri.hostname).to.be(window.location.hostname);
-      expect(uri.pathname).to.be('/wms');
+      assert.strictEqual(uri.protocol, 'http:');
+      assert.strictEqual(uri.hostname, window.location.hostname);
+      assert.strictEqual(uri.pathname, '/wms');
       const queryData = uri.searchParams;
-      expect(queryData.get('BBOX')).to.be('20,10,40,30');
-      expect(queryData.get('CRS')).to.be('EPSG:4326');
-      expect(queryData.get('FORMAT')).to.be('image/png');
-      expect(queryData.get('HEIGHT')).to.be('200');
-      expect(queryData.get('LAYERS')).to.be('layer');
-      expect(queryData.get('REQUEST')).to.be('GetMap');
-      expect(queryData.get('SERVICE')).to.be('WMS');
-      expect(queryData.get('SRS')).to.be(null);
-      expect(queryData.get('STYLES')).to.be('');
-      expect(queryData.get('TRANSPARENT')).to.be('TRUE');
-      expect(queryData.get('VERSION')).to.be('1.3.0');
-      expect(queryData.get('WIDTH')).to.be('200');
-      expect(uri.hash.replace('#', '')).to.be.empty();
+      assert.strictEqual(queryData.get('BBOX'), '20,10,40,30');
+      assert.strictEqual(queryData.get('CRS'), 'EPSG:4326');
+      assert.strictEqual(queryData.get('FORMAT'), 'image/png');
+      assert.strictEqual(queryData.get('HEIGHT'), '200');
+      assert.strictEqual(queryData.get('LAYERS'), 'layer');
+      assert.strictEqual(queryData.get('REQUEST'), 'GetMap');
+      assert.strictEqual(queryData.get('SERVICE'), 'WMS');
+      assert.strictEqual(queryData.get('SRS'), null);
+      assert.strictEqual(queryData.get('STYLES'), '');
+      assert.strictEqual(queryData.get('TRANSPARENT'), 'TRUE');
+      assert.strictEqual(queryData.get('VERSION'), '1.3.0');
+      assert.strictEqual(queryData.get('WIDTH'), '200');
+      assert.isEmpty(uri.hash.replace('#', ''));
     });
 
     it('sets CRS to match the projection', function () {
@@ -230,8 +233,8 @@ describe('ol/source/ImageWMS', function () {
       image1.load();
       const uri1 = new URL(image1.getImage().src);
       const queryData1 = uri1.searchParams;
-      expect(queryData1.get('BBOX')).to.be('20,10,40,30');
-      expect(queryData1.get('CRS')).to.be('EPSG:4326');
+      assert.strictEqual(queryData1.get('BBOX'), '20,10,40,30');
+      assert.strictEqual(queryData1.get('CRS'), 'EPSG:4326');
 
       const projection2 = getProjection('EPSG:3857');
       const image2 = source.getImage(
@@ -243,8 +246,8 @@ describe('ol/source/ImageWMS', function () {
       image2.load();
       const uri2 = new URL(image2.getImage().src);
       const queryData2 = uri2.searchParams;
-      expect(queryData2.get('BBOX')).to.be('10,20,30,40');
-      expect(queryData2.get('CRS')).to.be('EPSG:3857');
+      assert.strictEqual(queryData2.get('BBOX'), '10,20,30,40');
+      assert.strictEqual(queryData2.get('CRS'), 'EPSG:3857');
 
       const projection3 = getProjection('EPSG:900913');
       const image3 = source.getImage(
@@ -256,8 +259,8 @@ describe('ol/source/ImageWMS', function () {
       image3.load();
       const uri3 = new URL(image3.getImage().src);
       const queryData3 = uri3.searchParams;
-      expect(queryData3.get('BBOX')).to.be('10,20,30,40');
-      expect(queryData3.get('CRS')).to.be('EPSG:900913');
+      assert.strictEqual(queryData3.get('BBOX'), '10,20,30,40');
+      assert.strictEqual(queryData3.get('CRS'), 'EPSG:900913');
     });
 
     it('sets the SRS query value instead of CRS if version < 1.3', function () {
@@ -267,8 +270,8 @@ describe('ol/source/ImageWMS', function () {
       image.load();
       const uri = new URL(image.getImage().src);
       const queryData = uri.searchParams;
-      expect(queryData.get('CRS')).to.be(null);
-      expect(queryData.get('SRS')).to.be('EPSG:4326');
+      assert.strictEqual(queryData.get('CRS'), null);
+      assert.strictEqual(queryData.get('SRS'), 'EPSG:4326');
     });
 
     it('allows various parameters to be overridden', function () {
@@ -279,8 +282,8 @@ describe('ol/source/ImageWMS', function () {
       image.load();
       const uri = new URL(image.getImage().src);
       const queryData = uri.searchParams;
-      expect(queryData.get('FORMAT')).to.be('image/jpeg');
-      expect(queryData.get('TRANSPARENT')).to.be('false');
+      assert.strictEqual(queryData.get('FORMAT'), 'image/jpeg');
+      assert.strictEqual(queryData.get('TRANSPARENT'), 'false');
     });
 
     it('valid TRANSPARENT default value', function () {
@@ -289,7 +292,7 @@ describe('ol/source/ImageWMS', function () {
       image.load();
       const uri = new URL(image.getImage().src);
       const queryData = uri.searchParams;
-      expect(queryData.get('TRANSPARENT')).to.be('TRUE');
+      assert.strictEqual(queryData.get('TRANSPARENT'), 'TRUE');
     });
 
     it('valid TRANSPARENT override value', function () {
@@ -299,7 +302,7 @@ describe('ol/source/ImageWMS', function () {
       image.load();
       const uri = new URL(image.getImage().src);
       const queryData = uri.searchParams;
-      expect(queryData.get('TRANSPARENT')).to.be('FALSE');
+      assert.strictEqual(queryData.get('TRANSPARENT'), 'FALSE');
     });
 
     it('does not add a STYLES= option if one is specified', function () {
@@ -309,7 +312,7 @@ describe('ol/source/ImageWMS', function () {
       image.load();
       const uri = new URL(image.getImage().src);
       const queryData = uri.searchParams;
-      expect(queryData.get('STYLES')).to.be('foo');
+      assert.strictEqual(queryData.get('STYLES'), 'foo');
     });
 
     it('changes the BBOX order for EN axis orientations', function () {
@@ -319,7 +322,7 @@ describe('ol/source/ImageWMS', function () {
       image.load();
       const uri = new URL(image.getImage().src);
       const queryData = uri.searchParams;
-      expect(queryData.get('BBOX')).to.be('10,20,30,40');
+      assert.strictEqual(queryData.get('BBOX'), '10,20,30,40');
     });
 
     it('uses EN BBOX order if version < 1.3', function () {
@@ -329,7 +332,7 @@ describe('ol/source/ImageWMS', function () {
       image.load();
       const uri = new URL(image.getImage().src);
       const queryData = uri.searchParams;
-      expect(queryData.get('BBOX')).to.be('10,20,30,40');
+      assert.strictEqual(queryData.get('BBOX'), '10,20,30,40');
     });
 
     it('sets MAP_RESOLUTION when the server is MapServer', function () {
@@ -340,7 +343,7 @@ describe('ol/source/ImageWMS', function () {
       image.load();
       const uri = new URL(image.getImage().src);
       const queryData = uri.searchParams;
-      expect(queryData.get('MAP_RESOLUTION')).to.be('180');
+      assert.strictEqual(queryData.get('MAP_RESOLUTION'), '180');
     });
 
     it('sets FORMAT_OPTIONS when the server is GeoServer', function () {
@@ -351,7 +354,7 @@ describe('ol/source/ImageWMS', function () {
       image.load();
       const uri = new URL(image.getImage().src);
       const queryData = uri.searchParams;
-      expect(queryData.get('FORMAT_OPTIONS')).to.be('dpi:180');
+      assert.strictEqual(queryData.get('FORMAT_OPTIONS'), 'dpi:180');
     });
 
     it('extends FORMAT_OPTIONS if it is already present', function () {
@@ -363,7 +366,10 @@ describe('ol/source/ImageWMS', function () {
       image.load();
       const uri = new URL(image.getImage().src);
       const queryData = uri.searchParams;
-      expect(queryData.get('FORMAT_OPTIONS')).to.be('param1:value1;dpi:180');
+      assert.strictEqual(
+        queryData.get('FORMAT_OPTIONS'),
+        'param1:value1;dpi:180',
+      );
     });
 
     it('rounds FORMAT_OPTIONS to an integer when the server is GeoServer', function () {
@@ -374,7 +380,7 @@ describe('ol/source/ImageWMS', function () {
       image.load();
       const uri = new URL(image.getImage().src);
       const queryData = uri.searchParams;
-      expect(queryData.get('FORMAT_OPTIONS')).to.be('dpi:119');
+      assert.strictEqual(queryData.get('FORMAT_OPTIONS'), 'dpi:119');
     });
 
     it('sets DPI when the server is QGIS', function () {
@@ -385,7 +391,7 @@ describe('ol/source/ImageWMS', function () {
       image.load();
       const uri = new URL(image.getImage().src);
       const queryData = uri.searchParams;
-      expect(queryData.get('DPI')).to.be('180');
+      assert.strictEqual(queryData.get('DPI'), '180');
     });
 
     it('creates an image with a custom imageLoadFunction', function () {
@@ -394,9 +400,10 @@ describe('ol/source/ImageWMS', function () {
       const source = new ImageWMS(options);
       const image = source.getImage(extent, resolution, pixelRatio, projection);
       image.load();
-      expect(imageLoadFunction.called).to.be(true);
-      expect(imageLoadFunction.getCall(0).args[0]).to.eql(image);
-      expect(imageLoadFunction.getCall(0).args[1]).to.be(
+      assert.strictEqual(imageLoadFunction.called, true);
+      assert.deepEqual(imageLoadFunction.getCall(0).args[0], image);
+      assert.strictEqual(
+        imageLoadFunction.getCall(0).args[1],
         window.location.origin +
           '/wms?REQUEST=GetMap&SERVICE=WMS&VERSION=1.3.0&FORMAT=image%2Fpng&STYLES=&TRANSPARENT=TRUE&LAYERS=layer&WIDTH=200&HEIGHT=200&CRS=EPSG%3A4326&BBOX=20%2C10%2C40%2C30',
       );
@@ -417,7 +424,7 @@ describe('ol/source/ImageWMS', function () {
         pixelRatio,
         projection,
       );
-      expect(image1).to.equal(image2);
+      assert.equal(image1, image2);
     });
 
     it('returns same image for calls with similar extents', function (done) {
@@ -432,7 +439,7 @@ describe('ol/source/ImageWMS', function () {
         extent = [10.01, 20.1, 30.01, 40.1];
         image2 = source.getImage(extent, resolution, pixelRatio, projection);
         try {
-          expect(image1).to.equal(image2);
+          assert.equal(image1, image2);
           done();
         } catch (e) {
           done(e);
@@ -452,7 +459,7 @@ describe('ol/source/ImageWMS', function () {
         Number(uri.searchParams.get('WIDTH')),
         Number(uri.searchParams.get('HEIGHT')),
       ];
-      expect(size).to.eql([300, 600]);
+      assert.deepEqual(size, [300, 600]);
     });
   });
 
@@ -463,26 +470,26 @@ describe('ol/source/ImageWMS', function () {
         INFO_FORMAT: 'text/plain',
       });
       const uri = new URL(url);
-      expect(uri.protocol).to.be('http:');
-      expect(uri.hostname).to.be(window.location.hostname);
-      expect(uri.pathname).to.be('/wms');
+      assert.strictEqual(uri.protocol, 'http:');
+      assert.strictEqual(uri.hostname, window.location.hostname);
+      assert.strictEqual(uri.pathname, '/wms');
       const queryData = uri.searchParams;
-      expect(queryData.get('BBOX')).to.be('24.95,14.95,35.05,25.05');
-      expect(queryData.get('CRS')).to.be('EPSG:4326');
-      expect(queryData.get('FORMAT')).to.be('image/png');
-      expect(queryData.get('HEIGHT')).to.be('101');
-      expect(queryData.get('I')).to.be('50');
-      expect(queryData.get('J')).to.be('50');
-      expect(queryData.get('LAYERS')).to.be('layer');
-      expect(queryData.get('QUERY_LAYERS')).to.be('layer');
-      expect(queryData.get('REQUEST')).to.be('GetFeatureInfo');
-      expect(queryData.get('SERVICE')).to.be('WMS');
-      expect(queryData.get('SRS')).to.be(null);
-      expect(queryData.get('STYLES')).to.be('');
-      expect(queryData.get('TRANSPARENT')).to.be('TRUE');
-      expect(queryData.get('VERSION')).to.be('1.3.0');
-      expect(queryData.get('WIDTH')).to.be('101');
-      expect(uri.hash.replace('#', '')).to.be.empty();
+      assert.strictEqual(queryData.get('BBOX'), '24.95,14.95,35.05,25.05');
+      assert.strictEqual(queryData.get('CRS'), 'EPSG:4326');
+      assert.strictEqual(queryData.get('FORMAT'), 'image/png');
+      assert.strictEqual(queryData.get('HEIGHT'), '101');
+      assert.strictEqual(queryData.get('I'), '50');
+      assert.strictEqual(queryData.get('J'), '50');
+      assert.strictEqual(queryData.get('LAYERS'), 'layer');
+      assert.strictEqual(queryData.get('QUERY_LAYERS'), 'layer');
+      assert.strictEqual(queryData.get('REQUEST'), 'GetFeatureInfo');
+      assert.strictEqual(queryData.get('SERVICE'), 'WMS');
+      assert.strictEqual(queryData.get('SRS'), null);
+      assert.strictEqual(queryData.get('STYLES'), '');
+      assert.strictEqual(queryData.get('TRANSPARENT'), 'TRUE');
+      assert.strictEqual(queryData.get('VERSION'), '1.3.0');
+      assert.strictEqual(queryData.get('WIDTH'), '101');
+      assert.isEmpty(uri.hash.replace('#', ''));
     });
 
     it("returns the expected GetFeatureInfo URL when source's projection is different from the parameter", function () {
@@ -491,28 +498,29 @@ describe('ol/source/ImageWMS', function () {
         INFO_FORMAT: 'text/plain',
       });
       const uri = new URL(url);
-      expect(uri.protocol).to.be('http:');
-      expect(uri.hostname).to.be(window.location.hostname);
-      expect(uri.pathname).to.be('/wms');
+      assert.strictEqual(uri.protocol, 'http:');
+      assert.strictEqual(uri.hostname, window.location.hostname);
+      assert.strictEqual(uri.pathname, '/wms');
       const queryData = uri.searchParams;
-      expect(queryData.get('BBOX')).to.be(
+      assert.strictEqual(
+        queryData.get('BBOX'),
         '1577259.402312431,2854419.4299513334,2875520.229418512,4152680.2570574144',
       );
-      expect(queryData.get('CRS')).to.be('EPSG:3857');
-      expect(queryData.get('FORMAT')).to.be('image/png');
-      expect(queryData.get('HEIGHT')).to.be('101');
-      expect(queryData.get('I')).to.be('50');
-      expect(queryData.get('J')).to.be('50');
-      expect(queryData.get('LAYERS')).to.be('layer');
-      expect(queryData.get('QUERY_LAYERS')).to.be('layer');
-      expect(queryData.get('REQUEST')).to.be('GetFeatureInfo');
-      expect(queryData.get('SERVICE')).to.be('WMS');
-      expect(queryData.get('SRS')).to.be(null);
-      expect(queryData.get('STYLES')).to.be('');
-      expect(queryData.get('TRANSPARENT')).to.be('TRUE');
-      expect(queryData.get('VERSION')).to.be('1.3.0');
-      expect(queryData.get('WIDTH')).to.be('101');
-      expect(uri.hash.replace('#', '')).to.be.empty();
+      assert.strictEqual(queryData.get('CRS'), 'EPSG:3857');
+      assert.strictEqual(queryData.get('FORMAT'), 'image/png');
+      assert.strictEqual(queryData.get('HEIGHT'), '101');
+      assert.strictEqual(queryData.get('I'), '50');
+      assert.strictEqual(queryData.get('J'), '50');
+      assert.strictEqual(queryData.get('LAYERS'), 'layer');
+      assert.strictEqual(queryData.get('QUERY_LAYERS'), 'layer');
+      assert.strictEqual(queryData.get('REQUEST'), 'GetFeatureInfo');
+      assert.strictEqual(queryData.get('SERVICE'), 'WMS');
+      assert.strictEqual(queryData.get('SRS'), null);
+      assert.strictEqual(queryData.get('STYLES'), '');
+      assert.strictEqual(queryData.get('TRANSPARENT'), 'TRUE');
+      assert.strictEqual(queryData.get('VERSION'), '1.3.0');
+      assert.strictEqual(queryData.get('WIDTH'), '101');
+      assert.isEmpty(uri.hash.replace('#', ''));
     });
 
     it('sets the QUERY_LAYERS param as expected', function () {
@@ -522,26 +530,26 @@ describe('ol/source/ImageWMS', function () {
         QUERY_LAYERS: 'foo,bar',
       });
       const uri = new URL(url);
-      expect(uri.protocol).to.be('http:');
-      expect(uri.hostname).to.be(window.location.hostname);
-      expect(uri.pathname).to.be('/wms');
+      assert.strictEqual(uri.protocol, 'http:');
+      assert.strictEqual(uri.hostname, window.location.hostname);
+      assert.strictEqual(uri.pathname, '/wms');
       const queryData = uri.searchParams;
-      expect(queryData.get('BBOX')).to.be('24.95,14.95,35.05,25.05');
-      expect(queryData.get('CRS')).to.be('EPSG:4326');
-      expect(queryData.get('FORMAT')).to.be('image/png');
-      expect(queryData.get('HEIGHT')).to.be('101');
-      expect(queryData.get('I')).to.be('50');
-      expect(queryData.get('J')).to.be('50');
-      expect(queryData.get('LAYERS')).to.be('layer');
-      expect(queryData.get('QUERY_LAYERS')).to.be('foo,bar');
-      expect(queryData.get('REQUEST')).to.be('GetFeatureInfo');
-      expect(queryData.get('SERVICE')).to.be('WMS');
-      expect(queryData.get('SRS')).to.be(null);
-      expect(queryData.get('STYLES')).to.be('');
-      expect(queryData.get('TRANSPARENT')).to.be('TRUE');
-      expect(queryData.get('VERSION')).to.be('1.3.0');
-      expect(queryData.get('WIDTH')).to.be('101');
-      expect(uri.hash.replace('#', '')).to.be.empty();
+      assert.strictEqual(queryData.get('BBOX'), '24.95,14.95,35.05,25.05');
+      assert.strictEqual(queryData.get('CRS'), 'EPSG:4326');
+      assert.strictEqual(queryData.get('FORMAT'), 'image/png');
+      assert.strictEqual(queryData.get('HEIGHT'), '101');
+      assert.strictEqual(queryData.get('I'), '50');
+      assert.strictEqual(queryData.get('J'), '50');
+      assert.strictEqual(queryData.get('LAYERS'), 'layer');
+      assert.strictEqual(queryData.get('QUERY_LAYERS'), 'foo,bar');
+      assert.strictEqual(queryData.get('REQUEST'), 'GetFeatureInfo');
+      assert.strictEqual(queryData.get('SERVICE'), 'WMS');
+      assert.strictEqual(queryData.get('SRS'), null);
+      assert.strictEqual(queryData.get('STYLES'), '');
+      assert.strictEqual(queryData.get('TRANSPARENT'), 'TRUE');
+      assert.strictEqual(queryData.get('VERSION'), '1.3.0');
+      assert.strictEqual(queryData.get('WIDTH'), '101');
+      assert.isEmpty(uri.hash.replace('#', ''));
     });
   });
 
@@ -550,16 +558,16 @@ describe('ol/source/ImageWMS', function () {
       const source = new ImageWMS(options);
       const url = source.getLegendUrl(resolution);
       const uri = new URL(url);
-      expect(uri.protocol).to.be('http:');
-      expect(uri.hostname).to.be(window.location.hostname);
-      expect(uri.pathname).to.be('/wms');
+      assert.strictEqual(uri.protocol, 'http:');
+      assert.strictEqual(uri.hostname, window.location.hostname);
+      assert.strictEqual(uri.pathname, '/wms');
       const queryData = uri.searchParams;
-      expect(queryData.get('FORMAT')).to.be('image/png');
-      expect(queryData.get('LAYER')).to.be('layer');
-      expect(queryData.get('REQUEST')).to.be('GetLegendGraphic');
-      expect(queryData.get('SERVICE')).to.be('WMS');
-      expect(queryData.get('VERSION')).to.be('1.3.0');
-      expect(queryData.get('SCALE')).to.be('357.14285714285717');
+      assert.strictEqual(queryData.get('FORMAT'), 'image/png');
+      assert.strictEqual(queryData.get('LAYER'), 'layer');
+      assert.strictEqual(queryData.get('REQUEST'), 'GetLegendGraphic');
+      assert.strictEqual(queryData.get('SERVICE'), 'WMS');
+      assert.strictEqual(queryData.get('VERSION'), '1.3.0');
+      assert.strictEqual(queryData.get('SCALE'), '357.14285714285717');
     });
 
     it('does not include SCALE if no resolution was provided', function () {
@@ -567,7 +575,7 @@ describe('ol/source/ImageWMS', function () {
       const url = source.getLegendUrl();
       const uri = new URL(url);
       const queryData = uri.searchParams;
-      expect(queryData.get('SCALE')).to.be(null);
+      assert.strictEqual(queryData.get('SCALE'), null);
     });
 
     it('adds additional params as expected', function () {
@@ -586,26 +594,26 @@ describe('ol/source/ImageWMS', function () {
         LAYER: 'LAYER_VALUE',
       });
       const uri = new URL(url);
-      expect(uri.protocol).to.be('http:');
-      expect(uri.hostname).to.be(window.location.hostname);
-      expect(uri.pathname).to.be('/wms');
+      assert.strictEqual(uri.protocol, 'http:');
+      assert.strictEqual(uri.hostname, window.location.hostname);
+      assert.strictEqual(uri.pathname, '/wms');
       const queryData = uri.searchParams;
-      expect(queryData.get('FORMAT')).to.be('FORMAT_VALUE');
-      expect(queryData.get('LAYER')).to.be('LAYER_VALUE');
-      expect(queryData.get('REQUEST')).to.be('GetLegendGraphic');
-      expect(queryData.get('SERVICE')).to.be('WMS');
-      expect(queryData.get('VERSION')).to.be('1.3.0');
-      expect(queryData.get('SCALE')).to.be('357.14285714285717');
-      expect(queryData.get('STYLE')).to.be('STYLE_VALUE');
-      expect(queryData.get('FEATURETYPE')).to.be('FEATURETYPE_VALUE');
-      expect(queryData.get('RULE')).to.be('RULE_VALUE');
-      expect(queryData.get('SLD')).to.be('SLD_VALUE');
-      expect(queryData.get('SLD_BODY')).to.be('SLD_BODY_VALUE');
-      expect(queryData.get('FORMAT')).to.be('FORMAT_VALUE');
-      expect(queryData.get('WIDTH')).to.be('WIDTH_VALUE');
-      expect(queryData.get('HEIGHT')).to.be('HEIGHT_VALUE');
-      expect(queryData.get('EXCEPTIONS')).to.be('EXCEPTIONS_VALUE');
-      expect(queryData.get('LANGUAGE')).to.be('LANGUAGE_VALUE');
+      assert.strictEqual(queryData.get('FORMAT'), 'FORMAT_VALUE');
+      assert.strictEqual(queryData.get('LAYER'), 'LAYER_VALUE');
+      assert.strictEqual(queryData.get('REQUEST'), 'GetLegendGraphic');
+      assert.strictEqual(queryData.get('SERVICE'), 'WMS');
+      assert.strictEqual(queryData.get('VERSION'), '1.3.0');
+      assert.strictEqual(queryData.get('SCALE'), '357.14285714285717');
+      assert.strictEqual(queryData.get('STYLE'), 'STYLE_VALUE');
+      assert.strictEqual(queryData.get('FEATURETYPE'), 'FEATURETYPE_VALUE');
+      assert.strictEqual(queryData.get('RULE'), 'RULE_VALUE');
+      assert.strictEqual(queryData.get('SLD'), 'SLD_VALUE');
+      assert.strictEqual(queryData.get('SLD_BODY'), 'SLD_BODY_VALUE');
+      assert.strictEqual(queryData.get('FORMAT'), 'FORMAT_VALUE');
+      assert.strictEqual(queryData.get('WIDTH'), 'WIDTH_VALUE');
+      assert.strictEqual(queryData.get('HEIGHT'), 'HEIGHT_VALUE');
+      assert.strictEqual(queryData.get('EXCEPTIONS'), 'EXCEPTIONS_VALUE');
+      assert.strictEqual(queryData.get('LANGUAGE'), 'LANGUAGE_VALUE');
     });
   });
 
@@ -647,7 +655,7 @@ describe('ol/source/ImageWMS', function () {
 
     it('reloads from server', function (done) {
       map.once('rendercomplete', function () {
-        expect(callCount).to.be(1);
+        assert.strictEqual(callCount, 1);
         done();
       });
       source.refresh();
@@ -698,10 +706,13 @@ describe('ol/source/ImageWMS', function () {
 
     it('loads wrapped extents when both projections are global', function (done) {
       map.once('rendercomplete', function () {
-        expect(queryData.length).to.be(1);
-        expect(queryData[0].get('BBOX')).to.be('-85.078125,181,85.078125,541');
-        expect(queryData[0].get('WIDTH')).to.be('256');
-        expect(queryData[0].get('HEIGHT')).to.be('121');
+        assert.strictEqual(queryData.length, 1);
+        assert.strictEqual(
+          queryData[0].get('BBOX'),
+          '-85.078125,181,85.078125,541',
+        );
+        assert.strictEqual(queryData[0].get('WIDTH'), '256');
+        assert.strictEqual(queryData[0].get('HEIGHT'), '121');
         done();
       });
       map.getView().setCenter(fromLonLat([361, 0]));
@@ -710,7 +721,7 @@ describe('ol/source/ImageWMS', function () {
     it('does not load outside extent when view projection is not global', function (done) {
       getProjection('EPSG:3857').setGlobal(false);
       map.once('rendercomplete', function () {
-        expect(queryData.length).to.be(0);
+        assert.strictEqual(queryData.length, 0);
         done();
       });
       map.getView().setCenter(fromLonLat([361, 0]));
@@ -719,7 +730,7 @@ describe('ol/source/ImageWMS', function () {
     it('does not load outside extent when source projection is not global', function (done) {
       getProjection('EPSG:4326').setGlobal(false);
       map.once('rendercomplete', function () {
-        expect(queryData.length).to.be(0);
+        assert.strictEqual(queryData.length, 0);
         done();
       });
       map.getView().setCenter(fromLonLat([361, 0]));

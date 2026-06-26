@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {get as getProjection, transform} from '../../../../../src/ol/proj.js';
 import {calculateSourceResolution} from '../../../../../src/ol/reproj.js';
 
@@ -18,7 +19,7 @@ describe('ol.reproj', function () {
         origin,
         resolution,
       );
-      expect(result).to.be(resolution);
+      assert.strictEqual(result, resolution);
 
       result = calculateSourceResolution(
         proj3857,
@@ -26,7 +27,7 @@ describe('ol.reproj', function () {
         point3857,
         resolution,
       );
-      expect(result).to.be(resolution);
+      assert.strictEqual(result, resolution);
 
       result = calculateSourceResolution(
         proj4326,
@@ -34,7 +35,7 @@ describe('ol.reproj', function () {
         point4326,
         resolution,
       );
-      expect(result).to.be(resolution);
+      assert.strictEqual(result, resolution);
     });
 
     it('calculates correctly', function () {
@@ -46,8 +47,9 @@ describe('ol.reproj', function () {
         point4326,
         resolution4326,
       );
-      expect(resolution3857).not.to.be(resolution4326);
-      expect(resolution3857).to.roughlyEqual(
+      assert.notEqual(resolution3857, resolution4326);
+      assert.approximately(
+        resolution3857,
         5 * proj4326.getMetersPerUnit(),
         1e-4,
       );
@@ -58,7 +60,7 @@ describe('ol.reproj', function () {
         point3857,
         resolution3857,
       );
-      expect(result).to.be(resolution4326);
+      assert.strictEqual(result, resolution4326);
     });
   });
 });

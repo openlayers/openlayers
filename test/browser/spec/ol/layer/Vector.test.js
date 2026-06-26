@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import Feature from '../../../../../src/ol/Feature.js';
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
@@ -25,8 +26,8 @@ describe('ol.layer.Vector', function () {
 
     it('creates a new layer', function () {
       const layer = new VectorLayer({source: source});
-      expect(layer).to.be.a(VectorLayer);
-      expect(layer).to.be.a(Layer);
+      assert.instanceOf(layer, VectorLayer);
+      assert.instanceOf(layer, Layer);
     });
 
     it('accepts a style option with a single style', function () {
@@ -36,7 +37,7 @@ describe('ol.layer.Vector', function () {
       });
 
       const styleFunction = layer.getStyleFunction();
-      expect(styleFunction()).to.eql([style]);
+      assert.deepEqual(styleFunction(), [style]);
     });
 
     it('accepts a style option with an array of styles', function () {
@@ -46,7 +47,7 @@ describe('ol.layer.Vector', function () {
       });
 
       const styleFunction = layer.getStyleFunction();
-      expect(styleFunction()).to.eql([style]);
+      assert.deepEqual(styleFunction(), [style]);
     });
 
     it('accepts a style option with a style function', function () {
@@ -58,7 +59,7 @@ describe('ol.layer.Vector', function () {
       });
 
       const styleFunction = layer.getStyleFunction();
-      expect(styleFunction()).to.eql([style]);
+      assert.deepEqual(styleFunction(), [style]);
     });
   });
 
@@ -74,7 +75,7 @@ describe('ol.layer.Vector', function () {
 
     it('allows the style to be set after construction', function () {
       layer.setStyle(style);
-      expect(layer.getStyle()).to.be(style);
+      assert.strictEqual(layer.getStyle(), style);
     });
 
     it('dispatches the change event', function (done) {
@@ -85,22 +86,22 @@ describe('ol.layer.Vector', function () {
     });
 
     it('updates the internal style function', function () {
-      expect(layer.getStyleFunction()).to.be(createDefaultStyle);
+      assert.strictEqual(layer.getStyleFunction(), createDefaultStyle);
       layer.setStyle(style);
-      expect(layer.getStyleFunction()).not.to.be(createDefaultStyle);
+      assert.notEqual(layer.getStyleFunction(), createDefaultStyle);
     });
 
     it('allows setting an null style', function () {
       layer.setStyle(null);
-      expect(layer.getStyle()).to.be(null);
-      expect(layer.getStyleFunction()).to.be(undefined);
+      assert.strictEqual(layer.getStyle(), null);
+      assert.strictEqual(layer.getStyleFunction(), undefined);
     });
 
     it('sets the default style when passing undefined', function () {
       layer.setStyle(style);
       layer.setStyle(undefined);
-      expect(layer.getStyle()).to.be(createDefaultStyle);
-      expect(layer.getStyleFunction()).to.be(createDefaultStyle);
+      assert.strictEqual(layer.getStyle(), createDefaultStyle);
+      assert.strictEqual(layer.getStyleFunction(), createDefaultStyle);
     });
   });
 
@@ -113,19 +114,19 @@ describe('ol.layer.Vector', function () {
         source: source,
       });
 
-      expect(layer.getStyle()).to.be(createDefaultStyle);
+      assert.strictEqual(layer.getStyle(), createDefaultStyle);
 
       layer.setStyle(style);
-      expect(layer.getStyle()).to.be(style);
+      assert.strictEqual(layer.getStyle(), style);
 
       layer.setStyle([style]);
-      expect(layer.getStyle()).to.eql([style]);
+      assert.deepEqual(layer.getStyle(), [style]);
 
       const styleFunction = function (feature, resolution) {
         return [style];
       };
       layer.setStyle(styleFunction);
-      expect(layer.getStyle()).to.be(styleFunction);
+      assert.strictEqual(layer.getStyle(), styleFunction);
     });
 
     it('returns a flat style if a flat style was set', () => {
@@ -141,7 +142,7 @@ describe('ol.layer.Vector', function () {
         },
       ];
       layer.setStyle(style);
-      expect(layer.getStyle()).to.be(style);
+      assert.strictEqual(layer.getStyle(), style);
     });
   });
 
@@ -153,16 +154,16 @@ describe('ol.layer.Vector', function () {
       });
 
       const styleFunction = layer.getStyleFunction();
-      expect(styleFunction).to.be.a(Function);
+      assert.instanceOf(styleFunction, Function);
 
       const styles = styleFunction(new Feature(), 1);
-      expect(styles).to.be.an(Array);
-      expect(styles).to.have.length(1);
+      assert.instanceOf(styles, Array);
+      assert.lengthOf(styles, 1);
 
       const style = styles[0];
       const fill = style.getFill();
-      expect(fill).to.be.a(Fill);
-      expect(fill.getColor()).to.eql([255, 0, 0, 1]);
+      assert.instanceOf(fill, Fill);
+      assert.deepEqual(fill.getColor(), [255, 0, 0, 1]);
     });
 
     it('accepts an array of flat styles', () => {
@@ -179,27 +180,27 @@ describe('ol.layer.Vector', function () {
       ]);
 
       const styleFunction = layer.getStyleFunction();
-      expect(styleFunction).to.be.a(Function);
+      assert.instanceOf(styleFunction, Function);
 
       const styles = styleFunction(new Feature(), 1);
-      expect(styles).to.be.an(Array);
-      expect(styles).to.have.length(2);
+      assert.instanceOf(styles, Array);
+      assert.lengthOf(styles, 2);
 
       const first = styles[0];
-      expect(first).to.be.a(Style);
+      assert.instanceOf(first, Style);
 
       const firstStroke = first.getStroke();
-      expect(firstStroke).to.be.a(Stroke);
-      expect(firstStroke.getColor()).to.eql([255, 0, 0, 1]);
-      expect(firstStroke.getWidth()).to.be(10);
+      assert.instanceOf(firstStroke, Stroke);
+      assert.deepEqual(firstStroke.getColor(), [255, 0, 0, 1]);
+      assert.strictEqual(firstStroke.getWidth(), 10);
 
       const second = styles[1];
-      expect(second).to.be.a(Style);
+      assert.instanceOf(second, Style);
 
       const secondStroke = second.getStroke();
-      expect(secondStroke).to.be.a(Stroke);
-      expect(secondStroke.getColor()).to.eql([255, 255, 0, 1]);
-      expect(secondStroke.getWidth()).to.be(5);
+      assert.instanceOf(secondStroke, Stroke);
+      assert.deepEqual(secondStroke.getColor(), [255, 255, 0, 1]);
+      assert.strictEqual(secondStroke.getWidth(), 5);
     });
   });
 
@@ -271,8 +272,8 @@ describe('ol.layer.Vector', function () {
       const pixel = map.getPixelFromCoordinate([-1000000, 0]);
 
       layer.getFeatures(pixel).then(function (features) {
-        expect(features.length).to.equal(1);
-        expect(features[0].get('name')).to.be('feature1');
+        assert.equal(features.length, 1);
+        assert.strictEqual(features[0].get('name'), 'feature1');
         done();
       });
     });
@@ -324,8 +325,8 @@ describe('ol.layer.Vector', function () {
       const pixel = map.getPixelFromCoordinate([-1000000, 0]);
 
       layer.getFeatures(pixel).then(function (features) {
-        expect(features.length).to.equal(1);
-        expect(features[0].get('name')).to.be('feature1');
+        assert.equal(features.length, 1);
+        assert.strictEqual(features[0].get('name'), 'feature1');
         done();
       });
     });
@@ -361,8 +362,8 @@ describe('ol.layer.Vector', function () {
         const pixel = map.getPixelFromCoordinate([-1000000, 0]);
 
         layer.getFeatures(pixel).then(function (features) {
-          expect(features.length).to.equal(1);
-          expect(features[0].get('name')).to.be('feature1');
+          assert.equal(features.length, 1);
+          assert.strictEqual(features[0].get('name'), 'feature1');
           done();
         });
       });
@@ -403,8 +404,8 @@ describe('ol.layer.Vector', function () {
         const pixel = map.getPixelFromCoordinate([-1000000, 0]);
 
         layer.getFeatures(pixel).then(function (features) {
-          expect(features.length).to.equal(1);
-          expect(features[0].get('name')).to.be('feature1');
+          assert.equal(features.length, 1);
+          assert.strictEqual(features[0].get('name'), 'feature1');
           done();
         });
       });
@@ -436,8 +437,8 @@ describe('ol.layer.Vector', function () {
       layer
         .getFeatures(pixel)
         .then(function (features) {
-          expect(features.length).to.equal(1);
-          expect(features[0]).to.be(feature);
+          assert.equal(features.length, 1);
+          assert.strictEqual(features[0], feature);
           done();
         }, done)
         .catch(done);
@@ -478,12 +479,12 @@ describe('ol.layer.Vector', function () {
 
       return Promise.all([
         layer.getFeatures(pixel1).then(function (features) {
-          expect(features.length).to.equal(1);
-          expect(features[0].get('name')).to.be('feature1');
+          assert.equal(features.length, 1);
+          assert.strictEqual(features[0].get('name'), 'feature1');
         }),
         layer.getFeatures(pixel2).then(function (features) {
-          expect(features.length).to.equal(1);
-          expect(features[0].get('name')).to.be('feature2');
+          assert.equal(features.length, 1);
+          assert.strictEqual(features[0].get('name'), 'feature2');
         }),
       ]);
     });

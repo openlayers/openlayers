@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import OWS from '../../../../../src/ol/format/OWS.js';
 import {parse} from '../../../../../src/ol/xml.js';
 
@@ -41,16 +42,16 @@ describe('ol.format.OWS 1.1', function () {
     );
 
     const obj = parser.read(doc);
-    expect(obj).to.be.ok();
+    assert.isOk(obj);
     const serviceProvider = obj.ServiceProvider;
-    expect(serviceProvider).to.be.ok();
-    expect(serviceProvider.ProviderName).to.eql('MiraMon');
+    assert.isOk(serviceProvider);
+    assert.deepEqual(serviceProvider.ProviderName, 'MiraMon');
     const url = 'http://www.creaf.uab.es/miramon';
-    expect(serviceProvider.ProviderSite).to.eql(url);
+    assert.deepEqual(serviceProvider.ProviderSite, url);
     const name = 'Joan Maso Pau';
-    expect(serviceProvider.ServiceContact.IndividualName).to.eql(name);
+    assert.deepEqual(serviceProvider.ServiceContact.IndividualName, name);
     const position = 'Senior Software Engineer';
-    expect(serviceProvider.ServiceContact.PositionName).to.eql(position);
+    assert.deepEqual(serviceProvider.ServiceContact.PositionName, position);
   });
 
   it('should read ServiceIdentification tag properly', function () {
@@ -74,18 +75,19 @@ describe('ol.format.OWS 1.1', function () {
         '</ows:GetCapabilities>',
     );
     const obj = parser.readFromNode(doc.firstChild);
-    expect(obj).to.be.ok();
+    assert.isOk(obj);
 
     const serviceIdentification = obj.ServiceIdentification;
-    expect(serviceIdentification).to.be.ok();
-    expect(serviceIdentification.Abstract).to.eql(
+    assert.isOk(serviceIdentification);
+    assert.deepEqual(
+      serviceIdentification.Abstract,
       'Service that constrains the map access interface to some TileMatrixSets',
     );
-    expect(serviceIdentification.AccessConstraints).to.eql('none');
-    expect(serviceIdentification.Fees).to.eql('none');
-    expect(serviceIdentification.Title).to.eql('Web Map Tile Service');
-    expect(serviceIdentification.ServiceTypeVersion).to.eql('1.0.0');
-    expect(serviceIdentification.ServiceType).to.eql('OGC WMTS');
+    assert.deepEqual(serviceIdentification.AccessConstraints, 'none');
+    assert.deepEqual(serviceIdentification.Fees, 'none');
+    assert.deepEqual(serviceIdentification.Title, 'Web Map Tile Service');
+    assert.deepEqual(serviceIdentification.ServiceTypeVersion, '1.0.0');
+    assert.deepEqual(serviceIdentification.ServiceType, 'OGC WMTS');
   });
 
   it('should read OperationsMetadata tag properly', function () {
@@ -132,25 +134,28 @@ describe('ol.format.OWS 1.1', function () {
         '</ows:GetCapabilities>',
     );
     const obj = parser.readFromNode(doc.firstChild);
-    expect(obj).to.be.ok();
+    assert.isOk(obj);
 
     const operationsMetadata = obj.OperationsMetadata;
-    expect(operationsMetadata).to.be.ok();
+    assert.isOk(operationsMetadata);
     const getCap = operationsMetadata.GetCapabilities;
     let dcp = getCap.DCP;
     let url = 'http://www.miramon.uab.es/cgi-bin/MiraMon5_0.cgi?';
-    expect(dcp.HTTP.Get[0].href).to.eql(url);
-    expect(dcp.HTTP.Get[0].Constraint[0].name).to.eql('GetEncoding');
-    expect(dcp.HTTP.Get[0].Constraint[0].AllowedValues.Value[0]).to.eql('KVP');
+    assert.deepEqual(dcp.HTTP.Get[0].href, url);
+    assert.deepEqual(dcp.HTTP.Get[0].Constraint[0].name, 'GetEncoding');
+    assert.deepEqual(
+      dcp.HTTP.Get[0].Constraint[0].AllowedValues.Value[0],
+      'KVP',
+    );
 
     url = 'http://www.miramon.uab.es/cgi-bin/MiraMon5_0.cgi?';
     dcp = operationsMetadata.GetFeatureInfo.DCP;
-    expect(dcp.HTTP.Get[0].href).to.eql(url);
-    expect(dcp.HTTP.Get[0].Constraint).to.be(undefined);
+    assert.deepEqual(dcp.HTTP.Get[0].href, url);
+    assert.strictEqual(dcp.HTTP.Get[0].Constraint, undefined);
 
     url = 'http://www.miramon.uab.es/cgi-bin/MiraMon5_0.cgi?';
     dcp = operationsMetadata.GetTile.DCP;
-    expect(dcp.HTTP.Get[0].href).to.eql(url);
-    expect(dcp.HTTP.Get[0].Constraint).to.be(undefined);
+    assert.deepEqual(dcp.HTTP.Get[0].href, url);
+    assert.strictEqual(dcp.HTTP.Get[0].Constraint, undefined);
   });
 });

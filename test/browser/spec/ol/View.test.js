@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import Map from '../../../../src/ol/Map.js';
 import View, {
   createCenterConstraint,
@@ -21,11 +22,11 @@ describe('ol/View', function () {
     });
 
     it('creates an instance', function () {
-      expect(view).to.be.a(View);
+      assert.instanceOf(view, View);
     });
 
     it('provides default rotation', function () {
-      expect(view.getRotation()).to.be(0);
+      assert.strictEqual(view.getRotation(), 0);
     });
   });
 
@@ -36,8 +37,8 @@ describe('ol/View', function () {
         resolution: 1200,
       });
       view.setViewportSize();
-      expect(view.getResolution()).to.eql(1000);
-      expect(view.targetResolution_).to.eql(1000);
+      assert.deepEqual(view.getResolution(), 1000);
+      assert.deepEqual(view.targetResolution_, 1000);
     });
 
     it('correctly handles min resolution constraint', function () {
@@ -47,8 +48,8 @@ describe('ol/View', function () {
         resolution: 50,
       });
       view.setViewportSize();
-      expect(view.getResolution()).to.eql(128);
-      expect(view.targetResolution_).to.eql(128);
+      assert.deepEqual(view.getResolution(), 128);
+      assert.deepEqual(view.targetResolution_, 128);
     });
 
     it('correctly handles resolutions array constraint', function () {
@@ -57,16 +58,16 @@ describe('ol/View', function () {
         resolution: 1200,
       });
       view.setViewportSize();
-      expect(view.getResolution()).to.eql(1024);
-      expect(view.targetResolution_).to.eql(1024);
+      assert.deepEqual(view.getResolution(), 1024);
+      assert.deepEqual(view.targetResolution_, 1024);
 
       view = new View({
         resolutions: [1024, 512, 256, 128, 64, 32],
         resolution: 10,
       });
       view.setViewportSize();
-      expect(view.getResolution()).to.eql(32);
-      expect(view.targetResolution_).to.eql(32);
+      assert.deepEqual(view.getResolution(), 32);
+      assert.deepEqual(view.targetResolution_, 32);
     });
 
     it('correctly handles min zoom constraint', function () {
@@ -75,8 +76,8 @@ describe('ol/View', function () {
         zoom: 2,
       });
       view.setViewportSize();
-      expect(view.getZoom()).to.eql(3);
-      expect(view.targetResolution_).to.eql(view.getMaxResolution());
+      assert.deepEqual(view.getZoom(), 3);
+      assert.deepEqual(view.targetResolution_, view.getMaxResolution());
     });
 
     it('correctly handles max zoom constraint', function () {
@@ -85,8 +86,9 @@ describe('ol/View', function () {
         zoom: 5,
       });
       view.setViewportSize();
-      expect(view.getZoom()).to.eql(4);
-      expect(view.targetResolution_).to.eql(
+      assert.deepEqual(view.getZoom(), 4);
+      assert.deepEqual(
+        view.targetResolution_,
         view.getMaxResolution() / Math.pow(2, 4),
       );
     });
@@ -98,8 +100,8 @@ describe('ol/View', function () {
         resolution: 1,
       });
       view.setViewportSize();
-      expect(view.getResolution()).to.eql(0.5);
-      expect(view.targetResolution_).to.eql(0.5);
+      assert.deepEqual(view.getResolution(), 0.5);
+      assert.deepEqual(view.targetResolution_, 0.5);
     });
   });
 
@@ -111,8 +113,8 @@ describe('ol/View', function () {
           const size = [512, 256];
           const resolution = 1e5;
           const fn = createCenterConstraint(options);
-          expect(fn([0, 0], resolution, size)).to.eql([0, 0]);
-          expect(fn([42, -100], resolution, size)).to.eql([42, -100]);
+          assert.deepEqual(fn([0, 0], resolution, size), [0, 0]);
+          assert.deepEqual(fn([42, -100], resolution, size), [42, -100]);
         });
       });
 
@@ -124,10 +126,10 @@ describe('ol/View', function () {
           const size = [360, 180];
           const resolution = 0.5;
           const fn = createCenterConstraint(options);
-          expect(fn([0, 0], resolution, size)).to.eql([0, 0]);
-          expect(fn([0, 60], resolution, size)).to.eql([0, 45]);
-          expect(fn([180, 60], resolution, size)).to.eql([180, 45]);
-          expect(fn([-180, 60], resolution, size)).to.eql([-180, 45]);
+          assert.deepEqual(fn([0, 0], resolution, size), [0, 0]);
+          assert.deepEqual(fn([0, 60], resolution, size), [0, 45]);
+          assert.deepEqual(fn([180, 60], resolution, size), [180, 45]);
+          assert.deepEqual(fn([-180, 60], resolution, size), [-180, 45]);
         });
 
         it('disallows going south off the world', function () {
@@ -137,10 +139,10 @@ describe('ol/View', function () {
           const size = [360, 180];
           const resolution = 0.5;
           const fn = createCenterConstraint(options);
-          expect(fn([0, 0], resolution, size)).to.eql([0, 0]);
-          expect(fn([0, -60], resolution, size)).to.eql([0, -45]);
-          expect(fn([180, -60], resolution, size)).to.eql([180, -45]);
-          expect(fn([-180, -60], resolution, size)).to.eql([-180, -45]);
+          assert.deepEqual(fn([0, 0], resolution, size), [0, 0]);
+          assert.deepEqual(fn([0, -60], resolution, size), [0, -45]);
+          assert.deepEqual(fn([180, -60], resolution, size), [180, -45]);
+          assert.deepEqual(fn([-180, -60], resolution, size), [-180, -45]);
         });
       });
 
@@ -150,8 +152,8 @@ describe('ol/View', function () {
           const size = [512, 256];
           const resolution = 1e5;
           const fn = createCenterConstraint(options);
-          expect(fn([0, 0], resolution, size)).to.eql([0, 0]);
-          expect(fn([42, -100], resolution, size)).to.eql([42, -100]);
+          assert.deepEqual(fn([0, 0], resolution, size), [0, 0]);
+          assert.deepEqual(fn([42, -100], resolution, size), [42, -100]);
         });
       });
 
@@ -162,9 +164,9 @@ describe('ol/View', function () {
             constrainOnlyCenter: true,
           };
           const fn = createCenterConstraint(options);
-          expect(fn([0, 0])).to.eql([0, 0]);
-          expect(fn([-10, 0])).to.eql([0, 0]);
-          expect(fn([100, 100])).to.eql([1, 1]);
+          assert.deepEqual(fn([0, 0]), [0, 0]);
+          assert.deepEqual(fn([-10, 0]), [0, 0]);
+          assert.deepEqual(fn([100, 100]), [1, 1]);
         });
       });
 
@@ -176,15 +178,15 @@ describe('ol/View', function () {
           const fn = createCenterConstraint(options);
           const res = 1;
           const size = [0.15, 0.1];
-          expect(fn([0, 0], res, size)).to.eql([0.075, 0.05]);
-          expect(fn([0.5, 0.5], res, size)).to.eql([0.5, 0.5]);
-          expect(fn([10, 10], res, size)).to.eql([0.925, 0.95]);
+          assert.deepEqual(fn([0, 0], res, size), [0.075, 0.05]);
+          assert.deepEqual(fn([0.5, 0.5], res, size), [0.5, 0.5]);
+          assert.deepEqual(fn([10, 10], res, size), [0.925, 0.95]);
 
           const overshootCenter = fn([10, 10], res, size, true);
-          expect(overshootCenter[0] > 0.925).to.eql(true);
-          expect(overshootCenter[1] > 0.95).to.eql(true);
-          expect(overshootCenter[0] < 9).to.eql(true);
-          expect(overshootCenter[1] < 9).to.eql(true);
+          assert.deepEqual(overshootCenter[0] > 0.925, true);
+          assert.deepEqual(overshootCenter[1] > 0.95, true);
+          assert.deepEqual(overshootCenter[0] < 9, true);
+          assert.deepEqual(overshootCenter[1] < 9, true);
         });
       });
     });
@@ -195,11 +197,13 @@ describe('ol/View', function () {
         it('gives a correct resolution constraint function', function () {
           const options = {};
           const fn = createResolutionConstraint(options).constraint;
-          expect(fn(156543.03392804097, 0, size)).to.roughlyEqual(
+          assert.approximately(
+            fn(156543.03392804097, 0, size),
             156543.03392804097,
             1e-9,
           );
-          expect(fn(78271.51696402048, 0, size)).to.roughlyEqual(
+          assert.approximately(
+            fn(78271.51696402048, 0, size),
             78271.51696402048,
             1e-10,
           );
@@ -216,16 +220,16 @@ describe('ol/View', function () {
           };
           const info = createResolutionConstraint(options);
           const maxResolution = info.maxResolution;
-          expect(maxResolution).to.eql(81);
+          assert.deepEqual(maxResolution, 81);
           const minResolution = info.minResolution;
-          expect(minResolution).to.eql(3);
+          assert.deepEqual(minResolution, 3);
           const fn = info.constraint;
-          expect(fn(82, 0, size)).to.eql(81);
-          expect(fn(81, 0, size)).to.eql(81);
-          expect(fn(27, 0, size)).to.eql(27);
-          expect(fn(9, 0, size)).to.eql(9);
-          expect(fn(3, 0, size)).to.eql(3);
-          expect(fn(2, 0, size)).to.eql(3);
+          assert.deepEqual(fn(82, 0, size), 81);
+          assert.deepEqual(fn(81, 0, size), 81);
+          assert.deepEqual(fn(27, 0, size), 27);
+          assert.deepEqual(fn(9, 0, size), 9);
+          assert.deepEqual(fn(3, 0, size), 3);
+          assert.deepEqual(fn(2, 0, size), 3);
         });
       });
 
@@ -237,15 +241,15 @@ describe('ol/View', function () {
           };
           const info = createResolutionConstraint(options);
           const maxResolution = info.maxResolution;
-          expect(maxResolution).to.eql(97);
+          assert.deepEqual(maxResolution, 97);
           const minResolution = info.minResolution;
-          expect(minResolution).to.eql(0.45);
+          assert.deepEqual(minResolution, 0.45);
           const fn = info.constraint;
-          expect(fn(97, 0, size)).to.eql(97);
-          expect(fn(76, 0, size)).to.eql(76);
-          expect(fn(65, 0, size)).to.eql(65);
-          expect(fn(54, 0, size)).to.eql(54);
-          expect(fn(0.45, 0, size)).to.eql(0.45);
+          assert.deepEqual(fn(97, 0, size), 97);
+          assert.deepEqual(fn(76, 0, size), 76);
+          assert.deepEqual(fn(65, 0, size), 65);
+          assert.deepEqual(fn(54, 0, size), 54);
+          assert.deepEqual(fn(0.45, 0, size), 0.45);
         });
       });
 
@@ -262,12 +266,14 @@ describe('ol/View', function () {
             maxZoom: maxZoom,
           });
 
-          expect(constraint(defaultMaxRes, 0, size)).to.roughlyEqual(
+          assert.approximately(
+            constraint(defaultMaxRes, 0, size),
             defaultMaxRes,
             1e-9,
           );
 
-          expect(constraint(0, 0, size)).to.roughlyEqual(
+          assert.approximately(
+            constraint(0, 0, size),
             defaultMaxRes / Math.pow(2, maxZoom),
             1e-9,
           );
@@ -279,12 +285,14 @@ describe('ol/View', function () {
             minZoom: minZoom,
           });
 
-          expect(constraint(defaultMaxRes, 0, size)).to.roughlyEqual(
+          assert.approximately(
+            constraint(defaultMaxRes, 0, size),
             defaultMaxRes / Math.pow(2, minZoom),
             1e-9,
           );
 
-          expect(constraint(0, 0, size)).to.roughlyEqual(
+          assert.approximately(
+            constraint(0, 0, size),
             defaultMaxRes / Math.pow(2, 28),
             1e-9,
           );
@@ -298,12 +306,14 @@ describe('ol/View', function () {
             maxZoom: maxZoom,
           });
 
-          expect(constraint(defaultMaxRes, 0, size)).to.roughlyEqual(
+          assert.approximately(
+            constraint(defaultMaxRes, 0, size),
             defaultMaxRes / Math.pow(2, minZoom),
             1e-9,
           );
 
-          expect(constraint(0, 0, size)).to.roughlyEqual(
+          assert.approximately(
+            constraint(0, 0, size),
             defaultMaxRes / Math.pow(2, maxZoom),
             1e-9,
           );
@@ -319,12 +329,14 @@ describe('ol/View', function () {
             zoomFactor: zoomFactor,
           });
 
-          expect(constraint(defaultMaxRes, 0, size)).to.roughlyEqual(
+          assert.approximately(
+            constraint(defaultMaxRes, 0, size),
             defaultMaxRes / Math.pow(zoomFactor, minZoom),
             1e-9,
           );
 
-          expect(constraint(0, 0, size)).to.roughlyEqual(
+          assert.approximately(
+            constraint(0, 0, size),
             defaultMaxRes / Math.pow(zoomFactor, maxZoom),
             1e-9,
           );
@@ -345,7 +357,8 @@ describe('ol/View', function () {
             maxResolution: maxResolution,
           });
 
-          expect(constraint(maxResolution * 3, 0, size)).to.roughlyEqual(
+          assert.approximately(
+            constraint(maxResolution * 3, 0, size),
             maxResolution,
             1e-9,
           );
@@ -353,8 +366,8 @@ describe('ol/View', function () {
           const minResolution = constraint(0, 0, size);
           const defaultMinRes = defaultMaxRes / Math.pow(2, 28);
 
-          expect(minResolution).to.be.greaterThan(defaultMinRes);
-          expect(minResolution / defaultMinRes).to.be.lessThan(2);
+          assert.isAbove(minResolution, defaultMinRes);
+          assert.isBelow(minResolution / defaultMinRes, 2);
         });
 
         it('works with only minResolution', function () {
@@ -363,14 +376,15 @@ describe('ol/View', function () {
             minResolution: minResolution,
           });
 
-          expect(constraint(defaultMaxRes, 0, size)).to.roughlyEqual(
+          assert.approximately(
+            constraint(defaultMaxRes, 0, size),
             defaultMaxRes,
             1e-9,
           );
 
           const constrainedMinRes = constraint(0, 0, size);
-          expect(constrainedMinRes).to.be.greaterThan(minResolution);
-          expect(constrainedMinRes / minResolution).to.be.lessThan(2);
+          assert.isAbove(constrainedMinRes, minResolution);
+          assert.isBelow(constrainedMinRes / minResolution, 2);
         });
 
         it('works with minResolution and maxResolution', function () {
@@ -380,13 +394,13 @@ describe('ol/View', function () {
             constrainResolution: true,
           });
 
-          expect(constraint(600, 0, size)).to.be(500);
-          expect(constraint(500, 0, size)).to.be(500);
-          expect(constraint(400, 0, size)).to.be(500);
-          expect(constraint(300, 0, size)).to.be(250);
-          expect(constraint(200, 0, size)).to.be(250);
-          expect(constraint(100, 0, size)).to.be(125);
-          expect(constraint(0, 0, size)).to.be(125);
+          assert.strictEqual(constraint(600, 0, size), 500);
+          assert.strictEqual(constraint(500, 0, size), 500);
+          assert.strictEqual(constraint(400, 0, size), 500);
+          assert.strictEqual(constraint(300, 0, size), 250);
+          assert.strictEqual(constraint(200, 0, size), 250);
+          assert.strictEqual(constraint(100, 0, size), 125);
+          assert.strictEqual(constraint(0, 0, size), 125);
         });
 
         it('accepts minResolution, maxResolution, and zoomFactor', function () {
@@ -397,12 +411,12 @@ describe('ol/View', function () {
             constrainResolution: true,
           });
 
-          expect(constraint(1000, 0, size)).to.be(500);
-          expect(constraint(500, 0, size)).to.be(500);
-          expect(constraint(100, 0, size)).to.be(50);
-          expect(constraint(50, 0, size)).to.be(50);
-          expect(constraint(10, 0, size)).to.be(5);
-          expect(constraint(1, 0, size)).to.be(5);
+          assert.strictEqual(constraint(1000, 0, size), 500);
+          assert.strictEqual(constraint(500, 0, size), 500);
+          assert.strictEqual(constraint(100, 0, size), 50);
+          assert.strictEqual(constraint(50, 0, size), 50);
+          assert.strictEqual(constraint(10, 0, size), 5);
+          assert.strictEqual(constraint(1, 0, size), 5);
         });
 
         it('accepts extent and uses the smallest value', function () {
@@ -410,12 +424,12 @@ describe('ol/View', function () {
             extent: [0, 0, 4000, 6000],
           });
 
-          expect(constraint(1000, 0, size)).to.be(20);
-          expect(constraint(500, 0, size)).to.be(20);
-          expect(constraint(100, 0, size)).to.be(20);
-          expect(constraint(50, 0, size)).to.be(20);
-          expect(constraint(10, 0, size)).to.be(10);
-          expect(constraint(1, 0, size)).to.be(1);
+          assert.strictEqual(constraint(1000, 0, size), 20);
+          assert.strictEqual(constraint(500, 0, size), 20);
+          assert.strictEqual(constraint(100, 0, size), 20);
+          assert.strictEqual(constraint(50, 0, size), 20);
+          assert.strictEqual(constraint(10, 0, size), 10);
+          assert.strictEqual(constraint(1, 0, size), 1);
         });
 
         it('accepts extent and showFullExtent and uses the larger value', function () {
@@ -424,12 +438,12 @@ describe('ol/View', function () {
             showFullExtent: true,
           });
 
-          expect(constraint(1000, 0, size)).to.be(30);
-          expect(constraint(500, 0, size)).to.be(30);
-          expect(constraint(100, 0, size)).to.be(30);
-          expect(constraint(50, 0, size)).to.be(30);
-          expect(constraint(10, 0, size)).to.be(10);
-          expect(constraint(1, 0, size)).to.be(1);
+          assert.strictEqual(constraint(1000, 0, size), 30);
+          assert.strictEqual(constraint(500, 0, size), 30);
+          assert.strictEqual(constraint(100, 0, size), 30);
+          assert.strictEqual(constraint(50, 0, size), 30);
+          assert.strictEqual(constraint(10, 0, size), 10);
+          assert.strictEqual(constraint(1, 0, size), 1);
         });
       });
 
@@ -449,7 +463,8 @@ describe('ol/View', function () {
             minZoom: minZoom,
           });
 
-          expect(constraint(maxResolution * 3, 0, size)).to.roughlyEqual(
+          assert.approximately(
+            constraint(maxResolution * 3, 0, size),
             maxResolution,
             1e-9,
           );
@@ -457,8 +472,8 @@ describe('ol/View', function () {
           const minResolution = constraint(0, 0, size);
           const defaultMinRes = defaultMaxRes / Math.pow(2, 28);
 
-          expect(minResolution).to.be.greaterThan(defaultMinRes);
-          expect(minResolution / defaultMinRes).to.be.lessThan(2);
+          assert.isAbove(minResolution, defaultMinRes);
+          assert.isBelow(minResolution / defaultMinRes, 2);
         });
 
         it('respects minResolution over maxZoom', function () {
@@ -469,14 +484,15 @@ describe('ol/View', function () {
             maxZoom: maxZoom,
           });
 
-          expect(constraint(defaultMaxRes, 0, size)).to.roughlyEqual(
+          assert.approximately(
+            constraint(defaultMaxRes, 0, size),
             defaultMaxRes,
             1e-9,
           );
 
           const constrainedMinRes = constraint(0, 0, size);
-          expect(constrainedMinRes).to.be.greaterThan(minResolution);
-          expect(constrainedMinRes / minResolution).to.be.lessThan(2);
+          assert.isAbove(constrainedMinRes, minResolution);
+          assert.isBelow(constrainedMinRes / minResolution, 2);
         });
       });
 
@@ -491,14 +507,14 @@ describe('ol/View', function () {
 
         it('are disabled by default', function () {
           const fn = getConstraint({});
-          expect(fn(defaultMaxRes, 0, size)).to.be(defaultMaxRes / 2);
+          assert.strictEqual(fn(defaultMaxRes, 0, size), defaultMaxRes / 2);
         });
 
         it('can be enabled by setting multiWorld to true', function () {
           const fn = getConstraint({
             multiWorld: true,
           });
-          expect(fn(defaultMaxRes, 0, size)).to.be(defaultMaxRes);
+          assert.strictEqual(fn(defaultMaxRes, 0, size), defaultMaxRes);
         });
 
         it('disabled, with constrainResolution', function () {
@@ -506,7 +522,7 @@ describe('ol/View', function () {
             maxResolution: maxResolution,
             constrainResolution: true,
           });
-          expect(fn(defaultMaxRes, 0, size)).to.be(maxResolution / 4);
+          assert.strictEqual(fn(defaultMaxRes, 0, size), maxResolution / 4);
         });
 
         it('enabled, with constrainResolution', function () {
@@ -515,14 +531,14 @@ describe('ol/View', function () {
             constrainResolution: true,
             multiWorld: true,
           });
-          expect(fn(defaultMaxRes, 0, size)).to.be(maxResolution);
+          assert.strictEqual(fn(defaultMaxRes, 0, size), maxResolution);
         });
 
         it('disabled, with resolutions array', function () {
           const fn = getConstraint({
             resolutions: resolutions,
           });
-          expect(fn(defaultMaxRes, 0, size)).to.be(defaultMaxRes / 2);
+          assert.strictEqual(fn(defaultMaxRes, 0, size), defaultMaxRes / 2);
         });
 
         it('enabled, with resolutions array', function () {
@@ -530,7 +546,7 @@ describe('ol/View', function () {
             resolutions: resolutions,
             multiWorld: true,
           });
-          expect(fn(defaultMaxRes, 0, size)).to.be(defaultMaxRes);
+          assert.strictEqual(fn(defaultMaxRes, 0, size), defaultMaxRes);
         });
 
         it('disabled, with resolutions array and constrainResolution', function () {
@@ -538,7 +554,7 @@ describe('ol/View', function () {
             resolutions: resolutions,
             constrainResolution: true,
           });
-          expect(fn(defaultMaxRes, 0, size)).to.be(resolutions[2]);
+          assert.strictEqual(fn(defaultMaxRes, 0, size), resolutions[2]);
         });
 
         it('enabled, with resolutions array and constrainResolution', function () {
@@ -547,7 +563,7 @@ describe('ol/View', function () {
             constrainResolution: true,
             multiWorld: true,
           });
-          expect(fn(defaultMaxRes, 0, size)).to.be(resolutions[0]);
+          assert.strictEqual(fn(defaultMaxRes, 0, size), resolutions[0]);
         });
       });
     });
@@ -556,8 +572,8 @@ describe('ol/View', function () {
       it('gives a correct rotation constraint function', function () {
         const options = {};
         const fn = createRotationConstraint(options);
-        expect(fn(0.01, 0)).to.eql(0);
-        expect(fn(0.15, 0)).to.eql(0.15);
+        assert.deepEqual(fn(0.01, 0), 0);
+        assert.deepEqual(fn(0.15, 0), 0.15);
       });
     });
   });
@@ -570,7 +586,7 @@ describe('ol/View', function () {
         resolution: 1,
       });
       view.setResolution(undefined);
-      expect(view.getCenter()).to.eql(center);
+      assert.deepEqual(view.getCenter(), center);
     });
   });
 
@@ -581,7 +597,7 @@ describe('ol/View', function () {
         resolution: 1,
       });
       view.setCenter(undefined);
-      expect(view.getCenter()).to.be(undefined);
+      assert.strictEqual(view.getCenter(), undefined);
     });
   });
 
@@ -592,12 +608,12 @@ describe('ol/View', function () {
         zoom: 0,
       });
 
-      expect(view.getHints()).to.eql([0, 0]);
-      expect(view.getInteracting()).to.eql(false);
+      assert.deepEqual(view.getHints(), [0, 0]);
+      assert.deepEqual(view.getInteracting(), false);
 
       view.setHint(ViewHint.INTERACTING, 1);
-      expect(view.getHints()).to.eql([0, 1]);
-      expect(view.getInteracting()).to.eql(true);
+      assert.deepEqual(view.getHints(), [0, 1]);
+      assert.deepEqual(view.getInteracting(), true);
     });
 
     it('triggers the change event', function (done) {
@@ -607,8 +623,8 @@ describe('ol/View', function () {
       });
 
       view.on('change', function () {
-        expect(view.getHints()).to.eql([0, 1]);
-        expect(view.getInteracting()).to.eql(true);
+        assert.deepEqual(view.getHints(), [0, 1]);
+        assert.deepEqual(view.getInteracting(), true);
         done();
       });
       view.setHint(ViewHint.INTERACTING, 1);
@@ -624,9 +640,9 @@ describe('ol/View', function () {
       });
       const options = view.getUpdatedOptions_({minZoom: 3});
 
-      expect(options.center).to.eql([0, 0]);
-      expect(options.minZoom).to.eql(3);
-      expect(options.zoom).to.eql(10);
+      assert.deepEqual(options.center, [0, 0]);
+      assert.deepEqual(options.minZoom, 3);
+      assert.deepEqual(options.zoom, 10);
     });
 
     it('returns the current properties with getProperties()', function () {
@@ -640,10 +656,10 @@ describe('ol/View', function () {
       view.setRotation(1);
 
       const options = view.getProperties();
-      expect(options.minZoom).to.eql(2);
-      expect(options.zoom).to.eql(8);
-      expect(options.center).to.eql([1, 2]);
-      expect(options.rotation).to.eql(1);
+      assert.deepEqual(options.minZoom, 2);
+      assert.deepEqual(options.zoom, 8);
+      assert.deepEqual(options.center, [1, 2]);
+      assert.deepEqual(options.rotation, 1);
     });
 
     it('applies the current zoom', function () {
@@ -654,8 +670,8 @@ describe('ol/View', function () {
       view.setZoom(8);
       const options = view.getUpdatedOptions_();
 
-      expect(options.center).to.eql([0, 0]);
-      expect(options.zoom).to.eql(8);
+      assert.deepEqual(options.center, [0, 0]);
+      assert.deepEqual(options.zoom, 8);
     });
 
     it('applies the current resolution if resolution was originally supplied', function () {
@@ -667,8 +683,8 @@ describe('ol/View', function () {
       view.setResolution(500);
       const options = view.getUpdatedOptions_();
 
-      expect(options.center).to.eql([0, 0]);
-      expect(options.resolution).to.eql(500);
+      assert.deepEqual(options.center, [0, 0]);
+      assert.deepEqual(options.resolution, 500);
     });
 
     it('applies the current center', function () {
@@ -679,8 +695,8 @@ describe('ol/View', function () {
       view.setCenter([1, 2]);
       const options = view.getUpdatedOptions_();
 
-      expect(options.center).to.eql([1, 2]);
-      expect(options.zoom).to.eql(10);
+      assert.deepEqual(options.center, [1, 2]);
+      assert.deepEqual(options.zoom, 10);
     });
 
     it('applies the current rotation', function () {
@@ -691,9 +707,9 @@ describe('ol/View', function () {
       view.setRotation(Math.PI / 6);
       const options = view.getUpdatedOptions_();
 
-      expect(options.center).to.eql([0, 0]);
-      expect(options.zoom).to.eql(10);
-      expect(options.rotation).to.eql(Math.PI / 6);
+      assert.deepEqual(options.center, [0, 0]);
+      assert.deepEqual(options.zoom, 10);
+      assert.deepEqual(options.rotation, Math.PI / 6);
     });
   });
 
@@ -727,16 +743,16 @@ describe('ol/View', function () {
           duration: 25,
         },
         function (complete) {
-          expect(complete).to.be(true);
-          expect(isNaN(view.nextResolution_)).to.be(true);
-          expect(view.getCenter()).to.eql([0, 0]);
-          expect(view.getZoom()).to.eql(4);
-          expect(view.getAnimating()).to.be(false);
+          assert.strictEqual(complete, true);
+          assert.strictEqual(isNaN(view.nextResolution_), true);
+          assert.deepEqual(view.getCenter(), [0, 0]);
+          assert.deepEqual(view.getZoom(), 4);
+          assert.strictEqual(view.getAnimating(), false);
           done();
         },
       );
-      expect(view.getAnimating()).to.eql(true);
-      expect(isNaN(view.nextResolution_)).to.be(false);
+      assert.deepEqual(view.getAnimating(), true);
+      assert.strictEqual(isNaN(view.nextResolution_), false);
     });
 
     it('allows duration to be zero', function (done) {
@@ -751,10 +767,10 @@ describe('ol/View', function () {
           duration: 0,
         },
         function (complete) {
-          expect(complete).to.be(true);
-          expect(view.getCenter()).to.eql([0, 0]);
-          expect(view.getZoom()).to.eql(4);
-          expect(view.getAnimating()).to.eql(false);
+          assert.strictEqual(complete, true);
+          assert.deepEqual(view.getCenter(), [0, 0]);
+          assert.deepEqual(view.getZoom(), 4);
+          assert.deepEqual(view.getAnimating(), false);
           done();
         },
       );
@@ -771,7 +787,7 @@ describe('ol/View', function () {
         center: [0, 0],
         duration: 25,
       });
-      expect(view.getAnimating()).to.eql(false);
+      assert.deepEqual(view.getAnimating(), false);
     });
 
     describe('Set final animation state if view is not defined.', function () {
@@ -787,10 +803,10 @@ describe('ol/View', function () {
           rotation: rotation,
           duration: 25,
         });
-        expect(view.getAnimating()).to.eql(false);
-        expect(view.getCenter()).to.eql(center);
-        expect(view.getZoom()).to.eql(zoom);
-        expect(view.getRotation()).to.eql(rotation);
+        assert.deepEqual(view.getAnimating(), false);
+        assert.deepEqual(view.getCenter(), center);
+        assert.deepEqual(view.getZoom(), zoom);
+        assert.deepEqual(view.getRotation(), rotation);
       });
 
       it('prefers zoom over resolution', function () {
@@ -801,7 +817,7 @@ describe('ol/View', function () {
           zoom: zoom,
           resolution: 1,
         });
-        expect(view.getZoom()).to.eql(zoom);
+        assert.deepEqual(view.getZoom(), zoom);
       });
 
       it('uses all animation steps to get final state', function () {
@@ -822,10 +838,10 @@ describe('ol/View', function () {
           },
           {resolution: resolution},
         );
-        expect(view.getAnimating()).to.be(false);
-        expect(view.getCenter()).to.eql(center);
-        expect(view.getResolution()).to.be(resolution);
-        expect(view.getRotation()).to.be(rotation);
+        assert.strictEqual(view.getAnimating(), false);
+        assert.deepEqual(view.getCenter(), center);
+        assert.strictEqual(view.getResolution(), resolution);
+        assert.strictEqual(view.getRotation(), rotation);
       });
 
       it('animates remaining steps after it becomes defined', function () {
@@ -845,10 +861,10 @@ describe('ol/View', function () {
             duration: 25,
           },
         );
-        expect(view.getAnimating()).to.be(true);
-        expect(view.getCenter()).to.eql(center);
-        expect(view.getResolution()).to.be(resolution);
-        expect(view.getRotation()).to.roughlyEqual(0, 0.02);
+        assert.strictEqual(view.getAnimating(), true);
+        assert.deepEqual(view.getCenter(), center);
+        assert.strictEqual(view.getResolution(), resolution);
+        assert.approximately(view.getRotation(), 0, 0.02);
       });
     });
 
@@ -865,8 +881,8 @@ describe('ol/View', function () {
           duration: 25,
         },
         function (complete) {
-          expect(complete).to.be(true);
-          expect(view.getZoom()).to.be(4);
+          assert.strictEqual(complete, true);
+          assert.strictEqual(view.getZoom(), 4);
           done();
         },
       );
@@ -887,9 +903,9 @@ describe('ol/View', function () {
           duration: 10,
         },
         function (complete) {
-          expect(complete).to.be(true);
-          expect(view.getResolution()).to.be(minResolution);
-          expect(view.getZoom()).to.be(maxZoom);
+          assert.strictEqual(complete, true);
+          assert.strictEqual(view.getResolution(), minResolution);
+          assert.strictEqual(view.getZoom(), maxZoom);
           done();
         },
       );
@@ -907,11 +923,8 @@ describe('ol/View', function () {
           duration: 0,
         },
         function (complete) {
-          expect(complete).to.be(true);
-          expect(view.getRotation()).to.roughlyEqual(
-            (Math.PI / 180) * -1,
-            1e-12,
-          );
+          assert.strictEqual(complete, true);
+          assert.approximately(view.getRotation(), (Math.PI / 180) * -1, 1e-12);
           done();
         },
       );
@@ -929,8 +942,9 @@ describe('ol/View', function () {
           duration: 0,
         },
         function (complete) {
-          expect(complete).to.be(true);
-          expect(view.getRotation()).to.roughlyEqual(
+          assert.strictEqual(complete, true);
+          assert.approximately(
+            view.getRotation(),
             (Math.PI / 180) * 179,
             1e-12,
           );
@@ -951,7 +965,7 @@ describe('ol/View', function () {
           duration: 25,
         },
         function (complete) {
-          expect(complete).to.be(true);
+          assert.strictEqual(complete, true);
           done();
         },
       );
@@ -964,7 +978,7 @@ describe('ol/View', function () {
       });
 
       function firstCallback(complete) {
-        expect(complete).to.be(true);
+        assert.strictEqual(complete, true);
 
         view.animate(
           {
@@ -976,7 +990,7 @@ describe('ol/View', function () {
       }
 
       function secondCallback(complete) {
-        expect(complete).to.be(true);
+        assert.strictEqual(complete, true);
         done();
       }
 
@@ -1001,7 +1015,7 @@ describe('ol/View', function () {
           duration: 25,
         },
         function (complete) {
-          expect(complete).to.be(false);
+          assert.strictEqual(complete, false);
           done();
         },
       );
@@ -1021,7 +1035,7 @@ describe('ol/View', function () {
           duration: 25,
         },
         function (complete) {
-          expect(complete).to.be(true);
+          assert.strictEqual(complete, true);
           done();
         },
       );
@@ -1036,8 +1050,8 @@ describe('ol/View', function () {
           duration: 25,
         },
         function (complete) {
-          expect(view.getZoom()).to.be(10);
-          expect(complete).to.be(true);
+          assert.strictEqual(view.getZoom(), 10);
+          assert.strictEqual(complete, true);
           done();
         },
       );
@@ -1061,16 +1075,16 @@ describe('ol/View', function () {
           duration: 25,
         },
         function (complete) {
-          expect(checked).to.be(true);
-          expect(view.getZoom()).to.roughlyEqual(2, 1e-5);
-          expect(view.getCenter()).to.eql([10, 10]);
-          expect(complete).to.be(true);
+          assert.strictEqual(checked, true);
+          assert.approximately(view.getZoom(), 2, 1e-5);
+          assert.deepEqual(view.getCenter(), [10, 10]);
+          assert.strictEqual(complete, true);
           done();
         },
       );
 
       setTimeout(function () {
-        expect(view.getCenter()).to.eql([0, 0]);
+        assert.deepEqual(view.getCenter(), [0, 0]);
         checked = true;
       }, 10);
     });
@@ -1086,7 +1100,7 @@ describe('ol/View', function () {
       function decrement() {
         --count;
         if (count === 0) {
-          expect(view.getHints()[ViewHint.ANIMATING]).to.be(0);
+          assert.strictEqual(view.getHints()[ViewHint.ANIMATING], 0);
           done();
         }
       }
@@ -1097,7 +1111,7 @@ describe('ol/View', function () {
         },
         decrement,
       );
-      expect(view.getHints()[ViewHint.ANIMATING]).to.be(1);
+      assert.strictEqual(view.getHints()[ViewHint.ANIMATING], 1);
 
       view.animate(
         {
@@ -1106,7 +1120,7 @@ describe('ol/View', function () {
         },
         decrement,
       );
-      expect(view.getHints()[ViewHint.ANIMATING]).to.be(2);
+      assert.strictEqual(view.getHints()[ViewHint.ANIMATING], 2);
 
       view.animate(
         {
@@ -1115,7 +1129,7 @@ describe('ol/View', function () {
         },
         decrement,
       );
-      expect(view.getHints()[ViewHint.ANIMATING]).to.be(3);
+      assert.strictEqual(view.getHints()[ViewHint.ANIMATING], 3);
     });
 
     it('clears the ANIMATING hint when animations are cancelled', function () {
@@ -1129,23 +1143,23 @@ describe('ol/View', function () {
         center: [1, 2],
         duration: 25,
       });
-      expect(view.getHints()[ViewHint.ANIMATING]).to.be(1);
+      assert.strictEqual(view.getHints()[ViewHint.ANIMATING], 1);
 
       view.animate({
         zoom: 1,
         duration: 25,
       });
-      expect(view.getHints()[ViewHint.ANIMATING]).to.be(2);
+      assert.strictEqual(view.getHints()[ViewHint.ANIMATING], 2);
 
       view.animate({
         rotation: Math.PI,
         duration: 25,
       });
-      expect(view.getHints()[ViewHint.ANIMATING]).to.be(3);
+      assert.strictEqual(view.getHints()[ViewHint.ANIMATING], 3);
 
       // cancel animations
       view.setCenter([10, 20]);
-      expect(view.getHints()[ViewHint.ANIMATING]).to.be(0);
+      assert.strictEqual(view.getHints()[ViewHint.ANIMATING], 0);
     });
 
     it('completes multiple staggered animations run in parallel', function (done) {
@@ -1167,18 +1181,18 @@ describe('ol/View', function () {
       );
 
       setTimeout(function () {
-        expect(view.getZoom() > 0).to.be(true);
-        expect(view.getZoom() < 1).to.be(true);
-        expect(view.getAnimating()).to.be(true);
+        assert.strictEqual(view.getZoom() > 0, true);
+        assert.strictEqual(view.getZoom() < 1, true);
+        assert.strictEqual(view.getAnimating(), true);
         view.animate(
           {
             zoom: 2,
             duration: 50,
           },
           function () {
-            expect(calls).to.be(1);
-            expect(view.getZoom()).to.be(2);
-            expect(view.getAnimating()).to.be(false);
+            assert.strictEqual(calls, 1);
+            assert.strictEqual(view.getZoom(), 2);
+            assert.strictEqual(view.getAnimating(), false);
             done();
           },
         );
@@ -1195,7 +1209,7 @@ describe('ol/View', function () {
 
       function onAnimateEnd() {
         if (calls == 2) {
-          expect(view.getAnimating()).to.be(false);
+          assert.strictEqual(view.getAnimating(), false);
           done();
         }
       }
@@ -1207,7 +1221,7 @@ describe('ol/View', function () {
         },
         function () {
           ++calls;
-          expect(view.getCenter()).to.eql([100, 100]);
+          assert.deepEqual(view.getCenter(), [100, 100]);
           onAnimateEnd();
         },
       );
@@ -1223,21 +1237,21 @@ describe('ol/View', function () {
         },
         function () {
           ++calls;
-          expect(view.getResolution()).to.be(2);
+          assert.strictEqual(view.getResolution(), 2);
           onAnimateEnd();
         },
       );
 
       setTimeout(function () {
-        expect(view.getResolution() > 2).to.be(true);
-        expect(view.getResolution() < 2000).to.be(true);
-        expect(view.getAnimating()).to.be(true);
+        assert.strictEqual(view.getResolution() > 2, true);
+        assert.strictEqual(view.getResolution() < 2000, true);
+        assert.strictEqual(view.getAnimating(), true);
       }, 10);
 
       setTimeout(function () {
-        expect(view.getResolution() > 2).to.be(true);
-        expect(view.getResolution() < 2000).to.be(true);
-        expect(view.getAnimating()).to.be(true);
+        assert.strictEqual(view.getResolution() > 2, true);
+        assert.strictEqual(view.getResolution() < 2000, true);
+        assert.strictEqual(view.getAnimating(), true);
       }, 40);
     });
 
@@ -1257,7 +1271,7 @@ describe('ol/View', function () {
           duration: 25,
         },
         function () {
-          expect(view.getZoom()).to.be(1);
+          assert.strictEqual(view.getZoom(), 1);
           done();
         },
       );
@@ -1282,7 +1296,7 @@ describe('ol/View', function () {
           duration: 25,
         },
         function () {
-          expect(view.getZoom()).to.be(1);
+          assert.strictEqual(view.getZoom(), 1);
           done();
         },
       );
@@ -1324,9 +1338,9 @@ describe('ol/View', function () {
       });
 
       setTimeout(function () {
-        expect(view.getAnimating()).to.be(true);
+        assert.strictEqual(view.getAnimating(), true);
         view.once('change', function () {
-          expect(view.getAnimating()).to.be(false);
+          assert.strictEqual(view.getAnimating(), false);
           done();
         });
         view.cancelAnimations();
@@ -1357,9 +1371,9 @@ describe('ol/View', function () {
       });
 
       setTimeout(function () {
-        expect(view.getAnimating()).to.be(true);
+        assert.strictEqual(view.getAnimating(), true);
         view.once('change', function () {
-          expect(view.getAnimating()).to.be(false);
+          assert.strictEqual(view.getAnimating(), false);
           done();
         });
         view.cancelAnimations();
@@ -1378,14 +1392,14 @@ describe('ol/View', function () {
           duration: 50,
         },
         function (complete) {
-          expect(view.getAnimating()).to.be(false);
-          expect(complete).to.be(false);
+          assert.strictEqual(view.getAnimating(), false);
+          assert.strictEqual(complete, false);
           done();
         },
       );
 
       setTimeout(function () {
-        expect(view.getAnimating()).to.be(true);
+        assert.strictEqual(view.getAnimating(), true);
         view.cancelAnimations();
       }, 10);
     });
@@ -1399,12 +1413,12 @@ describe('ol/View', function () {
       view = new View({
         resolutions: resolutions,
       });
-      expect(view.getResolutions()).to.be(resolutions);
+      assert.strictEqual(view.getResolutions(), resolutions);
     });
 
     it('returns resolutions as undefined', function () {
       view = new View();
-      expect(view.getResolutions()).to.be(undefined);
+      assert.strictEqual(view.getResolutions(), undefined);
     });
   });
 
@@ -1418,31 +1432,33 @@ describe('ol/View', function () {
 
     it('returns correct zoom levels (with resolutions array)', function () {
       view.setResolution(undefined);
-      expect(view.getZoom()).to.be(undefined);
+      assert.strictEqual(view.getZoom(), undefined);
 
       view.setResolution(513);
-      expect(view.getZoom()).to.roughlyEqual(
+      assert.approximately(
+        view.getZoom(),
         Math.log(1024 / 513) / Math.LN2,
         1e-9,
       );
 
       view.setResolution(512);
-      expect(view.getZoom()).to.be(1);
+      assert.strictEqual(view.getZoom(), 1);
 
       view.setResolution(100);
-      expect(view.getZoom()).to.roughlyEqual(3.35614, 1e-5);
+      assert.approximately(view.getZoom(), 3.35614, 1e-5);
 
       view.setResolution(65);
-      expect(view.getZoom()).to.roughlyEqual(3.97763, 1e-5);
+      assert.approximately(view.getZoom(), 3.97763, 1e-5);
 
       view.setResolution(64);
-      expect(view.getZoom()).to.be(4);
+      assert.strictEqual(view.getZoom(), 4);
 
       view.setResolution(16);
-      expect(view.getZoom()).to.be(6);
+      assert.strictEqual(view.getZoom(), 6);
 
       view.setResolution(15);
-      expect(view.getZoom()).to.roughlyEqual(
+      assert.approximately(
+        view.getZoom(),
         Math.log(1024 / 15) / Math.LN2,
         1e-9,
       );
@@ -1454,19 +1470,19 @@ describe('ol/View', function () {
       });
 
       view.setZoom(1);
-      expect(view.getZoom()).to.be(1);
+      assert.strictEqual(view.getZoom(), 1);
 
       view.setZoom(1.3);
-      expect(view.getZoom()).to.be(1.3);
+      assert.strictEqual(view.getZoom(), 1.3);
 
       view.setZoom(2);
-      expect(view.getZoom()).to.be(2);
+      assert.strictEqual(view.getZoom(), 2);
 
       view.setZoom(2.7);
-      expect(view.getZoom()).to.be(2.7);
+      assert.strictEqual(view.getZoom(), 2.7);
 
       view.setZoom(3);
-      expect(view.getZoom()).to.be(3);
+      assert.strictEqual(view.getZoom(), 3);
     });
   });
 
@@ -1478,22 +1494,22 @@ describe('ol/View', function () {
       });
 
       view.setZoom(5);
-      expect(view.getZoom()).to.be(10);
+      assert.strictEqual(view.getZoom(), 10);
 
       view.setZoom(10);
-      expect(view.getZoom()).to.be(10);
+      assert.strictEqual(view.getZoom(), 10);
 
       view.setZoom(15);
-      expect(view.getZoom()).to.be(15);
+      assert.strictEqual(view.getZoom(), 15);
 
       view.setZoom(15.3);
-      expect(view.getZoom()).to.be(15.3);
+      assert.strictEqual(view.getZoom(), 15.3);
 
       view.setZoom(20);
-      expect(view.getZoom()).to.be(20);
+      assert.strictEqual(view.getZoom(), 20);
 
       view.setZoom(25);
-      expect(view.getZoom()).to.be(20);
+      assert.strictEqual(view.getZoom(), 20);
     });
   });
 
@@ -1505,10 +1521,10 @@ describe('ol/View', function () {
       });
 
       view.setResolution(100);
-      expect(view.getZoom()).to.be(0);
+      assert.strictEqual(view.getZoom(), 0);
 
       view.setZoom(0);
-      expect(view.getResolution()).to.be(100);
+      assert.strictEqual(view.getResolution(), 100);
     });
   });
 
@@ -1517,13 +1533,13 @@ describe('ol/View', function () {
       const view = new View();
       const max = view.getMaxResolution();
 
-      expect(view.getZoomForResolution(max)).to.be(0);
+      assert.strictEqual(view.getZoomForResolution(max), 0);
 
-      expect(view.getZoomForResolution(max / 2)).to.be(1);
+      assert.strictEqual(view.getZoomForResolution(max / 2), 1);
 
-      expect(view.getZoomForResolution(max / 4)).to.be(2);
+      assert.strictEqual(view.getZoomForResolution(max / 4), 2);
 
-      expect(view.getZoomForResolution(2 * max)).to.be(-1);
+      assert.strictEqual(view.getZoomForResolution(2 * max), -1);
     });
 
     it('returns correct zoom levels for specifically configured resolutions', function () {
@@ -1531,15 +1547,15 @@ describe('ol/View', function () {
         resolutions: [10, 8, 6, 4, 2],
       });
 
-      expect(view.getZoomForResolution(10)).to.be(0);
+      assert.strictEqual(view.getZoomForResolution(10), 0);
 
-      expect(view.getZoomForResolution(8)).to.be(1);
+      assert.strictEqual(view.getZoomForResolution(8), 1);
 
-      expect(view.getZoomForResolution(6)).to.be(2);
+      assert.strictEqual(view.getZoomForResolution(6), 2);
 
-      expect(view.getZoomForResolution(4)).to.be(3);
+      assert.strictEqual(view.getZoomForResolution(4), 3);
 
-      expect(view.getZoomForResolution(2)).to.be(4);
+      assert.strictEqual(view.getZoomForResolution(2), 4);
     });
   });
 
@@ -1549,12 +1565,20 @@ describe('ol/View', function () {
       const max = view.getMaxZoom();
       const min = view.getMinZoom();
 
-      expect(view.getResolutionForZoom(max)).to.be(view.getMinResolution());
-      expect(view.getResolutionForZoom(max + 1)).to.be(
+      assert.strictEqual(
+        view.getResolutionForZoom(max),
+        view.getMinResolution(),
+      );
+      assert.strictEqual(
+        view.getResolutionForZoom(max + 1),
         view.getMinResolution() / 2,
       );
-      expect(view.getResolutionForZoom(min)).to.be(view.getMaxResolution());
-      expect(view.getResolutionForZoom(min - 1)).to.be(
+      assert.strictEqual(
+        view.getResolutionForZoom(min),
+        view.getMaxResolution(),
+      );
+      assert.strictEqual(
+        view.getResolutionForZoom(min - 1),
         view.getMaxResolution() * 2,
       );
     });
@@ -1564,13 +1588,13 @@ describe('ol/View', function () {
         resolutions: [10, 8, 6, 4, 2],
       });
 
-      expect(view.getResolutionForZoom(-1)).to.be(10);
-      expect(view.getResolutionForZoom(0)).to.be(10);
-      expect(view.getResolutionForZoom(1)).to.be(8);
-      expect(view.getResolutionForZoom(2)).to.be(6);
-      expect(view.getResolutionForZoom(3)).to.be(4);
-      expect(view.getResolutionForZoom(4)).to.be(2);
-      expect(view.getResolutionForZoom(5)).to.be(2);
+      assert.strictEqual(view.getResolutionForZoom(-1), 10);
+      assert.strictEqual(view.getResolutionForZoom(0), 10);
+      assert.strictEqual(view.getResolutionForZoom(1), 8);
+      assert.strictEqual(view.getResolutionForZoom(2), 6);
+      assert.strictEqual(view.getResolutionForZoom(3), 4);
+      assert.strictEqual(view.getResolutionForZoom(4), 2);
+      assert.strictEqual(view.getResolutionForZoom(5), 2);
     });
 
     it('returns correct zoom levels for views with a single configured resolution', () => {
@@ -1578,9 +1602,9 @@ describe('ol/View', function () {
         resolutions: [10],
       });
 
-      expect(view.getResolutionForZoom(-1)).to.be(10);
-      expect(view.getResolutionForZoom(0)).to.be(10);
-      expect(view.getResolutionForZoom(5)).to.be(10);
+      assert.strictEqual(view.getResolutionForZoom(-1), 10);
+      assert.strictEqual(view.getResolutionForZoom(0), 10);
+      assert.strictEqual(view.getResolutionForZoom(5), 10);
     });
 
     it('returns correct zoom levels for resolutions with variable zoom levels', function () {
@@ -1588,23 +1612,27 @@ describe('ol/View', function () {
         resolutions: [50, 10, 5, 2.5, 1.25, 0.625],
       });
 
-      expect(view.getResolutionForZoom(-1)).to.be(50);
-      expect(view.getResolutionForZoom(0)).to.be(50);
-      expect(view.getResolutionForZoom(0.5)).to.be(50 / Math.pow(5, 0.5));
-      expect(view.getResolutionForZoom(1)).to.be(10);
-      expect(view.getResolutionForZoom(2)).to.be(5);
-      expect(view.getResolutionForZoom(2.75)).to.be(5 / Math.pow(2, 0.75));
-      expect(view.getResolutionForZoom(3)).to.be(2.5);
-      expect(view.getResolutionForZoom(4)).to.be(1.25);
-      expect(view.getResolutionForZoom(5)).to.be(0.625);
-      expect(view.getResolutionForZoom(6)).to.be(0.625);
+      assert.strictEqual(view.getResolutionForZoom(-1), 50);
+      assert.strictEqual(view.getResolutionForZoom(0), 50);
+      assert.strictEqual(view.getResolutionForZoom(0.5), 50 / Math.pow(5, 0.5));
+      assert.strictEqual(view.getResolutionForZoom(1), 10);
+      assert.strictEqual(view.getResolutionForZoom(2), 5);
+      assert.strictEqual(
+        view.getResolutionForZoom(2.75),
+        5 / Math.pow(2, 0.75),
+      );
+      assert.strictEqual(view.getResolutionForZoom(3), 2.5);
+      assert.strictEqual(view.getResolutionForZoom(4), 1.25);
+      assert.strictEqual(view.getResolutionForZoom(5), 0.625);
+      assert.strictEqual(view.getResolutionForZoom(6), 0.625);
     });
   });
 
   describe('#getMaxZoom', function () {
     it('returns the zoom level for the min resolution', function () {
       const view = new View();
-      expect(view.getMaxZoom()).to.be(
+      assert.strictEqual(
+        view.getMaxZoom(),
         view.getZoomForResolution(view.getMinResolution()),
       );
     });
@@ -1613,14 +1641,15 @@ describe('ol/View', function () {
       const view = new View({
         maxZoom: 10,
       });
-      expect(view.getMaxZoom()).to.be(10);
+      assert.strictEqual(view.getMaxZoom(), 10);
     });
   });
 
   describe('#getMinZoom', function () {
     it('returns the zoom level for the max resolution', function () {
       const view = new View();
-      expect(view.getMinZoom()).to.be(
+      assert.strictEqual(
+        view.getMinZoom(),
         view.getZoomForResolution(view.getMaxResolution()),
       );
     });
@@ -1629,7 +1658,7 @@ describe('ol/View', function () {
       const view = new View({
         minZoom: 3,
       });
-      expect(view.getMinZoom()).to.be(3);
+      assert.strictEqual(view.getMinZoom(), 3);
     });
   });
 
@@ -1642,7 +1671,7 @@ describe('ol/View', function () {
         });
 
         view.setMaxZoom(2);
-        expect(view.getZoom()).to.be(2);
+        assert.strictEqual(view.getZoom(), 2);
       });
     });
 
@@ -1653,7 +1682,7 @@ describe('ol/View', function () {
         });
 
         view.setMaxZoom(2);
-        expect(view.getZoom()).to.be(2);
+        assert.strictEqual(view.getZoom(), 2);
       });
     });
   });
@@ -1667,7 +1696,7 @@ describe('ol/View', function () {
         });
 
         view.setMinZoom(5);
-        expect(view.getZoom()).to.be(5);
+        assert.strictEqual(view.getZoom(), 5);
       });
     });
 
@@ -1678,7 +1707,7 @@ describe('ol/View', function () {
         });
 
         view.setMinZoom(5);
-        expect(view.getZoom()).to.be(5);
+        assert.strictEqual(view.getZoom(), 5);
       });
     });
   });
@@ -1692,10 +1721,10 @@ describe('ol/View', function () {
       });
 
       const extent = view.calculateExtent([100, 200]);
-      expect(extent[0]).to.be(-25600);
-      expect(extent[1]).to.be(-51200);
-      expect(extent[2]).to.be(25600);
-      expect(extent[3]).to.be(51200);
+      assert.strictEqual(extent[0], -25600);
+      assert.strictEqual(extent[1], -51200);
+      assert.strictEqual(extent[2], 25600);
+      assert.strictEqual(extent[3], 51200);
     });
     it('returns the expected extent with rotation', function () {
       const view = new View({
@@ -1705,10 +1734,10 @@ describe('ol/View', function () {
         rotation: Math.PI / 2,
       });
       const extent = view.calculateExtent([100, 200]);
-      expect(extent[0]).to.roughlyEqual(-51200, 1e-9);
-      expect(extent[1]).to.roughlyEqual(-25600, 1e-9);
-      expect(extent[2]).to.roughlyEqual(51200, 1e-9);
-      expect(extent[3]).to.roughlyEqual(25600, 1e-9);
+      assert.approximately(extent[0], -51200, 1e-9);
+      assert.approximately(extent[1], -25600, 1e-9);
+      assert.approximately(extent[2], 51200, 1e-9);
+      assert.approximately(extent[3], 25600, 1e-9);
     });
     it('works with a view padding', function () {
       const view = new View({
@@ -1719,10 +1748,10 @@ describe('ol/View', function () {
       });
 
       let extent = view.calculateExtent();
-      expect(extent).to.eql([-20, -30, 20, 30]);
+      assert.deepEqual(extent, [-20, -30, 20, 30]);
       view.padding = [0, 0, 0, 0];
       extent = view.calculateExtent();
-      expect(extent).to.eql([-60, -60, 40, 40]);
+      assert.deepEqual(extent, [-60, -60, 40, 40]);
     });
   });
 
@@ -1742,22 +1771,22 @@ describe('ol/View', function () {
     });
     it('correctly initializes the viewport size', function () {
       const size = map.getView().getViewportSize_();
-      expect(size).to.eql([200, 150]);
+      assert.deepEqual(size, [200, 150]);
     });
     it('correctly updates the viewport size', function () {
       target.style.width = '300px';
       target.style.height = '200px';
       map.updateSize();
       const size = map.getView().getViewportSize_();
-      expect(size).to.eql([300, 200]);
+      assert.deepEqual(size, [300, 200]);
     });
     it('calculates the size correctly', function () {
       let size = map.getView().getViewportSize_(Math.PI / 2);
-      expect(size[0]).to.roughlyEqual(150, 1e-9);
-      expect(size[1]).to.roughlyEqual(200, 1e-9);
+      assert.approximately(size[0], 150, 1e-9);
+      assert.approximately(size[1], 200, 1e-9);
       size = map.getView().getViewportSize_(Math.PI);
-      expect(size[0]).to.roughlyEqual(200, 1e-9);
-      expect(size[1]).to.roughlyEqual(150, 1e-9);
+      assert.approximately(size[0], 200, 1e-9);
+      assert.approximately(size[1], 150, 1e-9);
     });
   });
 
@@ -1777,12 +1806,12 @@ describe('ol/View', function () {
     });
     it('same as getViewportSize_ when no padding is set', function () {
       const size = map.getView().getViewportSizeMinusPadding_();
-      expect(size).to.eql(map.getView().getViewportSize_());
+      assert.deepEqual(size, map.getView().getViewportSize_());
     });
     it('correctly updates when the padding is changed', function () {
       map.getView().padding = [1, 2, 3, 4];
       const size = map.getView().getViewportSizeMinusPadding_();
-      expect(size).to.eql([194, 146]);
+      assert.deepEqual(size, [194, 146]);
     });
   });
 
@@ -1821,20 +1850,20 @@ describe('ol/View', function () {
         ]),
         {size: [200, 200], padding: [100, 0, 0, 100]},
       );
-      expect(view.getResolution()).to.be(11);
-      expect(view.getCenter()[0]).to.be(5950);
-      expect(view.getCenter()[1]).to.be(47100);
+      assert.strictEqual(view.getResolution(), 11);
+      assert.strictEqual(view.getCenter()[0], 5950);
+      assert.strictEqual(view.getCenter()[1], 47100);
 
       view.fit(new Circle([6000, 46000], 1000), {size: [200, 200]});
-      expect(view.getResolution()).to.be(10);
-      expect(view.getCenter()[0]).to.be(6000);
-      expect(view.getCenter()[1]).to.be(46000);
+      assert.strictEqual(view.getResolution(), 10);
+      assert.strictEqual(view.getCenter()[0], 6000);
+      assert.strictEqual(view.getCenter()[1], 46000);
 
       view.setRotation(Math.PI / 8);
       view.fit(new Circle([6000, 46000], 1000), {size: [200, 200]});
-      expect(view.getResolution()).to.roughlyEqual(10, 1e-9);
-      expect(view.getCenter()[0]).to.roughlyEqual(6000, 1e-9);
-      expect(view.getCenter()[1]).to.roughlyEqual(46000, 1e-9);
+      assert.approximately(view.getResolution(), 10, 1e-9);
+      assert.approximately(view.getCenter()[0], 6000, 1e-9);
+      assert.approximately(view.getCenter()[1], 46000, 1e-9);
 
       view.setRotation(Math.PI / 4);
       view.fit(
@@ -1845,9 +1874,9 @@ describe('ol/View', function () {
         ]),
         {size: [200, 200], padding: [100, 0, 0, 100]},
       );
-      expect(view.getResolution()).to.roughlyEqual(14.849242404917458, 1e-9);
-      expect(view.getCenter()[0]).to.roughlyEqual(5200, 1e-9);
-      expect(view.getCenter()[1]).to.roughlyEqual(46300, 1e-9);
+      assert.approximately(view.getResolution(), 14.849242404917458, 1e-9);
+      assert.approximately(view.getCenter()[0], 5200, 1e-9);
+      assert.approximately(view.getCenter()[1], 46300, 1e-9);
     });
     it('fits correctly to the geometry', function () {
       view.setConstrainResolution(true);
@@ -1860,9 +1889,9 @@ describe('ol/View', function () {
         ]),
         {size: [200, 200], padding: [100, 0, 0, 100]},
       );
-      expect(view.getResolution()).to.be(20);
-      expect(view.getCenter()[0]).to.be(5500);
-      expect(view.getCenter()[1]).to.be(47550);
+      assert.strictEqual(view.getResolution(), 20);
+      assert.strictEqual(view.getCenter()[0], 5500);
+      assert.strictEqual(view.getCenter()[1], 47550);
 
       view.fit(
         new LineString([
@@ -1872,59 +1901,59 @@ describe('ol/View', function () {
         ]),
         {size: [200, 200], padding: [100, 0, 0, 100], nearest: true},
       );
-      expect(view.getResolution()).to.be(10);
-      expect(view.getCenter()[0]).to.be(6000);
-      expect(view.getCenter()[1]).to.be(47050);
+      assert.strictEqual(view.getResolution(), 10);
+      assert.strictEqual(view.getCenter()[0], 6000);
+      assert.strictEqual(view.getCenter()[1], 47050);
 
       view.fit(new Point([6000, 46000]), {
         size: [200, 200],
         padding: [100, 0, 0, 100],
         minResolution: 2,
       });
-      expect(view.getResolution()).to.be(2);
-      expect(view.getCenter()[0]).to.be(5900);
-      expect(view.getCenter()[1]).to.be(46100);
+      assert.strictEqual(view.getResolution(), 2);
+      assert.strictEqual(view.getCenter()[0], 5900);
+      assert.strictEqual(view.getCenter()[1], 46100);
 
       view.fit(new Point([6000, 46000]), {
         size: [200, 200],
         padding: [100, 0, 0, 100],
         maxZoom: 6,
       });
-      expect(view.getResolution()).to.be(2);
-      expect(view.getZoom()).to.be(6);
-      expect(view.getCenter()[0]).to.be(5900);
-      expect(view.getCenter()[1]).to.be(46100);
+      assert.strictEqual(view.getResolution(), 2);
+      assert.strictEqual(view.getZoom(), 6);
+      assert.strictEqual(view.getCenter()[0], 5900);
+      assert.strictEqual(view.getCenter()[1], 46100);
     });
 
     it('fits correctly to the extent', function () {
       view.fit([1000, 1000, 2000, 2000], {size: [200, 200]});
-      expect(view.getResolution()).to.be(5);
-      expect(view.getCenter()[0]).to.be(1500);
-      expect(view.getCenter()[1]).to.be(1500);
+      assert.strictEqual(view.getResolution(), 5);
+      assert.strictEqual(view.getCenter()[0], 1500);
+      assert.strictEqual(view.getCenter()[1], 1500);
     });
     it('fits correctly to the extent when a padding is configured', function () {
       view.padding = [100, 0, 0, 100];
       view.setViewportSize([200, 200]);
       view.fit([1000, 1000, 2000, 2000]);
-      expect(view.getResolution()).to.be(10);
-      expect(view.getCenter()[0]).to.be(1500);
-      expect(view.getCenter()[1]).to.be(1500);
+      assert.strictEqual(view.getResolution(), 10);
+      assert.strictEqual(view.getCenter()[0], 1500);
+      assert.strictEqual(view.getCenter()[1], 1500);
     });
     it('fits correctly to the extent when a view extent is configured', function () {
       view.set('extent', [1500, 0, 2500, 10000]);
       view.applyOptions_(view.getProperties());
       view.fit([1000, 1000, 2000, 2000]);
-      expect(view.calculateExtent()).eql([1500, 1000, 2500, 2000]);
+      assert.deepEqual(view.calculateExtent(), [1500, 1000, 2500, 2000]);
     });
     it('throws on invalid geometry/extent value', function () {
-      expect(function () {
+      assert.throws(function () {
         view.fit(true, [200, 200]);
-      }).to.throwException();
+      });
     });
     it('throws on empty extent', function () {
-      expect(function () {
+      assert.throws(function () {
         view.fit(createEmpty());
-      }).to.throwException();
+      });
     });
     it('animates when duration is defined', function (done) {
       view.fit(
@@ -1940,13 +1969,13 @@ describe('ol/View', function () {
         },
       );
 
-      expect(view.getAnimating()).to.eql(true);
+      assert.deepEqual(view.getAnimating(), true);
 
       setTimeout(function () {
-        expect(view.getResolution()).to.be(11);
-        expect(view.getCenter()[0]).to.be(5950);
-        expect(view.getCenter()[1]).to.be(47100);
-        expect(view.getAnimating()).to.eql(false);
+        assert.strictEqual(view.getResolution(), 11);
+        assert.strictEqual(view.getCenter()[0], 5950);
+        assert.strictEqual(view.getCenter()[1], 47100);
+        assert.deepEqual(view.getAnimating(), false);
         done();
       }, 50);
     });
@@ -1959,7 +1988,7 @@ describe('ol/View', function () {
         ]),
         {
           callback: function (complete) {
-            expect(complete).to.be(true);
+            assert.strictEqual(complete, true);
             done();
           },
         },
@@ -1975,7 +2004,7 @@ describe('ol/View', function () {
         {
           duration: 25,
           callback: function (complete) {
-            expect(complete).to.be(true);
+            assert.strictEqual(complete, true);
             done();
           },
         },
@@ -1993,13 +2022,13 @@ describe('ol/View', function () {
     it('fit correctly to the coordinates', function () {
       view.setResolution(10);
       view.centerOn([6000, 46000], [400, 400], [300, 300]);
-      expect(view.getCenter()[0]).to.be(5000);
-      expect(view.getCenter()[1]).to.be(47000);
+      assert.strictEqual(view.getCenter()[0], 5000);
+      assert.strictEqual(view.getCenter()[1], 47000);
 
       view.setRotation(Math.PI / 4);
       view.centerOn([6000, 46000], [400, 400], [300, 300]);
-      expect(view.getCenter()[0]).to.roughlyEqual(4585.78643762691, 1e-9);
-      expect(view.getCenter()[1]).to.roughlyEqual(46000, 1e-9);
+      assert.approximately(view.getCenter()[0], 4585.78643762691, 1e-9);
+      assert.approximately(view.getCenter()[1], 46000, 1e-9);
     });
   });
 
@@ -2011,19 +2040,19 @@ describe('ol/View', function () {
 
     it('correctly changes the view hint', function () {
       view.beginInteraction();
-      expect(view.getHints()[1]).to.be(1);
+      assert.strictEqual(view.getHints()[1], 1);
       view.beginInteraction();
-      expect(view.getHints()[1]).to.be(2);
+      assert.strictEqual(view.getHints()[1], 2);
       view.endInteraction();
       view.endInteraction();
-      expect(view.getHints()[1]).to.be(0);
+      assert.strictEqual(view.getHints()[1], 0);
     });
 
     it('does not allow hint value to become negative', function () {
       view.beginInteraction();
       view.endInteraction();
       view.endInteraction();
-      expect(view.getHints()[1]).to.be(0);
+      assert.strictEqual(view.getHints()[1], 0);
     });
   });
 
@@ -2034,7 +2063,7 @@ describe('ol/View', function () {
       view = new View({
         zoom: 0,
       });
-      expect(view.getConstrainedZoom(3)).to.be(3);
+      assert.strictEqual(view.getConstrainedZoom(3), 3);
     });
     it('works correctly with resolution constraints', function () {
       view = new View({
@@ -2042,17 +2071,17 @@ describe('ol/View', function () {
         minZoom: 4,
         maxZoom: 8,
       });
-      expect(view.getConstrainedZoom(3)).to.be(4);
-      expect(view.getConstrainedZoom(10)).to.be(8);
+      assert.strictEqual(view.getConstrainedZoom(3), 4);
+      assert.strictEqual(view.getConstrainedZoom(10), 8);
     });
     it('works correctly with a specific resolution set', function () {
       view = new View({
         zoom: 0,
         resolutions: [512, 256, 128, 64, 32, 16, 8],
       });
-      expect(view.getConstrainedZoom(0)).to.be(0);
-      expect(view.getConstrainedZoom(4)).to.be(4);
-      expect(view.getConstrainedZoom(8)).to.be(6);
+      assert.strictEqual(view.getConstrainedZoom(0), 0);
+      assert.strictEqual(view.getConstrainedZoom(4), 4);
+      assert.strictEqual(view.getConstrainedZoom(8), 6);
     });
   });
 
@@ -2062,8 +2091,9 @@ describe('ol/View', function () {
 
     it('works correctly by snapping to power of 2', function () {
       view = new View();
-      expect(view.getConstrainedResolution(1000000)).to.be(defaultMaxRes);
-      expect(view.getConstrainedResolution(defaultMaxRes / 8)).to.be(
+      assert.strictEqual(view.getConstrainedResolution(1000000), defaultMaxRes);
+      assert.strictEqual(
+        view.getConstrainedResolution(defaultMaxRes / 8),
         defaultMaxRes / 8,
       );
     });
@@ -2074,11 +2104,11 @@ describe('ol/View', function () {
         maxZoom: 4,
         constrainResolution: true,
       });
-      expect(view.getConstrainedResolution(90, 1)).to.be(100);
-      expect(view.getConstrainedResolution(90, -1)).to.be(20);
-      expect(view.getConstrainedResolution(20)).to.be(20);
-      expect(view.getConstrainedResolution(5)).to.be(4);
-      expect(view.getConstrainedResolution(1)).to.be(4);
+      assert.strictEqual(view.getConstrainedResolution(90, 1), 100);
+      assert.strictEqual(view.getConstrainedResolution(90, -1), 20);
+      assert.strictEqual(view.getConstrainedResolution(20), 20);
+      assert.strictEqual(view.getConstrainedResolution(5), 4);
+      assert.strictEqual(view.getConstrainedResolution(1), 4);
     });
     it('works correctly with a specific resolution set', function () {
       view = new View({
@@ -2086,12 +2116,12 @@ describe('ol/View', function () {
         resolutions: [512, 256, 128, 64, 32, 16, 8],
         constrainResolution: true,
       });
-      expect(view.getConstrainedResolution(1000, 1)).to.be(512);
-      expect(view.getConstrainedResolution(260, 1)).to.be(512);
-      expect(view.getConstrainedResolution(260)).to.be(256);
-      expect(view.getConstrainedResolution(30)).to.be(32);
-      expect(view.getConstrainedResolution(30, -1)).to.be(16);
-      expect(view.getConstrainedResolution(4, -1)).to.be(8);
+      assert.strictEqual(view.getConstrainedResolution(1000, 1), 512);
+      assert.strictEqual(view.getConstrainedResolution(260, 1), 512);
+      assert.strictEqual(view.getConstrainedResolution(260), 256);
+      assert.strictEqual(view.getConstrainedResolution(30), 32);
+      assert.strictEqual(view.getConstrainedResolution(30, -1), 16);
+      assert.strictEqual(view.getConstrainedResolution(4, -1), 8);
     });
   });
 
@@ -2103,20 +2133,22 @@ describe('ol/View', function () {
       });
 
       view.adjustRotation(Math.PI / 2);
-      expect(view.getRotation()).to.be(Math.PI / 2);
-      expect(view.getCenter()).to.eql([0, 0]);
+      assert.strictEqual(view.getRotation(), Math.PI / 2);
+      assert.deepEqual(view.getCenter(), [0, 0]);
 
       view.adjustRotation(-Math.PI);
-      expect(view.getRotation()).to.be(-Math.PI / 2);
-      expect(view.getCenter()).to.eql([0, 0]);
+      assert.strictEqual(view.getRotation(), -Math.PI / 2);
+      assert.deepEqual(view.getCenter(), [0, 0]);
 
       view.adjustRotation(Math.PI / 3, [50, 0]);
-      expect(view.getRotation()).to.roughlyEqual(-Math.PI / 6, 1e-9);
-      expect(view.getCenter()[0]).to.roughlyEqual(
+      assert.approximately(view.getRotation(), -Math.PI / 6, 1e-9);
+      assert.approximately(
+        view.getCenter()[0],
         50 * (1 - Math.cos(Math.PI / 3)),
         1e-9,
       );
-      expect(view.getCenter()[1]).to.roughlyEqual(
+      assert.approximately(
+        view.getCenter()[1],
         -50 * Math.sin(Math.PI / 3),
         1e-9,
       );
@@ -2130,12 +2162,12 @@ describe('ol/View', function () {
       });
 
       view.adjustRotation(Math.PI / 2);
-      expect(view.getRotation()).to.be(0);
-      expect(view.getCenter()).to.eql([0, 0]);
+      assert.strictEqual(view.getRotation(), 0);
+      assert.deepEqual(view.getCenter(), [0, 0]);
 
       view.adjustRotation(-Math.PI * 3, [-50, 0]);
-      expect(view.getRotation()).to.be(0);
-      expect(view.getCenter()).to.eql([0, 0]);
+      assert.strictEqual(view.getRotation(), 0);
+      assert.deepEqual(view.getCenter(), [0, 0]);
     });
   });
 
@@ -2147,16 +2179,16 @@ describe('ol/View', function () {
       });
 
       view.adjustZoom(1);
-      expect(view.getResolution()).to.be(0.5);
+      assert.strictEqual(view.getResolution(), 0.5);
 
       view.adjustZoom(-1);
-      expect(view.getResolution()).to.be(1);
+      assert.strictEqual(view.getResolution(), 1);
 
       view.adjustZoom(2);
-      expect(view.getResolution()).to.be(0.25);
+      assert.strictEqual(view.getResolution(), 0.25);
 
       view.adjustZoom(-2);
-      expect(view.getResolution()).to.be(1);
+      assert.strictEqual(view.getResolution(), 1);
     });
 
     it('changes view resolution and center relative to the anchor', function () {
@@ -2167,16 +2199,16 @@ describe('ol/View', function () {
       });
 
       view.adjustZoom(1, [10, 10]);
-      expect(view.getCenter()).to.eql([5, 5]);
+      assert.deepEqual(view.getCenter(), [5, 5]);
 
       view.adjustZoom(-1, [0, 0]);
-      expect(view.getCenter()).to.eql([10, 10]);
+      assert.deepEqual(view.getCenter(), [10, 10]);
 
       view.adjustZoom(2, [0, 0]);
-      expect(view.getCenter()).to.eql([2.5, 2.5]);
+      assert.deepEqual(view.getCenter(), [2.5, 2.5]);
 
       view.adjustZoom(-2, [0, 0]);
-      expect(view.getCenter()).to.eql([10, 10]);
+      assert.deepEqual(view.getCenter(), [10, 10]);
     });
 
     it('changes view resolution and center relative to the anchor, while respecting the extent (center only)', function () {
@@ -2189,16 +2221,16 @@ describe('ol/View', function () {
       });
 
       view.adjustZoom(1, [10, 10]);
-      expect(view.getCenter()).to.eql([2.5, 2.5]);
+      assert.deepEqual(view.getCenter(), [2.5, 2.5]);
 
       view.adjustZoom(-1, [0, 0]);
-      expect(view.getCenter()).to.eql([2.5, 2.5]);
+      assert.deepEqual(view.getCenter(), [2.5, 2.5]);
 
       view.adjustZoom(2, [10, 10]);
-      expect(view.getCenter()).to.eql([2.5, 2.5]);
+      assert.deepEqual(view.getCenter(), [2.5, 2.5]);
 
       view.adjustZoom(-2, [0, 0]);
-      expect(view.getCenter()).to.eql([2.5, 2.5]);
+      assert.deepEqual(view.getCenter(), [2.5, 2.5]);
     });
 
     it('changes view resolution and center relative to the anchor, while respecting the extent', function () {
@@ -2212,17 +2244,17 @@ describe('ol/View', function () {
       map.setView(view);
 
       view.adjustZoom(1, [100, 100]);
-      expect(view.getCenter()).to.eql([75, 75]);
+      assert.deepEqual(view.getCenter(), [75, 75]);
 
       view.adjustZoom(-1, [75, 75]);
-      expect(view.getCenter()).to.eql([50, 50]);
+      assert.deepEqual(view.getCenter(), [50, 50]);
 
       view.adjustZoom(2, [100, 100]);
-      expect(view.getCenter()).to.eql([87.5, 87.5]);
+      assert.deepEqual(view.getCenter(), [87.5, 87.5]);
 
       view.adjustZoom(-3, [0, 0]);
-      expect(view.getCenter()).to.eql([50, 50]);
-      expect(view.getResolution()).to.eql(1);
+      assert.deepEqual(view.getCenter(), [50, 50]);
+      assert.deepEqual(view.getResolution(), 1);
     });
 
     it('changes view resolution and center relative to the anchor, while respecting the extent (rotated)', function () {
@@ -2238,11 +2270,14 @@ describe('ol/View', function () {
       const halfSize = 100 * Math.SQRT1_2;
 
       view.adjustZoom(1, [100, 100]);
-      expect(view.getCenter()).to.eql([100 - halfSize / 2, 100 - halfSize / 2]);
+      assert.deepEqual(view.getCenter(), [
+        100 - halfSize / 2,
+        100 - halfSize / 2,
+      ]);
 
       view.setCenter([0, 50]);
       view.adjustZoom(-1, [0, 0]);
-      expect(view.getCenter()).to.eql([0, 100 - halfSize]);
+      assert.deepEqual(view.getCenter(), [0, 100 - halfSize]);
     });
   });
 
@@ -2257,16 +2292,16 @@ describe('ol/View', function () {
       });
 
       view.adjustZoom(1);
-      expect(view.getResolution()).to.be(0.5);
+      assert.strictEqual(view.getResolution(), 0.5);
 
       view.adjustZoom(-1);
-      expect(view.getResolution()).to.be(1);
+      assert.strictEqual(view.getResolution(), 1);
 
       view.adjustZoom(2);
-      expect(view.getResolution()).to.be(0.25);
+      assert.strictEqual(view.getResolution(), 0.25);
 
       view.adjustZoom(-2);
-      expect(view.getResolution()).to.be(1);
+      assert.strictEqual(view.getResolution(), 1);
     });
 
     it('changes view resolution and center relative to the anchor', function () {
@@ -2279,23 +2314,23 @@ describe('ol/View', function () {
 
       view.adjustZoom(1, [90, 45]);
       center = view.getCenter();
-      expect(center[0]).to.be(45);
-      expect(center[1]).to.roughlyEqual(24.4698, 1e-4);
+      assert.strictEqual(center[0], 45);
+      assert.approximately(center[1], 24.4698, 1e-4);
 
       view.adjustZoom(-1, [90, 45]);
       center = view.getCenter();
-      expect(center[0]).to.roughlyEqual(0, 1e-10);
-      expect(center[1]).to.roughlyEqual(0, 1e-10);
+      assert.approximately(center[0], 0, 1e-10);
+      assert.approximately(center[1], 0, 1e-10);
 
       view.adjustZoom(2, [-90, -45]);
       center = view.getCenter();
-      expect(center[0]).to.be(-67.5);
-      expect(center[1]).to.roughlyEqual(-35.3836, 1e-4);
+      assert.strictEqual(center[0], -67.5);
+      assert.approximately(center[1], -35.3836, 1e-4);
 
       view.adjustZoom(-2, [-90, -45]);
       center = view.getCenter();
-      expect(center[0]).to.roughlyEqual(0, 1e-10);
-      expect(center[1]).to.roughlyEqual(0, 1e-10);
+      assert.approximately(center[0], 0, 1e-10);
+      assert.approximately(center[1], 0, 1e-10);
     });
   });
 
@@ -2311,7 +2346,7 @@ describe('ol/View', function () {
     });
     it('Correctly shifts the viewport center when a padding is set', function () {
       view.padding = [50, 0, 0, 50];
-      expect(view.getCenter()).to.eql([25, -25]);
+      assert.deepEqual(view.getCenter(), [25, -25]);
     });
   });
 });
@@ -2338,7 +2373,7 @@ describe('does not start unexpected animations during interaction', function () 
     view.beginInteraction();
     view.endInteraction();
     setTimeout(function () {
-      expect(callCount).to.be(1);
+      assert.strictEqual(callCount, 1);
       done();
     }, 500);
   });
@@ -2356,7 +2391,7 @@ describe('does not start unexpected animations during interaction', function () 
     view.beginInteraction();
     view.endInteraction();
     setTimeout(function () {
-      expect(callCount).to.be(1);
+      assert.strictEqual(callCount, 1);
       done();
     }, 500);
   });
@@ -2455,7 +2490,7 @@ describe('ol.View.isNoopAnimation()', function () {
   cases.forEach(function (c, i) {
     it('works for case ' + i, function () {
       const noop = isNoopAnimation(c.animation);
-      expect(noop).to.equal(c.noop);
+      assert.equal(noop, c.noop);
     });
   });
 });

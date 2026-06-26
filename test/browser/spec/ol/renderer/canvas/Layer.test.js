@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import Feature from '../../../../../../src/ol/Feature.js';
 import Map from '../../../../../../src/ol/Map.js';
 import View from '../../../../../../src/ol/View.js';
@@ -43,6 +44,9 @@ describe('ol/renderer/canvas/Layer', function () {
   });
 
   it('reuses container', function () {
-    expect(map.getTargetElement().querySelectorAll('canvas').length).to.be(1);
+    assert.strictEqual(
+      map.getTargetElement().querySelectorAll('canvas').length,
+      1,
+    );
   });
 });

@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {
   arrayToGlsl,
   colorToGlsl,
@@ -20,7 +21,9 @@ describe('ol.webgl.ShaderBuilder', () => {
       builder.setSymbolColorExpression(colorToGlsl([80, 0, 255, 1]));
       builder.setTextureCoordinateExpression(arrayToGlsl([0, 0.5, 0.5, 1]));
 
-      expect(builder.getSymbolVertexShader()).to.eql(`${COMMON_HEADER}
+      assert.deepEqual(
+        builder.getSymbolVertexShader(),
+        `${COMMON_HEADER}
 
 attribute vec2 a_position;
 attribute vec2 a_localPosition;
@@ -71,7 +74,8 @@ void main(void) {
   v_opacity = 0.4;
   v_test = vec3(1.0, 2.0, 3.0);
 
-}`);
+}`,
+      );
     });
     it('generates a symbol vertex shader (with uniforms and attributes)', () => {
       const builder = new ShaderBuilder();
@@ -83,7 +87,9 @@ void main(void) {
       builder.setTextureCoordinateExpression(arrayToGlsl([0, 0.5, 0.5, 1]));
       builder.setShapeDiscardExpression('u_myUniform > 0.5');
 
-      expect(builder.getSymbolVertexShader()).to.eql(`${COMMON_HEADER}
+      assert.deepEqual(
+        builder.getSymbolVertexShader(),
+        `${COMMON_HEADER}
 uniform float u_myUniform;
 attribute vec2 a_position;
 attribute vec2 a_localPosition;
@@ -131,7 +137,8 @@ void main(void) {
   v_centerPx = screenToPx(center.xy) + centerOffsetPx;
   v_myAttr = a_myAttr;
   if (u_myUniform > 0.5) { gl_Position = vec4(2.0, 2.0, 0.0, 0.0); }
-}`);
+}`,
+      );
     });
     it('generates a symbol vertex shader (with rotateWithView)', () => {
       const builder = new ShaderBuilder();
@@ -141,7 +148,9 @@ void main(void) {
       builder.setTextureCoordinateExpression(arrayToGlsl([0, 0.5, 0.5, 1]));
       builder.setSymbolRotateWithView(true);
 
-      expect(builder.getSymbolVertexShader()).to.eql(`${COMMON_HEADER}
+      assert.deepEqual(
+        builder.getSymbolVertexShader(),
+        `${COMMON_HEADER}
 
 attribute vec2 a_position;
 attribute vec2 a_localPosition;
@@ -188,7 +197,8 @@ void main(void) {
   v_centerPx = screenToPx(center.xy) + centerOffsetPx;
 
 
-}`);
+}`,
+      );
     });
 
     it('generates a symbol vertex shader (with a rotation expression)', () => {
@@ -197,7 +207,9 @@ void main(void) {
       builder.setSymbolOffsetExpression(arrayToGlsl([5, -7]));
       builder.setSymbolRotationExpression('u_time * 0.2');
 
-      expect(builder.getSymbolVertexShader()).to.eql(`${COMMON_HEADER}
+      assert.deepEqual(
+        builder.getSymbolVertexShader(),
+        `${COMMON_HEADER}
 
 attribute vec2 a_position;
 attribute vec2 a_localPosition;
@@ -244,7 +256,8 @@ void main(void) {
   v_centerPx = screenToPx(center.xy) + centerOffsetPx;
 
 
-}`);
+}`,
+      );
     });
 
     it('returns null if no color or size specified', () => {
@@ -252,7 +265,7 @@ void main(void) {
       builder.setSymbolRotationExpression('1.0');
       builder.setSymbolOffsetExpression('vec2(1.0)');
       builder.setSymbolRotateWithView('0.0');
-      expect(builder.getSymbolVertexShader()).to.be(null);
+      assert.strictEqual(builder.getSymbolVertexShader(), null);
     });
   });
   describe('getSymbolFragmentShader', () => {
@@ -265,7 +278,9 @@ void main(void) {
       builder.setSymbolColorExpression(colorToGlsl([80, 0, 255]));
       builder.setTextureCoordinateExpression(arrayToGlsl([0, 0.5, 0.5, 1]));
 
-      expect(builder.getSymbolFragmentShader()).to.eql(`${COMMON_HEADER}
+      assert.deepEqual(
+        builder.getSymbolFragmentShader(),
+        `${COMMON_HEADER}
 
 varying vec2 v_texCoord;
 varying vec4 v_hitColor;
@@ -290,7 +305,8 @@ void main(void) {
     if (gl_FragColor.a < 0.05) { discard; };
     gl_FragColor = v_hitColor;
   }
-}`);
+}`,
+      );
     });
     it('generates a symbol fragment shader (with uniforms)', () => {
       const builder = new ShaderBuilder();
@@ -302,7 +318,9 @@ void main(void) {
       builder.setTextureCoordinateExpression(arrayToGlsl([0, 0.5, 0.5, 1]));
       builder.setFragmentDiscardExpression('u_myUniform > 0.5');
 
-      expect(builder.getSymbolFragmentShader()).to.eql(`${COMMON_HEADER}
+      assert.deepEqual(
+        builder.getSymbolFragmentShader(),
+        `${COMMON_HEADER}
 uniform float u_myUniform;
 uniform vec2 u_myUniform2;
 varying vec2 v_texCoord;
@@ -326,7 +344,8 @@ void main(void) {
     if (gl_FragColor.a < 0.05) { discard; };
     gl_FragColor = v_hitColor;
   }
-}`);
+}`,
+      );
     });
 
     it('returns null if no color or size specified', () => {
@@ -334,7 +353,7 @@ void main(void) {
       builder.setSymbolRotationExpression('1.0');
       builder.setSymbolOffsetExpression('vec2(1.0)');
       builder.setSymbolRotateWithView('0.0');
-      expect(builder.getSymbolFragmentShader()).to.be(null);
+      assert.strictEqual(builder.getSymbolFragmentShader(), null);
     });
   });
   describe('stroke shaders', () => {
@@ -357,7 +376,9 @@ void main(void) {
 
     describe('getStrokeVertexShader', () => {
       it('generates a stroke vertex shader (with uniforms, varying and attributes)', () => {
-        expect(builder.getStrokeVertexShader()).to.eql(`${COMMON_HEADER}
+        assert.deepEqual(
+          builder.getStrokeVertexShader(),
+          `${COMMON_HEADER}
 uniform float u_myUniform;
 attribute vec2 a_segmentStart;
 attribute vec2 a_segmentEnd;
@@ -463,28 +484,34 @@ void main(void) {
   v_test = vec3(1.0, 2.0, 3.0);
   v_myAttr = a_myAttr;
   if (u_myUniform > 0.5) { gl_Position = vec4(2.0, 2.0, 0.0, 0.0); }
-}`);
+}`,
+        );
       });
 
       it('takes into account the pattern length expression if specified', () => {
         builder.setStrokePatternLengthExpression('10.0 * 3.0');
-        expect(builder.getStrokeVertexShader()).to.contain(`
+        assert.include(
+          builder.getStrokeVertexShader(),
+          `
   v_distancePx = a_distanceLow / u_resolution - (lineOffsetPx * a_angleTangentSum);
   float distanceHighPx = a_distanceHigh / u_resolution;
   v_distancePx = mod(v_distancePx, 10.0 * 3.0);
   distanceHighPx = mod(distanceHighPx, 10.0 * 3.0);
   v_distancePx += distanceHighPx;
-`);
+`,
+        );
       });
 
       it('returns null if no color or size specified', () => {
         const builder = new ShaderBuilder();
-        expect(builder.getStrokeVertexShader()).to.be(null);
+        assert.strictEqual(builder.getStrokeVertexShader(), null);
       });
     });
     describe('getStrokeFragmentShader', () => {
       it('generates a stroke fragment shader (with attribute and uniform)', () => {
-        expect(builder.getStrokeFragmentShader()).to.eql(`${COMMON_HEADER}
+        assert.deepEqual(
+          builder.getStrokeFragmentShader(),
+          `${COMMON_HEADER}
 uniform float u_myUniform;
 varying vec2 v_segmentStartPx;
 varying vec2 v_segmentEndPx;
@@ -636,12 +663,13 @@ void main(void) {
     if (gl_FragColor.a < 0.1) { discard; };
     gl_FragColor = v_hitColor;
   }
-}`);
+}`,
+        );
       });
 
       it('returns null if no color or size specified', () => {
         const builder = new ShaderBuilder();
-        expect(builder.getStrokeFragmentShader()).to.be(null);
+        assert.strictEqual(builder.getStrokeFragmentShader(), null);
       });
     });
   });
@@ -657,7 +685,9 @@ void main(void) {
       builder.setFragmentDiscardExpression('u_myUniform > 0.5');
       builder.setShapeDiscardExpression('u_myUniform > 0.5');
 
-      expect(builder.getFillVertexShader()).to.eql(`${COMMON_HEADER}
+      assert.deepEqual(
+        builder.getFillVertexShader(),
+        `${COMMON_HEADER}
 uniform float u_myUniform;
 attribute vec2 a_position;
 attribute vec2 a_hitColor;
@@ -681,14 +711,17 @@ void main(void) {
   v_test = vec3(1.0, 2.0, 3.0);
   v_myAttr = a_myAttr;
   if (u_myUniform > 0.5) { gl_Position = vec4(2.0, 2.0, 0.0, 0.0); }
-}`);
+}`,
+      );
     });
     it('computes the pattern origin correctly if a pattern size is provided', () => {
       const builder = new ShaderBuilder();
       builder.setFillPatternSizeExpression(`vec2(32., 64.)`);
       builder.setFillColorExpression(colorToGlsl([80, 0, 255, 1]));
 
-      expect(builder.getFillVertexShader()).to.eql(`${COMMON_HEADER}
+      assert.deepEqual(
+        builder.getFillVertexShader(),
+        `${COMMON_HEADER}
 
 attribute vec2 a_position;
 attribute vec2 a_hitColor;
@@ -722,12 +755,13 @@ void main(void) {
 
 
 
-}`);
+}`,
+      );
     });
 
     it('returns null if no color specified', () => {
       const builder = new ShaderBuilder();
-      expect(builder.getFillVertexShader()).to.be(null);
+      assert.strictEqual(builder.getFillVertexShader(), null);
     });
   });
   describe('getFillFragmentShader', () => {
@@ -740,7 +774,9 @@ void main(void) {
       builder.setFillColorExpression(colorToGlsl([80, 0, 255, 1]));
       builder.setFragmentDiscardExpression('u_myUniform > 0.5');
 
-      expect(builder.getFillFragmentShader()).to.eql(`${COMMON_HEADER}
+      assert.deepEqual(
+        builder.getFillFragmentShader(),
+        `${COMMON_HEADER}
 uniform float u_myUniform;
 varying vec4 v_hitColor;
 varying vec2 v_patternOriginPx;
@@ -774,12 +810,13 @@ void main(void) {
     if (gl_FragColor.a < 0.1) { discard; };
     gl_FragColor = v_hitColor;
   }
-}`);
+}`,
+      );
     });
 
     it('returns null if no color specified', () => {
       const builder = new ShaderBuilder();
-      expect(builder.getFillFragmentShader()).to.be(null);
+      assert.strictEqual(builder.getFillFragmentShader(), null);
     });
   });
 
@@ -794,9 +831,9 @@ void main(void) {
       builder.setSymbolColorExpression('vec4(1.0)');
     });
     it('adds the function in all vertex shaders', () => {
-      expect(builder.getFillVertexShader()).to.contain(FN1);
-      expect(builder.getStrokeVertexShader()).to.contain(FN1);
-      expect(builder.getSymbolVertexShader()).to.contain(FN1);
+      assert.include(builder.getFillVertexShader(), FN1);
+      assert.include(builder.getStrokeVertexShader(), FN1);
+      assert.include(builder.getSymbolVertexShader(), FN1);
     });
   });
 
@@ -811,9 +848,9 @@ void main(void) {
       builder.setSymbolColorExpression('vec4(1.0)');
     });
     it('adds the function in all vertex shaders', () => {
-      expect(builder.getFillFragmentShader()).to.contain(FN2);
-      expect(builder.getStrokeFragmentShader()).to.contain(FN2);
-      expect(builder.getSymbolFragmentShader()).to.contain(FN2);
+      assert.include(builder.getFillFragmentShader(), FN2);
+      assert.include(builder.getStrokeFragmentShader(), FN2);
+      assert.include(builder.getSymbolFragmentShader(), FN2);
     });
   });
 });

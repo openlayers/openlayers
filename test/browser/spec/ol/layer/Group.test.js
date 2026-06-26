@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {spy as sinonSpy} from 'sinon';
 import Collection from '../../../../../src/ol/Collection.js';
 import {getIntersection} from '../../../../../src/ol/extent.js';
@@ -27,19 +28,19 @@ describe('ol/layer/Group', function () {
     });
 
     it('creates an instance', function () {
-      expect(group).to.be.a(LayerGroup);
+      assert.instanceOf(group, LayerGroup);
     });
 
     it('provides default opacity', function () {
-      expect(group.getOpacity()).to.be(1);
+      assert.strictEqual(group.getOpacity(), 1);
     });
 
     it('provides default visibility', function () {
-      expect(group.getVisible()).to.be(true);
+      assert.strictEqual(group.getVisible(), true);
     });
 
     it('provides default layerState', function () {
-      expect(group.getLayerState()).to.eql({
+      assert.deepEqual(group.getLayerState(), {
         layer: group,
         opacity: 1,
         visible: true,
@@ -54,8 +55,8 @@ describe('ol/layer/Group', function () {
     });
 
     it('provides default empty layers collection', function () {
-      expect(group.getLayers()).to.be.a(Collection);
-      expect(group.getLayers().getLength()).to.be(0);
+      assert.instanceOf(group.getLayers(), Collection);
+      assert.strictEqual(group.getLayers().getLength(), 0);
     });
   });
 
@@ -81,17 +82,17 @@ describe('ol/layer/Group', function () {
       group.on('change', listener);
 
       layer.setOpacity(0.5);
-      expect(listener.calledOnce).to.be(true);
+      assert.strictEqual(listener.calledOnce, true);
     });
 
     it('is dispatched by the group when layer visibility changes', function () {
       group.on('change', listener);
 
       layer.setVisible(false);
-      expect(listener.callCount).to.be(1);
+      assert.strictEqual(listener.callCount, 1);
 
       layer.setVisible(true);
-      expect(listener.callCount).to.be(2);
+      assert.strictEqual(listener.callCount, 2);
     });
   });
 
@@ -117,17 +118,17 @@ describe('ol/layer/Group', function () {
       group.on('propertychange', listener);
 
       group.setOpacity(0.5);
-      expect(listener.calledOnce).to.be(true);
+      assert.strictEqual(listener.calledOnce, true);
     });
 
     it('is dispatched by the group when group visibility changes', function () {
       group.on('propertychange', listener);
 
       group.setVisible(false);
-      expect(listener.callCount).to.be(1);
+      assert.strictEqual(listener.callCount, 1);
 
       group.setVisible(true);
-      expect(listener.callCount).to.be(2);
+      assert.strictEqual(listener.callCount, 2);
     });
   });
 
@@ -149,13 +150,13 @@ describe('ol/layer/Group', function () {
         maxZoom: 10,
       });
 
-      expect(group.getOpacity()).to.be(0.5);
-      expect(group.getVisible()).to.be(false);
-      expect(group.getMaxResolution()).to.be(500);
-      expect(group.getMinResolution()).to.be(0.25);
-      expect(group.getMinZoom()).to.be(1);
-      expect(group.getMaxZoom()).to.be(10);
-      expect(group.getLayerState()).to.eql({
+      assert.strictEqual(group.getOpacity(), 0.5);
+      assert.strictEqual(group.getVisible(), false);
+      assert.strictEqual(group.getMaxResolution(), 500);
+      assert.strictEqual(group.getMinResolution(), 0.25);
+      assert.strictEqual(group.getMinZoom(), 1);
+      assert.strictEqual(group.getMaxZoom(), 10);
+      assert.deepEqual(group.getLayerState(), {
         layer: group,
         opacity: 0.5,
         visible: false,
@@ -167,9 +168,9 @@ describe('ol/layer/Group', function () {
         minZoom: 1,
         maxZoom: 10,
       });
-      expect(group.getLayers()).to.be.a(Collection);
-      expect(group.getLayers().getLength()).to.be(1);
-      expect(group.getLayers().item(0)).to.be(layer);
+      assert.instanceOf(group.getLayers(), Collection);
+      assert.strictEqual(group.getLayers().getLength(), 1);
+      assert.strictEqual(group.getLayers().item(0), layer);
 
       disposeHierarchy(group);
     });
@@ -191,12 +192,12 @@ describe('ol/layer/Group', function () {
         minResolution: 0.25,
       });
 
-      expect(group.getOpacity()).to.be(0.5);
-      expect(group.getVisible()).to.be(false);
-      expect(group.getExtent()).to.eql(groupExtent);
-      expect(group.getMaxResolution()).to.be(500);
-      expect(group.getMinResolution()).to.be(0.25);
-      expect(group.getLayerState()).to.eql({
+      assert.strictEqual(group.getOpacity(), 0.5);
+      assert.strictEqual(group.getVisible(), false);
+      assert.deepEqual(group.getExtent(), groupExtent);
+      assert.strictEqual(group.getMaxResolution(), 500);
+      assert.strictEqual(group.getMinResolution(), 0.25);
+      assert.deepEqual(group.getLayerState(), {
         layer: group,
         opacity: 0.5,
         visible: false,
@@ -208,9 +209,9 @@ describe('ol/layer/Group', function () {
         minZoom: -Infinity,
         maxZoom: Infinity,
       });
-      expect(group.getLayers()).to.be.a(Collection);
-      expect(group.getLayers().getLength()).to.be(1);
-      expect(group.getLayers().item(0)).to.be(layer);
+      assert.instanceOf(group.getLayers(), Collection);
+      assert.strictEqual(group.getLayers().getLength(), 1);
+      assert.strictEqual(group.getLayers().item(0), layer);
 
       disposeHierarchy(group);
     });
@@ -221,7 +222,7 @@ describe('ol/layer/Group', function () {
       const group = new LayerGroup();
       const layer = new Layer({});
       group.on('addlayer', (event) => {
-        expect(event.layer).to.be(layer);
+        assert.strictEqual(event.layer, layer);
         done();
       });
 
@@ -234,7 +235,7 @@ describe('ol/layer/Group', function () {
 
       let count = 0;
       group.on('addlayer', (event) => {
-        expect(event.layer).to.be(layers[count]);
+        assert.strictEqual(event.layer, layers[count]);
         count++;
         if (count === layers.length) {
           done();
@@ -251,7 +252,7 @@ describe('ol/layer/Group', function () {
 
       let count = 0;
       group.on('addlayer', (event) => {
-        expect(event.layer).to.be(layers[count]);
+        assert.strictEqual(event.layer, layers[count]);
         count++;
         if (count === layers.length) {
           done();
@@ -265,7 +266,7 @@ describe('ol/layer/Group', function () {
       const group = new LayerGroup();
       const layer = new LayerGroup();
       group.on('addlayer', (event) => {
-        expect(event.layer).to.be(layer);
+        assert.strictEqual(event.layer, layer);
         done();
       });
 
@@ -279,7 +280,7 @@ describe('ol/layer/Group', function () {
 
       const layer = new Layer({});
       group.on('addlayer', (event) => {
-        expect(event.layer).to.be(layer);
+        assert.strictEqual(event.layer, layer);
         done();
       });
 
@@ -294,7 +295,7 @@ describe('ol/layer/Group', function () {
 
       const layer = new Layer({});
       group.on('addlayer', (event) => {
-        expect(event.layer).to.be(layer);
+        assert.strictEqual(event.layer, layer);
         done();
       });
 
@@ -324,7 +325,7 @@ describe('ol/layer/Group', function () {
       const layer = new Layer({});
       const group = new LayerGroup({layers: [layer]});
       group.on('removelayer', (event) => {
-        expect(event.layer).to.be(layer);
+        assert.strictEqual(event.layer, layer);
         done();
       });
 
@@ -335,7 +336,7 @@ describe('ol/layer/Group', function () {
       const layer = new Layer({});
       const group = new LayerGroup({layers: [layer]});
       group.on('removelayer', (event) => {
-        expect(event.layer).to.be(layer);
+        assert.strictEqual(event.layer, layer);
         done();
       });
 
@@ -347,7 +348,7 @@ describe('ol/layer/Group', function () {
       const child = new LayerGroup({layers: [layer]});
       const group = new LayerGroup({layers: [child]});
       group.on('removelayer', (event) => {
-        expect(event.layer).to.be(layer);
+        assert.strictEqual(event.layer, layer);
         done();
       });
 
@@ -391,7 +392,7 @@ describe('ol/layer/Group', function () {
       group.setMinResolution(0.25);
       group.setMinZoom(5);
       group.setMaxZoom(10);
-      expect(group.getLayerState()).to.eql({
+      assert.deepEqual(group.getLayerState(), {
         layer: group,
         opacity: 0.3,
         visible: false,
@@ -408,7 +409,7 @@ describe('ol/layer/Group', function () {
     it('returns a layerState with clamped values', function () {
       group.setOpacity(-1.5);
       group.setVisible(false);
-      expect(group.getLayerState()).to.eql({
+      assert.deepEqual(group.getLayerState(), {
         layer: group,
         opacity: 0,
         visible: false,
@@ -423,7 +424,7 @@ describe('ol/layer/Group', function () {
 
       group.setOpacity(3);
       group.setVisible(true);
-      expect(group.getLayerState()).to.eql({
+      assert.deepEqual(group.getLayerState(), {
         layer: group,
         opacity: 1,
         visible: true,
@@ -444,21 +445,21 @@ describe('ol/layer/Group', function () {
       const group = new LayerGroup({
         layers: layers,
       });
-      expect(Object.keys(group.listenerKeys_).length).to.eql(0);
+      assert.deepEqual(Object.keys(group.listenerKeys_).length, 0);
       const layer = new Layer({});
       layers.push(layer);
-      expect(Object.keys(group.listenerKeys_).length).to.eql(1);
+      assert.deepEqual(Object.keys(group.listenerKeys_).length, 1);
 
       const listeners = group.listenerKeys_[getUid(layer)];
-      expect(listeners.length).to.eql(2);
-      expect(typeof listeners[0]).to.be('object');
-      expect(typeof listeners[1]).to.be('object');
+      assert.deepEqual(listeners.length, 2);
+      assert.strictEqual(typeof listeners[0], 'object');
+      assert.strictEqual(typeof listeners[1], 'object');
 
       // remove the layer from the group
       layers.pop();
-      expect(Object.keys(group.listenerKeys_).length).to.eql(0);
-      expect(listeners[0].listener).to.be(undefined);
-      expect(listeners[1].listener).to.be(undefined);
+      assert.deepEqual(Object.keys(group.listenerKeys_).length, 0);
+      assert.strictEqual(listeners[0].listener, undefined);
+      assert.strictEqual(listeners[1].listener, undefined);
     });
   });
 
@@ -473,7 +474,7 @@ describe('ol/layer/Group', function () {
       const group = new LayerGroup();
 
       group.setLayers(layers);
-      expect(group.getLayers()).to.be(layers);
+      assert.strictEqual(group.getLayers(), layers);
 
       disposeHierarchy(group);
     });
@@ -514,8 +515,8 @@ describe('ol/layer/Group', function () {
       const group = new LayerGroup();
 
       const layerStatesArray = group.getLayerStatesArray();
-      expect(layerStatesArray).to.be.a(Array);
-      expect(layerStatesArray.length).to.be(0);
+      assert.instanceOf(layerStatesArray, Array);
+      assert.strictEqual(layerStatesArray.length, 0);
 
       group.dispose();
     });
@@ -526,18 +527,18 @@ describe('ol/layer/Group', function () {
       });
 
       const layerStatesArray = group.getLayerStatesArray();
-      expect(layerStatesArray).to.be.a(Array);
-      expect(layerStatesArray.length).to.be(2);
-      expect(layerStatesArray[0]).to.eql(layer1.getLayerState());
+      assert.instanceOf(layerStatesArray, Array);
+      assert.strictEqual(layerStatesArray.length, 2);
+      assert.deepEqual(layerStatesArray[0], layer1.getLayerState());
 
       // layer state should match except for layer reference
       const layerState = Object.assign({}, layerStatesArray[0]);
       delete layerState.layer;
       const groupState = Object.assign({}, group.getLayerState());
       delete groupState.layer;
-      expect(layerState).to.eql(groupState);
+      assert.deepEqual(layerState, groupState);
 
-      expect(layerStatesArray[1]).to.eql(layer2.getLayerState());
+      assert.deepEqual(layerStatesArray[1], layer2.getLayerState());
 
       group.dispose();
     });
@@ -549,7 +550,7 @@ describe('ol/layer/Group', function () {
         layers: [layer1],
       });
       const layerStatesArray = group.getLayerStatesArray();
-      expect(layerStatesArray[0].extent).to.eql(groupExtent);
+      assert.deepEqual(layerStatesArray[0].extent, groupExtent);
       group.dispose();
     });
 
@@ -560,7 +561,8 @@ describe('ol/layer/Group', function () {
         layers: [layer3],
       });
       const layerStatesArray = group.getLayerStatesArray();
-      expect(layerStatesArray[0].extent).to.eql(
+      assert.deepEqual(
+        layerStatesArray[0].extent,
         getIntersection(layer3.getExtent(), groupExtent),
       );
       group.dispose();
@@ -584,12 +586,12 @@ describe('ol/layer/Group', function () {
       delete layerState.layer;
       const groupState = Object.assign({}, group.getLayerState());
       delete groupState.layer;
-      expect(layerState).to.eql(groupState);
+      assert.deepEqual(layerState, groupState);
 
       // layer state should be transformed (and we ignore layer reference)
       layerState = Object.assign({}, layerStatesArray[1]);
       delete layerState.layer;
-      expect(layerState).to.eql({
+      assert.deepEqual(layerState, {
         opacity: 0.25,
         visible: false,
         managed: true,
@@ -622,8 +624,8 @@ describe('ol/layer/Group', function () {
         ],
       });
 
-      expect(group.getLayerStatesArray()[0].minZoom).to.be(5);
-      expect(group.getLayerStatesArray()[1].minZoom).to.be(10);
+      assert.strictEqual(group.getLayerStatesArray()[0].minZoom, 5);
+      assert.strictEqual(group.getLayerStatesArray()[1].minZoom, 10);
 
       disposeHierarchy(group);
     });
@@ -646,8 +648,8 @@ describe('ol/layer/Group', function () {
         ],
       });
 
-      expect(group.getLayerStatesArray()[0].maxZoom).to.be(5);
-      expect(group.getLayerStatesArray()[1].maxZoom).to.be(2);
+      assert.strictEqual(group.getLayerStatesArray()[0].maxZoom, 5);
+      assert.strictEqual(group.getLayerStatesArray()[1].maxZoom, 2);
 
       disposeHierarchy(group);
     });
@@ -670,9 +672,9 @@ describe('ol/layer/Group', function () {
       });
 
       const layerStatesArray = group.getLayerStatesArray();
-      expect(layerStatesArray[0].zIndex).to.be(-1);
-      expect(layerStatesArray[1].zIndex).to.be(2);
-      expect(layerStatesArray[2].zIndex).to.be(0);
+      assert.strictEqual(layerStatesArray[0].zIndex, -1);
+      assert.strictEqual(layerStatesArray[1].zIndex, 2);
+      assert.strictEqual(layerStatesArray[2].zIndex, 0);
 
       disposeHierarchy(group);
     });
@@ -693,7 +695,7 @@ describe('ol/layer/Group', function () {
       });
 
       const layerStatesArray = group.getLayerStatesArray();
-      expect(layerStatesArray[0].zIndex).to.be(5);
+      assert.strictEqual(layerStatesArray[0].zIndex, 5);
 
       disposeHierarchy(group);
     });
@@ -713,7 +715,7 @@ describe('ol/layer/Group', function () {
       });
 
       const layerStatesArray = group.getLayerStatesArray();
-      expect(layerStatesArray[0].zIndex).to.be(1);
+      assert.strictEqual(layerStatesArray[0].zIndex, 1);
 
       disposeHierarchy(group);
     });

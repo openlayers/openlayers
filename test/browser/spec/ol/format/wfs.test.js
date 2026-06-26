@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import proj4 from 'proj4';
 import Feature from '../../../../../src/ol/Feature.js';
 import GML2 from '../../../../../src/ol/format/GML2.js';
@@ -37,6 +38,7 @@ import {
 } from '../../../../../src/ol/proj.js';
 import {register} from '../../../../../src/ol/proj/proj4.js';
 import {parse} from '../../../../../src/ol/xml.js';
+import {assertXmlEqual} from '../../../../util/xml.js';
 
 describe('ol.format.WFS', function () {
   describe('featureType', function () {
@@ -45,9 +47,9 @@ describe('ol.format.WFS', function () {
         featureNS: 'http://www.openplans.org/topp',
         featureType: ['foo', 'bar'],
       });
-      expect(format.getFeatureType()).to.eql(['foo', 'bar']);
+      assert.deepEqual(format.getFeatureType(), ['foo', 'bar']);
       format.setFeatureType('baz');
-      expect(format.getFeatureType()).to.eql('baz');
+      assert.deepEqual(format.getFeatureType(), 'baz');
     });
   });
 
@@ -79,14 +81,14 @@ describe('ol.format.WFS', function () {
     });
 
     it('creates 3 features', function () {
-      expect(features).to.have.length(3);
+      assert.lengthOf(features, 3);
     });
 
     it('creates a polygon for Illinois', function () {
       feature = features[0];
-      expect(feature.getId()).to.equal('states.1');
-      expect(feature.get('STATE_NAME')).to.equal('Illinois');
-      expect(feature.getGeometry()).to.be.an(MultiPolygon);
+      assert.equal(feature.getId(), 'states.1');
+      assert.equal(feature.get('STATE_NAME'), 'Illinois');
+      assert.instanceOf(feature.getGeometry(), MultiPolygon);
     });
 
     it('transforms and creates a polygon for Illinois', function () {
@@ -94,13 +96,13 @@ describe('ol.format.WFS', function () {
         featureProjection: 'EPSG:3857',
       });
       feature = features[0];
-      expect(feature.getId()).to.equal('states.1');
-      expect(feature.get('STATE_NAME')).to.equal('Illinois');
+      assert.equal(feature.getId(), 'states.1');
+      assert.equal(feature.get('STATE_NAME'), 'Illinois');
       const geom = feature.getGeometry();
-      expect(geom).to.be.an(MultiPolygon);
+      assert.instanceOf(geom, MultiPolygon);
       const p = transform([-88.071, 37.511], 'EPSG:4326', 'EPSG:3857');
       p.push(0);
-      expect(geom.getFirstCoordinate()).to.eql(p);
+      assert.deepEqual(geom.getFirstCoordinate(), p);
     });
   });
 
@@ -133,18 +135,19 @@ describe('ol.format.WFS', function () {
     });
 
     it('creates 3 features', function () {
-      expect(features).to.have.length(3);
+      assert.lengthOf(features, 3);
     });
 
     it('creates a polygon for My Polygon with hole', function () {
       feature = features[0];
-      expect(feature.getId()).to.equal('1');
-      expect(feature.get('name')).to.equal('My Polygon with hole');
-      expect(feature.get('boundedBy')).to.eql([
-        47.003018, -0.768746, 47.925567, 0.532597,
-      ]);
-      expect(feature.getGeometry()).to.be.an(MultiPolygon);
-      expect(feature.getGeometry().getFlatCoordinates()).to.have.length(60);
+      assert.equal(feature.getId(), '1');
+      assert.equal(feature.get('name'), 'My Polygon with hole');
+      assert.deepEqual(
+        feature.get('boundedBy'),
+        [47.003018, -0.768746, 47.925567, 0.532597],
+      );
+      assert.instanceOf(feature.getGeometry(), MultiPolygon);
+      assert.lengthOf(feature.getGeometry().getFlatCoordinates(), 60);
     });
   });
 
@@ -161,7 +164,7 @@ describe('ol.format.WFS', function () {
     });
     it('returns an empty array of features when none exist', function () {
       const result = new WFS().readFeatures(xml);
-      expect(result).to.have.length(0);
+      assert.lengthOf(result, 0);
     });
   });
 
@@ -178,7 +181,7 @@ describe('ol.format.WFS', function () {
       });
     });
     it('returns the correct number of features', function () {
-      expect(response.numberOfFeatures).to.equal(625);
+      assert.equal(response.numberOfFeatures, 625);
     });
   });
 
@@ -203,9 +206,10 @@ describe('ol.format.WFS', function () {
       });
     });
     it('returns the correct bounds', function () {
-      expect(response.bounds).to.eql([
-        3197.88, 306457.313, 280339.156, 613850.438,
-      ]);
+      assert.deepEqual(
+        response.bounds,
+        [3197.88, 306457.313, 280339.156, 613850.438],
+      );
     });
   });
 
@@ -225,11 +229,11 @@ describe('ol.format.WFS', function () {
       );
     });
     it('returns the correct TransactionResponse object', function () {
-      expect(response.transactionSummary.totalDeleted).to.equal(0);
-      expect(response.transactionSummary.totalInserted).to.equal(0);
-      expect(response.transactionSummary.totalUpdated).to.equal(1);
-      expect(response.insertIds).to.have.length(2);
-      expect(response.insertIds[0]).to.equal('parcelle.40');
+      assert.equal(response.transactionSummary.totalDeleted, 0);
+      assert.equal(response.transactionSummary.totalInserted, 0);
+      assert.equal(response.transactionSummary.totalUpdated, 1);
+      assert.lengthOf(response.insertIds, 2);
+      assert.equal(response.insertIds[0], 'parcelle.40');
     });
   });
 
@@ -259,7 +263,7 @@ describe('ol.format.WFS', function () {
         srsName: 'urn:ogc:def:crs:EPSG::4326',
         propertyNames: ['STATE_NAME', 'STATE_FIPS', 'STATE_ABBR'],
       });
-      expect(serialized).to.xmleql(parse(text));
+      assertXmlEqual(serialized, parse(text));
     });
 
     it('creates paging headers', function () {
@@ -284,7 +288,7 @@ describe('ol.format.WFS', function () {
         featurePrefix: 'topp',
         featureTypes: ['states'],
       });
-      expect(serialized).to.xmleql(parse(text));
+      assertXmlEqual(serialized, parse(text));
     });
 
     it('creates a BBOX filter', function () {
@@ -311,7 +315,7 @@ describe('ol.format.WFS', function () {
         geometryName: 'the_geom',
         bbox: [1, 2, 3, 4],
       });
-      expect(serialized.firstElementChild).to.xmleql(parse(text));
+      assertXmlEqual(serialized.firstElementChild, parse(text));
     });
 
     it('creates one BBOX filter per feature type', function () {
@@ -362,9 +366,9 @@ describe('ol.format.WFS', function () {
           },
         ],
       });
-      expect(serialized.children.length).to.equal(2);
-      expect(serialized.firstElementChild).to.xmleql(parse(textQuery1));
-      expect(serialized.lastElementChild).to.xmleql(parse(textQuery2));
+      assert.equal(serialized.children.length, 2);
+      assertXmlEqual(serialized.firstElementChild, parse(textQuery1));
+      assertXmlEqual(serialized.lastElementChild, parse(textQuery2));
     });
 
     it('creates a property filter', function () {
@@ -386,7 +390,7 @@ describe('ol.format.WFS', function () {
         featureTypes: ['states'],
         filter: equalToFilter('name', 'New York', false),
       });
-      expect(serialized.firstElementChild).to.xmleql(parse(text));
+      assertXmlEqual(serialized.firstElementChild, parse(text));
     });
 
     it('creates two property filters', function () {
@@ -417,7 +421,7 @@ describe('ol.format.WFS', function () {
           equalToFilter('area', 1234),
         ),
       });
-      expect(serialized.firstElementChild).to.xmleql(parse(text));
+      assertXmlEqual(serialized.firstElementChild, parse(text));
     });
 
     it('creates greater/less than property filters', function () {
@@ -466,7 +470,7 @@ describe('ol.format.WFS', function () {
           ),
         ),
       });
-      expect(serialized.firstElementChild).to.xmleql(parse(text));
+      assertXmlEqual(serialized.firstElementChild, parse(text));
     });
 
     it('creates isBetween property filter', function () {
@@ -489,7 +493,7 @@ describe('ol.format.WFS', function () {
         featureTypes: ['states'],
         filter: betweenFilter('area', 100, 1000),
       });
-      expect(serialized.firstElementChild).to.xmleql(parse(text));
+      assertXmlEqual(serialized.firstElementChild, parse(text));
     });
 
     it('creates isNull property filter', function () {
@@ -510,7 +514,7 @@ describe('ol.format.WFS', function () {
         featureTypes: ['states'],
         filter: isNullFilter('area'),
       });
-      expect(serialized.firstElementChild).to.xmleql(parse(text));
+      assertXmlEqual(serialized.firstElementChild, parse(text));
     });
 
     it('creates isLike property filter', function () {
@@ -532,7 +536,7 @@ describe('ol.format.WFS', function () {
         featureTypes: ['states'],
         filter: likeFilter('name', 'New*'),
       });
-      expect(serialized.firstElementChild).to.xmleql(parse(text));
+      assertXmlEqual(serialized.firstElementChild, parse(text));
     });
 
     it('creates isLike property filter with arguments', function () {
@@ -554,7 +558,7 @@ describe('ol.format.WFS', function () {
         featureTypes: ['states'],
         filter: likeFilter('name', 'New*', '*', '.', '!', false),
       });
-      expect(serialized.firstElementChild).to.xmleql(parse(text));
+      assertXmlEqual(serialized.firstElementChild, parse(text));
     });
 
     it('creates a Not filter', function () {
@@ -578,7 +582,7 @@ describe('ol.format.WFS', function () {
         featureTypes: ['states'],
         filter: notFilter(equalToFilter('name', 'New York')),
       });
-      expect(serialized.firstElementChild).to.xmleql(parse(text));
+      assertXmlEqual(serialized.firstElementChild, parse(text));
     });
 
     it('creates an AND filter', function () {
@@ -618,7 +622,7 @@ describe('ol.format.WFS', function () {
           greaterThanFilter('population', 2000000),
         ),
       });
-      expect(serialized.firstElementChild).to.xmleql(parse(text));
+      assertXmlEqual(serialized.firstElementChild, parse(text));
     });
 
     it('creates a contains filter', function () {
@@ -657,7 +661,7 @@ describe('ol.format.WFS', function () {
           ]),
         ),
       });
-      expect(serialized.firstElementChild).to.xmleql(parse(text));
+      assertXmlEqual(serialized.firstElementChild, parse(text));
     });
 
     it('creates a intersects filter', function () {
@@ -696,7 +700,7 @@ describe('ol.format.WFS', function () {
           ]),
         ),
       });
-      expect(serialized.firstElementChild).to.xmleql(parse(text));
+      assertXmlEqual(serialized.firstElementChild, parse(text));
     });
 
     it('WFS v2 creates an intersects filter with a MultiSurface', function () {
@@ -739,7 +743,7 @@ describe('ol.format.WFS', function () {
           ]),
         ),
       });
-      expect(serialized.firstElementChild).to.xmleql(parse(text));
+      assertXmlEqual(serialized.firstElementChild, parse(text));
     });
 
     it('creates a within filter', function () {
@@ -778,7 +782,7 @@ describe('ol.format.WFS', function () {
           ]),
         ),
       });
-      expect(serialized.firstElementChild).to.xmleql(parse(text));
+      assertXmlEqual(serialized.firstElementChild, parse(text));
     });
 
     it('creates a dwithin filter', function () {
@@ -820,7 +824,7 @@ describe('ol.format.WFS', function () {
           'm',
         ),
       });
-      expect(serialized.firstElementChild).to.xmleql(parse(text));
+      assertXmlEqual(serialized.firstElementChild, parse(text));
     });
 
     it('creates During property filter', function () {
@@ -855,7 +859,7 @@ describe('ol.format.WFS', function () {
           '2012-12-31T00:00:00Z',
         ),
       });
-      expect(serialized.firstElementChild).to.xmleql(parse(text));
+      assertXmlEqual(serialized.firstElementChild, parse(text));
     });
   });
 
@@ -870,7 +874,7 @@ describe('ol.format.WFS', function () {
       const serialized = new WFS().writeTransaction(null, null, null, {
         handle: 'handle_t',
       });
-      expect(serialized).to.xmleql(parse(text));
+      assertXmlEqual(serialized, parse(text));
     });
   });
 
@@ -902,7 +906,7 @@ describe('ol.format.WFS', function () {
         featurePrefix: 'feature',
         gmlOptions: {multiCurve: true, srsName: 'EPSG:900913'},
       });
-      expect(serialized).to.xmleql(parse(text));
+      assertXmlEqual(serialized, parse(text));
     });
   });
 
@@ -937,7 +941,7 @@ describe('ol.format.WFS', function () {
         featurePrefix: 'foo',
         gmlOptions: {srsName: 'EPSG:900913'},
       });
-      expect(serialized).to.xmleql(parse(text));
+      assertXmlEqual(serialized, parse(text));
     });
 
     it('creates the correct update if geometry name is alias', function () {
@@ -961,7 +965,7 @@ describe('ol.format.WFS', function () {
         featurePrefix: 'foo',
         gmlOptions: {srsName: 'EPSG:900913'},
       });
-      expect(serialized).to.xmleql(parse(text));
+      assertXmlEqual(serialized, parse(text));
     });
   });
 
@@ -987,9 +991,10 @@ describe('ol.format.WFS', function () {
         featureType: 'FAULTS',
         gmlOptions: {srsName: 'EPSG:900913'},
       });
-      expect(
+      assert.equal(
         serialized.firstChild.attributes.getNamedItem('xmlns:feature') !== null,
-      ).to.equal(true);
+        true,
+      );
     });
   });
 
@@ -1010,14 +1015,14 @@ describe('ol.format.WFS', function () {
         ]),
       );
 
-      expect(function () {
+      assert.throws(function () {
         format.writeTransaction(null, [updateFeature], null, {
           featureNS: 'http://foo',
           featureType: 'FAULTS',
           featurePrefix: 'foo',
           gmlOptions: {srsName: 'EPSG:900913'},
         });
-      }).to.throwException();
+      });
     });
   });
 
@@ -1062,7 +1067,7 @@ describe('ol.format.WFS', function () {
         featurePrefix: 'foo',
         gmlOptions: {srsName: 'EPSG:900913'},
       });
-      expect(serialized).to.xmleql(parse(text));
+      assertXmlEqual(serialized, parse(text));
     });
   });
 
@@ -1104,7 +1109,7 @@ describe('ol.format.WFS', function () {
         featureType: 'states',
         featurePrefix: 'topp',
       });
-      expect(serialized).to.xmleql(parse(text));
+      assertXmlEqual(serialized, parse(text));
     });
   });
 
@@ -1133,7 +1138,7 @@ describe('ol.format.WFS', function () {
           },
         ],
       });
-      expect(serialized).to.xmleql(parse(text));
+      assertXmlEqual(serialized, parse(text));
     });
   });
 
@@ -1184,7 +1189,7 @@ describe('ol.format.WFS', function () {
         version: '1.0.0',
       });
 
-      expect(serialized).to.xmleql(parse(text));
+      assertXmlEqual(serialized, parse(text));
     });
   });
 
@@ -1226,7 +1231,7 @@ describe('ol.format.WFS', function () {
         featureType: 'topp:states',
         featurePrefix: 'topp',
       });
-      expect(serialized).to.xmleql(parse(text));
+      assertXmlEqual(serialized, parse(text));
     });
   });
 
@@ -1275,7 +1280,7 @@ describe('ol.format.WFS', function () {
         version: '1.0.0',
       });
 
-      expect(serialized).to.xmleql(parse(text));
+      assertXmlEqual(serialized, parse(text));
     });
   });
 
@@ -1318,7 +1323,7 @@ describe('ol.format.WFS', function () {
         hasZ: true,
         featurePrefix: 'topp',
       });
-      expect(serialized).to.xmleql(parse(text));
+      assertXmlEqual(serialized, parse(text));
     });
 
     describe('when writing out a Transaction request', function () {
@@ -1333,11 +1338,11 @@ describe('ol.format.WFS', function () {
       };
 
       it('does not throw on null or undefined property values for GML2', () => {
-        expect(() => writeTransaction(new GML2())).to.not.throwException();
+        assert.doesNotThrow(() => writeTransaction(new GML2()));
       });
 
       it('does not throw on null or undefined property values for GML3', () => {
-        expect(() => writeTransaction(new GML3())).to.not.throwException();
+        assert.doesNotThrow(() => writeTransaction(new GML3()));
       });
     });
 
@@ -1362,7 +1367,7 @@ describe('ol.format.WFS', function () {
       );
       const xmlSerializer = new XMLSerializer();
       const xmlString = xmlSerializer.serializeToString(serialized);
-      expect(xmlString).contain('<Name>');
+      assert.include(xmlString, '<Name>');
     });
   });
 
@@ -1385,7 +1390,7 @@ describe('ol.format.WFS', function () {
         featureTypes: ['states', 'cities'],
         featurePrefix: 'topp',
       });
-      expect(serialized).to.xmleql(parse(text));
+      assertXmlEqual(serialized, parse(text));
     });
   });
 
@@ -1407,15 +1412,15 @@ describe('ol.format.WFS', function () {
     });
 
     it('creates 7 features', function () {
-      expect(features).to.have.length(7);
+      assert.lengthOf(features, 7);
     });
 
     it('creates a polygon for Arnstadt', function () {
       feature = features[0];
       const fid = 'Historische_Messtischblaetter_WFS.71055885';
-      expect(feature.getId()).to.equal(fid);
-      expect(feature.get('titel')).to.equal('Arnstadt');
-      expect(feature.getGeometry()).to.be.an(Polygon);
+      assert.equal(feature.getId(), fid);
+      assert.equal(feature.get('titel'), 'Arnstadt');
+      assert.instanceOf(feature.getGeometry(), Polygon);
     });
   });
 
@@ -1439,7 +1444,7 @@ describe('ol.format.WFS', function () {
     });
 
     it('reads all features', function () {
-      expect(features.length).to.be(12);
+      assert.strictEqual(features.length, 12);
     });
   });
 
@@ -1467,8 +1472,8 @@ describe('ol.format.WFS', function () {
     });
 
     it('reads all features', function () {
-      expect(lineFeatures.length).to.be(3);
-      expect(polygonFeatures.length).to.be(9);
+      assert.strictEqual(lineFeatures.length, 3);
+      assert.strictEqual(polygonFeatures.length, 9);
     });
   });
 
@@ -1489,7 +1494,7 @@ describe('ol.format.WFS', function () {
     });
 
     it('reads all features with autoconfigure', function () {
-      expect(features.length).to.be(12);
+      assert.strictEqual(features.length, 12);
     });
   });
 
@@ -1510,9 +1515,9 @@ describe('ol.format.WFS', function () {
     });
 
     it('reads all features', function () {
-      expect(features.length).to.be(5);
+      assert.strictEqual(features.length, 5);
       features.forEach(function (feature) {
-        expect(feature instanceof Feature).to.be(true);
+        assert.strictEqual(feature instanceof Feature, true);
       });
     });
   });
@@ -1541,8 +1546,8 @@ describe('ol.format.WFS', function () {
     });
 
     it('reads all features', function () {
-      expect(busFeatures.length).to.be(3);
-      expect(infoFeatures.length).to.be(2);
+      assert.strictEqual(busFeatures.length, 3);
+      assert.strictEqual(infoFeatures.length, 2);
     });
   });
 
@@ -1581,7 +1586,7 @@ describe('ol.format.WFS', function () {
         ),
         '1.1.0',
       );
-      expect(serialized).to.xmleql(parse(wfs1Filter));
+      assertXmlEqual(serialized, parse(wfs1Filter));
     });
     it('defaults to creating a WFS 1.x.x filter if no version specified', function () {
       const serialized = writeFilter(
@@ -1590,7 +1595,7 @@ describe('ol.format.WFS', function () {
           equalToFilter('waterway', 'riverbank'),
         ),
       );
-      expect(serialized).to.xmleql(parse(wfs1Filter));
+      assertXmlEqual(serialized, parse(wfs1Filter));
     });
     it('creates a WFS 2.x.x filter', function () {
       const serialized = writeFilter(
@@ -1600,7 +1605,7 @@ describe('ol.format.WFS', function () {
         ),
         '2.0.0',
       );
-      expect(serialized).to.xmleql(parse(wfs2Filter));
+      assertXmlEqual(serialized, parse(wfs2Filter));
     });
   });
 
@@ -1658,7 +1663,7 @@ describe('ol.format.WFS', function () {
         featurePrefix: 'sf',
         filter,
       });
-      expect(serialized).to.xmleql(parse(getFeatureXml));
+      assertXmlEqual(serialized, parse(getFeatureXml));
     });
 
     it('can writeGetFeature query with negated disjoint spatial filter', function () {
@@ -1719,7 +1724,7 @@ describe('ol.format.WFS', function () {
         featurePrefix: 'sf',
         filter,
       });
-      expect(serialized).to.xmleql(parse(getFeatureXml));
+      assertXmlEqual(serialized, parse(getFeatureXml));
     });
 
     it('can parse basic GetFeature response', function () {
@@ -1747,8 +1752,8 @@ describe('ol.format.WFS', function () {
         version: '2.0.0',
       });
       const features = wfs.readFeatures(parse(response));
-      expect(features.length).to.be(1);
-      expect(features[0]).to.be.an(Feature);
+      assert.strictEqual(features.length, 1);
+      assert.instanceOf(features[0], Feature);
     });
 
     describe('when writing out a Transaction request', function () {
@@ -1764,7 +1769,7 @@ describe('ol.format.WFS', function () {
         }).writeTransaction(null, null, null, {
           handle: 'handle_t',
         });
-        expect(serialized).to.xmleql(parse(text));
+        assertXmlEqual(serialized, parse(text));
       });
     });
 
@@ -1810,7 +1815,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           featurePrefix: 'feature',
           gmlOptions: {multiCurve: true, srsName: 'EPSG:900913'},
         });
-        expect(serialized).to.xmleql(parse(text));
+        assertXmlEqual(serialized, parse(text));
       });
     });
 
@@ -1853,7 +1858,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           'm',
         ),
       });
-      expect(serialized.firstElementChild).to.xmleql(parse(text));
+      assertXmlEqual(serialized.firstElementChild, parse(text));
     });
 
     it('creates isLike property filter', function () {
@@ -1875,7 +1880,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         featureTypes: ['states'],
         filter: likeFilter('name', 'New*'),
       });
-      expect(serialized.firstElementChild).to.xmleql(parse(text));
+      assertXmlEqual(serialized.firstElementChild, parse(text));
     });
 
     it('creates isBetween property filter', function () {
@@ -1898,7 +1903,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         featureTypes: ['states'],
         filter: betweenFilter('area', 100, 1000),
       });
-      expect(serialized.firstElementChild).to.xmleql(parse(text));
+      assertXmlEqual(serialized.firstElementChild, parse(text));
     });
 
     it('creates greater/less than property filters', function () {
@@ -1947,7 +1952,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           ),
         ),
       });
-      expect(serialized.firstElementChild).to.xmleql(parse(text));
+      assertXmlEqual(serialized.firstElementChild, parse(text));
     });
 
     it('creates During property filter', function () {
@@ -1982,7 +1987,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
           '2012-12-31T00:00:00Z',
         ),
       });
-      expect(serialized.firstElementChild).to.xmleql(parse(text));
+      assertXmlEqual(serialized.firstElementChild, parse(text));
     });
 
     it('should use <ValueReference> tag for property names', () => {
@@ -2006,8 +2011,8 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
       );
       const xmlSerializer = new XMLSerializer();
       const xmlString = xmlSerializer.serializeToString(serialized);
-      expect(xmlString).contain('<ValueReference>');
-      expect(xmlString).not.contain('<Name>');
+      assert.include(xmlString, '<ValueReference>');
+      assert.notInclude(xmlString, '<Name>');
     });
   });
 });

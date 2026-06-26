@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import fse from 'fs-extra';
 import Feature from '../../../../src/ol/Feature.js';
 import {equals} from '../../../../src/ol/extent.js';
@@ -10,7 +11,6 @@ import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
 import {get as getProjection, transform} from '../../../../src/ol/proj.js';
-import expect from '../../expect.js';
 
 describe('ol/format/EsriJSON.js', function () {
   let format;
@@ -194,46 +194,46 @@ describe('ol/format/EsriJSON.js', function () {
   describe('#readFeature', function () {
     it('can read a single point feature', function () {
       const feature = format.readFeature(pointEsriJSON);
-      expect(feature).to.be.an(Feature);
+      assert.instanceOf(feature, Feature);
       const geometry = feature.getGeometry();
-      expect(geometry).to.be.an(Point);
-      expect(geometry.getCoordinates()).to.eql([102.0, 0.5]);
-      expect(feature.get('prop0')).to.be('value0');
+      assert.instanceOf(geometry, Point);
+      assert.deepEqual(geometry.getCoordinates(), [102.0, 0.5]);
+      assert.strictEqual(feature.get('prop0'), 'value0');
     });
 
     it('can read a single multipoint feature', function () {
       const feature = format.readFeature(multiPointEsriJSON);
-      expect(feature).to.be.an(Feature);
+      assert.instanceOf(feature, Feature);
       const geometry = feature.getGeometry();
-      expect(geometry).to.be.an(MultiPoint);
-      expect(geometry.getCoordinates()).to.eql([
+      assert.instanceOf(geometry, MultiPoint);
+      assert.deepEqual(geometry.getCoordinates(), [
         [102.0, 0.0],
         [103.0, 1.0],
       ]);
-      expect(feature.get('prop0')).to.be('value0');
+      assert.strictEqual(feature.get('prop0'), 'value0');
     });
 
     it('can read a single line string feature', function () {
       const feature = format.readFeature(lineStringEsriJSON);
-      expect(feature).to.be.an(Feature);
+      assert.instanceOf(feature, Feature);
       const geometry = feature.getGeometry();
-      expect(geometry).to.be.an(LineString);
-      expect(geometry.getCoordinates()).to.eql([
+      assert.instanceOf(geometry, LineString);
+      assert.deepEqual(geometry.getCoordinates(), [
         [102.0, 0.0],
         [103.0, 1.0],
         [104.0, 0.0],
         [105.0, 1.0],
       ]);
-      expect(feature.get('prop0')).to.be('value0');
-      expect(feature.get('prop1')).to.be(0.0);
+      assert.strictEqual(feature.get('prop0'), 'value0');
+      assert.strictEqual(feature.get('prop1'), 0.0);
     });
 
     it('can read a multi line string feature', function () {
       const feature = format.readFeature(multiLineStringEsriJSON);
-      expect(feature).to.be.an(Feature);
+      assert.instanceOf(feature, Feature);
       const geometry = feature.getGeometry();
-      expect(geometry).to.be.an(MultiLineString);
-      expect(geometry.getCoordinates()).to.eql([
+      assert.instanceOf(geometry, MultiLineString);
+      assert.deepEqual(geometry.getCoordinates(), [
         [
           [102.0, 0.0],
           [103.0, 1.0],
@@ -247,16 +247,16 @@ describe('ol/format/EsriJSON.js', function () {
           [108.0, 4.0],
         ],
       ]);
-      expect(feature.get('prop0')).to.be('value0');
-      expect(feature.get('prop1')).to.be(0.0);
+      assert.strictEqual(feature.get('prop0'), 'value0');
+      assert.strictEqual(feature.get('prop1'), 0.0);
     });
 
     it('can read a single polygon feature', function () {
       const feature = format.readFeature(polygonEsriJSON);
-      expect(feature).to.be.an(Feature);
+      assert.instanceOf(feature, Feature);
       const geometry = feature.getGeometry();
-      expect(geometry).to.be.an(Polygon);
-      expect(geometry.getCoordinates()).to.eql([
+      assert.instanceOf(geometry, Polygon);
+      assert.deepEqual(geometry.getCoordinates(), [
         [
           [100.0, 0.0],
           [100.0, 1.0],
@@ -264,16 +264,16 @@ describe('ol/format/EsriJSON.js', function () {
           [101.0, 0.0],
         ],
       ]);
-      expect(feature.get('prop0')).to.be('value0');
-      expect(feature.get('prop1')).to.eql({'this': 'that'});
+      assert.strictEqual(feature.get('prop0'), 'value0');
+      assert.deepEqual(feature.get('prop1'), {'this': 'that'});
     });
 
     it('can read a multi polygon feature', function () {
       const feature = format.readFeature(multiPolygonEsriJSON);
-      expect(feature).to.be.an(Feature);
+      assert.instanceOf(feature, Feature);
       const geometry = feature.getGeometry();
-      expect(geometry).to.be.an(MultiPolygon);
-      expect(geometry.getCoordinates()).to.eql([
+      assert.instanceOf(geometry, MultiPolygon);
+      assert.deepEqual(geometry.getCoordinates(), [
         [
           [
             [0, 1],
@@ -301,14 +301,14 @@ describe('ol/format/EsriJSON.js', function () {
 
     it('can read a feature collection', function () {
       const features = format.readFeatures(featureCollectionEsriJSON);
-      expect(features).to.have.length(3);
-      expect(features[0].getGeometry()).to.be.an(Point);
-      expect(features[1].getGeometry()).to.be.an(LineString);
-      expect(features[2].getGeometry()).to.be.an(Polygon);
+      assert.lengthOf(features, 3);
+      assert.instanceOf(features[0].getGeometry(), Point);
+      assert.instanceOf(features[1].getGeometry(), LineString);
+      assert.instanceOf(features[2].getGeometry(), Polygon);
 
-      expect(features[0].getId()).to.eql('value0');
-      expect(features[1].getId()).to.eql('value0');
-      expect(features[2].getId()).to.eql('value0');
+      assert.deepEqual(features[0].getId(), 'value0');
+      assert.deepEqual(features[1].getId(), 'value0');
+      assert.deepEqual(features[2].getId(), 'value0');
     });
 
     it('can read and transform a point', function () {
@@ -316,8 +316,9 @@ describe('ol/format/EsriJSON.js', function () {
         featureProjection: 'EPSG:3857',
         dataProjection: 'EPSG:4326',
       });
-      expect(feature[0].getGeometry()).to.be.an(Point);
-      expect(feature[0].getGeometry().getCoordinates()).to.eql(
+      assert.instanceOf(feature[0].getGeometry(), Point);
+      assert.deepEqual(
+        feature[0].getGeometry().getCoordinates(),
         transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857'),
       );
     });
@@ -327,17 +328,18 @@ describe('ol/format/EsriJSON.js', function () {
         featureProjection: 'EPSG:3857',
         dataProjection: 'EPSG:4326',
       });
-      expect(features[0].getGeometry()).to.be.an(Point);
-      expect(features[0].getGeometry().getCoordinates()).to.eql(
+      assert.instanceOf(features[0].getGeometry(), Point);
+      assert.deepEqual(
+        features[0].getGeometry().getCoordinates(),
         transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857'),
       );
-      expect(features[1].getGeometry().getCoordinates()).to.eql([
+      assert.deepEqual(features[1].getGeometry().getCoordinates(), [
         transform([102.0, 0.0], 'EPSG:4326', 'EPSG:3857'),
         transform([103.0, 1.0], 'EPSG:4326', 'EPSG:3857'),
         transform([104.0, 0.0], 'EPSG:4326', 'EPSG:3857'),
         transform([105.0, 1.0], 'EPSG:4326', 'EPSG:3857'),
       ]);
-      expect(features[2].getGeometry().getCoordinates()).to.eql([
+      assert.deepEqual(features[2].getGeometry().getCoordinates(), [
         [
           transform([100.0, 0.0], 'EPSG:4326', 'EPSG:3857'),
           transform([100.0, 1.0], 'EPSG:4326', 'EPSG:3857'),
@@ -351,8 +353,8 @@ describe('ol/format/EsriJSON.js', function () {
       const feature = new EsriJSON({geometryName: 'the_geom'}).readFeature(
         pointEsriJSON,
       );
-      expect(feature.getGeometryName()).to.be('the_geom');
-      expect(feature.getGeometry()).to.be.an(Point);
+      assert.strictEqual(feature.getGeometryName(), 'the_geom');
+      assert.instanceOf(feature.getGeometry(), Point);
     });
   });
 
@@ -361,19 +363,19 @@ describe('ol/format/EsriJSON.js', function () {
       const str = JSON.stringify(data);
       const array = format.readFeatures(str);
 
-      expect(array.length).to.be(2);
+      assert.strictEqual(array.length, 2);
 
       const first = array[0];
-      expect(first).to.be.a(Feature);
-      expect(first.get('LINK_ID')).to.be(573730499);
+      assert.instanceOf(first, Feature);
+      assert.strictEqual(first.get('LINK_ID'), 573730499);
       const firstGeom = first.getGeometry();
-      expect(firstGeom).to.be.a(LineString);
+      assert.instanceOf(firstGeom, LineString);
 
       const second = array[1];
-      expect(second).to.be.a(Feature);
-      expect(second.get('ST_NAME')).to.be('BRUNNSGATAN');
+      assert.instanceOf(second, Feature);
+      assert.strictEqual(second.get('ST_NAME'), 'BRUNNSGATAN');
       const secondGeom = second.getGeometry();
-      expect(secondGeom).to.be.a(LineString);
+      assert.instanceOf(secondGeom, LineString);
     });
 
     it('parses ksfields.geojson', async () => {
@@ -382,15 +384,15 @@ describe('ol/format/EsriJSON.js', function () {
         {encoding: 'utf8'},
       );
       const result = format.readFeatures(text);
-      expect(result.length).to.be(9);
+      assert.strictEqual(result.length, 9);
 
       const first = result[0];
-      expect(first).to.be.a(Feature);
-      expect(first.get('field_name')).to.be('EUDORA');
-      expect(first.getId()).to.be(6406);
+      assert.instanceOf(first, Feature);
+      assert.strictEqual(first.get('field_name'), 'EUDORA');
+      assert.strictEqual(first.getId(), 6406);
       const firstGeom = first.getGeometry();
-      expect(firstGeom).to.be.a(Polygon);
-      expect(
+      assert.instanceOf(firstGeom, Polygon);
+      assert.strictEqual(
         equals(
           firstGeom.getExtent(),
           [
@@ -398,15 +400,16 @@ describe('ol/format/EsriJSON.js', function () {
             4716567.373073828,
           ],
         ),
-      ).to.be(true);
+        true,
+      );
 
       const last = result[8];
-      expect(last).to.be.a(Feature);
-      expect(last.get('field_name')).to.be('FEAGINS');
-      expect(last.getId()).to.be(6030);
+      assert.instanceOf(last, Feature);
+      assert.strictEqual(last.get('field_name'), 'FEAGINS');
+      assert.strictEqual(last.getId(), 6030);
       const lastGeom = last.getGeometry();
-      expect(lastGeom).to.be.a(Polygon);
-      expect(
+      assert.instanceOf(lastGeom, Polygon);
+      assert.strictEqual(
         equals(
           lastGeom.getExtent(),
           [
@@ -414,7 +417,8 @@ describe('ol/format/EsriJSON.js', function () {
             4578554.9934867555,
           ],
         ),
-      ).to.be(true);
+        true,
+      );
     });
   });
 
@@ -426,9 +430,9 @@ describe('ol/format/EsriJSON.js', function () {
       });
 
       const obj = format.readGeometry(str);
-      expect(obj).to.be.a(Point);
-      expect(obj.getCoordinates()).to.eql([10, 20]);
-      expect(obj.getLayout()).to.eql('XY');
+      assert.instanceOf(obj, Point);
+      assert.deepEqual(obj.getCoordinates(), [10, 20]);
+      assert.deepEqual(obj.getLayout(), 'XY');
     });
 
     it('parses XYZ point', function () {
@@ -439,9 +443,9 @@ describe('ol/format/EsriJSON.js', function () {
       });
 
       const obj = format.readGeometry(str);
-      expect(obj).to.be.a(Point);
-      expect(obj.getCoordinates()).to.eql([10, 20, 10]);
-      expect(obj.getLayout()).to.eql('XYZ');
+      assert.instanceOf(obj, Point);
+      assert.deepEqual(obj.getCoordinates(), [10, 20, 10]);
+      assert.deepEqual(obj.getLayout(), 'XYZ');
     });
 
     it('parses XYM point', function () {
@@ -452,9 +456,9 @@ describe('ol/format/EsriJSON.js', function () {
       });
 
       const obj = format.readGeometry(str);
-      expect(obj).to.be.a(Point);
-      expect(obj.getCoordinates()).to.eql([10, 20, 10]);
-      expect(obj.getLayout()).to.eql('XYM');
+      assert.instanceOf(obj, Point);
+      assert.deepEqual(obj.getCoordinates(), [10, 20, 10]);
+      assert.deepEqual(obj.getLayout(), 'XYM');
     });
 
     it('parses XYZM point', function () {
@@ -466,9 +470,9 @@ describe('ol/format/EsriJSON.js', function () {
       });
 
       const obj = format.readGeometry(str);
-      expect(obj).to.be.a(Point);
-      expect(obj.getCoordinates()).to.eql([10, 20, 0, 10]);
-      expect(obj.getLayout()).to.eql('XYZM');
+      assert.instanceOf(obj, Point);
+      assert.deepEqual(obj.getCoordinates(), [10, 20, 0, 10]);
+      assert.deepEqual(obj.getLayout(), 'XYZM');
     });
 
     it('parses multipoint', function () {
@@ -480,12 +484,12 @@ describe('ol/format/EsriJSON.js', function () {
       });
 
       const obj = format.readGeometry(str);
-      expect(obj).to.be.a(MultiPoint);
-      expect(obj.getCoordinates()).to.eql([
+      assert.instanceOf(obj, MultiPoint);
+      assert.deepEqual(obj.getCoordinates(), [
         [10, 20],
         [20, 30],
       ]);
-      expect(obj.getLayout()).to.eql('XY');
+      assert.deepEqual(obj.getLayout(), 'XY');
     });
 
     it('parses XYZ multipoint', function () {
@@ -498,12 +502,12 @@ describe('ol/format/EsriJSON.js', function () {
       });
 
       const obj = format.readGeometry(str);
-      expect(obj).to.be.a(MultiPoint);
-      expect(obj.getCoordinates()).to.eql([
+      assert.instanceOf(obj, MultiPoint);
+      assert.deepEqual(obj.getCoordinates(), [
         [10, 20, 0],
         [20, 30, 0],
       ]);
-      expect(obj.getLayout()).to.eql('XYZ');
+      assert.deepEqual(obj.getLayout(), 'XYZ');
     });
 
     it('parses XYM multipoint', function () {
@@ -516,12 +520,12 @@ describe('ol/format/EsriJSON.js', function () {
       });
 
       const obj = format.readGeometry(str);
-      expect(obj).to.be.a(MultiPoint);
-      expect(obj.getCoordinates()).to.eql([
+      assert.instanceOf(obj, MultiPoint);
+      assert.deepEqual(obj.getCoordinates(), [
         [10, 20, 0],
         [20, 30, 0],
       ]);
-      expect(obj.getLayout()).to.eql('XYM');
+      assert.deepEqual(obj.getLayout(), 'XYM');
     });
 
     it('parses XYZM multipoint', function () {
@@ -535,12 +539,12 @@ describe('ol/format/EsriJSON.js', function () {
       });
 
       const obj = format.readGeometry(str);
-      expect(obj).to.be.a(MultiPoint);
-      expect(obj.getCoordinates()).to.eql([
+      assert.instanceOf(obj, MultiPoint);
+      assert.deepEqual(obj.getCoordinates(), [
         [10, 20, 0, 1],
         [20, 30, 0, 1],
       ]);
-      expect(obj.getLayout()).to.eql('XYZM');
+      assert.deepEqual(obj.getLayout(), 'XYZM');
     });
 
     it('parses linestring', function () {
@@ -554,12 +558,12 @@ describe('ol/format/EsriJSON.js', function () {
       });
 
       const obj = format.readGeometry(str);
-      expect(obj).to.be.a(LineString);
-      expect(obj.getCoordinates()).to.eql([
+      assert.instanceOf(obj, LineString);
+      assert.deepEqual(obj.getCoordinates(), [
         [10, 20],
         [30, 40],
       ]);
-      expect(obj.getLayout()).to.eql('XY');
+      assert.deepEqual(obj.getLayout(), 'XY');
     });
 
     it('parses XYZ linestring', function () {
@@ -574,9 +578,9 @@ describe('ol/format/EsriJSON.js', function () {
       });
 
       const obj = format.readGeometry(str);
-      expect(obj).to.be.a(LineString);
-      expect(obj.getLayout()).to.eql('XYZ');
-      expect(obj.getCoordinates()).to.eql([
+      assert.instanceOf(obj, LineString);
+      assert.deepEqual(obj.getLayout(), 'XYZ');
+      assert.deepEqual(obj.getCoordinates(), [
         [10, 20, 1534],
         [30, 40, 1420],
       ]);
@@ -594,9 +598,9 @@ describe('ol/format/EsriJSON.js', function () {
       });
 
       const obj = format.readGeometry(str);
-      expect(obj).to.be.a(LineString);
-      expect(obj.getLayout()).to.eql('XYM');
-      expect(obj.getCoordinates()).to.eql([
+      assert.instanceOf(obj, LineString);
+      assert.deepEqual(obj.getLayout(), 'XYM');
+      assert.deepEqual(obj.getCoordinates(), [
         [10, 20, 1534],
         [30, 40, 1420],
       ]);
@@ -615,9 +619,9 @@ describe('ol/format/EsriJSON.js', function () {
       });
 
       const obj = format.readGeometry(str);
-      expect(obj).to.be.a(LineString);
-      expect(obj.getLayout()).to.eql('XYZM');
-      expect(obj.getCoordinates()).to.eql([
+      assert.instanceOf(obj, LineString);
+      assert.deepEqual(obj.getLayout(), 'XYZM');
+      assert.deepEqual(obj.getCoordinates(), [
         [10, 20, 1534, 1],
         [30, 40, 1420, 2],
       ]);
@@ -641,8 +645,8 @@ describe('ol/format/EsriJSON.js', function () {
         ],
       });
       const obj = format.readGeometry(str);
-      expect(obj).to.be.a(MultiLineString);
-      expect(obj.getCoordinates()).to.eql([
+      assert.instanceOf(obj, MultiLineString);
+      assert.deepEqual(obj.getCoordinates(), [
         [
           [102.0, 0.0],
           [103.0, 1.0],
@@ -656,7 +660,7 @@ describe('ol/format/EsriJSON.js', function () {
           [108.0, 4.0],
         ],
       ]);
-      expect(obj.getLayout()).to.eql('XY');
+      assert.deepEqual(obj.getLayout(), 'XY');
     });
 
     it('parses XYZ multilinestring', function () {
@@ -678,8 +682,8 @@ describe('ol/format/EsriJSON.js', function () {
         ],
       });
       const obj = format.readGeometry(str);
-      expect(obj).to.be.a(MultiLineString);
-      expect(obj.getCoordinates()).to.eql([
+      assert.instanceOf(obj, MultiLineString);
+      assert.deepEqual(obj.getCoordinates(), [
         [
           [102.0, 0.0, 1],
           [103.0, 1.0, 1],
@@ -693,7 +697,7 @@ describe('ol/format/EsriJSON.js', function () {
           [108.0, 4.0, 1],
         ],
       ]);
-      expect(obj.getLayout()).to.eql('XYZ');
+      assert.deepEqual(obj.getLayout(), 'XYZ');
     });
 
     it('parses XYM multilinestring', function () {
@@ -715,8 +719,8 @@ describe('ol/format/EsriJSON.js', function () {
         ],
       });
       const obj = format.readGeometry(str);
-      expect(obj).to.be.a(MultiLineString);
-      expect(obj.getCoordinates()).to.eql([
+      assert.instanceOf(obj, MultiLineString);
+      assert.deepEqual(obj.getCoordinates(), [
         [
           [102.0, 0.0, 1],
           [103.0, 1.0, 1],
@@ -730,7 +734,7 @@ describe('ol/format/EsriJSON.js', function () {
           [108.0, 4.0, 1],
         ],
       ]);
-      expect(obj.getLayout()).to.eql('XYM');
+      assert.deepEqual(obj.getLayout(), 'XYM');
     });
 
     it('parses XYZM multilinestring', function () {
@@ -753,8 +757,8 @@ describe('ol/format/EsriJSON.js', function () {
         ],
       });
       const obj = format.readGeometry(str);
-      expect(obj).to.be.a(MultiLineString);
-      expect(obj.getCoordinates()).to.eql([
+      assert.instanceOf(obj, MultiLineString);
+      assert.deepEqual(obj.getCoordinates(), [
         [
           [102, 0, 1, 2],
           [103, 1, 1, 2],
@@ -768,7 +772,7 @@ describe('ol/format/EsriJSON.js', function () {
           [108, 4, 1, 2],
         ],
       ]);
-      expect(obj.getLayout()).to.eql('XYZM');
+      assert.deepEqual(obj.getLayout(), 'XYZM');
     });
 
     it('parses polygon', function () {
@@ -797,14 +801,14 @@ describe('ol/format/EsriJSON.js', function () {
         rings: [outer, inner1, inner2],
       });
       const obj = format.readGeometry(str);
-      expect(obj).to.be.a(Polygon);
-      expect(obj.getLayout()).to.eql('XY');
+      assert.instanceOf(obj, Polygon);
+      assert.deepEqual(obj.getLayout(), 'XY');
       const rings = obj.getLinearRings();
-      expect(rings.length).to.be(3);
-      expect(rings[0].getCoordinates()[0].length).to.equal(2);
-      expect(rings[0]).to.be.a(LinearRing);
-      expect(rings[1]).to.be.a(LinearRing);
-      expect(rings[2]).to.be.a(LinearRing);
+      assert.strictEqual(rings.length, 3);
+      assert.equal(rings[0].getCoordinates()[0].length, 2);
+      assert.instanceOf(rings[0], LinearRing);
+      assert.instanceOf(rings[1], LinearRing);
+      assert.instanceOf(rings[2], LinearRing);
     });
 
     it('parses XYZ polygon', function () {
@@ -834,14 +838,14 @@ describe('ol/format/EsriJSON.js', function () {
         hasZ: true,
       });
       const obj = format.readGeometry(str);
-      expect(obj).to.be.a(Polygon);
-      expect(obj.getLayout()).to.eql('XYZ');
+      assert.instanceOf(obj, Polygon);
+      assert.deepEqual(obj.getLayout(), 'XYZ');
       const rings = obj.getLinearRings();
-      expect(rings.length).to.be(3);
-      expect(rings[0].getCoordinates()[0].length).to.equal(3);
-      expect(rings[0]).to.be.a(LinearRing);
-      expect(rings[1]).to.be.a(LinearRing);
-      expect(rings[2]).to.be.a(LinearRing);
+      assert.strictEqual(rings.length, 3);
+      assert.equal(rings[0].getCoordinates()[0].length, 3);
+      assert.instanceOf(rings[0], LinearRing);
+      assert.instanceOf(rings[1], LinearRing);
+      assert.instanceOf(rings[2], LinearRing);
     });
 
     it('parses XYM polygon', function () {
@@ -871,14 +875,14 @@ describe('ol/format/EsriJSON.js', function () {
         hasM: true,
       });
       const obj = format.readGeometry(str);
-      expect(obj).to.be.a(Polygon);
-      expect(obj.getLayout()).to.eql('XYM');
+      assert.instanceOf(obj, Polygon);
+      assert.deepEqual(obj.getLayout(), 'XYM');
       const rings = obj.getLinearRings();
-      expect(rings.length).to.be(3);
-      expect(rings[0].getCoordinates()[0].length).to.equal(3);
-      expect(rings[0]).to.be.a(LinearRing);
-      expect(rings[1]).to.be.a(LinearRing);
-      expect(rings[2]).to.be.a(LinearRing);
+      assert.strictEqual(rings.length, 3);
+      assert.equal(rings[0].getCoordinates()[0].length, 3);
+      assert.instanceOf(rings[0], LinearRing);
+      assert.instanceOf(rings[1], LinearRing);
+      assert.instanceOf(rings[2], LinearRing);
     });
 
     it('parses XYZM polygon', function () {
@@ -909,14 +913,14 @@ describe('ol/format/EsriJSON.js', function () {
         hasM: true,
       });
       const obj = format.readGeometry(str);
-      expect(obj).to.be.a(Polygon);
-      expect(obj.getLayout()).to.eql('XYZM');
+      assert.instanceOf(obj, Polygon);
+      assert.deepEqual(obj.getLayout(), 'XYZM');
       const rings = obj.getLinearRings();
-      expect(rings.length).to.be(3);
-      expect(rings[0].getCoordinates()[0].length).to.equal(4);
-      expect(rings[0]).to.be.a(LinearRing);
-      expect(rings[1]).to.be.a(LinearRing);
-      expect(rings[2]).to.be.a(LinearRing);
+      assert.strictEqual(rings.length, 3);
+      assert.equal(rings[0].getCoordinates()[0].length, 4);
+      assert.instanceOf(rings[0], LinearRing);
+      assert.instanceOf(rings[1], LinearRing);
+      assert.instanceOf(rings[2], LinearRing);
     });
 
     it('parses XY multipolygon', function () {
@@ -943,9 +947,9 @@ describe('ol/format/EsriJSON.js', function () {
         ],
       });
       const obj = format.readGeometry(str);
-      expect(obj).to.be.a(MultiPolygon);
-      expect(obj.getLayout()).to.eql('XY');
-      expect(obj.getCoordinates()).to.eql([
+      assert.instanceOf(obj, MultiPolygon);
+      assert.deepEqual(obj.getLayout(), 'XY');
+      assert.deepEqual(obj.getCoordinates(), [
         [
           [
             [0, 1],
@@ -996,9 +1000,9 @@ describe('ol/format/EsriJSON.js', function () {
         hasZ: true,
       });
       const obj = format.readGeometry(str);
-      expect(obj).to.be.a(MultiPolygon);
-      expect(obj.getLayout()).to.eql('XYZ');
-      expect(obj.getCoordinates()).to.eql([
+      assert.instanceOf(obj, MultiPolygon);
+      assert.deepEqual(obj.getLayout(), 'XYZ');
+      assert.deepEqual(obj.getCoordinates(), [
         [
           [
             [0, 1, 0],
@@ -1049,9 +1053,9 @@ describe('ol/format/EsriJSON.js', function () {
         hasM: true,
       });
       const obj = format.readGeometry(str);
-      expect(obj).to.be.a(MultiPolygon);
-      expect(obj.getLayout()).to.eql('XYM');
-      expect(obj.getCoordinates()).to.eql([
+      assert.instanceOf(obj, MultiPolygon);
+      assert.deepEqual(obj.getLayout(), 'XYM');
+      assert.deepEqual(obj.getCoordinates(), [
         [
           [
             [0, 1, 0],
@@ -1103,9 +1107,9 @@ describe('ol/format/EsriJSON.js', function () {
         hasM: true,
       });
       const obj = format.readGeometry(str);
-      expect(obj).to.be.a(MultiPolygon);
-      expect(obj.getLayout()).to.eql('XYZM');
-      expect(obj.getCoordinates()).to.eql([
+      assert.instanceOf(obj, MultiPolygon);
+      assert.deepEqual(obj.getLayout(), 'XYZM');
+      assert.deepEqual(obj.getCoordinates(), [
         [
           [
             [0, 1, 0, 1],
@@ -1159,8 +1163,8 @@ describe('ol/format/EsriJSON.js', function () {
       const str = JSON.stringify(input);
       const obj = format.readGeometry(input);
 
-      expect(obj).to.be.a(MultiPolygon);
-      expect(str).to.eql(JSON.stringify(input));
+      assert.instanceOf(obj, MultiPolygon);
+      assert.deepEqual(str, JSON.stringify(input));
     });
   });
 
@@ -1197,19 +1201,22 @@ describe('ol/format/EsriJSON.js', function () {
       };
       const features = format.readFeatures(json);
 
-      expect(features.length).to.be(2);
+      assert.strictEqual(features.length, 2);
 
       const first = features[0];
-      expect(first).to.be.a(Feature);
-      expect(first.get('foo')).to.be('bar');
-      expect(first.getGeometry()).to.be.a(Point);
+      assert.instanceOf(first, Feature);
+      assert.strictEqual(first.get('foo'), 'bar');
+      assert.instanceOf(first.getGeometry(), Point);
 
       const second = features[1];
-      expect(second).to.be.a(Feature);
-      expect(second.get('bam')).to.be('baz');
-      expect(second.getGeometry()).to.be.a(LineString);
+      assert.instanceOf(second, Feature);
+      assert.strictEqual(second.get('bam'), 'baz');
+      assert.instanceOf(second.getGeometry(), LineString);
 
-      expect(format.readProjection(json)).to.be(getProjection('EPSG:3857'));
+      assert.strictEqual(
+        format.readProjection(json),
+        getProjection('EPSG:3857'),
+      );
     });
   });
 
@@ -1217,7 +1224,8 @@ describe('ol/format/EsriJSON.js', function () {
     it('encodes point', function () {
       const point = new Point([10, 20]);
       const esrijson = format.writeGeometry(point);
-      expect(point.getCoordinates()).to.eql(
+      assert.deepEqual(
+        point.getCoordinates(),
         format.readGeometry(esrijson).getCoordinates(),
       );
     });
@@ -1225,7 +1233,8 @@ describe('ol/format/EsriJSON.js', function () {
     it('encodes XYZ point', function () {
       const point = new Point([10, 20, 0], 'XYZ');
       const esrijson = format.writeGeometry(point);
-      expect(point.getCoordinates()).to.eql(
+      assert.deepEqual(
+        point.getCoordinates(),
         format.readGeometry(esrijson).getCoordinates(),
       );
     });
@@ -1233,7 +1242,8 @@ describe('ol/format/EsriJSON.js', function () {
     it('encodes XYM point', function () {
       const point = new Point([10, 20, 0], 'XYM');
       const esrijson = format.writeGeometry(point);
-      expect(point.getCoordinates()).to.eql(
+      assert.deepEqual(
+        point.getCoordinates(),
         format.readGeometry(esrijson).getCoordinates(),
       );
     });
@@ -1241,7 +1251,8 @@ describe('ol/format/EsriJSON.js', function () {
     it('encodes XYZM point', function () {
       const point = new Point([10, 20, 5, 0], 'XYZM');
       const esrijson = format.writeGeometry(point);
-      expect(point.getCoordinates()).to.eql(
+      assert.deepEqual(
+        point.getCoordinates(),
         format.readGeometry(esrijson).getCoordinates(),
       );
     });
@@ -1252,7 +1263,8 @@ describe('ol/format/EsriJSON.js', function () {
         [30, 40],
       ]);
       const esrijson = format.writeGeometry(linestring);
-      expect(linestring.getCoordinates()).to.eql(
+      assert.deepEqual(
+        linestring.getCoordinates(),
         format.readGeometry(esrijson).getCoordinates(),
       );
     });
@@ -1266,7 +1278,8 @@ describe('ol/format/EsriJSON.js', function () {
         'XYZ',
       );
       const esrijson = format.writeGeometry(linestring);
-      expect(linestring.getCoordinates()).to.eql(
+      assert.deepEqual(
+        linestring.getCoordinates(),
         format.readGeometry(esrijson).getCoordinates(),
       );
     });
@@ -1280,7 +1293,8 @@ describe('ol/format/EsriJSON.js', function () {
         'XYM',
       );
       const esrijson = format.writeGeometry(linestring);
-      expect(linestring.getCoordinates()).to.eql(
+      assert.deepEqual(
+        linestring.getCoordinates(),
         format.readGeometry(esrijson).getCoordinates(),
       );
     });
@@ -1294,7 +1308,8 @@ describe('ol/format/EsriJSON.js', function () {
         'XYZM',
       );
       const esrijson = format.writeGeometry(linestring);
-      expect(linestring.getCoordinates()).to.eql(
+      assert.deepEqual(
+        linestring.getCoordinates(),
         format.readGeometry(esrijson).getCoordinates(),
       );
     });
@@ -1323,7 +1338,8 @@ describe('ol/format/EsriJSON.js', function () {
       ];
       const polygon = new Polygon([outer, inner1, inner2]);
       const esrijson = format.writeGeometry(polygon);
-      expect(polygon.getCoordinates(false)).to.eql(
+      assert.deepEqual(
+        polygon.getCoordinates(false),
         format.readGeometry(esrijson).getCoordinates(),
       );
     });
@@ -1352,7 +1368,8 @@ describe('ol/format/EsriJSON.js', function () {
       ];
       const polygon = new Polygon([outer, inner1, inner2], 'XYZ');
       const esrijson = format.writeGeometry(polygon);
-      expect(polygon.getCoordinates(false)).to.eql(
+      assert.deepEqual(
+        polygon.getCoordinates(false),
         format.readGeometry(esrijson).getCoordinates(),
       );
     });
@@ -1381,7 +1398,8 @@ describe('ol/format/EsriJSON.js', function () {
       ];
       const polygon = new Polygon([outer, inner1, inner2], 'XYM');
       const esrijson = format.writeGeometry(polygon);
-      expect(polygon.getCoordinates(false)).to.eql(
+      assert.deepEqual(
+        polygon.getCoordinates(false),
         format.readGeometry(esrijson).getCoordinates(),
       );
     });
@@ -1410,7 +1428,8 @@ describe('ol/format/EsriJSON.js', function () {
       ];
       const polygon = new Polygon([outer, inner1, inner2], 'XYZM');
       const esrijson = format.writeGeometry(polygon);
-      expect(polygon.getCoordinates(false)).to.eql(
+      assert.deepEqual(
+        polygon.getCoordinates(false),
         format.readGeometry(esrijson).getCoordinates(),
       );
     });
@@ -1421,7 +1440,8 @@ describe('ol/format/EsriJSON.js', function () {
         [103.0, 1.0],
       ]);
       const esrijson = format.writeGeometry(multipoint);
-      expect(multipoint.getCoordinates()).to.eql(
+      assert.deepEqual(
+        multipoint.getCoordinates(),
         format.readGeometry(esrijson).getCoordinates(),
       );
     });
@@ -1435,7 +1455,8 @@ describe('ol/format/EsriJSON.js', function () {
         'XYZ',
       );
       const esrijson = format.writeGeometry(multipoint);
-      expect(multipoint.getCoordinates()).to.eql(
+      assert.deepEqual(
+        multipoint.getCoordinates(),
         format.readGeometry(esrijson).getCoordinates(),
       );
     });
@@ -1449,7 +1470,8 @@ describe('ol/format/EsriJSON.js', function () {
         'XYM',
       );
       const esrijson = format.writeGeometry(multipoint);
-      expect(multipoint.getCoordinates()).to.eql(
+      assert.deepEqual(
+        multipoint.getCoordinates(),
         format.readGeometry(esrijson).getCoordinates(),
       );
     });
@@ -1463,7 +1485,8 @@ describe('ol/format/EsriJSON.js', function () {
         'XYZM',
       );
       const esrijson = format.writeGeometry(multipoint);
-      expect(multipoint.getCoordinates()).to.eql(
+      assert.deepEqual(
+        multipoint.getCoordinates(),
         format.readGeometry(esrijson).getCoordinates(),
       );
     });
@@ -1484,7 +1507,8 @@ describe('ol/format/EsriJSON.js', function () {
         ],
       ]);
       const esrijson = format.writeGeometry(multilinestring);
-      expect(multilinestring.getCoordinates()).to.eql(
+      assert.deepEqual(
+        multilinestring.getCoordinates(),
         format.readGeometry(esrijson).getCoordinates(),
       );
     });
@@ -1508,7 +1532,8 @@ describe('ol/format/EsriJSON.js', function () {
         'XYZ',
       );
       const esrijson = format.writeGeometry(multilinestring);
-      expect(multilinestring.getCoordinates()).to.eql(
+      assert.deepEqual(
+        multilinestring.getCoordinates(),
         format.readGeometry(esrijson).getCoordinates(),
       );
     });
@@ -1532,7 +1557,8 @@ describe('ol/format/EsriJSON.js', function () {
         'XYM',
       );
       const esrijson = format.writeGeometry(multilinestring);
-      expect(multilinestring.getCoordinates()).to.eql(
+      assert.deepEqual(
+        multilinestring.getCoordinates(),
         format.readGeometry(esrijson).getCoordinates(),
       );
     });
@@ -1556,7 +1582,8 @@ describe('ol/format/EsriJSON.js', function () {
         'XYZM',
       );
       const esrijson = format.writeGeometry(multilinestring);
-      expect(multilinestring.getCoordinates()).to.eql(
+      assert.deepEqual(
+        multilinestring.getCoordinates(),
         format.readGeometry(esrijson).getCoordinates(),
       );
     });
@@ -1587,7 +1614,8 @@ describe('ol/format/EsriJSON.js', function () {
         ],
       ]);
       const esrijson = format.writeGeometry(multipolygon);
-      expect(multipolygon.getCoordinates()).to.eql(
+      assert.deepEqual(
+        multipolygon.getCoordinates(),
         format.readGeometry(esrijson).getCoordinates(),
       );
     });
@@ -1621,7 +1649,8 @@ describe('ol/format/EsriJSON.js', function () {
         'XYZ',
       );
       const esrijson = format.writeGeometry(multipolygon);
-      expect(multipolygon.getCoordinates()).to.eql(
+      assert.deepEqual(
+        multipolygon.getCoordinates(),
         format.readGeometry(esrijson).getCoordinates(),
       );
     });
@@ -1655,7 +1684,8 @@ describe('ol/format/EsriJSON.js', function () {
         'XYM',
       );
       const esrijson = format.writeGeometry(multipolygon);
-      expect(multipolygon.getCoordinates()).to.eql(
+      assert.deepEqual(
+        multipolygon.getCoordinates(),
         format.readGeometry(esrijson).getCoordinates(),
       );
     });
@@ -1689,7 +1719,8 @@ describe('ol/format/EsriJSON.js', function () {
         'XYZM',
       );
       const esrijson = format.writeGeometry(multipolygon);
-      expect(multipolygon.getCoordinates()).to.eql(
+      assert.deepEqual(
+        multipolygon.getCoordinates(),
         format.readGeometry(esrijson).getCoordinates(),
       );
     });
@@ -1704,13 +1735,15 @@ describe('ol/format/EsriJSON.js', function () {
         dataProjection: 'EPSG:4326',
         featureProjection: 'EPSG:3857',
       });
-      expect(point.getCoordinates()[0]).to.roughlyEqual(
+      assert.approximately(
+        point.getCoordinates()[0],
         newPoint.getCoordinates()[0],
         1e-8,
       );
-      expect(
+      assert.isBelow(
         Math.abs(point.getCoordinates()[1] - newPoint.getCoordinates()[1]),
-      ).to.be.lessThan(0.0000001);
+        0.0000001,
+      );
     });
   });
 
@@ -1720,19 +1753,20 @@ describe('ol/format/EsriJSON.js', function () {
       const array = format.readFeatures(str);
       const esrijson = format.writeFeaturesObject(array);
       const result = format.readFeatures(esrijson);
-      expect(array.length).to.equal(result.length);
+      assert.equal(array.length, result.length);
       let got, exp, gotProp, expProp;
       for (let i = 0, ii = array.length; i < ii; ++i) {
         got = array[i];
         exp = result[i];
-        expect(got.getGeometry().getCoordinates()).to.eql(
+        assert.deepEqual(
+          got.getGeometry().getCoordinates(),
           exp.getGeometry().getCoordinates(),
         );
         gotProp = got.getProperties();
         delete gotProp.geometry;
         expProp = exp.getProperties();
         delete expProp.geometry;
-        expect(gotProp).to.eql(expProp);
+        assert.deepEqual(gotProp, expProp);
       }
     });
 
@@ -1748,12 +1782,13 @@ describe('ol/format/EsriJSON.js', function () {
       for (let i = 0, ii = array.length; i < ii; ++i) {
         got = array[i];
         exp = result[i];
-        expect(
+        assert.deepEqual(
           got
             .getGeometry()
             .transform('EPSG:3857', 'EPSG:4326')
             .getCoordinates(),
-        ).to.eql(exp.getGeometry().getCoordinates());
+          exp.getGeometry().getCoordinates(),
+        );
       }
     });
 
@@ -1762,13 +1797,13 @@ describe('ol/format/EsriJSON.js', function () {
       feature.setGeometryName('mygeom');
       feature.setGeometry(new Point([5, 10]));
       const esrijson = format.writeFeaturesObject([feature]);
-      expect(esrijson.features[0].attributes.mygeom).to.eql(undefined);
+      assert.deepEqual(esrijson.features[0].attributes.mygeom, undefined);
     });
 
     it('writes out a feature without properties correctly', function () {
       const feature = new Feature(new Point([5, 10]));
       const esrijson = format.writeFeatureObject(feature);
-      expect(esrijson.attributes).to.eql({});
+      assert.deepEqual(esrijson.attributes, {});
     });
 
     it('adds the projection inside the geometry correctly when featureProjection is set', function () {
@@ -1779,8 +1814,9 @@ describe('ol/format/EsriJSON.js', function () {
       });
       esrijson.features.forEach(function (feature, i) {
         const spatialReference = feature.geometry.spatialReference;
-        expect(Number(spatialReference.wkid)).to.equal(3857);
-        expect(feature.geometry.paths[0]).to.eql(
+        assert.equal(Number(spatialReference.wkid), 3857);
+        assert.deepEqual(
+          feature.geometry.paths[0],
           array[i].getGeometry().getCoordinates(),
         );
       });
@@ -1795,8 +1831,9 @@ describe('ol/format/EsriJSON.js', function () {
       });
       esrijson.features.forEach(function (feature, i) {
         const spatialReference = feature.geometry.spatialReference;
-        expect(Number(spatialReference.wkid)).to.equal(4326);
-        expect(feature.geometry.paths[0]).to.eql(
+        assert.equal(Number(spatialReference.wkid), 4326);
+        assert.deepEqual(
+          feature.geometry.paths[0],
           array[i]
             .getGeometry()
             .clone()
@@ -1811,8 +1848,9 @@ describe('ol/format/EsriJSON.js', function () {
       const array = format.readFeatures(str);
       const esrijson = format.writeFeaturesObject(array);
       esrijson.features.forEach(function (feature, i) {
-        expect(feature.geometry.spatialReference).to.be(undefined);
-        expect(feature.geometry.paths[0]).to.eql(
+        assert.strictEqual(feature.geometry.spatialReference, undefined);
+        assert.deepEqual(
+          feature.geometry.paths[0],
           array[i].getGeometry().getCoordinates(),
         );
       });

@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import DataTile, {
   asArrayLike,
   asImageLike,
@@ -33,9 +34,9 @@ describe('ol/DataTile', function () {
         loader: loader,
         transition: 200,
       });
-      expect(tile.tileCoord).to.equal(tileCoord);
-      expect(tile.transition_).to.be(200);
-      expect(tile.loader_).to.equal(loader);
+      assert.equal(tile.tileCoord, tileCoord);
+      assert.strictEqual(tile.transition_, 200);
+      assert.equal(tile.loader_, loader);
     });
   });
 
@@ -46,7 +47,7 @@ describe('ol/DataTile', function () {
         tileCoord: tileCoord,
         loader: loader,
       });
-      expect(tile.getSize()).to.eql([256, 256]);
+      assert.deepEqual(tile.getSize(), [256, 256]);
     });
 
     it('respects what is provided in the constructor', function () {
@@ -57,7 +58,7 @@ describe('ol/DataTile', function () {
         tileCoord: tileCoord,
         loader: loader,
       });
-      expect(tile.getSize()).to.eql(size);
+      assert.deepEqual(tile.getSize(), size);
     });
   });
 
@@ -68,11 +69,11 @@ describe('ol/DataTile', function () {
         tileCoord: tileCoord,
         loader: loader,
       });
-      expect(tile.getState()).to.be(TileState.IDLE);
+      assert.strictEqual(tile.getState(), TileState.IDLE);
       tile.load();
-      expect(tile.getState()).to.be(TileState.LOADING);
+      assert.strictEqual(tile.getState(), TileState.LOADING);
       listenOnce(tile, 'change', () => {
-        expect(tile.getState()).to.be(TileState.LOADED);
+        assert.strictEqual(tile.getState(), TileState.LOADED);
         done();
       });
     });
@@ -86,9 +87,9 @@ describe('ol/DataTile', function () {
       tile.state = TileState.ERROR;
 
       tile.load();
-      expect(tile.getState()).to.be(TileState.LOADING);
+      assert.strictEqual(tile.getState(), TileState.LOADING);
       listenOnce(tile, 'change', () => {
-        expect(tile.getState()).to.be(TileState.LOADED);
+        assert.strictEqual(tile.getState(), TileState.LOADED);
         done();
       });
     });
@@ -103,14 +104,14 @@ describe('ol/DataTile', function () {
       });
       tile.load();
       listenOnce(tile, 'change', () => {
-        expect(tile.getState()).to.be(TileState.LOADED);
+        assert.strictEqual(tile.getState(), TileState.LOADED);
         const data = tile.getData();
-        expect(data).to.be.an(Uint8ClampedArray);
-        expect(data.length).to.be(262144);
+        assert.instanceOf(data, Uint8ClampedArray);
+        assert.strictEqual(data.length, 262144);
         const expected = [255, 0, 0, 255, 255, 0, 0, 255];
-        expect(Array.from(data.slice(0, 8))).to.eql(expected);
-        expect(asImageLike(data)).to.be(null);
-        expect(asArrayLike(data)).to.be(data);
+        assert.deepEqual(Array.from(data.slice(0, 8)), expected);
+        assert.strictEqual(asImageLike(data), null);
+        assert.strictEqual(asArrayLike(data), data);
         done();
       });
     });
@@ -142,18 +143,18 @@ describe('ol/DataTile', function () {
       });
       tile.load();
       listenOnce(tile, 'change', () => {
-        expect(tile.getState()).to.be(TileState.LOADED);
+        assert.strictEqual(tile.getState(), TileState.LOADED);
         const data = tile.getData();
-        expect(data).to.be.an(Image);
-        expect(data.width).to.be(256);
-        expect(data.height).to.be(256);
-        expect(asArrayLike(data)).to.be(null);
-        expect(asImageLike(data)).to.be(data);
+        assert.instanceOf(data, Image);
+        assert.strictEqual(data.width, 256);
+        assert.strictEqual(data.height, 256);
+        assert.strictEqual(asArrayLike(data), null);
+        assert.strictEqual(asImageLike(data), data);
         const imageData = toArray(asImageLike(data));
-        expect(imageData).to.be.an(Uint8ClampedArray);
-        expect(imageData.length).to.be(262144);
+        assert.instanceOf(imageData, Uint8ClampedArray);
+        assert.strictEqual(imageData.length, 262144);
         const expected = [255, 0, 0, 255, 255, 0, 0, 255];
-        expect(Array.from(imageData.slice(0, 8))).to.eql(expected);
+        assert.deepEqual(Array.from(imageData.slice(0, 8)), expected);
         done();
       });
     });

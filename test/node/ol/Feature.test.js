@@ -1,28 +1,28 @@
+import {assert} from 'chai';
 import {spy as sinonSpy} from 'sinon';
 import Feature, {createStyleFunction} from '../../../src/ol/Feature.js';
 import Point from '../../../src/ol/geom/Point.js';
 import {isEmpty} from '../../../src/ol/obj.js';
 import Style from '../../../src/ol/style/Style.js';
-import expect from '../expect.js';
 
 describe('ol/Feature.js', function () {
   describe('constructor', function () {
     it('creates a new feature', function () {
       const feature = new Feature();
-      expect(feature).to.be.a(Feature);
+      assert.instanceOf(feature, Feature);
     });
 
     it('takes properties', function () {
       const feature = new Feature({
         foo: 'bar',
       });
-      expect(feature.get('foo')).to.be('bar');
+      assert.strictEqual(feature.get('foo'), 'bar');
     });
 
     it("can store the feature's commonly used id", function () {
       const feature = new Feature();
       feature.setId('foo');
-      expect(feature.getId()).to.be('foo');
+      assert.strictEqual(feature.getId(), 'foo');
     });
 
     it('will set the default geometry', function () {
@@ -31,8 +31,8 @@ describe('ol/Feature.js', function () {
         foo: 'bar',
       });
       const geometry = feature.getGeometry();
-      expect(geometry).to.be.a(Point);
-      expect(feature.get('geometry')).to.be(geometry);
+      assert.instanceOf(geometry, Point);
+      assert.strictEqual(feature.get('geometry'), geometry);
     });
   });
 
@@ -42,19 +42,19 @@ describe('ol/Feature.js', function () {
         a: 'first',
         b: 'second',
       });
-      expect(feature.get('a')).to.be('first');
-      expect(feature.get('b')).to.be('second');
+      assert.strictEqual(feature.get('a'), 'first');
+      assert.strictEqual(feature.get('b'), 'second');
     });
 
     it('returns undefined for unset attributes', function () {
       const feature = new Feature();
-      expect(feature.get('a')).to.be(undefined);
+      assert.strictEqual(feature.get('a'), undefined);
     });
 
     it('returns values set by set', function () {
       const feature = new Feature();
       feature.set('a', 'b');
-      expect(feature.get('a')).to.be('b');
+      assert.strictEqual(feature.get('a'), 'b');
     });
   });
 
@@ -70,17 +70,17 @@ describe('ol/Feature.js', function () {
       const attributes = feature.getProperties();
 
       const keys = Object.keys(attributes);
-      expect(keys.sort()).to.eql(['foo', 'geometry', 'ten']);
+      assert.deepEqual(keys.sort(), ['foo', 'geometry', 'ten']);
 
-      expect(attributes.foo).to.be('bar');
-      expect(attributes.geometry).to.be(point);
-      expect(attributes.ten).to.be(10);
+      assert.strictEqual(attributes.foo, 'bar');
+      assert.strictEqual(attributes.geometry, point);
+      assert.strictEqual(attributes.ten, 10);
     });
 
     it('is empty by default', function () {
       const feature = new Feature();
       const properties = feature.getProperties();
-      expect(isEmpty(properties)).to.be(true);
+      assert.strictEqual(isEmpty(properties), true);
     });
   });
 
@@ -96,16 +96,16 @@ describe('ol/Feature.js', function () {
       const attributes = feature.getPropertiesInternal();
 
       const keys = Object.keys(attributes);
-      expect(keys.sort()).to.eql(['foo', 'geometry', 'ten']);
+      assert.deepEqual(keys.sort(), ['foo', 'geometry', 'ten']);
 
-      expect(attributes.foo).to.be('bar');
-      expect(attributes.geometry).to.be(point);
-      expect(attributes.ten).to.be(10);
+      assert.strictEqual(attributes.foo, 'bar');
+      assert.strictEqual(attributes.geometry, point);
+      assert.strictEqual(attributes.ten, 10);
     });
 
     it('is null by default', () => {
       const feature = new Feature();
-      expect(feature.getPropertiesInternal()).to.be(null);
+      assert.strictEqual(feature.getPropertiesInternal(), null);
     });
   });
 
@@ -114,35 +114,35 @@ describe('ol/Feature.js', function () {
 
     it('returns undefined for unset geometry', function () {
       const feature = new Feature();
-      expect(feature.getGeometry()).to.be(undefined);
+      assert.strictEqual(feature.getGeometry(), undefined);
     });
 
     it('returns null for null geometry (constructor)', function () {
       const feature = new Feature(null);
-      expect(feature.getGeometry()).to.be(undefined);
+      assert.strictEqual(feature.getGeometry(), undefined);
     });
 
     it('returns null for null geometry (setGeometry())', function () {
       const feature = new Feature();
       feature.setGeometry(null);
-      expect(feature.getGeometry()).to.be(null);
+      assert.strictEqual(feature.getGeometry(), null);
     });
 
     it('gets the geometry set at construction', function () {
       const feature = new Feature({
         geometry: point,
       });
-      expect(feature.getGeometry()).to.be(point);
+      assert.strictEqual(feature.getGeometry(), point);
     });
 
     it('gets any geometry set by setGeometry', function () {
       const feature = new Feature();
       feature.setGeometry(point);
-      expect(feature.getGeometry()).to.be(point);
+      assert.strictEqual(feature.getGeometry(), point);
 
       const point2 = new Point([1, 2]);
       feature.setGeometry(point2);
-      expect(feature.getGeometry()).to.be(point2);
+      assert.strictEqual(feature.getGeometry(), point2);
     });
   });
 
@@ -153,7 +153,7 @@ describe('ol/Feature.js', function () {
         b: 'second',
       });
       feature.set('a', 'new');
-      expect(feature.get('a')).to.be('new');
+      assert.strictEqual(feature.get('a'), 'new');
     });
 
     it('can be used to set the geometry', function () {
@@ -162,22 +162,22 @@ describe('ol/Feature.js', function () {
         geometry: new Point([1, 2]),
       });
       feature.set('geometry', point);
-      expect(feature.get('geometry')).to.be(point);
-      expect(feature.getGeometry()).to.be(point);
+      assert.strictEqual(feature.get('geometry'), point);
+      assert.strictEqual(feature.getGeometry(), point);
     });
 
     it('can be used to set attributes with arbitrary names', function () {
       const feature = new Feature();
 
       feature.set('toString', 'string');
-      expect(feature.get('toString')).to.be('string');
-      expect(typeof feature.toString).to.be('function');
+      assert.strictEqual(feature.get('toString'), 'string');
+      assert.strictEqual(typeof feature.toString, 'function');
 
       feature.set('getGeometry', 'x');
-      expect(feature.get('getGeometry')).to.be('x');
+      assert.strictEqual(feature.get('getGeometry'), 'x');
 
       feature.set('geometry', new Point([1, 2]));
-      expect(feature.getGeometry()).to.be.a(Point);
+      assert.instanceOf(feature.getGeometry(), Point);
     });
   });
 
@@ -187,18 +187,18 @@ describe('ol/Feature.js', function () {
     it('sets the default geometry', function () {
       const feature = new Feature();
       feature.setGeometry(point);
-      expect(feature.get('geometry')).to.be(point);
+      assert.strictEqual(feature.get('geometry'), point);
     });
 
     it('replaces previous default geometry', function () {
       const feature = new Feature({
         geometry: point,
       });
-      expect(feature.getGeometry()).to.be(point);
+      assert.strictEqual(feature.getGeometry(), point);
 
       const point2 = new Point([1, 2]);
       feature.setGeometry(point2);
-      expect(feature.getGeometry()).to.be(point2);
+      assert.strictEqual(feature.getGeometry(), point2);
     });
   });
 
@@ -208,16 +208,16 @@ describe('ol/Feature.js', function () {
     it('sets property where to to look at geometry', function () {
       const feature = new Feature();
       feature.setGeometry(point);
-      expect(feature.getGeometry()).to.be(point);
+      assert.strictEqual(feature.getGeometry(), point);
 
       const point2 = new Point([1, 2]);
       feature.set('altGeometry', point2);
-      expect(feature.getGeometry()).to.be(point);
+      assert.strictEqual(feature.getGeometry(), point);
       feature.setGeometryName('altGeometry');
-      expect(feature.getGeometry()).to.be(point2);
+      assert.strictEqual(feature.getGeometry(), point2);
 
       feature.on('change', function () {
-        expect().fail();
+        assert.fail();
       });
       point.setCoordinates([0, 2]);
     });
@@ -232,7 +232,7 @@ describe('ol/Feature.js', function () {
       const spy = sinonSpy();
       feature.on('change', spy);
       point2.setCoordinates([0, 2]);
-      expect(spy.callCount).to.be(1);
+      assert.strictEqual(spy.callCount, 1);
     });
 
     it('can use a different geometry name', function () {
@@ -240,30 +240,30 @@ describe('ol/Feature.js', function () {
       feature.setGeometryName('foo');
       const point = new Point([10, 20]);
       feature.setGeometry(point);
-      expect(feature.getGeometry()).to.be(point);
+      assert.strictEqual(feature.getGeometry(), point);
     });
   });
 
   describe('#setId()', function () {
     it('sets the feature identifier', function () {
       const feature = new Feature();
-      expect(feature.getId()).to.be(undefined);
+      assert.strictEqual(feature.getId(), undefined);
       feature.setId('foo');
-      expect(feature.getId()).to.be('foo');
+      assert.strictEqual(feature.getId(), 'foo');
     });
 
     it('accepts a string or number', function () {
       const feature = new Feature();
       feature.setId('foo');
-      expect(feature.getId()).to.be('foo');
+      assert.strictEqual(feature.getId(), 'foo');
       feature.setId(2);
-      expect(feature.getId()).to.be(2);
+      assert.strictEqual(feature.getId(), 2);
     });
 
     it('dispatches the "change" event', function (done) {
       const feature = new Feature();
       feature.on('change', function () {
-        expect(feature.getId()).to.be('foo');
+        assert.strictEqual(feature.getId(), 'foo');
         done();
       });
       feature.setId('foo');
@@ -277,26 +277,26 @@ describe('ol/Feature.js', function () {
 
     it('returns undefined after construction', function () {
       const feature = new Feature();
-      expect(feature.getStyleFunction()).to.be(undefined);
+      assert.strictEqual(feature.getStyleFunction(), undefined);
     });
 
     it('returns the function passed to setStyle', function () {
       const feature = new Feature();
       feature.setStyle(styleFunction);
-      expect(feature.getStyleFunction()).to.be(styleFunction);
+      assert.strictEqual(feature.getStyleFunction(), styleFunction);
     });
 
     it('does not get confused with user "styleFunction" property', function () {
       const feature = new Feature();
       feature.set('styleFunction', 'foo');
-      expect(feature.getStyleFunction()).to.be(undefined);
+      assert.strictEqual(feature.getStyleFunction(), undefined);
     });
 
     it('does not get confused with "styleFunction" option', function () {
       const feature = new Feature({
         styleFunction: 'foo',
       });
-      expect(feature.getStyleFunction()).to.be(undefined);
+      assert.strictEqual(feature.getStyleFunction(), undefined);
     });
   });
 
@@ -311,29 +311,29 @@ describe('ol/Feature.js', function () {
       const feature = new Feature();
       feature.setStyle(style);
       const func = feature.getStyleFunction();
-      expect(func()).to.eql([style]);
+      assert.deepEqual(func(), [style]);
     });
 
     it('accepts an array of styles', function () {
       const feature = new Feature();
       feature.setStyle([style]);
       const func = feature.getStyleFunction();
-      expect(func()).to.eql([style]);
+      assert.deepEqual(func(), [style]);
     });
 
     it('accepts a style function', function () {
       const feature = new Feature();
       feature.setStyle(styleFunction);
-      expect(feature.getStyleFunction()).to.be(styleFunction);
-      expect(feature.getStyleFunction()(feature, 42)).to.be(42);
+      assert.strictEqual(feature.getStyleFunction(), styleFunction);
+      assert.strictEqual(feature.getStyleFunction()(feature, 42), 42);
     });
 
     it('accepts null', function () {
       const feature = new Feature();
       feature.setStyle(style);
       feature.setStyle(null);
-      expect(feature.getStyle()).to.be(null);
-      expect(feature.getStyleFunction()).to.be(undefined);
+      assert.strictEqual(feature.getStyle(), null);
+      assert.strictEqual(feature.getStyleFunction(), undefined);
     });
 
     it('dispatches a change event', function () {
@@ -341,7 +341,7 @@ describe('ol/Feature.js', function () {
       const spy = sinonSpy();
       feature.on('change', spy);
       feature.setStyle(style);
-      expect(spy.callCount).to.be(1);
+      assert.strictEqual(spy.callCount, 1);
     });
   });
 
@@ -355,16 +355,16 @@ describe('ol/Feature.js', function () {
     it('returns what is passed to setStyle', function () {
       const feature = new Feature();
 
-      expect(feature.getStyle()).to.be(null);
+      assert.strictEqual(feature.getStyle(), null);
 
       feature.setStyle(style);
-      expect(feature.getStyle()).to.be(style);
+      assert.strictEqual(feature.getStyle(), style);
 
       feature.setStyle([style]);
-      expect(feature.getStyle()).to.eql([style]);
+      assert.deepEqual(feature.getStyle(), [style]);
 
       feature.setStyle(styleFunction);
-      expect(feature.getStyle()).to.be(styleFunction);
+      assert.strictEqual(feature.getStyle(), styleFunction);
     });
 
     it('does not get confused with "style" option to constructor', function () {
@@ -372,14 +372,14 @@ describe('ol/Feature.js', function () {
         style: 'foo',
       });
 
-      expect(feature.getStyle()).to.be(null);
+      assert.strictEqual(feature.getStyle(), null);
     });
 
     it('does not get confused with user set "style" property', function () {
       const feature = new Feature();
       feature.set('style', 'foo');
 
-      expect(feature.getStyle()).to.be(null);
+      assert.strictEqual(feature.getStyle(), null);
     });
   });
 
@@ -396,16 +396,16 @@ describe('ol/Feature.js', function () {
       feature.set('barkey', 'barval');
 
       const clone = feature.clone();
-      expect(clone.get('fookey')).to.be('fooval');
-      expect(clone.getId()).to.be(undefined);
-      expect(clone.getGeometryName()).to.be('geom');
+      assert.strictEqual(clone.get('fookey'), 'fooval');
+      assert.strictEqual(clone.getId(), undefined);
+      assert.strictEqual(clone.getGeometryName(), 'geom');
       const geometryClone = clone.getGeometry();
-      expect(geometryClone).not.to.be(geometry);
+      assert.notEqual(geometryClone, geometry);
       const coordinates = geometryClone.getFlatCoordinates();
-      expect(coordinates[0]).to.be(1);
-      expect(coordinates[1]).to.be(2);
-      expect(clone.getStyle()).to.be(style);
-      expect(clone.get('barkey')).to.be('barval');
+      assert.strictEqual(coordinates[0], 1);
+      assert.strictEqual(coordinates[1], 2);
+      assert.strictEqual(clone.getStyle(), style);
+      assert.strictEqual(clone.get('barkey'), 'barval');
     });
 
     it('clones features where the default geometry propetry is not a geometry', function () {
@@ -416,9 +416,9 @@ describe('ol/Feature.js', function () {
         geometry: {lat: 1, lon: 1},
       });
       const clone = f.clone();
-      expect(f.getGeometryName()).to.be(clone.getGeometryName());
-      expect(clone.getGeometry()).to.be.a(Point);
-      expect(clone.get('geometry')).to.eql({lat: 1, lon: 1});
+      assert.strictEqual(f.getGeometryName(), clone.getGeometryName());
+      assert.instanceOf(clone.getGeometry(), Point);
+      assert.deepEqual(clone.get('geometry'), {lat: 1, lon: 1});
     });
 
     it('correctly clones features with no geometry and no style', function () {
@@ -426,9 +426,9 @@ describe('ol/Feature.js', function () {
       feature.set('fookey', 'fooval');
 
       const clone = feature.clone();
-      expect(clone.get('fookey')).to.be('fooval');
-      expect(clone.getGeometry()).to.be(undefined);
-      expect(clone.getStyle()).to.be(null);
+      assert.strictEqual(clone.get('fookey'), 'fooval');
+      assert.strictEqual(clone.getGeometry(), undefined);
+      assert.strictEqual(clone.getStyle(), null);
     });
   });
 
@@ -440,7 +440,7 @@ describe('ol/Feature.js', function () {
       const spy = sinonSpy();
       feature.on('change', spy);
       feature.setGeometry(null);
-      expect(spy.callCount).to.be(1);
+      assert.strictEqual(spy.callCount, 1);
     });
   });
 });
@@ -450,12 +450,12 @@ describe('ol.Feature.createStyleFunction()', function () {
 
   it('creates a feature style function from a single style', function () {
     const styleFunction = createStyleFunction(style);
-    expect(styleFunction()).to.eql([style]);
+    assert.deepEqual(styleFunction(), [style]);
   });
 
   it('creates a feature style function from an array of styles', function () {
     const styleFunction = createStyleFunction([style]);
-    expect(styleFunction()).to.eql([style]);
+    assert.deepEqual(styleFunction(), [style]);
   });
 
   it('passes through a function', function () {
@@ -463,12 +463,12 @@ describe('ol.Feature.createStyleFunction()', function () {
       return [style];
     };
     const styleFunction = createStyleFunction(original);
-    expect(styleFunction).to.be(original);
+    assert.strictEqual(styleFunction, original);
   });
 
   it('throws on (some) unexpected input', function () {
-    expect(function () {
+    assert.throws(function () {
       createStyleFunction({bogus: 'input'});
-    }).to.throwException();
+    });
   });
 });

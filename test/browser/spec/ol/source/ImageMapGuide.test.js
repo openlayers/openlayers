@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import ImageState from '../../../../../src/ol/ImageState.js';
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
@@ -47,11 +48,13 @@ describe('ol/source/ImageMapGuide', function () {
       map.once('rendercomplete', function () {
         source.updateParams({'MAPDEFINITION': 'newValue'});
         map.once('rendercomplete', function () {
-          expect(srcs.length).to.be(2);
-          expect(new URL(srcs[0]).searchParams.get('MAPDEFINITION')).to.be(
+          assert.strictEqual(srcs.length, 2);
+          assert.strictEqual(
+            new URL(srcs[0]).searchParams.get('MAPDEFINITION'),
             'mdf',
           );
-          expect(new URL(srcs[1]).searchParams.get('MAPDEFINITION')).to.be(
+          assert.strictEqual(
+            new URL(srcs[1]).searchParams.get('MAPDEFINITION'),
             'newValue',
           );
           done();
@@ -67,9 +70,9 @@ describe('ol/source/ImageMapGuide', function () {
       source.setParams({test: 'after'});
 
       const params = source.getParams();
-      expect(params).to.eql({test: 'after'});
+      assert.deepEqual(params, {test: 'after'});
 
-      expect(before).to.eql({test: 'before', foo: 'bar'});
+      assert.deepEqual(before, {test: 'before', foo: 'bar'});
     });
   });
 
@@ -77,23 +80,23 @@ describe('ol/source/ImageMapGuide', function () {
     it('verify getting a param', function () {
       const source = new ImageMapGuide(options);
       const setParams = source.getParams();
-      expect(setParams).to.eql({MAPDEFINITION: 'mdf'});
+      assert.deepEqual(setParams, {MAPDEFINITION: 'mdf'});
     });
 
     it('verify on adding a param', function () {
       const source = new ImageMapGuide(options);
       source.updateParams({'TEST': 'value'});
       const setParams = source.getParams();
-      expect(setParams).to.eql({MAPDEFINITION: 'mdf', TEST: 'value'});
-      expect(options.params).to.eql({MAPDEFINITION: 'mdf'});
+      assert.deepEqual(setParams, {MAPDEFINITION: 'mdf', TEST: 'value'});
+      assert.deepEqual(options.params, {MAPDEFINITION: 'mdf'});
     });
 
     it('verify on update a param', function () {
       const source = new ImageMapGuide(options);
       source.updateParams({'MAPDEFINITION': 'newValue'});
       const setParams = source.getParams();
-      expect(setParams).to.eql({MAPDEFINITION: 'newValue'});
-      expect(options.params).to.eql({MAPDEFINITION: 'mdf'});
+      assert.deepEqual(setParams, {MAPDEFINITION: 'newValue'});
+      assert.deepEqual(options.params, {MAPDEFINITION: 'mdf'});
     });
   });
 });

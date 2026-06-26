@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import proj4 from 'proj4';
 import {spy as sinonSpy} from 'sinon';
 import ImageTile from '../../../../../src/ol/ImageTile.js';
@@ -36,12 +37,12 @@ describe('ol/source/TileImage', function () {
   describe('#getInterpolate()', function () {
     it('is true by default', function () {
       const source = new TileImage({});
-      expect(source.getInterpolate()).to.be(true);
+      assert.strictEqual(source.getInterpolate(), true);
     });
 
     it('is false if constructed with interpolate: false', function () {
       const source = new TileImage({interpolate: false});
-      expect(source.getInterpolate()).to.be(false);
+      assert.strictEqual(source.getInterpolate(), false);
     });
   });
 
@@ -53,7 +54,7 @@ describe('ol/source/TileImage', function () {
       const retrieved = source.getTileGridForProjection(
         getProjection('EPSG:4326'),
       );
-      expect(retrieved).to.be(tileGrid);
+      assert.strictEqual(retrieved, tileGrid);
     });
   });
 
@@ -62,7 +63,7 @@ describe('ol/source/TileImage', function () {
 
     beforeEach(function () {
       source = createSource();
-      expect(source.getKey()).to.be(getUid(source));
+      assert.strictEqual(source.getKey(), getUid(source));
       tile = source.getTileInternal(0, 0, 0, 1, getProjection('EPSG:3857'));
     });
 
@@ -79,8 +80,8 @@ describe('ol/source/TileImage', function () {
             1,
             getProjection('EPSG:3857'),
           );
-          expect(returnedTile).not.to.be(tile);
-          expect(returnedTile.key).to.be('key0');
+          assert.notEqual(returnedTile, tile);
+          assert.strictEqual(returnedTile.key, 'key0');
         });
       });
     });
@@ -96,8 +97,8 @@ describe('ol/source/TileImage', function () {
         1,
         getProjection('EPSG:3857'),
       );
-      expect(tile3857).to.be.a(ImageTile);
-      expect(tile3857).not.to.be.a(ReprojTile);
+      assert.instanceOf(tile3857, ImageTile);
+      assert.notInstanceOf(tile3857, ReprojTile);
 
       const projXXX = new Projection({
         code: 'XXX',
@@ -105,8 +106,8 @@ describe('ol/source/TileImage', function () {
       });
       const sourceXXX = createSource(projXXX);
       const tileXXX = sourceXXX.getTile(0, 0, 0, 1, projXXX);
-      expect(tileXXX).to.be.a(ImageTile);
-      expect(tileXXX).not.to.be.a(ReprojTile);
+      assert.instanceOf(tileXXX, ImageTile);
+      assert.notInstanceOf(tileXXX, ReprojTile);
     });
 
     beforeEach(function () {
@@ -129,7 +130,7 @@ describe('ol/source/TileImage', function () {
         }),
       );
       const tile = source.getTile(0, 0, 0, 1, getProjection('EPSG:3857'));
-      expect(tile).to.be.a(ReprojTile);
+      assert.instanceOf(tile, ReprojTile);
 
       listen(tile, 'change', function () {
         if (tile.getState() == 2) {
@@ -151,7 +152,7 @@ describe('ol/source/TileImage', function () {
         }),
       );
       const tile = source.getTile(0, 0, 0, 1, proj);
-      expect(tile).to.be.a(ReprojTile);
+      assert.instanceOf(tile, ReprojTile);
 
       listen(tile, 'change', function () {
         if (tile.getState() == 2) {
@@ -182,8 +183,8 @@ describe('ol/source/TileImage', function () {
       source.on('tileloadend', endSpy);
       const tile = source.getTile(0, 0, 0, 1, getProjection('EPSG:3857'));
       tile.load();
-      expect(startSpy.callCount).to.be(1);
-      expect(endSpy.callCount).to.be(1);
+      assert.strictEqual(startSpy.callCount, 1);
+      assert.strictEqual(endSpy.callCount, 1);
     });
 
     it('works for loading-error-loading-loaded sequences', function (done) {
@@ -203,8 +204,8 @@ describe('ol/source/TileImage', function () {
         errorSpy();
       });
       source.on('tileloadend', function () {
-        expect(startSpy.callCount).to.be(2);
-        expect(errorSpy.callCount).to.be(1);
+        assert.strictEqual(startSpy.callCount, 2);
+        assert.strictEqual(errorSpy.callCount, 1);
         done();
       });
       const tile = source.getTile(0, 0, 0, 1, getProjection('EPSG:3857'));
@@ -218,8 +219,8 @@ describe('ol/source/TileImage', function () {
       const source = createSource('EPSG:3857', undefined, transition);
       const tile = source.getTile(0, 0, 0, 1, getProjection('EPSG:4326'));
 
-      expect(tile).to.be.a(ReprojTile);
-      expect(tile.transition_).to.be(transition);
+      assert.instanceOf(tile, ReprojTile);
+      assert.strictEqual(tile.transition_, transition);
     });
   });
 });

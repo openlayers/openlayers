@@ -1,12 +1,12 @@
+import {assert} from 'chai';
 import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
-import expect from '../../expect.js';
 
 describe('ol/geom/MultiPolygon.js', function () {
   it('cannot be constructed with a null geometry', function () {
-    expect(function () {
+    assert.throws(function () {
       return new MultiPolygon(null);
-    }).to.throwException();
+    });
   });
 
   describe('with a null MultiPolygon', function () {
@@ -21,7 +21,7 @@ describe('ol/geom/MultiPolygon.js', function () {
           ],
         ]),
       ]);
-      expect(multiPolygon.getCoordinates()).to.eql([
+      assert.deepEqual(multiPolygon.getCoordinates(), [
         [
           [
             [0, 0],
@@ -41,7 +41,7 @@ describe('ol/geom/MultiPolygon.js', function () {
           ],
         ]),
       );
-      expect(multiPolygon.getCoordinates()).to.eql([
+      assert.deepEqual(multiPolygon.getCoordinates(), [
         [
           [
             [0, 0],
@@ -59,7 +59,7 @@ describe('ol/geom/MultiPolygon.js', function () {
           ],
         ],
       ]);
-      expect(multiPolygon.getPolygons().length).to.eql(2);
+      assert.deepEqual(multiPolygon.getPolygons().length, 2);
     });
   });
 
@@ -80,7 +80,7 @@ describe('ol/geom/MultiPolygon.js', function () {
           ],
         ]),
       );
-      expect(multiPolygon.getCoordinates()).to.eql([
+      assert.deepEqual(multiPolygon.getCoordinates(), [
         [
           [
             [0, 0],
@@ -100,7 +100,7 @@ describe('ol/geom/MultiPolygon.js', function () {
           ],
         ]),
       );
-      expect(multiPolygon.getCoordinates()).to.eql([
+      assert.deepEqual(multiPolygon.getCoordinates(), [
         [
           [
             [0, 0],
@@ -118,7 +118,7 @@ describe('ol/geom/MultiPolygon.js', function () {
           ],
         ],
       ]);
-      expect(multiPolygon.getPolygons().length).to.eql(2);
+      assert.deepEqual(multiPolygon.getPolygons().length, 2);
     });
   });
 
@@ -137,7 +137,7 @@ describe('ol/geom/MultiPolygon.js', function () {
       ]);
       geom.scale(10);
       const coordinates = geom.getCoordinates();
-      expect(coordinates).to.eql([
+      assert.deepEqual(coordinates, [
         [
           [
             [-10, -20],
@@ -164,7 +164,7 @@ describe('ol/geom/MultiPolygon.js', function () {
       ]);
       geom.scale(2, 3);
       const coordinates = geom.getCoordinates();
-      expect(coordinates).to.eql([
+      assert.deepEqual(coordinates, [
         [
           [
             [-2, -6],
@@ -191,7 +191,7 @@ describe('ol/geom/MultiPolygon.js', function () {
       ]);
       geom.scale(3, 2, [-1, -2]);
       const coordinates = geom.getCoordinates();
-      expect(coordinates).to.eql([
+      assert.deepEqual(coordinates, [
         [
           [
             [-1, -2],
@@ -230,8 +230,8 @@ describe('ol/geom/MultiPolygon.js', function () {
 
     it('can return individual polygons', function () {
       const polygon0 = multiPolygon.getPolygon(0);
-      expect(polygon0).to.be.an(Polygon);
-      expect(polygon0.getCoordinates()).to.eql([
+      assert.instanceOf(polygon0, Polygon);
+      assert.deepEqual(polygon0.getCoordinates(), [
         [
           [0, 0],
           [0, 2],
@@ -240,8 +240,8 @@ describe('ol/geom/MultiPolygon.js', function () {
         ],
       ]);
       const polygon1 = multiPolygon.getPolygon(1);
-      expect(polygon1).to.be.an(Polygon);
-      expect(polygon1.getCoordinates()).to.eql([
+      assert.instanceOf(polygon1, Polygon);
+      assert.deepEqual(polygon1.getCoordinates(), [
         [
           [3, 0],
           [4, 1],
@@ -253,10 +253,10 @@ describe('ol/geom/MultiPolygon.js', function () {
 
     it('can return all polygons', function () {
       const polygons = multiPolygon.getPolygons();
-      expect(polygons).to.be.an(Array);
-      expect(polygons).to.have.length(2);
-      expect(polygons[0]).to.be.an(Polygon);
-      expect(polygons[0].getCoordinates()).to.eql([
+      assert.instanceOf(polygons, Array);
+      assert.lengthOf(polygons, 2);
+      assert.instanceOf(polygons[0], Polygon);
+      assert.deepEqual(polygons[0].getCoordinates(), [
         [
           [0, 0],
           [0, 2],
@@ -264,8 +264,8 @@ describe('ol/geom/MultiPolygon.js', function () {
           [2, 0],
         ],
       ]);
-      expect(polygons[1]).to.be.an(Polygon);
-      expect(polygons[1].getCoordinates()).to.eql([
+      assert.instanceOf(polygons[1], Polygon);
+      assert.deepEqual(polygons[1].getCoordinates(), [
         [
           [3, 0],
           [4, 1],
@@ -280,8 +280,8 @@ describe('ol/geom/MultiPolygon.js', function () {
         multiPolygon.setProperties({foo: 'bar', baz: null});
 
         const clone = multiPolygon.clone();
-        expect(multiPolygon.endss_).to.eql(clone.endss_);
-        expect(clone.getProperties()).to.eql({foo: 'bar', baz: null});
+        assert.deepEqual(multiPolygon.endss_, clone.endss_);
+        assert.deepEqual(clone.getProperties(), {foo: 'bar', baz: null});
       });
     });
 
@@ -325,34 +325,34 @@ describe('ol/geom/MultiPolygon.js', function () {
       const withEmptyPolygon = new MultiPolygon([[ccw], []]);
 
       it('returns coordinates as they were constructed', function () {
-        expect(right.getCoordinates()).to.eql([
+        assert.deepEqual(right.getCoordinates(), [
           [ccw, cw],
           [ccw2, cw2],
         ]);
-        expect(left.getCoordinates()).to.eql([
+        assert.deepEqual(left.getCoordinates(), [
           [cw, ccw],
           [cw2, ccw2],
         ]);
-        expect(withEmptyPolygon.getCoordinates()).to.eql([[ccw], []]);
+        assert.deepEqual(withEmptyPolygon.getCoordinates(), [[ccw], []]);
       });
 
       it('can return coordinates with right-hand orientation', function () {
-        expect(right.getCoordinates(true)).to.eql([
+        assert.deepEqual(right.getCoordinates(true), [
           [ccw, cw],
           [ccw2, cw2],
         ]);
-        expect(left.getCoordinates(true)).to.eql([
+        assert.deepEqual(left.getCoordinates(true), [
           [ccw, cw],
           [ccw2, cw2],
         ]);
       });
 
       it('can return coordinates with left-hand orientation', function () {
-        expect(right.getCoordinates(false)).to.eql([
+        assert.deepEqual(right.getCoordinates(false), [
           [cw, ccw],
           [cw2, ccw2],
         ]);
-        expect(left.getCoordinates(false)).to.eql([
+        assert.deepEqual(left.getCoordinates(false), [
           [cw, ccw],
           [cw2, ccw2],
         ]);
@@ -361,15 +361,15 @@ describe('ol/geom/MultiPolygon.js', function () {
 
     describe('#getExtent()', function () {
       it('returns expected result', function () {
-        expect(multiPolygon.getExtent()).to.eql([0, 0, 5, 2]);
+        assert.deepEqual(multiPolygon.getExtent(), [0, 0, 5, 2]);
       });
     });
 
     describe('#getSimplifiedGeometry', function () {
       it('returns the expected result', function () {
         const simplifiedGeometry = multiPolygon.getSimplifiedGeometry(1);
-        expect(simplifiedGeometry).to.be.an(MultiPolygon);
-        expect(simplifiedGeometry.getCoordinates()).to.eql([
+        assert.instanceOf(simplifiedGeometry, MultiPolygon);
+        assert.deepEqual(simplifiedGeometry.getCoordinates(), [
           [
             [
               [0, 0],
@@ -392,14 +392,18 @@ describe('ol/geom/MultiPolygon.js', function () {
       it('returns true for extent of of each polygon', function () {
         const polygons = multiPolygon.getPolygons();
         for (let i = 0; i < polygons.length; i++) {
-          expect(multiPolygon.intersectsExtent(polygons[i].getExtent())).to.be(
+          assert.strictEqual(
+            multiPolygon.intersectsExtent(polygons[i].getExtent()),
             true,
           );
         }
       });
 
       it('returns false for non-matching extent within own extent', function () {
-        expect(multiPolygon.intersectsExtent([2.1, 0, 2.9, 2])).to.be(false);
+        assert.strictEqual(
+          multiPolygon.intersectsExtent([2.1, 0, 2.9, 2]),
+          false,
+        );
       });
     });
   });
@@ -424,7 +428,7 @@ describe('ol/geom/MultiPolygon.js', function () {
           ],
         ], // counterclockwise polygon with area 0.25
       ]);
-      expect(multiPolygon.getArea()).to.be(0.75);
+      assert.strictEqual(multiPolygon.getArea(), 0.75);
     });
   });
 
@@ -451,9 +455,9 @@ describe('ol/geom/MultiPolygon.js', function () {
         ],
       ]);
       const interiorPoints = geom.getInteriorPoints();
-      expect(interiorPoints.getType()).to.be('MultiPoint');
-      expect(interiorPoints.layout).to.be('XYM');
-      expect(interiorPoints.getCoordinates()).to.eql([
+      assert.strictEqual(interiorPoints.getType(), 'MultiPoint');
+      assert.strictEqual(interiorPoints.layout, 'XYM');
+      assert.deepEqual(interiorPoints.getCoordinates(), [
         [0.5, 0.5, 1],
         [1.5, 1.5, 1],
       ]);

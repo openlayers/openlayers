@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {spy as sinonSpy} from 'sinon';
 import Feature from '../../../../../../src/ol/Feature.js';
 import {UNDEFINED_PROP_VALUE} from '../../../../../../src/ol/expr/gpu.js';
@@ -109,9 +110,10 @@ describe('Render instructions utilities', function () {
       );
     });
     it('generates render instructions', function () {
-      expect(Array.from(renderInstructions)).to.eql([
-        2, 2, 1000, 22, 33, 44, 6, 6, 2000, 44, 55, 66,
-      ]);
+      assert.deepEqual(
+        Array.from(renderInstructions),
+        [2, 2, 1000, 22, 33, 44, 6, 6, 2000, 44, 55, 66],
+      );
     });
   });
 
@@ -125,10 +127,13 @@ describe('Render instructions utilities', function () {
       );
     });
     it('generates render instructions', function () {
-      expect(Array.from(renderInstructions)).to.eql([
-        3000, 66, 77, 88, 5, 2, 0, 0, 4, 0, 0, 6, 2, 0, 4, 6, 0, 2, 0, 0, 4000,
-        88, 99, 0, 3, 20, 38, 1, 60, 78, 2, 100, 118, 3,
-      ]);
+      assert.deepEqual(
+        Array.from(renderInstructions),
+        [
+          3000, 66, 77, 88, 5, 2, 0, 0, 4, 0, 0, 6, 2, 0, 4, 6, 0, 2, 0, 0,
+          4000, 88, 99, 0, 3, 20, 38, 1, 60, 78, 2, 100, 118, 3,
+        ],
+      );
     });
   });
 
@@ -142,9 +147,10 @@ describe('Render instructions utilities', function () {
       );
     });
     it('generates render instructions', function () {
-      expect(Array.from(renderInstructions)).to.eql([
-        3000, 66, 77, 88, 1, 5, 2, 0, 4, 0, 6, 2, 4, 6, 2, 0,
-      ]);
+      assert.deepEqual(
+        Array.from(renderInstructions),
+        [3000, 66, 77, 88, 1, 5, 2, 0, 4, 0, 6, 2, 4, 6, 2, 0],
+      );
     });
   });
 
@@ -166,9 +172,10 @@ describe('Render instructions utilities', function () {
       );
     });
     it('generates render instructions', function () {
-      expect(Array.from(renderInstructions)).to.eql([
-        2, 2, 0, 1, 2, 3, 6, 6, 0, 1, 2, 3,
-      ]);
+      assert.deepEqual(
+        Array.from(renderInstructions),
+        [2, 2, 0, 1, 2, 3, 6, 6, 0, 1, 2, 3],
+      );
     });
   });
 
@@ -189,9 +196,10 @@ describe('Render instructions utilities', function () {
         SAMPLE_TRANSFORM,
       );
 
-      expect(Array.from(renderInstructions)).to.eql([
-        2, 2, -9999999, 6, 6, -9999999,
-      ]);
+      assert.deepEqual(
+        Array.from(renderInstructions),
+        [2, 2, -9999999, 6, 6, -9999999],
+      );
     });
     it('uses zero if the feature have this property set to null', () => {
       renderInstructions = generatePointRenderInstructions(
@@ -209,7 +217,7 @@ describe('Render instructions utilities', function () {
         SAMPLE_TRANSFORM,
       );
 
-      expect(Array.from(renderInstructions)).to.eql([2, 2, 0, 6, 6, 3]);
+      assert.deepEqual(Array.from(renderInstructions), [2, 2, 0, 6, 6, 3]);
     });
 
     describe('an attribute value conflicts with UNDEFINED_PROP_VALUE', () => {
@@ -248,11 +256,12 @@ describe('Render instructions utilities', function () {
           SAMPLE_TRANSFORM,
         );
 
-        expect(
+        assert.strictEqual(
           consoleSpy.calledWith(
             'The "has" operator might return false positives.',
           ),
-        ).to.be(true);
+          true,
+        );
       });
     });
   });

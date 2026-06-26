@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import Map from '../../../../../src/ol/Map.js';
 import Tile from '../../../../../src/ol/Tile.js';
 import View from '../../../../../src/ol/View.js';
@@ -78,7 +79,7 @@ describe('ol.control.Attribution', function () {
       const attribution = map
         .getTarget()
         .querySelectorAll('.ol-attribution li');
-      expect(attribution.length).to.be(2);
+      assert.strictEqual(attribution.length, 2);
       done();
     }, 0);
   });
@@ -96,7 +97,7 @@ describe('ol.control.Attribution', function () {
       const attribution = map
         .getTarget()
         .querySelectorAll('.ol-attribution li');
-      expect(attribution.length).to.be(3);
+      assert.strictEqual(attribution.length, 3);
       done();
     }, 0);
   });
@@ -113,7 +114,7 @@ describe('ol.control.Attribution', function () {
       const attribution = map
         .getTarget()
         .querySelectorAll('.ol-attribution li');
-      expect(attribution.length).to.be(3);
+      assert.strictEqual(attribution.length, 3);
       done();
     }, 0);
   });
@@ -130,7 +131,7 @@ describe('ol.control.Attribution', function () {
       const attribution = map
         .getTarget()
         .querySelectorAll('.ol-attribution li');
-      expect(attribution.length).to.be(3);
+      assert.strictEqual(attribution.length, 3);
       done();
     }, 0);
   });
@@ -155,7 +156,7 @@ describe('ol.control.Attribution', function () {
     const attribution = map
       .getTarget()
       .querySelectorAll('.ol-attribution.ol-uncollapsible');
-    expect(attribution.length).to.be(1);
+    assert.strictEqual(attribution.length, 1);
   });
 
   it('renders attributions as collapsible if configured with collapsible set to true', function () {
@@ -178,6 +179,6 @@ describe('ol.control.Attribution', function () {
     const attribution = map
       .getTarget()
       .querySelectorAll('.ol-attribution.ol-uncollapsible');
-    expect(attribution.length).to.be(0);
+    assert.strictEqual(attribution.length, 0);
   });
 });

@@ -1,10 +1,11 @@
+import {assert} from 'chai';
 import FullScreen from '../../../../../src/ol/control/FullScreen.js';
 
 describe('ol.control.FullScreen', function () {
   describe('constructor', function () {
     it('can be constructed without arguments', function () {
       const instance = new FullScreen();
-      expect(instance).to.be.an(FullScreen);
+      assert.instanceOf(instance, FullScreen);
     });
   });
 
@@ -13,7 +14,7 @@ describe('ol.control.FullScreen', function () {
       it('is created with the default inactive classname set on the button', function () {
         const instance = new FullScreen();
         const button = instance.button_;
-        expect(button.className).to.equal('ol-full-screen-false');
+        assert.equal(button.className, 'ol-full-screen-false');
       });
     });
     describe('when inactiveClassName is set', function () {
@@ -22,7 +23,7 @@ describe('ol.control.FullScreen', function () {
           inactiveClassName: 'foo bar',
         });
         const button = instance.button_;
-        expect(button.className).to.equal('foo bar');
+        assert.equal(button.className, 'foo bar');
       });
     });
   });

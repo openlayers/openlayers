@@ -1,5 +1,5 @@
+import {assert} from 'chai';
 import LinearRing from '../../../../src/ol/geom/LinearRing.js';
-import expect from '../../expect.js';
 
 describe('ol/geom/LinearRing.js', function () {
   describe('#intersectsExtent', function () {
@@ -15,15 +15,18 @@ describe('ol/geom/LinearRing.js', function () {
     });
 
     it('returns true when the extent intersects the boundary', function () {
-      expect(linearRing.intersectsExtent([4, -1, 6, 1])).to.be(true);
+      assert.strictEqual(linearRing.intersectsExtent([4, -1, 6, 1]), true);
     });
 
     it('returns false when the extent is inside the ring boundary', function () {
-      expect(linearRing.intersectsExtent([2, 2, 3, 3])).to.be(false);
+      assert.strictEqual(linearRing.intersectsExtent([2, 2, 3, 3]), false);
     });
 
     it("returns true for the geom's own extent", function () {
-      expect(linearRing.intersectsExtent(linearRing.getExtent())).to.be(true);
+      assert.strictEqual(
+        linearRing.intersectsExtent(linearRing.getExtent()),
+        true,
+      );
     });
   });
 });

@@ -1,6 +1,6 @@
+import {assert} from 'chai';
 import {lineStringLength} from '../../../../../src/ol/geom/flat/length.js';
 import {drawTextOnPath} from '../../../../../src/ol/geom/flat/textpath.js';
-import expect from '../../../expect.js';
 
 describe('ol/geom/flat/drawTextOnPath.js', function () {
   const horizontal = [0, 0, 100, 0];
@@ -29,7 +29,7 @@ describe('ol/geom/flat/drawTextOnPath.js', function () {
       '',
       {},
     );
-    expect(instructions).to.eql([[50, 0, 15, 0, 'foo']]);
+    assert.deepEqual(instructions, [[50, 0, 15, 0, 'foo']]);
   });
 
   it('left-aligns text on a horizontal line', function () {
@@ -46,7 +46,7 @@ describe('ol/geom/flat/drawTextOnPath.js', function () {
       '',
       {},
     );
-    expect(instructions).to.eql([[15, 0, 15, 0, 'foo']]);
+    assert.deepEqual(instructions, [[15, 0, 15, 0, 'foo']]);
   });
 
   it('right-aligns text on a horizontal line', function () {
@@ -64,7 +64,7 @@ describe('ol/geom/flat/drawTextOnPath.js', function () {
       '',
       {},
     );
-    expect(instructions).to.eql([[85, 0, 15, 0, 'foo']]);
+    assert.deepEqual(instructions, [[85, 0, 15, 0, 'foo']]);
   });
 
   it('draws text on a vertical line', function () {
@@ -83,7 +83,7 @@ describe('ol/geom/flat/drawTextOnPath.js', function () {
       {},
     );
     const a = (90 * Math.PI) / 180;
-    expect(instructions).to.eql([[0, 50, 15, a, 'foo']]);
+    assert.deepEqual(instructions, [[0, 50, 15, a, 'foo']]);
   });
 
   it('draws text on a diagonal line', function () {
@@ -101,8 +101,8 @@ describe('ol/geom/flat/drawTextOnPath.js', function () {
       '',
       {},
     );
-    expect(instructions[0][3]).to.be((45 * Math.PI) / 180);
-    expect(instructions.length).to.be(1);
+    assert.strictEqual(instructions[0][3], (45 * Math.PI) / 180);
+    assert.strictEqual(instructions.length, 1);
   });
 
   it('draws reverse text on a diagonal line', function () {
@@ -120,8 +120,8 @@ describe('ol/geom/flat/drawTextOnPath.js', function () {
       '',
       {},
     );
-    expect(instructions[0][3]).to.be((-45 * Math.PI) / 180);
-    expect(instructions.length).to.be(1);
+    assert.strictEqual(instructions[0][3], (-45 * Math.PI) / 180);
+    assert.strictEqual(instructions.length, 1);
   });
 
   it('renders long text with extrapolation', function () {
@@ -139,8 +139,8 @@ describe('ol/geom/flat/drawTextOnPath.js', function () {
       '',
       {},
     );
-    expect(instructions[0]).to.eql([50, 0, 75, 0, 'foo-foo-foo-foo']);
-    expect(instructions.length).to.be(1);
+    assert.deepEqual(instructions[0], [50, 0, 75, 0, 'foo-foo-foo-foo']);
+    assert.strictEqual(instructions.length, 1);
   });
 
   it('renders angled text', function () {
@@ -159,10 +159,10 @@ describe('ol/geom/flat/drawTextOnPath.js', function () {
       '',
       {},
     );
-    expect(instructions[0][3]).to.eql((45 * Math.PI) / 180);
-    expect(instructions[0][4]).to.be('fo');
-    expect(instructions[1][3]).to.eql((-45 * Math.PI) / 180);
-    expect(instructions[1][4]).to.be('oo');
+    assert.deepEqual(instructions[0][3], (45 * Math.PI) / 180);
+    assert.strictEqual(instructions[0][4], 'fo');
+    assert.deepEqual(instructions[1][3], (-45 * Math.PI) / 180);
+    assert.strictEqual(instructions[1][4], 'oo');
   });
 
   it('respects maxAngle', function () {
@@ -181,7 +181,7 @@ describe('ol/geom/flat/drawTextOnPath.js', function () {
       '',
       {},
     );
-    expect(instructions).to.be(null);
+    assert.strictEqual(instructions, null);
   });
 
   it('uses the smallest angle for maxAngleDelta', function () {
@@ -200,7 +200,7 @@ describe('ol/geom/flat/drawTextOnPath.js', function () {
       '',
       {},
     );
-    expect(instructions).to.not.be(undefined);
+    assert.notEqual(instructions, undefined);
   });
 
   it('respects the offset option', function () {
@@ -219,8 +219,8 @@ describe('ol/geom/flat/drawTextOnPath.js', function () {
       '',
       {},
     );
-    expect(instructions[0][3]).to.be((-45 * Math.PI) / 180);
-    expect(instructions.length).to.be(1);
+    assert.strictEqual(instructions[0][3], (-45 * Math.PI) / 180);
+    assert.strictEqual(instructions.length, 1);
   });
 
   it('respects the end option', function () {
@@ -239,8 +239,8 @@ describe('ol/geom/flat/drawTextOnPath.js', function () {
       '',
       {},
     );
-    expect(instructions[0][3]).to.be((45 * Math.PI) / 180);
-    expect(instructions.length).to.be(1);
+    assert.strictEqual(instructions[0][3], (45 * Math.PI) / 180);
+    assert.strictEqual(instructions.length, 1);
   });
 
   it('renders multi-line in one segment', function () {
@@ -264,9 +264,9 @@ describe('ol/geom/flat/drawTextOnPath.js', function () {
       '',
       {},
     );
-    expect(instructions[0][3]).to.be((45 * Math.PI) / 180);
-    expect(instructions[0][4]).to.be(text);
-    expect(instructions.length).to.be(1);
+    assert.strictEqual(instructions[0][3], (45 * Math.PI) / 180);
+    assert.strictEqual(instructions[0][4], text);
+    assert.strictEqual(instructions.length, 1);
   });
 
   it('renders multi-line as single-line across segments', function () {
@@ -291,10 +291,10 @@ describe('ol/geom/flat/drawTextOnPath.js', function () {
       '',
       {},
     );
-    expect(instructions[0][3]).to.be((45 * Math.PI) / 180);
-    expect(instructions[0][4]).to.be('foo-foo-foo bar-bar-b');
-    expect(instructions.length).to.be(2);
-    expect(instructions[1][3]).to.be((-45 * Math.PI) / 180);
-    expect(instructions[1][4]).to.be('ar-bar-bar-bar-bar');
+    assert.strictEqual(instructions[0][3], (45 * Math.PI) / 180);
+    assert.strictEqual(instructions[0][4], 'foo-foo-foo bar-bar-b');
+    assert.strictEqual(instructions.length, 2);
+    assert.strictEqual(instructions[1][3], (-45 * Math.PI) / 180);
+    assert.strictEqual(instructions[1][4], 'ar-bar-bar-bar-bar');
   });
 });

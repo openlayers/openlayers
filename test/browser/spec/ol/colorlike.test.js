@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {asColorLike} from '../../../../src/ol/colorlike.js';
 import Fill from '../../../../src/ol/style/Fill.js';
 
@@ -11,7 +12,7 @@ describe('ol/colorlike', () => {
       });
       return fill.ready().then(() => {
         const pattern = asColorLike(fill.getColor());
-        expect(pattern).to.be.a(CanvasPattern);
+        assert.instanceOf(pattern, CanvasPattern);
       });
     });
   });

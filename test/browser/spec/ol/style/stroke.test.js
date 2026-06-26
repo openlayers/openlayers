@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import Stroke from '../../../../../src/ol/style/Stroke.js';
 
 describe('ol.style.Stroke', function () {
@@ -5,8 +6,8 @@ describe('ol.style.Stroke', function () {
     it('creates a new ol.style.Stroke', function () {
       const original = new Stroke();
       const clone = original.clone();
-      expect(clone).to.be.an(Stroke);
-      expect(clone).to.not.be(original);
+      assert.instanceOf(clone, Stroke);
+      assert.notEqual(clone, original);
     });
 
     it('copies all values', function () {
@@ -20,13 +21,13 @@ describe('ol.style.Stroke', function () {
         width: 5,
       });
       const clone = original.clone();
-      expect(original.getColor()).to.eql(clone.getColor());
-      expect(original.getLineCap()).to.eql(clone.getLineCap());
-      expect(original.getLineJoin()).to.eql(clone.getLineJoin());
-      expect(original.getLineDash()).to.eql(clone.getLineDash());
-      expect(original.getLineDashOffset()).to.eql(clone.getLineDashOffset());
-      expect(original.getMiterLimit()).to.eql(clone.getMiterLimit());
-      expect(original.getWidth()).to.eql(clone.getWidth());
+      assert.deepEqual(original.getColor(), clone.getColor());
+      assert.deepEqual(original.getLineCap(), clone.getLineCap());
+      assert.deepEqual(original.getLineJoin(), clone.getLineJoin());
+      assert.deepEqual(original.getLineDash(), clone.getLineDash());
+      assert.deepEqual(original.getLineDashOffset(), clone.getLineDashOffset());
+      assert.deepEqual(original.getMiterLimit(), clone.getMiterLimit());
+      assert.deepEqual(original.getWidth(), clone.getWidth());
     });
 
     it('the clone does not reference the same objects as the original', function () {
@@ -35,13 +36,13 @@ describe('ol.style.Stroke', function () {
         lineDash: [1, 2, 3],
       });
       const clone = original.clone();
-      expect(original.getColor()).to.not.be(clone.getColor());
-      expect(original.getLineDash()).to.not.be(clone.getLineDash());
+      assert.notEqual(original.getColor(), clone.getColor());
+      assert.notEqual(original.getLineDash(), clone.getLineDash());
 
       clone.getColor()[0] = 0;
       clone.getLineDash()[0] = 0;
-      expect(original.getColor()).to.not.eql(clone.getColor());
-      expect(original.getLineDash()).to.not.eql(clone.getLineDash());
+      assert.notDeepEqual(original.getColor(), clone.getColor());
+      assert.notDeepEqual(original.getLineDash(), clone.getLineDash());
     });
   });
 });

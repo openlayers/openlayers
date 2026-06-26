@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {spy as sinonSpy} from 'sinon';
 import * as render from '../../../../../../src/ol/render/canvas.js';
 
@@ -22,8 +23,8 @@ describe('ol.render.canvas', function () {
         if (render.checkedFonts.get('normal 400 16px "foo"') == retries) {
           clearInterval(interval);
           render.checkedFonts.removeEventListener('propertychange', spy);
-          expect(spy.callCount).to.be(0);
-          expect(render.textHeights).to.not.eql({});
+          assert.strictEqual(spy.callCount, 0);
+          assert.notDeepEqual(render.textHeights, {});
           done();
         }
       }, 100);
@@ -35,8 +36,8 @@ describe('ol.render.canvas', function () {
       render.checkedFonts.addEventListener('propertychange', spy);
       setTimeout(function () {
         render.checkedFonts.removeEventListener('propertychange', spy);
-        expect(spy.callCount).to.be(0);
-        expect(render.textHeights).to.not.eql({});
+        assert.strictEqual(spy.callCount, 0);
+        assert.notDeepEqual(render.textHeights, {});
         done();
       }, 1000);
       render.registerFont('12px sans-serif');
@@ -47,8 +48,8 @@ describe('ol.render.canvas', function () {
       render.checkedFonts.addEventListener('propertychange', spy);
       setInterval(function () {
         render.checkedFonts.removeEventListener('propertychange', spy);
-        expect(spy.callCount).to.be(0);
-        expect(render.textHeights).to.not.eql({});
+        assert.strictEqual(spy.callCount, 0);
+        assert.notDeepEqual(render.textHeights, {});
         done();
       }, 1000);
       render.registerFont('12px monospace');
@@ -64,8 +65,8 @@ describe('ol.render.canvas', function () {
             onPropertyChange,
           );
           try {
-            expect(e.key).to.be('normal 400 16px "Abel"');
-            expect(render.textHeights).to.eql({});
+            assert.strictEqual(e.key, 'normal 400 16px "Abel"');
+            assert.deepEqual(render.textHeights, {});
 
             font.remove();
             render.checkedFonts.setProperties({}, true);
@@ -82,12 +83,8 @@ describe('ol.render.canvas', function () {
   describe('measureTextHeight', function () {
     it('respects line-height', function () {
       const height = render.measureTextHeight('12px/1.2 sans-serif');
-      expect(render.measureTextHeight('12px/2.4 sans-serif')).to.be.greaterThan(
-        height,
-      );
-      expect(render.measureTextHeight('12px/0.1 sans-serif')).to.be.lessThan(
-        height,
-      );
+      assert.isAbove(render.measureTextHeight('12px/2.4 sans-serif'), height);
+      assert.isBelow(render.measureTextHeight('12px/0.1 sans-serif'), height);
     });
   });
 
@@ -98,11 +95,11 @@ describe('ol.render.canvas', function () {
         rotate: sinonSpy(),
       };
       render.rotateAtOffset(context, Math.PI, 10, 10);
-      expect(context.translate.callCount).to.be(2);
-      expect(context.translate.firstCall.args).to.eql([10, 10]);
-      expect(context.translate.secondCall.args).to.eql([-10, -10]);
-      expect(context.rotate.callCount).to.be(1);
-      expect(context.rotate.firstCall.args).to.eql([Math.PI]);
+      assert.strictEqual(context.translate.callCount, 2);
+      assert.deepEqual(context.translate.firstCall.args, [10, 10]);
+      assert.deepEqual(context.translate.secondCall.args, [-10, -10]);
+      assert.strictEqual(context.rotate.callCount, 1);
+      assert.deepEqual(context.rotate.firstCall.args, [Math.PI]);
     });
   });
 
@@ -138,12 +135,12 @@ describe('ol.render.canvas', function () {
         scale,
       );
 
-      expect(layerContext.save.callCount).to.be(1);
-      expect(layerContext.transform.callCount).to.be(1);
-      expect(layerContext.transform.firstCall.args).to.eql(transform);
-      expect(layerContext.drawImage.callCount).to.be(1);
-      expect(layerContext.globalAlpha).to.be(0.5);
-      expect(layerContext.restore.callCount).to.be(1);
+      assert.strictEqual(layerContext.save.callCount, 1);
+      assert.strictEqual(layerContext.transform.callCount, 1);
+      assert.deepEqual(layerContext.transform.firstCall.args, transform);
+      assert.strictEqual(layerContext.drawImage.callCount, 1);
+      assert.strictEqual(layerContext.globalAlpha, 0.5);
+      assert.strictEqual(layerContext.restore.callCount, 1);
     });
   });
 });

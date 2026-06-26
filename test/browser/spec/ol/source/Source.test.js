@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {spy as sinonSpy} from 'sinon';
 import {get as getProjection} from '../../../../../src/ol/proj.js';
 import Source from '../../../../../src/ol/source/Source.js';
@@ -8,7 +9,7 @@ describe('ol/source/Source', function () {
       const source = new Source({
         projection: getProjection('EPSG:4326'),
       });
-      expect(source).to.be.a(Source);
+      assert.instanceOf(source, Source);
     });
   });
 
@@ -16,7 +17,7 @@ describe('ol/source/Source', function () {
     it('accepts undefined', function () {
       const source = new Source({});
       const attributions = source.getAttributions();
-      expect(attributions).to.be(null);
+      assert.strictEqual(attributions, null);
     });
 
     it('accepts a single string', function () {
@@ -24,9 +25,9 @@ describe('ol/source/Source', function () {
         attributions: 'Humpty',
       });
       const attributions = source.getAttributions();
-      expect(attributions).to.not.be(null);
-      expect(typeof attributions).to.be('function');
-      expect(attributions()).to.eql(['Humpty']);
+      assert.notEqual(attributions, null);
+      assert.strictEqual(typeof attributions, 'function');
+      assert.deepEqual(attributions(), ['Humpty']);
     });
 
     it('accepts an array of strings', function () {
@@ -34,9 +35,9 @@ describe('ol/source/Source', function () {
         attributions: ['Humpty', 'Dumpty'],
       });
       const attributions = source.getAttributions();
-      expect(attributions).to.not.be(null);
-      expect(typeof attributions).to.be('function');
-      expect(attributions()).to.eql(['Humpty', 'Dumpty']);
+      assert.notEqual(attributions, null);
+      assert.strictEqual(typeof attributions, 'function');
+      assert.deepEqual(attributions(), ['Humpty', 'Dumpty']);
     });
 
     it('accepts a function that returns a string', function () {
@@ -46,9 +47,9 @@ describe('ol/source/Source', function () {
         },
       });
       const attributions = source.getAttributions();
-      expect(attributions).to.not.be(null);
-      expect(typeof attributions).to.be('function');
-      expect(attributions()).to.be('Humpty');
+      assert.notEqual(attributions, null);
+      assert.strictEqual(typeof attributions, 'function');
+      assert.strictEqual(attributions(), 'Humpty');
     });
 
     it('accepts a function that returns an array of strings', function () {
@@ -58,9 +59,9 @@ describe('ol/source/Source', function () {
         },
       });
       const attributions = source.getAttributions();
-      expect(attributions).to.not.be(null);
-      expect(typeof attributions).to.be('function');
-      expect(attributions()).to.eql(['Humpty', 'Dumpty']);
+      assert.notEqual(attributions, null);
+      assert.strictEqual(typeof attributions, 'function');
+      assert.deepEqual(attributions(), ['Humpty', 'Dumpty']);
     });
   });
 
@@ -72,19 +73,19 @@ describe('ol/source/Source', function () {
       const changedSpy = sinonSpy();
       source.on('change', changedSpy);
       source.refresh();
-      expect(changedSpy.called).to.be.ok();
+      assert.isOk(changedSpy.called);
     });
   });
 
   describe('#getInterpolate()', function () {
     it('returns false by default', function () {
       const source = new Source({});
-      expect(source.getInterpolate()).to.be(false);
+      assert.strictEqual(source.getInterpolate(), false);
     });
 
     it('returns true if constructed with interpolate: true', function () {
       const source = new Source({interpolate: true});
-      expect(source.getInterpolate()).to.be(true);
+      assert.strictEqual(source.getInterpolate(), true);
     });
   });
 
@@ -104,23 +105,23 @@ describe('ol/source/Source', function () {
     it('accepts undefined', function () {
       source.setAttributions();
       const attributions = source.getAttributions();
-      expect(attributions).to.be(null);
+      assert.strictEqual(attributions, null);
     });
 
     it('accepts a single string', function () {
       source.setAttributions('Humpty');
       const attributions = source.getAttributions();
-      expect(attributions).to.not.be(null);
-      expect(typeof attributions).to.be('function');
-      expect(attributions()).to.eql(['Humpty']);
+      assert.notEqual(attributions, null);
+      assert.strictEqual(typeof attributions, 'function');
+      assert.deepEqual(attributions(), ['Humpty']);
     });
 
     it('accepts an array of strings', function () {
       source.setAttributions(['Humpty', 'Dumpty']);
       const attributions = source.getAttributions();
-      expect(attributions).to.not.be(null);
-      expect(typeof attributions).to.be('function');
-      expect(attributions()).to.eql(['Humpty', 'Dumpty']);
+      assert.notEqual(attributions, null);
+      assert.strictEqual(typeof attributions, 'function');
+      assert.deepEqual(attributions(), ['Humpty', 'Dumpty']);
     });
 
     it('accepts a function that returns a string', function () {
@@ -128,9 +129,9 @@ describe('ol/source/Source', function () {
         return 'Humpty';
       });
       const attributions = source.getAttributions();
-      expect(attributions).to.not.be(null);
-      expect(typeof attributions).to.be('function');
-      expect(attributions()).to.eql('Humpty');
+      assert.notEqual(attributions, null);
+      assert.strictEqual(typeof attributions, 'function');
+      assert.deepEqual(attributions(), 'Humpty');
     });
 
     it('accepts a function that returns an array of strings', function () {
@@ -138,9 +139,9 @@ describe('ol/source/Source', function () {
         return ['Humpty', 'Dumpty'];
       });
       const attributions = source.getAttributions();
-      expect(attributions).to.not.be(null);
-      expect(typeof attributions).to.be('function');
-      expect(attributions()).to.eql(['Humpty', 'Dumpty']);
+      assert.notEqual(attributions, null);
+      assert.strictEqual(typeof attributions, 'function');
+      assert.deepEqual(attributions(), ['Humpty', 'Dumpty']);
     });
   });
 });

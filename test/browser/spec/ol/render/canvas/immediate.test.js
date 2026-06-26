@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {spy as sinonSpy} from 'sinon';
 import Circle from '../../../../../../src/ol/geom/Circle.js';
 import GeometryCollection from '../../../../../../src/ol/geom/GeometryCollection.js';
@@ -30,8 +31,8 @@ describe('ol.render.canvas.Immediate', function () {
   describe('constructor', function () {
     it('creates an instance', function () {
       const instance = new CanvasImmediateRenderer();
-      expect(instance).to.be.a(CanvasImmediateRenderer);
-      expect(instance).to.be.a(VectorContext);
+      assert.instanceOf(instance, CanvasImmediateRenderer);
+      assert.instanceOf(instance, VectorContext);
     });
   });
 
@@ -53,16 +54,19 @@ describe('ol.render.canvas.Immediate', function () {
       });
 
       context.setStyle(style);
-      expect(context.setFillStrokeStyle.calledOnce).to.be(true);
-      expect(
+      assert.strictEqual(context.setFillStrokeStyle.calledOnce, true);
+      assert.strictEqual(
         context.setFillStrokeStyle.firstCall.calledWithExactly(fill, stroke),
-      ).to.be(true);
-      expect(context.setImageStyle.calledOnce).to.be(true);
-      expect(context.setImageStyle.firstCall.calledWithExactly(image)).to.be(
         true,
       );
-      expect(context.setTextStyle.calledOnce).to.be(true);
-      expect(context.setTextStyle.firstCall.calledWithExactly(text)).to.be(
+      assert.strictEqual(context.setImageStyle.calledOnce, true);
+      assert.strictEqual(
+        context.setImageStyle.firstCall.calledWithExactly(image),
+        true,
+      );
+      assert.strictEqual(context.setTextStyle.calledOnce, true);
+      assert.strictEqual(
+        context.setTextStyle.firstCall.calledWithExactly(text),
         true,
       );
     });
@@ -77,8 +81,9 @@ describe('ol.render.canvas.Immediate', function () {
 
       const geometry = new Point([1, 2]);
       context.drawGeometry(geometry);
-      expect(context.drawPoint.calledOnce).to.be(true);
-      expect(context.drawPoint.firstCall.calledWithExactly(geometry)).to.be(
+      assert.strictEqual(context.drawPoint.calledOnce, true);
+      assert.strictEqual(
+        context.drawPoint.firstCall.calledWithExactly(geometry),
         true,
       );
     });
@@ -92,10 +97,11 @@ describe('ol.render.canvas.Immediate', function () {
         [3, 4],
       ]);
       context.drawGeometry(geometry);
-      expect(context.drawLineString.calledOnce).to.be(true);
-      expect(
+      assert.strictEqual(context.drawLineString.calledOnce, true);
+      assert.strictEqual(
         context.drawLineString.firstCall.calledWithExactly(geometry),
-      ).to.be(true);
+        true,
+      );
     });
 
     it('calls drawPolygon() with a Polygon', function () {
@@ -111,8 +117,9 @@ describe('ol.render.canvas.Immediate', function () {
         ],
       ]);
       context.drawGeometry(geometry);
-      expect(context.drawPolygon.calledOnce).to.be(true);
-      expect(context.drawPolygon.firstCall.calledWithExactly(geometry)).to.be(
+      assert.strictEqual(context.drawPolygon.calledOnce, true);
+      assert.strictEqual(
+        context.drawPolygon.firstCall.calledWithExactly(geometry),
         true,
       );
     });
@@ -126,10 +133,11 @@ describe('ol.render.canvas.Immediate', function () {
         [3, 4],
       ]);
       context.drawGeometry(geometry);
-      expect(context.drawMultiPoint.calledOnce).to.be(true);
-      expect(
+      assert.strictEqual(context.drawMultiPoint.calledOnce, true);
+      assert.strictEqual(
         context.drawMultiPoint.firstCall.calledWithExactly(geometry),
-      ).to.be(true);
+        true,
+      );
     });
 
     it('calls drawMultiLineString() with a MultiLineString', function () {
@@ -143,10 +151,11 @@ describe('ol.render.canvas.Immediate', function () {
         ],
       ]);
       context.drawGeometry(geometry);
-      expect(context.drawMultiLineString.calledOnce).to.be(true);
-      expect(
+      assert.strictEqual(context.drawMultiLineString.calledOnce, true);
+      assert.strictEqual(
         context.drawMultiLineString.firstCall.calledWithExactly(geometry),
-      ).to.be(true);
+        true,
+      );
     });
 
     it('calls drawMultiPolygon() with a MultiPolygon', function () {
@@ -164,10 +173,11 @@ describe('ol.render.canvas.Immediate', function () {
         ],
       ]);
       context.drawGeometry(geometry);
-      expect(context.drawMultiPolygon.calledOnce).to.be(true);
-      expect(
+      assert.strictEqual(context.drawMultiPolygon.calledOnce, true);
+      assert.strictEqual(
         context.drawMultiPolygon.firstCall.calledWithExactly(geometry),
-      ).to.be(true);
+        true,
+      );
     });
 
     it('calls drawGeometryCollection() with a GeometryCollection', function () {
@@ -194,15 +204,20 @@ describe('ol.render.canvas.Immediate', function () {
       const geometry = new GeometryCollection([point, linestring, polygon]);
       context.drawGeometry(geometry);
 
-      expect(context.drawGeometryCollection.calledOnce).to.be(true);
-      expect(context.drawPoint.calledOnce).to.be(true);
-      expect(context.drawPoint.firstCall.calledWithExactly(point)).to.be(true);
-      expect(context.drawLineString.calledOnce).to.be(true);
-      expect(
+      assert.strictEqual(context.drawGeometryCollection.calledOnce, true);
+      assert.strictEqual(context.drawPoint.calledOnce, true);
+      assert.strictEqual(
+        context.drawPoint.firstCall.calledWithExactly(point),
+        true,
+      );
+      assert.strictEqual(context.drawLineString.calledOnce, true);
+      assert.strictEqual(
         context.drawLineString.firstCall.calledWithExactly(linestring),
-      ).to.be(true);
-      expect(context.drawPolygon.calledOnce).to.be(true);
-      expect(context.drawPolygon.firstCall.calledWithExactly(polygon)).to.be(
+        true,
+      );
+      assert.strictEqual(context.drawPolygon.calledOnce, true);
+      assert.strictEqual(
+        context.drawPolygon.firstCall.calledWithExactly(polygon),
         true,
       );
     });
@@ -214,8 +229,9 @@ describe('ol.render.canvas.Immediate', function () {
       const geometry = new Circle([0, 0]);
       context.drawGeometry(geometry);
 
-      expect(context.drawCircle.calledOnce).to.be(true);
-      expect(context.drawCircle.firstCall.calledWithExactly(geometry)).to.be(
+      assert.strictEqual(context.drawCircle.calledOnce, true);
+      assert.strictEqual(
+        context.drawCircle.firstCall.calledWithExactly(geometry),
         true,
       );
     });
@@ -344,10 +360,10 @@ describe('ol.render.canvas.Immediate', function () {
       for (let i = 0, ii = instructions.length; i < ii; ++i) {
         const actualInstruction = serialize(i, instructions[i]);
         const expectedInstruction = serialize(i, expected[i]);
-        expect(actualInstruction).to.equal(expectedInstruction);
+        assert.equal(actualInstruction, expectedInstruction);
       }
 
-      expect(instructions.length).to.equal(expected.length);
+      assert.equal(instructions.length, expected.length);
     });
   });
 });

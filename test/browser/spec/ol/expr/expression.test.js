@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {
   AnyType,
   BooleanType,
@@ -16,9 +17,9 @@ describe('ol/expr/expression.js', () => {
   describe('parse()', () => {
     it('parses a literal color (string)', () => {
       const expression = parse('fuchsia', ColorType, newParsingContext());
-      expect(expression).to.be.a(LiteralExpression);
-      expect(includesType(expression.type, ColorType));
-      expect(expression.value).to.eql([255, 0, 255, 1]);
+      assert.instanceOf(expression, LiteralExpression);
+      assert.ok(includesType(expression.type, ColorType));
+      assert.deepEqual(expression.value, [255, 0, 255, 1]);
     });
 
     it('parses a * expression with colors', () => {
@@ -28,13 +29,13 @@ describe('ol/expr/expression.js', () => {
         ColorType,
         context,
       );
-      expect(expression).to.be.a(CallExpression);
-      expect(expression.operator).to.be('*');
-      expect(isType(expression.type, ColorType)).to.be(true);
-      expect(expression.args).to.have.length(3);
-      expect(isType(expression.args[0].type, ColorType)).to.be(true);
-      expect(isType(expression.args[1].type, ColorType)).to.be(true);
-      expect(isType(expression.args[2].type, ColorType)).to.be(true);
+      assert.instanceOf(expression, CallExpression);
+      assert.strictEqual(expression.operator, '*');
+      assert.strictEqual(isType(expression.type, ColorType), true);
+      assert.lengthOf(expression.args, 3);
+      assert.strictEqual(isType(expression.args[0].type, ColorType), true);
+      assert.strictEqual(isType(expression.args[1].type, ColorType), true);
+      assert.strictEqual(isType(expression.args[2].type, ColorType), true);
     });
 
     describe('case operation', () => {
@@ -52,15 +53,15 @@ describe('ol/expr/expression.js', () => {
           ColorType,
           context,
         );
-        expect(expression).to.be.a(CallExpression);
-        expect(expression.operator).to.be('case');
-        expect(isType(expression.type, ColorType)).to.be(true);
-        expect(expression.args).to.have.length(5);
-        expect(isType(expression.args[0].type, BooleanType)).to.be(true);
-        expect(isType(expression.args[1].type, ColorType)).to.be(true);
-        expect(isType(expression.args[2].type, BooleanType)).to.be(true);
-        expect(isType(expression.args[3].type, ColorType)).to.be(true);
-        expect(isType(expression.args[4].type, ColorType)).to.be(true);
+        assert.instanceOf(expression, CallExpression);
+        assert.strictEqual(expression.operator, 'case');
+        assert.strictEqual(isType(expression.type, ColorType), true);
+        assert.lengthOf(expression.args, 5);
+        assert.strictEqual(isType(expression.args[0].type, BooleanType), true);
+        assert.strictEqual(isType(expression.args[1].type, ColorType), true);
+        assert.strictEqual(isType(expression.args[2].type, BooleanType), true);
+        assert.strictEqual(isType(expression.args[3].type, ColorType), true);
+        assert.strictEqual(isType(expression.args[4].type, ColorType), true);
       });
 
       it('respects the return type (string color)', () => {
@@ -69,7 +70,7 @@ describe('ol/expr/expression.js', () => {
           ColorType,
           newParsingContext(),
         );
-        expect(isType(expression.type, ColorType)).to.be(true);
+        assert.strictEqual(isType(expression.type, ColorType), true);
       });
     });
 
@@ -81,16 +82,19 @@ describe('ol/expr/expression.js', () => {
           ColorType,
           context,
         );
-        expect(expression).to.be.a(CallExpression);
-        expect(expression.operator).to.be('match');
-        expect(isType(expression.type, ColorType)).to.be(true);
-        expect(expression.args).to.have.length(6);
-        expect(typeName(expression.args[0].type)).to.be(typeName(NumberType));
-        expect(isType(expression.args[1].type, NumberType)).to.be(true);
-        expect(isType(expression.args[2].type, ColorType)).to.be(true);
-        expect(isType(expression.args[3].type, NumberType)).to.be(true);
-        expect(isType(expression.args[4].type, ColorType)).to.be(true);
-        expect(isType(expression.args[5].type, ColorType)).to.be(true);
+        assert.instanceOf(expression, CallExpression);
+        assert.strictEqual(expression.operator, 'match');
+        assert.strictEqual(isType(expression.type, ColorType), true);
+        assert.lengthOf(expression.args, 6);
+        assert.strictEqual(
+          typeName(expression.args[0].type),
+          typeName(NumberType),
+        );
+        assert.strictEqual(isType(expression.args[1].type, NumberType), true);
+        assert.strictEqual(isType(expression.args[2].type, ColorType), true);
+        assert.strictEqual(isType(expression.args[3].type, NumberType), true);
+        assert.strictEqual(isType(expression.args[4].type, ColorType), true);
+        assert.strictEqual(isType(expression.args[5].type, ColorType), true);
       });
 
       it('respects the return type (color string)', () => {
@@ -99,7 +103,7 @@ describe('ol/expr/expression.js', () => {
           ColorType,
           newParsingContext(),
         );
-        expect(isType(expression.type, ColorType)).to.be(true);
+        assert.strictEqual(isType(expression.type, ColorType), true);
       });
     });
 
@@ -110,13 +114,13 @@ describe('ol/expr/expression.js', () => {
           ColorType,
           newParsingContext(),
         );
-        expect(expression.operator).to.be('palette');
-        expect(isType(expression.type, ColorType)).to.be(true);
-        expect(expression.args).to.have.length(4);
-        expect(isType(expression.args[0].type, NumberType)).to.be(true);
-        expect(isType(expression.args[1].type, ColorType)).to.be(true);
-        expect(isType(expression.args[2].type, ColorType)).to.be(true);
-        expect(isType(expression.args[3].type, ColorType)).to.be(true);
+        assert.strictEqual(expression.operator, 'palette');
+        assert.strictEqual(isType(expression.type, ColorType), true);
+        assert.lengthOf(expression.args, 4);
+        assert.strictEqual(isType(expression.args[0].type, NumberType), true);
+        assert.strictEqual(isType(expression.args[1].type, ColorType), true);
+        assert.strictEqual(isType(expression.args[2].type, ColorType), true);
+        assert.strictEqual(isType(expression.args[3].type, ColorType), true);
       });
     });
   });
@@ -145,9 +149,7 @@ describe('ol/expr/expression.js', () => {
     for (const {name, expression, error, context} of cases) {
       it(`throws for ${name}`, () => {
         const newContext = {...newParsingContext(), ...context};
-        expect(() => parse(expression, AnyType, newContext)).to.throwError(
-          (e) => expect(e.message).to.eql(error),
-        );
+        assert.throws(() => parse(expression, AnyType, newContext), error);
       });
     }
   });

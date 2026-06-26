@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {spy as sinonSpy} from 'sinon';
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
@@ -20,12 +21,12 @@ describe('ol.interaction.Interaction', function () {
     });
 
     it('creates a new interaction', function () {
-      expect(interaction).to.be.a(Interaction);
-      expect(interaction).to.be.a(EventTarget);
+      assert.instanceOf(interaction, Interaction);
+      assert.instanceOf(interaction, EventTarget);
     });
 
     it('creates an active interaction', function () {
-      expect(interaction.getActive()).to.be(true);
+      assert.strictEqual(interaction.getActive(), true);
     });
   });
 
@@ -34,12 +35,12 @@ describe('ol.interaction.Interaction', function () {
       const map = new Map({});
       const interaction = new Interaction({});
       interaction.setMap(map);
-      expect(interaction.getMap()).to.be(map);
+      assert.strictEqual(interaction.getMap(), map);
     });
 
     it('returns null if no map', function () {
       const interaction = new Interaction({});
-      expect(interaction.getMap()).to.be(null);
+      assert.strictEqual(interaction.getMap(), null);
     });
   });
 
@@ -48,13 +49,13 @@ describe('ol.interaction.Interaction', function () {
       const map = new Map({});
       const interaction = new Interaction({});
       interaction.setMap(map);
-      expect(interaction.getMap()).to.be(map);
+      assert.strictEqual(interaction.getMap(), map);
     });
 
     it('accepts null', function () {
       const interaction = new Interaction({});
       interaction.setMap(null);
-      expect(interaction.getMap()).to.be(null);
+      assert.strictEqual(interaction.getMap(), null);
     });
   });
 
@@ -70,19 +71,19 @@ describe('ol.interaction.Interaction', function () {
 
     it('has a default event handler', function () {
       const interaction = new Interaction({});
-      expect(interaction.handleEvent()).to.be(true);
+      assert.strictEqual(interaction.handleEvent(), true);
     });
 
     it('allows event handler overrides via options', function () {
       const interaction = new Interaction({
         handleEvent: FALSE,
       });
-      expect(interaction.handleEvent()).to.be(false);
+      assert.strictEqual(interaction.handleEvent(), false);
     });
 
     it('allows event handler overrides via class extension', function () {
       const interaction = new MockInteraction({});
-      expect(interaction.handleEvent()).to.be(false);
+      assert.strictEqual(interaction.handleEvent(), false);
     });
   });
 });
@@ -103,8 +104,8 @@ describe('zoomByDelta - useGeographic', () => {
     const duration = 10;
     zoomByDelta(view, 1, anchor, duration);
 
-    expect(spy.callCount).to.be(1);
+    assert.strictEqual(spy.callCount, 1);
     const options = spy.getCall(0).args[0];
-    expect(options.anchor).to.be(anchor);
+    assert.strictEqual(options.anchor, anchor);
   });
 });

@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import Feature from '../../../../../src/ol/Feature.js';
 import ImageState from '../../../../../src/ol/ImageState.js';
 import Map from '../../../../../src/ol/Map.js';
@@ -30,19 +31,19 @@ describe('ol.layer.VectorTile', function () {
     });
 
     it('creates an instance', function () {
-      expect(layer).to.be.a(VectorTileLayer);
+      assert.instanceOf(layer, VectorTileLayer);
     });
 
     it('provides default preload', function () {
-      expect(layer.getPreload()).to.be(0);
+      assert.strictEqual(layer.getPreload(), 0);
     });
 
     it('provides default useInterimTilesOnError', function () {
-      expect(layer.getUseInterimTilesOnError()).to.be(true);
+      assert.strictEqual(layer.getUseInterimTilesOnError(), true);
     });
 
     it('provides default renderMode', function () {
-      expect(layer.getRenderMode()).to.be('hybrid');
+      assert.strictEqual(layer.getRenderMode(), 'hybrid');
     });
   });
 
@@ -52,13 +53,13 @@ describe('ol.layer.VectorTile', function () {
         renderMode: 'hybrid',
         source: new VectorTileSource({}),
       });
-      expect(layer.getRenderMode()).to.be('hybrid');
-      expect(function () {
+      assert.strictEqual(layer.getRenderMode(), 'hybrid');
+      assert.throws(function () {
         layer = new VectorTileLayer({
           renderMode: 'foo',
           source: new VectorTileSource({}),
         });
-      }).to.throwException();
+      });
     });
   });
 
@@ -129,7 +130,7 @@ describe('ol.layer.VectorTile', function () {
         layer
           .getFeatures(pixel)
           .then(function (features) {
-            expect(features[0].get('name')).to.be('feature1');
+            assert.strictEqual(features[0].get('name'), 'feature1');
             done();
           })
           .catch(done);
@@ -142,7 +143,7 @@ describe('ol.layer.VectorTile', function () {
         layer
           .getFeatures(pixel)
           .then(function (features) {
-            expect(features.length).to.be(0);
+            assert.strictEqual(features.length, 0);
             done();
           })
           .catch(done);
@@ -163,13 +164,19 @@ describe('ol.layer.VectorTile', function () {
               .tileCache_.get(
                 `${getUid(layer.getSource())},${objectURL},0/0/0`,
               );
-            expect(Object.keys(tile.hitDetectionImageData).length).to.be(1);
+            assert.strictEqual(
+              Object.keys(tile.hitDetectionImageData).length,
+              1,
+            );
             const tile2 = layer2
               .getRenderer()
               .tileCache_.get(
                 `${getUid(layer.getSource())},${objectURL},0/0/0`,
               );
-            expect(Object.keys(tile2.hitDetectionImageData).length).to.be(1);
+            assert.strictEqual(
+              Object.keys(tile2.hitDetectionImageData).length,
+              1,
+            );
             done();
           })
           .catch(done);
@@ -218,7 +225,7 @@ describe('ol.layer.VectorTile', function () {
     it('returns an empty array when no tiles are in the cache', function () {
       layer.getRenderer().getTileCache().clear();
       const extent = map.getView().calculateExtent(map.getSize());
-      expect(layer.getFeaturesInExtent(extent).length).to.be(0);
+      assert.strictEqual(layer.getFeaturesInExtent(extent).length, 0);
     });
 
     it('returns features in extent for the last rendered z', function (done) {
@@ -226,21 +233,21 @@ describe('ol.layer.VectorTile', function () {
       map.once('rendercomplete', function () {
         const extent = map.getView().calculateExtent(map.getSize());
         const features = layer.getFeaturesInExtent(extent);
-        expect(features.length).to.be(4);
+        assert.strictEqual(features.length, 4);
         const keys = {};
         features.forEach((feature) => {
-          expect(feature.get('z')).to.be(15);
-          expect(feature.getId() in keys).to.be(false);
+          assert.strictEqual(feature.get('z'), 15);
+          assert.strictEqual(feature.getId() in keys, false);
           keys[feature.getId()] = true;
         });
         map.getView().setZoom(0);
         map.once('rendercomplete', function () {
           const extent = map.getView().calculateExtent(map.getSize());
           const features = layer.getFeaturesInExtent(extent);
-          expect(features.length).to.be(1);
+          assert.strictEqual(features.length, 1);
           features.forEach((feature) => {
-            expect(feature.get('z')).to.be(0);
-            expect(feature.getId() in keys).to.be(false);
+            assert.strictEqual(feature.get('z'), 0);
+            assert.strictEqual(feature.getId() in keys, false);
             keys[feature.getId()] = true;
           });
           done();
@@ -308,18 +315,16 @@ describe('ol.layer.VectorTile', function () {
         });
 
       renderer.renderFrame(frameState);
-      // Tiles not yet loaded, no icon queued
-      expect(renderer.ready).to.be(true);
+      assert.strictEqual(renderer.ready, true);
       const source = layer.getSource();
       const wantedTiles = frameState.wantedTiles[getUid(source)];
-      expect(isEmpty(wantedTiles)).to.be(false);
+      assert.strictEqual(isEmpty(wantedTiles), false);
 
       // Tiles are loaded synchronously
       renderer.tileCache_.forEach((tile) => tile.load());
 
       renderer.renderFrame(frameState);
-      // Tiles loaded, waiting for icon
-      expect(renderer.ready).to.be(false);
+      assert.strictEqual(renderer.ready, false);
 
       layer
         .getStyle()
@@ -330,8 +335,7 @@ describe('ol.layer.VectorTile', function () {
           }
           try {
             renderer.renderFrame(frameState);
-            // Tiles and icon loaded
-            expect(renderer.ready).to.be(true);
+            assert.strictEqual(renderer.ready, true);
             done();
           } catch (e) {
             done(e);

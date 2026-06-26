@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {
   boundingExtent,
   createEmpty,
@@ -9,13 +10,12 @@ import Polygon, {
   fromCircle,
   fromExtent,
 } from '../../../../src/ol/geom/Polygon.js';
-import expect from '../../expect.js';
 
 describe('ol/geom/Polygon.js', function () {
   it('cannot be constructed with a null geometry', function () {
-    expect(function () {
+    assert.throws(function () {
       return new Polygon(null);
-    }).to.throwException();
+    });
   });
 
   describe('construct empty', function () {
@@ -25,23 +25,23 @@ describe('ol/geom/Polygon.js', function () {
     });
 
     it('defaults to layout XY', function () {
-      expect(polygon.getLayout()).to.be('XY');
+      assert.strictEqual(polygon.getLayout(), 'XY');
     });
 
     it('has empty coordinates', function () {
-      expect(polygon.getCoordinates()).to.be.empty();
+      assert.isEmpty(polygon.getCoordinates());
     });
 
     it('has an empty extent', function () {
-      expect(isEmpty(polygon.getExtent())).to.be(true);
+      assert.strictEqual(isEmpty(polygon.getExtent()), true);
     });
 
     it('has empty flat coordinates', function () {
-      expect(polygon.getFlatCoordinates()).to.be.empty();
+      assert.isEmpty(polygon.getFlatCoordinates());
     });
 
     it('has stride the expected stride', function () {
-      expect(polygon.getStride()).to.be(2);
+      assert.strictEqual(polygon.getStride(), 2);
     });
 
     it('can append linear rings', function () {
@@ -52,7 +52,7 @@ describe('ol/geom/Polygon.js', function () {
           [5, 6],
         ]),
       );
-      expect(polygon.getCoordinates()).to.eql([
+      assert.deepEqual(polygon.getCoordinates(), [
         [
           [1, 2],
           [3, 4],
@@ -66,7 +66,7 @@ describe('ol/geom/Polygon.js', function () {
           [11, 12],
         ]),
       );
-      expect(polygon.getCoordinates()).to.eql([
+      assert.deepEqual(polygon.getCoordinates(), [
         [
           [1, 2],
           [3, 4],
@@ -105,38 +105,38 @@ describe('ol/geom/Polygon.js', function () {
     });
 
     it('has the expected layout', function () {
-      expect(polygon.getLayout()).to.be('XY');
+      assert.strictEqual(polygon.getLayout(), 'XY');
     });
 
     it('has the expected coordinates', function () {
-      expect(polygon.getCoordinates()).to.eql([outerRing, innerRing]);
+      assert.deepEqual(polygon.getCoordinates(), [outerRing, innerRing]);
     });
 
     it('has the expected extent', function () {
-      expect(polygon.getExtent()).to.eql([0, 0, 4, 4]);
+      assert.deepEqual(polygon.getExtent(), [0, 0, 4, 4]);
     });
 
     it('has the expected flat coordinates', function () {
-      expect(polygon.getFlatCoordinates()).to.eql(flatCoordinates);
+      assert.deepEqual(polygon.getFlatCoordinates(), flatCoordinates);
     });
 
     it('has stride the expected stride', function () {
-      expect(polygon.getStride()).to.be(2);
+      assert.strictEqual(polygon.getStride(), 2);
     });
 
     it('can return individual rings', function () {
-      expect(polygon.getLinearRing(0).getCoordinates()).to.eql(outerRing);
-      expect(polygon.getLinearRing(1).getCoordinates()).to.eql(innerRing);
+      assert.deepEqual(polygon.getLinearRing(0).getCoordinates(), outerRing);
+      assert.deepEqual(polygon.getLinearRing(1).getCoordinates(), innerRing);
     });
 
     it('has the expected rings', function () {
       const linearRings = polygon.getLinearRings();
-      expect(linearRings).to.be.an(Array);
-      expect(linearRings).to.have.length(2);
-      expect(linearRings[0]).to.be.an(LinearRing);
-      expect(linearRings[0].getCoordinates()).to.eql(outerRing);
-      expect(linearRings[1]).to.be.an(LinearRing);
-      expect(linearRings[1].getCoordinates()).to.eql(innerRing);
+      assert.instanceOf(linearRings, Array);
+      assert.lengthOf(linearRings, 2);
+      assert.instanceOf(linearRings[0], LinearRing);
+      assert.deepEqual(linearRings[0].getCoordinates(), outerRing);
+      assert.instanceOf(linearRings[1], LinearRing);
+      assert.deepEqual(linearRings[1].getCoordinates(), innerRing);
     });
 
     it('does not reverse any rings', function () {
@@ -144,20 +144,20 @@ describe('ol/geom/Polygon.js', function () {
       innerRing.reverse();
       polygon = new Polygon([outerRing, innerRing]);
       const coordinates = polygon.getCoordinates();
-      expect(coordinates[0]).to.eql(outerRing);
-      expect(coordinates[1]).to.eql(innerRing);
+      assert.deepEqual(coordinates[0], outerRing);
+      assert.deepEqual(coordinates[1], innerRing);
     });
 
     it('does not contain outside coordinates', function () {
-      expect(polygon.intersectsCoordinate(outsideOuter)).to.be(false);
+      assert.strictEqual(polygon.intersectsCoordinate(outsideOuter), false);
     });
 
     it('does contain inside coordinates', function () {
-      expect(polygon.intersectsCoordinate(inside)).to.be(true);
+      assert.strictEqual(polygon.intersectsCoordinate(inside), true);
     });
 
     it('does not contain inside inner coordinates', function () {
-      expect(polygon.intersectsCoordinate(insideInner)).to.be(false);
+      assert.strictEqual(polygon.intersectsCoordinate(insideInner), false);
     });
 
     describe('#getCoordinates()', function () {
@@ -179,18 +179,18 @@ describe('ol/geom/Polygon.js', function () {
       const left = new Polygon([cw, ccw]);
 
       it('returns coordinates as they were constructed', function () {
-        expect(right.getCoordinates()).to.eql([ccw, cw]);
-        expect(left.getCoordinates()).to.eql([cw, ccw]);
+        assert.deepEqual(right.getCoordinates(), [ccw, cw]);
+        assert.deepEqual(left.getCoordinates(), [cw, ccw]);
       });
 
       it('can return coordinates with right-hand orientation', function () {
-        expect(right.getCoordinates(true)).to.eql([ccw, cw]);
-        expect(left.getCoordinates(true)).to.eql([ccw, cw]);
+        assert.deepEqual(right.getCoordinates(true), [ccw, cw]);
+        assert.deepEqual(left.getCoordinates(true), [ccw, cw]);
       });
 
       it('can return coordinates with left-hand orientation', function () {
-        expect(right.getCoordinates(false)).to.eql([cw, ccw]);
-        expect(left.getCoordinates(false)).to.eql([cw, ccw]);
+        assert.deepEqual(right.getCoordinates(false), [cw, ccw]);
+        assert.deepEqual(left.getCoordinates(false), [cw, ccw]);
       });
     });
 
@@ -198,20 +198,20 @@ describe('ol/geom/Polygon.js', function () {
       it('reverses the outer ring if necessary', function () {
         outerRing.reverse();
         polygon = new Polygon([outerRing, innerRing]);
-        expect(polygon.getOrientedFlatCoordinates()).to.eql(flatCoordinates);
+        assert.deepEqual(polygon.getOrientedFlatCoordinates(), flatCoordinates);
       });
 
       it('reverses inner rings if necessary', function () {
         innerRing.reverse();
         polygon = new Polygon([outerRing, innerRing]);
-        expect(polygon.getOrientedFlatCoordinates()).to.eql(flatCoordinates);
+        assert.deepEqual(polygon.getOrientedFlatCoordinates(), flatCoordinates);
       });
 
       it('reverses all rings if necessary', function () {
         outerRing.reverse();
         innerRing.reverse();
         polygon = new Polygon([outerRing, innerRing]);
-        expect(polygon.getOrientedFlatCoordinates()).to.eql(flatCoordinates);
+        assert.deepEqual(polygon.getOrientedFlatCoordinates(), flatCoordinates);
       });
     });
   });
@@ -238,59 +238,65 @@ describe('ol/geom/Polygon.js', function () {
     });
 
     it('has the expected layout', function () {
-      expect(polygon.getLayout()).to.be('XYZ');
+      assert.strictEqual(polygon.getLayout(), 'XYZ');
     });
 
     it('has the expected coordinates', function () {
-      expect(polygon.getCoordinates()).to.eql([outerRing, innerRing]);
+      assert.deepEqual(polygon.getCoordinates(), [outerRing, innerRing]);
     });
 
     it('has the expected extent', function () {
-      expect(polygon.getExtent()).to.eql([0, 0, 4, 4]);
+      assert.deepEqual(polygon.getExtent(), [0, 0, 4, 4]);
     });
 
     it('has the expected flat coordinates', function () {
-      expect(polygon.getFlatCoordinates()).to.eql(flatCoordinates);
+      assert.deepEqual(polygon.getFlatCoordinates(), flatCoordinates);
     });
 
     it('has stride the expected stride', function () {
-      expect(polygon.getStride()).to.be(3);
+      assert.strictEqual(polygon.getStride(), 3);
     });
 
     it('does not contain outside coordinates', function () {
-      expect(polygon.intersectsCoordinate(outsideOuter)).to.be(false);
+      assert.strictEqual(polygon.intersectsCoordinate(outsideOuter), false);
     });
 
     it('does contain inside coordinates', function () {
-      expect(polygon.intersectsCoordinate(inside)).to.be(true);
+      assert.strictEqual(polygon.intersectsCoordinate(inside), true);
     });
 
     it('does not contain inside inner coordinates', function () {
-      expect(polygon.intersectsCoordinate(insideInner)).to.be(false);
+      assert.strictEqual(polygon.intersectsCoordinate(insideInner), false);
     });
 
     describe('#intersectsExtent', function () {
       it('does not intersect outside extent', function () {
-        expect(polygon.intersectsExtent(boundingExtent([outsideOuter]))).to.be(
+        assert.strictEqual(
+          polygon.intersectsExtent(boundingExtent([outsideOuter])),
           false,
         );
       });
 
       it('does intersect inside extent', function () {
-        expect(polygon.intersectsExtent(boundingExtent([inside]))).to.be(true);
+        assert.strictEqual(
+          polygon.intersectsExtent(boundingExtent([inside])),
+          true,
+        );
       });
 
       it('does intersect boundary extent', function () {
         const firstMidX = (outerRing[0][0] + outerRing[1][0]) / 2;
         const firstMidY = (outerRing[0][1] + outerRing[1][1]) / 2;
 
-        expect(
+        assert.strictEqual(
           polygon.intersectsExtent(boundingExtent([[firstMidX, firstMidY]])),
-        ).to.be(true);
+          true,
+        );
       });
 
       it('does not intersect extent fully contained by inner ring', function () {
-        expect(polygon.intersectsExtent(boundingExtent([insideInner]))).to.be(
+        assert.strictEqual(
+          polygon.intersectsExtent(boundingExtent([insideInner])),
           false,
         );
       });
@@ -300,20 +306,20 @@ describe('ol/geom/Polygon.js', function () {
       it('reverses the outer ring if necessary', function () {
         outerRing.reverse();
         polygon = new Polygon([outerRing, innerRing]);
-        expect(polygon.getOrientedFlatCoordinates()).to.eql(flatCoordinates);
+        assert.deepEqual(polygon.getOrientedFlatCoordinates(), flatCoordinates);
       });
 
       it('reverses inner rings if necessary', function () {
         innerRing.reverse();
         polygon = new Polygon([outerRing, innerRing]);
-        expect(polygon.getOrientedFlatCoordinates()).to.eql(flatCoordinates);
+        assert.deepEqual(polygon.getOrientedFlatCoordinates(), flatCoordinates);
       });
 
       it('reverses all rings if necessary', function () {
         outerRing.reverse();
         innerRing.reverse();
         polygon = new Polygon([outerRing, innerRing]);
-        expect(polygon.getOrientedFlatCoordinates()).to.eql(flatCoordinates);
+        assert.deepEqual(polygon.getOrientedFlatCoordinates(), flatCoordinates);
       });
     });
   });
@@ -340,59 +346,65 @@ describe('ol/geom/Polygon.js', function () {
     });
 
     it('has the expected layout', function () {
-      expect(polygon.getLayout()).to.be('XYM');
+      assert.strictEqual(polygon.getLayout(), 'XYM');
     });
 
     it('has the expected coordinates', function () {
-      expect(polygon.getCoordinates()).to.eql([outerRing, innerRing]);
+      assert.deepEqual(polygon.getCoordinates(), [outerRing, innerRing]);
     });
 
     it('has the expected extent', function () {
-      expect(polygon.getExtent()).to.eql([0, 0, 4, 4]);
+      assert.deepEqual(polygon.getExtent(), [0, 0, 4, 4]);
     });
 
     it('has the expected flat coordinates', function () {
-      expect(polygon.getFlatCoordinates()).to.eql(flatCoordinates);
+      assert.deepEqual(polygon.getFlatCoordinates(), flatCoordinates);
     });
 
     it('has stride the expected stride', function () {
-      expect(polygon.getStride()).to.be(3);
+      assert.strictEqual(polygon.getStride(), 3);
     });
 
     it('does not contain outside coordinates', function () {
-      expect(polygon.intersectsCoordinate(outsideOuter)).to.be(false);
+      assert.strictEqual(polygon.intersectsCoordinate(outsideOuter), false);
     });
 
     it('does contain inside coordinates', function () {
-      expect(polygon.intersectsCoordinate(inside)).to.be(true);
+      assert.strictEqual(polygon.intersectsCoordinate(inside), true);
     });
 
     it('does not contain inside inner coordinates', function () {
-      expect(polygon.intersectsCoordinate(insideInner)).to.be(false);
+      assert.strictEqual(polygon.intersectsCoordinate(insideInner), false);
     });
 
     describe('#intersectsExtent', function () {
       it('does not intersect outside extent', function () {
-        expect(polygon.intersectsExtent(boundingExtent([outsideOuter]))).to.be(
+        assert.strictEqual(
+          polygon.intersectsExtent(boundingExtent([outsideOuter])),
           false,
         );
       });
 
       it('does intersect inside extent', function () {
-        expect(polygon.intersectsExtent(boundingExtent([inside]))).to.be(true);
+        assert.strictEqual(
+          polygon.intersectsExtent(boundingExtent([inside])),
+          true,
+        );
       });
 
       it('does intersect boundary extent', function () {
         const firstMidX = (outerRing[0][0] + outerRing[1][0]) / 2;
         const firstMidY = (outerRing[0][1] + outerRing[1][1]) / 2;
 
-        expect(
+        assert.strictEqual(
           polygon.intersectsExtent(boundingExtent([[firstMidX, firstMidY]])),
-        ).to.be(true);
+          true,
+        );
       });
 
       it('does not intersect extent fully contained by inner ring', function () {
-        expect(polygon.intersectsExtent(boundingExtent([insideInner]))).to.be(
+        assert.strictEqual(
+          polygon.intersectsExtent(boundingExtent([insideInner])),
           false,
         );
       });
@@ -402,20 +414,20 @@ describe('ol/geom/Polygon.js', function () {
       it('reverses the outer ring if necessary', function () {
         outerRing.reverse();
         polygon = new Polygon([outerRing, innerRing]);
-        expect(polygon.getOrientedFlatCoordinates()).to.eql(flatCoordinates);
+        assert.deepEqual(polygon.getOrientedFlatCoordinates(), flatCoordinates);
       });
 
       it('reverses inner rings if necessary', function () {
         innerRing.reverse();
         polygon = new Polygon([outerRing, innerRing]);
-        expect(polygon.getOrientedFlatCoordinates()).to.eql(flatCoordinates);
+        assert.deepEqual(polygon.getOrientedFlatCoordinates(), flatCoordinates);
       });
 
       it('reverses all rings if necessary', function () {
         outerRing.reverse();
         innerRing.reverse();
         polygon = new Polygon([outerRing, innerRing]);
-        expect(polygon.getOrientedFlatCoordinates()).to.eql(flatCoordinates);
+        assert.deepEqual(polygon.getOrientedFlatCoordinates(), flatCoordinates);
       });
     });
   });
@@ -452,11 +464,11 @@ describe('ol/geom/Polygon.js', function () {
     });
 
     it('has the expected layout', function () {
-      expect(polygon.getLayout()).to.be('XYZM');
+      assert.strictEqual(polygon.getLayout(), 'XYZM');
     });
 
     it('has the expected coordinates', function () {
-      expect(polygon.getCoordinates()).to.eql([
+      assert.deepEqual(polygon.getCoordinates(), [
         outerRing,
         innerRing1,
         innerRing2,
@@ -464,55 +476,62 @@ describe('ol/geom/Polygon.js', function () {
     });
 
     it('has the expected extent', function () {
-      expect(polygon.getExtent()).to.eql([0, 0, 6, 6]);
+      assert.deepEqual(polygon.getExtent(), [0, 0, 6, 6]);
     });
 
     it('has the expected flat coordinates', function () {
-      expect(polygon.getFlatCoordinates()).to.eql(flatCoordinates);
+      assert.deepEqual(polygon.getFlatCoordinates(), flatCoordinates);
     });
 
     it('has stride the expected stride', function () {
-      expect(polygon.getStride()).to.be(4);
+      assert.strictEqual(polygon.getStride(), 4);
     });
 
     it('does not contain outside coordinates', function () {
-      expect(polygon.intersectsCoordinate(outsideOuter)).to.be(false);
+      assert.strictEqual(polygon.intersectsCoordinate(outsideOuter), false);
     });
 
     it('does contain inside coordinates', function () {
-      expect(polygon.intersectsCoordinate(inside)).to.be(true);
+      assert.strictEqual(polygon.intersectsCoordinate(inside), true);
     });
 
     it('does not contain inside inner coordinates', function () {
-      expect(polygon.intersectsCoordinate(insideInner1)).to.be(false);
-      expect(polygon.intersectsCoordinate(insideInner2)).to.be(false);
+      assert.strictEqual(polygon.intersectsCoordinate(insideInner1), false);
+      assert.strictEqual(polygon.intersectsCoordinate(insideInner2), false);
     });
 
     describe('#intersectsExtent', function () {
       it('does not intersect outside extent', function () {
-        expect(polygon.intersectsExtent(boundingExtent([outsideOuter]))).to.be(
+        assert.strictEqual(
+          polygon.intersectsExtent(boundingExtent([outsideOuter])),
           false,
         );
       });
 
       it('does intersect inside extent', function () {
-        expect(polygon.intersectsExtent(boundingExtent([inside]))).to.be(true);
+        assert.strictEqual(
+          polygon.intersectsExtent(boundingExtent([inside])),
+          true,
+        );
       });
 
       it('does intersect boundary extent', function () {
         const firstMidX = (outerRing[0][0] + outerRing[1][0]) / 2;
         const firstMidY = (outerRing[0][1] + outerRing[1][1]) / 2;
 
-        expect(
+        assert.strictEqual(
           polygon.intersectsExtent(boundingExtent([[firstMidX, firstMidY]])),
-        ).to.be(true);
+          true,
+        );
       });
 
       it('does not intersect extent fully contained by inner ring', function () {
-        expect(polygon.intersectsExtent(boundingExtent([insideInner1]))).to.be(
+        assert.strictEqual(
+          polygon.intersectsExtent(boundingExtent([insideInner1])),
           false,
         );
-        expect(polygon.intersectsExtent(boundingExtent([insideInner2]))).to.be(
+        assert.strictEqual(
+          polygon.intersectsExtent(boundingExtent([insideInner2])),
           false,
         );
       });
@@ -522,14 +541,14 @@ describe('ol/geom/Polygon.js', function () {
       it('reverses the outer ring if necessary', function () {
         outerRing.reverse();
         polygon = new Polygon([outerRing, innerRing1, innerRing2]);
-        expect(polygon.getOrientedFlatCoordinates()).to.eql(flatCoordinates);
+        assert.deepEqual(polygon.getOrientedFlatCoordinates(), flatCoordinates);
       });
 
       it('reverses inner rings if necessary', function () {
         innerRing1.reverse();
         innerRing2.reverse();
         polygon = new Polygon([outerRing, innerRing1, innerRing2]);
-        expect(polygon.getOrientedFlatCoordinates()).to.eql(flatCoordinates);
+        assert.deepEqual(polygon.getOrientedFlatCoordinates(), flatCoordinates);
       });
 
       it('reverses all rings if necessary', function () {
@@ -537,7 +556,7 @@ describe('ol/geom/Polygon.js', function () {
         innerRing1.reverse();
         innerRing2.reverse();
         polygon = new Polygon([outerRing, innerRing1, innerRing2]);
-        expect(polygon.getOrientedFlatCoordinates()).to.eql(flatCoordinates);
+        assert.deepEqual(polygon.getOrientedFlatCoordinates(), flatCoordinates);
       });
     });
   });
@@ -562,8 +581,8 @@ describe('ol/geom/Polygon.js', function () {
     describe('#getSimplifiedGeometry', function () {
       it('returns the expected result', function () {
         const simplifiedGeometry = polygon.getSimplifiedGeometry(9);
-        expect(simplifiedGeometry).to.be.an(Polygon);
-        expect(simplifiedGeometry.getCoordinates()).to.eql([
+        assert.instanceOf(simplifiedGeometry, Polygon);
+        assert.deepEqual(simplifiedGeometry.getCoordinates(), [
           [
             [3, 0],
             [0, 3],
@@ -589,7 +608,7 @@ describe('ol/geom/Polygon.js', function () {
       ]);
       geom.scale(10);
       const coordinates = geom.getCoordinates();
-      expect(coordinates).to.eql([
+      assert.deepEqual(coordinates, [
         [
           [-10, -20],
           [10, -20],
@@ -612,7 +631,7 @@ describe('ol/geom/Polygon.js', function () {
       ]);
       geom.scale(2, 3);
       const coordinates = geom.getCoordinates();
-      expect(coordinates).to.eql([
+      assert.deepEqual(coordinates, [
         [
           [-2, -6],
           [2, -6],
@@ -635,7 +654,7 @@ describe('ol/geom/Polygon.js', function () {
       ]);
       geom.scale(3, 2, [-1, -2]);
       const coordinates = geom.getCoordinates();
-      expect(coordinates).to.eql([
+      assert.deepEqual(coordinates, [
         [
           [-1, -2],
           [5, -2],
@@ -659,9 +678,9 @@ describe('ol/geom/Polygon.js', function () {
         ],
       ]);
       const interiorPoint = geom.getInteriorPoint();
-      expect(interiorPoint.getType()).to.be('Point');
-      expect(interiorPoint.layout).to.be('XYM');
-      expect(interiorPoint.getCoordinates()).to.eql([0.5, 0.5, 1]);
+      assert.strictEqual(interiorPoint.getType(), 'Point');
+      assert.strictEqual(interiorPoint.layout, 'XYM');
+      assert.deepEqual(interiorPoint.getCoordinates(), [0.5, 0.5, 1]);
     });
 
     it('returns XYM point for donut polygons', function () {
@@ -682,9 +701,9 @@ describe('ol/geom/Polygon.js', function () {
         ],
       ]);
       const interiorPoint = geom.getInteriorPoint();
-      expect(interiorPoint.getType()).to.be('Point');
-      expect(interiorPoint.layout).to.be('XYM');
-      expect(interiorPoint.getCoordinates()).to.eql([0.75, 1.5, 0.5]);
+      assert.strictEqual(interiorPoint.getType(), 'Point');
+      assert.strictEqual(interiorPoint.layout, 'XYM');
+      assert.deepEqual(interiorPoint.getCoordinates(), [0.75, 1.5, 0.5]);
     });
   });
 
@@ -693,15 +712,15 @@ describe('ol/geom/Polygon.js', function () {
       const extent = [1, 2, 3, 5];
       const polygon = fromExtent(extent);
       const flatCoordinates = polygon.getFlatCoordinates();
-      expect(flatCoordinates).to.eql([1, 2, 1, 5, 3, 5, 3, 2, 1, 2]);
+      assert.deepEqual(flatCoordinates, [1, 2, 1, 5, 3, 5, 3, 2, 1, 2]);
       const orientedFlatCoordinates = polygon.getOrientedFlatCoordinates();
-      expect(orientedFlatCoordinates).to.eql([1, 2, 1, 5, 3, 5, 3, 2, 1, 2]);
+      assert.deepEqual(orientedFlatCoordinates, [1, 2, 1, 5, 3, 5, 3, 2, 1, 2]);
     });
 
     it('throws on empty extent', function () {
-      expect(function () {
+      assert.throws(function () {
         fromExtent(createEmpty());
-      }).to.throwException();
+      });
     });
   });
 
@@ -710,38 +729,34 @@ describe('ol/geom/Polygon.js', function () {
       const circle = new Circle([0, 0, 0], 1, 'XYZ');
       const polygon = fromCircle(circle);
       const coordinates = polygon.getLinearRing(0).getCoordinates();
-      expect(coordinates[0].length).to.eql(3);
-      expect(coordinates[0][2]).to.eql(0);
-      expect(coordinates[32]).to.eql(coordinates[0]);
-      // east
-      expect(coordinates[0][0]).to.roughlyEqual(1, 1e-9);
-      expect(coordinates[0][1]).to.roughlyEqual(0, 1e-9);
-      // south
-      expect(coordinates[8][0]).to.roughlyEqual(0, 1e-9);
-      expect(coordinates[8][1]).to.roughlyEqual(1, 1e-9);
-      // west
-      expect(coordinates[16][0]).to.roughlyEqual(-1, 1e-9);
-      expect(coordinates[16][1]).to.roughlyEqual(0, 1e-9);
-      // north
-      expect(coordinates[24][0]).to.roughlyEqual(0, 1e-9);
-      expect(coordinates[24][1]).to.roughlyEqual(-1, 1e-9);
+      assert.deepEqual(coordinates[0].length, 3);
+      assert.deepEqual(coordinates[0][2], 0);
+      assert.deepEqual(coordinates[32], coordinates[0]);
+      assert.approximately(coordinates[0][0], 1, 1e-9);
+      assert.approximately(coordinates[0][1], 0, 1e-9);
+      assert.approximately(coordinates[8][0], 0, 1e-9);
+      assert.approximately(coordinates[8][1], 1, 1e-9);
+      assert.approximately(coordinates[16][0], -1, 1e-9);
+      assert.approximately(coordinates[16][1], 0, 1e-9);
+      assert.approximately(coordinates[24][0], 0, 1e-9);
+      assert.approximately(coordinates[24][1], -1, 1e-9);
     });
 
     it('creates a regular polygon with custom sides and angle', function () {
       const circle = new Circle([0, 0], 1);
       const polygon = fromCircle(circle, 4, Math.PI / 2);
       const coordinates = polygon.getLinearRing(0).getCoordinates();
-      expect(coordinates[4]).to.eql(coordinates[0]);
-      expect(coordinates[0][0]).to.roughlyEqual(0, 1e-9);
-      expect(coordinates[0][1]).to.roughlyEqual(1, 1e-9);
+      assert.deepEqual(coordinates[4], coordinates[0]);
+      assert.approximately(coordinates[0][0], 0, 1e-9);
+      assert.approximately(coordinates[0][1], 1, 1e-9);
     });
 
     it('creates a regular polygon, maintaining ZM values', () => {
       const circle = new Circle([0, 0, 1, 1], 1, 'XYZM');
       const polygon = fromCircle(circle);
       const coordinates = polygon.getLinearRing(0).getCoordinates();
-      expect(coordinates[0][2]).to.eql(1);
-      expect(coordinates[0][3]).to.eql(1);
+      assert.deepEqual(coordinates[0][2], 1);
+      assert.deepEqual(coordinates[0][3], 1);
     });
   });
 });

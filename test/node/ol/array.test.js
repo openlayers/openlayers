@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {
   ascending,
   binarySearch,
@@ -9,7 +10,6 @@ import {
   reverseSubArray,
   stableSort,
 } from '../../../src/ol/array.js';
-import expect from '../expect.js';
 
 describe('ol/array.js', function () {
   describe('binarySearch', function () {
@@ -49,76 +49,76 @@ describe('ol/array.js', function () {
       ];
 
       it("should find '1000' at index 0", function () {
-        expect(binarySearch(a, '1000')).to.be(0);
+        assert.strictEqual(binarySearch(a, '1000'), 0);
       });
       it("should find 'zzz' at index " + (a.length - 1), function () {
-        expect(binarySearch(a, 'zzz')).to.be(a.length - 1);
+        assert.strictEqual(binarySearch(a, 'zzz'), a.length - 1);
       });
       it("should find 'C' at index 10", function () {
-        expect(binarySearch(a, 'C')).to.be(10);
+        assert.strictEqual(binarySearch(a, 'C'), 10);
       });
       it("should find 'B' at index 7 || 8 || 9", function () {
         const pos = binarySearch(a, 'B');
-        expect(pos == 7 || pos == 8 || pos == 9).to.be.ok();
+        assert.isOk(pos == 7 || pos == 8 || pos == 9);
       });
       it("should not find '100'", function () {
         const pos = binarySearch(a, '100');
-        expect(pos < 0).to.be.ok();
+        assert.isOk(pos < 0);
       });
       it("should have an insertion point of 0 for '100'", function () {
         const pos = binarySearch(a, '100');
-        expect(insertionPoint(pos)).to.be(0);
+        assert.strictEqual(insertionPoint(pos), 0);
       });
       it("should not find 'zzz0'", function () {
         const pos = binarySearch(a, 'zzz0');
-        expect(pos < 0).to.be.ok();
+        assert.isOk(pos < 0);
       });
       it(
         'should have an insertion point of ' + a.length + " for 'zzz0'",
         function () {
           const pos = binarySearch(a, 'zzz0');
-          expect(insertionPoint(pos)).to.be(a.length);
+          assert.strictEqual(insertionPoint(pos), a.length);
         },
       );
       it("should not find 'BA'", function () {
         const pos = binarySearch(a, 'zzz0');
-        expect(pos < 0).to.be.ok();
+        assert.isOk(pos < 0);
       });
       it("should have an insertion point of 10 for 'BA'", function () {
         const pos = binarySearch(a, 'BA');
-        expect(insertionPoint(pos)).to.be(10);
+        assert.strictEqual(insertionPoint(pos), 10);
       });
     });
 
     describe('0 length array with default comparison', function () {
       const b = [];
       it("should not find 'a'", function () {
-        expect(binarySearch(b, 'a') < 0).to.be.ok();
+        assert.isOk(binarySearch(b, 'a') < 0);
       });
       it("should have an insertion point of 0 for 'a'", function () {
         const pos = binarySearch(b, 'a');
-        expect(insertionPoint(pos)).to.be(0);
+        assert.strictEqual(insertionPoint(pos), 0);
       });
     });
 
     describe('single element array with default lexiographical comparison', function () {
       const c = ['only item'];
       it("should find 'only item' at index 0", function () {
-        expect(binarySearch(c, 'only item')).to.be(0);
+        assert.strictEqual(binarySearch(c, 'only item'), 0);
       });
       it("should not find 'a'", function () {
-        expect(binarySearch(c, 'a') < 0).to.be.ok();
+        assert.isOk(binarySearch(c, 'a') < 0);
       });
       it("should have an insertion point of 0 for 'a'", function () {
         const pos = binarySearch(c, 'a');
-        expect(insertionPoint(pos)).to.be(0);
+        assert.strictEqual(insertionPoint(pos), 0);
       });
       it("should not find 'z'", function () {
-        expect(binarySearch(c, 'z') < 0).to.be.ok();
+        assert.isOk(binarySearch(c, 'z') < 0);
       });
       it("should have an insertion point of 1 for 'z'", function () {
         const pos = binarySearch(c, 'z');
-        expect(insertionPoint(pos)).to.be(1);
+        assert.strictEqual(insertionPoint(pos), 1);
       });
     });
 
@@ -128,44 +128,44 @@ describe('ol/array.js', function () {
         142.88888708, 334, 342, 453, 54254,
       ];
       it('should find -897123.9 at index 0', function () {
-        expect(binarySearch(d, -897123.9)).to.be(0);
+        assert.strictEqual(binarySearch(d, -897123.9), 0);
       });
       it('should find 54254 at index ' + (d.length - 1), function () {
-        expect(binarySearch(d, 54254)).to.be(d.length - 1);
+        assert.strictEqual(binarySearch(d, 54254), d.length - 1);
       });
       it('should find -3 at index 5', function () {
-        expect(binarySearch(d, -3)).to.be(5);
+        assert.strictEqual(binarySearch(d, -3), 5);
       });
       it('should find 0 at index 6 || 7 || 8', function () {
         const pos = binarySearch(d, 0);
-        expect(pos == 6 || pos == 7 || pos == 8).to.be(true);
+        assert.strictEqual(pos == 6 || pos == 7 || pos == 8, true);
       });
       it('should not find -900000', function () {
         const pos = binarySearch(d, -900000);
-        expect(pos < 0).to.be(true);
+        assert.strictEqual(pos < 0, true);
       });
       it('should have an insertion point of 0 for -900000', function () {
         const pos = binarySearch(d, -900000);
-        expect(insertionPoint(pos)).to.be(0);
+        assert.strictEqual(insertionPoint(pos), 0);
       });
       it('should not find 54255', function () {
         const pos = binarySearch(d, 54255);
-        expect(pos < 0).to.be(true);
+        assert.strictEqual(pos < 0, true);
       });
       it(
         'should have an insertion point of ' + d.length + ' for 54255',
         function () {
           const pos = binarySearch(d, 54255);
-          expect(insertionPoint(pos)).to.be(d.length);
+          assert.strictEqual(insertionPoint(pos), d.length);
         },
       );
       it('should not find 1.1', function () {
         const pos = binarySearch(d, 1.1);
-        expect(pos < 0).to.be(true);
+        assert.strictEqual(pos < 0, true);
       });
       it('should have an insertion point of 10 for 1.1', function () {
         const pos = binarySearch(d, 1.1);
-        expect(insertionPoint(pos)).to.be(10);
+        assert.strictEqual(insertionPoint(pos), 10);
       });
     });
 
@@ -176,46 +176,46 @@ describe('ol/array.js', function () {
       ];
       it('should find 54254 at index 0', function () {
         const pos = binarySearch(e, 54254, revNumCompare);
-        expect(pos).to.be(0);
+        assert.strictEqual(pos, 0);
       });
       it('should find -897123.9 at index ' + (e.length - 1), function () {
         const pos = binarySearch(e, -897123.9, revNumCompare);
-        expect(pos).to.be(e.length - 1);
+        assert.strictEqual(pos, e.length - 1);
       });
       it('should find -3 at index 10', function () {
         const pos = binarySearch(e, -3, revNumCompare);
-        expect(pos).to.be(10);
+        assert.strictEqual(pos, 10);
       });
       it('should find 0 at index 7 || 8 || 9', function () {
         const pos = binarySearch(e, 0, revNumCompare);
-        expect(pos == 7 || pos == 8 || pos == 9).to.be(true);
+        assert.strictEqual(pos == 7 || pos == 8 || pos == 9, true);
       });
       it('should not find 54254.1', function () {
         const pos = binarySearch(e, 54254.1, revNumCompare);
-        expect(pos < 0).to.be(true);
+        assert.strictEqual(pos < 0, true);
       });
       it('should have an insertion point of 0 for 54254.1', function () {
         const pos = binarySearch(e, 54254.1, revNumCompare);
-        expect(insertionPoint(pos)).to.be(0);
+        assert.strictEqual(insertionPoint(pos), 0);
       });
       it('should not find -897124', function () {
         const pos = binarySearch(e, -897124, revNumCompare);
-        expect(pos < 0).to.be(true);
+        assert.strictEqual(pos < 0, true);
       });
       it(
         'should have an insertion point of ' + e.length + ' for -897124',
         function () {
           const pos = binarySearch(e, -897124, revNumCompare);
-          expect(insertionPoint(pos)).to.be(e.length);
+          assert.strictEqual(insertionPoint(pos), e.length);
         },
       );
       it('should not find 1.1', function () {
         const pos = binarySearch(e, 1.1, revNumCompare);
-        expect(pos < 0).to.be(true);
+        assert.strictEqual(pos < 0, true);
       });
       it('should have an insertion point of 0 for 1.1', function () {
         const pos = binarySearch(e, 1.1, revNumCompare);
-        expect(insertionPoint(pos)).to.be(6);
+        assert.strictEqual(insertionPoint(pos), 6);
       });
     });
 
@@ -223,11 +223,11 @@ describe('ol/array.js', function () {
       const f = [];
       it('should not find 0', function () {
         const pos = binarySearch(f, 0, revNumCompare);
-        expect(pos < 0).to.be(true);
+        assert.strictEqual(pos < 0, true);
       });
       it('should have an insertion point of 0 for 0', function () {
         const pos = binarySearch(f, 0, revNumCompare);
-        expect(insertionPoint(pos)).to.be(0);
+        assert.strictEqual(insertionPoint(pos), 0);
       });
     });
 
@@ -235,32 +235,32 @@ describe('ol/array.js', function () {
       const g = [1];
       it('should find 1 at index 0', function () {
         const pos = binarySearch(g, 1, revNumCompare);
-        expect(pos).to.be(0);
+        assert.strictEqual(pos, 0);
       });
       it('should not find 2', function () {
         const pos = binarySearch(g, 2, revNumCompare);
-        expect(pos < 0).to.be(true);
+        assert.strictEqual(pos < 0, true);
       });
       it('should have an insertion point of 0 for 2', function () {
         const pos = binarySearch(g, 2, revNumCompare);
-        expect(insertionPoint(pos)).to.be(0);
+        assert.strictEqual(insertionPoint(pos), 0);
       });
       it('should not find 0', function () {
         const pos = binarySearch(g, 0, revNumCompare);
-        expect(pos < 0).to.be(true);
+        assert.strictEqual(pos < 0, true);
       });
       it('should have an insertion point of 1 for 0', function () {
         const pos = binarySearch(g, 0, revNumCompare);
-        expect(insertionPoint(pos)).to.be(1);
+        assert.strictEqual(insertionPoint(pos), 1);
       });
     });
 
     describe('finding first index when multiple candidates', function () {
       it('should find the index of the first 0', function () {
-        expect(binarySearch([0, 0, 1], 0)).to.be(0);
+        assert.strictEqual(binarySearch([0, 0, 1], 0), 0);
       });
       it('should find the index of the first 1', function () {
-        expect(binarySearch([0, 1, 1], 1)).to.be(1);
+        assert.strictEqual(binarySearch([0, 1, 1], 1), 1);
       });
     });
 
@@ -301,10 +301,9 @@ describe('ol/array.js', function () {
         Function.prototype.apply = origFunctionApply;
         Function.prototype.call = origFunctionCall;
 
-        // Expectations
-        expect(calls['Array#slice']).to.be(false);
-        expect(calls['Function#apply']).to.be(false);
-        expect(calls['Function#call']).to.be(false);
+        assert.strictEqual(calls['Array#slice'], false);
+        assert.strictEqual(calls['Function#apply'], false);
+        assert.strictEqual(calls['Function#call'], false);
       });
     });
 
@@ -312,62 +311,62 @@ describe('ol/array.js', function () {
       const arr = [1, 2, 2, 2, 3, 5, 9];
 
       it('should return the index of where the item would go plus one, negated, if the item is not found', function () {
-        expect(binarySearch(arr, 4)).to.equal(-6);
+        assert.equal(binarySearch(arr, 4), -6);
       });
       it('should work even on empty arrays', function () {
-        expect(binarySearch([], 42)).to.equal(-1);
+        assert.equal(binarySearch([], 42), -1);
       });
       it('should work even on arrays of doubles', function () {
-        expect(binarySearch([0.0, 0.1, 0.2, 0.3, 0.4], 0.25)).to.equal(-4);
+        assert.equal(binarySearch([0.0, 0.1, 0.2, 0.3, 0.4], 0.25), -4);
       });
     });
   });
 
   describe('equals', function () {
     it('returns true for [] == []', function () {
-      expect(equals([], [])).to.be(true);
+      assert.strictEqual(equals([], []), true);
     });
     it('returns true for [1] == [1]', function () {
-      expect(equals([1], [1])).to.be(true);
+      assert.strictEqual(equals([1], [1]), true);
     });
     it("returns true for ['1'] == ['1']", function () {
-      expect(equals(['1'], ['1'])).to.be(true);
+      assert.strictEqual(equals(['1'], ['1']), true);
     });
     it("returns false for [1] == ['1']", function () {
-      expect(equals([1], ['1'])).to.be(false);
+      assert.strictEqual(equals([1], ['1']), false);
     });
     it('returns true for [null] == [null]', function () {
-      expect(equals([null], [null])).to.be(true);
+      assert.strictEqual(equals([null], [null]), true);
     });
     it('returns false for [null] == [undefined]', function () {
-      expect(equals([null], [undefined])).to.be(false);
+      assert.strictEqual(equals([null], [undefined]), false);
     });
     it('returns true for [1, 2] == [1, 2]', function () {
-      expect(equals([1, 2], [1, 2])).to.be(true);
+      assert.strictEqual(equals([1, 2], [1, 2]), true);
     });
     it('returns false for [1, 2] == [2, 1]', function () {
-      expect(equals([1, 2], [2, 1])).to.be(false);
+      assert.strictEqual(equals([1, 2], [2, 1]), false);
     });
     it('returns false for [1, 2] == [1]', function () {
-      expect(equals([1, 2], [1])).to.be(false);
+      assert.strictEqual(equals([1, 2], [1]), false);
     });
     it('returns false for [1] == [1, 2]', function () {
-      expect(equals([1], [1, 2])).to.be(false);
+      assert.strictEqual(equals([1], [1, 2]), false);
     });
     it('returns false for [{}] == [{}]', function () {
-      expect(equals([{}], [{}])).to.be(false);
+      assert.strictEqual(equals([{}], [{}]), false);
     });
   });
   describe('extend', function () {
     it('extends an array in place with an array', function () {
       const a = [0, 1];
       extend(a, [2, 3]);
-      expect(a).to.eql([0, 1, 2, 3]);
+      assert.deepEqual(a, [0, 1, 2, 3]);
     });
     it('extends an array in place with a number', function () {
       const a = [0, 1];
       extend(a, 2);
-      expect(a).to.eql([0, 1, 2]);
+      assert.deepEqual(a, [0, 1, 2]);
     });
     it('extends an array in place with a big array', function () {
       const a = [];
@@ -377,29 +376,29 @@ describe('ol/array.js', function () {
         bigArray[i] = i;
       }
       extend(a, bigArray);
-      expect(a).to.eql(bigArray);
+      assert.deepEqual(a, bigArray);
     });
   });
 
   describe('isSorted', function () {
     it('works with just an array as argument', function () {
-      expect(isSorted([1, 2, 3])).to.be(true);
-      expect(isSorted([1, 2, 2])).to.be(true);
-      expect(isSorted([1, 2, 1])).to.be(false);
+      assert.strictEqual(isSorted([1, 2, 3]), true);
+      assert.strictEqual(isSorted([1, 2, 2]), true);
+      assert.strictEqual(isSorted([1, 2, 1]), false);
     });
 
     it('works with strict comparison without compare function', function () {
-      expect(isSorted([1, 2, 3], null, true)).to.be(true);
-      expect(isSorted([1, 2, 2], null, true)).to.be(false);
-      expect(isSorted([1, 2, 1], null, true)).to.be(false);
+      assert.strictEqual(isSorted([1, 2, 3], null, true), true);
+      assert.strictEqual(isSorted([1, 2, 2], null, true), false);
+      assert.strictEqual(isSorted([1, 2, 1], null, true), false);
     });
 
     it('works with a compare function', function () {
       function compare(a, b) {
         return b - a;
       }
-      expect(isSorted([1, 2, 3], compare)).to.be(false);
-      expect(isSorted([3, 2, 2], compare)).to.be(true);
+      assert.strictEqual(isSorted([1, 2, 3], compare), false);
+      assert.strictEqual(isSorted([3, 2, 2], compare), true);
     });
   });
 
@@ -407,109 +406,117 @@ describe('ol/array.js', function () {
     it('returns expected value', function () {
       const arr = [1000, 500, 100];
 
-      expect(linearFindNearest(arr, 10000, 0)).to.eql(0);
-      expect(linearFindNearest(arr, 10000, 1)).to.eql(0);
-      expect(linearFindNearest(arr, 10000, -1)).to.eql(0);
+      assert.deepEqual(linearFindNearest(arr, 10000, 0), 0);
+      assert.deepEqual(linearFindNearest(arr, 10000, 1), 0);
+      assert.deepEqual(linearFindNearest(arr, 10000, -1), 0);
 
-      expect(linearFindNearest(arr, 1000, 0)).to.eql(0);
-      expect(linearFindNearest(arr, 1000, 1)).to.eql(0);
-      expect(linearFindNearest(arr, 1000, -1)).to.eql(0);
+      assert.deepEqual(linearFindNearest(arr, 1000, 0), 0);
+      assert.deepEqual(linearFindNearest(arr, 1000, 1), 0);
+      assert.deepEqual(linearFindNearest(arr, 1000, -1), 0);
 
-      expect(linearFindNearest(arr, 999, -1)).to.eql(1);
+      assert.deepEqual(linearFindNearest(arr, 999, -1), 1);
 
-      expect(
+      assert.deepEqual(
         linearFindNearest(arr, 901, function (value, high, low) {
           return value - (low + (high - low) * 0.8);
         }),
-      ).to.eql(0);
+        0,
+      );
 
-      expect(
+      assert.deepEqual(
         linearFindNearest(arr, 900, function (value, high, low) {
           return value - (low + (high - low) * 0.8);
         }),
-      ).to.eql(1);
+        1,
+      );
 
-      expect(linearFindNearest(arr, 900, 0)).to.eql(0);
-      expect(linearFindNearest(arr, 900, 1)).to.eql(0);
-      expect(linearFindNearest(arr, 900, -1)).to.eql(1);
+      assert.deepEqual(linearFindNearest(arr, 900, 0), 0);
+      assert.deepEqual(linearFindNearest(arr, 900, 1), 0);
+      assert.deepEqual(linearFindNearest(arr, 900, -1), 1);
 
-      expect(linearFindNearest(arr, 751, 0)).to.eql(0);
+      assert.deepEqual(linearFindNearest(arr, 751, 0), 0);
 
-      expect(linearFindNearest(arr, 750, 0)).to.eql(1);
-      expect(linearFindNearest(arr, 750, 1)).to.eql(0);
-      expect(linearFindNearest(arr, 750, -1)).to.eql(1);
+      assert.deepEqual(linearFindNearest(arr, 750, 0), 1);
+      assert.deepEqual(linearFindNearest(arr, 750, 1), 0);
+      assert.deepEqual(linearFindNearest(arr, 750, -1), 1);
 
-      expect(
+      assert.deepEqual(
         linearFindNearest(arr, 551, function (value, high, low) {
           return value - (low + (high - low) * 0.1);
         }),
-      ).to.eql(0);
+        0,
+      );
 
-      expect(
+      assert.deepEqual(
         linearFindNearest(arr, 550, function (value, high, low) {
           return value - (low + (high - low) * 0.1);
         }),
-      ).to.eql(1);
+        1,
+      );
 
-      expect(linearFindNearest(arr, 550, 0)).to.eql(1);
-      expect(linearFindNearest(arr, 550, 1)).to.eql(0);
-      expect(linearFindNearest(arr, 550, -1)).to.eql(1);
+      assert.deepEqual(linearFindNearest(arr, 550, 0), 1);
+      assert.deepEqual(linearFindNearest(arr, 550, 1), 0);
+      assert.deepEqual(linearFindNearest(arr, 550, -1), 1);
 
-      expect(linearFindNearest(arr, 501, 1)).to.eql(0);
+      assert.deepEqual(linearFindNearest(arr, 501, 1), 0);
 
-      expect(linearFindNearest(arr, 500, 0)).to.eql(1);
-      expect(linearFindNearest(arr, 500, 1)).to.eql(1);
-      expect(linearFindNearest(arr, 500, -1)).to.eql(1);
+      assert.deepEqual(linearFindNearest(arr, 500, 0), 1);
+      assert.deepEqual(linearFindNearest(arr, 500, 1), 1);
+      assert.deepEqual(linearFindNearest(arr, 500, -1), 1);
 
-      expect(linearFindNearest(arr, 499, -1)).to.eql(2);
+      assert.deepEqual(linearFindNearest(arr, 499, -1), 2);
 
-      expect(
+      assert.deepEqual(
         linearFindNearest(arr, 451, function (value, high, low) {
           return value - (low + (high - low) * 0.875);
         }),
-      ).to.eql(1);
+        1,
+      );
 
-      expect(
+      assert.deepEqual(
         linearFindNearest(arr, 450, function (value, high, low) {
           return value - (low + (high - low) * 0.875);
         }),
-      ).to.eql(2);
+        2,
+      );
 
-      expect(linearFindNearest(arr, 450, 0)).to.eql(1);
-      expect(linearFindNearest(arr, 450, 1)).to.eql(1);
-      expect(linearFindNearest(arr, 450, -1)).to.eql(2);
+      assert.deepEqual(linearFindNearest(arr, 450, 0), 1);
+      assert.deepEqual(linearFindNearest(arr, 450, 1), 1);
+      assert.deepEqual(linearFindNearest(arr, 450, -1), 2);
 
-      expect(linearFindNearest(arr, 301, 0)).to.eql(1);
+      assert.deepEqual(linearFindNearest(arr, 301, 0), 1);
 
-      expect(linearFindNearest(arr, 300, 0)).to.eql(2);
-      expect(linearFindNearest(arr, 300, 1)).to.eql(1);
-      expect(linearFindNearest(arr, 300, -1)).to.eql(2);
+      assert.deepEqual(linearFindNearest(arr, 300, 0), 2);
+      assert.deepEqual(linearFindNearest(arr, 300, 1), 1);
+      assert.deepEqual(linearFindNearest(arr, 300, -1), 2);
 
-      expect(
+      assert.deepEqual(
         linearFindNearest(arr, 201, function (value, high, low) {
           return value - (low + (high - low) * 0.25);
         }),
-      ).to.eql(1);
+        1,
+      );
 
-      expect(
+      assert.deepEqual(
         linearFindNearest(arr, 200, function (value, high, low) {
           return value - (low + (high - low) * 0.25);
         }),
-      ).to.eql(2);
+        2,
+      );
 
-      expect(linearFindNearest(arr, 200, 0)).to.eql(2);
-      expect(linearFindNearest(arr, 200, 1)).to.eql(1);
-      expect(linearFindNearest(arr, 200, -1)).to.eql(2);
+      assert.deepEqual(linearFindNearest(arr, 200, 0), 2);
+      assert.deepEqual(linearFindNearest(arr, 200, 1), 1);
+      assert.deepEqual(linearFindNearest(arr, 200, -1), 2);
 
-      expect(linearFindNearest(arr, 101, 1)).to.eql(1);
+      assert.deepEqual(linearFindNearest(arr, 101, 1), 1);
 
-      expect(linearFindNearest(arr, 100, 0)).to.eql(2);
-      expect(linearFindNearest(arr, 100, 1)).to.eql(2);
-      expect(linearFindNearest(arr, 100, -1)).to.eql(2);
+      assert.deepEqual(linearFindNearest(arr, 100, 0), 2);
+      assert.deepEqual(linearFindNearest(arr, 100, 1), 2);
+      assert.deepEqual(linearFindNearest(arr, 100, -1), 2);
 
-      expect(linearFindNearest(arr, 50, 0)).to.eql(2);
-      expect(linearFindNearest(arr, 50, 1)).to.eql(2);
-      expect(linearFindNearest(arr, 50, -1)).to.eql(2);
+      assert.deepEqual(linearFindNearest(arr, 50, 0), 2);
+      assert.deepEqual(linearFindNearest(arr, 50, 1), 2);
+      assert.deepEqual(linearFindNearest(arr, 50, -1), 2);
     });
   });
 
@@ -517,20 +524,19 @@ describe('ol/array.js', function () {
     it('sorts integers in ascending order', function () {
       const arr = [3000, 40, 200];
       arr.sort(ascending);
-      // default sort would yield [200, 3000, 40]
-      expect(arr).to.eql([40, 200, 3000]);
+      assert.deepEqual(arr, [40, 200, 3000]);
     });
 
     it('sorts floats in ascending order', function () {
       const arr = [-2.0, -2.1, -1.9];
       arr.sort(ascending);
-      expect(arr).to.eql([-2.1, -2.0, -1.9]);
+      assert.deepEqual(arr, [-2.1, -2.0, -1.9]);
     });
 
     it('sorts strings in ascending order', function () {
       const arr = ['bravo', 'alpha', 'delta'];
       arr.sort(ascending);
-      expect(arr).to.eql(['alpha', 'bravo', 'delta']);
+      assert.deepEqual(arr, ['alpha', 'bravo', 'delta']);
     });
   });
 
@@ -538,9 +544,9 @@ describe('ol/array.js', function () {
     it('removes elements from an array', function () {
       const a = ['a', 'b', 'c', 'd'];
       remove(a, 'c');
-      expect(a).to.eql(['a', 'b', 'd']);
+      assert.deepEqual(a, ['a', 'b', 'd']);
       remove(a, 'x');
-      expect(a).to.eql(['a', 'b', 'd']);
+      assert.deepEqual(a, ['a', 'b', 'd']);
     });
   });
 
@@ -551,19 +557,19 @@ describe('ol/array.js', function () {
 
       arr = [1, 5, 4, 3, 2, 6];
       reverseSubArray(arr, 1, 4);
-      expect(arr).to.eql(expected);
+      assert.deepEqual(arr, expected);
 
       arr = [3, 2, 1, 4, 5, 6];
       reverseSubArray(arr, 0, 2);
-      expect(arr).to.eql(expected);
+      assert.deepEqual(arr, expected);
 
       arr = [1, 2, 3, 6, 5, 4];
       reverseSubArray(arr, 3, 5);
-      expect(arr).to.eql(expected);
+      assert.deepEqual(arr, expected);
 
       arr = [6, 5, 4, 3, 2, 1];
       reverseSubArray(arr, 0, 5);
-      expect(arr).to.eql(expected);
+      assert.deepEqual(arr, expected);
     });
   });
 
@@ -590,7 +596,7 @@ describe('ol/array.js', function () {
       for (let i = 0; i < arr.length; i++) {
         sortedValues.push(arr[i].val);
       }
-      expect(wantedSortedValues).to.eql(sortedValues);
+      assert.deepEqual(wantedSortedValues, sortedValues);
     });
   });
 });

@@ -25,10 +25,6 @@ module.exports = async function (karma) {
     },
     files: [
       {
-        pattern: path.resolve(__dirname, require.resolve('expect.js/index.js')),
-        watched: false,
-      },
-      {
         pattern: path.resolve(__dirname, './test-extensions.js'),
       },
       {

@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {
   addCommon,
   clearAllProjections,
@@ -43,15 +44,15 @@ describe('ol/proj/epsg3857', function () {
       for (let i = 0, ii = cases.length; i < ii; ++i) {
         const point = cases[i].g;
         const transformed = fromEPSG4326(point);
-        expect(transformed[0]).to.roughlyEqual(cases[i].m[0], tolerance);
-        expect(transformed[1]).to.roughlyEqual(cases[i].m[1], tolerance);
+        assert.approximately(transformed[0], cases[i].m[0], tolerance);
+        assert.approximately(transformed[1], cases[i].m[1], tolerance);
       }
     });
 
     it('does not produce unexpected results for string coordinates', function () {
       const transformed = fromEPSG4326(['180', '90']);
-      expect(transformed[0]).to.roughlyEqual(HALF_SIZE, 1e-5);
-      expect(transformed[1]).to.roughlyEqual(MAX_SAFE_Y, 1e-5);
+      assert.approximately(transformed[0], HALF_SIZE, 1e-5);
+      assert.approximately(transformed[1], MAX_SAFE_Y, 1e-5);
     });
   });
 
@@ -61,7 +62,8 @@ describe('ol/proj/epsg3857', function () {
       const epsg3857 = getProjection('EPSG:3857');
       const resolution = 19.11;
       const point = [0, 0];
-      expect(getPointResolution(epsg3857, resolution, point)).to.roughlyEqual(
+      assert.approximately(
+        getPointResolution(epsg3857, resolution, point),
         19.11,
         1e-1,
       );
@@ -73,7 +75,8 @@ describe('ol/proj/epsg3857', function () {
       const epsg4326 = getProjection('EPSG:4326');
       const resolution = 19.11;
       const point = transform([0, 43.65], epsg4326, epsg3857);
-      expect(getPointResolution(epsg3857, resolution, point)).to.roughlyEqual(
+      assert.approximately(
+        getPointResolution(epsg3857, resolution, point),
         19.11 * Math.cos((Math.PI * 43.65) / 180),
         1e-9,
       );
@@ -87,7 +90,8 @@ describe('ol/proj/epsg3857', function () {
       let latitude;
       for (latitude = 0; latitude <= 85; ++latitude) {
         const point = transform([0, latitude], epsg4326, epsg3857);
-        expect(getPointResolution(epsg3857, resolution, point)).to.roughlyEqual(
+        assert.approximately(
+          getPointResolution(epsg3857, resolution, point),
           19.11 * Math.cos((Math.PI * latitude) / 180),
           1e-9,
         );

@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {spy as sinonSpy} from 'sinon';
 import {
   getJSON,
@@ -11,10 +12,10 @@ describe('ol/net', function () {
     it('returns a promise that resolves to a parsed JSON object', function (done) {
       const url = 'spec/ol/data/point.json';
       const result = getJSON(url);
-      expect(result).to.be.a(Promise);
+      assert.instanceOf(result, Promise);
       result.then(function (json) {
-        expect(json).to.be.an(Object);
-        expect(json.type).to.be('FeatureCollection');
+        assert.instanceOf(json, Object);
+        assert.strictEqual(json.type, 'FeatureCollection');
         done();
       });
       result.catch(done);
@@ -24,7 +25,7 @@ describe('ol/net', function () {
   describe('resolveUrl()', function () {
     it('resolves an absolute URL given a base and relative URL', function () {
       const url = resolveUrl('https://example.com/base/', 'relative/path');
-      expect(url).to.be('https://example.com/base/relative/path');
+      assert.strictEqual(url, 'https://example.com/base/relative/path');
     });
 
     it('returns the second arg if it is an absolute URL', function () {
@@ -32,7 +33,7 @@ describe('ol/net', function () {
         'https://example.com',
         'https://other-example.com',
       );
-      expect(url).to.be('https://other-example.com');
+      assert.strictEqual(url, 'https://other-example.com');
     });
   });
 
@@ -46,8 +47,8 @@ describe('ol/net', function () {
     function createCallback(url, done) {
       removeChild = sinonSpy();
       const callback = function (data) {
-        expect(data).to.be(url + key);
-        expect(removeChild.called).to.be(true);
+        assert.strictEqual(data, url + key);
+        assert.strictEqual(removeChild.called, true);
         done();
       };
       key = 'olc_' + getUid(callback);
@@ -99,11 +100,11 @@ describe('ol/net', function () {
         };
       };
       function callback() {
-        expect().fail();
+        assert.fail();
       }
       function errback() {
-        expect(window[key]).to.be(undefined);
-        expect(removeChild.called).to.be(true);
+        assert.strictEqual(window[key], undefined);
+        assert.strictEqual(removeChild.called, true);
         done();
       }
       requestJSONP('foo', callback, errback);

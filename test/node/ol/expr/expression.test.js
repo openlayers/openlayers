@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {
   AnyType,
   BooleanType,
@@ -22,138 +23,137 @@ import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
 import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
 import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../src/ol/geom/Point.js';
-import expect from '../../expect.js';
 
 describe('ol/expr/expression.js', () => {
   describe('parse()', () => {
     it('parses a literal boolean', () => {
       const expression = parse(true, BooleanType, newParsingContext());
-      expect(expression).to.be.a(LiteralExpression);
-      expect(isType(expression.type, BooleanType)).to.be(true);
-      expect(expression.value).to.be(true);
+      assert.instanceOf(expression, LiteralExpression);
+      assert.strictEqual(isType(expression.type, BooleanType), true);
+      assert.strictEqual(expression.value, true);
     });
 
     it('casts a number to boolean (42)', () => {
       const expression = parse(42, BooleanType, newParsingContext());
-      expect(expression).to.be.a(LiteralExpression);
-      expect(typeName(expression.type)).to.be(typeName(BooleanType));
-      expect(expression.value).to.be(true);
+      assert.instanceOf(expression, LiteralExpression);
+      assert.strictEqual(typeName(expression.type), typeName(BooleanType));
+      assert.strictEqual(expression.value, true);
     });
 
     it('casts a number to boolean (0)', () => {
       const expression = parse(0, BooleanType, newParsingContext());
-      expect(expression).to.be.a(LiteralExpression);
-      expect(typeName(expression.type)).to.be(typeName(BooleanType));
-      expect(expression.value).to.be(false);
+      assert.instanceOf(expression, LiteralExpression);
+      assert.strictEqual(typeName(expression.type), typeName(BooleanType));
+      assert.strictEqual(expression.value, false);
     });
 
     it('casts a string to boolean ("foo")', () => {
       const expression = parse('foo', BooleanType, newParsingContext());
-      expect(expression).to.be.a(LiteralExpression);
-      expect(typeName(expression.type)).to.be(typeName(BooleanType));
-      expect(expression.value).to.be(true);
+      assert.instanceOf(expression, LiteralExpression);
+      assert.strictEqual(typeName(expression.type), typeName(BooleanType));
+      assert.strictEqual(expression.value, true);
     });
 
     it('casts a string to boolean ("")', () => {
       const expression = parse('', BooleanType, newParsingContext());
-      expect(expression).to.be.a(LiteralExpression);
-      expect(typeName(expression.type)).to.be(typeName(BooleanType));
-      expect(expression.value).to.be(false);
+      assert.instanceOf(expression, LiteralExpression);
+      assert.strictEqual(typeName(expression.type), typeName(BooleanType));
+      assert.strictEqual(expression.value, false);
     });
 
     it('parses a literal string', () => {
       const expression = parse('foo', StringType, newParsingContext());
-      expect(expression).to.be.a(LiteralExpression);
-      expect(isType(expression.type, StringType)).to.be(true);
-      expect(expression.value).to.be('foo');
+      assert.instanceOf(expression, LiteralExpression);
+      assert.strictEqual(isType(expression.type, StringType), true);
+      assert.strictEqual(expression.value, 'foo');
     });
 
     it('casts a number to a string', () => {
       const expression = parse(42, StringType, newParsingContext());
-      expect(expression).to.be.a(LiteralExpression);
-      expect(isType(expression.type, StringType)).to.be(true);
-      expect(expression.value).to.be('42');
+      assert.instanceOf(expression, LiteralExpression);
+      assert.strictEqual(isType(expression.type, StringType), true);
+      assert.strictEqual(expression.value, '42');
     });
 
     it('casts a boolean to a string (true)', () => {
       const expression = parse(true, StringType, newParsingContext());
-      expect(expression).to.be.a(LiteralExpression);
-      expect(typeName(expression.type)).to.be(typeName(StringType));
-      expect(expression.value).to.be('true');
+      assert.instanceOf(expression, LiteralExpression);
+      assert.strictEqual(typeName(expression.type), typeName(StringType));
+      assert.strictEqual(expression.value, 'true');
     });
 
     it('casts a boolean to a string (false)', () => {
       const expression = parse(false, StringType, newParsingContext());
-      expect(expression).to.be.a(LiteralExpression);
-      expect(typeName(expression.type)).to.be(typeName(StringType));
-      expect(expression.value).to.be('false');
+      assert.instanceOf(expression, LiteralExpression);
+      assert.strictEqual(typeName(expression.type), typeName(StringType));
+      assert.strictEqual(expression.value, 'false');
     });
 
     it('parses a literal number', () => {
       const expression = parse(42, NumberType, newParsingContext());
-      expect(expression).to.be.a(LiteralExpression);
-      expect(isType(expression.type, NumberType)).to.be(true);
-      expect(expression.value).to.be(42);
+      assert.instanceOf(expression, LiteralExpression);
+      assert.strictEqual(isType(expression.type, NumberType), true);
+      assert.strictEqual(expression.value, 42);
     });
 
     it('parses a literal color (array)', () => {
       const expression = parse([255, 0, 255], ColorType, newParsingContext());
-      expect(expression).to.be.a(LiteralExpression);
-      expect(includesType(expression.type, ColorType));
-      expect(expression.value).to.eql([255, 0, 255, 1]);
+      assert.instanceOf(expression, LiteralExpression);
+      assert.ok(includesType(expression.type, ColorType));
+      assert.deepEqual(expression.value, [255, 0, 255, 1]);
     });
 
     it('parses a literal color (array w/ alpha)', () => {
       const expression = parse([0, 0, 0, 1], ColorType, newParsingContext());
-      expect(expression).to.be.a(LiteralExpression);
-      expect(includesType(expression.type, ColorType));
-      expect(expression.value).to.eql([0, 0, 0, 1]);
+      assert.instanceOf(expression, LiteralExpression);
+      assert.ok(includesType(expression.type, ColorType));
+      assert.deepEqual(expression.value, [0, 0, 0, 1]);
     });
 
     it('parses a literal number array', () => {
       const expression = parse([10, 20], NumberArrayType, newParsingContext());
-      expect(expression).to.be.a(LiteralExpression);
-      expect(includesType(expression.type, NumberArrayType));
-      expect(expression.value).to.eql([10, 20]);
+      assert.instanceOf(expression, LiteralExpression);
+      assert.ok(includesType(expression.type, NumberArrayType));
+      assert.deepEqual(expression.value, [10, 20]);
     });
 
     it('parses a get expression', () => {
       const context = newParsingContext();
       const expression = parse(['get', 'foo'], AnyType, context);
-      expect(expression).to.be.a(CallExpression);
-      expect(expression.operator).to.be('get');
-      expect(isType(expression.type, AnyType)).to.be(true);
-      expect(context.properties.get('foo')).to.be(AnyType);
+      assert.instanceOf(expression, CallExpression);
+      assert.strictEqual(expression.operator, 'get');
+      assert.strictEqual(isType(expression.type, AnyType), true);
+      assert.strictEqual(context.properties.get('foo'), AnyType);
     });
 
     it('parses a get expression with a specific type', () => {
       const context = newParsingContext();
       const expression = parse(['get', 'foo'], NumberArrayType, context);
-      expect(isType(expression.type, NumberArrayType)).to.be(true);
-      expect(context.properties.get('foo')).to.be(NumberArrayType);
+      assert.strictEqual(isType(expression.type, NumberArrayType), true);
+      assert.strictEqual(context.properties.get('foo'), NumberArrayType);
     });
 
     it('parses a var expression', () => {
       const context = newParsingContext();
       const expression = parse(['var', 'foo'], AnyType, context);
-      expect(expression).to.be.a(CallExpression);
-      expect(expression.operator).to.be('var');
-      expect(isType(expression.type, AnyType)).to.be(true);
-      expect(context.variables.get('foo')).to.be(AnyType);
+      assert.instanceOf(expression, CallExpression);
+      assert.strictEqual(expression.operator, 'var');
+      assert.strictEqual(isType(expression.type, AnyType), true);
+      assert.strictEqual(context.variables.get('foo'), AnyType);
     });
 
     it('parses an expression relying on map state', () => {
       let context = newParsingContext();
       parse(['zoom'], NumberType, context);
-      expect(context.mapState).to.be(true);
+      assert.strictEqual(context.mapState, true);
 
       context = newParsingContext();
       parse(['resolution'], NumberType, context);
-      expect(context.mapState).to.be(true);
+      assert.strictEqual(context.mapState, true);
 
       context = newParsingContext();
       parse(['time'], NumberType, context);
-      expect(context.mapState).to.be(true);
+      assert.strictEqual(context.mapState, true);
     });
 
     it('parses a concat expression', () => {
@@ -163,10 +163,10 @@ describe('ol/expr/expression.js', () => {
         StringType,
         context,
       );
-      expect(expression).to.be.a(CallExpression);
-      expect(expression.operator).to.be('concat');
-      expect(isType(expression.type, StringType));
-      expect(context.properties.get('foo')).to.be(StringType);
+      assert.instanceOf(expression, CallExpression);
+      assert.strictEqual(expression.operator, 'concat');
+      assert.ok(isType(expression.type, StringType));
+      assert.strictEqual(context.properties.get('foo'), StringType);
     });
 
     it('is ok to have a concat expression with a string and number', () => {
@@ -176,12 +176,18 @@ describe('ol/expr/expression.js', () => {
         StringType,
         context,
       );
-      expect(expression).to.be.a(CallExpression);
-      expect(expression.operator).to.be('concat');
-      expect(typeName(expression.type)).to.be(typeName(StringType));
-      expect(expression.args).to.have.length(2);
-      expect(typeName(expression.args[0].type)).to.be(typeName(StringType));
-      expect(typeName(expression.args[1].type)).to.be(typeName(StringType));
+      assert.instanceOf(expression, CallExpression);
+      assert.strictEqual(expression.operator, 'concat');
+      assert.strictEqual(typeName(expression.type), typeName(StringType));
+      assert.lengthOf(expression.args, 2);
+      assert.strictEqual(
+        typeName(expression.args[0].type),
+        typeName(StringType),
+      );
+      assert.strictEqual(
+        typeName(expression.args[1].type),
+        typeName(StringType),
+      );
     });
 
     it('parses a coalesce expression', () => {
@@ -191,20 +197,20 @@ describe('ol/expr/expression.js', () => {
         StringType,
         context,
       );
-      expect(expression).to.be.a(CallExpression);
-      expect(expression.operator).to.be('coalesce');
-      expect(isType(expression.type, StringType));
-      expect(context.properties.get('foo')).to.be(StringType);
+      assert.instanceOf(expression, CallExpression);
+      assert.strictEqual(expression.operator, 'coalesce');
+      assert.ok(isType(expression.type, StringType));
+      assert.strictEqual(context.properties.get('foo'), StringType);
     });
 
     it('parses id expression', () => {
       const context = newParsingContext();
       const expression = parse(['id'], StringType | NumberType, context);
-      expect(context.featureId).to.be(true);
+      assert.strictEqual(context.featureId, true);
 
-      expect(expression).to.be.a(CallExpression);
-      expect(expression.operator).to.be('id');
-      expect(isType(expression.type, StringType | NumberType));
+      assert.instanceOf(expression, CallExpression);
+      assert.strictEqual(expression.operator, 'id');
+      assert.ok(isType(expression.type, StringType | NumberType));
     });
 
     it('parses a == expression', () => {
@@ -214,37 +220,37 @@ describe('ol/expr/expression.js', () => {
         BooleanType,
         context,
       );
-      expect(expression).to.be.a(CallExpression);
-      expect(expression.operator).to.be('==');
-      expect(isType(expression.type, BooleanType)).to.be(true);
-      expect(expression.args).to.have.length(2);
-      expect(expression.args[0]).to.be.a(CallExpression);
-      expect(isType(expression.args[0].type, StringType)).to.be(true);
-      expect(expression.args[1]).to.be.a(LiteralExpression);
-      expect(isType(expression.args[1].type, StringType)).to.be(true);
-      expect(context.properties.get('foo')).to.be(StringType);
+      assert.instanceOf(expression, CallExpression);
+      assert.strictEqual(expression.operator, '==');
+      assert.strictEqual(isType(expression.type, BooleanType), true);
+      assert.lengthOf(expression.args, 2);
+      assert.instanceOf(expression.args[0], CallExpression);
+      assert.strictEqual(isType(expression.args[0].type, StringType), true);
+      assert.instanceOf(expression.args[1], LiteralExpression);
+      assert.strictEqual(isType(expression.args[1].type, StringType), true);
+      assert.strictEqual(context.properties.get('foo'), StringType);
     });
 
     it('narrows down types using provided style variables', () => {
       const styleVariables = {x: 123};
       const context = newParsingContext(styleVariables);
       parse(['==', ['var', 'x'], ['get', 'y']], BooleanType, context);
-      expect(context.variables.get('x')).to.be(NumberType);
-      expect(context.properties.get('y')).to.be(NumberType);
+      assert.strictEqual(context.variables.get('x'), NumberType);
+      assert.strictEqual(context.properties.get('y'), NumberType);
     });
 
     it('do a more lenient type determination for style variables (string as color)', () => {
       const styleVariables = {x: 'hello'};
       const context = newParsingContext(styleVariables);
       parse(['var', 'x'], ColorType, context);
-      expect(context.variables.get('x')).to.be(ColorType);
+      assert.strictEqual(context.variables.get('x'), ColorType);
     });
 
     it('do a more lenient type determination for style variables (number[] as size)', () => {
       const styleVariables = {x: [1, 2]};
       const context = newParsingContext(styleVariables);
       parse(['var', 'x'], SizeType, context);
-      expect(context.variables.get('x')).to.be(SizeType);
+      assert.strictEqual(context.variables.get('x'), SizeType);
     });
 
     describe('case operation', () => {
@@ -254,7 +260,7 @@ describe('ol/expr/expression.js', () => {
           StringType,
           newParsingContext(),
         );
-        expect(isType(expression.type, StringType)).to.be(true);
+        assert.strictEqual(isType(expression.type, StringType), true);
       });
 
       it('respects the return type (number array)', () => {
@@ -272,11 +278,23 @@ describe('ol/expr/expression.js', () => {
           NumberArrayType,
           newParsingContext(),
         );
-        expect(isType(expression.type, NumberArrayType)).to.be(true);
-        expect(isType(expression.args[1].type, NumberArrayType)).to.be(true);
-        expect(isType(expression.args[3].type, NumberArrayType)).to.be(true);
-        expect(isType(expression.args[5].type, NumberArrayType)).to.be(true);
-        expect(isType(expression.args[6].type, NumberArrayType)).to.be(true);
+        assert.strictEqual(isType(expression.type, NumberArrayType), true);
+        assert.strictEqual(
+          isType(expression.args[1].type, NumberArrayType),
+          true,
+        );
+        assert.strictEqual(
+          isType(expression.args[3].type, NumberArrayType),
+          true,
+        );
+        assert.strictEqual(
+          isType(expression.args[5].type, NumberArrayType),
+          true,
+        );
+        assert.strictEqual(
+          isType(expression.args[6].type, NumberArrayType),
+          true,
+        );
       });
 
       it('respects the return type (size)', () => {
@@ -292,10 +310,10 @@ describe('ol/expr/expression.js', () => {
           SizeType,
           newParsingContext(),
         );
-        expect(isType(expression.type, SizeType)).to.be(true);
-        expect(isType(expression.args[1].type, SizeType)).to.be(true);
-        expect(isType(expression.args[3].type, SizeType)).to.be(true);
-        expect(isType(expression.args[4].type, SizeType)).to.be(true);
+        assert.strictEqual(isType(expression.type, SizeType), true);
+        assert.strictEqual(isType(expression.args[1].type, SizeType), true);
+        assert.strictEqual(isType(expression.args[3].type, SizeType), true);
+        assert.strictEqual(isType(expression.args[4].type, SizeType), true);
       });
     });
 
@@ -307,8 +325,8 @@ describe('ol/expr/expression.js', () => {
           StringType,
           context,
         );
-        expect(isType(expression.type, StringType)).to.be(true);
-        expect(context.properties.get('attr')).to.be(NumberType);
+        assert.strictEqual(isType(expression.type, StringType), true);
+        assert.strictEqual(context.properties.get('attr'), NumberType);
       });
 
       it('respects the return type (color array)', () => {
@@ -317,7 +335,7 @@ describe('ol/expr/expression.js', () => {
           ColorType,
           newParsingContext(),
         );
-        expect(isType(expression.type, ColorType)).to.be(true);
+        assert.strictEqual(isType(expression.type, ColorType), true);
       });
 
       it('respects the return type (size)', () => {
@@ -327,8 +345,8 @@ describe('ol/expr/expression.js', () => {
           SizeType,
           context,
         );
-        expect(isType(expression.type, SizeType)).to.be(true);
-        expect(context.properties.get('shape')).to.be(StringType);
+        assert.strictEqual(isType(expression.type, SizeType), true);
+        assert.strictEqual(context.properties.get('shape'), StringType);
       });
     });
 
@@ -340,15 +358,15 @@ describe('ol/expr/expression.js', () => {
           BooleanType,
           context,
         );
-        expect(expression).to.be.a(CallExpression);
-        expect(expression.operator).to.be('in');
-        expect(isType(expression.type, BooleanType)).to.be(true);
-        expect(expression.args).to.have.length(4);
-        expect(isType(expression.args[0].type, NumberType)).to.be(true);
-        expect(isType(expression.args[1].type, NumberType)).to.be(true);
-        expect(isType(expression.args[2].type, NumberType)).to.be(true);
-        expect(isType(expression.args[3].type, NumberType)).to.be(true);
-        expect(context.properties.get('attr')).to.be(NumberType);
+        assert.instanceOf(expression, CallExpression);
+        assert.strictEqual(expression.operator, 'in');
+        assert.strictEqual(isType(expression.type, BooleanType), true);
+        assert.lengthOf(expression.args, 4);
+        assert.strictEqual(isType(expression.args[0].type, NumberType), true);
+        assert.strictEqual(isType(expression.args[1].type, NumberType), true);
+        assert.strictEqual(isType(expression.args[2].type, NumberType), true);
+        assert.strictEqual(isType(expression.args[3].type, NumberType), true);
+        assert.strictEqual(context.properties.get('attr'), NumberType);
       });
 
       it('respects the return type (number haystack using literal operator)', () => {
@@ -358,14 +376,14 @@ describe('ol/expr/expression.js', () => {
           BooleanType,
           context,
         );
-        expect(expression).to.be.a(CallExpression);
-        expect(expression.operator).to.be('in');
-        expect(isType(expression.type, BooleanType)).to.be(true);
-        expect(expression.args).to.have.length(4);
-        expect(isType(expression.args[0].type, NumberType)).to.be(true);
-        expect(isType(expression.args[1].type, NumberType)).to.be(true);
-        expect(isType(expression.args[2].type, NumberType)).to.be(true);
-        expect(isType(expression.args[3].type, NumberType)).to.be(true);
+        assert.instanceOf(expression, CallExpression);
+        assert.strictEqual(expression.operator, 'in');
+        assert.strictEqual(isType(expression.type, BooleanType), true);
+        assert.lengthOf(expression.args, 4);
+        assert.strictEqual(isType(expression.args[0].type, NumberType), true);
+        assert.strictEqual(isType(expression.args[1].type, NumberType), true);
+        assert.strictEqual(isType(expression.args[2].type, NumberType), true);
+        assert.strictEqual(isType(expression.args[3].type, NumberType), true);
       });
 
       it('respects the return types (string haystack)', () => {
@@ -375,16 +393,16 @@ describe('ol/expr/expression.js', () => {
           BooleanType,
           context,
         );
-        expect(expression).to.be.a(CallExpression);
-        expect(expression.operator).to.be('in');
-        expect(isType(expression.type, BooleanType)).to.be(true);
-        expect(expression.args).to.have.length(5);
-        expect(isType(expression.args[0].type, StringType)).to.be(true);
-        expect(isType(expression.args[1].type, StringType)).to.be(true);
-        expect(isType(expression.args[2].type, StringType)).to.be(true);
-        expect(isType(expression.args[3].type, StringType)).to.be(true);
-        expect(isType(expression.args[4].type, StringType)).to.be(true);
-        expect(context.properties.get('attr')).to.be(StringType);
+        assert.instanceOf(expression, CallExpression);
+        assert.strictEqual(expression.operator, 'in');
+        assert.strictEqual(isType(expression.type, BooleanType), true);
+        assert.lengthOf(expression.args, 5);
+        assert.strictEqual(isType(expression.args[0].type, StringType), true);
+        assert.strictEqual(isType(expression.args[1].type, StringType), true);
+        assert.strictEqual(isType(expression.args[2].type, StringType), true);
+        assert.strictEqual(isType(expression.args[3].type, StringType), true);
+        assert.strictEqual(isType(expression.args[4].type, StringType), true);
+        assert.strictEqual(context.properties.get('attr'), StringType);
       });
     });
 
@@ -396,15 +414,15 @@ describe('ol/expr/expression.js', () => {
           NumberArrayType,
           context,
         );
-        expect(expression.operator).to.be('array');
-        expect(isType(expression.type, NumberArrayType)).to.be(true);
-        expect(expression.args).to.have.length(5);
-        expect(isType(expression.args[0].type, NumberType)).to.be(true);
-        expect(isType(expression.args[1].type, NumberType)).to.be(true);
-        expect(isType(expression.args[2].type, NumberType)).to.be(true);
-        expect(isType(expression.args[3].type, NumberType)).to.be(true);
-        expect(isType(expression.args[4].type, NumberType)).to.be(true);
-        expect(context.properties.get('third')).to.be(NumberType);
+        assert.strictEqual(expression.operator, 'array');
+        assert.strictEqual(isType(expression.type, NumberArrayType), true);
+        assert.lengthOf(expression.args, 5);
+        assert.strictEqual(isType(expression.args[0].type, NumberType), true);
+        assert.strictEqual(isType(expression.args[1].type, NumberType), true);
+        assert.strictEqual(isType(expression.args[2].type, NumberType), true);
+        assert.strictEqual(isType(expression.args[3].type, NumberType), true);
+        assert.strictEqual(isType(expression.args[4].type, NumberType), true);
+        assert.strictEqual(context.properties.get('third'), NumberType);
       });
 
       it('respects the return type (color)', () => {
@@ -414,12 +432,12 @@ describe('ol/expr/expression.js', () => {
           ColorType,
           context,
         );
-        expect(isType(expression.type, ColorType)).to.be(true);
-        expect(expression.args).to.have.length(3);
-        expect(isType(expression.args[0].type, NumberType)).to.be(true);
-        expect(isType(expression.args[1].type, NumberType)).to.be(true);
-        expect(isType(expression.args[2].type, NumberType)).to.be(true);
-        expect(context.properties.get('blue')).to.be(NumberType);
+        assert.strictEqual(isType(expression.type, ColorType), true);
+        assert.lengthOf(expression.args, 3);
+        assert.strictEqual(isType(expression.args[0].type, NumberType), true);
+        assert.strictEqual(isType(expression.args[1].type, NumberType), true);
+        assert.strictEqual(isType(expression.args[2].type, NumberType), true);
+        assert.strictEqual(context.properties.get('blue'), NumberType);
       });
     });
   });
@@ -555,9 +573,7 @@ describe('ol/expr/expression.js', () => {
     for (const {name, expression, error, context} of cases) {
       it(`throws for ${name}`, () => {
         const newContext = {...newParsingContext(), ...context};
-        expect(() => parse(expression, AnyType, newContext)).to.throwError(
-          (e) => expect(e.message).to.eql(error),
-        );
+        assert.throws(() => parse(expression, AnyType, newContext), error);
       });
     }
   });
@@ -586,137 +602,142 @@ describe('ol/expr/expression.js', () => {
 
     for (const {type, name} of cases) {
       it(`returns ${name} for ${type}`, () => {
-        expect(typeName(type)).to.be(name);
+        assert.strictEqual(typeName(type), name);
       });
     }
   });
 
   describe('includesType()', () => {
     it('works for BooleanType', () => {
-      expect(includesType(NoneType, BooleanType)).to.be(false);
-      expect(includesType(BooleanType, BooleanType)).to.be(true);
-      expect(includesType(StringType, BooleanType)).to.be(false);
-      expect(includesType(NumberType, BooleanType)).to.be(false);
-      expect(includesType(ColorType, BooleanType)).to.be(false);
-      expect(includesType(NumberArrayType, BooleanType)).to.be(false);
-      expect(includesType(AnyType, BooleanType)).to.be(true);
+      assert.strictEqual(includesType(NoneType, BooleanType), false);
+      assert.strictEqual(includesType(BooleanType, BooleanType), true);
+      assert.strictEqual(includesType(StringType, BooleanType), false);
+      assert.strictEqual(includesType(NumberType, BooleanType), false);
+      assert.strictEqual(includesType(ColorType, BooleanType), false);
+      assert.strictEqual(includesType(NumberArrayType, BooleanType), false);
+      assert.strictEqual(includesType(AnyType, BooleanType), true);
     });
 
     it('works for StringType', () => {
-      expect(includesType(NoneType, StringType)).to.be(false);
-      expect(includesType(BooleanType, StringType)).to.be(false);
-      expect(includesType(StringType, StringType)).to.be(true);
-      expect(includesType(NumberType, StringType)).to.be(false);
-      expect(includesType(ColorType, StringType)).to.be(false);
-      expect(includesType(NumberArrayType, StringType)).to.be(false);
-      expect(includesType(AnyType, StringType)).to.be(true);
+      assert.strictEqual(includesType(NoneType, StringType), false);
+      assert.strictEqual(includesType(BooleanType, StringType), false);
+      assert.strictEqual(includesType(StringType, StringType), true);
+      assert.strictEqual(includesType(NumberType, StringType), false);
+      assert.strictEqual(includesType(ColorType, StringType), false);
+      assert.strictEqual(includesType(NumberArrayType, StringType), false);
+      assert.strictEqual(includesType(AnyType, StringType), true);
     });
 
     it('works for NumberType', () => {
-      expect(includesType(NoneType, NumberType)).to.be(false);
-      expect(includesType(BooleanType, NumberType)).to.be(false);
-      expect(includesType(StringType, NumberType)).to.be(false);
-      expect(includesType(NumberType, NumberType)).to.be(true);
-      expect(includesType(ColorType, NumberType)).to.be(false);
-      expect(includesType(NumberArrayType, NumberType)).to.be(false);
-      expect(includesType(AnyType, NumberType)).to.be(true);
+      assert.strictEqual(includesType(NoneType, NumberType), false);
+      assert.strictEqual(includesType(BooleanType, NumberType), false);
+      assert.strictEqual(includesType(StringType, NumberType), false);
+      assert.strictEqual(includesType(NumberType, NumberType), true);
+      assert.strictEqual(includesType(ColorType, NumberType), false);
+      assert.strictEqual(includesType(NumberArrayType, NumberType), false);
+      assert.strictEqual(includesType(AnyType, NumberType), true);
     });
 
     it('works for ColorType', () => {
-      expect(includesType(NoneType, ColorType)).to.be(false);
-      expect(includesType(BooleanType, ColorType)).to.be(false);
-      expect(includesType(StringType, ColorType)).to.be(false);
-      expect(includesType(NumberType, ColorType)).to.be(false);
-      expect(includesType(ColorType, ColorType)).to.be(true);
-      expect(includesType(NumberArrayType, ColorType)).to.be(false);
-      expect(includesType(AnyType, ColorType)).to.be(true);
+      assert.strictEqual(includesType(NoneType, ColorType), false);
+      assert.strictEqual(includesType(BooleanType, ColorType), false);
+      assert.strictEqual(includesType(StringType, ColorType), false);
+      assert.strictEqual(includesType(NumberType, ColorType), false);
+      assert.strictEqual(includesType(ColorType, ColorType), true);
+      assert.strictEqual(includesType(NumberArrayType, ColorType), false);
+      assert.strictEqual(includesType(AnyType, ColorType), true);
     });
 
     it('works for NumberArrayType', () => {
-      expect(includesType(NoneType, NumberArrayType)).to.be(false);
-      expect(includesType(BooleanType, NumberArrayType)).to.be(false);
-      expect(includesType(StringType, NumberArrayType)).to.be(false);
-      expect(includesType(NumberType, NumberArrayType)).to.be(false);
-      expect(includesType(ColorType, NumberArrayType)).to.be(false);
-      expect(includesType(NumberArrayType, NumberArrayType)).to.be(true);
-      expect(includesType(AnyType, NumberArrayType)).to.be(true);
+      assert.strictEqual(includesType(NoneType, NumberArrayType), false);
+      assert.strictEqual(includesType(BooleanType, NumberArrayType), false);
+      assert.strictEqual(includesType(StringType, NumberArrayType), false);
+      assert.strictEqual(includesType(NumberType, NumberArrayType), false);
+      assert.strictEqual(includesType(ColorType, NumberArrayType), false);
+      assert.strictEqual(includesType(NumberArrayType, NumberArrayType), true);
+      assert.strictEqual(includesType(AnyType, NumberArrayType), true);
     });
   });
 
   describe('isType()', () => {
     it('works for BooleanType', () => {
-      expect(isType(NoneType, BooleanType)).to.be(false);
-      expect(isType(BooleanType, BooleanType)).to.be(true);
-      expect(isType(StringType, BooleanType)).to.be(false);
-      expect(isType(NumberType, BooleanType)).to.be(false);
-      expect(isType(ColorType, BooleanType)).to.be(false);
-      expect(isType(NumberArrayType, BooleanType)).to.be(false);
-      expect(isType(AnyType, BooleanType)).to.be(false);
+      assert.strictEqual(isType(NoneType, BooleanType), false);
+      assert.strictEqual(isType(BooleanType, BooleanType), true);
+      assert.strictEqual(isType(StringType, BooleanType), false);
+      assert.strictEqual(isType(NumberType, BooleanType), false);
+      assert.strictEqual(isType(ColorType, BooleanType), false);
+      assert.strictEqual(isType(NumberArrayType, BooleanType), false);
+      assert.strictEqual(isType(AnyType, BooleanType), false);
     });
 
     it('works for StringType', () => {
-      expect(isType(NoneType, StringType)).to.be(false);
-      expect(isType(BooleanType, StringType)).to.be(false);
-      expect(isType(StringType, StringType)).to.be(true);
-      expect(isType(NumberType, StringType)).to.be(false);
-      expect(isType(ColorType, StringType)).to.be(false);
-      expect(isType(NumberArrayType, StringType)).to.be(false);
-      expect(isType(AnyType, StringType)).to.be(false);
+      assert.strictEqual(isType(NoneType, StringType), false);
+      assert.strictEqual(isType(BooleanType, StringType), false);
+      assert.strictEqual(isType(StringType, StringType), true);
+      assert.strictEqual(isType(NumberType, StringType), false);
+      assert.strictEqual(isType(ColorType, StringType), false);
+      assert.strictEqual(isType(NumberArrayType, StringType), false);
+      assert.strictEqual(isType(AnyType, StringType), false);
     });
 
     it('works for NumberType', () => {
-      expect(isType(NoneType, NumberType)).to.be(false);
-      expect(isType(BooleanType, NumberType)).to.be(false);
-      expect(isType(StringType, NumberType)).to.be(false);
-      expect(isType(NumberType, NumberType)).to.be(true);
-      expect(isType(ColorType, NumberType)).to.be(false);
-      expect(isType(NumberArrayType, NumberType)).to.be(false);
-      expect(isType(AnyType, NumberType)).to.be(false);
+      assert.strictEqual(isType(NoneType, NumberType), false);
+      assert.strictEqual(isType(BooleanType, NumberType), false);
+      assert.strictEqual(isType(StringType, NumberType), false);
+      assert.strictEqual(isType(NumberType, NumberType), true);
+      assert.strictEqual(isType(ColorType, NumberType), false);
+      assert.strictEqual(isType(NumberArrayType, NumberType), false);
+      assert.strictEqual(isType(AnyType, NumberType), false);
     });
 
     it('works for ColorType', () => {
-      expect(isType(NoneType, ColorType)).to.be(false);
-      expect(isType(BooleanType, ColorType)).to.be(false);
-      expect(isType(StringType, ColorType)).to.be(false);
-      expect(isType(NumberType, ColorType)).to.be(false);
-      expect(isType(ColorType, ColorType)).to.be(true);
-      expect(isType(NumberArrayType, ColorType)).to.be(false);
-      expect(isType(AnyType, ColorType)).to.be(false);
+      assert.strictEqual(isType(NoneType, ColorType), false);
+      assert.strictEqual(isType(BooleanType, ColorType), false);
+      assert.strictEqual(isType(StringType, ColorType), false);
+      assert.strictEqual(isType(NumberType, ColorType), false);
+      assert.strictEqual(isType(ColorType, ColorType), true);
+      assert.strictEqual(isType(NumberArrayType, ColorType), false);
+      assert.strictEqual(isType(AnyType, ColorType), false);
     });
 
     it('works for NumberArrayType', () => {
-      expect(isType(NoneType, NumberArrayType)).to.be(false);
-      expect(isType(BooleanType, NumberArrayType)).to.be(false);
-      expect(isType(StringType, NumberArrayType)).to.be(false);
-      expect(isType(NumberType, NumberArrayType)).to.be(false);
-      expect(isType(ColorType, NumberArrayType)).to.be(false);
-      expect(isType(NumberArrayType, NumberArrayType)).to.be(true);
-      expect(isType(AnyType, NumberArrayType)).to.be(false);
+      assert.strictEqual(isType(NoneType, NumberArrayType), false);
+      assert.strictEqual(isType(BooleanType, NumberArrayType), false);
+      assert.strictEqual(isType(StringType, NumberArrayType), false);
+      assert.strictEqual(isType(NumberType, NumberArrayType), false);
+      assert.strictEqual(isType(ColorType, NumberArrayType), false);
+      assert.strictEqual(isType(NumberArrayType, NumberArrayType), true);
+      assert.strictEqual(isType(AnyType, NumberArrayType), false);
     });
   });
   describe('computeGeometryType', () => {
     it('returns empty string for falsy geom', () => {
-      expect(computeGeometryType(undefined)).to.eql('');
+      assert.deepEqual(computeGeometryType(undefined), '');
     });
     it('returns Point for Point geom', () => {
-      expect(computeGeometryType(new Point([0, 1]))).to.eql('Point');
+      assert.deepEqual(computeGeometryType(new Point([0, 1])), 'Point');
     });
     it('returns Polygon for MultiPolygon geom', () => {
-      expect(computeGeometryType(new MultiPolygon([]))).to.eql('Polygon');
+      assert.deepEqual(computeGeometryType(new MultiPolygon([])), 'Polygon');
     });
     it('returns LineString for MultiLineString geom', () => {
-      expect(computeGeometryType(new MultiLineString([]))).to.eql('LineString');
+      assert.deepEqual(
+        computeGeometryType(new MultiLineString([])),
+        'LineString',
+      );
     });
     it('returns first geom type in geometry collection', () => {
-      expect(
+      assert.deepEqual(
         computeGeometryType(new GeometryCollection([new Circle([0, 1])])),
-      ).to.eql('Polygon');
-      expect(
+        'Polygon',
+      );
+      assert.deepEqual(
         computeGeometryType(new GeometryCollection([new MultiPoint([])])),
-      ).to.eql('Point');
+        'Point',
+      );
     });
     it('returns empty string for empty geom collection', () => {
-      expect(computeGeometryType(new GeometryCollection([]))).to.eql('');
+      assert.deepEqual(computeGeometryType(new GeometryCollection([])), '');
     });
   });
 });

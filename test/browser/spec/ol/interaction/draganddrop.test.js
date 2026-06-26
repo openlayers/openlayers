@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import View from '../../../../../src/ol/View.js';
 import Event from '../../../../../src/ol/events/Event.js';
 import EventTarget from '../../../../../src/ol/events/Target.js';
@@ -32,11 +33,11 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function () {
   describe('constructor', function () {
     it('can be constructed without arguments', function () {
       const interaction = new DragAndDrop();
-      expect(interaction).to.be.an(DragAndDrop);
+      assert.instanceOf(interaction, DragAndDrop);
     });
 
     it('sets formats on the instance', function () {
-      expect(interaction.formats_).to.have.length(1);
+      assert.lengthOf(interaction.formats_, 1);
     });
 
     it('accepts a source option', function () {
@@ -45,7 +46,7 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function () {
         formatConstructors: [GeoJSON],
         source: source,
       });
-      expect(drop.source_).to.equal(source);
+      assert.equal(drop.source_, source);
     });
   });
 
@@ -53,26 +54,26 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function () {
     it('registers and unregisters listeners', function () {
       interaction.setMap(map);
       interaction.setActive(true);
-      expect(viewport.hasListener('dragenter')).to.be(true);
-      expect(viewport.hasListener('dragover')).to.be(true);
-      expect(viewport.hasListener('drop')).to.be(true);
+      assert.strictEqual(viewport.hasListener('dragenter'), true);
+      assert.strictEqual(viewport.hasListener('dragover'), true);
+      assert.strictEqual(viewport.hasListener('drop'), true);
       interaction.setActive(false);
-      expect(viewport.hasListener('dragenter')).to.be(false);
-      expect(viewport.hasListener('dragover')).to.be(false);
-      expect(viewport.hasListener('drop')).to.be(false);
+      assert.strictEqual(viewport.hasListener('dragenter'), false);
+      assert.strictEqual(viewport.hasListener('dragover'), false);
+      assert.strictEqual(viewport.hasListener('drop'), false);
     });
   });
 
   describe('#setMap()', function () {
     it('registers and unregisters listeners', function () {
       interaction.setMap(map);
-      expect(viewport.hasListener('dragenter')).to.be(true);
-      expect(viewport.hasListener('dragover')).to.be(true);
-      expect(viewport.hasListener('drop')).to.be(true);
+      assert.strictEqual(viewport.hasListener('dragenter'), true);
+      assert.strictEqual(viewport.hasListener('dragover'), true);
+      assert.strictEqual(viewport.hasListener('drop'), true);
       interaction.setMap(null);
-      expect(viewport.hasListener('dragenter')).to.be(false);
-      expect(viewport.hasListener('dragover')).to.be(false);
-      expect(viewport.hasListener('drop')).to.be(false);
+      assert.strictEqual(viewport.hasListener('dragenter'), false);
+      assert.strictEqual(viewport.hasListener('dragover'), false);
+      assert.strictEqual(viewport.hasListener('drop'), false);
     });
 
     it('registers and unregisters listeners on a custom target', function () {
@@ -82,13 +83,13 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function () {
         target: customTarget,
       });
       interaction.setMap(map);
-      expect(customTarget.hasListener('dragenter')).to.be(true);
-      expect(customTarget.hasListener('dragover')).to.be(true);
-      expect(customTarget.hasListener('drop')).to.be(true);
+      assert.strictEqual(customTarget.hasListener('dragenter'), true);
+      assert.strictEqual(customTarget.hasListener('dragover'), true);
+      assert.strictEqual(customTarget.hasListener('drop'), true);
       interaction.setMap(null);
-      expect(customTarget.hasListener('dragenter')).to.be(false);
-      expect(customTarget.hasListener('dragover')).to.be(false);
-      expect(customTarget.hasListener('drop')).to.be(false);
+      assert.strictEqual(customTarget.hasListener('dragenter'), false);
+      assert.strictEqual(customTarget.hasListener('dragover'), false);
+      assert.strictEqual(customTarget.hasListener('drop'), false);
     });
   });
 
@@ -126,12 +127,13 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function () {
 
     it('reads dropped files as text', function (done) {
       interaction.on('addfeatures', function (evt) {
-        expect(evt.features.length).to.be(1);
-        expect(evt.features[0].getGeometry().getCoordinates()).to.eql(
+        assert.strictEqual(evt.features.length, 1);
+        assert.deepEqual(
+          evt.features[0].getGeometry().getCoordinates(),
           transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857'),
         );
-        expect(mockReadAsText).to.be(true);
-        expect(mockReadAsArrayBuffer).to.be(false);
+        assert.strictEqual(mockReadAsText, true);
+        assert.strictEqual(mockReadAsArrayBuffer, false);
         done();
       });
       interaction.setMap(map);
@@ -161,18 +163,19 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function () {
         },
       };
       viewport.dispatchEvent(event);
-      expect(event.dataTransfer.dropEffect).to.be('copy');
-      expect(event.propagationStopped).to.be(true);
+      assert.strictEqual(event.dataTransfer.dropEffect, 'copy');
+      assert.strictEqual(event.propagationStopped, true);
     });
 
     it('works with user projection', function (done) {
       interaction.on('addfeatures', function (evt) {
-        expect(evt.features.length).to.be(1);
-        expect(evt.features[0].getGeometry().getCoordinates()).to.eql([
-          102.0, 0.5,
-        ]);
-        expect(mockReadAsText).to.be(true);
-        expect(mockReadAsArrayBuffer).to.be(false);
+        assert.strictEqual(evt.features.length, 1);
+        assert.deepEqual(
+          evt.features[0].getGeometry().getCoordinates(),
+          [102.0, 0.5],
+        );
+        assert.strictEqual(mockReadAsText, true);
+        assert.strictEqual(mockReadAsArrayBuffer, false);
         clearUserProjection();
         done();
       });
@@ -204,8 +207,8 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function () {
         },
       };
       viewport.dispatchEvent(event);
-      expect(event.dataTransfer.dropEffect).to.be('copy');
-      expect(event.propagationStopped).to.be(true);
+      assert.strictEqual(event.dataTransfer.dropEffect, 'copy');
+      assert.strictEqual(event.propagationStopped, true);
     });
 
     it('reads dropped files as arraybuffer', function (done) {
@@ -215,9 +218,9 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function () {
       drop.setMap(map);
 
       drop.on('addfeatures', function (evt) {
-        expect(evt.features.length).to.be(1);
-        expect(mockReadAsText).to.be(false);
-        expect(mockReadAsArrayBuffer).to.be(true);
+        assert.strictEqual(evt.features.length, 1);
+        assert.strictEqual(mockReadAsText, false);
+        assert.strictEqual(mockReadAsArrayBuffer, true);
         done();
       });
 
@@ -238,8 +241,8 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function () {
         },
       };
       viewport.dispatchEvent(event);
-      expect(event.dataTransfer.dropEffect).to.be('copy');
-      expect(event.propagationStopped).to.be(true);
+      assert.strictEqual(event.dataTransfer.dropEffect, 'copy');
+      assert.strictEqual(event.propagationStopped, true);
     });
 
     it('reads using constructed formats', function (done) {
@@ -249,9 +252,9 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function () {
       drop.setMap(map);
 
       drop.on('addfeatures', function (evt) {
-        expect(evt.features.length).to.be(1);
-        expect(mockReadAsText).to.be(true);
-        expect(mockReadAsArrayBuffer).to.be(false);
+        assert.strictEqual(evt.features.length, 1);
+        assert.strictEqual(mockReadAsText, true);
+        assert.strictEqual(mockReadAsArrayBuffer, false);
         done();
       });
 
@@ -272,8 +275,8 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function () {
         },
       };
       viewport.dispatchEvent(event);
-      expect(event.dataTransfer.dropEffect).to.be('copy');
-      expect(event.propagationStopped).to.be(true);
+      assert.strictEqual(event.dataTransfer.dropEffect, 'copy');
+      assert.strictEqual(event.propagationStopped, true);
     });
 
     it('reads using arraybuffer formats', function (done) {
@@ -296,9 +299,9 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function () {
       drop.setMap(map);
 
       drop.on('addfeatures', function (evt) {
-        expect(evt.features.length).to.be(1);
-        expect(mockReadAsText).to.be(false);
-        expect(mockReadAsArrayBuffer).to.be(true);
+        assert.strictEqual(evt.features.length, 1);
+        assert.strictEqual(mockReadAsText, false);
+        assert.strictEqual(mockReadAsArrayBuffer, true);
         done();
       });
 
@@ -319,8 +322,8 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function () {
         },
       };
       viewport.dispatchEvent(event);
-      expect(event.dataTransfer.dropEffect).to.be('copy');
-      expect(event.propagationStopped).to.be(true);
+      assert.strictEqual(event.dataTransfer.dropEffect, 'copy');
+      assert.strictEqual(event.propagationStopped, true);
     });
 
     it('adds dropped features to a source', function (done) {
@@ -333,7 +336,7 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function () {
 
       drop.on('addfeatures', function (evt) {
         const features = source.getFeatures();
-        expect(features.length).to.be(1);
+        assert.strictEqual(features.length, 1);
         done();
       });
 
@@ -354,8 +357,8 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function () {
         },
       };
       viewport.dispatchEvent(event);
-      expect(event.dataTransfer.dropEffect).to.be('copy');
-      expect(event.propagationStopped).to.be(true);
+      assert.strictEqual(event.dataTransfer.dropEffect, 'copy');
+      assert.strictEqual(event.propagationStopped, true);
     });
   });
 });

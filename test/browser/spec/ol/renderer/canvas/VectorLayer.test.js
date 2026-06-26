@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {spy as sinonSpy} from 'sinon';
 import Feature from '../../../../../../src/ol/Feature.js';
 import Map from '../../../../../../src/ol/Map.js';
@@ -51,7 +52,7 @@ describe('ol/renderer/canvas/VectorLayer', function () {
         source: new VectorSource(),
       });
       const renderer = new CanvasVectorLayerRenderer(layer);
-      expect(renderer).to.be.a(CanvasVectorLayerRenderer);
+      assert.instanceOf(renderer, CanvasVectorLayerRenderer);
     });
 
     it('gives precedence to feature styles over layer styles', function () {
@@ -81,8 +82,8 @@ describe('ol/renderer/canvas/VectorLayer', function () {
       map.addLayer(layer);
       const spy = sinonSpy(layer.getRenderer(), 'renderFeature');
       map.renderSync();
-      expect(spy.getCall(0).args[2]).to.eql(layerStyle);
-      expect(spy.getCall(1).args[2]).to.be(featureStyle);
+      assert.deepEqual(spy.getCall(0).args[2], layerStyle);
+      assert.strictEqual(spy.getCall(1).args[2], featureStyle);
 
       disposeMap(map);
     });
@@ -106,7 +107,7 @@ describe('ol/renderer/canvas/VectorLayer', function () {
       const revision = layer.getRevision();
       setTimeout(function () {
         try {
-          expect(layer.getRevision()).to.be(revision);
+          assert.strictEqual(layer.getRevision(), revision);
           done();
         } catch (e) {
           done(e);
@@ -133,7 +134,7 @@ describe('ol/renderer/canvas/VectorLayer', function () {
       const revision = layer.getRevision();
       setTimeout(function () {
         try {
-          expect(layer.getRevision()).to.be(revision);
+          assert.strictEqual(layer.getRevision(), revision);
           done();
         } catch (e) {
           done(e);
@@ -165,7 +166,7 @@ describe('ol/renderer/canvas/VectorLayer', function () {
           checkedFonts.removeEventListener('propertychange', onPropertyChange);
           try {
             font.remove();
-            expect(layer.getRevision()).to.be(revision + 1);
+            assert.strictEqual(layer.getRevision(), revision + 1);
             done();
           } catch (e) {
             done(e);
@@ -207,7 +208,7 @@ describe('ol/renderer/canvas/VectorLayer', function () {
         }),
       });
       map.addLayer(layer);
-      expect(() => map.renderSync()).to.not.throwException();
+      assert.doesNotThrow(() => map.renderSync());
     });
   });
 
@@ -255,9 +256,9 @@ describe('ol/renderer/canvas/VectorLayer', function () {
         spy,
         matches,
       );
-      expect(spy.callCount).to.be(1);
-      expect(spy.getCall(0).args[1]).to.be(layer);
-      expect(matches).to.be.empty();
+      assert.strictEqual(spy.callCount, 1);
+      assert.strictEqual(spy.getCall(0).args[1], layer);
+      assert.isEmpty(matches);
     });
 
     it('works with declutter: true when source has no features', () => {
@@ -273,7 +274,7 @@ describe('ol/renderer/canvas/VectorLayer', function () {
           rotation: 0,
         },
       };
-      expect(() =>
+      assert.doesNotThrow(() =>
         renderer.forEachFeatureAtCoordinate(
           coordinate,
           frameState,
@@ -281,7 +282,7 @@ describe('ol/renderer/canvas/VectorLayer', function () {
           spy,
           matches,
         ),
-      ).to.not.throwException();
+      );
     });
   });
 
@@ -330,7 +331,8 @@ describe('ol/renderer/canvas/VectorLayer', function () {
     it('sets correct extent for small viewport near dateline', function () {
       setExtent([projExtent[0] - 10000, -10000, projExtent[0] + 10000, 10000]);
       renderer.prepareFrame(frameState);
-      expect(renderer.replayGroup_.maxExtent_).to.eql(
+      assert.deepEqual(
+        renderer.replayGroup_.maxExtent_,
         bufferExtent(
           [
             projExtent[0] - worldWidth + buffer,
@@ -341,21 +343,22 @@ describe('ol/renderer/canvas/VectorLayer', function () {
           buffer,
         ),
       );
-      expect(loadExtents.length).to.be(2);
-      expect(loadExtents[0]).to.eql(bufferExtent(frameState.extent, buffer));
+      assert.strictEqual(loadExtents.length, 2);
+      assert.deepEqual(loadExtents[0], bufferExtent(frameState.extent, buffer));
       const otherExtent = [
         projExtent[2] - 10000,
         -10000,
         projExtent[2] + 10000,
         10000,
       ];
-      expect(loadExtents[1]).to.eql(bufferExtent(otherExtent, buffer));
+      assert.deepEqual(loadExtents[1], bufferExtent(otherExtent, buffer));
     });
 
     it('sets correct extent for viewport less than 1 world wide', function () {
       setExtent([projExtent[0] - 10000, -10000, projExtent[2] - 10000, 10000]);
       renderer.prepareFrame(frameState);
-      expect(renderer.replayGroup_.maxExtent_).to.eql(
+      assert.deepEqual(
+        renderer.replayGroup_.maxExtent_,
         bufferExtent(
           [
             projExtent[0] - worldWidth + buffer,
@@ -366,15 +369,15 @@ describe('ol/renderer/canvas/VectorLayer', function () {
           buffer,
         ),
       );
-      expect(loadExtents.length).to.be(2);
-      expect(loadExtents[0]).to.eql(bufferExtent(frameState.extent, buffer));
+      assert.strictEqual(loadExtents.length, 2);
+      assert.deepEqual(loadExtents[0], bufferExtent(frameState.extent, buffer));
       const otherExtent = [
         projExtent[0] - 10000 + worldWidth,
         -10000,
         projExtent[2] - 10000 + worldWidth,
         10000,
       ];
-      expect(loadExtents[1]).to.eql(bufferExtent(otherExtent, buffer));
+      assert.deepEqual(loadExtents[1], bufferExtent(otherExtent, buffer));
     });
 
     it('sets correct extent for viewport more than 1 world wide', function () {
@@ -385,7 +388,8 @@ describe('ol/renderer/canvas/VectorLayer', function () {
         10000,
       ]);
       renderer.prepareFrame(frameState);
-      expect(renderer.replayGroup_.maxExtent_).to.eql(
+      assert.deepEqual(
+        renderer.replayGroup_.maxExtent_,
         bufferExtent(
           [
             projExtent[0] - worldWidth + buffer,
@@ -396,8 +400,8 @@ describe('ol/renderer/canvas/VectorLayer', function () {
           buffer,
         ),
       );
-      expect(loadExtents.length).to.be(1);
-      expect(loadExtents[0]).to.eql(bufferExtent(frameState.extent, buffer));
+      assert.strictEqual(loadExtents.length, 1);
+      assert.deepEqual(loadExtents[0], bufferExtent(frameState.extent, buffer));
     });
 
     it('sets correct extent for viewport more than 2 worlds wide, one world away', function () {
@@ -408,7 +412,8 @@ describe('ol/renderer/canvas/VectorLayer', function () {
         10000,
       ]);
       renderer.prepareFrame(frameState);
-      expect(renderer.replayGroup_.maxExtent_).to.eql(
+      assert.deepEqual(
+        renderer.replayGroup_.maxExtent_,
         bufferExtent(
           [
             projExtent[0] - 2 * worldWidth - 10000,
@@ -419,20 +424,21 @@ describe('ol/renderer/canvas/VectorLayer', function () {
           buffer,
         ),
       );
-      expect(loadExtents.length).to.be(1);
+      assert.strictEqual(loadExtents.length, 1);
       const normalizedExtent = [
         projExtent[0] - 2 * worldWidth + worldWidth - 10000,
         -10000,
         projExtent[0] + 2 * worldWidth + worldWidth + 10000,
         10000,
       ];
-      expect(loadExtents[0]).to.eql(bufferExtent(normalizedExtent, buffer));
+      assert.deepEqual(loadExtents[0], bufferExtent(normalizedExtent, buffer));
     });
 
     it('sets correct extent for small viewport, one world away', function () {
       setExtent([-worldWidth - 10000, -10000, -worldWidth + 10000, 10000]);
       renderer.prepareFrame(frameState);
-      expect(renderer.replayGroup_.maxExtent_).to.eql(
+      assert.deepEqual(
+        renderer.replayGroup_.maxExtent_,
         bufferExtent(
           [
             projExtent[0] - worldWidth + buffer,
@@ -443,23 +449,23 @@ describe('ol/renderer/canvas/VectorLayer', function () {
           buffer,
         ),
       );
-      expect(loadExtents.length).to.be(1);
+      assert.strictEqual(loadExtents.length, 1);
       const normalizedExtent = [-10000, -10000, 10000, 10000];
-      expect(loadExtents[0]).to.eql(bufferExtent(normalizedExtent, buffer));
+      assert.deepEqual(loadExtents[0], bufferExtent(normalizedExtent, buffer));
     });
 
     it('sets replayGroupChanged correctly', function () {
       setExtent([-10000, -10000, 10000, 10000]);
       renderer.prepareFrame(frameState);
-      expect(renderer.replayGroupChanged).to.be(true);
+      assert.strictEqual(renderer.replayGroupChanged, true);
       renderer.prepareFrame(frameState);
-      expect(renderer.replayGroupChanged).to.be(false);
+      assert.strictEqual(renderer.replayGroupChanged, false);
       frameState.declutter = {};
       renderer.prepareFrame(frameState);
-      expect(renderer.replayGroupChanged).to.be(true);
+      assert.strictEqual(renderer.replayGroupChanged, true);
       frameState.pixelRatio = 2;
       renderer.prepareFrame(frameState);
-      expect(renderer.replayGroupChanged).to.be(true);
+      assert.strictEqual(renderer.replayGroupChanged, true);
     });
 
     it('dispatches a postrender event when rendering', function () {
@@ -475,8 +481,8 @@ describe('ol/renderer/canvas/VectorLayer', function () {
       if (renderer.prepareFrame(frameState)) {
         container = renderer.renderFrame(frameState, null);
       }
-      expect(postrenderSpy.callCount).to.be(1);
-      expect(container).to.not.be(null);
+      assert.strictEqual(postrenderSpy.callCount, 1);
+      assert.notEqual(container, null);
     });
     it('renders an empty source if a postrender event listener is added', function () {
       const layer = renderer.getLayer();
@@ -490,7 +496,7 @@ describe('ol/renderer/canvas/VectorLayer', function () {
       if (renderer.prepareFrame(frameState)) {
         container = renderer.renderFrame(frameState, null);
       }
-      expect(container).to.not.be(null);
+      assert.notEqual(container, null);
     });
   });
 
@@ -530,8 +536,8 @@ describe('ol/renderer/canvas/VectorLayer', function () {
         renderer.renderFrame(frameState, null);
         renderer.getFeatures([50, 50]).then((features) => {
           const imageData = renderer.hitDetectionImageData_;
-          expect(imageData).to.be.an(ImageData);
-          expect(features).to.have.length(1);
+          assert.instanceOf(imageData, ImageData);
+          assert.lengthOf(features, 1);
 
           setExtent([
             5e8 - worldWidth,
@@ -542,9 +548,12 @@ describe('ol/renderer/canvas/VectorLayer', function () {
           if (renderer.prepareFrame(frameState)) {
             renderer.renderFrame(frameState);
             renderer.getFeatures([50, 50]).then((features) => {
-              expect(renderer.hitDetectionImageData_).to.be.an(ImageData);
-              expect(renderer.hitDetectionImageData_ !== imageData).to.be(true);
-              expect(features).to.have.length(0);
+              assert.instanceOf(renderer.hitDetectionImageData_, ImageData);
+              assert.strictEqual(
+                renderer.hitDetectionImageData_ !== imageData,
+                true,
+              );
+              assert.lengthOf(features, 0);
               done();
             });
           }
@@ -591,24 +600,24 @@ describe('ol/renderer/canvas/VectorLayer', function () {
       if (renderer.prepareFrame(frameState)) {
         renderer.renderFrame(frameState, null);
       }
-      expect(renderer.renderWorlds.callCount).to.be(0);
-      expect(renderer.clipUnrotated.callCount).to.be(0);
+      assert.strictEqual(renderer.renderWorlds.callCount, 0);
+      assert.strictEqual(renderer.clipUnrotated.callCount, 0);
     });
     it('renders if layer extent partially intersects view extent', function () {
       const frameState = createLayerFrameState([0, 0, 100, 100]);
       if (renderer.prepareFrame(frameState)) {
         renderer.renderFrame(frameState, null);
       }
-      expect(renderer.renderWorlds.callCount).to.be(1);
-      expect(renderer.clipUnrotated.callCount).to.be(1);
+      assert.strictEqual(renderer.renderWorlds.callCount, 1);
+      assert.strictEqual(renderer.clipUnrotated.callCount, 1);
     });
     it('renders withoutt clipping when layer extent covers view', function () {
       const frameState = createLayerFrameState([-200, -200, 200, 200]);
       if (renderer.prepareFrame(frameState)) {
         renderer.renderFrame(frameState, null);
       }
-      expect(renderer.renderWorlds.callCount).to.be(1);
-      expect(renderer.clipUnrotated.callCount).to.be(0);
+      assert.strictEqual(renderer.renderWorlds.callCount, 1);
+      assert.strictEqual(renderer.clipUnrotated.callCount, 0);
     });
   });
 

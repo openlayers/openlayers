@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {
   buildExpression,
   newEvaluationContext,
@@ -10,7 +11,6 @@ import {
   NumberType,
   StringType,
 } from '../../../../src/ol/expr/expression.js';
-import expect from '../../expect.js';
 
 describe('ol/expr/cpu.js', () => {
   describe('buildExpression()', () => {
@@ -816,9 +816,9 @@ describe('ol/expr/cpu.js', () => {
         const evaluationContext = c.context || newEvaluationContext();
         const value = evaluator(evaluationContext);
         if (c.tolerance !== undefined) {
-          expect(value).to.roughlyEqual(c.expected, c.tolerance);
+          assert.approximately(value, c.expected, c.tolerance);
         } else {
-          expect(value).to.eql(c.expected);
+          assert.deepEqual(value, c.expected);
         }
       });
     }
@@ -897,7 +897,7 @@ describe('ol/expr/cpu.js', () => {
           it(`works for ${input}`, () => {
             evaluationContext.variables.input = input;
             const got = evaluator(evaluationContext);
-            expect(got).to.roughlyEqual(output, 1e-6);
+            assert.approximately(got, output, 1e-6);
           });
         }
       });

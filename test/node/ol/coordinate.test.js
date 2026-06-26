@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {
   add as addCoordinate,
   closestOnCircle,
@@ -16,7 +17,6 @@ import {
 import Circle from '../../../src/ol/geom/Circle.js';
 import {get} from '../../../src/ol/proj.js';
 import Projection from '../../../src/ol/proj/Projection.js';
-import expect from '../expect.js';
 
 describe('ol/coordinate.js', function () {
   describe('#add', function () {
@@ -29,20 +29,20 @@ describe('ol/coordinate.js', function () {
 
     it('returns a coordinate', function () {
       const returnedCoordinate = addCoordinate(coordinate, delta);
-      expect(returnedCoordinate).to.be.an('array');
-      expect(returnedCoordinate).to.have.length(2);
+      assert.isArray(returnedCoordinate);
+      assert.lengthOf(returnedCoordinate, 2);
     });
 
     it('adds the delta', function () {
       const returnedCoordinate = addCoordinate(coordinate, delta);
-      expect(returnedCoordinate[0]).to.eql(48.73);
-      expect(returnedCoordinate[1]).to.eql(10.1);
+      assert.deepEqual(returnedCoordinate[0], 48.73);
+      assert.deepEqual(returnedCoordinate[1], 10.1);
     });
 
     it('modifies in place', function () {
       addCoordinate(coordinate, delta);
-      expect(coordinate[0]).to.eql(48.73);
-      expect(coordinate[1]).to.eql(10.1);
+      assert.deepEqual(coordinate[0], 48.73);
+      assert.deepEqual(coordinate[1], 10.1);
     });
 
     it('does not produce unexpected results with string delta values', function () {
@@ -52,8 +52,8 @@ describe('ol/coordinate.js', function () {
           return String(n);
         }),
       );
-      expect(coordinate[0]).to.eql(48.73);
-      expect(coordinate[1]).to.eql(10.1);
+      assert.deepEqual(coordinate[0], 48.73);
+      assert.deepEqual(coordinate[1], 10.1);
     });
   });
 
@@ -65,8 +65,8 @@ describe('ol/coordinate.js', function () {
     it('compares correctly', function () {
       const bonnEqualsBonn = coordinatesEqual(bonn1, bonn2);
       const bonnEqualsCologne = coordinatesEqual(bonn1, cologne);
-      expect(bonnEqualsBonn).to.be(true);
-      expect(bonnEqualsCologne).to.be(false);
+      assert.strictEqual(bonnEqualsBonn, true);
+      assert.strictEqual(bonnEqualsCologne, false);
     });
   });
 
@@ -78,12 +78,12 @@ describe('ol/coordinate.js', function () {
 
     it('rounds the values', function () {
       const string = formatCoordinate(coordinate, '{x} {y}', 0);
-      expect(string).to.eql('7 47');
+      assert.deepEqual(string, '7 47');
     });
 
     it('handles the optional fractionDigits param', function () {
       const string = formatCoordinate(coordinate, '{x} {y}', 3);
-      expect(string).to.eql('6.612 46.792');
+      assert.deepEqual(string, '6.612 46.792');
     });
   });
 
@@ -97,20 +97,20 @@ describe('ol/coordinate.js', function () {
 
     it('returns a CoordinateFormatType', function () {
       created = createStringXY();
-      expect(created).to.be.a('function');
+      assert.isFunction(created);
 
       formatted = created(coordinate);
-      expect(formatted).to.be.a('string');
-      expect(formatted).to.eql('7, 47');
+      assert.isString(formatted);
+      assert.deepEqual(formatted, '7, 47');
     });
 
     it('respects opt_fractionDigits', function () {
       created = createStringXY(3);
-      expect(created).to.be.a('function');
+      assert.isFunction(created);
 
       formatted = created(coordinate);
-      expect(formatted).to.be.a('string');
-      expect(formatted).to.eql('6.612, 46.792');
+      assert.isString(formatted);
+      assert.deepEqual(formatted, '6.612, 46.792');
     });
   });
 
@@ -118,10 +118,10 @@ describe('ol/coordinate.js', function () {
     const center = [5, 10];
     const circle = new Circle(center, 10);
     it('can find the closest point on circle', function () {
-      expect(closestOnCircle([-20, 10], circle)).to.eql([-5, 10]);
+      assert.deepEqual(closestOnCircle([-20, 10], circle), [-5, 10]);
     });
     it('can handle coordinate equal circle center', function () {
-      expect(closestOnCircle(center, circle)).to.eql([15, 10]);
+      assert.deepEqual(closestOnCircle(center, circle), [15, 10]);
     });
   });
 
@@ -132,7 +132,7 @@ describe('ol/coordinate.js', function () {
         [-5, 0],
         [10, 0],
       ];
-      expect(closestOnSegment(point, segment)).to.eql([2, 0]);
+      assert.deepEqual(closestOnSegment(point, segment), [2, 0]);
     });
     it('can handle points where the foot of the perpendicular is not closest', function () {
       const point = [0, -6];
@@ -140,27 +140,27 @@ describe('ol/coordinate.js', function () {
         [-5, 0],
         [0, -1],
       ];
-      expect(closestOnSegment(point, segment)).to.eql([0, -1]);
+      assert.deepEqual(closestOnSegment(point, segment), [0, -1]);
     });
   });
 
   describe('#format', function () {
     it('can deal with undefined coordinate', function () {
-      expect(formatCoordinate()).to.be('');
+      assert.strictEqual(formatCoordinate(), '');
     });
     it('formats a coordinate into a template (default precision is 0)', function () {
       const coord = [7.85, 47.983333];
       const template = 'Coordinate is ({x}|{y}).';
       const got = formatCoordinate(coord, template);
       const expected = 'Coordinate is (8|48).';
-      expect(got).to.be(expected);
+      assert.strictEqual(got, expected);
     });
     it('formats a coordinate into a template and respects precision)', function () {
       const coord = [7.85, 47.983333];
       const template = 'Coordinate is ({x}|{y}).';
       const got = formatCoordinate(coord, template, 2);
       const expected = 'Coordinate is (7.85|47.98).';
-      expect(got).to.be(expected);
+      assert.strictEqual(got, expected);
     });
   });
 
@@ -169,15 +169,15 @@ describe('ol/coordinate.js', function () {
       const coord = [7.85, 47.983333];
       const rotateRadians = Math.PI / 2; // 90 degrees
       rotateCoordinate(coord, rotateRadians);
-      expect(coord[0].toFixed(6)).to.eql('-47.983333');
-      expect(coord[1].toFixed(6)).to.eql('7.850000');
+      assert.deepEqual(coord[0].toFixed(6), '-47.983333');
+      assert.deepEqual(coord[1].toFixed(6), '7.850000');
     });
     it('returns the rotated point', function () {
       const coord = [7.85, 47.983333];
       const rotateRadians = Math.PI / 2; // 90 degrees
       const rotated = rotateCoordinate(coord, rotateRadians);
-      expect(rotated[0].toFixed(7)).to.eql('-47.9833330');
-      expect(rotated[1].toFixed(7)).to.eql('7.8500000');
+      assert.deepEqual(rotated[0].toFixed(7), '-47.9833330');
+      assert.deepEqual(rotated[1].toFixed(7), '7.8500000');
     });
   });
 
@@ -186,15 +186,15 @@ describe('ol/coordinate.js', function () {
       const coord = [7.85, 47.983333];
       const scale = 1.2;
       scaleCoordinate(coord, scale);
-      expect(coord[0].toFixed(7)).to.eql('9.4200000');
-      expect(coord[1].toFixed(7)).to.eql('57.5799996');
+      assert.deepEqual(coord[0].toFixed(7), '9.4200000');
+      assert.deepEqual(coord[1].toFixed(7), '57.5799996');
     });
     it('returns the scaled point', function () {
       const coord = [7.85, 47.983333];
       const scale = 1.2;
       const scaledCoord = scaleCoordinate(coord, scale);
-      expect(scaledCoord[0].toFixed(7)).to.eql('9.4200000');
-      expect(scaledCoord[1].toFixed(7)).to.eql('57.5799996');
+      assert.deepEqual(scaledCoord[0].toFixed(7), '9.4200000');
+      assert.deepEqual(scaledCoord[1].toFixed(7), '57.5799996');
     });
   });
 
@@ -205,7 +205,7 @@ describe('ol/coordinate.js', function () {
         [-5, 0],
         [10, 0],
       ];
-      expect(squaredDistanceToSegment(point, segment)).to.eql(25);
+      assert.deepEqual(squaredDistanceToSegment(point, segment), 25);
     });
     it('can handle points where the foot of the perpendicular is not closest', function () {
       const point = [0, -6];
@@ -213,27 +213,31 @@ describe('ol/coordinate.js', function () {
         [-5, 0],
         [0, -1],
       ];
-      expect(squaredDistanceToSegment(point, segment)).to.eql(25);
+      assert.deepEqual(squaredDistanceToSegment(point, segment), 25);
     });
   });
 
   describe('degreesToStringHDMS', () => {
     it('includes minutes and seconds if non-zero', () => {
-      expect(degreesToStringHDMS('NS', 10 + 30 / 60 + 30 / 3600)).to.be(
+      assert.strictEqual(
+        degreesToStringHDMS('NS', 10 + 30 / 60 + 30 / 3600),
         '10° 30′ 30″ N',
       );
     });
 
     it('omits minutes if zero', () => {
-      expect(degreesToStringHDMS('NS', 10)).to.be('10° N');
+      assert.strictEqual(degreesToStringHDMS('NS', 10), '10° N');
     });
 
     it('includes minutes if seconds are non-zero', () => {
-      expect(degreesToStringHDMS('NS', 10 + 30 / 3600)).to.be('10° 00′ 30″ N');
+      assert.strictEqual(
+        degreesToStringHDMS('NS', 10 + 30 / 3600),
+        '10° 00′ 30″ N',
+      );
     });
 
     it('omits seconds if zero', () => {
-      expect(degreesToStringHDMS('NS', 10.5)).to.be('10° 30′ N');
+      assert.strictEqual(degreesToStringHDMS('NS', 10.5), '10° 30′ N');
     });
   });
 
@@ -241,13 +245,13 @@ describe('ol/coordinate.js', function () {
     it('returns the empty string on undefined input', function () {
       const got = toStringHDMS();
       const expected = '';
-      expect(got).to.be(expected);
+      assert.strictEqual(got, expected);
     });
     it('formats with zero fractional digits as default', function () {
       const coord = [7.85, 47.983333];
       const got = toStringHDMS(coord);
       const expected = '47° 59′ N 7° 51′ E';
-      expect(got).to.be(expected);
+      assert.strictEqual(got, expected);
     });
     it('formats with given fractional digits, if passed', function () {
       const coord = [
@@ -256,7 +260,7 @@ describe('ol/coordinate.js', function () {
       ];
       const got = toStringHDMS(coord, 3);
       const expected = '20° 30′ 00.432″ N 10° 20′ 00.346″ E';
-      expect(got).to.be(expected);
+      assert.strictEqual(got, expected);
     });
   });
 
@@ -265,13 +269,13 @@ describe('ol/coordinate.js', function () {
       const coord = [7.85, 47.983333];
       const got = toStringXY(coord);
       const expected = '8, 48';
-      expect(got).to.be(expected);
+      assert.strictEqual(got, expected);
     });
     it('formats with given fractional digits, if passed', function () {
       const coord = [7.85, 47.983333];
       const got = toStringXY(coord, 2);
       const expected = '7.85, 47.98';
-      expect(got).to.be(expected);
+      assert.strictEqual(got, expected);
     });
   });
 
@@ -279,29 +283,29 @@ describe('ol/coordinate.js', function () {
     const projection = get('EPSG:4326');
 
     it('leaves real world coordinate untouched', function () {
-      expect(wrapX([16, 48], projection)).to.eql([16, 48]);
+      assert.deepEqual(wrapX([16, 48], projection), [16, 48]);
     });
 
     it('moves left world coordinate to real world', function () {
-      expect(wrapX([-344, 48], projection)).to.eql([16, 48]);
+      assert.deepEqual(wrapX([-344, 48], projection), [16, 48]);
     });
 
     it('moves right world coordinate to real world', function () {
-      expect(wrapX([376, 48], projection)).to.eql([16, 48]);
+      assert.deepEqual(wrapX([376, 48], projection), [16, 48]);
     });
 
     it('moves far off left coordinate to real world', function () {
-      expect(wrapX([-1064, 48], projection)).to.eql([16, 48]);
+      assert.deepEqual(wrapX([-1064, 48], projection), [16, 48]);
     });
 
     it('moves far off right coordinate to real world', function () {
-      expect(wrapX([1096, 48], projection)).to.eql([16, 48]);
+      assert.deepEqual(wrapX([1096, 48], projection), [16, 48]);
     });
 
     const swiss = new Projection({code: 'EPSG:21781', units: 'm'});
 
     it('leaves non-global projection coordinates untouched', function () {
-      expect(wrapX([1096, 48], swiss)).to.eql([1096, 48]);
+      assert.deepEqual(wrapX([1096, 48], swiss), [1096, 48]);
     });
   });
 });

@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {spy as sinonSpy} from 'sinon';
 import Feature from '../../../../../../src/ol/Feature.js';
 import GeometryCollection from '../../../../../../src/ol/geom/GeometryCollection.js';
@@ -31,10 +32,10 @@ describe('MixedGeometryBatch', function () {
       mixedBatch.addFeatures(features);
     });
     it('calls addFeature for each feature', () => {
-      expect(spy.callCount).to.be(3);
-      expect(spy.args[0][0]).to.be(features[0]);
-      expect(spy.args[1][0]).to.be(features[1]);
-      expect(spy.args[2][0]).to.be(features[2]);
+      assert.strictEqual(spy.callCount, 3);
+      assert.strictEqual(spy.args[0][0], features[0]);
+      assert.strictEqual(spy.args[1][0], features[1]);
+      assert.strictEqual(spy.args[2][0], features[2]);
     });
   });
 
@@ -65,32 +66,30 @@ describe('MixedGeometryBatch', function () {
         const keys = Object.keys(mixedBatch.pointBatch.entries);
         const uid1 = getUid(feature1);
         const uid2 = getUid(feature2);
-        expect(keys).to.eql([uid1, uid2]);
-        expect(mixedBatch.pointBatch.entries[uid1]).to.eql({
+        assert.deepEqual(keys, [uid1, uid2]);
+        assert.deepEqual(mixedBatch.pointBatch.entries[uid1], {
           feature: feature1,
           ref: 1,
           flatCoordss: [[0, 1]],
         });
-        expect(mixedBatch.pointBatch.entries[uid2]).to.eql({
+        assert.deepEqual(mixedBatch.pointBatch.entries[uid2], {
           feature: feature2,
           ref: 2,
           flatCoordss: [[2, 3]],
         });
       });
       it('computes the geometries count', () => {
-        expect(mixedBatch.pointBatch.geometriesCount).to.be(2);
+        assert.strictEqual(mixedBatch.pointBatch.geometriesCount, 2);
       });
       it('leaves other batches untouched', () => {
-        expect(Object.keys(mixedBatch.polygonBatch.entries)).to.have.length(0);
-        expect(Object.keys(mixedBatch.lineStringBatch.entries)).to.have.length(
-          0,
-        );
+        assert.lengthOf(Object.keys(mixedBatch.polygonBatch.entries), 0);
+        assert.lengthOf(Object.keys(mixedBatch.lineStringBatch.entries), 0);
       });
       it('assigns a hit detection ref to the entry', () => {
-        expect(mixedBatch.globalCounter_).to.be(2);
-        expect(mixedBatch.freeGlobalRef_.length).to.be(0);
-        expect(mixedBatch.getFeatureFromRef(1)).to.be(feature1);
-        expect(mixedBatch.getFeatureFromRef(2)).to.be(feature2);
+        assert.strictEqual(mixedBatch.globalCounter_, 2);
+        assert.strictEqual(mixedBatch.freeGlobalRef_.length, 0);
+        assert.strictEqual(mixedBatch.getFeatureFromRef(1), feature1);
+        assert.strictEqual(mixedBatch.getFeatureFromRef(2), feature2);
       });
     });
 
@@ -107,10 +106,10 @@ describe('MixedGeometryBatch', function () {
         });
         it('updates the modified properties and geometry in the point batch', () => {
           const entry = mixedBatch.pointBatch.entries[getUid(feature1)];
-          expect(entry.feature.get('prop1')).to.eql('changed');
+          assert.deepEqual(entry.feature.get('prop1'), 'changed');
         });
         it('keeps geometry count the same', () => {
-          expect(mixedBatch.pointBatch.geometriesCount).to.be(2);
+          assert.strictEqual(mixedBatch.pointBatch.geometriesCount, 2);
         });
       });
       describe('changing the geometry', () => {
@@ -122,10 +121,10 @@ describe('MixedGeometryBatch', function () {
         });
         it('updates the geometry in the point batch', () => {
           const entry = mixedBatch.pointBatch.entries[getUid(feature1)];
-          expect(entry.flatCoordss).to.eql([[40, 41]]);
+          assert.deepEqual(entry.flatCoordss, [[40, 41]]);
         });
         it('keeps geometry count the same', () => {
-          expect(mixedBatch.pointBatch.geometriesCount).to.be(2);
+          assert.strictEqual(mixedBatch.pointBatch.geometriesCount, 2);
         });
       });
       describe('if called with feature not already present', () => {
@@ -149,20 +148,23 @@ describe('MixedGeometryBatch', function () {
           mixedBatch.changeFeature(otherFeature);
         });
         it('does not add the new feature', () => {
-          expect(mixedBatch.pointBatch.entries).not.to.contain(
+          assert.notProperty(
+            mixedBatch.pointBatch.entries,
             getUid(otherFeature),
           );
-          expect(mixedBatch.polygonBatch.entries).not.to.contain(
+          assert.notProperty(
+            mixedBatch.polygonBatch.entries,
             getUid(otherFeature),
           );
-          expect(mixedBatch.lineStringBatch.entries).not.to.contain(
+          assert.notProperty(
+            mixedBatch.lineStringBatch.entries,
             getUid(otherFeature),
           );
         });
         it('keeps geometry count the same', () => {
-          expect(mixedBatch.pointBatch.geometriesCount).to.be(2);
-          expect(mixedBatch.polygonBatch.geometriesCount).to.be(0);
-          expect(mixedBatch.lineStringBatch.geometriesCount).to.be(0);
+          assert.strictEqual(mixedBatch.pointBatch.geometriesCount, 2);
+          assert.strictEqual(mixedBatch.polygonBatch.geometriesCount, 0);
+          assert.strictEqual(mixedBatch.lineStringBatch.geometriesCount, 0);
         });
       });
     });
@@ -175,12 +177,12 @@ describe('MixedGeometryBatch', function () {
       });
       it('clears the entry related to this feature', () => {
         const keys = Object.keys(mixedBatch.pointBatch.entries);
-        expect(keys).to.not.contain(getUid(feature1));
-        expect(mixedBatch.getFeatureFromRef(1)).to.be(undefined);
-        expect(mixedBatch.getFeatureFromRef(2)).to.be(feature2);
+        assert.notInclude(keys, getUid(feature1));
+        assert.strictEqual(mixedBatch.getFeatureFromRef(1), undefined);
+        assert.strictEqual(mixedBatch.getFeatureFromRef(2), feature2);
       });
       it('recompute geometry count', () => {
-        expect(mixedBatch.pointBatch.geometriesCount).to.be(1);
+        assert.strictEqual(mixedBatch.pointBatch.geometriesCount, 1);
       });
     });
   });
@@ -221,14 +223,14 @@ describe('MixedGeometryBatch', function () {
         const keys = Object.keys(mixedBatch.lineStringBatch.entries);
         const uid1 = getUid(feature1);
         const uid2 = getUid(feature2);
-        expect(keys).to.eql([uid1, uid2]);
-        expect(mixedBatch.lineStringBatch.entries[uid1]).to.eql({
+        assert.deepEqual(keys, [uid1, uid2]);
+        assert.deepEqual(mixedBatch.lineStringBatch.entries[uid1], {
           feature: feature1,
           flatCoordss: [[0, 1, 0, 2, 3, 0, 4, 5, 0, 6, 7, 0]],
           verticesCount: 4,
           ref: 1,
         });
-        expect(mixedBatch.lineStringBatch.entries[uid2]).to.eql({
+        assert.deepEqual(mixedBatch.lineStringBatch.entries[uid2], {
           feature: feature2,
           flatCoordss: [[8, 9, 0, 10, 11, 0, 12, 13, 0]],
           verticesCount: 3,
@@ -236,12 +238,12 @@ describe('MixedGeometryBatch', function () {
         });
       });
       it('computes the aggregated metrics on all geoms', () => {
-        expect(mixedBatch.lineStringBatch.verticesCount).to.be(7);
-        expect(mixedBatch.lineStringBatch.geometriesCount).to.be(2);
+        assert.strictEqual(mixedBatch.lineStringBatch.verticesCount, 7);
+        assert.strictEqual(mixedBatch.lineStringBatch.geometriesCount, 2);
       });
       it('leaves other batches untouched', () => {
-        expect(Object.keys(mixedBatch.polygonBatch.entries)).to.have.length(0);
-        expect(Object.keys(mixedBatch.pointBatch.entries)).to.have.length(0);
+        assert.lengthOf(Object.keys(mixedBatch.polygonBatch.entries), 0);
+        assert.lengthOf(Object.keys(mixedBatch.pointBatch.entries), 0);
       });
     });
 
@@ -259,15 +261,15 @@ describe('MixedGeometryBatch', function () {
         });
         it('updates the modified properties and geometry in the linestring batch', () => {
           const entry = mixedBatch.lineStringBatch.entries[getUid(feature1)];
-          expect(entry.feature.get('prop1')).to.eql('changed');
-          expect(entry.verticesCount).to.eql(6);
-          expect(entry.flatCoordss).to.eql([
+          assert.deepEqual(entry.feature.get('prop1'), 'changed');
+          assert.deepEqual(entry.verticesCount, 6);
+          assert.deepEqual(entry.flatCoordss, [
             [0, 1, 0, 2, 3, 0, 4, 5, 0, 6, 7, 0, 100, 101, 0, 102, 103, 0],
           ]);
         });
         it('updates the aggregated metrics on all geoms', () => {
-          expect(mixedBatch.lineStringBatch.verticesCount).to.be(9);
-          expect(mixedBatch.lineStringBatch.geometriesCount).to.be(2);
+          assert.strictEqual(mixedBatch.lineStringBatch.verticesCount, 9);
+          assert.strictEqual(mixedBatch.lineStringBatch.geometriesCount, 2);
         });
       });
       describe('changing the geometry', () => {
@@ -282,11 +284,11 @@ describe('MixedGeometryBatch', function () {
         });
         it('updates the geometry in the linestring batch', () => {
           const entry = mixedBatch.lineStringBatch.entries[getUid(feature1)];
-          expect(entry.flatCoordss).to.eql([[40, 41, 0, 42, 43, 0]]);
+          assert.deepEqual(entry.flatCoordss, [[40, 41, 0, 42, 43, 0]]);
         });
         it('updates the aggregated metrics on all geoms', () => {
-          expect(mixedBatch.lineStringBatch.verticesCount).to.be(5);
-          expect(mixedBatch.lineStringBatch.geometriesCount).to.be(2);
+          assert.strictEqual(mixedBatch.lineStringBatch.verticesCount, 5);
+          assert.strictEqual(mixedBatch.lineStringBatch.geometriesCount, 2);
         });
       });
     });
@@ -299,11 +301,11 @@ describe('MixedGeometryBatch', function () {
       });
       it('clears the entry related to this feature', () => {
         const keys = Object.keys(mixedBatch.lineStringBatch.entries);
-        expect(keys).to.not.contain(getUid(feature1));
+        assert.notInclude(keys, getUid(feature1));
       });
       it('updates the aggregated metrics on all geoms', () => {
-        expect(mixedBatch.lineStringBatch.verticesCount).to.be(3);
-        expect(mixedBatch.lineStringBatch.geometriesCount).to.be(1);
+        assert.strictEqual(mixedBatch.lineStringBatch.verticesCount, 3);
+        assert.strictEqual(mixedBatch.lineStringBatch.geometriesCount, 1);
       });
     });
   });
@@ -364,8 +366,8 @@ describe('MixedGeometryBatch', function () {
         const keys = Object.keys(mixedBatch.polygonBatch.entries);
         const uid1 = getUid(feature1);
         const uid2 = getUid(feature2);
-        expect(keys).to.eql([uid1, uid2]);
-        expect(mixedBatch.polygonBatch.entries[uid1]).to.eql({
+        assert.deepEqual(keys, [uid1, uid2]);
+        assert.deepEqual(mixedBatch.polygonBatch.entries[uid1], {
           feature: feature1,
           flatCoordss: [[0, 1, 2, 3, 4, 5, 60, 7, 20, 21, 22, 23, -24, 25]],
           verticesCount: 7,
@@ -373,7 +375,7 @@ describe('MixedGeometryBatch', function () {
           ringsVerticesCounts: [[4, 3]],
           ref: 1,
         });
-        expect(mixedBatch.polygonBatch.entries[uid2]).to.eql({
+        assert.deepEqual(mixedBatch.polygonBatch.entries[uid2], {
           feature: feature2,
           flatCoordss: [
             [
@@ -388,14 +390,14 @@ describe('MixedGeometryBatch', function () {
         });
       });
       it('computes the aggregated metrics on all polygons', () => {
-        expect(mixedBatch.polygonBatch.verticesCount).to.be(17);
-        expect(mixedBatch.polygonBatch.geometriesCount).to.be(2);
-        expect(mixedBatch.polygonBatch.ringsCount).to.be(5);
+        assert.strictEqual(mixedBatch.polygonBatch.verticesCount, 17);
+        assert.strictEqual(mixedBatch.polygonBatch.geometriesCount, 2);
+        assert.strictEqual(mixedBatch.polygonBatch.ringsCount, 5);
       });
       it('puts the linear rings in the linestring batch', () => {
         const keys = Object.keys(mixedBatch.lineStringBatch.entries);
-        expect(keys).to.eql([getUid(feature1), getUid(feature2)]);
-        expect(mixedBatch.lineStringBatch.entries[getUid(feature1)]).to.eql({
+        assert.deepEqual(keys, [getUid(feature1), getUid(feature2)]);
+        assert.deepEqual(mixedBatch.lineStringBatch.entries[getUid(feature1)], {
           feature: feature1,
           flatCoordss: [
             [0, 1, 0, 2, 3, 0, 4, 5, 0, 60, 7, 0],
@@ -404,7 +406,7 @@ describe('MixedGeometryBatch', function () {
           verticesCount: 7,
           ref: 1,
         });
-        expect(mixedBatch.lineStringBatch.entries[getUid(feature2)]).to.eql({
+        assert.deepEqual(mixedBatch.lineStringBatch.entries[getUid(feature2)], {
           feature: feature2,
           flatCoordss: [
             [8, 9, 0, 10, 11, 0, 120, 13, 0],
@@ -416,11 +418,11 @@ describe('MixedGeometryBatch', function () {
         });
       });
       it('computes the aggregated metrics on all linestrings', () => {
-        expect(mixedBatch.lineStringBatch.verticesCount).to.be(17);
-        expect(mixedBatch.lineStringBatch.geometriesCount).to.be(5);
+        assert.strictEqual(mixedBatch.lineStringBatch.verticesCount, 17);
+        assert.strictEqual(mixedBatch.lineStringBatch.geometriesCount, 5);
       });
       it('leaves point batch untouched', () => {
-        expect(Object.keys(mixedBatch.pointBatch.entries)).to.have.length(0);
+        assert.lengthOf(Object.keys(mixedBatch.pointBatch.entries), 0);
       });
     });
 
@@ -444,15 +446,15 @@ describe('MixedGeometryBatch', function () {
         });
         it('updates the modified properties and geometry in the polygon batch', () => {
           const entry = mixedBatch.polygonBatch.entries[getUid(feature1)];
-          expect(entry.feature.get('prop1')).to.eql('changed');
-          expect(entry.verticesCount).to.eql(11);
-          expect(entry.ringsCount).to.eql(3);
-          expect(entry.ringsVerticesCounts).to.eql([[4, 3, 4]]);
+          assert.deepEqual(entry.feature.get('prop1'), 'changed');
+          assert.deepEqual(entry.verticesCount, 11);
+          assert.deepEqual(entry.ringsCount, 3);
+          assert.deepEqual(entry.ringsVerticesCounts, [[4, 3, 4]]);
         });
         it('updates the aggregated metrics on all geoms', () => {
-          expect(mixedBatch.polygonBatch.verticesCount).to.be(21);
-          expect(mixedBatch.polygonBatch.geometriesCount).to.be(2);
-          expect(mixedBatch.polygonBatch.ringsCount).to.be(6);
+          assert.strictEqual(mixedBatch.polygonBatch.verticesCount, 21);
+          assert.strictEqual(mixedBatch.polygonBatch.geometriesCount, 2);
+          assert.strictEqual(mixedBatch.polygonBatch.ringsCount, 6);
         });
       });
       describe('changing the geometry', () => {
@@ -471,18 +473,18 @@ describe('MixedGeometryBatch', function () {
         });
         it('updates the geometry in the polygon batch', () => {
           const entry = mixedBatch.polygonBatch.entries[getUid(feature1)];
-          expect(entry.feature).to.be(feature1);
-          expect(entry.verticesCount).to.eql(4);
-          expect(entry.ringsCount).to.eql(1);
-          expect(entry.ringsVerticesCounts).to.eql([[4]]);
-          expect(entry.flatCoordss).to.eql([
+          assert.strictEqual(entry.feature, feature1);
+          assert.deepEqual(entry.verticesCount, 4);
+          assert.deepEqual(entry.ringsCount, 1);
+          assert.deepEqual(entry.ringsVerticesCounts, [[4]]);
+          assert.deepEqual(entry.flatCoordss, [
             [201, 202, 203, 204, 205, 206, 2070, 208],
           ]);
         });
         it('updates the aggregated metrics on all geoms', () => {
-          expect(mixedBatch.polygonBatch.verticesCount).to.be(14);
-          expect(mixedBatch.polygonBatch.geometriesCount).to.be(2);
-          expect(mixedBatch.polygonBatch.ringsCount).to.be(4);
+          assert.strictEqual(mixedBatch.polygonBatch.verticesCount, 14);
+          assert.strictEqual(mixedBatch.polygonBatch.geometriesCount, 2);
+          assert.strictEqual(mixedBatch.polygonBatch.ringsCount, 4);
         });
       });
     });
@@ -495,17 +497,17 @@ describe('MixedGeometryBatch', function () {
       });
       it('clears the entry related to this feature', () => {
         const keys = Object.keys(mixedBatch.polygonBatch.entries);
-        expect(keys).to.not.contain(getUid(feature1));
+        assert.notInclude(keys, getUid(feature1));
       });
       it('updates the aggregated metrics on all geoms', () => {
-        expect(mixedBatch.polygonBatch.verticesCount).to.be(10);
-        expect(mixedBatch.polygonBatch.geometriesCount).to.be(1);
-        expect(mixedBatch.polygonBatch.ringsCount).to.be(3);
+        assert.strictEqual(mixedBatch.polygonBatch.verticesCount, 10);
+        assert.strictEqual(mixedBatch.polygonBatch.geometriesCount, 1);
+        assert.strictEqual(mixedBatch.polygonBatch.ringsCount, 3);
       });
       it('keeps the removed ref for later use', () => {
-        expect(mixedBatch.freeGlobalRef_).to.eql([1]);
-        expect(mixedBatch.globalCounter_).to.be(2);
-        expect(mixedBatch.refToFeature_.size).to.be(1);
+        assert.deepEqual(mixedBatch.freeGlobalRef_, [1]);
+        assert.strictEqual(mixedBatch.globalCounter_, 2);
+        assert.strictEqual(mixedBatch.refToFeature_.size, 1);
       });
     });
   });
@@ -583,7 +585,7 @@ describe('MixedGeometryBatch', function () {
       });
       it('puts the polygons in the polygon batch', () => {
         const uid = getUid(feature);
-        expect(mixedBatch.polygonBatch.entries[uid]).to.eql({
+        assert.deepEqual(mixedBatch.polygonBatch.entries[uid], {
           feature: feature,
           flatCoordss: [
             [0, 1, 2, 3, 4, 5, 60, 7, 20, 21, 22, 23, -24, 25],
@@ -603,7 +605,7 @@ describe('MixedGeometryBatch', function () {
       });
       it('puts the polygon rings and linestrings in the linestring batch', () => {
         const uid = getUid(feature);
-        expect(mixedBatch.lineStringBatch.entries[uid]).to.eql({
+        assert.deepEqual(mixedBatch.lineStringBatch.entries[uid], {
           feature: feature,
           flatCoordss: [
             [0, 1, 0, 2, 3, 0, 4, 5, 0, 60, 7, 0],
@@ -620,7 +622,7 @@ describe('MixedGeometryBatch', function () {
       });
       it('puts the points in the point batch', () => {
         const uid = getUid(feature);
-        expect(mixedBatch.pointBatch.entries[uid]).to.eql({
+        assert.deepEqual(mixedBatch.pointBatch.entries[uid], {
           feature: feature,
           flatCoordss: [
             [101, 102],
@@ -631,16 +633,16 @@ describe('MixedGeometryBatch', function () {
         });
       });
       it('computes the aggregated metrics on all polygons', () => {
-        expect(mixedBatch.polygonBatch.verticesCount).to.be(17);
-        expect(mixedBatch.polygonBatch.geometriesCount).to.be(2);
-        expect(mixedBatch.polygonBatch.ringsCount).to.be(5);
+        assert.strictEqual(mixedBatch.polygonBatch.verticesCount, 17);
+        assert.strictEqual(mixedBatch.polygonBatch.geometriesCount, 2);
+        assert.strictEqual(mixedBatch.polygonBatch.ringsCount, 5);
       });
       it('computes the aggregated metrics on all linestring', () => {
-        expect(mixedBatch.lineStringBatch.verticesCount).to.be(24);
-        expect(mixedBatch.lineStringBatch.geometriesCount).to.be(7);
+        assert.strictEqual(mixedBatch.lineStringBatch.verticesCount, 24);
+        assert.strictEqual(mixedBatch.lineStringBatch.geometriesCount, 7);
       });
       it('computes the aggregated metrics on all points', () => {
-        expect(mixedBatch.pointBatch.geometriesCount).to.be(3);
+        assert.strictEqual(mixedBatch.pointBatch.geometriesCount, 3);
       });
     });
 
@@ -673,7 +675,7 @@ describe('MixedGeometryBatch', function () {
         });
         it('updates the geometries in the polygon batch', () => {
           const entry = mixedBatch.polygonBatch.entries[getUid(feature)];
-          expect(entry).to.eql({
+          assert.deepEqual(entry, {
             feature: feature,
             flatCoordss: [
               [0, 1, 2, 3, 4, 5, 60, 7, 20, 21, 22, 23, -24, 25],
@@ -691,7 +693,7 @@ describe('MixedGeometryBatch', function () {
         });
         it('updates the geometries in the linestring batch', () => {
           const entry = mixedBatch.lineStringBatch.entries[getUid(feature)];
-          expect(entry).to.eql({
+          assert.deepEqual(entry, {
             feature: feature,
             flatCoordss: [
               [0, 1, 0, 2, 3, 0, 4, 5, 0, 60, 7, 0],
@@ -712,13 +714,13 @@ describe('MixedGeometryBatch', function () {
           });
         });
         it('updates the aggregated metrics on the polygon batch', () => {
-          expect(mixedBatch.polygonBatch.verticesCount).to.be(22);
-          expect(mixedBatch.polygonBatch.geometriesCount).to.be(3);
-          expect(mixedBatch.polygonBatch.ringsCount).to.be(6);
+          assert.strictEqual(mixedBatch.polygonBatch.verticesCount, 22);
+          assert.strictEqual(mixedBatch.polygonBatch.geometriesCount, 3);
+          assert.strictEqual(mixedBatch.polygonBatch.ringsCount, 6);
         });
         it('updates the aggregated metrics on the linestring batch', () => {
-          expect(mixedBatch.lineStringBatch.verticesCount).to.be(33);
-          expect(mixedBatch.lineStringBatch.geometriesCount).to.be(9);
+          assert.strictEqual(mixedBatch.lineStringBatch.verticesCount, 33);
+          assert.strictEqual(mixedBatch.lineStringBatch.geometriesCount, 9);
         });
       });
       describe('changing the geometry', () => {
@@ -737,7 +739,7 @@ describe('MixedGeometryBatch', function () {
         });
         it('updates the geometries in the polygon batch', () => {
           const entry = mixedBatch.polygonBatch.entries[getUid(feature)];
-          expect(entry).to.eql({
+          assert.deepEqual(entry, {
             feature: feature,
             flatCoordss: [[201, 202, 203, 204, 205, 206, 2070, 208]],
             verticesCount: 4,
@@ -748,7 +750,7 @@ describe('MixedGeometryBatch', function () {
         });
         it('updates the geometries in the linestring batch', () => {
           const entry = mixedBatch.lineStringBatch.entries[getUid(feature)];
-          expect(entry).to.eql({
+          assert.deepEqual(entry, {
             feature: feature,
             flatCoordss: [
               [201, 202, 0, 203, 204, 0, 205, 206, 0, 2070, 208, 0],
@@ -758,18 +760,18 @@ describe('MixedGeometryBatch', function () {
           });
         });
         it('updates the aggregated metrics on the polygon batch', () => {
-          expect(mixedBatch.polygonBatch.verticesCount).to.be(4);
-          expect(mixedBatch.polygonBatch.geometriesCount).to.be(1);
-          expect(mixedBatch.polygonBatch.ringsCount).to.be(1);
+          assert.strictEqual(mixedBatch.polygonBatch.verticesCount, 4);
+          assert.strictEqual(mixedBatch.polygonBatch.geometriesCount, 1);
+          assert.strictEqual(mixedBatch.polygonBatch.ringsCount, 1);
         });
         it('updates the aggregated metrics on the linestring batch', () => {
-          expect(mixedBatch.lineStringBatch.verticesCount).to.be(4);
-          expect(mixedBatch.lineStringBatch.geometriesCount).to.be(1);
+          assert.strictEqual(mixedBatch.lineStringBatch.verticesCount, 4);
+          assert.strictEqual(mixedBatch.lineStringBatch.geometriesCount, 1);
         });
         it('updates the aggregated metrics on the point batch', () => {
           const keys = Object.keys(mixedBatch.pointBatch.entries);
-          expect(keys).to.not.contain(getUid(feature));
-          expect(mixedBatch.pointBatch.geometriesCount).to.be(0);
+          assert.notInclude(keys, getUid(feature));
+          assert.strictEqual(mixedBatch.pointBatch.geometriesCount, 0);
         });
       });
     });
@@ -781,21 +783,21 @@ describe('MixedGeometryBatch', function () {
       });
       it('clears all entries in the polygon batch', () => {
         const keys = Object.keys(mixedBatch.polygonBatch.entries);
-        expect(keys).to.have.length(0);
-        expect(mixedBatch.polygonBatch.verticesCount).to.be(0);
-        expect(mixedBatch.polygonBatch.geometriesCount).to.be(0);
-        expect(mixedBatch.polygonBatch.ringsCount).to.be(0);
+        assert.lengthOf(keys, 0);
+        assert.strictEqual(mixedBatch.polygonBatch.verticesCount, 0);
+        assert.strictEqual(mixedBatch.polygonBatch.geometriesCount, 0);
+        assert.strictEqual(mixedBatch.polygonBatch.ringsCount, 0);
       });
       it('clears all entries in the linestring batch', () => {
         const keys = Object.keys(mixedBatch.lineStringBatch.entries);
-        expect(keys).to.have.length(0);
-        expect(mixedBatch.lineStringBatch.verticesCount).to.be(0);
-        expect(mixedBatch.lineStringBatch.geometriesCount).to.be(0);
+        assert.lengthOf(keys, 0);
+        assert.strictEqual(mixedBatch.lineStringBatch.verticesCount, 0);
+        assert.strictEqual(mixedBatch.lineStringBatch.geometriesCount, 0);
       });
       it('clears all entries in the point batch', () => {
         const keys = Object.keys(mixedBatch.pointBatch.entries);
-        expect(keys).to.have.length(0);
-        expect(mixedBatch.pointBatch.geometriesCount).to.be(0);
+        assert.lengthOf(keys, 0);
+        assert.strictEqual(mixedBatch.pointBatch.geometriesCount, 0);
       });
     });
   });
@@ -855,7 +857,7 @@ describe('MixedGeometryBatch', function () {
     describe('#addFeature', () => {
       it('puts the polygons in the polygon batch', () => {
         const uid = getUid(feature);
-        expect(mixedBatch.polygonBatch.entries[uid]).to.eql({
+        assert.deepEqual(mixedBatch.polygonBatch.entries[uid], {
           feature: feature,
           flatCoordss: [[0, 1, 2, 3, 4, 5, 60, 7]],
           verticesCount: 4,
@@ -866,7 +868,7 @@ describe('MixedGeometryBatch', function () {
       });
       it('puts the polygon rings and linestrings in the linestring batch', () => {
         const uid = getUid(feature);
-        expect(mixedBatch.lineStringBatch.entries[uid]).to.eql({
+        assert.deepEqual(mixedBatch.lineStringBatch.entries[uid], {
           feature: feature,
           flatCoordss: [
             [0, 1, 0, 2, 3, 0, 4, 5, 0, 60, 7, 0],
@@ -883,7 +885,7 @@ describe('MixedGeometryBatch', function () {
       });
       it('puts the points in the point batch', () => {
         const uid = getUid(feature);
-        expect(mixedBatch.pointBatch.entries[uid]).to.eql({
+        assert.deepEqual(mixedBatch.pointBatch.entries[uid], {
           feature: feature,
           flatCoordss: [
             [101, 102],
@@ -894,16 +896,16 @@ describe('MixedGeometryBatch', function () {
         });
       });
       it('computes the aggregated metrics on all polygons', () => {
-        expect(mixedBatch.polygonBatch.verticesCount).to.be(4);
-        expect(mixedBatch.polygonBatch.ringsCount).to.be(1);
-        expect(mixedBatch.polygonBatch.geometriesCount).to.be(1);
+        assert.strictEqual(mixedBatch.polygonBatch.verticesCount, 4);
+        assert.strictEqual(mixedBatch.polygonBatch.ringsCount, 1);
+        assert.strictEqual(mixedBatch.polygonBatch.geometriesCount, 1);
       });
       it('computes the aggregated metrics on all linestring', () => {
-        expect(mixedBatch.lineStringBatch.verticesCount).to.be(11);
-        expect(mixedBatch.lineStringBatch.geometriesCount).to.be(3);
+        assert.strictEqual(mixedBatch.lineStringBatch.verticesCount, 11);
+        assert.strictEqual(mixedBatch.lineStringBatch.geometriesCount, 3);
       });
       it('computes the aggregated metrics on all points', () => {
-        expect(mixedBatch.pointBatch.geometriesCount).to.be(3);
+        assert.strictEqual(mixedBatch.pointBatch.geometriesCount, 3);
       });
     });
   });
@@ -944,8 +946,8 @@ describe('MixedGeometryBatch', function () {
       });
       it('puts the polygons in the polygon batch', () => {
         const keys = Object.keys(mixedBatch.polygonBatch.entries);
-        expect(keys).to.eql([uid]);
-        expect(mixedBatch.polygonBatch.entries[uid]).to.eql({
+        assert.deepEqual(keys, [uid]);
+        assert.deepEqual(mixedBatch.polygonBatch.entries[uid], {
           feature: feature,
           flatCoordss: [[0, 1, 2, 3, 4, 5, 60, 7, 20, 21, 22, 23, -24, 25]],
           verticesCount: 7,
@@ -955,14 +957,14 @@ describe('MixedGeometryBatch', function () {
         });
       });
       it('computes the aggregated metrics on all polygons', () => {
-        expect(mixedBatch.polygonBatch.verticesCount).to.be(7);
-        expect(mixedBatch.polygonBatch.geometriesCount).to.be(1);
-        expect(mixedBatch.polygonBatch.ringsCount).to.be(2);
+        assert.strictEqual(mixedBatch.polygonBatch.verticesCount, 7);
+        assert.strictEqual(mixedBatch.polygonBatch.geometriesCount, 1);
+        assert.strictEqual(mixedBatch.polygonBatch.ringsCount, 2);
       });
       it('puts the linear rings in the linestring batch', () => {
         const keys = Object.keys(mixedBatch.lineStringBatch.entries);
-        expect(keys).to.eql([uid]);
-        expect(mixedBatch.lineStringBatch.entries[uid]).to.eql({
+        assert.deepEqual(keys, [uid]);
+        assert.deepEqual(mixedBatch.lineStringBatch.entries[uid], {
           feature: feature,
           flatCoordss: [
             [0, 1, 0, 2, 3, 0, 4, 5, 0, 60, 7, 0],
@@ -973,11 +975,11 @@ describe('MixedGeometryBatch', function () {
         });
       });
       it('computes the aggregated metrics on all linestrings', () => {
-        expect(mixedBatch.lineStringBatch.verticesCount).to.be(7);
-        expect(mixedBatch.lineStringBatch.geometriesCount).to.be(2);
+        assert.strictEqual(mixedBatch.lineStringBatch.verticesCount, 7);
+        assert.strictEqual(mixedBatch.lineStringBatch.geometriesCount, 2);
       });
       it('leaves point batch untouched', () => {
-        expect(Object.keys(mixedBatch.pointBatch.entries)).to.have.length(0);
+        assert.lengthOf(Object.keys(mixedBatch.pointBatch.entries), 0);
       });
     });
 
@@ -988,12 +990,12 @@ describe('MixedGeometryBatch', function () {
       });
       it('clears the entry related to this feature', () => {
         const keys = Object.keys(mixedBatch.polygonBatch.entries);
-        expect(keys).to.not.contain(uid);
+        assert.notInclude(keys, uid);
       });
       it('updates the aggregated metrics on all geoms', () => {
-        expect(mixedBatch.polygonBatch.verticesCount).to.be(0);
-        expect(mixedBatch.polygonBatch.geometriesCount).to.be(0);
-        expect(mixedBatch.polygonBatch.ringsCount).to.be(0);
+        assert.strictEqual(mixedBatch.polygonBatch.verticesCount, 0);
+        assert.strictEqual(mixedBatch.polygonBatch.geometriesCount, 0);
+        assert.strictEqual(mixedBatch.polygonBatch.ringsCount, 0);
       });
     });
   });
@@ -1040,8 +1042,8 @@ describe('MixedGeometryBatch', function () {
     });
 
     it('puts two different polygons with holes in the polygon batch', () => {
-      expect(mixedBatch.polygonBatch.geometriesCount).to.be(2);
-      expect(mixedBatch.polygonBatch.entries[uid]).to.eql({
+      assert.strictEqual(mixedBatch.polygonBatch.geometriesCount, 2);
+      assert.deepEqual(mixedBatch.polygonBatch.entries[uid], {
         feature: feature,
         flatCoordss: [
           [0, 1, 2, 3, 4, 5, 60, 7, 20, 21, 22, 23, -24, 25],
@@ -1057,7 +1059,7 @@ describe('MixedGeometryBatch', function () {
       });
     });
     it('puts the linear rings in the linestring batch', () => {
-      expect(mixedBatch.lineStringBatch.entries[uid]).to.eql({
+      assert.deepEqual(mixedBatch.lineStringBatch.entries[uid], {
         feature: feature,
         flatCoordss: [
           [0, 1, 0, 2, 3, 0, 4, 5, 0, 60, 7, 0],
@@ -1174,7 +1176,7 @@ describe('MixedGeometryBatch', function () {
         mixedBatch.addFeature(feature3);
       });
       it('puts the polygons in the polygon batch', () => {
-        expect(mixedBatch.polygonBatch.entries[uid2]).to.eql({
+        assert.deepEqual(mixedBatch.polygonBatch.entries[uid2], {
           feature: feature2,
           flatCoordss: [
             [0, 1, 2, 3, 4, 5, -6, 7, 20, 21, 22, 23, 24, -25],
@@ -1193,7 +1195,7 @@ describe('MixedGeometryBatch', function () {
         });
       });
       it('puts the polygon rings and linestrings in the linestring batch', () => {
-        expect(mixedBatch.lineStringBatch.entries[uid1]).to.eql({
+        assert.deepEqual(mixedBatch.lineStringBatch.entries[uid1], {
           feature: feature1,
           flatCoordss: [
             [0, 1, 0, 2, 3, 0, 4, 5, 0, 6, 7, 0],
@@ -1202,7 +1204,7 @@ describe('MixedGeometryBatch', function () {
           verticesCount: 7,
           ref: 1,
         });
-        expect(mixedBatch.lineStringBatch.entries[uid2]).to.eql({
+        assert.deepEqual(mixedBatch.lineStringBatch.entries[uid2], {
           feature: feature2,
           flatCoordss: [
             [0, 1, 0, 2, 3, 0, 4, 5, 0, -6, 7, 0],
@@ -1216,16 +1218,16 @@ describe('MixedGeometryBatch', function () {
         });
       });
       it('computes the aggregated metrics on all polygons', () => {
-        expect(mixedBatch.polygonBatch.verticesCount).to.be(17);
-        expect(mixedBatch.polygonBatch.geometriesCount).to.be(2);
-        expect(mixedBatch.polygonBatch.ringsCount).to.be(5);
+        assert.strictEqual(mixedBatch.polygonBatch.verticesCount, 17);
+        assert.strictEqual(mixedBatch.polygonBatch.geometriesCount, 2);
+        assert.strictEqual(mixedBatch.polygonBatch.ringsCount, 5);
       });
       it('computes the aggregated metrics on all linestring', () => {
-        expect(mixedBatch.lineStringBatch.verticesCount).to.be(24);
-        expect(mixedBatch.lineStringBatch.geometriesCount).to.be(7);
+        assert.strictEqual(mixedBatch.lineStringBatch.verticesCount, 24);
+        assert.strictEqual(mixedBatch.lineStringBatch.geometriesCount, 7);
       });
       it('computes the aggregated metrics on all points', () => {
-        expect(mixedBatch.pointBatch.geometriesCount).to.be(3);
+        assert.strictEqual(mixedBatch.pointBatch.geometriesCount, 3);
       });
     });
   });
@@ -1248,13 +1250,15 @@ describe('MixedGeometryBatch', function () {
     });
 
     it('has the transformed flatCoords', () => {
-      expect(mixedBatch.pointBatch.entries[uid1].flatCoordss).to.eql(
+      assert.deepEqual(
+        mixedBatch.pointBatch.entries[uid1].flatCoordss,
         transformedFlatCoordss,
       );
     });
     it('has the same transformed flatCoords after changeFeature', () => {
       mixedBatch.changeFeature(feature1, projectionTransform);
-      expect(mixedBatch.pointBatch.entries[uid1].flatCoordss).to.eql(
+      assert.deepEqual(
+        mixedBatch.pointBatch.entries[uid1].flatCoordss,
         transformedFlatCoordss,
       );
     });
@@ -1279,21 +1283,21 @@ describe('MixedGeometryBatch', function () {
     });
 
     it('clears polygon batch', () => {
-      expect(Object.keys(mixedBatch.polygonBatch.entries)).to.have.length(0);
-      expect(mixedBatch.polygonBatch.geometriesCount).to.be(0);
-      expect(mixedBatch.polygonBatch.verticesCount).to.be(0);
-      expect(mixedBatch.polygonBatch.ringsCount).to.be(0);
+      assert.lengthOf(Object.keys(mixedBatch.polygonBatch.entries), 0);
+      assert.strictEqual(mixedBatch.polygonBatch.geometriesCount, 0);
+      assert.strictEqual(mixedBatch.polygonBatch.verticesCount, 0);
+      assert.strictEqual(mixedBatch.polygonBatch.ringsCount, 0);
     });
 
     it('clears linestring batch', () => {
-      expect(Object.keys(mixedBatch.lineStringBatch.entries)).to.have.length(0);
-      expect(mixedBatch.lineStringBatch.geometriesCount).to.be(0);
-      expect(mixedBatch.lineStringBatch.verticesCount).to.be(0);
+      assert.lengthOf(Object.keys(mixedBatch.lineStringBatch.entries), 0);
+      assert.strictEqual(mixedBatch.lineStringBatch.geometriesCount, 0);
+      assert.strictEqual(mixedBatch.lineStringBatch.verticesCount, 0);
     });
 
     it('clears point batch', () => {
-      expect(Object.keys(mixedBatch.pointBatch.entries)).to.have.length(0);
-      expect(mixedBatch.pointBatch.geometriesCount).to.be(0);
+      assert.lengthOf(Object.keys(mixedBatch.pointBatch.entries), 0);
+      assert.strictEqual(mixedBatch.pointBatch.geometriesCount, 0);
     });
   });
 
@@ -1327,25 +1331,23 @@ describe('MixedGeometryBatch', function () {
       });
 
       it('only keeps two features', () => {
-        expect(Object.keys(mixedBatch.pointBatch.entries)).to.have.length(2);
-        expect(mixedBatch.pointBatch.geometriesCount).to.be(2);
+        assert.lengthOf(Object.keys(mixedBatch.pointBatch.entries), 2);
+        assert.strictEqual(mixedBatch.pointBatch.geometriesCount, 2);
       });
 
       it('leaves polygon batch empty', () => {
-        expect(Object.keys(mixedBatch.polygonBatch.entries)).to.have.length(0);
-        expect(mixedBatch.polygonBatch.geometriesCount).to.be(0);
+        assert.lengthOf(Object.keys(mixedBatch.polygonBatch.entries), 0);
+        assert.strictEqual(mixedBatch.polygonBatch.geometriesCount, 0);
       });
 
       it('leaves linestring batch empty', () => {
-        expect(Object.keys(mixedBatch.lineStringBatch.entries)).to.have.length(
-          0,
-        );
-        expect(mixedBatch.lineStringBatch.geometriesCount).to.be(0);
+        assert.lengthOf(Object.keys(mixedBatch.lineStringBatch.entries), 0);
+        assert.strictEqual(mixedBatch.lineStringBatch.geometriesCount, 0);
       });
 
       it('preserves the feature references from the original batch', () => {
-        expect(mixedBatch.getFeatureFromRef(1)).to.be(feature1);
-        expect(mixedBatch.getFeatureFromRef(4)).to.be(feature4);
+        assert.strictEqual(mixedBatch.getFeatureFromRef(1), feature1);
+        assert.strictEqual(mixedBatch.getFeatureFromRef(4), feature4);
       });
     });
     describe('filtering out everything', () => {
@@ -1354,20 +1356,18 @@ describe('MixedGeometryBatch', function () {
       });
 
       it('leaves point batch empty', () => {
-        expect(Object.keys(mixedBatch.pointBatch.entries)).to.have.length(0);
-        expect(mixedBatch.pointBatch.geometriesCount).to.be(0);
+        assert.lengthOf(Object.keys(mixedBatch.pointBatch.entries), 0);
+        assert.strictEqual(mixedBatch.pointBatch.geometriesCount, 0);
       });
 
       it('leaves polygon batch empty', () => {
-        expect(Object.keys(mixedBatch.polygonBatch.entries)).to.have.length(0);
-        expect(mixedBatch.polygonBatch.geometriesCount).to.be(0);
+        assert.lengthOf(Object.keys(mixedBatch.polygonBatch.entries), 0);
+        assert.strictEqual(mixedBatch.polygonBatch.geometriesCount, 0);
       });
 
       it('leaves linestring batch empty', () => {
-        expect(Object.keys(mixedBatch.lineStringBatch.entries)).to.have.length(
-          0,
-        );
-        expect(mixedBatch.lineStringBatch.geometriesCount).to.be(0);
+        assert.lengthOf(Object.keys(mixedBatch.lineStringBatch.entries), 0);
+        assert.strictEqual(mixedBatch.lineStringBatch.geometriesCount, 0);
       });
     });
   });

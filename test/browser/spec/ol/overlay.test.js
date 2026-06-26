@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import Map from '../../../../src/ol/Map.js';
 import Overlay from '../../../../src/ol/Overlay.js';
 import View from '../../../../src/ol/View.js';
@@ -36,13 +37,13 @@ describe('ol.Overlay', function () {
   describe('constructor', function () {
     it('can be constructed with minimal arguments', function () {
       const instance = new Overlay({});
-      expect(instance).to.be.an(Overlay);
+      assert.instanceOf(instance, Overlay);
     });
 
     it('can be constructed with className', function () {
       const instance = new Overlay({className: 'my-class'});
-      expect(instance).to.be.an(Overlay);
-      expect(instance.element.className).to.be('my-class');
+      assert.instanceOf(instance, Overlay);
+      assert.strictEqual(instance.element.className, 'my-class');
     });
   });
 
@@ -62,7 +63,7 @@ describe('ol.Overlay', function () {
         position: [0, 0],
       });
       map.addOverlay(overlay);
-      expect(overlay.getId()).to.be(undefined);
+      assert.strictEqual(overlay.getId(), undefined);
       map.removeOverlay(overlay);
       overlay = new Overlay({
         id: 'foo',
@@ -70,7 +71,7 @@ describe('ol.Overlay', function () {
         position: [0, 0],
       });
       map.addOverlay(overlay);
-      expect(overlay.getId()).to.be('foo');
+      assert.strictEqual(overlay.getId(), 'foo');
     });
   });
 
@@ -91,9 +92,9 @@ describe('ol.Overlay', function () {
       });
       map.addOverlay(overlay);
       map.renderSync();
-      expect(overlay.element.style.display).not.to.be('none');
+      assert.notEqual(overlay.element.style.display, 'none');
       overlay.setVisible(false);
-      expect(overlay.element.style.display).to.be('none');
+      assert.strictEqual(overlay.element.style.display, 'none');
     });
   });
 });

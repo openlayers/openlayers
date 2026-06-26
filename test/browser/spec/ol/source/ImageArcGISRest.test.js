@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import ImageState from '../../../../../src/ol/ImageState.js';
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
@@ -21,14 +22,14 @@ describe('ol/source/ImageArcGISRest', function () {
   describe('#getInterpolate()', function () {
     it('is true by default', function () {
       const source = new ImageArcGISRest(options);
-      expect(source.getInterpolate()).to.be(true);
+      assert.strictEqual(source.getInterpolate(), true);
     });
 
     it('is false if constructed with interpolate: false', function () {
       const source = new ImageArcGISRest(
         Object.assign({interpolate: false}, options),
       );
-      expect(source.getInterpolate()).to.be(false);
+      assert.strictEqual(source.getInterpolate(), false);
     });
   });
 
@@ -45,17 +46,17 @@ describe('ol/source/ImageArcGISRest', function () {
       image.load();
 
       const uri = new URL(image.getImage().src);
-      expect(uri.protocol).to.be('http:');
-      expect(uri.hostname).to.be(window.location.hostname);
-      expect(uri.pathname).to.be('/MapServer/export');
+      assert.strictEqual(uri.protocol, 'http:');
+      assert.strictEqual(uri.hostname, window.location.hostname);
+      assert.strictEqual(uri.pathname, '/MapServer/export');
 
       const queryData = uri.searchParams;
-      expect(queryData.get('size')).to.be('150,16');
-      expect(queryData.get('bbox')).to.be('-9.5,0.7,5.5,2.3');
-      expect(queryData.get('format')).to.be('png32');
-      expect(queryData.get('imageSR')).to.be('3857');
-      expect(queryData.get('bboxSR')).to.be('3857');
-      expect(queryData.get('transparent')).to.be('true');
+      assert.strictEqual(queryData.get('size'), '150,16');
+      assert.strictEqual(queryData.get('bbox'), '-9.5,0.7,5.5,2.3');
+      assert.strictEqual(queryData.get('format'), 'png32');
+      assert.strictEqual(queryData.get('imageSR'), '3857');
+      assert.strictEqual(queryData.get('bboxSR'), '3857');
+      assert.strictEqual(queryData.get('transparent'), 'true');
     });
 
     it('returns a non floating point dpi value', function () {
@@ -69,7 +70,7 @@ describe('ol/source/ImageArcGISRest', function () {
       image.load();
       const uri = new URL(image.getImage().src);
       const queryData = uri.searchParams;
-      expect(queryData.get('dpi')).to.be('91');
+      assert.strictEqual(queryData.get('dpi'), '91');
     });
 
     it('returns a image with the expected URL for ImageServer', function () {
@@ -83,15 +84,15 @@ describe('ol/source/ImageArcGISRest', function () {
       );
       image.load();
       const uri = new URL(image.getImage().src);
-      expect(uri.protocol).to.be('http:');
-      expect(uri.hostname).to.be(window.location.hostname);
-      expect(uri.pathname).to.be('/ImageServer/exportImage');
+      assert.strictEqual(uri.protocol, 'http:');
+      assert.strictEqual(uri.hostname, window.location.hostname);
+      assert.strictEqual(uri.pathname, '/ImageServer/exportImage');
       const queryData = uri.searchParams;
-      expect(queryData.get('bbox')).to.be('-9.5,0.7,5.5,2.3');
-      expect(queryData.get('format')).to.be('png32');
-      expect(queryData.get('imageSR')).to.be('3857');
-      expect(queryData.get('bboxSR')).to.be('3857');
-      expect(queryData.get('transparent')).to.be('true');
+      assert.strictEqual(queryData.get('bbox'), '-9.5,0.7,5.5,2.3');
+      assert.strictEqual(queryData.get('format'), 'png32');
+      assert.strictEqual(queryData.get('imageSR'), '3857');
+      assert.strictEqual(queryData.get('bboxSR'), '3857');
+      assert.strictEqual(queryData.get('transparent'), 'true');
     });
 
     it('allows various parameters to be overridden', function () {
@@ -107,8 +108,8 @@ describe('ol/source/ImageArcGISRest', function () {
       image.load();
       const uri = new URL(image.getImage().src);
       const queryData = uri.searchParams;
-      expect(queryData.get('format')).to.be('png');
-      expect(queryData.get('transparent')).to.be('false');
+      assert.strictEqual(queryData.get('format'), 'png');
+      assert.strictEqual(queryData.get('transparent'), 'false');
     });
 
     it('allows adding rest option', function () {
@@ -123,7 +124,7 @@ describe('ol/source/ImageArcGISRest', function () {
       image.load();
       const uri = new URL(image.getImage().src);
       const queryData = uri.searchParams;
-      expect(queryData.get('LAYERS')).to.be('show:1,3,4');
+      assert.strictEqual(queryData.get('LAYERS'), 'show:1,3,4');
     });
   });
 
@@ -160,7 +161,7 @@ describe('ol/source/ImageArcGISRest', function () {
       image.load();
       const uri = new URL(image.getImage().src);
       const queryData = uri.searchParams;
-      expect(queryData.get('TEST')).to.be('value');
+      assert.strictEqual(queryData.get('TEST'), 'value');
     });
 
     it('updates an existing param', function () {
@@ -178,7 +179,7 @@ describe('ol/source/ImageArcGISRest', function () {
       image.load();
       const uri = new URL(image.getImage().src);
       const queryData = uri.searchParams;
-      expect(queryData.get('TEST')).to.be('newValue');
+      assert.strictEqual(queryData.get('TEST'), 'newValue');
     });
 
     it('reloads from server', function (done) {
@@ -194,9 +195,15 @@ describe('ol/source/ImageArcGISRest', function () {
       map.once('rendercomplete', function () {
         source.updateParams({'TEST': 'newValue'});
         map.once('rendercomplete', function () {
-          expect(srcs.length).to.be(2);
-          expect(new URL(srcs[0]).searchParams.get('TEST')).to.be('value');
-          expect(new URL(srcs[1]).searchParams.get('TEST')).to.be('newValue');
+          assert.strictEqual(srcs.length, 2);
+          assert.strictEqual(
+            new URL(srcs[0]).searchParams.get('TEST'),
+            'value',
+          );
+          assert.strictEqual(
+            new URL(srcs[1]).searchParams.get('TEST'),
+            'newValue',
+          );
           done();
         });
       });
@@ -210,9 +217,9 @@ describe('ol/source/ImageArcGISRest', function () {
       source.setParams({test: 'after'});
 
       const params = source.getParams();
-      expect(params).to.eql({test: 'after'});
+      assert.deepEqual(params, {test: 'after'});
 
-      expect(before).to.eql({test: 'before', foo: 'bar'});
+      assert.deepEqual(before, {test: 'before', foo: 'bar'});
     });
   });
 
@@ -221,7 +228,7 @@ describe('ol/source/ImageArcGISRest', function () {
       options.params.TEST = 'value';
       const source = new ImageArcGISRest(options);
       const setParams = source.getParams();
-      expect(setParams).to.eql({TEST: 'value'});
+      assert.deepEqual(setParams, {TEST: 'value'});
     });
 
     it('verify on adding a param', function () {
@@ -229,8 +236,8 @@ describe('ol/source/ImageArcGISRest', function () {
       const source = new ImageArcGISRest(options);
       source.updateParams({'TEST2': 'newValue'});
       const setParams = source.getParams();
-      expect(setParams).to.eql({TEST: 'value', TEST2: 'newValue'});
-      expect(options.params).to.eql({TEST: 'value'});
+      assert.deepEqual(setParams, {TEST: 'value', TEST2: 'newValue'});
+      assert.deepEqual(options.params, {TEST: 'value'});
     });
 
     it('verify on update a param', function () {
@@ -238,8 +245,8 @@ describe('ol/source/ImageArcGISRest', function () {
       const source = new ImageArcGISRest(options);
       source.updateParams({'TEST': 'newValue'});
       const setParams = source.getParams();
-      expect(setParams).to.eql({TEST: 'newValue'});
-      expect(options.params).to.eql({TEST: 'value'});
+      assert.deepEqual(setParams, {TEST: 'newValue'});
+      assert.deepEqual(options.params, {TEST: 'value'});
     });
   });
 
@@ -251,7 +258,7 @@ describe('ol/source/ImageArcGISRest', function () {
 
       const url = source.getUrl();
 
-      expect(url).to.eql('http://test.com/MapServer');
+      assert.deepEqual(url, 'http://test.com/MapServer');
     });
   });
 
@@ -262,7 +269,7 @@ describe('ol/source/ImageArcGISRest', function () {
 
       const url = source.getUrl();
 
-      expect(url).to.eql('http://test.com/MapServer');
+      assert.deepEqual(url, 'http://test.com/MapServer');
     });
 
     it('verify setting url with existing url', function () {
@@ -273,7 +280,7 @@ describe('ol/source/ImageArcGISRest', function () {
 
       const url = source.getUrl();
 
-      expect(url).to.eql('http://test2.com/MapServer');
+      assert.deepEqual(url, 'http://test2.com/MapServer');
     });
   });
 });

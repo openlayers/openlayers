@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import CartoDB from '../../../../../src/ol/source/CartoDB.js';
 import XYZ from '../../../../../src/ol/source/XYZ.js';
 
@@ -8,8 +9,8 @@ describe('ol.source.CartoDB', function () {
         account: 'documentation',
         config: {},
       });
-      expect(source).to.be.a(XYZ);
-      expect(source).to.be.a(CartoDB);
+      assert.instanceOf(source, XYZ);
+      assert.instanceOf(source, CartoDB);
     });
   });
 });

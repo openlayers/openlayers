@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {spy as sinonSpy, stub as sinonStub} from 'sinon';
 import Feature from '../../../../../src/ol/Feature.js';
 import {VOID} from '../../../../../src/ol/functions.js';
@@ -49,16 +50,16 @@ describe('ol/renderer/vector', function () {
         // call #1
         renderFeature(builderGroup, feature, style, squaredTolerance, listener);
 
-        expect(iconStyleLoadSpy.calledOnce).to.be.ok();
+        assert.isOk(iconStyleLoadSpy.calledOnce);
         listeners = iconStyle.iconImage_.listeners_['change'];
-        expect(listeners.length).to.eql(1);
+        assert.deepEqual(listeners.length, 1);
 
         // call #2
         renderFeature(builderGroup, feature, style, squaredTolerance, listener);
 
-        expect(iconStyleLoadSpy.calledOnce).to.be.ok();
+        assert.isOk(iconStyleLoadSpy.calledOnce);
         listeners = iconStyle.iconImage_.listeners_['change'];
-        expect(listeners.length).to.eql(1);
+        assert.deepEqual(listeners.length, 1);
       });
     });
 
@@ -71,7 +72,7 @@ describe('ol/renderer/vector', function () {
           VOID,
         );
         renderFeature(builderGroup, feature, style, squaredTolerance, listener);
-        expect(setImageStyleSpy.called).to.be(false);
+        assert.strictEqual(setImageStyleSpy.called, false);
         setImageStyleSpy.restore();
         drawPointSpy.restore();
       });
@@ -90,7 +91,7 @@ describe('ol/renderer/vector', function () {
           'drawMultiPoint',
         ).callsFake(VOID);
         renderFeature(builderGroup, feature, style, squaredTolerance, listener);
-        expect(setImageStyleSpy.called).to.be(false);
+        assert.strictEqual(setImageStyleSpy.called, false);
         setImageStyleSpy.restore();
         drawMultiPointSpy.restore();
       });
@@ -115,8 +116,8 @@ describe('ol/renderer/vector', function () {
           'drawLineString',
         ).callsFake(VOID);
         renderFeature(builderGroup, feature, style, squaredTolerance, listener);
-        expect(setFillStrokeStyleSpy.called).to.be(true);
-        expect(drawLineStringSpy.called).to.be(true);
+        assert.strictEqual(setFillStrokeStyleSpy.called, true);
+        assert.strictEqual(drawLineStringSpy.called, true);
         setFillStrokeStyleSpy.restore();
         drawLineStringSpy.restore();
       });
@@ -143,8 +144,8 @@ describe('ol/renderer/vector', function () {
           'drawMultiLineString',
         ).callsFake(VOID);
         renderFeature(builderGroup, feature, style, squaredTolerance, listener);
-        expect(setFillStrokeStyleSpy.called).to.be(true);
-        expect(drawMultiLineStringSpy.called).to.be(true);
+        assert.strictEqual(setFillStrokeStyleSpy.called, true);
+        assert.strictEqual(drawMultiLineStringSpy.called, true);
         setFillStrokeStyleSpy.restore();
         drawMultiLineStringSpy.restore();
       });
@@ -173,8 +174,8 @@ describe('ol/renderer/vector', function () {
           'drawPolygon',
         ).callsFake(VOID);
         renderFeature(builderGroup, feature, style, squaredTolerance, listener);
-        expect(setFillStrokeStyleSpy.called).to.be(true);
-        expect(drawPolygonSpy.called).to.be(true);
+        assert.strictEqual(setFillStrokeStyleSpy.called, true);
+        assert.strictEqual(drawPolygonSpy.called, true);
         setFillStrokeStyleSpy.restore();
         drawPolygonSpy.restore();
       });
@@ -205,8 +206,8 @@ describe('ol/renderer/vector', function () {
           'drawMultiPolygon',
         ).callsFake(VOID);
         renderFeature(builderGroup, feature, style, squaredTolerance, listener);
-        expect(setFillStrokeStyleSpy.called).to.be(true);
-        expect(drawMultiPolygonSpy.called).to.be(true);
+        assert.strictEqual(setFillStrokeStyleSpy.called, true);
+        assert.strictEqual(drawMultiPolygonSpy.called, true);
         setFillStrokeStyleSpy.restore();
         drawMultiPolygonSpy.restore();
       });

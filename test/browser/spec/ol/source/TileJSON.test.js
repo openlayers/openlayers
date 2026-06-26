@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {unByKey} from '../../../../../src/ol/Observable.js';
 import {transformExtent} from '../../../../../src/ol/proj.js';
 import Source from '../../../../../src/ol/source/Source.js';
@@ -9,15 +10,15 @@ describe('ol/source/TileJSON', function () {
       const source = new TileJSON({
         url: 'spec/ol/data/tilejson.json',
       });
-      expect(source).to.be.a(Source);
-      expect(source).to.be.a(TileJSON);
+      assert.instanceOf(source, Source);
+      assert.instanceOf(source, TileJSON);
     });
   });
 
   describe('#getInterpolate()', function () {
     it('is true by default', function () {
       const source = new TileJSON({url: 'spec/ol/data/tilejson.json'});
-      expect(source.getInterpolate()).to.be(true);
+      assert.strictEqual(source.getInterpolate(), true);
     });
 
     it('is false if constructed with interpolate: false', function () {
@@ -25,7 +26,7 @@ describe('ol/source/TileJSON', function () {
         interpolate: false,
         url: 'spec/ol/data/tilejson.json',
       });
-      expect(source.getInterpolate()).to.be(false);
+      assert.strictEqual(source.getInterpolate(), false);
     });
   });
 
@@ -37,8 +38,8 @@ describe('ol/source/TileJSON', function () {
       source.on('change', function () {
         if (source.getState() === 'ready') {
           const tileJSON = source.getTileJSON();
-          expect(tileJSON.name).to.eql('Geography Class');
-          expect(tileJSON.version).to.eql('1.0.0');
+          assert.deepEqual(tileJSON.name, 'Geography Class');
+          assert.deepEqual(tileJSON.version, '1.0.0');
         }
       });
     });
@@ -74,20 +75,25 @@ describe('ol/source/TileJSON', function () {
       const source = new TileJSON({
         tileJSON: tileJSON,
       });
-      expect(source.getState()).to.be('ready');
-      expect(source.getTileUrlFunction()([0, 0, 0])).to.be(
+      assert.strictEqual(source.getState(), 'ready');
+      assert.strictEqual(
+        source.getTileUrlFunction()([0, 0, 0]),
         'https://a.tiles.mapbox.com/v3/mapbox.geography-class/0/0/0.png',
       );
-      expect(source.getTileUrlFunction()([1, 0, 0])).to.be(
+      assert.strictEqual(
+        source.getTileUrlFunction()([1, 0, 0]),
         'https://a.tiles.mapbox.com/v3/mapbox.geography-class/1/0/0.png',
       );
-      expect(source.getTileUrlFunction()([1, 0, 1])).to.be(
+      assert.strictEqual(
+        source.getTileUrlFunction()([1, 0, 1]),
         'https://b.tiles.mapbox.com/v3/mapbox.geography-class/1/0/1.png',
       );
-      expect(source.getTileUrlFunction()([1, 1, 0])).to.be(
+      assert.strictEqual(
+        source.getTileUrlFunction()([1, 1, 0]),
         'https://c.tiles.mapbox.com/v3/mapbox.geography-class/1/1/0.png',
       );
-      expect(source.getTileUrlFunction()([1, 1, 1])).to.be(
+      assert.strictEqual(
+        source.getTileUrlFunction()([1, 1, 1]),
         'https://d.tiles.mapbox.com/v3/mapbox.geography-class/1/1/1.png',
       );
     });
@@ -100,23 +106,23 @@ describe('ol/source/TileJSON', function () {
       const source = new TileJSON({
         tileJSON: tileJSON,
       });
-      expect(source.getState()).to.be('ready');
+      assert.strictEqual(source.getState(), 'ready');
       const attributions = source.getAttributions();
-      expect(attributions).to.not.be(null);
-      expect(typeof attributions).to.be('function');
+      assert.notEqual(attributions, null);
+      assert.strictEqual(typeof attributions, 'function');
       const frameState = {};
       frameState.extent = transformExtent(
         [1, 51, 2, 52],
         'EPSG:4326',
         'EPSG:3857',
       );
-      expect(attributions(frameState)).to.eql(['TileMill']);
+      assert.deepEqual(attributions(frameState), ['TileMill']);
       frameState.extent = transformExtent(
         [2, 51, 3, 52],
         'EPSG:4326',
         'EPSG:3857',
       );
-      expect(attributions(frameState)).to.be(null);
+      assert.strictEqual(attributions(frameState), null);
     });
 
     it('attributions bounds default to the tilegrid extent', function () {
@@ -124,23 +130,23 @@ describe('ol/source/TileJSON', function () {
       const source = new TileJSON({
         tileJSON: tileJSON,
       });
-      expect(source.getState()).to.be('ready');
+      assert.strictEqual(source.getState(), 'ready');
       const attributions = source.getAttributions();
-      expect(attributions).to.not.be(null);
-      expect(typeof attributions).to.be('function');
+      assert.notEqual(attributions, null);
+      assert.strictEqual(typeof attributions, 'function');
       const frameState = {};
       frameState.extent = transformExtent(
         [1, 51, 2, 52],
         'EPSG:4326',
         'EPSG:3857',
       );
-      expect(attributions(frameState)).to.eql(['TileMill']);
+      assert.deepEqual(attributions(frameState), ['TileMill']);
       frameState.extent = transformExtent(
         [2, 51, 3, 52],
         'EPSG:4326',
         'EPSG:3857',
       );
-      expect(attributions(frameState)).to.eql(['TileMill']);
+      assert.deepEqual(attributions(frameState), ['TileMill']);
     });
   });
 
@@ -150,8 +156,8 @@ describe('ol/source/TileJSON', function () {
         url: 'invalid.jsonp',
       });
       source.on('change', function () {
-        expect(source.getState()).to.eql('error');
-        expect(source.getTileJSON()).to.eql(null);
+        assert.deepEqual(source.getState(), 'error');
+        assert.deepEqual(source.getTileJSON(), null);
       });
     });
 
@@ -160,8 +166,8 @@ describe('ol/source/TileJSON', function () {
         url: 'http://example.com',
       });
       source.on('change', function () {
-        expect(source.getState()).to.eql('error');
-        expect(source.getTileJSON()).to.eql(null);
+        assert.deepEqual(source.getState(), 'error');
+        assert.deepEqual(source.getTileJSON(), null);
       });
     });
 
@@ -170,8 +176,8 @@ describe('ol/source/TileJSON', function () {
         url: '/',
       });
       source.on('change', function () {
-        expect(source.getState()).to.eql('error');
-        expect(source.getTileJSON()).to.eql(null);
+        assert.deepEqual(source.getState(), 'error');
+        assert.deepEqual(source.getTileJSON(), null);
       });
     });
   });
@@ -200,37 +206,37 @@ describe('ol/source/TileJSON', function () {
       tileUrl = source.tileUrlFunction(
         tileGrid.getTileCoordForCoordAndZ(coordinate, 0),
       );
-      expect(tileUrl.match(regex)[1]).to.eql('0/0/0');
+      assert.deepEqual(tileUrl.match(regex)[1], '0/0/0');
 
       tileUrl = source.tileUrlFunction(
         tileGrid.getTileCoordForCoordAndZ(coordinate, 1),
       );
-      expect(tileUrl.match(regex)[1]).to.eql('1/1/0');
+      assert.deepEqual(tileUrl.match(regex)[1], '1/1/0');
 
       tileUrl = source.tileUrlFunction(
         tileGrid.getTileCoordForCoordAndZ(coordinate, 2),
       );
-      expect(tileUrl.match(regex)[1]).to.eql('2/2/1');
+      assert.deepEqual(tileUrl.match(regex)[1], '2/2/1');
 
       tileUrl = source.tileUrlFunction(
         tileGrid.getTileCoordForCoordAndZ(coordinate, 3),
       );
-      expect(tileUrl.match(regex)[1]).to.eql('3/4/2');
+      assert.deepEqual(tileUrl.match(regex)[1], '3/4/2');
 
       tileUrl = source.tileUrlFunction(
         tileGrid.getTileCoordForCoordAndZ(coordinate, 4),
       );
-      expect(tileUrl.match(regex)[1]).to.eql('4/8/5');
+      assert.deepEqual(tileUrl.match(regex)[1], '4/8/5');
 
       tileUrl = source.tileUrlFunction(
         tileGrid.getTileCoordForCoordAndZ(coordinate, 5),
       );
-      expect(tileUrl.match(regex)[1]).to.eql('5/16/11');
+      assert.deepEqual(tileUrl.match(regex)[1], '5/16/11');
 
       tileUrl = source.tileUrlFunction(
         tileGrid.getTileCoordForCoordAndZ(coordinate, 6),
       );
-      expect(tileUrl.match(regex)[1]).to.eql('6/33/22');
+      assert.deepEqual(tileUrl.match(regex)[1], '6/33/22');
     });
   });
 });

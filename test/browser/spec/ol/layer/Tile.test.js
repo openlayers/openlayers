@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
 import TileLayer from '../../../../../src/ol/layer/Tile.js';
@@ -20,15 +21,15 @@ describe('ol/layer/Tile', function () {
     });
 
     it('creates an instance', function () {
-      expect(layer).to.be.a(TileLayer);
+      assert.instanceOf(layer, TileLayer);
     });
 
     it('provides default preload', function () {
-      expect(layer.getPreload()).to.be(0);
+      assert.strictEqual(layer.getPreload(), 0);
     });
 
     it('provides default useInterimTilesOnError', function () {
-      expect(layer.getUseInterimTilesOnError()).to.be(true);
+      assert.strictEqual(layer.getUseInterimTilesOnError(), true);
     });
   });
 
@@ -64,12 +65,12 @@ describe('ol/layer/Tile', function () {
 
     it('gets pixel data', () => {
       const data = layer.getData([50, 50]);
-      expect(data).to.be.a(Uint8ClampedArray);
-      expect(data.length).to.be(4);
-      expect(data[0]).to.be(181);
-      expect(data[1]).to.be(208);
-      expect(data[2]).to.be(208);
-      expect(data[3]).to.be(255);
+      assert.instanceOf(data, Uint8ClampedArray);
+      assert.strictEqual(data.length, 4);
+      assert.strictEqual(data[0], 181);
+      assert.strictEqual(data[1], 208);
+      assert.strictEqual(data[2], 208);
+      assert.strictEqual(data[3], 255);
     });
 
     it('gets reprojected pixel data', (done) => {
@@ -89,12 +90,12 @@ describe('ol/layer/Tile', function () {
       );
       map.once('rendercomplete', () => {
         const data = layer.getData([50, 50]);
-        expect(data).to.be.a(Uint8ClampedArray);
-        expect(data.length).to.be(4);
-        expect(data[0]).to.be(181);
-        expect(data[1]).to.be(208);
-        expect(data[2]).to.be(208);
-        expect(data[3]).to.be(255);
+        assert.instanceOf(data, Uint8ClampedArray);
+        assert.strictEqual(data.length, 4);
+        assert.strictEqual(data[0], 181);
+        assert.strictEqual(data[1], 208);
+        assert.strictEqual(data[2], 208);
+        assert.strictEqual(data[3], 255);
         done();
       });
     });
@@ -103,7 +104,7 @@ describe('ol/layer/Tile', function () {
       layer.setVisible(false);
       map.renderSync();
       const data = layer.getData([50, 50]);
-      expect(data).to.be(null);
+      assert.strictEqual(data, null);
     });
   });
 
@@ -144,36 +145,36 @@ describe('ol/layer/Tile', function () {
 
     it('gets pixel data', () => {
       data = layer.getData([76, 114]);
-      expect(data).to.be.a(Uint8ClampedArray);
-      expect(data.length).to.be(4);
-      expect(data[0]).to.be(77);
-      expect(data[1]).to.be(255);
-      expect(data[2]).to.be(77);
-      expect(data[3]).to.be(179);
+      assert.instanceOf(data, Uint8ClampedArray);
+      assert.strictEqual(data.length, 4);
+      assert.strictEqual(data[0], 77);
+      assert.strictEqual(data[1], 255);
+      assert.strictEqual(data[2], 77);
+      assert.strictEqual(data[3], 179);
 
       data = layer.getData([76, 118]);
-      expect(data).to.be.a(Uint8ClampedArray);
-      expect(data.length).to.be(4);
-      expect(data[0]).to.be(255);
-      expect(data[1]).to.be(77);
-      expect(data[2]).to.be(77);
-      expect(data[3]).to.be(179);
+      assert.instanceOf(data, Uint8ClampedArray);
+      assert.strictEqual(data.length, 4);
+      assert.strictEqual(data[0], 255);
+      assert.strictEqual(data[1], 77);
+      assert.strictEqual(data[2], 77);
+      assert.strictEqual(data[3], 179);
 
       data = layer.getData([80, 114]);
-      expect(data).to.be.a(Uint8ClampedArray);
-      expect(data.length).to.be(4);
-      expect(data[0]).to.be(255);
-      expect(data[1]).to.be(77);
-      expect(data[2]).to.be(77);
-      expect(data[3]).to.be(179);
+      assert.instanceOf(data, Uint8ClampedArray);
+      assert.strictEqual(data.length, 4);
+      assert.strictEqual(data[0], 255);
+      assert.strictEqual(data[1], 77);
+      assert.strictEqual(data[2], 77);
+      assert.strictEqual(data[3], 179);
 
       data = layer.getData([80, 118]);
-      expect(data).to.be.a(Uint8ClampedArray);
-      expect(data.length).to.be(4);
-      expect(data[0]).to.be(77);
-      expect(data[1]).to.be(255);
-      expect(data[2]).to.be(77);
-      expect(data[3]).to.be(179);
+      assert.instanceOf(data, Uint8ClampedArray);
+      assert.strictEqual(data.length, 4);
+      assert.strictEqual(data[0], 77);
+      assert.strictEqual(data[1], 255);
+      assert.strictEqual(data[2], 77);
+      assert.strictEqual(data[3], 179);
     });
   });
 
@@ -218,7 +219,7 @@ describe('ol/layer/Tile', function () {
       });
 
       map.once('rendercomplete', function () {
-        expect(lastFrameState.animate).to.be(false);
+        assert.strictEqual(lastFrameState.animate, false);
         done();
       });
 
@@ -238,7 +239,7 @@ describe('ol/layer/Tile', function () {
       });
 
       map.once('rendercomplete', function () {
-        expect(lastFrameState.animate).to.be(false);
+        assert.strictEqual(lastFrameState.animate, false);
         done();
       });
 

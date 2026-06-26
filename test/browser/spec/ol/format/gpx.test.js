@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import Feature from '../../../../../src/ol/Feature.js';
 import GPX from '../../../../../src/ol/format/GPX.js';
 import LineString from '../../../../../src/ol/geom/LineString.js';
@@ -6,6 +7,7 @@ import Point from '../../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../../src/ol/geom/Polygon.js';
 import {get as getProjection, transform} from '../../../../../src/ol/proj.js';
 import {parse} from '../../../../../src/ol/xml.js';
+import {assertXmlEqual} from '../../../../util/xml.js';
 
 describe('ol.format.GPX', function () {
   let format;
@@ -16,12 +18,12 @@ describe('ol.format.GPX', function () {
   describe('#readProjection', function () {
     it('returns the default projection from document', function () {
       const projection = format.readProjectionFromDocument();
-      expect(projection).to.eql(getProjection('EPSG:4326'));
+      assert.deepEqual(projection, getProjection('EPSG:4326'));
     });
 
     it('returns the default projection from node', function () {
       const projection = format.readProjectionFromNode();
-      expect(projection).to.eql(getProjection('EPSG:4326'));
+      assert.deepEqual(projection, getProjection('EPSG:4326'));
     });
   });
 
@@ -32,7 +34,7 @@ describe('ol.format.GPX', function () {
         '  <metadata></metadata>' +
         '</gpx>';
       const metadata = format.readMetadata(text);
-      expect(metadata).to.be.null;
+      assert.isNull(metadata);
     });
     it('can read various metadata entries/attribute', function () {
       const test =
@@ -55,37 +57,42 @@ describe('ol.format.GPX', function () {
         `  </metadata>` +
         '</gpx>';
       const metadata = format.readMetadata(test);
-      expect(metadata).to.be.an(Object);
-      expect(metadata['name']).to.be('GPX file name');
-      expect(metadata['desc']).to.be('something that describe this GPX');
+      assert.instanceOf(metadata, Object);
+      assert.strictEqual(metadata['name'], 'GPX file name');
+      assert.strictEqual(metadata['desc'], 'something that describe this GPX');
 
-      expect(metadata['author']).to.be.an(Object);
+      assert.instanceOf(metadata['author'], Object);
       const {author} = metadata;
-      expect(author['name']).to.be('Author name');
-      expect(author['link']).to.be('https://url.to.author.website.com');
+      assert.strictEqual(author['name'], 'Author name');
+      assert.strictEqual(author['link'], 'https://url.to.author.website.com');
 
-      expect(metadata['copyright']).to.be.an(Object);
+      assert.instanceOf(metadata['copyright'], Object);
       const {copyright} = metadata;
-      expect(copyright['author']).to.be(
+      assert.strictEqual(
+        copyright['author'],
         "hello I'm the author of the copyright",
       );
-      expect(copyright['year']).to.be(2024);
-      expect(copyright['license']).to.be('https://link.to.the.licence.com');
+      assert.strictEqual(copyright['year'], 2024);
+      assert.strictEqual(
+        copyright['license'],
+        'https://link.to.the.licence.com',
+      );
 
-      expect(metadata['link']).to.be('https://a-link-for-this.gpx.com');
-      expect(metadata['time']).to.be(
+      assert.strictEqual(metadata['link'], 'https://a-link-for-this.gpx.com');
+      assert.strictEqual(
+        metadata['time'],
         new Date('2024-01-25T12:00').getTime() / 1000,
       );
-      expect(metadata['keywords']).to.be('Some,keywords,for,this,GPX');
+      assert.strictEqual(metadata['keywords'], 'Some,keywords,for,this,GPX');
 
-      expect(metadata['bounds']).to.have.length(2);
+      assert.lengthOf(metadata['bounds'], 2);
       const [bottomLeft, topRight] = metadata['bounds'];
-      expect(bottomLeft).to.have.length(2);
-      expect(bottomLeft[0]).to.be(-7.0);
-      expect(bottomLeft[1]).to.be(12.3);
-      expect(topRight).to.have.length(2);
-      expect(topRight[0]).to.be(8.9);
-      expect(topRight[1]).to.be(45.6);
+      assert.lengthOf(bottomLeft, 2);
+      assert.strictEqual(bottomLeft[0], -7.0);
+      assert.strictEqual(bottomLeft[1], 12.3);
+      assert.lengthOf(topRight, 2);
+      assert.strictEqual(topRight[0], 8.9);
+      assert.strictEqual(topRight[1], 45.6);
     });
   });
 
@@ -96,13 +103,13 @@ describe('ol.format.GPX', function () {
         '  <rte/>' +
         '</gpx>';
       const fs = format.readFeatures(text);
-      expect(fs).to.have.length(1);
+      assert.lengthOf(fs, 1);
       const f = fs[0];
-      expect(f).to.be.an(Feature);
+      assert.instanceOf(f, Feature);
       const g = f.getGeometry();
-      expect(g).to.be.an(LineString);
-      expect(g.getCoordinates()).to.eql([]);
-      expect(g.getLayout()).to.be('XY');
+      assert.instanceOf(g, LineString);
+      assert.deepEqual(g.getCoordinates(), []);
+      assert.strictEqual(g.getLayout(), 'XY');
     });
 
     it('can read and write various rte attributes', function () {
@@ -125,20 +132,20 @@ describe('ol.format.GPX', function () {
         '  </rte>' +
         '</gpx>';
       const fs = format.readFeatures(text);
-      expect(fs).to.have.length(1);
+      assert.lengthOf(fs, 1);
       const f = fs[0];
-      expect(f).to.be.an(Feature);
-      expect(f.get('name')).to.be('Name');
-      expect(f.get('cmt')).to.be('Comment');
-      expect(f.get('desc')).to.be('Description');
-      expect(f.get('src')).to.be('Source');
-      expect(f.get('link')).to.be('http://example.com/');
-      expect(f.get('linkText')).to.be('Link text');
-      expect(f.get('linkType')).to.be('Link type');
-      expect(f.get('number')).to.be(1);
-      expect(f.get('type')).to.be('Type');
+      assert.instanceOf(f, Feature);
+      assert.strictEqual(f.get('name'), 'Name');
+      assert.strictEqual(f.get('cmt'), 'Comment');
+      assert.strictEqual(f.get('desc'), 'Description');
+      assert.strictEqual(f.get('src'), 'Source');
+      assert.strictEqual(f.get('link'), 'http://example.com/');
+      assert.strictEqual(f.get('linkText'), 'Link text');
+      assert.strictEqual(f.get('linkType'), 'Link type');
+      assert.strictEqual(f.get('number'), 1);
+      assert.strictEqual(f.get('type'), 'Type');
       const serialized = format.writeFeaturesNode(fs);
-      expect(serialized).to.xmleql(parse(text));
+      assertXmlEqual(serialized, parse(text));
     });
 
     it('can read and write a rte with multiple rtepts', function () {
@@ -153,18 +160,18 @@ describe('ol.format.GPX', function () {
         '  </rte>' +
         '</gpx>';
       const fs = format.readFeatures(text);
-      expect(fs).to.have.length(1);
+      assert.lengthOf(fs, 1);
       const f = fs[0];
-      expect(f).to.be.an(Feature);
+      assert.instanceOf(f, Feature);
       const g = f.getGeometry();
-      expect(g).to.be.an(LineString);
-      expect(g.getCoordinates()).to.eql([
+      assert.instanceOf(g, LineString);
+      assert.deepEqual(g.getCoordinates(), [
         [2, 1],
         [4, 3],
       ]);
-      expect(g.getLayout()).to.be('XY');
+      assert.strictEqual(g.getLayout(), 'XY');
       const serialized = format.writeFeaturesNode(fs);
-      expect(serialized).to.xmleql(parse(text));
+      assertXmlEqual(serialized, parse(text));
     });
 
     it('can transform, read and write a rte', function () {
@@ -181,19 +188,19 @@ describe('ol.format.GPX', function () {
       const fs = format.readFeatures(text, {
         featureProjection: 'EPSG:3857',
       });
-      expect(fs).to.have.length(1);
+      assert.lengthOf(fs, 1);
       const f = fs[0];
-      expect(f).to.be.an(Feature);
+      assert.instanceOf(f, Feature);
       const g = f.getGeometry();
-      expect(g).to.be.an(LineString);
+      assert.instanceOf(g, LineString);
       const p1 = transform([2, 1], 'EPSG:4326', 'EPSG:3857');
       const p2 = transform([6, 5], 'EPSG:4326', 'EPSG:3857');
-      expect(g.getCoordinates()).to.eql([p1, p2]);
-      expect(g.getLayout()).to.be('XY');
+      assert.deepEqual(g.getCoordinates(), [p1, p2]);
+      assert.strictEqual(g.getLayout(), 'XY');
       const serialized = format.writeFeaturesNode(fs, {
         featureProjection: 'EPSG:3857',
       });
-      expect(serialized).to.xmleql(parse(text));
+      assertXmlEqual(serialized, parse(text));
     });
 
     it('does not write rte attributes in rtepts', function () {
@@ -210,7 +217,7 @@ describe('ol.format.GPX', function () {
         '</gpx>';
       const fs = format.readFeatures(text);
       const serialized = format.writeFeaturesNode(fs);
-      expect(serialized).to.xmleql(parse(text));
+      assertXmlEqual(serialized, parse(text));
     });
   });
 
@@ -221,13 +228,13 @@ describe('ol.format.GPX', function () {
         '  <trk/>' +
         '</gpx>';
       const fs = format.readFeatures(text);
-      expect(fs).to.have.length(1);
+      assert.lengthOf(fs, 1);
       const f = fs[0];
-      expect(f).to.be.an(Feature);
+      assert.instanceOf(f, Feature);
       const g = f.getGeometry();
-      expect(g).to.be.an(MultiLineString);
-      expect(g.getCoordinates()).to.eql([]);
-      expect(g.getLayout()).to.be('XY');
+      assert.instanceOf(g, MultiLineString);
+      assert.deepEqual(g.getCoordinates(), []);
+      assert.strictEqual(g.getLayout(), 'XY');
     });
 
     it('can read and write various trk attributes', function () {
@@ -250,20 +257,20 @@ describe('ol.format.GPX', function () {
         '  </trk>' +
         '</gpx>';
       const fs = format.readFeatures(text);
-      expect(fs).to.have.length(1);
+      assert.lengthOf(fs, 1);
       const f = fs[0];
-      expect(f).to.be.an(Feature);
-      expect(f.get('name')).to.be('Name');
-      expect(f.get('cmt')).to.be('Comment');
-      expect(f.get('desc')).to.be('Description');
-      expect(f.get('src')).to.be('Source');
-      expect(f.get('link')).to.be('http://example.com/');
-      expect(f.get('linkText')).to.be('Link text');
-      expect(f.get('linkType')).to.be('Link type');
-      expect(f.get('number')).to.be(1);
-      expect(f.get('type')).to.be('Type');
+      assert.instanceOf(f, Feature);
+      assert.strictEqual(f.get('name'), 'Name');
+      assert.strictEqual(f.get('cmt'), 'Comment');
+      assert.strictEqual(f.get('desc'), 'Description');
+      assert.strictEqual(f.get('src'), 'Source');
+      assert.strictEqual(f.get('link'), 'http://example.com/');
+      assert.strictEqual(f.get('linkText'), 'Link text');
+      assert.strictEqual(f.get('linkType'), 'Link type');
+      assert.strictEqual(f.get('number'), 1);
+      assert.strictEqual(f.get('type'), 'Type');
       const serialized = format.writeFeaturesNode(fs);
-      expect(serialized).to.xmleql(parse(text));
+      assertXmlEqual(serialized, parse(text));
     });
 
     it('can read and write a trk with an empty trkseg', function () {
@@ -277,15 +284,15 @@ describe('ol.format.GPX', function () {
         '  </trk>' +
         '</gpx>';
       const fs = format.readFeatures(text);
-      expect(fs).to.have.length(1);
+      assert.lengthOf(fs, 1);
       const f = fs[0];
-      expect(f).to.be.an(Feature);
+      assert.instanceOf(f, Feature);
       const g = f.getGeometry();
-      expect(g).to.be.an(MultiLineString);
-      expect(g.getCoordinates()).to.eql([[]]);
-      expect(g.getLayout()).to.be('XY');
+      assert.instanceOf(g, MultiLineString);
+      assert.deepEqual(g.getCoordinates(), [[]]);
+      assert.strictEqual(g.getLayout(), 'XY');
       const serialized = format.writeFeaturesNode(fs);
-      expect(serialized).to.xmleql(parse(text));
+      assertXmlEqual(serialized, parse(text));
     });
 
     it('can read/write a trk with a trkseg with multiple trkpts', function () {
@@ -308,20 +315,20 @@ describe('ol.format.GPX', function () {
         '  </trk>' +
         '</gpx>';
       const fs = format.readFeatures(text);
-      expect(fs).to.have.length(1);
+      assert.lengthOf(fs, 1);
       const f = fs[0];
-      expect(f).to.be.an(Feature);
+      assert.instanceOf(f, Feature);
       const g = f.getGeometry();
-      expect(g).to.be.an(MultiLineString);
-      expect(g.getCoordinates()).to.eql([
+      assert.instanceOf(g, MultiLineString);
+      assert.deepEqual(g.getCoordinates(), [
         [
           [2, 1, 3, 1263115752],
           [6, 5, 7, 1263115812],
         ],
       ]);
-      expect(g.getLayout()).to.be('XYZM');
+      assert.strictEqual(g.getLayout(), 'XYZM');
       const serialized = format.writeFeaturesNode(fs);
-      expect(serialized).to.xmleql(parse(text));
+      assertXmlEqual(serialized, parse(text));
     });
 
     it('can transform, read and write a trk with a trkseg', function () {
@@ -346,21 +353,21 @@ describe('ol.format.GPX', function () {
       const fs = format.readFeatures(text, {
         featureProjection: 'EPSG:3857',
       });
-      expect(fs).to.have.length(1);
+      assert.lengthOf(fs, 1);
       const f = fs[0];
-      expect(f).to.be.an(Feature);
+      assert.instanceOf(f, Feature);
       const g = f.getGeometry();
-      expect(g).to.be.an(MultiLineString);
+      assert.instanceOf(g, MultiLineString);
       const p1 = transform([2, 1], 'EPSG:4326', 'EPSG:3857');
       p1.push(3, 1263115752);
       const p2 = transform([6, 5], 'EPSG:4326', 'EPSG:3857');
       p2.push(7, 1263115812);
-      expect(g.getCoordinates()).to.eql([[p1, p2]]);
-      expect(g.getLayout()).to.be('XYZM');
+      assert.deepEqual(g.getCoordinates(), [[p1, p2]]);
+      assert.strictEqual(g.getLayout(), 'XYZM');
       const serialized = format.writeFeaturesNode(fs, {
         featureProjection: 'EPSG:3857',
       });
-      expect(serialized).to.xmleql(parse(text));
+      assertXmlEqual(serialized, parse(text));
     });
 
     it('can read and write a trk with multiple trksegs', function () {
@@ -393,12 +400,12 @@ describe('ol.format.GPX', function () {
         '  </trk>' +
         '</gpx>';
       const fs = format.readFeatures(text);
-      expect(fs).to.have.length(1);
+      assert.lengthOf(fs, 1);
       const f = fs[0];
-      expect(f).to.be.an(Feature);
+      assert.instanceOf(f, Feature);
       const g = f.getGeometry();
-      expect(g).to.be.an(MultiLineString);
-      expect(g.getCoordinates()).to.eql([
+      assert.instanceOf(g, MultiLineString);
+      assert.deepEqual(g.getCoordinates(), [
         [
           [2, 1, 3, 1263115752],
           [6, 5, 7, 1263115812],
@@ -408,9 +415,9 @@ describe('ol.format.GPX', function () {
           [12, 11, 13, 1263115932],
         ],
       ]);
-      expect(g.getLayout()).to.be('XYZM');
+      assert.strictEqual(g.getLayout(), 'XYZM');
       const serialized = format.writeFeaturesNode(fs);
-      expect(serialized).to.xmleql(parse(text));
+      assertXmlEqual(serialized, parse(text));
     });
 
     it('does not write trk attributes in trkpts', function () {
@@ -445,7 +452,7 @@ describe('ol.format.GPX', function () {
         '</gpx>';
       const fs = format.readFeatures(text);
       const serialized = format.writeFeaturesNode(fs);
-      expect(serialized).to.xmleql(parse(text));
+      assertXmlEqual(serialized, parse(text));
     });
   });
 
@@ -459,15 +466,15 @@ describe('ol.format.GPX', function () {
         '  <wpt lat="1" lon="2"/>' +
         '</gpx>';
       const fs = format.readFeatures(text);
-      expect(fs).to.have.length(1);
+      assert.lengthOf(fs, 1);
       const f = fs[0];
-      expect(f).to.be.an(Feature);
+      assert.instanceOf(f, Feature);
       const g = f.getGeometry();
-      expect(g).to.be.an(Point);
-      expect(g.getCoordinates()).to.eql([2, 1]);
-      expect(g.getLayout()).to.be('XY');
+      assert.instanceOf(g, Point);
+      assert.deepEqual(g.getCoordinates(), [2, 1]);
+      assert.strictEqual(g.getLayout(), 'XY');
       const serialized = format.writeFeaturesNode(fs);
-      expect(serialized).to.xmleql(parse(text));
+      assertXmlEqual(serialized, parse(text));
     });
 
     it('can transform, read and write a wpt', function () {
@@ -481,18 +488,18 @@ describe('ol.format.GPX', function () {
       const fs = format.readFeatures(text, {
         featureProjection: 'EPSG:3857',
       });
-      expect(fs).to.have.length(1);
+      assert.lengthOf(fs, 1);
       const f = fs[0];
-      expect(f).to.be.an(Feature);
+      assert.instanceOf(f, Feature);
       const g = f.getGeometry();
-      expect(g).to.be.an(Point);
+      assert.instanceOf(g, Point);
       const expectedPoint = transform([2, 1], 'EPSG:4326', 'EPSG:3857');
-      expect(g.getCoordinates()).to.eql(expectedPoint);
-      expect(g.getLayout()).to.be('XY');
+      assert.deepEqual(g.getCoordinates(), expectedPoint);
+      assert.strictEqual(g.getLayout(), 'XY');
       const serialized = format.writeFeaturesNode(fs, {
         featureProjection: 'EPSG:3857',
       });
-      expect(serialized).to.xmleql(parse(text));
+      assertXmlEqual(serialized, parse(text));
     });
 
     it('can read and write a wpt with ele', function () {
@@ -506,15 +513,15 @@ describe('ol.format.GPX', function () {
         '  </wpt>' +
         '</gpx>';
       const fs = format.readFeatures(text);
-      expect(fs).to.have.length(1);
+      assert.lengthOf(fs, 1);
       const f = fs[0];
-      expect(f).to.be.an(Feature);
+      assert.instanceOf(f, Feature);
       const g = f.getGeometry();
-      expect(g).to.be.an(Point);
-      expect(g.getCoordinates()).to.eql([2, 1, 3]);
-      expect(g.getLayout()).to.be('XYZ');
+      assert.instanceOf(g, Point);
+      assert.deepEqual(g.getCoordinates(), [2, 1, 3]);
+      assert.strictEqual(g.getLayout(), 'XYZ');
       const serialized = format.writeFeaturesNode(fs);
-      expect(serialized).to.xmleql(parse(text));
+      assertXmlEqual(serialized, parse(text));
     });
 
     it('can read and write a wpt with time', function () {
@@ -528,15 +535,15 @@ describe('ol.format.GPX', function () {
         '  </wpt>' +
         '</gpx>';
       const fs = format.readFeatures(text);
-      expect(fs).to.have.length(1);
+      assert.lengthOf(fs, 1);
       const f = fs[0];
-      expect(f).to.be.an(Feature);
+      assert.instanceOf(f, Feature);
       const g = f.getGeometry();
-      expect(g).to.be.an(Point);
-      expect(g.getCoordinates()).to.eql([2, 1, 1263115752]);
-      expect(g.getLayout()).to.be('XYM');
+      assert.instanceOf(g, Point);
+      assert.deepEqual(g.getCoordinates(), [2, 1, 1263115752]);
+      assert.strictEqual(g.getLayout(), 'XYM');
       const serialized = format.writeFeaturesNode(fs);
-      expect(serialized).to.xmleql(parse(text));
+      assertXmlEqual(serialized, parse(text));
     });
 
     it('can read and write a wpt with ele and time', function () {
@@ -551,15 +558,15 @@ describe('ol.format.GPX', function () {
         '  </wpt>' +
         '</gpx>';
       const fs = format.readFeatures(text);
-      expect(fs).to.have.length(1);
+      assert.lengthOf(fs, 1);
       const f = fs[0];
-      expect(f).to.be.an(Feature);
+      assert.instanceOf(f, Feature);
       const g = f.getGeometry();
-      expect(g).to.be.an(Point);
-      expect(g.getCoordinates()).to.eql([2, 1, 3, 1263115752]);
-      expect(g.getLayout()).to.be('XYZM');
+      assert.instanceOf(g, Point);
+      assert.deepEqual(g.getCoordinates(), [2, 1, 3, 1263115752]);
+      assert.strictEqual(g.getLayout(), 'XYZM');
       const serialized = format.writeFeaturesNode(fs);
-      expect(serialized).to.xmleql(parse(text));
+      assertXmlEqual(serialized, parse(text));
     });
 
     it('can read and write various wpt attributes', function () {
@@ -591,28 +598,28 @@ describe('ol.format.GPX', function () {
         '  </wpt>' +
         '</gpx>';
       const fs = format.readFeatures(text);
-      expect(fs).to.have.length(1);
+      assert.lengthOf(fs, 1);
       const f = fs[0];
-      expect(f).to.be.an(Feature);
-      expect(f.get('magvar')).to.be(11);
-      expect(f.get('geoidheight')).to.be(4);
-      expect(f.get('name')).to.be('Name');
-      expect(f.get('cmt')).to.be('Comment');
-      expect(f.get('desc')).to.be('Description');
-      expect(f.get('src')).to.be('Source');
-      expect(f.get('link')).to.be('http://example.com/');
-      expect(f.get('linkText')).to.be('Link text');
-      expect(f.get('linkType')).to.be('Link type');
-      expect(f.get('sym')).to.be('Symbol');
-      expect(f.get('type')).to.be('Type');
-      expect(f.get('fix')).to.be('2d');
-      expect(f.get('hdop')).to.be(6);
-      expect(f.get('vdop')).to.be(7);
-      expect(f.get('pdop')).to.be(8);
-      expect(f.get('ageofdgpsdata')).to.be(9);
-      expect(f.get('dgpsid')).to.be(10);
+      assert.instanceOf(f, Feature);
+      assert.strictEqual(f.get('magvar'), 11);
+      assert.strictEqual(f.get('geoidheight'), 4);
+      assert.strictEqual(f.get('name'), 'Name');
+      assert.strictEqual(f.get('cmt'), 'Comment');
+      assert.strictEqual(f.get('desc'), 'Description');
+      assert.strictEqual(f.get('src'), 'Source');
+      assert.strictEqual(f.get('link'), 'http://example.com/');
+      assert.strictEqual(f.get('linkText'), 'Link text');
+      assert.strictEqual(f.get('linkType'), 'Link type');
+      assert.strictEqual(f.get('sym'), 'Symbol');
+      assert.strictEqual(f.get('type'), 'Type');
+      assert.strictEqual(f.get('fix'), '2d');
+      assert.strictEqual(f.get('hdop'), 6);
+      assert.strictEqual(f.get('vdop'), 7);
+      assert.strictEqual(f.get('pdop'), 8);
+      assert.strictEqual(f.get('ageofdgpsdata'), 9);
+      assert.strictEqual(f.get('dgpsid'), 10);
       const serialized = format.writeFeaturesNode(fs);
-      expect(serialized).to.xmleql(parse(text));
+      assertXmlEqual(serialized, parse(text));
     });
   });
 
@@ -629,7 +636,7 @@ describe('ol.format.GPX', function () {
         '  <trk/>' +
         '</gpx>';
       const fs = format.readFeatures(text);
-      expect(fs).to.have.length(3);
+      assert.lengthOf(fs, 3);
     });
 
     it('can read features with a version 1.1 namespace', function () {
@@ -640,13 +647,13 @@ describe('ol.format.GPX', function () {
         '  <trk/>' +
         '</gpx>';
       const fs = format.readFeatures(text);
-      expect(fs).to.have.length(3);
+      assert.lengthOf(fs, 3);
     });
 
     it('can read features with no namespace', function () {
       const text = '<gpx>' + '  <wpt/>' + '  <rte/>' + '  <trk/>' + '</gpx>';
       const fs = format.readFeatures(text);
-      expect(fs).to.have.length(3);
+      assert.lengthOf(fs, 3);
     });
   });
 
@@ -671,9 +678,9 @@ describe('ol.format.GPX', function () {
         '  </wpt>' +
         '</gpx>';
       const fs = format.readFeatures(text);
-      expect(fs).to.have.length(1);
+      assert.lengthOf(fs, 1);
       const feature = fs[0];
-      expect(feature.getId()).to.be('feature-id');
+      assert.strictEqual(feature.getId(), 'feature-id');
     });
 
     it('can process extensions from rte', function () {
@@ -687,9 +694,9 @@ describe('ol.format.GPX', function () {
         '  </rte>' +
         '</gpx>';
       const fs = format.readFeatures(text);
-      expect(fs).to.have.length(1);
+      assert.lengthOf(fs, 1);
       const feature = fs[0];
-      expect(feature.getId()).to.be('feature-id');
+      assert.strictEqual(feature.getId(), 'feature-id');
     });
 
     it('can process extensions from trk, not trkpt', function () {
@@ -709,9 +716,9 @@ describe('ol.format.GPX', function () {
         '  </trk>' +
         '</gpx>';
       const fs = format.readFeatures(text);
-      expect(fs).to.have.length(1);
+      assert.lengthOf(fs, 1);
       const feature = fs[0];
-      expect(feature.getId()).to.be('feature-id');
+      assert.strictEqual(feature.getId(), 'feature-id');
     });
   });
 
@@ -738,7 +745,7 @@ describe('ol.format.GPX', function () {
         'xsi:schemaLocation="http://www.topografix.com/GPX/1/1 ' +
         'http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" ' +
         'creator="OpenLayers"></gpx>';
-      expect(gpx).to.xmleql(parse(expected));
+      assertXmlEqual(gpx, parse(expected));
     });
   });
 });

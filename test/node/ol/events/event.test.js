@@ -1,19 +1,19 @@
+import {assert} from 'chai';
 import {spy as sinonSpy} from 'sinon';
 import Event, {
   preventDefault,
   stopPropagation,
 } from '../../../../src/ol/events/Event.js';
-import expect from '../../expect.js';
 
 describe('ol/events/Event.js', function () {
   describe('constructor', function () {
     it('takes a type as argument', function () {
       const event = new Event('foo');
-      expect(event.type).to.be('foo');
+      assert.strictEqual(event.type, 'foo');
     });
     it('does not set the propagationStopped flag', function () {
       const event = new Event('foo');
-      expect(event.propagationStopped).to.be(undefined);
+      assert.strictEqual(event.propagationStopped, undefined);
     });
   });
 
@@ -21,11 +21,11 @@ describe('ol/events/Event.js', function () {
     it('sets the defaultPrevented flag', function () {
       const event = new Event('foo');
       event.preventDefault();
-      expect(event.defaultPrevented).to.be(true);
+      assert.strictEqual(event.defaultPrevented, true);
     });
     it('does the same as #stopPropagation', function () {
       const event = new Event('foo');
-      expect(event.stopPropagation()).to.equal(event.preventDefault());
+      assert.equal(event.stopPropagation(), event.preventDefault());
     });
   });
 
@@ -35,7 +35,7 @@ describe('ol/events/Event.js', function () {
         preventDefault: sinonSpy(),
       };
       preventDefault(event);
-      expect(event.preventDefault.called).to.be(true);
+      assert.strictEqual(event.preventDefault.called, true);
     });
   });
 
@@ -45,7 +45,7 @@ describe('ol/events/Event.js', function () {
         stopPropagation: sinonSpy(),
       };
       stopPropagation(event);
-      expect(event.stopPropagation.called).to.be(true);
+      assert.strictEqual(event.stopPropagation.called, true);
     });
   });
 });

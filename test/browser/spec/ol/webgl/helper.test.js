@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {spy as sinonSpy, stub as sinonStub} from 'sinon';
 import {
   create as createTransform,
@@ -81,12 +82,12 @@ describe('ol/webgl/WebGLHelper', function () {
       });
 
       it('initialized WebGL context & canvas', function () {
-        expect(h.getGL() instanceof WebGLRenderingContext).to.eql(true);
-        expect(h.getCanvas() instanceof HTMLCanvasElement).to.eql(true);
+        assert.deepEqual(h.getGL() instanceof WebGLRenderingContext, true);
+        assert.deepEqual(h.getCanvas() instanceof HTMLCanvasElement, true);
       });
 
       it('has a default rendering pass', function () {
-        expect(h.postProcessPasses_.length).to.eql(1);
+        assert.deepEqual(h.postProcessPasses_.length, 1);
       });
     });
 
@@ -107,12 +108,12 @@ describe('ol/webgl/WebGLHelper', function () {
       });
 
       it('has instantiated post-processing passes', function () {
-        expect(h.postProcessPasses_.length).to.eql(2);
-        expect(h.postProcessPasses_[0].scaleRatio_).to.eql(0.5);
-        expect(h.postProcessPasses_[0].uniforms_.length).to.eql(0);
-        expect(h.postProcessPasses_[1].scaleRatio_).to.eql(1);
-        expect(h.postProcessPasses_[1].uniforms_.length).to.eql(1);
-        expect(h.postProcessPasses_[1].uniforms_[0].value).to.eql(4);
+        assert.deepEqual(h.postProcessPasses_.length, 2);
+        assert.deepEqual(h.postProcessPasses_[0].scaleRatio_, 0.5);
+        assert.deepEqual(h.postProcessPasses_[0].uniforms_.length, 0);
+        assert.deepEqual(h.postProcessPasses_[1].scaleRatio_, 1);
+        assert.deepEqual(h.postProcessPasses_[1].uniforms_.length, 1);
+        assert.deepEqual(h.postProcessPasses_[1].uniforms_[0].value, 4);
       });
     });
   });
@@ -146,40 +147,46 @@ describe('ol/webgl/WebGLHelper', function () {
       });
 
       it('has resized the canvas', function () {
-        expect(h.getCanvas().width).to.eql(100);
-        expect(h.getCanvas().height).to.eql(160);
+        assert.deepEqual(h.getCanvas().width, 100);
+        assert.deepEqual(h.getCanvas().height, 160);
       });
 
       it('has processed default uniforms', function () {
         const uniformLocations = h.uniformLocationsByProgram_[getUid(program)];
-        expect(uniformLocations[DefaultUniform.TIME]).not.to.eql(undefined);
-        expect(uniformLocations[DefaultUniform.ZOOM]).not.to.eql(undefined);
-        expect(uniformLocations[DefaultUniform.RESOLUTION]).not.to.eql(
+        assert.notDeepEqual(uniformLocations[DefaultUniform.TIME], undefined);
+        assert.notDeepEqual(uniformLocations[DefaultUniform.ZOOM], undefined);
+        assert.notDeepEqual(
+          uniformLocations[DefaultUniform.RESOLUTION],
           undefined,
         );
-        expect(uniformLocations[DefaultUniform.VIEWPORT_SIZE_PX]).not.to.eql(
+        assert.notDeepEqual(
+          uniformLocations[DefaultUniform.VIEWPORT_SIZE_PX],
           undefined,
         );
-        expect(uniformLocations[DefaultUniform.PIXEL_RATIO]).not.to.eql(
+        assert.notDeepEqual(
+          uniformLocations[DefaultUniform.PIXEL_RATIO],
           undefined,
         );
-        expect(uniformLocations[DefaultUniform.ROTATION]).not.to.eql(undefined);
+        assert.notDeepEqual(
+          uniformLocations[DefaultUniform.ROTATION],
+          undefined,
+        );
       });
 
       it('has processed uniforms', function () {
-        expect(h.uniforms_.length).to.eql(5);
-        expect(h.uniforms_[0].name).to.eql('u_test1');
-        expect(h.uniforms_[1].name).to.eql('u_test2');
-        expect(h.uniforms_[2].name).to.eql('u_test3');
-        expect(h.uniforms_[3].name).to.eql('u_test4');
-        expect(h.uniforms_[4].name).to.eql('u_test5');
-        expect(h.uniforms_[0].location).to.not.eql(-1);
-        expect(h.uniforms_[1].location).to.not.eql(-1);
-        expect(h.uniforms_[2].location).to.not.eql(-1);
-        expect(h.uniforms_[3].location).to.not.eql(-1);
-        expect(h.uniforms_[4].location).to.not.eql(-1);
-        expect(h.uniforms_[2].texture).to.not.eql(undefined);
-        expect(h.uniforms_[4].texture).to.eql(uniformTexture);
+        assert.deepEqual(h.uniforms_.length, 5);
+        assert.deepEqual(h.uniforms_[0].name, 'u_test1');
+        assert.deepEqual(h.uniforms_[1].name, 'u_test2');
+        assert.deepEqual(h.uniforms_[2].name, 'u_test3');
+        assert.deepEqual(h.uniforms_[3].name, 'u_test4');
+        assert.deepEqual(h.uniforms_[4].name, 'u_test5');
+        assert.notDeepEqual(h.uniforms_[0].location, -1);
+        assert.notDeepEqual(h.uniforms_[1].location, -1);
+        assert.notDeepEqual(h.uniforms_[2].location, -1);
+        assert.notDeepEqual(h.uniforms_[3].location, -1);
+        assert.notDeepEqual(h.uniforms_[4].location, -1);
+        assert.notDeepEqual(h.uniforms_[2].texture, undefined);
+        assert.deepEqual(h.uniforms_[4].texture, uniformTexture);
       });
 
       describe('avoid resizing the canvas if not required', () => {
@@ -200,8 +207,8 @@ describe('ol/webgl/WebGLHelper', function () {
         });
 
         it('does not resize the canvas', function () {
-          expect(widthSpy.set.callCount).to.be(0);
-          expect(heightSpy.set.callCount).to.be(0);
+          assert.strictEqual(widthSpy.set.callCount, 0);
+          assert.strictEqual(heightSpy.set.callCount, 0);
         });
       });
     });
@@ -216,41 +223,39 @@ describe('ol/webgl/WebGLHelper', function () {
       });
 
       it('has saved the program', function () {
-        expect(h.currentProgram_).to.eql(p);
+        assert.deepEqual(h.currentProgram_, p);
       });
 
       it('has no shader compilation error', function () {
-        expect(h.shaderCompileErrors_).to.eql(null);
+        assert.deepEqual(h.shaderCompileErrors_, null);
       });
 
       it('can find the uniform location', function () {
-        expect(h.getUniformLocation('u_test')).to.not.eql(null);
+        assert.notDeepEqual(h.getUniformLocation('u_test'), null);
       });
 
       it('can find the attribute location', function () {
-        expect(h.getAttributeLocation('a_test')).to.not.eql(-1);
+        assert.notDeepEqual(h.getAttributeLocation('a_test'), -1);
       });
 
       it('cannot find an unknown attribute location', function () {
-        expect(h.getAttributeLocation('a_test_missing')).to.eql(-1);
+        assert.deepEqual(h.getAttributeLocation('a_test_missing'), -1);
       });
     });
 
     describe('invalid shader compiling', function () {
       it('throws for an invalid vertex shader', function () {
         h = new WebGLHelper();
-        expect(() =>
-          h.getProgram(FRAGMENT_SHADER, INVALID_VERTEX_SHADER),
-        ).to.throwException(
+        assert.throws(
+          () => h.getProgram(FRAGMENT_SHADER, INVALID_VERTEX_SHADER),
           /Vertex shader compilation failed: ERROR: 0:10: 'bla' : syntax error/,
         );
       });
 
       it('throws for an invalid fragment shader', function () {
         h = new WebGLHelper();
-        expect(() =>
-          h.getProgram(INVALID_FRAGMENT_SHADER, VERTEX_SHADER),
-        ).to.throwException(
+        assert.throws(
+          () => h.getProgram(INVALID_FRAGMENT_SHADER, VERTEX_SHADER),
           /Fragment shader compilation failed: ERROR: 0:5: 'oops' : undeclared identifier/,
         );
       });
@@ -282,7 +287,8 @@ describe('ol/webgl/WebGLHelper', function () {
 
         h.makeProjectionTransform(SAMPLE_FRAMESTATE, given);
 
-        expect(given.map((val) => val.toFixed(15))).to.eql(
+        assert.deepEqual(
+          given.map((val) => val.toFixed(15)),
           expected.map((val) => val.toFixed(15)),
         );
       });
@@ -295,10 +301,10 @@ describe('ol/webgl/WebGLHelper', function () {
         buffer.fromArray([0, 1, 2, 3]);
         h.flushBufferData(buffer);
         const bufferKey = getUid(buffer);
-        expect(h.bufferCache_).to.have.property(bufferKey);
+        assert.property(h.bufferCache_, bufferKey);
 
         h.deleteBuffer(buffer);
-        expect(h.bufferCache_).to.not.have.property(bufferKey);
+        assert.notProperty(h.bufferCache_, bufferKey);
       });
     });
 
@@ -326,14 +332,14 @@ describe('ol/webgl/WebGLHelper', function () {
         gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, data);
         gl.deleteFramebuffer(fb);
 
-        expect(data[0]).to.eql(0);
-        expect(data[1]).to.eql(0);
-        expect(data[2]).to.eql(0);
-        expect(data[3]).to.eql(0);
-        expect(data[4]).to.eql(0);
-        expect(data[5]).to.eql(0);
-        expect(data[6]).to.eql(0);
-        expect(data[7]).to.eql(0);
+        assert.deepEqual(data[0], 0);
+        assert.deepEqual(data[1], 0);
+        assert.deepEqual(data[2], 0);
+        assert.deepEqual(data[3], 0);
+        assert.deepEqual(data[4], 0);
+        assert.deepEqual(data[5], 0);
+        assert.deepEqual(data[6], 0);
+        assert.deepEqual(data[7], 0);
       });
 
       it('creates a texture from image data', function () {
@@ -363,14 +369,14 @@ describe('ol/webgl/WebGLHelper', function () {
         gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, data);
         gl.deleteFramebuffer(fb);
 
-        expect(data[0]).to.eql(100);
-        expect(data[1]).to.eql(150);
-        expect(data[2]).to.eql(200);
-        expect(data[3]).to.eql(250);
-        expect(data[4]).to.eql(100);
-        expect(data[5]).to.eql(150);
-        expect(data[6]).to.eql(200);
-        expect(data[7]).to.eql(250);
+        assert.deepEqual(data[0], 100);
+        assert.deepEqual(data[1], 150);
+        assert.deepEqual(data[2], 200);
+        assert.deepEqual(data[3], 250);
+        assert.deepEqual(data[4], 100);
+        assert.deepEqual(data[5], 150);
+        assert.deepEqual(data[6], 200);
+        assert.deepEqual(data[7], 250);
       });
 
       it('reuses a given texture', function () {
@@ -379,7 +385,7 @@ describe('ol/webgl/WebGLHelper', function () {
         const gl = h.getGL();
         const t1 = gl.createTexture();
         const t2 = h.createTexture([width, height], undefined, t1);
-        expect(t1).to.be(t2);
+        assert.strictEqual(t1, t2);
       });
     });
   });
@@ -431,22 +437,22 @@ describe('ol/webgl/WebGLHelper', function () {
       h.enableAttributes(baseAttrs);
       const bytesPerFloat = Float32Array.BYTES_PER_ELEMENT;
 
-      expect(spy.callCount).to.eql(3);
-      expect(spy.getCall(0).args[0]).to.eql('attr1');
-      expect(spy.getCall(0).args[1]).to.eql(3);
-      expect(spy.getCall(0).args[2]).to.eql(FLOAT);
-      expect(spy.getCall(0).args[3]).to.eql(6 * bytesPerFloat);
-      expect(spy.getCall(0).args[4]).to.eql(0);
-      expect(spy.getCall(1).args[0]).to.eql('attr2');
-      expect(spy.getCall(1).args[1]).to.eql(2);
-      expect(spy.getCall(1).args[2]).to.eql(FLOAT);
-      expect(spy.getCall(1).args[3]).to.eql(6 * bytesPerFloat);
-      expect(spy.getCall(1).args[4]).to.eql(3 * bytesPerFloat);
-      expect(spy.getCall(2).args[0]).to.eql('attr3');
-      expect(spy.getCall(2).args[1]).to.eql(1);
-      expect(spy.getCall(2).args[2]).to.eql(FLOAT);
-      expect(spy.getCall(2).args[3]).to.eql(6 * bytesPerFloat);
-      expect(spy.getCall(2).args[4]).to.eql(5 * bytesPerFloat);
+      assert.deepEqual(spy.callCount, 3);
+      assert.deepEqual(spy.getCall(0).args[0], 'attr1');
+      assert.deepEqual(spy.getCall(0).args[1], 3);
+      assert.deepEqual(spy.getCall(0).args[2], FLOAT);
+      assert.deepEqual(spy.getCall(0).args[3], 6 * bytesPerFloat);
+      assert.deepEqual(spy.getCall(0).args[4], 0);
+      assert.deepEqual(spy.getCall(1).args[0], 'attr2');
+      assert.deepEqual(spy.getCall(1).args[1], 2);
+      assert.deepEqual(spy.getCall(1).args[2], FLOAT);
+      assert.deepEqual(spy.getCall(1).args[3], 6 * bytesPerFloat);
+      assert.deepEqual(spy.getCall(1).args[4], 3 * bytesPerFloat);
+      assert.deepEqual(spy.getCall(2).args[0], 'attr3');
+      assert.deepEqual(spy.getCall(2).args[1], 1);
+      assert.deepEqual(spy.getCall(2).args[2], FLOAT);
+      assert.deepEqual(spy.getCall(2).args[3], 6 * bytesPerFloat);
+      assert.deepEqual(spy.getCall(2).args[4], 5 * bytesPerFloat);
     });
 
     it('enables attributes including padding (empty slots)', function () {
@@ -467,17 +473,17 @@ describe('ol/webgl/WebGLHelper', function () {
       ]);
       const bytesPerFloat = Float32Array.BYTES_PER_ELEMENT;
 
-      expect(spy.callCount).to.eql(2);
-      expect(spy.getCall(0).args[0]).to.eql('attr1');
-      expect(spy.getCall(0).args[1]).to.eql(3);
-      expect(spy.getCall(0).args[2]).to.eql(FLOAT);
-      expect(spy.getCall(0).args[3]).to.eql(6 * bytesPerFloat);
-      expect(spy.getCall(0).args[4]).to.eql(0);
-      expect(spy.getCall(1).args[0]).to.eql('attr3');
-      expect(spy.getCall(1).args[1]).to.eql(1);
-      expect(spy.getCall(1).args[2]).to.eql(FLOAT);
-      expect(spy.getCall(1).args[3]).to.eql(6 * bytesPerFloat);
-      expect(spy.getCall(1).args[4]).to.eql(5 * bytesPerFloat);
+      assert.deepEqual(spy.callCount, 2);
+      assert.deepEqual(spy.getCall(0).args[0], 'attr1');
+      assert.deepEqual(spy.getCall(0).args[1], 3);
+      assert.deepEqual(spy.getCall(0).args[2], FLOAT);
+      assert.deepEqual(spy.getCall(0).args[3], 6 * bytesPerFloat);
+      assert.deepEqual(spy.getCall(0).args[4], 0);
+      assert.deepEqual(spy.getCall(1).args[0], 'attr3');
+      assert.deepEqual(spy.getCall(1).args[1], 1);
+      assert.deepEqual(spy.getCall(1).args[2], FLOAT);
+      assert.deepEqual(spy.getCall(1).args[3], 6 * bytesPerFloat);
+      assert.deepEqual(spy.getCall(1).args[4], 5 * bytesPerFloat);
     });
   });
 
@@ -521,8 +527,8 @@ describe('ol/webgl/WebGLHelper', function () {
       h.enableAttributesInstanced(baseAttrs);
       const bytesPerFloat = Float32Array.BYTES_PER_ELEMENT;
 
-      expect(spy.callCount).to.eql(1);
-      expect(spy.firstCall.args).to.eql([
+      assert.deepEqual(spy.callCount, 1);
+      assert.deepEqual(spy.firstCall.args, [
         'attr1',
         3,
         FLOAT,
@@ -531,8 +537,8 @@ describe('ol/webgl/WebGLHelper', function () {
         true,
       ]);
 
-      expect(extSpy.callCount).to.eql(1);
-      expect(extSpy.firstCall.args).to.eql([
+      assert.deepEqual(extSpy.callCount, 1);
+      assert.deepEqual(extSpy.firstCall.args, [
         h.getAttributeLocation('attr1'),
         1,
       ]);
@@ -557,12 +563,21 @@ describe('ol/webgl/WebGLHelper', function () {
     });
 
     it('sets the default uniforms according the frame state', function () {
-      expect(stubFloat.getCall(0).args).to.eql([DefaultUniform.TIME, 1]);
-      expect(stubFloat.getCall(1).args).to.eql([DefaultUniform.ZOOM, 3]);
-      expect(stubFloat.getCall(2).args).to.eql([DefaultUniform.RESOLUTION, 2]);
-      expect(stubFloat.getCall(3).args).to.eql([DefaultUniform.PIXEL_RATIO, 2]);
-      expect(stubFloat.getCall(4).args).to.eql([DefaultUniform.ROTATION, 0.4]);
-      expect(stubVec2.getCall(0).args).to.eql([
+      assert.deepEqual(stubFloat.getCall(0).args, [DefaultUniform.TIME, 1]);
+      assert.deepEqual(stubFloat.getCall(1).args, [DefaultUniform.ZOOM, 3]);
+      assert.deepEqual(stubFloat.getCall(2).args, [
+        DefaultUniform.RESOLUTION,
+        2,
+      ]);
+      assert.deepEqual(stubFloat.getCall(3).args, [
+        DefaultUniform.PIXEL_RATIO,
+        2,
+      ]);
+      assert.deepEqual(stubFloat.getCall(4).args, [
+        DefaultUniform.ROTATION,
+        0.4,
+      ]);
+      assert.deepEqual(stubVec2.getCall(0).args, [
         DefaultUniform.VIEWPORT_SIZE_PX,
         [100, 150],
       ]);
@@ -589,8 +604,8 @@ describe('ol/webgl/WebGLHelper', function () {
     });
     it('calls drawElementsInstancedANGLE', () => {
       const gl = h.getGL();
-      expect(drawSpy.callCount).to.eql(1);
-      expect(drawSpy.firstCall.args).to.eql([
+      assert.deepEqual(drawSpy.callCount, 1);
+      assert.deepEqual(drawSpy.firstCall.args, [
         gl.TRIANGLES,
         8,
         gl.UNSIGNED_INT,
@@ -601,9 +616,9 @@ describe('ol/webgl/WebGLHelper', function () {
     it('resets the divisors after rendering', () => {
       const gl = h.getGL();
       const max = gl.getParameter(gl.MAX_VERTEX_ATTRIBS);
-      expect(divisorSpy.getCalls().length).to.eql(max); // each possible attribute is disabled
+      assert.deepEqual(divisorSpy.getCalls().length, max);
       for (let i = 0; i < max; i++) {
-        expect(divisorSpy.getCall(i).args).to.eql([i, 0]);
+        assert.deepEqual(divisorSpy.getCall(i).args, [i, 0]);
       }
     });
   });
@@ -619,9 +634,9 @@ describe('ol/webgl/WebGLHelper', function () {
     it('all active attributes are disabled when enabling programs, disregarding of previous state', () => {
       const gl = h.getGL();
       const max = gl.getParameter(gl.MAX_VERTEX_ATTRIBS);
-      expect(disableAttribSpy.getCalls().length).to.eql(max); // each possible attribute is disabled
+      assert.deepEqual(disableAttribSpy.getCalls().length, max);
       for (let i = 0; i < max; i++) {
-        expect(disableAttribSpy.getCall(i).args[0]).to.eql(i);
+        assert.deepEqual(disableAttribSpy.getCall(i).args[0], i);
       }
     });
   });

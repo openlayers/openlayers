@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import proj4 from 'proj4';
 import {
   addCommon,
@@ -37,7 +38,7 @@ describe('ol.reproj.Triangulation', function () {
         [-180, -90, 180, 90],
         0,
       );
-      expect(triangulation.getTriangles().length).to.be(2);
+      assert.strictEqual(triangulation.getTriangles().length, 2);
     });
 
     it('is empty when outside source extent', function () {
@@ -50,7 +51,7 @@ describe('ol.reproj.Triangulation', function () {
         proj27700.getExtent(),
         0,
       );
-      expect(triangulation.getTriangles().length).to.be(0);
+      assert.strictEqual(triangulation.getTriangles().length, 0);
     });
 
     it('can handle null source extent', function () {
@@ -62,7 +63,7 @@ describe('ol.reproj.Triangulation', function () {
         null,
         0,
       );
-      expect(triangulation.getTriangles().length).to.be(2);
+      assert.strictEqual(triangulation.getTriangles().length, 2);
     });
   });
 });

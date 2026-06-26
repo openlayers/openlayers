@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import LineString from '../../../../../src/ol/geom/LineString.js';
 import MultiLineString from '../../../../../src/ol/geom/MultiLineString.js';
 import MultiPolygon from '../../../../../src/ol/geom/MultiPolygon.js';
@@ -20,7 +21,7 @@ describe('ol.render.Feature', function () {
         properties,
         'foo',
       );
-      expect(feature).to.be.a(RenderFeature);
+      assert.instanceOf(feature, RenderFeature);
     });
   });
 
@@ -34,7 +35,7 @@ describe('ol.render.Feature', function () {
         properties,
         'foo',
       );
-      expect(feature.get('foo')).to.be('bar');
+      assert.strictEqual(feature.get('foo'), 'bar');
     });
   });
 
@@ -48,7 +49,7 @@ describe('ol.render.Feature', function () {
         properties,
         'foo',
       );
-      expect(feature.getEnds()).to.equal(ends);
+      assert.equal(feature.getEnds(), ends);
     });
   });
 
@@ -62,7 +63,7 @@ describe('ol.render.Feature', function () {
         properties,
         'foo',
       );
-      expect(feature.getExtent()).to.eql([0, 0, 0, 0]);
+      assert.deepEqual(feature.getExtent(), [0, 0, 0, 0]);
     });
 
     it('caches the extent', function () {
@@ -74,7 +75,7 @@ describe('ol.render.Feature', function () {
         properties,
         'foo',
       );
-      expect(feature.getExtent()).to.equal(feature.extent_);
+      assert.equal(feature.getExtent(), feature.extent_);
     });
 
     it('returns the correct extent for a linestring', function () {
@@ -85,7 +86,7 @@ describe('ol.render.Feature', function () {
         2,
         {},
       );
-      expect(feature.getExtent()).to.eql([-1, -2, 2, 1]);
+      assert.deepEqual(feature.getExtent(), [-1, -2, 2, 1]);
     });
 
     it('returns the correct extent for an XYZ linestring', function () {
@@ -96,7 +97,7 @@ describe('ol.render.Feature', function () {
         3,
         {},
       );
-      expect(feature.getExtent()).to.eql([-1, -2, 2, 1]);
+      assert.deepEqual(feature.getExtent(), [-1, -2, 2, 1]);
     });
   });
 
@@ -110,7 +111,7 @@ describe('ol.render.Feature', function () {
         properties,
         'foo',
       );
-      expect(feature.getFlatCoordinates()).to.equal(flatCoordinates);
+      assert.equal(feature.getFlatCoordinates(), flatCoordinates);
     });
   });
 
@@ -131,8 +132,11 @@ describe('ol.render.Feature', function () {
         polygon.getEnds(),
         2,
       );
-      expect(feature.getFlatInteriorPoint()).to.eql([5, 5, 10]);
-      expect(feature.getFlatInteriorPoint()).to.be(feature.flatInteriorPoints_);
+      assert.deepEqual(feature.getFlatInteriorPoint(), [5, 5, 10]);
+      assert.strictEqual(
+        feature.getFlatInteriorPoint(),
+        feature.flatInteriorPoints_,
+      );
     });
   });
 
@@ -164,8 +168,9 @@ describe('ol.render.Feature', function () {
         polygon.getEndss().flat(),
         2,
       );
-      expect(feature.getFlatInteriorPoints()).to.eql([5, 5, 10, 15, 5, 10]);
-      expect(feature.getFlatInteriorPoints()).to.be(
+      assert.deepEqual(feature.getFlatInteriorPoints(), [5, 5, 10, 15, 5, 10]);
+      assert.strictEqual(
+        feature.getFlatInteriorPoints(),
         feature.flatInteriorPoints_,
       );
     });
@@ -186,8 +191,8 @@ describe('ol.render.Feature', function () {
         [10],
         2,
       );
-      expect(feature.getFlatMidpoint()).to.eql([10, 10]);
-      expect(feature.getFlatMidpoint()).to.eql(feature.flatMidpoints_);
+      assert.deepEqual(feature.getFlatMidpoint(), [10, 10]);
+      assert.deepEqual(feature.getFlatMidpoint(), feature.flatMidpoints_);
     });
   });
 
@@ -215,8 +220,8 @@ describe('ol.render.Feature', function () {
         line.getEnds(),
         2,
       );
-      expect(feature.getFlatMidpoints()).to.eql([10, 10, 20, 10]);
-      expect(feature.getFlatMidpoints()).to.be(feature.flatMidpoints_);
+      assert.deepEqual(feature.getFlatMidpoints(), [10, 10, 20, 10]);
+      assert.strictEqual(feature.getFlatMidpoints(), feature.flatMidpoints_);
     });
   });
 
@@ -230,7 +235,7 @@ describe('ol.render.Feature', function () {
         properties,
         'foo',
       );
-      expect(feature.getGeometry()).to.equal(feature);
+      assert.equal(feature.getGeometry(), feature);
     });
   });
 
@@ -244,7 +249,7 @@ describe('ol.render.Feature', function () {
         properties,
         'foo',
       );
-      expect(feature.getId()).to.be('foo');
+      assert.strictEqual(feature.getId(), 'foo');
     });
   });
 
@@ -258,7 +263,7 @@ describe('ol.render.Feature', function () {
         properties,
         'foo',
       );
-      expect(feature.getProperties()).to.equal(properties);
+      assert.equal(feature.getProperties(), properties);
     });
   });
 
@@ -272,7 +277,7 @@ describe('ol.render.Feature', function () {
         properties,
         'foo',
       );
-      expect(feature.getSimplifiedGeometry()).to.equal(feature);
+      assert.equal(feature.getSimplifiedGeometry(), feature);
     });
   });
 
@@ -286,7 +291,7 @@ describe('ol.render.Feature', function () {
         properties,
         'foo',
       );
-      expect(feature.getStride()).to.be(2);
+      assert.strictEqual(feature.getStride(), 2);
     });
   });
 
@@ -300,7 +305,7 @@ describe('ol.render.Feature', function () {
         properties,
         'foo',
       );
-      expect(feature.getStyleFunction()).to.be(undefined);
+      assert.strictEqual(feature.getStyleFunction(), undefined);
     });
   });
 
@@ -314,7 +319,7 @@ describe('ol.render.Feature', function () {
         properties,
         'foo',
       );
-      expect(feature.getType()).to.equal(type);
+      assert.equal(feature.getType(), type);
     });
   });
 
@@ -330,25 +335,31 @@ describe('ol.render.Feature', function () {
       );
 
       const clone = feature.clone();
-      expect(clone).to.be.a(RenderFeature);
-      expect(clone.getType()).to.equal(feature.getType());
-      expect(clone.getFlatCoordinates()).to.eql(feature.getFlatCoordinates());
-      expect(clone.getEnds()).to.eql(feature.getEnds());
-      expect(clone.getStride()).to.equal(feature.getStride());
-      expect(clone.getProperties()).to.eql(feature.getProperties());
-      expect(clone.getId()).to.equal(feature.getId());
+      assert.instanceOf(clone, RenderFeature);
+      assert.equal(clone.getType(), feature.getType());
+      assert.deepEqual(
+        clone.getFlatCoordinates(),
+        feature.getFlatCoordinates(),
+      );
+      assert.deepEqual(clone.getEnds(), feature.getEnds());
+      assert.equal(clone.getStride(), feature.getStride());
+      assert.deepEqual(clone.getProperties(), feature.getProperties());
+      assert.equal(clone.getId(), feature.getId());
     });
 
     it('works with point geometries', () => {
       const feature = new RenderFeature('Point', [1, 2], null, 2, {}, 'foo');
       const clone = feature.clone();
-      expect(clone).to.be.a(RenderFeature);
-      expect(clone.getType()).to.equal(feature.getType());
-      expect(clone.getFlatCoordinates()).to.eql(feature.getFlatCoordinates());
-      expect(clone.getEnds()).to.eql(feature.getEnds());
-      expect(clone.getStride()).to.equal(feature.getStride());
-      expect(clone.getProperties()).to.eql(feature.getProperties());
-      expect(clone.getId()).to.equal(feature.getId());
+      assert.instanceOf(clone, RenderFeature);
+      assert.equal(clone.getType(), feature.getType());
+      assert.deepEqual(
+        clone.getFlatCoordinates(),
+        feature.getFlatCoordinates(),
+      );
+      assert.deepEqual(clone.getEnds(), feature.getEnds());
+      assert.equal(clone.getStride(), feature.getStride());
+      assert.deepEqual(clone.getProperties(), feature.getProperties());
+      assert.equal(clone.getId(), feature.getId());
     });
   });
 });

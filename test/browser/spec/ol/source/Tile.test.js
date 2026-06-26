@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import Tile from '../../../../../src/ol/Tile.js';
 import {get as getProjection} from '../../../../../src/ol/proj.js';
 import Projection from '../../../../../src/ol/proj/Projection.js';
@@ -43,31 +44,31 @@ describe('ol/source/Tile', function () {
       const source = new TileSource({
         projection: getProjection('EPSG:4326'),
       });
-      expect(source).to.be.a(Source);
-      expect(source).to.be.a(TileSource);
+      assert.instanceOf(source, Source);
+      assert.instanceOf(source, TileSource);
     });
   });
 
   describe('#setKey()', function () {
     it('sets the source key', function () {
       const source = new TileSource({});
-      expect(source.getKey()).to.equal(getUid(source));
+      assert.equal(source.getKey(), getUid(source));
 
       const key = 'foo';
       source.setKey(key);
-      expect(source.getKey()).to.equal(key);
+      assert.equal(source.getKey(), key);
     });
   });
 
   describe('#getInterpolate()', function () {
     it('is false by default', function () {
       const source = new TileSource({});
-      expect(source.getInterpolate()).to.be(false);
+      assert.strictEqual(source.getInterpolate(), false);
     });
 
     it('is true if constructed with interpolate: true', function () {
       const source = new TileSource({interpolate: true});
-      expect(source.getInterpolate()).to.be(true);
+      assert.strictEqual(source.getInterpolate(), true);
     });
   });
 
@@ -108,13 +109,13 @@ describe('ol/source/Tile', function () {
       });
 
       let tileCoord = tileSource.getTileCoordForTileUrlFunction([6, -31, 22]);
-      expect(tileCoord).to.eql([6, 33, 22]);
+      assert.deepEqual(tileCoord, [6, 33, 22]);
 
       tileCoord = tileSource.getTileCoordForTileUrlFunction([6, 33, 22]);
-      expect(tileCoord).to.eql([6, 33, 22]);
+      assert.deepEqual(tileCoord, [6, 33, 22]);
 
       tileCoord = tileSource.getTileCoordForTileUrlFunction([6, 97, 22]);
-      expect(tileCoord).to.eql([6, 33, 22]);
+      assert.deepEqual(tileCoord, [6, 33, 22]);
     });
 
     it('returns the expected tile coordinate - {wrapX: false}', function () {
@@ -124,13 +125,13 @@ describe('ol/source/Tile', function () {
       });
 
       let tileCoord = tileSource.getTileCoordForTileUrlFunction([6, -31, 22]);
-      expect(tileCoord).to.eql(null);
+      assert.deepEqual(tileCoord, null);
 
       tileCoord = tileSource.getTileCoordForTileUrlFunction([6, 33, 22]);
-      expect(tileCoord).to.eql([6, 33, 22]);
+      assert.deepEqual(tileCoord, [6, 33, 22]);
 
       tileCoord = tileSource.getTileCoordForTileUrlFunction([6, 97, 22]);
-      expect(tileCoord).to.eql(null);
+      assert.deepEqual(tileCoord, null);
     });
 
     it('works with wrapX and custom projection without extent', function () {
@@ -144,7 +145,7 @@ describe('ol/source/Tile', function () {
       });
 
       const tileCoord = tileSource.getTileCoordForTileUrlFunction([6, -31, 22]);
-      expect(tileCoord).to.eql([6, 33, 22]);
+      assert.deepEqual(tileCoord, [6, 33, 22]);
     });
   });
 
@@ -157,13 +158,11 @@ describe('ol/source/Tile', function () {
       const revision = source.getRevision();
       // check the loaded tile is there
       const tile = source.getTile(1, 0, 0);
-      expect(tile).to.be.a(Tile);
-      // check tile cache is filled
-      expect(source.getRevision()).to.eql(revision);
+      assert.instanceOf(tile, Tile);
+      assert.deepEqual(source.getRevision(), revision);
       // refresh the source
       source.refresh();
-      // check tile cache after refresh (should be empty)
-      expect(source.getRevision()).to.eql(revision + 1);
+      assert.deepEqual(source.getRevision(), revision + 1);
     });
   });
 });
@@ -172,8 +171,8 @@ describe('MockTile', function () {
   describe('constructor', function () {
     it('creates a tile source', function () {
       const source = new MockTile({});
-      expect(source).to.be.a(TileSource);
-      expect(source).to.be.a(MockTile);
+      assert.instanceOf(source, TileSource);
+      assert.instanceOf(source, MockTile);
     });
   });
 
@@ -187,18 +186,18 @@ describe('MockTile', function () {
 
       // check a loaded tile
       tile = source.getTile(0, 0, 0);
-      expect(tile).to.be.a(Tile);
-      expect(tile.state).to.be(2); // LOADED
+      assert.instanceOf(tile, Tile);
+      assert.strictEqual(tile.state, 2);
 
       // check a tile that is not loaded
       tile = source.getTile(1, 0, -1);
-      expect(tile).to.be.a(Tile);
-      expect(tile.state).to.be(0); // IDLE
+      assert.instanceOf(tile, Tile);
+      assert.strictEqual(tile.state, 0);
 
       // check another loaded tile
       tile = source.getTile(1, 0, 0);
-      expect(tile).to.be.a(Tile);
-      expect(tile.state).to.be(2); // LOADED
+      assert.instanceOf(tile, Tile);
+      assert.strictEqual(tile.state, 2);
     });
   });
 });

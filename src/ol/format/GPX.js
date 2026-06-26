@@ -296,7 +296,8 @@ class GPX extends XMLFeature {
         NAMESPACE_URIS.includes(n.namespaceURI) &&
         n.localName === 'metadata'
       ) {
-        return pushParseAndPop({}, METADATA_PARSERS, n, []);
+        const metadata = pushParseAndPop({}, METADATA_PARSERS, n, []);
+        return Object.keys(metadata).length > 0 ? metadata : null;
       }
     }
     return null;

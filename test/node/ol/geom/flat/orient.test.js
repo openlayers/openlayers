@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import GeoJSON from '../../../../../src/ol/format/GeoJSON.js';
 import {
   inflateEnds,
@@ -8,7 +9,6 @@ import {
   orientLinearRingsArray,
 } from '../../../../../src/ol/geom/flat/orient.js';
 import RenderFeature from '../../../../../src/ol/render/Feature.js';
-import expect from '../../../expect.js';
 
 describe('ol/geom/flat/orient.js', function () {
   describe('linearRingIsClockwise', function () {
@@ -20,7 +20,7 @@ describe('ol/geom/flat/orient.js', function () {
         flatCoordinates.length,
         2,
       );
-      expect(isClockwise).to.be(true);
+      assert.strictEqual(isClockwise, true);
     });
 
     it('identifies anti-clockwise rings', function () {
@@ -31,7 +31,7 @@ describe('ol/geom/flat/orient.js', function () {
         flatCoordinates.length,
         2,
       );
-      expect(isClockwise).to.be(false);
+      assert.strictEqual(isClockwise, false);
     });
 
     it('identifies clockwise with duplicated coordinates', function () {
@@ -42,7 +42,7 @@ describe('ol/geom/flat/orient.js', function () {
         flatCoordinates.length,
         2,
       );
-      expect(isClockwise).to.be(true);
+      assert.strictEqual(isClockwise, true);
     });
 
     it('identifies anti-clockwise with duplicated coordinates', function () {
@@ -53,7 +53,7 @@ describe('ol/geom/flat/orient.js', function () {
         flatCoordinates.length,
         2,
       );
-      expect(isClockwise).to.be(false);
+      assert.strictEqual(isClockwise, false);
     });
 
     it('identifies clockwise when last coordinate equals first', function () {
@@ -64,7 +64,7 @@ describe('ol/geom/flat/orient.js', function () {
         flatCoordinates.length,
         2,
       );
-      expect(isClockwise).to.be(true);
+      assert.strictEqual(isClockwise, true);
     });
 
     it('identifies anti-clockwise when last coordinate equals first', function () {
@@ -75,7 +75,7 @@ describe('ol/geom/flat/orient.js', function () {
         flatCoordinates.length,
         2,
       );
-      expect(isClockwise).to.be(false);
+      assert.strictEqual(isClockwise, false);
     });
 
     it('returns undefined when ring has too few vertices', function () {
@@ -86,7 +86,7 @@ describe('ol/geom/flat/orient.js', function () {
         flatCoordinates.length,
         2,
       );
-      expect(isClockwise).to.be(undefined);
+      assert.strictEqual(isClockwise, undefined);
     });
   });
 
@@ -106,13 +106,13 @@ describe('ol/geom/flat/orient.js', function () {
     const ends = [10, 20];
 
     it('checks for left-hand orientation by default', function () {
-      expect(oriented(rightCoords, 0, ends, 2)).to.be(false);
-      expect(oriented(leftCoords, 0, ends, 2)).to.be(true);
+      assert.strictEqual(oriented(rightCoords, 0, ends, 2), false);
+      assert.strictEqual(oriented(leftCoords, 0, ends, 2), true);
     });
 
     it('can check for right-hand orientation', function () {
-      expect(oriented(rightCoords, 0, ends, 2, true)).to.be(true);
-      expect(oriented(leftCoords, 0, ends, 2, true)).to.be(false);
+      assert.strictEqual(oriented(rightCoords, 0, ends, 2, true), true);
+      assert.strictEqual(oriented(leftCoords, 0, ends, 2, true), false);
     });
   });
 
@@ -137,13 +137,13 @@ describe('ol/geom/flat/orient.js', function () {
     ];
 
     it('checks for left-hand orientation by default', function () {
-      expect(oriented(rightCoords, 0, ends, 2)).to.be(false);
-      expect(oriented(leftCoords, 0, ends, 2)).to.be(true);
+      assert.strictEqual(oriented(rightCoords, 0, ends, 2), false);
+      assert.strictEqual(oriented(leftCoords, 0, ends, 2), true);
     });
 
     it('can check for right-hand orientation', function () {
-      expect(oriented(rightCoords, 0, ends, 2, true)).to.be(true);
-      expect(oriented(leftCoords, 0, ends, 2, true)).to.be(false);
+      assert.strictEqual(oriented(rightCoords, 0, ends, 2, true), true);
+      assert.strictEqual(oriented(leftCoords, 0, ends, 2, true), false);
     });
   });
 
@@ -165,21 +165,21 @@ describe('ol/geom/flat/orient.js', function () {
     it('orients using the left-hand rule by default', function () {
       const rightClone = rightCoords.slice();
       orient(rightClone, 0, ends, 2);
-      expect(rightClone).to.eql(leftCoords);
+      assert.deepEqual(rightClone, leftCoords);
 
       const leftClone = leftCoords.slice();
       orient(leftClone, 0, ends, 2);
-      expect(leftClone).to.eql(leftCoords);
+      assert.deepEqual(leftClone, leftCoords);
     });
 
     it('can orient using the right-hand rule', function () {
       const rightClone = rightCoords.slice();
       orient(rightClone, 0, ends, 2, true);
-      expect(rightClone).to.eql(rightCoords);
+      assert.deepEqual(rightClone, rightCoords);
 
       const leftClone = leftCoords.slice();
       orient(leftClone, 0, ends, 2, true);
-      expect(leftClone).to.eql(rightCoords);
+      assert.deepEqual(leftClone, rightCoords);
     });
   });
 
@@ -206,21 +206,21 @@ describe('ol/geom/flat/orient.js', function () {
     it('orients using the left-hand rule by default', function () {
       const rightClone = rightCoords.slice();
       orient(rightClone, 0, ends, 2);
-      expect(rightClone).to.eql(leftCoords);
+      assert.deepEqual(rightClone, leftCoords);
 
       const leftClone = leftCoords.slice();
       orient(leftClone, 0, ends, 2);
-      expect(leftClone).to.eql(leftCoords);
+      assert.deepEqual(leftClone, leftCoords);
     });
 
     it('can orient using the right-hand rule', function () {
       const rightClone = rightCoords.slice();
       orient(rightClone, 0, ends, 2, true);
-      expect(rightClone).to.eql(rightCoords);
+      assert.deepEqual(rightClone, rightCoords);
 
       const leftClone = leftCoords.slice();
       orient(leftClone, 0, ends, 2, true);
-      expect(leftClone).to.eql(rightCoords);
+      assert.deepEqual(leftClone, rightCoords);
     });
   });
 
@@ -254,7 +254,8 @@ describe('ol/geom/flat/orient.js', function () {
     it('inflates ends', function () {
       renderFeatures.forEach((renderFeature, i) => {
         const ends = renderFeature.getEnds();
-        expect(inflateEnds(renderFeature.getFlatCoordinates(), ends)).to.eql(
+        assert.deepEqual(
+          inflateEnds(renderFeature.getFlatCoordinates(), ends),
           features[i].getGeometry().getEndss(),
         );
       });

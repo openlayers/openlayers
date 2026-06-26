@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import CircleStyle from '../../../../../src/ol/style/Circle.js';
 import Fill from '../../../../../src/ol/style/Fill.js';
 import Stroke from '../../../../../src/ol/style/Stroke.js';
@@ -6,14 +7,13 @@ describe('ol/style/Circle', function () {
   describe('#constructor', function () {
     it('creates a canvas (no fill-style)', function () {
       const style = new CircleStyle({radius: 10});
-      expect(style.getImage(1)).to.be.an(HTMLCanvasElement);
-      expect(style.getSize()).to.eql([20, 20]);
-      expect(style.getImageSize()).to.eql([20, 20]);
-      expect(style.getOrigin()).to.eql([0, 0]);
-      expect(style.getAnchor()).to.eql([10, 10]);
-      // no hit-detection image is created, because no fill style is set
-      expect(style.getImage(1)).to.be(style.getHitDetectionImage());
-      expect(style.getHitDetectionImage()).to.be.an(HTMLCanvasElement);
+      assert.instanceOf(style.getImage(1), HTMLCanvasElement);
+      assert.deepEqual(style.getSize(), [20, 20]);
+      assert.deepEqual(style.getImageSize(), [20, 20]);
+      assert.deepEqual(style.getOrigin(), [0, 0]);
+      assert.deepEqual(style.getAnchor(), [10, 10]);
+      assert.strictEqual(style.getImage(1), style.getHitDetectionImage());
+      assert.instanceOf(style.getHitDetectionImage(), HTMLCanvasElement);
     });
 
     it('creates a canvas (transparent fill-style)', function () {
@@ -23,14 +23,13 @@ describe('ol/style/Circle', function () {
           color: 'transparent',
         }),
       });
-      expect(style.getImage(1)).to.be.an(HTMLCanvasElement);
-      expect(style.getSize()).to.eql([20, 20]);
-      expect(style.getImageSize()).to.eql([20, 20]);
-      expect(style.getOrigin()).to.eql([0, 0]);
-      expect(style.getAnchor()).to.eql([10, 10]);
-      // hit-detection image is created, because transparent fill style is set
-      expect(style.getImage(1)).to.not.be(style.getHitDetectionImage());
-      expect(style.getHitDetectionImage()).to.be.an(HTMLCanvasElement);
+      assert.instanceOf(style.getImage(1), HTMLCanvasElement);
+      assert.deepEqual(style.getSize(), [20, 20]);
+      assert.deepEqual(style.getImageSize(), [20, 20]);
+      assert.deepEqual(style.getOrigin(), [0, 0]);
+      assert.deepEqual(style.getAnchor(), [10, 10]);
+      assert.notEqual(style.getImage(1), style.getHitDetectionImage());
+      assert.instanceOf(style.getHitDetectionImage(), HTMLCanvasElement);
     });
 
     it('creates a canvas (non-transparent fill-style)', function () {
@@ -40,14 +39,13 @@ describe('ol/style/Circle', function () {
           color: '#FFFF00',
         }),
       });
-      expect(style.getImage(1)).to.be.an(HTMLCanvasElement);
-      expect(style.getSize()).to.eql([20, 20]);
-      expect(style.getImageSize()).to.eql([20, 20]);
-      expect(style.getOrigin()).to.eql([0, 0]);
-      expect(style.getAnchor()).to.eql([10, 10]);
-      // no hit-detection image is created, because non-transparent fill style is set
-      expect(style.getImage(1)).to.be(style.getHitDetectionImage());
-      expect(style.getHitDetectionImage()).to.be.an(HTMLCanvasElement);
+      assert.instanceOf(style.getImage(1), HTMLCanvasElement);
+      assert.deepEqual(style.getSize(), [20, 20]);
+      assert.deepEqual(style.getImageSize(), [20, 20]);
+      assert.deepEqual(style.getOrigin(), [0, 0]);
+      assert.deepEqual(style.getAnchor(), [10, 10]);
+      assert.strictEqual(style.getImage(1), style.getHitDetectionImage());
+      assert.instanceOf(style.getHitDetectionImage(), HTMLCanvasElement);
     });
   });
 
@@ -55,8 +53,8 @@ describe('ol/style/Circle', function () {
     it('creates a new ol.style.Circle', function () {
       const original = new CircleStyle();
       const clone = original.clone();
-      expect(clone).to.be.an(CircleStyle);
-      expect(clone).to.not.be(original);
+      assert.instanceOf(clone, CircleStyle);
+      assert.notEqual(clone, original);
     });
 
     it('copies all values', function () {
@@ -75,18 +73,28 @@ describe('ol/style/Circle', function () {
       });
       original.setOpacity(0.5);
       const clone = original.clone();
-      expect(original.getFill().getColor()).to.eql(clone.getFill().getColor());
-      expect(original.getOpacity()).to.eql(clone.getOpacity());
-      expect(original.getRadius()).to.eql(clone.getRadius());
-      expect(original.getRotation()).to.eql(clone.getRotation());
-      expect(original.getRotateWithView()).to.eql(clone.getRotateWithView());
-      expect(original.getScale()[0]).to.eql(clone.getScale()[0]);
-      expect(original.getScale()[1]).to.eql(clone.getScale()[1]);
-      expect(original.getStroke().getColor()).to.eql(
+      assert.deepEqual(
+        original.getFill().getColor(),
+        clone.getFill().getColor(),
+      );
+      assert.deepEqual(original.getOpacity(), clone.getOpacity());
+      assert.deepEqual(original.getRadius(), clone.getRadius());
+      assert.deepEqual(original.getRotation(), clone.getRotation());
+      assert.deepEqual(original.getRotateWithView(), clone.getRotateWithView());
+      assert.deepEqual(original.getScale()[0], clone.getScale()[0]);
+      assert.deepEqual(original.getScale()[1], clone.getScale()[1]);
+      assert.deepEqual(
+        original.getStroke().getColor(),
         clone.getStroke().getColor(),
       );
-      expect(original.getDisplacement()[0]).to.eql(clone.getDisplacement()[0]);
-      expect(original.getDisplacement()[1]).to.eql(clone.getDisplacement()[1]);
+      assert.deepEqual(
+        original.getDisplacement()[0],
+        clone.getDisplacement()[0],
+      );
+      assert.deepEqual(
+        original.getDisplacement()[1],
+        clone.getDisplacement()[1],
+      );
     });
 
     it('the clone does not reference the same objects as the original', function () {
@@ -101,17 +109,19 @@ describe('ol/style/Circle', function () {
         displacement: [0, 5],
       });
       const clone = original.clone();
-      expect(original.getFill()).to.not.be(clone.getFill());
-      expect(original.getStroke()).to.not.be(clone.getStroke());
-      expect(original.getScale()).to.not.be(clone.getScale());
-      expect(original.getDisplacement()).to.not.be(clone.getDisplacement());
+      assert.notEqual(original.getFill(), clone.getFill());
+      assert.notEqual(original.getStroke(), clone.getStroke());
+      assert.notEqual(original.getScale(), clone.getScale());
+      assert.notEqual(original.getDisplacement(), clone.getDisplacement());
 
       clone.getFill().setColor('#012345');
       clone.getStroke().setColor('#012345');
-      expect(original.getFill().getColor()).to.not.eql(
+      assert.notDeepEqual(
+        original.getFill().getColor(),
         clone.getFill().getColor(),
       );
-      expect(original.getStroke().getColor()).to.not.eql(
+      assert.notDeepEqual(
+        original.getStroke().getColor(),
         clone.getStroke().getColor(),
       );
     });
@@ -125,18 +135,18 @@ describe('ol/style/Circle', function () {
           color: '#FFFF00',
         }),
       });
-      expect(style.getRadius()).to.eql(10);
+      assert.deepEqual(style.getRadius(), 10);
 
       const hitImageBefore = style.getHitDetectionImage();
-      expect(hitImageBefore).to.be.an(HTMLCanvasElement);
-      expect(hitImageBefore.width).to.eql(20);
+      assert.instanceOf(hitImageBefore, HTMLCanvasElement);
+      assert.deepEqual(hitImageBefore.width, 20);
 
       style.setRadius(20);
-      expect(style.getRadius()).to.eql(20);
+      assert.deepEqual(style.getRadius(), 20);
 
       const hitImageAfter = style.getHitDetectionImage();
-      expect(hitImageAfter).to.be.an(HTMLCanvasElement);
-      expect(hitImageAfter.width).to.eql(40);
+      assert.instanceOf(hitImageAfter, HTMLCanvasElement);
+      assert.deepEqual(hitImageAfter.width, 40);
     });
   });
 });

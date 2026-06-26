@@ -1,13 +1,13 @@
+import {assert} from 'chai';
 import {isEmpty} from '../../../../src/ol/extent.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
-import expect from '../../expect.js';
 
 describe('ol/geom/MultiLineString.js', function () {
   it('cannot be constructed with a null geometry', function () {
-    expect(function () {
+    assert.throws(function () {
       return new MultiLineString(null);
-    }).to.throwException();
+    });
   });
 
   describe('construct empty', function () {
@@ -17,23 +17,23 @@ describe('ol/geom/MultiLineString.js', function () {
     });
 
     it('defaults to layout XY', function () {
-      expect(multiLineString.getLayout()).to.be('XY');
+      assert.strictEqual(multiLineString.getLayout(), 'XY');
     });
 
     it('has empty coordinates', function () {
-      expect(multiLineString.getCoordinates()).to.be.empty();
+      assert.isEmpty(multiLineString.getCoordinates());
     });
 
     it('has an empty extent', function () {
-      expect(isEmpty(multiLineString.getExtent())).to.be(true);
+      assert.strictEqual(isEmpty(multiLineString.getExtent()), true);
     });
 
     it('has empty flat coordinates', function () {
-      expect(multiLineString.getFlatCoordinates()).to.be.empty();
+      assert.isEmpty(multiLineString.getFlatCoordinates());
     });
 
     it('has stride the expected stride', function () {
-      expect(multiLineString.getStride()).to.be(2);
+      assert.strictEqual(multiLineString.getStride(), 2);
     });
 
     it('can append line strings', function () {
@@ -43,7 +43,7 @@ describe('ol/geom/MultiLineString.js', function () {
           [3, 4],
         ]),
       );
-      expect(multiLineString.getCoordinates()).to.eql([
+      assert.deepEqual(multiLineString.getCoordinates(), [
         [
           [1, 2],
           [3, 4],
@@ -55,7 +55,7 @@ describe('ol/geom/MultiLineString.js', function () {
           [7, 8],
         ]),
       );
-      expect(multiLineString.getCoordinates()).to.eql([
+      assert.deepEqual(multiLineString.getCoordinates(), [
         [
           [1, 2],
           [3, 4],
@@ -84,11 +84,11 @@ describe('ol/geom/MultiLineString.js', function () {
     });
 
     it('has the expected layout', function () {
-      expect(multiLineString.getLayout()).to.be('XY');
+      assert.strictEqual(multiLineString.getLayout(), 'XY');
     });
 
     it('has the expected coordinates', function () {
-      expect(multiLineString.getCoordinates()).to.eql([
+      assert.deepEqual(multiLineString.getCoordinates(), [
         [
           [1, 2],
           [3, 4],
@@ -101,32 +101,39 @@ describe('ol/geom/MultiLineString.js', function () {
     });
 
     it('has the expected extent', function () {
-      expect(multiLineString.getExtent()).to.eql([1, 2, 7, 8]);
+      assert.deepEqual(multiLineString.getExtent(), [1, 2, 7, 8]);
     });
 
     it('has the expected flat coordinates', function () {
-      expect(multiLineString.getFlatCoordinates()).to.eql([
-        1, 2, 3, 4, 5, 6, 7, 8,
-      ]);
+      assert.deepEqual(
+        multiLineString.getFlatCoordinates(),
+        [1, 2, 3, 4, 5, 6, 7, 8],
+      );
     });
 
     it('has stride the expected stride', function () {
-      expect(multiLineString.getStride()).to.be(2);
+      assert.strictEqual(multiLineString.getStride(), 2);
     });
 
     describe('#getFlatMidpoints', function () {
       it('returns the expected result', function () {
-        expect(multiLineString.getFlatMidpoints()).to.eql([2, 3, 6, 7]);
+        assert.deepEqual(multiLineString.getFlatMidpoints(), [2, 3, 6, 7]);
       });
     });
 
     describe('#intersectsExtent()', function () {
       it('returns true for intersecting part of lineString', function () {
-        expect(multiLineString.intersectsExtent([1, 2, 2, 3])).to.be(true);
+        assert.strictEqual(
+          multiLineString.intersectsExtent([1, 2, 2, 3]),
+          true,
+        );
       });
 
       it('returns false for non-matching extent within own extent', function () {
-        expect(multiLineString.intersectsExtent([1, 7, 2, 8])).to.be(false);
+        assert.strictEqual(
+          multiLineString.intersectsExtent([1, 7, 2, 8]),
+          false,
+        );
       });
     });
   });
@@ -147,11 +154,11 @@ describe('ol/geom/MultiLineString.js', function () {
     });
 
     it('has the expected layout', function () {
-      expect(multiLineString.getLayout()).to.be('XYZ');
+      assert.strictEqual(multiLineString.getLayout(), 'XYZ');
     });
 
     it('has the expected coordinates', function () {
-      expect(multiLineString.getCoordinates()).to.eql([
+      assert.deepEqual(multiLineString.getCoordinates(), [
         [
           [1, 2, 3],
           [4, 5, 6],
@@ -164,17 +171,18 @@ describe('ol/geom/MultiLineString.js', function () {
     });
 
     it('has the expected extent', function () {
-      expect(multiLineString.getExtent()).to.eql([1, 2, 10, 11]);
+      assert.deepEqual(multiLineString.getExtent(), [1, 2, 10, 11]);
     });
 
     it('has the expected flat coordinates', function () {
-      expect(multiLineString.getFlatCoordinates()).to.eql([
-        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
-      ]);
+      assert.deepEqual(
+        multiLineString.getFlatCoordinates(),
+        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+      );
     });
 
     it('has stride the expected stride', function () {
-      expect(multiLineString.getStride()).to.be(3);
+      assert.strictEqual(multiLineString.getStride(), 3);
     });
   });
 
@@ -197,11 +205,11 @@ describe('ol/geom/MultiLineString.js', function () {
     });
 
     it('has the expected layout', function () {
-      expect(multiLineString.getLayout()).to.be('XYM');
+      assert.strictEqual(multiLineString.getLayout(), 'XYM');
     });
 
     it('has the expected coordinates', function () {
-      expect(multiLineString.getCoordinates()).to.eql([
+      assert.deepEqual(multiLineString.getCoordinates(), [
         [
           [1, 2, 3],
           [4, 5, 6],
@@ -214,31 +222,32 @@ describe('ol/geom/MultiLineString.js', function () {
     });
 
     it('has the expected extent', function () {
-      expect(multiLineString.getExtent()).to.eql([1, 2, 10, 11]);
+      assert.deepEqual(multiLineString.getExtent(), [1, 2, 10, 11]);
     });
 
     it('has the expected flat coordinates', function () {
-      expect(multiLineString.getFlatCoordinates()).to.eql([
-        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
-      ]);
+      assert.deepEqual(
+        multiLineString.getFlatCoordinates(),
+        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+      );
     });
 
     it('has stride the expected stride', function () {
-      expect(multiLineString.getStride()).to.be(3);
+      assert.strictEqual(multiLineString.getStride(), 3);
     });
 
     it('can return individual line strings', function () {
       const lineString0 = multiLineString.getLineString(0);
-      expect(lineString0).to.be.an(LineString);
-      expect(lineString0.getLayout()).to.be('XYM');
-      expect(lineString0.getCoordinates()).to.eql([
+      assert.instanceOf(lineString0, LineString);
+      assert.strictEqual(lineString0.getLayout(), 'XYM');
+      assert.deepEqual(lineString0.getCoordinates(), [
         [1, 2, 3],
         [4, 5, 6],
       ]);
       const lineString1 = multiLineString.getLineString(1);
-      expect(lineString1).to.be.an(LineString);
-      expect(lineString1.getLayout()).to.be('XYM');
-      expect(lineString1.getCoordinates()).to.eql([
+      assert.instanceOf(lineString1, LineString);
+      assert.strictEqual(lineString1.getLayout(), 'XYM');
+      assert.deepEqual(lineString1.getCoordinates(), [
         [7, 8, 9],
         [10, 11, 12],
       ]);
@@ -247,93 +256,122 @@ describe('ol/geom/MultiLineString.js', function () {
     describe('#getCoordinateAtM', function () {
       describe('with extrapolation and interpolation', function () {
         it('returns the expected value', function () {
-          expect(multiLineString.getCoordinateAtM(0, true, true)).to.eql([
-            1, 2, 0,
-          ]);
-          expect(multiLineString.getCoordinateAtM(3, true, true)).to.eql([
-            1, 2, 3,
-          ]);
-          expect(multiLineString.getCoordinateAtM(4.5, true, true)).to.eql([
-            2.5, 3.5, 4.5,
-          ]);
-          expect(multiLineString.getCoordinateAtM(6, true, true)).to.eql([
-            4, 5, 6,
-          ]);
-          expect(multiLineString.getCoordinateAtM(7.5, true, true)).to.eql([
-            5.5, 6.5, 7.5,
-          ]);
-          expect(multiLineString.getCoordinateAtM(9, true, true)).to.eql([
-            7, 8, 9,
-          ]);
-          expect(multiLineString.getCoordinateAtM(10.5, true, true)).to.eql([
-            8.5, 9.5, 10.5,
-          ]);
-          expect(multiLineString.getCoordinateAtM(12, true, true)).to.eql([
-            10, 11, 12,
-          ]);
-          expect(multiLineString.getCoordinateAtM(15, true, true)).to.eql([
-            10, 11, 15,
-          ]);
+          assert.deepEqual(
+            multiLineString.getCoordinateAtM(0, true, true),
+            [1, 2, 0],
+          );
+          assert.deepEqual(
+            multiLineString.getCoordinateAtM(3, true, true),
+            [1, 2, 3],
+          );
+          assert.deepEqual(
+            multiLineString.getCoordinateAtM(4.5, true, true),
+            [2.5, 3.5, 4.5],
+          );
+          assert.deepEqual(
+            multiLineString.getCoordinateAtM(6, true, true),
+            [4, 5, 6],
+          );
+          assert.deepEqual(
+            multiLineString.getCoordinateAtM(7.5, true, true),
+            [5.5, 6.5, 7.5],
+          );
+          assert.deepEqual(
+            multiLineString.getCoordinateAtM(9, true, true),
+            [7, 8, 9],
+          );
+          assert.deepEqual(
+            multiLineString.getCoordinateAtM(10.5, true, true),
+            [8.5, 9.5, 10.5],
+          );
+          assert.deepEqual(
+            multiLineString.getCoordinateAtM(12, true, true),
+            [10, 11, 12],
+          );
+          assert.deepEqual(
+            multiLineString.getCoordinateAtM(15, true, true),
+            [10, 11, 15],
+          );
         });
       });
 
       describe('with extrapolation and no interpolation', function () {
         it('returns the expected value', function () {
-          expect(multiLineString.getCoordinateAtM(0, true, false)).to.eql([
-            1, 2, 0,
-          ]);
-          expect(multiLineString.getCoordinateAtM(3, true, false)).to.eql([
-            1, 2, 3,
-          ]);
-          expect(multiLineString.getCoordinateAtM(4.5, true, false)).to.eql([
-            2.5, 3.5, 4.5,
-          ]);
-          expect(multiLineString.getCoordinateAtM(6, true, false)).to.eql([
-            4, 5, 6,
-          ]);
-          expect(multiLineString.getCoordinateAtM(7.5, true, false)).to.be(
+          assert.deepEqual(
+            multiLineString.getCoordinateAtM(0, true, false),
+            [1, 2, 0],
+          );
+          assert.deepEqual(
+            multiLineString.getCoordinateAtM(3, true, false),
+            [1, 2, 3],
+          );
+          assert.deepEqual(
+            multiLineString.getCoordinateAtM(4.5, true, false),
+            [2.5, 3.5, 4.5],
+          );
+          assert.deepEqual(
+            multiLineString.getCoordinateAtM(6, true, false),
+            [4, 5, 6],
+          );
+          assert.strictEqual(
+            multiLineString.getCoordinateAtM(7.5, true, false),
             null,
           );
-          expect(multiLineString.getCoordinateAtM(9, true, false)).to.eql([
-            7, 8, 9,
-          ]);
-          expect(multiLineString.getCoordinateAtM(10.5, true, false)).to.eql([
-            8.5, 9.5, 10.5,
-          ]);
-          expect(multiLineString.getCoordinateAtM(12, true, false)).to.eql([
-            10, 11, 12,
-          ]);
-          expect(multiLineString.getCoordinateAtM(15, true, false)).to.eql([
-            10, 11, 15,
-          ]);
+          assert.deepEqual(
+            multiLineString.getCoordinateAtM(9, true, false),
+            [7, 8, 9],
+          );
+          assert.deepEqual(
+            multiLineString.getCoordinateAtM(10.5, true, false),
+            [8.5, 9.5, 10.5],
+          );
+          assert.deepEqual(
+            multiLineString.getCoordinateAtM(12, true, false),
+            [10, 11, 12],
+          );
+          assert.deepEqual(
+            multiLineString.getCoordinateAtM(15, true, false),
+            [10, 11, 15],
+          );
         });
       });
 
       describe('with no extrapolation and interpolation', function () {
         it('returns the expected value', function () {
-          expect(multiLineString.getCoordinateAtM(0, false, true)).to.eql(null);
-          expect(multiLineString.getCoordinateAtM(3, false, true)).to.eql([
-            1, 2, 3,
-          ]);
-          expect(multiLineString.getCoordinateAtM(4.5, false, true)).to.eql([
-            2.5, 3.5, 4.5,
-          ]);
-          expect(multiLineString.getCoordinateAtM(6, false, true)).to.eql([
-            4, 5, 6,
-          ]);
-          expect(multiLineString.getCoordinateAtM(7.5, false, true)).to.eql([
-            5.5, 6.5, 7.5,
-          ]);
-          expect(multiLineString.getCoordinateAtM(9, false, true)).to.eql([
-            7, 8, 9,
-          ]);
-          expect(multiLineString.getCoordinateAtM(10.5, false, true)).to.eql([
-            8.5, 9.5, 10.5,
-          ]);
-          expect(multiLineString.getCoordinateAtM(12, false, true)).to.eql([
-            10, 11, 12,
-          ]);
-          expect(multiLineString.getCoordinateAtM(15, false, true)).to.eql(
+          assert.deepEqual(
+            multiLineString.getCoordinateAtM(0, false, true),
+            null,
+          );
+          assert.deepEqual(
+            multiLineString.getCoordinateAtM(3, false, true),
+            [1, 2, 3],
+          );
+          assert.deepEqual(
+            multiLineString.getCoordinateAtM(4.5, false, true),
+            [2.5, 3.5, 4.5],
+          );
+          assert.deepEqual(
+            multiLineString.getCoordinateAtM(6, false, true),
+            [4, 5, 6],
+          );
+          assert.deepEqual(
+            multiLineString.getCoordinateAtM(7.5, false, true),
+            [5.5, 6.5, 7.5],
+          );
+          assert.deepEqual(
+            multiLineString.getCoordinateAtM(9, false, true),
+            [7, 8, 9],
+          );
+          assert.deepEqual(
+            multiLineString.getCoordinateAtM(10.5, false, true),
+            [8.5, 9.5, 10.5],
+          );
+          assert.deepEqual(
+            multiLineString.getCoordinateAtM(12, false, true),
+            [10, 11, 12],
+          );
+          assert.deepEqual(
+            multiLineString.getCoordinateAtM(15, false, true),
             null,
           );
         });
@@ -341,31 +379,40 @@ describe('ol/geom/MultiLineString.js', function () {
 
       describe('with no extrapolation or interpolation', function () {
         it('returns the expected value', function () {
-          expect(multiLineString.getCoordinateAtM(0, false, false)).to.eql(
+          assert.deepEqual(
+            multiLineString.getCoordinateAtM(0, false, false),
             null,
           );
-          expect(multiLineString.getCoordinateAtM(3, false, false)).to.eql([
-            1, 2, 3,
-          ]);
-          expect(multiLineString.getCoordinateAtM(4.5, false, false)).to.eql([
-            2.5, 3.5, 4.5,
-          ]);
-          expect(multiLineString.getCoordinateAtM(6, false, false)).to.eql([
-            4, 5, 6,
-          ]);
-          expect(multiLineString.getCoordinateAtM(7.5, false, false)).to.eql(
+          assert.deepEqual(
+            multiLineString.getCoordinateAtM(3, false, false),
+            [1, 2, 3],
+          );
+          assert.deepEqual(
+            multiLineString.getCoordinateAtM(4.5, false, false),
+            [2.5, 3.5, 4.5],
+          );
+          assert.deepEqual(
+            multiLineString.getCoordinateAtM(6, false, false),
+            [4, 5, 6],
+          );
+          assert.deepEqual(
+            multiLineString.getCoordinateAtM(7.5, false, false),
             null,
           );
-          expect(multiLineString.getCoordinateAtM(9, false, false)).to.eql([
-            7, 8, 9,
-          ]);
-          expect(multiLineString.getCoordinateAtM(10.5, false, false)).to.eql([
-            8.5, 9.5, 10.5,
-          ]);
-          expect(multiLineString.getCoordinateAtM(12, false, false)).to.eql([
-            10, 11, 12,
-          ]);
-          expect(multiLineString.getCoordinateAtM(15, false, false)).to.eql(
+          assert.deepEqual(
+            multiLineString.getCoordinateAtM(9, false, false),
+            [7, 8, 9],
+          );
+          assert.deepEqual(
+            multiLineString.getCoordinateAtM(10.5, false, false),
+            [8.5, 9.5, 10.5],
+          );
+          assert.deepEqual(
+            multiLineString.getCoordinateAtM(12, false, false),
+            [10, 11, 12],
+          );
+          assert.deepEqual(
+            multiLineString.getCoordinateAtM(15, false, false),
             null,
           );
         });
@@ -389,11 +436,11 @@ describe('ol/geom/MultiLineString.js', function () {
     });
 
     it('has the expected layout', function () {
-      expect(multiLineString.getLayout()).to.be('XYZM');
+      assert.strictEqual(multiLineString.getLayout(), 'XYZM');
     });
 
     it('has the expected coordinates', function () {
-      expect(multiLineString.getCoordinates()).to.eql([
+      assert.deepEqual(multiLineString.getCoordinates(), [
         [
           [1, 2, 3, 4],
           [5, 6, 7, 8],
@@ -406,17 +453,18 @@ describe('ol/geom/MultiLineString.js', function () {
     });
 
     it('has the expected extent', function () {
-      expect(multiLineString.getExtent()).to.eql([1, 2, 13, 14]);
+      assert.deepEqual(multiLineString.getExtent(), [1, 2, 13, 14]);
     });
 
     it('has the expected flat coordinates', function () {
-      expect(multiLineString.getFlatCoordinates()).to.eql([
-        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
-      ]);
+      assert.deepEqual(
+        multiLineString.getFlatCoordinates(),
+        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
+      );
     });
 
     it('has stride the expected stride', function () {
-      expect(multiLineString.getStride()).to.be(4);
+      assert.strictEqual(multiLineString.getStride(), 4);
     });
   });
 
@@ -434,7 +482,7 @@ describe('ol/geom/MultiLineString.js', function () {
       ]);
       geom.scale(10);
       const coordinates = geom.getCoordinates();
-      expect(coordinates).to.eql([
+      assert.deepEqual(coordinates, [
         [
           [-100, -200],
           [100, 200],
@@ -459,7 +507,7 @@ describe('ol/geom/MultiLineString.js', function () {
       ]);
       geom.scale(2, 3);
       const coordinates = geom.getCoordinates();
-      expect(coordinates).to.eql([
+      assert.deepEqual(coordinates, [
         [
           [-20, -60],
           [20, 60],
@@ -484,7 +532,7 @@ describe('ol/geom/MultiLineString.js', function () {
       ]);
       geom.scale(3, 2, [10, 20]);
       const coordinates = geom.getCoordinates();
-      expect(coordinates).to.eql([
+      assert.deepEqual(coordinates, [
         [
           [-50, -60],
           [10, 20],
@@ -508,13 +556,14 @@ describe('ol/geom/MultiLineString.js', function () {
         [7, 8],
       ]);
       const multiLineString = new MultiLineString([lineString1, lineString2]);
-      expect(multiLineString.getFlatCoordinates()).to.eql([
-        1, 2, 3, 4, 5, 6, 7, 8,
-      ]);
-      expect(multiLineString.getEnds()).to.eql([4, 8]);
+      assert.deepEqual(
+        multiLineString.getFlatCoordinates(),
+        [1, 2, 3, 4, 5, 6, 7, 8],
+      );
+      assert.deepEqual(multiLineString.getEnds(), [4, 8]);
       const coordinates = multiLineString.getCoordinates();
-      expect(coordinates[0]).to.eql(lineString1.getCoordinates());
-      expect(coordinates[1]).to.eql(lineString2.getCoordinates());
+      assert.deepEqual(coordinates[0], lineString1.getCoordinates());
+      assert.deepEqual(coordinates[1], lineString2.getCoordinates());
     });
   });
 
@@ -534,19 +583,19 @@ describe('ol/geom/MultiLineString.js', function () {
     });
 
     it('does contain XY', function () {
-      expect(multiLineString.containsXY(1, 2)).to.be(true);
-      expect(multiLineString.containsXY(4, 5)).to.be(true);
-      expect(multiLineString.containsXY(3, 4)).to.be(true);
+      assert.strictEqual(multiLineString.containsXY(1, 2), true);
+      assert.strictEqual(multiLineString.containsXY(4, 5), true);
+      assert.strictEqual(multiLineString.containsXY(3, 4), true);
 
-      expect(multiLineString.containsXY(-1, -1)).to.be(true);
-      expect(multiLineString.containsXY(2, 2)).to.be(true);
-      expect(multiLineString.containsXY(0, 0)).to.be(true);
+      assert.strictEqual(multiLineString.containsXY(-1, -1), true);
+      assert.strictEqual(multiLineString.containsXY(2, 2), true);
+      assert.strictEqual(multiLineString.containsXY(0, 0), true);
     });
 
     it('does not contain XY', function () {
-      expect(multiLineString.containsXY(1, 3)).to.be(false);
-      expect(multiLineString.containsXY(2, 11)).to.be(false);
-      expect(multiLineString.containsXY(-2, 3)).to.be(false);
+      assert.strictEqual(multiLineString.containsXY(1, 3), false);
+      assert.strictEqual(multiLineString.containsXY(2, 11), false);
+      assert.strictEqual(multiLineString.containsXY(-2, 3), false);
     });
   });
 
@@ -565,7 +614,7 @@ describe('ol/geom/MultiLineString.js', function () {
         ],
       ]);
       const length = multiLineString.getLength();
-      expect(length).to.be(3);
+      assert.strictEqual(length, 3);
     });
   });
 });

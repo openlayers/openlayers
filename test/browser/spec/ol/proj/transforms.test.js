@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import Projection from '../../../../../src/ol/proj/Projection.js';
 import {add, get, remove} from '../../../../../src/ol/proj/transforms.js';
 
@@ -20,10 +21,10 @@ describe('ol/proj/transforms.js', function () {
       return input;
     };
     add(foo, bar, transform);
-    expect(get('foo', 'bar')).to.be(transform);
+    assert.strictEqual(get('foo', 'bar'), transform);
 
     const removed = remove(foo, bar);
-    expect(removed).to.be(transform);
-    expect(get('foo', 'bar')).to.be(null);
+    assert.strictEqual(removed, transform);
+    assert.strictEqual(get('foo', 'bar'), null);
   });
 });

@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {unpackColor} from '../../../../../../src/ol/render/webgl/compileUtil.js';
 import {
   colorDecodeId,
@@ -7,26 +8,33 @@ import {
 describe('webgl encode utils', function () {
   describe('colorEncodeIdAndPack and colorDecodeId', function () {
     it('correctly encodes and decodes ids', function () {
-      expect(colorDecodeId(unpackColor(colorEncodeIdAndPack(0)))).to.eql(0);
-      expect(colorDecodeId(unpackColor(colorEncodeIdAndPack(1)))).to.eql(1);
-      expect(colorDecodeId(unpackColor(colorEncodeIdAndPack(123)))).to.eql(123);
-      expect(colorDecodeId(unpackColor(colorEncodeIdAndPack(12345)))).to.eql(
+      assert.deepEqual(colorDecodeId(unpackColor(colorEncodeIdAndPack(0))), 0);
+      assert.deepEqual(colorDecodeId(unpackColor(colorEncodeIdAndPack(1))), 1);
+      assert.deepEqual(
+        colorDecodeId(unpackColor(colorEncodeIdAndPack(123))),
+        123,
+      );
+      assert.deepEqual(
+        colorDecodeId(unpackColor(colorEncodeIdAndPack(12345))),
         12345,
       );
-      expect(colorDecodeId(unpackColor(colorEncodeIdAndPack(123456)))).to.eql(
+      assert.deepEqual(
+        colorDecodeId(unpackColor(colorEncodeIdAndPack(123456))),
         123456,
       );
-      expect(colorDecodeId(unpackColor(colorEncodeIdAndPack(91612)))).to.eql(
+      assert.deepEqual(
+        colorDecodeId(unpackColor(colorEncodeIdAndPack(91612))),
         91612,
       );
-      expect(
+      assert.deepEqual(
         colorDecodeId(unpackColor(colorEncodeIdAndPack(1234567890))),
-      ).to.eql(1234567890);
+        1234567890,
+      );
     });
 
     it('correctly reuses array', function () {
       const arr = [];
-      expect(colorEncodeIdAndPack(123, arr)).to.be(arr);
+      assert.strictEqual(colorEncodeIdAndPack(123, arr), arr);
     });
 
     it('make sure that the encoded color (once unpacked) is compatible with Uint8Array storage', function () {
@@ -45,7 +53,7 @@ describe('webgl encode utils', function () {
         typed[3] / 255,
       ];
       const decoded = colorDecodeId(arr);
-      expect(decoded).to.eql(91612);
+      assert.deepEqual(decoded, 91612);
     });
   });
 });

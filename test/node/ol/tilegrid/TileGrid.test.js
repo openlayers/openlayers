@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import TileRange from '../../../../src/ol/TileRange.js';
 import {createOrUpdate} from '../../../../src/ol/extent.js';
 import {get as getProjection} from '../../../../src/ol/proj.js';
@@ -17,8 +18,6 @@ import {
   getForProjection as getTileGridForProjection,
 } from '../../../../src/ol/tilegrid.js';
 
-import expect from '../../expect.js';
-
 describe('ol/tilegrid/TileGrid.js', function () {
   let resolutions;
   let origin;
@@ -32,136 +31,136 @@ describe('ol/tilegrid/TileGrid.js', function () {
 
   describe('create valid', function () {
     it('does not throw an exception', function () {
-      expect(function () {
+      assert.doesNotThrow(function () {
         return new TileGrid({
           resolutions: resolutions,
           origin: origin,
           tileSize: tileSize,
         });
-      }).not.to.throwException();
+      });
     });
   });
 
   describe('create with duplicate resolutions', function () {
     it('throws an exception', function () {
-      expect(function () {
+      assert.throws(function () {
         return new TileGrid({
           resolutions: [100, 50, 50, 25, 10],
           origin: origin,
           tileSize: tileSize,
         });
-      }).to.throwException();
+      });
     });
   });
 
   describe('create with out of order resolutions', function () {
     it('throws an exception', function () {
       const resolutions = [100, 25, 50, 10];
-      expect(function () {
+      assert.throws(function () {
         return new TileGrid({
           resolutions: resolutions,
           origin: origin,
           tileSize: tileSize,
         });
-      }).to.throwException();
+      });
     });
   });
 
   describe('create with multiple origins', function () {
     it('does not throw an exception', function () {
-      expect(function () {
+      assert.doesNotThrow(function () {
         return new TileGrid({
           resolutions: [100, 50, 25, 10],
           origins: [origin, origin, origin, origin],
           tileSize: tileSize,
         });
-      }).not.to.throwException();
+      });
     });
   });
 
   describe('create with both origin and multiple origins', function () {
     it('throws an exception', function () {
-      expect(function () {
+      assert.throws(function () {
         return new TileGrid({
           resolutions: [100, 50, 25, 10],
           origins: [origin, origin, origin, origin],
           origin: origin,
           tileSize: tileSize,
         });
-      }).to.throwException();
+      });
     });
   });
 
   describe('create with too few origins', function () {
     it('throws an exception', function () {
-      expect(function () {
+      assert.throws(function () {
         return new TileGrid({
           resolutions: [100, 50, 25, 10],
           origins: [origin, origin, origin],
           tileSize: tileSize,
         });
-      }).to.throwException();
+      });
     });
   });
 
   describe('create with too many origins', function () {
     it('throws an exception', function () {
-      expect(function () {
+      assert.throws(function () {
         return new TileGrid({
           resolutions: [100, 50, 25, 10],
           origins: [origin, origin, origin, origin, origin],
           tileSize: tileSize,
         });
-      }).to.throwException();
+      });
     });
   });
 
   describe('create with multiple tileSizes', function () {
     it('does not throw an exception', function () {
-      expect(function () {
+      assert.doesNotThrow(function () {
         return new TileGrid({
           resolutions: [100, 50, 25, 10],
           tileSizes: [tileSize, tileSize, tileSize, tileSize],
           origin: origin,
         });
-      }).not.to.throwException();
+      });
     });
   });
 
   describe('create with both tileSize and multiple tileSizes', function () {
     it('throws an exception', function () {
-      expect(function () {
+      assert.throws(function () {
         return new TileGrid({
           resolutions: [100, 50, 25, 10],
           tileSizes: [tileSize, tileSize, tileSize, tileSize],
           tileSize: tileSize,
           origin: origin,
         });
-      }).to.throwException();
+      });
     });
   });
 
   describe('create with too few tileSizes', function () {
     it('throws an exception', function () {
-      expect(function () {
+      assert.throws(function () {
         return new TileGrid({
           resolutions: [100, 50, 25, 10],
           tileSizes: [tileSize, tileSize, tileSize],
           origin: origin,
         });
-      }).to.throwException();
+      });
     });
   });
 
   describe('create with too many tileSizes', function () {
     it('throws an exception', function () {
-      expect(function () {
+      assert.throws(function () {
         return new TileGrid({
           resolutions: [100, 50, 25, 10],
           tileSizes: [tileSize, tileSize, tileSize, tileSize, tileSize],
           origin: origin,
         });
-      }).to.throwException();
+      });
     });
   });
 
@@ -176,15 +175,15 @@ describe('ol/tilegrid/TileGrid.js', function () {
     });
 
     it('returns the configured origin', function () {
-      expect(tileGrid.getOrigin()).to.eql([10, 20]);
+      assert.deepEqual(tileGrid.getOrigin(), [10, 20]);
     });
 
     it('returns null for an unknown extent', function () {
-      expect(tileGrid.getExtent()).to.equal(null);
+      assert.equal(tileGrid.getExtent(), null);
     });
 
     it('returns null for an unknown full tile range', function () {
-      expect(tileGrid.getFullTileRange(0)).to.equal(null);
+      assert.equal(tileGrid.getFullTileRange(0), null);
     });
   });
 
@@ -199,15 +198,15 @@ describe('ol/tilegrid/TileGrid.js', function () {
     });
 
     it('assumes top left corner of extent as origin', function () {
-      expect(tileGrid.getOrigin()).to.eql([10, 40]);
+      assert.deepEqual(tileGrid.getOrigin(), [10, 40]);
     });
 
     it('calculates full tile ranges from extent', function () {
       const fullTileRange = tileGrid.getFullTileRange(0);
-      expect(fullTileRange.minX).to.equal(0);
-      expect(fullTileRange.maxX).to.equal(1);
-      expect(fullTileRange.minY).to.equal(0);
-      expect(fullTileRange.maxY).to.equal(1);
+      assert.equal(fullTileRange.minX, 0);
+      assert.equal(fullTileRange.maxX, 1);
+      assert.equal(fullTileRange.minY, 0);
+      assert.equal(fullTileRange.maxY, 1);
     });
   });
 
@@ -224,10 +223,10 @@ describe('ol/tilegrid/TileGrid.js', function () {
 
     it('calculates full tile ranges from sizes', function () {
       const fullTileRange = tileGrid.getFullTileRange(0);
-      expect(fullTileRange.minX).to.equal(0);
-      expect(fullTileRange.maxX).to.equal(2);
-      expect(fullTileRange.minY).to.equal(0);
-      expect(fullTileRange.maxY).to.equal(2);
+      assert.equal(fullTileRange.minX, 0);
+      assert.equal(fullTileRange.maxX, 2);
+      assert.equal(fullTileRange.minY, 0);
+      assert.equal(fullTileRange.maxY, 2);
     });
   });
 
@@ -243,15 +242,15 @@ describe('ol/tilegrid/TileGrid.js', function () {
     });
 
     it('returns the configured extent', function () {
-      expect(tileGrid.getExtent()).to.eql([10, 20, 30, 40]);
+      assert.deepEqual(tileGrid.getExtent(), [10, 20, 30, 40]);
     });
 
     it('calculates full tile ranges from sizes, further limited by extent', function () {
       const fullTileRange = tileGrid.getFullTileRange(0);
-      expect(fullTileRange.minX).to.equal(0);
-      expect(fullTileRange.maxX).to.equal(1);
-      expect(fullTileRange.minY).to.equal(0);
-      expect(fullTileRange.maxY).to.equal(1);
+      assert.equal(fullTileRange.minX, 0);
+      assert.equal(fullTileRange.maxX, 1);
+      assert.equal(fullTileRange.minY, 0);
+      assert.equal(fullTileRange.maxY, 1);
     });
   });
 
@@ -267,10 +266,10 @@ describe('ol/tilegrid/TileGrid.js', function () {
 
     it('calculates full tile ranges from extent', function () {
       const fullTileRange = tileGrid.getFullTileRange(0);
-      expect(fullTileRange.minX).to.equal(0);
-      expect(fullTileRange.maxX).to.equal(1);
-      expect(fullTileRange.minY).to.equal(0);
-      expect(fullTileRange.maxY).to.equal(1);
+      assert.equal(fullTileRange.minX, 0);
+      assert.equal(fullTileRange.maxX, 1);
+      assert.equal(fullTileRange.minY, 0);
+      assert.equal(fullTileRange.maxY, 1);
     });
   });
 
@@ -287,8 +286,8 @@ describe('ol/tilegrid/TileGrid.js', function () {
 
     it('calculates correct minY and maxY for positive heights', function () {
       const fullTileRange = tileGrid.getFullTileRange(0);
-      expect(fullTileRange.minY).to.equal(0);
-      expect(fullTileRange.maxY).to.equal(2);
+      assert.equal(fullTileRange.minY, 0);
+      assert.equal(fullTileRange.maxY, 2);
     });
   });
 
@@ -305,8 +304,8 @@ describe('ol/tilegrid/TileGrid.js', function () {
 
     it('calculates correct minX and maxX for negative heights', function () {
       const fullTileRange = tileGrid.getFullTileRange(0);
-      expect(fullTileRange.minY).to.equal(-3);
-      expect(fullTileRange.maxY).to.equal(-1);
+      assert.equal(fullTileRange.minY, -3);
+      assert.equal(fullTileRange.maxY, -1);
     });
   });
 
@@ -318,8 +317,8 @@ describe('ol/tilegrid/TileGrid.js', function () {
         tileSize: 10,
         resolutions: [1],
       });
-      expect(tileGrid.getOrigin()).to.eql([0, 0]);
-      expect(tileGrid.getExtent()).to.eql([10, 20, 30, 40]);
+      assert.deepEqual(tileGrid.getOrigin(), [0, 0]);
+      assert.deepEqual(tileGrid.getExtent(), [10, 20, 30, 40]);
     });
   });
 
@@ -360,7 +359,7 @@ describe('ol/tilegrid/TileGrid.js', function () {
       for (let z = 0; z <= 3; ++z) {
         const zTileRange = tileGrid.getFullTileRange(z);
         for (const property in tileRanges[z]) {
-          expect(zTileRange[property]).to.be(tileRanges[z][property]);
+          assert.strictEqual(zTileRange[property], tileRanges[z][property]);
         }
       }
     });
@@ -374,7 +373,10 @@ describe('ol/tilegrid/TileGrid.js', function () {
       ];
       outOfRangeTileCoords.forEach(function (tileCoord) {
         const tileRange = tileGrid.getFullTileRange(tileCoord[0]);
-        expect(tileRange.containsXY(tileCoord[1], tileCoord[2])).to.be(false);
+        assert.strictEqual(
+          tileRange.containsXY(tileCoord[1], tileCoord[2]),
+          false,
+        );
       });
     });
   });
@@ -386,18 +388,18 @@ describe('ol/tilegrid/TileGrid.js', function () {
       origin,
       tileSize,
     });
-    expect(tileGrid.getMinZoom()).to.be(2);
+    assert.strictEqual(tileGrid.getMinZoom(), 2);
   });
 
   describe('createForExtent', function () {
     it('allows creation of tile grid from extent', function () {
       const extent = createOrUpdate(-100, -100, 100, 100);
       const grid = createForExtent(extent);
-      expect(grid).to.be.a(TileGrid);
+      assert.instanceOf(grid, TileGrid);
 
       const resolutions = grid.getResolutions();
-      expect(resolutions.length).to.be(DEFAULT_MAX_ZOOM + 1);
-      expect(grid.getOrigin()).to.eql([-100, 100]);
+      assert.strictEqual(resolutions.length, DEFAULT_MAX_ZOOM + 1);
+      assert.deepEqual(grid.getOrigin(), [-100, 100]);
     });
   });
 
@@ -408,7 +410,7 @@ describe('ol/tilegrid/TileGrid.js', function () {
         origin: origin,
         tileSize: tileSize,
       });
-      expect(grid.zoomFactor_).to.be(2);
+      assert.strictEqual(grid.zoomFactor_, 2);
     });
 
     it('is not set for an inconsistent zoom factor', function () {
@@ -417,7 +419,7 @@ describe('ol/tilegrid/TileGrid.js', function () {
         origin: origin,
         tileSize: tileSize,
       });
-      expect(grid.zoomFactor_).to.be(undefined);
+      assert.strictEqual(grid.zoomFactor_, undefined);
     });
   });
 
@@ -425,35 +427,36 @@ describe('ol/tilegrid/TileGrid.js', function () {
     it('allows easier creation of a tile grid', function () {
       const projection = getProjection('EPSG:3857');
       const grid = createForProjection(projection);
-      expect(grid).to.be.a(TileGrid);
+      assert.instanceOf(grid, TileGrid);
 
       const resolutions = grid.getResolutions();
-      expect(resolutions.length).to.be(DEFAULT_MAX_ZOOM + 1);
+      assert.strictEqual(resolutions.length, DEFAULT_MAX_ZOOM + 1);
     });
 
     it('accepts a number of zoom levels', function () {
       const projection = getProjection('EPSG:3857');
       const grid = createForProjection(projection, 18);
-      expect(grid).to.be.a(TileGrid);
+      assert.instanceOf(grid, TileGrid);
 
       const resolutions = grid.getResolutions();
-      expect(resolutions.length).to.be(19);
+      assert.strictEqual(resolutions.length, 19);
     });
 
     it('accepts a big number of zoom levels', function () {
       const projection = getProjection('EPSG:3857');
       const grid = createForProjection(projection, 23);
-      expect(grid).to.be.a(TileGrid);
+      assert.instanceOf(grid, TileGrid);
 
       const resolutions = grid.getResolutions();
-      expect(resolutions.length).to.be(24);
+      assert.strictEqual(resolutions.length, 24);
     });
 
     it('works for projections unknown to the client', function () {
       const projection = new Projection({code: 'EPSG:31287', units: 'm'});
       const grid = createForProjection(projection);
       const resolutions = grid.getResolutions();
-      expect(resolutions[5]).to.be(
+      assert.strictEqual(
+        resolutions[5],
         (360 * METERS_PER_UNIT.degrees) / DEFAULT_TILE_SIZE / Math.pow(2, 5),
       );
     });
@@ -463,7 +466,7 @@ describe('ol/tilegrid/TileGrid.js', function () {
       const grid = createForProjection(projection);
       const origin = grid.getOrigin();
       const half = HALF_SIZE;
-      expect(origin).to.eql([-half, half]);
+      assert.deepEqual(origin, [-half, half]);
     });
 
     it('accepts bottom-left as corner', function () {
@@ -476,7 +479,7 @@ describe('ol/tilegrid/TileGrid.js', function () {
       );
       const origin = grid.getOrigin();
       const half = HALF_SIZE;
-      expect(origin).to.eql([-half, -half]);
+      assert.deepEqual(origin, [-half, -half]);
     });
 
     it('accepts bottom-right as corner', function () {
@@ -489,7 +492,7 @@ describe('ol/tilegrid/TileGrid.js', function () {
       );
       const origin = grid.getOrigin();
       const half = HALF_SIZE;
-      expect(origin).to.eql([half, -half]);
+      assert.deepEqual(origin, [half, -half]);
     });
 
     it('accepts top-left as corner', function () {
@@ -502,7 +505,7 @@ describe('ol/tilegrid/TileGrid.js', function () {
       );
       const origin = grid.getOrigin();
       const half = HALF_SIZE;
-      expect(origin).to.eql([-half, half]);
+      assert.deepEqual(origin, [-half, half]);
     });
 
     it('accepts top-right as corner', function () {
@@ -515,19 +518,20 @@ describe('ol/tilegrid/TileGrid.js', function () {
       );
       const origin = grid.getOrigin();
       const half = HALF_SIZE;
-      expect(origin).to.eql([half, half]);
+      assert.deepEqual(origin, [half, half]);
     });
   });
 
   describe('createXYZ()', function () {
     it('uses defaults', function () {
       const tileGrid = createXYZ();
-      expect(tileGrid.getExtent()).to.eql(
+      assert.deepEqual(
+        tileGrid.getExtent(),
         getProjection('EPSG:3857').getExtent(),
       );
-      expect(tileGrid.getMinZoom()).to.equal(0);
-      expect(tileGrid.getMaxZoom()).to.equal(DEFAULT_MAX_ZOOM);
-      expect(tileGrid.getTileSize()).to.equal(DEFAULT_TILE_SIZE);
+      assert.equal(tileGrid.getMinZoom(), 0);
+      assert.equal(tileGrid.getMaxZoom(), DEFAULT_MAX_ZOOM);
+      assert.equal(tileGrid.getTileSize(), DEFAULT_TILE_SIZE);
     });
 
     it('respects configuration options', function () {
@@ -538,11 +542,15 @@ describe('ol/tilegrid/TileGrid.js', function () {
         maxZoom: 2,
         tileSize: 128,
       });
-      expect(tileGrid.getExtent()).to.eql([10, 20, 30, 40]);
-      expect(tileGrid.getResolutions()).to.eql([10 / 128, 5 / 128, 2.5 / 128]);
-      expect(tileGrid.getMinZoom()).to.equal(1);
-      expect(tileGrid.getMaxZoom()).to.equal(2);
-      expect(tileGrid.getTileSize()).to.equal(128);
+      assert.deepEqual(tileGrid.getExtent(), [10, 20, 30, 40]);
+      assert.deepEqual(tileGrid.getResolutions(), [
+        10 / 128,
+        5 / 128,
+        2.5 / 128,
+      ]);
+      assert.equal(tileGrid.getMinZoom(), 1);
+      assert.equal(tileGrid.getMaxZoom(), 2);
+      assert.equal(tileGrid.getTileSize(), 128);
     });
   });
 
@@ -550,11 +558,11 @@ describe('ol/tilegrid/TileGrid.js', function () {
     it('gets the default tile grid for a projection', function () {
       const projection = getProjection('EPSG:3857');
       const grid = getTileGridForProjection(projection);
-      expect(grid).to.be.a(TileGrid);
+      assert.instanceOf(grid, TileGrid);
 
       const resolutions = grid.getResolutions();
-      expect(resolutions.length).to.be(DEFAULT_MAX_ZOOM + 1);
-      expect(grid.getTileSize()).to.eql(256);
+      assert.strictEqual(resolutions.length, DEFAULT_MAX_ZOOM + 1);
+      assert.deepEqual(grid.getTileSize(), 256);
     });
 
     it('stores the default tile grid on a projection', function () {
@@ -562,7 +570,7 @@ describe('ol/tilegrid/TileGrid.js', function () {
       const grid = getTileGridForProjection(projection);
       const gridAgain = getTileGridForProjection(projection);
 
-      expect(grid).to.be(gridAgain);
+      assert.strictEqual(grid, gridAgain);
     });
   });
 
@@ -576,40 +584,40 @@ describe('ol/tilegrid/TileGrid.js', function () {
       let range;
 
       range = tileGrid.getTileCoordChildTileRange([0, 0, 0]);
-      expect(range.minX).to.be(0);
-      expect(range.maxX).to.be(1);
-      expect(range.minY).to.be(0);
-      expect(range.maxY).to.be(1);
+      assert.strictEqual(range.minX, 0);
+      assert.strictEqual(range.maxX, 1);
+      assert.strictEqual(range.minY, 0);
+      assert.strictEqual(range.maxY, 1);
 
       range = tileGrid.getTileCoordChildTileRange([0, 1, 0]);
-      expect(range.minX).to.be(2);
-      expect(range.maxX).to.be(3);
-      expect(range.minY).to.be(0);
-      expect(range.maxY).to.be(1);
+      assert.strictEqual(range.minX, 2);
+      assert.strictEqual(range.maxX, 3);
+      assert.strictEqual(range.minY, 0);
+      assert.strictEqual(range.maxY, 1);
 
       range = tileGrid.getTileCoordChildTileRange([0, 0, 1]);
-      expect(range.minX).to.be(0);
-      expect(range.maxX).to.be(1);
-      expect(range.minY).to.be(2);
-      expect(range.maxY).to.be(3);
+      assert.strictEqual(range.minX, 0);
+      assert.strictEqual(range.maxX, 1);
+      assert.strictEqual(range.minY, 2);
+      assert.strictEqual(range.maxY, 3);
 
       range = tileGrid.getTileCoordChildTileRange([0, -1, 0]);
-      expect(range.minX).to.be(-2);
-      expect(range.maxX).to.be(-1);
-      expect(range.minY).to.be(0);
-      expect(range.maxY).to.be(1);
+      assert.strictEqual(range.minX, -2);
+      assert.strictEqual(range.maxX, -1);
+      assert.strictEqual(range.minY, 0);
+      assert.strictEqual(range.maxY, 1);
 
       range = tileGrid.getTileCoordChildTileRange([0, 0, -1]);
-      expect(range.minX).to.be(0);
-      expect(range.maxX).to.be(1);
-      expect(range.minY).to.be(-2);
-      expect(range.maxY).to.be(-1);
+      assert.strictEqual(range.minX, 0);
+      assert.strictEqual(range.maxX, 1);
+      assert.strictEqual(range.minY, -2);
+      assert.strictEqual(range.maxY, -1);
     });
 
     it('returns null for z > maxZoom', function () {
       const max = tileGrid.maxZoom;
       const range = tileGrid.getTileCoordChildTileRange([max + 1, 0, 0]);
-      expect(range).to.be(null);
+      assert.strictEqual(range, null);
     });
   });
 
@@ -639,38 +647,38 @@ describe('ol/tilegrid/TileGrid.js', function () {
         },
       );
 
-      expect(zs.length).to.eql(5);
-      expect(tileRanges.length).to.eql(5);
+      assert.deepEqual(zs.length, 5);
+      assert.deepEqual(tileRanges.length, 5);
 
-      expect(zs[0]).to.eql(4);
-      expect(tileRanges[0].minX).to.eql(5);
-      expect(tileRanges[0].maxX).to.eql(5);
-      expect(tileRanges[0].minY).to.eql(10);
-      expect(tileRanges[0].maxY).to.eql(10);
+      assert.deepEqual(zs[0], 4);
+      assert.deepEqual(tileRanges[0].minX, 5);
+      assert.deepEqual(tileRanges[0].maxX, 5);
+      assert.deepEqual(tileRanges[0].minY, 10);
+      assert.deepEqual(tileRanges[0].maxY, 10);
 
-      expect(zs[1]).to.eql(3);
-      expect(tileRanges[1].minX).to.eql(2);
-      expect(tileRanges[1].maxX).to.eql(2);
-      expect(tileRanges[1].minY).to.eql(5);
-      expect(tileRanges[1].maxY).to.eql(5);
+      assert.deepEqual(zs[1], 3);
+      assert.deepEqual(tileRanges[1].minX, 2);
+      assert.deepEqual(tileRanges[1].maxX, 2);
+      assert.deepEqual(tileRanges[1].minY, 5);
+      assert.deepEqual(tileRanges[1].maxY, 5);
 
-      expect(zs[2]).to.eql(2);
-      expect(tileRanges[2].minX).to.eql(1);
-      expect(tileRanges[2].maxX).to.eql(1);
-      expect(tileRanges[2].minY).to.eql(2);
-      expect(tileRanges[2].maxY).to.eql(2);
+      assert.deepEqual(zs[2], 2);
+      assert.deepEqual(tileRanges[2].minX, 1);
+      assert.deepEqual(tileRanges[2].maxX, 1);
+      assert.deepEqual(tileRanges[2].minY, 2);
+      assert.deepEqual(tileRanges[2].maxY, 2);
 
-      expect(zs[3]).to.eql(1);
-      expect(tileRanges[3].minX).to.eql(0);
-      expect(tileRanges[3].maxX).to.eql(0);
-      expect(tileRanges[3].minY).to.eql(1);
-      expect(tileRanges[3].maxY).to.eql(1);
+      assert.deepEqual(zs[3], 1);
+      assert.deepEqual(tileRanges[3].minX, 0);
+      assert.deepEqual(tileRanges[3].maxX, 0);
+      assert.deepEqual(tileRanges[3].minY, 1);
+      assert.deepEqual(tileRanges[3].maxY, 1);
 
-      expect(zs[4]).to.eql(0);
-      expect(tileRanges[4].minX).to.eql(0);
-      expect(tileRanges[4].maxX).to.eql(0);
-      expect(tileRanges[4].minY).to.eql(0);
-      expect(tileRanges[4].maxY).to.eql(0);
+      assert.deepEqual(zs[4], 0);
+      assert.deepEqual(tileRanges[4].minX, 0);
+      assert.deepEqual(tileRanges[4].maxX, 0);
+      assert.deepEqual(tileRanges[4].minY, 0);
+      assert.deepEqual(tileRanges[4].maxY, 0);
     });
   });
 
@@ -681,27 +689,26 @@ describe('ol/tilegrid/TileGrid.js', function () {
     });
 
     it('returns the correct resolution at the equator', function () {
-      // @see https://docs.microsoft.com/en-us/bingmaps/articles/understanding-scale-and-resolution
-      expect(tileGrid.getResolution(0)).to.roughlyEqual(156543.04, 1e-2);
-      expect(tileGrid.getResolution(1)).to.roughlyEqual(78271.52, 1e-2);
-      expect(tileGrid.getResolution(2)).to.roughlyEqual(39135.76, 1e-2);
-      expect(tileGrid.getResolution(3)).to.roughlyEqual(19567.88, 1e-2);
-      expect(tileGrid.getResolution(4)).to.roughlyEqual(9783.94, 1e-2);
-      expect(tileGrid.getResolution(5)).to.roughlyEqual(4891.97, 1e-2);
-      expect(tileGrid.getResolution(6)).to.roughlyEqual(2445.98, 1e-2);
-      expect(tileGrid.getResolution(7)).to.roughlyEqual(1222.99, 1e-2);
-      expect(tileGrid.getResolution(8)).to.roughlyEqual(611.5, 1e-2);
-      expect(tileGrid.getResolution(9)).to.roughlyEqual(305.75, 1e-2);
-      expect(tileGrid.getResolution(10)).to.roughlyEqual(152.87, 1e-2);
-      expect(tileGrid.getResolution(11)).to.roughlyEqual(76.44, 1e-2);
-      expect(tileGrid.getResolution(12)).to.roughlyEqual(38.22, 1e-2);
-      expect(tileGrid.getResolution(13)).to.roughlyEqual(19.11, 1e-2);
-      expect(tileGrid.getResolution(14)).to.roughlyEqual(9.55, 1e-2);
-      expect(tileGrid.getResolution(15)).to.roughlyEqual(4.78, 1e-2);
-      expect(tileGrid.getResolution(16)).to.roughlyEqual(2.39, 1e-2);
-      expect(tileGrid.getResolution(17)).to.roughlyEqual(1.19, 1e-2);
-      expect(tileGrid.getResolution(18)).to.roughlyEqual(0.6, 1e-2);
-      expect(tileGrid.getResolution(19)).to.roughlyEqual(0.3, 1e-2);
+      assert.approximately(tileGrid.getResolution(0), 156543.04, 1e-2);
+      assert.approximately(tileGrid.getResolution(1), 78271.52, 1e-2);
+      assert.approximately(tileGrid.getResolution(2), 39135.76, 1e-2);
+      assert.approximately(tileGrid.getResolution(3), 19567.88, 1e-2);
+      assert.approximately(tileGrid.getResolution(4), 9783.94, 1e-2);
+      assert.approximately(tileGrid.getResolution(5), 4891.97, 1e-2);
+      assert.approximately(tileGrid.getResolution(6), 2445.98, 1e-2);
+      assert.approximately(tileGrid.getResolution(7), 1222.99, 1e-2);
+      assert.approximately(tileGrid.getResolution(8), 611.5, 1e-2);
+      assert.approximately(tileGrid.getResolution(9), 305.75, 1e-2);
+      assert.approximately(tileGrid.getResolution(10), 152.87, 1e-2);
+      assert.approximately(tileGrid.getResolution(11), 76.44, 1e-2);
+      assert.approximately(tileGrid.getResolution(12), 38.22, 1e-2);
+      assert.approximately(tileGrid.getResolution(13), 19.11, 1e-2);
+      assert.approximately(tileGrid.getResolution(14), 9.55, 1e-2);
+      assert.approximately(tileGrid.getResolution(15), 4.78, 1e-2);
+      assert.approximately(tileGrid.getResolution(16), 2.39, 1e-2);
+      assert.approximately(tileGrid.getResolution(17), 1.19, 1e-2);
+      assert.approximately(tileGrid.getResolution(18), 0.6, 1e-2);
+      assert.approximately(tileGrid.getResolution(19), 0.3, 1e-2);
     });
   });
 
@@ -717,24 +724,24 @@ describe('ol/tilegrid/TileGrid.js', function () {
         let tileCoord;
 
         tileCoord = tileGrid.getTileCoordForCoordAndZ([0, 0], 3);
-        expect(tileCoord[0]).to.eql(3);
-        expect(tileCoord[1]).to.eql(0);
-        expect(tileCoord[2]).to.eql(0);
+        assert.deepEqual(tileCoord[0], 3);
+        assert.deepEqual(tileCoord[1], 0);
+        assert.deepEqual(tileCoord[2], 0);
 
         tileCoord = tileGrid.getTileCoordForCoordAndZ([0, 100000], 3);
-        expect(tileCoord[0]).to.eql(3);
-        expect(tileCoord[1]).to.eql(0);
-        expect(tileCoord[2]).to.eql(-10);
+        assert.deepEqual(tileCoord[0], 3);
+        assert.deepEqual(tileCoord[1], 0);
+        assert.deepEqual(tileCoord[2], -10);
 
         tileCoord = tileGrid.getTileCoordForCoordAndZ([100000, 0], 3);
-        expect(tileCoord[0]).to.eql(3);
-        expect(tileCoord[1]).to.eql(10);
-        expect(tileCoord[2]).to.eql(0);
+        assert.deepEqual(tileCoord[0], 3);
+        assert.deepEqual(tileCoord[1], 10);
+        assert.deepEqual(tileCoord[2], 0);
 
         tileCoord = tileGrid.getTileCoordForCoordAndZ([100000, 100000], 3);
-        expect(tileCoord[0]).to.eql(3);
-        expect(tileCoord[1]).to.eql(10);
-        expect(tileCoord[2]).to.eql(-10);
+        assert.deepEqual(tileCoord[0], 3);
+        assert.deepEqual(tileCoord[1], 10);
+        assert.deepEqual(tileCoord[2], -10);
       });
     });
 
@@ -749,24 +756,24 @@ describe('ol/tilegrid/TileGrid.js', function () {
         let tileCoord;
 
         tileCoord = tileGrid.getTileCoordForCoordAndZ([0, 0], 3);
-        expect(tileCoord[0]).to.eql(3);
-        expect(tileCoord[1]).to.eql(0);
-        expect(tileCoord[2]).to.eql(10);
+        assert.deepEqual(tileCoord[0], 3);
+        assert.deepEqual(tileCoord[1], 0);
+        assert.deepEqual(tileCoord[2], 10);
 
         tileCoord = tileGrid.getTileCoordForCoordAndZ([0, 100000], 3);
-        expect(tileCoord[0]).to.eql(3);
-        expect(tileCoord[1]).to.eql(0);
-        expect(tileCoord[2]).to.eql(0);
+        assert.deepEqual(tileCoord[0], 3);
+        assert.deepEqual(tileCoord[1], 0);
+        assert.deepEqual(tileCoord[2], 0);
 
         tileCoord = tileGrid.getTileCoordForCoordAndZ([100000, 0], 3);
-        expect(tileCoord[0]).to.eql(3);
-        expect(tileCoord[1]).to.eql(10);
-        expect(tileCoord[2]).to.eql(10);
+        assert.deepEqual(tileCoord[0], 3);
+        assert.deepEqual(tileCoord[1], 10);
+        assert.deepEqual(tileCoord[2], 10);
 
         tileCoord = tileGrid.getTileCoordForCoordAndZ([100000, 100000], 3);
-        expect(tileCoord[0]).to.eql(3);
-        expect(tileCoord[1]).to.eql(10);
-        expect(tileCoord[2]).to.eql(0);
+        assert.deepEqual(tileCoord[0], 3);
+        assert.deepEqual(tileCoord[1], 10);
+        assert.deepEqual(tileCoord[2], 0);
       });
     });
   });
@@ -786,65 +793,65 @@ describe('ol/tilegrid/TileGrid.js', function () {
       // gets the first tile at the origin
       coordinate = [0, 0];
       tileCoord = tileGrid.getTileCoordForCoordAndResolution(coordinate, 10);
-      expect(tileCoord[0]).to.eql(0);
-      expect(tileCoord[1]).to.eql(0);
-      expect(tileCoord[2]).to.eql(0);
+      assert.deepEqual(tileCoord[0], 0);
+      assert.deepEqual(tileCoord[1], 0);
+      assert.deepEqual(tileCoord[2], 0);
 
       // gets one tile northwest of the origin
       coordinate = [-1280, 1280];
       tileCoord = tileGrid.getTileCoordForCoordAndResolution(coordinate, 10);
-      expect(tileCoord[0]).to.eql(0);
-      expect(tileCoord[1]).to.eql(-1);
-      expect(tileCoord[2]).to.eql(-1);
+      assert.deepEqual(tileCoord[0], 0);
+      assert.deepEqual(tileCoord[1], -1);
+      assert.deepEqual(tileCoord[2], -1);
 
       // gets one tile northeast of the origin
       coordinate = [1280, 1280];
       tileCoord = tileGrid.getTileCoordForCoordAndResolution(coordinate, 10);
-      expect(tileCoord[0]).to.eql(0);
-      expect(tileCoord[1]).to.eql(0);
-      expect(tileCoord[2]).to.eql(-1);
+      assert.deepEqual(tileCoord[0], 0);
+      assert.deepEqual(tileCoord[1], 0);
+      assert.deepEqual(tileCoord[2], -1);
 
       // gets one tile southeast of the origin
       coordinate = [1280, -1280];
       tileCoord = tileGrid.getTileCoordForCoordAndResolution(coordinate, 10);
-      expect(tileCoord[0]).to.eql(0);
-      expect(tileCoord[1]).to.eql(0);
-      expect(tileCoord[2]).to.eql(0);
+      assert.deepEqual(tileCoord[0], 0);
+      assert.deepEqual(tileCoord[1], 0);
+      assert.deepEqual(tileCoord[2], 0);
 
       // gets one tile southwest of the origin
       coordinate = [-1280, -1280];
       tileCoord = tileGrid.getTileCoordForCoordAndResolution(coordinate, 10);
-      expect(tileCoord[0]).to.eql(0);
-      expect(tileCoord[1]).to.eql(-1);
-      expect(tileCoord[2]).to.eql(0);
+      assert.deepEqual(tileCoord[0], 0);
+      assert.deepEqual(tileCoord[1], -1);
+      assert.deepEqual(tileCoord[2], 0);
 
       // gets the tile to the east when on the edge
       coordinate = [2560, -1280];
       tileCoord = tileGrid.getTileCoordForCoordAndResolution(coordinate, 10);
-      expect(tileCoord[0]).to.eql(0);
-      expect(tileCoord[1]).to.eql(1);
-      expect(tileCoord[2]).to.eql(0);
+      assert.deepEqual(tileCoord[0], 0);
+      assert.deepEqual(tileCoord[1], 1);
+      assert.deepEqual(tileCoord[2], 0);
 
       // gets the tile to the south when on the edge
       coordinate = [1280, -2560];
       tileCoord = tileGrid.getTileCoordForCoordAndResolution(coordinate, 10);
-      expect(tileCoord[0]).to.eql(0);
-      expect(tileCoord[1]).to.eql(0);
-      expect(tileCoord[2]).to.eql(1);
+      assert.deepEqual(tileCoord[0], 0);
+      assert.deepEqual(tileCoord[1], 0);
+      assert.deepEqual(tileCoord[2], 1);
 
       // pixels are top aligned to the origin
       coordinate = [1280, -2549.999];
       tileCoord = tileGrid.getTileCoordForCoordAndResolution(coordinate, 10);
-      expect(tileCoord[0]).to.eql(0);
-      expect(tileCoord[1]).to.eql(0);
-      expect(tileCoord[2]).to.eql(0);
+      assert.deepEqual(tileCoord[0], 0);
+      assert.deepEqual(tileCoord[1], 0);
+      assert.deepEqual(tileCoord[2], 0);
 
       // pixels are left aligned to the origin
       coordinate = [2549.999, -1280];
       tileCoord = tileGrid.getTileCoordForCoordAndResolution(coordinate, 10);
-      expect(tileCoord[0]).to.eql(0);
-      expect(tileCoord[1]).to.eql(0);
-      expect(tileCoord[2]).to.eql(0);
+      assert.deepEqual(tileCoord[0], 0);
+      assert.deepEqual(tileCoord[1], 0);
+      assert.deepEqual(tileCoord[2], 0);
     });
   });
 
@@ -860,9 +867,9 @@ describe('ol/tilegrid/TileGrid.js', function () {
 
       // gets higher tile for edge intersection
       tileCoord = tileGrid.getTileCoordForXYAndResolution_(0, 0, 100, false);
-      expect(tileCoord[0]).to.eql(3);
-      expect(tileCoord[1]).to.eql(0);
-      expect(tileCoord[2]).to.eql(0);
+      assert.deepEqual(tileCoord[0], 3);
+      assert.deepEqual(tileCoord[1], 0);
+      assert.deepEqual(tileCoord[2], 0);
 
       // gets higher tile for edge intersection
       tileCoord = tileGrid.getTileCoordForXYAndResolution_(
@@ -871,9 +878,9 @@ describe('ol/tilegrid/TileGrid.js', function () {
         100,
         false,
       );
-      expect(tileCoord[0]).to.eql(3);
-      expect(tileCoord[1]).to.eql(10);
-      expect(tileCoord[2]).to.eql(-10);
+      assert.deepEqual(tileCoord[0], 3);
+      assert.deepEqual(tileCoord[1], 10);
+      assert.deepEqual(tileCoord[2], -10);
     });
 
     it('handles alt intersection policy', function () {
@@ -887,9 +894,9 @@ describe('ol/tilegrid/TileGrid.js', function () {
 
       // can get lower tile for edge intersection
       tileCoord = tileGrid.getTileCoordForXYAndResolution_(0, 0, 100, true);
-      expect(tileCoord[0]).to.eql(3);
-      expect(tileCoord[1]).to.eql(-1);
-      expect(tileCoord[2]).to.eql(-1);
+      assert.deepEqual(tileCoord[0], 3);
+      assert.deepEqual(tileCoord[1], -1);
+      assert.deepEqual(tileCoord[2], -1);
 
       // can get lower tile for edge intersection
       tileCoord = tileGrid.getTileCoordForXYAndResolution_(
@@ -898,9 +905,9 @@ describe('ol/tilegrid/TileGrid.js', function () {
         100,
         true,
       );
-      expect(tileCoord[0]).to.eql(3);
-      expect(tileCoord[1]).to.eql(9);
-      expect(tileCoord[2]).to.eql(-11);
+      assert.deepEqual(tileCoord[0], 3);
+      assert.deepEqual(tileCoord[1], 9);
+      assert.deepEqual(tileCoord[2], -11);
     });
   });
 
@@ -914,16 +921,16 @@ describe('ol/tilegrid/TileGrid.js', function () {
       let center;
 
       center = tileGrid.getTileCoordCenter([0, 0, 0]);
-      expect(center[0]).to.eql(50000);
-      expect(center[1]).to.eql(-50000);
+      assert.deepEqual(center[0], 50000);
+      assert.deepEqual(center[1], -50000);
 
       center = tileGrid.getTileCoordCenter([3, 0, 0]);
-      expect(center[0]).to.eql(5000);
-      expect(center[1]).to.eql(-5000);
+      assert.deepEqual(center[0], 5000);
+      assert.deepEqual(center[1], -5000);
 
       center = tileGrid.getTileCoordCenter([3, 9, 9]);
-      expect(center[0]).to.eql(95000);
-      expect(center[1]).to.eql(-95000);
+      assert.deepEqual(center[0], 95000);
+      assert.deepEqual(center[1], -95000);
     });
   });
 
@@ -937,22 +944,22 @@ describe('ol/tilegrid/TileGrid.js', function () {
       let tileCoordExtent;
 
       tileCoordExtent = tileGrid.getTileCoordExtent([0, 0, 0]);
-      expect(tileCoordExtent[0]).to.eql(0);
-      expect(tileCoordExtent[1]).to.eql(-100000);
-      expect(tileCoordExtent[2]).to.eql(100000);
-      expect(tileCoordExtent[3]).to.eql(0);
+      assert.deepEqual(tileCoordExtent[0], 0);
+      assert.deepEqual(tileCoordExtent[1], -100000);
+      assert.deepEqual(tileCoordExtent[2], 100000);
+      assert.deepEqual(tileCoordExtent[3], 0);
 
       tileCoordExtent = tileGrid.getTileCoordExtent([3, 9, 0]);
-      expect(tileCoordExtent[0]).to.eql(90000);
-      expect(tileCoordExtent[1]).to.eql(-10000);
-      expect(tileCoordExtent[2]).to.eql(100000);
-      expect(tileCoordExtent[3]).to.eql(0);
+      assert.deepEqual(tileCoordExtent[0], 90000);
+      assert.deepEqual(tileCoordExtent[1], -10000);
+      assert.deepEqual(tileCoordExtent[2], 100000);
+      assert.deepEqual(tileCoordExtent[3], 0);
 
       tileCoordExtent = tileGrid.getTileCoordExtent([3, 0, 9]);
-      expect(tileCoordExtent[0]).to.eql(0);
-      expect(tileCoordExtent[1]).to.eql(-100000);
-      expect(tileCoordExtent[2]).to.eql(10000);
-      expect(tileCoordExtent[3]).to.eql(-90000);
+      assert.deepEqual(tileCoordExtent[0], 0);
+      assert.deepEqual(tileCoordExtent[1], -100000);
+      assert.deepEqual(tileCoordExtent[2], 10000);
+      assert.deepEqual(tileCoordExtent[3], -90000);
     });
   });
 
@@ -968,31 +975,31 @@ describe('ol/tilegrid/TileGrid.js', function () {
 
       // overlaps to the right
       tileRange = tileGrid.getTileRangeForExtentAndZ([0, 0, 10.1, 10], 0);
-      expect(tileRange.minX).to.be(0);
-      expect(tileRange.maxX).to.be(1);
-      expect(tileRange.minY).to.be(0);
-      expect(tileRange.maxY).to.be(0);
+      assert.strictEqual(tileRange.minX, 0);
+      assert.strictEqual(tileRange.maxX, 1);
+      assert.strictEqual(tileRange.minY, 0);
+      assert.strictEqual(tileRange.maxY, 0);
 
       // overlaps to the bottom
       tileRange = tileGrid.getTileRangeForExtentAndZ([0, -0.1, 10, 10], 0);
-      expect(tileRange.minX).to.be(0);
-      expect(tileRange.maxX).to.be(0);
-      expect(tileRange.minY).to.be(0);
-      expect(tileRange.maxY).to.be(1);
+      assert.strictEqual(tileRange.minX, 0);
+      assert.strictEqual(tileRange.maxX, 0);
+      assert.strictEqual(tileRange.minY, 0);
+      assert.strictEqual(tileRange.maxY, 1);
 
       // overlaps to the left
       tileRange = tileGrid.getTileRangeForExtentAndZ([-0.1, 0, 10, 10], 0);
-      expect(tileRange.minX).to.be(-1);
-      expect(tileRange.maxX).to.be(0);
-      expect(tileRange.minY).to.be(0);
-      expect(tileRange.maxY).to.be(0);
+      assert.strictEqual(tileRange.minX, -1);
+      assert.strictEqual(tileRange.maxX, 0);
+      assert.strictEqual(tileRange.minY, 0);
+      assert.strictEqual(tileRange.maxY, 0);
 
       // overlaps to the top
       tileRange = tileGrid.getTileRangeForExtentAndZ([0, 0, 10, 10.1], 0);
-      expect(tileRange.minX).to.be(0);
-      expect(tileRange.maxX).to.be(0);
-      expect(tileRange.minY).to.be(-1);
-      expect(tileRange.maxY).to.be(0);
+      assert.strictEqual(tileRange.minX, 0);
+      assert.strictEqual(tileRange.maxX, 0);
+      assert.strictEqual(tileRange.minY, -1);
+      assert.strictEqual(tileRange.maxY, 0);
     });
 
     it('returns the expected TileRange', function () {
@@ -1005,28 +1012,28 @@ describe('ol/tilegrid/TileGrid.js', function () {
       let tileRange;
 
       tileRange = tileGrid.getTileRangeForExtentAndZ(e, 0);
-      expect(tileRange.minY).to.eql(-1);
-      expect(tileRange.minX).to.eql(0);
-      expect(tileRange.maxX).to.eql(0);
-      expect(tileRange.maxY).to.eql(-1);
+      assert.deepEqual(tileRange.minY, -1);
+      assert.deepEqual(tileRange.minX, 0);
+      assert.deepEqual(tileRange.maxX, 0);
+      assert.deepEqual(tileRange.maxY, -1);
 
       tileRange = tileGrid.getTileRangeForExtentAndZ(e, 1);
-      expect(tileRange.minX).to.eql(0);
-      expect(tileRange.minY).to.eql(-1);
-      expect(tileRange.maxX).to.eql(1);
-      expect(tileRange.maxY).to.eql(-1);
+      assert.deepEqual(tileRange.minX, 0);
+      assert.deepEqual(tileRange.minY, -1);
+      assert.deepEqual(tileRange.maxX, 1);
+      assert.deepEqual(tileRange.maxY, -1);
 
       tileRange = tileGrid.getTileRangeForExtentAndZ(e, 2);
-      expect(tileRange.minX).to.eql(1);
-      expect(tileRange.minY).to.eql(-1);
-      expect(tileRange.maxX).to.eql(2);
-      expect(tileRange.maxY).to.eql(-1);
+      assert.deepEqual(tileRange.minX, 1);
+      assert.deepEqual(tileRange.minY, -1);
+      assert.deepEqual(tileRange.maxX, 2);
+      assert.deepEqual(tileRange.maxY, -1);
 
       tileRange = tileGrid.getTileRangeForExtentAndZ(e, 3);
-      expect(tileRange.minX).to.eql(4);
-      expect(tileRange.minY).to.eql(-2);
-      expect(tileRange.maxX).to.eql(5);
-      expect(tileRange.maxY).to.eql(-1);
+      assert.deepEqual(tileRange.minX, 4);
+      assert.deepEqual(tileRange.minY, -2);
+      assert.deepEqual(tileRange.maxX, 5);
+      assert.deepEqual(tileRange.maxY, -1);
     });
   });
 
@@ -1040,8 +1047,8 @@ describe('ol/tilegrid/TileGrid.js', function () {
         resolutions: resolutions,
         origin: origin,
       });
-      expect(tileGrid.getTileSize(0)).to.equal(256);
-      expect(tileGrid.getTileSize(3)).to.equal(256);
+      assert.equal(tileGrid.getTileSize(0), 256);
+      assert.equal(tileGrid.getTileSize(3), 256);
     });
 
     it('works with one tile size as array', function () {
@@ -1050,8 +1057,8 @@ describe('ol/tilegrid/TileGrid.js', function () {
         resolutions: resolutions,
         origin: origin,
       });
-      expect(tileGrid.getTileSize(0)).to.eql([512, 256]);
-      expect(tileGrid.getTileSize(3)).to.eql([512, 256]);
+      assert.deepEqual(tileGrid.getTileSize(0), [512, 256]);
+      assert.deepEqual(tileGrid.getTileSize(3), [512, 256]);
     });
 
     it('works with multiple tile sizes as number', function () {
@@ -1060,8 +1067,8 @@ describe('ol/tilegrid/TileGrid.js', function () {
         resolutions: resolutions,
         origin: origin,
       });
-      expect(tileGrid.getTileSize(0)).to.equal(256);
-      expect(tileGrid.getTileSize(3)).to.equal(512);
+      assert.equal(tileGrid.getTileSize(0), 256);
+      assert.equal(tileGrid.getTileSize(3), 512);
     });
 
     it('works with multiple tile sizes as array', function () {
@@ -1075,8 +1082,8 @@ describe('ol/tilegrid/TileGrid.js', function () {
         resolutions: resolutions,
         origin: origin,
       });
-      expect(tileGrid.getTileSize(0)).to.eql([512, 256]);
-      expect(tileGrid.getTileSize(3)).to.eql([640, 320]);
+      assert.deepEqual(tileGrid.getTileSize(0), [512, 256]);
+      assert.deepEqual(tileGrid.getTileSize(3), [640, 320]);
     });
   });
 
@@ -1087,7 +1094,7 @@ describe('ol/tilegrid/TileGrid.js', function () {
       tileGrid.forEachTileCoord([15, 47, 16, 48], 8, function (tileCoord) {
         tileCoords.push(tileCoord);
       });
-      expect(tileCoords).to.eql([
+      assert.deepEqual(tileCoords, [
         [8, 138, 29],
         [8, 138, 30],
         [8, 139, 29],
@@ -1115,26 +1122,26 @@ describe('ol/tilegrid/TileGrid.js', function () {
         },
       );
 
-      expect(zs.length).to.eql(3);
-      expect(tileRanges.length).to.eql(3);
+      assert.deepEqual(zs.length, 3);
+      assert.deepEqual(tileRanges.length, 3);
 
-      expect(zs[0]).to.eql(2);
-      expect(tileRanges[0].minX).to.eql(2);
-      expect(tileRanges[0].minY).to.eql(1);
-      expect(tileRanges[0].maxX).to.eql(3);
-      expect(tileRanges[0].maxY).to.eql(1);
+      assert.deepEqual(zs[0], 2);
+      assert.deepEqual(tileRanges[0].minX, 2);
+      assert.deepEqual(tileRanges[0].minY, 1);
+      assert.deepEqual(tileRanges[0].maxX, 3);
+      assert.deepEqual(tileRanges[0].maxY, 1);
 
-      expect(zs[1]).to.eql(1);
-      expect(tileRanges[1].minX).to.eql(1);
-      expect(tileRanges[1].minY).to.eql(0);
-      expect(tileRanges[1].maxX).to.eql(1);
-      expect(tileRanges[1].maxY).to.eql(0);
+      assert.deepEqual(zs[1], 1);
+      assert.deepEqual(tileRanges[1].minX, 1);
+      assert.deepEqual(tileRanges[1].minY, 0);
+      assert.deepEqual(tileRanges[1].maxX, 1);
+      assert.deepEqual(tileRanges[1].maxY, 0);
 
-      expect(zs[2]).to.eql(0);
-      expect(tileRanges[2].minX).to.eql(0);
-      expect(tileRanges[2].minY).to.eql(0);
-      expect(tileRanges[2].maxX).to.eql(0);
-      expect(tileRanges[2].maxY).to.eql(0);
+      assert.deepEqual(zs[2], 0);
+      assert.deepEqual(tileRanges[2].minX, 0);
+      assert.deepEqual(tileRanges[2].minY, 0);
+      assert.deepEqual(tileRanges[2].maxX, 0);
+      assert.deepEqual(tileRanges[2].maxY, 0);
     });
   });
 
@@ -1146,10 +1153,10 @@ describe('ol/tilegrid/TileGrid.js', function () {
         tileSize: tileSize,
       });
 
-      expect(tileGrid.getZForResolution(1000)).to.eql(0);
-      expect(tileGrid.getZForResolution(500)).to.eql(1);
-      expect(tileGrid.getZForResolution(250)).to.eql(2);
-      expect(tileGrid.getZForResolution(100)).to.eql(3);
+      assert.deepEqual(tileGrid.getZForResolution(1000), 0);
+      assert.deepEqual(tileGrid.getZForResolution(500), 1);
+      assert.deepEqual(tileGrid.getZForResolution(250), 2);
+      assert.deepEqual(tileGrid.getZForResolution(100), 3);
     });
   });
 
@@ -1161,19 +1168,19 @@ describe('ol/tilegrid/TileGrid.js', function () {
         tileSize: tileSize,
       });
 
-      expect(tileGrid.getZForResolution(2000)).to.eql(0);
-      expect(tileGrid.getZForResolution(1000)).to.eql(0);
-      expect(tileGrid.getZForResolution(900)).to.eql(0);
-      expect(tileGrid.getZForResolution(750)).to.eql(1);
-      expect(tileGrid.getZForResolution(625)).to.eql(1);
-      expect(tileGrid.getZForResolution(500)).to.eql(1);
-      expect(tileGrid.getZForResolution(475)).to.eql(1);
-      expect(tileGrid.getZForResolution(375)).to.eql(2);
-      expect(tileGrid.getZForResolution(250)).to.eql(2);
-      expect(tileGrid.getZForResolution(200)).to.eql(2);
-      expect(tileGrid.getZForResolution(125)).to.eql(3);
-      expect(tileGrid.getZForResolution(100)).to.eql(3);
-      expect(tileGrid.getZForResolution(50)).to.eql(3);
+      assert.deepEqual(tileGrid.getZForResolution(2000), 0);
+      assert.deepEqual(tileGrid.getZForResolution(1000), 0);
+      assert.deepEqual(tileGrid.getZForResolution(900), 0);
+      assert.deepEqual(tileGrid.getZForResolution(750), 1);
+      assert.deepEqual(tileGrid.getZForResolution(625), 1);
+      assert.deepEqual(tileGrid.getZForResolution(500), 1);
+      assert.deepEqual(tileGrid.getZForResolution(475), 1);
+      assert.deepEqual(tileGrid.getZForResolution(375), 2);
+      assert.deepEqual(tileGrid.getZForResolution(250), 2);
+      assert.deepEqual(tileGrid.getZForResolution(200), 2);
+      assert.deepEqual(tileGrid.getZForResolution(125), 3);
+      assert.deepEqual(tileGrid.getZForResolution(100), 3);
+      assert.deepEqual(tileGrid.getZForResolution(50), 3);
     });
   });
 
@@ -1185,19 +1192,19 @@ describe('ol/tilegrid/TileGrid.js', function () {
         tileSize: tileSize,
       });
 
-      expect(tileGrid.getZForResolution(2000, 1)).to.eql(0);
-      expect(tileGrid.getZForResolution(1000, 1)).to.eql(0);
-      expect(tileGrid.getZForResolution(900, 1)).to.eql(0);
-      expect(tileGrid.getZForResolution(750, 1)).to.eql(0);
-      expect(tileGrid.getZForResolution(625, 1)).to.eql(0);
-      expect(tileGrid.getZForResolution(500, 1)).to.eql(1);
-      expect(tileGrid.getZForResolution(475, 1)).to.eql(1);
-      expect(tileGrid.getZForResolution(375, 1)).to.eql(1);
-      expect(tileGrid.getZForResolution(250, 1)).to.eql(2);
-      expect(tileGrid.getZForResolution(200, 1)).to.eql(2);
-      expect(tileGrid.getZForResolution(125, 1)).to.eql(2);
-      expect(tileGrid.getZForResolution(100, 1)).to.eql(3);
-      expect(tileGrid.getZForResolution(50, 1)).to.eql(3);
+      assert.deepEqual(tileGrid.getZForResolution(2000, 1), 0);
+      assert.deepEqual(tileGrid.getZForResolution(1000, 1), 0);
+      assert.deepEqual(tileGrid.getZForResolution(900, 1), 0);
+      assert.deepEqual(tileGrid.getZForResolution(750, 1), 0);
+      assert.deepEqual(tileGrid.getZForResolution(625, 1), 0);
+      assert.deepEqual(tileGrid.getZForResolution(500, 1), 1);
+      assert.deepEqual(tileGrid.getZForResolution(475, 1), 1);
+      assert.deepEqual(tileGrid.getZForResolution(375, 1), 1);
+      assert.deepEqual(tileGrid.getZForResolution(250, 1), 2);
+      assert.deepEqual(tileGrid.getZForResolution(200, 1), 2);
+      assert.deepEqual(tileGrid.getZForResolution(125, 1), 2);
+      assert.deepEqual(tileGrid.getZForResolution(100, 1), 3);
+      assert.deepEqual(tileGrid.getZForResolution(50, 1), 3);
     });
   });
 
@@ -1209,19 +1216,19 @@ describe('ol/tilegrid/TileGrid.js', function () {
         tileSize: tileSize,
       });
 
-      expect(tileGrid.getZForResolution(2000, -1)).to.eql(0);
-      expect(tileGrid.getZForResolution(1000, -1)).to.eql(0);
-      expect(tileGrid.getZForResolution(900, -1)).to.eql(1);
-      expect(tileGrid.getZForResolution(750, -1)).to.eql(1);
-      expect(tileGrid.getZForResolution(625, -1)).to.eql(1);
-      expect(tileGrid.getZForResolution(500, -1)).to.eql(1);
-      expect(tileGrid.getZForResolution(475, -1)).to.eql(2);
-      expect(tileGrid.getZForResolution(375, -1)).to.eql(2);
-      expect(tileGrid.getZForResolution(250, -1)).to.eql(2);
-      expect(tileGrid.getZForResolution(200, -1)).to.eql(3);
-      expect(tileGrid.getZForResolution(125, -1)).to.eql(3);
-      expect(tileGrid.getZForResolution(100, -1)).to.eql(3);
-      expect(tileGrid.getZForResolution(50, -1)).to.eql(3);
+      assert.deepEqual(tileGrid.getZForResolution(2000, -1), 0);
+      assert.deepEqual(tileGrid.getZForResolution(1000, -1), 0);
+      assert.deepEqual(tileGrid.getZForResolution(900, -1), 1);
+      assert.deepEqual(tileGrid.getZForResolution(750, -1), 1);
+      assert.deepEqual(tileGrid.getZForResolution(625, -1), 1);
+      assert.deepEqual(tileGrid.getZForResolution(500, -1), 1);
+      assert.deepEqual(tileGrid.getZForResolution(475, -1), 2);
+      assert.deepEqual(tileGrid.getZForResolution(375, -1), 2);
+      assert.deepEqual(tileGrid.getZForResolution(250, -1), 2);
+      assert.deepEqual(tileGrid.getZForResolution(200, -1), 3);
+      assert.deepEqual(tileGrid.getZForResolution(125, -1), 3);
+      assert.deepEqual(tileGrid.getZForResolution(100, -1), 3);
+      assert.deepEqual(tileGrid.getZForResolution(50, -1), 3);
     });
   });
 
@@ -1233,53 +1240,61 @@ describe('ol/tilegrid/TileGrid.js', function () {
         tileSize: tileSize,
       });
 
-      expect(
+      assert.deepEqual(
         tileGrid.getZForResolution(626, function (value, high, low) {
           return value - (low + (high - low) * 0.25);
         }),
-      ).to.eql(0);
+        0,
+      );
 
-      expect(
+      assert.deepEqual(
         tileGrid.getZForResolution(625, function (value, high, low) {
           return value - (low + (high - low) * 0.25);
         }),
-      ).to.eql(1);
+        1,
+      );
 
-      expect(
+      assert.deepEqual(
         tileGrid.getZForResolution(476, function (value, high, low) {
           return value - (low + (high - low) * 0.9);
         }),
-      ).to.eql(1);
+        1,
+      );
 
-      expect(
+      assert.deepEqual(
         tileGrid.getZForResolution(475, function (value, high, low) {
           return value - (low + (high - low) * 0.9);
         }),
-      ).to.eql(2);
+        2,
+      );
 
-      expect(
+      assert.deepEqual(
         tileGrid.getZForResolution(201, function (value, high, low) {
           return value - (low + (high - low) * 0.666666667);
         }),
-      ).to.eql(2);
+        2,
+      );
 
-      expect(
+      assert.deepEqual(
         tileGrid.getZForResolution(200, function (value, high, low) {
           return value - (low + (high - low) * 0.666666667);
         }),
-      ).to.eql(3);
+        3,
+      );
 
-      expect(
+      assert.deepEqual(
         tileGrid.getZForResolution(126, function (value, high, low) {
           return value - (low + (high - low) * 0.166666667);
         }),
-      ).to.eql(2);
+        2,
+      );
 
-      expect(
+      assert.deepEqual(
         tileGrid.getZForResolution(125, function (value, high, low) {
           return value - (low + (high - low) * 0.166666667);
         }),
-      ).to.eql(3);
+        3,
+      );
     });
   });
 
@@ -1291,34 +1306,34 @@ describe('ol/tilegrid/TileGrid.js', function () {
 
     it('can be used to get the child tile range', function () {
       const range = tileGrid.getTileRangeForTileCoordAndZ([0, 0, 0], 1);
-      expect(range.minX).to.be(0);
-      expect(range.maxX).to.be(1);
-      expect(range.minY).to.be(0);
-      expect(range.maxY).to.be(1);
+      assert.strictEqual(range.minX, 0);
+      assert.strictEqual(range.maxX, 1);
+      assert.strictEqual(range.minY, 0);
+      assert.strictEqual(range.maxY, 1);
     });
 
     it('can be used to get the range of a deeper level', function () {
       const range = tileGrid.getTileRangeForTileCoordAndZ([0, 0, 0], 3);
-      expect(range.minX).to.be(0);
-      expect(range.maxX).to.be(7);
-      expect(range.minY).to.be(0);
-      expect(range.maxY).to.be(7);
+      assert.strictEqual(range.minX, 0);
+      assert.strictEqual(range.maxX, 7);
+      assert.strictEqual(range.minY, 0);
+      assert.strictEqual(range.maxY, 7);
     });
 
     it('can be used to get the parent tile range', function () {
       const range = tileGrid.getTileRangeForTileCoordAndZ([1, 1, 0], 0);
-      expect(range.minX).to.be(0);
-      expect(range.maxX).to.be(0);
-      expect(range.minY).to.be(0);
-      expect(range.maxY).to.be(0);
+      assert.strictEqual(range.minX, 0);
+      assert.strictEqual(range.maxX, 0);
+      assert.strictEqual(range.minY, 0);
+      assert.strictEqual(range.maxY, 0);
     });
 
     it('can be used to get the range of a shallower level', function () {
       const range = tileGrid.getTileRangeForTileCoordAndZ([3, 1, 6], 0);
-      expect(range.minX).to.be(0);
-      expect(range.maxX).to.be(0);
-      expect(range.minY).to.be(0);
-      expect(range.maxY).to.be(0);
+      assert.strictEqual(range.minX, 0);
+      assert.strictEqual(range.maxX, 0);
+      assert.strictEqual(range.minY, 0);
+      assert.strictEqual(range.maxY, 0);
     });
 
     const tileCoord = [15, 6239, 11751];
@@ -1327,10 +1342,10 @@ describe('ol/tilegrid/TileGrid.js', function () {
       function (z, tileRange) {
         it(`works for level ${z}`, function () {
           const range = tileGrid.getTileRangeForTileCoordAndZ(tileCoord, z);
-          expect(range.minX).to.be(tileRange.minX);
-          expect(range.maxX).to.be(tileRange.maxX);
-          expect(range.minY).to.be(tileRange.minY);
-          expect(range.maxY).to.be(tileRange.maxY);
+          assert.strictEqual(range.minX, tileRange.minX);
+          assert.strictEqual(range.maxX, tileRange.maxX);
+          assert.strictEqual(range.minY, tileRange.minY);
+          assert.strictEqual(range.maxY, tileRange.maxY);
         });
       },
     );

@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import Google from '../../../../../src/ol/source/Google.js';
 
 const validKey = 'valid-key';
@@ -73,13 +74,13 @@ describe('ol/source/Google', () => {
   describe('constructor', (done) => {
     it('creates a new source', () => {
       source = new Google({key: validKey});
-      expect(source).to.be.a(Google);
+      assert.instanceOf(source, Google);
 
-      expect(source.tileGrid).not.to.be.ok();
+      assert.notOk(source.tileGrid);
 
       source.once('change', () => {
-        expect(source.getState()).to.be('ready');
-        expect(source.tileGrid).to.be.ok();
+        assert.strictEqual(source.getState(), 'ready');
+        assert.isOk(source.tileGrid);
         done();
       });
     });
@@ -87,8 +88,9 @@ describe('ol/source/Google', () => {
     it('sets error if key is not valid', (done) => {
       source = new Google({key: 'invalid'});
       source.once('change', () => {
-        expect(source.getState()).to.be('error');
-        expect(source.getError().message).to.be(
+        assert.strictEqual(source.getState(), 'error');
+        assert.strictEqual(
+          source.getError().message,
           'API key not valid. Please pass a valid API key.',
         );
         done();
@@ -99,17 +101,17 @@ describe('ol/source/Google', () => {
   describe('tileUrlFunction()', (done) => {
     it('returns a url that includes the session and api key', () => {
       source = new Google({key: validKey});
-      expect(source).to.be.a(Google);
+      assert.instanceOf(source, Google);
 
       source.once('change', () => {
-        expect(source.getState()).to.be('ready');
+        assert.strictEqual(source.getState(), 'ready');
 
         const url = new URL(
           source.tileUrlFunction([0, 0, 0], 1, source.getProjection()),
         );
 
-        expect(url.searchParams.get('session')).to.be(sessionId);
-        expect(url.searchParams.get('key').to.be(validKey));
+        assert.strictEqual(url.searchParams.get('session'), sessionId);
+        assert.strictEqual(url.searchParams.get('key'), validKey);
         done();
       });
     });

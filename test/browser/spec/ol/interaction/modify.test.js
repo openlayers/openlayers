@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {spy as sinonSpy} from 'sinon';
 import Collection from '../../../../../src/ol/Collection.js';
 import CollectionEventType from '../../../../../src/ol/CollectionEventType.js';
@@ -153,24 +154,20 @@ describe('ol.interaction.Modify', function () {
     const startevent = events[0];
     const endevent = events[events.length - 1];
 
-    // first event should be modifystart
-    expect(startevent).to.be.a(ModifyEvent);
-    expect(startevent.type).to.eql('modifystart');
+    assert.instanceOf(startevent, ModifyEvent);
+    assert.deepEqual(startevent.type, 'modifystart');
 
-    // last event should be modifyend
-    expect(endevent).to.be.a(ModifyEvent);
-    expect(endevent.type).to.eql('modifyend');
+    assert.instanceOf(endevent, ModifyEvent);
+    assert.deepEqual(endevent.type, 'modifyend');
 
-    // make sure we get change events to events array
-    expect(events.length > 2).to.be(true);
+    assert.strictEqual(events.length > 2, true);
     // middle events should be feature modification events
     for (let i = 1; i < events.length - 1; i++) {
-      expect(events[i]).to.equal('change');
+      assert.equal(events[i], 'change');
     }
 
-    // ModifyEvents should include the expected features
-    expect(startevent.features.getArray()).to.eql(features);
-    expect(endevent.features.getArray()).to.eql(features);
+    assert.deepEqual(startevent.features.getArray(), features);
+    assert.deepEqual(endevent.features.getArray(), features);
   }
 
   describe('constructor', function () {
@@ -181,8 +178,8 @@ describe('ol.interaction.Modify', function () {
         features: features,
       });
       const rbushEntries = modify.rBush_.getAll();
-      expect(rbushEntries.length).to.be(1);
-      expect(rbushEntries[0].feature).to.be(feature);
+      assert.strictEqual(rbushEntries.length, 1);
+      assert.strictEqual(rbushEntries[0].feature, feature);
     });
 
     it('accepts feature without geometry', function () {
@@ -192,12 +189,12 @@ describe('ol.interaction.Modify', function () {
         features: features,
       });
       let rbushEntries = modify.rBush_.getAll();
-      expect(rbushEntries.length).to.be(0);
+      assert.strictEqual(rbushEntries.length, 0);
 
       feature.setGeometry(new Point([0, 10]));
       rbushEntries = modify.rBush_.getAll();
-      expect(rbushEntries.length).to.be(1);
-      expect(rbushEntries[0].feature).to.be(feature);
+      assert.strictEqual(rbushEntries.length, 1);
+      assert.strictEqual(rbushEntries[0].feature, feature);
     });
 
     it('accepts a source', function () {
@@ -205,8 +202,8 @@ describe('ol.interaction.Modify', function () {
       const source = new VectorSource({features: [feature]});
       const modify = new Modify({source: source});
       const rbushEntries = modify.rBush_.getAll();
-      expect(rbushEntries.length).to.be(1);
-      expect(rbushEntries[0].feature).to.be(feature);
+      assert.strictEqual(rbushEntries.length, 1);
+      assert.strictEqual(rbushEntries[0].feature, feature);
     });
 
     it('accepts a hitDetection option', function () {
@@ -215,14 +212,14 @@ describe('ol.interaction.Modify', function () {
       const layer = new VectorLayer({source: source});
       const modify = new Modify({hitDetection: layer, source: source});
       const rbushEntries = modify.rBush_.getAll();
-      expect(rbushEntries.length).to.be(1);
-      expect(rbushEntries[0].feature).to.be(feature);
-      expect(modify.hitDetection_).to.be(layer);
+      assert.strictEqual(rbushEntries.length, 1);
+      assert.strictEqual(rbushEntries[0].feature, feature);
+      assert.strictEqual(modify.hitDetection_, layer);
     });
 
     it('accepts a snapToPointer option', function () {
       const modify = new Modify({source: source, snapToPointer: true});
-      expect(modify.snapToPointer_).to.be(true);
+      assert.strictEqual(modify.snapToPointer_, true);
     });
   });
 
@@ -242,20 +239,20 @@ describe('ol.interaction.Modify', function () {
 
       const events = trackEvents(first, modify);
 
-      expect(first.getGeometry().getRevision()).to.equal(firstRevision);
-      expect(first.getGeometry().getCoordinates()[0]).to.have.length(5);
-      expect(second.getGeometry().getRevision()).to.equal(secondRevision);
-      expect(second.getGeometry().getCoordinates()[0]).to.have.length(5);
+      assert.equal(first.getGeometry().getRevision(), firstRevision);
+      assert.lengthOf(first.getGeometry().getCoordinates()[0], 5);
+      assert.equal(second.getGeometry().getRevision(), secondRevision);
+      assert.lengthOf(second.getGeometry().getCoordinates()[0], 5);
 
       simulateEvent('pointerdown', 10, -20, {alt: true}, 0);
       simulateEvent('pointerup', 10, -20, {alt: true}, 0);
       simulateEvent('click', 10, -20, {alt: true}, 0);
       simulateEvent('singleclick', 10, -20, {alt: true}, 0);
 
-      expect(first.getGeometry().getRevision()).to.equal(firstRevision + 1);
-      expect(first.getGeometry().getCoordinates()[0]).to.have.length(4);
-      expect(second.getGeometry().getRevision()).to.equal(secondRevision + 1);
-      expect(second.getGeometry().getCoordinates()[0]).to.have.length(4);
+      assert.equal(first.getGeometry().getRevision(), firstRevision + 1);
+      assert.lengthOf(first.getGeometry().getCoordinates()[0], 4);
+      assert.equal(second.getGeometry().getRevision(), secondRevision + 1);
+      assert.lengthOf(second.getGeometry().getCoordinates()[0], 4);
 
       validateEvents(events, features);
     });
@@ -284,18 +281,18 @@ describe('ol.interaction.Modify', function () {
 
       const events = trackEvents(first, modify);
 
-      expect(first.getGeometry().getRevision()).to.equal(firstRevision);
-      expect(first.getGeometry().getCoordinates()).to.have.length(5);
+      assert.equal(first.getGeometry().getRevision(), firstRevision);
+      assert.lengthOf(first.getGeometry().getCoordinates(), 5);
 
       simulateEvent('pointerdown', 0, 0, {alt: true}, 0);
       simulateEvent('pointerup', 0, 0, {alt: true}, 0);
       simulateEvent('click', 0, 0, {alt: true}, 0);
       simulateEvent('singleclick', 0, 0, {alt: true}, 0);
 
-      expect(first.getGeometry().getRevision()).to.equal(firstRevision + 1);
-      expect(first.getGeometry().getCoordinates()).to.have.length(4);
-      expect(first.getGeometry().getCoordinates()[0][0]).to.equal(10);
-      expect(first.getGeometry().getCoordinates()[0][1]).to.equal(20);
+      assert.equal(first.getGeometry().getRevision(), firstRevision + 1);
+      assert.lengthOf(first.getGeometry().getCoordinates(), 4);
+      assert.equal(first.getGeometry().getCoordinates()[0][0], 10);
+      assert.equal(first.getGeometry().getCoordinates()[0][1], 20);
 
       validateEvents(events, features);
     });
@@ -324,18 +321,18 @@ describe('ol.interaction.Modify', function () {
 
       const events = trackEvents(first, modify);
 
-      expect(first.getGeometry().getRevision()).to.equal(firstRevision);
-      expect(first.getGeometry().getCoordinates()).to.have.length(5);
+      assert.equal(first.getGeometry().getRevision(), firstRevision);
+      assert.lengthOf(first.getGeometry().getCoordinates(), 5);
 
       simulateEvent('pointerdown', 40, 0, {alt: true}, 0);
       simulateEvent('pointerup', 40, 0, {alt: true}, 0);
       simulateEvent('click', 40, 0, {alt: true}, 0);
       simulateEvent('singleclick', 40, 0, {alt: true}, 0);
 
-      expect(first.getGeometry().getRevision()).to.equal(firstRevision + 1);
-      expect(first.getGeometry().getCoordinates()).to.have.length(4);
-      expect(first.getGeometry().getCoordinates()[3][0]).to.equal(40);
-      expect(first.getGeometry().getCoordinates()[3][1]).to.equal(40);
+      assert.equal(first.getGeometry().getRevision(), firstRevision + 1);
+      assert.lengthOf(first.getGeometry().getCoordinates(), 4);
+      assert.equal(first.getGeometry().getCoordinates()[3][0], 40);
+      assert.equal(first.getGeometry().getCoordinates()[3][1], 40);
 
       validateEvents(events, features);
     });
@@ -364,19 +361,19 @@ describe('ol.interaction.Modify', function () {
 
       const events = trackEvents(first, modify);
 
-      expect(first.getGeometry().getRevision()).to.equal(firstRevision);
-      expect(first.getGeometry().getCoordinates()).to.have.length(5);
+      assert.equal(first.getGeometry().getRevision(), firstRevision);
+      assert.lengthOf(first.getGeometry().getCoordinates(), 5);
 
       simulateEvent('pointerdown', 40, 0, null, 0);
       simulateEvent('pointerup', 40, 0, null, 0);
 
       const removed = modify.removePoint();
 
-      expect(removed).to.be(true);
-      expect(first.getGeometry().getRevision()).to.equal(firstRevision + 1);
-      expect(first.getGeometry().getCoordinates()).to.have.length(4);
-      expect(first.getGeometry().getCoordinates()[3][0]).to.equal(40);
-      expect(first.getGeometry().getCoordinates()[3][1]).to.equal(40);
+      assert.strictEqual(removed, true);
+      assert.equal(first.getGeometry().getRevision(), firstRevision + 1);
+      assert.lengthOf(first.getGeometry().getCoordinates(), 4);
+      assert.equal(first.getGeometry().getCoordinates()[3][0], 40);
+      assert.equal(first.getGeometry().getCoordinates()[3][1], 40);
 
       validateEvents(events, features);
     });
@@ -405,16 +402,16 @@ describe('ol.interaction.Modify', function () {
 
       const events = trackEvents(first, modify);
 
-      expect(first.getGeometry().getRevision()).to.equal(firstRevision);
-      expect(first.getGeometry().getCoordinates()).to.have.length(5);
+      assert.equal(first.getGeometry().getRevision(), firstRevision);
+      assert.lengthOf(first.getGeometry().getCoordinates(), 5);
 
       const removed = modify.removePoint([40, 0]);
 
-      expect(removed).to.be(true);
-      expect(first.getGeometry().getRevision()).to.equal(firstRevision + 1);
-      expect(first.getGeometry().getCoordinates()).to.have.length(4);
-      expect(first.getGeometry().getCoordinates()[3][0]).to.equal(40);
-      expect(first.getGeometry().getCoordinates()[3][1]).to.equal(40);
+      assert.strictEqual(removed, true);
+      assert.equal(first.getGeometry().getRevision(), firstRevision + 1);
+      assert.lengthOf(first.getGeometry().getCoordinates(), 4);
+      assert.equal(first.getGeometry().getCoordinates()[3][0], 40);
+      assert.equal(first.getGeometry().getCoordinates()[3][1], 40);
 
       validateEvents(events, features);
     });
@@ -439,7 +436,7 @@ describe('ol.interaction.Modify', function () {
 
       simulateEvent('pointermove', 10, -20, null, 0);
 
-      expect(modify.canRemovePoint()).to.be(true);
+      assert.strictEqual(modify.canRemovePoint(), true);
     });
 
     it('canRemovePoint() returns false when point cannot be deleted', function () {
@@ -460,7 +457,7 @@ describe('ol.interaction.Modify', function () {
 
       simulateEvent('pointermove', 5, -10, null, 0);
 
-      expect(modify.canRemovePoint()).to.be(false);
+      assert.strictEqual(modify.canRemovePoint(), false);
     });
   });
 
@@ -504,9 +501,9 @@ describe('ol.interaction.Modify', function () {
       simulateEvent('pointerdrag', 50, -10, null, 0);
       simulateEvent('pointerup', 50, -10, null, 0);
 
-      expect(lineFeature.getGeometry().getCoordinates()[0][2]).to.equal(10);
-      expect(lineFeature.getGeometry().getCoordinates()[2][2]).to.equal(30);
-      expect(lineFeature.getGeometry().getCoordinates()[4][2]).to.equal(50);
+      assert.equal(lineFeature.getGeometry().getCoordinates()[0][2], 10);
+      assert.equal(lineFeature.getGeometry().getCoordinates()[2][2], 30);
+      assert.equal(lineFeature.getGeometry().getCoordinates()[4][2], 50);
     });
 
     it('preserves different Z values across geometries at shared vertex with sharedVerticesEqual', function () {
@@ -543,12 +540,11 @@ describe('ol.interaction.Modify', function () {
       let coordsZ1 = lineZ1.getGeometry().getCoordinates();
       let coordsZ2 = lineZ2.getGeometry().getCoordinates();
 
-      // Each line should preserve its own Z; non-dragged vertices unchanged
-      expect(coordsZ1[0]).to.eql([-10, -10, 100]);
-      expect(coordsZ1[1]).to.eql([10, 20, 200]);
+      assert.deepEqual(coordsZ1[0], [-10, -10, 100]);
+      assert.deepEqual(coordsZ1[1], [10, 20, 200]);
 
-      expect(coordsZ2[0]).to.eql([-10, -10, 999]);
-      expect(coordsZ2[1]).to.eql([10, 20, 888]);
+      assert.deepEqual(coordsZ2[0], [-10, -10, 999]);
+      assert.deepEqual(coordsZ2[1], [10, 20, 888]);
 
       // Second drag: move the second shared vertex from [10, 20] to [15, 25]
       simulateEvent('pointermove', 10, -20, null, 0);
@@ -560,11 +556,11 @@ describe('ol.interaction.Modify', function () {
       coordsZ1 = lineZ1.getGeometry().getCoordinates();
       coordsZ2 = lineZ2.getGeometry().getCoordinates();
 
-      expect(coordsZ1[0]).to.eql([-10, -10, 100]);
-      expect(coordsZ1[1]).to.eql([15, 25, 200]);
+      assert.deepEqual(coordsZ1[0], [-10, -10, 100]);
+      assert.deepEqual(coordsZ1[1], [15, 25, 200]);
 
-      expect(coordsZ2[0]).to.eql([-10, -10, 999]);
-      expect(coordsZ2[1]).to.eql([15, 25, 888]);
+      assert.deepEqual(coordsZ2[0], [-10, -10, 999]);
+      assert.deepEqual(coordsZ2[1], [15, 25, 888]);
     });
 
     it('matches XY and XYZ vertices with sharedVerticesEqual', function () {
@@ -603,15 +599,13 @@ describe('ol.interaction.Modify', function () {
       let coordsXYZ = lineXYZ.getGeometry().getCoordinates();
       let coordsXY = lineXY.getGeometry().getCoordinates();
 
-      // XYZ line: dragged vertex should move, preserve Z; others unchanged
-      expect(coordsXYZ[0]).to.eql([-10, -10, 100]);
-      expect(coordsXYZ[1]).to.eql([10, 20, 200]);
-      expect(coordsXYZ[2]).to.eql([0, 40, 300]);
+      assert.deepEqual(coordsXYZ[0], [-10, -10, 100]);
+      assert.deepEqual(coordsXYZ[1], [10, 20, 200]);
+      assert.deepEqual(coordsXYZ[2], [0, 40, 300]);
 
-      // XY line: dragged vertex should move, stay 2D; others unchanged
-      expect(coordsXY[0]).to.eql([-10, -10]);
-      expect(coordsXY[1]).to.eql([10, 20]);
-      expect(coordsXY[2]).to.eql([0, 40]);
+      assert.deepEqual(coordsXY[0], [-10, -10]);
+      assert.deepEqual(coordsXY[1], [10, 20]);
+      assert.deepEqual(coordsXY[2], [0, 40]);
 
       // Second drag: move the second shared vertex from [10, 20] to [15, 25]
       simulateEvent('pointermove', 10, -20, null, 0);
@@ -623,13 +617,13 @@ describe('ol.interaction.Modify', function () {
       coordsXYZ = lineXYZ.getGeometry().getCoordinates();
       coordsXY = lineXY.getGeometry().getCoordinates();
 
-      expect(coordsXYZ[0]).to.eql([-10, -10, 100]);
-      expect(coordsXYZ[1]).to.eql([15, 25, 200]);
-      expect(coordsXYZ[2]).to.eql([0, 40, 300]);
+      assert.deepEqual(coordsXYZ[0], [-10, -10, 100]);
+      assert.deepEqual(coordsXYZ[1], [15, 25, 200]);
+      assert.deepEqual(coordsXYZ[2], [0, 40, 300]);
 
-      expect(coordsXY[0]).to.eql([-10, -10]);
-      expect(coordsXY[1]).to.eql([15, 25]);
-      expect(coordsXY[2]).to.eql([0, 40]);
+      assert.deepEqual(coordsXY[0], [-10, -10]);
+      assert.deepEqual(coordsXY[1], [15, 25]);
+      assert.deepEqual(coordsXY[2], [0, 40]);
     });
 
     it('does not match vertices with different Z without sharedVerticesEqual', function () {
@@ -666,7 +660,7 @@ describe('ol.interaction.Modify', function () {
       // Only one line should have moved (default behavior compares all dimensions)
       const z1Moved = coordsZ1[0][0] === -10 && coordsZ1[0][1] === -10;
       const z2Moved = coordsZ2[0][0] === -10 && coordsZ2[0][1] === -10;
-      expect(z1Moved !== z2Moved).to.be(true);
+      assert.strictEqual(z1Moved !== z2Moved, true);
     });
 
     it('keeps polygon geometries valid', function () {
@@ -697,8 +691,8 @@ describe('ol.interaction.Modify', function () {
       coords = overlappingVertexFeature.getGeometry().getCoordinates();
       exteriorRing = coords[0];
 
-      expect(exteriorRing.length).to.equal(9);
-      expect(exteriorRing[0]).to.eql(exteriorRing[exteriorRing.length - 1]);
+      assert.equal(exteriorRing.length, 9);
+      assert.deepEqual(exteriorRing[0], exteriorRing[exteriorRing.length - 1]);
 
       // move the overlapping vertice
       simulateEvent('pointermove', 10, -20, null, 0);
@@ -710,9 +704,9 @@ describe('ol.interaction.Modify', function () {
       coords = overlappingVertexFeature.getGeometry().getCoordinates();
       exteriorRing = coords[0];
 
-      expect(exteriorRing.length).to.equal(9);
-      expect(exteriorRing[0]).to.eql([10, 25]);
-      expect(exteriorRing[0]).to.eql(exteriorRing[exteriorRing.length - 1]);
+      assert.equal(exteriorRing.length, 9);
+      assert.deepEqual(exteriorRing[0], [10, 25]);
+      assert.deepEqual(exteriorRing[0], exteriorRing[exteriorRing.length - 1]);
     });
   });
 
@@ -739,7 +733,7 @@ describe('ol.interaction.Modify', function () {
       simulateEvent('pointerdown', 0, 0, null, 0);
       simulateEvent('pointerup', 0, 0, null, 0);
 
-      expect(lineFeature.getGeometry().getCoordinates().length).to.equal(5);
+      assert.equal(lineFeature.getGeometry().getCoordinates().length, 5);
     });
     it('inserts one vertex into both linestrings with duplicate segments each', function () {
       const lineFeature1 = new Feature(
@@ -776,9 +770,12 @@ describe('ol.interaction.Modify', function () {
       simulateEvent('pointerup', 0, 0, null, 0);
       modify.un('modifystart', onModifyStart);
 
-      expect(lineFeature1.getGeometry().getCoordinates().length).to.be(4);
-      expect(lineFeature2.getGeometry().getCoordinates().length).to.be(4);
-      expect(modifiedFeatures.getArray()).to.eql([lineFeature1, lineFeature2]);
+      assert.strictEqual(lineFeature1.getGeometry().getCoordinates().length, 4);
+      assert.strictEqual(lineFeature2.getGeometry().getCoordinates().length, 4);
+      assert.deepEqual(modifiedFeatures.getArray(), [
+        lineFeature1,
+        lineFeature2,
+      ]);
     });
     it('insertPoint() inserts a vertex into a LineString programmatically', function () {
       const lineFeature = new Feature({
@@ -797,12 +794,12 @@ describe('ol.interaction.Modify', function () {
 
       simulateEvent('pointermove', 0, 0, null, 0);
 
-      expect(lineFeature.getGeometry().getCoordinates().length).to.equal(2);
+      assert.equal(lineFeature.getGeometry().getCoordinates().length, 2);
 
       const inserted = modify.insertPoint();
-      expect(inserted).to.be(true);
+      assert.strictEqual(inserted, true);
 
-      expect(lineFeature.getGeometry().getCoordinates().length).to.equal(3);
+      assert.equal(lineFeature.getGeometry().getCoordinates().length, 3);
     });
     it('insertPoint() inserts the provided vertex into a LineString programmatically', function () {
       const lineFeature = new Feature({
@@ -819,13 +816,13 @@ describe('ol.interaction.Modify', function () {
       });
       map.addInteraction(modify);
 
-      expect(lineFeature.getGeometry().getCoordinates().length).to.equal(2);
+      assert.equal(lineFeature.getGeometry().getCoordinates().length, 2);
 
       const inserted = modify.insertPoint([0, 0]);
-      expect(inserted).to.be(true);
+      assert.strictEqual(inserted, true);
 
-      expect(lineFeature.getGeometry().getCoordinates().length).to.equal(3);
-      expect(lineFeature.getGeometry().getCoordinates()[1]).to.eql([0, 0]);
+      assert.equal(lineFeature.getGeometry().getCoordinates().length, 3);
+      assert.deepEqual(lineFeature.getGeometry().getCoordinates()[1], [0, 0]);
     });
     it('canInsertPoint() returns true when point can be inserted', function () {
       const lineFeature = new Feature({
@@ -844,7 +841,7 @@ describe('ol.interaction.Modify', function () {
 
       simulateEvent('pointermove', 0, 0, null, 0);
 
-      expect(modify.canInsertPoint()).to.be(true);
+      assert.strictEqual(modify.canInsertPoint(), true);
     });
     it('canInsertPoint() returns false when point cannot be inserted', function () {
       const lineFeature = new Feature({
@@ -863,7 +860,7 @@ describe('ol.interaction.Modify', function () {
 
       simulateEvent('pointermove', 5, 50, null, 0);
 
-      expect(modify.canInsertPoint()).to.be(false);
+      assert.strictEqual(modify.canInsertPoint(), false);
     });
   });
 
@@ -885,8 +882,8 @@ describe('ol.interaction.Modify', function () {
       simulateEvent('pointerdrag', 5, -5, null, 0);
       simulateEvent('pointerup', 5, -5, null, 0);
 
-      expect(circleFeature.getGeometry().getRadius()).to.equal(20);
-      expect(circleFeature.getGeometry().getCenter()).to.eql([5, 5]);
+      assert.equal(circleFeature.getGeometry().getRadius(), 20);
+      assert.deepEqual(circleFeature.getGeometry().getCenter(), [5, 5]);
 
       // Increase radius along x axis
       simulateEvent('pointermove', 25, -4, null, 0);
@@ -895,8 +892,8 @@ describe('ol.interaction.Modify', function () {
       simulateEvent('pointerdrag', 30, -5, null, 0);
       simulateEvent('pointerup', 30, -5, null, 0);
 
-      expect(circleFeature.getGeometry().getRadius()).to.roughlyEqual(25, 0.1);
-      expect(circleFeature.getGeometry().getCenter()).to.eql([5, 5]);
+      assert.approximately(circleFeature.getGeometry().getRadius(), 25, 0.1);
+      assert.deepEqual(circleFeature.getGeometry().getCenter(), [5, 5]);
 
       // Increase radius along y axis
       simulateEvent('pointermove', 4, -30, null, 0);
@@ -905,8 +902,8 @@ describe('ol.interaction.Modify', function () {
       simulateEvent('pointerdrag', 5, -35, null, 0);
       simulateEvent('pointerup', 5, -35, null, 0);
 
-      expect(circleFeature.getGeometry().getRadius()).to.roughlyEqual(30, 0.1);
-      expect(circleFeature.getGeometry().getCenter()).to.eql([5, 5]);
+      assert.approximately(circleFeature.getGeometry().getRadius(), 30, 0.1);
+      assert.deepEqual(circleFeature.getGeometry().getCenter(), [5, 5]);
     });
 
     it('changes the circle radius and center in a user projection', function () {
@@ -936,8 +933,8 @@ describe('ol.interaction.Modify', function () {
         .getGeometry()
         .clone()
         .transform(userProjection, viewProjection);
-      expect(geometry1.getRadius()).to.roughlyEqual(20, 1e-9);
-      expect(geometry1.getCenter()).to.eql([5, 5]);
+      assert.approximately(geometry1.getRadius(), 20, 1e-9);
+      assert.deepEqual(geometry1.getCenter(), [5, 5]);
 
       // Increase radius along x axis
       simulateEvent('pointermove', 25, -4, null, 0);
@@ -950,8 +947,8 @@ describe('ol.interaction.Modify', function () {
         .getGeometry()
         .clone()
         .transform(userProjection, viewProjection);
-      expect(geometry2.getRadius()).to.roughlyEqual(25, 0.1);
-      expect(geometry2.getCenter()).to.eql([5, 5]);
+      assert.approximately(geometry2.getRadius(), 25, 0.1);
+      assert.deepEqual(geometry2.getCenter(), [5, 5]);
 
       // Increase radius along y axis
       simulateEvent('pointermove', 4, -30, null, 0);
@@ -964,8 +961,8 @@ describe('ol.interaction.Modify', function () {
         .getGeometry()
         .clone()
         .transform(userProjection, viewProjection);
-      expect(geometry3.getRadius()).to.roughlyEqual(30, 0.1);
-      expect(geometry3.getCenter()).to.eql([5, 5]);
+      assert.approximately(geometry3.getRadius(), 30, 0.1);
+      assert.deepEqual(geometry3.getCenter(), [5, 5]);
     });
   });
 
@@ -985,46 +982,46 @@ describe('ol.interaction.Modify', function () {
     });
 
     it('clicking vertex should delete it and +r1', function () {
-      expect(feature.getGeometry().getRevision()).to.equal(1);
-      expect(feature.getGeometry().getCoordinates()[0]).to.have.length(5);
+      assert.equal(feature.getGeometry().getRevision(), 1);
+      assert.lengthOf(feature.getGeometry().getCoordinates()[0], 5);
 
       simulateEvent('pointerdown', 10, -20, {alt: true}, 0);
       simulateEvent('pointerup', 10, -20, {alt: true}, 0);
       simulateEvent('click', 10, -20, {alt: true}, 0);
       simulateEvent('singleclick', 10, -20, {alt: true}, 0);
 
-      expect(feature.getGeometry().getRevision()).to.equal(2);
-      expect(feature.getGeometry().getCoordinates()[0]).to.have.length(4);
+      assert.equal(feature.getGeometry().getRevision(), 2);
+      assert.lengthOf(feature.getGeometry().getCoordinates()[0], 4);
 
       validateEvents(events, [feature]);
     });
 
     it('single clicking boundary should add vertex and +r1', function () {
-      expect(feature.getGeometry().getRevision()).to.equal(1);
-      expect(feature.getGeometry().getCoordinates()[0]).to.have.length(5);
+      assert.equal(feature.getGeometry().getRevision(), 1);
+      assert.lengthOf(feature.getGeometry().getCoordinates()[0], 5);
 
       simulateEvent('pointerdown', 40, -20, null, 0);
       simulateEvent('pointerup', 40, -20, null, 0);
       simulateEvent('click', 40, -20, null, 0);
       simulateEvent('singleclick', 40, -20, null, 0);
 
-      expect(feature.getGeometry().getRevision()).to.equal(2);
-      expect(feature.getGeometry().getCoordinates()[0]).to.have.length(6);
+      assert.equal(feature.getGeometry().getRevision(), 2);
+      assert.lengthOf(feature.getGeometry().getCoordinates()[0], 6);
 
       validateEvents(events, [feature]);
     });
 
     it('single clicking on created vertex should delete it again', function () {
-      expect(feature.getGeometry().getRevision()).to.equal(1);
-      expect(feature.getGeometry().getCoordinates()[0]).to.have.length(5);
+      assert.equal(feature.getGeometry().getRevision(), 1);
+      assert.lengthOf(feature.getGeometry().getCoordinates()[0], 5);
 
       simulateEvent('pointerdown', 40, -20, null, 0);
       simulateEvent('pointerup', 40, -20, null, 0);
       simulateEvent('click', 40, -20, null, 0);
       simulateEvent('singleclick', 40, -20, null, 0);
 
-      expect(feature.getGeometry().getRevision()).to.equal(2);
-      expect(feature.getGeometry().getCoordinates()[0]).to.have.length(6);
+      assert.equal(feature.getGeometry().getRevision(), 2);
+      assert.lengthOf(feature.getGeometry().getCoordinates()[0], 6);
 
       validateEvents(events, [feature]);
       events.length = 0;
@@ -1034,15 +1031,15 @@ describe('ol.interaction.Modify', function () {
       simulateEvent('click', 40, -20, {alt: true}, 0);
       simulateEvent('singleclick', 40, -20, {alt: true}, 0);
 
-      expect(feature.getGeometry().getRevision()).to.equal(3);
-      expect(feature.getGeometry().getCoordinates()[0]).to.have.length(5);
+      assert.equal(feature.getGeometry().getRevision(), 3);
+      assert.lengthOf(feature.getGeometry().getCoordinates()[0], 5);
 
       validateEvents(events, [feature]);
     });
 
     it('clicking with drag should add vertex and +r2', function () {
-      expect(feature.getGeometry().getRevision()).to.equal(1);
-      expect(feature.getGeometry().getCoordinates()[0]).to.have.length(5);
+      assert.equal(feature.getGeometry().getRevision(), 1);
+      assert.lengthOf(feature.getGeometry().getCoordinates()[0], 5);
 
       simulateEvent('pointermove', 40, -20, null, 0);
       simulateEvent('pointerdown', 40, -20, null, 0);
@@ -1050,15 +1047,15 @@ describe('ol.interaction.Modify', function () {
       simulateEvent('pointerdrag', 30, -20, null, 0);
       simulateEvent('pointerup', 30, -20, null, 0);
 
-      expect(feature.getGeometry().getRevision()).to.equal(3);
-      expect(feature.getGeometry().getCoordinates()[0]).to.have.length(6);
+      assert.equal(feature.getGeometry().getRevision(), 3);
+      assert.lengthOf(feature.getGeometry().getCoordinates()[0], 6);
 
       validateEvents(events, [feature]);
     });
 
     it('clicking with right button should not add a vertex', function () {
-      expect(feature.getGeometry().getRevision()).to.equal(1);
-      expect(feature.getGeometry().getCoordinates()[0]).to.have.length(5);
+      assert.equal(feature.getGeometry().getRevision(), 1);
+      assert.lengthOf(feature.getGeometry().getCoordinates()[0], 5);
 
       simulateEvent('pointermove', 40, -20, null, 0);
       // right click
@@ -1067,9 +1064,9 @@ describe('ol.interaction.Modify', function () {
       simulateEvent('pointerdrag', 30, -20, null, 1);
       simulateEvent('pointerup', 30, -20, null, 1);
 
-      expect(feature.getGeometry().getRevision()).to.equal(1);
-      expect(feature.getGeometry().getCoordinates()[0]).to.have.length(5);
-      expect(events).to.have.length(0);
+      assert.equal(feature.getGeometry().getRevision(), 1);
+      assert.lengthOf(feature.getGeometry().getCoordinates()[0], 5);
+      assert.lengthOf(events, 0);
     });
   });
 
@@ -1131,28 +1128,28 @@ describe('ol.interaction.Modify', function () {
 
       let geomCoords;
       geomCoords = firstPolygon.getCoordinates()[0];
-      expect(geomCoords[0][0]).to.equal(-1);
-      expect(geomCoords[0][1]).to.equal(0);
+      assert.equal(geomCoords[0][0], -1);
+      assert.equal(geomCoords[0][1], 0);
 
       geomCoords = secondPolygon.getCoordinates()[0];
-      expect(geomCoords[0][0]).to.equal(-1);
-      expect(geomCoords[0][1]).to.equal(0);
+      assert.equal(geomCoords[0][0], -1);
+      assert.equal(geomCoords[0][1], 0);
 
       geomCoords = firstLineString.getCoordinates();
-      expect(geomCoords[1][0]).to.equal(-1);
-      expect(geomCoords[1][1]).to.equal(0);
+      assert.equal(geomCoords[1][0], -1);
+      assert.equal(geomCoords[1][1], 0);
 
       geomCoords = secondLineString.getCoordinates();
-      expect(geomCoords[1][0]).to.equal(-1);
-      expect(geomCoords[1][1]).to.equal(0);
+      assert.equal(geomCoords[1][0], -1);
+      assert.equal(geomCoords[1][1], 0);
 
       geomCoords = point.getCoordinates();
-      expect(geomCoords[0]).to.equal(-1);
-      expect(geomCoords[1]).to.equal(0);
+      assert.equal(geomCoords[0], -1);
+      assert.equal(geomCoords[1], 0);
 
       geomCoords = circle.getCenter();
-      expect(geomCoords[0]).to.equal(-1);
-      expect(geomCoords[1]).to.equal(0);
+      assert.equal(geomCoords[0], -1);
+      assert.equal(geomCoords[1], 0);
     });
   });
 
@@ -1172,8 +1169,8 @@ describe('ol.interaction.Modify', function () {
     });
 
     it('should delete vertex on double click', function () {
-      expect(feature.getGeometry().getRevision()).to.equal(1);
-      expect(feature.getGeometry().getCoordinates()[0]).to.have.length(5);
+      assert.equal(feature.getGeometry().getRevision(), 1);
+      assert.lengthOf(feature.getGeometry().getCoordinates()[0], 5);
 
       simulateEvent('pointerdown', 10, -20, null, 0);
       simulateEvent('pointerup', 10, -20, null, 0);
@@ -1183,25 +1180,25 @@ describe('ol.interaction.Modify', function () {
       simulateEvent('click', 10, -20, null, 0);
       simulateEvent('dblclick', 10, -20, null, 0);
 
-      expect(feature.getGeometry().getRevision()).to.equal(2);
-      expect(feature.getGeometry().getCoordinates()[0]).to.have.length(4);
+      assert.equal(feature.getGeometry().getRevision(), 2);
+      assert.lengthOf(feature.getGeometry().getCoordinates()[0], 4);
 
       validateEvents(events, features);
     });
 
     it('should do nothing on single click', function () {
-      expect(feature.getGeometry().getRevision()).to.equal(1);
-      expect(feature.getGeometry().getCoordinates()[0]).to.have.length(5);
+      assert.equal(feature.getGeometry().getRevision(), 1);
+      assert.lengthOf(feature.getGeometry().getCoordinates()[0], 5);
 
       simulateEvent('pointerdown', 10, -20, null, 0);
       simulateEvent('pointerup', 10, -20, null, 0);
       simulateEvent('click', 10, -20, null, 0);
       simulateEvent('singleclick', 10, -20, null, 0);
 
-      expect(feature.getGeometry().getRevision()).to.equal(1);
-      expect(feature.getGeometry().getCoordinates()[0]).to.have.length(5);
+      assert.equal(feature.getGeometry().getRevision(), 1);
+      assert.lengthOf(feature.getGeometry().getCoordinates()[0], 5);
 
-      expect(events.length).to.eql(0);
+      assert.deepEqual(events.length, 0);
     });
   });
 
@@ -1225,8 +1222,8 @@ describe('ol.interaction.Modify', function () {
       simulateEvent('pointerdrag', -10, -10, null, 0);
       simulateEvent('pointerup', -10, -10, null, 0);
 
-      expect(listenerSpy.callCount).to.be(0);
-      expect(feature.getGeometry().getCoordinates()[0]).to.have.length(5);
+      assert.strictEqual(listenerSpy.callCount, 0);
+      assert.lengthOf(feature.getGeometry().getCoordinates()[0], 5);
 
       // try to add vertex
       simulateEvent('pointerdown', 40, -20, null, 0);
@@ -1234,8 +1231,8 @@ describe('ol.interaction.Modify', function () {
       simulateEvent('click', 40, -20, null, 0);
       simulateEvent('singleclick', 40, -20, null, 0);
 
-      expect(listenerSpy.callCount).to.be(1);
-      expect(feature.getGeometry().getCoordinates()[0]).to.have.length(5);
+      assert.strictEqual(listenerSpy.callCount, 1);
+      assert.lengthOf(feature.getGeometry().getCoordinates()[0], 5);
     });
 
     it('does not fire `modifystart` when nothing is modified', function (done) {
@@ -1260,7 +1257,7 @@ describe('ol.interaction.Modify', function () {
       simulateEvent('singleclick', 42, -30, null, 0);
 
       setTimeout(function () {
-        expect(modifystart).to.be(false);
+        assert.strictEqual(modifystart, false);
         done();
       }, 0);
     });
@@ -1287,7 +1284,7 @@ describe('ol.interaction.Modify', function () {
       simulateEvent('singleclick', 42, -30, null, 0);
 
       setTimeout(function () {
-        expect(modifyend).to.be(false);
+        assert.strictEqual(modifyend, false);
         done();
       }, 0);
     });
@@ -1314,16 +1311,16 @@ describe('ol.interaction.Modify', function () {
 
       // try to add vertex - should not be possible due to the insertVertexCondition
       simulateEvent('pointermove', 40, -20, null, 0);
-      expect(modify.vertexFeature_).to.be(null);
+      assert.strictEqual(modify.vertexFeature_, null);
       simulateEvent('pointerdown', 40, -20, null, 0);
       simulateEvent('pointermove', 60, -20, null, 0);
-      expect(modify.vertexFeature_).to.be(null);
+      assert.strictEqual(modify.vertexFeature_, null);
       simulateEvent('pointerdrag', 60, -20, null, 0);
       simulateEvent('pointerup', 60, -20, null, 0);
 
-      expect(listenerSpy.callCount).to.be(2);
-      expect(feature.getGeometry().getRevision()).to.equal(firstRevision);
-      expect(feature.getGeometry().getCoordinates().length).to.eql(5);
+      assert.strictEqual(listenerSpy.callCount, 2);
+      assert.equal(feature.getGeometry().getRevision(), firstRevision);
+      assert.deepEqual(feature.getGeometry().getCoordinates().length, 5);
     });
 
     it('does not prevent moving vertices', function () {
@@ -1348,16 +1345,16 @@ describe('ol.interaction.Modify', function () {
 
       // move first vertex - should be possible
       simulateEvent('pointermove', 0, 0, null, 0);
-      expect(modify.vertexFeature_).to.not.be(null);
+      assert.notEqual(modify.vertexFeature_, null);
       simulateEvent('pointerdown', 0, 0, null, 0);
       simulateEvent('pointermove', -20, 20, null, 0);
       simulateEvent('pointerdrag', -20, 20, null, 0);
       simulateEvent('pointerup', -20, 20, null, 0);
 
-      expect(listenerSpy.callCount).to.be(0);
-      expect(feature.getGeometry().getRevision()).to.equal(firstRevision + 1);
-      expect(feature.getGeometry().getCoordinates().length).to.eql(5);
-      expect(feature.getGeometry().getCoordinates()[0]).to.eql([-20, -20]);
+      assert.strictEqual(listenerSpy.callCount, 0);
+      assert.equal(feature.getGeometry().getRevision(), firstRevision + 1);
+      assert.deepEqual(feature.getGeometry().getCoordinates().length, 5);
+      assert.deepEqual(feature.getGeometry().getCoordinates()[0], [-20, -20]);
     });
   });
 
@@ -1387,7 +1384,7 @@ describe('ol.interaction.Modify', function () {
       let listeners;
 
       listeners = getModifyListeners(feature, modify);
-      expect(listeners).to.have.length(1);
+      assert.lengthOf(listeners, 1);
 
       let firstSegmentData;
 
@@ -1397,8 +1394,8 @@ describe('ol.interaction.Modify', function () {
           return node;
         },
       );
-      expect(firstSegmentData.segment[0]).to.eql([10, 10]);
-      expect(firstSegmentData.segment[1]).to.eql([10, 10]);
+      assert.deepEqual(firstSegmentData.segment[0], [10, 10]);
+      assert.deepEqual(firstSegmentData.segment[1], [10, 10]);
 
       const center = feature.getGeometry().getCenter();
       center[0] = 1;
@@ -1411,11 +1408,11 @@ describe('ol.interaction.Modify', function () {
           return node;
         },
       );
-      expect(firstSegmentData.segment[0]).to.eql([1, 1]);
-      expect(firstSegmentData.segment[1]).to.eql([1, 1]);
+      assert.deepEqual(firstSegmentData.segment[0], [1, 1]);
+      assert.deepEqual(firstSegmentData.segment[1], [1, 1]);
 
       listeners = getModifyListeners(feature, modify);
-      expect(listeners).to.have.length(1);
+      assert.lengthOf(listeners, 1);
     });
 
     it('updates polygon segment data', function () {
@@ -1428,7 +1425,7 @@ describe('ol.interaction.Modify', function () {
       let listeners;
 
       listeners = getModifyListeners(feature, modify);
-      expect(listeners).to.have.length(1);
+      assert.lengthOf(listeners, 1);
 
       let firstSegmentData;
 
@@ -1438,8 +1435,8 @@ describe('ol.interaction.Modify', function () {
           return node;
         },
       );
-      expect(firstSegmentData.segment[0]).to.eql([0, 0]);
-      expect(firstSegmentData.segment[1]).to.eql([10, 20]);
+      assert.deepEqual(firstSegmentData.segment[0], [0, 0]);
+      assert.deepEqual(firstSegmentData.segment[1], [10, 20]);
 
       const coordinates = feature.getGeometry().getCoordinates();
       const firstVertex = coordinates[0][0];
@@ -1453,11 +1450,11 @@ describe('ol.interaction.Modify', function () {
           return node;
         },
       );
-      expect(firstSegmentData.segment[0]).to.eql([1, 1]);
-      expect(firstSegmentData.segment[1]).to.eql([10, 20]);
+      assert.deepEqual(firstSegmentData.segment[0], [1, 1]);
+      assert.deepEqual(firstSegmentData.segment[1], [10, 20]);
 
       listeners = getModifyListeners(feature, modify);
-      expect(listeners).to.have.length(1);
+      assert.lengthOf(listeners, 1);
     });
   });
 
@@ -1473,9 +1470,9 @@ describe('ol.interaction.Modify', function () {
       simulateEvent('pointermove', -10, -10, null, 0);
       simulateEvent('pointerdrag', -10, -10, null, 0);
       collection.remove(features[0]);
-      expect(function () {
+      assert.doesNotThrow(function () {
         simulateEvent('pointerup', -10, -10, null, 0);
-      }).to.not.throwException();
+      });
     });
   });
 
@@ -1486,19 +1483,19 @@ describe('ol.interaction.Modify', function () {
         features: collection,
       });
       map.addInteraction(modify);
-      expect(modify.vertexFeature_).to.be(null);
+      assert.strictEqual(modify.vertexFeature_, null);
 
       simulateEvent('pointermove', 10, -20, null, 0);
-      expect(modify.vertexFeature_).to.not.be(null);
-      expect(modify.vertexFeature_.get('features').length).to.be(1);
-      expect(modify.vertexFeature_.get('geometries').length).to.be(1);
-      expect(modify.vertexFeature_.get('existing')).to.be(true);
+      assert.notEqual(modify.vertexFeature_, null);
+      assert.strictEqual(modify.vertexFeature_.get('features').length, 1);
+      assert.strictEqual(modify.vertexFeature_.get('geometries').length, 1);
+      assert.strictEqual(modify.vertexFeature_.get('existing'), true);
 
       simulateEvent('pointermove', 40, -20, null, 0);
-      expect(modify.vertexFeature_.get('existing')).to.be(false);
+      assert.strictEqual(modify.vertexFeature_.get('existing'), false);
 
       modify.setActive(false);
-      expect(modify.vertexFeature_).to.be(null);
+      assert.strictEqual(modify.vertexFeature_, null);
       map.removeInteraction(modify);
     });
 
@@ -1516,8 +1513,9 @@ describe('ol.interaction.Modify', function () {
       );
       collection.push(feature);
       simulateEvent('pointermove', 10, -20, null, 0);
-      expect(modify.vertexFeature_.get('features')[0]).to.eql(feature);
-      expect(modify.vertexFeature_.get('geometries')[0]).to.eql(
+      assert.deepEqual(modify.vertexFeature_.get('features')[0], feature);
+      assert.deepEqual(
+        modify.vertexFeature_.get('geometries')[0],
         feature.getGeometry(),
       );
       map.removeInteraction(modify);
@@ -1534,8 +1532,9 @@ describe('ol.interaction.Modify', function () {
       );
       collection.push(feature);
       simulateEvent('pointermove', 5, -5, null, 0);
-      expect(modify.vertexFeature_.get('features')[0]).to.eql(feature);
-      expect(modify.vertexFeature_.get('geometries')[0]).to.eql(
+      assert.deepEqual(modify.vertexFeature_.get('features')[0], feature);
+      assert.deepEqual(
+        modify.vertexFeature_.get('geometries')[0],
         feature.getGeometry().getGeometriesArray()[1],
       );
     });
@@ -1561,10 +1560,11 @@ describe('ol.interaction.Modify', function () {
       );
       map.renderSync();
       simulateEvent('pointermove', 10, -10, null, 0);
-      expect(modify.vertexFeature_.get('features')[0]).to.eql(pointFeature);
-      expect(
+      assert.deepEqual(modify.vertexFeature_.get('features')[0], pointFeature);
+      assert.deepEqual(
         modify.vertexFeature_.get('geometries')[0].getCoordinates(),
-      ).to.eql(pointFeature.getGeometry().getCoordinates());
+        pointFeature.getGeometry().getCoordinates(),
+      );
     });
 
     it('works with hit detection of point features with userGeographic()', function () {
@@ -1598,10 +1598,11 @@ describe('ol.interaction.Modify', function () {
       simulateEvent('pointerdown', 10, -10, null, 0);
       simulateEvent('pointerdrag', 0, 0, null, 0);
       simulateEvent('pointerup', 0, 0, null, 0);
-      expect(modify.vertexFeature_.get('features')[0]).to.eql(pointFeature);
-      expect(
+      assert.deepEqual(modify.vertexFeature_.get('features')[0], pointFeature);
+      assert.deepEqual(
         modify.vertexFeature_.get('geometries')[0].getCoordinates(),
-      ).to.eql(pointFeature.getGeometry().getCoordinates());
+        pointFeature.getGeometry().getCoordinates(),
+      );
       clearUserProjection();
     });
 
@@ -1617,7 +1618,7 @@ describe('ol.interaction.Modify', function () {
       simulateEvent('pointerdown', 2, 2, null, 0);
       simulateEvent('pointerdrag', 2, 2, null, 0);
       simulateEvent('pointerup', 2, 2, null, 0);
-      expect(pointFeature.getGeometry().getCoordinates()).to.eql([2, -2]);
+      assert.deepEqual(pointFeature.getGeometry().getCoordinates(), [2, -2]);
     });
 
     it('does not snap to pointer when snapToPointer is false', function () {
@@ -1633,7 +1634,7 @@ describe('ol.interaction.Modify', function () {
       simulateEvent('pointerdown', 2, 2, null, 0);
       simulateEvent('pointerdrag', 2, 2, null, 0);
       simulateEvent('pointerup', 2, 2, null, 0);
-      expect(pointFeature.getGeometry().getCoordinates()).to.eql([0, 0]);
+      assert.deepEqual(pointFeature.getGeometry().getCoordinates(), [0, 0]);
     });
   });
 
@@ -1642,7 +1643,7 @@ describe('ol.interaction.Modify', function () {
       const modify = new Modify({
         features: new Collection(),
       });
-      expect(modify.getOverlay()).to.eql(modify.overlay_);
+      assert.deepEqual(modify.getOverlay(), modify.overlay_);
     });
   });
 
@@ -1652,9 +1653,9 @@ describe('ol.interaction.Modify', function () {
         features: new Collection([new Feature(new Point([10, 20]))]),
       });
       map.addInteraction(modify);
-      expect(modify.getPoint()).to.be(null);
+      assert.strictEqual(modify.getPoint(), null);
       simulateEvent('pointermove', 10, -20, null, 0);
-      expect(modify.getPoint()).to.eql([10, 20]);
+      assert.deepEqual(modify.getPoint(), [10, 20]);
     });
   });
 
@@ -1682,8 +1683,8 @@ describe('ol.interaction.Modify', function () {
       simulateEvent('pointerdrag', 5, -5, null, 0);
       simulateEvent('pointerup', 5, -5, null, 0);
 
-      expect(circleFeature.getGeometry().getRadius()).to.equal(20);
-      expect(circleFeature.getGeometry().getCenter()).to.eql([5, 5]);
+      assert.equal(circleFeature.getGeometry().getRadius(), 20);
+      assert.deepEqual(circleFeature.getGeometry().getCenter(), [5, 5]);
 
       // Increase radius along x axis
       simulateEvent('pointermove', 25, -4, null, 0);
@@ -1692,8 +1693,8 @@ describe('ol.interaction.Modify', function () {
       simulateEvent('pointerdrag', 30, -5, null, 0);
       simulateEvent('pointerup', 30, -5, null, 0);
 
-      expect(circleFeature.getGeometry().getRadius()).to.roughlyEqual(25, 1e-9);
-      expect(circleFeature.getGeometry().getCenter()).to.eql([5, 5]);
+      assert.approximately(circleFeature.getGeometry().getRadius(), 25, 1e-9);
+      assert.deepEqual(circleFeature.getGeometry().getCenter(), [5, 5]);
 
       // Increase radius along y axis
       simulateEvent('pointermove', 4, -30, null, 0);
@@ -1702,8 +1703,8 @@ describe('ol.interaction.Modify', function () {
       simulateEvent('pointerdrag', 5, -35, null, 0);
       simulateEvent('pointerup', 5, -35, null, 0);
 
-      expect(circleFeature.getGeometry().getRadius()).to.equal(30);
-      expect(circleFeature.getGeometry().getCenter()).to.eql([5, 5]);
+      assert.equal(circleFeature.getGeometry().getRadius(), 30);
+      assert.deepEqual(circleFeature.getGeometry().getCenter(), [5, 5]);
     });
 
     it('changes the circle radius and center in a user projection', function () {
@@ -1739,8 +1740,8 @@ describe('ol.interaction.Modify', function () {
         .getGeometry()
         .clone()
         .transform(userProjection, viewProjection);
-      expect(geometry1.getRadius()).to.roughlyEqual(20, 1e-9);
-      expect(geometry1.getCenter()).to.eql([5, 5]);
+      assert.approximately(geometry1.getRadius(), 20, 1e-9);
+      assert.deepEqual(geometry1.getCenter(), [5, 5]);
 
       // Increase radius along x axis
       simulateEvent('pointermove', 25, -4, null, 0);
@@ -1753,8 +1754,8 @@ describe('ol.interaction.Modify', function () {
         .getGeometry()
         .clone()
         .transform(userProjection, viewProjection);
-      expect(geometry2.getRadius()).to.roughlyEqual(25, 1e-9);
-      expect(geometry2.getCenter()).to.eql([5, 5]);
+      assert.approximately(geometry2.getRadius(), 25, 1e-9);
+      assert.deepEqual(geometry2.getCenter(), [5, 5]);
 
       // Increase radius along y axis
       simulateEvent('pointermove', 4, -30, null, 0);
@@ -1767,8 +1768,8 @@ describe('ol.interaction.Modify', function () {
         .getGeometry()
         .clone()
         .transform(userProjection, viewProjection);
-      expect(geometry3.getRadius()).to.roughlyEqual(30, 1e-9);
-      expect(geometry3.getCenter()).to.eql([5, 5]);
+      assert.approximately(geometry3.getRadius(), 30, 1e-9);
+      assert.deepEqual(geometry3.getCenter(), [5, 5]);
     });
   });
 
@@ -1807,9 +1808,7 @@ describe('ol.interaction.Modify', function () {
       simulateEvent('pointermove', 5, -20, null, 0);
       simulateEvent('pointerdrag', 5, -20, null, 0);
       simulateEvent('pointerup', 5, -20, null, 0);
-      expect(lineFeature.getGeometry().getRevision()).to.be.greaterThan(
-        firstRevision,
-      );
+      assert.isAbove(lineFeature.getGeometry().getRevision(), firstRevision);
     });
 
     it('prevents modification of features that do not pass the filter', function () {
@@ -1821,7 +1820,7 @@ describe('ol.interaction.Modify', function () {
       simulateEvent('pointermove', 5, -20, null, 0);
       simulateEvent('pointerdrag', 5, -20, null, 0);
       simulateEvent('pointerup', 5, -20, null, 0);
-      expect(lineFeature.getGeometry().getRevision()).to.equal(firstRevision);
+      assert.equal(lineFeature.getGeometry().getRevision(), firstRevision);
     });
   });
 
@@ -1861,7 +1860,7 @@ describe('ol.interaction.Modify', function () {
 
       //modify was constructed with a source containing only lineFeature
       let listeners = getListeners(EventType.CHANGE, lineFeature, modify);
-      expect(listeners.length).to.equal(1);
+      assert.equal(listeners.length, 1);
       //propertychange event handler won't be registered unless a filter function
       // is provided.  In this case it was.
       listeners = getListeners(
@@ -1869,11 +1868,11 @@ describe('ol.interaction.Modify', function () {
         lineFeature,
         modify,
       );
-      expect(listeners.length).to.equal(1);
+      assert.equal(listeners.length, 1);
       listeners = getListeners(VectorEventType.ADDFEATURE, source, modify);
-      expect(listeners.length).to.equal(1);
+      assert.equal(listeners.length, 1);
       listeners = getListeners(VectorEventType.REMOVEFEATURE, source, modify);
-      expect(listeners.length).to.equal(1);
+      assert.equal(listeners.length, 1);
 
       const newFeature = lineFeature.clone();
       source.addFeature(newFeature);
@@ -1882,9 +1881,9 @@ describe('ol.interaction.Modify', function () {
         newFeature,
         modify,
       );
-      expect(listeners.length).to.equal(1);
+      assert.equal(listeners.length, 1);
       listeners = getListeners(EventType.CHANGE, newFeature, modify);
-      expect(listeners.length).to.equal(1);
+      assert.equal(listeners.length, 1);
 
       modify.dispose();
       listeners = getListeners(
@@ -1892,21 +1891,21 @@ describe('ol.interaction.Modify', function () {
         lineFeature,
         modify,
       );
-      expect(listeners.length).to.equal(0);
+      assert.equal(listeners.length, 0);
       listeners = getListeners(EventType.CHANGE, lineFeature, modify);
-      expect(listeners.length).to.equal(0);
+      assert.equal(listeners.length, 0);
       listeners = getListeners(
         ObjectEventType.PROPERTYCHANGE,
         newFeature,
         modify,
       );
-      expect(listeners.length).to.equal(0);
+      assert.equal(listeners.length, 0);
       listeners = getListeners(EventType.CHANGE, newFeature, modify);
-      expect(listeners.length).to.equal(0);
+      assert.equal(listeners.length, 0);
       listeners = getListeners(VectorEventType.ADDFEATURE, source, modify);
-      expect(listeners.length).to.equal(0);
+      assert.equal(listeners.length, 0);
       listeners = getListeners(VectorEventType.REMOVEFEATURE, source, modify);
-      expect(listeners.length).to.equal(0);
+      assert.equal(listeners.length, 0);
     });
 
     it('are removed on dispose() when feature collection is provided', function () {
@@ -1922,7 +1921,7 @@ describe('ol.interaction.Modify', function () {
       map.addInteraction(modify);
 
       let listeners = getListeners(EventType.CHANGE, lineFeature, modify);
-      expect(listeners.length).to.equal(1);
+      assert.equal(listeners.length, 1);
       //propertychange event handler won't be registered unless a filter function
       // is provided.  In this case it was.
       listeners = getListeners(
@@ -1930,19 +1929,19 @@ describe('ol.interaction.Modify', function () {
         lineFeature,
         modify,
       );
-      expect(listeners.length).to.equal(1);
+      assert.equal(listeners.length, 1);
       listeners = getListeners(
         CollectionEventType.ADD,
         featureCollection,
         modify,
       );
-      expect(listeners.length).to.equal(1);
+      assert.equal(listeners.length, 1);
       listeners = getListeners(
         CollectionEventType.REMOVE,
         featureCollection,
         modify,
       );
-      expect(listeners.length).to.equal(1);
+      assert.equal(listeners.length, 1);
 
       const newFeature = lineFeature.clone();
       featureCollection.push(newFeature);
@@ -1951,9 +1950,9 @@ describe('ol.interaction.Modify', function () {
         newFeature,
         modify,
       );
-      expect(listeners.length).to.equal(1);
+      assert.equal(listeners.length, 1);
       listeners = getListeners(EventType.CHANGE, newFeature, modify);
-      expect(listeners.length).to.equal(1);
+      assert.equal(listeners.length, 1);
 
       modify.dispose();
       listeners = getListeners(
@@ -1961,29 +1960,29 @@ describe('ol.interaction.Modify', function () {
         lineFeature,
         modify,
       );
-      expect(listeners.length).to.equal(0);
+      assert.equal(listeners.length, 0);
       listeners = getListeners(EventType.CHANGE, lineFeature, modify);
-      expect(listeners.length).to.equal(0);
+      assert.equal(listeners.length, 0);
       listeners = getListeners(
         ObjectEventType.PROPERTYCHANGE,
         newFeature,
         modify,
       );
-      expect(listeners.length).to.equal(0);
+      assert.equal(listeners.length, 0);
       listeners = getListeners(EventType.CHANGE, newFeature, modify);
-      expect(listeners.length).to.equal(0);
+      assert.equal(listeners.length, 0);
       listeners = getListeners(
         CollectionEventType.ADD,
         featureCollection,
         modify,
       );
-      expect(listeners.length).to.equal(0);
+      assert.equal(listeners.length, 0);
       listeners = getListeners(
         CollectionEventType.REMOVE,
         featureCollection,
         modify,
       );
-      expect(listeners.length).to.equal(0);
+      assert.equal(listeners.length, 0);
     });
   });
 
@@ -2034,8 +2033,8 @@ describe('ol.interaction.Modify', function () {
       simulateEvent('pointerdrag', 50, 50, null, 0);
       simulateEvent('pointerup', 50, 50, null, 0);
 
-      expect(modify.traceState_.active).to.be(true);
-      expect(modify.traceState_.targetIndex).to.be(-1);
+      assert.strictEqual(modify.traceState_.active, true);
+      assert.strictEqual(modify.traceState_.targetIndex, -1);
 
       // decond drag ends tracing (right half of top edge)
       simulateEvent('pointermove', 200, 0, null, 0);
@@ -2043,11 +2042,11 @@ describe('ol.interaction.Modify', function () {
       simulateEvent('pointermove', 90, 100, null, 0);
       simulateEvent('pointerdrag', 90, 100, null, 0);
       simulateEvent('pointerup', 90, 100, null, 0);
-      expect(modify.traceState_.active).to.be(false);
+      assert.strictEqual(modify.traceState_.active, false);
 
       const geometry = modifyFeature.getGeometry();
 
-      expect(geometry.getCoordinates()).to.eql([
+      assert.deepEqual(geometry.getCoordinates(), [
         [
           [90, -100], // second drag point
           [250, 0],
@@ -2098,10 +2097,10 @@ describe('ol.interaction.Modify', function () {
       simulateEvent('pointerdrag', 5, -5, null, 0);
       simulateEvent('pointerup', 5, -5, null, 0);
 
-      expect(invalidStates.length).to.be(0);
+      assert.strictEqual(invalidStates.length, 0);
 
       const finalCoords = polygonFeature.getGeometry().getCoordinates()[0];
-      expect(finalCoords[0]).to.eql(finalCoords[finalCoords.length - 1]);
+      assert.deepEqual(finalCoords[0], finalCoords[finalCoords.length - 1]);
     });
 
     it('keeps first and last vertex synchronized when dragging first vertex of MultiPolygon', function () {
@@ -2142,12 +2141,12 @@ describe('ol.interaction.Modify', function () {
       simulateEvent('pointerdrag', 5, -5, null, 0);
       simulateEvent('pointerup', 5, -5, null, 0);
 
-      expect(invalidStates.length).to.be(0);
+      assert.strictEqual(invalidStates.length, 0);
 
       const finalCoords = multiPolygonFeature
         .getGeometry()
         .getCoordinates()[0][0];
-      expect(finalCoords[0]).to.eql(finalCoords[finalCoords.length - 1]);
+      assert.deepEqual(finalCoords[0], finalCoords[finalCoords.length - 1]);
     });
   });
 });

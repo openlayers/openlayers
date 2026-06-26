@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
 import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
@@ -8,7 +9,6 @@ import RenderFeature, {
   toFeature,
   toGeometry,
 } from '../../../../src/ol/render/Feature.js';
-import expect from '../../expect.js';
 
 describe('ol/render/Feature', function () {
   describe('toGeometry()', function () {
@@ -21,11 +21,12 @@ describe('ol/render/Feature', function () {
         2,
       );
       const converted = toGeometry(renderFeature);
-      expect(converted).to.be.a(Point);
-      expect(converted.getFlatCoordinates()).to.eql(
+      assert.instanceOf(converted, Point);
+      assert.deepEqual(
+        converted.getFlatCoordinates(),
         geometry.getFlatCoordinates(),
       );
-      expect(converted.getProperties()).to.eql({});
+      assert.deepEqual(converted.getProperties(), {});
     });
     it('creates a MultiPoint', function () {
       const geometry = new MultiPoint([
@@ -39,11 +40,12 @@ describe('ol/render/Feature', function () {
         2,
       );
       const converted = toGeometry(renderFeature);
-      expect(converted).to.be.a(MultiPoint);
-      expect(converted.getFlatCoordinates()).to.eql(
+      assert.instanceOf(converted, MultiPoint);
+      assert.deepEqual(
+        converted.getFlatCoordinates(),
         geometry.getFlatCoordinates(),
       );
-      expect(converted.getProperties()).to.eql({});
+      assert.deepEqual(converted.getProperties(), {});
     });
     it('creates a LineString', function () {
       const geometry = new LineString([
@@ -57,11 +59,12 @@ describe('ol/render/Feature', function () {
         2,
       );
       const converted = toGeometry(renderFeature);
-      expect(converted).to.be.a(LineString);
-      expect(converted.getFlatCoordinates()).to.eql(
+      assert.instanceOf(converted, LineString);
+      assert.deepEqual(
+        converted.getFlatCoordinates(),
         geometry.getFlatCoordinates(),
       );
-      expect(converted.getProperties()).to.eql({});
+      assert.deepEqual(converted.getProperties(), {});
     });
     it('creates a MultiLineString', function () {
       const geometry = new MultiLineString([
@@ -81,12 +84,13 @@ describe('ol/render/Feature', function () {
         2,
       );
       const converted = toGeometry(renderFeature);
-      expect(converted).to.be.a(MultiLineString);
-      expect(converted.getFlatCoordinates()).to.eql(
+      assert.instanceOf(converted, MultiLineString);
+      assert.deepEqual(
+        converted.getFlatCoordinates(),
         geometry.getFlatCoordinates(),
       );
-      expect(converted.getEnds()).to.eql(geometry.getEnds());
-      expect(converted.getProperties()).to.eql({});
+      assert.deepEqual(converted.getEnds(), geometry.getEnds());
+      assert.deepEqual(converted.getProperties(), {});
     });
     it('creates a Polygon', function () {
       const geometry = new Polygon([
@@ -110,12 +114,13 @@ describe('ol/render/Feature', function () {
         2,
       );
       const converted = toGeometry(renderFeature);
-      expect(converted).to.be.a(Polygon);
-      expect(converted.getFlatCoordinates()).to.eql(
+      assert.instanceOf(converted, Polygon);
+      assert.deepEqual(
+        converted.getFlatCoordinates(),
         geometry.getFlatCoordinates(),
       );
-      expect(converted.getEnds()).to.eql(geometry.getEnds());
-      expect(converted.getProperties()).to.eql({});
+      assert.deepEqual(converted.getEnds(), geometry.getEnds());
+      assert.deepEqual(converted.getProperties(), {});
     });
     it('creates a MultiPolygon from oriented polygon rings', function () {
       const geometry = new MultiPolygon([
@@ -149,12 +154,13 @@ describe('ol/render/Feature', function () {
         2,
       );
       const converted = toGeometry(renderFeature);
-      expect(converted).to.be.a(MultiPolygon);
-      expect(converted.getFlatCoordinates()).to.eql(
+      assert.instanceOf(converted, MultiPolygon);
+      assert.deepEqual(
+        converted.getFlatCoordinates(),
         geometry.getFlatCoordinates(),
       );
-      expect(converted.getEndss()).to.eql(geometry.getEndss());
-      expect(converted.getProperties()).to.eql({});
+      assert.deepEqual(converted.getEndss(), geometry.getEndss());
+      assert.deepEqual(converted.getProperties(), {});
     });
   });
 
@@ -173,7 +179,7 @@ describe('ol/render/Feature', function () {
       );
 
       const got = feature.getPropertiesInternal();
-      expect(got).to.eql(properties);
+      assert.deepEqual(got, properties);
     });
   });
 
@@ -192,14 +198,15 @@ describe('ol/render/Feature', function () {
       );
       const feature = toFeature(renderFeature);
       const converted = feature.getGeometry();
-      expect(converted).to.be.a(Point);
-      expect(converted.getFlatCoordinates()).to.eql(
+      assert.instanceOf(converted, Point);
+      assert.deepEqual(
+        converted.getFlatCoordinates(),
         geometry.getFlatCoordinates(),
       );
-      expect(feature.getId()).to.be(id);
+      assert.strictEqual(feature.getId(), id);
       const props = feature.getProperties();
       delete props.geometry;
-      expect(props).to.eql(properties);
+      assert.deepEqual(props, properties);
     });
   });
   it('creates a Feature<LineString> with non-default geometry name', function () {
@@ -220,15 +227,16 @@ describe('ol/render/Feature', function () {
     const geometryName = 'geom';
     const feature = toFeature(renderFeature, geometryName);
     const converted = feature.getGeometry();
-    expect(converted).to.be.a(LineString);
-    expect(feature.get(geometryName)).to.be(converted);
-    expect(converted.getFlatCoordinates()).to.eql(
+    assert.instanceOf(converted, LineString);
+    assert.strictEqual(feature.get(geometryName), converted);
+    assert.deepEqual(
+      converted.getFlatCoordinates(),
       geometry.getFlatCoordinates(),
     );
-    expect(feature.getId()).to.be(id);
+    assert.strictEqual(feature.getId(), id);
     const props = feature.getProperties();
     delete props.geom;
-    expect(props).to.eql(properties);
+    assert.deepEqual(props, properties);
   });
 
   describe('clone()', () => {
@@ -255,30 +263,33 @@ describe('ol/render/Feature', function () {
       );
 
       const clone = feature.clone();
-      expect(clone).to.be.a(RenderFeature);
-      expect(clone.getFlatCoordinates()).to.eql(feature.getFlatCoordinates());
-      expect(clone.getEnds()).to.eql(feature.getEnds());
-      expect(clone.getId()).to.be(feature.getId());
-      expect(clone.getProperties()).to.eql(feature.getProperties());
+      assert.instanceOf(clone, RenderFeature);
+      assert.deepEqual(
+        clone.getFlatCoordinates(),
+        feature.getFlatCoordinates(),
+      );
+      assert.deepEqual(clone.getEnds(), feature.getEnds());
+      assert.strictEqual(clone.getId(), feature.getId());
+      assert.deepEqual(clone.getProperties(), feature.getProperties());
 
       const modifiedCoordinates = clone.getFlatCoordinates();
       modifiedCoordinates.length = 0;
 
       const originalCoordinates = feature.getFlatCoordinates();
-      expect(originalCoordinates).to.not.be(modifiedCoordinates);
+      assert.notEqual(originalCoordinates, modifiedCoordinates);
 
       const modifiedEnds = clone.getEnds();
       modifiedEnds.length = 0;
 
       const originalEnds = feature.getEnds();
-      expect(originalEnds).to.not.be(modifiedEnds);
+      assert.notEqual(originalEnds, modifiedEnds);
 
       const modifiedProperties = clone.getProperties();
       for (const key in modifiedProperties) {
         delete modifiedProperties[key];
       }
       const originalProperties = feature.getProperties();
-      expect(originalProperties).to.not.be(modifiedProperties);
+      assert.notEqual(originalProperties, modifiedProperties);
     });
   });
 });

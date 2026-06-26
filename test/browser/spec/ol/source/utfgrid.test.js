@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {
   fromLonLat,
   get as getProjection,
@@ -38,20 +39,20 @@ describe('ol.source.UTFGrid', function () {
   describe('constructor', function () {
     it('needs to be constructed with url option', function () {
       const source = new UTFGrid({url: url});
-      expect(source).to.be.an(UTFGrid);
-      expect(source).to.be.an(TileSource);
+      assert.instanceOf(source, UTFGrid);
+      assert.instanceOf(source, TileSource);
 
-      expect(function () {
+      assert.throws(function () {
         // no options: will throw
         return new UTFGrid();
-      }).to.throwException();
+      });
 
-      expect(function () {
+      assert.throws(function () {
         // no url-option: will throw
         return new UTFGrid({});
-      }).to.throwException();
+      });
 
-      expect(getUTFGrid()).to.be.an(UTFGrid);
+      assert.instanceOf(getUTFGrid(), UTFGrid);
     });
   });
 
@@ -60,12 +61,12 @@ describe('ol.source.UTFGrid', function () {
       const source = new UTFGrid({
         url: url,
       });
-      expect(source.getState()).to.be('loading');
-      expect(source.tileGrid).to.be(null);
+      assert.strictEqual(source.getState(), 'loading');
+      assert.strictEqual(source.tileGrid, null);
 
       source.on('change', function (event) {
         if (source.getState() === 'ready') {
-          expect(source.tileGrid).to.be.an(TileGrid);
+          assert.instanceOf(source.tileGrid, TileGrid);
           done();
         }
       });
@@ -77,12 +78,12 @@ describe('ol.source.UTFGrid', function () {
       const source = new UTFGrid({
         url: 'Bogus UTFGrid URL',
       });
-      expect(source.getState()).to.be('loading');
-      expect(source.tileGrid).to.be(null);
+      assert.strictEqual(source.getState(), 'loading');
+      assert.strictEqual(source.tileGrid, null);
 
       source.on('change', function (event) {
         if (source.getState() === 'error') {
-          expect(source.tileGrid).to.be(null);
+          assert.strictEqual(source.tileGrid, null);
           done();
         }
       });
@@ -92,14 +93,14 @@ describe('ol.source.UTFGrid', function () {
   describe('#handleTileJSONResponse', function () {
     it('sets up a tileGrid', function () {
       const source = getUTFGrid();
-      expect(source.getTileGrid()).to.be(null);
+      assert.strictEqual(source.getTileGrid(), null);
       // call the handleTileJSONResponse method with our
       // locally available tileJson (from `before`)
       source.handleTileJSONResponse(tileJson);
 
       const tileGrid = source.getTileGrid();
-      expect(tileGrid).to.not.be(null);
-      expect(tileGrid).to.be.an(TileGrid);
+      assert.notEqual(tileGrid, null);
+      assert.instanceOf(tileGrid, TileGrid);
     });
 
     it('sets up a tilegrid with expected extent', function () {
@@ -119,11 +120,11 @@ describe('ol.source.UTFGrid', function () {
         proj4326,
         proj3857,
       );
-      expect(extent).to.eql(proj3857.getExtent());
-      expect(extent[0]).to.roughlyEqual(expectedExtent3857[0], 1e-8);
-      expect(extent[1]).to.roughlyEqual(expectedExtent3857[1], 1e-8);
-      expect(extent[2]).to.roughlyEqual(expectedExtent3857[2], 1e-8);
-      expect(extent[3]).to.roughlyEqual(expectedExtent3857[3], 1e-8);
+      assert.deepEqual(extent, proj3857.getExtent());
+      assert.approximately(extent[0], expectedExtent3857[0], 1e-8);
+      assert.approximately(extent[1], expectedExtent3857[1], 1e-8);
+      assert.approximately(extent[2], expectedExtent3857[2], 1e-8);
+      assert.approximately(extent[3], expectedExtent3857[3], 1e-8);
     });
 
     it('sets up a tilegrid with expected minZoom', function () {
@@ -134,7 +135,7 @@ describe('ol.source.UTFGrid', function () {
 
       const tileGrid = source.getTileGrid();
       const minZoom = tileGrid.getMinZoom();
-      expect(minZoom).to.eql(tileJson.minzoom);
+      assert.deepEqual(minZoom, tileJson.minzoom);
     });
 
     it('sets up a tilegrid with expected maxZoom', function () {
@@ -145,44 +146,44 @@ describe('ol.source.UTFGrid', function () {
 
       const tileGrid = source.getTileGrid();
       const maxZoom = tileGrid.getMaxZoom();
-      expect(maxZoom).to.eql(tileJson.maxzoom);
+      assert.deepEqual(maxZoom, tileJson.maxzoom);
     });
 
     it('sets up a template', function () {
       const source = getUTFGrid();
-      expect(source.getTemplate()).to.be(undefined);
+      assert.strictEqual(source.getTemplate(), undefined);
 
       // call the handleTileJSONResponse method with our
       // locally available tileJson (from `before`)
       source.handleTileJSONResponse(tileJson);
 
       const template = source.getTemplate();
-      expect(template).to.not.be(undefined);
-      expect(template).to.be(tileJson.template);
+      assert.notEqual(template, undefined);
+      assert.strictEqual(template, tileJson.template);
     });
 
     it('sets up correct attribution', function () {
       const source = getUTFGrid();
-      expect(source.getAttributions()).to.be(null);
+      assert.strictEqual(source.getAttributions(), null);
 
       // call the handleTileJSONResponse method with our
       // locally available tileJson (from `before`)
       source.handleTileJSONResponse(tileJson);
 
       const attributions = source.getAttributions();
-      expect(attributions).to.not.be(null);
-      expect(typeof attributions).to.be('function');
+      assert.notEqual(attributions, null);
+      assert.strictEqual(typeof attributions, 'function');
     });
 
     it('sets correct state', function () {
       const source = getUTFGrid();
-      expect(source.getState()).to.be('loading');
+      assert.strictEqual(source.getState(), 'loading');
 
       // call the handleTileJSONResponse method with our
       // locally available tileJson (from `before`)
       source.handleTileJSONResponse(tileJson);
 
-      expect(source.getState()).to.be('ready');
+      assert.strictEqual(source.getState(), 'ready');
     });
   });
 
@@ -251,10 +252,10 @@ describe('ol.source.UTFGrid', function () {
 
     it('calls callback with data if found', function (done) {
       const callback = function (data) {
-        expect(arguments).to.have.length(1);
-        expect(data).to.not.be(null);
-        expect('admin' in data).to.be(true);
-        expect(data.admin).to.be('Germany');
+        assert.lengthOf(arguments, 1);
+        assert.notEqual(data, null);
+        assert.strictEqual('admin' in data, true);
+        assert.strictEqual(data.admin, 'Germany');
         done();
       };
       source.forDataAtCoordinateAndResolution(
@@ -267,8 +268,8 @@ describe('ol.source.UTFGrid', function () {
 
     it('calls callback with `null` if not found', function (done) {
       const callback = function (data) {
-        expect(arguments).to.have.length(1);
-        expect(data).to.be(null);
+        assert.lengthOf(arguments, 1);
+        assert.strictEqual(data, null);
         done();
       };
       source.forDataAtCoordinateAndResolution(

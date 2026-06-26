@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import ImageTile from '../../../../../src/ol/ImageTile.js';
 import {get as getProjection} from '../../../../../src/ol/proj.js';
 import TileArcGISRest from '../../../../../src/ol/source/TileArcGISRest.js';
@@ -15,22 +16,22 @@ describe('ol/source/TileArcGISRest', function () {
     it('returns a tile with the expected URL', function () {
       const source = new TileArcGISRest(options);
       const tile = source.getTile(3, 2, 6, 1, getProjection('EPSG:3857'));
-      expect(tile).to.be.an(ImageTile);
+      assert.instanceOf(tile, ImageTile);
       const uri = new URL(tile.src_);
-      expect(uri.protocol).to.be('http:');
-      expect(uri.hostname).to.be('example.com');
-      expect(uri.pathname).to.be('/MapServer/export');
+      assert.strictEqual(uri.protocol, 'http:');
+      assert.strictEqual(uri.hostname, 'example.com');
+      assert.strictEqual(uri.pathname, '/MapServer/export');
       const queryData = uri.searchParams;
       const bbox = queryData.get('bbox').split(',').map(parseFloat);
-      expect(bbox[0]).roughlyEqual(-10018754.171394622, 1e-9);
-      expect(bbox[1]).roughlyEqual(-15028131.257091936, 1e-9);
-      expect(bbox[2]).roughlyEqual(-5009377.085697311, 1e-9);
-      expect(bbox[3]).roughlyEqual(-10018754.171394624, 1e-9);
-      expect(queryData.get('format')).to.be('png32');
-      expect(queryData.get('size')).to.be('256,256');
-      expect(queryData.get('imageSR')).to.be('3857');
-      expect(queryData.get('bboxSR')).to.be('3857');
-      expect(queryData.get('transparent')).to.be('true');
+      assert.approximately(bbox[0], -10018754.171394622, 1e-9);
+      assert.approximately(bbox[1], -15028131.257091936, 1e-9);
+      assert.approximately(bbox[2], -5009377.085697311, 1e-9);
+      assert.approximately(bbox[3], -10018754.171394624, 1e-9);
+      assert.strictEqual(queryData.get('format'), 'png32');
+      assert.strictEqual(queryData.get('size'), '256,256');
+      assert.strictEqual(queryData.get('imageSR'), '3857');
+      assert.strictEqual(queryData.get('bboxSR'), '3857');
+      assert.strictEqual(queryData.get('transparent'), 'true');
     });
 
     it('returns a non floating point dpi value', function () {
@@ -38,7 +39,7 @@ describe('ol/source/TileArcGISRest', function () {
       const tile = source.getTile(3, 2, 6, 1.12, getProjection('EPSG:3857'));
       const uri = new URL(tile.src_);
       const queryData = uri.searchParams;
-      expect(queryData.get('dpi')).to.be('101');
+      assert.strictEqual(queryData.get('dpi'), '101');
     });
 
     it('takes dpi from params if specified', function () {
@@ -47,7 +48,7 @@ describe('ol/source/TileArcGISRest', function () {
       const tile = source.getTile(3, 2, 6, 1.12, getProjection('EPSG:3857'));
       const uri = new URL(tile.src_);
       const queryData = uri.searchParams;
-      expect(queryData.get('dpi')).to.be('108');
+      assert.strictEqual(queryData.get('dpi'), '108');
       delete options.params.dpi;
     });
 
@@ -59,44 +60,44 @@ describe('ol/source/TileArcGISRest', function () {
       const source = new TileArcGISRest(options);
 
       const tile = source.getTile(3, 2, 6, 1, getProjection('EPSG:3857'));
-      expect(tile).to.be.an(ImageTile);
+      assert.instanceOf(tile, ImageTile);
       const uri = new URL(tile.src_);
-      expect(uri.protocol).to.be('http:');
-      expect(uri.hostname).to.match(/test[12]\.com/);
-      expect(uri.pathname).to.be('/MapServer/export');
+      assert.strictEqual(uri.protocol, 'http:');
+      assert.match(uri.hostname, /test[12]\.com/);
+      assert.strictEqual(uri.pathname, '/MapServer/export');
       const queryData = uri.searchParams;
       const bbox = queryData.get('bbox').split(',').map(parseFloat);
-      expect(bbox[0]).roughlyEqual(-10018754.171394622, 1e-9);
-      expect(bbox[1]).roughlyEqual(-15028131.257091936, 1e-9);
-      expect(bbox[2]).roughlyEqual(-5009377.085697311, 1e-9);
-      expect(bbox[3]).roughlyEqual(-10018754.171394624, 1e-9);
-      expect(queryData.get('format')).to.be('png32');
-      expect(queryData.get('size')).to.be('256,256');
-      expect(queryData.get('imageSR')).to.be('3857');
-      expect(queryData.get('bboxSR')).to.be('3857');
-      expect(queryData.get('transparent')).to.be('true');
+      assert.approximately(bbox[0], -10018754.171394622, 1e-9);
+      assert.approximately(bbox[1], -15028131.257091936, 1e-9);
+      assert.approximately(bbox[2], -5009377.085697311, 1e-9);
+      assert.approximately(bbox[3], -10018754.171394624, 1e-9);
+      assert.strictEqual(queryData.get('format'), 'png32');
+      assert.strictEqual(queryData.get('size'), '256,256');
+      assert.strictEqual(queryData.get('imageSR'), '3857');
+      assert.strictEqual(queryData.get('bboxSR'), '3857');
+      assert.strictEqual(queryData.get('transparent'), 'true');
     });
 
     it('returns a tile with the expected URL for ImageServer', function () {
       options.url = 'http://example.com/ImageServer';
       const source = new TileArcGISRest(options);
       const tile = source.getTile(3, 2, 6, 1, getProjection('EPSG:3857'));
-      expect(tile).to.be.an(ImageTile);
+      assert.instanceOf(tile, ImageTile);
       const uri = new URL(tile.src_);
-      expect(uri.protocol).to.be('http:');
-      expect(uri.hostname).to.be('example.com');
-      expect(uri.pathname).to.be('/ImageServer/exportImage');
+      assert.strictEqual(uri.protocol, 'http:');
+      assert.strictEqual(uri.hostname, 'example.com');
+      assert.strictEqual(uri.pathname, '/ImageServer/exportImage');
       const queryData = uri.searchParams;
       const bbox = queryData.get('bbox').split(',').map(parseFloat);
-      expect(bbox[0]).roughlyEqual(-10018754.171394622, 1e-9);
-      expect(bbox[1]).roughlyEqual(-15028131.257091936, 1e-9);
-      expect(bbox[2]).roughlyEqual(-5009377.085697311, 1e-9);
-      expect(bbox[3]).roughlyEqual(-10018754.171394624, 1e-9);
-      expect(queryData.get('format')).to.be('png32');
-      expect(queryData.get('size')).to.be('256,256');
-      expect(queryData.get('imageSR')).to.be('3857');
-      expect(queryData.get('bboxSR')).to.be('3857');
-      expect(queryData.get('transparent')).to.be('true');
+      assert.approximately(bbox[0], -10018754.171394622, 1e-9);
+      assert.approximately(bbox[1], -15028131.257091936, 1e-9);
+      assert.approximately(bbox[2], -5009377.085697311, 1e-9);
+      assert.approximately(bbox[3], -10018754.171394624, 1e-9);
+      assert.strictEqual(queryData.get('format'), 'png32');
+      assert.strictEqual(queryData.get('size'), '256,256');
+      assert.strictEqual(queryData.get('imageSR'), '3857');
+      assert.strictEqual(queryData.get('bboxSR'), '3857');
+      assert.strictEqual(queryData.get('transparent'), 'true');
     });
 
     it('allows various parameters to be overridden', function () {
@@ -106,8 +107,8 @@ describe('ol/source/TileArcGISRest', function () {
       const tile = source.getTile(3, 2, 2, 1, getProjection('EPSG:4326'));
       const uri = new URL(tile.src_);
       const queryData = uri.searchParams;
-      expect(queryData.get('format')).to.be('png');
-      expect(queryData.get('transparent')).to.be('false');
+      assert.strictEqual(queryData.get('format'), 'png');
+      assert.strictEqual(queryData.get('transparent'), 'false');
     });
 
     it('allows adding rest option', function () {
@@ -116,7 +117,7 @@ describe('ol/source/TileArcGISRest', function () {
       const tile = source.getTile(3, 2, 2, 1, getProjection('EPSG:4326'));
       const uri = new URL(tile.src_);
       const queryData = uri.searchParams;
-      expect(queryData.get('layers')).to.be('show:1,3,4');
+      assert.strictEqual(queryData.get('layers'), 'show:1,3,4');
     });
   });
 
@@ -127,9 +128,9 @@ describe('ol/source/TileArcGISRest', function () {
       source.setParams({test: 'after'});
 
       const params = source.getParams();
-      expect(params).to.eql({test: 'after'});
+      assert.deepEqual(params, {test: 'after'});
 
-      expect(before).to.eql({test: 'before', foo: 'bar'});
+      assert.deepEqual(before, {test: 'before', foo: 'bar'});
     });
   });
 
@@ -141,7 +142,7 @@ describe('ol/source/TileArcGISRest', function () {
       const tile = source.getTile(3, 2, 6, 1, getProjection('EPSG:3857'));
       const uri = new URL(tile.src_);
       const queryData = uri.searchParams;
-      expect(queryData.get('TEST')).to.be('value');
+      assert.strictEqual(queryData.get('TEST'), 'value');
     });
 
     it('updates an existing param', function () {
@@ -153,7 +154,7 @@ describe('ol/source/TileArcGISRest', function () {
       const tile = source.getTile(3, 2, 6, 1, getProjection('EPSG:3857'));
       const uri = new URL(tile.src_);
       const queryData = uri.searchParams;
-      expect(queryData.get('TEST')).to.be('newValue');
+      assert.strictEqual(queryData.get('TEST'), 'newValue');
     });
   });
 
@@ -162,7 +163,7 @@ describe('ol/source/TileArcGISRest', function () {
       options.params.TEST = 'value';
       const source = new TileArcGISRest(options);
       const setParams = source.getParams();
-      expect(setParams).to.eql({TEST: 'value'});
+      assert.deepEqual(setParams, {TEST: 'value'});
     });
 
     it('verify on adding a param', function () {
@@ -170,8 +171,8 @@ describe('ol/source/TileArcGISRest', function () {
       const source = new TileArcGISRest(options);
       source.updateParams({'TEST2': 'newValue'});
       const setParams = source.getParams();
-      expect(setParams).to.eql({TEST: 'value', TEST2: 'newValue'});
-      expect(options.params).to.eql({TEST: 'value'});
+      assert.deepEqual(setParams, {TEST: 'value', TEST2: 'newValue'});
+      assert.deepEqual(options.params, {TEST: 'value'});
     });
 
     it('verify on update a param', function () {
@@ -179,8 +180,8 @@ describe('ol/source/TileArcGISRest', function () {
       const source = new TileArcGISRest(options);
       source.updateParams({'TEST': 'newValue'});
       const setParams = source.getParams();
-      expect(setParams).to.eql({TEST: 'newValue'});
-      expect(options.params).to.eql({TEST: 'value'});
+      assert.deepEqual(setParams, {TEST: 'newValue'});
+      assert.deepEqual(options.params, {TEST: 'value'});
     });
   });
 
@@ -195,7 +196,7 @@ describe('ol/source/TileArcGISRest', function () {
 
       const urls = source.getUrls();
 
-      expect(urls).to.eql([
+      assert.deepEqual(urls, [
         'http://test.com/MapServer',
         'http://test2.com/MapServer',
       ]);
@@ -212,7 +213,7 @@ describe('ol/source/TileArcGISRest', function () {
 
       const urls = source.getUrls();
 
-      expect(urls).to.eql([
+      assert.deepEqual(urls, [
         'http://test.com/MapServer',
         'http://test2.com/MapServer',
       ]);
@@ -232,7 +233,7 @@ describe('ol/source/TileArcGISRest', function () {
 
       const urls = source.getUrls();
 
-      expect(urls).to.eql([
+      assert.deepEqual(urls, [
         'http://test3.com/MapServer',
         'http://test4.com/MapServer',
       ]);
@@ -246,7 +247,7 @@ describe('ol/source/TileArcGISRest', function () {
 
       const urls = source.getUrls();
 
-      expect(urls).to.eql(['http://test.com/MapServer']);
+      assert.deepEqual(urls, ['http://test.com/MapServer']);
     });
 
     it('verify setting url with list of urls', function () {
@@ -260,14 +261,14 @@ describe('ol/source/TileArcGISRest', function () {
 
       const urls = source.getUrls();
 
-      expect(urls).to.eql(['http://test3.com/MapServer']);
+      assert.deepEqual(urls, ['http://test3.com/MapServer']);
 
       const tileUrl = source.tileUrlFunction(
         [0, 0, 0],
         1,
         getProjection('EPSG:4326'),
       );
-      expect(tileUrl.indexOf(urls[0])).to.be(0);
+      assert.strictEqual(tileUrl.indexOf(urls[0]), 0);
     });
   });
 });

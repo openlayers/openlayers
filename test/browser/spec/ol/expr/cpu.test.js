@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {
   buildExpression,
   newEvaluationContext,
@@ -38,9 +39,9 @@ describe('ol/expr/cpu.js', () => {
         const evaluationContext = c.context || newEvaluationContext();
         const value = evaluator(evaluationContext);
         if (c.tolerance !== undefined) {
-          expect(value).to.roughlyEqual(c.expected, c.tolerance);
+          assert.approximately(value, c.expected, c.tolerance);
         } else {
-          expect(value).to.eql(c.expected);
+          assert.deepEqual(value, c.expected);
         }
       });
     }

@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import WKT from '../../../../src/ol/format/WKT.js';
 import GeometryCollection from '../../../../src/ol/geom/GeometryCollection.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
@@ -88,7 +89,7 @@ describe('ol/sphere', function () {
 
     expected.forEach(function (e, i) {
       it('calculates the distance between two points: ' + i, function () {
-        expect(getDistance(e.c1, e.c2)).to.roughlyEqual(e.distance, 1e-6);
+        assert.approximately(getDistance(e.c1, e.c2), e.distance, 1e-6);
       });
     });
   });
@@ -184,7 +185,7 @@ describe('ol/sphere', function () {
       it('works for case ' + i, function () {
         const c = cases[i];
         const length = getLength(c.geometry, c.options);
-        expect(length).to.roughlyEqual(c.length, 1e-8);
+        assert.approximately(length, c.length, 1e-8);
       });
     });
   });
@@ -206,20 +207,20 @@ describe('ol/sphere', function () {
 
     it('calculates the area of Ilinois', function () {
       const area = getArea(geometry, {projection: 'EPSG:4326'});
-      expect(area).to.equal(expectedArea);
+      assert.equal(area, expectedArea);
     });
 
     it('calculates the area of a projected geometry', function () {
       const projected = geometry.clone().transform('EPSG:4326', 'EPSG:3857');
       const area = getArea(projected);
-      expect(area).to.roughlyEqual(expectedArea, 1e-3);
+      assert.approximately(area, expectedArea, 1e-3);
     });
 
     it('calculates the area of a projected geometry collection', function () {
       const part = geometry.clone().transform('EPSG:4326', 'EPSG:3857');
       const collection = new GeometryCollection([part, part.clone()]);
       const area = getArea(collection);
-      expect(area).to.roughlyEqual(2 * expectedArea, 1e-3);
+      assert.approximately(area, 2 * expectedArea, 1e-3);
     });
   });
 });

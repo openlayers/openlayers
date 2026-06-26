@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import Map from '../../../../../src/ol/Map.js';
 import Control from '../../../../../src/ol/control/Control.js';
 
@@ -22,7 +23,7 @@ describe('ol.control.Control', function () {
   describe('dispose', function () {
     it('removes the control element from its parent', function () {
       control.dispose();
-      expect(control.element.parentNode).to.be(null);
+      assert.strictEqual(control.element.parentNode, null);
     });
   });
 });
@@ -36,10 +37,10 @@ describe('element', function () {
       const control = new Control({
         element: null,
       });
-      expect(control.element).to.be(null);
+      assert.strictEqual(control.element, null);
       map.addControl(control);
     } catch {
-      expect().fail();
+      assert.fail();
     }
     disposeMap(map);
   });
@@ -48,14 +49,14 @@ describe('element', function () {
     const control = new Control({
       element: document.createElement('div'),
     });
-    expect(control.element.style.pointerEvents).to.be('auto');
+    assert.strictEqual(control.element.style.pointerEvents, 'auto');
   });
   it('does not set `pointer-events: auto` for custom target', function () {
     const control = new Control({
       element: document.createElement('div'),
       target: document.createElement('div'),
     });
-    expect(control.element.style.pointerEvents).to.be('');
+    assert.strictEqual(control.element.style.pointerEvents, '');
   });
   it('does not override `pointer-events` style', function () {
     const element = document.createElement('div');
@@ -63,7 +64,7 @@ describe('element', function () {
     const control = new Control({
       element: element,
     });
-    expect(control.element.style.pointerEvents).to.be('none');
+    assert.strictEqual(control.element.style.pointerEvents, 'none');
   });
 });
 
@@ -74,7 +75,7 @@ describe("ol.control.Control's target", function () {
       target.id = 'mycontrol';
       document.body.appendChild(target);
       const ctrl = new Control({target: 'mycontrol'});
-      expect(ctrl.target_.id).to.equal('mycontrol');
+      assert.equal(ctrl.target_.id, 'mycontrol');
       ctrl.dispose();
       target.remove();
     });
@@ -83,13 +84,13 @@ describe("ol.control.Control's target", function () {
       target.id = 'mycontrol';
       document.body.appendChild(target);
       const ctrl = new Control({target: target});
-      expect(ctrl.target_.id).to.equal('mycontrol');
+      assert.equal(ctrl.target_.id, 'mycontrol');
       ctrl.dispose();
       target.remove();
     });
     it('ignores non-existing target id', function () {
       const ctrl = new Control({target: 'doesnotexist'});
-      expect(ctrl.target_).to.equal(null);
+      assert.equal(ctrl.target_, null);
       ctrl.dispose();
     });
   });
@@ -99,7 +100,7 @@ describe("ol.control.Control's event target", function () {
   it('is the Control when the Control uses the default target', function (done) {
     const ctrl = new Control({element: document.createElement('div')});
     ctrl.on('test-event', function (e) {
-      expect(e.target).to.be(ctrl);
+      assert.strictEqual(e.target, ctrl);
       done();
     });
     ctrl.dispatchEvent('test-event');
@@ -111,7 +112,7 @@ describe("ol.control.Control's event target", function () {
       target: document.createElement('div'),
     });
     ctrl.on('test-event', function (e) {
-      expect(e.target).to.be(ctrl);
+      assert.strictEqual(e.target, ctrl);
       done();
     });
     ctrl.dispatchEvent('test-event');

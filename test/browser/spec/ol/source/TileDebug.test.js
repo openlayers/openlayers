@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import GeoTIFFSource from '../../../../../src/ol/source/GeoTIFF.js';
 import TileDebug from '../../../../../src/ol/source/TileDebug.js';
 import {createXYZ} from '../../../../../src/ol/tilegrid.js';
@@ -5,18 +6,22 @@ import {createXYZ} from '../../../../../src/ol/tilegrid.js';
 describe('ol/source/TileDebug', function () {
   it('applies default options', function () {
     const debugSource = new TileDebug();
-    expect(debugSource.getProjection().getCode()).to.be('EPSG:3857');
-    expect(debugSource.getProjection().getUnits()).to.be('m');
-    expect(debugSource.getTileGrid().getExtent()).to.eql([
-      -20037508.342789244, -20037508.342789244, 20037508.342789244,
-      20037508.342789244,
-    ]);
-    expect(debugSource.getTileGrid().getResolutions().length).to.be(43);
-    expect(debugSource.getTileGrid().getResolution(0)).to.be(
+    assert.strictEqual(debugSource.getProjection().getCode(), 'EPSG:3857');
+    assert.strictEqual(debugSource.getProjection().getUnits(), 'm');
+    assert.deepEqual(
+      debugSource.getTileGrid().getExtent(),
+      [
+        -20037508.342789244, -20037508.342789244, 20037508.342789244,
+        20037508.342789244,
+      ],
+    );
+    assert.strictEqual(debugSource.getTileGrid().getResolutions().length, 43);
+    assert.strictEqual(
+      debugSource.getTileGrid().getResolution(0),
       156543.03392804097,
     );
-    expect(debugSource.getWrapX()).to.be(true);
-    expect(debugSource.zDirection).to.be(0);
+    assert.strictEqual(debugSource.getWrapX(), true);
+    assert.strictEqual(debugSource.zDirection, 0);
   });
 
   it('applies options from another source', function (done) {
@@ -31,15 +36,16 @@ describe('ol/source/TileDebug', function () {
       source: cogSource,
     });
     cogSource.getView().then(() => {
-      expect(debugSource.getProjection().getCode()).to.be('EPSG:4326');
-      expect(debugSource.getProjection().getUnits()).to.be('degrees');
-      expect(debugSource.getTileGrid().getExtent()).to.eql([
-        -180, -90, 180, 90,
-      ]);
-      expect(debugSource.getTileGrid().getResolutions().length).to.be(1);
-      expect(debugSource.getTileGrid().getResolution(0)).to.be(0.703125);
-      expect(debugSource.getWrapX()).to.be(false);
-      expect(debugSource.zDirection).to.be(0);
+      assert.strictEqual(debugSource.getProjection().getCode(), 'EPSG:4326');
+      assert.strictEqual(debugSource.getProjection().getUnits(), 'degrees');
+      assert.deepEqual(
+        debugSource.getTileGrid().getExtent(),
+        [-180, -90, 180, 90],
+      );
+      assert.strictEqual(debugSource.getTileGrid().getResolutions().length, 1);
+      assert.strictEqual(debugSource.getTileGrid().getResolution(0), 0.703125);
+      assert.strictEqual(debugSource.getWrapX(), false);
+      assert.strictEqual(debugSource.zDirection, 0);
       done();
     });
   });
@@ -60,18 +66,22 @@ describe('ol/source/TileDebug', function () {
       zDirection: 1,
     });
     cogSource.getView().then(() => {
-      expect(debugSource.getProjection().getCode()).to.be('EPSG:3857');
-      expect(debugSource.getProjection().getUnits()).to.be('m');
-      expect(debugSource.getTileGrid().getExtent()).to.eql([
-        -20037508.342789244, -20037508.342789244, 20037508.342789244,
-        20037508.342789244,
-      ]);
-      expect(debugSource.getTileGrid().getResolutions().length).to.be(43);
-      expect(debugSource.getTileGrid().getResolution(0)).to.be(
+      assert.strictEqual(debugSource.getProjection().getCode(), 'EPSG:3857');
+      assert.strictEqual(debugSource.getProjection().getUnits(), 'm');
+      assert.deepEqual(
+        debugSource.getTileGrid().getExtent(),
+        [
+          -20037508.342789244, -20037508.342789244, 20037508.342789244,
+          20037508.342789244,
+        ],
+      );
+      assert.strictEqual(debugSource.getTileGrid().getResolutions().length, 43);
+      assert.strictEqual(
+        debugSource.getTileGrid().getResolution(0),
         156543.03392804097,
       );
-      expect(debugSource.getWrapX()).to.be(true);
-      expect(debugSource.zDirection).to.be(1);
+      assert.strictEqual(debugSource.getWrapX(), true);
+      assert.strictEqual(debugSource.zDirection, 1);
       done();
     });
   });

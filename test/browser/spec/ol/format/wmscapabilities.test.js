@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import WMSCapabilities from '../../../../../src/ol/format/WMSCapabilities.js';
 
 describe('ol.format.WMSCapabilities', function () {
@@ -16,28 +17,28 @@ describe('ol.format.WMSCapabilities', function () {
     });
 
     it('can read version', function () {
-      expect(capabilities.version).to.eql('1.3.0');
+      assert.deepEqual(capabilities.version, '1.3.0');
     });
 
     it('can read Service section', function () {
       const service = capabilities.Service;
-      expect(service.Name).to.eql('WMS');
-      expect(service.Title).to.eql('Acme Corp. Map Server');
-      expect(service.KeywordList).to.eql(['bird', 'roadrunner', 'ambush']);
-      expect(service.OnlineResource).to.eql('http://hostname/');
-      expect(service.Fees).to.eql('none');
-      expect(service.AccessConstraints).to.eql('none');
-      expect(service.LayerLimit).to.eql(16);
-      expect(service.MaxWidth).to.eql(2048);
-      expect(service.MaxHeight).to.eql(2048);
+      assert.deepEqual(service.Name, 'WMS');
+      assert.deepEqual(service.Title, 'Acme Corp. Map Server');
+      assert.deepEqual(service.KeywordList, ['bird', 'roadrunner', 'ambush']);
+      assert.deepEqual(service.OnlineResource, 'http://hostname/');
+      assert.deepEqual(service.Fees, 'none');
+      assert.deepEqual(service.AccessConstraints, 'none');
+      assert.deepEqual(service.LayerLimit, 16);
+      assert.deepEqual(service.MaxWidth, 2048);
+      assert.deepEqual(service.MaxHeight, 2048);
 
       const contact = service.ContactInformation;
-      expect(contact.ContactPosition).to.eql('Computer Scientist');
-      expect(contact.ContactPersonPrimary).to.eql({
+      assert.deepEqual(contact.ContactPosition, 'Computer Scientist');
+      assert.deepEqual(contact.ContactPersonPrimary, {
         ContactPerson: 'Jeff Smith',
         ContactOrganization: 'NASA',
       });
-      expect(contact.ContactAddress).to.eql({
+      assert.deepEqual(contact.ContactAddress, {
         AddressType: 'postal',
         Address: 'NASA Goddard Space Flight Center',
         City: 'Greenbelt',
@@ -45,46 +46,46 @@ describe('ol.format.WMSCapabilities', function () {
         PostCode: '20771',
         Country: 'USA',
       });
-      expect(contact.ContactVoiceTelephone).to.eql('+1 301 555-1212');
-      expect(contact.ContactElectronicMailAddress).to.eql('user@host.com');
+      assert.deepEqual(contact.ContactVoiceTelephone, '+1 301 555-1212');
+      assert.deepEqual(contact.ContactElectronicMailAddress, 'user@host.com');
     });
 
     it('can read Capability.Exception', function () {
       const exception = capabilities.Capability.Exception;
 
-      expect(exception).to.eql(['XML', 'INIMAGE', 'BLANK']);
+      assert.deepEqual(exception, ['XML', 'INIMAGE', 'BLANK']);
     });
 
     it('can read Capability.Request.GetCapabilities', function () {
       const getCapabilities = capabilities.Capability.Request.GetCapabilities;
 
-      expect(getCapabilities.Format).to.eql(['text/xml']);
-      expect(getCapabilities.DCPType.length).to.eql(1);
+      assert.deepEqual(getCapabilities.Format, ['text/xml']);
+      assert.deepEqual(getCapabilities.DCPType.length, 1);
       const http = getCapabilities.DCPType[0].HTTP;
-      expect(http.Get.OnlineResource).to.eql('http://hostname/path?');
-      expect(http.Post.OnlineResource).to.eql('http://hostname/path?');
+      assert.deepEqual(http.Get.OnlineResource, 'http://hostname/path?');
+      assert.deepEqual(http.Post.OnlineResource, 'http://hostname/path?');
     });
 
     it('can read Capability.Request.GetFeatureInfo', function () {
       const getFeatureInfo = capabilities.Capability.Request.GetFeatureInfo;
 
-      expect(getFeatureInfo.Format).to.eql([
+      assert.deepEqual(getFeatureInfo.Format, [
         'text/xml',
         'text/plain',
         'text/html',
       ]);
-      expect(getFeatureInfo.DCPType.length).to.eql(1);
+      assert.deepEqual(getFeatureInfo.DCPType.length, 1);
       const http = getFeatureInfo.DCPType[0].HTTP;
-      expect(http.Get.OnlineResource).to.eql('http://hostname/path?');
+      assert.deepEqual(http.Get.OnlineResource, 'http://hostname/path?');
     });
 
     it('can read Capability.Request.GetMap', function () {
       const getMap = capabilities.Capability.Request.GetMap;
 
-      expect(getMap.Format).to.eql(['image/gif', 'image/png', 'image/jpeg']);
-      expect(getMap.DCPType.length).to.eql(1);
+      assert.deepEqual(getMap.Format, ['image/gif', 'image/png', 'image/jpeg']);
+      assert.deepEqual(getMap.DCPType.length, 1);
       const http = getMap.DCPType[0].HTTP;
-      expect(http.Get.OnlineResource).to.eql('http://hostname/path?');
+      assert.deepEqual(http.Get.OnlineResource, 'http://hostname/path?');
     });
 
     it('should not have the SLD nodes', function () {
@@ -92,23 +93,23 @@ describe('ol.format.WMSCapabilities', function () {
       const getLegendGraphic = capabilities.Capability.Request.getLegendGraphic;
       const userDefinedSymbolization =
         capabilities.Capability.UserDefinedSymbolization;
-      expect(describeLayer).to.eql(undefined);
-      expect(getLegendGraphic).to.eql(undefined);
-      expect(userDefinedSymbolization).to.eql(undefined);
+      assert.deepEqual(describeLayer, undefined);
+      assert.deepEqual(getLegendGraphic, undefined);
+      assert.deepEqual(userDefinedSymbolization, undefined);
     });
 
     it('can read Capability.Layer', function () {
       const layer = capabilities.Capability.Layer;
-      expect(layer.Title).to.eql('Acme Corp. Map Server');
-      expect(layer.Name).to.be(undefined);
-      expect(layer.CRS).to.eql(['CRS:84']);
-      expect(layer.AuthorityURL).to.eql([
+      assert.deepEqual(layer.Title, 'Acme Corp. Map Server');
+      assert.strictEqual(layer.Name, undefined);
+      assert.deepEqual(layer.CRS, ['CRS:84']);
+      assert.deepEqual(layer.AuthorityURL, [
         {
           name: 'DIF_ID',
           OnlineResource: 'http://gcmd.gsfc.nasa.gov/difguide/whatisadif.html',
         },
       ]);
-      expect(layer.BoundingBox).to.eql([
+      assert.deepEqual(layer.BoundingBox, [
         {
           crs: 'CRS:84',
           extent: [-1, -1, 1, 1],
@@ -116,12 +117,12 @@ describe('ol.format.WMSCapabilities', function () {
         },
       ]);
 
-      expect(layer.Layer.length).to.eql(4);
-      expect(layer.Layer[0].Name).to.eql('ROADS_RIVERS');
-      expect(layer.Layer[0].Title).to.eql('Roads and Rivers');
-      expect(layer.Layer[0].CRS).to.eql(['EPSG:26986', 'CRS:84']);
-      expect(layer.Layer[0].Identifier).to.eql(['123456']);
-      expect(layer.Layer[0].BoundingBox).to.eql([
+      assert.deepEqual(layer.Layer.length, 4);
+      assert.deepEqual(layer.Layer[0].Name, 'ROADS_RIVERS');
+      assert.deepEqual(layer.Layer[0].Title, 'Roads and Rivers');
+      assert.deepEqual(layer.Layer[0].CRS, ['EPSG:26986', 'CRS:84']);
+      assert.deepEqual(layer.Layer[0].Identifier, ['123456']);
+      assert.deepEqual(layer.Layer[0].BoundingBox, [
         {
           crs: 'CRS:84',
           extent: [-71.63, 41.75, -70.78, 42.9],
@@ -133,10 +134,11 @@ describe('ol.format.WMSCapabilities', function () {
           res: [1, 1],
         },
       ]);
-      expect(layer.Layer[0].EX_GeographicBoundingBox).to.eql([
-        -71.63, 41.75, -70.78, 42.9,
-      ]);
-      expect(layer.Layer[0].Style).to.eql([
+      assert.deepEqual(
+        layer.Layer[0].EX_GeographicBoundingBox,
+        [-71.63, 41.75, -70.78, 42.9],
+      );
+      assert.deepEqual(layer.Layer[0].Style, [
         {
           Name: 'USGS',
           Title: 'USGS Topo Map Style',
@@ -156,13 +158,13 @@ describe('ol.format.WMSCapabilities', function () {
           ],
         },
       ]);
-      expect(layer.Layer[0].FeatureListURL).to.eql([
+      assert.deepEqual(layer.Layer[0].FeatureListURL, [
         {
           Format: 'XML',
           OnlineResource: 'http://www.university.edu/data/roads_rivers.gml',
         },
       ]);
-      expect(layer.Layer[0].Attribution).to.eql({
+      assert.deepEqual(layer.Layer[0].Attribution, {
         Title: 'State College University',
         OnlineResource: 'http://www.university.edu/',
         LogoURL: {
@@ -189,28 +191,28 @@ describe('ol.format.WMSCapabilities', function () {
     });
 
     it('can read version', function () {
-      expect(capabilities.version).to.eql('1.3.0');
+      assert.deepEqual(capabilities.version, '1.3.0');
     });
 
     it('can read Service section', function () {
       const service = capabilities.Service;
-      expect(service.Name).to.eql('WMS');
-      expect(service.Title).to.eql('Acme Corp. Map Server');
-      expect(service.KeywordList).to.eql(['bird', 'roadrunner', 'ambush']);
-      expect(service.OnlineResource).to.eql('http://hostname/');
-      expect(service.Fees).to.eql('none');
-      expect(service.AccessConstraints).to.eql('none');
-      expect(service.LayerLimit).to.eql(16);
-      expect(service.MaxWidth).to.eql(2048);
-      expect(service.MaxHeight).to.eql(2048);
+      assert.deepEqual(service.Name, 'WMS');
+      assert.deepEqual(service.Title, 'Acme Corp. Map Server');
+      assert.deepEqual(service.KeywordList, ['bird', 'roadrunner', 'ambush']);
+      assert.deepEqual(service.OnlineResource, 'http://hostname/');
+      assert.deepEqual(service.Fees, 'none');
+      assert.deepEqual(service.AccessConstraints, 'none');
+      assert.deepEqual(service.LayerLimit, 16);
+      assert.deepEqual(service.MaxWidth, 2048);
+      assert.deepEqual(service.MaxHeight, 2048);
 
       const contact = service.ContactInformation;
-      expect(contact.ContactPosition).to.eql('Computer Scientist');
-      expect(contact.ContactPersonPrimary).to.eql({
+      assert.deepEqual(contact.ContactPosition, 'Computer Scientist');
+      assert.deepEqual(contact.ContactPersonPrimary, {
         ContactPerson: 'Jeff Smith',
         ContactOrganization: 'NASA',
       });
-      expect(contact.ContactAddress).to.eql({
+      assert.deepEqual(contact.ContactAddress, {
         AddressType: 'postal',
         Address: 'NASA Goddard Space Flight Center',
         City: 'Greenbelt',
@@ -218,71 +220,74 @@ describe('ol.format.WMSCapabilities', function () {
         PostCode: '20771',
         Country: 'USA',
       });
-      expect(contact.ContactVoiceTelephone).to.eql('+1 301 555-1212');
-      expect(contact.ContactElectronicMailAddress).to.eql('user@host.com');
+      assert.deepEqual(contact.ContactVoiceTelephone, '+1 301 555-1212');
+      assert.deepEqual(contact.ContactElectronicMailAddress, 'user@host.com');
     });
 
     it('can read Capability.Exception', function () {
       const exception = capabilities.Capability.Exception;
 
-      expect(exception).to.eql(['XML', 'INIMAGE', 'BLANK']);
+      assert.deepEqual(exception, ['XML', 'INIMAGE', 'BLANK']);
     });
 
     it('can read Capability.Request.GetCapabilities', function () {
       const getCapabilities = capabilities.Capability.Request.GetCapabilities;
 
-      expect(getCapabilities.Format).to.eql(['text/xml']);
-      expect(getCapabilities.DCPType.length).to.eql(1);
+      assert.deepEqual(getCapabilities.Format, ['text/xml']);
+      assert.deepEqual(getCapabilities.DCPType.length, 1);
       const http = getCapabilities.DCPType[0].HTTP;
-      expect(http.Get.OnlineResource).to.eql('http://hostname/path?');
-      expect(http.Post.OnlineResource).to.eql('http://hostname/path?');
+      assert.deepEqual(http.Get.OnlineResource, 'http://hostname/path?');
+      assert.deepEqual(http.Post.OnlineResource, 'http://hostname/path?');
     });
 
     it('can read Capability.Request.GetFeatureInfo', function () {
       const getFeatureInfo = capabilities.Capability.Request.GetFeatureInfo;
 
-      expect(getFeatureInfo.Format).to.eql([
+      assert.deepEqual(getFeatureInfo.Format, [
         'text/xml',
         'text/plain',
         'text/html',
       ]);
-      expect(getFeatureInfo.DCPType.length).to.eql(1);
+      assert.deepEqual(getFeatureInfo.DCPType.length, 1);
       const http = getFeatureInfo.DCPType[0].HTTP;
-      expect(http.Get.OnlineResource).to.eql('http://hostname/path?');
+      assert.deepEqual(http.Get.OnlineResource, 'http://hostname/path?');
     });
 
     it('can read Capability.Request.GetMap', function () {
       const getMap = capabilities.Capability.Request.GetMap;
 
-      expect(getMap.Format).to.eql(['image/gif', 'image/png', 'image/jpeg']);
-      expect(getMap.DCPType.length).to.eql(1);
+      assert.deepEqual(getMap.Format, ['image/gif', 'image/png', 'image/jpeg']);
+      assert.deepEqual(getMap.DCPType.length, 1);
       const http = getMap.DCPType[0].HTTP;
-      expect(http.Get.OnlineResource).to.eql('http://hostname/path?');
+      assert.deepEqual(http.Get.OnlineResource, 'http://hostname/path?');
     });
 
     it('can read the Capability.Request.GetLegendGraphic', function () {
       const getLegendGraphic = capabilities.Capability.Request.GetLegendGraphic;
-      expect(getLegendGraphic).to.not.eql(undefined);
-      expect(getLegendGraphic.Format).to.eql([
+      assert.notDeepEqual(getLegendGraphic, undefined);
+      assert.deepEqual(getLegendGraphic.Format, [
         'image/png',
         'image/png; mode=8bit',
         'image/jpeg',
         'image/vnd.jpeg-png',
         'image/vnd.jpeg-png8',
       ]);
-      expect(getLegendGraphic.DCPType[0].HTTP.Get.OnlineResource).to.eql(
+      assert.deepEqual(
+        getLegendGraphic.DCPType[0].HTTP.Get.OnlineResource,
         'http://hostname/path?',
       );
-      expect(getLegendGraphic.DCPType[0].HTTP.Post.OnlineResource).to.eql(
+      assert.deepEqual(
+        getLegendGraphic.DCPType[0].HTTP.Post.OnlineResource,
         'http://hostname/path?',
       );
     });
 
     it('can read the Capability.Request.DescribeLayer', function () {
       const describeLayer = capabilities.Capability.Request.DescribeLayer;
-      expect(describeLayer).to.not.eql(undefined);
-      expect(describeLayer.Format).to.eql(['application/vnd.ogc.gml']);
-      expect(describeLayer.DCPType[0].HTTP.Get.OnlineResource).to.eql(
+      assert.notDeepEqual(describeLayer, undefined);
+      assert.deepEqual(describeLayer.Format, ['application/vnd.ogc.gml']);
+      assert.deepEqual(
+        describeLayer.DCPType[0].HTTP.Get.OnlineResource,
         'http://hostname/path?',
       );
     });
@@ -290,26 +295,26 @@ describe('ol.format.WMSCapabilities', function () {
     it('can read the Capability.UserDefinedSymbolization', function () {
       const userDefinedSymbolization =
         capabilities.Capability.UserDefinedSymbolization;
-      expect(userDefinedSymbolization.SupportSLD).to.eql(true);
-      expect(userDefinedSymbolization.UserStyle).to.eql(true);
-      expect(userDefinedSymbolization.UserLayer).to.eql(false);
-      expect(userDefinedSymbolization.RemoteWFS).to.eql(false);
-      expect(userDefinedSymbolization.InlineFeatureData).to.eql(false);
-      expect(userDefinedSymbolization.RemoteWCS).to.eql(false);
+      assert.deepEqual(userDefinedSymbolization.SupportSLD, true);
+      assert.deepEqual(userDefinedSymbolization.UserStyle, true);
+      assert.deepEqual(userDefinedSymbolization.UserLayer, false);
+      assert.deepEqual(userDefinedSymbolization.RemoteWFS, false);
+      assert.deepEqual(userDefinedSymbolization.InlineFeatureData, false);
+      assert.deepEqual(userDefinedSymbolization.RemoteWCS, false);
     });
 
     it('can read Capability.Layer', function () {
       const layer = capabilities.Capability.Layer;
-      expect(layer.Title).to.eql('Acme Corp. Map Server');
-      expect(layer.Name).to.be(undefined);
-      expect(layer.CRS).to.eql(['CRS:84']);
-      expect(layer.AuthorityURL).to.eql([
+      assert.deepEqual(layer.Title, 'Acme Corp. Map Server');
+      assert.strictEqual(layer.Name, undefined);
+      assert.deepEqual(layer.CRS, ['CRS:84']);
+      assert.deepEqual(layer.AuthorityURL, [
         {
           name: 'DIF_ID',
           OnlineResource: 'http://gcmd.gsfc.nasa.gov/difguide/whatisadif.html',
         },
       ]);
-      expect(layer.BoundingBox).to.eql([
+      assert.deepEqual(layer.BoundingBox, [
         {
           crs: 'CRS:84',
           extent: [-1, -1, 1, 1],
@@ -317,12 +322,12 @@ describe('ol.format.WMSCapabilities', function () {
         },
       ]);
 
-      expect(layer.Layer.length).to.eql(4);
-      expect(layer.Layer[0].Name).to.eql('ROADS_RIVERS');
-      expect(layer.Layer[0].Title).to.eql('Roads and Rivers');
-      expect(layer.Layer[0].CRS).to.eql(['EPSG:26986', 'CRS:84']);
-      expect(layer.Layer[0].Identifier).to.eql(['123456']);
-      expect(layer.Layer[0].BoundingBox).to.eql([
+      assert.deepEqual(layer.Layer.length, 4);
+      assert.deepEqual(layer.Layer[0].Name, 'ROADS_RIVERS');
+      assert.deepEqual(layer.Layer[0].Title, 'Roads and Rivers');
+      assert.deepEqual(layer.Layer[0].CRS, ['EPSG:26986', 'CRS:84']);
+      assert.deepEqual(layer.Layer[0].Identifier, ['123456']);
+      assert.deepEqual(layer.Layer[0].BoundingBox, [
         {
           crs: 'CRS:84',
           extent: [-71.63, 41.75, -70.78, 42.9],
@@ -334,10 +339,11 @@ describe('ol.format.WMSCapabilities', function () {
           res: [1, 1],
         },
       ]);
-      expect(layer.Layer[0].EX_GeographicBoundingBox).to.eql([
-        -71.63, 41.75, -70.78, 42.9,
-      ]);
-      expect(layer.Layer[0].Style).to.eql([
+      assert.deepEqual(
+        layer.Layer[0].EX_GeographicBoundingBox,
+        [-71.63, 41.75, -70.78, 42.9],
+      );
+      assert.deepEqual(layer.Layer[0].Style, [
         {
           Name: 'USGS',
           Title: 'USGS Topo Map Style',
@@ -357,13 +363,13 @@ describe('ol.format.WMSCapabilities', function () {
           ],
         },
       ]);
-      expect(layer.Layer[0].FeatureListURL).to.eql([
+      assert.deepEqual(layer.Layer[0].FeatureListURL, [
         {
           Format: 'XML',
           OnlineResource: 'http://www.university.edu/data/roads_rivers.gml',
         },
       ]);
-      expect(layer.Layer[0].Attribution).to.eql({
+      assert.deepEqual(layer.Layer[0].Attribution, {
         Title: 'State College University',
         OnlineResource: 'http://www.university.edu/',
         LogoURL: {
@@ -390,28 +396,29 @@ describe('ol.format.WMSCapabilities', function () {
     });
 
     it('can read version', function () {
-      expect(capabilities.version).to.eql('1.1.1');
+      assert.deepEqual(capabilities.version, '1.1.1');
     });
 
     it('can read Service section', function () {
       const service = capabilities.Service;
-      expect(service.Name).to.eql('OGC:WMS');
-      expect(service.Title).to.eql('Acme Corp. Map Server');
-      expect(service.Abstract).to.eql(
+      assert.deepEqual(service.Name, 'OGC:WMS');
+      assert.deepEqual(service.Title, 'Acme Corp. Map Server');
+      assert.deepEqual(
+        service.Abstract,
         'WMT Map Server maintained by Acme Corporation. Contact: webmaster@wmt.acme.com.\n      High-quality maps showing roadrunner nests and possible ambush locations.',
       );
-      expect(service.KeywordList).to.eql(['bird', 'roadrunner', 'ambush']);
-      expect(service.OnlineResource).to.eql('http://hostname/');
-      expect(service.Fees).to.eql('none');
-      expect(service.AccessConstraints).to.eql('none');
+      assert.deepEqual(service.KeywordList, ['bird', 'roadrunner', 'ambush']);
+      assert.deepEqual(service.OnlineResource, 'http://hostname/');
+      assert.deepEqual(service.Fees, 'none');
+      assert.deepEqual(service.AccessConstraints, 'none');
 
       const contact = service.ContactInformation;
-      expect(contact.ContactPosition).to.eql('Computer Scientist');
-      expect(contact.ContactPersonPrimary).to.eql({
+      assert.deepEqual(contact.ContactPosition, 'Computer Scientist');
+      assert.deepEqual(contact.ContactPersonPrimary, {
         ContactPerson: 'Jeff deLaBeaujardiere',
         ContactOrganization: 'NASA',
       });
-      expect(contact.ContactAddress).to.eql({
+      assert.deepEqual(contact.ContactAddress, {
         AddressType: 'postal',
         Address: 'NASA Goddard Space Flight Center, Code 933',
         City: 'Greenbelt',
@@ -419,9 +426,10 @@ describe('ol.format.WMSCapabilities', function () {
         PostCode: '20771',
         Country: 'USA',
       });
-      expect(contact.ContactVoiceTelephone).to.eql('+1 301 286-1569');
-      expect(contact.ContactFacsimileTelephone).to.eql('+1 301 286-1777');
-      expect(contact.ContactElectronicMailAddress).to.eql(
+      assert.deepEqual(contact.ContactVoiceTelephone, '+1 301 286-1569');
+      assert.deepEqual(contact.ContactFacsimileTelephone, '+1 301 286-1777');
+      assert.deepEqual(
+        contact.ContactElectronicMailAddress,
         'delabeau@iniki.gsfc.nasa.gov',
       );
     });
@@ -429,7 +437,7 @@ describe('ol.format.WMSCapabilities', function () {
     it('can read Capability.Exception', function () {
       const exception = capabilities.Capability.Exception;
 
-      expect(exception).to.eql([
+      assert.deepEqual(exception, [
         'application/vnd.ogc.se_xml',
         'application/vnd.ogc.se_inimage',
         'application/vnd.ogc.se_blank',
@@ -439,33 +447,33 @@ describe('ol.format.WMSCapabilities', function () {
     it('can read Capability.Request.GetCapabilities', function () {
       const getCapabilities = capabilities.Capability.Request.GetCapabilities;
 
-      expect(getCapabilities.Format).to.eql(['application/vnd.ogc.wms_xml']);
-      expect(getCapabilities.DCPType.length).to.eql(1);
+      assert.deepEqual(getCapabilities.Format, ['application/vnd.ogc.wms_xml']);
+      assert.deepEqual(getCapabilities.DCPType.length, 1);
       const http = getCapabilities.DCPType[0].HTTP;
-      expect(http.Get.OnlineResource).to.eql('http://hostname:port/path');
-      expect(http.Post.OnlineResource).to.eql('http://hostname:port/path');
+      assert.deepEqual(http.Get.OnlineResource, 'http://hostname:port/path');
+      assert.deepEqual(http.Post.OnlineResource, 'http://hostname:port/path');
     });
 
     it('can read Capability.Request.GetFeatureInfo', function () {
       const getFeatureInfo = capabilities.Capability.Request.GetFeatureInfo;
 
-      expect(getFeatureInfo.Format).to.eql([
+      assert.deepEqual(getFeatureInfo.Format, [
         'application/vnd.ogc.gml',
         'text/plain',
         'text/html',
       ]);
-      expect(getFeatureInfo.DCPType.length).to.eql(1);
+      assert.deepEqual(getFeatureInfo.DCPType.length, 1);
       const http = getFeatureInfo.DCPType[0].HTTP;
-      expect(http.Get.OnlineResource).to.eql('http://hostname:port/path');
+      assert.deepEqual(http.Get.OnlineResource, 'http://hostname:port/path');
     });
 
     it('can read Capability.Request.GetMap', function () {
       const getMap = capabilities.Capability.Request.GetMap;
 
-      expect(getMap.Format).to.eql(['image/gif', 'image/png', 'image/jpeg']);
-      expect(getMap.DCPType.length).to.eql(1);
+      assert.deepEqual(getMap.Format, ['image/gif', 'image/png', 'image/jpeg']);
+      assert.deepEqual(getMap.DCPType.length, 1);
       const http = getMap.DCPType[0].HTTP;
-      expect(http.Get.OnlineResource).to.eql('http://hostname:port/path');
+      assert.deepEqual(http.Get.OnlineResource, 'http://hostname:port/path');
     });
 
     it('should not have the SLD nodes', function () {
@@ -473,16 +481,16 @@ describe('ol.format.WMSCapabilities', function () {
       const getLegendGraphic = capabilities.Capability.Request.getLegendGraphic;
       const userDefinedSymbolization =
         capabilities.Capability.UserDefinedSymbolization;
-      expect(describeLayer).to.eql(undefined);
-      expect(getLegendGraphic).to.eql(undefined);
-      expect(userDefinedSymbolization).to.eql(undefined);
+      assert.deepEqual(describeLayer, undefined);
+      assert.deepEqual(getLegendGraphic, undefined);
+      assert.deepEqual(userDefinedSymbolization, undefined);
     });
 
     it('can read Capability.Layer', function () {
       const layerCapability = capabilities.Capability.Layer;
-      expect(layerCapability.Title).to.eql('Acme Corp. Map Server');
-      expect(layerCapability.SRS).to.eql(['EPSG:4326']);
-      expect(layerCapability.AuthorityURL).to.eql([
+      assert.deepEqual(layerCapability.Title, 'Acme Corp. Map Server');
+      assert.deepEqual(layerCapability.SRS, ['EPSG:4326']);
+      assert.deepEqual(layerCapability.AuthorityURL, [
         {
           'OnlineResource':
             'http://gcmd.gsfc.nasa.gov/difguide/whatisadif.html',
@@ -490,26 +498,26 @@ describe('ol.format.WMSCapabilities', function () {
         },
       ]);
       const layers = layerCapability.Layer;
-      expect(layers.length).to.eql(4);
+      assert.deepEqual(layers.length, 4);
       const layer = layers[0];
 
-      expect(layer.Name).to.eql('ROADS_RIVERS');
-      expect(layer.Title).to.eql('Roads and Rivers');
-      expect(layer.SRS).to.eql(['EPSG:26986', 'EPSG:4326']);
-      expect(layer.queryable).to.eql(false);
-      expect(layer.cascaded).to.eql(undefined);
-      expect(layer.opaque).to.eql(false);
-      expect(layer.noSubsets).to.eql(false);
-      expect(layer.fixedWidth).to.eql(undefined);
-      expect(layer.fixedHeight).to.eql(undefined);
-      expect(layer.Extent).to.eql(undefined);
-      expect(layer.Identifier).to.eql(['123456']);
+      assert.deepEqual(layer.Name, 'ROADS_RIVERS');
+      assert.deepEqual(layer.Title, 'Roads and Rivers');
+      assert.deepEqual(layer.SRS, ['EPSG:26986', 'EPSG:4326']);
+      assert.deepEqual(layer.queryable, false);
+      assert.deepEqual(layer.cascaded, undefined);
+      assert.deepEqual(layer.opaque, false);
+      assert.deepEqual(layer.noSubsets, false);
+      assert.deepEqual(layer.fixedWidth, undefined);
+      assert.deepEqual(layer.fixedHeight, undefined);
+      assert.deepEqual(layer.Extent, undefined);
+      assert.deepEqual(layer.Identifier, ['123456']);
 
-      expect(layer.LatLonBoundingBox).to.eql({
+      assert.deepEqual(layer.LatLonBoundingBox, {
         'extent': [-71.63, 41.75, -70.78, 42.9],
         'res': [undefined, undefined],
       });
-      expect(layer.BoundingBox).to.eql([
+      assert.deepEqual(layer.BoundingBox, [
         {
           'extent': [-71.63, 41.75, -70.78, 42.9],
           'res': [0.01, 0.01],
@@ -521,20 +529,20 @@ describe('ol.format.WMSCapabilities', function () {
           'srs': 'EPSG:26986',
         },
       ]);
-      expect(layer.FeatureListURL).to.eql([
+      assert.deepEqual(layer.FeatureListURL, [
         {
           'Format': 'application/vnd.ogc.se_xml"',
           'OnlineResource': 'http://www.university.edu/data/roads_rivers.gml',
         },
       ]);
-      expect(layer.AuthorityURL).to.eql([
+      assert.deepEqual(layer.AuthorityURL, [
         {
           'OnlineResource':
             'http://gcmd.gsfc.nasa.gov/difguide/whatisadif.html',
           'name': 'DIF_ID',
         },
       ]);
-      expect(layer.ScaleHint).to.eql([
+      assert.deepEqual(layer.ScaleHint, [
         {
           'min': 4000,
           'max': 35000,
@@ -542,55 +550,66 @@ describe('ol.format.WMSCapabilities', function () {
       ]);
 
       const attribution = layer.Attribution;
-      expect(attribution.Title).to.eql('State College University');
-      expect(attribution.OnlineResource).to.eql('http://www.university.edu/');
-      expect(attribution.LogoURL).to.eql({
+      assert.deepEqual(attribution.Title, 'State College University');
+      assert.deepEqual(
+        attribution.OnlineResource,
+        'http://www.university.edu/',
+      );
+      assert.deepEqual(attribution.LogoURL, {
         'Format': 'image/gif',
         'OnlineResource': 'http://www.university.edu/icons/logo.gif',
         'size': [100, 100],
       });
 
-      expect(layer.Style.length).to.eql(1);
+      assert.deepEqual(layer.Style.length, 1);
       const style = layer.Style[0];
-      expect(style.Name).to.eql('USGS');
-      expect(style.Title).to.eql('USGS Topo Map Style');
-      expect(style.Abstract).to.eql(
+      assert.deepEqual(style.Name, 'USGS');
+      assert.deepEqual(style.Title, 'USGS Topo Map Style');
+      assert.deepEqual(
+        style.Abstract,
         'Features are shown in a style like that used in USGS topographic maps.',
       );
-      expect(style.LegendURL).to.eql([
+      assert.deepEqual(style.LegendURL, [
         {
           'Format': 'image/gif',
           'OnlineResource': 'http://www.university.edu/legends/usgs.gif',
           'size': [72, 72],
         },
       ]);
-      expect(style.StyleSheetURL).to.eql({
+      assert.deepEqual(style.StyleSheetURL, {
         'Format': 'text/xsl',
         'OnlineResource': 'http://www.university.edu/stylesheets/usgs.xsl',
       });
 
-      expect(layer.Layer.length).to.eql(2);
+      assert.deepEqual(layer.Layer.length, 2);
       const subLayer = layer.Layer[0];
 
-      expect(subLayer.Name).to.eql('ROADS_1M');
-      expect(subLayer.Title).to.eql('Roads at 1:1M scale');
-      expect(subLayer.Abstract).to.eql('Roads at a scale of 1 to 1 million.');
-      expect(subLayer.KeywordList).to.eql(['road', 'transportation', 'atlas']);
-      expect(subLayer.Identifier).to.eql(['123456']);
-      expect(subLayer.SRS).to.eql(['EPSG:26986']);
-      expect(subLayer.queryable).to.eql(true);
-      expect(subLayer.cascaded).to.eql(undefined);
-      expect(subLayer.opaque).to.eql(false);
-      expect(subLayer.noSubsets).to.eql(false);
-      expect(subLayer.fixedWidth).to.eql(undefined);
-      expect(subLayer.fixedHeight).to.eql(undefined);
-      expect(subLayer.Extent).to.eql(undefined);
+      assert.deepEqual(subLayer.Name, 'ROADS_1M');
+      assert.deepEqual(subLayer.Title, 'Roads at 1:1M scale');
+      assert.deepEqual(
+        subLayer.Abstract,
+        'Roads at a scale of 1 to 1 million.',
+      );
+      assert.deepEqual(subLayer.KeywordList, [
+        'road',
+        'transportation',
+        'atlas',
+      ]);
+      assert.deepEqual(subLayer.Identifier, ['123456']);
+      assert.deepEqual(subLayer.SRS, ['EPSG:26986']);
+      assert.deepEqual(subLayer.queryable, true);
+      assert.deepEqual(subLayer.cascaded, undefined);
+      assert.deepEqual(subLayer.opaque, false);
+      assert.deepEqual(subLayer.noSubsets, false);
+      assert.deepEqual(subLayer.fixedWidth, undefined);
+      assert.deepEqual(subLayer.fixedHeight, undefined);
+      assert.deepEqual(subLayer.Extent, undefined);
 
-      expect(subLayer.LatLonBoundingBox).to.eql({
+      assert.deepEqual(subLayer.LatLonBoundingBox, {
         'extent': [-71.63, 41.75, -70.78, 42.9],
         'res': [undefined, undefined],
       });
-      expect(subLayer.BoundingBox).to.eql([
+      assert.deepEqual(subLayer.BoundingBox, [
         {
           'extent': [-71.63, 41.75, -70.78, 42.9],
           'res': [0.01, 0.01],
@@ -602,13 +621,13 @@ describe('ol.format.WMSCapabilities', function () {
           'srs': 'EPSG:26986',
         },
       ]);
-      expect(subLayer.ScaleHint).to.eql([
+      assert.deepEqual(subLayer.ScaleHint, [
         {
           'min': 4000,
           'max': 35000,
         },
       ]);
-      expect(subLayer.MetadataURL).to.eql([
+      assert.deepEqual(subLayer.MetadataURL, [
         {
           'Format': 'text/plain',
           'OnlineResource': 'http://www.university.edu/metadata/roads.txt',
@@ -621,24 +640,26 @@ describe('ol.format.WMSCapabilities', function () {
         },
       ]);
       const subLayerAttribution = subLayer.Attribution;
-      expect(subLayerAttribution.Title).to.eql('State College University');
-      expect(subLayerAttribution.OnlineResource).to.eql(
+      assert.deepEqual(subLayerAttribution.Title, 'State College University');
+      assert.deepEqual(
+        subLayerAttribution.OnlineResource,
         'http://www.university.edu/',
       );
-      expect(subLayerAttribution.LogoURL).to.eql({
+      assert.deepEqual(subLayerAttribution.LogoURL, {
         'Format': 'image/gif',
         'OnlineResource': 'http://www.university.edu/icons/logo.gif',
         'size': [100, 100],
       });
 
-      expect(subLayer.Style.length).to.eql(2);
+      assert.deepEqual(subLayer.Style.length, 2);
       const subLayerStyle = subLayer.Style[0];
-      expect(subLayerStyle.Name).to.eql('ATLAS');
-      expect(subLayerStyle.Title).to.eql('Road atlas style');
-      expect(subLayerStyle.Abstract).to.eql(
+      assert.deepEqual(subLayerStyle.Name, 'ATLAS');
+      assert.deepEqual(subLayerStyle.Title, 'Road atlas style');
+      assert.deepEqual(
+        subLayerStyle.Abstract,
         'Roads are shown in a style like that used in a commercial road atlas.',
       );
-      expect(subLayerStyle.LegendURL).to.eql([
+      assert.deepEqual(subLayerStyle.LegendURL, [
         {
           'Format': 'image/gif',
           'OnlineResource': 'http://www.university.edu/legends/atlas.gif',
@@ -663,28 +684,29 @@ describe('ol.format.WMSCapabilities', function () {
     });
 
     it('can read version', function () {
-      expect(capabilities.version).to.eql('1.1.1');
+      assert.deepEqual(capabilities.version, '1.1.1');
     });
 
     it('can read Service section', function () {
       const service = capabilities.Service;
-      expect(service.Name).to.eql('OGC:WMS');
-      expect(service.Title).to.eql('Acme Corp. Map Server');
-      expect(service.Abstract).to.eql(
+      assert.deepEqual(service.Name, 'OGC:WMS');
+      assert.deepEqual(service.Title, 'Acme Corp. Map Server');
+      assert.deepEqual(
+        service.Abstract,
         'WMT Map Server maintained by Acme Corporation. Contact: webmaster@wmt.acme.com.\n      High-quality maps showing roadrunner nests and possible ambush locations.',
       );
-      expect(service.KeywordList).to.eql(['bird', 'roadrunner', 'ambush']);
-      expect(service.OnlineResource).to.eql('http://hostname/');
-      expect(service.Fees).to.eql('none');
-      expect(service.AccessConstraints).to.eql('none');
+      assert.deepEqual(service.KeywordList, ['bird', 'roadrunner', 'ambush']);
+      assert.deepEqual(service.OnlineResource, 'http://hostname/');
+      assert.deepEqual(service.Fees, 'none');
+      assert.deepEqual(service.AccessConstraints, 'none');
 
       const contact = service.ContactInformation;
-      expect(contact.ContactPosition).to.eql('Computer Scientist');
-      expect(contact.ContactPersonPrimary).to.eql({
+      assert.deepEqual(contact.ContactPosition, 'Computer Scientist');
+      assert.deepEqual(contact.ContactPersonPrimary, {
         ContactPerson: 'Jeff deLaBeaujardiere',
         ContactOrganization: 'NASA',
       });
-      expect(contact.ContactAddress).to.eql({
+      assert.deepEqual(contact.ContactAddress, {
         AddressType: 'postal',
         Address: 'NASA Goddard Space Flight Center, Code 933',
         City: 'Greenbelt',
@@ -692,9 +714,10 @@ describe('ol.format.WMSCapabilities', function () {
         PostCode: '20771',
         Country: 'USA',
       });
-      expect(contact.ContactVoiceTelephone).to.eql('+1 301 286-1569');
-      expect(contact.ContactFacsimileTelephone).to.eql('+1 301 286-1777');
-      expect(contact.ContactElectronicMailAddress).to.eql(
+      assert.deepEqual(contact.ContactVoiceTelephone, '+1 301 286-1569');
+      assert.deepEqual(contact.ContactFacsimileTelephone, '+1 301 286-1777');
+      assert.deepEqual(
+        contact.ContactElectronicMailAddress,
         'delabeau@iniki.gsfc.nasa.gov',
       );
     });
@@ -702,7 +725,7 @@ describe('ol.format.WMSCapabilities', function () {
     it('can read Capability.Exception', function () {
       const exception = capabilities.Capability.Exception;
 
-      expect(exception).to.eql([
+      assert.deepEqual(exception, [
         'application/vnd.ogc.se_xml',
         'application/vnd.ogc.se_inimage',
         'application/vnd.ogc.se_blank',
@@ -712,58 +735,61 @@ describe('ol.format.WMSCapabilities', function () {
     it('can read Capability.Request.GetCapabilities', function () {
       const getCapabilities = capabilities.Capability.Request.GetCapabilities;
 
-      expect(getCapabilities.Format).to.eql(['application/vnd.ogc.wms_xml']);
-      expect(getCapabilities.DCPType.length).to.eql(1);
+      assert.deepEqual(getCapabilities.Format, ['application/vnd.ogc.wms_xml']);
+      assert.deepEqual(getCapabilities.DCPType.length, 1);
       const http = getCapabilities.DCPType[0].HTTP;
-      expect(http.Get.OnlineResource).to.eql('http://hostname:port/path');
-      expect(http.Post.OnlineResource).to.eql('http://hostname:port/path');
+      assert.deepEqual(http.Get.OnlineResource, 'http://hostname:port/path');
+      assert.deepEqual(http.Post.OnlineResource, 'http://hostname:port/path');
     });
 
     it('can read Capability.Request.GetFeatureInfo', function () {
       const getFeatureInfo = capabilities.Capability.Request.GetFeatureInfo;
 
-      expect(getFeatureInfo.Format).to.eql([
+      assert.deepEqual(getFeatureInfo.Format, [
         'application/vnd.ogc.gml',
         'text/plain',
         'text/html',
       ]);
-      expect(getFeatureInfo.DCPType.length).to.eql(1);
+      assert.deepEqual(getFeatureInfo.DCPType.length, 1);
       const http = getFeatureInfo.DCPType[0].HTTP;
-      expect(http.Get.OnlineResource).to.eql('http://hostname:port/path');
+      assert.deepEqual(http.Get.OnlineResource, 'http://hostname:port/path');
     });
 
     it('can read Capability.Request.GetMap', function () {
       const getMap = capabilities.Capability.Request.GetMap;
 
-      expect(getMap.Format).to.eql(['image/gif', 'image/png', 'image/jpeg']);
-      expect(getMap.DCPType.length).to.eql(1);
+      assert.deepEqual(getMap.Format, ['image/gif', 'image/png', 'image/jpeg']);
+      assert.deepEqual(getMap.DCPType.length, 1);
       const http = getMap.DCPType[0].HTTP;
-      expect(http.Get.OnlineResource).to.eql('http://hostname:port/path');
+      assert.deepEqual(http.Get.OnlineResource, 'http://hostname:port/path');
     });
 
     it('can read the Capability.Request.GetLegendGraphic', function () {
       const getLegendGraphic = capabilities.Capability.Request.GetLegendGraphic;
-      expect(getLegendGraphic).to.not.eql(undefined);
-      expect(getLegendGraphic.Format).to.eql([
+      assert.notDeepEqual(getLegendGraphic, undefined);
+      assert.deepEqual(getLegendGraphic.Format, [
         'image/png',
         'image/png; mode=8bit',
         'image/jpeg',
         'image/vnd.jpeg-png',
         'image/vnd.jpeg-png8',
       ]);
-      expect(getLegendGraphic.DCPType[0].HTTP.Get.OnlineResource).to.eql(
+      assert.deepEqual(
+        getLegendGraphic.DCPType[0].HTTP.Get.OnlineResource,
         'http://hostname:port/path',
       );
-      expect(getLegendGraphic.DCPType[0].HTTP.Post.OnlineResource).to.eql(
+      assert.deepEqual(
+        getLegendGraphic.DCPType[0].HTTP.Post.OnlineResource,
         'http://hostname:port/path',
       );
     });
 
     it('can read the Capability.Request.DescribeLayer', function () {
       const describeLayer = capabilities.Capability.Request.DescribeLayer;
-      expect(describeLayer).to.not.eql(undefined);
-      expect(describeLayer.Format).to.eql(['application/vnd.ogc.gml']);
-      expect(describeLayer.DCPType[0].HTTP.Get.OnlineResource).to.eql(
+      assert.notDeepEqual(describeLayer, undefined);
+      assert.deepEqual(describeLayer.Format, ['application/vnd.ogc.gml']);
+      assert.deepEqual(
+        describeLayer.DCPType[0].HTTP.Get.OnlineResource,
         'http://hostname:port/path',
       );
     });
@@ -771,19 +797,19 @@ describe('ol.format.WMSCapabilities', function () {
     it('can read the Capability.UserDefinedSymbolization', function () {
       const userDefinedSymbolization =
         capabilities.Capability.UserDefinedSymbolization;
-      expect(userDefinedSymbolization.SupportSLD).to.eql(true);
-      expect(userDefinedSymbolization.UserStyle).to.eql(true);
-      expect(userDefinedSymbolization.UserLayer).to.eql(false);
-      expect(userDefinedSymbolization.RemoteWFS).to.eql(false);
-      expect(userDefinedSymbolization.InlineFeatureData).to.eql(false);
-      expect(userDefinedSymbolization.RemoteWCS).to.eql(false);
+      assert.deepEqual(userDefinedSymbolization.SupportSLD, true);
+      assert.deepEqual(userDefinedSymbolization.UserStyle, true);
+      assert.deepEqual(userDefinedSymbolization.UserLayer, false);
+      assert.deepEqual(userDefinedSymbolization.RemoteWFS, false);
+      assert.deepEqual(userDefinedSymbolization.InlineFeatureData, false);
+      assert.deepEqual(userDefinedSymbolization.RemoteWCS, false);
     });
 
     it('can read Capability.Layer', function () {
       const layerCapability = capabilities.Capability.Layer;
-      expect(layerCapability.Title).to.eql('Acme Corp. Map Server');
-      expect(layerCapability.SRS).to.eql(['EPSG:4326']);
-      expect(layerCapability.AuthorityURL).to.eql([
+      assert.deepEqual(layerCapability.Title, 'Acme Corp. Map Server');
+      assert.deepEqual(layerCapability.SRS, ['EPSG:4326']);
+      assert.deepEqual(layerCapability.AuthorityURL, [
         {
           'OnlineResource':
             'http://gcmd.gsfc.nasa.gov/difguide/whatisadif.html',
@@ -791,26 +817,26 @@ describe('ol.format.WMSCapabilities', function () {
         },
       ]);
       const layers = layerCapability.Layer;
-      expect(layers.length).to.eql(4);
+      assert.deepEqual(layers.length, 4);
       const layer = layers[0];
 
-      expect(layer.Name).to.eql('ROADS_RIVERS');
-      expect(layer.Title).to.eql('Roads and Rivers');
-      expect(layer.SRS).to.eql(['EPSG:26986', 'EPSG:4326']);
-      expect(layer.queryable).to.eql(false);
-      expect(layer.cascaded).to.eql(undefined);
-      expect(layer.opaque).to.eql(false);
-      expect(layer.noSubsets).to.eql(false);
-      expect(layer.fixedWidth).to.eql(undefined);
-      expect(layer.fixedHeight).to.eql(undefined);
-      expect(layer.Extent).to.eql(undefined);
-      expect(layer.Identifier).to.eql(['123456']);
+      assert.deepEqual(layer.Name, 'ROADS_RIVERS');
+      assert.deepEqual(layer.Title, 'Roads and Rivers');
+      assert.deepEqual(layer.SRS, ['EPSG:26986', 'EPSG:4326']);
+      assert.deepEqual(layer.queryable, false);
+      assert.deepEqual(layer.cascaded, undefined);
+      assert.deepEqual(layer.opaque, false);
+      assert.deepEqual(layer.noSubsets, false);
+      assert.deepEqual(layer.fixedWidth, undefined);
+      assert.deepEqual(layer.fixedHeight, undefined);
+      assert.deepEqual(layer.Extent, undefined);
+      assert.deepEqual(layer.Identifier, ['123456']);
 
-      expect(layer.LatLonBoundingBox).to.eql({
+      assert.deepEqual(layer.LatLonBoundingBox, {
         'extent': [-71.63, 41.75, -70.78, 42.9],
         'res': [undefined, undefined],
       });
-      expect(layer.BoundingBox).to.eql([
+      assert.deepEqual(layer.BoundingBox, [
         {
           'extent': [-71.63, 41.75, -70.78, 42.9],
           'res': [0.01, 0.01],
@@ -822,20 +848,20 @@ describe('ol.format.WMSCapabilities', function () {
           'srs': 'EPSG:26986',
         },
       ]);
-      expect(layer.FeatureListURL).to.eql([
+      assert.deepEqual(layer.FeatureListURL, [
         {
           'Format': 'application/vnd.ogc.se_xml"',
           'OnlineResource': 'http://www.university.edu/data/roads_rivers.gml',
         },
       ]);
-      expect(layer.AuthorityURL).to.eql([
+      assert.deepEqual(layer.AuthorityURL, [
         {
           'OnlineResource':
             'http://gcmd.gsfc.nasa.gov/difguide/whatisadif.html',
           'name': 'DIF_ID',
         },
       ]);
-      expect(layer.ScaleHint).to.eql([
+      assert.deepEqual(layer.ScaleHint, [
         {
           'min': 4000,
           'max': 35000,
@@ -843,55 +869,66 @@ describe('ol.format.WMSCapabilities', function () {
       ]);
 
       const attribution = layer.Attribution;
-      expect(attribution.Title).to.eql('State College University');
-      expect(attribution.OnlineResource).to.eql('http://www.university.edu/');
-      expect(attribution.LogoURL).to.eql({
+      assert.deepEqual(attribution.Title, 'State College University');
+      assert.deepEqual(
+        attribution.OnlineResource,
+        'http://www.university.edu/',
+      );
+      assert.deepEqual(attribution.LogoURL, {
         'Format': 'image/gif',
         'OnlineResource': 'http://www.university.edu/icons/logo.gif',
         'size': [100, 100],
       });
 
-      expect(layer.Style.length).to.eql(1);
+      assert.deepEqual(layer.Style.length, 1);
       const style = layer.Style[0];
-      expect(style.Name).to.eql('USGS');
-      expect(style.Title).to.eql('USGS Topo Map Style');
-      expect(style.Abstract).to.eql(
+      assert.deepEqual(style.Name, 'USGS');
+      assert.deepEqual(style.Title, 'USGS Topo Map Style');
+      assert.deepEqual(
+        style.Abstract,
         'Features are shown in a style like that used in USGS topographic maps.',
       );
-      expect(style.LegendURL).to.eql([
+      assert.deepEqual(style.LegendURL, [
         {
           'Format': 'image/gif',
           'OnlineResource': 'http://www.university.edu/legends/usgs.gif',
           'size': [72, 72],
         },
       ]);
-      expect(style.StyleSheetURL).to.eql({
+      assert.deepEqual(style.StyleSheetURL, {
         'Format': 'text/xsl',
         'OnlineResource': 'http://www.university.edu/stylesheets/usgs.xsl',
       });
 
-      expect(layer.Layer.length).to.eql(2);
+      assert.deepEqual(layer.Layer.length, 2);
       const subLayer = layer.Layer[0];
 
-      expect(subLayer.Name).to.eql('ROADS_1M');
-      expect(subLayer.Title).to.eql('Roads at 1:1M scale');
-      expect(subLayer.Abstract).to.eql('Roads at a scale of 1 to 1 million.');
-      expect(subLayer.KeywordList).to.eql(['road', 'transportation', 'atlas']);
-      expect(subLayer.Identifier).to.eql(['123456']);
-      expect(subLayer.SRS).to.eql(['EPSG:26986']);
-      expect(subLayer.queryable).to.eql(true);
-      expect(subLayer.cascaded).to.eql(undefined);
-      expect(subLayer.opaque).to.eql(false);
-      expect(subLayer.noSubsets).to.eql(false);
-      expect(subLayer.fixedWidth).to.eql(undefined);
-      expect(subLayer.fixedHeight).to.eql(undefined);
-      expect(subLayer.Extent).to.eql(undefined);
+      assert.deepEqual(subLayer.Name, 'ROADS_1M');
+      assert.deepEqual(subLayer.Title, 'Roads at 1:1M scale');
+      assert.deepEqual(
+        subLayer.Abstract,
+        'Roads at a scale of 1 to 1 million.',
+      );
+      assert.deepEqual(subLayer.KeywordList, [
+        'road',
+        'transportation',
+        'atlas',
+      ]);
+      assert.deepEqual(subLayer.Identifier, ['123456']);
+      assert.deepEqual(subLayer.SRS, ['EPSG:26986']);
+      assert.deepEqual(subLayer.queryable, true);
+      assert.deepEqual(subLayer.cascaded, undefined);
+      assert.deepEqual(subLayer.opaque, false);
+      assert.deepEqual(subLayer.noSubsets, false);
+      assert.deepEqual(subLayer.fixedWidth, undefined);
+      assert.deepEqual(subLayer.fixedHeight, undefined);
+      assert.deepEqual(subLayer.Extent, undefined);
 
-      expect(subLayer.LatLonBoundingBox).to.eql({
+      assert.deepEqual(subLayer.LatLonBoundingBox, {
         'extent': [-71.63, 41.75, -70.78, 42.9],
         'res': [undefined, undefined],
       });
-      expect(subLayer.BoundingBox).to.eql([
+      assert.deepEqual(subLayer.BoundingBox, [
         {
           'extent': [-71.63, 41.75, -70.78, 42.9],
           'res': [0.01, 0.01],
@@ -903,13 +940,13 @@ describe('ol.format.WMSCapabilities', function () {
           'srs': 'EPSG:26986',
         },
       ]);
-      expect(subLayer.ScaleHint).to.eql([
+      assert.deepEqual(subLayer.ScaleHint, [
         {
           'min': 4000,
           'max': 35000,
         },
       ]);
-      expect(subLayer.MetadataURL).to.eql([
+      assert.deepEqual(subLayer.MetadataURL, [
         {
           'Format': 'text/plain',
           'OnlineResource': 'http://www.university.edu/metadata/roads.txt',
@@ -922,24 +959,26 @@ describe('ol.format.WMSCapabilities', function () {
         },
       ]);
       const subLayerAttribution = subLayer.Attribution;
-      expect(subLayerAttribution.Title).to.eql('State College University');
-      expect(subLayerAttribution.OnlineResource).to.eql(
+      assert.deepEqual(subLayerAttribution.Title, 'State College University');
+      assert.deepEqual(
+        subLayerAttribution.OnlineResource,
         'http://www.university.edu/',
       );
-      expect(subLayerAttribution.LogoURL).to.eql({
+      assert.deepEqual(subLayerAttribution.LogoURL, {
         'Format': 'image/gif',
         'OnlineResource': 'http://www.university.edu/icons/logo.gif',
         'size': [100, 100],
       });
 
-      expect(subLayer.Style.length).to.eql(2);
+      assert.deepEqual(subLayer.Style.length, 2);
       const subLayerStyle = subLayer.Style[0];
-      expect(subLayerStyle.Name).to.eql('ATLAS');
-      expect(subLayerStyle.Title).to.eql('Road atlas style');
-      expect(subLayerStyle.Abstract).to.eql(
+      assert.deepEqual(subLayerStyle.Name, 'ATLAS');
+      assert.deepEqual(subLayerStyle.Title, 'Road atlas style');
+      assert.deepEqual(
+        subLayerStyle.Abstract,
         'Roads are shown in a style like that used in a commercial road atlas.',
       );
-      expect(subLayerStyle.LegendURL).to.eql([
+      assert.deepEqual(subLayerStyle.LegendURL, [
         {
           'Format': 'image/gif',
           'OnlineResource': 'http://www.university.edu/legends/atlas.gif',
@@ -966,23 +1005,23 @@ describe('ol.format.WMSCapabilities', function () {
     });
 
     it('can read version', function () {
-      expect(capabilities.version).to.eql('1.3.0');
+      assert.deepEqual(capabilities.version, '1.3.0');
     });
 
     it('can read Service section', function () {
       // FIXME not all fields are tested
       const service = capabilities.Service;
 
-      expect(service.Name).to.eql('WMS');
-      expect(service.Title).to.eql('Acme Corp. Map Server');
+      assert.deepEqual(service.Name, 'WMS');
+      assert.deepEqual(service.Title, 'Acme Corp. Map Server');
     });
 
     it('can read Capability.Layer', function () {
       const layer = capabilities.Capability.Layer;
 
-      expect(layer.Title).to.eql('Roads at 1:1M scale');
-      expect(layer.Name).to.be('ROADS_1M');
-      expect(layer.queryable).to.be(true);
+      assert.deepEqual(layer.Title, 'Roads at 1:1M scale');
+      assert.strictEqual(layer.Name, 'ROADS_1M');
+      assert.strictEqual(layer.queryable, true);
     });
   });
 });

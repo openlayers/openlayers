@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {spy as sinonSpy} from 'sinon';
 import Feature from '../../../../../../src/ol/Feature.js';
 import Map from '../../../../../../src/ol/Map.js';
@@ -21,6 +22,7 @@ import {
   create as createTransform,
 } from '../../../../../../src/ol/transform.js';
 import {getUid} from '../../../../../../src/ol/util.js';
+import {assertArrayLikeEqual} from '../../../../../util/equal.js';
 
 const baseFrameState = {
   viewHints: [],
@@ -63,7 +65,7 @@ describe('ol/renderer/webgl/PointsLayer', function () {
         vertexShader: simpleVertexShader,
         fragmentShader: simpleFragmentShader,
       });
-      expect(renderer).to.be.a(WebGLPointsLayerRenderer);
+      assert.instanceOf(renderer, WebGLPointsLayerRenderer);
       renderer.dispose();
     });
   });
@@ -97,7 +99,7 @@ describe('ol/renderer/webgl/PointsLayer', function () {
 
       const spy = sinonSpy(renderer.helper, 'prepareDraw');
       renderer.prepareFrame(frameState);
-      expect(spy.called).to.be(true);
+      assert.strictEqual(spy.called, true);
     });
 
     it('fills up a buffer with 2 triangles per point', function (done) {
@@ -119,15 +121,17 @@ describe('ol/renderer/webgl/PointsLayer', function () {
         if (event.data.type !== WebGLWorkerMessageType.GENERATE_POINT_BUFFERS) {
           return;
         }
-        expect(renderer.verticesBuffer_.getArray().length).to.eql(8);
-        expect(renderer.instanceAttributesBuffer_.getArray().length).to.eql(
+        assertArrayLikeEqual(renderer.verticesBuffer_.getArray().length, 8);
+        assert.deepEqual(
+          renderer.instanceAttributesBuffer_.getArray().length,
           2 * attributePerVertex,
         );
-        expect(renderer.indicesBuffer_.getArray().length).to.eql(6);
+        assertArrayLikeEqual(renderer.indicesBuffer_.getArray().length, 6);
 
-        expect(renderer.instanceAttributesBuffer_.getArray()).to.eql([
-          10, 20, 30, 40,
-        ]);
+        assertArrayLikeEqual(
+          renderer.instanceAttributesBuffer_.getArray(),
+          [10, 20, 30, 40],
+        );
         done();
       });
     });
@@ -160,20 +164,23 @@ describe('ol/renderer/webgl/PointsLayer', function () {
         if (!renderer.verticesBuffer_.getArray()) {
           return;
         }
-        expect(renderer.verticesBuffer_.getArray().length).to.eql(8);
-        expect(renderer.instanceAttributesBuffer_.getArray().length).to.eql(
+        assertArrayLikeEqual(renderer.verticesBuffer_.getArray().length, 8);
+        assert.deepEqual(
+          renderer.instanceAttributesBuffer_.getArray().length,
           2 * attributePerVertex,
         );
-        expect(renderer.indicesBuffer_.getArray().length).to.eql(6);
+        assertArrayLikeEqual(renderer.indicesBuffer_.getArray().length, 6);
 
-        expect(
+        assertArrayLikeEqual(
           renderer.instanceAttributesBuffer_.getArray().slice(0, 2),
-        ).to.eql([10, 20]);
-        expect(
+          [10, 20],
+        );
+        assertArrayLikeEqual(
           renderer.instanceAttributesBuffer_
             .getArray()
             .slice(attributePerVertex, 2 + attributePerVertex),
-        ).to.eql([30, 40]);
+          [30, 40],
+        );
         done();
       });
     });
@@ -198,11 +205,12 @@ describe('ol/renderer/webgl/PointsLayer', function () {
           return;
         }
         const attributePerVertex = 1;
-        expect(renderer.verticesBuffer_.getArray().length).to.eql(8);
-        expect(renderer.instanceAttributesBuffer_.getArray().length).to.eql(
+        assertArrayLikeEqual(renderer.verticesBuffer_.getArray().length, 8);
+        assert.deepEqual(
+          renderer.instanceAttributesBuffer_.getArray().length,
           2 * attributePerVertex,
         );
-        expect(renderer.indicesBuffer_.getArray().length).to.eql(6);
+        assertArrayLikeEqual(renderer.indicesBuffer_.getArray().length, 6);
 
         done();
       });
@@ -214,60 +222,60 @@ describe('ol/renderer/webgl/PointsLayer', function () {
       frameState.viewHints[ViewHint.INTERACTING] = 1;
       frameState.viewHints[ViewHint.ANIMATING] = 0;
       renderer.prepareFrame(frameState);
-      expect(spy.called).to.be(false);
+      assert.strictEqual(spy.called, false);
 
       frameState.viewHints[ViewHint.INTERACTING] = 0;
       frameState.viewHints[ViewHint.ANIMATING] = 1;
       renderer.prepareFrame(frameState);
-      expect(spy.called).to.be(false);
+      assert.strictEqual(spy.called, false);
 
       frameState.viewHints[ViewHint.INTERACTING] = 0;
       frameState.viewHints[ViewHint.ANIMATING] = 0;
       renderer.prepareFrame(frameState);
-      expect(spy.called).to.be(true);
+      assert.strictEqual(spy.called, true);
     });
 
     it('rebuilds the buffers only when the frame extent changed', function () {
       const spy = sinonSpy(renderer, 'rebuildBuffers_');
 
       renderer.prepareFrame(frameState);
-      expect(spy.callCount).to.be(1);
+      assert.strictEqual(spy.callCount, 1);
 
       renderer.prepareFrame(frameState);
-      expect(spy.callCount).to.be(1);
+      assert.strictEqual(spy.callCount, 1);
 
       frameState.extent = [10, 20, 30, 40];
       renderer.prepareFrame(frameState);
-      expect(spy.callCount).to.be(2);
+      assert.strictEqual(spy.callCount, 2);
     });
 
     it('triggers source loading when the extent changes', function () {
       const spy = sinonSpy(layer.getSource(), 'loadFeatures');
 
       renderer.prepareFrame(frameState);
-      expect(spy.callCount).to.be(1);
+      assert.strictEqual(spy.callCount, 1);
 
       renderer.prepareFrame(frameState);
-      expect(spy.callCount).to.be(1);
+      assert.strictEqual(spy.callCount, 1);
 
       frameState.extent = [10, 20, 30, 40];
       renderer.prepareFrame(frameState);
-      expect(spy.callCount).to.be(2);
-      expect(spy.getCall(1).args[0]).to.eql([0, 10, 40, 50]); // renderBuffer is 10
+      assert.strictEqual(spy.callCount, 2);
+      assert.deepEqual(spy.getCall(1).args[0], [0, 10, 40, 50]);
     });
 
     it('triggers source loading when the source revision changes', function () {
       const spy = sinonSpy(layer.getSource(), 'loadFeatures');
 
       renderer.prepareFrame(frameState);
-      expect(spy.callCount).to.be(1);
+      assert.strictEqual(spy.callCount, 1);
 
       renderer.prepareFrame(frameState);
-      expect(spy.callCount).to.be(1);
+      assert.strictEqual(spy.callCount, 1);
 
       layer.getSource().changed();
       renderer.prepareFrame(frameState);
-      expect(spy.callCount).to.be(2);
+      assert.strictEqual(spy.callCount, 2);
     });
   });
 
@@ -326,16 +334,16 @@ describe('ol/renderer/webgl/PointsLayer', function () {
             frameState,
             0,
             function (feature) {
-              expect(feature).to.be(expected);
+              assert.strictEqual(feature, expected);
               called = true;
             },
             null,
           );
 
           if (expected) {
-            expect(called).to.be(true);
+            assert.strictEqual(called, true);
           } else {
-            expect(called).to.be(false);
+            assert.strictEqual(called, false);
           }
         }
 
@@ -390,7 +398,7 @@ describe('ol/renderer/webgl/PointsLayer', function () {
         function checkHit(x, y, expected) {
           found = null;
           renderer.forEachFeatureAtCoordinate([x, y], frameState, 0, cb, null);
-          expect(found).to.be(expected);
+          assert.strictEqual(found, expected);
         }
 
         checkHit(0, 0, feature);
@@ -430,8 +438,8 @@ describe('ol/renderer/webgl/PointsLayer', function () {
       const spyHelper = sinonSpy(renderer.helper, 'disposeInternal');
       const spyWorker = sinonSpy(renderer.worker_, 'terminate');
       renderer.dispose();
-      expect(spyHelper.called).to.be(true);
-      expect(spyWorker.called).to.be(true);
+      assert.strictEqual(spyHelper.called, true);
+      assert.strictEqual(spyWorker.called, true);
     });
   });
 
@@ -492,7 +500,7 @@ describe('ol/renderer/webgl/PointsLayer', function () {
         vertexShader: simpleVertexShader,
         fragmentShader: simpleFragmentShader,
       });
-      expect(renderer.featureCount_).to.be(0);
+      assert.strictEqual(renderer.featureCount_, 0);
     });
 
     it('contains the features initially present in the source', function () {
@@ -501,26 +509,32 @@ describe('ol/renderer/webgl/PointsLayer', function () {
         vertexShader: simpleVertexShader,
         fragmentShader: simpleFragmentShader,
       });
-      expect(renderer.featureCount_).to.be(3);
-      expect(getCache(features[0], renderer).feature).to.be(features[0]);
-      expect(getCache(features[0], renderer).flatCoordinates).to.be(
+      assert.strictEqual(renderer.featureCount_, 3);
+      assert.strictEqual(getCache(features[0], renderer).feature, features[0]);
+      assert.strictEqual(
+        getCache(features[0], renderer).flatCoordinates,
         features[0].getGeometry().getFlatCoordinates(),
       );
-      expect(getCache(features[0], renderer).properties['test']).to.be(
+      assert.strictEqual(
+        getCache(features[0], renderer).properties['test'],
         features[0].get('test'),
       );
-      expect(getCache(features[1], renderer).feature).to.be(features[1]);
-      expect(getCache(features[1], renderer).flatCoordinates).to.be(
+      assert.strictEqual(getCache(features[1], renderer).feature, features[1]);
+      assert.strictEqual(
+        getCache(features[1], renderer).flatCoordinates,
         features[1].getGeometry().getFlatCoordinates(),
       );
-      expect(getCache(features[1], renderer).properties['test']).to.be(
+      assert.strictEqual(
+        getCache(features[1], renderer).properties['test'],
         features[1].get('test'),
       );
-      expect(getCache(features[2], renderer).feature).to.be(features[2]);
-      expect(getCache(features[2], renderer).flatCoordinates).to.be(
+      assert.strictEqual(getCache(features[2], renderer).feature, features[2]);
+      assert.strictEqual(
+        getCache(features[2], renderer).flatCoordinates,
         features[2].getGeometry().getFlatCoordinates(),
       );
-      expect(getCache(features[2], renderer).properties['test']).to.be(
+      assert.strictEqual(
+        getCache(features[2], renderer).properties['test'],
         features[2].get('test'),
       );
     });
@@ -531,7 +545,7 @@ describe('ol/renderer/webgl/PointsLayer', function () {
         vertexShader: simpleVertexShader,
         fragmentShader: simpleFragmentShader,
       });
-      expect(renderer.featureCount_).to.be(features.length);
+      assert.strictEqual(renderer.featureCount_, features.length);
     });
 
     it('removes features which no longer have a valid point geometry', () => {
@@ -547,7 +561,7 @@ describe('ol/renderer/webgl/PointsLayer', function () {
           [1, 1],
         ]),
       );
-      expect(renderer.featureCount_).to.be(1);
+      assert.strictEqual(renderer.featureCount_, 1);
     });
 
     it('adds features whose geometry becomes valid', () => {
@@ -558,7 +572,7 @@ describe('ol/renderer/webgl/PointsLayer', function () {
       });
       invalidGeometryFeatures[0].setGeometry(new Point([0, 1]));
       invalidGeometryFeatures[1].setGeometry(new Point([2, 2]));
-      expect(renderer.featureCount_).to.be(2);
+      assert.strictEqual(renderer.featureCount_, 2);
     });
 
     it('contains the features added to the source', function () {
@@ -568,23 +582,27 @@ describe('ol/renderer/webgl/PointsLayer', function () {
       });
 
       source.addFeature(features[0]);
-      expect(renderer.featureCount_).to.be(1);
+      assert.strictEqual(renderer.featureCount_, 1);
 
       source.addFeature(features[1]);
-      expect(renderer.featureCount_).to.be(2);
+      assert.strictEqual(renderer.featureCount_, 2);
 
-      expect(getCache(features[0], renderer).feature).to.be(features[0]);
-      expect(getCache(features[0], renderer).flatCoordinates).to.be(
+      assert.strictEqual(getCache(features[0], renderer).feature, features[0]);
+      assert.strictEqual(
+        getCache(features[0], renderer).flatCoordinates,
         features[0].getGeometry().getFlatCoordinates(),
       );
-      expect(getCache(features[0], renderer).properties['test']).to.be(
+      assert.strictEqual(
+        getCache(features[0], renderer).properties['test'],
         features[0].get('test'),
       );
-      expect(getCache(features[1], renderer).feature).to.be(features[1]);
-      expect(getCache(features[1], renderer).flatCoordinates).to.be(
+      assert.strictEqual(getCache(features[1], renderer).feature, features[1]);
+      assert.strictEqual(
+        getCache(features[1], renderer).flatCoordinates,
         features[1].getGeometry().getFlatCoordinates(),
       );
-      expect(getCache(features[1], renderer).properties['test']).to.be(
+      assert.strictEqual(
+        getCache(features[1], renderer).properties['test'],
         features[1].get('test'),
       );
     });
@@ -596,23 +614,27 @@ describe('ol/renderer/webgl/PointsLayer', function () {
       });
 
       source.addFeatures(features);
-      expect(renderer.featureCount_).to.be(3);
+      assert.strictEqual(renderer.featureCount_, 3);
 
       source.removeFeature(features[1]);
-      expect(renderer.featureCount_).to.be(2);
+      assert.strictEqual(renderer.featureCount_, 2);
 
-      expect(getCache(features[0], renderer).feature).to.be(features[0]);
-      expect(getCache(features[0], renderer).flatCoordinates).to.be(
+      assert.strictEqual(getCache(features[0], renderer).feature, features[0]);
+      assert.strictEqual(
+        getCache(features[0], renderer).flatCoordinates,
         features[0].getGeometry().getFlatCoordinates(),
       );
-      expect(getCache(features[0], renderer).properties['test']).to.be(
+      assert.strictEqual(
+        getCache(features[0], renderer).properties['test'],
         features[0].get('test'),
       );
-      expect(getCache(features[2], renderer).feature).to.be(features[2]);
-      expect(getCache(features[2], renderer).flatCoordinates).to.be(
+      assert.strictEqual(getCache(features[2], renderer).feature, features[2]);
+      assert.strictEqual(
+        getCache(features[2], renderer).flatCoordinates,
         features[2].getGeometry().getFlatCoordinates(),
       );
-      expect(getCache(features[2], renderer).properties['test']).to.be(
+      assert.strictEqual(
+        getCache(features[2], renderer).properties['test'],
         features[2].get('test'),
       );
     });
@@ -627,14 +649,19 @@ describe('ol/renderer/webgl/PointsLayer', function () {
       features[0].set('test', 'updated');
       features[0].set('added', true);
       features[0].getGeometry().setCoordinates([10, 20]);
-      expect(renderer.featureCount_).to.be(3);
+      assert.strictEqual(renderer.featureCount_, 3);
 
-      expect(getCache(features[0], renderer).feature).to.be(features[0]);
-      expect(getCache(features[0], renderer).flatCoordinates).to.eql([10, 20]);
-      expect(getCache(features[0], renderer).properties['test']).to.be(
+      assert.strictEqual(getCache(features[0], renderer).feature, features[0]);
+      assert.deepEqual(
+        getCache(features[0], renderer).flatCoordinates,
+        [10, 20],
+      );
+      assert.strictEqual(
+        getCache(features[0], renderer).properties['test'],
         features[0].get('test'),
       );
-      expect(getCache(features[0], renderer).properties['added']).to.be(
+      assert.strictEqual(
+        getCache(features[0], renderer).properties['added'],
         features[0].get('added'),
       );
     });
@@ -712,8 +739,8 @@ describe('ol/renderer/webgl/PointsLayer', function () {
 
       layer.once('postrender', (evt) => {
         postrenderNotified = true;
-        expect(prerenderNotified).to.be(true);
-        expect(postrenderNotified).to.be(true);
+        assert.strictEqual(prerenderNotified, true);
+        assert.strictEqual(postrenderNotified, true);
         done();
       });
 
@@ -755,22 +782,24 @@ describe('ol/renderer/webgl/PointsLayer', function () {
         const targetContext = createCanvasContext2D(1, 1);
         const canvas = document.querySelector('.ol-layer');
         targetContext.drawImage(canvas, 50, 50, 1, 1, 0, 0, 1, 1);
-        expect(Array.from(targetContext.getImageData(0, 0, 1, 1).data)).to.eql([
-          255, 0, 0, 255,
-        ]);
+        assert.deepEqual(
+          Array.from(targetContext.getImageData(0, 0, 1, 1).data),
+          [255, 0, 0, 255],
+        );
         layer
           .getSource()
           .addFeature(new Feature(new Point([1900000, 1900000])));
         layer.once('postrender', function () {
-          expect(layer.getRenderer().ready).to.be(false);
+          assert.strictEqual(layer.getRenderer().ready, false);
         });
         map.once('rendercomplete', function () {
           const targetContext = createCanvasContext2D(1, 1);
           const canvas = document.querySelector('.ol-layer');
           targetContext.drawImage(canvas, 99, 0, 1, 1, 0, 0, 1, 1);
-          expect(
+          assert.deepEqual(
             Array.from(targetContext.getImageData(0, 0, 1, 1).data),
-          ).to.eql([255, 0, 0, 255]);
+            [255, 0, 0, 255],
+          );
           done();
         });
       });
@@ -866,17 +895,17 @@ describe('ol/renderer/webgl/PointsLayer', function () {
     });
 
     it('allows changing variables', function (done) {
-      expect(layer.styleVariables_['r']).to.be(0);
-      expect(getCenterPixelImageData()).to.eql([0, 255, 0, 255]);
+      assert.strictEqual(layer.styleVariables_['r'], 0);
+      assert.deepEqual(getCenterPixelImageData(), [0, 255, 0, 255]);
       layer.updateStyleVariables({
         r: 255,
         g: 0,
         b: 255,
       });
-      expect(layer.styleVariables_['r']).to.be(255);
+      assert.strictEqual(layer.styleVariables_['r'], 255);
 
       map.on('rendercomplete', function (event) {
-        expect(getCenterPixelImageData()).to.eql([255, 0, 255, 255]);
+        assert.deepEqual(getCenterPixelImageData(), [255, 0, 255, 255]);
         done();
       });
     });

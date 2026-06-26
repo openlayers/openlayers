@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import Projection from '../../../../../src/ol/proj/Projection.js';
 import Zoomify, {CustomTile} from '../../../../../src/ol/source/Zoomify.js';
 import TileGrid from '../../../../../src/ol/tilegrid/TileGrid.js';
@@ -46,96 +47,87 @@ describe('ol/source/Zoomify', function () {
     it('requires config "size" and "url"', function () {
       let source;
 
-      // undefined config object
-      expect(function () {
+      assert.throws(function () {
         source = new Zoomify();
-      }).to.throwException();
+      });
 
-      // empty object as config object
-      expect(function () {
+      assert.throws(function () {
         source = new Zoomify({});
-      }).to.throwException();
+      });
 
-      // passing "url" in config object
-      expect(function () {
+      assert.throws(function () {
         source = new Zoomify({
           url: 'some-url',
         });
-      }).to.throwException();
+      });
 
-      // passing "size" in config object
-      expect(function () {
+      assert.throws(function () {
         source = new Zoomify({
           size: [47, 11],
         });
-      }).to.throwException();
+      });
 
-      // passing "size" and "url" in config object
-      expect(function () {
+      assert.doesNotThrow(function () {
         source = new Zoomify({
           url: '',
           size: [47, 11],
         });
-      }).to.not.throwException();
-      // we got a source
-      expect(source).to.be.a(Zoomify);
+      });
+      assert.instanceOf(source, Zoomify);
 
-      // also test our helper methods from above
-      expect(function () {
+      assert.doesNotThrow(function () {
         source = getZoomifySource();
-      }).to.not.throwException();
-      expect(function () {
+      });
+      assert.doesNotThrow(function () {
         source = getIIPSource();
-      }).to.not.throwException();
-      // we got a source
-      expect(source).to.be.a(Zoomify);
+      });
+      assert.instanceOf(source, Zoomify);
     });
 
     it('does not need "tierSizeCalculation" option', function () {
-      expect(function () {
+      assert.doesNotThrow(function () {
         new Zoomify({
           url: '',
           size: [47, 11],
         });
-      }).to.not.throwException();
+      });
     });
 
     it('accepts "tierSizeCalculation" option "default"', function () {
-      expect(function () {
+      assert.doesNotThrow(function () {
         new Zoomify({
           url: '',
           size: [47, 11],
           tierSizeCalculation: 'default',
         });
-      }).to.not.throwException();
+      });
     });
 
     it('accepts "tierSizeCalculation" option "truncated"', function () {
-      expect(function () {
+      assert.doesNotThrow(function () {
         new Zoomify({
           url: '',
           size: [47, 11],
           tierSizeCalculation: 'truncated',
         });
-      }).to.not.throwException();
+      });
     });
 
     it('throws on unexpected "tierSizeCalculation" ', function () {
-      // passing unknown string will throw
-      expect(function () {
+      assert.throws(function () {
         new Zoomify({
           url: '',
           size: [47, 11],
           tierSizeCalculation: 'ace-of-spades',
         });
-      }).to.throwException();
+      });
     });
 
     it('creates a tileGrid for both protocols', function () {
       const sources = [getZoomifySource(), getIIPSource()];
       for (let i = 0; i < sources.length; i++) {
         const tileGrid = sources[i].getTileGrid();
-        expect(tileGrid).to.be.a(TileGrid);
+        assert.instanceOf(tileGrid, TileGrid);
       }
     });
   });
@@ -143,12 +135,12 @@ describe('ol/source/Zoomify', function () {
   describe('#getInterpolate()', function () {
     it('is true by default', function () {
       const source = new Zoomify({url: '', size: [47, 11]});
-      expect(source.getInterpolate()).to.be(true);
+      assert.strictEqual(source.getInterpolate(), true);
     });
 
     it('is false if constructed with interpolate: false', function () {
       const source = new Zoomify({interpolate: false, url: '', size: [47, 11]});
-      expect(source.getInterpolate()).to.be(false);
+      assert.strictEqual(source.getInterpolate(), false);
     });
   });
 
@@ -158,7 +150,7 @@ describe('ol/source/Zoomify', function () {
       for (let i = 0; i < sources.length; i++) {
         const tileGrid = sources[i].getTileGrid();
         const expectedExtent = [0, -h, w, 0];
-        expect(tileGrid.getExtent()).to.eql(expectedExtent);
+        assert.deepEqual(tileGrid.getExtent(), expectedExtent);
       }
     });
 
@@ -167,7 +159,7 @@ describe('ol/source/Zoomify', function () {
       for (let i = 0; i < sources.length; i++) {
         const tileGrid = sources[i].getTileGrid();
         const expectedOrigin = [0, 0];
-        expect(tileGrid.getOrigin()).to.eql(expectedOrigin);
+        assert.deepEqual(tileGrid.getOrigin(), expectedOrigin);
       }
     });
 
@@ -176,7 +168,7 @@ describe('ol/source/Zoomify', function () {
       for (let i = 0; i < sources.length; i++) {
         const tileGrid = sources[i].getTileGrid();
         const expectedResolutions = [4, 2, 1];
-        expect(tileGrid.getResolutions()).to.eql(expectedResolutions);
+        assert.deepEqual(tileGrid.getResolutions(), expectedResolutions);
       }
     });
 
@@ -185,7 +177,7 @@ describe('ol/source/Zoomify', function () {
       const expectedTileSizes = [DEFAULT_TILE_SIZE, 1024];
       for (let i = 0; i < sources.length; i++) {
         const tileGrid = sources[i].getTileGrid();
-        expect(tileGrid.getTileSize()).to.eql(expectedTileSizes[i]);
+        assert.deepEqual(tileGrid.getTileSize(), expectedTileSizes[i]);
       }
     });
 
@@ -200,7 +192,7 @@ describe('ol/source/Zoomify', function () {
       ];
       for (let i = 0; i < sources.length; i++) {
         const tileGrid = sources[i].getTileGrid();
-        expect(tileGrid.getExtent()).to.eql(expectedExtents[i]);
+        assert.deepEqual(tileGrid.getExtent(), expectedExtents[i]);
       }
     });
 
@@ -215,7 +207,7 @@ describe('ol/source/Zoomify', function () {
       ];
       for (let i = 0; i < sources.length; i++) {
         const tileGrid = sources[i].getTileGrid();
-        expect(tileGrid.getOrigin()).to.eql(expectedOrigins[i]);
+        assert.deepEqual(tileGrid.getOrigin(), expectedOrigins[i]);
       }
     });
   });
@@ -245,9 +237,9 @@ describe('ol/source/Zoomify', function () {
       });
       const tileGridTruncated = sourceTruncated.getTileGrid();
 
-      expect(tileGrid.getResolutions()).to.eql([4, 2, 1]);
-      expect(tileGridDefault.getResolutions()).to.eql([4, 2, 1]);
-      expect(tileGridTruncated.getResolutions()).to.eql([2, 1]);
+      assert.deepEqual(tileGrid.getResolutions(), [4, 2, 1]);
+      assert.deepEqual(tileGridDefault.getResolutions(), [4, 2, 1]);
+      assert.deepEqual(tileGridTruncated.getResolutions(), [2, 1]);
     });
   });
 
@@ -255,42 +247,48 @@ describe('ol/source/Zoomify', function () {
     it('creates an expected tileUrlFunction with zoomify template', function () {
       const source = getZoomifySource();
       const tileUrlFunction = source.getTileUrlFunction();
-      // zoomlevel 0
-      expect(tileUrlFunction([0, 0, 0])).to.eql(
+      assert.deepEqual(
+        tileUrlFunction([0, 0, 0]),
         'spec/ol/source/images/zoomify/TileGroup0/0-0-0.jpg',
       );
-      // zoomlevel 1
-      expect(tileUrlFunction([1, 0, 0])).to.eql(
+      assert.deepEqual(
+        tileUrlFunction([1, 0, 0]),
         'spec/ol/source/images/zoomify/TileGroup0/1-0-0.jpg',
       );
-      expect(tileUrlFunction([1, 1, 0])).to.eql(
+      assert.deepEqual(
+        tileUrlFunction([1, 1, 0]),
         'spec/ol/source/images/zoomify/TileGroup0/1-1-0.jpg',
       );
-      expect(tileUrlFunction([1, 0, 1])).to.eql(
+      assert.deepEqual(
+        tileUrlFunction([1, 0, 1]),
         'spec/ol/source/images/zoomify/TileGroup0/1-0-1.jpg',
       );
-      expect(tileUrlFunction([1, 1, 1])).to.eql(
+      assert.deepEqual(
+        tileUrlFunction([1, 1, 1]),
         'spec/ol/source/images/zoomify/TileGroup0/1-1-1.jpg',
       );
     });
     it('creates an expected tileUrlFunction with IIP template', function () {
       const source = getIIPSource();
       const tileUrlFunction = source.getTileUrlFunction();
-      // zoomlevel 0
-      expect(tileUrlFunction([0, 0, 0])).to.eql(
+      assert.deepEqual(
+        tileUrlFunction([0, 0, 0]),
         'spec/ol/source/images/zoomify?JTL=0,0',
       );
-      // zoomlevel 1
-      expect(tileUrlFunction([1, 0, 0])).to.eql(
+      assert.deepEqual(
+        tileUrlFunction([1, 0, 0]),
         'spec/ol/source/images/zoomify?JTL=1,0',
       );
-      expect(tileUrlFunction([1, 1, 0])).to.eql(
+      assert.deepEqual(
+        tileUrlFunction([1, 1, 0]),
         'spec/ol/source/images/zoomify?JTL=1,1',
       );
-      expect(tileUrlFunction([1, 0, 1])).to.eql(
+      assert.deepEqual(
+        tileUrlFunction([1, 0, 1]),
         'spec/ol/source/images/zoomify?JTL=1,2',
       );
-      expect(tileUrlFunction([1, 1, 1])).to.eql(
+      assert.deepEqual(
+        tileUrlFunction([1, 1, 1]),
         'spec/ol/source/images/zoomify?JTL=1,3',
       );
     });
@@ -301,28 +299,31 @@ describe('ol/source/Zoomify', function () {
         size: size,
       });
       const tileUrlFunction = source.getTileUrlFunction();
-      // zoomlevel 0
-      expect(tileUrlFunction([0, 0, 0])).to.eql(
+      assert.deepEqual(
+        tileUrlFunction([0, 0, 0]),
         'spec/ol/source/images/zoomify/TileGroup0/0-0-0.jpg',
       );
-      // zoomlevel 1
-      expect(tileUrlFunction([1, 0, 0])).to.eql(
+      assert.deepEqual(
+        tileUrlFunction([1, 0, 0]),
         'spec/ol/source/images/zoomify/TileGroup0/1-0-0.jpg',
       );
-      expect(tileUrlFunction([1, 1, 0])).to.eql(
+      assert.deepEqual(
+        tileUrlFunction([1, 1, 0]),
         'spec/ol/source/images/zoomify/TileGroup0/1-1-0.jpg',
       );
-      expect(tileUrlFunction([1, 0, 1])).to.eql(
+      assert.deepEqual(
+        tileUrlFunction([1, 0, 1]),
         'spec/ol/source/images/zoomify/TileGroup0/1-0-1.jpg',
       );
-      expect(tileUrlFunction([1, 1, 1])).to.eql(
+      assert.deepEqual(
+        tileUrlFunction([1, 1, 1]),
         'spec/ol/source/images/zoomify/TileGroup0/1-1-1.jpg',
       );
     });
     it('returns undefined if no tileCoord passed', function () {
       const source = getZoomifySource();
       const tileUrlFunction = source.getTileUrlFunction();
-      expect(tileUrlFunction()).to.be(undefined);
+      assert.strictEqual(tileUrlFunction(), undefined);
     });
   });
 
@@ -330,7 +331,7 @@ describe('ol/source/Zoomify', function () {
     it('returns expected tileClass instances via "getTile"', function () {
       const source = getZoomifySource();
       const tile = source.getTile(0, 0, 0, 1, proj);
-      expect(tile).to.be.a(CustomTile);
+      assert.instanceOf(tile, CustomTile);
     });
   });
 });

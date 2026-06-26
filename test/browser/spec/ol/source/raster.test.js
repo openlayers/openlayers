@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {spy as sinonSpy} from 'sinon';
 import Feature from '../../../../../src/ol/Feature.js';
 import Map from '../../../../../src/ol/Map.js';
@@ -108,8 +109,8 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function () {
         threads: 0,
         sources: [new TileSource({})],
       });
-      expect(source).to.be.a(Source);
-      expect(source).to.be.a(RasterSource);
+      assert.instanceOf(source, Source);
+      assert.instanceOf(source, RasterSource);
     });
 
     it('defaults to "pixel" operation', function (done) {
@@ -125,10 +126,10 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function () {
       });
 
       source.once('afteroperations', function () {
-        expect(log.length).to.equal(4);
+        assert.equal(log.length, 4);
         const inputs = log[0];
         const pixel = inputs[0];
-        expect(pixel).to.be.an('array');
+        assert.isArray(pixel);
         done();
       });
 
@@ -148,7 +149,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function () {
         },
       });
 
-      expect(source.getResolutions()).to.eql([100, 10, 1]);
+      assert.deepEqual(source.getResolutions(), [100, 10, 1]);
     });
 
     it('accepts a "resolutions" option', function (done) {
@@ -162,7 +163,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function () {
       });
 
       source.on('afteroperations', function (event) {
-        expect(event.resolution).to.equal(1);
+        assert.equal(event.resolution, 1);
         done();
       });
 
@@ -183,7 +184,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function () {
         },
       });
 
-      expect(source.getResolutions()).to.be(null);
+      assert.strictEqual(source.getResolutions(), null);
     });
 
     it('disposes the processor when disposed', function () {
@@ -197,7 +198,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function () {
 
       source.dispose();
 
-      expect(source.processor_.disposed).to.be(true);
+      assert.strictEqual(source.processor_.disposed, true);
     });
 
     it('allows operation type to be set to "image"', function (done) {
@@ -214,12 +215,12 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function () {
       });
 
       source.once('afteroperations', function () {
-        expect(log.length).to.equal(1);
+        assert.equal(log.length, 1);
         const inputs = log[0];
         const imageData = inputs[0];
-        expect(imageData.data).to.be.a(Uint8ClampedArray);
-        expect(imageData.width).to.be(2);
-        expect(imageData.height).to.be(2);
+        assert.instanceOf(imageData.data, Uint8ClampedArray);
+        assert.strictEqual(imageData.width, 2);
+        assert.strictEqual(imageData.height, 2);
         done();
       });
 
@@ -239,7 +240,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function () {
         },
       });
 
-      expect(source.getInterpolate()).to.be(false);
+      assert.strictEqual(source.getInterpolate(), false);
       source.dispose();
     });
   });
@@ -255,7 +256,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function () {
         },
       });
       const blueAttributions = blue.getAttributions();
-      expect(blueAttributions()).to.eql([]);
+      assert.deepEqual(blueAttributions(), []);
     });
 
     it('shows single attributions', function () {
@@ -269,9 +270,9 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function () {
       });
       const redAttribtuions = red.getAttributions();
 
-      expect(redAttribtuions()).to.not.be(null);
-      expect(typeof redAttribtuions).to.be('function');
-      expect(redAttribtuions()).to.eql(['red raster source']);
+      assert.notEqual(redAttribtuions(), null);
+      assert.strictEqual(typeof redAttribtuions, 'function');
+      assert.deepEqual(redAttribtuions(), ['red raster source']);
     });
 
     it('concatinates multiple attributions', function () {
@@ -285,9 +286,9 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function () {
       });
       const redGreenAttributions = redGreen.getAttributions();
 
-      expect(redGreenAttributions()).to.not.be(null);
-      expect(typeof redGreenAttributions).to.be('function');
-      expect(redGreenAttributions()).to.eql([
+      assert.notEqual(redGreenAttributions(), null);
+      assert.strictEqual(typeof redGreenAttributions, 'function');
+      assert.deepEqual(redGreenAttributions(), [
         'red raster source',
         'green raster source',
       ]);
@@ -302,9 +303,9 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function () {
         const redPixel = pixels[0];
         const greenPixel = pixels[1];
         const bluePixel = pixels[2];
-        expect(redPixel).to.eql([255, 0, 0, 255]);
-        expect(greenPixel).to.eql([0, 255, 0, 255]);
-        expect(bluePixel).to.eql([0, 0, 255, 255]);
+        assert.deepEqual(redPixel, [255, 0, 0, 255]);
+        assert.deepEqual(greenPixel, [0, 255, 0, 255]);
+        assert.deepEqual(bluePixel, [0, 0, 255, 255]);
         return pixels[0];
       });
 
@@ -313,7 +314,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function () {
       view.setZoom(0);
 
       raster.once('afteroperations', function (event) {
-        expect(count).to.equal(4);
+        assert.equal(count, 4);
         done();
       });
     });
@@ -343,8 +344,8 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function () {
         return pixels[0];
       });
 
-      expect(previousProcessor.disposed).to.be(true);
-      expect(raster.processor_.disposed).to.be(false);
+      assert.strictEqual(previousProcessor.disposed, true);
+      assert.strictEqual(raster.processor_.disposed, false);
     });
   });
 
@@ -357,11 +358,11 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function () {
       });
 
       raster.once('beforeoperations', function (event) {
-        expect(count).to.equal(0);
-        expect(!!event).to.be(true);
-        expect(event.extent).to.be.an('array');
-        expect(event.resolution).to.be.a('number');
-        expect(event.data).to.be.an('object');
+        assert.equal(count, 0);
+        assert.strictEqual(!!event, true);
+        assert.isArray(event.extent);
+        assert.isNumber(event.resolution);
+        assert.isObject(event.data);
         done();
       });
 
@@ -381,7 +382,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function () {
       });
 
       raster.once('afteroperations', function (event) {
-        expect(event.data.count).to.equal(4);
+        assert.equal(event.data.count, 4);
         done();
       });
 
@@ -400,11 +401,11 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function () {
       });
 
       raster.once('afteroperations', function (event) {
-        expect(count).to.equal(4);
-        expect(!!event).to.be(true);
-        expect(event.extent).to.be.an('array');
-        expect(event.resolution).to.be.a('number');
-        expect(event.data).to.be.an('object');
+        assert.equal(count, 4);
+        assert.strictEqual(!!event, true);
+        assert.isArray(event.extent);
+        assert.isNumber(event.resolution);
+        assert.isObject(event.data);
         done();
       });
 
@@ -420,7 +421,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function () {
       });
 
       raster.once('afteroperations', function (event) {
-        expect(event.data.message).to.equal('hello world');
+        assert.equal(event.data.message, 'hello world');
         done();
       });
 
@@ -444,9 +445,9 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function () {
       layer.setSource(raster);
 
       raster.once('afteroperations', function (event) {
-        expect(event.data).to.be.an(Array);
-        expect(event.data).to.have.length(threads);
-        expect(event.data[0].prop).to.equal('value');
+        assert.instanceOf(event.data, Array);
+        assert.lengthOf(event.data, threads);
+        assert.equal(event.data[0].prop, 'value');
         done();
       });
 
@@ -499,13 +500,14 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function () {
 
       source.once('afteroperations', function () {
         setTimeout(function () {
-          expect(workerCompleteCount).to.be(2);
-          expect(afterCount).to.be(1);
+          assert.strictEqual(workerCompleteCount, 2);
+          assert.strictEqual(afterCount, 1);
           const image = source.renderedImageCanvas_.getImage();
           const context = image.getContext('2d');
-          expect(Array.from(context.getImageData(1, 1, 1, 1).data)).to.eql([
-            0, 0, 255, 255,
-          ]);
+          assert.deepEqual(
+            Array.from(context.getImageData(1, 1, 1, 1).data),
+            [0, 0, 255, 255],
+          );
           done();
         }, 80);
       });
@@ -551,12 +553,13 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function () {
 
       const tileCache = raster.layers_[0].getRenderer().tileCache_;
 
-      expect(tileCache.getCount()).to.equal(0);
+      assert.equal(tileCache.getCount(), 0);
 
       map2.once('moveend', function () {
-        expect(tileCache.getCount()).to.equal(1);
+        assert.equal(tileCache.getCount(), 1);
         const state = tileCache.peekLast().getState();
-        expect(state === TileState.LOADING || state === TileState.LOADED).to.be(
+        assert.strictEqual(
+          state === TileState.LOADING || state === TileState.LOADED,
           true,
         );
         done();
@@ -576,7 +579,7 @@ where('Uint8ClampedArray').describe('Processor', function () {
         operation: identity,
       });
 
-      expect(processor).to.be.a(Processor);
+      assert.instanceOf(processor, Processor);
     });
   });
 
@@ -601,8 +604,8 @@ where('Uint8ClampedArray').describe('Processor', function () {
           done(err);
           return;
         }
-        expect(m.count).to.equal(2);
-        expect(m.sum).to.equal(36);
+        assert.equal(m.count, 2);
+        assert.equal(m.sum, 36);
         done();
       });
     });
@@ -627,8 +630,9 @@ where('Uint8ClampedArray').describe('Processor', function () {
           done(err);
           return;
         }
-        expect(output).to.be.a(ImageData);
-        expect(output.data).to.eql(
+        assert.instanceOf(output, ImageData);
+        assert.deepEqual(
+          output.data,
           new Uint8ClampedArray([2, 4, 6, 8, 10, 12, 14, 16]),
         );
         done();
@@ -668,10 +672,11 @@ where('Uint8ClampedArray').describe('Processor', function () {
           done(err);
           return;
         }
-        expect(output).to.be.a(ImageData);
+        assert.instanceOf(output, ImageData);
         const v0 = Math.round((255 * (1 + 8 / 12)) / 2);
         const v1 = Math.round((255 * (1 + -3 / 13)) / 2);
-        expect(output.data).to.eql(
+        assert.deepEqual(
+          output.data,
           new Uint8ClampedArray([v0, v0, v0, 0, v1, v1, v1, 1]),
         );
 
@@ -692,7 +697,7 @@ where('Uint8ClampedArray').describe('Processor', function () {
             done(err);
             return;
           }
-          expect(output).to.be.a(ImageData);
+          assert.instanceOf(output, ImageData);
           ++calls;
         };
       }
@@ -703,7 +708,7 @@ where('Uint8ClampedArray').describe('Processor', function () {
       }
 
       setTimeout(function () {
-        expect(calls).to.be(5);
+        assert.strictEqual(calls, 5);
         done();
       }, 1000);
     });
@@ -732,12 +737,12 @@ where('Uint8ClampedArray').describe('Processor', function () {
       }
 
       setTimeout(function () {
-        expect(log).to.have.length(5);
-        expect(log[0]).to.be(null);
-        expect(log[1]).to.be(null);
-        expect(log[2]).to.be(null);
-        expect(log[3]).to.be.a(ImageData);
-        expect(log[4]).to.be.a(ImageData);
+        assert.lengthOf(log, 5);
+        assert.strictEqual(log[0], null);
+        assert.strictEqual(log[1], null);
+        assert.strictEqual(log[2], null);
+        assert.instanceOf(log[3], ImageData);
+        assert.instanceOf(log[4], ImageData);
         done();
       }, 1000);
     });
@@ -780,9 +785,9 @@ where('Uint8ClampedArray').describe('Processor', function () {
           done(err);
           return;
         }
-        expect(identitySpy.callCount).to.be(2);
+        assert.strictEqual(identitySpy.callCount, 2);
         const first = identitySpy.getCall(0);
-        expect(first.args).to.have.length(2);
+        assert.lengthOf(first.args, 2);
         done();
       });
     });
@@ -802,8 +807,8 @@ where('Uint8ClampedArray').describe('Processor', function () {
           done(err);
           return;
         }
-        expect(m).to.eql(meta);
-        expect(identitySpy.callCount).to.be(1);
+        assert.deepEqual(m, meta);
+        assert.strictEqual(identitySpy.callCount, 1);
         done();
       });
     });

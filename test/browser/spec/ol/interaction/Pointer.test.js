@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import Map from '../../../../../src/ol/Map.js';
 import MapBrowserEvent from '../../../../../src/ol/MapBrowserEvent.js';
 import MapBrowserEventHandler from '../../../../../src/ol/MapBrowserEventHandler.js';
@@ -30,7 +31,7 @@ describe('ol/interaction/Pointer', function () {
         },
       });
       interaction.handleEvent(event);
-      expect(defaultPrevented).to.be(false);
+      assert.strictEqual(defaultPrevented, false);
     });
 
     it('does not prevent default on unhandled down event', function () {
@@ -40,7 +41,7 @@ describe('ol/interaction/Pointer', function () {
         },
       });
       interaction.handleEvent(event);
-      expect(defaultPrevented).to.be(false);
+      assert.strictEqual(defaultPrevented, false);
     });
   });
 
@@ -92,8 +93,8 @@ describe('ol/interaction/Pointer', function () {
 
     it('has default event handlers', function () {
       const interaction = new PointerInteraction({});
-      expect(interaction.handleDownEvent()).to.be(false);
-      expect(interaction.handleUpEvent()).to.be(false);
+      assert.strictEqual(interaction.handleDownEvent(), false);
+      assert.strictEqual(interaction.handleUpEvent(), false);
     });
 
     it('allows event handler overrides via options', function () {
@@ -105,32 +106,32 @@ describe('ol/interaction/Pointer', function () {
       });
 
       interaction.handleDownEvent();
-      expect(handleDownCalled).to.be(true);
+      assert.strictEqual(handleDownCalled, true);
 
       interaction.handleDragEvent();
-      expect(handleDragCalled).to.be(true);
+      assert.strictEqual(handleDragCalled, true);
 
       interaction.handleMoveEvent();
-      expect(handleMoveCalled).to.be(true);
+      assert.strictEqual(handleMoveCalled, true);
 
       interaction.handleUpEvent();
-      expect(handleUpCalled).to.be(true);
+      assert.strictEqual(handleUpCalled, true);
     });
 
     it('allows event handler overrides via class extension', function () {
       const interaction = new MockPointerInteraction({});
 
       interaction.handleDownEvent();
-      expect(handleDownCalled).to.be(true);
+      assert.strictEqual(handleDownCalled, true);
 
       interaction.handleDragEvent();
-      expect(handleDragCalled).to.be(true);
+      assert.strictEqual(handleDragCalled, true);
 
       interaction.handleMoveEvent();
-      expect(handleMoveCalled).to.be(true);
+      assert.strictEqual(handleMoveCalled, true);
 
       interaction.handleUpEvent();
-      expect(handleUpCalled).to.be(true);
+      assert.strictEqual(handleUpCalled, true);
     });
   });
 
@@ -188,11 +189,11 @@ describe('ol/interaction/Pointer', function () {
     it('tracks pointers correctly', function () {
       element.dispatchEvent(down1);
       element.dispatchEvent(down2);
-      expect(interaction.targetPointers[0].pointerId).to.be(1);
-      expect(interaction.targetPointers[1].pointerId).to.be(2);
+      assert.strictEqual(interaction.targetPointers[0].pointerId, 1);
+      assert.strictEqual(interaction.targetPointers[1].pointerId, 2);
       document.dispatchEvent(up1);
       document.dispatchEvent(up2);
-      expect(interaction.targetPointers).to.have.length(0);
+      assert.lengthOf(interaction.targetPointers, 0);
     });
   });
 });

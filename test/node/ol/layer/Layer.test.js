@@ -1,7 +1,7 @@
+import {assert} from 'chai';
 import BaseEvent from '../../../../src/ol/events/Event.js';
 import Layer from '../../../../src/ol/layer/Layer.js';
 import Source from '../../../../src/ol/source/Source.js';
-import expect from '../../expect.js';
 
 function delay(ms) {
   return new Promise((resolve) => {
@@ -16,8 +16,8 @@ describe('ol/layer/Layer.js', () => {
       const layer = new Layer({source: source});
 
       function handler(event) {
-        expect(event).to.be.a(BaseEvent);
-        expect(event.target).to.be(layer);
+        assert.instanceOf(event, BaseEvent);
+        assert.strictEqual(event.target, layer);
         done();
       }
       layer.on('sourceready', handler);
@@ -30,8 +30,8 @@ describe('ol/layer/Layer.js', () => {
       const layer = new Layer({source: source});
 
       function handler(event) {
-        expect(event).to.be.a(BaseEvent);
-        expect(event.target).to.be(layer);
+        assert.instanceOf(event, BaseEvent);
+        assert.strictEqual(event.target, layer);
         done();
       }
       layer.on('sourceready', handler);
@@ -56,7 +56,7 @@ describe('ol/layer/Layer.js', () => {
       source.changed();
       await delay(5);
 
-      expect(calls).to.be(1);
+      assert.strictEqual(calls, 1);
     });
 
     it('is not dispatched after source is removed', async () => {
@@ -73,7 +73,7 @@ describe('ol/layer/Layer.js', () => {
       source.setState('ready');
       await delay(5);
 
-      expect(calls).to.be(0);
+      assert.strictEqual(calls, 0);
     });
 
     it('is dispatched if source is added later', async () => {
@@ -89,7 +89,7 @@ describe('ol/layer/Layer.js', () => {
       layer.setSource(source);
       await delay(5);
 
-      expect(calls).to.be(1);
+      assert.strictEqual(calls, 1);
     });
 
     it('is dispatched if new source is set', async () => {
@@ -102,13 +102,13 @@ describe('ol/layer/Layer.js', () => {
       layer.on('sourceready', handler);
 
       await delay(5);
-      expect(calls).to.be(1);
+      assert.strictEqual(calls, 1);
 
       const source = new Source({state: 'ready'});
       layer.setSource(source);
       await delay(5);
 
-      expect(calls).to.be(2);
+      assert.strictEqual(calls, 2);
     });
   });
 });

@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {equals} from '../../../../src/ol/array.js';
 import {DEVICE_PIXEL_RATIO} from '../../../../src/ol/has.js';
 import {toContext} from '../../../../src/ol/render.js';
@@ -12,8 +13,8 @@ describe('ol.render', function () {
     it('creates an ol.render.canvas.Immediate and sets defaults', function () {
       const canvas = document.createElement('canvas');
       const render = toContext(canvas.getContext('2d'));
-      expect(render).to.be.a(CanvasImmediateRenderer);
-      expect(render.pixelRatio_).to.be(DEVICE_PIXEL_RATIO);
+      assert.instanceOf(render, CanvasImmediateRenderer);
+      assert.strictEqual(render.pixelRatio_, DEVICE_PIXEL_RATIO);
     });
 
     it('sets size and pixel ratio from options', function () {
@@ -24,21 +25,21 @@ describe('ol.render', function () {
         pixelRatio: pixelRatio,
         size: size,
       });
-      expect(render.pixelRatio_).to.be(pixelRatio);
-      expect(render.extent_).to.eql([
+      assert.strictEqual(render.pixelRatio_, pixelRatio);
+      assert.deepEqual(render.extent_, [
         0,
         0,
         size[0] * pixelRatio,
         size[1] * pixelRatio,
       ]);
-      expect(canvas.style.width).to.be(size[0] + 'px');
-      expect(canvas.style.height).to.be(size[1] + 'px');
+      assert.strictEqual(canvas.style.width, size[0] + 'px');
+      assert.strictEqual(canvas.style.height, size[1] + 'px');
       const transform = scaleTransform(
         createTransform(),
         pixelRatio,
         pixelRatio,
       );
-      expect(equals(render.transform_, transform)).to.be.ok();
+      assert.isOk(equals(render.transform_, transform));
     });
   });
 });

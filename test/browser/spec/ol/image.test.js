@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {spy as sinonSpy} from 'sinon';
 import ImageWrapper, {
   decode,
@@ -22,28 +23,28 @@ describe('ol/Image', function () {
         pixelRatio,
         ImageState.IDLE,
       );
-      expect(instance).to.be.an(ImageWrapper);
-      expect(instance.getState()).to.be(ImageState.IDLE);
+      assert.instanceOf(instance, ImageWrapper);
+      assert.strictEqual(instance.getState(), ImageState.IDLE);
     });
     it('creates a new instance with a loader', function (done) {
       let instance = undefined;
       const image = new Image();
       const loader = (extent, resolution, pixelRatio) => {
-        expect(extent).to.eql([0, 0, 1, 1]);
-        expect(resolution).to.be(1);
-        expect(pixelRatio).to.be(1);
+        assert.deepEqual(extent, [0, 0, 1, 1]);
+        assert.strictEqual(resolution, 1);
+        assert.strictEqual(pixelRatio, 1);
         image.src =
           'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
         instance.setImage(image);
         return load(image);
       };
       instance = new ImageWrapper(extent, resolution, pixelRatio, loader);
-      expect(instance).to.be.an(ImageWrapper);
-      expect(instance.getState()).to.be(ImageState.IDLE);
+      assert.instanceOf(instance, ImageWrapper);
+      assert.strictEqual(instance.getState(), ImageState.IDLE);
       instance.addEventListener('change', function handleChange() {
         if (instance.getState() === ImageState.LOADED) {
           instance.removeEventListener('change', handleChange);
-          expect(instance.getImage()).to.be(image);
+          assert.strictEqual(instance.getImage(), image);
           done();
         }
       });
@@ -64,8 +65,8 @@ describe('ol/Image', function () {
       listenImage(img, handleLoad, handleError);
 
       setTimeout(function () {
-        expect(handleLoad.called).to.be(true);
-        expect(handleError.called).to.be(false);
+        assert.strictEqual(handleLoad.called, true);
+        assert.strictEqual(handleError.called, false);
         done();
       }, 200);
     });
@@ -75,8 +76,8 @@ describe('ol/Image', function () {
       img.src = 'spec/ol/data/dot.png';
 
       setTimeout(function () {
-        expect(handleLoad.called).to.be(true);
-        expect(handleError.called).to.be(false);
+        assert.strictEqual(handleLoad.called, true);
+        assert.strictEqual(handleError.called, false);
         done();
       }, 200);
     });
@@ -86,8 +87,8 @@ describe('ol/Image', function () {
       listenImage(img, handleLoad, handleError);
 
       setTimeout(function () {
-        expect(handleLoad.called).to.be(false);
-        expect(handleError.called).to.be(true);
+        assert.strictEqual(handleLoad.called, false);
+        assert.strictEqual(handleError.called, true);
         done();
       }, 500);
     });
@@ -97,8 +98,8 @@ describe('ol/Image', function () {
       listenImage(img, handleLoad, handleError)();
 
       setTimeout(function () {
-        expect(handleLoad.called).to.be(false);
-        expect(handleError.called).to.be(false);
+        assert.strictEqual(handleLoad.called, false);
+        assert.strictEqual(handleError.called, false);
         done();
       }, 200);
     });
@@ -112,63 +113,63 @@ describe('ol/Image', function () {
     it('load()', async () => {
       image.src = dataUri;
       const loadedImage = await load(image);
-      expect(loadedImage).to.eql(image);
-      expect(loadedImage.width).to.be(1);
+      assert.deepEqual(loadedImage, image);
+      assert.strictEqual(loadedImage.width, 1);
     });
     it('load() with error', async () => {
       image.src = 'invalid.jpeg';
       try {
         await load(image);
-        expect().fail();
+        assert.fail();
       } catch (error) {
-        expect(error).to.be.an(Error);
+        assert.instanceOf(error, Error);
       }
     });
     it('decodeFallback()', async () => {
       image.src = dataUri;
       const loadedImage = await decodeFallback(image);
-      expect(loadedImage).to.eql(image);
-      expect(loadedImage.width).to.be(1);
+      assert.deepEqual(loadedImage, image);
+      assert.strictEqual(loadedImage.width, 1);
     });
     it('decodeFallback() with error', async () => {
       image.src = 'invalid.jpeg';
       try {
         await decodeFallback(image);
-        expect().fail();
+        assert.fail();
       } catch (error) {
-        expect(error).to.be.an(Error);
+        assert.instanceOf(error, Error);
       }
     });
     it('decode()', async () => {
       image.src = dataUri;
       const loadedImage = await decode(image);
-      expect(loadedImage).to.be.an(ImageBitmap);
-      expect(loadedImage.width).to.be(1);
+      assert.instanceOf(loadedImage, ImageBitmap);
+      assert.strictEqual(loadedImage.width, 1);
     });
     it('decode() with error', async () => {
       image.src = 'invalid.jpeg';
       try {
         await decode(image);
-        expect().fail();
+        assert.fail();
       } catch (error) {
-        expect(error).to.be.an(Error);
+        assert.instanceOf(error, Error);
       }
     });
     it('decode() with SVG', async () => {
       image.src =
         'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1" viewBox="0 0 1 1"/>';
       const loadedImage = await decode(image);
-      expect(loadedImage).to.be.an(ImageBitmap);
-      expect(loadedImage.width).to.be(1);
+      assert.instanceOf(loadedImage, ImageBitmap);
+      assert.strictEqual(loadedImage.width, 1);
     });
     it('decode() with zero-dimension SVG', async () => {
       image.src =
         'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"/>';
       try {
         await decode(image);
-        expect().fail();
+        assert.fail();
       } catch (error) {
-        expect(error).to.be.an(Error);
+        assert.instanceOf(error, Error);
       }
     });
   });

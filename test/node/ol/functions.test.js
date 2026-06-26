@@ -1,14 +1,14 @@
+import {assert} from 'chai';
 import {memoizeOne, toPromise} from '../../../src/ol/functions.js';
-import expect from '../expect.js';
 
 describe('ol/functions.js', function () {
   describe('toPromise()', () => {
     it('returns a promise given a getter for a value', (done) => {
       const getter = () => 'a value';
       const promise = toPromise(getter);
-      expect(promise).to.be.a(Promise);
+      assert.instanceOf(promise, Promise);
       promise.then((value) => {
-        expect(value).to.be('a value');
+        assert.strictEqual(value, 'a value');
         done();
       }, done);
     });
@@ -16,9 +16,9 @@ describe('ol/functions.js', function () {
     it('returns a promise given a getter for a promise that resolves', (done) => {
       const getter = () => Promise.resolve('a value');
       const promise = toPromise(getter);
-      expect(promise).to.be.a(Promise);
+      assert.instanceOf(promise, Promise);
       promise.then((value) => {
-        expect(value).to.be('a value');
+        assert.strictEqual(value, 'a value');
         done();
       }, done);
     });
@@ -28,14 +28,14 @@ describe('ol/functions.js', function () {
         throw new Error('an error');
       };
       const promise = toPromise(getter);
-      expect(promise).to.be.a(Promise);
+      assert.instanceOf(promise, Promise);
       promise.then(
         (value) => {
           done(new Error(`expected promise to reject, got ${value}`));
         },
         (err) => {
-          expect(err).to.be.an(Error);
-          expect(err.message).to.be('an error');
+          assert.instanceOf(err, Error);
+          assert.strictEqual(err.message, 'an error');
           done();
         },
       );
@@ -44,14 +44,14 @@ describe('ol/functions.js', function () {
     it('returns a promise that rejects given a getter for a promse that rejects', (done) => {
       const getter = () => Promise.reject(new Error('an error'));
       const promise = toPromise(getter);
-      expect(promise).to.be.a(Promise);
+      assert.instanceOf(promise, Promise);
       promise.then(
         (value) => {
           done(new Error(`expected promise to reject, got ${value}`));
         },
         (err) => {
-          expect(err).to.be.an(Error);
-          expect(err.message).to.be('an error');
+          assert.instanceOf(err, Error);
+          assert.strictEqual(err.message, 'an error');
           done();
         },
       );
@@ -68,7 +68,7 @@ describe('ol/functions.js', function () {
       }
       const memoized = memoizeOne(call);
       const result = memoized(arg1, arg2, arg3);
-      expect(memoized(arg1, arg2, arg3)).to.be(result);
+      assert.strictEqual(memoized(arg1, arg2, arg3), result);
     });
 
     it('returns the result from the first call when called a second time with the same this object', function () {
@@ -83,7 +83,7 @@ describe('ol/functions.js', function () {
       const thisObj = {};
 
       const result = memoized.call(thisObj, arg1, arg2, arg3);
-      expect(memoized.call(thisObj, arg1, arg2, arg3)).to.be(result);
+      assert.strictEqual(memoized.call(thisObj, arg1, arg2, arg3), result);
     });
 
     it('returns a different result when called a second time with the different args', function () {
@@ -95,7 +95,7 @@ describe('ol/functions.js', function () {
       }
       const memoized = memoizeOne(call);
       const result = memoized(arg1, arg2, arg3);
-      expect(memoized(arg3, arg2, arg1)).not.to.be(result);
+      assert.notEqual(memoized(arg3, arg2, arg1), result);
     });
 
     it('returns a different result when called a second time with a different this object', function () {
@@ -109,7 +109,7 @@ describe('ol/functions.js', function () {
       const secondThis = {};
       const memoized = memoizeOne(call);
       const result = memoized.call(firstThis, arg1, arg2, arg3);
-      expect(memoized.call(secondThis, arg1, arg2, arg3)).not.to.be(result);
+      assert.notEqual(memoized.call(secondThis, arg1, arg2, arg3), result);
     });
   });
 });

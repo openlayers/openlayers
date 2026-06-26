@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {spy as sinonSpy} from 'sinon';
 import Map from '../../../../../../src/ol/Map.js';
 import TileQueue from '../../../../../../src/ol/TileQueue.js';
@@ -22,6 +23,7 @@ import {create} from '../../../../../../src/ol/transform.js';
 import WebGLHelper from '../../../../../../src/ol/webgl/Helper.js';
 import WebGLRenderTarget from '../../../../../../src/ol/webgl/RenderTarget.js';
 import TileGeometry from '../../../../../../src/ol/webgl/TileGeometry.js';
+import {assertArrayLikeEqual} from '../../../../../util/equal.js';
 
 const SAMPLE_STYLE = {
   'fill-color': ['get', 'color'],
@@ -161,11 +163,11 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
   });
 
   it('creates a new instance', function () {
-    expect(renderer).to.be.a(WebGLVectorTileLayerRenderer);
+    assert.instanceOf(renderer, WebGLVectorTileLayerRenderer);
   });
 
   it('do not create renderer initially', function () {
-    expect(renderer.styleRenderer_).to.eql(null);
+    assert.deepEqual(renderer.styleRenderer_, null);
   });
 
   describe('#afterHelperCreated', () => {
@@ -178,39 +180,48 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
     });
 
     it('creates renderer', () => {
-      expect(renderer.styleRenderer_).to.be.a(VectorStyleRenderer);
+      assert.instanceOf(renderer.styleRenderer_, VectorStyleRenderer);
     });
     it('passes the shaders to renderer', () => {
       const firstBuilder = renderer.styleRenderer_.styleShaders[0].builder;
       const secondBuilder = renderer.styleRenderer_.styleShaders[1].builder;
-      expect(firstBuilder.getFillColorExpression()).to.be('a_prop_color');
-      expect(secondBuilder.getFillColorExpression()).to.be(
+      assert.strictEqual(firstBuilder.getFillColorExpression(), 'a_prop_color');
+      assert.strictEqual(
+        secondBuilder.getFillColorExpression(),
         'vec4(1.0, 1.0, 1.0, 1.0)',
       );
     });
     it('adds a discard expression and uniforms to the styles', () => {
       const firstBuilder = renderer.styleRenderer_.styleShaders[0].builder;
       const secondBuilder = renderer.styleRenderer_.styleShaders[1].builder;
-      expect(firstBuilder.uniforms_).to.eql([
+      assert.deepEqual(firstBuilder.uniforms_, [
         {name: 'u_depthMask', type: 'sampler2D'},
         {name: 'u_tileZoomLevel', type: 'float'},
       ]);
-      expect(firstBuilder.getFragmentDiscardExpression()).to.be(
+      assert.strictEqual(
+        firstBuilder.getFragmentDiscardExpression(),
         'texture2D(u_depthMask, gl_FragCoord.xy / u_pixelRatio / u_viewportSizePx).r * 50. > u_tileZoomLevel + 0.5',
       );
-      expect(secondBuilder.uniforms_).to.eql([
+      assert.deepEqual(secondBuilder.uniforms_, [
         {name: 'u_depthMask', type: 'sampler2D'},
         {name: 'u_tileZoomLevel', type: 'float'},
       ]);
-      expect(secondBuilder.getFragmentDiscardExpression()).to.be(
+      assert.strictEqual(
+        secondBuilder.getFragmentDiscardExpression(),
         'texture2D(u_depthMask, gl_FragCoord.xy / u_pixelRatio / u_viewportSizePx).r * 50. > u_tileZoomLevel + 0.5',
       );
     });
     it('instantiates the tile mask target, indices, attributes and program', () => {
-      expect(renderer.tileMaskTarget_).to.be.an(WebGLRenderTarget);
-      expect(renderer.tileMaskIndices_.getArray()).to.eql([0, 1, 3, 1, 2, 3]);
-      expect(renderer.tileMaskAttributes_[0].name).to.be(Attributes.POSITION);
-      expect(renderer.tileMaskProgram_).to.be.an(WebGLProgram);
+      assert.instanceOf(renderer.tileMaskTarget_, WebGLRenderTarget);
+      assertArrayLikeEqual(
+        renderer.tileMaskIndices_.getArray(),
+        [0, 1, 3, 1, 2, 3],
+      );
+      assert.strictEqual(
+        renderer.tileMaskAttributes_[0].name,
+        Attributes.POSITION,
+      );
+      assert.instanceOf(renderer.tileMaskProgram_, WebGLProgram);
     });
   });
 
@@ -228,11 +239,11 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
       });
 
       it('recreates renderer', () => {
-        expect(renderer.styleRenderer_).to.be.a(VectorStyleRenderer);
+        assert.instanceOf(renderer.styleRenderer_, VectorStyleRenderer);
       });
       it('passes the correct styles to renderer', () => {
         const builder = renderer.styleRenderer_.styleShaders[0].builder;
-        expect(builder.getSymbolColorExpression()).to.contain('a_prop_size');
+        assert.include(builder.getSymbolColorExpression(), 'a_prop_size');
       });
     });
 
@@ -244,15 +255,16 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
       });
 
       it('recreates renderer', () => {
-        expect(renderer.styleRenderer_).to.be.a(VectorStyleRenderer);
+        assert.instanceOf(renderer.styleRenderer_, VectorStyleRenderer);
       });
       it('passes the correct styles to renderer', () => {
         const builder = renderer.styleRenderer_.styleShaders[0].builder;
-        expect(builder.getSymbolColorExpression()).to.contain('vec4(1.0)');
+        assert.include(builder.getSymbolColorExpression(), 'vec4(1.0)');
       });
       it('adds the mask discard expression to the existing fragment discard', () => {
         const builder = renderer.styleRenderer_.styleShaders[0].builder;
-        expect(builder.getFragmentDiscardExpression()).to.be(
+        assert.strictEqual(
+          builder.getFragmentDiscardExpression(),
           '(u_zoom > 10.0) || (texture2D(u_depthMask, gl_FragCoord.xy / u_pixelRatio / u_viewportSizePx).r * 50. > u_tileZoomLevel + 0.5)',
         );
       });
@@ -282,11 +294,11 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
       sinonSpy(vectorTileLayer, 'changed');
     });
     it('creates a TileGeometry instance', () => {
-      expect(tileRepresentation).to.be.a(TileGeometry);
+      assert.instanceOf(tileRepresentation, TileGeometry);
     });
     it('triggers a redraw of the layer when the tile representation is ready', () => {
       tileRepresentation.setReady();
-      expect(vectorTileLayer.changed.calledOnce).to.be(true);
+      assert.strictEqual(vectorTileLayer.changed.calledOnce, true);
     });
   });
 
@@ -319,45 +331,56 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
       renderer.renderFrame(frameState);
     });
     it('sets the size of the tile mask target according to frame state', () => {
-      expect(renderer.tileMaskTarget_.getSize()).to.eql([400, 200]);
+      assert.deepEqual(renderer.tileMaskTarget_.getSize(), [400, 200]);
     });
     it('sets TILE_ZOOM_LEVEL uniform three times for each tile and style renderer, plus two times for tile masks', () => {
       const calls = renderer.helper.setUniformFloatValue
         .getCalls()
         .filter((c) => c.args[0] === Uniforms.TILE_ZOOM_LEVEL);
-      expect(calls.length).to.be(14);
-      expect(calls[0].args).to.eql([Uniforms.TILE_ZOOM_LEVEL, 2]); // tile mask
-      expect(calls[1].args).to.eql([Uniforms.TILE_ZOOM_LEVEL, 2]); // tile mask
-      expect(calls[2].args).to.eql([Uniforms.TILE_ZOOM_LEVEL, 2]);
-      expect(calls[8].args).to.eql([Uniforms.TILE_ZOOM_LEVEL, 2]);
+      assert.strictEqual(calls.length, 14);
+      assertArrayLikeEqual(calls[0].args, [Uniforms.TILE_ZOOM_LEVEL, 2]);
+      assertArrayLikeEqual(calls[1].args, [Uniforms.TILE_ZOOM_LEVEL, 2]);
+      assertArrayLikeEqual(calls[2].args, [Uniforms.TILE_ZOOM_LEVEL, 2]);
+      assertArrayLikeEqual(calls[8].args, [Uniforms.TILE_ZOOM_LEVEL, 2]);
     });
     it('sets GLOBAL_ALPHA uniform three times for each tile and style renderer, plus two times for tile masks', () => {
       const calls = renderer.helper.setUniformFloatValue
         .getCalls()
         .filter((c) => c.args[0] === Uniforms.GLOBAL_ALPHA);
-      expect(calls.length).to.be(14);
-      expect(calls[0].args).to.eql([Uniforms.GLOBAL_ALPHA, 1]); // tile mask
-      expect(calls[1].args).to.eql([Uniforms.GLOBAL_ALPHA, 1]); // tile mask
-      expect(calls[2].args).to.eql([Uniforms.GLOBAL_ALPHA, 1]);
-      expect(calls[8].args).to.eql([Uniforms.GLOBAL_ALPHA, 1]);
+      assert.strictEqual(calls.length, 14);
+      assertArrayLikeEqual(calls[0].args, [Uniforms.GLOBAL_ALPHA, 1]);
+      assertArrayLikeEqual(calls[1].args, [Uniforms.GLOBAL_ALPHA, 1]);
+      assertArrayLikeEqual(calls[2].args, [Uniforms.GLOBAL_ALPHA, 1]);
+      assertArrayLikeEqual(calls[8].args, [Uniforms.GLOBAL_ALPHA, 1]);
     });
     it('sets RENDER_EXTENT uniform three times for each tile and style renderer, plus two times for tile masks', () => {
       const calls = renderer.helper.setUniformFloatVec4
         .getCalls()
         .filter((c) => c.args[0] === Uniforms.RENDER_EXTENT);
-      expect(calls.length).to.be(14);
-      expect(calls[0].args).to.eql([Uniforms.RENDER_EXTENT, [0, 0, 64, 64]]); // tile mask
-      expect(calls[1].args).to.eql([Uniforms.RENDER_EXTENT, [0, 0, 64, 64]]); // tile mask
-      expect(calls[2].args).to.eql([Uniforms.RENDER_EXTENT, [0, 0, 64, 64]]);
-      expect(calls[8].args).to.eql([Uniforms.RENDER_EXTENT, [0, 0, 64, 64]]);
+      assert.strictEqual(calls.length, 14);
+      assertArrayLikeEqual(calls[0].args, [
+        Uniforms.RENDER_EXTENT,
+        [0, 0, 64, 64],
+      ]);
+      assertArrayLikeEqual(calls[1].args, [
+        Uniforms.RENDER_EXTENT,
+        [0, 0, 64, 64],
+      ]);
+      assertArrayLikeEqual(calls[2].args, [
+        Uniforms.RENDER_EXTENT,
+        [0, 0, 64, 64],
+      ]);
+      assertArrayLikeEqual(calls[8].args, [
+        Uniforms.RENDER_EXTENT,
+        [0, 0, 64, 64],
+      ]);
     });
     it('sets PROJECTION matrix uniform three times for each tile and style renderer, plus one time per tiles for their mask', () => {
       const calls = renderer.helper.setUniformMatrixValue
         .getCalls()
         .filter((c) => c.args[0] === Uniforms.PROJECTION_MATRIX);
-      expect(calls.length).to.be(14);
-      // first tile mask
-      expect(calls[0].args).to.eql([
+      assert.strictEqual(calls.length, 14);
+      assertArrayLikeEqual(calls[0].args, [
         Uniforms.PROJECTION_MATRIX,
         // 0.04   0     0     0      combination of:
         // 0      0.08  0     0        translate( 0 , -16 )  ->  subtract view center
@@ -365,8 +388,7 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
         // -2.56 -1.28  0     1        scale( 2 / ( 0.25 * 200px ) , 2 / ( 0.25 * 100px ) )  ->  divide by resolution and viewport size
         [0.04, 0, 0, 0, 0, 0.08, 0, 0, 0, 0, 1, 0, -2.56, -1.28, 0, 1],
       ]);
-      // first tile geometry
-      expect(calls[2].args).to.eql([
+      assertArrayLikeEqual(calls[2].args, [
         Uniforms.PROJECTION_MATRIX,
         // 0.04   0     0     0      combination of:
         // 0      0.08  0     0        translate( 0 , -16 )  ->  subtract view center
@@ -374,8 +396,7 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
         // -2.56 -1.28  0     1        scale( 2 / ( 0.25 * 200px ) , 2 / ( 0.25 * 100px ) )  ->  divide by resolution and viewport size
         [0.04, 0, 0, 0, 0, 0.08, 0, 0, 0, 0, 1, 0, -2.56, -1.28, 0, 1],
       ]);
-      // second tile geometry
-      expect(calls[8].args).to.eql([
+      assertArrayLikeEqual(calls[8].args, [
         Uniforms.PROJECTION_MATRIX,
         // 0.04   0     0     0      combination of:
         // 0      0.08  0     0        translate( 0 , -16 )  ->  subtract view center
@@ -388,9 +409,8 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
       const calls = renderer.helper.setUniformMatrixValue
         .getCalls()
         .filter((c) => c.args[0] === Uniforms.INVERT_PROJECTION_MATRIX);
-      expect(calls.length).to.be(14);
-      // first tile mask
-      expect(calls[0].args).to.eql([
+      assert.strictEqual(calls.length, 14);
+      assertArrayLikeEqual(calls[0].args, [
         Uniforms.INVERT_PROJECTION_MATRIX,
         // 25     0     0     0      combination of:
         // 0      12.5  0     0      * scale( 0.25 * 200px / 2 , 0.25 * 100px / 2 )  ->  view resolution and viewport size
@@ -398,28 +418,26 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
         // 64     16    0     1      * translate( 0 , 16 )  ->  add view center
         [25, 0, 0, 0, 0, 12.5, 0, 0, 0, 0, 1, 0, 64, 16, 0, 1],
       ]);
-      // first tile geometry
-      expect(calls[2].args).to.eql([
+      assertArrayLikeEqual(calls[2].args, [
         Uniforms.INVERT_PROJECTION_MATRIX,
         [25, 0, 0, 0, 0, 12.5, 0, 0, 0, 0, 1, 0, 64, 16, 0, 1],
       ]);
-      // second tile geometry
-      expect(calls[8].args).to.eql([
+      assertArrayLikeEqual(calls[8].args, [
         Uniforms.INVERT_PROJECTION_MATRIX,
         [25, 0, 0, 0, 0, 12.5, 0, 0, 0, 0, 1, 0, 0, 16, 0, 1],
       ]);
     });
     it('bind TILE_MASK_TEXTURE uniform three times for each tile and style renderer, plus one time before rendering tile masks', () => {
       const calls = renderer.helper.bindTexture.getCalls();
-      expect(calls.length).to.be(13);
-      expect(calls[0].args).to.eql([
+      assert.strictEqual(calls.length, 13);
+      assertArrayLikeEqual(calls[0].args, [
         renderer.tileMaskTarget_.getTexture(),
         0,
         Uniforms.TILE_MASK_TEXTURE,
       ]);
     });
     it('calls render for each tile on each renderer', () => {
-      expect(renderer.styleRenderer_.render.callCount).to.be(2);
+      assert.strictEqual(renderer.styleRenderer_.render.callCount, 2);
     });
   });
 });

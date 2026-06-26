@@ -1,10 +1,10 @@
+import {assert} from 'chai';
 import {spy as sinonSpy} from 'sinon';
 import Geometry from '../../../../src/ol/geom/Geometry.js';
 import GeometryCollection from '../../../../src/ol/geom/GeometryCollection.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
-import expect from '../../expect.js';
 
 describe('ol/geom/GeometryCollection.js', function () {
   const outer = [
@@ -42,8 +42,8 @@ describe('ol/geom/GeometryCollection.js', function () {
     });
 
     it('creates a geometry collection from an array of geometries', function () {
-      expect(multi).to.be.a(GeometryCollection);
-      expect(multi).to.be.a(Geometry);
+      assert.instanceOf(multi, GeometryCollection);
+      assert.instanceOf(multi, Geometry);
     });
 
     it('fires a change event when one of its component changes', function (done) {
@@ -56,7 +56,7 @@ describe('ol/geom/GeometryCollection.js', function () {
     it('deregister old components', function () {
       multi.setGeometries([poly]);
       multi.on('change', function () {
-        expect().fail();
+        assert.fail();
       });
       point.setCoordinates([10, 10]);
     });
@@ -82,11 +82,11 @@ describe('ol/geom/GeometryCollection.js', function () {
       const multi = new GeometryCollection([point, line, poly]);
 
       const geometries = multi.getGeometries();
-      expect(geometries).to.be.an(Array);
-      expect(geometries).to.have.length(3);
-      expect(geometries[0]).to.be.a(Point);
-      expect(geometries[1]).to.be.a(LineString);
-      expect(geometries[2]).to.be.a(Polygon);
+      assert.instanceOf(geometries, Array);
+      assert.lengthOf(geometries, 3);
+      assert.instanceOf(geometries[0], Point);
+      assert.instanceOf(geometries[1], LineString);
+      assert.instanceOf(geometries[2], Polygon);
     });
   });
 
@@ -101,15 +101,15 @@ describe('ol/geom/GeometryCollection.js', function () {
       const multi = new GeometryCollection([point, line, poly]);
       multi.setProperties({foo: 'bar', baz: null});
       const clone = multi.clone();
-      expect(clone).to.not.be(multi);
+      assert.notEqual(clone, multi);
       const geometries = clone.getGeometries();
-      expect(geometries[0].getCoordinates()).to.eql([10, 20]);
-      expect(geometries[1].getCoordinates()).to.eql([
+      assert.deepEqual(geometries[0].getCoordinates(), [10, 20]);
+      assert.deepEqual(geometries[1].getCoordinates(), [
         [10, 20],
         [30, 40],
       ]);
-      expect(geometries[2].getCoordinates()).to.eql([outer, inner1, inner2]);
-      expect(clone.getProperties()).to.eql({foo: 'bar', baz: null});
+      assert.deepEqual(geometries[2].getCoordinates(), [outer, inner1, inner2]);
+      assert.deepEqual(clone.getProperties(), {foo: 'bar', baz: null});
     });
 
     it('does a deep clone', function () {
@@ -118,11 +118,12 @@ describe('ol/geom/GeometryCollection.js', function () {
       const multi = new GeometryCollection(originalGeometries);
       const clone = multi.clone();
       const clonedGeometries = clone.getGeometries();
-      expect(clonedGeometries).not.to.be(originalGeometries);
-      expect(clonedGeometries).to.have.length(originalGeometries.length);
-      expect(clonedGeometries).to.have.length(1);
-      expect(clonedGeometries[0]).not.to.be(originalGeometries[0]);
-      expect(clonedGeometries[0].getCoordinates()).to.eql(
+      assert.notEqual(clonedGeometries, originalGeometries);
+      assert.lengthOf(clonedGeometries, originalGeometries.length);
+      assert.lengthOf(clonedGeometries, 1);
+      assert.notEqual(clonedGeometries[0], originalGeometries[0]);
+      assert.deepEqual(
+        clonedGeometries[0].getCoordinates(),
         originalGeometries[0].getCoordinates(),
       );
     });
@@ -137,10 +138,10 @@ describe('ol/geom/GeometryCollection.js', function () {
       ]);
       const multi = new GeometryCollection([point, line]);
       const extent = multi.getExtent();
-      expect(extent[0]).to.be(1);
-      expect(extent[2]).to.be(30);
-      expect(extent[1]).to.be(2);
-      expect(extent[3]).to.be(40);
+      assert.strictEqual(extent[0], 1);
+      assert.strictEqual(extent[2], 30);
+      assert.strictEqual(extent[1], 2);
+      assert.strictEqual(extent[3], 40);
     });
   });
 
@@ -158,20 +159,20 @@ describe('ol/geom/GeometryCollection.js', function () {
     });
 
     it('returns true for intersecting point', function () {
-      expect(multi.intersectsExtent([5, 20, 5, 20])).to.be(true);
+      assert.strictEqual(multi.intersectsExtent([5, 20, 5, 20]), true);
     });
 
     it('returns true for intersecting part of lineString', function () {
-      expect(multi.intersectsExtent([25, 35, 30, 40])).to.be(true);
+      assert.strictEqual(multi.intersectsExtent([25, 35, 30, 40]), true);
     });
 
     it('returns true for intersecting part of polygon', function () {
-      expect(multi.intersectsExtent([0, 0, 5, 5])).to.be(true);
+      assert.strictEqual(multi.intersectsExtent([0, 0, 5, 5]), true);
     });
 
     it('returns false for non-matching extent within own extent', function () {
       const extent = [0, 35, 5, 40];
-      expect(poly.intersectsExtent(extent)).to.be(false);
+      assert.strictEqual(poly.intersectsExtent(extent), false);
     });
   });
 
@@ -191,16 +192,16 @@ describe('ol/geom/GeometryCollection.js', function () {
       const listener = sinonSpy();
       multi.on('change', listener);
       multi.setGeometries([point, line, poly]);
-      expect(listener.calledOnce).to.be(true);
+      assert.strictEqual(listener.calledOnce, true);
     });
 
     it('updates the extent', function () {
-      expect(multi.getExtent()).to.eql([0, 0, 30, 40]);
+      assert.deepEqual(multi.getExtent(), [0, 0, 30, 40]);
       line.setCoordinates([
         [10, 20],
         [300, 400],
       ]);
-      expect(multi.getExtent()).to.eql([0, 0, 300, 400]);
+      assert.deepEqual(multi.getExtent(), [0, 0, 300, 400]);
     });
   });
 
@@ -215,8 +216,8 @@ describe('ol/geom/GeometryCollection.js', function () {
       ]);
       geom.scale(10);
       const geometries = geom.getGeometries();
-      expect(geometries[0].getCoordinates()).to.eql([-10, -20]);
-      expect(geometries[1].getCoordinates()).to.eql([
+      assert.deepEqual(geometries[0].getCoordinates(), [-10, -20]);
+      assert.deepEqual(geometries[1].getCoordinates(), [
         [0, 0],
         [10, 20],
       ]);
@@ -232,8 +233,8 @@ describe('ol/geom/GeometryCollection.js', function () {
       ]);
       geom.scale(2, 3);
       const geometries = geom.getGeometries();
-      expect(geometries[0].getCoordinates()).to.eql([-2, -6]);
-      expect(geometries[1].getCoordinates()).to.eql([
+      assert.deepEqual(geometries[0].getCoordinates(), [-2, -6]);
+      assert.deepEqual(geometries[1].getCoordinates(), [
         [0, 0],
         [2, 6],
       ]);
@@ -249,8 +250,8 @@ describe('ol/geom/GeometryCollection.js', function () {
       ]);
       geom.scale(10, 15, [-1, -2]);
       const geometries = geom.getGeometries();
-      expect(geometries[0].getCoordinates()).to.eql([-1, -2]);
-      expect(geometries[1].getCoordinates()).to.eql([
+      assert.deepEqual(geometries[0].getCoordinates(), [-1, -2]);
+      assert.deepEqual(geometries[1].getCoordinates(), [
         [9, 28],
         [19, 58],
       ]);
@@ -272,18 +273,18 @@ describe('ol/geom/GeometryCollection.js', function () {
       multi.transform('EPSG:4326', 'EPSG:3857');
 
       const geometries = multi.getGeometries();
-      expect(geometries[0]).to.be.a(Point);
-      expect(geometries[1]).to.be.a(LineString);
+      assert.instanceOf(geometries[0], Point);
+      assert.instanceOf(geometries[1], LineString);
 
       let coords = geometries[0].getCoordinates();
-      expect(coords[0]).to.roughlyEqual(1113194.9, 1e-2);
-      expect(coords[1]).to.roughlyEqual(2273030.92, 1e-2);
+      assert.approximately(coords[0], 1113194.9, 1e-2);
+      assert.approximately(coords[1], 2273030.92, 1e-2);
 
       coords = geometries[1].getCoordinates();
-      expect(coords[0][0]).to.roughlyEqual(1113194.9, 1e-2);
-      expect(coords[0][1]).to.roughlyEqual(2273030.92, 1e-2);
-      expect(coords[1][0]).to.roughlyEqual(3339584.72, 1e-2);
-      expect(coords[1][1]).to.roughlyEqual(4865942.27, 1e-2);
+      assert.approximately(coords[0][0], 1113194.9, 1e-2);
+      assert.approximately(coords[0][1], 2273030.92, 1e-2);
+      assert.approximately(coords[1][0], 3339584.72, 1e-2);
+      assert.approximately(coords[1][1], 4865942.27, 1e-2);
     });
   });
 });

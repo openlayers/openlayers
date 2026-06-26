@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import {
   fromString,
   isStringColor,
@@ -43,7 +44,7 @@ describe('ol/color', () => {
       ];
       for (const c of cases) {
         it(`works for ${c[0]}`, () => {
-          expect(fromString(c[0])).to.eql(c[1]);
+          assert.deepEqual(fromString(c[0]), c[1]);
         });
       }
     });
@@ -61,10 +62,10 @@ describe('ol/color', () => {
       for (const c of cases) {
         it(`throws an error on ${c}`, () => {
           try {
-            const color = fromString(c);
-            expect().fail(`Expected an error, got ${color}`);
+            fromString(c);
+            assert.fail();
           } catch (err) {
-            expect(err.message).to.be(`failed to parse "${c}" as color`);
+            assert.strictEqual(err.message, `failed to parse "${c}" as color`);
           }
         });
       }
@@ -73,11 +74,11 @@ describe('ol/color', () => {
 
   describe('isValid()', () => {
     it('correctly detects valid colors', () => {
-      expect(isStringColor('lightgreen')).to.be(true);
-      expect(isStringColor('yellow')).to.be(true);
-      expect(isStringColor('GREEN')).to.be(true);
-      expect(isStringColor('notacolor')).to.be(false);
-      expect(isStringColor('red_')).to.be(false);
+      assert.strictEqual(isStringColor('lightgreen'), true);
+      assert.strictEqual(isStringColor('yellow'), true);
+      assert.strictEqual(isStringColor('GREEN'), true);
+      assert.strictEqual(isStringColor('notacolor'), false);
+      assert.strictEqual(isStringColor('red_'), false);
     });
   });
 
@@ -105,13 +106,13 @@ describe('ol/color', () => {
         h = parseFloat(h);
         const rgba1 = fromString(lchString);
         const rgba2 = lchaToRgba([l, c, h, 1]);
-        expect(rgba1).to.eql(rgba2);
+        assert.deepEqual(rgba1, rgba2);
 
         const alpha = Math.random();
         const rgbaIn = [rgba1[0], rgba1[1], rgba1[2], alpha];
         const lcha = rgbaToLcha(rgbaIn);
         const rgbaOut = lchaToRgba(lcha);
-        expect(rgbaOut).to.eql(rgbaIn);
+        assert.deepEqual(rgbaOut, rgbaIn);
       });
     }
   });

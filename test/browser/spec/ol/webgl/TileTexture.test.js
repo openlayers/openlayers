@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import DataTile from '../../../../../src/ol/DataTile.js';
 import ImageTile from '../../../../../src/ol/ImageTile.js';
 import TileState from '../../../../../src/ol/TileState.js';
@@ -54,17 +55,17 @@ describe('ol/webgl/TileTexture', function () {
   });
 
   it('constructor', function () {
-    expect(tileTexture.tile.tileCoord).to.eql([3, 2, 1]);
-    expect(tileTexture.coords).to.be.a(WebGLArrayBuffer);
+    assert.deepEqual(tileTexture.tile.tileCoord, [3, 2, 1]);
+    assert.instanceOf(tileTexture.coords, WebGLArrayBuffer);
   });
 
   it('handles data tiles', function (done) {
     const dataTile = tileTexture.tile;
-    expect(tileTexture.loaded).to.be(false);
-    expect(dataTile.getState()).to.be(TileState.IDLE);
+    assert.strictEqual(tileTexture.loaded, false);
+    assert.strictEqual(dataTile.getState(), TileState.IDLE);
     tileTexture.addEventListener('change', () => {
       if (dataTile.getState() === TileState.LOADED) {
-        expect(tileTexture.loaded).to.be(true);
+        assert.strictEqual(tileTexture.loaded, true);
         done();
       }
     });
@@ -74,14 +75,14 @@ describe('ol/webgl/TileTexture', function () {
   it('handles image tiles', function () {
     const imageTile = new ImageTile([0, 0, 0], TileState.LOADED);
     tileTexture.setTile(imageTile);
-    expect(tileTexture.loaded).to.be(true);
+    assert.strictEqual(tileTexture.loaded, true);
   });
 
   it('sets anonymous cors mode for image tiles by default', function () {
     const tile = new ImageTile([0, 0, 0], TileState.IDLE);
     tileTexture.setTile(tile);
     const image = tile.getImage();
-    expect(image.crossOrigin).to.be('anonymous');
+    assert.strictEqual(image.crossOrigin, 'anonymous');
   });
 
   it('resepects any existing cors mode', function () {
@@ -95,19 +96,19 @@ describe('ol/webgl/TileTexture', function () {
     );
     tileTexture.setTile(tile);
     const image = tile.getImage();
-    expect(image.crossOrigin).to.be('use-credentials');
+    assert.strictEqual(image.crossOrigin, 'use-credentials');
   });
 
   it('registers and unregisters change listener', function () {
     const tile = tileTexture.tile;
-    expect(tile.getListeners('change').length).to.be(2);
+    assert.strictEqual(tile.getListeners('change').length, 2);
     tileTexture.dispose();
-    expect(tile.getListeners('change').length).to.be(1);
+    assert.strictEqual(tile.getListeners('change').length, 1);
   });
 
   it('updates metadata and unregisters change listener when setting a different tile', function (done) {
     const tile = tileTexture.tile;
-    expect(tile.getListeners('change').length).to.be(2);
+    assert.strictEqual(tile.getListeners('change').length, 2);
     const differentTile = new DataTile({
       tileCoord: [1, 0, 1],
       loader(z, x, y) {
@@ -115,9 +116,9 @@ describe('ol/webgl/TileTexture', function () {
       },
     });
     tileTexture.setTile(differentTile);
-    expect(tile.getListeners('change').length).to.be(1);
+    assert.strictEqual(tile.getListeners('change').length, 1);
     tileTexture.addEventListener('change', () => {
-      expect(tileTexture.bandCount).to.be(3);
+      assert.strictEqual(tileTexture.bandCount, 3);
       done();
     });
     differentTile.load();

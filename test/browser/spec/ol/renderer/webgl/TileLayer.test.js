@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import Map from '../../../../../../src/ol/Map.js';
 import TileQueue from '../../../../../../src/ol/TileQueue.js';
 import View from '../../../../../../src/ol/View.js';
@@ -72,33 +73,33 @@ describe('ol/renderer/webgl/TileLayer', function () {
   });
 
   it('maintains a cache on the renderer', function () {
-    expect(renderer.tileRepresentationCache.highWaterMark).to.be(512);
+    assert.strictEqual(renderer.tileRepresentationCache.highWaterMark, 512);
   });
 
   it('#prepareFrame()', function () {
     const source = tileLayer.getSource();
     tileLayer.setSource(null);
-    expect(renderer.prepareFrame(frameState)).to.be(false);
+    assert.strictEqual(renderer.prepareFrame(frameState), false);
     tileLayer.setSource(source);
     renderer = tileLayer.getRenderer();
-    expect(renderer.prepareFrame(frameState)).to.be(true);
+    assert.strictEqual(renderer.prepareFrame(frameState), true);
     const tileGrid = source.getTileGrid();
     tileLayer.setExtent(tileGrid.getTileCoordExtent([2, 0, 0]));
     frameState.resolution = tileGrid.getResolution(2);
     frameState.extent = tileGrid.getTileCoordExtent([2, 2, 2]);
     frameState.layerStatesArray = [tileLayer.getLayerState()];
-    expect(renderer.prepareFrame(frameState)).to.be(false);
+    assert.strictEqual(renderer.prepareFrame(frameState), false);
   });
 
   it('#renderFrame()', function () {
     const ready = renderer.prepareFrame(frameState);
-    expect(ready).to.be(true);
+    assert.strictEqual(ready, true);
 
     const rendered = renderer.renderFrame(frameState);
-    expect(rendered).to.be.a(HTMLCanvasElement);
-    expect(frameState.tileQueue.getCount()).to.be(1);
-    expect(Object.keys(frameState.wantedTiles).length).to.be(1);
-    expect(renderer.tileRepresentationCache.count_).to.be(1);
+    assert.instanceOf(rendered, HTMLCanvasElement);
+    assert.strictEqual(frameState.tileQueue.getCount(), 1);
+    assert.strictEqual(Object.keys(frameState.wantedTiles).length, 1);
+    assert.strictEqual(renderer.tileRepresentationCache.count_, 1);
   });
 
   describe('enqueueTiles()', () => {
@@ -115,7 +116,7 @@ describe('ol/renderer/webgl/TileLayer', function () {
 
       const source = tileLayer.getSource();
       const sourceKey = getUid(source);
-      expect(frameState.wantedTiles[sourceKey]).to.be.an(Object);
+      assert.instanceOf(frameState.wantedTiles[sourceKey], Object);
 
       const wantedTiles = frameState.wantedTiles[sourceKey];
 
@@ -125,7 +126,7 @@ describe('ol/renderer/webgl/TileLayer', function () {
         [sourceKey + '/10,512,511']: true,
         [sourceKey + '/10,512,512']: true,
       };
-      expect(wantedTiles).to.eql(expected);
+      assert.deepEqual(wantedTiles, expected);
     });
 
     it('enqueues tiles at multiple zoom levels (preload: 2)', () => {
@@ -142,7 +143,7 @@ describe('ol/renderer/webgl/TileLayer', function () {
 
       const source = tileLayer.getSource();
       const sourceKey = getUid(source);
-      expect(frameState.wantedTiles[sourceKey]).to.be.an(Object);
+      assert.instanceOf(frameState.wantedTiles[sourceKey], Object);
 
       const wantedTiles = frameState.wantedTiles[sourceKey];
 
@@ -160,7 +161,7 @@ describe('ol/renderer/webgl/TileLayer', function () {
         [sourceKey + '/8,128,127']: true,
         [sourceKey + '/8,128,128']: true,
       };
-      expect(wantedTiles).to.eql(expected);
+      assert.deepEqual(wantedTiles, expected);
     });
 
     it('does not go below layer min zoom', () => {
@@ -178,7 +179,7 @@ describe('ol/renderer/webgl/TileLayer', function () {
 
       const source = tileLayer.getSource();
       const sourceKey = getUid(source);
-      expect(frameState.wantedTiles[sourceKey]).to.be.an(Object);
+      assert.instanceOf(frameState.wantedTiles[sourceKey], Object);
 
       const wantedTiles = frameState.wantedTiles[sourceKey];
 
@@ -192,7 +193,7 @@ describe('ol/renderer/webgl/TileLayer', function () {
         [sourceKey + '/9,256,255']: true,
         [sourceKey + '/9,256,256']: true,
       };
-      expect(wantedTiles).to.eql(expected);
+      assert.deepEqual(wantedTiles, expected);
     });
 
     it('layer min zoom relates to view zoom levels', () => {
@@ -213,7 +214,7 @@ describe('ol/renderer/webgl/TileLayer', function () {
 
       const source = tileLayer.getSource();
       const sourceKey = getUid(source);
-      expect(frameState.wantedTiles[sourceKey]).to.be.an(Object);
+      assert.instanceOf(frameState.wantedTiles[sourceKey], Object);
 
       const wantedTiles = frameState.wantedTiles[sourceKey];
 
@@ -231,7 +232,7 @@ describe('ol/renderer/webgl/TileLayer', function () {
         [sourceKey + '/8,128,127']: true,
         [sourceKey + '/8,128,128']: true,
       };
-      expect(wantedTiles).to.eql(expected);
+      assert.deepEqual(wantedTiles, expected);
     });
 
     it('skips tiles not in the rotated viewport', () => {
@@ -257,7 +258,7 @@ describe('ol/renderer/webgl/TileLayer', function () {
 
       const source = tileLayer.getSource();
       const sourceKey = getUid(source);
-      expect(frameState.wantedTiles[sourceKey]).to.be.an(Object);
+      assert.instanceOf(frameState.wantedTiles[sourceKey], Object);
 
       const wantedTiles = frameState.wantedTiles[sourceKey];
 
@@ -267,7 +268,7 @@ describe('ol/renderer/webgl/TileLayer', function () {
         [sourceKey + '/10,512,511']: true,
         [sourceKey + '/10,512,512']: true,
       };
-      expect(wantedTiles).to.eql(expected);
+      assert.deepEqual(wantedTiles, expected);
     });
   });
 
@@ -286,7 +287,7 @@ describe('ol/renderer/webgl/TileLayer', function () {
       });
     });
     it('creates a TileTexture instance', () => {
-      expect(tileRepresentation).to.be.a(TileTexture);
+      assert.instanceOf(tileRepresentation, TileTexture);
     });
   });
 });
