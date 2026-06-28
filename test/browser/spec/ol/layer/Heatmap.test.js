@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {spy as sinonSpy} from 'sinon';
 import Feature from '../../../../../src/ol/Feature.js';
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
@@ -8,6 +7,10 @@ import Point from '../../../../../src/ol/geom/Point.js';
 import HeatmapLayer from '../../../../../src/ol/layer/Heatmap.js';
 import * as ol_renderer_webgl_vectorlayer from '../../../../../src/ol/renderer/webgl/VectorLayer.js';
 import VectorSource from '../../../../../src/ol/source/Vector.js';
+
+// sinon can't spy on ES module exports, so the renderer module is mocked here
+// to capture how the renderer gets constructed.
+vi.mock('../../../../../src/ol/renderer/webgl/VectorLayer.js', {spy: true});
 
 describe('ol/layer/Heatmap', function () {
   /** @type {HTMLDivElement} */
@@ -38,10 +41,11 @@ describe('ol/layer/Heatmap', function () {
 
   let rendererSpy;
   beforeEach(() => {
-    rendererSpy = sinonSpy(ol_renderer_webgl_vectorlayer, 'default');
+    rendererSpy = ol_renderer_webgl_vectorlayer.default;
+    rendererSpy.mockClear();
   });
   afterEach(() => {
-    rendererSpy.restore();
+    rendererSpy.mockClear();
   });
 
   describe('constructor', function () {
@@ -88,28 +92,28 @@ describe('ol/layer/Heatmap', function () {
       assert.deepEqual(layer.getBlur(), ['get', 'weight']);
     });
     it('recreates the renderer', () => {
-      sinonSpy(layer, 'createRenderer');
+      vi.spyOn(layer, 'createRenderer');
       layer.setBlur(['get', 'weight']);
       layer.getRenderer();
-      assert.strictEqual(layer.createRenderer.calledOnce, true);
+      assert.strictEqual(layer.createRenderer.mock.calls.length, 1);
     });
 
     describe('numerical value', () => {
       it('adds a uniform which reads the numerical value', () => {
         layer.setBlur(12);
         layer.getRenderer();
-        const rendererOpts = rendererSpy.getCall(0).args[1];
+        const rendererOpts = rendererSpy.mock.calls[0][1];
         const uniforms = rendererOpts.style.uniforms;
         assert.property(uniforms, 'a_blur');
         assert.deepEqual(uniforms.a_blur(), 12);
       });
       it('does not recreate the renderer if called several times with a numerical value', () => {
-        sinonSpy(layer, 'createRenderer');
+        vi.spyOn(layer, 'createRenderer');
         layer.setBlur(12);
         layer.setBlur(17);
         layer.setBlur(20);
         layer.getRenderer();
-        assert.strictEqual(layer.createRenderer.callCount, 1);
+        assert.strictEqual(layer.createRenderer.mock.calls.length, 1);
       });
     });
   });
@@ -128,28 +132,28 @@ describe('ol/layer/Heatmap', function () {
       assert.deepEqual(layer.getRadius(), ['get', 'size']);
     });
     it('recreates the renderer', () => {
-      sinonSpy(layer, 'createRenderer');
+      vi.spyOn(layer, 'createRenderer');
       layer.setRadius(['get', 'size']);
       layer.getRenderer();
-      assert.strictEqual(layer.createRenderer.calledOnce, true);
+      assert.strictEqual(layer.createRenderer.mock.calls.length, 1);
     });
 
     describe('numerical value', () => {
       it('adds a uniform which reads the numerical value', () => {
         layer.setRadius(12);
         layer.getRenderer();
-        const rendererOpts = rendererSpy.getCall(0).args[1];
+        const rendererOpts = rendererSpy.mock.calls[0][1];
         const uniforms = rendererOpts.style.uniforms;
         assert.property(uniforms, 'a_radius');
         assert.deepEqual(uniforms.a_radius(), 12);
       });
       it('does not recreate the renderer if called several times with a numerical value', () => {
-        sinonSpy(layer, 'createRenderer');
+        vi.spyOn(layer, 'createRenderer');
         layer.setRadius(12);
         layer.setRadius(17);
         layer.setRadius(20);
         layer.getRenderer();
-        assert.strictEqual(layer.createRenderer.callCount, 1);
+        assert.strictEqual(layer.createRenderer.mock.calls.length, 1);
       });
     });
   });
@@ -168,7 +172,7 @@ describe('ol/layer/Heatmap', function () {
       });
       layer.getRenderer();
 
-      const rendererOpts = rendererSpy.getCall(0).args[1];
+      const rendererOpts = rendererSpy.mock.calls[0][1];
       const attrs = rendererOpts.style.attributes;
       assert.property(attrs, 'prop_weight');
 
@@ -189,7 +193,7 @@ describe('ol/layer/Heatmap', function () {
       });
       layer.getRenderer();
 
-      const rendererOpts = rendererSpy.getCall(0).args[1];
+      const rendererOpts = rendererSpy.mock.calls[0][1];
       const attrs = rendererOpts.style.attributes;
       assert.property(attrs, 'prop_weight');
 
@@ -210,7 +214,7 @@ describe('ol/layer/Heatmap', function () {
       });
       layer.getRenderer();
 
-      const rendererOpts = rendererSpy.getCall(0).args[1];
+      const rendererOpts = rendererSpy.mock.calls[0][1];
       const attrs = rendererOpts.style.attributes;
       assert.property(attrs, 'prop_sizeAttr');
 
@@ -236,10 +240,10 @@ describe('ol/layer/Heatmap', function () {
         assert.deepEqual(layer.weight_, 'bla');
       });
       it('recreates the renderer', () => {
-        sinonSpy(layer, 'createRenderer');
+        vi.spyOn(layer, 'createRenderer');
         layer.setWeight('bla');
         layer.getRenderer();
-        assert.strictEqual(layer.createRenderer.calledOnce, true);
+        assert.strictEqual(layer.createRenderer.mock.calls.length, 1);
       });
     });
   });
@@ -257,7 +261,7 @@ describe('ol/layer/Heatmap', function () {
       });
       layer.getRenderer();
 
-      const rendererOpts = rendererSpy.getCall(0).args[1];
+      const rendererOpts = rendererSpy.mock.calls[0][1];
       const attrs = rendererOpts.style.attributes;
       assert.property(attrs, 'prop_sizeAttr');
 
@@ -274,7 +278,7 @@ describe('ol/layer/Heatmap', function () {
       });
       layer.getRenderer();
 
-      const rendererOpts = rendererSpy.getCall(0).args[1];
+      const rendererOpts = rendererSpy.mock.calls[0][1];
       const attrs = rendererOpts.style.attributes;
       assert.property(attrs, 'prop_sizeAttr');
 
@@ -291,10 +295,10 @@ describe('ol/layer/Heatmap', function () {
         assert.deepEqual(layer.filter_, filter);
       });
       it('recreates the renderer', () => {
-        sinonSpy(layer, 'createRenderer');
+        vi.spyOn(layer, 'createRenderer');
         layer.setFilter(true);
         layer.getRenderer();
-        assert.strictEqual(layer.createRenderer.calledOnce, true);
+        assert.strictEqual(layer.createRenderer.mock.calls.length, 1);
       });
     });
   });
@@ -308,7 +312,7 @@ describe('ol/layer/Heatmap', function () {
       });
       layer.getRenderer();
 
-      const rendererOpts = rendererSpy.getCall(0).args[1];
+      const rendererOpts = rendererSpy.mock.calls[0][1];
       const attrs = rendererOpts.style.attributes;
       assert.property(attrs, 'prop_myBlur');
       assert.property(attrs, 'prop_myRadius');

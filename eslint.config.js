@@ -59,6 +59,7 @@ export default [
         disposeMap: 'readonly',
         it: 'readonly',
         render: 'readonly',
+        vi: 'readonly',
         where: 'readonly',
       },
     },
