@@ -326,62 +326,63 @@ describe('ol/layer/Heatmap', function () {
   });
 
   describe('hit detection', function () {
-    it('hit detects two distinct features', function (done) {
-      const feature = new Feature({
-        geometry: new Point([0, 0]),
-        id: 1,
-        weight: 10,
-      });
-      const feature2 = new Feature({
-        geometry: new Point([14, 14]),
-        id: 2,
-        weight: 10,
-      });
-      const feature3 = new Feature({
-        geometry: new LineString([
-          [-5, 10],
-          [5, 10],
-        ]),
-        id: 3,
-        weight: 10,
-      });
+    it('hit detects two distinct features', () =>
+      new Promise((resolve) => {
+        const feature = new Feature({
+          geometry: new Point([0, 0]),
+          id: 1,
+          weight: 10,
+        });
+        const feature2 = new Feature({
+          geometry: new Point([14, 14]),
+          id: 2,
+          weight: 10,
+        });
+        const feature3 = new Feature({
+          geometry: new LineString([
+            [-5, 10],
+            [5, 10],
+          ]),
+          id: 3,
+          weight: 10,
+        });
 
-      const source = new VectorSource({
-        features: [feature, feature2, feature3],
-      });
-      layer = new HeatmapLayer({
-        source: source,
-        blur: 10,
-        radius: 10,
-      });
-      map.addLayer(layer);
-      map.render();
+        const source = new VectorSource({
+          features: [feature, feature2, feature3],
+        });
+        layer = new HeatmapLayer({
+          source: source,
+          blur: 10,
+          radius: 10,
+        });
+        map.addLayer(layer);
+        map.render();
 
-      function hitTest(coordinate) {
-        const features = map.getFeaturesAtPixel(
-          map.getPixelFromCoordinate(coordinate),
-        );
-        return features.length ? features[0] : null;
-      }
+        function hitTest(coordinate) {
+          const features = map.getFeaturesAtPixel(
+            map.getPixelFromCoordinate(coordinate),
+          );
+          return features.length ? features[0] : null;
+        }
 
-      layer.once('change', () => {
-        map.renderSync();
-        let res;
-        res = hitTest([0, 0]);
-        assert.strictEqual(res, feature);
-        res = hitTest([20, 0]);
-        assert.strictEqual(res, null);
-        res = hitTest([14, 14]);
-        assert.strictEqual(res, feature2);
-        res = hitTest([0, 14]);
-        assert.strictEqual(res, null);
-        res = hitTest([-3, 10]);
-        assert.strictEqual(res, feature3);
-        res = hitTest([3, 7]);
-        assert.strictEqual(res, null);
-        done();
-      });
-    });
+        layer.once('change', () => {
+          map.renderSync();
+          let res;
+          res = hitTest([0, 0]);
+          assert.strictEqual(res, feature);
+          res = hitTest([20, 0]);
+          assert.strictEqual(res, null);
+          res = hitTest([14, 14]);
+          assert.strictEqual(res, feature2);
+          res = hitTest([0, 14]);
+          assert.strictEqual(res, null);
+          res = hitTest([-3, 10]);
+          assert.strictEqual(res, feature3);
+          res = hitTest([3, 7]);
+          assert.strictEqual(res, null);
+          resolve();
+        });
+      }));
   });
 
   describe('updateStyleVariables()', function () {

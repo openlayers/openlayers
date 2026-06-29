@@ -48,9 +48,11 @@ export default [
     languageOptions: {
       globals: {
         after: 'readonly',
+        afterAll: 'readonly',
         afterEach: 'readonly',
         afterLoadText: 'readonly',
         before: 'readonly',
+        beforeAll: 'readonly',
         beforeEach: 'readonly',
         createMapDiv: 'readonly',
         defineCustomMapEl: 'readonly',

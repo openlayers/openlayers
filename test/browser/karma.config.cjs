@@ -37,8 +37,15 @@ module.exports = async function (karma) {
         watched: false,
       },
     ],
-    // Specs ported to Vitest use vi.* and can't run under Karma.
-    exclude: ['spec/ol/layer/Heatmap.test.js'],
+    // Specs ported to Vitest run there instead; see test/browser/vitest.config.mjs.
+    exclude: [
+      'spec/ol/resolutionconstraint.test.js',
+      'spec/ol/tileurlfunction.test.js',
+      'spec/ol/worker/webgl.test.js',
+      'spec/ol/featureloader.test.js',
+      'spec/ol/format/wmtscapabilities.test.js',
+      'spec/ol/layer/Heatmap.test.js',
+    ],
     proxies: {
       '/spec/': '/base/spec/',
       '/wms': '/base/spec/ol/data/blank.png',
