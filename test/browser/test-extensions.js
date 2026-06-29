@@ -97,8 +97,8 @@ setLogLevel('error');
       throw new Error('where() called with unknown key: ' + key);
     }
     return {
-      describe: features[key] ? global.describe : global.xdescribe,
-      it: features[key] ? global.it : global.xit,
+      describe: features[key] ? global.describe : global.describe.skip,
+      it: features[key] ? global.it : global.it.skip,
     };
   };
 

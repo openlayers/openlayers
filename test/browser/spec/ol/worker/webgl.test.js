@@ -22,27 +22,32 @@ describe('ol/worker/webgl', () => {
   describe('messaging', () => {
     describe('GENERATE_POINT_BUFFERS', () => {
       let responseData;
-      beforeEach((done) => {
-        const renderInstructions = Float32Array.from([0, 10, 111, 20, 30, 222]);
-        const id = Math.floor(Math.random() * 10000);
-        const message = {
-          type: WebGLWorkerMessageType.GENERATE_POINT_BUFFERS,
-          renderInstructions,
-          customAttributesSize: 1,
-          testInt: 101,
-          testString: 'abcd',
-          id,
-        };
-        responseData = null;
-        worker.postMessage(message);
+      beforeEach(
+        () =>
+          new Promise((resolve) => {
+            const renderInstructions = Float32Array.from([
+              0, 10, 111, 20, 30, 222,
+            ]);
+            const id = Math.floor(Math.random() * 10000);
+            const message = {
+              type: WebGLWorkerMessageType.GENERATE_POINT_BUFFERS,
+              renderInstructions,
+              customAttributesSize: 1,
+              testInt: 101,
+              testString: 'abcd',
+              id,
+            };
+            responseData = null;
+            worker.postMessage(message);
 
-        worker.addEventListener('message', (event) => {
-          if (event.data.id === id) {
-            responseData = event.data;
-            done();
-          }
-        });
-      });
+            worker.addEventListener('message', (event) => {
+              if (event.data.id === id) {
+                responseData = event.data;
+                resolve();
+              }
+            });
+          }),
+      );
       it('responds with info passed in the message', () => {
         assert.deepEqual(
           responseData.type,
@@ -71,38 +76,43 @@ describe('ol/worker/webgl', () => {
       let indices;
       let vertices;
       let instanceAttrs;
-      beforeEach((done) => {
-        const renderInstructions = Float32Array.from([
-          111, 4, 20, 30, -1, 40, 50, -2, 6, 7, -3, 80, 90, -4,
-        ]);
-        const id = Math.floor(Math.random() * 10000);
-        const renderInstructionsTransform = createTransform();
-        const message = {
-          type: WebGLWorkerMessageType.GENERATE_LINE_STRING_BUFFERS,
-          renderInstructions,
-          customAttributesSize: 1,
-          testInt: 101,
-          testString: 'abcd',
-          id,
-          renderInstructionsTransform,
-        };
-        responseData = null;
-        worker.postMessage(message);
+      beforeEach(
+        () =>
+          new Promise((resolve) => {
+            const renderInstructions = Float32Array.from([
+              111, 4, 20, 30, -1, 40, 50, -2, 6, 7, -3, 80, 90, -4,
+            ]);
+            const id = Math.floor(Math.random() * 10000);
+            const renderInstructionsTransform = createTransform();
+            const message = {
+              type: WebGLWorkerMessageType.GENERATE_LINE_STRING_BUFFERS,
+              renderInstructions,
+              customAttributesSize: 1,
+              testInt: 101,
+              testString: 'abcd',
+              id,
+              renderInstructionsTransform,
+            };
+            responseData = null;
+            worker.postMessage(message);
 
-        worker.addEventListener('message', (event) => {
-          if (event.data.id === id) {
-            responseData = event.data;
-            indices = Array.from(new Uint32Array(responseData.indicesBuffer));
-            vertices = Array.from(
-              new Float32Array(responseData.vertexAttributesBuffer),
-            );
-            instanceAttrs = Array.from(
-              new Float32Array(responseData.instanceAttributesBuffer),
-            );
-            done();
-          }
-        });
-      });
+            worker.addEventListener('message', (event) => {
+              if (event.data.id === id) {
+                responseData = event.data;
+                indices = Array.from(
+                  new Uint32Array(responseData.indicesBuffer),
+                );
+                vertices = Array.from(
+                  new Float32Array(responseData.vertexAttributesBuffer),
+                );
+                instanceAttrs = Array.from(
+                  new Float32Array(responseData.instanceAttributesBuffer),
+                );
+                resolve();
+              }
+            });
+          }),
+      );
       it('responds with info passed in the message', () => {
         assert.deepEqual(
           responseData.type,
@@ -131,37 +141,40 @@ describe('ol/worker/webgl', () => {
       });
 
       describe('closed line', () => {
-        beforeEach((done) => {
-          const renderInstructions = Float32Array.from([
-            111, 4, 20, 30, -1, 40, 50, -2, 6, 7, -3, 20, 30, -4,
-          ]);
-          const id = Math.floor(Math.random() * 10000);
-          const renderInstructionsTransform = createTransform();
-          const message = {
-            type: WebGLWorkerMessageType.GENERATE_LINE_STRING_BUFFERS,
-            renderInstructions,
-            customAttributesSize: 1,
-            testInt: 101,
-            testString: 'abcd',
-            id,
-            renderInstructionsTransform,
-          };
-          responseData = null;
-          worker.postMessage(message);
+        beforeEach(
+          () =>
+            new Promise((resolve) => {
+              const renderInstructions = Float32Array.from([
+                111, 4, 20, 30, -1, 40, 50, -2, 6, 7, -3, 20, 30, -4,
+              ]);
+              const id = Math.floor(Math.random() * 10000);
+              const renderInstructionsTransform = createTransform();
+              const message = {
+                type: WebGLWorkerMessageType.GENERATE_LINE_STRING_BUFFERS,
+                renderInstructions,
+                customAttributesSize: 1,
+                testInt: 101,
+                testString: 'abcd',
+                id,
+                renderInstructionsTransform,
+              };
+              responseData = null;
+              worker.postMessage(message);
 
-          worker.addEventListener('message', (event) => {
-            if (event.data.id === id) {
-              responseData = event.data;
-              vertices = Array.from(
-                new Float32Array(responseData.vertexAttributesBuffer),
-              );
-              instanceAttrs = Array.from(
-                new Float32Array(responseData.instanceAttributesBuffer),
-              );
-              done();
-            }
-          });
-        });
+              worker.addEventListener('message', (event) => {
+                if (event.data.id === id) {
+                  responseData = event.data;
+                  vertices = Array.from(
+                    new Float32Array(responseData.vertexAttributesBuffer),
+                  );
+                  instanceAttrs = Array.from(
+                    new Float32Array(responseData.instanceAttributesBuffer),
+                  );
+                  resolve();
+                }
+              });
+            }),
+        );
         it('computes join angles for a closed loop', () => {
           assert.deepEqual(
             instanceAttrs.slice(6, 8),
@@ -177,30 +190,33 @@ describe('ol/worker/webgl', () => {
 
     describe('GENERATE_POLYGON_BUFFERS', () => {
       let responseData;
-      beforeEach((done) => {
-        const renderInstructions = Float32Array.from([
-          1234, 2, 6, 5, 0, 0, 10, 0, 15, 6, 10, 12, 0, 12, 0, 0, 3, 3, 5, 1, 7,
-          3, 5, 5, 3, 3,
-        ]);
-        const id = Math.floor(Math.random() * 10000);
-        const message = {
-          type: WebGLWorkerMessageType.GENERATE_POLYGON_BUFFERS,
-          renderInstructions,
-          customAttributesSize: 1,
-          testInt: 101,
-          testString: 'abcd',
-          id,
-        };
-        responseData = null;
-        worker.postMessage(message);
+      beforeEach(
+        () =>
+          new Promise((resolve) => {
+            const renderInstructions = Float32Array.from([
+              1234, 2, 6, 5, 0, 0, 10, 0, 15, 6, 10, 12, 0, 12, 0, 0, 3, 3, 5,
+              1, 7, 3, 5, 5, 3, 3,
+            ]);
+            const id = Math.floor(Math.random() * 10000);
+            const message = {
+              type: WebGLWorkerMessageType.GENERATE_POLYGON_BUFFERS,
+              renderInstructions,
+              customAttributesSize: 1,
+              testInt: 101,
+              testString: 'abcd',
+              id,
+            };
+            responseData = null;
+            worker.postMessage(message);
 
-        worker.addEventListener('message', (event) => {
-          if (event.data.id === id) {
-            responseData = event.data;
-            done();
-          }
-        });
-      });
+            worker.addEventListener('message', (event) => {
+              if (event.data.id === id) {
+                responseData = event.data;
+                resolve();
+              }
+            });
+          }),
+      );
       it('responds with info passed in the message', () => {
         assert.deepEqual(
           responseData.type,

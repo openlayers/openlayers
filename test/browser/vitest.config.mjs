@@ -16,7 +16,6 @@ export default defineConfig({
       'test/browser/spec/ol/tileurlfunction.test.js',
       'test/browser/spec/ol/worker/webgl.test.js',
       'test/browser/spec/ol/featureloader.test.js',
-      'test/browser/spec/ol/Map.test.js',
       'test/browser/spec/ol/format/wmtscapabilities.test.js',
       'test/browser/spec/ol/layer/Heatmap.test.js',
     ],
