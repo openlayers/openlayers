@@ -27,20 +27,25 @@ class ZIndexContext {
     this.offset_ = 0;
 
     /**
+     * Name of the method last accessed on the proxy, pushed together with its
+     * arguments when the method is actually called.
+     * @private
+     * @type {string|symbol}
+     */
+    this.pendingMethod_;
+
+    /**
      * @private
      * @type {ZIndexContextProxy}
      */
     this.context_ = /** @type {ZIndexContextProxy} */ (
       new Proxy(getSharedCanvasContext2D(), {
         get: (target, property) => {
-          if (
-            typeof (/** @type {*} */ (getSharedCanvasContext2D())[property]) !==
-            'function'
-          ) {
+          if (typeof (/** @type {*} */ (target)[property]) !== 'function') {
             // we only accept calling functions on the proxy, not accessing properties
             return undefined;
           }
-          this.push_(property);
+          this.pendingMethod_ = property;
           return this.pushMethodArgs_;
         },
         set: (target, property, value) => {
@@ -65,13 +70,13 @@ class ZIndexContext {
   }
 
   /**
-   * @private
+   * Pushes the method name captured at access time together with the arguments
+   * passed at call time. Reused across all proxied method calls.
    * @param {...*} args Args.
-   * @return {ZIndexContext} This.
+   * @private
    */
   pushMethodArgs_ = (...args) => {
-    this.push_(args);
-    return this;
+    this.push_(this.pendingMethod_, args);
   };
 
   /**
@@ -107,11 +112,9 @@ class ZIndexContext {
         const instructionAtIndex = instructionsAtIndex[++i];
         if (typeof (/** @type {*} */ (context)[property]) === 'function') {
           /** @type {*} */ (context)[property](...instructionAtIndex);
+        } else if (typeof instructionAtIndex === 'function') {
+          /** @type {*} */ (context)[property] = instructionAtIndex(context);
         } else {
-          if (typeof instructionAtIndex === 'function') {
-            /** @type {*} */ (context)[property] = instructionAtIndex(context);
-            continue;
-          }
           /** @type {*} */ (context)[property] = instructionAtIndex;
         }
       }
