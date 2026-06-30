@@ -418,6 +418,27 @@ export function wrapX(coordinate, projection) {
   return coordinate;
 }
 /**
+ * Modifies the provided coordinate in-place to be the world copy nearest to
+ * the given reference X position. Useful for getting the screen pixel of a
+ * coordinate when the map has been panned past the antimeridian.
+ *
+ * @param {Coordinate} coordinate Coordinate (modified in place).
+ * @param {import("./proj/Projection.js").default} projection Projection.
+ * @param {number} referenceX Reference X position to find the nearest world to.
+ * @return {Coordinate} The coordinate in the nearest world copy.
+ */
+export function wrapXNearest(coordinate, projection, referenceX) {
+  if (projection.canWrapX()) {
+    const worldWidth = getWidth(projection.getExtent());
+    const n = Math.round((referenceX - coordinate[0]) / worldWidth);
+    if (n !== 0) {
+      coordinate[0] += n * worldWidth;
+    }
+  }
+  return coordinate;
+}
+
+/**
  * @param {Coordinate} coordinate Coordinate.
  * @param {import("./proj/Projection.js").default} projection Projection.
  * @param {number} [sourceExtentWidth] Width of the source extent.
