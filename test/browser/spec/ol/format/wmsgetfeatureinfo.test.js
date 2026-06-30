@@ -23,20 +23,27 @@ describe('ol.format.WMSGetFeatureInfo', function () {
     describe('read Features', function () {
       let features;
 
-      before(function (done) {
-        proj4.defs('urn:x-ogc:def:crs:EPSG:4326', proj4.defs('EPSG:4326'));
-        register(proj4);
-        afterLoadText('spec/ol/format/wms/getfeatureinfo.xml', function (data) {
-          try {
-            features = new WMSGetFeatureInfo().readFeatures(data);
-          } catch (e) {
-            done(e);
-          }
-          done();
-        });
-      });
+      beforeAll(
+        () =>
+          new Promise((resolve, reject) => {
+            proj4.defs('urn:x-ogc:def:crs:EPSG:4326', proj4.defs('EPSG:4326'));
+            register(proj4);
+            afterLoadText(
+              'spec/ol/format/wms/getfeatureinfo.xml',
+              function (data) {
+                try {
+                  features = new WMSGetFeatureInfo().readFeatures(data);
+                } catch (e) {
+                  reject(e);
+                  return;
+                }
+                resolve();
+              },
+            );
+          }),
+      );
 
-      after(function () {
+      afterAll(function () {
         delete proj4.defs['urn:x-ogc:def:crs:EPSG:4326'];
         clearAllProjections();
         addCommon();

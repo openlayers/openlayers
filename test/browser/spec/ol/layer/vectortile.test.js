@@ -124,64 +124,70 @@ describe('ol.layer.VectorTile', function () {
       URL.revokeObjectURL(objectURL);
     });
 
-    it('detects features properly', function (done) {
-      map.once('rendercomplete', function () {
-        const pixel = map.getPixelFromCoordinate(fromLonLat([-36, 0]));
-        layer
-          .getFeatures(pixel)
-          .then(function (features) {
-            assert.strictEqual(features[0].get('name'), 'feature1');
-            done();
-          })
-          .catch(done);
-      });
-    });
+    it('detects features properly', () =>
+      new Promise((resolve, reject) => {
+        const done = (err) => (err ? reject(err) : resolve());
+        map.once('rendercomplete', function () {
+          const pixel = map.getPixelFromCoordinate(fromLonLat([-36, 0]));
+          layer
+            .getFeatures(pixel)
+            .then(function (features) {
+              assert.strictEqual(features[0].get('name'), 'feature1');
+              done();
+            })
+            .catch(done);
+        });
+      }));
 
-    it('does not give false positives', function (done) {
-      map.once('rendercomplete', function () {
-        const pixel = map.getPixelFromCoordinate(fromLonLat([0, 0]));
-        layer
-          .getFeatures(pixel)
-          .then(function (features) {
-            assert.strictEqual(features.length, 0);
-            done();
-          })
-          .catch(done);
-      });
-    });
+    it('does not give false positives', () =>
+      new Promise((resolve, reject) => {
+        const done = (err) => (err ? reject(err) : resolve());
+        map.once('rendercomplete', function () {
+          const pixel = map.getPixelFromCoordinate(fromLonLat([0, 0]));
+          layer
+            .getFeatures(pixel)
+            .then(function (features) {
+              assert.strictEqual(features.length, 0);
+              done();
+            })
+            .catch(done);
+        });
+      }));
 
-    it('stores separate hit detection data for each layer that uses the source', function (done) {
-      const layer2 = new VectorTileLayer({
-        source: layer.getSource(),
-      });
-      map.addLayer(layer2);
-      map.once('rendercomplete', function () {
-        const pixel = map.getPixelFromCoordinate(fromLonLat([-36, 0]));
-        Promise.all([layer.getFeatures(pixel), layer2.getFeatures(pixel)])
-          .then(function (result) {
-            const tile = layer
-              .getRenderer()
-              .tileCache_.get(
-                `${getUid(layer.getSource())},${objectURL},0/0/0`,
+    it('stores separate hit detection data for each layer that uses the source', () =>
+      new Promise((resolve, reject) => {
+        const done = (err) => (err ? reject(err) : resolve());
+        const layer2 = new VectorTileLayer({
+          source: layer.getSource(),
+        });
+        map.addLayer(layer2);
+        map.once('rendercomplete', function () {
+          const pixel = map.getPixelFromCoordinate(fromLonLat([-36, 0]));
+          Promise.all([layer.getFeatures(pixel), layer2.getFeatures(pixel)])
+            .then(function (result) {
+              const tile = layer
+                .getRenderer()
+                .tileCache_.get(
+                  `${getUid(layer.getSource())},${objectURL},0/0/0`,
+                );
+              assert.strictEqual(
+                Object.keys(tile.hitDetectionImageData).length,
+                1,
               );
-            assert.strictEqual(
-              Object.keys(tile.hitDetectionImageData).length,
-              1,
-            );
-            const tile2 = layer2
-              .getRenderer()
-              .tileCache_.get(
-                `${getUid(layer.getSource())},${objectURL},0/0/0`,
+              const tile2 = layer2
+                .getRenderer()
+                .tileCache_.get(
+                  `${getUid(layer.getSource())},${objectURL},0/0/0`,
+                );
+              assert.strictEqual(
+                Object.keys(tile2.hitDetectionImageData).length,
+                1,
               );
-            assert.strictEqual(
-              Object.keys(tile2.hitDetectionImageData).length,
-              1,
-            );
-            done();
-          })
-          .catch(done);
-      });
-    });
+              done();
+            })
+            .catch(done);
+        });
+      }));
   });
 
   describe('getFeatuersInExtent', function () {
@@ -228,32 +234,33 @@ describe('ol.layer.VectorTile', function () {
       assert.strictEqual(layer.getFeaturesInExtent(extent).length, 0);
     });
 
-    it('returns features in extent for the last rendered z', function (done) {
-      map.getView().setZoom(15);
-      map.once('rendercomplete', function () {
-        const extent = map.getView().calculateExtent(map.getSize());
-        const features = layer.getFeaturesInExtent(extent);
-        assert.strictEqual(features.length, 4);
-        const keys = {};
-        features.forEach((feature) => {
-          assert.strictEqual(feature.get('z'), 15);
-          assert.strictEqual(feature.getId() in keys, false);
-          keys[feature.getId()] = true;
-        });
-        map.getView().setZoom(0);
+    it('returns features in extent for the last rendered z', () =>
+      new Promise((resolve) => {
+        map.getView().setZoom(15);
         map.once('rendercomplete', function () {
           const extent = map.getView().calculateExtent(map.getSize());
           const features = layer.getFeaturesInExtent(extent);
-          assert.strictEqual(features.length, 1);
+          assert.strictEqual(features.length, 4);
+          const keys = {};
           features.forEach((feature) => {
-            assert.strictEqual(feature.get('z'), 0);
+            assert.strictEqual(feature.get('z'), 15);
             assert.strictEqual(feature.getId() in keys, false);
             keys[feature.getId()] = true;
           });
-          done();
+          map.getView().setZoom(0);
+          map.once('rendercomplete', function () {
+            const extent = map.getView().calculateExtent(map.getSize());
+            const features = layer.getFeaturesInExtent(extent);
+            assert.strictEqual(features.length, 1);
+            features.forEach((feature) => {
+              assert.strictEqual(feature.get('z'), 0);
+              assert.strictEqual(feature.getId() in keys, false);
+              keys[feature.getId()] = true;
+            });
+            resolve();
+          });
         });
-      });
-    });
+      }));
   });
 
   describe('#renderFrame', function () {
@@ -263,84 +270,87 @@ describe('ol.layer.VectorTile', function () {
       layer.dispose();
     });
 
-    it('sets ready property to false when icons are loading', function (done) {
-      const zoom = 1;
-      const tileSize = 32;
-      const projection = getProjection('EPSG:3857');
-      const tileGrid = createXYZ({tileSize: tileSize});
-      const resolution = tileGrid.getResolution(zoom);
-      layer = new VectorTileLayer({
-        renderBuffer: 0,
-        source: new VectorTileSource({
-          tileSize: tileSize,
-          tileUrlFunction: (tileCoord) => tileCoord.join('/'),
-          tileLoadFunction: function (tile, url) {
-            const coordinate = tileGrid.getTileCoordCenter(tile.getTileCoord());
-            tile.setFeatures([new Feature(new Point(coordinate))]);
-          },
-        }),
-        style: new Style({
-          image: new Icon({
-            src:
-              'data:image/svg+xml;base64,' +
-              window.btoa(`<svg width="10" height="10" viewBox="0 0 1 1" xmlns="http://www.w3.org/2000/svg">
+    it('sets ready property to false when icons are loading', () =>
+      new Promise((resolve, reject) => {
+        const zoom = 1;
+        const tileSize = 32;
+        const projection = getProjection('EPSG:3857');
+        const tileGrid = createXYZ({tileSize: tileSize});
+        const resolution = tileGrid.getResolution(zoom);
+        layer = new VectorTileLayer({
+          renderBuffer: 0,
+          source: new VectorTileSource({
+            tileSize: tileSize,
+            tileUrlFunction: (tileCoord) => tileCoord.join('/'),
+            tileLoadFunction: function (tile, url) {
+              const coordinate = tileGrid.getTileCoordCenter(
+                tile.getTileCoord(),
+              );
+              tile.setFeatures([new Feature(new Point(coordinate))]);
+            },
+          }),
+          style: new Style({
+            image: new Icon({
+              src:
+                'data:image/svg+xml;base64,' +
+                window.btoa(`<svg width="10" height="10" viewBox="0 0 1 1" xmlns="http://www.w3.org/2000/svg">
               <rect x="0" y="0" width="1" height="1"/>
               </svg>`),
+            }),
           }),
-        }),
-      });
-      const renderer = layer.getRenderer();
-      const frameState =
-        /** @type {import("../../../../../src/ol/Map.js").FrameState} */ ({
-          pixelRatio: 1,
-          viewState: {
-            zoom: zoom,
-            resolution: resolution,
-            center: [0, 0],
-            rotation: 0,
-            projection: projection,
-          },
-          size: [2 * tileSize, 2 * tileSize],
-          extent: [-tileSize, -tileSize, tileSize, tileSize].map(
-            (n) => n * resolution,
-          ),
-          viewHints: [0, 0],
-          layerStatesArray: layer.getLayerStatesArray(),
-          layerIndex: 0,
-          wantedTiles: {},
-          usedTiles: {},
-          tileQueue: {isKeyQueued: () => true},
-          pixelToCoordinateTransform: createTransform(),
-          postRenderFunctions: [],
         });
+        const renderer = layer.getRenderer();
+        const frameState =
+          /** @type {import("../../../../../src/ol/Map.js").FrameState} */ ({
+            pixelRatio: 1,
+            viewState: {
+              zoom: zoom,
+              resolution: resolution,
+              center: [0, 0],
+              rotation: 0,
+              projection: projection,
+            },
+            size: [2 * tileSize, 2 * tileSize],
+            extent: [-tileSize, -tileSize, tileSize, tileSize].map(
+              (n) => n * resolution,
+            ),
+            viewHints: [0, 0],
+            layerStatesArray: layer.getLayerStatesArray(),
+            layerIndex: 0,
+            wantedTiles: {},
+            usedTiles: {},
+            tileQueue: {isKeyQueued: () => true},
+            pixelToCoordinateTransform: createTransform(),
+            postRenderFunctions: [],
+          });
 
-      renderer.renderFrame(frameState);
-      assert.strictEqual(renderer.ready, true);
-      const source = layer.getSource();
-      const wantedTiles = frameState.wantedTiles[getUid(source)];
-      assert.strictEqual(isEmpty(wantedTiles), false);
+        renderer.renderFrame(frameState);
+        assert.strictEqual(renderer.ready, true);
+        const source = layer.getSource();
+        const wantedTiles = frameState.wantedTiles[getUid(source)];
+        assert.strictEqual(isEmpty(wantedTiles), false);
 
-      // Tiles are loaded synchronously
-      renderer.tileCache_.forEach((tile) => tile.load());
+        // Tiles are loaded synchronously
+        renderer.tileCache_.forEach((tile) => tile.load());
 
-      renderer.renderFrame(frameState);
-      assert.strictEqual(renderer.ready, false);
+        renderer.renderFrame(frameState);
+        assert.strictEqual(renderer.ready, false);
 
-      layer
-        .getStyle()
-        .getImage()
-        .listenImageChange(function (evt) {
-          if (evt.target.getImageState() !== ImageState.LOADED) {
-            return;
-          }
-          try {
-            renderer.renderFrame(frameState);
-            assert.strictEqual(renderer.ready, true);
-            done();
-          } catch (e) {
-            done(e);
-          }
-        });
-    });
+        layer
+          .getStyle()
+          .getImage()
+          .listenImageChange(function (evt) {
+            if (evt.target.getImageState() !== ImageState.LOADED) {
+              return;
+            }
+            try {
+              renderer.renderFrame(frameState);
+              assert.strictEqual(renderer.ready, true);
+              resolve();
+            } catch (e) {
+              reject(e);
+            }
+          });
+      }));
   });
 });

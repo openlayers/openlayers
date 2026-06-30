@@ -12,17 +12,21 @@ describe('ol/source/WMTS', function () {
   describe('when creating options from capabilities', function () {
     const parser = new WMTSCapabilities();
     let capabilities, content;
-    before(function (done) {
-      afterLoadText('spec/ol/format/wmts/ogcsample.xml', function (xml) {
-        try {
-          content = xml;
-          capabilities = parser.read(xml);
-        } catch (e) {
-          done(e);
-        }
-        done();
-      });
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText('spec/ol/format/wmts/ogcsample.xml', function (xml) {
+            try {
+              content = xml;
+              capabilities = parser.read(xml);
+            } catch (e) {
+              reject(e);
+              return;
+            }
+            resolve();
+          });
+        }),
+    );
 
     it('returns null if the layer was not found in the capabilities', function () {
       const options = optionsFromCapabilities(capabilities, {
@@ -363,16 +367,20 @@ describe('ol/source/WMTS', function () {
   describe('when creating options from Esri capabilities', function () {
     const parser = new WMTSCapabilities();
     let capabilities;
-    before(function (done) {
-      afterLoadText('spec/ol/format/wmts/arcgis.xml', function (xml) {
-        try {
-          capabilities = parser.read(xml);
-        } catch (e) {
-          done(e);
-        }
-        done();
-      });
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText('spec/ol/format/wmts/arcgis.xml', function (xml) {
+            try {
+              capabilities = parser.read(xml);
+            } catch (e) {
+              reject(e);
+              return;
+            }
+            resolve();
+          });
+        }),
+    );
 
     it('can create KVP options from spec/ol/format/wmts/arcgis.xml', function () {
       const options = optionsFromCapabilities(capabilities, {
@@ -411,19 +419,23 @@ describe('ol/source/WMTS', function () {
   describe('when creating options from wgs84 capabilities', function () {
     const parser = new WMTSCapabilities();
     let capabilities;
-    before(function (done) {
-      afterLoadText(
-        'spec/ol/format/wmts/capabilities_wgs84.xml',
-        function (xml) {
-          try {
-            capabilities = parser.read(xml);
-          } catch (e) {
-            done(e);
-          }
-          done();
-        },
-      );
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText(
+            'spec/ol/format/wmts/capabilities_wgs84.xml',
+            function (xml) {
+              try {
+                capabilities = parser.read(xml);
+              } catch (e) {
+                reject(e);
+                return;
+              }
+              resolve();
+            },
+          );
+        }),
+    );
 
     it('returns correct bounding box', function () {
       const options = optionsFromCapabilities(capabilities, {
@@ -468,19 +480,23 @@ describe('ol/source/WMTS', function () {
   describe('when creating options from wgs84 capabilities with BoundingBox', function () {
     const parser = new WMTSCapabilities();
     let capabilities;
-    before(function (done) {
-      afterLoadText(
-        'spec/ol/format/wmts/capabilities_wgs84_with_boundingbox.xml',
-        function (xml) {
-          try {
-            capabilities = parser.read(xml);
-          } catch (e) {
-            done(e);
-          }
-          done();
-        },
-      );
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText(
+            'spec/ol/format/wmts/capabilities_wgs84_with_boundingbox.xml',
+            function (xml) {
+              try {
+                capabilities = parser.read(xml);
+              } catch (e) {
+                reject(e);
+                return;
+              }
+              resolve();
+            },
+          );
+        }),
+    );
 
     it('returns correct bounding box when the layer has BoundingBox', function () {
       const options = optionsFromCapabilities(capabilities, {
@@ -519,19 +535,23 @@ describe('ol/source/WMTS', function () {
   describe('when creating options from epsg:4326 capabilities with BoundingBox', function () {
     const parser = new WMTSCapabilities();
     let capabilities;
-    before(function (done) {
-      afterLoadText(
-        'spec/ol/format/wmts/capabilities_epsg4326_with_boundingbox.xml',
-        function (xml) {
-          try {
-            capabilities = parser.read(xml);
-          } catch (e) {
-            done(e);
-          }
-          done();
-        },
-      );
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText(
+            'spec/ol/format/wmts/capabilities_epsg4326_with_boundingbox.xml',
+            function (xml) {
+              try {
+                capabilities = parser.read(xml);
+              } catch (e) {
+                reject(e);
+                return;
+              }
+              resolve();
+            },
+          );
+        }),
+    );
 
     it('returns correct bounding box when the layer has BoundingBox', function () {
       const options = optionsFromCapabilities(capabilities, {
@@ -546,19 +566,23 @@ describe('ol/source/WMTS', function () {
   describe('when creating options from capabilities with layer BoundingBox', function () {
     const parser = new WMTSCapabilities();
     let capabilities;
-    before(function (done) {
-      afterLoadText(
-        'spec/ol/format/wmts/capabilities_with_layer_boundingbox.xml',
-        function (xml) {
-          try {
-            capabilities = parser.read(xml);
-          } catch (e) {
-            done(e);
-          }
-          done();
-        },
-      );
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText(
+            'spec/ol/format/wmts/capabilities_with_layer_boundingbox.xml',
+            function (xml) {
+              try {
+                capabilities = parser.read(xml);
+              } catch (e) {
+                reject(e);
+                return;
+              }
+              resolve();
+            },
+          );
+        }),
+    );
 
     it('returns correct projection bounding box when the layer has BoundingBox in the right projection', function () {
       const options = optionsFromCapabilities(capabilities, {
@@ -580,19 +604,23 @@ describe('ol/source/WMTS', function () {
   describe('set wrap x by bounding box if available', function () {
     const parser = new WMTSCapabilities();
     let capabilities;
-    before(function (done) {
-      afterLoadText(
-        'spec/ol/format/wmts/capabilities_wrapx.xml',
-        function (xml) {
-          try {
-            capabilities = parser.read(xml);
-          } catch (e) {
-            done(e);
-          }
-          done();
-        },
-      );
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText(
+            'spec/ol/format/wmts/capabilities_wrapx.xml',
+            function (xml) {
+              try {
+                capabilities = parser.read(xml);
+              } catch (e) {
+                reject(e);
+                return;
+              }
+              resolve();
+            },
+          );
+        }),
+    );
 
     it('sets wrapx when no bounding box is set', function () {
       const options = optionsFromCapabilities(capabilities, {
@@ -630,19 +658,23 @@ describe('ol/source/WMTS', function () {
   describe('when creating options from capabilities with TileMatrixSetLink', function () {
     const parser = new WMTSCapabilities();
     let capabilities;
-    before(function (done) {
-      afterLoadText(
-        'spec/ol/format/wmts/capabilities_with_tilematrixsetlink.xml',
-        function (xml) {
-          try {
-            capabilities = parser.read(xml);
-          } catch (e) {
-            done(e);
-          }
-          done();
-        },
-      );
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText(
+            'spec/ol/format/wmts/capabilities_with_tilematrixsetlink.xml',
+            function (xml) {
+              try {
+                capabilities = parser.read(xml);
+              } catch (e) {
+                reject(e);
+                return;
+              }
+              resolve();
+            },
+          );
+        }),
+    );
 
     it('returns correct bounding box for a layer', function () {
       const options = optionsFromCapabilities(capabilities, {

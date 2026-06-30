@@ -97,25 +97,27 @@ describe("ol.control.Control's target", function () {
 });
 
 describe("ol.control.Control's event target", function () {
-  it('is the Control when the Control uses the default target', function (done) {
-    const ctrl = new Control({element: document.createElement('div')});
-    ctrl.on('test-event', function (e) {
-      assert.strictEqual(e.target, ctrl);
-      done();
-    });
-    ctrl.dispatchEvent('test-event');
-    ctrl.dispose();
-  });
-  it('is the Control when the Control has a custom target', function (done) {
-    const ctrl = new Control({
-      element: document.createElement('div'),
-      target: document.createElement('div'),
-    });
-    ctrl.on('test-event', function (e) {
-      assert.strictEqual(e.target, ctrl);
-      done();
-    });
-    ctrl.dispatchEvent('test-event');
-    ctrl.dispose();
-  });
+  it('is the Control when the Control uses the default target', () =>
+    new Promise((resolve) => {
+      const ctrl = new Control({element: document.createElement('div')});
+      ctrl.on('test-event', function (e) {
+        assert.strictEqual(e.target, ctrl);
+        resolve();
+      });
+      ctrl.dispatchEvent('test-event');
+      ctrl.dispose();
+    }));
+  it('is the Control when the Control has a custom target', () =>
+    new Promise((resolve) => {
+      const ctrl = new Control({
+        element: document.createElement('div'),
+        target: document.createElement('div'),
+      });
+      ctrl.on('test-event', function (e) {
+        assert.strictEqual(e.target, ctrl);
+        resolve();
+      });
+      ctrl.dispatchEvent('test-event');
+      ctrl.dispose();
+    }));
 });

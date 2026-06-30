@@ -42,61 +42,62 @@ describe('ol.TileQueue', function () {
   describe('#loadMoreTiles()', function () {
     const noop = function () {};
 
-    it('works when tile queues share tiles', function (done) {
-      const q1 = new TileQueue(noop, noop);
-      const q2 = new TileQueue(noop, noop);
+    it('works when tile queues share tiles', () =>
+      new Promise((resolve) => {
+        const q1 = new TileQueue(noop, noop);
+        const q2 = new TileQueue(noop, noop);
 
-      const numTiles = 20;
-      const maxLoading = numTiles / 2;
+        const numTiles = 20;
+        const maxLoading = numTiles / 2;
 
-      let processedTiles = 0;
-      for (let i = 0; i < numTiles; ++i) {
-        const tile = createImageTile();
-        tile.addEventListener('change', function processed() {
-          const state = tile.getState();
-          if (state === TileState.LOADED || state === TileState.ERROR) {
-            tile.removeEventListener('change', processed);
-            ++processedTiles;
-          }
-          if (processedTiles === numTiles) {
-            setTimeout(finish, 0);
-          }
-        });
-        q1.enqueue([tile]);
-        q2.enqueue([tile]);
-      }
+        let processedTiles = 0;
+        for (let i = 0; i < numTiles; ++i) {
+          const tile = createImageTile();
+          tile.addEventListener('change', function processed() {
+            const state = tile.getState();
+            if (state === TileState.LOADED || state === TileState.ERROR) {
+              tile.removeEventListener('change', processed);
+              ++processedTiles;
+            }
+            if (processedTiles === numTiles) {
+              setTimeout(finish, 0);
+            }
+          });
+          q1.enqueue([tile]);
+          q2.enqueue([tile]);
+        }
 
-      assert.equal(q1.getCount(), numTiles);
-      assert.equal(q2.getCount(), numTiles);
+        assert.equal(q1.getCount(), numTiles);
+        assert.equal(q2.getCount(), numTiles);
 
-      assert.equal(q1.getTilesLoading(), 0);
-      assert.equal(q2.getTilesLoading(), 0);
-
-      // ask both to load
-      q1.loadMoreTiles(maxLoading, maxLoading);
-      q2.loadMoreTiles(maxLoading, maxLoading);
-
-      assert.equal(q1.getTilesLoading(), maxLoading);
-      assert.equal(q2.getTilesLoading(), maxLoading);
-
-      assert.equal(q1.getCount(), numTiles - maxLoading);
-      assert.equal(q2.getCount(), 0);
-
-      // let all tiles load
-      function finish() {
         assert.equal(q1.getTilesLoading(), 0);
         assert.equal(q2.getTilesLoading(), 0);
 
-        // ask both to load, this should clear q1
+        // ask both to load
         q1.loadMoreTiles(maxLoading, maxLoading);
         q2.loadMoreTiles(maxLoading, maxLoading);
 
-        assert.equal(q1.getCount(), 0);
+        assert.equal(q1.getTilesLoading(), maxLoading);
+        assert.equal(q2.getTilesLoading(), maxLoading);
+
+        assert.equal(q1.getCount(), numTiles - maxLoading);
         assert.equal(q2.getCount(), 0);
 
-        done();
-      }
-    });
+        // let all tiles load
+        function finish() {
+          assert.equal(q1.getTilesLoading(), 0);
+          assert.equal(q2.getTilesLoading(), 0);
+
+          // ask both to load, this should clear q1
+          q1.loadMoreTiles(maxLoading, maxLoading);
+          q2.loadMoreTiles(maxLoading, maxLoading);
+
+          assert.equal(q1.getCount(), 0);
+          assert.equal(q2.getCount(), 0);
+
+          resolve();
+        }
+      }));
   });
 
   describe('heapify', function () {
@@ -147,58 +148,60 @@ describe('ol.TileQueue', function () {
       assert.strictEqual(tile.hasListener('change'), false);
     });
 
-    it('error tiles - with retry', function (done) {
-      const tq = new TileQueue(noop, noop);
-      const tile = createImageTile(noop);
+    it('error tiles - with retry', () =>
+      new Promise((resolve, reject) => {
+        const tq = new TileQueue(noop, noop);
+        const tile = createImageTile(noop);
 
-      tq.enqueue([tile]);
-      tq.loadMoreTiles(Infinity, Infinity);
-      assert.deepEqual(tq.getTilesLoading(), 1);
-      assert.deepEqual(tile.getState(), 1);
+        tq.enqueue([tile]);
+        tq.loadMoreTiles(Infinity, Infinity);
+        assert.deepEqual(tq.getTilesLoading(), 1);
+        assert.deepEqual(tile.getState(), 1);
 
-      tile.setState(TileState.ERROR);
-      assert.deepEqual(tq.getTilesLoading(), 0);
-      assert.strictEqual(tile.hasListener('change'), true);
+        tile.setState(TileState.ERROR);
+        assert.deepEqual(tq.getTilesLoading(), 0);
+        assert.strictEqual(tile.hasListener('change'), true);
 
-      tile.setState(TileState.IDLE);
-      setTimeout(() => tile.setState(TileState.LOADING), 100);
-      setTimeout(() => tile.setState(TileState.LOADED), 200);
-      setTimeout(() => {
-        try {
-          assert.deepEqual(tq.getTilesLoading(), 0);
-          assert.strictEqual(tile.hasListener('change'), false);
-          done();
-        } catch (e) {
-          done(e);
-        }
-      }, 300);
-    });
+        tile.setState(TileState.IDLE);
+        setTimeout(() => tile.setState(TileState.LOADING), 100);
+        setTimeout(() => tile.setState(TileState.LOADED), 200);
+        setTimeout(() => {
+          try {
+            assert.deepEqual(tq.getTilesLoading(), 0);
+            assert.strictEqual(tile.hasListener('change'), false);
+            resolve();
+          } catch (e) {
+            reject(e);
+          }
+        }, 300);
+      }));
 
-    it('error tiles - without retry', function (done) {
-      const tq = new TileQueue(noop, noop);
-      const tile = createImageTile(noop);
-      const tileCache = new LRUCache();
-      tileCache.set(tile.getTileCoord().toString(), tile);
+    it('error tiles - without retry', () =>
+      new Promise((resolve, reject) => {
+        const tq = new TileQueue(noop, noop);
+        const tile = createImageTile(noop);
+        const tileCache = new LRUCache();
+        tileCache.set(tile.getTileCoord().toString(), tile);
 
-      tq.enqueue([tile]);
-      tq.loadMoreTiles(Infinity, Infinity);
-      assert.deepEqual(tq.getTilesLoading(), 1);
-      assert.deepEqual(tile.getState(), 1);
+        tq.enqueue([tile]);
+        tq.loadMoreTiles(Infinity, Infinity);
+        assert.deepEqual(tq.getTilesLoading(), 1);
+        assert.deepEqual(tile.getState(), 1);
 
-      tile.setState(TileState.ERROR);
-      assert.deepEqual(tq.getTilesLoading(), 0);
-      assert.strictEqual(tile.hasListener('change'), true);
+        tile.setState(TileState.ERROR);
+        assert.deepEqual(tq.getTilesLoading(), 0);
+        assert.strictEqual(tile.hasListener('change'), true);
 
-      setTimeout(() => tileCache.clear(), 100);
-      setTimeout(() => {
-        try {
-          assert.deepEqual(tq.getTilesLoading(), 0);
-          assert.strictEqual(tile.hasListener('change'), false);
-          done();
-        } catch (e) {
-          done(e);
-        }
-      }, 200);
-    });
+        setTimeout(() => tileCache.clear(), 100);
+        setTimeout(() => {
+          try {
+            assert.deepEqual(tq.getTilesLoading(), 0);
+            assert.strictEqual(tile.hasListener('change'), false);
+            resolve();
+          } catch (e) {
+            reject(e);
+          }
+        }, 200);
+      }));
   });
 });

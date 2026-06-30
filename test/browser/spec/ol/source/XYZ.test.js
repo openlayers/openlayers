@@ -208,56 +208,61 @@ describe('ol/source/XYZ', function () {
   describe('clear and refresh', function () {
     let map, source;
     let callCount = 0;
-    beforeEach(function (done) {
-      source = new XYZ({
-        url: 'spec/ol/data/osm-{z}-{x}-{y}.png',
-        tileLoadFunction: function (image, src) {
-          ++callCount;
-          image.getImage().src = src;
-        },
-      });
-      const target = document.createElement('div');
-      target.style.width = '100px';
-      target.style.height = '100px';
-      document.body.appendChild(target);
-      map = new Map({
-        target: target,
-        layers: [
-          new TileLayer({
-            source: source,
-          }),
-        ],
-        view: new View({
-          center: [0, 0],
-          zoom: 0,
+    beforeEach(
+      () =>
+        new Promise((resolve) => {
+          source = new XYZ({
+            url: 'spec/ol/data/osm-{z}-{x}-{y}.png',
+            tileLoadFunction: function (image, src) {
+              ++callCount;
+              image.getImage().src = src;
+            },
+          });
+          const target = document.createElement('div');
+          target.style.width = '100px';
+          target.style.height = '100px';
+          document.body.appendChild(target);
+          map = new Map({
+            target: target,
+            layers: [
+              new TileLayer({
+                source: source,
+              }),
+            ],
+            view: new View({
+              center: [0, 0],
+              zoom: 0,
+            }),
+          });
+          map.once('rendercomplete', function () {
+            callCount = 0;
+            resolve();
+          });
         }),
-      });
-      map.once('rendercomplete', function () {
-        callCount = 0;
-        done();
-      });
-    });
+    );
 
     afterEach(function () {
       disposeMap(map);
     });
 
-    it('#refresh() reloads from server', function (done) {
-      map.once('rendercomplete', function () {
-        assert.strictEqual(callCount, 1);
-        done();
-      });
-      source.refresh();
-    });
+    it('#refresh() reloads from server', () =>
+      new Promise((resolve) => {
+        map.once('rendercomplete', function () {
+          assert.strictEqual(callCount, 1);
+          resolve();
+        });
+        source.refresh();
+      }));
 
-    it('#clear() clears the tile cache', function (done) {
-      map.once('rendercomplete', function () {
-        done(new Error('should not re-render'));
-      });
-      source.clear();
-      setTimeout(function () {
-        done();
-      }, 1000);
-    });
+    it('#clear() clears the tile cache', () =>
+      new Promise((resolve, reject) => {
+        map.once('rendercomplete', function () {
+          reject(new Error('should not re-render'));
+        });
+        source.clear();
+        setTimeout(function () {
+          resolve();
+        }, 1000);
+      }));
   });
 });

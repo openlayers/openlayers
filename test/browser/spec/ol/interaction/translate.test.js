@@ -30,39 +30,42 @@ describe('ol.interaction.Translate', function () {
   const width = 360;
   const height = 180;
 
-  beforeEach(function (done) {
-    target = document.createElement('div');
-    const style = target.style;
-    style.position = 'absolute';
-    style.left = '-1000px';
-    style.top = '-1000px';
-    style.width = width + 'px';
-    style.height = height + 'px';
-    document.body.appendChild(target);
-    source = new VectorSource();
-    features = [
-      new Feature({
-        geometry: new Point([10, -20]),
+  beforeEach(
+    () =>
+      new Promise((resolve) => {
+        target = document.createElement('div');
+        const style = target.style;
+        style.position = 'absolute';
+        style.left = '-1000px';
+        style.top = '-1000px';
+        style.width = width + 'px';
+        style.height = height + 'px';
+        document.body.appendChild(target);
+        source = new VectorSource();
+        features = [
+          new Feature({
+            geometry: new Point([10, -20]),
+          }),
+          new Feature({
+            geometry: new Point([20, -30]),
+          }),
+        ];
+        source.addFeatures(features);
+        const layer = new VectorLayer({source: source});
+        map = new Map({
+          target: target,
+          layers: [layer],
+          view: new View({
+            projection: 'EPSG:4326',
+            center: [0, 0],
+            resolution: 1,
+          }),
+        });
+        map.once('postrender', function () {
+          resolve();
+        });
       }),
-      new Feature({
-        geometry: new Point([20, -30]),
-      }),
-    ];
-    source.addFeatures(features);
-    const layer = new VectorLayer({source: source});
-    map = new Map({
-      target: target,
-      layers: [layer],
-      view: new View({
-        projection: 'EPSG:4326',
-        center: [0, 0],
-        resolution: 1,
-      }),
-    });
-    map.once('postrender', function () {
-      done();
-    });
-  });
+  );
 
   afterEach(function () {
     disposeMap(map);
@@ -310,103 +313,105 @@ describe('ol.interaction.Translate', function () {
       map.addInteraction(translate);
     });
 
-    it('moves in view projection', function (done) {
-      const feature = new Feature(
-        new GeometryCollection([
-          new Circle([10, -10], 10),
-          new Polygon([
-            [
-              [30, 0],
-              [20, -20],
-              [40, -20],
-              [30, 0],
-            ],
+    it('moves in view projection', () =>
+      new Promise((resolve) => {
+        const feature = new Feature(
+          new GeometryCollection([
+            new Circle([10, -10], 10),
+            new Polygon([
+              [
+                [30, 0],
+                [20, -20],
+                [40, -20],
+                [30, 0],
+              ],
+            ]),
           ]),
-        ]),
-      );
-      source.addFeature(feature);
-      map.once('postrender', function () {
-        const events = trackEvents(feature, translate);
+        );
+        source.addFeature(feature);
+        map.once('postrender', function () {
+          const events = trackEvents(feature, translate);
 
-        simulateEvent('pointermove', 10, 20);
-        simulateEvent('pointerdown', 10, 20);
-        simulateEvent('pointerdrag', 50, -40);
-        simulateEvent('pointerup', 50, -40);
+          simulateEvent('pointermove', 10, 20);
+          simulateEvent('pointerdown', 10, 20);
+          simulateEvent('pointerdrag', 50, -40);
+          simulateEvent('pointerup', 50, -40);
 
-        const geometries = feature.getGeometry().getGeometriesArray();
-        assert.equal(geometries[0].getRadius(), 10);
-        assert.deepEqual(geometries[0].getCenter(), [50, 50]);
-        assert.deepEqual(geometries[1].getCoordinates(), [
-          [
-            [70, 60],
-            [60, 40],
-            [80, 40],
-            [70, 60],
-          ],
-        ]);
-
-        validateEvents(events, [feature]);
-        done();
-      });
-    });
-
-    it('moves in a non-parallel user projection', function (done) {
-      proj4.defs(
-        'EPSG:32637',
-        '+proj=utm +zone=37 +datum=WGS84 +units=m +no_defs +type=crs',
-      );
-      register(proj4);
-      const userProjection = 'EPSG:32637';
-      setUserProjection(userProjection);
-      const viewProjection = map.getView().getProjection();
-
-      const feature = new Feature(
-        new GeometryCollection([
-          new Circle([10, -10], 10),
-          new Polygon([
+          const geometries = feature.getGeometry().getGeometriesArray();
+          assert.equal(geometries[0].getRadius(), 10);
+          assert.deepEqual(geometries[0].getCenter(), [50, 50]);
+          assert.deepEqual(geometries[1].getCoordinates(), [
             [
-              [30, 0],
-              [20, -20],
-              [40, -20],
-              [30, 0],
+              [70, 60],
+              [60, 40],
+              [80, 40],
+              [70, 60],
             ],
-          ]),
-        ]).transform(viewProjection, userProjection),
-      );
-      source.addFeature(feature);
-      map.once('postrender', function () {
-        const events = trackEvents(feature, translate);
+          ]);
 
-        simulateEvent('pointermove', 10, 20);
-        simulateEvent('pointerdown', 10, 20);
-        simulateEvent('pointerdrag', 50, -40);
-        simulateEvent('pointerup', 50, -40);
+          validateEvents(events, [feature]);
+          resolve();
+        });
+      }));
 
-        const geometries = feature.getGeometry().getGeometriesArray();
-        const circle = geometries[0]
-          .clone()
-          .transform(userProjection, viewProjection);
-        assert.approximately(circle.getRadius(), 10, 1e-9);
-        const center = circle.getCenter();
-        assert.approximately(center[0], 50, 1e-9);
-        assert.approximately(center[1], 50, 1e-9);
-        const polygon = geometries[1]
-          .clone()
-          .transform(userProjection, viewProjection);
-        const coordinates = polygon.getCoordinates()[0];
-        assert.approximately(coordinates[0][0], 70, 1e-9);
-        assert.approximately(coordinates[0][1], 60, 1e-9);
-        assert.approximately(coordinates[1][0], 60, 1e-9);
-        assert.approximately(coordinates[1][1], 40, 1e-9);
-        assert.approximately(coordinates[2][0], 80, 1e-9);
-        assert.approximately(coordinates[2][1], 40, 1e-9);
-        assert.equal(coordinates[3][0], coordinates[0][0]);
-        assert.equal(coordinates[3][1], coordinates[0][1]);
+    it('moves in a non-parallel user projection', () =>
+      new Promise((resolve) => {
+        proj4.defs(
+          'EPSG:32637',
+          '+proj=utm +zone=37 +datum=WGS84 +units=m +no_defs +type=crs',
+        );
+        register(proj4);
+        const userProjection = 'EPSG:32637';
+        setUserProjection(userProjection);
+        const viewProjection = map.getView().getProjection();
 
-        validateEvents(events, [feature]);
-        done();
-      });
-    });
+        const feature = new Feature(
+          new GeometryCollection([
+            new Circle([10, -10], 10),
+            new Polygon([
+              [
+                [30, 0],
+                [20, -20],
+                [40, -20],
+                [30, 0],
+              ],
+            ]),
+          ]).transform(viewProjection, userProjection),
+        );
+        source.addFeature(feature);
+        map.once('postrender', function () {
+          const events = trackEvents(feature, translate);
+
+          simulateEvent('pointermove', 10, 20);
+          simulateEvent('pointerdown', 10, 20);
+          simulateEvent('pointerdrag', 50, -40);
+          simulateEvent('pointerup', 50, -40);
+
+          const geometries = feature.getGeometry().getGeometriesArray();
+          const circle = geometries[0]
+            .clone()
+            .transform(userProjection, viewProjection);
+          assert.approximately(circle.getRadius(), 10, 1e-9);
+          const center = circle.getCenter();
+          assert.approximately(center[0], 50, 1e-9);
+          assert.approximately(center[1], 50, 1e-9);
+          const polygon = geometries[1]
+            .clone()
+            .transform(userProjection, viewProjection);
+          const coordinates = polygon.getCoordinates()[0];
+          assert.approximately(coordinates[0][0], 70, 1e-9);
+          assert.approximately(coordinates[0][1], 60, 1e-9);
+          assert.approximately(coordinates[1][0], 60, 1e-9);
+          assert.approximately(coordinates[1][1], 40, 1e-9);
+          assert.approximately(coordinates[2][0], 80, 1e-9);
+          assert.approximately(coordinates[2][1], 40, 1e-9);
+          assert.equal(coordinates[3][0], coordinates[0][0]);
+          assert.equal(coordinates[3][1], coordinates[0][1]);
+
+          validateEvents(events, [feature]);
+          resolve();
+        });
+      }));
   });
 
   describe('changes css cursor', function () {

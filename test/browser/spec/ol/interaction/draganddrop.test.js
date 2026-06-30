@@ -125,240 +125,246 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function () {
       FileReader = OrigFileReader;
     });
 
-    it('reads dropped files as text', function (done) {
-      interaction.on('addfeatures', function (evt) {
-        assert.strictEqual(evt.features.length, 1);
-        assert.deepEqual(
-          evt.features[0].getGeometry().getCoordinates(),
-          transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857'),
-        );
-        assert.strictEqual(mockReadAsText, true);
-        assert.strictEqual(mockReadAsArrayBuffer, false);
-        done();
-      });
-      interaction.setMap(map);
-      const event = new Event();
-      event.dataTransfer = {};
-      event.type = 'dragenter';
-      viewport.dispatchEvent(event);
-      event.type = 'dragover';
-      viewport.dispatchEvent(event);
-      event.type = 'drop';
-      event.dataTransfer.files = {
-        length: 1,
-        item: function () {
-          return JSON.stringify({
-            type: 'FeatureCollection',
-            features: [
-              {
-                type: 'Feature',
-                id: '1',
-                'geometry': {
-                  'type': 'Point',
-                  'coordinates': [102.0, 0.5],
+    it('reads dropped files as text', () =>
+      new Promise((resolve) => {
+        interaction.on('addfeatures', function (evt) {
+          assert.strictEqual(evt.features.length, 1);
+          assert.deepEqual(
+            evt.features[0].getGeometry().getCoordinates(),
+            transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857'),
+          );
+          assert.strictEqual(mockReadAsText, true);
+          assert.strictEqual(mockReadAsArrayBuffer, false);
+          resolve();
+        });
+        interaction.setMap(map);
+        const event = new Event();
+        event.dataTransfer = {};
+        event.type = 'dragenter';
+        viewport.dispatchEvent(event);
+        event.type = 'dragover';
+        viewport.dispatchEvent(event);
+        event.type = 'drop';
+        event.dataTransfer.files = {
+          length: 1,
+          item: function () {
+            return JSON.stringify({
+              type: 'FeatureCollection',
+              features: [
+                {
+                  type: 'Feature',
+                  id: '1',
+                  'geometry': {
+                    'type': 'Point',
+                    'coordinates': [102.0, 0.5],
+                  },
                 },
-              },
-            ],
-          });
-        },
-      };
-      viewport.dispatchEvent(event);
-      assert.strictEqual(event.dataTransfer.dropEffect, 'copy');
-      assert.strictEqual(event.propagationStopped, true);
-    });
+              ],
+            });
+          },
+        };
+        viewport.dispatchEvent(event);
+        assert.strictEqual(event.dataTransfer.dropEffect, 'copy');
+        assert.strictEqual(event.propagationStopped, true);
+      }));
 
-    it('works with user projection', function (done) {
-      interaction.on('addfeatures', function (evt) {
-        assert.strictEqual(evt.features.length, 1);
-        assert.deepEqual(
-          evt.features[0].getGeometry().getCoordinates(),
-          [102.0, 0.5],
-        );
-        assert.strictEqual(mockReadAsText, true);
-        assert.strictEqual(mockReadAsArrayBuffer, false);
-        clearUserProjection();
-        done();
-      });
-      useGeographic();
-      interaction.setMap(map);
-      const event = new Event();
-      event.dataTransfer = {};
-      event.type = 'dragenter';
-      viewport.dispatchEvent(event);
-      event.type = 'dragover';
-      viewport.dispatchEvent(event);
-      event.type = 'drop';
-      event.dataTransfer.files = {
-        length: 1,
-        item: function () {
-          return JSON.stringify({
-            type: 'FeatureCollection',
-            features: [
-              {
-                type: 'Feature',
-                id: '1',
-                'geometry': {
-                  'type': 'Point',
-                  'coordinates': [102.0, 0.5],
+    it('works with user projection', () =>
+      new Promise((resolve) => {
+        interaction.on('addfeatures', function (evt) {
+          assert.strictEqual(evt.features.length, 1);
+          assert.deepEqual(
+            evt.features[0].getGeometry().getCoordinates(),
+            [102.0, 0.5],
+          );
+          assert.strictEqual(mockReadAsText, true);
+          assert.strictEqual(mockReadAsArrayBuffer, false);
+          clearUserProjection();
+          resolve();
+        });
+        useGeographic();
+        interaction.setMap(map);
+        const event = new Event();
+        event.dataTransfer = {};
+        event.type = 'dragenter';
+        viewport.dispatchEvent(event);
+        event.type = 'dragover';
+        viewport.dispatchEvent(event);
+        event.type = 'drop';
+        event.dataTransfer.files = {
+          length: 1,
+          item: function () {
+            return JSON.stringify({
+              type: 'FeatureCollection',
+              features: [
+                {
+                  type: 'Feature',
+                  id: '1',
+                  'geometry': {
+                    'type': 'Point',
+                    'coordinates': [102.0, 0.5],
+                  },
                 },
-              },
-            ],
-          });
-        },
-      };
-      viewport.dispatchEvent(event);
-      assert.strictEqual(event.dataTransfer.dropEffect, 'copy');
-      assert.strictEqual(event.propagationStopped, true);
-    });
+              ],
+            });
+          },
+        };
+        viewport.dispatchEvent(event);
+        assert.strictEqual(event.dataTransfer.dropEffect, 'copy');
+        assert.strictEqual(event.propagationStopped, true);
+      }));
 
-    it('reads dropped files as arraybuffer', function (done) {
-      const drop = new DragAndDrop({
-        formatConstructors: [GeoJSON, MVT],
-      });
-      drop.setMap(map);
+    it('reads dropped files as arraybuffer', () =>
+      new Promise((resolve) => {
+        const drop = new DragAndDrop({
+          formatConstructors: [GeoJSON, MVT],
+        });
+        drop.setMap(map);
 
-      drop.on('addfeatures', function (evt) {
-        assert.strictEqual(evt.features.length, 1);
-        assert.strictEqual(mockReadAsText, false);
-        assert.strictEqual(mockReadAsArrayBuffer, true);
-        done();
-      });
+        drop.on('addfeatures', function (evt) {
+          assert.strictEqual(evt.features.length, 1);
+          assert.strictEqual(mockReadAsText, false);
+          assert.strictEqual(mockReadAsArrayBuffer, true);
+          resolve();
+        });
 
-      const event = new Event();
-      event.dataTransfer = {};
-      event.type = 'dragenter';
-      viewport.dispatchEvent(event);
-      event.type = 'dragover';
-      viewport.dispatchEvent(event);
-      event.type = 'drop';
-      event.dataTransfer.files = {
-        length: 1,
-        item: function () {
-          return JSON.stringify({
-            type: 'FeatureCollection',
-            features: [{type: 'Feature', id: '1'}],
-          });
-        },
-      };
-      viewport.dispatchEvent(event);
-      assert.strictEqual(event.dataTransfer.dropEffect, 'copy');
-      assert.strictEqual(event.propagationStopped, true);
-    });
+        const event = new Event();
+        event.dataTransfer = {};
+        event.type = 'dragenter';
+        viewport.dispatchEvent(event);
+        event.type = 'dragover';
+        viewport.dispatchEvent(event);
+        event.type = 'drop';
+        event.dataTransfer.files = {
+          length: 1,
+          item: function () {
+            return JSON.stringify({
+              type: 'FeatureCollection',
+              features: [{type: 'Feature', id: '1'}],
+            });
+          },
+        };
+        viewport.dispatchEvent(event);
+        assert.strictEqual(event.dataTransfer.dropEffect, 'copy');
+        assert.strictEqual(event.propagationStopped, true);
+      }));
 
-    it('reads using constructed formats', function (done) {
-      const drop = new DragAndDrop({
-        formatConstructors: [new GeoJSON()],
-      });
-      drop.setMap(map);
+    it('reads using constructed formats', () =>
+      new Promise((resolve) => {
+        const drop = new DragAndDrop({
+          formatConstructors: [new GeoJSON()],
+        });
+        drop.setMap(map);
 
-      drop.on('addfeatures', function (evt) {
-        assert.strictEqual(evt.features.length, 1);
-        assert.strictEqual(mockReadAsText, true);
-        assert.strictEqual(mockReadAsArrayBuffer, false);
-        done();
-      });
+        drop.on('addfeatures', function (evt) {
+          assert.strictEqual(evt.features.length, 1);
+          assert.strictEqual(mockReadAsText, true);
+          assert.strictEqual(mockReadAsArrayBuffer, false);
+          resolve();
+        });
 
-      const event = new Event();
-      event.dataTransfer = {};
-      event.type = 'dragenter';
-      viewport.dispatchEvent(event);
-      event.type = 'dragover';
-      viewport.dispatchEvent(event);
-      event.type = 'drop';
-      event.dataTransfer.files = {
-        length: 1,
-        item: function () {
-          return JSON.stringify({
-            type: 'FeatureCollection',
-            features: [{type: 'Feature', id: '1'}],
-          });
-        },
-      };
-      viewport.dispatchEvent(event);
-      assert.strictEqual(event.dataTransfer.dropEffect, 'copy');
-      assert.strictEqual(event.propagationStopped, true);
-    });
+        const event = new Event();
+        event.dataTransfer = {};
+        event.type = 'dragenter';
+        viewport.dispatchEvent(event);
+        event.type = 'dragover';
+        viewport.dispatchEvent(event);
+        event.type = 'drop';
+        event.dataTransfer.files = {
+          length: 1,
+          item: function () {
+            return JSON.stringify({
+              type: 'FeatureCollection',
+              features: [{type: 'Feature', id: '1'}],
+            });
+          },
+        };
+        viewport.dispatchEvent(event);
+        assert.strictEqual(event.dataTransfer.dropEffect, 'copy');
+        assert.strictEqual(event.propagationStopped, true);
+      }));
 
-    it('reads using arraybuffer formats', function (done) {
-      class binaryGeoJSON extends GeoJSON {
-        constructor(options) {
-          super(options);
+    it('reads using arraybuffer formats', () =>
+      new Promise((resolve) => {
+        class binaryGeoJSON extends GeoJSON {
+          constructor(options) {
+            super(options);
+          }
+          getType() {
+            return 'arraybuffer';
+          }
+          readFeatures(source, options) {
+            const data = new TextDecoder().decode(source);
+            return super.readFeatures(data, options);
+          }
         }
-        getType() {
-          return 'arraybuffer';
-        }
-        readFeatures(source, options) {
-          const data = new TextDecoder().decode(source);
-          return super.readFeatures(data, options);
-        }
-      }
 
-      const drop = new DragAndDrop({
-        formatConstructors: [binaryGeoJSON],
-      });
-      drop.setMap(map);
+        const drop = new DragAndDrop({
+          formatConstructors: [binaryGeoJSON],
+        });
+        drop.setMap(map);
 
-      drop.on('addfeatures', function (evt) {
-        assert.strictEqual(evt.features.length, 1);
-        assert.strictEqual(mockReadAsText, false);
-        assert.strictEqual(mockReadAsArrayBuffer, true);
-        done();
-      });
+        drop.on('addfeatures', function (evt) {
+          assert.strictEqual(evt.features.length, 1);
+          assert.strictEqual(mockReadAsText, false);
+          assert.strictEqual(mockReadAsArrayBuffer, true);
+          resolve();
+        });
 
-      const event = new Event();
-      event.dataTransfer = {};
-      event.type = 'dragenter';
-      viewport.dispatchEvent(event);
-      event.type = 'dragover';
-      viewport.dispatchEvent(event);
-      event.type = 'drop';
-      event.dataTransfer.files = {
-        length: 1,
-        item: function () {
-          return JSON.stringify({
-            type: 'FeatureCollection',
-            features: [{type: 'Feature', id: '1'}],
-          });
-        },
-      };
-      viewport.dispatchEvent(event);
-      assert.strictEqual(event.dataTransfer.dropEffect, 'copy');
-      assert.strictEqual(event.propagationStopped, true);
-    });
+        const event = new Event();
+        event.dataTransfer = {};
+        event.type = 'dragenter';
+        viewport.dispatchEvent(event);
+        event.type = 'dragover';
+        viewport.dispatchEvent(event);
+        event.type = 'drop';
+        event.dataTransfer.files = {
+          length: 1,
+          item: function () {
+            return JSON.stringify({
+              type: 'FeatureCollection',
+              features: [{type: 'Feature', id: '1'}],
+            });
+          },
+        };
+        viewport.dispatchEvent(event);
+        assert.strictEqual(event.dataTransfer.dropEffect, 'copy');
+        assert.strictEqual(event.propagationStopped, true);
+      }));
 
-    it('adds dropped features to a source', function (done) {
-      const source = new VectorSource();
-      const drop = new DragAndDrop({
-        formatConstructors: [GeoJSON],
-        source: source,
-      });
-      drop.setMap(map);
+    it('adds dropped features to a source', () =>
+      new Promise((resolve) => {
+        const source = new VectorSource();
+        const drop = new DragAndDrop({
+          formatConstructors: [GeoJSON],
+          source: source,
+        });
+        drop.setMap(map);
 
-      drop.on('addfeatures', function (evt) {
-        const features = source.getFeatures();
-        assert.strictEqual(features.length, 1);
-        done();
-      });
+        drop.on('addfeatures', function (evt) {
+          const features = source.getFeatures();
+          assert.strictEqual(features.length, 1);
+          resolve();
+        });
 
-      const event = new Event();
-      event.dataTransfer = {};
-      event.type = 'dragenter';
-      viewport.dispatchEvent(event);
-      event.type = 'dragover';
-      viewport.dispatchEvent(event);
-      event.type = 'drop';
-      event.dataTransfer.files = {
-        length: 1,
-        item: function () {
-          return JSON.stringify({
-            type: 'FeatureCollection',
-            features: [{type: 'Feature', id: '1'}],
-          });
-        },
-      };
-      viewport.dispatchEvent(event);
-      assert.strictEqual(event.dataTransfer.dropEffect, 'copy');
-      assert.strictEqual(event.propagationStopped, true);
-    });
+        const event = new Event();
+        event.dataTransfer = {};
+        event.type = 'dragenter';
+        viewport.dispatchEvent(event);
+        event.type = 'dragover';
+        viewport.dispatchEvent(event);
+        event.type = 'drop';
+        event.dataTransfer.files = {
+          length: 1,
+          item: function () {
+            return JSON.stringify({
+              type: 'FeatureCollection',
+              features: [{type: 'Feature', id: '1'}],
+            });
+          },
+        };
+        viewport.dispatchEvent(event);
+        assert.strictEqual(event.dataTransfer.dropEffect, 'copy');
+        assert.strictEqual(event.propagationStopped, true);
+      }));
   });
 });
