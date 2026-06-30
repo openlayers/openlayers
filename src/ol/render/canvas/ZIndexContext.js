@@ -27,6 +27,14 @@ class ZIndexContext {
     this.offset_ = 0;
 
     /**
+     * Name of the method last accessed on the proxy, pushed together with its
+     * arguments when the method is actually called.
+     * @private
+     * @type {string|symbol}
+     */
+    this.pendingMethod_;
+
+    /**
      * @private
      * @type {ZIndexContextProxy}
      */
@@ -37,12 +45,8 @@ class ZIndexContext {
             // we only accept calling functions on the proxy, not accessing properties
             return undefined;
           }
-          /**
-           * @param {...*} args Arguments to function with name in property
-           */
-          return (...args) => {
-            this.push_(property, args);
-          };
+          this.pendingMethod_ = property;
+          return this.pushMethodArgs_;
         },
         set: (target, property, value) => {
           this.push_(property, value);
@@ -64,6 +68,16 @@ class ZIndexContext {
     }
     instructions[index].push(...args);
   }
+
+  /**
+   * Pushes the method name captured at access time together with the arguments
+   * passed at call time. Reused across all proxied method calls.
+   * @param {...*} args Args.
+   * @private
+   */
+  pushMethodArgs_ = (...args) => {
+    this.push_(this.pendingMethod_, args);
+  };
 
   /**
    * Push a function that renders to the context directly.
