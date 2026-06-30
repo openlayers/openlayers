@@ -7,30 +7,37 @@ import {defaultImageLoadFunction} from '../../../../src/ol/source/Image.js';
 
 describe('ol.ImageTile', function () {
   describe('#load()', function () {
-    it('can load idle tile', function (done) {
-      const tileCoord = [0, 0, 0];
-      const state = TileState.IDLE;
-      const src = 'spec/ol/data/osm-0-0-0.png';
-      const tileLoadFunction = defaultImageLoadFunction;
-      const tile = new ImageTile(tileCoord, state, src, null, tileLoadFunction);
+    it('can load idle tile', () =>
+      new Promise((resolve) => {
+        const tileCoord = [0, 0, 0];
+        const state = TileState.IDLE;
+        const src = 'spec/ol/data/osm-0-0-0.png';
+        const tileLoadFunction = defaultImageLoadFunction;
+        const tile = new ImageTile(
+          tileCoord,
+          state,
+          src,
+          null,
+          tileLoadFunction,
+        );
 
-      let previousState = tile.getState();
+        let previousState = tile.getState();
 
-      listen(tile, EventType.CHANGE, function (event) {
-        const state = tile.getState();
-        if (previousState == TileState.IDLE) {
-          assert.strictEqual(state, TileState.LOADING);
-        } else if (previousState == TileState.LOADING) {
-          assert.strictEqual(state, TileState.LOADED);
-          done();
-        } else {
-          assert.fail();
-        }
-        previousState = state;
-      });
+        listen(tile, EventType.CHANGE, function (event) {
+          const state = tile.getState();
+          if (previousState == TileState.IDLE) {
+            assert.strictEqual(state, TileState.LOADING);
+          } else if (previousState == TileState.LOADING) {
+            assert.strictEqual(state, TileState.LOADED);
+            resolve();
+          } else {
+            assert.fail();
+          }
+          previousState = state;
+        });
 
-      tile.load();
-    });
+        tile.load();
+      }));
 
     it('can load tile with referrerPolicy', () => {
       const tileCoord = [0, 0, 0];
@@ -41,51 +48,65 @@ describe('ol.ImageTile', function () {
       assert.strictEqual(tile.getImage().referrerPolicy, referrerPolicy);
     });
 
-    it('can load error tile', function (done) {
-      const tileCoord = [0, 0, 0];
-      const state = TileState.ERROR;
-      const src = 'spec/ol/data/osm-0-0-0.png';
-      const tileLoadFunction = defaultImageLoadFunction;
-      const tile = new ImageTile(tileCoord, state, src, null, tileLoadFunction);
+    it('can load error tile', () =>
+      new Promise((resolve) => {
+        const tileCoord = [0, 0, 0];
+        const state = TileState.ERROR;
+        const src = 'spec/ol/data/osm-0-0-0.png';
+        const tileLoadFunction = defaultImageLoadFunction;
+        const tile = new ImageTile(
+          tileCoord,
+          state,
+          src,
+          null,
+          tileLoadFunction,
+        );
 
-      let previousState = tile.getState();
+        let previousState = tile.getState();
 
-      listen(tile, EventType.CHANGE, function (event) {
-        const state = tile.getState();
-        if (previousState == TileState.ERROR) {
-          assert.strictEqual(state, TileState.LOADING);
-        } else if (previousState == TileState.LOADING) {
-          assert.strictEqual(state, TileState.LOADED);
-          done();
-        } else {
-          assert.fail();
-        }
-        previousState = state;
-      });
+        listen(tile, EventType.CHANGE, function (event) {
+          const state = tile.getState();
+          if (previousState == TileState.ERROR) {
+            assert.strictEqual(state, TileState.LOADING);
+          } else if (previousState == TileState.LOADING) {
+            assert.strictEqual(state, TileState.LOADED);
+            resolve();
+          } else {
+            assert.fail();
+          }
+          previousState = state;
+        });
 
-      tile.load();
-    });
+        tile.load();
+      }));
 
-    it('loads an empty image on error ', function (done) {
-      const tileCoord = [0, 0, 0];
-      const state = TileState.IDLE;
-      const src = 'spec/ol/data/osm-0-0-99.png';
-      const tileLoadFunction = defaultImageLoadFunction;
-      const tile = new ImageTile(tileCoord, state, src, null, tileLoadFunction);
+    it('loads an empty image on error ', () =>
+      new Promise((resolve) => {
+        const tileCoord = [0, 0, 0];
+        const state = TileState.IDLE;
+        const src = 'spec/ol/data/osm-0-0-99.png';
+        const tileLoadFunction = defaultImageLoadFunction;
+        const tile = new ImageTile(
+          tileCoord,
+          state,
+          src,
+          null,
+          tileLoadFunction,
+        );
 
-      const key = listen(tile, EventType.CHANGE, function (event) {
-        const state = tile.getState();
-        if (state == TileState.ERROR) {
-          assert.strictEqual(state, TileState.ERROR);
-          assert.instanceOf(tile.image_, HTMLCanvasElement);
-          unlistenByKey(key);
-          tile.load();
-          assert.instanceOf(tile.image_, HTMLImageElement);
-          done();
-        }
-      });
+        const key = listen(tile, EventType.CHANGE, function (event) {
+          const state = tile.getState();
+          if (state == TileState.ERROR) {
+            assert.strictEqual(state, TileState.ERROR);
+            assert.instanceOf(tile.image_, HTMLCanvasElement);
+            unlistenByKey(key);
+            tile.load();
+            assert.instanceOf(tile.image_, HTMLImageElement);
+            resolve();
+          }
+        });
 
-      tile.load();
-    });
+        tile.load();
+      }));
   });
 });

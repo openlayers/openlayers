@@ -9,45 +9,48 @@ describe('ol/layer/Image', () => {
   describe('getData()', () => {
     let map, target, layer;
 
-    beforeEach((done) => {
-      const projection = new Projection({
-        code: 'custom-image',
-        units: 'pixels',
-        extent: [0, 0, 200, 200],
-      });
+    beforeEach(
+      () =>
+        new Promise((resolve) => {
+          const projection = new Projection({
+            code: 'custom-image',
+            units: 'pixels',
+            extent: [0, 0, 200, 200],
+          });
 
-      target = document.createElement('div');
-      target.style.width = '100px';
-      target.style.height = '100px';
-      document.body.appendChild(target);
+          target = document.createElement('div');
+          target.style.width = '100px';
+          target.style.height = '100px';
+          document.body.appendChild(target);
 
-      const imageExtent = [0, 0, 20, 20];
-      const source = new Static({
-        url: 'spec/ol/data/dot.png',
-        projection: projection,
-        imageExtent: imageExtent,
-      });
+          const imageExtent = [0, 0, 20, 20];
+          const source = new Static({
+            url: 'spec/ol/data/dot.png',
+            projection: projection,
+            imageExtent: imageExtent,
+          });
 
-      layer = new ImageLayer({
-        source: source,
-        extent: imageExtent,
-      });
+          layer = new ImageLayer({
+            source: source,
+            extent: imageExtent,
+          });
 
-      map = new Map({
-        pixelRatio: 1,
-        target: target,
-        layers: [layer],
-        view: new View({
-          projection: projection,
-          center: [10, 10],
-          zoom: 1,
-          maxZoom: 8,
+          map = new Map({
+            pixelRatio: 1,
+            target: target,
+            layers: [layer],
+            view: new View({
+              projection: projection,
+              center: [10, 10],
+              zoom: 1,
+              maxZoom: 8,
+            }),
+          });
+          map.once('rendercomplete', () => {
+            resolve();
+          });
         }),
-      });
-      map.once('rendercomplete', () => {
-        done();
-      });
-    });
+    );
 
     afterEach(() => {
       disposeMap(map);

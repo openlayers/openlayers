@@ -20,10 +20,13 @@ const types = {
   '.xml': 'application/xml',
   '.gml': 'application/xml',
   '.kml': 'application/vnd.google-earth.kml+xml',
+  '.wkt': 'text/plain',
   '.txt': 'text/plain',
   '.png': 'image/png',
   '.jpg': 'image/jpeg',
   '.gif': 'image/gif',
+  '.tif': 'image/tiff',
+  '.woff2': 'font/woff2',
   '.mvt': 'application/octet-stream',
   '.pbf': 'application/octet-stream',
 };

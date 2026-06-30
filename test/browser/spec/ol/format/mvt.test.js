@@ -8,16 +8,19 @@ import RenderFeature from '../../../../../src/ol/render/Feature.js';
 
 where('ArrayBuffer.isView').describe('ol.format.MVT', function () {
   let data;
-  beforeEach(function (done) {
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', 'spec/ol/data/14-8938-5680.vector.pbf');
-    xhr.responseType = 'arraybuffer';
-    xhr.onload = function () {
-      data = xhr.response;
-      done();
-    };
-    xhr.send();
-  });
+  beforeEach(
+    () =>
+      new Promise((resolve) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', 'spec/ol/data/14-8938-5680.vector.pbf');
+        xhr.responseType = 'arraybuffer';
+        xhr.onload = function () {
+          data = xhr.response;
+          resolve();
+        };
+        xhr.send();
+      }),
+  );
 
   describe('#readFeatures', function () {
     const options = {

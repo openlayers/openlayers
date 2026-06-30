@@ -2368,57 +2368,60 @@ describe('ol.format.KML', function () {
           assert.strictEqual(style.getZIndex(), undefined);
         });
 
-        it("can read a feature's IconStyle, load the image and reset the scale", function (done) {
-          format = new KML({
-            iconUrlFunction: function (href) {
-              return href.replace('http://foo/', 'spec/ol/data/');
-            },
-          });
-          const text =
-            '<kml xmlns="http://earth.google.com/kml/2.2">' +
-            '  <Placemark>' +
-            '    <Style>' +
-            '      <IconStyle>' +
-            '        <Icon>' +
-            '          <href>http://foo/dot.png</href>' +
-            '        </Icon>' +
-            '      </IconStyle>' +
-            '    </Style>' +
-            '  </Placemark>' +
-            '</kml>';
-          const fs = format.readFeatures(text);
-          assert.lengthOf(fs, 1);
-          const f = fs[0];
-          assert.instanceOf(f, Feature);
-          const styleFunction = f.getStyleFunction();
-          assert.notEqual(styleFunction, undefined);
-          const styleArray = /** @type {Array<Style>} */ (styleFunction(f, 0));
-          assert.instanceOf(styleArray, Array);
-          assert.lengthOf(styleArray, 1);
-          const style = styleArray[0];
-          assert.instanceOf(style, Style);
-          assert.strictEqual(style.getFill(), getDefaultFillStyle());
-          assert.strictEqual(style.getStroke(), getDefaultStrokeStyle());
-          const imageStyle = style.getImage();
-          assert.instanceOf(imageStyle, Icon);
-          assert.deepEqual(imageStyle.getSrc(), 'spec/ol/data/dot.png');
-          assert.strictEqual(imageStyle.getAnchor(), null);
-          assert.strictEqual(imageStyle.getOrigin(), null);
-          assert.deepEqual(imageStyle.getRotation(), 0);
-          assert.strictEqual(imageStyle.getSize(), null);
-          assert.strictEqual(imageStyle.getScale(), 1);
-          assert.deepEqual(imageStyle.getImage().crossOrigin, 'anonymous');
-          assert.strictEqual(style.getText(), getDefaultTextStyle());
-          assert.strictEqual(style.getZIndex(), undefined);
+        it("can read a feature's IconStyle, load the image and reset the scale", () =>
+          new Promise((resolve) => {
+            format = new KML({
+              iconUrlFunction: function (href) {
+                return href.replace('http://foo/', 'spec/ol/data/');
+              },
+            });
+            const text =
+              '<kml xmlns="http://earth.google.com/kml/2.2">' +
+              '  <Placemark>' +
+              '    <Style>' +
+              '      <IconStyle>' +
+              '        <Icon>' +
+              '          <href>http://foo/dot.png</href>' +
+              '        </Icon>' +
+              '      </IconStyle>' +
+              '    </Style>' +
+              '  </Placemark>' +
+              '</kml>';
+            const fs = format.readFeatures(text);
+            assert.lengthOf(fs, 1);
+            const f = fs[0];
+            assert.instanceOf(f, Feature);
+            const styleFunction = f.getStyleFunction();
+            assert.notEqual(styleFunction, undefined);
+            const styleArray = /** @type {Array<Style>} */ (
+              styleFunction(f, 0)
+            );
+            assert.instanceOf(styleArray, Array);
+            assert.lengthOf(styleArray, 1);
+            const style = styleArray[0];
+            assert.instanceOf(style, Style);
+            assert.strictEqual(style.getFill(), getDefaultFillStyle());
+            assert.strictEqual(style.getStroke(), getDefaultStrokeStyle());
+            const imageStyle = style.getImage();
+            assert.instanceOf(imageStyle, Icon);
+            assert.deepEqual(imageStyle.getSrc(), 'spec/ol/data/dot.png');
+            assert.strictEqual(imageStyle.getAnchor(), null);
+            assert.strictEqual(imageStyle.getOrigin(), null);
+            assert.deepEqual(imageStyle.getRotation(), 0);
+            assert.strictEqual(imageStyle.getSize(), null);
+            assert.strictEqual(imageStyle.getScale(), 1);
+            assert.deepEqual(imageStyle.getImage().crossOrigin, 'anonymous');
+            assert.strictEqual(style.getText(), getDefaultTextStyle());
+            assert.strictEqual(style.getZIndex(), undefined);
 
-          imageStyle.listenImageChange(function (evt) {
-            if (imageStyle.getImageState() === ImageState.LOADED) {
-              assert.deepEqual(imageStyle.getSize(), [20, 20]);
-              assert.strictEqual(imageStyle.getScale(), 1.6);
-              done();
-            }
-          });
-        });
+            imageStyle.listenImageChange(function (evt) {
+              if (imageStyle.getImageState() === ImageState.LOADED) {
+                assert.deepEqual(imageStyle.getSize(), [20, 20]);
+                assert.strictEqual(imageStyle.getScale(), 1.6);
+                resolve();
+              }
+            });
+          }));
 
         it("can read a IconStyle's hotspot", function () {
           const text =
@@ -4377,16 +4380,20 @@ describe('ol.format.KML', function () {
 
     describe('when parsing states.kml', function () {
       let features;
-      before(function (done) {
-        afterLoadText('spec/ol/format/kml/states.kml', function (xml) {
-          try {
-            features = format.readFeatures(xml);
-          } catch (e) {
-            done(e);
-          }
-          done();
-        });
-      });
+      beforeAll(
+        () =>
+          new Promise((resolve, reject) => {
+            afterLoadText('spec/ol/format/kml/states.kml', function (xml) {
+              try {
+                features = format.readFeatures(xml);
+              } catch (e) {
+                reject(e);
+                return;
+              }
+              resolve();
+            });
+          }),
+      );
 
       it('creates 50 features', function () {
         assert.lengthOf(features, 50);
@@ -4472,16 +4479,20 @@ describe('ol.format.KML', function () {
 
     describe('#JSONExport', function () {
       let features;
-      before(function (done) {
-        afterLoadText('spec/ol/format/kml/style.kml', function (xml) {
-          try {
-            features = format.readFeatures(xml);
-          } catch (e) {
-            done(e);
-          }
-          done();
-        });
-      });
+      beforeAll(
+        () =>
+          new Promise((resolve, reject) => {
+            afterLoadText('spec/ol/format/kml/style.kml', function (xml) {
+              try {
+                features = format.readFeatures(xml);
+              } catch (e) {
+                reject(e);
+                return;
+              }
+              resolve();
+            });
+          }),
+      );
 
       it('feature must not have a properties property', function () {
         const geojsonFormat = new GeoJSON();
@@ -4593,16 +4604,23 @@ describe('ol.format.KML', function () {
 
     describe('#readNetworkLinksFile', function () {
       let nl;
-      before(function (done) {
-        afterLoadText('spec/ol/format/kml/networklinks.kml', function (xml) {
-          try {
-            nl = format.readNetworkLinks(xml);
-          } catch (e) {
-            done(e);
-          }
-          done();
-        });
-      });
+      beforeAll(
+        () =>
+          new Promise((resolve, reject) => {
+            afterLoadText(
+              'spec/ol/format/kml/networklinks.kml',
+              function (xml) {
+                try {
+                  nl = format.readNetworkLinks(xml);
+                } catch (e) {
+                  reject(e);
+                  return;
+                }
+                resolve();
+              },
+            );
+          }),
+      );
 
       it('returns an array of network links', function () {
         assert.lengthOf(nl, 2);

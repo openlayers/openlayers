@@ -19,33 +19,36 @@ describe('ol.interaction.DblClickDragZoom', function () {
     const width = 360;
     const height = 180;
 
-    beforeEach(function (done) {
-      target = document.createElement('div');
-      const style = target.style;
-      style.position = 'absolute';
-      style.left = '0px';
-      style.top = '0px';
-      style.width = width + 'px';
-      style.height = height + 'px';
-      document.body.appendChild(target);
-      const source = new VectorSource();
-      const layer = new VectorLayer({source: source});
-      interaction = new DblClickDragZoom();
-      map = new Map({
-        target: target,
-        layers: [layer],
-        interactions: [interaction],
-        view: new View({
-          projection: 'EPSG:4326',
-          center: [0, 0],
-          resolution: 1,
+    beforeEach(
+      () =>
+        new Promise((resolve) => {
+          target = document.createElement('div');
+          const style = target.style;
+          style.position = 'absolute';
+          style.left = '0px';
+          style.top = '0px';
+          style.width = width + 'px';
+          style.height = height + 'px';
+          document.body.appendChild(target);
+          const source = new VectorSource();
+          const layer = new VectorLayer({source: source});
+          interaction = new DblClickDragZoom();
+          map = new Map({
+            target: target,
+            layers: [layer],
+            interactions: [interaction],
+            view: new View({
+              projection: 'EPSG:4326',
+              center: [0, 0],
+              resolution: 1,
+            }),
+          });
+          map.getView().setZoom(3);
+          map.once('postrender', function () {
+            resolve();
+          });
         }),
-      });
-      map.getView().setZoom(3);
-      map.once('postrender', function () {
-        done();
-      });
-    });
+    );
 
     afterEach(function () {
       disposeMap(map);

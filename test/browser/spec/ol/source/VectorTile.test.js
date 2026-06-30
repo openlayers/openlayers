@@ -50,27 +50,28 @@ describe('ol/source/VectorTile', function () {
       assert.deepEqual(tile.getTileCoord(), [0, 0, 0]);
     });
 
-    it('loads source tiles', function (done) {
-      const source = new VectorTileSource({
-        format: new GeoJSON(),
-        url: 'spec/ol/data/point.json',
-      });
-      const tile = source.getTile(0, 0, 0, 1, source.getProjection());
+    it('loads source tiles', () =>
+      new Promise((resolve) => {
+        const source = new VectorTileSource({
+          format: new GeoJSON(),
+          url: 'spec/ol/data/point.json',
+        });
+        const tile = source.getTile(0, 0, 0, 1, source.getProjection());
 
-      tile.load();
-      const key = listen(tile, 'change', function (e) {
-        if (tile.getState() === TileState.LOADED) {
-          const sourceTile = source.getSourceTiles(
-            1,
-            source.getProjection(),
-            tile,
-          )[0];
-          assert.isAbove(sourceTile.getFeatures().length, 0);
-          unlistenByKey(key);
-          done();
-        }
-      });
-    });
+        tile.load();
+        const key = listen(tile, 'change', function (e) {
+          if (tile.getState() === TileState.LOADED) {
+            const sourceTile = source.getSourceTiles(
+              1,
+              source.getProjection(),
+              tile,
+            )[0];
+            assert.isAbove(sourceTile.getFeatures().length, 0);
+            unlistenByKey(key);
+            resolve();
+          }
+        });
+      }));
 
     describe('tile loading states', () => {
       let tile, originalSetState;
@@ -89,24 +90,25 @@ describe('ol/source/VectorTile', function () {
         tile.setState = originalSetState;
       });
 
-      it('transitions states until EMPTY is set', (done) => {
-        const states = [];
-        tile.setState = function (state) {
-          originalSetState.call(this, state);
-          states.push([state, tile.getState()]);
-          if (state === TileState.ERROR) {
-            assert.deepEqual(states, [
-              // [requested state, actual state]
-              [TileState.LOADING, TileState.LOADING],
-              [TileState.EMPTY, TileState.EMPTY],
-              [TileState.ERROR, TileState.EMPTY],
-            ]);
-            done();
-          }
-        };
-        tile.load();
-        tile.dispose();
-      });
+      it('transitions states until EMPTY is set', () =>
+        new Promise((resolve) => {
+          const states = [];
+          tile.setState = function (state) {
+            originalSetState.call(this, state);
+            states.push([state, tile.getState()]);
+            if (state === TileState.ERROR) {
+              assert.deepEqual(states, [
+                // [requested state, actual state]
+                [TileState.LOADING, TileState.LOADING],
+                [TileState.EMPTY, TileState.EMPTY],
+                [TileState.ERROR, TileState.EMPTY],
+              ]);
+              resolve();
+            }
+          };
+          tile.load();
+          tile.dispose();
+        }));
     });
 
     it('unreferences source tiles that are no longer used', () => {
@@ -288,68 +290,70 @@ describe('ol/source/VectorTile', function () {
   });
 
   describe('Tile load events', function () {
-    it('triggers tileloadstart and tileloadend with ol.VectorTile', function (done) {
-      const tile = source.getTile(
-        14,
-        8938,
-        5680,
-        1,
-        getProjection('EPSG:3857'),
-      );
-      let started = false;
-      source.on('tileloadstart', function () {
-        started = true;
-      });
-      source.on('tileloadend', function (e) {
-        assert.strictEqual(started, true);
-        assert.instanceOf(e.tile, VectorTile);
-        assert.strictEqual(e.tile.getFeatures().length, 1327);
-        done();
-      });
-      tile.load();
-    });
-    it('triggers events and loads source tile properly for wrapX counterpart', function (done) {
-      const tile1 = source.getTile(
-        14,
-        8938,
-        5680,
-        1,
-        getProjection('EPSG:3857'),
-      );
-      const tile2 = source.getTile(
-        14,
-        8938 + Math.pow(2, 14),
-        5680,
-        1,
-        getProjection('EPSG:3857'),
-      );
-      assert.deepEqual(tile2.wrappedTileCoord, [14, 8938, 5680]);
-      let loadstart = 0;
-      source.on('tileloadstart', function () {
-        ++loadstart;
-      });
-      let loadend = 0;
-      source.on('tileloadend', function (e) {
-        ++loadend;
-      });
-      let loaded = 0;
-      [tile1, tile2].forEach((tile) => {
-        tile.addEventListener('change', (e) => {
-          if (e.target.getState() === TileState.LOADED) {
-            const sourceTiles = e.target.getSourceTiles();
-            assert.strictEqual(sourceTiles.length, 1);
-            assert.strictEqual(sourceTiles[0].getState(), TileState.LOADED);
-            ++loaded;
-            if (loaded === 2) {
-              assert.strictEqual(loadstart, 1);
-              assert.strictEqual(loadend, 1);
-              done();
-            }
-          }
+    it('triggers tileloadstart and tileloadend with ol.VectorTile', () =>
+      new Promise((resolve) => {
+        const tile = source.getTile(
+          14,
+          8938,
+          5680,
+          1,
+          getProjection('EPSG:3857'),
+        );
+        let started = false;
+        source.on('tileloadstart', function () {
+          started = true;
+        });
+        source.on('tileloadend', function (e) {
+          assert.strictEqual(started, true);
+          assert.instanceOf(e.tile, VectorTile);
+          assert.strictEqual(e.tile.getFeatures().length, 1327);
+          resolve();
         });
         tile.load();
-      });
-    });
+      }));
+    it('triggers events and loads source tile properly for wrapX counterpart', () =>
+      new Promise((resolve) => {
+        const tile1 = source.getTile(
+          14,
+          8938,
+          5680,
+          1,
+          getProjection('EPSG:3857'),
+        );
+        const tile2 = source.getTile(
+          14,
+          8938 + Math.pow(2, 14),
+          5680,
+          1,
+          getProjection('EPSG:3857'),
+        );
+        assert.deepEqual(tile2.wrappedTileCoord, [14, 8938, 5680]);
+        let loadstart = 0;
+        source.on('tileloadstart', function () {
+          ++loadstart;
+        });
+        let loadend = 0;
+        source.on('tileloadend', function (e) {
+          ++loadend;
+        });
+        let loaded = 0;
+        [tile1, tile2].forEach((tile) => {
+          tile.addEventListener('change', (e) => {
+            if (e.target.getState() === TileState.LOADED) {
+              const sourceTiles = e.target.getSourceTiles();
+              assert.strictEqual(sourceTiles.length, 1);
+              assert.strictEqual(sourceTiles[0].getState(), TileState.LOADED);
+              ++loaded;
+              if (loaded === 2) {
+                assert.strictEqual(loadstart, 1);
+                assert.strictEqual(loadend, 1);
+                resolve();
+              }
+            }
+          });
+          tile.load();
+        });
+      }));
   });
 
   describe('different source and render tile grids', function () {
@@ -402,13 +406,14 @@ describe('ol/source/VectorTile', function () {
       disposeMap(map);
     });
 
-    it('loads only required tiles', function (done) {
-      map.renderSync();
-      setTimeout(function () {
-        assert.deepEqual(loaded, ['5/13/-28']);
-        done();
-      }, 0);
-    });
+    it('loads only required tiles', () =>
+      new Promise((resolve) => {
+        map.renderSync();
+        setTimeout(function () {
+          assert.deepEqual(loaded, ['5/13/-28']);
+          resolve();
+        }, 0);
+      }));
   });
 
   describe('tile cache and queue', function () {
@@ -446,23 +451,24 @@ describe('ol/source/VectorTile', function () {
       disposeMap(map);
     });
 
-    it('does not fill up the tile queue', function (done) {
-      const tileQueue = map.tileQueue_;
-      const max = urls.length + 3;
-      let count = 0;
-      map.on('rendercomplete', () => {
-        ++count;
+    it('does not fill up the tile queue', () =>
+      new Promise((resolve) => {
+        const tileQueue = map.tileQueue_;
+        const max = urls.length + 3;
+        let count = 0;
+        map.on('rendercomplete', () => {
+          ++count;
 
-        assert.strictEqual(tileQueue.getTilesLoading(), 0);
-        if (count === max) {
-          done();
-          return;
-        }
+          assert.strictEqual(tileQueue.getTilesLoading(), 0);
+          if (count === max) {
+            resolve();
+            return;
+          }
 
-        const newUrl = urls[count % urls.length];
-        source.setUrl(newUrl);
-      });
-    });
+          const newUrl = urls[count % urls.length];
+          source.setUrl(newUrl);
+        });
+      }));
 
     it('clears source tiles on refresh()', async () => {
       await new Promise((resolve) => map.once('rendercomplete', resolve));
