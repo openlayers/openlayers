@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {spy as sinonSpy} from 'sinon';
 import Collection from '../../../../../src/ol/Collection.js';
 import {getIntersection} from '../../../../../src/ol/extent.js';
 import LayerGroup from '../../../../../src/ol/layer/Group.js';
@@ -71,7 +70,7 @@ describe('ol/layer/Group', function () {
       group = new LayerGroup({
         layers: [layer],
       });
-      listener = sinonSpy();
+      listener = vi.fn();
     });
 
     afterEach(function () {
@@ -82,17 +81,17 @@ describe('ol/layer/Group', function () {
       group.on('change', listener);
 
       layer.setOpacity(0.5);
-      assert.strictEqual(listener.calledOnce, true);
+      assert.strictEqual(listener.mock.calls.length, 1);
     });
 
     it('is dispatched by the group when layer visibility changes', function () {
       group.on('change', listener);
 
       layer.setVisible(false);
-      assert.strictEqual(listener.callCount, 1);
+      assert.strictEqual(listener.mock.calls.length, 1);
 
       layer.setVisible(true);
-      assert.strictEqual(listener.callCount, 2);
+      assert.strictEqual(listener.mock.calls.length, 2);
     });
   });
 
@@ -107,7 +106,7 @@ describe('ol/layer/Group', function () {
       group = new LayerGroup({
         layers: [layer],
       });
-      listener = sinonSpy();
+      listener = vi.fn();
     });
 
     afterEach(function () {
@@ -118,17 +117,17 @@ describe('ol/layer/Group', function () {
       group.on('propertychange', listener);
 
       group.setOpacity(0.5);
-      assert.strictEqual(listener.calledOnce, true);
+      assert.strictEqual(listener.mock.calls.length, 1);
     });
 
     it('is dispatched by the group when group visibility changes', function () {
       group.on('propertychange', listener);
 
       group.setVisible(false);
-      assert.strictEqual(listener.callCount, 1);
+      assert.strictEqual(listener.mock.calls.length, 1);
 
       group.setVisible(true);
-      assert.strictEqual(listener.callCount, 2);
+      assert.strictEqual(listener.mock.calls.length, 2);
     });
   });
 
@@ -218,156 +217,178 @@ describe('ol/layer/Group', function () {
   });
 
   describe('addlayer event', () => {
-    it('is dispatched when a layer is added', (done) => {
-      const group = new LayerGroup();
-      const layer = new Layer({});
-      group.on('addlayer', (event) => {
-        assert.strictEqual(event.layer, layer);
-        done();
-      });
+    it('is dispatched when a layer is added', () => {
+      return new Promise((resolve) => {
+        const group = new LayerGroup();
+        const layer = new Layer({});
+        group.on('addlayer', (event) => {
+          assert.strictEqual(event.layer, layer);
+          resolve();
+        });
 
-      group.getLayers().push(layer);
+        group.getLayers().push(layer);
+      });
     });
 
-    it('is dispatched once for each layer added', (done) => {
-      const group = new LayerGroup();
-      const layers = [new Layer({}), new Layer({}), new Layer({})];
+    it('is dispatched once for each layer added', () => {
+      return new Promise((resolve) => {
+        const group = new LayerGroup();
+        const layers = [new Layer({}), new Layer({}), new Layer({})];
 
-      let count = 0;
-      group.on('addlayer', (event) => {
-        assert.strictEqual(event.layer, layers[count]);
-        count++;
-        if (count === layers.length) {
-          done();
-        }
+        let count = 0;
+        group.on('addlayer', (event) => {
+          assert.strictEqual(event.layer, layers[count]);
+          count++;
+          if (count === layers.length) {
+            resolve();
+          }
+        });
+
+        group.getLayers().extend(layers);
       });
-
-      group.getLayers().extend(layers);
     });
 
-    it('is dispatched when setLayers is called', (done) => {
-      const group = new LayerGroup();
+    it('is dispatched when setLayers is called', () => {
+      return new Promise((resolve) => {
+        const group = new LayerGroup();
 
-      const layers = [new Layer({}), new Layer({}), new Layer({})];
+        const layers = [new Layer({}), new Layer({}), new Layer({})];
 
-      let count = 0;
-      group.on('addlayer', (event) => {
-        assert.strictEqual(event.layer, layers[count]);
-        count++;
-        if (count === layers.length) {
-          done();
-        }
+        let count = 0;
+        group.on('addlayer', (event) => {
+          assert.strictEqual(event.layer, layers[count]);
+          count++;
+          if (count === layers.length) {
+            resolve();
+          }
+        });
+
+        group.setLayers(new Collection(layers));
       });
-
-      group.setLayers(new Collection(layers));
     });
 
-    it('is dispatched when a layer group is added', (done) => {
-      const group = new LayerGroup();
-      const layer = new LayerGroup();
-      group.on('addlayer', (event) => {
-        assert.strictEqual(event.layer, layer);
-        done();
-      });
+    it('is dispatched when a layer group is added', () => {
+      return new Promise((resolve) => {
+        const group = new LayerGroup();
+        const layer = new LayerGroup();
+        group.on('addlayer', (event) => {
+          assert.strictEqual(event.layer, layer);
+          resolve();
+        });
 
-      group.getLayers().push(layer);
+        group.getLayers().push(layer);
+      });
     });
 
-    it('is dispatched for each layer added to a child group', (done) => {
-      const group = new LayerGroup();
-      const child = new LayerGroup();
-      group.getLayers().push(child);
+    it('is dispatched for each layer added to a child group', () => {
+      return new Promise((resolve) => {
+        const group = new LayerGroup();
+        const child = new LayerGroup();
+        group.getLayers().push(child);
 
-      const layer = new Layer({});
-      group.on('addlayer', (event) => {
-        assert.strictEqual(event.layer, layer);
-        done();
+        const layer = new Layer({});
+        group.on('addlayer', (event) => {
+          assert.strictEqual(event.layer, layer);
+          resolve();
+        });
+
+        child.getLayers().push(layer);
       });
-
-      child.getLayers().push(layer);
     });
 
-    it('is dispatched for each layer added to a child group configured at construction', (done) => {
-      const child = new LayerGroup();
-      const group = new LayerGroup({
-        layers: [child],
-      });
+    it('is dispatched for each layer added to a child group configured at construction', () => {
+      return new Promise((resolve) => {
+        const child = new LayerGroup();
+        const group = new LayerGroup({
+          layers: [child],
+        });
 
-      const layer = new Layer({});
-      group.on('addlayer', (event) => {
-        assert.strictEqual(event.layer, layer);
-        done();
-      });
+        const layer = new Layer({});
+        group.on('addlayer', (event) => {
+          assert.strictEqual(event.layer, layer);
+          resolve();
+        });
 
-      child.getLayers().push(layer);
+        child.getLayers().push(layer);
+      });
     });
 
-    it('is not dispatched for layers added to a child group after the child group is removed', (done) => {
-      const child = new LayerGroup();
-      const group = new LayerGroup({
-        layers: [child],
+    it('is not dispatched for layers added to a child group after the child group is removed', () => {
+      return new Promise((resolve, reject) => {
+        const child = new LayerGroup();
+        const group = new LayerGroup({
+          layers: [child],
+        });
+
+        const layer = new Layer({});
+        group.on('addlayer', () => {
+          reject(new Error('unexpected addlayer after group removal'));
+        });
+
+        group.getLayers().remove(child);
+        child.getLayers().push(layer);
+
+        setTimeout(resolve, 10);
       });
-
-      const layer = new Layer({});
-      group.on('addlayer', (event) => {
-        done(new Error('unexpected addlayer after group removal'));
-      });
-
-      group.getLayers().remove(child);
-      child.getLayers().push(layer);
-
-      setTimeout(done, 10);
     });
   });
 
   describe('removelayer event', () => {
-    it('is dispatched when a layer is removed', (done) => {
-      const layer = new Layer({});
-      const group = new LayerGroup({layers: [layer]});
-      group.on('removelayer', (event) => {
-        assert.strictEqual(event.layer, layer);
-        done();
-      });
+    it('is dispatched when a layer is removed', () => {
+      return new Promise((resolve) => {
+        const layer = new Layer({});
+        const group = new LayerGroup({layers: [layer]});
+        group.on('removelayer', (event) => {
+          assert.strictEqual(event.layer, layer);
+          resolve();
+        });
 
-      group.getLayers().remove(layer);
+        group.getLayers().remove(layer);
+      });
     });
 
-    it('is dispatched when a setLayers is called', (done) => {
-      const layer = new Layer({});
-      const group = new LayerGroup({layers: [layer]});
-      group.on('removelayer', (event) => {
-        assert.strictEqual(event.layer, layer);
-        done();
-      });
+    it('is dispatched when a setLayers is called', () => {
+      return new Promise((resolve) => {
+        const layer = new Layer({});
+        const group = new LayerGroup({layers: [layer]});
+        group.on('removelayer', (event) => {
+          assert.strictEqual(event.layer, layer);
+          resolve();
+        });
 
-      group.setLayers(new Collection());
+        group.setLayers(new Collection());
+      });
     });
 
-    it('is dispatched when a layer is removed from a child group', (done) => {
-      const layer = new Layer({});
-      const child = new LayerGroup({layers: [layer]});
-      const group = new LayerGroup({layers: [child]});
-      group.on('removelayer', (event) => {
-        assert.strictEqual(event.layer, layer);
-        done();
-      });
+    it('is dispatched when a layer is removed from a child group', () => {
+      return new Promise((resolve) => {
+        const layer = new Layer({});
+        const child = new LayerGroup({layers: [layer]});
+        const group = new LayerGroup({layers: [child]});
+        group.on('removelayer', (event) => {
+          assert.strictEqual(event.layer, layer);
+          resolve();
+        });
 
-      child.getLayers().remove(layer);
+        child.getLayers().remove(layer);
+      });
     });
 
-    it('is not dispatched when a layer is removed from a child group after child group removal', (done) => {
-      const layer = new Layer({});
-      const child = new LayerGroup({layers: [layer]});
-      const group = new LayerGroup({layers: [child]});
-      group.getLayers().remove(child);
+    it('is not dispatched when a layer is removed from a child group after child group removal', () => {
+      return new Promise((resolve, reject) => {
+        const layer = new Layer({});
+        const child = new LayerGroup({layers: [layer]});
+        const group = new LayerGroup({layers: [child]});
+        group.getLayers().remove(child);
 
-      group.on('removelayer', (event) => {
-        done(new Error('unexpected removelayer after group removal'));
+        group.on('removelayer', () => {
+          reject(new Error('unexpected removelayer after group removal'));
+        });
+
+        child.getLayers().remove(layer);
+
+        setTimeout(resolve, 10);
       });
-
-      child.getLayers().remove(layer);
-
-      setTimeout(done, 10);
     });
   });
 

@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {stub as sinonStub} from 'sinon';
 import Feature from '../../../../../../src/ol/Feature.js';
 import {
   BooleanType,
@@ -78,10 +77,10 @@ describe('ol/render/webgl/compileUtil', () => {
   describe('applyContextToBuilder', () => {
     it('registers variables as uniforms, properties as attributes and functions in the builder', () => {
       const builder = {
-        addUniform: sinonStub(),
-        addAttribute: sinonStub(),
-        addVertexShaderFunction: sinonStub(),
-        addFragmentShaderFunction: sinonStub(),
+        addUniform: vi.fn(),
+        addAttribute: vi.fn(),
+        addVertexShaderFunction: vi.fn(),
+        addFragmentShaderFunction: vi.fn(),
       };
       const context = {
         variables: new Map([['myColor', ColorType]]),
@@ -94,34 +93,34 @@ describe('ol/render/webgl/compileUtil', () => {
 
       applyContextToBuilder(builder, context);
 
-      assert.strictEqual(
-        builder.addUniform.calledWith('u_var_myColor', 'vec4'),
-        true,
-      );
-      assert.strictEqual(
-        builder.addAttribute.calledWith(
-          'a_prop_colorProp',
-          'vec2',
-          'unpackColor(a_prop_colorProp)',
-          'vec4',
+      assert.isTrue(
+        builder.addUniform.mock.calls.some(
+          (args) => args[0] === 'u_var_myColor' && args[1] === 'vec4',
         ),
-        true,
       );
-      assert.strictEqual(
-        builder.addAttribute.calledWith('a_prop_stringProp', 'float'),
-        true,
-      );
-      assert.strictEqual(
-        builder.addVertexShaderFunction.calledWith(
-          'function myFunction() { return 1.0; }',
+      assert.isTrue(
+        builder.addAttribute.mock.calls.some(
+          (args) =>
+            args[0] === 'a_prop_colorProp' &&
+            args[1] === 'vec2' &&
+            args[2] === 'unpackColor(a_prop_colorProp)' &&
+            args[3] === 'vec4',
         ),
-        true,
       );
-      assert.strictEqual(
-        builder.addFragmentShaderFunction.calledWith(
-          'function myFunction() { return 1.0; }',
+      assert.isTrue(
+        builder.addAttribute.mock.calls.some(
+          (args) => args[0] === 'a_prop_stringProp' && args[1] === 'float',
         ),
-        true,
+      );
+      assert.isTrue(
+        builder.addVertexShaderFunction.mock.calls.some(
+          (args) => args[0] === 'function myFunction() { return 1.0; }',
+        ),
+      );
+      assert.isTrue(
+        builder.addFragmentShaderFunction.mock.calls.some(
+          (args) => args[0] === 'function myFunction() { return 1.0; }',
+        ),
       );
     });
   });

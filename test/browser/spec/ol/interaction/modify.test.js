@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {spy as sinonSpy} from 'sinon';
 import Collection from '../../../../../src/ol/Collection.js';
 import CollectionEventType from '../../../../../src/ol/CollectionEventType.js';
 import Feature from '../../../../../src/ol/Feature.js';
@@ -40,51 +39,54 @@ describe('ol.interaction.Modify', function () {
   const width = 360;
   const height = 180;
 
-  beforeEach(function (done) {
-    target = document.createElement('div');
+  beforeEach(
+    () =>
+      new Promise((resolve) => {
+        target = document.createElement('div');
 
-    const style = target.style;
-    style.position = 'absolute';
-    style.left = '-1000px';
-    style.top = '-1000px';
-    style.width = width + 'px';
-    style.height = height + 'px';
-    document.body.appendChild(target);
+        const style = target.style;
+        style.position = 'absolute';
+        style.left = '-1000px';
+        style.top = '-1000px';
+        style.width = width + 'px';
+        style.height = height + 'px';
+        document.body.appendChild(target);
 
-    features = [
-      new Feature({
-        geometry: new Polygon([
-          [
-            [0, 0],
-            [10, 20],
-            [0, 40],
-            [40, 40],
-            [40, 0],
-          ],
-        ]),
+        features = [
+          new Feature({
+            geometry: new Polygon([
+              [
+                [0, 0],
+                [10, 20],
+                [0, 40],
+                [40, 40],
+                [40, 0],
+              ],
+            ]),
+          }),
+        ];
+
+        source = new VectorSource({
+          features: features,
+        });
+
+        layer = new VectorLayer({source: source});
+
+        map = new Map({
+          target: target,
+          layers: [layer],
+          view: new View({
+            projection: 'EPSG:4326',
+            center: [0, 0],
+            resolution: 1,
+          }),
+        });
+
+        map.once('postrender', function () {
+          resolve();
+        });
       }),
-    ];
-
-    source = new VectorSource({
-      features: features,
-    });
-
-    layer = new VectorLayer({source: source});
-
-    map = new Map({
-      target: target,
-      layers: [layer],
-      view: new View({
-        projection: 'EPSG:4326',
-        center: [0, 0],
-        resolution: 1,
-      }),
-    });
-
-    map.once('postrender', function () {
-      done();
-    });
-  });
+  );
 
   afterEach(function () {
     disposeMap(map);
@@ -1204,7 +1206,7 @@ describe('ol.interaction.Modify', function () {
 
   describe('insertVertexCondition', function () {
     it('calls the callback function', function () {
-      const listenerSpy = sinonSpy(function (event) {
+      const listenerSpy = vi.fn(function (event) {
         return false;
       });
 
@@ -1222,7 +1224,7 @@ describe('ol.interaction.Modify', function () {
       simulateEvent('pointerdrag', -10, -10, null, 0);
       simulateEvent('pointerup', -10, -10, null, 0);
 
-      assert.strictEqual(listenerSpy.callCount, 0);
+      assert.strictEqual(listenerSpy.mock.calls.length, 0);
       assert.lengthOf(feature.getGeometry().getCoordinates()[0], 5);
 
       // try to add vertex
@@ -1231,63 +1233,65 @@ describe('ol.interaction.Modify', function () {
       simulateEvent('click', 40, -20, null, 0);
       simulateEvent('singleclick', 40, -20, null, 0);
 
-      assert.strictEqual(listenerSpy.callCount, 1);
+      assert.strictEqual(listenerSpy.mock.calls.length, 1);
       assert.lengthOf(feature.getGeometry().getCoordinates()[0], 5);
     });
 
-    it('does not fire `modifystart` when nothing is modified', function (done) {
-      const modify = new Modify({
-        features: new Collection(features),
-        insertVertexCondition: never,
-      });
-      map.addInteraction(modify);
+    it('does not fire `modifystart` when nothing is modified', () =>
+      new Promise((resolve) => {
+        const modify = new Modify({
+          features: new Collection(features),
+          insertVertexCondition: never,
+        });
+        map.addInteraction(modify);
 
-      let modifystart = false;
-      modify.on('modifystart', function () {
-        modifystart = true;
-      });
+        let modifystart = false;
+        modify.on('modifystart', function () {
+          modifystart = true;
+        });
 
-      // try to add vertex
-      simulateEvent('pointermove', 40, -20, null, 0);
-      simulateEvent('pointerdown', 40, -20, null, 0);
-      simulateEvent('pointermove', 42, -30, null, 0);
-      simulateEvent('pointerdrag', 42, -30, null, 0);
-      simulateEvent('pointerup', 42, -30, null, 0);
-      simulateEvent('click', 42, -30, null, 0);
-      simulateEvent('singleclick', 42, -30, null, 0);
+        // try to add vertex
+        simulateEvent('pointermove', 40, -20, null, 0);
+        simulateEvent('pointerdown', 40, -20, null, 0);
+        simulateEvent('pointermove', 42, -30, null, 0);
+        simulateEvent('pointerdrag', 42, -30, null, 0);
+        simulateEvent('pointerup', 42, -30, null, 0);
+        simulateEvent('click', 42, -30, null, 0);
+        simulateEvent('singleclick', 42, -30, null, 0);
 
-      setTimeout(function () {
-        assert.strictEqual(modifystart, false);
-        done();
-      }, 0);
-    });
+        setTimeout(function () {
+          assert.strictEqual(modifystart, false);
+          resolve();
+        }, 0);
+      }));
 
-    it('does not fire `modifyend` when nothing is modified', function (done) {
-      const modify = new Modify({
-        features: new Collection(features),
-        deleteCondition: click,
-        insertVertexCondition: never,
-      });
-      map.addInteraction(modify);
+    it('does not fire `modifyend` when nothing is modified', () =>
+      new Promise((resolve) => {
+        const modify = new Modify({
+          features: new Collection(features),
+          deleteCondition: click,
+          insertVertexCondition: never,
+        });
+        map.addInteraction(modify);
 
-      let modifyend = false;
-      modify.on('modifyend', function (e) {
-        modifyend = true;
-      });
+        let modifyend = false;
+        modify.on('modifyend', function (e) {
+          modifyend = true;
+        });
 
-      // try to add vertex
-      simulateEvent('pointermove', 40, -20, null, 0);
-      simulateEvent('pointerdown', 40, -20, null, 0);
-      simulateEvent('pointerdrag', 42, -30, null, 0);
-      simulateEvent('pointerup', 42, -30, null, 0);
-      simulateEvent('click', 42, -30, null, 0);
-      simulateEvent('singleclick', 42, -30, null, 0);
+        // try to add vertex
+        simulateEvent('pointermove', 40, -20, null, 0);
+        simulateEvent('pointerdown', 40, -20, null, 0);
+        simulateEvent('pointerdrag', 42, -30, null, 0);
+        simulateEvent('pointerup', 42, -30, null, 0);
+        simulateEvent('click', 42, -30, null, 0);
+        simulateEvent('singleclick', 42, -30, null, 0);
 
-      setTimeout(function () {
-        assert.strictEqual(modifyend, false);
-        done();
-      }, 0);
-    });
+        setTimeout(function () {
+          assert.strictEqual(modifyend, false);
+          resolve();
+        }, 0);
+      }));
 
     it('does not create an overlay vertex feature on `pointermove` when insertVertexCondition is not fulfilled', function () {
       const feature = new Feature({
@@ -1302,7 +1306,7 @@ describe('ol.interaction.Modify', function () {
       const firstRevision = feature.getGeometry().getRevision();
       features.length = 0;
       features.push(feature);
-      const listenerSpy = sinonSpy(() => false);
+      const listenerSpy = vi.fn(() => false);
       const modify = new Modify({
         features: new Collection(features),
         insertVertexCondition: listenerSpy,
@@ -1318,7 +1322,7 @@ describe('ol.interaction.Modify', function () {
       simulateEvent('pointerdrag', 60, -20, null, 0);
       simulateEvent('pointerup', 60, -20, null, 0);
 
-      assert.strictEqual(listenerSpy.callCount, 2);
+      assert.strictEqual(listenerSpy.mock.calls.length, 2);
       assert.equal(feature.getGeometry().getRevision(), firstRevision);
       assert.deepEqual(feature.getGeometry().getCoordinates().length, 5);
     });
@@ -1336,7 +1340,7 @@ describe('ol.interaction.Modify', function () {
       const firstRevision = feature.getGeometry().getRevision();
       features.length = 0;
       features.push(feature);
-      const listenerSpy = sinonSpy(() => false);
+      const listenerSpy = vi.fn(() => false);
       const modify = new Modify({
         features: new Collection(features),
         insertVertexCondition: listenerSpy,
@@ -1351,7 +1355,7 @@ describe('ol.interaction.Modify', function () {
       simulateEvent('pointerdrag', -20, 20, null, 0);
       simulateEvent('pointerup', -20, 20, null, 0);
 
-      assert.strictEqual(listenerSpy.callCount, 0);
+      assert.strictEqual(listenerSpy.mock.calls.length, 0);
       assert.equal(feature.getGeometry().getRevision(), firstRevision + 1);
       assert.deepEqual(feature.getGeometry().getCoordinates().length, 5);
       assert.deepEqual(feature.getGeometry().getCoordinates()[0], [-20, -20]);
