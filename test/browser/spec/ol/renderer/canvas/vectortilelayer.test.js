@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {spy as sinonSpy} from 'sinon';
 import Feature from '../../../../../../src/ol/Feature.js';
 import Map from '../../../../../../src/ol/Map.js';
 import TileState from '../../../../../../src/ol/TileState.js';
@@ -133,29 +132,29 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
       });
       map.removeLayer(layer);
       map.addLayer(testLayer);
-      const spy = sinonSpy(
+      const spy = vi.spyOn(
         CanvasVectorTileLayerRenderer.prototype,
         'renderTileImage_',
       );
       map.renderSync();
-      assert.strictEqual(spy.callCount, 0);
-      spy.restore();
+      assert.strictEqual(spy.mock.calls.length, 0);
+      spy.mockRestore();
     });
 
     it('renders both replays and images for hybrid rendering', function () {
-      const spy1 = sinonSpy(
+      const spy1 = vi.spyOn(
         CanvasVectorTileLayerRenderer.prototype,
         'getRenderTransform',
       );
-      const spy2 = sinonSpy(
+      const spy2 = vi.spyOn(
         CanvasVectorTileLayerRenderer.prototype,
         'renderTileImage_',
       );
       map.renderSync();
-      assert.strictEqual(spy1.callCount, 1);
-      assert.strictEqual(spy2.callCount, 1);
-      spy1.restore();
-      spy2.restore();
+      assert.strictEqual(spy1.mock.calls.length, 1);
+      assert.strictEqual(spy2.mock.calls.length, 1);
+      spy1.mockRestore();
+      spy2.mockRestore();
     });
 
     it('renders replays with custom renderers as direct replays', function () {
@@ -164,79 +163,88 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
           renderer: function () {},
         }),
       );
-      const spy = sinonSpy(
+      const spy = vi.spyOn(
         CanvasVectorTileLayerRenderer.prototype,
         'getRenderTransform',
       );
       map.renderSync();
-      assert.strictEqual(spy.callCount, 1);
-      spy.restore();
+      assert.strictEqual(spy.mock.calls.length, 1);
+      spy.mockRestore();
     });
 
     it('gives precedence to feature styles over layer styles', function () {
-      const spy = sinonSpy(layer.getRenderer(), 'renderFeature');
+      const spy = vi.spyOn(layer.getRenderer(), 'renderFeature');
       map.renderSync();
       assert.strictEqual(
-        spy.getCall(0).args[2],
+        spy.mock.calls[0][2],
         layer.getStyleFunction()(feature1),
       );
       assert.strictEqual(
-        spy.getCall(1).args[2],
+        spy.mock.calls[1][2],
         feature2.getStyleFunction()(feature2),
       );
-      spy.restore();
+      spy.mockRestore();
     });
 
-    it('does not re-render for unavailable fonts', function (done) {
-      map.renderSync();
-      layerStyle[0].getText().setFont('12px "Unavailable font",sans-serif');
-      layer.changed();
-      const revision = layer.getRevision();
-      setTimeout(function () {
-        try {
-          assert.strictEqual(layer.getRevision(), revision);
-          done();
-        } catch (e) {
-          done(e);
-        }
-      }, 1000);
-    });
-
-    it('does not re-render for available fonts', function (done) {
-      map.renderSync();
-      layerStyle[0].getText().setFont('12px sans-serif');
-      layer.changed();
-      const revision = layer.getRevision();
-      setTimeout(function () {
-        try {
-          assert.strictEqual(layer.getRevision(), revision);
-          done();
-        } catch (e) {
-          done(e);
-        }
-      }, 1000);
-    });
-
-    it('re-renders for fonts that become available', function (done) {
-      map.renderSync();
-      font.add();
-      layerStyle[0].getText().setFont(`12px "${fontFamily}",sans-serif`);
-      layer.changed();
-      const revision = layer.getRevision();
-      checkedFonts.addEventListener(
-        'propertychange',
-        function onPropertyChange(e) {
-          checkedFonts.removeEventListener('propertychange', onPropertyChange);
+    it('does not re-render for unavailable fonts', () =>
+      new Promise((resolve, reject) => {
+        map.renderSync();
+        layerStyle[0].getText().setFont('12px "Unavailable font",sans-serif');
+        layer.changed();
+        const revision = layer.getRevision();
+        setTimeout(function () {
           try {
-            font.remove();
-            assert.strictEqual(layer.getRevision(), revision + 1);
-            done();
+            assert.strictEqual(layer.getRevision(), revision);
+            resolve();
           } catch (e) {
-            done(e);
+            reject(e);
+            return;
           }
-        },
-      );
-    });
+        }, 1000);
+      }));
+
+    it('does not re-render for available fonts', () =>
+      new Promise((resolve, reject) => {
+        map.renderSync();
+        layerStyle[0].getText().setFont('12px sans-serif');
+        layer.changed();
+        const revision = layer.getRevision();
+        setTimeout(function () {
+          try {
+            assert.strictEqual(layer.getRevision(), revision);
+            resolve();
+          } catch (e) {
+            reject(e);
+            return;
+          }
+        }, 1000);
+      }));
+
+    it('re-renders for fonts that become available', () =>
+      new Promise((resolve, reject) => {
+        map.renderSync();
+        font.add();
+        layerStyle[0].getText().setFont(`12px "${fontFamily}",sans-serif`);
+        layer.changed();
+        const revision = layer.getRevision();
+        checkedFonts.addEventListener(
+          'propertychange',
+          function onPropertyChange(e) {
+            checkedFonts.removeEventListener(
+              'propertychange',
+              onPropertyChange,
+            );
+            try {
+              font.remove();
+              assert.strictEqual(layer.getRevision(), revision + 1);
+              resolve();
+            } catch (e) {
+              reject(e);
+              return;
+            }
+          },
+        );
+      }));
 
     it('works for multiple layers that use the same source', function () {
       const layer2 = new VectorTileLayer({
@@ -256,189 +264,197 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
       assert.lengthOf(Object.keys(tile2.executorGroups), 1);
     });
 
-    it('sets the correct `wantedResolution`', (done) => {
-      map.getView().setZoom(0.1);
-      map.renderSync();
-      map.frameState_;
-      const resolution = map.frameState_.viewState.resolution;
-      const tile = layer.getRenderer().getTile(0, 0, 0, map.frameState_);
-      assert.strictEqual(tile.wantedResolution, resolution);
-      map.getView().animate({zoom: 0.6, duration: 200}, () => {
-        setTimeout(() => {
-          try {
-            assert.strictEqual(
-              tile.wantedResolution,
-              map.frameState_.viewState.resolution,
-            );
-            done();
-          } catch (e) {
-            done(e);
-          }
-        }, 100);
-      });
-      setTimeout(
-        // not hifi - use previous resolution
-        () => assert.strictEqual(tile.wantedResolution, resolution),
-        100,
-      );
-    });
+    it('sets the correct `wantedResolution`', () =>
+      new Promise((resolve, reject) => {
+        map.getView().setZoom(0.1);
+        map.renderSync();
+        map.frameState_;
+        const resolution = map.frameState_.viewState.resolution;
+        const tile = layer.getRenderer().getTile(0, 0, 0, map.frameState_);
+        assert.strictEqual(tile.wantedResolution, resolution);
+        map.getView().animate({zoom: 0.6, duration: 200}, () => {
+          setTimeout(() => {
+            try {
+              assert.strictEqual(
+                tile.wantedResolution,
+                map.frameState_.viewState.resolution,
+              );
+              resolve();
+            } catch (e) {
+              reject(e);
+              return;
+            }
+          }, 100);
+        });
+        setTimeout(
+          // not hifi - use previous resolution
+          () => assert.strictEqual(tile.wantedResolution, resolution),
+          100,
+        );
+      }));
 
-    it('reuses render container and adds and removes overlay context', function (done) {
-      map.getLayers().insertAt(
-        0,
-        new TileLayer({
-          source: new XYZ({
-            url: 'rendering/ol/data/tiles/osm/{z}/{x}/{y}.png',
+    it('reuses render container and adds and removes overlay context', () =>
+      new Promise((resolve) => {
+        map.getLayers().insertAt(
+          0,
+          new TileLayer({
+            source: new XYZ({
+              url: 'rendering/ol/data/tiles/osm/{z}/{x}/{y}.png',
+            }),
           }),
-        }),
-      );
-      map.once('rendercomplete', function () {
-        assert.strictEqual(
-          document.querySelector('.ol-layers').childElementCount,
-          1,
         );
-        assert.strictEqual(
-          document.querySelector('.ol-layer').childElementCount,
-          1,
-        );
-        map.removeLayer(map.getLayers().item(1));
-        map.renderSync();
-        assert.strictEqual(
-          document.querySelector('.ol-layer').childElementCount,
-          1,
-        );
-        done();
-      });
-    });
+        map.once('rendercomplete', function () {
+          assert.strictEqual(
+            document.querySelector('.ol-layers').childElementCount,
+            1,
+          );
+          assert.strictEqual(
+            document.querySelector('.ol-layer').childElementCount,
+            1,
+          );
+          map.removeLayer(map.getLayers().item(1));
+          map.renderSync();
+          assert.strictEqual(
+            document.querySelector('.ol-layer').childElementCount,
+            1,
+          );
+          resolve();
+        });
+      }));
 
-    it('reuses render container when previous layer has a background', function (done) {
-      map.getLayers().insertAt(
-        0,
-        new TileLayer({
-          background: 'rgb(255, 0, 0)',
-          source: new XYZ({
-            url: 'rendering/ol/data/tiles/osm/{z}/{x}/{y}.png',
+    it('reuses render container when previous layer has a background', () =>
+      new Promise((resolve) => {
+        map.getLayers().insertAt(
+          0,
+          new TileLayer({
+            background: 'rgb(255, 0, 0)',
+            source: new XYZ({
+              url: 'rendering/ol/data/tiles/osm/{z}/{x}/{y}.png',
+            }),
           }),
-        }),
-      );
-      map.once('rendercomplete', function () {
-        assert.strictEqual(
-          document.querySelector('.ol-layers').childElementCount,
-          1,
         );
-        assert.strictEqual(
-          document.querySelector('.ol-layer').childElementCount,
-          1,
-        );
-        map.removeLayer(map.getLayers().item(1));
-        map.renderSync();
-        assert.strictEqual(
-          document.querySelector('.ol-layer').childElementCount,
-          1,
-        );
-        done();
-      });
-    });
+        map.once('rendercomplete', function () {
+          assert.strictEqual(
+            document.querySelector('.ol-layers').childElementCount,
+            1,
+          );
+          assert.strictEqual(
+            document.querySelector('.ol-layer').childElementCount,
+            1,
+          );
+          map.removeLayer(map.getLayers().item(1));
+          map.renderSync();
+          assert.strictEqual(
+            document.querySelector('.ol-layer').childElementCount,
+            1,
+          );
+          resolve();
+        });
+      }));
 
-    it('does not reuse render container when backgrounds are different', function (done) {
-      map.getLayers().insertAt(
-        0,
-        new TileLayer({
-          background: 'rgb(255, 0, 0)',
-          source: new XYZ({
-            url: 'rendering/ol/data/tiles/osm/{z}/{x}/{y}.png',
+    it('does not reuse render container when backgrounds are different', () =>
+      new Promise((resolve) => {
+        map.getLayers().insertAt(
+          0,
+          new TileLayer({
+            background: 'rgb(255, 0, 0)',
+            source: new XYZ({
+              url: 'rendering/ol/data/tiles/osm/{z}/{x}/{y}.png',
+            }),
           }),
-        }),
-      );
-      map.getLayers().insertAt(
-        0,
-        new TileLayer({
-          background: 'rgba(255, 0, 0, 0.1)',
-          source: new XYZ({
-            url: 'rendering/ol/data/tiles/osm/{z}/{x}/{y}.png',
+        );
+        map.getLayers().insertAt(
+          0,
+          new TileLayer({
+            background: 'rgba(255, 0, 0, 0.1)',
+            source: new XYZ({
+              url: 'rendering/ol/data/tiles/osm/{z}/{x}/{y}.png',
+            }),
           }),
-        }),
-      );
-      map.once('rendercomplete', function () {
-        assert.strictEqual(
-          document.querySelector('.ol-layers').childElementCount,
-          2,
         );
-        assert.strictEqual(
-          document.querySelector('.ol-layer').childElementCount,
-          1,
-        );
-        map.removeLayer(map.getLayers().item(1));
-        map.renderSync();
-        assert.strictEqual(
-          document.querySelector('.ol-layers').childElementCount,
-          1,
-        );
-        done();
-      });
-    });
+        map.once('rendercomplete', function () {
+          assert.strictEqual(
+            document.querySelector('.ol-layers').childElementCount,
+            2,
+          );
+          assert.strictEqual(
+            document.querySelector('.ol-layer').childElementCount,
+            1,
+          );
+          map.removeLayer(map.getLayers().item(1));
+          map.renderSync();
+          assert.strictEqual(
+            document.querySelector('.ol-layers').childElementCount,
+            1,
+          );
+          resolve();
+        });
+      }));
 
-    it('sets the configured background (string) on the container', function (done) {
-      layer.setBackground('rgba(255, 0, 0, 0.5)');
-      map.once('rendercomplete', function () {
-        assert.strictEqual(
-          layer.getRenderer().container.style.backgroundColor,
-          'rgba(255, 0, 0, 0.5)',
-        );
-        done();
-      });
-    });
+    it('sets the configured background (string) on the container', () =>
+      new Promise((resolve) => {
+        layer.setBackground('rgba(255, 0, 0, 0.5)');
+        map.once('rendercomplete', function () {
+          assert.strictEqual(
+            layer.getRenderer().container.style.backgroundColor,
+            'rgba(255, 0, 0, 0.5)',
+          );
+          resolve();
+        });
+      }));
 
-    it('sets the configured background (function) on the container', function (done) {
-      layer.setBackground(function (resolution) {
-        assert.strictEqual(resolution, map.getView().getResolution());
-        return 'rgba(255, 0, 0, 0.5)';
-      });
-      map.once('rendercomplete', function () {
-        assert.strictEqual(
-          layer.getRenderer().container.style.backgroundColor,
-          'rgba(255, 0, 0, 0.5)',
-        );
-        done();
-      });
-    });
+    it('sets the configured background (function) on the container', () =>
+      new Promise((resolve) => {
+        layer.setBackground(function (resolution) {
+          assert.strictEqual(resolution, map.getView().getResolution());
+          return 'rgba(255, 0, 0, 0.5)';
+        });
+        map.once('rendercomplete', function () {
+          assert.strictEqual(
+            layer.getRenderer().container.style.backgroundColor,
+            'rgba(255, 0, 0, 0.5)',
+          );
+          resolve();
+        });
+      }));
 
-    it('changes background when function returns a different color', function (done) {
-      let count = 0;
-      layer.setBackground(function (resolution) {
-        const backgrounds = [
-          undefined,
-          'rgba(255, 0, 0, 0.5)',
-          'rgba(0, 0, 255, 0.5)',
-          undefined,
-        ];
+    it('changes background when function returns a different color', () =>
+      new Promise((resolve) => {
+        let count = 0;
+        layer.setBackground(function (resolution) {
+          const backgrounds = [
+            undefined,
+            'rgba(255, 0, 0, 0.5)',
+            'rgba(0, 0, 255, 0.5)',
+            undefined,
+          ];
 
-        assert.strictEqual(resolution, map.getView().getResolution());
-        return backgrounds[count++];
-      });
-      map.once('rendercomplete', function () {
-        assert.strictEqual(
-          layer.getRenderer().container.style.backgroundColor,
-          '',
-        );
-        map.renderSync();
-        assert.strictEqual(
-          layer.getRenderer().container.style.backgroundColor,
-          'rgba(255, 0, 0, 0.5)',
-        );
-        map.renderSync();
-        assert.strictEqual(
-          layer.getRenderer().container.style.backgroundColor,
-          'rgba(0, 0, 255, 0.5)',
-        );
-        map.renderSync();
-        assert.strictEqual(
-          layer.getRenderer().container.style.backgroundColor,
-          '',
-        );
-        done();
-      });
-    });
+          assert.strictEqual(resolution, map.getView().getResolution());
+          return backgrounds[count++];
+        });
+        map.once('rendercomplete', function () {
+          assert.strictEqual(
+            layer.getRenderer().container.style.backgroundColor,
+            '',
+          );
+          map.renderSync();
+          assert.strictEqual(
+            layer.getRenderer().container.style.backgroundColor,
+            'rgba(255, 0, 0, 0.5)',
+          );
+          map.renderSync();
+          assert.strictEqual(
+            layer.getRenderer().container.style.backgroundColor,
+            'rgba(0, 0, 255, 0.5)',
+          );
+          map.renderSync();
+          assert.strictEqual(
+            layer.getRenderer().container.style.backgroundColor,
+            '',
+          );
+          resolve();
+        });
+      }));
   });
 
   describe('#prepareFrame', function () {
@@ -888,7 +904,7 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
     });
 
     it('calls callback once per feature with a layer as 2nd arg', function () {
-      const spy = sinonSpy();
+      const spy = vi.fn();
       const coordinate = [0, 0];
       const matches = [];
       const frameState = {
@@ -909,176 +925,182 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
         spy,
         matches,
       );
-      assert.strictEqual(spy.callCount, 1);
-      assert.strictEqual(spy.getCall(0).args[1], layer);
+      assert.strictEqual(spy.mock.calls.length, 1);
+      assert.strictEqual(spy.mock.calls[0][1], layer);
       assert.isEmpty(matches);
     });
 
-    it('does not give false positives when overzoomed', function (done) {
-      const target = document.createElement('div');
-      target.style.width = '100px';
-      target.style.height = '100px';
-      document.body.appendChild(target);
-      const extent = [
-        1824704.739223726, 6141868.096770482, 1827150.7241288517,
-        6144314.081675608,
-      ];
-      const source = new VectorTileSource({
-        format: new MVT(),
-        url: 'spec/ol/data/14-8938-5680.vector.pbf',
-        minZoom: 14,
-        maxZoom: 14,
-      });
-      const map = new Map({
-        target: target,
-        layers: [
-          new VectorTileLayer({
-            extent: extent,
-            source: source,
-          }),
-        ],
-        view: new View({
-          center: getCenter(extent),
-          zoom: 19,
-        }),
-      });
-      source.on('tileloadend', function () {
-        setTimeout(function () {
-          const features = map.getFeaturesAtPixel([96, 96]);
-          disposeMap(map);
-          assert.instanceOf(features, Array);
-          assert.isEmpty(features);
-          done();
-        }, 200);
-      });
-    });
-
-    it('does not fail after decluttering', (done) => {
-      const target = document.createElement('div');
-      target.style.width = '100px';
-      target.style.height = '100px';
-      document.body.appendChild(target);
-      const extent = [
-        1824704.739223726, 6141868.096770482, 1827150.7241288517,
-        6144314.081675608,
-      ];
-      const source = new VectorTileSource({
-        format: new MVT(),
-        url: 'spec/ol/data/14-8938-5680.vector.pbf',
-        minZoom: 14,
-        maxZoom: 14,
-      });
-      const layer = new VectorTileLayer({
-        declutter: true,
-        extent: extent,
-        source: source,
-      });
-      const map = new Map({
-        target: target,
-        layers: [layer],
-        view: new View({
-          center: getCenter(extent),
-          zoom: 14,
-        }),
-      });
-      map.once('rendercomplete', () => {
-        setTimeout(() => {
-          disposeMap(map);
-        }, 0);
-        assert.doesNotThrow(() => {
-          layer
-            .getRenderer()
-            .forEachFeatureAtCoordinate(
-              getCenter(extent),
-              map.frameState_,
-              1,
-              VOID,
-              [],
-            );
+    it('does not give false positives when overzoomed', () =>
+      new Promise((resolve) => {
+        const target = document.createElement('div');
+        target.style.width = '100px';
+        target.style.height = '100px';
+        document.body.appendChild(target);
+        const extent = [
+          1824704.739223726, 6141868.096770482, 1827150.7241288517,
+          6144314.081675608,
+        ];
+        const source = new VectorTileSource({
+          format: new MVT(),
+          url: 'spec/ol/data/14-8938-5680.vector.pbf',
+          minZoom: 14,
+          maxZoom: 14,
         });
-        done();
-      });
-    });
-
-    it('detects symbols with `declutterMode: "none"`', (done) => {
-      const target = document.createElement('div');
-      target.style.width = '100px';
-      target.style.height = '100px';
-      document.body.appendChild(target);
-      const extent = [
-        1824704.739223726, 6141868.096770482, 1827150.7241288517,
-        6144314.081675608,
-      ];
-      const source = new VectorTileSource({
-        format: new MVT(),
-        url: 'spec/ol/data/14-8938-5680.vector.pbf',
-        minZoom: 14,
-        maxZoom: 14,
-      });
-      const layer = new VectorTileLayer({
-        declutter: true,
-        extent: extent,
-        source: source,
-        style: new Style({
-          image: new Circle({
-            declutterMode: 'none',
-            radius: 5,
-            fill: new Fill({color: 'red'}),
+        const map = new Map({
+          target: target,
+          layers: [
+            new VectorTileLayer({
+              extent: extent,
+              source: source,
+            }),
+          ],
+          view: new View({
+            center: getCenter(extent),
+            zoom: 19,
           }),
-        }),
-      });
-      const map = new Map({
-        target: target,
-        layers: [layer],
-        view: new View({
-          center: getCenter(extent),
-          zoom: 14,
-        }),
-      });
-      map.once('rendercomplete', () => {
-        setTimeout(() => {
-          disposeMap(map);
-        }, 0);
-        const features = map.getFeaturesAtPixel([11, 75]);
-        assert.lengthOf(features, 1);
-        done();
-      });
-    });
+        });
+        source.on('tileloadend', function () {
+          setTimeout(function () {
+            const features = map.getFeaturesAtPixel([96, 96]);
+            disposeMap(map);
+            assert.instanceOf(features, Array);
+            assert.isEmpty(features);
+            resolve();
+          }, 200);
+        });
+      }));
+
+    it('does not fail after decluttering', () =>
+      new Promise((resolve) => {
+        const target = document.createElement('div');
+        target.style.width = '100px';
+        target.style.height = '100px';
+        document.body.appendChild(target);
+        const extent = [
+          1824704.739223726, 6141868.096770482, 1827150.7241288517,
+          6144314.081675608,
+        ];
+        const source = new VectorTileSource({
+          format: new MVT(),
+          url: 'spec/ol/data/14-8938-5680.vector.pbf',
+          minZoom: 14,
+          maxZoom: 14,
+        });
+        const layer = new VectorTileLayer({
+          declutter: true,
+          extent: extent,
+          source: source,
+        });
+        const map = new Map({
+          target: target,
+          layers: [layer],
+          view: new View({
+            center: getCenter(extent),
+            zoom: 14,
+          }),
+        });
+        map.once('rendercomplete', () => {
+          assert.doesNotThrow(() => {
+            layer
+              .getRenderer()
+              .forEachFeatureAtCoordinate(
+                getCenter(extent),
+                map.frameState_,
+                1,
+                VOID,
+                [],
+              );
+          });
+          setTimeout(() => {
+            disposeMap(map);
+            resolve();
+          }, 0);
+        });
+      }));
+
+    it('detects symbols with `declutterMode: "none"`', () =>
+      new Promise((resolve) => {
+        const target = document.createElement('div');
+        target.style.width = '100px';
+        target.style.height = '100px';
+        document.body.appendChild(target);
+        const extent = [
+          1824704.739223726, 6141868.096770482, 1827150.7241288517,
+          6144314.081675608,
+        ];
+        const source = new VectorTileSource({
+          format: new MVT(),
+          url: 'spec/ol/data/14-8938-5680.vector.pbf',
+          minZoom: 14,
+          maxZoom: 14,
+        });
+        const layer = new VectorTileLayer({
+          declutter: true,
+          extent: extent,
+          source: source,
+          style: new Style({
+            image: new Circle({
+              declutterMode: 'none',
+              radius: 5,
+              fill: new Fill({color: 'red'}),
+            }),
+          }),
+        });
+        const map = new Map({
+          target: target,
+          layers: [layer],
+          view: new View({
+            center: getCenter(extent),
+            zoom: 14,
+          }),
+        });
+        map.once('rendercomplete', () => {
+          const features = map.getFeaturesAtPixel([11, 75]);
+          assert.lengthOf(features, 1);
+          setTimeout(() => {
+            disposeMap(map);
+            resolve();
+          }, 0);
+        });
+      }));
   });
 
   describe('mixed declutter settings', () => {
     let map;
-    beforeEach((done) => {
-      const extent = [
-        1824704.739223726, 6141868.096770482, 1827150.7241288517,
-        6144314.081675608,
-      ];
-      const source = new VectorTileSource({
-        format: new MVT(),
-        url: 'spec/ol/data/14-8938-5680.vector.pbf',
-        minZoom: 14,
-        maxZoom: 14,
-      });
-      const layer1 = new VectorTileLayer({
-        declutter: true,
-        extent: extent,
-        source: source,
-      });
-      const layer2 = new VectorTileLayer({
-        declutter: true,
-        extent: extent,
-        source: source,
-      });
-      map = new Map({
-        target: createMapDiv(100, 100),
-        layers: [layer1, layer2],
-        view: new View({
-          center: getCenter(extent),
-          zoom: 14,
+    beforeEach(
+      () =>
+        new Promise((resolve) => {
+          const extent = [
+            1824704.739223726, 6141868.096770482, 1827150.7241288517,
+            6144314.081675608,
+          ];
+          const source = new VectorTileSource({
+            format: new MVT(),
+            url: 'spec/ol/data/14-8938-5680.vector.pbf',
+            minZoom: 14,
+            maxZoom: 14,
+          });
+          const layer1 = new VectorTileLayer({
+            declutter: true,
+            extent: extent,
+            source: source,
+          });
+          const layer2 = new VectorTileLayer({
+            declutter: true,
+            extent: extent,
+            source: source,
+          });
+          map = new Map({
+            target: createMapDiv(100, 100),
+            layers: [layer1, layer2],
+            view: new View({
+              center: getCenter(extent),
+              zoom: 14,
+            }),
+          });
+          map.once('rendercomplete', () => resolve());
         }),
-      });
-      map.once('rendercomplete', () => done());
-    });
+    );
 
     afterEach(() => {
       checkedFonts.getListeners('propertychange').forEach((listener) => {

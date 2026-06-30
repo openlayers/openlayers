@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {spy as sinonSpy} from 'sinon';
 import Feature from '../../../../../../src/ol/Feature.js';
 import GeometryCollection from '../../../../../../src/ol/geom/GeometryCollection.js';
 import LineString from '../../../../../../src/ol/geom/LineString.js';
@@ -28,14 +27,14 @@ describe('MixedGeometryBatch', function () {
     let features, spy;
     beforeEach(() => {
       features = [new Feature(), new Feature(), new Feature()];
-      spy = sinonSpy(mixedBatch, 'addFeature');
+      spy = vi.spyOn(mixedBatch, 'addFeature');
       mixedBatch.addFeatures(features);
     });
     it('calls addFeature for each feature', () => {
-      assert.strictEqual(spy.callCount, 3);
-      assert.strictEqual(spy.args[0][0], features[0]);
-      assert.strictEqual(spy.args[1][0], features[1]);
-      assert.strictEqual(spy.args[2][0], features[2]);
+      assert.strictEqual(spy.mock.calls.length, 3);
+      assert.strictEqual(spy.mock.calls[0][0], features[0]);
+      assert.strictEqual(spy.mock.calls[1][0], features[1]);
+      assert.strictEqual(spy.mock.calls[2][0], features[2]);
     });
   });
 

@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {spy as sinonSpy} from 'sinon';
 import Feature from '../../../../../../src/ol/Feature.js';
 import Map from '../../../../../../src/ol/Map.js';
 import View from '../../../../../../src/ol/View.js';
@@ -97,185 +96,194 @@ describe('ol/renderer/webgl/PointsLayer', function () {
     it('calls WebGlHelper#prepareDraw', function () {
       renderer.prepareFrame(frameState);
 
-      const spy = sinonSpy(renderer.helper, 'prepareDraw');
+      const spy = vi.spyOn(renderer.helper, 'prepareDraw');
       renderer.prepareFrame(frameState);
-      assert.strictEqual(spy.called, true);
+      assert.isAbove(spy.mock.calls.length, 0);
     });
 
-    it('fills up a buffer with 2 triangles per point', function (done) {
-      layer.getSource().addFeature(
-        new Feature({
-          geometry: new Point([10, 20]),
-        }),
-      );
-      layer.getSource().addFeature(
-        new Feature({
-          geometry: new Point([30, 40]),
-        }),
-      );
-      renderer.prepareFrame(frameState);
-
-      const attributePerVertex = 2;
-
-      renderer.worker_.addEventListener('message', function (event) {
-        if (event.data.type !== WebGLWorkerMessageType.GENERATE_POINT_BUFFERS) {
-          return;
-        }
-        assertArrayLikeEqual(renderer.verticesBuffer_.getArray().length, 8);
-        assert.deepEqual(
-          renderer.instanceAttributesBuffer_.getArray().length,
-          2 * attributePerVertex,
+    it('fills up a buffer with 2 triangles per point', () =>
+      new Promise((resolve) => {
+        layer.getSource().addFeature(
+          new Feature({
+            geometry: new Point([10, 20]),
+          }),
         );
-        assertArrayLikeEqual(renderer.indicesBuffer_.getArray().length, 6);
-
-        assertArrayLikeEqual(
-          renderer.instanceAttributesBuffer_.getArray(),
-          [10, 20, 30, 40],
+        layer.getSource().addFeature(
+          new Feature({
+            geometry: new Point([30, 40]),
+          }),
         );
-        done();
-      });
-    });
+        renderer.prepareFrame(frameState);
 
-    it('fills up the hit render buffer with 2 triangles per point', function (done) {
-      renderer.dispose();
-      renderer = new WebGLPointsLayerRenderer(layer, {
-        vertexShader: simpleVertexShader,
-        fragmentShader: simpleFragmentShader,
-        hitDetectionEnabled: true,
-      });
-      layer.getSource().addFeature(
-        new Feature({
-          geometry: new Point([10, 20]),
-        }),
-      );
-      layer.getSource().addFeature(
-        new Feature({
-          geometry: new Point([30, 40]),
-        }),
-      );
-      renderer.prepareFrame(frameState);
+        const attributePerVertex = 2;
 
-      const attributePerVertex = 5;
+        renderer.worker_.addEventListener('message', function (event) {
+          if (
+            event.data.type !== WebGLWorkerMessageType.GENERATE_POINT_BUFFERS
+          ) {
+            return;
+          }
+          assertArrayLikeEqual(renderer.verticesBuffer_.getArray().length, 8);
+          assert.deepEqual(
+            renderer.instanceAttributesBuffer_.getArray().length,
+            2 * attributePerVertex,
+          );
+          assertArrayLikeEqual(renderer.indicesBuffer_.getArray().length, 6);
 
-      renderer.worker_.addEventListener('message', function (event) {
-        if (event.data.type !== WebGLWorkerMessageType.GENERATE_POINT_BUFFERS) {
-          return;
-        }
-        if (!renderer.verticesBuffer_.getArray()) {
-          return;
-        }
-        assertArrayLikeEqual(renderer.verticesBuffer_.getArray().length, 8);
-        assert.deepEqual(
-          renderer.instanceAttributesBuffer_.getArray().length,
-          2 * attributePerVertex,
+          assertArrayLikeEqual(
+            renderer.instanceAttributesBuffer_.getArray(),
+            [10, 20, 30, 40],
+          );
+          resolve();
+        });
+      }));
+
+    it('fills up the hit render buffer with 2 triangles per point', () =>
+      new Promise((resolve) => {
+        renderer.dispose();
+        renderer = new WebGLPointsLayerRenderer(layer, {
+          vertexShader: simpleVertexShader,
+          fragmentShader: simpleFragmentShader,
+          hitDetectionEnabled: true,
+        });
+        layer.getSource().addFeature(
+          new Feature({
+            geometry: new Point([10, 20]),
+          }),
         );
-        assertArrayLikeEqual(renderer.indicesBuffer_.getArray().length, 6);
-
-        assertArrayLikeEqual(
-          renderer.instanceAttributesBuffer_.getArray().slice(0, 2),
-          [10, 20],
+        layer.getSource().addFeature(
+          new Feature({
+            geometry: new Point([30, 40]),
+          }),
         );
-        assertArrayLikeEqual(
-          renderer.instanceAttributesBuffer_
-            .getArray()
-            .slice(attributePerVertex, 2 + attributePerVertex),
-          [30, 40],
+        renderer.prepareFrame(frameState);
+
+        const attributePerVertex = 5;
+
+        renderer.worker_.addEventListener('message', function (event) {
+          if (
+            event.data.type !== WebGLWorkerMessageType.GENERATE_POINT_BUFFERS
+          ) {
+            return;
+          }
+          if (!renderer.verticesBuffer_.getArray()) {
+            return;
+          }
+          assertArrayLikeEqual(renderer.verticesBuffer_.getArray().length, 8);
+          assert.deepEqual(
+            renderer.instanceAttributesBuffer_.getArray().length,
+            2 * attributePerVertex,
+          );
+          assertArrayLikeEqual(renderer.indicesBuffer_.getArray().length, 6);
+
+          assertArrayLikeEqual(
+            renderer.instanceAttributesBuffer_.getArray().slice(0, 2),
+            [10, 20],
+          );
+          assertArrayLikeEqual(
+            renderer.instanceAttributesBuffer_
+              .getArray()
+              .slice(attributePerVertex, 2 + attributePerVertex),
+            [30, 40],
+          );
+          resolve();
+        });
+      }));
+
+    it('clears the buffers when the features are gone', () =>
+      new Promise((resolve) => {
+        const source = layer.getSource();
+        source.addFeature(
+          new Feature({
+            geometry: new Point([10, 20]),
+          }),
         );
-        done();
-      });
-    });
-
-    it('clears the buffers when the features are gone', function (done) {
-      const source = layer.getSource();
-      source.addFeature(
-        new Feature({
-          geometry: new Point([10, 20]),
-        }),
-      );
-      source.removeFeature(source.getFeatures()[0]);
-      source.addFeature(
-        new Feature({
-          geometry: new Point([10, 20]),
-        }),
-      );
-      renderer.prepareFrame(frameState);
-
-      renderer.worker_.addEventListener('message', function (event) {
-        if (event.data.type !== WebGLWorkerMessageType.GENERATE_POINT_BUFFERS) {
-          return;
-        }
-        const attributePerVertex = 1;
-        assertArrayLikeEqual(renderer.verticesBuffer_.getArray().length, 8);
-        assert.deepEqual(
-          renderer.instanceAttributesBuffer_.getArray().length,
-          2 * attributePerVertex,
+        source.removeFeature(source.getFeatures()[0]);
+        source.addFeature(
+          new Feature({
+            geometry: new Point([10, 20]),
+          }),
         );
-        assertArrayLikeEqual(renderer.indicesBuffer_.getArray().length, 6);
+        renderer.prepareFrame(frameState);
 
-        done();
-      });
-    });
+        renderer.worker_.addEventListener('message', function (event) {
+          if (
+            event.data.type !== WebGLWorkerMessageType.GENERATE_POINT_BUFFERS
+          ) {
+            return;
+          }
+          const attributePerVertex = 1;
+          assertArrayLikeEqual(renderer.verticesBuffer_.getArray().length, 8);
+          assert.deepEqual(
+            renderer.instanceAttributesBuffer_.getArray().length,
+            2 * attributePerVertex,
+          );
+          assertArrayLikeEqual(renderer.indicesBuffer_.getArray().length, 6);
+
+          resolve();
+        });
+      }));
 
     it('rebuilds the buffers only when not interacting or animating', function () {
-      const spy = sinonSpy(renderer, 'rebuildBuffers_');
+      const spy = vi.spyOn(renderer, 'rebuildBuffers_');
 
       frameState.viewHints[ViewHint.INTERACTING] = 1;
       frameState.viewHints[ViewHint.ANIMATING] = 0;
       renderer.prepareFrame(frameState);
-      assert.strictEqual(spy.called, false);
+      assert.strictEqual(spy.mock.calls.length, 0);
 
       frameState.viewHints[ViewHint.INTERACTING] = 0;
       frameState.viewHints[ViewHint.ANIMATING] = 1;
       renderer.prepareFrame(frameState);
-      assert.strictEqual(spy.called, false);
+      assert.strictEqual(spy.mock.calls.length, 0);
 
       frameState.viewHints[ViewHint.INTERACTING] = 0;
       frameState.viewHints[ViewHint.ANIMATING] = 0;
       renderer.prepareFrame(frameState);
-      assert.strictEqual(spy.called, true);
+      assert.isAbove(spy.mock.calls.length, 0);
     });
 
     it('rebuilds the buffers only when the frame extent changed', function () {
-      const spy = sinonSpy(renderer, 'rebuildBuffers_');
+      const spy = vi.spyOn(renderer, 'rebuildBuffers_');
 
       renderer.prepareFrame(frameState);
-      assert.strictEqual(spy.callCount, 1);
+      assert.strictEqual(spy.mock.calls.length, 1);
 
       renderer.prepareFrame(frameState);
-      assert.strictEqual(spy.callCount, 1);
+      assert.strictEqual(spy.mock.calls.length, 1);
 
       frameState.extent = [10, 20, 30, 40];
       renderer.prepareFrame(frameState);
-      assert.strictEqual(spy.callCount, 2);
+      assert.strictEqual(spy.mock.calls.length, 2);
     });
 
     it('triggers source loading when the extent changes', function () {
-      const spy = sinonSpy(layer.getSource(), 'loadFeatures');
+      const spy = vi.spyOn(layer.getSource(), 'loadFeatures');
 
       renderer.prepareFrame(frameState);
-      assert.strictEqual(spy.callCount, 1);
+      assert.strictEqual(spy.mock.calls.length, 1);
 
       renderer.prepareFrame(frameState);
-      assert.strictEqual(spy.callCount, 1);
+      assert.strictEqual(spy.mock.calls.length, 1);
 
       frameState.extent = [10, 20, 30, 40];
       renderer.prepareFrame(frameState);
-      assert.strictEqual(spy.callCount, 2);
-      assert.deepEqual(spy.getCall(1).args[0], [0, 10, 40, 50]);
+      assert.strictEqual(spy.mock.calls.length, 2);
+      assert.deepEqual(spy.mock.calls[1][0], [0, 10, 40, 50]);
     });
 
     it('triggers source loading when the source revision changes', function () {
-      const spy = sinonSpy(layer.getSource(), 'loadFeatures');
+      const spy = vi.spyOn(layer.getSource(), 'loadFeatures');
 
       renderer.prepareFrame(frameState);
-      assert.strictEqual(spy.callCount, 1);
+      assert.strictEqual(spy.mock.calls.length, 1);
 
       renderer.prepareFrame(frameState);
-      assert.strictEqual(spy.callCount, 1);
+      assert.strictEqual(spy.mock.calls.length, 1);
 
       layer.getSource().changed();
       renderer.prepareFrame(frameState);
-      assert.strictEqual(spy.callCount, 2);
+      assert.strictEqual(spy.mock.calls.length, 2);
     });
   });
 
@@ -301,121 +309,129 @@ describe('ol/renderer/webgl/PointsLayer', function () {
       renderer.dispose();
     });
 
-    it('correctly hit detects a feature', function (done) {
-      const transform = composeTransform(
-        createTransform(),
-        20,
-        20,
-        1,
-        -1,
-        0,
-        0,
-        0,
-      );
-      const frameState = Object.assign({}, baseFrameState, {
-        extent: [-20, -20, 20, 20],
-        size: [40, 40],
-        coordinateToPixelTransform: transform,
-        layerStatesArray: [layer.getLayerState()],
-      });
+    it('correctly hit detects a feature', () =>
+      new Promise((resolve) => {
+        const transform = composeTransform(
+          createTransform(),
+          20,
+          20,
+          1,
+          -1,
+          0,
+          0,
+          0,
+        );
+        const frameState = Object.assign({}, baseFrameState, {
+          extent: [-20, -20, 20, 20],
+          size: [40, 40],
+          coordinateToPixelTransform: transform,
+          layerStatesArray: [layer.getLayerState()],
+        });
 
-      renderer.prepareFrame(frameState);
-      renderer.worker_.addEventListener('message', function () {
-        if (!renderer.renderInstructions_) {
-          return;
-        }
         renderer.prepareFrame(frameState);
-        renderer.renderFrame(frameState);
-
-        function checkHit(x, y, expected) {
-          let called = false;
-          renderer.forEachFeatureAtCoordinate(
-            [x, y],
-            frameState,
-            0,
-            function (feature) {
-              assert.strictEqual(feature, expected);
-              called = true;
-            },
-            null,
-          );
-
-          if (expected) {
-            assert.strictEqual(called, true);
-          } else {
-            assert.strictEqual(called, false);
+        renderer.worker_.addEventListener('message', function () {
+          if (!renderer.renderInstructions_) {
+            return;
           }
-        }
+          renderer.prepareFrame(frameState);
+          renderer.renderFrame(frameState);
 
-        checkHit(0, 0, feature);
-        checkHit(1, -1, feature);
-        checkHit(-2, 2, feature);
-        checkHit(2, 0, null);
-        checkHit(1, -3, null);
+          function checkHit(x, y, expected) {
+            let called = false;
+            renderer.forEachFeatureAtCoordinate(
+              [x, y],
+              frameState,
+              0,
+              function (feature) {
+                assert.strictEqual(feature, expected);
+                called = true;
+              },
+              null,
+            );
 
-        checkHit(14, 14, feature2);
-        checkHit(15, 13, feature2);
-        checkHit(12, 16, feature2);
-        checkHit(16, 14, null);
-        checkHit(13, 11, null);
+            if (expected) {
+              assert.strictEqual(called, true);
+            } else {
+              assert.strictEqual(called, false);
+            }
+          }
 
-        done();
-      });
-    });
+          checkHit(0, 0, feature);
+          checkHit(1, -1, feature);
+          checkHit(-2, 2, feature);
+          checkHit(2, 0, null);
+          checkHit(1, -3, null);
 
-    it('correctly hit detects with pixelratio != 1', function (done) {
-      const transform = composeTransform(
-        createTransform(),
-        20,
-        20,
-        1,
-        -1,
-        0,
-        0,
-        0,
-      );
-      const frameState = Object.assign({}, baseFrameState, {
-        pixelRatio: 3,
-        extent: [-20, -20, 20, 20],
-        size: [40, 40],
-        coordinateToPixelTransform: transform,
-        layerStatesArray: [layer.getLayerState()],
-      });
+          checkHit(14, 14, feature2);
+          checkHit(15, 13, feature2);
+          checkHit(12, 16, feature2);
+          checkHit(16, 14, null);
+          checkHit(13, 11, null);
 
-      let found;
-      const cb = function (feature) {
-        found = feature;
-      };
+          resolve();
+        });
+      }));
 
-      renderer.prepareFrame(frameState);
-      renderer.worker_.addEventListener('message', function () {
-        if (!renderer.renderInstructions_) {
-          return;
-        }
+    it('correctly hit detects with pixelratio != 1', () =>
+      new Promise((resolve) => {
+        const transform = composeTransform(
+          createTransform(),
+          20,
+          20,
+          1,
+          -1,
+          0,
+          0,
+          0,
+        );
+        const frameState = Object.assign({}, baseFrameState, {
+          pixelRatio: 3,
+          extent: [-20, -20, 20, 20],
+          size: [40, 40],
+          coordinateToPixelTransform: transform,
+          layerStatesArray: [layer.getLayerState()],
+        });
+
+        let found;
+        const cb = function (feature) {
+          found = feature;
+        };
+
         renderer.prepareFrame(frameState);
-        renderer.renderFrame(frameState);
+        renderer.worker_.addEventListener('message', function () {
+          if (!renderer.renderInstructions_) {
+            return;
+          }
+          renderer.prepareFrame(frameState);
+          renderer.renderFrame(frameState);
 
-        function checkHit(x, y, expected) {
-          found = null;
-          renderer.forEachFeatureAtCoordinate([x, y], frameState, 0, cb, null);
-          assert.strictEqual(found, expected);
-        }
+          function checkHit(x, y, expected) {
+            found = null;
+            renderer.forEachFeatureAtCoordinate(
+              [x, y],
+              frameState,
+              0,
+              cb,
+              null,
+            );
+            assert.strictEqual(found, expected);
+          }
 
-        checkHit(0, 0, feature);
-        checkHit(1, -1, feature);
-        checkHit(-2, 2, feature);
-        checkHit(2, 0, null);
-        checkHit(1, -3, null);
+          checkHit(0, 0, feature);
+          checkHit(1, -1, feature);
+          checkHit(-2, 2, feature);
+          checkHit(2, 0, null);
+          checkHit(1, -3, null);
 
-        checkHit(14, 14, feature2);
-        checkHit(15, 13, feature2);
-        checkHit(12, 16, feature2);
-        checkHit(16, 14, null);
-        checkHit(13, 11, null);
+          checkHit(14, 14, feature2);
+          checkHit(15, 13, feature2);
+          checkHit(12, 16, feature2);
+          checkHit(16, 14, null);
+          checkHit(13, 11, null);
 
-        done();
-      });
-    });
+          resolve();
+        });
+      }));
   });
 
   describe('#disposeInternal', function () {
@@ -435,11 +451,11 @@ describe('ol/renderer/webgl/PointsLayer', function () {
       });
       renderer.prepareFrame(frameState);
 
-      const spyHelper = sinonSpy(renderer.helper, 'disposeInternal');
-      const spyWorker = sinonSpy(renderer.worker_, 'terminate');
+      const spyHelper = vi.spyOn(renderer.helper, 'disposeInternal');
+      const spyWorker = vi.spyOn(renderer.worker_, 'terminate');
       renderer.dispose();
-      assert.strictEqual(spyHelper.called, true);
-      assert.strictEqual(spyWorker.called, true);
+      assert.isAbove(spyHelper.mock.calls.length, 0);
+      assert.isAbove(spyWorker.mock.calls.length, 0);
     });
   });
 
@@ -729,24 +745,25 @@ describe('ol/renderer/webgl/PointsLayer', function () {
       renderer.dispose();
     });
 
-    it('fires prerender and postrender events', function (done) {
-      let prerenderNotified = false;
-      let postrenderNotified = false;
+    it('fires prerender and postrender events', () =>
+      new Promise((resolve) => {
+        let prerenderNotified = false;
+        let postrenderNotified = false;
 
-      layer.once('prerender', (evt) => {
-        prerenderNotified = true;
-      });
+        layer.once('prerender', (evt) => {
+          prerenderNotified = true;
+        });
 
-      layer.once('postrender', (evt) => {
-        postrenderNotified = true;
-        assert.strictEqual(prerenderNotified, true);
-        assert.strictEqual(postrenderNotified, true);
-        done();
-      });
+        layer.once('postrender', (evt) => {
+          postrenderNotified = true;
+          assert.strictEqual(prerenderNotified, true);
+          assert.strictEqual(postrenderNotified, true);
+          resolve();
+        });
 
-      renderer.prepareFrame(frameState);
-      renderer.renderFrame(frameState);
-    });
+        renderer.prepareFrame(frameState);
+        renderer.renderFrame(frameState);
+      }));
   });
 
   describe('rendercomplete', function () {
@@ -777,33 +794,34 @@ describe('ol/renderer/webgl/PointsLayer', function () {
       layer.dispose();
     });
 
-    it('is completely rendered on rendercomplete', function (done) {
-      map.once('rendercomplete', function () {
-        const targetContext = createCanvasContext2D(1, 1);
-        const canvas = document.querySelector('.ol-layer');
-        targetContext.drawImage(canvas, 50, 50, 1, 1, 0, 0, 1, 1);
-        assert.deepEqual(
-          Array.from(targetContext.getImageData(0, 0, 1, 1).data),
-          [255, 0, 0, 255],
-        );
-        layer
-          .getSource()
-          .addFeature(new Feature(new Point([1900000, 1900000])));
-        layer.once('postrender', function () {
-          assert.strictEqual(layer.getRenderer().ready, false);
-        });
+    it('is completely rendered on rendercomplete', () =>
+      new Promise((resolve) => {
         map.once('rendercomplete', function () {
           const targetContext = createCanvasContext2D(1, 1);
           const canvas = document.querySelector('.ol-layer');
-          targetContext.drawImage(canvas, 99, 0, 1, 1, 0, 0, 1, 1);
+          targetContext.drawImage(canvas, 50, 50, 1, 1, 0, 0, 1, 1);
           assert.deepEqual(
             Array.from(targetContext.getImageData(0, 0, 1, 1).data),
             [255, 0, 0, 255],
           );
-          done();
+          layer
+            .getSource()
+            .addFeature(new Feature(new Point([1900000, 1900000])));
+          layer.once('postrender', function () {
+            assert.strictEqual(layer.getRenderer().ready, false);
+          });
+          map.once('rendercomplete', function () {
+            const targetContext = createCanvasContext2D(1, 1);
+            const canvas = document.querySelector('.ol-layer');
+            targetContext.drawImage(canvas, 99, 0, 1, 1, 0, 0, 1, 1);
+            assert.deepEqual(
+              Array.from(targetContext.getImageData(0, 0, 1, 1).data),
+              [255, 0, 0, 255],
+            );
+            resolve();
+          });
         });
-      });
-    });
+      }));
   });
 
   describe('layer not visible initially', function () {
@@ -836,14 +854,15 @@ describe('ol/renderer/webgl/PointsLayer', function () {
       layer.dispose();
     });
 
-    it('loadstart and loadend events trigger normally', function (done) {
-      map.once('loadstart', () => {
-        map.once('loadend', () => {
-          done();
+    it('loadstart and loadend events trigger normally', () =>
+      new Promise((resolve) => {
+        map.once('loadstart', () => {
+          map.once('loadend', () => {
+            resolve();
+          });
         });
-      });
-      map.renderSync();
-    });
+        map.renderSync();
+      }));
   });
 
   describe('#updateStyleVariables()', function () {
@@ -857,57 +876,61 @@ describe('ol/renderer/webgl/PointsLayer', function () {
     }
 
     let map, layer;
-    beforeEach(function (done) {
-      layer = new WebGLPointsLayer({
-        className: 'testlayer',
-        source: new VectorSource({
-          features: [new Feature(new Point([0, 0]))],
+    beforeEach(
+      () =>
+        new Promise((resolve) => {
+          layer = new WebGLPointsLayer({
+            className: 'testlayer',
+            source: new VectorSource({
+              features: [new Feature(new Point([0, 0]))],
+            }),
+            variables: {
+              r: 0,
+              g: 255,
+              b: 0,
+            },
+            style: {
+              'circle-radius': 14,
+              'circle-fill-color': [
+                'color',
+                ['var', 'r'],
+                ['var', 'g'],
+                ['var', 'b'],
+              ],
+            },
+          });
+          map = new Map({
+            pixelRatio: 1,
+            target: createMapDiv(100, 100),
+            layers: [layer],
+            view: new View({
+              center: [0, 0],
+              zoom: 2,
+            }),
+          });
+          map.once('rendercomplete', () => resolve());
         }),
-        variables: {
-          r: 0,
-          g: 255,
-          b: 0,
-        },
-        style: {
-          'circle-radius': 14,
-          'circle-fill-color': [
-            'color',
-            ['var', 'r'],
-            ['var', 'g'],
-            ['var', 'b'],
-          ],
-        },
-      });
-      map = new Map({
-        pixelRatio: 1,
-        target: createMapDiv(100, 100),
-        layers: [layer],
-        view: new View({
-          center: [0, 0],
-          zoom: 2,
-        }),
-      });
-      map.once('rendercomplete', () => done());
-    });
+    );
     afterEach(function () {
       disposeMap(map);
       layer.dispose();
     });
 
-    it('allows changing variables', function (done) {
-      assert.strictEqual(layer.styleVariables_['r'], 0);
-      assert.deepEqual(getCenterPixelImageData(), [0, 255, 0, 255]);
-      layer.updateStyleVariables({
-        r: 255,
-        g: 0,
-        b: 255,
-      });
-      assert.strictEqual(layer.styleVariables_['r'], 255);
+    it('allows changing variables', () =>
+      new Promise((resolve) => {
+        assert.strictEqual(layer.styleVariables_['r'], 0);
+        assert.deepEqual(getCenterPixelImageData(), [0, 255, 0, 255]);
+        layer.updateStyleVariables({
+          r: 255,
+          g: 0,
+          b: 255,
+        });
+        assert.strictEqual(layer.styleVariables_['r'], 255);
 
-      map.on('rendercomplete', function (event) {
-        assert.deepEqual(getCenterPixelImageData(), [255, 0, 255, 255]);
-        done();
-      });
-    });
+        map.on('rendercomplete', function (event) {
+          assert.deepEqual(getCenterPixelImageData(), [255, 0, 255, 255]);
+          resolve();
+        });
+      }));
   });
 });

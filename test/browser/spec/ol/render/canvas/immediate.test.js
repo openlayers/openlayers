@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {spy as sinonSpy} from 'sinon';
 import Circle from '../../../../../../src/ol/geom/Circle.js';
 import GeometryCollection from '../../../../../../src/ol/geom/GeometryCollection.js';
 import LineString from '../../../../../../src/ol/geom/LineString.js';
@@ -19,12 +18,12 @@ import Text from '../../../../../../src/ol/style/Text.js';
 describe('ol.render.canvas.Immediate', function () {
   function getMockContext() {
     return {
-      setLineDash: sinonSpy(),
-      beginPath: sinonSpy(),
-      closePath: sinonSpy(),
-      stroke: sinonSpy(),
-      lineTo: sinonSpy(),
-      moveTo: sinonSpy(),
+      setLineDash: vi.fn(),
+      beginPath: vi.fn(),
+      closePath: vi.fn(),
+      stroke: vi.fn(),
+      lineTo: vi.fn(),
+      moveTo: vi.fn(),
     };
   }
 
@@ -39,9 +38,9 @@ describe('ol.render.canvas.Immediate', function () {
   describe('#setStyle()', function () {
     it('calls the more specific methods with style parts', function () {
       const context = new CanvasImmediateRenderer();
-      sinonSpy(context, 'setFillStrokeStyle');
-      sinonSpy(context, 'setImageStyle');
-      sinonSpy(context, 'setTextStyle');
+      vi.spyOn(context, 'setFillStrokeStyle');
+      vi.spyOn(context, 'setImageStyle');
+      vi.spyOn(context, 'setTextStyle');
       const fill = new Fill({});
       const stroke = new Stroke({});
       const text = new Text({});
@@ -54,21 +53,15 @@ describe('ol.render.canvas.Immediate', function () {
       });
 
       context.setStyle(style);
-      assert.strictEqual(context.setFillStrokeStyle.calledOnce, true);
-      assert.strictEqual(
-        context.setFillStrokeStyle.firstCall.calledWithExactly(fill, stroke),
-        true,
-      );
-      assert.strictEqual(context.setImageStyle.calledOnce, true);
-      assert.strictEqual(
-        context.setImageStyle.firstCall.calledWithExactly(image),
-        true,
-      );
-      assert.strictEqual(context.setTextStyle.calledOnce, true);
-      assert.strictEqual(
-        context.setTextStyle.firstCall.calledWithExactly(text),
-        true,
-      );
+      assert.strictEqual(context.setFillStrokeStyle.mock.calls.length, 1);
+      assert.deepEqual(context.setFillStrokeStyle.mock.calls[0], [
+        fill,
+        stroke,
+      ]);
+      assert.strictEqual(context.setImageStyle.mock.calls.length, 1);
+      assert.deepEqual(context.setImageStyle.mock.calls[0], [image]);
+      assert.strictEqual(context.setTextStyle.mock.calls.length, 1);
+      assert.deepEqual(context.setTextStyle.mock.calls[0], [text]);
     });
   });
 
@@ -77,36 +70,30 @@ describe('ol.render.canvas.Immediate', function () {
 
     it('calls drawPoint() with a Point', function () {
       const context = new CanvasImmediateRenderer(getMockContext(), 1, extent);
-      sinonSpy(context, 'drawPoint');
+      vi.spyOn(context, 'drawPoint');
 
       const geometry = new Point([1, 2]);
       context.drawGeometry(geometry);
-      assert.strictEqual(context.drawPoint.calledOnce, true);
-      assert.strictEqual(
-        context.drawPoint.firstCall.calledWithExactly(geometry),
-        true,
-      );
+      assert.strictEqual(context.drawPoint.mock.calls.length, 1);
+      assert.deepEqual(context.drawPoint.mock.calls[0], [geometry]);
     });
 
     it('calls drawLineString() with a LineString', function () {
       const context = new CanvasImmediateRenderer(getMockContext(), 1, extent);
-      sinonSpy(context, 'drawLineString');
+      vi.spyOn(context, 'drawLineString');
 
       const geometry = new LineString([
         [1, 2],
         [3, 4],
       ]);
       context.drawGeometry(geometry);
-      assert.strictEqual(context.drawLineString.calledOnce, true);
-      assert.strictEqual(
-        context.drawLineString.firstCall.calledWithExactly(geometry),
-        true,
-      );
+      assert.strictEqual(context.drawLineString.mock.calls.length, 1);
+      assert.deepEqual(context.drawLineString.mock.calls[0], [geometry]);
     });
 
     it('calls drawPolygon() with a Polygon', function () {
       const context = new CanvasImmediateRenderer(getMockContext(), 1, extent);
-      sinonSpy(context, 'drawPolygon');
+      vi.spyOn(context, 'drawPolygon');
 
       const geometry = new Polygon([
         [
@@ -117,32 +104,26 @@ describe('ol.render.canvas.Immediate', function () {
         ],
       ]);
       context.drawGeometry(geometry);
-      assert.strictEqual(context.drawPolygon.calledOnce, true);
-      assert.strictEqual(
-        context.drawPolygon.firstCall.calledWithExactly(geometry),
-        true,
-      );
+      assert.strictEqual(context.drawPolygon.mock.calls.length, 1);
+      assert.deepEqual(context.drawPolygon.mock.calls[0], [geometry]);
     });
 
     it('calls drawMultiPoint() with a MultiPoint', function () {
       const context = new CanvasImmediateRenderer(getMockContext(), 1, extent);
-      sinonSpy(context, 'drawMultiPoint');
+      vi.spyOn(context, 'drawMultiPoint');
 
       const geometry = new MultiPoint([
         [1, 2],
         [3, 4],
       ]);
       context.drawGeometry(geometry);
-      assert.strictEqual(context.drawMultiPoint.calledOnce, true);
-      assert.strictEqual(
-        context.drawMultiPoint.firstCall.calledWithExactly(geometry),
-        true,
-      );
+      assert.strictEqual(context.drawMultiPoint.mock.calls.length, 1);
+      assert.deepEqual(context.drawMultiPoint.mock.calls[0], [geometry]);
     });
 
     it('calls drawMultiLineString() with a MultiLineString', function () {
       const context = new CanvasImmediateRenderer(getMockContext(), 1, extent);
-      sinonSpy(context, 'drawMultiLineString');
+      vi.spyOn(context, 'drawMultiLineString');
 
       const geometry = new MultiLineString([
         [
@@ -151,16 +132,13 @@ describe('ol.render.canvas.Immediate', function () {
         ],
       ]);
       context.drawGeometry(geometry);
-      assert.strictEqual(context.drawMultiLineString.calledOnce, true);
-      assert.strictEqual(
-        context.drawMultiLineString.firstCall.calledWithExactly(geometry),
-        true,
-      );
+      assert.strictEqual(context.drawMultiLineString.mock.calls.length, 1);
+      assert.deepEqual(context.drawMultiLineString.mock.calls[0], [geometry]);
     });
 
     it('calls drawMultiPolygon() with a MultiPolygon', function () {
       const context = new CanvasImmediateRenderer(getMockContext(), 1, extent);
-      sinonSpy(context, 'drawMultiPolygon');
+      vi.spyOn(context, 'drawMultiPolygon');
 
       const geometry = new MultiPolygon([
         [
@@ -173,19 +151,16 @@ describe('ol.render.canvas.Immediate', function () {
         ],
       ]);
       context.drawGeometry(geometry);
-      assert.strictEqual(context.drawMultiPolygon.calledOnce, true);
-      assert.strictEqual(
-        context.drawMultiPolygon.firstCall.calledWithExactly(geometry),
-        true,
-      );
+      assert.strictEqual(context.drawMultiPolygon.mock.calls.length, 1);
+      assert.deepEqual(context.drawMultiPolygon.mock.calls[0], [geometry]);
     });
 
     it('calls drawGeometryCollection() with a GeometryCollection', function () {
       const context = new CanvasImmediateRenderer(getMockContext(), 1, extent);
-      sinonSpy(context, 'drawGeometryCollection');
-      sinonSpy(context, 'drawPoint');
-      sinonSpy(context, 'drawLineString');
-      sinonSpy(context, 'drawPolygon');
+      vi.spyOn(context, 'drawGeometryCollection');
+      vi.spyOn(context, 'drawPoint');
+      vi.spyOn(context, 'drawLineString');
+      vi.spyOn(context, 'drawPolygon');
 
       const point = new Point([1, 2]);
       const linestring = new LineString([
@@ -204,36 +179,24 @@ describe('ol.render.canvas.Immediate', function () {
       const geometry = new GeometryCollection([point, linestring, polygon]);
       context.drawGeometry(geometry);
 
-      assert.strictEqual(context.drawGeometryCollection.calledOnce, true);
-      assert.strictEqual(context.drawPoint.calledOnce, true);
-      assert.strictEqual(
-        context.drawPoint.firstCall.calledWithExactly(point),
-        true,
-      );
-      assert.strictEqual(context.drawLineString.calledOnce, true);
-      assert.strictEqual(
-        context.drawLineString.firstCall.calledWithExactly(linestring),
-        true,
-      );
-      assert.strictEqual(context.drawPolygon.calledOnce, true);
-      assert.strictEqual(
-        context.drawPolygon.firstCall.calledWithExactly(polygon),
-        true,
-      );
+      assert.strictEqual(context.drawGeometryCollection.mock.calls.length, 1);
+      assert.strictEqual(context.drawPoint.mock.calls.length, 1);
+      assert.deepEqual(context.drawPoint.mock.calls[0], [point]);
+      assert.strictEqual(context.drawLineString.mock.calls.length, 1);
+      assert.deepEqual(context.drawLineString.mock.calls[0], [linestring]);
+      assert.strictEqual(context.drawPolygon.mock.calls.length, 1);
+      assert.deepEqual(context.drawPolygon.mock.calls[0], [polygon]);
     });
 
     it('calls drawCircle() with a Circle', function () {
       const context = new CanvasImmediateRenderer(getMockContext(), 1, extent);
-      sinonSpy(context, 'drawCircle');
+      vi.spyOn(context, 'drawCircle');
 
       const geometry = new Circle([0, 0]);
       context.drawGeometry(geometry);
 
-      assert.strictEqual(context.drawCircle.calledOnce, true);
-      assert.strictEqual(
-        context.drawCircle.firstCall.calledWithExactly(geometry),
-        true,
-      );
+      assert.strictEqual(context.drawCircle.mock.calls.length, 1);
+      assert.deepEqual(context.drawCircle.mock.calls[0], [geometry]);
     });
   });
 

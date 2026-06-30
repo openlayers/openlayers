@@ -1,6 +1,6 @@
 import {assert} from 'chai';
 import proj4 from 'proj4';
-import {spy as sinonSpy} from 'sinon';
+
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
 import ScaleLine from '../../../../../src/ol/control/ScaleLine.js';
@@ -101,29 +101,30 @@ describe('ol.control.ScaleLine', function () {
   });
 
   describe('synchronisation with map view', function () {
-    it('calls `render` as soon as the map is rendered', function (done) {
-      const renderSpy = sinonSpy();
-      const ctrl = new ScaleLine({
-        render: renderSpy,
-      });
-      assert.strictEqual(renderSpy.called, false);
-      ctrl.setMap(map);
-      assert.strictEqual(renderSpy.called, false);
-      map.setView(
-        new View({
-          center: [0, 0],
-          zoom: 0,
-        }),
-      );
-      assert.strictEqual(renderSpy.called, false);
-      map.once('postrender', function () {
-        assert.strictEqual(renderSpy.called, true);
-        assert.strictEqual(renderSpy.callCount, 1);
-        done();
-      });
-    });
+    it('calls `render` as soon as the map is rendered', () =>
+      new Promise((resolve) => {
+        const renderSpy = vi.fn();
+        const ctrl = new ScaleLine({
+          render: renderSpy,
+        });
+        assert.strictEqual(renderSpy.mock.calls.length, 0);
+        ctrl.setMap(map);
+        assert.strictEqual(renderSpy.mock.calls.length, 0);
+        map.setView(
+          new View({
+            center: [0, 0],
+            zoom: 0,
+          }),
+        );
+        assert.strictEqual(renderSpy.mock.calls.length, 0);
+        map.once('postrender', function () {
+          assert.isAbove(renderSpy.mock.calls.length, 0);
+          assert.strictEqual(renderSpy.mock.calls.length, 1);
+          resolve();
+        });
+      }));
     it('calls `render` as often as the map is rendered', function () {
-      const renderSpy = sinonSpy();
+      const renderSpy = vi.fn();
       const ctrl = new ScaleLine({
         render: renderSpy,
       });
@@ -135,31 +136,32 @@ describe('ol.control.ScaleLine', function () {
         }),
       );
       map.renderSync();
-      assert.strictEqual(renderSpy.callCount, 1);
+      assert.strictEqual(renderSpy.mock.calls.length, 1);
       map.renderSync();
-      assert.strictEqual(renderSpy.callCount, 2);
+      assert.strictEqual(renderSpy.mock.calls.length, 2);
       map.renderSync();
-      assert.strictEqual(renderSpy.callCount, 3);
+      assert.strictEqual(renderSpy.mock.calls.length, 3);
     });
-    it('calls `render` as when the view changes', function (done) {
-      const renderSpy = sinonSpy();
-      const ctrl = new ScaleLine({
-        render: renderSpy,
-      });
-      ctrl.setMap(map);
-      map.setView(
-        new View({
-          center: [0, 0],
-          zoom: 0,
-        }),
-      );
-      map.renderSync();
-      map.once('postrender', function () {
-        assert.strictEqual(renderSpy.callCount, 2);
-        done();
-      });
-      map.getView().setCenter([1, 1]);
-    });
+    it('calls `render` as when the view changes', () =>
+      new Promise((resolve) => {
+        const renderSpy = vi.fn();
+        const ctrl = new ScaleLine({
+          render: renderSpy,
+        });
+        ctrl.setMap(map);
+        map.setView(
+          new View({
+            center: [0, 0],
+            zoom: 0,
+          }),
+        );
+        map.renderSync();
+        map.once('postrender', function () {
+          assert.strictEqual(renderSpy.mock.calls.length, 2);
+          resolve();
+        });
+        map.getView().setCenter([1, 1]);
+      }));
   });
 
   describe('static method `render`', function () {
@@ -225,20 +227,23 @@ describe('ol.control.ScaleLine', function () {
     let degreesHtml;
     let imperialHtml;
     let usHtml;
-    beforeEach(function (done) {
-      ctrl = new ScaleLine();
-      ctrl.setMap(map);
-      map.setView(
-        new View({
-          center: [0, 0],
-          zoom: 0,
+    beforeEach(
+      () =>
+        new Promise((resolve) => {
+          ctrl = new ScaleLine();
+          ctrl.setMap(map);
+          map.setView(
+            new View({
+              center: [0, 0],
+              zoom: 0,
+            }),
+          );
+          map.once('postrender', function () {
+            metricHtml = ctrl.element.innerHTML;
+            resolve();
+          });
         }),
-      );
-      map.once('postrender', function () {
-        metricHtml = ctrl.element.innerHTML;
-        done();
-      });
-    });
+    );
     afterEach(function () {
       map.setView(null);
       map.removeControl(ctrl);

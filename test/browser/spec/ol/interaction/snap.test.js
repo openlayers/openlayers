@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {spy as sinonSpy} from 'sinon';
 import Collection from '../../../../../src/ol/Collection.js';
 import Feature from '../../../../../src/ol/Feature.js';
 import Map from '../../../../../src/ol/Map.js';
@@ -386,7 +385,7 @@ describe('ol.interaction.Snap', function () {
       const geometryCollection = new Feature(
         new GeometryCollection([new Point([0, 0])]),
       );
-      const segmenter = sinonSpy((geometry) => {
+      const segmenter = vi.fn((geometry) => {
         return [geometry.getCoordinates()];
       });
       const snapInteraction = new Snap({
@@ -396,7 +395,7 @@ describe('ol.interaction.Snap', function () {
         },
       });
       snapInteraction.setMap(map);
-      assert.strictEqual(segmenter.called, true);
+      assert.isAbove(segmenter.mock.calls.length, 0);
     });
 
     it('handle feature without geometry', function () {

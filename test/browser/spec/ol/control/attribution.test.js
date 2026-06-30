@@ -73,68 +73,72 @@ describe('ol.control.Attribution', function () {
     map = null;
   });
 
-  it('does not add duplicate attributions', function (done) {
-    map.renderSync();
-    setTimeout(() => {
-      const attribution = map
-        .getTarget()
-        .querySelectorAll('.ol-attribution li');
-      assert.strictEqual(attribution.length, 2);
-      done();
-    }, 0);
-  });
+  it('does not add duplicate attributions', () =>
+    new Promise((resolve) => {
+      map.renderSync();
+      setTimeout(() => {
+        const attribution = map
+          .getTarget()
+          .querySelectorAll('.ol-attribution li');
+        assert.strictEqual(attribution.length, 2);
+        resolve();
+      }, 0);
+    }));
 
-  it('does not add duplicate static attributions', function (done) {
-    map.getControls().clear();
-    map.addControl(
-      new Attribution({
-        collapsible: true,
-        attributions: ['static', 'static'],
-      }),
-    );
-    map.renderSync();
-    setTimeout(() => {
-      const attribution = map
-        .getTarget()
-        .querySelectorAll('.ol-attribution li');
-      assert.strictEqual(attribution.length, 3);
-      done();
-    }, 0);
-  });
+  it('does not add duplicate static attributions', () =>
+    new Promise((resolve) => {
+      map.getControls().clear();
+      map.addControl(
+        new Attribution({
+          collapsible: true,
+          attributions: ['static', 'static'],
+        }),
+      );
+      map.renderSync();
+      setTimeout(() => {
+        const attribution = map
+          .getTarget()
+          .querySelectorAll('.ol-attribution li');
+        assert.strictEqual(attribution.length, 3);
+        resolve();
+      }, 0);
+    }));
 
-  it('renders static attributions alongside source attributions', function (done) {
-    map.getControls().clear();
-    map.addControl(
-      new Attribution({
-        attributions: ['static'],
-      }),
-    );
-    map.renderSync();
-    setTimeout(() => {
-      const attribution = map
-        .getTarget()
-        .querySelectorAll('.ol-attribution li');
-      assert.strictEqual(attribution.length, 3);
-      done();
-    }, 0);
-  });
+  it('renders static attributions alongside source attributions', () =>
+    new Promise((resolve) => {
+      map.getControls().clear();
+      map.addControl(
+        new Attribution({
+          attributions: ['static'],
+        }),
+      );
+      map.renderSync();
+      setTimeout(() => {
+        const attribution = map
+          .getTarget()
+          .querySelectorAll('.ol-attribution li');
+        assert.strictEqual(attribution.length, 3);
+        resolve();
+      }, 0);
+    }));
 
-  it('deduplicates static attributions and source attributions together', function (done) {
-    map.getControls().clear();
-    map.addControl(
-      new Attribution({
-        attributions: ['static', 'foo'],
-      }),
-    );
-    map.renderSync();
-    setTimeout(() => {
-      const attribution = map
-        .getTarget()
-        .querySelectorAll('.ol-attribution li');
-      assert.strictEqual(attribution.length, 3);
-      done();
-    }, 0);
-  });
+  it('deduplicates static attributions and source attributions together', () =>
+    new Promise((resolve) => {
+      map.getControls().clear();
+      map.addControl(
+        new Attribution({
+          attributions: ['static', 'foo'],
+        }),
+      );
+      map.renderSync();
+      setTimeout(() => {
+        const attribution = map
+          .getTarget()
+          .querySelectorAll('.ol-attribution li');
+        assert.strictEqual(attribution.length, 3);
+        resolve();
+      }, 0);
+    }));
 
   it('renders attributions as non-collapsible if source is configured with attributionsCollapsible set to false', function () {
     map.getControls().clear();

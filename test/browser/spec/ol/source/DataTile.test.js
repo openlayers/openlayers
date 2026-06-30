@@ -25,19 +25,20 @@ describe('ol/source/DataTile', function () {
   });
 
   describe('#getTile()', function () {
-    it('gets tiles and fires a tileloadend event', function (done) {
-      const tile = source.getTile(3, 2, 1);
-      assert.instanceOf(tile, DataTile);
-      assert.strictEqual(tile.state, TileState.IDLE);
+    it('gets tiles and fires a tileloadend event', () =>
+      new Promise((resolve) => {
+        const tile = source.getTile(3, 2, 1);
+        assert.instanceOf(tile, DataTile);
+        assert.strictEqual(tile.state, TileState.IDLE);
 
-      source.on('tileloadend', () => {
-        assert.strictEqual(tile.state, TileState.LOADED);
-        assert.deepEqual(Array.from(tile.getData().slice(0, 3)), [3, 2, 1]);
-        done();
-      });
+        source.on('tileloadend', () => {
+          assert.strictEqual(tile.state, TileState.LOADED);
+          assert.deepEqual(Array.from(tile.getData().slice(0, 3)), [3, 2, 1]);
+          resolve();
+        });
 
-      tile.load();
-    });
+        tile.load();
+      }));
   });
 
   describe('#getTileSize()', function () {

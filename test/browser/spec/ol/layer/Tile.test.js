@@ -35,29 +35,32 @@ describe('ol/layer/Tile', function () {
 
   describe('getData()', () => {
     let map, target, layer;
-    beforeEach((done) => {
-      target = document.createElement('div');
-      target.style.width = '100px';
-      target.style.height = '100px';
-      document.body.appendChild(target);
+    beforeEach(
+      () =>
+        new Promise((resolve) => {
+          target = document.createElement('div');
+          target.style.width = '100px';
+          target.style.height = '100px';
+          document.body.appendChild(target);
 
-      layer = new TileLayer({
-        source: new XYZ({
-          url: 'spec/ol/data/osm-0-0-0.png',
+          layer = new TileLayer({
+            source: new XYZ({
+              url: 'spec/ol/data/osm-0-0-0.png',
+            }),
+          });
+
+          map = new Map({
+            target: target,
+            layers: [layer],
+            view: new View({
+              center: [0, 0],
+              zoom: 0,
+            }),
+          });
+
+          map.once('rendercomplete', () => resolve());
         }),
-      });
-
-      map = new Map({
-        target: target,
-        layers: [layer],
-        view: new View({
-          center: [0, 0],
-          zoom: 0,
-        }),
-      });
-
-      map.once('rendercomplete', () => done());
-    });
+    );
 
     afterEach(() => {
       disposeMap(map);
@@ -73,32 +76,33 @@ describe('ol/layer/Tile', function () {
       assert.strictEqual(data[3], 255);
     });
 
-    it('gets reprojected pixel data', (done) => {
-      layer.setSource(
-        new XYZ({
-          url: 'spec/ol/data/osm-0-0-0.png',
-          maxZoom: 0,
-          interpolate: false,
-        }),
-      );
-      map.setView(
-        new View({
-          center: [0, 0],
-          zoom: 1,
-          projection: 'EPSG:4326',
-        }),
-      );
-      map.once('rendercomplete', () => {
-        const data = layer.getData([50, 50]);
-        assert.instanceOf(data, Uint8ClampedArray);
-        assert.strictEqual(data.length, 4);
-        assert.strictEqual(data[0], 181);
-        assert.strictEqual(data[1], 208);
-        assert.strictEqual(data[2], 208);
-        assert.strictEqual(data[3], 255);
-        done();
-      });
-    });
+    it('gets reprojected pixel data', () =>
+      new Promise((resolve) => {
+        layer.setSource(
+          new XYZ({
+            url: 'spec/ol/data/osm-0-0-0.png',
+            maxZoom: 0,
+            interpolate: false,
+          }),
+        );
+        map.setView(
+          new View({
+            center: [0, 0],
+            zoom: 1,
+            projection: 'EPSG:4326',
+          }),
+        );
+        map.once('rendercomplete', () => {
+          const data = layer.getData([50, 50]);
+          assert.instanceOf(data, Uint8ClampedArray);
+          assert.strictEqual(data.length, 4);
+          assert.strictEqual(data[0], 181);
+          assert.strictEqual(data[1], 208);
+          assert.strictEqual(data[2], 208);
+          assert.strictEqual(data[3], 255);
+          resolve();
+        });
+      }));
 
     it('gets pixel data', () => {
       layer.setVisible(false);
@@ -110,34 +114,37 @@ describe('ol/layer/Tile', function () {
 
   describe('gutter', () => {
     let map, target, layer, data;
-    beforeEach((done) => {
-      target = document.createElement('div');
-      target.style.width = '256px';
-      target.style.height = '256px';
-      document.body.appendChild(target);
+    beforeEach(
+      () =>
+        new Promise((resolve) => {
+          target = document.createElement('div');
+          target.style.width = '256px';
+          target.style.height = '256px';
+          document.body.appendChild(target);
 
-      layer = new TileLayer({
-        source: new TileWMS({
-          params: {
-            LAYERS: 'layer',
-          },
-          gutter: 20,
-          url: 'spec/ol/data/wms20.png',
+          layer = new TileLayer({
+            source: new TileWMS({
+              params: {
+                LAYERS: 'layer',
+              },
+              gutter: 20,
+              url: 'spec/ol/data/wms20.png',
+            }),
+          });
+
+          map = new Map({
+            target: target,
+            pixelRatio: 1,
+            layers: [layer],
+            view: new View({
+              center: [0, 0],
+              zoom: 0,
+            }),
+          });
+
+          map.once('rendercomplete', () => resolve());
         }),
-      });
-
-      map = new Map({
-        target: target,
-        pixelRatio: 1,
-        layers: [layer],
-        view: new View({
-          center: [0, 0],
-          zoom: 0,
-        }),
-      });
-
-      map.once('rendercomplete', () => done());
-    });
+    );
 
     afterEach(() => {
       disposeMap(map);
@@ -181,69 +188,74 @@ describe('ol/layer/Tile', function () {
   describe('frameState.animate after tile transition with layer opacity', function () {
     let target, map;
 
-    beforeEach(function (done) {
-      target = document.createElement('div');
-      Object.assign(target.style, {
-        position: 'absolute',
-        left: '-1000px',
-        top: '-1000px',
-        width: '256px',
-        height: '256px',
-      });
-      document.body.appendChild(target);
+    beforeEach(
+      () =>
+        new Promise((resolve) => {
+          target = document.createElement('div');
+          Object.assign(target.style, {
+            position: 'absolute',
+            left: '-1000px',
+            top: '-1000px',
+            width: '256px',
+            height: '256px',
+          });
+          document.body.appendChild(target);
 
-      map = new Map({
-        target: target,
-        view: new View({center: [0, 0], zoom: 1}),
-      });
+          map = new Map({
+            target: target,
+            view: new View({center: [0, 0], zoom: 1}),
+          });
 
-      map.once('rendercomplete', function () {
-        done();
-      });
-    });
+          map.once('rendercomplete', function () {
+            resolve();
+          });
+        }),
+    );
 
     afterEach(function () {
       disposeMap(map);
     });
 
-    it('sets frameState.animate to false when opacity is 1', function (done) {
-      let lastFrameState;
-      const layer = new TileLayer({
-        opacity: 1,
-        source: new XYZ({
-          url: 'spec/ol/data/osm-0-0-0.png',
-        }),
-      });
-      layer.on('postrender', function (event) {
-        lastFrameState = event.frameState;
-      });
+    it('sets frameState.animate to false when opacity is 1', () =>
+      new Promise((resolve) => {
+        let lastFrameState;
+        const layer = new TileLayer({
+          opacity: 1,
+          source: new XYZ({
+            url: 'spec/ol/data/osm-0-0-0.png',
+          }),
+        });
+        layer.on('postrender', function (event) {
+          lastFrameState = event.frameState;
+        });
 
-      map.once('rendercomplete', function () {
-        assert.strictEqual(lastFrameState.animate, false);
-        done();
-      });
+        map.once('rendercomplete', function () {
+          assert.strictEqual(lastFrameState.animate, false);
+          resolve();
+        });
 
-      map.addLayer(layer);
-    });
+        map.addLayer(layer);
+      }));
 
-    it('sets frameState.animate to false when opacity is 0.5', function (done) {
-      let lastFrameState;
-      const layer = new TileLayer({
-        opacity: 0.5,
-        source: new XYZ({
-          url: 'spec/ol/data/osm-0-0-0.png',
-        }),
-      });
-      layer.on('postrender', function (event) {
-        lastFrameState = event.frameState;
-      });
+    it('sets frameState.animate to false when opacity is 0.5', () =>
+      new Promise((resolve) => {
+        let lastFrameState;
+        const layer = new TileLayer({
+          opacity: 0.5,
+          source: new XYZ({
+            url: 'spec/ol/data/osm-0-0-0.png',
+          }),
+        });
+        layer.on('postrender', function (event) {
+          lastFrameState = event.frameState;
+        });
 
-      map.once('rendercomplete', function () {
-        assert.strictEqual(lastFrameState.animate, false);
-        done();
-      });
+        map.once('rendercomplete', function () {
+          assert.strictEqual(lastFrameState.animate, false);
+          resolve();
+        });
 
-      map.addLayer(layer);
-    });
+        map.addLayer(layer);
+      }));
   });
 });

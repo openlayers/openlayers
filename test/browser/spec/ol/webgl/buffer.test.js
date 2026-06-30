@@ -21,14 +21,16 @@ describe('ol.webgl.Buffer', function () {
       assert.strictEqual(b.getUsage(), STREAM_DRAW);
     });
 
-    it('raises an error if an incorrect type is used', function (done) {
-      try {
-        new WebGLArrayBuffer(1234);
-      } catch {
-        done();
-      }
-      done(true);
-    });
+    it('raises an error if an incorrect type is used', () =>
+      new Promise((resolve, reject) => {
+        try {
+          new WebGLArrayBuffer(1234);
+        } catch {
+          resolve();
+          return;
+        }
+        reject(new Error('expected an error to be raised'));
+      }));
   });
 
   describe('#getArrayClassForType', function () {

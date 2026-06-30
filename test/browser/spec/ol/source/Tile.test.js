@@ -73,32 +73,34 @@ describe('ol/source/Tile', function () {
   });
 
   describe('#setKey()', function () {
-    it('dispatches a change event', function (done) {
-      const source = new TileSource({});
+    it('dispatches a change event', () =>
+      new Promise((resolve) => {
+        const source = new TileSource({});
 
-      const key = 'foo';
-      source.once('change', function () {
-        done();
-      });
-      source.setKey(key);
-    });
-
-    it('does not dispatch change if key does not change', function (done) {
-      const source = new TileSource({});
-
-      const key = 'foo';
-      source.once('change', function () {
+        const key = 'foo';
         source.once('change', function () {
-          done(new Error('Unexpected change event after source.setKey()'));
+          resolve();
         });
-        setTimeout(function () {
-          done();
-        }, 10);
-        source.setKey(key); // this should not result in a change event
-      });
+        source.setKey(key);
+      }));
 
-      source.setKey(key); // this should result in a change event
-    });
+    it('does not dispatch change if key does not change', () =>
+      new Promise((resolve, reject) => {
+        const source = new TileSource({});
+
+        const key = 'foo';
+        source.once('change', function () {
+          source.once('change', function () {
+            reject(new Error('Unexpected change event after source.setKey()'));
+          });
+          setTimeout(function () {
+            resolve();
+          }, 10);
+          source.setKey(key); // this should not result in a change event
+        });
+
+        source.setKey(key); // this should result in a change event
+      }));
   });
 
   describe('#getTileCoordForTileUrlFunction()', function () {

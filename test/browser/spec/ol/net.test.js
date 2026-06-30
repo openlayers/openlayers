@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {spy as sinonSpy} from 'sinon';
 import {
   getJSON,
   jsonp as requestJSONP,
@@ -9,17 +8,18 @@ import {getUid} from '../../../../src/ol/util.js';
 
 describe('ol/net', function () {
   describe('getJSON()', function () {
-    it('returns a promise that resolves to a parsed JSON object', function (done) {
-      const url = 'spec/ol/data/point.json';
-      const result = getJSON(url);
-      assert.instanceOf(result, Promise);
-      result.then(function (json) {
-        assert.instanceOf(json, Object);
-        assert.strictEqual(json.type, 'FeatureCollection');
-        done();
-      });
-      result.catch(done);
-    });
+    it('returns a promise that resolves to a parsed JSON object', () =>
+      new Promise((resolve, reject) => {
+        const url = 'spec/ol/data/point.json';
+        const result = getJSON(url);
+        assert.instanceOf(result, Promise);
+        result.then(function (json) {
+          assert.instanceOf(json, Object);
+          assert.strictEqual(json.type, 'FeatureCollection');
+          resolve();
+        });
+        result.catch(reject);
+      }));
   });
 
   describe('resolveUrl()', function () {
@@ -44,12 +44,12 @@ describe('ol/net', function () {
     const origSetTimeout = setTimeout;
     let key, removeChild;
 
-    function createCallback(url, done) {
-      removeChild = sinonSpy();
+    function createCallback(url, resolve) {
+      removeChild = vi.fn();
       const callback = function (data) {
         assert.strictEqual(data, url + key);
-        assert.strictEqual(removeChild.called, true);
-        done();
+        assert.isAbove(removeChild.mock.calls.length, 0);
+        resolve();
       };
       key = 'olc_' + getUid(callback);
       return callback;
@@ -86,32 +86,39 @@ describe('ol/net', function () {
       setTimeout = origSetTimeout;
     });
 
-    it('appends callback param to url, cleans up after call', function (done) {
-      requestJSONP('foo', createCallback('foo?callback=', done));
-    });
-    it('appends correct callback param to a url with query', function (done) {
-      const callback = createCallback('http://foo/bar?baz&callback=', done);
-      requestJSONP('http://foo/bar?baz', callback);
-    });
-    it('calls errback when jsonp is not executed, cleans up', function (done) {
-      head.appendChild = function (element) {
-        element.parentNode = {
-          removeChild: removeChild,
+    it('appends callback param to url, cleans up after call', () =>
+      new Promise((resolve) => {
+        requestJSONP('foo', createCallback('foo?callback=', resolve));
+      }));
+    it('appends correct callback param to a url with query', () =>
+      new Promise((resolve) => {
+        const callback = createCallback(
+          'http://foo/bar?baz&callback=',
+          resolve,
+        );
+        requestJSONP('http://foo/bar?baz', callback);
+      }));
+    it('calls errback when jsonp is not executed, cleans up', () =>
+      new Promise((resolve) => {
+        head.appendChild = function (element) {
+          element.parentNode = {
+            removeChild: removeChild,
+          };
         };
-      };
-      function callback() {
-        assert.fail();
-      }
-      function errback() {
-        assert.strictEqual(window[key], undefined);
-        assert.strictEqual(removeChild.called, true);
-        done();
-      }
-      requestJSONP('foo', callback, errback);
-    });
-    it('accepts a custom callback param', function (done) {
-      const callback = createCallback('foo?mycallback=', done);
-      requestJSONP('foo', callback, undefined, 'mycallback');
-    });
+        function callback() {
+          assert.fail();
+        }
+        function errback() {
+          assert.strictEqual(window[key], undefined);
+          assert.isAbove(removeChild.mock.calls.length, 0);
+          resolve();
+        }
+        requestJSONP('foo', callback, errback);
+      }));
+    it('accepts a custom callback param', () =>
+      new Promise((resolve) => {
+        const callback = createCallback('foo?mycallback=', resolve);
+        requestJSONP('foo', callback, undefined, 'mycallback');
+      }));
   });
 });

@@ -26,29 +26,34 @@ describe('ol/source/BingMaps', function () {
   describe('#tileUrlFunction()', function () {
     let source, tileGrid;
 
-    beforeEach(function (done) {
-      source = new BingMaps({
-        imagerySet: 'AerialWithLabelsOnDemand',
-        key: '',
-        placeholderTiles: false,
-        hidpi: true,
-      });
+    beforeEach(
+      () =>
+        new Promise((resolve) => {
+          source = new BingMaps({
+            imagerySet: 'AerialWithLabelsOnDemand',
+            key: '',
+            placeholderTiles: false,
+            hidpi: true,
+          });
 
-      const client = new XMLHttpRequest();
-      client.open('GET', 'spec/ol/data/bing_aerialwithlabels.json', true);
-      client.onload = function () {
-        source.handleImageryMetadataResponse(JSON.parse(client.responseText));
-      };
-      client.send();
+          const client = new XMLHttpRequest();
+          client.open('GET', 'spec/ol/data/bing_aerialwithlabels.json', true);
+          client.onload = function () {
+            source.handleImageryMetadataResponse(
+              JSON.parse(client.responseText),
+            );
+          };
+          client.send();
 
-      const key = source.on('change', function () {
-        if (source.getState() === 'ready') {
-          unByKey(key);
-          tileGrid = source.getTileGrid();
-          done();
-        }
-      });
-    });
+          const key = source.on('change', function () {
+            if (source.getState() === 'ready') {
+              unByKey(key);
+              tileGrid = source.getTileGrid();
+              resolve();
+            }
+          });
+        }),
+    );
 
     it('getImagerySet works correctly', function () {
       assert.equal(source.getImagerySet(), 'AerialWithLabelsOnDemand');

@@ -6,16 +6,20 @@ describe('ol.tilegrid.WMTS', function () {
   describe('when creating tileGrid from capabilities', function () {
     const parser = new WMTSCapabilities();
     let capabilities;
-    before(function (done) {
-      afterLoadText('spec/ol/format/wmts/ogcsample.xml', function (xml) {
-        try {
-          capabilities = parser.read(xml);
-        } catch (e) {
-          done(e);
-        }
-        done();
-      });
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText('spec/ol/format/wmts/ogcsample.xml', function (xml) {
+            try {
+              capabilities = parser.read(xml);
+            } catch (e) {
+              reject(e);
+              return;
+            }
+            resolve();
+          });
+        }),
+    );
 
     it('can create tileGrid for EPSG:3857', function () {
       const matrixSetObj = capabilities.Contents.TileMatrixSet[0];
@@ -82,16 +86,20 @@ describe('ol.tilegrid.WMTS', function () {
   describe('when creating tileGrid from capabilities with and without TileMatrixSetLimits', function () {
     const parser = new WMTSCapabilities();
     let capabilities;
-    before(function (done) {
-      afterLoadText('spec/ol/format/wmts/ign.xml', function (xml) {
-        try {
-          capabilities = parser.read(xml);
-        } catch (e) {
-          done(e);
-        }
-        done();
-      });
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText('spec/ol/format/wmts/ign.xml', function (xml) {
+            try {
+              capabilities = parser.read(xml);
+            } catch (e) {
+              reject(e);
+              return;
+            }
+            resolve();
+          });
+        }),
+    );
 
     it('can create tileGrid for EPSG:3857 without matrixLimits', function () {
       const matrixSetObj = capabilities.Contents.TileMatrixSet[0];

@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {spy as sinonSpy} from 'sinon';
 import Map from '../../../../../src/ol/Map.js';
 import MapBrowserEvent from '../../../../../src/ol/MapBrowserEvent.js';
 import View from '../../../../../src/ol/View.js';
@@ -26,7 +25,7 @@ describe('ol.interaction.KeyboardPan', function () {
   describe('handleEvent()', function () {
     it('pans on arrow keys', function () {
       const view = map.getView();
-      const spy = sinonSpy(view, 'animateInternal');
+      const spy = vi.spyOn(view, 'animateInternal');
       const event = new MapBrowserEvent('keydown', map, {
         type: 'keydown',
         target: map.getTargetElement(),
@@ -35,25 +34,25 @@ describe('ol.interaction.KeyboardPan', function () {
 
       event.originalEvent.key = 'ArrowDown';
       map.handleMapBrowserEvent(event);
-      assert.deepEqual(spy.getCall(0).args[0].center, [0, -128]);
+      assert.deepEqual(spy.mock.calls[0][0].center, [0, -128]);
       view.setCenter([0, 0]);
 
       event.originalEvent.key = 'ArrowUp';
       map.handleMapBrowserEvent(event);
-      assert.deepEqual(spy.getCall(1).args[0].center, [0, 128]);
+      assert.deepEqual(spy.mock.calls[1][0].center, [0, 128]);
       view.setCenter([0, 0]);
 
       event.originalEvent.key = 'ArrowLeft';
       map.handleMapBrowserEvent(event);
-      assert.deepEqual(spy.getCall(2).args[0].center, [-128, 0]);
+      assert.deepEqual(spy.mock.calls[2][0].center, [-128, 0]);
       view.setCenter([0, 0]);
 
       event.originalEvent.key = 'ArrowRight';
       map.handleMapBrowserEvent(event);
-      assert.deepEqual(spy.getCall(3).args[0].center, [128, 0]);
+      assert.deepEqual(spy.mock.calls[3][0].center, [128, 0]);
       view.setCenter([0, 0]);
 
-      view.animateInternal.restore();
+      spy.mockRestore();
     });
   });
 
@@ -94,41 +93,42 @@ describe('ol.interaction.KeyboardPan', function () {
       customMapEl.remove();
     });
 
-    it('pans on arrow keys', function (done) {
-      // we have to wait until the map is rendered
-      olMap.on('rendercomplete', () => {
-        const view = olMap.getView();
-        const spy = sinonSpy(view, 'animateInternal');
-        const event = new MapBrowserEvent('keydown', olMap, {
-          type: 'keydown',
-          target: customMapEl,
-          preventDefault: Event.prototype.preventDefault,
+    it('pans on arrow keys', () =>
+      new Promise((resolve) => {
+        // we have to wait until the map is rendered
+        olMap.on('rendercomplete', () => {
+          const view = olMap.getView();
+          const spy = vi.spyOn(view, 'animateInternal');
+          const event = new MapBrowserEvent('keydown', olMap, {
+            type: 'keydown',
+            target: customMapEl,
+            preventDefault: Event.prototype.preventDefault,
+          });
+
+          event.originalEvent.key = 'ArrowDown';
+          olMap.handleMapBrowserEvent(event);
+          assert.deepEqual(spy.mock.calls[0][0].center, [0, -128]);
+          view.setCenter([0, 0]);
+
+          event.originalEvent.key = 'ArrowUp';
+          map.handleMapBrowserEvent(event);
+          assert.deepEqual(spy.mock.calls[1][0].center, [0, 128]);
+          view.setCenter([0, 0]);
+
+          event.originalEvent.key = 'ArrowLeft';
+          map.handleMapBrowserEvent(event);
+          assert.deepEqual(spy.mock.calls[2][0].center, [-128, 0]);
+          view.setCenter([0, 0]);
+
+          event.originalEvent.key = 'ArrowRight';
+          map.handleMapBrowserEvent(event);
+          assert.deepEqual(spy.mock.calls[3][0].center, [128, 0]);
+          view.setCenter([0, 0]);
+
+          spy.mockRestore();
+
+          resolve();
         });
-
-        event.originalEvent.key = 'ArrowDown';
-        olMap.handleMapBrowserEvent(event);
-        assert.deepEqual(spy.getCall(0).args[0].center, [0, -128]);
-        view.setCenter([0, 0]);
-
-        event.originalEvent.key = 'ArrowUp';
-        map.handleMapBrowserEvent(event);
-        assert.deepEqual(spy.getCall(1).args[0].center, [0, 128]);
-        view.setCenter([0, 0]);
-
-        event.originalEvent.key = 'ArrowLeft';
-        map.handleMapBrowserEvent(event);
-        assert.deepEqual(spy.getCall(2).args[0].center, [-128, 0]);
-        view.setCenter([0, 0]);
-
-        event.originalEvent.key = 'ArrowRight';
-        map.handleMapBrowserEvent(event);
-        assert.deepEqual(spy.getCall(3).args[0].center, [128, 0]);
-        view.setCenter([0, 0]);
-
-        view.animateInternal.restore();
-
-        done();
-      });
-    });
+      }));
   });
 });

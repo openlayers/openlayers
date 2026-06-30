@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {spy as sinonSpy, stub as sinonStub} from 'sinon';
 import Feature from '../../../../../src/ol/Feature.js';
 import {VOID} from '../../../../../src/ol/functions.js';
 import LineString from '../../../../../src/ol/geom/LineString.js';
@@ -34,13 +33,15 @@ describe('ol/renderer/vector', function () {
       });
       squaredTolerance = 1;
       listener = function () {};
-      iconStyleLoadSpy = sinonStub(iconStyle, 'load').callsFake(function () {
-        iconStyle.iconImage_.imageState_ = 1; // LOADING
-      });
+      iconStyleLoadSpy = vi
+        .spyOn(iconStyle, 'load')
+        .mockImplementation(function () {
+          iconStyle.iconImage_.imageState_ = 1; // LOADING
+        });
     });
 
     afterEach(function () {
-      iconStyleLoadSpy.restore();
+      iconStyleLoadSpy.mockRestore();
     });
 
     describe('call multiple times', function () {
@@ -50,14 +51,14 @@ describe('ol/renderer/vector', function () {
         // call #1
         renderFeature(builderGroup, feature, style, squaredTolerance, listener);
 
-        assert.isOk(iconStyleLoadSpy.calledOnce);
+        assert.strictEqual(iconStyleLoadSpy.mock.calls.length, 1);
         listeners = iconStyle.iconImage_.listeners_['change'];
         assert.deepEqual(listeners.length, 1);
 
         // call #2
         renderFeature(builderGroup, feature, style, squaredTolerance, listener);
 
-        assert.isOk(iconStyleLoadSpy.calledOnce);
+        assert.strictEqual(iconStyleLoadSpy.mock.calls.length, 1);
         listeners = iconStyle.iconImage_.listeners_['change'];
         assert.deepEqual(listeners.length, 1);
       });
@@ -67,14 +68,14 @@ describe('ol/renderer/vector', function () {
       it('does not render the point', function () {
         feature.setGeometry(new Point([0, 0]));
         const imageReplay = builderGroup.getBuilder(style.getZIndex(), 'Image');
-        const setImageStyleSpy = sinonSpy(imageReplay, 'setImageStyle');
-        const drawPointSpy = sinonStub(imageReplay, 'drawPoint').callsFake(
-          VOID,
-        );
+        const setImageStyleSpy = vi.spyOn(imageReplay, 'setImageStyle');
+        const drawPointSpy = vi
+          .spyOn(imageReplay, 'drawPoint')
+          .mockImplementation(VOID);
         renderFeature(builderGroup, feature, style, squaredTolerance, listener);
-        assert.strictEqual(setImageStyleSpy.called, false);
-        setImageStyleSpy.restore();
-        drawPointSpy.restore();
+        assert.strictEqual(setImageStyleSpy.mock.calls.length, 0);
+        setImageStyleSpy.mockRestore();
+        drawPointSpy.mockRestore();
       });
 
       it('does not render the multipoint', function () {
@@ -85,15 +86,14 @@ describe('ol/renderer/vector', function () {
           ]),
         );
         const imageReplay = builderGroup.getBuilder(style.getZIndex(), 'Image');
-        const setImageStyleSpy = sinonSpy(imageReplay, 'setImageStyle');
-        const drawMultiPointSpy = sinonStub(
-          imageReplay,
-          'drawMultiPoint',
-        ).callsFake(VOID);
+        const setImageStyleSpy = vi.spyOn(imageReplay, 'setImageStyle');
+        const drawMultiPointSpy = vi
+          .spyOn(imageReplay, 'drawMultiPoint')
+          .mockImplementation(VOID);
         renderFeature(builderGroup, feature, style, squaredTolerance, listener);
-        assert.strictEqual(setImageStyleSpy.called, false);
-        setImageStyleSpy.restore();
-        drawMultiPointSpy.restore();
+        assert.strictEqual(setImageStyleSpy.mock.calls.length, 0);
+        setImageStyleSpy.mockRestore();
+        drawMultiPointSpy.mockRestore();
       });
 
       it('does render the linestring', function () {
@@ -107,19 +107,18 @@ describe('ol/renderer/vector', function () {
           style.getZIndex(),
           'LineString',
         );
-        const setFillStrokeStyleSpy = sinonSpy(
+        const setFillStrokeStyleSpy = vi.spyOn(
           lineStringReplay,
           'setFillStrokeStyle',
         );
-        const drawLineStringSpy = sinonStub(
-          lineStringReplay,
-          'drawLineString',
-        ).callsFake(VOID);
+        const drawLineStringSpy = vi
+          .spyOn(lineStringReplay, 'drawLineString')
+          .mockImplementation(VOID);
         renderFeature(builderGroup, feature, style, squaredTolerance, listener);
-        assert.strictEqual(setFillStrokeStyleSpy.called, true);
-        assert.strictEqual(drawLineStringSpy.called, true);
-        setFillStrokeStyleSpy.restore();
-        drawLineStringSpy.restore();
+        assert.isAbove(setFillStrokeStyleSpy.mock.calls.length, 0);
+        assert.isAbove(drawLineStringSpy.mock.calls.length, 0);
+        setFillStrokeStyleSpy.mockRestore();
+        drawLineStringSpy.mockRestore();
       });
 
       it('does render the multilinestring', function () {
@@ -135,19 +134,18 @@ describe('ol/renderer/vector', function () {
           style.getZIndex(),
           'LineString',
         );
-        const setFillStrokeStyleSpy = sinonSpy(
+        const setFillStrokeStyleSpy = vi.spyOn(
           lineStringReplay,
           'setFillStrokeStyle',
         );
-        const drawMultiLineStringSpy = sinonStub(
-          lineStringReplay,
-          'drawMultiLineString',
-        ).callsFake(VOID);
+        const drawMultiLineStringSpy = vi
+          .spyOn(lineStringReplay, 'drawMultiLineString')
+          .mockImplementation(VOID);
         renderFeature(builderGroup, feature, style, squaredTolerance, listener);
-        assert.strictEqual(setFillStrokeStyleSpy.called, true);
-        assert.strictEqual(drawMultiLineStringSpy.called, true);
-        setFillStrokeStyleSpy.restore();
-        drawMultiLineStringSpy.restore();
+        assert.isAbove(setFillStrokeStyleSpy.mock.calls.length, 0);
+        assert.isAbove(drawMultiLineStringSpy.mock.calls.length, 0);
+        setFillStrokeStyleSpy.mockRestore();
+        drawMultiLineStringSpy.mockRestore();
       });
 
       it('does render the polygon', function () {
@@ -165,19 +163,18 @@ describe('ol/renderer/vector', function () {
           style.getZIndex(),
           'Polygon',
         );
-        const setFillStrokeStyleSpy = sinonSpy(
+        const setFillStrokeStyleSpy = vi.spyOn(
           polygonReplay,
           'setFillStrokeStyle',
         );
-        const drawPolygonSpy = sinonStub(
-          polygonReplay,
-          'drawPolygon',
-        ).callsFake(VOID);
+        const drawPolygonSpy = vi
+          .spyOn(polygonReplay, 'drawPolygon')
+          .mockImplementation(VOID);
         renderFeature(builderGroup, feature, style, squaredTolerance, listener);
-        assert.strictEqual(setFillStrokeStyleSpy.called, true);
-        assert.strictEqual(drawPolygonSpy.called, true);
-        setFillStrokeStyleSpy.restore();
-        drawPolygonSpy.restore();
+        assert.isAbove(setFillStrokeStyleSpy.mock.calls.length, 0);
+        assert.isAbove(drawPolygonSpy.mock.calls.length, 0);
+        setFillStrokeStyleSpy.mockRestore();
+        drawPolygonSpy.mockRestore();
       });
 
       it('does render the multipolygon', function () {
@@ -197,19 +194,18 @@ describe('ol/renderer/vector', function () {
           style.getZIndex(),
           'Polygon',
         );
-        const setFillStrokeStyleSpy = sinonSpy(
+        const setFillStrokeStyleSpy = vi.spyOn(
           polygonReplay,
           'setFillStrokeStyle',
         );
-        const drawMultiPolygonSpy = sinonStub(
-          polygonReplay,
-          'drawMultiPolygon',
-        ).callsFake(VOID);
+        const drawMultiPolygonSpy = vi
+          .spyOn(polygonReplay, 'drawMultiPolygon')
+          .mockImplementation(VOID);
         renderFeature(builderGroup, feature, style, squaredTolerance, listener);
-        assert.strictEqual(setFillStrokeStyleSpy.called, true);
-        assert.strictEqual(drawMultiPolygonSpy.called, true);
-        setFillStrokeStyleSpy.restore();
-        drawMultiPolygonSpy.restore();
+        assert.isAbove(setFillStrokeStyleSpy.mock.calls.length, 0);
+        assert.isAbove(drawMultiPolygonSpy.mock.calls.length, 0);
+        setFillStrokeStyleSpy.mockRestore();
+        drawMultiPolygonSpy.mockRestore();
       });
     });
   });

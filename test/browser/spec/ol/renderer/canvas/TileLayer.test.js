@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {spy as sinonSpy} from 'sinon';
 import Map from '../../../../../../src/ol/Map.js';
 import View from '../../../../../../src/ol/View.js';
 import TileLayer from '../../../../../../src/ol/layer/Tile.js';
@@ -31,47 +30,50 @@ describe('ol/renderer/canvas/TileLayer', function () {
       disposeMap(map);
     });
 
-    it("respects the source's zDirection setting", function (done) {
-      layer.getSource().zDirection = 1;
-      map.getView().setZoom(5.8); // would lead to z6 tile request with the default zDirection
-      map.once('rendercomplete', function () {
-        const tileCache = layer.getRenderer().tileCache_;
-        const keys = tileCache.getKeys();
-        assert.strictEqual(
-          keys.some((key) => key.startsWith('6/')),
-          false,
-        );
-        done();
-      });
-    });
+    it("respects the source's zDirection setting", () =>
+      new Promise((resolve) => {
+        layer.getSource().zDirection = 1;
+        map.getView().setZoom(5.8); // would lead to z6 tile request with the default zDirection
+        map.once('rendercomplete', function () {
+          const tileCache = layer.getRenderer().tileCache_;
+          const keys = tileCache.getKeys();
+          assert.strictEqual(
+            keys.some((key) => key.startsWith('6/')),
+            false,
+          );
+          resolve();
+        });
+      }));
 
-    it('image smoothing is re-enabled after rendering', function (done) {
-      let context;
-      layer.on('postrender', function (e) {
-        context = e.context;
-        context.imageSmoothingEnabled = false;
-      });
-      map.on('postrender', function () {
-        assert.strictEqual(context.imageSmoothingEnabled, true);
-        done();
-      });
-    });
+    it('image smoothing is re-enabled after rendering', () =>
+      new Promise((resolve) => {
+        let context;
+        layer.on('postrender', function (e) {
+          context = e.context;
+          context.imageSmoothingEnabled = false;
+        });
+        map.on('postrender', function () {
+          assert.strictEqual(context.imageSmoothingEnabled, true);
+          resolve();
+        });
+      }));
 
     describe('caching', () => {
-      it('updates the size of the tile cache ', (done) => {
-        const source = new TileDebug();
-        const layer = new TileLayer({source: source});
-        const spy = sinonSpy(layer.getRenderer(), 'updateCacheSize');
-        map.addLayer(layer);
-        map.once('rendercomplete', () => {
-          // rendercomplete triggers before the postrender functions with the cleanup are run,
-          // so wait another cycle
-          setTimeout(() => {
-            assert.strictEqual(spy.called, true);
-            done();
-          }, 0);
-        });
-      });
+      it('updates the size of the tile cache ', () =>
+        new Promise((resolve) => {
+          const source = new TileDebug();
+          const layer = new TileLayer({source: source});
+          const spy = vi.spyOn(layer.getRenderer(), 'updateCacheSize');
+          map.addLayer(layer);
+          map.once('rendercomplete', () => {
+            // rendercomplete triggers before the postrender functions with the cleanup are run,
+            // so wait another cycle
+            setTimeout(() => {
+              assert.isAbove(spy.mock.calls.length, 0);
+              resolve();
+            }, 0);
+          });
+        }));
       it('expires the tile cache, which disposes unused tiles', async () => {
         const source = new TileDebug();
         const layer = new TileLayer({source: source, cacheSize: 0});

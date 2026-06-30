@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {spy as sinonSpy} from 'sinon';
 import ImageWrapper from '../../../../../src/ol/Image.js';
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
@@ -8,17 +7,17 @@ import TileLayer from '../../../../../src/ol/layer/Tile.js';
 import LayerRenderer from '../../../../../src/ol/renderer/Layer.js';
 import XYZ from '../../../../../src/ol/source/XYZ.js';
 
-describe('ol/renderer/Layer', function () {
+describe('ol/renderer/Layer', () => {
   let layer, renderer;
   const eventType = 'change';
 
-  beforeEach(function () {
+  beforeEach(() => {
     layer = new Layer({});
     renderer = new LayerRenderer(layer);
   });
 
-  describe('#renderIfReadyAndVisible', function () {
-    it('updates revision when data is ready and layer is visible', function () {
+  describe('#renderIfReadyAndVisible', () => {
+    it('updates revision when data is ready and layer is visible', () => {
       layer.setVisible(true);
       let state;
       layer.getSourceState = function () {
@@ -34,20 +33,19 @@ describe('ol/renderer/Layer', function () {
     });
   });
 
-  describe('#loadImage', function () {
+  describe('#loadImage', () => {
     let image;
     let imageLoadFunction;
 
-    beforeEach(function () {
+    beforeEach(() => {
       const extent = [];
       const resolution = 1;
       const pixelRatio = 1;
 
-      const spy = sinonSpy();
+      const spy = vi.fn();
       imageLoadFunction = (...args) => {
         spy(...args);
-        const img = new Image();
-        return img;
+        return new Promise(() => {});
       };
       image = new ImageWrapper(
         extent,
@@ -57,45 +55,45 @@ describe('ol/renderer/Layer', function () {
       );
     });
 
-    describe('load IDLE image', function () {
-      it('returns false', function () {
+    describe('load IDLE image', () => {
+      it('returns false', () => {
         const loaded = renderer.loadImage(image);
         assert.strictEqual(loaded, false);
       });
 
-      it('registers a listener', function () {
+      it('registers a listener', () => {
         renderer.loadImage(image);
         const listeners = image.listeners_[eventType];
         assert.lengthOf(listeners, 1);
       });
     });
 
-    describe('load LOADED image', function () {
-      it('returns true', function () {
+    describe('load LOADED image', () => {
+      it('returns true', () => {
         image.state = 2; // LOADED
         const loaded = renderer.loadImage(image);
         assert.strictEqual(loaded, true);
       });
 
-      it('does not register a listener', function () {
+      it('does not register a listener', () => {
         image.state = 2; // LOADED
         const loaded = renderer.loadImage(image);
         assert.strictEqual(loaded, true);
       });
     });
 
-    describe('load LOADING image', function () {
-      beforeEach(function () {
+    describe('load LOADING image', () => {
+      beforeEach(() => {
         renderer.loadImage(image);
         assert.strictEqual(image.getState(), 1);
       });
 
-      it('returns false', function () {
+      it('returns false', () => {
         const loaded = renderer.loadImage(image);
         assert.strictEqual(loaded, false);
       });
 
-      it('does not register a new listener', function () {
+      it('does not register a new listener', () => {
         renderer.loadImage(image);
         const listeners = image.listeners_[eventType];
         assert.lengthOf(listeners, 1);
@@ -103,61 +101,65 @@ describe('ol/renderer/Layer', function () {
     });
   });
 
-  describe('manageTilePyramid behavior', function () {
+  describe('manageTilePyramid behavior', () => {
     let target, map, view, layer, source, spy;
 
-    beforeEach(function (done) {
-      target = document.createElement('div');
-      Object.assign(target.style, {
-        position: 'absolute',
-        left: '-1000px',
-        top: '-1000px',
-        width: '360px',
-        height: '180px',
-      });
-      document.body.appendChild(target);
+    beforeEach(
+      () =>
+        new Promise((resolve) => {
+          target = document.createElement('div');
+          Object.assign(target.style, {
+            position: 'absolute',
+            left: '-1000px',
+            top: '-1000px',
+            width: '360px',
+            height: '180px',
+          });
+          document.body.appendChild(target);
 
-      view = new View({
-        center: [0, 0],
-        multiWorld: true,
-        zoom: 0,
-      });
+          view = new View({
+            center: [0, 0],
+            multiWorld: true,
+            zoom: 0,
+          });
 
-      source = new XYZ({
-        url: '#{x}/{y}/{z}',
-      });
-      spy = sinonSpy(source, 'getTile');
-      layer = new TileLayer({
-        source: source,
-      });
+          source = new XYZ({
+            url: '#{x}/{y}/{z}',
+          });
+          spy = vi.spyOn(source, 'getTile');
+          layer = new TileLayer({
+            source: source,
+          });
 
-      map = new Map({
-        target: target,
-        view: view,
-        layers: [layer],
-      });
-      map.once('postrender', function () {
-        done();
-      });
-    });
+          map = new Map({
+            target: target,
+            view: view,
+            layers: [layer],
+          });
+          map.once('postrender', () => {
+            resolve();
+          });
+        }),
+    );
 
-    afterEach(function () {
-      source.getTile.restore();
+    afterEach(() => {
+      spy.mockRestore();
       disposeMap(map);
     });
 
-    it('accesses tiles from current zoom level last', function (done) {
-      // expect most recent tile in the cache to be from zoom level 0
-      const z = spy.lastCall.args[0];
-      assert.strictEqual(z, 0);
+    it('accesses tiles from current zoom level last', () =>
+      new Promise((resolve) => {
+        // expect most recent tile in the cache to be from zoom level 0
+        const z = spy.mock.calls[spy.mock.calls.length - 1][0];
+        assert.strictEqual(z, 0);
 
-      map.once('moveend', function () {
-        // expect most recent tile in the cache to be from zoom level 4
-        const z = spy.lastCall.args[0];
-        assert.strictEqual(z, 4);
-        done();
-      });
-      view.setZoom(4);
-    });
+        map.once('moveend', () => {
+          // expect most recent tile in the cache to be from zoom level 4
+          const z = spy.mock.calls[spy.mock.calls.length - 1][0];
+          assert.strictEqual(z, 4);
+          resolve();
+        });
+        view.setZoom(4);
+      }));
   });
 });
