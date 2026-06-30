@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {spy as sinonSpy} from 'sinon';
 import Feature from '../../../../../../src/ol/Feature.js';
 import ImageCanvas from '../../../../../../src/ol/ImageCanvas.js';
 import {scaleFromCenter} from '../../../../../../src/ol/extent.js';
@@ -17,9 +16,9 @@ describe('ol/renderer/canvas/VectorImageLayer', function () {
         source: new VectorSource(),
       });
       const renderer = new CanvasVectorImageLayerRenderer(layer);
-      const spy = sinonSpy(renderer.vectorRenderer_, 'dispose');
+      const spy = vi.spyOn(renderer.vectorRenderer_, 'dispose');
       renderer.dispose();
-      assert.strictEqual(spy.called, true);
+      assert.isAbove(spy.mock.calls.length, 0);
     });
   });
 
@@ -29,7 +28,7 @@ describe('ol/renderer/canvas/VectorImageLayer', function () {
     /** @type {CanvasVectorImageLayerRenderer} */
     let renderer;
     let frameState;
-    this.beforeEach(function () {
+    beforeEach(function () {
       layer = new VectorImageLayer({
         imageRatio: 2,
         source: new VectorSource({

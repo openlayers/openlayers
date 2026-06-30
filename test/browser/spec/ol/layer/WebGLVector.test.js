@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {spy as sinonSpy} from 'sinon';
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
 import WebGLVectorLayer from '../../../../../src/ol/layer/WebGLVector.js';
@@ -13,38 +12,41 @@ describe('ol/layer/WebGLVector', function () {
   /** @type {Map} */
   let map, target;
 
-  beforeEach(function (done) {
-    layer = new WebGLVectorLayer({
-      className: 'testlayer',
-      source: new VectorSource(),
-      style: [
-        {
-          'circle-radius': 4,
-          'circle-fill-color': ['var', 'fillColor'],
-        },
-        {
-          'fill-color': ['var', 'fillColor'],
-        },
-      ],
-      variables: {
-        fillColor: 'rgba(255, 0, 0, 0.5)',
-      },
-      disableHitDetection: false,
-    });
-    target = document.createElement('div');
-    target.style.width = '100px';
-    target.style.height = '100px';
-    document.body.appendChild(target);
-    map = new Map({
-      target: target,
-      layers: [layer],
-      view: new View({
-        center: [0, 0],
-        zoom: 2,
+  beforeEach(
+    () =>
+      new Promise((resolve) => {
+        layer = new WebGLVectorLayer({
+          className: 'testlayer',
+          source: new VectorSource(),
+          style: [
+            {
+              'circle-radius': 4,
+              'circle-fill-color': ['var', 'fillColor'],
+            },
+            {
+              'fill-color': ['var', 'fillColor'],
+            },
+          ],
+          variables: {
+            fillColor: 'rgba(255, 0, 0, 0.5)',
+          },
+          disableHitDetection: false,
+        });
+        target = document.createElement('div');
+        target.style.width = '100px';
+        target.style.height = '100px';
+        document.body.appendChild(target);
+        map = new Map({
+          target: target,
+          layers: [layer],
+          view: new View({
+            center: [0, 0],
+            zoom: 2,
+          }),
+        });
+        map.once('rendercomplete', () => resolve());
       }),
-    });
-    map.once('rendercomplete', () => done());
-  });
+  );
 
   afterEach(function () {
     disposeMap(map);
@@ -54,9 +56,9 @@ describe('ol/layer/WebGLVector', function () {
   describe('dispose()', () => {
     it('calls dispose on the renderer', () => {
       const renderer = layer.getRenderer();
-      const spy = sinonSpy(renderer, 'dispose');
+      const spy = vi.spyOn(renderer, 'dispose');
       layer.dispose();
-      assert.strictEqual(spy.called, true);
+      assert.isAbove(spy.mock.calls.length, 0);
     });
   });
 
@@ -127,87 +129,91 @@ describe('ol/layer/WebGLVector', function () {
 
     it('disposes of the previous renderer', function () {
       const renderer = layer.getRenderer();
-      const spy = sinonSpy(renderer, 'dispose');
+      const spy = vi.spyOn(renderer, 'dispose');
       layer.setStyle({});
-      assert.strictEqual(spy.called, true);
+      assert.isAbove(spy.mock.calls.length, 0);
     });
   });
 
-  it('dispatches a precompose event with WebGL context', (done) => {
-    let called = false;
-    layer.on('precompose', (event) => {
-      assert.instanceOf(event.context, WebGLRenderingContext);
-      called = true;
-    });
+  it('dispatches a precompose event with WebGL context', () =>
+    new Promise((resolve) => {
+      let called = false;
+      layer.on('precompose', (event) => {
+        assert.instanceOf(event.context, WebGLRenderingContext);
+        called = true;
+      });
 
-    map.once('rendercomplete', () => {
-      assert.strictEqual(called, true);
-      done();
-    });
+      map.once('rendercomplete', () => {
+        assert.strictEqual(called, true);
+        resolve();
+      });
 
-    map.render();
-  });
+      map.render();
+    }));
 
-  it('dispatches a prerender event with WebGL context and inverse pixel transform', (done) => {
-    let called = false;
-    layer.on('prerender', (event) => {
-      assert.instanceOf(event.context, WebGLRenderingContext);
-      const mapSize = event.frameState.size;
-      const bottomLeft = getRenderPixel(event, [0, mapSize[1]]);
-      assert.deepEqual(bottomLeft, [0, 0]);
-      called = true;
-    });
+  it('dispatches a prerender event with WebGL context and inverse pixel transform', () =>
+    new Promise((resolve) => {
+      let called = false;
+      layer.on('prerender', (event) => {
+        assert.instanceOf(event.context, WebGLRenderingContext);
+        const mapSize = event.frameState.size;
+        const bottomLeft = getRenderPixel(event, [0, mapSize[1]]);
+        assert.deepEqual(bottomLeft, [0, 0]);
+        called = true;
+      });
 
-    map.once('rendercomplete', () => {
-      assert.strictEqual(called, true);
-      done();
-    });
+      map.once('rendercomplete', () => {
+        assert.strictEqual(called, true);
+        resolve();
+      });
 
-    map.render();
-  });
+      map.render();
+    }));
 
-  it('dispatches a postrender event with WebGL context and inverse pixel transform', (done) => {
-    let called = false;
-    layer.on('postrender', (event) => {
-      assert.instanceOf(event.context, WebGLRenderingContext);
-      const mapSize = event.frameState.size;
-      const topRight = getRenderPixel(event, [mapSize[1], 0]);
-      const pixelRatio = event.frameState.pixelRatio;
-      assert.deepEqual(topRight, [
-        mapSize[0] * pixelRatio,
-        mapSize[1] * pixelRatio,
-      ]);
-      called = true;
-    });
+  it('dispatches a postrender event with WebGL context and inverse pixel transform', () =>
+    new Promise((resolve) => {
+      let called = false;
+      layer.on('postrender', (event) => {
+        assert.instanceOf(event.context, WebGLRenderingContext);
+        const mapSize = event.frameState.size;
+        const topRight = getRenderPixel(event, [mapSize[1], 0]);
+        const pixelRatio = event.frameState.pixelRatio;
+        assert.deepEqual(topRight, [
+          mapSize[0] * pixelRatio,
+          mapSize[1] * pixelRatio,
+        ]);
+        called = true;
+      });
 
-    map.once('rendercomplete', () => {
-      assert.strictEqual(called, true);
-      done();
-    });
+      map.once('rendercomplete', () => {
+        assert.strictEqual(called, true);
+        resolve();
+      });
 
-    map.render();
-  });
+      map.render();
+    }));
 
-  it('works if the layer is constructed without a source', (done) => {
-    const sourceless = new WebGLVectorLayer({
-      className: 'testlayer',
-      style: {
-        'fill-color': 'red',
-      },
-    });
+  it('works if the layer is constructed without a source', () =>
+    new Promise((resolve) => {
+      const sourceless = new WebGLVectorLayer({
+        className: 'testlayer',
+        style: {
+          'fill-color': 'red',
+        },
+      });
 
-    map.addLayer(sourceless);
+      map.addLayer(sourceless);
 
-    sourceless.setSource(new VectorSource());
+      sourceless.setSource(new VectorSource());
 
-    let called = false;
-    layer.on('postrender', (event) => {
-      called = true;
-    });
+      let called = false;
+      layer.on('postrender', (event) => {
+        called = true;
+      });
 
-    map.once('rendercomplete', () => {
-      assert.strictEqual(called, true);
-      done();
-    });
-  });
+      map.once('rendercomplete', () => {
+        assert.strictEqual(called, true);
+        resolve();
+      });
+    }));
 });

@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {spy as sinonSpy} from 'sinon';
 import {get as getProjection} from '../../../../../src/ol/proj.js';
 import Source from '../../../../../src/ol/source/Source.js';
 
@@ -70,10 +69,10 @@ describe('ol/source/Source', function () {
       const source = new Source({
         projection: getProjection('EPSG:4326'),
       });
-      const changedSpy = sinonSpy();
+      const changedSpy = vi.fn();
       source.on('change', changedSpy);
       source.refresh();
-      assert.isOk(changedSpy.called);
+      assert.isAbove(changedSpy.mock.calls.length, 0);
     });
   });
 

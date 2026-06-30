@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {spy as sinonSpy} from 'sinon';
 import WebGLHelper from '../../../../../src/ol/webgl/Helper.js';
 import WebGLRenderTarget from '../../../../../src/ol/webgl/RenderTarget.js';
 import {assertArrayLikeEqual} from '../../../../util/equal.js';
@@ -46,11 +45,11 @@ describe('ol.webgl.RenderTarget', function () {
 
     it('does nothing if the size has not changed', function () {
       const rt = new WebGLRenderTarget(helper, [12, 34]);
-      const spy = sinonSpy(rt, 'updateSize_');
+      const spy = vi.spyOn(rt, 'updateSize_');
       rt.setSize([12, 34]);
-      assert.strictEqual(spy.called, false);
+      assert.strictEqual(spy.mock.calls.length, 0);
       rt.setSize([12, 345]);
-      assert.strictEqual(spy.called, true);
+      assert.isAbove(spy.mock.calls.length, 0);
     });
   });
 
@@ -79,14 +78,14 @@ describe('ol.webgl.RenderTarget', function () {
     it('does not call gl.readPixels again when #clearCachedData is not called', function () {
       const rt = new WebGLRenderTarget(helper, [4, 4]);
       helper.createTexture([4, 4], testImage_4x4, rt.getTexture());
-      const spy = sinonSpy(rt.helper_.getGL(), 'readPixels');
+      const spy = vi.spyOn(rt.helper_.getGL(), 'readPixels');
       rt.readAll();
-      assert.deepEqual(spy.callCount, 1);
+      assert.deepEqual(spy.mock.calls.length, 1);
       rt.readAll();
-      assert.deepEqual(spy.callCount, 1);
+      assert.deepEqual(spy.mock.calls.length, 1);
       rt.clearCachedData();
       rt.readAll();
-      assert.deepEqual(spy.callCount, 2);
+      assert.deepEqual(spy.mock.calls.length, 2);
     });
   });
 
@@ -112,14 +111,14 @@ describe('ol.webgl.RenderTarget', function () {
     it('does not call gl.readPixels again when #clearCachedData is not called', function () {
       const rt = new WebGLRenderTarget(helper, [4, 4]);
       helper.createTexture([4, 4], testImage_4x4, rt.getTexture());
-      const spy = sinonSpy(rt.helper_.getGL(), 'readPixels');
+      const spy = vi.spyOn(rt.helper_.getGL(), 'readPixels');
       rt.readPixel(0, 0);
-      assert.deepEqual(spy.callCount, 1);
+      assert.deepEqual(spy.mock.calls.length, 1);
       rt.readPixel(1, 1);
-      assert.deepEqual(spy.callCount, 1);
+      assert.deepEqual(spy.mock.calls.length, 1);
       rt.clearCachedData();
       rt.readPixel(2, 2);
-      assert.deepEqual(spy.callCount, 2);
+      assert.deepEqual(spy.mock.calls.length, 2);
     });
 
     it('returns an array filled with 0 if outside of range', function () {

@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {spy as sinonSpy} from 'sinon';
 import Feature from '../../../../../../src/ol/Feature.js';
 import ImageWrapper from '../../../../../../src/ol/Image.js';
 import ImageState from '../../../../../../src/ol/ImageState.js';
@@ -19,39 +18,42 @@ describe('ol/renderer/canvas/ImageLayer', function () {
     let map, target, source;
     /** @type {ImageLayer} */
     let layer;
-    beforeEach(function (done) {
-      const projection = new Projection({
-        code: 'custom-image',
-        units: 'pixels',
-        extent: [0, 0, 200, 200],
-      });
-      target = document.createElement('div');
-      target.style.width = '100px';
-      target.style.height = '100px';
-      document.body.appendChild(target);
-      source = new Static({
-        url: 'spec/ol/data/dot.png',
-        projection: projection,
-        imageExtent: [0, 0, 20, 20],
-      });
-      layer = new ImageLayer({
-        source: source,
-      });
-      map = new Map({
-        pixelRatio: 1,
-        target: target,
-        layers: [layer],
-        view: new View({
-          projection: projection,
-          center: [10, 10],
-          zoom: 2,
-          maxZoom: 8,
+    beforeEach(
+      () =>
+        new Promise((resolve) => {
+          const projection = new Projection({
+            code: 'custom-image',
+            units: 'pixels',
+            extent: [0, 0, 200, 200],
+          });
+          target = document.createElement('div');
+          target.style.width = '100px';
+          target.style.height = '100px';
+          document.body.appendChild(target);
+          source = new Static({
+            url: 'spec/ol/data/dot.png',
+            projection: projection,
+            imageExtent: [0, 0, 20, 20],
+          });
+          layer = new ImageLayer({
+            source: source,
+          });
+          map = new Map({
+            pixelRatio: 1,
+            target: target,
+            layers: [layer],
+            view: new View({
+              projection: projection,
+              center: [10, 10],
+              zoom: 2,
+              maxZoom: 8,
+            }),
+          });
+          source.on('imageloadend', function () {
+            resolve();
+          });
         }),
-      });
-      source.on('imageloadend', function () {
-        done();
-      });
-    });
+    );
 
     afterEach(function () {
       disposeMap(map);
@@ -74,58 +76,62 @@ describe('ol/renderer/canvas/ImageLayer', function () {
       source,
       imageLayer,
       imageLayerCross;
-    beforeEach(function (done) {
-      projection = new Projection({
-        code: 'custom-image',
-        units: 'pixels',
-        extent: [0, 0, 200, 200],
-      });
-      target = document.createElement('div');
-      target.style.width = '100px';
-      target.style.height = '100px';
-      document.body.appendChild(target);
-      imageExtent = [0, 0, 20, 20];
-      source = new Static({
-        url: `https://openlayers.org/assets/theme/img/logo70.png`,
-        projection: projection,
-        imageExtent: imageExtent,
-      });
-      imageLayer = new ImageLayer({
-        source: source,
-      });
-      sourceCross = new Static({
-        url: `https://openlayers.org/assets/theme/img/logo70.png`,
-        projection: projection,
-        imageExtent: imageExtent,
-        crossOrigin: 'anonymous',
-      });
-      imageLayerCross = new ImageLayer({
-        source: sourceCross,
-      });
-      map = new Map({
-        pixelRatio: 1,
-        target: target,
-        layers: [imageLayer, imageLayerCross],
-        view: new View({
-          projection: projection,
-          center: [10, 10],
-          zoom: 1,
-          maxZoom: 8,
+    beforeEach(
+      () =>
+        new Promise((resolve, reject) => {
+          projection = new Projection({
+            code: 'custom-image',
+            units: 'pixels',
+            extent: [0, 0, 200, 200],
+          });
+          target = document.createElement('div');
+          target.style.width = '100px';
+          target.style.height = '100px';
+          document.body.appendChild(target);
+          imageExtent = [0, 0, 20, 20];
+          source = new Static({
+            url: `https://openlayers.org/assets/theme/img/logo70.png`,
+            projection: projection,
+            imageExtent: imageExtent,
+          });
+          imageLayer = new ImageLayer({
+            source: source,
+          });
+          sourceCross = new Static({
+            url: `https://openlayers.org/assets/theme/img/logo70.png`,
+            projection: projection,
+            imageExtent: imageExtent,
+            crossOrigin: 'anonymous',
+          });
+          imageLayerCross = new ImageLayer({
+            source: sourceCross,
+          });
+          map = new Map({
+            pixelRatio: 1,
+            target: target,
+            layers: [imageLayer, imageLayerCross],
+            view: new View({
+              projection: projection,
+              center: [10, 10],
+              zoom: 1,
+              maxZoom: 8,
+            }),
+          });
+          let loadedCount = 0;
+          [source, sourceCross].forEach(function (source) {
+            source.once('imageloadend', function () {
+              loadedCount++;
+              if (loadedCount === 2) {
+                resolve();
+              }
+            });
+            source.once('imageloaderror', function () {
+              reject(new Error('Image failed to load'));
+              return;
+            });
+          });
         }),
-      });
-      let loadedCount = 0;
-      [source, sourceCross].forEach(function (source) {
-        source.once('imageloadend', function () {
-          loadedCount++;
-          if (loadedCount === 2) {
-            done();
-          }
-        });
-        source.once('imageloaderror', function () {
-          done(new Error('Image failed to load'));
-        });
-      });
-    });
+    );
 
     afterEach(function () {
       disposeMap(map);
@@ -163,64 +169,69 @@ describe('ol/renderer/canvas/ImageLayer', function () {
   describe('Image rendering', function () {
     let map, div, layer;
 
-    beforeEach(function (done) {
-      const projection = getProj('EPSG:3857');
-      layer = new ImageLayer({
-        source: new Static({
-          url: 'spec/ol/data/osm-0-0-0.png',
-          imageExtent: projection.getExtent(),
-          projection: projection,
-        }),
-      });
+    beforeEach(
+      () =>
+        new Promise((resolve) => {
+          const projection = getProj('EPSG:3857');
+          layer = new ImageLayer({
+            source: new Static({
+              url: 'spec/ol/data/osm-0-0-0.png',
+              imageExtent: projection.getExtent(),
+              projection: projection,
+            }),
+          });
 
-      div = document.createElement('div');
-      div.style.width = '100px';
-      div.style.height = '100px';
-      document.body.appendChild(div);
-      map = new Map({
-        target: div,
-        layers: [layer],
-        view: new View({
-          center: [0, 0],
-          zoom: 2,
+          div = document.createElement('div');
+          div.style.width = '100px';
+          div.style.height = '100px';
+          document.body.appendChild(div);
+          map = new Map({
+            target: div,
+            layers: [layer],
+            view: new View({
+              center: [0, 0],
+              zoom: 2,
+            }),
+          });
+          layer.getSource().on('imageloadend', function () {
+            resolve();
+          });
         }),
-      });
-      layer.getSource().on('imageloadend', function () {
-        done();
-      });
-    });
+    );
 
     afterEach(function () {
       disposeMap(map);
     });
 
-    it('dispatches prerender and postrender events on the image layer', function (done) {
-      let prerender = 0;
-      let postrender = 0;
-      layer.on('prerender', function () {
-        ++prerender;
-      });
-      layer.on('postrender', function () {
-        ++postrender;
-      });
-      map.on('postrender', function () {
-        assert.strictEqual(prerender, 1);
-        assert.strictEqual(postrender, 1);
-        done();
-      });
-    });
+    it('dispatches prerender and postrender events on the image layer', () =>
+      new Promise((resolve) => {
+        let prerender = 0;
+        let postrender = 0;
+        layer.on('prerender', function () {
+          ++prerender;
+        });
+        layer.on('postrender', function () {
+          ++postrender;
+        });
+        map.on('postrender', function () {
+          assert.strictEqual(prerender, 1);
+          assert.strictEqual(postrender, 1);
+          resolve();
+        });
+      }));
 
-    it('image smoothing is re-enabled after rendering', function (done) {
-      let context;
-      layer.on('postrender', function (e) {
-        context = e.context;
-        context.imageSmoothingEnabled = false;
-      });
-      map.on('postrender', function () {
-        assert.strictEqual(context.imageSmoothingEnabled, true);
-        done();
-      });
-    });
+    it('image smoothing is re-enabled after rendering', () =>
+      new Promise((resolve) => {
+        let context;
+        layer.on('postrender', function (e) {
+          context = e.context;
+          context.imageSmoothingEnabled = false;
+        });
+        map.on('postrender', function () {
+          assert.strictEqual(context.imageSmoothingEnabled, true);
+          resolve();
+        });
+      }));
   });
 
   describe('Vector image rendering', function () {
@@ -251,21 +262,22 @@ describe('ol/renderer/canvas/ImageLayer', function () {
       disposeMap(map);
     });
 
-    it('dispatches prerender and postrender events on the vector layer', function (done) {
-      let prerender = 0;
-      let postrender = 0;
-      layer.on('prerender', function () {
-        ++prerender;
-      });
-      layer.on('postrender', function () {
-        ++postrender;
-      });
-      map.once('postrender', function () {
-        assert.strictEqual(prerender, 1);
-        assert.strictEqual(postrender, 1);
-        done();
-      });
-    });
+    it('dispatches prerender and postrender events on the vector layer', () =>
+      new Promise((resolve) => {
+        let prerender = 0;
+        let postrender = 0;
+        layer.on('prerender', function () {
+          ++prerender;
+        });
+        layer.on('postrender', function () {
+          ++postrender;
+        });
+        map.once('postrender', function () {
+          assert.strictEqual(prerender, 1);
+          assert.strictEqual(postrender, 1);
+          resolve();
+        });
+      }));
   });
   describe('renderFrame', function () {
     const projection = new Projection({
@@ -285,11 +297,11 @@ describe('ol/renderer/canvas/ImageLayer', function () {
       });
       layer.getSource().getImage([0, 0, 100, 100], 1, 1, projection).load();
       renderer = layer.getRenderer();
-      renderer.renderWorlds = sinonSpy();
-      renderer.clipUnrotated = sinonSpy();
+      renderer.renderWorlds = vi.fn();
+      renderer.clipUnrotated = vi.fn();
       renderer.useContainer = function () {
         CanvasImageLayerRenderer.prototype.useContainer.apply(this, arguments);
-        this.context = sinonSpy(this.context);
+        vi.spyOn(this.context, 'drawImage');
       };
       return {
         pixelRatio: 1,
@@ -311,65 +323,73 @@ describe('ol/renderer/canvas/ImageLayer', function () {
         viewHints: [],
       };
     }
-    it('does not render if layer extent does not intersect view extent', function (done) {
-      const frameState = createLayerFrameState([200, 200, 300, 300]);
-      layer.getSource().on('imageloadend', function () {
-        try {
-          assert.strictEqual(renderer.prepareFrame(frameState), false);
-          done();
-        } catch (e) {
-          done(e);
-        }
-      });
-    });
-    it('renders if layer extent partially intersects view extent', function (done) {
-      const frameState = createLayerFrameState([50, 50, 150, 150]);
-      layer.getSource().on('imageloadend', function () {
-        if (renderer.prepareFrame(frameState)) {
-          renderer.renderFrame(frameState, null);
-        }
-        try {
-          assert.strictEqual(renderer.clipUnrotated.callCount, 1);
-          assert.strictEqual(renderer.context.drawImage.callCount, 1);
-          done();
-        } catch (e) {
-          done(e);
-        }
-      });
-    });
-    it('renders without clipping when layer extent covers view', function (done) {
-      const frameState = createLayerFrameState([0, 0, 100, 100]);
-      layer.getSource().on('imageloadend', function () {
-        if (renderer.prepareFrame(frameState)) {
-          renderer.renderFrame(frameState, null);
-        }
-        try {
-          assert.strictEqual(renderer.clipUnrotated.callCount, 0);
-          assert.strictEqual(renderer.context.drawImage.callCount, 1);
-          done();
-        } catch (e) {
-          done(e);
-        }
-      });
-    });
-    it('resets image when empty', function (done) {
-      const frameState = createLayerFrameState([0, 0, 100, 100]);
-      layer.getSource().on('imageloadend', function () {
-        if (renderer.prepareFrame(frameState)) {
-          renderer.renderFrame(frameState, null);
-        }
-        try {
-          const image = renderer.image;
-          assert.instanceOf(image, ImageWrapper);
-          image.state = ImageState.EMPTY;
-          assert.strictEqual(renderer.prepareFrame(frameState), false);
-          assert.strictEqual(renderer.image, null);
-          done();
-        } catch (e) {
-          done(e);
-        }
-      });
-    });
+    it('does not render if layer extent does not intersect view extent', () =>
+      new Promise((resolve, reject) => {
+        const frameState = createLayerFrameState([200, 200, 300, 300]);
+        layer.getSource().on('imageloadend', function () {
+          try {
+            assert.strictEqual(renderer.prepareFrame(frameState), false);
+            resolve();
+          } catch (e) {
+            reject(e);
+            return;
+          }
+        });
+      }));
+    it('renders if layer extent partially intersects view extent', () =>
+      new Promise((resolve, reject) => {
+        const frameState = createLayerFrameState([50, 50, 150, 150]);
+        layer.getSource().on('imageloadend', function () {
+          if (renderer.prepareFrame(frameState)) {
+            renderer.renderFrame(frameState, null);
+          }
+          try {
+            assert.strictEqual(renderer.clipUnrotated.mock.calls.length, 1);
+            assert.strictEqual(renderer.context.drawImage.mock.calls.length, 1);
+            resolve();
+          } catch (e) {
+            reject(e);
+            return;
+          }
+        });
+      }));
+    it('renders without clipping when layer extent covers view', () =>
+      new Promise((resolve, reject) => {
+        const frameState = createLayerFrameState([0, 0, 100, 100]);
+        layer.getSource().on('imageloadend', function () {
+          if (renderer.prepareFrame(frameState)) {
+            renderer.renderFrame(frameState, null);
+          }
+          try {
+            assert.strictEqual(renderer.clipUnrotated.mock.calls.length, 0);
+            assert.strictEqual(renderer.context.drawImage.mock.calls.length, 1);
+            resolve();
+          } catch (e) {
+            reject(e);
+            return;
+          }
+        });
+      }));
+    it('resets image when empty', () =>
+      new Promise((resolve, reject) => {
+        const frameState = createLayerFrameState([0, 0, 100, 100]);
+        layer.getSource().on('imageloadend', function () {
+          if (renderer.prepareFrame(frameState)) {
+            renderer.renderFrame(frameState, null);
+          }
+          try {
+            const image = renderer.image;
+            assert.instanceOf(image, ImageWrapper);
+            image.state = ImageState.EMPTY;
+            assert.strictEqual(renderer.prepareFrame(frameState), false);
+            assert.strictEqual(renderer.image, null);
+            resolve();
+          } catch (e) {
+            reject(e);
+            return;
+          }
+        });
+      }));
   });
 
   describe('cache invalidation on visibility change', function () {
@@ -391,36 +411,39 @@ describe('ol/renderer/canvas/ImageLayer', function () {
       extent: [0, 0, 256, 256],
     });
 
-    beforeEach(function (done) {
-      target = document.createElement('div');
-      target.style.width = '100px';
-      target.style.height = '100px';
-      document.body.appendChild(target);
+    beforeEach(
+      () =>
+        new Promise((resolve) => {
+          target = document.createElement('div');
+          target.style.width = '100px';
+          target.style.height = '100px';
+          document.body.appendChild(target);
 
-      source = new Static({
-        url: 'spec/ol/data/osm-0-0-0.png',
-        projection: projection,
-        imageExtent: [0, 0, 256, 256],
-      });
+          source = new Static({
+            url: 'spec/ol/data/osm-0-0-0.png',
+            projection: projection,
+            imageExtent: [0, 0, 256, 256],
+          });
 
-      layer = new ImageLayer({
-        source: source,
-      });
+          layer = new ImageLayer({
+            source: source,
+          });
 
-      map = new Map({
-        target: target,
-        layers: [layer],
-        view: new View({
-          projection: projection,
-          center: [128, 128],
-          zoom: 0,
+          map = new Map({
+            target: target,
+            layers: [layer],
+            view: new View({
+              projection: projection,
+              center: [128, 128],
+              zoom: 0,
+            }),
+          });
+
+          source.on('imageloadend', function () {
+            resolve();
+          });
         }),
-      });
-
-      source.on('imageloadend', function () {
-        done();
-      });
-    });
+    );
 
     afterEach(function () {
       disposeMap(map);
