@@ -546,6 +546,12 @@ class SentinelHub extends DataTileSource {
    * @api
    */
   setFormat(format) {
+    if (!format) {
+      this.format_ = defaultFormat;
+      this.fireWhenReady_();
+      return;
+    }
+
     if (!knownImageMediaTypes[format]) {
       throw new Error(
         `Unsupported format: ${format}. Supported formats are: ${Object.keys(knownImageMediaTypes).join(', ')}`,
