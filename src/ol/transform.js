@@ -22,6 +22,9 @@ import {assert} from './asserts.js';
  * ```
  */
 
+/** @type {Transform} */
+export const IDENTITY_TRANSFORM = [1, 0, 0, 1, 0, 0];
+
 /**
  * @private
  * @type {Transform}
@@ -33,7 +36,7 @@ const tmp_ = new Array(6);
  * @return {!Transform} Identity transform.
  */
 export function create() {
-  return [1, 0, 0, 1, 0, 0];
+  return IDENTITY_TRANSFORM.slice(0);
 }
 
 /**
