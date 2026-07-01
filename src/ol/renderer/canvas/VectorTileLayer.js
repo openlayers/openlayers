@@ -13,6 +13,7 @@ import {
   getIntersection,
   getTopLeft,
   intersects,
+  subtractExtents,
 } from '../../extent.js';
 import {equivalent, getTransform, transformExtent} from '../../proj.js';
 import CanvasBuilderGroup from '../../render/canvas/BuilderGroup.js';
@@ -21,14 +22,15 @@ import CanvasExecutorGroup, {
 } from '../../render/canvas/ExecutorGroup.js';
 import ZIndexContext from '../../render/canvas/ZIndexContext.js';
 import {
-  HIT_DETECT_RESOLUTION,
   createHitDetectionImageData,
+  HIT_DETECT_RESOLUTION,
   hitDetect,
 } from '../../render/canvas/hitdetect.js';
 import {toSize} from '../../size.js';
 import {
   apply as applyTransform,
   create as createTransform,
+  IDENTITY_TRANSFORM,
   multiply,
   reset as resetTransform,
   scale,
@@ -766,48 +768,54 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   }
 
   /**
-   * Clips the current tile against the regions already covered by higher-z tiles.
-   * The clip mask uses an even-odd donut path (outer ring for the current tile,
-   * counter-clockwise; inner ring for the higher-z tile, clockwise).
+   * Clips the current tile to the regions not already covered by higher-z tiles.
+   * The tile extents are axis-aligned in world coordinates, so the covered
+   * regions can be subtracted as rectangles and a single clip applied to the
+   * disjoint remainder.
    * @param {CanvasRenderingContext2D|import("../../render/canvas/ZIndexContext.js").ZIndexContextProxy} clipContext Context to apply the clip to.
-   * @param {Array<number>} currentClip Clip coordinates of the current tile.
-   * @param {Array<Array<number>>} clips Clip coordinates of previously rendered tiles.
+   * @param {import("../../extent.js").Extent} currentExtent World extent of the current tile.
+   * @param {Array<import("../../extent.js").Extent>} clips World extents of previously rendered tiles.
    * @param {Array<number>} clipZs Zoom levels of previously rendered tiles.
    * @param {number} currentZ Zoom level of the current tile.
+   * @param {import("../../transform.js").Transform} transform Transform from world to render coordinates.
    * @return {boolean} The context was saved and needs to be restored.
    * @private
    */
-  clipTileContext_(clipContext, currentClip, clips, clipZs, currentZ) {
-    let contextSaved = false;
+  clipTileContext_(
+    clipContext,
+    currentExtent,
+    clips,
+    clipZs,
+    currentZ,
+    transform,
+  ) {
+    /** @type {Array<import("../../extent.js").Extent>} */
+    const covered = [];
     for (let i = 0, ii = clips.length; i < ii; ++i) {
-      const higherZClip = clips[i];
-      if (
-        currentZ >= clipZs[i] ||
-        !intersects(
-          [currentClip[0], currentClip[3], currentClip[4], currentClip[7]],
-          [higherZClip[0], higherZClip[3], higherZClip[4], higherZClip[7]],
-        )
-      ) {
-        continue;
+      if (currentZ < clipZs[i] && intersects(currentExtent, clips[i])) {
+        covered.push(clips[i]);
       }
-      if (!contextSaved) {
-        clipContext.save();
-        contextSaved = true;
-      }
-      clipContext.beginPath();
-      // counter-clockwise (outer ring) for current tile
-      clipContext.moveTo(currentClip[0], currentClip[1]);
-      clipContext.lineTo(currentClip[2], currentClip[3]);
-      clipContext.lineTo(currentClip[4], currentClip[5]);
-      clipContext.lineTo(currentClip[6], currentClip[7]);
-      // clockwise (inner ring) for higher z tile
-      clipContext.moveTo(higherZClip[6], higherZClip[7]);
-      clipContext.lineTo(higherZClip[4], higherZClip[5]);
-      clipContext.lineTo(higherZClip[2], higherZClip[3]);
-      clipContext.lineTo(higherZClip[0], higherZClip[1]);
-      clipContext.clip();
     }
-    return contextSaved;
+    if (covered.length === 0) {
+      return false;
+    }
+    const remainder = subtractExtents(currentExtent, covered);
+    clipContext.save();
+    clipContext.beginPath();
+    for (let i = 0, ii = remainder.length; i < ii; ++i) {
+      const r = remainder[i];
+      const p0 = applyTransform(transform, [r[0], r[1]]);
+      const p1 = applyTransform(transform, [r[0], r[3]]);
+      const p2 = applyTransform(transform, [r[2], r[3]]);
+      const p3 = applyTransform(transform, [r[2], r[1]]);
+      clipContext.moveTo(p0[0], p0[1]);
+      clipContext.lineTo(p1[0], p1[1]);
+      clipContext.lineTo(p2[0], p2[1]);
+      clipContext.lineTo(p3[0], p3[1]);
+      clipContext.closePath();
+    }
+    clipContext.clip();
+    return true;
   }
 
   /**
@@ -855,6 +863,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       /** @type {Array<import("../../VectorRenderTile.js").default>} */ (
         this.renderedTiles
       );
+    /** @type {Array<import("../../extent.js").Extent>} */
     const clips = [];
     const clipZs = [];
     const tileClipContexts = [];
@@ -872,22 +881,29 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       const transform = this.getTileRenderTransform(tile, frameState);
       const currentZ = tile.tileCoord[0];
       let contextSaved = false;
-      const currentClip = executorGroups[0].getClipCoords(transform);
+      const worldClip = executorGroups[0].getClipCoords(IDENTITY_TRANSFORM);
       let clipContext = context;
       let tileClipContext;
-      if (currentClip) {
+      if (worldClip) {
+        const currentExtent = [
+          worldClip[0],
+          worldClip[1],
+          worldClip[4],
+          worldClip[5],
+        ];
         tileClipContext = new ZIndexContext();
         clipContext = tileClipContext.getContext();
         if (z !== currentZ) {
           contextSaved = this.clipTileContext_(
             clipContext,
-            currentClip,
+            currentExtent,
             clips,
             clipZs,
             currentZ,
+            transform,
           );
         }
-        clips.push(currentClip);
+        clips.push(currentExtent);
         clipZs.push(currentZ);
       }
       for (let t = 0, tt = executorGroups.length; t < tt; ++t) {
