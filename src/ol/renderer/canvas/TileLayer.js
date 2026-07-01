@@ -14,6 +14,7 @@ import {
   getRotatedViewport,
   getTopLeft,
   intersects,
+  subtractExtents,
 } from '../../extent.js';
 import {equivalent, fromUserExtent} from '../../proj.js';
 import ReprojTile from '../../reproj/Tile.js';
@@ -772,12 +773,12 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
 
     this.preRender(context, frameState);
 
-    /** @type {Array<number>} */
     const zs = Object.keys(tilesByZ).map(Number);
     zs.sort(ascending);
 
-    let currentClip;
+    /** @type {Array<import("../../extent.js").Extent>} */
     const clips = [];
+    /** @type {Array<number>} */
     const clipZs = [];
     for (let i = zs.length - 1; i >= 0; --i) {
       const currentZ = zs[i];
@@ -820,45 +821,37 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
         const h = nextY - y;
         const transition = zs.length === 1;
 
-        let contextSaved = false;
-
-        // Clip mask for regions in this tile that already filled by a higher z tile
-        currentClip = [x, y, x + w, y, x + w, y + h, x, y + h];
-        for (let i = 0, ii = clips.length; i < ii; ++i) {
-          if (!transition && currentZ < clipZs[i]) {
-            const clip = clips[i];
-            if (
-              intersects(
-                [x, y, x + w, y + h],
-                [clip[0], clip[3], clip[4], clip[7]],
-              )
-            ) {
-              if (!contextSaved) {
-                context.save();
-                contextSaved = true;
-              }
-              context.beginPath();
-              // counter-clockwise (outer ring) for current tile
-              context.moveTo(currentClip[0], currentClip[1]);
-              context.lineTo(currentClip[2], currentClip[3]);
-              context.lineTo(currentClip[4], currentClip[5]);
-              context.lineTo(currentClip[6], currentClip[7]);
-              // clockwise (inner ring) for higher z tile
-              context.moveTo(clip[6], clip[7]);
-              context.lineTo(clip[4], clip[5]);
-              context.lineTo(clip[2], clip[3]);
-              context.lineTo(clip[0], clip[1]);
-              context.clip();
+        // Draw only the parts of this tile that are not already covered by a
+        // higher-z tile.
+        const currentRect = [x, y, x + w, y + h];
+        let clipRects;
+        if (!transition) {
+          /** @type {Array<import("../../extent.js").Extent>} */
+          const covered = [];
+          for (let j = 0, jj = clips.length; j < jj; ++j) {
+            if (currentZ < clipZs[j] && intersects(currentRect, clips[j])) {
+              covered.push(clips[j]);
             }
           }
+          if (covered.length > 0) {
+            clipRects = subtractExtents(currentRect, covered);
+          }
         }
-        clips.push(currentClip);
+        clips.push(currentRect);
         clipZs.push(currentZ);
 
-        this.drawTile(tile, frameState, x, y, w, h, tileGutter, transition);
-        if (contextSaved) {
-          context.restore();
-        }
+        this.drawTile(
+          tile,
+          frameState,
+          x,
+          y,
+          w,
+          h,
+          tileGutter,
+          transition,
+          clipRects,
+        );
+
         this.renderedTiles.unshift(tile);
 
         // TODO: decide if this is necessary
@@ -920,9 +913,13 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
    * @param {number} h Height of the tile.
    * @param {number} gutter Tile gutter.
    * @param {boolean} transition Apply an alpha transition.
+   * @param {Array<import("../../extent.js").Extent>} [clipRects] Sub-rectangles
+   *     of the tile to draw. When not provided, the whole tile is drawn; when an
+   *     empty array is provided, nothing is drawn (the tile is fully covered by
+   *     higher-z tiles).
    * @protected
    */
-  drawTile(tile, frameState, x, y, w, h, gutter, transition) {
+  drawTile(tile, frameState, x, y, w, h, gutter, transition, clipRects) {
     let image;
     if (tile instanceof DataTile) {
       image = asImageLike(tile.getData());
@@ -949,17 +946,42 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
       context.save();
       context.globalAlpha = alpha;
     }
-    context.drawImage(
-      image,
-      gutter,
-      gutter,
-      image.width - 2 * gutter,
-      image.height - 2 * gutter,
-      x,
-      y,
-      w,
-      h,
-    );
+    const imageWidth = image.width - 2 * gutter;
+    const imageHeight = image.height - 2 * gutter;
+    if (clipRects) {
+      const scaleX = imageWidth / w;
+      const scaleY = imageHeight / h;
+      for (let i = 0, ii = clipRects.length; i < ii; ++i) {
+        const rect = clipRects[i];
+        const rx = rect[0];
+        const ry = rect[1];
+        const rw = rect[2] - rect[0];
+        const rh = rect[3] - rect[1];
+        context.drawImage(
+          image,
+          gutter + (rx - x) * scaleX,
+          gutter + (ry - y) * scaleY,
+          rw * scaleX,
+          rh * scaleY,
+          rx,
+          ry,
+          rw,
+          rh,
+        );
+      }
+    } else {
+      context.drawImage(
+        image,
+        gutter,
+        gutter,
+        imageWidth,
+        imageHeight,
+        x,
+        y,
+        w,
+        h,
+      );
+    }
 
     if (alphaChanged) {
       context.restore();

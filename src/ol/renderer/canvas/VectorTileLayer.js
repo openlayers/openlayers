@@ -131,9 +131,11 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
    * @param {number} h Height of the tile.
    * @param {number} gutter Tile gutter.
    * @param {boolean} transition Apply an alpha transition.
+   * @param {Array<import("../../extent.js").Extent>} [clipRects] Sub-rectangles
+   *     of the tile to draw.
    * @override
    */
-  drawTile(tile, frameState, x, y, w, h, gutter, transition) {
+  drawTile(tile, frameState, x, y, w, h, gutter, transition, clipRects) {
     this.updateExecutorGroup_(
       tile,
       frameState.pixelRatio,
@@ -142,7 +144,7 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     if (this.tileImageNeedsRender_(tile)) {
       this.renderTileImage_(tile, frameState);
     }
-    super.drawTile(tile, frameState, x, y, w, h, gutter, transition);
+    super.drawTile(tile, frameState, x, y, w, h, gutter, transition, clipRects);
   }
 
   /**
@@ -764,6 +766,51 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
   }
 
   /**
+   * Clips the current tile against the regions already covered by higher-z tiles.
+   * The clip mask uses an even-odd donut path (outer ring for the current tile,
+   * counter-clockwise; inner ring for the higher-z tile, clockwise).
+   * @param {CanvasRenderingContext2D|import("../../render/canvas/ZIndexContext.js").ZIndexContextProxy} clipContext Context to apply the clip to.
+   * @param {Array<number>} currentClip Clip coordinates of the current tile.
+   * @param {Array<Array<number>>} clips Clip coordinates of previously rendered tiles.
+   * @param {Array<number>} clipZs Zoom levels of previously rendered tiles.
+   * @param {number} currentZ Zoom level of the current tile.
+   * @return {boolean} The context was saved and needs to be restored.
+   * @private
+   */
+  clipTileContext_(clipContext, currentClip, clips, clipZs, currentZ) {
+    let contextSaved = false;
+    for (let i = 0, ii = clips.length; i < ii; ++i) {
+      const higherZClip = clips[i];
+      if (
+        currentZ >= clipZs[i] ||
+        !intersects(
+          [currentClip[0], currentClip[3], currentClip[4], currentClip[7]],
+          [higherZClip[0], higherZClip[3], higherZClip[4], higherZClip[7]],
+        )
+      ) {
+        continue;
+      }
+      if (!contextSaved) {
+        clipContext.save();
+        contextSaved = true;
+      }
+      clipContext.beginPath();
+      // counter-clockwise (outer ring) for current tile
+      clipContext.moveTo(currentClip[0], currentClip[1]);
+      clipContext.lineTo(currentClip[2], currentClip[3]);
+      clipContext.lineTo(currentClip[4], currentClip[5]);
+      clipContext.lineTo(currentClip[6], currentClip[7]);
+      // clockwise (inner ring) for higher z tile
+      clipContext.moveTo(higherZClip[6], higherZClip[7]);
+      clipContext.lineTo(higherZClip[4], higherZClip[5]);
+      clipContext.lineTo(higherZClip[2], higherZClip[3]);
+      clipContext.lineTo(higherZClip[0], higherZClip[1]);
+      clipContext.clip();
+    }
+    return contextSaved;
+  }
+
+  /**
    * Render the vectors for this layer.
    * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Target context.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
@@ -825,45 +872,20 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
       const transform = this.getTileRenderTransform(tile, frameState);
       const currentZ = tile.tileCoord[0];
       let contextSaved = false;
-      // Clip mask for regions in this tile that already filled by a higher z tile
       const currentClip = executorGroups[0].getClipCoords(transform);
       let clipContext = context;
       let tileClipContext;
       if (currentClip) {
         tileClipContext = new ZIndexContext();
         clipContext = tileClipContext.getContext();
-        for (let j = 0, jj = clips.length; j < jj; ++j) {
-          if (z !== currentZ && currentZ < clipZs[j]) {
-            const clip = clips[j];
-            if (
-              intersects(
-                [
-                  currentClip[0],
-                  currentClip[3],
-                  currentClip[4],
-                  currentClip[7],
-                ],
-                [clip[0], clip[3], clip[4], clip[7]],
-              )
-            ) {
-              if (!contextSaved) {
-                clipContext.save();
-                contextSaved = true;
-              }
-              clipContext.beginPath();
-              // counter-clockwise (outer ring) for current tile
-              clipContext.moveTo(currentClip[0], currentClip[1]);
-              clipContext.lineTo(currentClip[2], currentClip[3]);
-              clipContext.lineTo(currentClip[4], currentClip[5]);
-              clipContext.lineTo(currentClip[6], currentClip[7]);
-              // clockwise (inner ring) for higher z tile
-              clipContext.moveTo(clip[6], clip[7]);
-              clipContext.lineTo(clip[4], clip[5]);
-              clipContext.lineTo(clip[2], clip[3]);
-              clipContext.lineTo(clip[0], clip[1]);
-              clipContext.clip();
-            }
-          }
+        if (z !== currentZ) {
+          contextSaved = this.clipTileContext_(
+            clipContext,
+            currentClip,
+            clips,
+            clipZs,
+            currentZ,
+          );
         }
         clips.push(currentClip);
         clipZs.push(currentZ);
