@@ -780,6 +780,11 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     const clips = [];
     /** @type {Array<number>} */
     const clipZs = [];
+    // Tiles at the target zoom that are still fading in. They are drawn in a
+    // second pass on top of the (fully drawn) lower-z fallback, so the fade
+    // reads as a coarse-to-fine sharpen instead of revealing the background.
+    /** @type {Array<{tile: import("../../Tile.js").default, x: number, y: number, w: number, h: number, gutter: number}>} */
+    const fadingTiles = [];
     for (let i = zs.length - 1; i >= 0; --i) {
       const currentZ = zs[i];
       const currentTilePixelSize = tileSource.getTilePixelSize(
@@ -819,23 +824,33 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
         const y = Math.round(origin[1] - yIndex * dy);
         const w = nextX - x;
         const h = nextY - y;
-        const transition = zs.length === 1;
+        // Only the target zoom tiles fade in; lower-z fallback tiles are just
+        // gap fillers and must not animate. `inTransition` is false when
+        // transitions are disabled, so this whole path is skipped then.
+        const transition = currentZ === z;
+
+        if (transition && tile.inTransition(uid)) {
+          // Still fading in - defer to the second pass and keep the fallback
+          // beneath it by not adding it to the clips.
+          fadingTiles.push({tile, x, y, w, h, gutter: tileGutter});
+          this.renderedTiles.unshift(tile);
+          this.updateUsedTiles(frameState.usedTiles, tileSource, tile);
+          continue;
+        }
 
         // Draw only the parts of this tile that are not already covered by a
         // higher-z tile.
         const currentRect = [x, y, x + w, y + h];
+        /** @type {Array<import("../../extent.js").Extent>} */
+        const covered = [];
+        for (let j = 0, jj = clips.length; j < jj; ++j) {
+          if (currentZ < clipZs[j] && intersects(currentRect, clips[j])) {
+            covered.push(clips[j]);
+          }
+        }
         let clipRects;
-        if (!transition) {
-          /** @type {Array<import("../../extent.js").Extent>} */
-          const covered = [];
-          for (let j = 0, jj = clips.length; j < jj; ++j) {
-            if (currentZ < clipZs[j] && intersects(currentRect, clips[j])) {
-              covered.push(clips[j]);
-            }
-          }
-          if (covered.length > 0) {
-            clipRects = subtractExtents(currentRect, covered);
-          }
+        if (covered.length > 0) {
+          clipRects = subtractExtents(currentRect, covered);
         }
         clips.push(currentRect);
         clipZs.push(currentZ);
@@ -857,6 +872,12 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
         // TODO: decide if this is necessary
         this.updateUsedTiles(frameState.usedTiles, tileSource, tile);
       }
+    }
+
+    // Second pass: draw the fading target zoom tiles on top of the fallback.
+    for (let i = 0, ii = fadingTiles.length; i < ii; ++i) {
+      const {tile, x, y, w, h, gutter} = fadingTiles[i];
+      this.drawTile(tile, frameState, x, y, w, h, gutter, true, undefined);
     }
 
     this.renderedResolution = tileResolution;
