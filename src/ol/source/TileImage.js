@@ -332,8 +332,9 @@ class TileImage extends UrlTile {
 /**
  * @param {ImageTile} imageTile Image tile.
  * @param {string} src Source.
+ * @param {RequestInit} options Fetch options.
  */
-export function defaultTileLoadFunction(imageTile, src) {
+export function defaultTileLoadFunction(imageTile, src, options = {}) {
   if (WORKER_OFFSCREEN_CANVAS) {
     // special treatment for offscreen canvas
     const crossOrigin = imageTile.getCrossOrigin();
@@ -350,13 +351,14 @@ export function defaultTileLoadFunction(imageTile, src) {
       credentials = 'include';
     }
 
-    const options = {
+    const _options = {
+      ...options,
       mode,
       credentials,
       referrerPolicy: imageTile.getReferrerPolicy(),
     };
 
-    fetch(src, options)
+    fetch(src, _options)
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}`);
