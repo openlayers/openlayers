@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {spy as sinonSpy, stub as sinonStub} from 'sinon';
 import Feature from '../../../../../../src/ol/Feature.js';
 import Circle from '../../../../../../src/ol/geom/Circle.js';
 import LineString from '../../../../../../src/ol/geom/LineString.js';
@@ -40,15 +39,17 @@ function executeInstructions(
   const transform = createTransform();
   const context = createContext();
   const executor = new Executor(0.02, 1, false, builder.finish());
-  sinonSpy(executor, 'drawLabelWithPointPlacement_');
-  const replayImageOrLabelStub = sinonStub(executor, 'replayImageOrLabel_');
+  vi.spyOn(executor, 'drawLabelWithPointPlacement_');
+  const replayImageOrLabelStub = vi
+    .spyOn(executor, 'replayImageOrLabel_')
+    .mockImplementation(() => {});
   executor.execute(context, 1, transform);
   assert.strictEqual(
-    executor.drawLabelWithPointPlacement_.callCount,
+    executor.drawLabelWithPointPlacement_.mock.calls.length,
     expectedDrawTextImageCalls,
   );
   assert.strictEqual(
-    replayImageOrLabelStub.callCount,
+    replayImageOrLabelStub.mock.calls.length,
     expectedBuilderImageCalls,
   );
 }

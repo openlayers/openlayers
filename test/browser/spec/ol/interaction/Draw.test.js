@@ -1,6 +1,5 @@
 import {assert} from 'chai';
 import proj4 from 'proj4';
-import {spy as sinonSpy} from 'sinon';
 import Feature from '../../../../../src/ol/Feature.js';
 import Map from '../../../../../src/ol/Map.js';
 import MapBrowserEvent from '../../../../../src/ol/MapBrowserEvent.js';
@@ -53,30 +52,33 @@ describe('ol/interaction/Draw', function () {
   const width = 360;
   const height = 180;
 
-  beforeEach(function (done) {
-    target = document.createElement('div');
-    const style = target.style;
-    style.position = 'absolute';
-    style.left = '-1000px';
-    style.top = '-1000px';
-    style.width = width + 'px';
-    style.height = height + 'px';
-    document.body.appendChild(target);
-    source = new VectorSource();
-    const layer = new VectorLayer({source: source});
-    map = new Map({
-      target: target,
-      layers: [layer],
-      view: new View({
-        projection: 'EPSG:4326',
-        center: [0, 0],
-        resolution: 1,
+  beforeEach(
+    () =>
+      new Promise((resolve) => {
+        target = document.createElement('div');
+        const style = target.style;
+        style.position = 'absolute';
+        style.left = '-1000px';
+        style.top = '-1000px';
+        style.width = width + 'px';
+        style.height = height + 'px';
+        document.body.appendChild(target);
+        source = new VectorSource();
+        const layer = new VectorLayer({source: source});
+        map = new Map({
+          target: target,
+          layers: [layer],
+          view: new View({
+            projection: 'EPSG:4326',
+            center: [0, 0],
+            resolution: 1,
+          }),
+        });
+        map.once('postrender', function () {
+          resolve();
+        });
       }),
-    });
-    map.once('postrender', function () {
-      done();
-    });
-  });
+  );
 
   afterEach(function () {
     disposeMap(map);
@@ -356,22 +358,22 @@ describe('ol/interaction/Draw', function () {
     });
 
     it('triggers draw events', function () {
-      const ds = sinonSpy();
-      const de = sinonSpy();
-      const da = sinonSpy();
+      const ds = vi.fn();
+      const de = vi.fn();
+      const da = vi.fn();
       listen(draw, 'drawstart', ds);
       listen(draw, 'drawend', de);
       listen(draw, 'drawabort', da);
       simulateEvent('pointermove', 10, 20);
       simulateEvent('pointerdown', 10, 20);
       simulateEvent('pointerup', 10, 20);
-      assert.strictEqual(ds.called, true);
-      assert.strictEqual(de.called, true);
-      assert.strictEqual(da.called, false);
+      assert.isAbove(ds.mock.calls.length, 0);
+      assert.isAbove(de.mock.calls.length, 0);
+      assert.strictEqual(da.mock.calls.length, 0);
       simulateEvent('pointermove', 20, 20);
-      assert.strictEqual(ds.callCount, 1);
-      assert.strictEqual(de.callCount, 1);
-      assert.strictEqual(da.callCount, 0);
+      assert.strictEqual(ds.mock.calls.length, 1);
+      assert.strictEqual(de.mock.calls.length, 1);
+      assert.strictEqual(da.mock.calls.length, 0);
     });
 
     it('triggers drawend event before inserting the feature', function () {
@@ -585,46 +587,47 @@ describe('ol/interaction/Draw', function () {
       ]);
     });
 
-    it('allows dragging of the vertex after dragVertexDelay', function (done) {
-      // first point
-      simulateEvent('pointermove', 10, 20);
-      simulateEvent('pointerdown', 10, 20);
-      simulateEvent('pointerup', 10, 20);
+    it('allows dragging of the vertex after dragVertexDelay', () =>
+      new Promise((resolve) => {
+        // first point
+        simulateEvent('pointermove', 10, 20);
+        simulateEvent('pointerdown', 10, 20);
+        simulateEvent('pointerup', 10, 20);
 
-      // second point, drag vertex
-      simulateEvent('pointermove', 15, 20);
-      simulateEvent('pointerdown', 15, 20);
-      setTimeout(function () {
-        simulateEvent('pointermove', 20, 10);
-        simulateEvent('pointerdrag', 20, 10);
-        simulateEvent('pointerup', 20, 10);
-        // third point
-        simulateEvent('pointermove', 30, 20);
-        simulateEvent('pointerdown', 30, 20);
-        simulateEvent('pointerup', 30, 20);
+        // second point, drag vertex
+        simulateEvent('pointermove', 15, 20);
+        simulateEvent('pointerdown', 15, 20);
+        setTimeout(function () {
+          simulateEvent('pointermove', 20, 10);
+          simulateEvent('pointerdrag', 20, 10);
+          simulateEvent('pointerup', 20, 10);
+          // third point
+          simulateEvent('pointermove', 30, 20);
+          simulateEvent('pointerdown', 30, 20);
+          simulateEvent('pointerup', 30, 20);
 
-        // finish on third point
-        simulateEvent('pointerdown', 30, 20);
-        simulateEvent('pointerup', 30, 20);
+          // finish on third point
+          simulateEvent('pointerdown', 30, 20);
+          simulateEvent('pointerup', 30, 20);
 
-        const features = source.getFeatures();
-        assert.lengthOf(features, 1);
-        const geometry = features[0].getGeometry();
-        assert.instanceOf(geometry, LineString);
-        assert.deepEqual(geometry.getCoordinates(), [
-          [10, -20],
-          [20, -10],
-          [30, -20],
-        ]);
+          const features = source.getFeatures();
+          assert.lengthOf(features, 1);
+          const geometry = features[0].getGeometry();
+          assert.instanceOf(geometry, LineString);
+          assert.deepEqual(geometry.getCoordinates(), [
+            [10, -20],
+            [20, -10],
+            [30, -20],
+          ]);
 
-        done();
-      }, 600);
-    });
+          resolve();
+        }, 600);
+      }));
 
     it('triggers draw events', function () {
-      const ds = sinonSpy();
-      const de = sinonSpy();
-      const da = sinonSpy();
+      const ds = vi.fn();
+      const de = vi.fn();
+      const da = vi.fn();
       listen(draw, 'drawstart', ds);
       listen(draw, 'drawend', de);
       listen(draw, 'drawabort', da);
@@ -644,12 +647,12 @@ describe('ol/interaction/Draw', function () {
       simulateEvent('pointerup', 30, 20);
       simulateEvent('pointermove', 10, 20);
 
-      assert.strictEqual(ds.called, true);
-      assert.strictEqual(ds.callCount, 1);
-      assert.strictEqual(de.called, true);
-      assert.strictEqual(de.callCount, 1);
-      assert.strictEqual(da.called, false);
-      assert.strictEqual(da.callCount, 0);
+      assert.isAbove(ds.mock.calls.length, 0);
+      assert.strictEqual(ds.mock.calls.length, 1);
+      assert.isAbove(de.mock.calls.length, 0);
+      assert.strictEqual(de.mock.calls.length, 1);
+      assert.strictEqual(da.mock.calls.length, 0);
+      assert.strictEqual(da.mock.calls.length, 0);
     });
 
     it('works if finishDrawing is called when the sketch feature is not defined', function () {
@@ -711,8 +714,8 @@ describe('ol/interaction/Draw', function () {
         type: type,
         finishCondition: finishCondition,
       });
-      draw.atFinish_ = sinonSpy(Draw.prototype.atFinish_);
-      draw.finishDrawing = sinonSpy(Draw.prototype.finishDrawing);
+      draw.atFinish_ = vi.fn(Draw.prototype.atFinish_);
+      draw.finishDrawing = vi.fn(Draw.prototype.finishDrawing);
       map.addInteraction(draw);
     }
 
@@ -739,11 +742,11 @@ describe('ol/interaction/Draw', function () {
     }
 
     function testFinishConditionTrue(type, amount) {
-      const finishCondition = sinonSpy(() => true);
+      const finishCondition = vi.fn(() => true);
       drawType(type, amount, finishCondition);
-      assert.strictEqual(draw.atFinish_.called, true);
-      assert.strictEqual(finishCondition.callCount, 1);
-      assert.strictEqual(draw.finishDrawing.callCount, 1);
+      assert.isAbove(draw.atFinish_.mock.calls.length, 0);
+      assert.strictEqual(finishCondition.mock.calls.length, 1);
+      assert.strictEqual(draw.finishDrawing.mock.calls.length, 1);
       assert.lengthOf(source.getFeatures(), 1);
     }
     it('calls finishCondition:true for POINT type', function () {
@@ -769,11 +772,11 @@ describe('ol/interaction/Draw', function () {
     });
 
     function testFinishConditionFalse(type, amount) {
-      const finishCondition = sinonSpy(() => false);
+      const finishCondition = vi.fn(() => false);
       drawType(type, amount, finishCondition);
-      assert.strictEqual(draw.atFinish_.called, true);
-      assert.strictEqual(finishCondition.callCount, 1);
-      assert.strictEqual(draw.finishDrawing.called, false);
+      assert.isAbove(draw.atFinish_.mock.calls.length, 0);
+      assert.strictEqual(finishCondition.mock.calls.length, 1);
+      assert.strictEqual(draw.finishDrawing.mock.calls.length, 0);
       assert.lengthOf(source.getFeatures(), 0);
     }
     it('calls finishCondition:false for POINT type', function () {
@@ -1055,9 +1058,9 @@ describe('ol/interaction/Draw', function () {
     });
 
     it('triggers draw events', function () {
-      const ds = sinonSpy();
-      const de = sinonSpy();
-      const da = sinonSpy();
+      const ds = vi.fn();
+      const de = vi.fn();
+      const da = vi.fn();
       listen(draw, 'drawstart', ds);
       listen(draw, 'drawend', de);
       listen(draw, 'drawabort', da);
@@ -1082,12 +1085,12 @@ describe('ol/interaction/Draw', function () {
       simulateEvent('pointerdown', 10, 20);
       simulateEvent('pointerup', 10, 20);
 
-      assert.strictEqual(ds.called, true);
-      assert.strictEqual(ds.callCount, 1);
-      assert.strictEqual(de.called, true);
-      assert.strictEqual(de.callCount, 1);
-      assert.strictEqual(da.called, false);
-      assert.strictEqual(da.callCount, 0);
+      assert.isAbove(ds.mock.calls.length, 0);
+      assert.strictEqual(ds.mock.calls.length, 1);
+      assert.isAbove(de.mock.calls.length, 0);
+      assert.strictEqual(de.mock.calls.length, 1);
+      assert.strictEqual(da.mock.calls.length, 0);
+      assert.strictEqual(da.mock.calls.length, 0);
     });
 
     it('works if finishDrawing is called when the sketch feature is not defined', function () {
@@ -1396,9 +1399,9 @@ describe('ol/interaction/Draw', function () {
     });
 
     it('triggers draw events', function () {
-      const ds = sinonSpy();
-      const de = sinonSpy();
-      const da = sinonSpy();
+      const ds = vi.fn();
+      const de = vi.fn();
+      const da = vi.fn();
       listen(draw, 'drawstart', ds);
       listen(draw, 'drawend', de);
       listen(draw, 'drawabort', da);
@@ -1413,12 +1416,12 @@ describe('ol/interaction/Draw', function () {
       simulateEvent('pointerdown', 30, 20);
       simulateEvent('pointerup', 30, 20);
 
-      assert.strictEqual(ds.called, true);
-      assert.strictEqual(ds.callCount, 1);
-      assert.strictEqual(de.called, true);
-      assert.strictEqual(de.callCount, 1);
-      assert.strictEqual(da.called, false);
-      assert.strictEqual(da.callCount, 0);
+      assert.isAbove(ds.mock.calls.length, 0);
+      assert.strictEqual(ds.mock.calls.length, 1);
+      assert.isAbove(de.mock.calls.length, 0);
+      assert.strictEqual(de.mock.calls.length, 1);
+      assert.strictEqual(da.mock.calls.length, 0);
+      assert.strictEqual(da.mock.calls.length, 0);
     });
   });
 
@@ -1451,9 +1454,9 @@ describe('ol/interaction/Draw', function () {
     });
 
     it('triggers draw events', function () {
-      const ds = sinonSpy();
-      const de = sinonSpy();
-      const da = sinonSpy();
+      const ds = vi.fn();
+      const de = vi.fn();
+      const da = vi.fn();
       listen(draw, 'drawstart', ds);
       listen(draw, 'drawend', de);
       listen(draw, 'drawabort', da);
@@ -1470,12 +1473,12 @@ describe('ol/interaction/Draw', function () {
 
       draw.abortDrawing();
 
-      assert.strictEqual(ds.called, true);
-      assert.strictEqual(ds.callCount, 1);
-      assert.strictEqual(de.called, false);
-      assert.strictEqual(de.callCount, 0);
-      assert.strictEqual(da.called, true);
-      assert.strictEqual(da.callCount, 1);
+      assert.isAbove(ds.mock.calls.length, 0);
+      assert.strictEqual(ds.mock.calls.length, 1);
+      assert.strictEqual(de.mock.calls.length, 0);
+      assert.strictEqual(de.mock.calls.length, 0);
+      assert.isAbove(da.mock.calls.length, 0);
+      assert.strictEqual(da.mock.calls.length, 1);
 
       // first point
       simulateEvent('pointermove', 10, 20);
@@ -1491,12 +1494,12 @@ describe('ol/interaction/Draw', function () {
       draw.removeLastPoint();
       draw.removeLastPoint();
 
-      assert.strictEqual(ds.called, true);
-      assert.strictEqual(ds.callCount, 2);
-      assert.strictEqual(de.called, false);
-      assert.strictEqual(de.callCount, 0);
-      assert.strictEqual(da.called, true);
-      assert.strictEqual(da.callCount, 2);
+      assert.isAbove(ds.mock.calls.length, 0);
+      assert.strictEqual(ds.mock.calls.length, 2);
+      assert.strictEqual(de.mock.calls.length, 0);
+      assert.strictEqual(de.mock.calls.length, 0);
+      assert.isAbove(da.mock.calls.length, 0);
+      assert.strictEqual(da.mock.calls.length, 2);
     });
 
     it('works if finishDrawing is called when the sketch feature is not defined', function () {
@@ -1532,22 +1535,22 @@ describe('ol/interaction/Draw', function () {
 
     describe('#setActive(false)', function () {
       it('unsets the map from the feature overlay', function () {
-        const spy = sinonSpy(interaction.overlay_, 'setMap');
+        const spy = vi.spyOn(interaction.overlay_, 'setMap');
         interaction.setActive(false);
-        assert.strictEqual(spy.getCall(0).args[0], null);
+        assert.strictEqual(spy.mock.calls[0][0], null);
       });
       it('aborts the drawing', function () {
         interaction.setActive(false);
         assert.strictEqual(interaction.sketchFeature_, null);
       });
       it('fires change:active', function () {
-        const spy = sinonSpy(interaction.overlay_, 'setMap');
-        const listenerSpy = sinonSpy(function () {
-          assert.strictEqual(spy.getCall(0).args[0], null);
+        const spy = vi.spyOn(interaction.overlay_, 'setMap');
+        const listenerSpy = vi.fn(function () {
+          assert.strictEqual(spy.mock.calls[0][0], null);
         });
         interaction.on('change:active', listenerSpy);
         interaction.setActive(false);
-        assert.strictEqual(listenerSpy.callCount, 1);
+        assert.strictEqual(listenerSpy.mock.calls.length, 1);
       });
     });
 
@@ -1556,18 +1559,18 @@ describe('ol/interaction/Draw', function () {
         interaction.setActive(false);
       });
       it('sets the map into the feature overlay', function () {
-        const spy = sinonSpy(interaction.overlay_, 'setMap');
+        const spy = vi.spyOn(interaction.overlay_, 'setMap');
         interaction.setActive(true);
-        assert.strictEqual(spy.getCall(0).args[0], map);
+        assert.strictEqual(spy.mock.calls[0][0], map);
       });
       it('fires change:active', function () {
-        const spy = sinonSpy(interaction.overlay_, 'setMap');
-        const listenerSpy = sinonSpy(function () {
-          assert.strictEqual(spy.getCall(0).args[0], map);
+        const spy = vi.spyOn(interaction.overlay_, 'setMap');
+        const listenerSpy = vi.fn(function () {
+          assert.strictEqual(spy.mock.calls[0][0], map);
         });
         interaction.on('change:active', listenerSpy);
         interaction.setActive(true);
-        assert.strictEqual(listenerSpy.callCount, 1);
+        assert.strictEqual(listenerSpy.mock.calls.length, 1);
       });
     });
   });
@@ -1596,9 +1599,9 @@ describe('ol/interaction/Draw', function () {
       });
       describe('#setMap(null) when interaction is active', function () {
         it('unsets the map from the feature overlay', function () {
-          const spy = sinonSpy(interaction.overlay_, 'setMap');
+          const spy = vi.spyOn(interaction.overlay_, 'setMap');
           interaction.setMap(null);
-          assert.strictEqual(spy.getCall(0).args[0], null);
+          assert.strictEqual(spy.mock.calls[0][0], null);
         });
         it('aborts the drawing', function () {
           interaction.setMap(null);
@@ -1628,17 +1631,17 @@ describe('ol/interaction/Draw', function () {
     describe('#setMap(map)', function () {
       describe('#setMap(map) when interaction is active', function () {
         it('sets the map into the feature overlay', function () {
-          const spy = sinonSpy(interaction.overlay_, 'setMap');
+          const spy = vi.spyOn(interaction.overlay_, 'setMap');
           interaction.setMap(map);
-          assert.strictEqual(spy.getCall(0).args[0], map);
+          assert.strictEqual(spy.mock.calls[0][0], map);
         });
       });
       describe('#setMap(map) when interaction is not active', function () {
         it('does not set the map into the feature overlay', function () {
           interaction.setActive(false);
-          const spy = sinonSpy(interaction.overlay_, 'setMap');
+          const spy = vi.spyOn(interaction.overlay_, 'setMap');
           interaction.setMap(map);
-          assert.strictEqual(spy.getCall(0).args[0], null);
+          assert.strictEqual(spy.mock.calls[0][0], null);
         });
       });
     });
@@ -1970,10 +1973,10 @@ describe('ol/interaction/Draw', function () {
     });
 
     it('dispatches a drawstart event', function () {
-      const spy = sinonSpy();
+      const spy = vi.fn();
       listen(draw, 'drawstart', spy);
       draw.extend(feature);
-      assert.strictEqual(spy.callCount, 1);
+      assert.strictEqual(spy.mock.calls.length, 1);
     });
   });
 
@@ -1987,22 +1990,24 @@ describe('ol/interaction/Draw', function () {
       });
       map.addInteraction(draw);
     });
-    it('finishes drawing when starting empty and appending maxPoints coordinates', (done) => {
-      draw.once('drawend', () => {
-        try {
-          setTimeout(() => {
-            assert.lengthOf(source.getFeatures(), 1);
-            done();
-          }, 0);
-        } catch (e) {
-          done(e);
-        }
-      });
-      draw.appendCoordinates([
-        [0, 0],
-        [1, 1],
-      ]);
-    });
+    it('finishes drawing when starting empty and appending maxPoints coordinates', () =>
+      new Promise((resolve, reject) => {
+        draw.once('drawend', () => {
+          try {
+            setTimeout(() => {
+              assert.lengthOf(source.getFeatures(), 1);
+              resolve();
+            }, 0);
+          } catch (e) {
+            reject(e);
+            return;
+          }
+        });
+        draw.appendCoordinates([
+          [0, 0],
+          [1, 1],
+        ]);
+      }));
   });
 
   describe('append coordinates when drawing a Polygon feature', function () {

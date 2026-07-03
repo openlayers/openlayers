@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {spy as sinonSpy} from 'sinon';
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
 import EventTarget from '../../../../../src/ol/events/Target.js';
@@ -98,14 +97,14 @@ describe('zoomByDelta - useGeographic', () => {
       zoom: 0,
     });
 
-    const spy = sinonSpy(view, 'animate');
+    const spy = vi.spyOn(view, 'animate');
 
     const anchor = [90, 45];
     const duration = 10;
     zoomByDelta(view, 1, anchor, duration);
 
-    assert.strictEqual(spy.callCount, 1);
-    const options = spy.getCall(0).args[0];
+    assert.strictEqual(spy.mock.calls.length, 1);
+    const options = spy.mock.calls[0][0];
     assert.strictEqual(options.anchor, anchor);
   });
 });

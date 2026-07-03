@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {spy as sinonSpy, stub as sinonStub} from 'sinon';
 import {
   create as createTransform,
   rotate as rotateTransform,
@@ -192,8 +191,8 @@ describe('ol/webgl/WebGLHelper', function () {
       describe('avoid resizing the canvas if not required', () => {
         let widthSpy, heightSpy;
         beforeEach(function () {
-          widthSpy = sinonSpy(h.getCanvas(), 'width', ['set']);
-          heightSpy = sinonSpy(h.getCanvas(), 'height', ['set']);
+          widthSpy = vi.spyOn(h.getCanvas(), 'width', 'set');
+          heightSpy = vi.spyOn(h.getCanvas(), 'height', 'set');
           // same size and pixel ratio
           h.prepareDraw({
             pixelRatio: 2,
@@ -207,8 +206,8 @@ describe('ol/webgl/WebGLHelper', function () {
         });
 
         it('does not resize the canvas', function () {
-          assert.strictEqual(widthSpy.set.callCount, 0);
-          assert.strictEqual(heightSpy.set.callCount, 0);
+          assert.strictEqual(widthSpy.mock.calls.length, 0);
+          assert.strictEqual(heightSpy.mock.calls.length, 0);
         });
       });
     });
@@ -433,30 +432,30 @@ describe('ol/webgl/WebGLHelper', function () {
     });
 
     it('enables attributes based on the given array (FLOAT)', function () {
-      const spy = sinonSpy(h, 'enableAttributeArray_');
+      const spy = vi.spyOn(h, 'enableAttributeArray_');
       h.enableAttributes(baseAttrs);
       const bytesPerFloat = Float32Array.BYTES_PER_ELEMENT;
 
-      assert.deepEqual(spy.callCount, 3);
-      assert.deepEqual(spy.getCall(0).args[0], 'attr1');
-      assert.deepEqual(spy.getCall(0).args[1], 3);
-      assert.deepEqual(spy.getCall(0).args[2], FLOAT);
-      assert.deepEqual(spy.getCall(0).args[3], 6 * bytesPerFloat);
-      assert.deepEqual(spy.getCall(0).args[4], 0);
-      assert.deepEqual(spy.getCall(1).args[0], 'attr2');
-      assert.deepEqual(spy.getCall(1).args[1], 2);
-      assert.deepEqual(spy.getCall(1).args[2], FLOAT);
-      assert.deepEqual(spy.getCall(1).args[3], 6 * bytesPerFloat);
-      assert.deepEqual(spy.getCall(1).args[4], 3 * bytesPerFloat);
-      assert.deepEqual(spy.getCall(2).args[0], 'attr3');
-      assert.deepEqual(spy.getCall(2).args[1], 1);
-      assert.deepEqual(spy.getCall(2).args[2], FLOAT);
-      assert.deepEqual(spy.getCall(2).args[3], 6 * bytesPerFloat);
-      assert.deepEqual(spy.getCall(2).args[4], 5 * bytesPerFloat);
+      assert.deepEqual(spy.mock.calls.length, 3);
+      assert.deepEqual(spy.mock.calls[0][0], 'attr1');
+      assert.deepEqual(spy.mock.calls[0][1], 3);
+      assert.deepEqual(spy.mock.calls[0][2], FLOAT);
+      assert.deepEqual(spy.mock.calls[0][3], 6 * bytesPerFloat);
+      assert.deepEqual(spy.mock.calls[0][4], 0);
+      assert.deepEqual(spy.mock.calls[1][0], 'attr2');
+      assert.deepEqual(spy.mock.calls[1][1], 2);
+      assert.deepEqual(spy.mock.calls[1][2], FLOAT);
+      assert.deepEqual(spy.mock.calls[1][3], 6 * bytesPerFloat);
+      assert.deepEqual(spy.mock.calls[1][4], 3 * bytesPerFloat);
+      assert.deepEqual(spy.mock.calls[2][0], 'attr3');
+      assert.deepEqual(spy.mock.calls[2][1], 1);
+      assert.deepEqual(spy.mock.calls[2][2], FLOAT);
+      assert.deepEqual(spy.mock.calls[2][3], 6 * bytesPerFloat);
+      assert.deepEqual(spy.mock.calls[2][4], 5 * bytesPerFloat);
     });
 
     it('enables attributes including padding (empty slots)', function () {
-      const spy = sinonSpy(h, 'enableAttributeArray_');
+      const spy = vi.spyOn(h, 'enableAttributeArray_');
       h.enableAttributes([
         {
           name: 'attr1',
@@ -473,17 +472,17 @@ describe('ol/webgl/WebGLHelper', function () {
       ]);
       const bytesPerFloat = Float32Array.BYTES_PER_ELEMENT;
 
-      assert.deepEqual(spy.callCount, 2);
-      assert.deepEqual(spy.getCall(0).args[0], 'attr1');
-      assert.deepEqual(spy.getCall(0).args[1], 3);
-      assert.deepEqual(spy.getCall(0).args[2], FLOAT);
-      assert.deepEqual(spy.getCall(0).args[3], 6 * bytesPerFloat);
-      assert.deepEqual(spy.getCall(0).args[4], 0);
-      assert.deepEqual(spy.getCall(1).args[0], 'attr3');
-      assert.deepEqual(spy.getCall(1).args[1], 1);
-      assert.deepEqual(spy.getCall(1).args[2], FLOAT);
-      assert.deepEqual(spy.getCall(1).args[3], 6 * bytesPerFloat);
-      assert.deepEqual(spy.getCall(1).args[4], 5 * bytesPerFloat);
+      assert.deepEqual(spy.mock.calls.length, 2);
+      assert.deepEqual(spy.mock.calls[0][0], 'attr1');
+      assert.deepEqual(spy.mock.calls[0][1], 3);
+      assert.deepEqual(spy.mock.calls[0][2], FLOAT);
+      assert.deepEqual(spy.mock.calls[0][3], 6 * bytesPerFloat);
+      assert.deepEqual(spy.mock.calls[0][4], 0);
+      assert.deepEqual(spy.mock.calls[1][0], 'attr3');
+      assert.deepEqual(spy.mock.calls[1][1], 1);
+      assert.deepEqual(spy.mock.calls[1][2], FLOAT);
+      assert.deepEqual(spy.mock.calls[1][3], 6 * bytesPerFloat);
+      assert.deepEqual(spy.mock.calls[1][4], 5 * bytesPerFloat);
     });
   });
 
@@ -519,16 +518,16 @@ describe('ol/webgl/WebGLHelper', function () {
     });
 
     it('enables attributes based on the given array (FLOAT)', function () {
-      const spy = sinonSpy(h, 'enableAttributeArray_');
-      const extSpy = sinonSpy(
+      const spy = vi.spyOn(h, 'enableAttributeArray_');
+      const extSpy = vi.spyOn(
         h.getInstancedRenderingExtension_(),
         'vertexAttribDivisorANGLE',
       );
       h.enableAttributesInstanced(baseAttrs);
       const bytesPerFloat = Float32Array.BYTES_PER_ELEMENT;
 
-      assert.deepEqual(spy.callCount, 1);
-      assert.deepEqual(spy.firstCall.args, [
+      assert.deepEqual(spy.mock.calls.length, 1);
+      assert.deepEqual(spy.mock.calls[0], [
         'attr1',
         3,
         FLOAT,
@@ -537,8 +536,8 @@ describe('ol/webgl/WebGLHelper', function () {
         true,
       ]);
 
-      assert.deepEqual(extSpy.callCount, 1);
-      assert.deepEqual(extSpy.firstCall.args, [
+      assert.deepEqual(extSpy.mock.calls.length, 1);
+      assert.deepEqual(extSpy.mock.calls[0], [
         h.getAttributeLocation('attr1'),
         1,
       ]);
@@ -548,36 +547,34 @@ describe('ol/webgl/WebGLHelper', function () {
   describe('#applyFrameState', function () {
     let stubFloat, stubVec2, stubTime;
     beforeEach(function () {
-      stubTime = sinonStub(Date, 'now');
-      stubTime.returns(1000);
+      stubTime = vi.spyOn(Date, 'now');
+      stubTime.mockReturnValue(1000);
       h = new WebGLHelper();
-      stubFloat = sinonStub(h, 'setUniformFloatValue');
-      stubVec2 = sinonStub(h, 'setUniformFloatVec2');
+      stubFloat = vi
+        .spyOn(h, 'setUniformFloatValue')
+        .mockImplementation(() => {});
+      stubVec2 = vi
+        .spyOn(h, 'setUniformFloatVec2')
+        .mockImplementation(() => {});
 
-      stubTime.returns(2000);
+      stubTime.mockReturnValue(2000);
       h.applyFrameState({...SAMPLE_FRAMESTATE, pixelRatio: 2});
     });
 
     afterEach(function () {
-      stubTime.restore();
+      stubTime.mockRestore();
     });
 
     it('sets the default uniforms according the frame state', function () {
-      assert.deepEqual(stubFloat.getCall(0).args, [DefaultUniform.TIME, 1]);
-      assert.deepEqual(stubFloat.getCall(1).args, [DefaultUniform.ZOOM, 3]);
-      assert.deepEqual(stubFloat.getCall(2).args, [
-        DefaultUniform.RESOLUTION,
-        2,
-      ]);
-      assert.deepEqual(stubFloat.getCall(3).args, [
+      assert.deepEqual(stubFloat.mock.calls[0], [DefaultUniform.TIME, 1]);
+      assert.deepEqual(stubFloat.mock.calls[1], [DefaultUniform.ZOOM, 3]);
+      assert.deepEqual(stubFloat.mock.calls[2], [DefaultUniform.RESOLUTION, 2]);
+      assert.deepEqual(stubFloat.mock.calls[3], [
         DefaultUniform.PIXEL_RATIO,
         2,
       ]);
-      assert.deepEqual(stubFloat.getCall(4).args, [
-        DefaultUniform.ROTATION,
-        0.4,
-      ]);
-      assert.deepEqual(stubVec2.getCall(0).args, [
+      assert.deepEqual(stubFloat.mock.calls[4], [DefaultUniform.ROTATION, 0.4]);
+      assert.deepEqual(stubVec2.mock.calls[0], [
         DefaultUniform.VIEWPORT_SIZE_PX,
         [100, 150],
       ]);
@@ -592,11 +589,11 @@ describe('ol/webgl/WebGLHelper', function () {
         h.getProgram(FRAGMENT_SHADER, VERTEX_SHADER),
         SAMPLE_FRAMESTATE,
       );
-      drawSpy = sinonSpy(
+      drawSpy = vi.spyOn(
         h.getInstancedRenderingExtension_(),
         'drawElementsInstancedANGLE',
       );
-      divisorSpy = sinonSpy(
+      divisorSpy = vi.spyOn(
         h.getInstancedRenderingExtension_(),
         'vertexAttribDivisorANGLE',
       );
@@ -604,8 +601,8 @@ describe('ol/webgl/WebGLHelper', function () {
     });
     it('calls drawElementsInstancedANGLE', () => {
       const gl = h.getGL();
-      assert.deepEqual(drawSpy.callCount, 1);
-      assert.deepEqual(drawSpy.firstCall.args, [
+      assert.deepEqual(drawSpy.mock.calls.length, 1);
+      assert.deepEqual(drawSpy.mock.calls[0], [
         gl.TRIANGLES,
         8,
         gl.UNSIGNED_INT,
@@ -616,9 +613,9 @@ describe('ol/webgl/WebGLHelper', function () {
     it('resets the divisors after rendering', () => {
       const gl = h.getGL();
       const max = gl.getParameter(gl.MAX_VERTEX_ATTRIBS);
-      assert.deepEqual(divisorSpy.getCalls().length, max);
+      assert.deepEqual(divisorSpy.mock.calls.length, max);
       for (let i = 0; i < max; i++) {
-        assert.deepEqual(divisorSpy.getCall(i).args, [i, 0]);
+        assert.deepEqual(divisorSpy.mock.calls[i], [i, 0]);
       }
     });
   });
@@ -627,16 +624,16 @@ describe('ol/webgl/WebGLHelper', function () {
     let disableAttribSpy;
     beforeEach(() => {
       h = new WebGLHelper();
-      disableAttribSpy = sinonSpy(h.getGL(), 'disableVertexAttribArray');
+      disableAttribSpy = vi.spyOn(h.getGL(), 'disableVertexAttribArray');
       const program = h.getProgram(FRAGMENT_SHADER, VERTEX_SHADER);
       h.useProgram(program, SAMPLE_FRAMESTATE);
     });
     it('all active attributes are disabled when enabling programs, disregarding of previous state', () => {
       const gl = h.getGL();
       const max = gl.getParameter(gl.MAX_VERTEX_ATTRIBS);
-      assert.deepEqual(disableAttribSpy.getCalls().length, max);
+      assert.deepEqual(disableAttribSpy.mock.calls.length, max);
       for (let i = 0; i < max; i++) {
-        assert.deepEqual(disableAttribSpy.getCall(i).args[0], i);
+        assert.deepEqual(disableAttribSpy.mock.calls[i][0], i);
       }
     });
   });
