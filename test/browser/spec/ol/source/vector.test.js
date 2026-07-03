@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {spy as sinonSpy} from 'sinon';
 import Collection from '../../../../../src/ol/Collection.js';
 import Feature from '../../../../../src/ol/Feature.js';
 import Map from '../../../../../src/ol/Map.js';
@@ -46,9 +45,9 @@ describe('ol/source/Vector', function () {
 
     describe('#forEachFeatureInExtent', function () {
       it('does not call the callback', function () {
-        const f = sinonSpy();
+        const f = vi.fn();
         vectorSource.forEachFeatureInExtent(infiniteExtent, f);
-        assert.strictEqual(f.called, false);
+        assert.strictEqual(f.mock.calls.length, 0);
       });
     });
 
@@ -104,10 +103,10 @@ describe('ol/source/Vector', function () {
       });
 
       it('fires a change event', function () {
-        const listener = sinonSpy();
+        const listener = vi.fn();
         listen(vectorSource, 'change', listener);
         vectorSource.addFeature(pointFeature);
-        assert.strictEqual(listener.called, true);
+        assert.isAbove(listener.mock.calls.length, 0);
       });
 
       it('adds same id features only once', function () {
@@ -221,80 +220,86 @@ describe('ol/source/Vector', function () {
 
   describe('clear and refresh', function () {
     let map, source, spy;
-    beforeEach(function (done) {
-      source = new VectorSource({
-        format: new GeoJSON(),
-        url: 'spec/ol/source/vectorsource/single-feature.json',
-      });
-      const target = document.createElement('div');
-      target.style.width = '100px';
-      target.style.height = '100px';
-      document.body.appendChild(target);
-      map = new Map({
-        target: target,
-        layers: [
-          new VectorLayer({
-            source: source,
-          }),
-        ],
-        view: new View({
-          center: [0, 0],
-          zoom: 0,
+    beforeEach(
+      () =>
+        new Promise((resolve) => {
+          source = new VectorSource({
+            format: new GeoJSON(),
+            url: 'spec/ol/source/vectorsource/single-feature.json',
+          });
+          const target = document.createElement('div');
+          target.style.width = '100px';
+          target.style.height = '100px';
+          document.body.appendChild(target);
+          map = new Map({
+            target: target,
+            layers: [
+              new VectorLayer({
+                source: source,
+              }),
+            ],
+            view: new View({
+              center: [0, 0],
+              zoom: 0,
+            }),
+          });
+          map.once('rendercomplete', function () {
+            spy = vi.spyOn(source, 'loader_');
+            resolve();
+          });
         }),
-      });
-      map.once('rendercomplete', function () {
-        spy = sinonSpy(source, 'loader_');
-        done();
-      });
-    });
+    );
 
     afterEach(function () {
       if (spy) {
-        source.loader_.restore();
+        source.loader_.mockRestore();
       }
       disposeMap(map);
     });
 
-    it('#refresh() reloads from server', function (done) {
-      assert.lengthOf(source.getFeatures(), 1);
-      map.once('rendercomplete', function () {
+    it('#refresh() reloads from server', () =>
+      new Promise((resolve) => {
         assert.lengthOf(source.getFeatures(), 1);
-        assert.strictEqual(spy.callCount, 1);
-        done();
-      });
-      source.refresh();
-    });
+        map.once('rendercomplete', function () {
+          assert.lengthOf(source.getFeatures(), 1);
+          assert.strictEqual(spy.mock.calls.length, 1);
+          resolve();
+        });
+        source.refresh();
+      }));
 
-    it('#clear() removes all features from the source', function (done) {
-      assert.lengthOf(source.getFeatures(), 1);
-      map.once('rendercomplete', function () {
-        assert.lengthOf(source.getFeatures(), 0);
-        assert.strictEqual(spy.callCount, 0);
-        done();
-      });
-      source.clear();
-    });
-
-    it('After #setUrl(), refresh() loads from the new url', function (done) {
-      source.loader_.restore();
-      spy = undefined;
-      assert.lengthOf(source.getFeatures(), 1);
-      const oldCoordinates = source
-        .getFeatures()[0]
-        .getGeometry()
-        .getCoordinates();
-      map.on('rendercomplete', function () {
+    it('#clear() removes all features from the source', () =>
+      new Promise((resolve) => {
         assert.lengthOf(source.getFeatures(), 1);
-        const newCoordinates = source
+        map.once('rendercomplete', function () {
+          assert.lengthOf(source.getFeatures(), 0);
+          assert.strictEqual(spy.mock.calls.length, 0);
+          resolve();
+        });
+        source.clear();
+      }));
+
+    it('After #setUrl(), refresh() loads from the new url', () =>
+      new Promise((resolve) => {
+        source.loader_.mockRestore();
+        spy = undefined;
+        assert.lengthOf(source.getFeatures(), 1);
+        const oldCoordinates = source
           .getFeatures()[0]
           .getGeometry()
           .getCoordinates();
-        assert.notDeepEqual(newCoordinates, oldCoordinates);
-        done();
-      });
-      source.setUrl('spec/ol/data/point.json');
-      source.refresh();
-    });
+        map.on('rendercomplete', function () {
+          assert.lengthOf(source.getFeatures(), 1);
+          const newCoordinates = source
+            .getFeatures()[0]
+            .getGeometry()
+            .getCoordinates();
+          assert.notDeepEqual(newCoordinates, oldCoordinates);
+          resolve();
+        });
+        source.setUrl('spec/ol/data/point.json');
+        source.refresh();
+      }));
   });
 
   describe('when populated with 10 random points and a null', function () {
@@ -314,39 +319,39 @@ describe('ol/source/Vector', function () {
 
     describe('#clear', function () {
       it('removes all features using fast path', function () {
-        const removeFeatureSpy = sinonSpy();
+        const removeFeatureSpy = vi.fn();
         listen(vectorSource, 'removefeature', removeFeatureSpy);
-        const clearSourceSpy = sinonSpy();
+        const clearSourceSpy = vi.fn();
         listen(vectorSource, 'clear', clearSourceSpy);
         vectorSource.clear(true);
         assert.deepEqual(vectorSource.getFeatures(), []);
         assert.strictEqual(vectorSource.isEmpty(), true);
-        assert.strictEqual(removeFeatureSpy.called, false);
-        assert.strictEqual(removeFeatureSpy.callCount, 0);
-        assert.strictEqual(clearSourceSpy.called, true);
-        assert.strictEqual(clearSourceSpy.callCount, 1);
+        assert.strictEqual(removeFeatureSpy.mock.calls.length, 0);
+        assert.strictEqual(removeFeatureSpy.mock.calls.length, 0);
+        assert.isAbove(clearSourceSpy.mock.calls.length, 0);
+        assert.strictEqual(clearSourceSpy.mock.calls.length, 1);
       });
 
       it('removes all features using slow path', function () {
-        const removeFeatureSpy = sinonSpy();
+        const removeFeatureSpy = vi.fn();
         listen(vectorSource, 'removefeature', removeFeatureSpy);
-        const clearSourceSpy = sinonSpy();
+        const clearSourceSpy = vi.fn();
         listen(vectorSource, 'clear', clearSourceSpy);
         vectorSource.clear();
         assert.deepEqual(vectorSource.getFeatures(), []);
         assert.strictEqual(vectorSource.isEmpty(), true);
-        assert.strictEqual(removeFeatureSpy.called, true);
-        assert.strictEqual(removeFeatureSpy.callCount, features.length);
-        assert.strictEqual(clearSourceSpy.called, true);
-        assert.strictEqual(clearSourceSpy.callCount, 1);
+        assert.isAbove(removeFeatureSpy.mock.calls.length, 0);
+        assert.strictEqual(removeFeatureSpy.mock.calls.length, features.length);
+        assert.isAbove(clearSourceSpy.mock.calls.length, 0);
+        assert.strictEqual(clearSourceSpy.mock.calls.length, 1);
       });
     });
 
     describe('#forEachFeatureInExtent', function () {
       it('is called the expected number of times', function () {
-        const f = sinonSpy();
+        const f = vi.fn();
         vectorSource.forEachFeatureInExtent(infiniteExtent, f);
-        assert.strictEqual(f.callCount, 10);
+        assert.strictEqual(f.mock.calls.length, 10);
       });
 
       it('allows breaking out', function () {
@@ -413,30 +418,30 @@ describe('ol/source/Vector', function () {
       });
 
       it('fires a change event', function () {
-        const listener = sinonSpy();
+        const listener = vi.fn();
         listen(vectorSource, 'change', listener);
         vectorSource.removeFeature(features[0]);
-        assert.strictEqual(listener.called, true);
+        assert.isAbove(listener.mock.calls.length, 0);
       });
 
       it('fires a removefeature event', function () {
-        const listener = sinonSpy();
+        const listener = vi.fn();
         listen(vectorSource, 'removefeature', listener);
         vectorSource.removeFeature(features[0]);
-        assert.strictEqual(listener.called, true);
+        assert.isAbove(listener.mock.calls.length, 0);
       });
 
       it('accepts features that are not in the source', function () {
-        const changeListener = sinonSpy();
+        const changeListener = vi.fn();
         listen(vectorSource, 'change', changeListener);
 
-        const removeFeatureListener = sinonSpy();
+        const removeFeatureListener = vi.fn();
         listen(vectorSource, 'removefeature', removeFeatureListener);
 
         const feature = new Feature(new Point([0, 0]));
         vectorSource.removeFeature(feature);
-        assert.strictEqual(changeListener.called, false);
-        assert.strictEqual(removeFeatureListener.called, false);
+        assert.strictEqual(changeListener.mock.calls.length, 0);
+        assert.strictEqual(removeFeatureListener.mock.calls.length, 0);
       });
     });
 
@@ -510,21 +515,21 @@ describe('ol/source/Vector', function () {
     it("fires a change event when setting a feature's property", function () {
       const feature = new Feature(new Point([1, 1]));
       vectorSource.addFeature(feature);
-      const listener = sinonSpy();
+      const listener = vi.fn();
       listen(vectorSource, 'change', listener);
       feature.set('foo', 'bar');
-      assert.strictEqual(listener.called, true);
+      assert.isAbove(listener.mock.calls.length, 0);
     });
 
     it('fires a changefeature event when updating a feature', function () {
       const feature = new Feature(new Point([1, 1]));
       vectorSource.addFeature(feature);
-      const listener = sinonSpy(function (event) {
+      const listener = vi.fn(function (event) {
         assert.strictEqual(event.feature, feature);
       });
       vectorSource.on('changefeature', listener);
       feature.setStyle(null);
-      assert.strictEqual(listener.called, true);
+      assert.isAbove(listener.mock.calls.length, 0);
     });
   });
 
@@ -683,90 +688,94 @@ describe('ol/source/Vector', function () {
       disposeMap(map);
     });
 
-    it('fires the FEATURESLOADSTART event', function (done) {
-      const source = new VectorSource();
-      source.on('featuresloadstart', function () {
-        done();
-      });
-      source.loadFeatures(
-        [-10000, -10000, 10000, 10000],
-        1,
-        getProjection('EPSG:3857'),
-      );
-    });
+    it('fires the FEATURESLOADSTART event', () =>
+      new Promise((resolve) => {
+        const source = new VectorSource();
+        source.on('featuresloadstart', function () {
+          resolve();
+        });
+        source.loadFeatures(
+          [-10000, -10000, 10000, 10000],
+          1,
+          getProjection('EPSG:3857'),
+        );
+      }));
 
-    it('fires the FEATURESLOADEND event after the features are added', function (done) {
-      const source = new VectorSource({
-        format: new GeoJSON(),
-        url: 'spec/ol/source/vectorsource/single-feature.json',
-      });
-      source.on('featuresloadend', function () {
-        const features = source.getFeatures();
-        assert.isArray(features);
-        assert.strictEqual(features.length, 1);
-        done();
-      });
-      source.loadFeatures(
-        [-10000, -10000, 10000, 10000],
-        1,
-        getProjection('EPSG:3857'),
-      );
-    });
+    it('fires the FEATURESLOADEND event after the features are added', () =>
+      new Promise((resolve) => {
+        const source = new VectorSource({
+          format: new GeoJSON(),
+          url: 'spec/ol/source/vectorsource/single-feature.json',
+        });
+        source.on('featuresloadend', function () {
+          const features = source.getFeatures();
+          assert.isArray(features);
+          assert.strictEqual(features.length, 1);
+          resolve();
+        });
+        source.loadFeatures(
+          [-10000, -10000, 10000, 10000],
+          1,
+          getProjection('EPSG:3857'),
+        );
+      }));
 
-    it('fires the FEATURESLOADEND event if the default load function is used', function (done) {
-      const source = new VectorSource({
-        format: new GeoJSON(),
-        url: 'spec/ol/source/vectorsource/single-feature.json',
-      });
-      source.on('featuresloadend', function (event) {
-        assert.isArray(event.features);
-        assert.strictEqual(event.features.length, 1);
-        done();
-      });
-      source.loadFeatures(
-        [-10000, -10000, 10000, 10000],
-        1,
-        getProjection('EPSG:3857'),
-      );
-    });
+    it('fires the FEATURESLOADEND event if the default load function is used', () =>
+      new Promise((resolve) => {
+        const source = new VectorSource({
+          format: new GeoJSON(),
+          url: 'spec/ol/source/vectorsource/single-feature.json',
+        });
+        source.on('featuresloadend', function (event) {
+          assert.isArray(event.features);
+          assert.strictEqual(event.features.length, 1);
+          resolve();
+        });
+        source.loadFeatures(
+          [-10000, -10000, 10000, 10000],
+          1,
+          getProjection('EPSG:3857'),
+        );
+      }));
 
     describe('with the "bbox" strategy', function () {
-      it('requests the view extent plus render buffer', function (done) {
-        const center = [-97.6114, 38.8403];
-        const source = new VectorSource({
-          strategy: bboxStrategy,
-          loader: function (extent) {
-            setTimeout(function () {
-              const lonLatExtent = transformExtent(
-                extent,
-                'EPSG:3857',
-                'EPSG:4326',
-              );
-              assert.approximately(lonLatExtent[0], -99.259349218, 1e-9);
-              assert.approximately(lonLatExtent[2], -95.963450781, 1e-9);
-              done();
-            }, 0);
-          },
-        });
-        const div = document.createElement('div');
-        div.style.width = '100px';
-        div.style.height = '100px';
-        document.body.appendChild(div);
-        const map = new Map({
-          target: div,
-          layers: [
-            new VectorLayer({
-              source: source,
+      it('requests the view extent plus render buffer', () =>
+        new Promise((resolve) => {
+          const center = [-97.6114, 38.8403];
+          const source = new VectorSource({
+            strategy: bboxStrategy,
+            loader: function (extent) {
+              setTimeout(function () {
+                const lonLatExtent = transformExtent(
+                  extent,
+                  'EPSG:3857',
+                  'EPSG:4326',
+                );
+                assert.approximately(lonLatExtent[0], -99.259349218, 1e-9);
+                assert.approximately(lonLatExtent[2], -95.963450781, 1e-9);
+                resolve();
+              }, 0);
+            },
+          });
+          const div = document.createElement('div');
+          div.style.width = '100px';
+          div.style.height = '100px';
+          document.body.appendChild(div);
+          const map = new Map({
+            target: div,
+            layers: [
+              new VectorLayer({
+                source: source,
+              }),
+            ],
+            view: new View({
+              center: fromLonLat(center),
+              zoom: 7,
             }),
-          ],
-          view: new View({
-            center: fromLonLat(center),
-            zoom: 7,
-          }),
-        });
-        map.renderSync();
-        disposeMap(map);
-      });
+          });
+          map.renderSync();
+          disposeMap(map);
+        }));
     });
 
     describe('with no loader and the "all" strategy', function () {
@@ -815,238 +824,259 @@ describe('ol/source/Vector', function () {
         assert.deepEqual(count2, 1);
       });
 
-      it('removes extents with #removeLoadedExtent()', function (done) {
-        const source = new VectorSource();
-        source.setLoader(function (bbox, resolution, projection) {
-          setTimeout(function () {
-            assert.lengthOf(source.loadedExtentsRtree_.getAll(), 1);
-            source.removeLoadedExtent(bbox);
-            assert.lengthOf(source.loadedExtentsRtree_.getAll(), 0);
-            done();
-          }, 0);
-        });
-        source.loadFeatures(
-          [-10000, -10000, 10000, 10000],
-          1,
-          getProjection('EPSG:3857'),
-        );
-      });
-
-      it('removes infinite extent from loadedExtentsRtree after multiple load requests', function (done) {
-        const source = new VectorSource();
-        source.setLoader(async () => []);
-
-        // Make multiple load requests with different extents
-        source.loadFeatures([-10, -10, 10, 10], 1, getProjection('EPSG:3857'));
-        source.loadFeatures([0, 0, 10, 10], 1, getProjection('EPSG:3857'));
-        source.loadFeatures([10, 10, 20, 20], 1, getProjection('EPSG:3857'));
-
-        // Wait for all loader callbacks to complete
-        setTimeout(() => {
-          // Verify we have loaded extents in the tree
-          const initialExtents = source.loadedExtentsRtree_.getAll();
-          assert.isAbove(initialExtents.length, 0);
-
-          // Remove the infinite extent
-          source.removeLoadedExtent([-Infinity, -Infinity, Infinity, Infinity]);
-
-          assert.lengthOf(source.loadedExtentsRtree_.getAll(), 0);
-          done();
-        }, 0);
-      });
-
-      it('fires the FEATURESLOADEND event if the load function uses the callback', function (done) {
-        const source = new VectorSource();
-        const spy = sinonSpy();
-        source.on('featuresloadend', spy);
-
-        const features = [new Feature(), new Feature()];
-
-        source.setLoader(function (bbox, resolution, projection, success) {
-          success(features);
-          setTimeout(function () {
-            assert.strictEqual(spy.calledOnce, true);
-            const event = spy.getCall(0).args[0];
-            assert.strictEqual(event.features, features);
-            done();
-          }, 0);
-        });
-        source.loadFeatures(
-          [-10000, -10000, 10000, 10000],
-          1,
-          getProjection('EPSG:3857'),
-        );
-      });
-
-      it('fires the FEATURESLOADERROR event if the load function uses the callback', function (done) {
-        const source = new VectorSource();
-        const spy = sinonSpy();
-        source.on('featuresloaderror', spy);
-
-        source.setLoader(
-          function (bbox, resolution, projection, success, failure) {
-            failure();
+      it('removes extents with #removeLoadedExtent()', () =>
+        new Promise((resolve) => {
+          const source = new VectorSource();
+          source.setLoader(function (bbox, resolution, projection) {
             setTimeout(function () {
-              assert.strictEqual(spy.calledOnce, true);
-              done();
-            }, 0);
-          },
-        );
-        source.loadFeatures(
-          [-10000, -10000, 10000, 10000],
-          1,
-          getProjection('EPSG:3857'),
-        );
-      });
-
-      it('clears loading state and map fires loadend after failure [Promise]', function (done) {
-        const source = new VectorSource();
-        let error = false;
-        source.on('featuresloaderror', () => {
-          error = true;
-          assert.strictEqual(!!source.loading, false);
-        });
-        source.setLoader(
-          (extent, resolution, projection) =>
-            new Promise((_, reject) => setTimeout(reject, 0)),
-        );
-        map.addLayer(new VectorLayer({source}));
-
-        map.once('loadend', () => {
-          assert.strictEqual(!!source.loading, false);
-          assert.strictEqual(error, true);
-          done();
-        });
-      });
-
-      it('retries and fires loadend after removeLoadedExtent and failure [Promise]', function (done) {
-        const source = new VectorSource();
-        let failures = 0;
-        let successes = 0;
-        source.on('featuresloaderror', () => {
-          ++failures;
-        });
-        source.on('featuresloadend', () => {
-          ++successes;
-        });
-        map.addLayer(new VectorLayer({source}));
-        let loadCount = 0;
-        source.setLoader((extent, resolution, projection) => {
-          loadCount++;
-          return new Promise((resolve, reject) => {
-            setTimeout(() => {
-              if (loadCount === 1) {
-                source.removeLoadedExtent(extent);
-                reject();
-              } else {
-                const features = [new Feature(new Point([0, 0]))];
-                resolve(features);
-              }
+              assert.lengthOf(source.loadedExtentsRtree_.getAll(), 1);
+              source.removeLoadedExtent(bbox);
+              assert.lengthOf(source.loadedExtentsRtree_.getAll(), 0);
+              resolve();
             }, 0);
           });
-        });
+          source.loadFeatures(
+            [-10000, -10000, 10000, 10000],
+            1,
+            getProjection('EPSG:3857'),
+          );
+        }));
 
-        map.on('loadend', function onloadend() {
-          assert.strictEqual(loadCount, 2);
-          assert.strictEqual(failures, 1);
-          assert.strictEqual(successes, 1);
-          assert.lengthOf(source.getFeatures(), 1);
-          done();
-        });
-      });
+      it('removes infinite extent from loadedExtentsRtree after multiple load requests', () =>
+        new Promise((resolve) => {
+          const source = new VectorSource();
+          source.setLoader(async () => []);
 
-      it('clears loading state and map fires loadend with empty success [Promise]', function (done) {
-        const source = new VectorSource();
-        source.on('featuresloadend', function () {
-          assert.strictEqual(!!source.loading, false);
-        });
-        source.setLoader(function (bbox, resolution, projection, success) {
-          return new Promise((resolve) => setTimeout(() => resolve([]), 0));
-        });
-        map.addLayer(new VectorLayer({source}));
+          // Make multiple load requests with different extents
+          source.loadFeatures(
+            [-10, -10, 10, 10],
+            1,
+            getProjection('EPSG:3857'),
+          );
+          source.loadFeatures([0, 0, 10, 10], 1, getProjection('EPSG:3857'));
+          source.loadFeatures([10, 10, 20, 20], 1, getProjection('EPSG:3857'));
 
-        map.once('loadend', function () {
-          assert.strictEqual(!!source.loading, false);
-          done();
-        });
-      });
-
-      it('clears loading state and map fires loadend after failure [callback]', function (done) {
-        const source = new VectorSource();
-        let error = false;
-        source.on('featuresloaderror', () => {
-          error = true;
-          assert.strictEqual(!!source.loading, false);
-        });
-        source.setLoader((extent, resolution, projection, success, failure) => {
-          setTimeout(failure, 0);
-        });
-        map.addLayer(new VectorLayer({source}));
-
-        map.once('loadend', () => {
-          assert.strictEqual(!!source.loading, false);
-          assert.strictEqual(error, true);
-          done();
-        });
-      });
-
-      it('retries and fires loadend after removeLoadedExtent and failure [callback]', function (done) {
-        const source = new VectorSource();
-        let failures = 0;
-        let successes = 0;
-        source.on('featuresloaderror', () => {
-          ++failures;
-        });
-        source.on('featuresloadend', () => {
-          ++successes;
-        });
-        map.addLayer(new VectorLayer({source}));
-        let loadCount = 0;
-        source.setLoader(
-          function (extent, resolution, projection, success, failure) {
-            loadCount++;
-            if (loadCount === 1) {
-              setTimeout(function () {
-                source.removeLoadedExtent(extent);
-                failure();
-              }, 0);
-            } else {
-              setTimeout(function () {
-                const features = [];
-                source.addFeatures(features);
-                success(features);
-              }, 0);
-            }
-          },
-        );
-
-        map.once('loadend', function () {
-          assert.strictEqual(loadCount, 2);
-          assert.strictEqual(failures, 1);
-          assert.strictEqual(successes, 1);
-          done();
-        });
-      });
-
-      it('clears loading state and map fires loadend with empty success [callback]', function (done) {
-        const source = new VectorSource();
-        source.on('featuresloadend', function () {
-          assert.strictEqual(!!source.loading, false);
-        });
-        source.setLoader(function (bbox, resolution, projection, success) {
+          // Wait for all loader callbacks to complete
           setTimeout(() => {
-            const features = [];
-            source.addFeatures(features);
-            success(features);
-          }, 0);
-        });
-        map.addLayer(new VectorLayer({source}));
+            // Verify we have loaded extents in the tree
+            const initialExtents = source.loadedExtentsRtree_.getAll();
+            assert.isAbove(initialExtents.length, 0);
 
-        map.once('loadend', function () {
-          assert.strictEqual(!!source.loading, false);
-          done();
-        });
-      });
+            // Remove the infinite extent
+            source.removeLoadedExtent([
+              -Infinity,
+              -Infinity,
+              Infinity,
+              Infinity,
+            ]);
+
+            assert.lengthOf(source.loadedExtentsRtree_.getAll(), 0);
+            resolve();
+          }, 0);
+        }));
+
+      it('fires the FEATURESLOADEND event if the load function uses the callback', () =>
+        new Promise((resolve) => {
+          const source = new VectorSource();
+          const spy = vi.fn();
+          source.on('featuresloadend', spy);
+
+          const features = [new Feature(), new Feature()];
+
+          source.setLoader(function (bbox, resolution, projection, success) {
+            success(features);
+            setTimeout(function () {
+              assert.strictEqual(spy.mock.calls.length, 1);
+              const event = spy.mock.calls[0][0];
+              assert.strictEqual(event.features, features);
+              resolve();
+            }, 0);
+          });
+          source.loadFeatures(
+            [-10000, -10000, 10000, 10000],
+            1,
+            getProjection('EPSG:3857'),
+          );
+        }));
+
+      it('fires the FEATURESLOADERROR event if the load function uses the callback', () =>
+        new Promise((resolve) => {
+          const source = new VectorSource();
+          const spy = vi.fn();
+          source.on('featuresloaderror', spy);
+
+          source.setLoader(
+            function (bbox, resolution, projection, success, failure) {
+              failure();
+              setTimeout(function () {
+                assert.strictEqual(spy.mock.calls.length, 1);
+                resolve();
+              }, 0);
+            },
+          );
+          source.loadFeatures(
+            [-10000, -10000, 10000, 10000],
+            1,
+            getProjection('EPSG:3857'),
+          );
+        }));
+
+      it('clears loading state and map fires loadend after failure [Promise]', () =>
+        new Promise((resolve) => {
+          const source = new VectorSource();
+          let error = false;
+          source.on('featuresloaderror', () => {
+            error = true;
+            assert.strictEqual(!!source.loading, false);
+          });
+          source.setLoader(
+            (extent, resolution, projection) =>
+              new Promise((_, reject) => setTimeout(reject, 0)),
+          );
+          map.addLayer(new VectorLayer({source}));
+
+          map.once('loadend', () => {
+            assert.strictEqual(!!source.loading, false);
+            assert.strictEqual(error, true);
+            resolve();
+          });
+        }));
+
+      it('retries and fires loadend after removeLoadedExtent and failure [Promise]', () =>
+        new Promise((resolve) => {
+          const source = new VectorSource();
+          let failures = 0;
+          let successes = 0;
+          source.on('featuresloaderror', () => {
+            ++failures;
+          });
+          source.on('featuresloadend', () => {
+            ++successes;
+          });
+          map.addLayer(new VectorLayer({source}));
+          let loadCount = 0;
+          source.setLoader((extent, resolution, projection) => {
+            loadCount++;
+            return new Promise((resolve, reject) => {
+              setTimeout(() => {
+                if (loadCount === 1) {
+                  source.removeLoadedExtent(extent);
+                  reject();
+                } else {
+                  const features = [new Feature(new Point([0, 0]))];
+                  resolve(features);
+                }
+              }, 0);
+            });
+          });
+
+          map.on('loadend', function onloadend() {
+            assert.strictEqual(loadCount, 2);
+            assert.strictEqual(failures, 1);
+            assert.strictEqual(successes, 1);
+            assert.lengthOf(source.getFeatures(), 1);
+            resolve();
+          });
+        }));
+
+      it('clears loading state and map fires loadend with empty success [Promise]', () =>
+        new Promise((resolve) => {
+          const source = new VectorSource();
+          source.on('featuresloadend', function () {
+            assert.strictEqual(!!source.loading, false);
+          });
+          source.setLoader(function (bbox, resolution, projection, success) {
+            return new Promise((resolve) => setTimeout(() => resolve([]), 0));
+          });
+          map.addLayer(new VectorLayer({source}));
+
+          map.once('loadend', function () {
+            assert.strictEqual(!!source.loading, false);
+            resolve();
+          });
+        }));
+
+      it('clears loading state and map fires loadend after failure [callback]', () =>
+        new Promise((resolve) => {
+          const source = new VectorSource();
+          let error = false;
+          source.on('featuresloaderror', () => {
+            error = true;
+            assert.strictEqual(!!source.loading, false);
+          });
+          source.setLoader(
+            (extent, resolution, projection, success, failure) => {
+              setTimeout(failure, 0);
+            },
+          );
+          map.addLayer(new VectorLayer({source}));
+
+          map.once('loadend', () => {
+            assert.strictEqual(!!source.loading, false);
+            assert.strictEqual(error, true);
+            resolve();
+          });
+        }));
+
+      it('retries and fires loadend after removeLoadedExtent and failure [callback]', () =>
+        new Promise((resolve) => {
+          const source = new VectorSource();
+          let failures = 0;
+          let successes = 0;
+          source.on('featuresloaderror', () => {
+            ++failures;
+          });
+          source.on('featuresloadend', () => {
+            ++successes;
+          });
+          map.addLayer(new VectorLayer({source}));
+          let loadCount = 0;
+          source.setLoader(
+            function (extent, resolution, projection, success, failure) {
+              loadCount++;
+              if (loadCount === 1) {
+                setTimeout(function () {
+                  source.removeLoadedExtent(extent);
+                  failure();
+                }, 0);
+              } else {
+                setTimeout(function () {
+                  const features = [];
+                  source.addFeatures(features);
+                  success(features);
+                }, 0);
+              }
+            },
+          );
+
+          map.once('loadend', function () {
+            assert.strictEqual(loadCount, 2);
+            assert.strictEqual(failures, 1);
+            assert.strictEqual(successes, 1);
+            resolve();
+          });
+        }));
+
+      it('clears loading state and map fires loadend with empty success [callback]', () =>
+        new Promise((resolve) => {
+          const source = new VectorSource();
+          source.on('featuresloadend', function () {
+            assert.strictEqual(!!source.loading, false);
+          });
+          source.setLoader(function (bbox, resolution, projection, success) {
+            setTimeout(() => {
+              const features = [];
+              source.addFeatures(features);
+              success(features);
+            }, 0);
+          });
+          map.addLayer(new VectorLayer({source}));
+
+          map.once('loadend', function () {
+            assert.strictEqual(!!source.loading, false);
+            resolve();
+          });
+        }));
     });
   });
 
@@ -1106,9 +1136,9 @@ describe('ol/source/Vector', function () {
 
     it('#forEachFeatureInExtent loops through all features', function () {
       source.addFeatures([new Feature(), new Feature()]);
-      const spy = sinonSpy();
+      const spy = vi.fn();
       source.forEachFeatureInExtent([0, 0, 0, 0], spy);
-      assert.strictEqual(spy.callCount, 2);
+      assert.strictEqual(spy.mock.calls.length, 2);
     });
   });
 
