@@ -15,6 +15,7 @@ export default defineConfig({
       'test/browser/spec/ol/DataTile.test.js',
       'test/browser/spec/ol/MapBrowserEvent.test.js',
       'test/browser/spec/ol/Tile.test.js',
+      'test/browser/spec/ol/View.test.js',
       'test/browser/spec/ol/color.test.js',
       'test/browser/spec/ol/colorlike.test.js',
       'test/browser/spec/ol/control/attribution.test.js',

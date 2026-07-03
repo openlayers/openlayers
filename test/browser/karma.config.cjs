@@ -42,6 +42,7 @@ module.exports = async function (karma) {
       'spec/ol/DataTile.test.js',
       'spec/ol/MapBrowserEvent.test.js',
       'spec/ol/Tile.test.js',
+      'spec/ol/View.test.js',
       'spec/ol/color.test.js',
       'spec/ol/colorlike.test.js',
       'spec/ol/control/attribution.test.js',

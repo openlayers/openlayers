@@ -616,19 +616,20 @@ describe('ol/View', function () {
       assert.deepEqual(view.getInteracting(), true);
     });
 
-    it('triggers the change event', function (done) {
-      const view = new View({
-        center: [0, 0],
-        zoom: 0,
-      });
+    it('triggers the change event', () =>
+      new Promise((resolve) => {
+        const view = new View({
+          center: [0, 0],
+          zoom: 0,
+        });
 
-      view.on('change', function () {
-        assert.deepEqual(view.getHints(), [0, 1]);
-        assert.deepEqual(view.getInteracting(), true);
-        done();
-      });
-      view.setHint(ViewHint.INTERACTING, 1);
-    });
+        view.on('change', function () {
+          assert.deepEqual(view.getHints(), [0, 1]);
+          assert.deepEqual(view.getInteracting(), true);
+          resolve();
+        });
+        view.setHint(ViewHint.INTERACTING, 1);
+      }));
   });
 
   describe('#getUpdatedOptions_()', function () {
@@ -731,50 +732,52 @@ describe('ol/View', function () {
       window.cancelAnimationFrame = originalCancelAnimationFrame;
     });
 
-    it('can be called to animate view properties', function (done) {
-      const view = new View({
-        center: [0, 0],
-        zoom: 5,
-      });
+    it('can be called to animate view properties', () =>
+      new Promise((resolve) => {
+        const view = new View({
+          center: [0, 0],
+          zoom: 5,
+        });
 
-      view.animate(
-        {
-          zoom: 4,
-          duration: 25,
-        },
-        function (complete) {
-          assert.strictEqual(complete, true);
-          assert.strictEqual(isNaN(view.nextResolution_), true);
-          assert.deepEqual(view.getCenter(), [0, 0]);
-          assert.deepEqual(view.getZoom(), 4);
-          assert.strictEqual(view.getAnimating(), false);
-          done();
-        },
-      );
-      assert.deepEqual(view.getAnimating(), true);
-      assert.strictEqual(isNaN(view.nextResolution_), false);
-    });
+        view.animate(
+          {
+            zoom: 4,
+            duration: 25,
+          },
+          function (complete) {
+            assert.strictEqual(complete, true);
+            assert.strictEqual(isNaN(view.nextResolution_), true);
+            assert.deepEqual(view.getCenter(), [0, 0]);
+            assert.deepEqual(view.getZoom(), 4);
+            assert.strictEqual(view.getAnimating(), false);
+            resolve();
+          },
+        );
+        assert.deepEqual(view.getAnimating(), true);
+        assert.strictEqual(isNaN(view.nextResolution_), false);
+      }));
 
-    it('allows duration to be zero', function (done) {
-      const view = new View({
-        center: [0, 0],
-        zoom: 5,
-      });
+    it('allows duration to be zero', () =>
+      new Promise((resolve) => {
+        const view = new View({
+          center: [0, 0],
+          zoom: 5,
+        });
 
-      view.animate(
-        {
-          zoom: 4,
-          duration: 0,
-        },
-        function (complete) {
-          assert.strictEqual(complete, true);
-          assert.deepEqual(view.getCenter(), [0, 0]);
-          assert.deepEqual(view.getZoom(), 4);
-          assert.deepEqual(view.getAnimating(), false);
-          done();
-        },
-      );
-    });
+        view.animate(
+          {
+            zoom: 4,
+            duration: 0,
+          },
+          function (complete) {
+            assert.strictEqual(complete, true);
+            assert.deepEqual(view.getCenter(), [0, 0]);
+            assert.deepEqual(view.getZoom(), 4);
+            assert.deepEqual(view.getAnimating(), false);
+            resolve();
+          },
+        );
+      }));
 
     it('immediately completes for no-op animations', function () {
       const view = new View({
@@ -868,269 +871,284 @@ describe('ol/View', function () {
       });
     });
 
-    it('prefers zoom over resolution', function (done) {
-      const view = new View({
-        center: [0, 0],
-        zoom: 5,
-      });
+    it('prefers zoom over resolution', () =>
+      new Promise((resolve) => {
+        const view = new View({
+          center: [0, 0],
+          zoom: 5,
+        });
 
-      view.animate(
-        {
-          zoom: 4,
-          resolution: view.getResolution() * 3,
-          duration: 25,
-        },
-        function (complete) {
+        view.animate(
+          {
+            zoom: 4,
+            resolution: view.getResolution() * 3,
+            duration: 25,
+          },
+          function (complete) {
+            assert.strictEqual(complete, true);
+            assert.strictEqual(view.getZoom(), 4);
+            resolve();
+          },
+        );
+      }));
+
+    it('avoids going under minResolution', () =>
+      new Promise((resolve) => {
+        const maxZoom = 14;
+        const view = new View({
+          center: [0, 0],
+          zoom: 0,
+          maxZoom: maxZoom,
+        });
+
+        const minResolution = view.getMinResolution();
+        view.animate(
+          {
+            resolution: minResolution,
+            duration: 10,
+          },
+          function (complete) {
+            assert.strictEqual(complete, true);
+            assert.strictEqual(view.getResolution(), minResolution);
+            assert.strictEqual(view.getZoom(), maxZoom);
+            resolve();
+          },
+        );
+      }));
+
+    it('takes the shortest arc to the target rotation', () =>
+      new Promise((resolve) => {
+        const view = new View({
+          center: [0, 0],
+          zoom: 0,
+          rotation: (Math.PI / 180) * 1,
+        });
+        view.animate(
+          {
+            rotation: (Math.PI / 180) * 359,
+            duration: 0,
+          },
+          function (complete) {
+            assert.strictEqual(complete, true);
+            assert.approximately(
+              view.getRotation(),
+              (Math.PI / 180) * -1,
+              1e-12,
+            );
+            resolve();
+          },
+        );
+      }));
+
+    it('normalizes rotation to angles between -180 and 180 degrees after the anmiation', () =>
+      new Promise((resolve) => {
+        const view = new View({
+          center: [0, 0],
+          zoom: 0,
+          rotation: (Math.PI / 180) * 1,
+        });
+        view.animate(
+          {
+            rotation: (Math.PI / 180) * -181,
+            duration: 0,
+          },
+          function (complete) {
+            assert.strictEqual(complete, true);
+            assert.approximately(
+              view.getRotation(),
+              (Math.PI / 180) * 179,
+              1e-12,
+            );
+            resolve();
+          },
+        );
+      }));
+
+    it('calls a callback when animation completes', () =>
+      new Promise((resolve) => {
+        const view = new View({
+          center: [0, 0],
+          zoom: 0,
+        });
+
+        view.animate(
+          {
+            zoom: 1,
+            duration: 25,
+          },
+          function (complete) {
+            assert.strictEqual(complete, true);
+            resolve();
+          },
+        );
+      }));
+
+    it('allows the callback to trigger another animation', () =>
+      new Promise((resolve) => {
+        const view = new View({
+          center: [0, 0],
+          zoom: 0,
+        });
+
+        function firstCallback(complete) {
           assert.strictEqual(complete, true);
-          assert.strictEqual(view.getZoom(), 4);
-          done();
-        },
-      );
-    });
 
-    it('avoids going under minResolution', function (done) {
-      const maxZoom = 14;
-      const view = new View({
-        center: [0, 0],
-        zoom: 0,
-        maxZoom: maxZoom,
-      });
-
-      const minResolution = view.getMinResolution();
-      view.animate(
-        {
-          resolution: minResolution,
-          duration: 10,
-        },
-        function (complete) {
-          assert.strictEqual(complete, true);
-          assert.strictEqual(view.getResolution(), minResolution);
-          assert.strictEqual(view.getZoom(), maxZoom);
-          done();
-        },
-      );
-    });
-
-    it('takes the shortest arc to the target rotation', function (done) {
-      const view = new View({
-        center: [0, 0],
-        zoom: 0,
-        rotation: (Math.PI / 180) * 1,
-      });
-      view.animate(
-        {
-          rotation: (Math.PI / 180) * 359,
-          duration: 0,
-        },
-        function (complete) {
-          assert.strictEqual(complete, true);
-          assert.approximately(view.getRotation(), (Math.PI / 180) * -1, 1e-12);
-          done();
-        },
-      );
-    });
-
-    it('normalizes rotation to angles between -180 and 180 degrees after the anmiation', function (done) {
-      const view = new View({
-        center: [0, 0],
-        zoom: 0,
-        rotation: (Math.PI / 180) * 1,
-      });
-      view.animate(
-        {
-          rotation: (Math.PI / 180) * -181,
-          duration: 0,
-        },
-        function (complete) {
-          assert.strictEqual(complete, true);
-          assert.approximately(
-            view.getRotation(),
-            (Math.PI / 180) * 179,
-            1e-12,
+          view.animate(
+            {
+              zoom: 2,
+              duration: 10,
+            },
+            secondCallback,
           );
-          done();
-        },
-      );
-    });
+        }
 
-    it('calls a callback when animation completes', function (done) {
-      const view = new View({
-        center: [0, 0],
-        zoom: 0,
-      });
-
-      view.animate(
-        {
-          zoom: 1,
-          duration: 25,
-        },
-        function (complete) {
+        function secondCallback(complete) {
           assert.strictEqual(complete, true);
-          done();
-        },
-      );
-    });
+          resolve();
+        }
 
-    it('allows the callback to trigger another animation', function (done) {
-      const view = new View({
-        center: [0, 0],
-        zoom: 0,
-      });
+        view.animate(
+          {
+            zoom: 1,
+            duration: 25,
+          },
+          firstCallback,
+        );
+      }));
 
-      function firstCallback(complete) {
-        assert.strictEqual(complete, true);
+    it('calls callback with false when animation is interrupted', () =>
+      new Promise((resolve) => {
+        const view = new View({
+          center: [0, 0],
+          zoom: 0,
+        });
+
+        view.animate(
+          {
+            zoom: 1,
+            duration: 25,
+          },
+          function (complete) {
+            assert.strictEqual(complete, false);
+            resolve();
+          },
+        );
+
+        view.setCenter([1, 2]); // interrupt the animation
+      }));
+
+    it('calls a callback even if animation is a no-op', () =>
+      new Promise((resolve) => {
+        const view = new View({
+          center: [0, 0],
+          zoom: 0,
+        });
+
+        view.animate(
+          {
+            zoom: 0,
+            duration: 25,
+          },
+          function (complete) {
+            assert.strictEqual(complete, true);
+            resolve();
+          },
+        );
+      }));
+
+    it('calls a callback if view is not defined before', () =>
+      new Promise((resolve) => {
+        const view = new View();
+
+        view.animate(
+          {
+            zoom: 10,
+            duration: 25,
+          },
+          function (complete) {
+            assert.strictEqual(view.getZoom(), 10);
+            assert.strictEqual(complete, true);
+            resolve();
+          },
+        );
+      }));
+
+    it('can run multiple animations in series', () =>
+      new Promise((resolve) => {
+        const view = new View({
+          center: [0, 0],
+          zoom: 0,
+        });
+
+        let checked = false;
 
         view.animate(
           {
             zoom: 2,
-            duration: 10,
+            duration: 25,
           },
-          secondCallback,
+          {
+            center: [10, 10],
+            duration: 25,
+          },
+          function (complete) {
+            assert.strictEqual(checked, true);
+            assert.approximately(view.getZoom(), 2, 1e-5);
+            assert.deepEqual(view.getCenter(), [10, 10]);
+            assert.strictEqual(complete, true);
+            resolve();
+          },
         );
-      }
 
-      function secondCallback(complete) {
-        assert.strictEqual(complete, true);
-        done();
-      }
+        setTimeout(function () {
+          assert.deepEqual(view.getCenter(), [0, 0]);
+          checked = true;
+        }, 10);
+      }));
 
-      view.animate(
-        {
-          zoom: 1,
-          duration: 25,
-        },
-        firstCallback,
-      );
-    });
-
-    it('calls callback with false when animation is interrupted', function (done) {
-      const view = new View({
-        center: [0, 0],
-        zoom: 0,
-      });
-
-      view.animate(
-        {
-          zoom: 1,
-          duration: 25,
-        },
-        function (complete) {
-          assert.strictEqual(complete, false);
-          done();
-        },
-      );
-
-      view.setCenter([1, 2]); // interrupt the animation
-    });
-
-    it('calls a callback even if animation is a no-op', function (done) {
-      const view = new View({
-        center: [0, 0],
-        zoom: 0,
-      });
-
-      view.animate(
-        {
+    it('properly sets the ANIMATING hint', () =>
+      new Promise((resolve) => {
+        const view = new View({
+          center: [0, 0],
           zoom: 0,
-          duration: 25,
-        },
-        function (complete) {
-          assert.strictEqual(complete, true);
-          done();
-        },
-      );
-    });
+          rotation: 0,
+        });
 
-    it('calls a callback if view is not defined before', function (done) {
-      const view = new View();
-
-      view.animate(
-        {
-          zoom: 10,
-          duration: 25,
-        },
-        function (complete) {
-          assert.strictEqual(view.getZoom(), 10);
-          assert.strictEqual(complete, true);
-          done();
-        },
-      );
-    });
-
-    it('can run multiple animations in series', function (done) {
-      const view = new View({
-        center: [0, 0],
-        zoom: 0,
-      });
-
-      let checked = false;
-
-      view.animate(
-        {
-          zoom: 2,
-          duration: 25,
-        },
-        {
-          center: [10, 10],
-          duration: 25,
-        },
-        function (complete) {
-          assert.strictEqual(checked, true);
-          assert.approximately(view.getZoom(), 2, 1e-5);
-          assert.deepEqual(view.getCenter(), [10, 10]);
-          assert.strictEqual(complete, true);
-          done();
-        },
-      );
-
-      setTimeout(function () {
-        assert.deepEqual(view.getCenter(), [0, 0]);
-        checked = true;
-      }, 10);
-    });
-
-    it('properly sets the ANIMATING hint', function (done) {
-      const view = new View({
-        center: [0, 0],
-        zoom: 0,
-        rotation: 0,
-      });
-
-      let count = 3;
-      function decrement() {
-        --count;
-        if (count === 0) {
-          assert.strictEqual(view.getHints()[ViewHint.ANIMATING], 0);
-          done();
+        let count = 3;
+        function decrement() {
+          --count;
+          if (count === 0) {
+            assert.strictEqual(view.getHints()[ViewHint.ANIMATING], 0);
+            resolve();
+          }
         }
-      }
-      view.animate(
-        {
-          center: [1, 2],
-          duration: 25,
-        },
-        decrement,
-      );
-      assert.strictEqual(view.getHints()[ViewHint.ANIMATING], 1);
+        view.animate(
+          {
+            center: [1, 2],
+            duration: 25,
+          },
+          decrement,
+        );
+        assert.strictEqual(view.getHints()[ViewHint.ANIMATING], 1);
 
-      view.animate(
-        {
-          zoom: 1,
-          duration: 25,
-        },
-        decrement,
-      );
-      assert.strictEqual(view.getHints()[ViewHint.ANIMATING], 2);
+        view.animate(
+          {
+            zoom: 1,
+            duration: 25,
+          },
+          decrement,
+        );
+        assert.strictEqual(view.getHints()[ViewHint.ANIMATING], 2);
 
-      view.animate(
-        {
-          rotation: Math.PI,
-          duration: 25,
-        },
-        decrement,
-      );
-      assert.strictEqual(view.getHints()[ViewHint.ANIMATING], 3);
-    });
+        view.animate(
+          {
+            rotation: Math.PI,
+            duration: 25,
+          },
+          decrement,
+        );
+        assert.strictEqual(view.getHints()[ViewHint.ANIMATING], 3);
+      }));
 
     it('clears the ANIMATING hint when animations are cancelled', function () {
       const view = new View({
@@ -1162,149 +1180,153 @@ describe('ol/View', function () {
       assert.strictEqual(view.getHints()[ViewHint.ANIMATING], 0);
     });
 
-    it('completes multiple staggered animations run in parallel', function (done) {
-      const view = new View({
-        center: [0, 0],
-        zoom: 0,
-      });
+    it('completes multiple staggered animations run in parallel', () =>
+      new Promise((resolve) => {
+        const view = new View({
+          center: [0, 0],
+          zoom: 0,
+        });
 
-      let calls = 0;
+        let calls = 0;
 
-      view.animate(
-        {
-          zoom: 1,
-          duration: 25,
-        },
-        function () {
-          ++calls;
-        },
-      );
-
-      setTimeout(function () {
-        assert.strictEqual(view.getZoom() > 0, true);
-        assert.strictEqual(view.getZoom() < 1, true);
-        assert.strictEqual(view.getAnimating(), true);
         view.animate(
           {
-            zoom: 2,
+            zoom: 1,
+            duration: 25,
+          },
+          function () {
+            ++calls;
+          },
+        );
+
+        setTimeout(function () {
+          assert.strictEqual(view.getZoom() > 0, true);
+          assert.strictEqual(view.getZoom() < 1, true);
+          assert.strictEqual(view.getAnimating(), true);
+          view.animate(
+            {
+              zoom: 2,
+              duration: 50,
+            },
+            function () {
+              assert.strictEqual(calls, 1);
+              assert.strictEqual(view.getZoom(), 2);
+              assert.strictEqual(view.getAnimating(), false);
+              resolve();
+            },
+          );
+        }, 10);
+      }));
+
+    it('completes complex animation using resolution', () =>
+      new Promise((resolve) => {
+        const view = new View({
+          center: [0, 0],
+          resolution: 2,
+        });
+
+        let calls = 0;
+
+        function onAnimateEnd() {
+          if (calls == 2) {
+            assert.strictEqual(view.getAnimating(), false);
+            resolve();
+          }
+        }
+
+        view.animate(
+          {
+            center: [100, 100],
             duration: 50,
           },
           function () {
-            assert.strictEqual(calls, 1);
-            assert.strictEqual(view.getZoom(), 2);
-            assert.strictEqual(view.getAnimating(), false);
-            done();
+            ++calls;
+            assert.deepEqual(view.getCenter(), [100, 100]);
+            onAnimateEnd();
           },
         );
-      }, 10);
-    });
 
-    it('completes complex animation using resolution', function (done) {
-      const view = new View({
-        center: [0, 0],
-        resolution: 2,
-      });
+        view.animate(
+          {
+            resolution: 2000,
+            duration: 25,
+          },
+          {
+            resolution: 2,
+            duration: 25,
+          },
+          function () {
+            ++calls;
+            assert.strictEqual(view.getResolution(), 2);
+            onAnimateEnd();
+          },
+        );
 
-      let calls = 0;
+        setTimeout(function () {
+          assert.strictEqual(view.getResolution() > 2, true);
+          assert.strictEqual(view.getResolution() < 2000, true);
+          assert.strictEqual(view.getAnimating(), true);
+        }, 10);
 
-      function onAnimateEnd() {
-        if (calls == 2) {
-          assert.strictEqual(view.getAnimating(), false);
-          done();
-        }
-      }
+        setTimeout(function () {
+          assert.strictEqual(view.getResolution() > 2, true);
+          assert.strictEqual(view.getResolution() < 2000, true);
+          assert.strictEqual(view.getAnimating(), true);
+        }, 40);
+      }));
 
-      view.animate(
-        {
-          center: [100, 100],
-          duration: 50,
-        },
-        function () {
-          ++calls;
-          assert.deepEqual(view.getCenter(), [100, 100]);
-          onAnimateEnd();
-        },
-      );
+    it('completes even though Map#setSize is called', () =>
+      new Promise((resolve) => {
+        const view = new View({
+          center: [0, 0],
+          zoom: 0,
+        });
+        const map = new Map({
+          view,
+        });
+        map.setSize([110, 90]);
 
-      view.animate(
-        {
-          resolution: 2000,
-          duration: 25,
-        },
-        {
-          resolution: 2,
-          duration: 25,
-        },
-        function () {
-          ++calls;
-          assert.strictEqual(view.getResolution(), 2);
-          onAnimateEnd();
-        },
-      );
+        view.animate(
+          {
+            zoom: 1,
+            duration: 25,
+          },
+          function () {
+            assert.strictEqual(view.getZoom(), 1);
+            resolve();
+          },
+        );
 
-      setTimeout(function () {
-        assert.strictEqual(view.getResolution() > 2, true);
-        assert.strictEqual(view.getResolution() < 2000, true);
-        assert.strictEqual(view.getAnimating(), true);
-      }, 10);
+        setTimeout(function () {
+          map.setSize([100, 100]);
+        }, 10);
+      }));
 
-      setTimeout(function () {
-        assert.strictEqual(view.getResolution() > 2, true);
-        assert.strictEqual(view.getResolution() < 2000, true);
-        assert.strictEqual(view.getAnimating(), true);
-      }, 40);
-    });
+    it('completes even though Map#updateSize is called', () =>
+      new Promise((resolve) => {
+        const view = new View({
+          center: [0, 0],
+          zoom: 0,
+        });
+        const map = new Map({
+          view,
+        });
 
-    it('completes even though Map#setSize is called', function (done) {
-      const view = new View({
-        center: [0, 0],
-        zoom: 0,
-      });
-      const map = new Map({
-        view,
-      });
-      map.setSize([110, 90]);
+        view.animate(
+          {
+            zoom: 1,
+            duration: 25,
+          },
+          function () {
+            assert.strictEqual(view.getZoom(), 1);
+            resolve();
+          },
+        );
 
-      view.animate(
-        {
-          zoom: 1,
-          duration: 25,
-        },
-        function () {
-          assert.strictEqual(view.getZoom(), 1);
-          done();
-        },
-      );
-
-      setTimeout(function () {
-        map.setSize([100, 100]);
-      }, 10);
-    });
-
-    it('completes even though Map#updateSize is called', function (done) {
-      const view = new View({
-        center: [0, 0],
-        zoom: 0,
-      });
-      const map = new Map({
-        view,
-      });
-
-      view.animate(
-        {
-          zoom: 1,
-          duration: 25,
-        },
-        function () {
-          assert.strictEqual(view.getZoom(), 1);
-          done();
-        },
-      );
-
-      setTimeout(function () {
-        map.updateSize();
-      }, 10);
-    });
+        setTimeout(function () {
+          map.updateSize();
+        }, 10);
+      }));
   });
 
   describe('#cancelAnimations()', function () {
@@ -1325,84 +1347,87 @@ describe('ol/View', function () {
       window.cancelAnimationFrame = originalCancelAnimationFrame;
     });
 
-    it('cancels a currently running animation', function (done) {
-      const view = new View({
-        center: [0, 0],
-        zoom: 0,
-        rotation: 0,
-      });
-
-      view.animate({
-        rotation: 10,
-        duration: 50,
-      });
-
-      setTimeout(function () {
-        assert.strictEqual(view.getAnimating(), true);
-        view.once('change', function () {
-          assert.strictEqual(view.getAnimating(), false);
-          done();
+    it('cancels a currently running animation', () =>
+      new Promise((resolve) => {
+        const view = new View({
+          center: [0, 0],
+          zoom: 0,
+          rotation: 0,
         });
-        view.cancelAnimations();
-      }, 10);
-    });
 
-    it('cancels a multiple animations', function (done) {
-      const view = new View({
-        center: [0, 0],
-        zoom: 0,
-        rotation: 0,
-      });
-
-      view.animate(
-        {
+        view.animate({
           rotation: 10,
           duration: 50,
-        },
-        {
-          zoom: 10,
-          duration: 50,
-        },
-      );
-
-      view.animate({
-        center: [10, 30],
-        duration: 100,
-      });
-
-      setTimeout(function () {
-        assert.strictEqual(view.getAnimating(), true);
-        view.once('change', function () {
-          assert.strictEqual(view.getAnimating(), false);
-          done();
         });
-        view.cancelAnimations();
-      }, 10);
-    });
 
-    it('calls callbacks with false to indicate animations did not complete', function (done) {
-      const view = new View({
-        center: [0, 0],
-        zoom: 0,
-      });
+        setTimeout(function () {
+          assert.strictEqual(view.getAnimating(), true);
+          view.once('change', function () {
+            assert.strictEqual(view.getAnimating(), false);
+            resolve();
+          });
+          view.cancelAnimations();
+        }, 10);
+      }));
 
-      view.animate(
-        {
-          zoom: 10,
-          duration: 50,
-        },
-        function (complete) {
-          assert.strictEqual(view.getAnimating(), false);
-          assert.strictEqual(complete, false);
-          done();
-        },
-      );
+    it('cancels a multiple animations', () =>
+      new Promise((resolve) => {
+        const view = new View({
+          center: [0, 0],
+          zoom: 0,
+          rotation: 0,
+        });
 
-      setTimeout(function () {
-        assert.strictEqual(view.getAnimating(), true);
-        view.cancelAnimations();
-      }, 10);
-    });
+        view.animate(
+          {
+            rotation: 10,
+            duration: 50,
+          },
+          {
+            zoom: 10,
+            duration: 50,
+          },
+        );
+
+        view.animate({
+          center: [10, 30],
+          duration: 100,
+        });
+
+        setTimeout(function () {
+          assert.strictEqual(view.getAnimating(), true);
+          view.once('change', function () {
+            assert.strictEqual(view.getAnimating(), false);
+            resolve();
+          });
+          view.cancelAnimations();
+        }, 10);
+      }));
+
+    it('calls callbacks with false to indicate animations did not complete', () =>
+      new Promise((resolve) => {
+        const view = new View({
+          center: [0, 0],
+          zoom: 0,
+        });
+
+        view.animate(
+          {
+            zoom: 10,
+            duration: 50,
+          },
+          function (complete) {
+            assert.strictEqual(view.getAnimating(), false);
+            assert.strictEqual(complete, false);
+            resolve();
+          },
+        );
+
+        setTimeout(function () {
+          assert.strictEqual(view.getAnimating(), true);
+          view.cancelAnimations();
+        }, 10);
+      }));
   });
 
   describe('#getResolutions', function () {
@@ -1955,61 +1980,64 @@ describe('ol/View', function () {
         view.fit(createEmpty());
       });
     });
-    it('animates when duration is defined', function (done) {
-      view.fit(
-        new LineString([
-          [6000, 46000],
-          [6000, 47100],
-          [7000, 46000],
-        ]),
-        {
-          size: [200, 200],
-          padding: [100, 0, 0, 100],
-          duration: 25,
-        },
-      );
-
-      assert.deepEqual(view.getAnimating(), true);
-
-      setTimeout(function () {
-        assert.strictEqual(view.getResolution(), 11);
-        assert.strictEqual(view.getCenter()[0], 5950);
-        assert.strictEqual(view.getCenter()[1], 47100);
-        assert.deepEqual(view.getAnimating(), false);
-        done();
-      }, 50);
-    });
-    it('calls a callback when duration is not defined', function (done) {
-      view.fit(
-        new LineString([
-          [6000, 46000],
-          [6000, 47100],
-          [7000, 46000],
-        ]),
-        {
-          callback: function (complete) {
-            assert.strictEqual(complete, true);
-            done();
+    it('animates when duration is defined', () =>
+      new Promise((resolve) => {
+        view.fit(
+          new LineString([
+            [6000, 46000],
+            [6000, 47100],
+            [7000, 46000],
+          ]),
+          {
+            size: [200, 200],
+            padding: [100, 0, 0, 100],
+            duration: 25,
           },
-        },
-      );
-    });
-    it('calls a callback when animation completes', function (done) {
-      view.fit(
-        new LineString([
-          [6000, 46000],
-          [6000, 47100],
-          [7000, 46000],
-        ]),
-        {
-          duration: 25,
-          callback: function (complete) {
-            assert.strictEqual(complete, true);
-            done();
+        );
+
+        assert.deepEqual(view.getAnimating(), true);
+
+        setTimeout(function () {
+          assert.strictEqual(view.getResolution(), 11);
+          assert.strictEqual(view.getCenter()[0], 5950);
+          assert.strictEqual(view.getCenter()[1], 47100);
+          assert.deepEqual(view.getAnimating(), false);
+          resolve();
+        }, 50);
+      }));
+    it('calls a callback when duration is not defined', () =>
+      new Promise((resolve) => {
+        view.fit(
+          new LineString([
+            [6000, 46000],
+            [6000, 47100],
+            [7000, 46000],
+          ]),
+          {
+            callback: function (complete) {
+              assert.strictEqual(complete, true);
+              resolve();
+            },
           },
-        },
-      );
-    });
+        );
+      }));
+    it('calls a callback when animation completes', () =>
+      new Promise((resolve) => {
+        view.fit(
+          new LineString([
+            [6000, 46000],
+            [6000, 47100],
+            [7000, 46000],
+          ]),
+          {
+            duration: 25,
+            callback: function (complete) {
+              assert.strictEqual(complete, true);
+              resolve();
+            },
+          },
+        );
+      }));
   });
 
   describe('centerOn', function () {
@@ -2362,39 +2390,41 @@ describe('does not start unexpected animations during interaction', function () 
     disposeMap(map);
   });
 
-  it('works when initialized with #setCenter() and #setZoom()', function (done) {
-    const view = map.getView();
-    let callCount = 0;
-    view.on('change:resolution', function () {
-      ++callCount;
-    });
-    view.setCenter([0, 0]);
-    view.setZoom(0);
-    view.beginInteraction();
-    view.endInteraction();
-    setTimeout(function () {
-      assert.strictEqual(callCount, 1);
-      done();
-    }, 500);
-  });
+  it('works when initialized with #setCenter() and #setZoom()', () =>
+    new Promise((resolve) => {
+      const view = map.getView();
+      let callCount = 0;
+      view.on('change:resolution', function () {
+        ++callCount;
+      });
+      view.setCenter([0, 0]);
+      view.setZoom(0);
+      view.beginInteraction();
+      view.endInteraction();
+      setTimeout(function () {
+        assert.strictEqual(callCount, 1);
+        resolve();
+      }, 500);
+    }));
 
-  it('works when initialized with #animate()', function (done) {
-    const view = map.getView();
-    let callCount = 0;
-    view.on('change:resolution', function () {
-      ++callCount;
-    });
-    view.animate({
-      center: [0, 0],
-      zoom: 0,
-    });
-    view.beginInteraction();
-    view.endInteraction();
-    setTimeout(function () {
-      assert.strictEqual(callCount, 1);
-      done();
-    }, 500);
-  });
+  it('works when initialized with #animate()', () =>
+    new Promise((resolve) => {
+      const view = map.getView();
+      let callCount = 0;
+      view.on('change:resolution', function () {
+        ++callCount;
+      });
+      view.animate({
+        center: [0, 0],
+        zoom: 0,
+      });
+      view.beginInteraction();
+      view.endInteraction();
+      setTimeout(function () {
+        assert.strictEqual(callCount, 1);
+        resolve();
+      }, 500);
+    }));
 });
 
 describe('ol.View.isNoopAnimation()', function () {
