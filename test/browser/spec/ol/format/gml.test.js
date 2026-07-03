@@ -30,17 +30,21 @@ describe('ol.format.GML2', function () {
 
   describe('#readFeatures', function () {
     let features;
-    before(function (done) {
-      const url = 'spec/ol/format/gml/osm-wfs-10.xml';
-      afterLoadText(url, function (xml) {
-        try {
-          features = new GML2().readFeatures(xml);
-        } catch (e) {
-          done(e);
-        }
-        done();
-      });
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          const url = 'spec/ol/format/gml/osm-wfs-10.xml';
+          afterLoadText(url, function (xml) {
+            try {
+              features = new GML2().readFeatures(xml);
+            } catch (e) {
+              reject(e);
+              return;
+            }
+            resolve();
+          });
+        }),
+    );
 
     it('reads all features', function () {
       assert.strictEqual(features.length, 3);
@@ -1387,35 +1391,39 @@ describe('ol.format.GML3', function () {
 
   describe('when parsing CDATA attribute', function () {
     let features;
-    before(function (done) {
-      try {
-        const text =
-          '<gml:featureMembers xmlns:gml="http://www.opengis.net/gml">' +
-          '  <topp:gnis_pop gml:id="gnis_pop.148604" xmlns:topp="' +
-          'http://www.openplans.org/topp">' +
-          '    <gml:name>Aflu</gml:name>' +
-          '    <topp:the_geom>' +
-          '      <gml:Point srsName="urn:x-ogc:def:crs:EPSG:4326">' +
-          '        <gml:pos>34.12 2.09</gml:pos>' +
-          '      </gml:Point>' +
-          '    </topp:the_geom>' +
-          '    <topp:population>84683</topp:population>' +
-          '    <topp:country>Algeria</topp:country>' +
-          '    <topp:type>place</topp:type>' +
-          '    <topp:name>Aflu</topp:name>' +
-          '    <topp:cdata><![CDATA[<a>b</a>]]></topp:cdata>' +
-          '  </topp:gnis_pop>' +
-          '</gml:featureMembers>';
-        const config = {
-          'featureNS': 'http://www.openplans.org/topp',
-          'featureType': 'gnis_pop',
-        };
-        features = new GML(config).readFeatures(text);
-      } catch (e) {
-        done(e);
-      }
-      done();
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          try {
+            const text =
+              '<gml:featureMembers xmlns:gml="http://www.opengis.net/gml">' +
+              '  <topp:gnis_pop gml:id="gnis_pop.148604" xmlns:topp="' +
+              'http://www.openplans.org/topp">' +
+              '    <gml:name>Aflu</gml:name>' +
+              '    <topp:the_geom>' +
+              '      <gml:Point srsName="urn:x-ogc:def:crs:EPSG:4326">' +
+              '        <gml:pos>34.12 2.09</gml:pos>' +
+              '      </gml:Point>' +
+              '    </topp:the_geom>' +
+              '    <topp:population>84683</topp:population>' +
+              '    <topp:country>Algeria</topp:country>' +
+              '    <topp:type>place</topp:type>' +
+              '    <topp:name>Aflu</topp:name>' +
+              '    <topp:cdata><![CDATA[<a>b</a>]]></topp:cdata>' +
+              '  </topp:gnis_pop>' +
+              '</gml:featureMembers>';
+            const config = {
+              'featureNS': 'http://www.openplans.org/topp',
+              'featureType': 'gnis_pop',
+            };
+            features = new GML(config).readFeatures(text);
+          } catch (e) {
+            reject(e);
+            return;
+          }
+          resolve();
+        }),
+    );
 
     it('creates 1 feature', function () {
       assert.lengthOf(features, 1);
@@ -1428,17 +1436,24 @@ describe('ol.format.GML3', function () {
 
   describe('when parsing TOPP states WFS with autoconfigure', function () {
     let features, gmlFormat;
-    before(function (done) {
-      afterLoadText('spec/ol/format/gml/topp-states-wfs.xml', function (xml) {
-        try {
-          gmlFormat = new GML();
-          features = gmlFormat.readFeatures(xml);
-        } catch (e) {
-          done(e);
-        }
-        done();
-      });
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText(
+            'spec/ol/format/gml/topp-states-wfs.xml',
+            function (xml) {
+              try {
+                gmlFormat = new GML();
+                features = gmlFormat.readFeatures(xml);
+              } catch (e) {
+                reject(e);
+                return;
+              }
+              resolve();
+            },
+          );
+        }),
+    );
 
     it('creates 3 features', function () {
       assert.lengthOf(features, 3);
@@ -1478,31 +1493,38 @@ describe('ol.format.GML3', function () {
 
   describe('when parsing TOPP states GML', function () {
     let features, text, gmlFormat;
-    before(function (done) {
-      afterLoadText('spec/ol/format/gml/topp-states-gml.xml', function (xml) {
-        try {
-          const schemaLoc =
-            'http://www.openplans.org/topp ' +
-            'http://demo.opengeo.org/geoserver/wfs?service=WFS&version=' +
-            '1.1.0&request=DescribeFeatureType&typeName=topp:states ' +
-            'http://www.opengis.net/gml ' +
-            'http://schemas.opengis.net/gml/3.2.1/gml.xsd';
-          const config = {
-            'featureNS': 'http://www.openplans.org/topp',
-            'featureType': 'states',
-            'multiSurface': true,
-            'srsName': 'urn:x-ogc:def:crs:EPSG:4326',
-            'schemaLocation': schemaLoc,
-          };
-          text = xml;
-          gmlFormat = new GML(config);
-          features = gmlFormat.readFeatures(xml);
-        } catch (e) {
-          done(e);
-        }
-        done();
-      });
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText(
+            'spec/ol/format/gml/topp-states-gml.xml',
+            function (xml) {
+              try {
+                const schemaLoc =
+                  'http://www.openplans.org/topp ' +
+                  'http://demo.opengeo.org/geoserver/wfs?service=WFS&version=' +
+                  '1.1.0&request=DescribeFeatureType&typeName=topp:states ' +
+                  'http://www.opengis.net/gml ' +
+                  'http://schemas.opengis.net/gml/3.2.1/gml.xsd';
+                const config = {
+                  'featureNS': 'http://www.openplans.org/topp',
+                  'featureType': 'states',
+                  'multiSurface': true,
+                  'srsName': 'urn:x-ogc:def:crs:EPSG:4326',
+                  'schemaLocation': schemaLoc,
+                };
+                text = xml;
+                gmlFormat = new GML(config);
+                features = gmlFormat.readFeatures(xml);
+              } catch (e) {
+                reject(e);
+                return;
+              }
+              resolve();
+            },
+          );
+        }),
+    );
 
     it('creates 10 features', function () {
       assert.lengthOf(features, 10);
@@ -1520,33 +1542,37 @@ describe('ol.format.GML3', function () {
 
   describe('when parsing TOPP states GML with multiple featureMember tags', function () {
     let features, gmlFormat;
-    before(function (done) {
-      afterLoadText(
-        'spec/ol/format/gml/topp-states-gml-featureMember.xml',
-        function (xml) {
-          try {
-            const schemaLoc =
-              'http://www.openplans.org/topp ' +
-              'http://demo.opengeo.org/geoserver/wfs?service=WFS&version=' +
-              '1.1.0&request=DescribeFeatureType&typeName=topp:states ' +
-              'http://www.opengis.net/gml ' +
-              'http://schemas.opengis.net/gml/3.2.1/gml.xsd';
-            const config = {
-              'featureNS': 'http://www.openplans.org/topp',
-              'featureType': 'states',
-              'multiSurface': true,
-              'srsName': 'urn:x-ogc:def:crs:EPSG:4326',
-              'schemaLocation': schemaLoc,
-            };
-            gmlFormat = new GML(config);
-            features = gmlFormat.readFeatures(xml);
-          } catch (e) {
-            done(e);
-          }
-          done();
-        },
-      );
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText(
+            'spec/ol/format/gml/topp-states-gml-featureMember.xml',
+            function (xml) {
+              try {
+                const schemaLoc =
+                  'http://www.openplans.org/topp ' +
+                  'http://demo.opengeo.org/geoserver/wfs?service=WFS&version=' +
+                  '1.1.0&request=DescribeFeatureType&typeName=topp:states ' +
+                  'http://www.opengis.net/gml ' +
+                  'http://schemas.opengis.net/gml/3.2.1/gml.xsd';
+                const config = {
+                  'featureNS': 'http://www.openplans.org/topp',
+                  'featureType': 'states',
+                  'multiSurface': true,
+                  'srsName': 'urn:x-ogc:def:crs:EPSG:4326',
+                  'schemaLocation': schemaLoc,
+                };
+                gmlFormat = new GML(config);
+                features = gmlFormat.readFeatures(xml);
+              } catch (e) {
+                reject(e);
+                return;
+              }
+              resolve();
+            },
+          );
+        }),
+    );
 
     it('creates 3 features', function () {
       assert.lengthOf(features, 3);
@@ -1555,20 +1581,27 @@ describe('ol.format.GML3', function () {
 
   describe('when parsing TOPP states GML from WFS', function () {
     let features, feature;
-    before(function (done) {
-      afterLoadText('spec/ol/format/gml/topp-states-wfs.xml', function (xml) {
-        try {
-          const config = {
-            'featureNS': 'http://www.openplans.org/topp',
-            'featureType': 'states',
-          };
-          features = new GML(config).readFeatures(xml);
-        } catch (e) {
-          done(e);
-        }
-        done();
-      });
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText(
+            'spec/ol/format/gml/topp-states-wfs.xml',
+            function (xml) {
+              try {
+                const config = {
+                  'featureNS': 'http://www.openplans.org/topp',
+                  'featureType': 'states',
+                };
+                features = new GML(config).readFeatures(xml);
+              } catch (e) {
+                reject(e);
+                return;
+              }
+              resolve();
+            },
+          );
+        }),
+    );
 
     it('creates 3 features', function () {
       assert.lengthOf(features, 3);
@@ -1584,20 +1617,24 @@ describe('ol.format.GML3', function () {
 
   describe('when parsing more than one geometry', function () {
     let features;
-    before(function (done) {
-      afterLoadText('spec/ol/format/gml/more-geoms.xml', function (xml) {
-        try {
-          const config = {
-            'featureNS': 'http://opengeo.org/#medford',
-            'featureType': 'zoning',
-          };
-          features = new GML(config).readFeatures(xml);
-        } catch (e) {
-          done(e);
-        }
-        done();
-      });
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText('spec/ol/format/gml/more-geoms.xml', function (xml) {
+            try {
+              const config = {
+                'featureNS': 'http://opengeo.org/#medford',
+                'featureType': 'zoning',
+              };
+              features = new GML(config).readFeatures(xml);
+            } catch (e) {
+              reject(e);
+              return;
+            }
+            resolve();
+          });
+        }),
+    );
 
     it('creates 2 geometries', function () {
       const feature = features[0];
@@ -1608,20 +1645,24 @@ describe('ol.format.GML3', function () {
 
   describe('when parsing an attribute name equal to featureType', function () {
     let features;
-    before(function (done) {
-      afterLoadText('spec/ol/format/gml/repeated-name.xml', function (xml) {
-        try {
-          const config = {
-            'featureNS': 'http://opengeo.org/#medford',
-            'featureType': 'zoning',
-          };
-          features = new GML(config).readFeatures(xml);
-        } catch (e) {
-          done(e);
-        }
-        done();
-      });
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText('spec/ol/format/gml/repeated-name.xml', function (xml) {
+            try {
+              const config = {
+                'featureNS': 'http://opengeo.org/#medford',
+                'featureType': 'zoning',
+              };
+              features = new GML(config).readFeatures(xml);
+            } catch (e) {
+              reject(e);
+              return;
+            }
+            resolve();
+          });
+        }),
+    );
 
     it('creates the correct attribute value', function () {
       const feature = features[0];
@@ -1631,16 +1672,23 @@ describe('ol.format.GML3', function () {
 
   describe('when parsing only a boundedBy element and no geometry', function () {
     let features;
-    before(function (done) {
-      afterLoadText('spec/ol/format/gml/only-boundedby.xml', function (xml) {
-        try {
-          features = new GML().readFeatures(xml);
-        } catch (e) {
-          done(e);
-        }
-        done();
-      });
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText(
+            'spec/ol/format/gml/only-boundedby.xml',
+            function (xml) {
+              try {
+                features = new GML().readFeatures(xml);
+              } catch (e) {
+                reject(e);
+                return;
+              }
+              resolve();
+            },
+          );
+        }),
+    );
 
     it('creates a feature without a geometry', function () {
       const feature = features[0];
@@ -1650,16 +1698,20 @@ describe('ol.format.GML3', function () {
 
   describe('when parsing from OGR', function () {
     let features;
-    before(function (done) {
-      afterLoadText('spec/ol/format/gml/ogr.xml', function (xml) {
-        try {
-          features = new GML().readFeatures(xml);
-        } catch (e) {
-          done(e);
-        }
-        done();
-      });
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText('spec/ol/format/gml/ogr.xml', function (xml) {
+            try {
+              features = new GML().readFeatures(xml);
+            } catch (e) {
+              reject(e);
+              return;
+            }
+            resolve();
+          });
+        }),
+    );
 
     it('reads all features', function () {
       assert.strictEqual(features.length, 1);
@@ -1668,22 +1720,26 @@ describe('ol.format.GML3', function () {
 
   describe('when parsing multiple feature types', function () {
     let features;
-    before(function (done) {
-      afterLoadText(
-        'spec/ol/format/gml/multiple-typenames.xml',
-        function (xml) {
-          try {
-            features = new GML({
-              featureNS: 'http://localhost:8080/official',
-              featureType: ['planet_osm_polygon', 'planet_osm_line'],
-            }).readFeatures(xml);
-          } catch (e) {
-            done(e);
-          }
-          done();
-        },
-      );
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText(
+            'spec/ol/format/gml/multiple-typenames.xml',
+            function (xml) {
+              try {
+                features = new GML({
+                  featureNS: 'http://localhost:8080/official',
+                  featureType: ['planet_osm_polygon', 'planet_osm_line'],
+                }).readFeatures(xml);
+              } catch (e) {
+                reject(e);
+                return;
+              }
+              resolve();
+            },
+          );
+        }),
+    );
 
     it('reads all features', function () {
       assert.strictEqual(features.length, 12);
@@ -1692,19 +1748,23 @@ describe('ol.format.GML3', function () {
 
   describe('when parsing multiple feature types', function () {
     let features;
-    before(function (done) {
-      afterLoadText(
-        'spec/ol/format/gml/multiple-typenames.xml',
-        function (xml) {
-          try {
-            features = new GML().readFeatures(xml);
-          } catch (e) {
-            done(e);
-          }
-          done();
-        },
-      );
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText(
+            'spec/ol/format/gml/multiple-typenames.xml',
+            function (xml) {
+              try {
+                features = new GML().readFeatures(xml);
+              } catch (e) {
+                reject(e);
+                return;
+              }
+              resolve();
+            },
+          );
+        }),
+    );
 
     it('reads all features with autoconfigure', function () {
       assert.strictEqual(features.length, 12);
@@ -1713,23 +1773,27 @@ describe('ol.format.GML3', function () {
 
   describe('when parsing multiple feature types / namespaces', function () {
     let features;
-    before(function (done) {
-      const url = 'spec/ol/format/gml/multiple-typenames-ns.xml';
-      afterLoadText(url, function (xml) {
-        try {
-          features = new GML({
-            featureNS: {
-              'topp': 'http://www.openplans.org/topp',
-              'sf': 'http://www.openplans.org/spearfish',
-            },
-            featureType: ['topp:states', 'sf:roads'],
-          }).readFeatures(xml);
-        } catch (e) {
-          done(e);
-        }
-        done();
-      });
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          const url = 'spec/ol/format/gml/multiple-typenames-ns.xml';
+          afterLoadText(url, function (xml) {
+            try {
+              features = new GML({
+                featureNS: {
+                  'topp': 'http://www.openplans.org/topp',
+                  'sf': 'http://www.openplans.org/spearfish',
+                },
+                featureType: ['topp:states', 'sf:roads'],
+              }).readFeatures(xml);
+            } catch (e) {
+              reject(e);
+              return;
+            }
+            resolve();
+          });
+        }),
+    );
 
     it('reads all features', function () {
       assert.strictEqual(features.length, 2);
@@ -1738,17 +1802,21 @@ describe('ol.format.GML3', function () {
 
   describe('when parsing multiple feature types / namespaces', function () {
     let features;
-    before(function (done) {
-      const url = 'spec/ol/format/gml/multiple-typenames-ns.xml';
-      afterLoadText(url, function (xml) {
-        try {
-          features = new GML().readFeatures(xml);
-        } catch (e) {
-          done(e);
-        }
-        done();
-      });
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          const url = 'spec/ol/format/gml/multiple-typenames-ns.xml';
+          afterLoadText(url, function (xml) {
+            try {
+              features = new GML().readFeatures(xml);
+            } catch (e) {
+              reject(e);
+              return;
+            }
+            resolve();
+          });
+        }),
+    );
 
     it('reads all features with autoconfigure', function () {
       assert.strictEqual(features.length, 2);
@@ -1757,23 +1825,27 @@ describe('ol.format.GML3', function () {
 
   describe('when parsing srsDimension from WFS (Geoserver)', function () {
     let features, feature;
-    before(function (done) {
-      afterLoadText(
-        'spec/ol/format/gml/geoserver3DFeatures.xml',
-        function (xml) {
-          try {
-            const config = {
-              'featureNS': 'http://www.opengeospatial.net/cite',
-              'featureType': 'geoserver_layer',
-            };
-            features = new GML(config).readFeatures(xml);
-          } catch (e) {
-            done(e);
-          }
-          done();
-        },
-      );
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText(
+            'spec/ol/format/gml/geoserver3DFeatures.xml',
+            function (xml) {
+              try {
+                const config = {
+                  'featureNS': 'http://www.opengeospatial.net/cite',
+                  'featureType': 'geoserver_layer',
+                };
+                features = new GML(config).readFeatures(xml);
+              } catch (e) {
+                reject(e);
+                return;
+              }
+              resolve();
+            },
+          );
+        }),
+    );
 
     it('creates 3 features', function () {
       assert.lengthOf(features, 3);
@@ -1829,17 +1901,21 @@ describe('ol.format.GML3', function () {
 
   describe('when parsing complex', function () {
     let features, gmlFormat;
-    before(function (done) {
-      afterLoadText('spec/ol/format/gml/gml-complex.xml', function (xml) {
-        try {
-          gmlFormat = new GML();
-          features = gmlFormat.readFeatures(xml);
-        } catch (e) {
-          done(e);
-        }
-        done();
-      });
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText('spec/ol/format/gml/gml-complex.xml', function (xml) {
+            try {
+              gmlFormat = new GML();
+              features = gmlFormat.readFeatures(xml);
+            } catch (e) {
+              reject(e);
+              return;
+            }
+            resolve();
+          });
+        }),
+    );
 
     it('creates 3 features', function () {
       assert.lengthOf(features, 3);
@@ -2954,35 +3030,39 @@ describe('ol.format.GML32', function () {
 
   describe('when parsing CDATA attribute', function () {
     let features;
-    before(function (done) {
-      try {
-        const text =
-          '<gml:featureMembers xmlns:gml="http://www.opengis.net/gml/3.2">' +
-          '  <topp:gnis_pop gml:id="gnis_pop.148604" xmlns:topp="' +
-          'http://www.openplans.org/topp">' +
-          '    <gml:name>Aflu</gml:name>' +
-          '    <topp:the_geom>' +
-          '      <gml:Point srsName="urn:x-ogc:def:crs:EPSG:4326">' +
-          '        <gml:pos>34.12 2.09</gml:pos>' +
-          '      </gml:Point>' +
-          '    </topp:the_geom>' +
-          '    <topp:population>84683</topp:population>' +
-          '    <topp:country>Algeria</topp:country>' +
-          '    <topp:type>place</topp:type>' +
-          '    <topp:name>Aflu</topp:name>' +
-          '    <topp:cdata><![CDATA[<a>b</a>]]></topp:cdata>' +
-          '  </topp:gnis_pop>' +
-          '</gml:featureMembers>';
-        const config = {
-          'featureNS': 'http://www.openplans.org/topp',
-          'featureType': 'gnis_pop',
-        };
-        features = new GML32(config).readFeatures(text);
-      } catch (e) {
-        done(e);
-      }
-      done();
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          try {
+            const text =
+              '<gml:featureMembers xmlns:gml="http://www.opengis.net/gml/3.2">' +
+              '  <topp:gnis_pop gml:id="gnis_pop.148604" xmlns:topp="' +
+              'http://www.openplans.org/topp">' +
+              '    <gml:name>Aflu</gml:name>' +
+              '    <topp:the_geom>' +
+              '      <gml:Point srsName="urn:x-ogc:def:crs:EPSG:4326">' +
+              '        <gml:pos>34.12 2.09</gml:pos>' +
+              '      </gml:Point>' +
+              '    </topp:the_geom>' +
+              '    <topp:population>84683</topp:population>' +
+              '    <topp:country>Algeria</topp:country>' +
+              '    <topp:type>place</topp:type>' +
+              '    <topp:name>Aflu</topp:name>' +
+              '    <topp:cdata><![CDATA[<a>b</a>]]></topp:cdata>' +
+              '  </topp:gnis_pop>' +
+              '</gml:featureMembers>';
+            const config = {
+              'featureNS': 'http://www.openplans.org/topp',
+              'featureType': 'gnis_pop',
+            };
+            features = new GML32(config).readFeatures(text);
+          } catch (e) {
+            reject(e);
+            return;
+          }
+          resolve();
+        }),
+    );
 
     it('creates 1 feature', function () {
       assert.lengthOf(features, 1);
@@ -2996,17 +3076,21 @@ describe('ol.format.GML32', function () {
   describe('when parsing multiple complex attributes', function () {
     let features;
     let gmlFormat;
-    before(function (done) {
-      afterLoadText('spec/ol/format/gml/gml32-complex.xml', function (xml) {
-        try {
-          gmlFormat = new GML32();
-          features = gmlFormat.readFeatures(xml);
-        } catch (e) {
-          done(e);
-        }
-        done();
-      });
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText('spec/ol/format/gml/gml32-complex.xml', function (xml) {
+            try {
+              gmlFormat = new GML32();
+              features = gmlFormat.readFeatures(xml);
+            } catch (e) {
+              reject(e);
+              return;
+            }
+            resolve();
+          });
+        }),
+    );
 
     it('creates 2 features', function () {
       assert.lengthOf(features, 2);
