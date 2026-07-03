@@ -40,6 +40,7 @@ module.exports = async function (karma) {
     // Specs ported to Vitest run there instead; see test/browser/vitest.config.mjs.
     exclude: [
       'spec/ol/DataTile.test.js',
+      'spec/ol/Map.test.js',
       'spec/ol/MapBrowserEvent.test.js',
       'spec/ol/Tile.test.js',
       'spec/ol/View.test.js',

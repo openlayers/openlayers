@@ -13,6 +13,7 @@ export default defineConfig({
   test: {
     include: [
       'test/browser/spec/ol/DataTile.test.js',
+      'test/browser/spec/ol/Map.test.js',
       'test/browser/spec/ol/MapBrowserEvent.test.js',
       'test/browser/spec/ol/Tile.test.js',
       'test/browser/spec/ol/View.test.js',
