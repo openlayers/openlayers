@@ -31,12 +31,37 @@ const types = {
   '.pbf': 'application/octet-stream',
 };
 
-function send(res, file) {
+function send(req, res, file) {
   res.setHeader(
     'Content-Type',
     types[path.extname(file)] || 'application/octet-stream',
   );
   res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Accept-Ranges', 'bytes');
+
+  const size = fs.statSync(file).size;
+  const range = req.headers.range;
+  if (range) {
+    const [x, y] = range.replace('bytes=', '').split('-');
+    const start = parseInt(x, 10) || 0;
+    let end = parseInt(y, 10);
+    if (isNaN(end) || end >= size) {
+      end = size - 1;
+    }
+    if (start >= size) {
+      res.statusCode = 416;
+      res.setHeader('Content-Range', `bytes */${size}`);
+      res.end();
+      return;
+    }
+    res.statusCode = 206;
+    res.setHeader('Content-Range', `bytes ${start}-${end}/${size}`);
+    res.setHeader('Content-Length', end - start + 1);
+    fs.createReadStream(file, {start, end}).pipe(res);
+    return;
+  }
+
+  res.setHeader('Content-Length', size);
   fs.createReadStream(file).pipe(res);
 }
 
@@ -50,7 +75,7 @@ export default function olFixtures() {
         const url = decodeURIComponent((req.url || '').split('?')[0]);
         for (const prefix in proxies) {
           if (url === prefix || url.startsWith(prefix + '/')) {
-            return send(res, proxies[prefix]);
+            return send(req, res, proxies[prefix]);
           }
         }
         // Only known data types, so test/source modules (.js) stay with Vite.
@@ -58,7 +83,7 @@ export default function olFixtures() {
         if (at !== -1 && types[path.extname(url)]) {
           const file = path.join(dir, url.slice(at));
           if (fs.existsSync(file) && fs.statSync(file).isFile()) {
-            return send(res, file);
+            return send(req, res, file);
           }
         }
         next();
