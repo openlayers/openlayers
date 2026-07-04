@@ -29,25 +29,26 @@ describe('ol/interaction/Link', () => {
   });
 
   describe('constructor', () => {
-    it('addds view state to the url', (done) => {
-      map.addInteraction(new Link());
+    it('addds view state to the url', () =>
+      new Promise((resolve) => {
+        map.addInteraction(new Link());
 
-      map.once('moveend', () => {
-        const url = new URL(window.location.href);
-        const params = url.searchParams;
-        assert.strictEqual(params.get('z'), '2');
-        assert.strictEqual(params.get('x'), '3');
-        assert.strictEqual(params.get('y'), '4');
-        assert.strictEqual(params.get('r'), '0.5');
-        assert.strictEqual(params.get('l'), '101');
-        done();
-      });
+        map.once('moveend', () => {
+          const url = new URL(window.location.href);
+          const params = url.searchParams;
+          assert.strictEqual(params.get('z'), '2');
+          assert.strictEqual(params.get('x'), '3');
+          assert.strictEqual(params.get('y'), '4');
+          assert.strictEqual(params.get('r'), '0.5');
+          assert.strictEqual(params.get('l'), '101');
+          resolve();
+        });
 
-      const view = map.getView();
-      view.setZoom(2);
-      view.setCenter([3, 4]);
-      view.setRotation(0.5);
-    });
+        const view = map.getView();
+        view.setZoom(2);
+        view.setCenter([3, 4]);
+        view.setRotation(0.5);
+      }));
 
     it('works with a view that is not fully defined', () => {
       map.setView(new View({}));
@@ -56,45 +57,47 @@ describe('ol/interaction/Link', () => {
       });
     });
 
-    it('accepts a prefix', (done) => {
-      map.addInteraction(new Link({prefix: 'ol:'}));
+    it('accepts a prefix', () =>
+      new Promise((resolve) => {
+        map.addInteraction(new Link({prefix: 'ol:'}));
 
-      map.once('moveend', () => {
-        const url = new URL(window.location.href);
-        const params = url.searchParams;
-        assert.strictEqual(params.get('ol:z'), '2');
-        assert.strictEqual(params.get('ol:x'), '3');
-        assert.strictEqual(params.get('ol:y'), '4');
-        assert.strictEqual(params.get('ol:r'), '0.5');
-        assert.strictEqual(params.get('ol:l'), '101');
-        done();
-      });
+        map.once('moveend', () => {
+          const url = new URL(window.location.href);
+          const params = url.searchParams;
+          assert.strictEqual(params.get('ol:z'), '2');
+          assert.strictEqual(params.get('ol:x'), '3');
+          assert.strictEqual(params.get('ol:y'), '4');
+          assert.strictEqual(params.get('ol:r'), '0.5');
+          assert.strictEqual(params.get('ol:l'), '101');
+          resolve();
+        });
 
-      const view = map.getView();
-      view.setZoom(2);
-      view.setCenter([3, 4]);
-      view.setRotation(0.5);
-    });
+        const view = map.getView();
+        view.setZoom(2);
+        view.setCenter([3, 4]);
+        view.setRotation(0.5);
+      }));
 
-    it('accepts an array of properties to track', (done) => {
-      map.addInteraction(new Link({params: ['z', 'r']}));
+    it('accepts an array of properties to track', () =>
+      new Promise((resolve) => {
+        map.addInteraction(new Link({params: ['z', 'r']}));
 
-      map.once('moveend', () => {
-        const url = new URL(window.location.href);
-        const params = url.searchParams;
-        assert.strictEqual(params.get('z'), '2');
-        assert.strictEqual(params.get('x'), null);
-        assert.strictEqual(params.get('y'), null);
-        assert.strictEqual(params.get('r'), '0.5');
-        assert.strictEqual(params.get('l'), null);
-        done();
-      });
+        map.once('moveend', () => {
+          const url = new URL(window.location.href);
+          const params = url.searchParams;
+          assert.strictEqual(params.get('z'), '2');
+          assert.strictEqual(params.get('x'), null);
+          assert.strictEqual(params.get('y'), null);
+          assert.strictEqual(params.get('r'), '0.5');
+          assert.strictEqual(params.get('l'), null);
+          resolve();
+        });
 
-      const view = map.getView();
-      view.setZoom(2);
-      view.setCenter([3, 4]);
-      view.setRotation(0.5);
-    });
+        const view = map.getView();
+        view.setZoom(2);
+        view.setCenter([3, 4]);
+        view.setRotation(0.5);
+      }));
   });
 
   describe('track()', (done) => {

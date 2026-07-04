@@ -85,17 +85,18 @@ describe('ol/source/Google', () => {
       });
     });
 
-    it('sets error if key is not valid', (done) => {
-      source = new Google({key: 'invalid'});
-      source.once('change', () => {
-        assert.strictEqual(source.getState(), 'error');
-        assert.strictEqual(
-          source.getError().message,
-          'API key not valid. Please pass a valid API key.',
-        );
-        done();
-      });
-    });
+    it('sets error if key is not valid', () =>
+      new Promise((done) => {
+        source = new Google({key: 'invalid'});
+        source.once('change', () => {
+          assert.strictEqual(source.getState(), 'error');
+          assert.strictEqual(
+            source.getError().message,
+            'API key not valid. Please pass a valid API key.',
+          );
+          done();
+        });
+      }));
   });
 
   describe('tileUrlFunction()', (done) => {

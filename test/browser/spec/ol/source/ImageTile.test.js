@@ -32,140 +32,145 @@ function getAssert(reject) {
 
 describe('ol/source/ImageTile', () => {
   describe('url option', () => {
-    it('accepts a single url template', (done) => {
-      const assert = getAssert(done);
-      const template = `${emptyUrl}#/{z}/{x}/{y}`;
-      const source = new ImageTile({url: template});
+    it('accepts a single url template', () =>
+      new Promise((resolve, reject) => {
+        const assert = getAssert(reject);
+        const template = `${emptyUrl}#/{z}/{x}/{y}`;
+        const source = new ImageTile({url: template});
 
-      const tile = source.getTile(3, 2, 1);
-      source.on('tileloadend', () => {
-        const data = tile.getData();
-        assert(data instanceof Image, 'expected an image');
-        const url = `${emptyUrl}#/3/2/1`;
-        assert(data.src === url, `expected ${data.src} to be ${url}`);
-        done();
-      });
-
-      tile.load();
-    });
-
-    it('accepts an array of url templates', (done) => {
-      const assert = getAssert(done);
-      const templates = [
-        `${emptyUrl}#a/{z}/{x}/{y}`,
-        `${emptyUrl}#b/{z}/{x}/{y}`,
-        `${emptyUrl}#c/{z}/{x}/{y}`,
-        `${emptyUrl}#d/{z}/{x}/{y}`,
-      ];
-
-      const source = new ImageTile({url: templates});
-
-      const tiles = [
-        source.getTile(4, 1, 1),
-        source.getTile(4, 1, 2),
-        source.getTile(4, 2, 1),
-        source.getTile(4, 2, 2),
-      ];
-
-      let loaded = 0;
-
-      source.on('tileloadend', () => {
-        loaded += 1;
-        if (loaded < tiles.length) {
-          return;
-        }
-        for (const tile of tiles) {
+        const tile = source.getTile(3, 2, 1);
+        source.on('tileloadend', () => {
           const data = tile.getData();
-          const [z, x, y] = tile.tileCoord;
-          const template = pickUrl(templates, z, x, y);
-          const url = renderXYZTemplate(template, z, x, y);
           assert(data instanceof Image, 'expected an image');
-          assert(
-            data.src === renderXYZTemplate(template, z, x, y),
-            `expected ${data.src} to be ${url}`,
-          );
-        }
-        done();
-      });
+          const url = `${emptyUrl}#/3/2/1`;
+          assert(data.src === url, `expected ${data.src} to be ${url}`);
+          resolve();
+        });
 
-      for (const tile of tiles) {
         tile.load();
-      }
-    });
+      }));
 
-    it('accepts a function that returns a url', (done) => {
-      const assert = getAssert(done);
-      const source = new ImageTile({
-        url: (z, x, y) => `${emptyUrl}#/${z}/${x}/${y}`,
-      });
+    it('accepts an array of url templates', () =>
+      new Promise((resolve, reject) => {
+        const assert = getAssert(reject);
+        const templates = [
+          `${emptyUrl}#a/{z}/{x}/{y}`,
+          `${emptyUrl}#b/{z}/{x}/{y}`,
+          `${emptyUrl}#c/{z}/{x}/{y}`,
+          `${emptyUrl}#d/{z}/{x}/{y}`,
+        ];
 
-      const tile = source.getTile(10, 9, 8);
-      source.on('tileloadend', () => {
-        const data = tile.getData();
-        assert(data instanceof Image, 'expected an image');
-        const url = `${emptyUrl}#/10/9/8`;
-        assert(data.src === url, `expected ${data.src} to be ${url}`);
-        done();
-      });
+        const source = new ImageTile({url: templates});
 
-      tile.load();
-    });
+        const tiles = [
+          source.getTile(4, 1, 1),
+          source.getTile(4, 1, 2),
+          source.getTile(4, 2, 1),
+          source.getTile(4, 2, 2),
+        ];
+
+        let loaded = 0;
+
+        source.on('tileloadend', () => {
+          loaded += 1;
+          if (loaded < tiles.length) {
+            return;
+          }
+          for (const tile of tiles) {
+            const data = tile.getData();
+            const [z, x, y] = tile.tileCoord;
+            const template = pickUrl(templates, z, x, y);
+            const url = renderXYZTemplate(template, z, x, y);
+            assert(data instanceof Image, 'expected an image');
+            assert(
+              data.src === renderXYZTemplate(template, z, x, y),
+              `expected ${data.src} to be ${url}`,
+            );
+          }
+          resolve();
+        });
+
+        for (const tile of tiles) {
+          tile.load();
+        }
+      }));
+
+    it('accepts a function that returns a url', () =>
+      new Promise((resolve, reject) => {
+        const assert = getAssert(reject);
+        const source = new ImageTile({
+          url: (z, x, y) => `${emptyUrl}#/${z}/${x}/${y}`,
+        });
+
+        const tile = source.getTile(10, 9, 8);
+        source.on('tileloadend', () => {
+          const data = tile.getData();
+          assert(data instanceof Image, 'expected an image');
+          const url = `${emptyUrl}#/10/9/8`;
+          assert(data.src === url, `expected ${data.src} to be ${url}`);
+          resolve();
+        });
+
+        tile.load();
+      }));
   });
 
   describe('crossOrigin option', () => {
-    it('gets passed to the loader', (done) => {
-      const assert = getAssert(done);
+    it('gets passed to the loader', () =>
+      new Promise((resolve, reject) => {
+        const assert = getAssert(reject);
 
-      const crossOriginValue = 'foo';
-      const referrerPolicyValue = 'bar';
+        const crossOriginValue = 'foo';
+        const referrerPolicyValue = 'bar';
 
-      let gotCrossOrigin;
-      let gotReferrerPolicy;
-      const source = new ImageTile({
-        crossOrigin: crossOriginValue,
-        referrerPolicy: referrerPolicyValue,
-        loader: (x, y, z, {crossOrigin, referrerPolicy}) => {
-          gotCrossOrigin = crossOrigin;
-          gotReferrerPolicy = referrerPolicy;
-          return loadImage(emptyUrl);
-        },
-      });
+        let gotCrossOrigin;
+        let gotReferrerPolicy;
+        const source = new ImageTile({
+          crossOrigin: crossOriginValue,
+          referrerPolicy: referrerPolicyValue,
+          loader: (x, y, z, {crossOrigin, referrerPolicy}) => {
+            gotCrossOrigin = crossOrigin;
+            gotReferrerPolicy = referrerPolicy;
+            return loadImage(emptyUrl);
+          },
+        });
 
-      const tile = source.getTile(3, 2, 1);
-      source.on('tileloadend', () => {
-        assert(
-          gotCrossOrigin === crossOriginValue,
-          `expected ${crossOriginValue}, got ${gotCrossOrigin}`,
-        );
-        assert(
-          gotReferrerPolicy === referrerPolicyValue,
-          `expected ${referrerPolicyValue}, got ${gotReferrerPolicy}`,
-        );
-        done();
-      });
+        const tile = source.getTile(3, 2, 1);
+        source.on('tileloadend', () => {
+          assert(
+            gotCrossOrigin === crossOriginValue,
+            `expected ${crossOriginValue}, got ${gotCrossOrigin}`,
+          );
+          assert(
+            gotReferrerPolicy === referrerPolicyValue,
+            `expected ${referrerPolicyValue}, got ${gotReferrerPolicy}`,
+          );
+          resolve();
+        });
 
-      tile.load();
-    });
+        tile.load();
+      }));
 
-    it('defaults to anonymous', (done) => {
-      const assert = getAssert(done);
+    it('defaults to anonymous', () =>
+      new Promise((resolve, reject) => {
+        const assert = getAssert(reject);
 
-      let got;
-      const source = new ImageTile({
-        loader: (x, y, z, {crossOrigin}) => {
-          got = crossOrigin;
-          return loadImage(emptyUrl);
-        },
-      });
+        let got;
+        const source = new ImageTile({
+          loader: (x, y, z, {crossOrigin}) => {
+            got = crossOrigin;
+            return loadImage(emptyUrl);
+          },
+        });
 
-      const tile = source.getTile(3, 2, 1);
-      source.on('tileloadend', () => {
-        assert(got === 'anonymous', `expected anonymous, got ${got}`);
-        done();
-      });
+        const tile = source.getTile(3, 2, 1);
+        source.on('tileloadend', () => {
+          assert(got === 'anonymous', `expected anonymous, got ${got}`);
+          resolve();
+        });
 
-      tile.load();
-    });
+        tile.load();
+      }));
   });
 
   describe('#getInterpolate()', () => {
@@ -181,99 +186,102 @@ describe('ol/source/ImageTile', () => {
   });
 
   describe('tile dispose', () => {
-    it('triggers abort event on the signal', (done) => {
-      const assert = getAssert(done);
+    it('triggers abort event on the signal', () =>
+      new Promise((resolve, reject) => {
+        const assert = getAssert(reject);
 
-      const source = new ImageTile({
-        loader(z, x, y, {signal}) {
-          signal.addEventListener('abort', () => {
-            const reason = signal.reason;
-            assert(
-              done,
-              reason instanceof Error,
-              'expected reason to be an error',
-            );
-            assert(
-              done,
-              reason.message === 'disposed',
-              `expected ${reason.message} to be 'disposed'`,
-            );
-            done();
-          });
+        const source = new ImageTile({
+          loader(z, x, y, {signal}) {
+            signal.addEventListener('abort', () => {
+              const reason = signal.reason;
+              assert(
+                reject,
+                reason instanceof Error,
+                'expected reason to be an error',
+              );
+              assert(
+                reject,
+                reason.message === 'disposed',
+                `expected ${reason.message} to be 'disposed'`,
+              );
+              resolve();
+            });
 
-          return new Promise((_, reject) => {
-            setTimeout(() => {
-              reject(new Error('abort was not dispatched'));
-            }, 5000);
-          });
-        },
-      });
+            return new Promise((_, reject) => {
+              setTimeout(() => {
+                reject(new Error('abort was not dispatched'));
+              }, 5000);
+            });
+          },
+        });
 
-      const tile = source.getTile(0, 0, 0);
-      tile.load();
-      setTimeout(() => {
-        tile.dispose();
-      }, 50);
-    });
+        const tile = source.getTile(0, 0, 0);
+        tile.load();
+        setTimeout(() => {
+          tile.dispose();
+        }, 50);
+      }));
   });
 
   describe('tile load events', () => {
-    it('dispatches tileloadstart and tileloadend events', (done) => {
-      const assert = getAssert(done);
+    it('dispatches tileloadstart and tileloadend events', () =>
+      new Promise((resolve, reject) => {
+        const assert = getAssert(reject);
 
-      const source = new ImageTile({url: emptyUrl});
+        const source = new ImageTile({url: emptyUrl});
 
-      let startCalled = false;
-      source.on('tileloadstart', () => {
-        assert(done, !startCalled, 'tileloadstart fired twice');
-        startCalled = true;
-      });
+        let startCalled = false;
+        source.on('tileloadstart', () => {
+          assert(reject, !startCalled, 'tileloadstart fired twice');
+          startCalled = true;
+        });
 
-      source.on('tileloadend', () => {
-        assert(done, startCalled, 'expected tileloadstart to be fired');
-        done();
-      });
+        source.on('tileloadend', () => {
+          assert(reject, startCalled, 'expected tileloadstart to be fired');
+          resolve();
+        });
 
-      const tile = source.getTile(0, 0, 0);
-      tile.load();
-    });
+        const tile = source.getTile(0, 0, 0);
+        tile.load();
+      }));
 
-    it('works for loading-error-loading-loaded sequences', (done) => {
-      const assert = getAssert(done);
+    it('works for loading-error-loading-loaded sequences', () =>
+      new Promise((resolve, reject) => {
+        const assert = getAssert(reject);
 
-      const source = new ImageTile({
-        loader() {
-          throw new Error('tile load failed');
-        },
-      });
+        const source = new ImageTile({
+          loader() {
+            throw new Error('tile load failed');
+          },
+        });
 
-      let startCalls = 0;
-      source.on('tileloadstart', () => {
-        startCalls += 1;
-      });
+        let startCalls = 0;
+        source.on('tileloadstart', () => {
+          startCalls += 1;
+        });
 
-      let errorCalled = false;
-      source.on('tileloaderror', function (e) {
-        assert(done, !errorCalled, 'tileloaderror fired twice');
-        errorCalled = true;
-        setTimeout(() => {
-          e.tile.setState(TileState.LOADING);
-          e.tile.setState(TileState.LOADED);
-        }, 0);
-      });
+        let errorCalled = false;
+        source.on('tileloaderror', function (e) {
+          assert(reject, !errorCalled, 'tileloaderror fired twice');
+          errorCalled = true;
+          setTimeout(() => {
+            e.tile.setState(TileState.LOADING);
+            e.tile.setState(TileState.LOADED);
+          }, 0);
+        });
 
-      source.on('tileloadend', () => {
-        assert(
-          done,
-          startCalls === 2,
-          `expected 2 tileloadstart events, got ${startCalls}`,
-        );
-        assert(done, errorCalled, 'expected tileloaderror to be fired');
-        done();
-      });
+        source.on('tileloadend', () => {
+          assert(
+            reject,
+            startCalls === 2,
+            `expected 2 tileloadstart events, got ${startCalls}`,
+          );
+          assert(reject, errorCalled, 'expected tileloaderror to be fired');
+          resolve();
+        });
 
-      const tile = source.getTile(0, 0, 0);
-      tile.load();
-    });
+        const tile = source.getTile(0, 0, 0);
+        tile.load();
+      }));
   });
 });
