@@ -186,9 +186,13 @@ describe('ol.render.canvas.BuilderGroup', function () {
 
     it('does not fill when fill pattern is not loaded', function () {
       const patternFill = new Style({
-        fill: new Fill({color: {src: 'not-loaded-pattern.png'}}),
+        fill: new Fill({
+          color: {
+            src: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=',
+          },
+        }),
       });
-      renderFeature(builder, feature1, patternFill, 1);
+      renderFeature(builder, feature1, patternFill, 1, function () {});
       execute(builder);
       assert.strictEqual(fillCount, 0);
     });
