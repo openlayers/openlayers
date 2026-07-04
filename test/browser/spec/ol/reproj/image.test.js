@@ -43,70 +43,74 @@ describe('ol.reproj.Image', function () {
     );
   }
 
-  it('changes state as expected', function (done) {
-    const image = createImage(1);
-    assert.strictEqual(image.getState(), 0);
-    listen(image, 'change', function () {
-      if (image.getState() == 2) {
-        // LOADED
-        done();
-      }
-    });
-    image.load();
-  });
-
-  it('returns correct canvas size', function (done) {
-    const image = createImage(1);
-    listen(image, 'change', function () {
-      if (image.getState() == 2) {
-        // LOADED
-        const canvas = image.getImage();
-        assert.strictEqual(canvas.width, 36);
-        assert.strictEqual(canvas.height, 17);
-        done();
-      }
-    });
-    image.load();
-  });
-
-  it('respects pixelRatio', function (done) {
-    const image = createImage(2);
-    listen(image, 'change', function () {
-      if (image.getState() == 2) {
-        // LOADED
-        const canvas = image.getImage();
-        assert.strictEqual(canvas.width, 72);
-        assert.strictEqual(canvas.height, 34);
-        done();
-      }
-    });
-    image.load();
-  });
-
-  it('has uniform color', function (done) {
-    const image = createTranslucentImage(1);
-    listen(image, 'change', function () {
-      if (image.getState() == 2) {
-        // LOADED
-        const canvas = image.getImage();
-        assert.strictEqual(canvas.width, 36);
-        assert.strictEqual(canvas.height, 17);
-        const pixels = canvas
-          .getContext('2d')
-          .getImageData(0, 0, canvas.width, canvas.height).data;
-
-        for (let i = 0; i < canvas.width * canvas.height * 4; i += 4) {
-          assert.isBelow(
-            Math.abs(pixels[i + 0] - pixels[0]) +
-              Math.abs(pixels[i + 1] - pixels[1]) +
-              Math.abs(pixels[i + 2] - pixels[2]) +
-              Math.abs(pixels[i + 3] - pixels[3]),
-            5,
-          );
+  it('changes state as expected', () =>
+    new Promise((resolve) => {
+      const image = createImage(1);
+      assert.strictEqual(image.getState(), 0);
+      listen(image, 'change', function () {
+        if (image.getState() == 2) {
+          // LOADED
+          resolve();
         }
-        done();
-      }
-    });
-    image.load();
-  });
+      });
+      image.load();
+    }));
+
+  it('returns correct canvas size', () =>
+    new Promise((resolve) => {
+      const image = createImage(1);
+      listen(image, 'change', function () {
+        if (image.getState() == 2) {
+          // LOADED
+          const canvas = image.getImage();
+          assert.strictEqual(canvas.width, 36);
+          assert.strictEqual(canvas.height, 17);
+          resolve();
+        }
+      });
+      image.load();
+    }));
+
+  it('respects pixelRatio', () =>
+    new Promise((resolve) => {
+      const image = createImage(2);
+      listen(image, 'change', function () {
+        if (image.getState() == 2) {
+          // LOADED
+          const canvas = image.getImage();
+          assert.strictEqual(canvas.width, 72);
+          assert.strictEqual(canvas.height, 34);
+          resolve();
+        }
+      });
+      image.load();
+    }));
+
+  it('has uniform color', () =>
+    new Promise((resolve) => {
+      const image = createTranslucentImage(1);
+      listen(image, 'change', function () {
+        if (image.getState() == 2) {
+          // LOADED
+          const canvas = image.getImage();
+          assert.strictEqual(canvas.width, 36);
+          assert.strictEqual(canvas.height, 17);
+          const pixels = canvas
+            .getContext('2d')
+            .getImageData(0, 0, canvas.width, canvas.height).data;
+
+          for (let i = 0; i < canvas.width * canvas.height * 4; i += 4) {
+            assert.isBelow(
+              Math.abs(pixels[i + 0] - pixels[0]) +
+                Math.abs(pixels[i + 1] - pixels[1]) +
+                Math.abs(pixels[i + 2] - pixels[2]) +
+                Math.abs(pixels[i + 3] - pixels[3]),
+              5,
+            );
+          }
+          resolve();
+        }
+      });
+      image.load();
+    }));
 });
