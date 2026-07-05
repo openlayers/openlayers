@@ -5,7 +5,7 @@ import {fileURLToPath} from 'url';
 const dir = path.dirname(fileURLToPath(import.meta.url));
 const blankPng = path.join(dir, 'spec/ol/data/blank.png');
 
-// Mirrors the karma `proxies`: fake service endpoints resolve to a blank image.
+// Fake service endpoints resolve to a blank image.
 const proxies = {
   '/wms': blankPng,
   '/ogcapi/map': blankPng,
@@ -66,7 +66,7 @@ function send(req, res, file) {
 }
 
 // Serves the spec fixtures loaded over XHR (e.g. afterLoadText('spec/ol/...'))
-// and the fake service endpoints, replacing the karma fixture serving.
+// and the fake service endpoints.
 export default function olFixtures() {
   return {
     name: 'ol-fixtures',
