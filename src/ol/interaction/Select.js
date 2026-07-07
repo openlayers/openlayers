@@ -28,7 +28,7 @@ const SelectEventType = {
 /**
  * A function that takes a {@link module:ol/Feature~Feature} and returns `true` if the feature may be
  * selected or `false` otherwise.
- * @typedef {function(import("../Feature.js").default, import("../layer/Layer.js").default<import("../source/Source.js").default>):boolean} FilterFunction
+ * @typedef {function(import("../Feature.js").default, import("../layer/Layer.js").default<import("../source/Source.js").default> | undefined):boolean} FilterFunction
  */
 
 /**
