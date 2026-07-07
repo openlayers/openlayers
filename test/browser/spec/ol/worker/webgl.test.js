@@ -218,7 +218,7 @@ describe('ol/worker/webgl', () => {
         const instanceAttrs = Array.from(
           new Float32Array(responseData.instanceAttributesBuffer),
         );
-        assert.lengthOf(indices, 27);
+        assert.lengthOf(indices, 24);
         assert.lengthOf(vertices, 33);
         assert.deepEqual(instanceAttrs, []);
       });
