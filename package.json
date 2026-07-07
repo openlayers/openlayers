@@ -136,6 +136,7 @@
     "shx": "^0.4.0",
     "sinon": "^22.0.0",
     "source-map-loader": "^5.0.0",
+    "terser-webpack-plugin": "^5.6.1",
     "threads": "^1.6.5",
     "topojson-client": "^3.1.0",
     "typescript": "6.0.3",
