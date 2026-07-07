@@ -192,12 +192,18 @@ async function coordinateLabels(dimName, size) {
   const isTime =
     meta.attributes?.standard_name === 'time' || /\bsince\b/i.test(units || '');
   const labels = [];
+  // The live array may disagree with the consolidated metadata read at page
+  // load (the store may have been rewritten since), so `data[i]` can be
+  // missing and a decoded date can be invalid; fall back to a plain value or
+  // index label instead of letting `toISOString()` throw.
   for (let i = 0; i < size; ++i) {
-    const ms = isTime ? cfTimeToMs(data[i], units) : null;
+    const value = data[i];
+    const ms = isTime ? cfTimeToMs(value, units) : null;
+    const date = ms === null ? null : new Date(ms);
     labels.push(
-      ms === null
-        ? String(data[i])
-        : new Date(ms).toISOString().slice(0, 16).replace('T', ' '),
+      date && !isNaN(date.getTime())
+        ? date.toISOString().slice(0, 16).replace('T', ' ')
+        : String(value ?? i),
     );
   }
   return labels;
@@ -206,11 +212,15 @@ async function coordinateLabels(dimName, size) {
 /**
  * Build one dropdown per non-spatial dimension reported by the source, labeling
  * each option with the real coordinate value (e.g. a date) when available.
+ * The container is only touched after all labels are loaded and only when this
+ * render is still the current one, so a superseded render cannot append stale
+ * selectors after a newer render cleared the container.
  * @param {Array<{name: string, size: number}>} dimensions The selectable dimensions.
+ * @param {number} token The render token this rebuild belongs to.
  * @return {Promise<void>} Resolves when the selectors are built.
  */
-async function buildDimensionSelectors(dimensions) {
-  dimsContainer.innerHTML = '';
+async function buildDimensionSelectors(dimensions, token) {
+  const columns = [];
   for (const {name, size} of dimensions) {
     const labels = await coordinateLabels(name, size);
     const group = document.createElement('div');
@@ -233,8 +243,12 @@ async function buildDimensionSelectors(dimensions) {
     const col = document.createElement('div');
     col.className = 'col-auto';
     col.appendChild(group);
-    dimsContainer.appendChild(col);
+    columns.push(col);
   }
+  if (token !== renderToken) {
+    return;
+  }
+  dimsContainer.replaceChildren(...columns);
 }
 
 /**
@@ -311,7 +325,7 @@ async function render(rebuildDimensions) {
       return; // a newer render started; drop this stale one
     }
     if (rebuildDimensions) {
-      await buildDimensionSelectors(source.getDimensions());
+      await buildDimensionSelectors(source.getDimensions(), token);
       if (token !== renderToken) {
         return;
       }
