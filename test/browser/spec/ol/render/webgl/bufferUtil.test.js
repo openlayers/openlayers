@@ -391,12 +391,12 @@ describe('webgl buffer generation utils', function () {
             3,
           ],
         );
-        assert.lengthOf(indexArray, 27);
+        assert.lengthOf(indexArray, 24);
         assert.deepEqual(
           indexArray,
           [
-            1, 2, 3, 3, 4, 0, 3, 0, 10, 7, 10, 0, 3, 10, 9, 7, 0, 1, 3, 9, 8, 8,
-            7, 1, 1, 3, 8,
+            4, 0, 9, 4, 9, 8, 7, 10, 0, 7, 0, 1, 7, 1, 2, 2, 3, 4, 2, 4, 8, 2,
+            8, 7,
           ],
         );
       });
@@ -428,12 +428,12 @@ describe('webgl buffer generation utils', function () {
             0, 1234, 3, 3, 1234, 5, 1, 1234, 7, 3, 1234, 5, 5, 1234, 3, 3, 1234,
           ],
         );
-        assert.lengthOf(indexArray, 27);
+        assert.lengthOf(indexArray, 24);
         assert.deepEqual(
           indexArray,
           [
-            1, 2, 3, 3, 4, 0, 3, 0, 10, 7, 10, 0, 3, 10, 9, 7, 0, 1, 3, 9, 8, 8,
-            7, 1, 1, 3, 8,
+            4, 0, 9, 4, 9, 8, 7, 10, 0, 7, 0, 1, 7, 1, 2, 2, 3, 4, 2, 4, 8, 2,
+            8, 7,
           ],
         );
       });
