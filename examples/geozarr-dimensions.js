@@ -45,6 +45,7 @@ const COMPOSITE_RESCALE = {
 };
 
 let map;
+let dataLayer; // the GeoZarr composite layer; its source is swapped on a time change
 let rootUrl = ''; // the entered store url (root); the source opens this in multi-group mode
 let rootMetadata = {}; // consolidated metadata of the store root (covers every group)
 let rootAttributes = {}; // attributes of the store root
@@ -331,23 +332,30 @@ async function render(rebuildDimensions) {
       }
     }
     hideError();
-    if (map) {
-      map.setTarget(null);
+    // A time-slice change stays on the same group/cube (same extent and
+    // projection), so swap the layer's source in place and keep the map — the
+    // user's pan/zoom is preserved. Only (re)build the map, fitting the view to
+    // the data extent, on the first load or a group/cube change, where the
+    // extent may differ.
+    if (map && dataLayer && !rebuildDimensions) {
+      dataLayer.setSource(source);
+    } else {
+      if (map) {
+        map.setTarget(null);
+      }
+      dataLayer = new TileLayer({style: compositeStyle(), source});
+      map = new Map({
+        layers: [new TileLayer({source: new OSM()}), dataLayer],
+        target: 'map',
+        view: getView(
+          source,
+          withLowerResolutions(1),
+          withHigherResolutions(2),
+          withExtentCenter(),
+          withZoom(2),
+        ),
+      });
     }
-    map = new Map({
-      layers: [
-        new TileLayer({source: new OSM()}),
-        new TileLayer({style: compositeStyle(), source}),
-      ],
-      target: 'map',
-      view: getView(
-        source,
-        withLowerResolutions(1),
-        withHigherResolutions(2),
-        withExtentCenter(),
-        withZoom(2),
-      ),
-    });
   } catch (error) {
     if (token === renderToken) {
       showError(error);
@@ -416,9 +424,10 @@ async function load() {
       option.textContent = path || '(root)';
       groupSelect.appendChild(option);
     }
-    // Only show the group selector when there is a real choice of subgroups.
-    groupCol.style.display =
-      groups.length === 1 && groups[0] === '' ? 'none' : '';
+    // Only show the group selector when there is a real choice of subgroups
+    // (2+ groups). A single group -- whether the bare root or one orbit
+    // direction, e.g. a descending-only S1 cube -- is auto-selected, no dropdown.
+    groupCol.style.display = groups.length < 2 ? 'none' : '';
     await loadGroup();
   } catch (error) {
     showError(error);
