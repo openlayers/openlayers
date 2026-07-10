@@ -6,8 +6,10 @@ import Layer from '../../../../../src/ol/layer/Tile.js';
 
 describe('ol/interaction/Link', () => {
   let map;
+  let originalHref;
 
   beforeEach(function () {
+    originalHref = window.location.href;
     map = new Map({
       target: createMapDiv(100, 100),
       view: new View({
@@ -26,6 +28,7 @@ describe('ol/interaction/Link', () => {
 
   afterEach(function () {
     disposeMap(map);
+    window.history.replaceState(null, '', originalHref);
   });
 
   describe('constructor', () => {
@@ -100,21 +103,20 @@ describe('ol/interaction/Link', () => {
       }));
   });
 
-  describe('track()', (done) => {
-    it('makes it possible to synchronize additional state with the URL', () => {
+  describe('track()', () => {
+    it('returns the initial value and writes updates to the URL', () => {
       const link = new Link();
       map.addInteraction(link);
 
       const testProperty = 'test-property';
       const testValue = 'test-value';
 
-      const initialValue = link.track(testProperty, (newValue) => {
-        assert.strictEqual(newValue, testValue);
-        done();
-      });
-
+      const initialValue = link.track(testProperty, () => {});
       assert.strictEqual(initialValue, null);
+
       link.update(testProperty, testValue);
+      const params = new URL(window.location.href).searchParams;
+      assert.strictEqual(params.get(testProperty), testValue);
     });
   });
 });

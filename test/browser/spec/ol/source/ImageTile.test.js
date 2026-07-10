@@ -194,13 +194,8 @@ describe('ol/source/ImageTile', () => {
           loader(z, x, y, {signal}) {
             signal.addEventListener('abort', () => {
               const reason = signal.reason;
+              assert(reason instanceof Error, 'expected reason to be an error');
               assert(
-                reject,
-                reason instanceof Error,
-                'expected reason to be an error',
-              );
-              assert(
-                reject,
                 reason.message === 'disposed',
                 `expected ${reason.message} to be 'disposed'`,
               );
@@ -232,12 +227,12 @@ describe('ol/source/ImageTile', () => {
 
         let startCalled = false;
         source.on('tileloadstart', () => {
-          assert(reject, !startCalled, 'tileloadstart fired twice');
+          assert(!startCalled, 'tileloadstart fired twice');
           startCalled = true;
         });
 
         source.on('tileloadend', () => {
-          assert(reject, startCalled, 'expected tileloadstart to be fired');
+          assert(startCalled, 'expected tileloadstart to be fired');
           resolve();
         });
 
@@ -262,7 +257,7 @@ describe('ol/source/ImageTile', () => {
 
         let errorCalled = false;
         source.on('tileloaderror', function (e) {
-          assert(reject, !errorCalled, 'tileloaderror fired twice');
+          assert(!errorCalled, 'tileloaderror fired twice');
           errorCalled = true;
           setTimeout(() => {
             e.tile.setState(TileState.LOADING);
@@ -272,11 +267,10 @@ describe('ol/source/ImageTile', () => {
 
         source.on('tileloadend', () => {
           assert(
-            reject,
             startCalls === 2,
             `expected 2 tileloadstart events, got ${startCalls}`,
           );
-          assert(reject, errorCalled, 'expected tileloaderror to be fired');
+          assert(errorCalled, 'expected tileloaderror to be fired');
           resolve();
         });
 

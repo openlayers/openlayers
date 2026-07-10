@@ -71,19 +71,22 @@ describe('ol/source/Google', () => {
     }
   });
 
-  describe('constructor', (done) => {
-    it('creates a new source', () => {
-      source = new Google({key: validKey});
-      assert.instanceOf(source, Google);
+  describe('constructor', () => {
+    it('creates a new source', () =>
+      new Promise((resolve) => {
+        source = new Google({key: validKey});
+        assert.instanceOf(source, Google);
 
-      assert.notOk(source.tileGrid);
+        assert.notOk(source.tileGrid);
 
-      source.once('change', () => {
-        assert.strictEqual(source.getState(), 'ready');
-        assert.isOk(source.tileGrid);
-        done();
-      });
-    });
+        source.on('change', () => {
+          if (source.getState() !== 'ready') {
+            return;
+          }
+          assert.isOk(source.tileGrid);
+          resolve();
+        });
+      }));
 
     it('sets error if key is not valid', () =>
       new Promise((done) => {
@@ -99,22 +102,25 @@ describe('ol/source/Google', () => {
       }));
   });
 
-  describe('tileUrlFunction()', (done) => {
-    it('returns a url that includes the session and api key', () => {
-      source = new Google({key: validKey});
-      assert.instanceOf(source, Google);
+  describe('tileUrlFunction()', () => {
+    it('returns a url that includes the session and api key', () =>
+      new Promise((resolve) => {
+        source = new Google({key: validKey});
+        assert.instanceOf(source, Google);
 
-      source.once('change', () => {
-        assert.strictEqual(source.getState(), 'ready');
+        source.on('change', () => {
+          if (source.getState() !== 'ready') {
+            return;
+          }
 
-        const url = new URL(
-          source.tileUrlFunction([0, 0, 0], 1, source.getProjection()),
-        );
+          const url = new URL(
+            source.tileUrlFunction([0, 0, 0], 1, source.getProjection()),
+          );
 
-        assert.strictEqual(url.searchParams.get('session'), sessionId);
-        assert.strictEqual(url.searchParams.get('key'), validKey);
-        done();
-      });
-    });
+          assert.strictEqual(url.searchParams.get('session'), sessionId);
+          assert.strictEqual(url.searchParams.get('key'), validKey);
+          resolve();
+        });
+      }));
   });
 });
