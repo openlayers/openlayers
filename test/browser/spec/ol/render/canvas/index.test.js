@@ -14,8 +14,11 @@ describe('ol.render.canvas', function () {
 
   describe('ol.render.canvas.registerFont()', function () {
     beforeEach(() => {
-      render.checkedFonts.setProperties({}, true);
       render.measureTextHeight('12px sans-serif');
+    });
+
+    afterEach(() => {
+      font.remove();
     });
 
     const retries = 100;
@@ -75,8 +78,6 @@ describe('ol.render.canvas', function () {
             try {
               assert.strictEqual(e.key, `normal 400 16px "${localFontFamily}"`);
               assert.deepEqual(render.textHeights, {});
-
-              font.remove();
               resolve();
             } catch (err) {
               reject(err);

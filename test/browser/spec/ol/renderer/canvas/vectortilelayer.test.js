@@ -116,6 +116,7 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
 
     afterEach(function () {
       disposeMap(map);
+      font.remove();
     });
 
     it('creates a new instance', function () {
@@ -235,7 +236,6 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
               onPropertyChange,
             );
             try {
-              font.remove();
               assert.strictEqual(layer.getRevision(), revision + 1);
               resolve();
             } catch (e) {
