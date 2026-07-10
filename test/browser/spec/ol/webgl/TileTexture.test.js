@@ -59,18 +59,19 @@ describe('ol/webgl/TileTexture', function () {
     assert.instanceOf(tileTexture.coords, WebGLArrayBuffer);
   });
 
-  it('handles data tiles', function (done) {
-    const dataTile = tileTexture.tile;
-    assert.strictEqual(tileTexture.loaded, false);
-    assert.strictEqual(dataTile.getState(), TileState.IDLE);
-    tileTexture.addEventListener('change', () => {
-      if (dataTile.getState() === TileState.LOADED) {
-        assert.strictEqual(tileTexture.loaded, true);
-        done();
-      }
-    });
-    dataTile.load();
-  });
+  it('handles data tiles', () =>
+    new Promise((resolve) => {
+      const dataTile = tileTexture.tile;
+      assert.strictEqual(tileTexture.loaded, false);
+      assert.strictEqual(dataTile.getState(), TileState.IDLE);
+      tileTexture.addEventListener('change', () => {
+        if (dataTile.getState() === TileState.LOADED) {
+          assert.strictEqual(tileTexture.loaded, true);
+          resolve();
+        }
+      });
+      dataTile.load();
+    }));
 
   it('handles image tiles', function () {
     const imageTile = new ImageTile([0, 0, 0], TileState.LOADED);
@@ -106,21 +107,22 @@ describe('ol/webgl/TileTexture', function () {
     assert.strictEqual(tile.getListeners('change').length, 1);
   });
 
-  it('updates metadata and unregisters change listener when setting a different tile', function (done) {
-    const tile = tileTexture.tile;
-    assert.strictEqual(tile.getListeners('change').length, 2);
-    const differentTile = new DataTile({
-      tileCoord: [1, 0, 1],
-      loader(z, x, y) {
-        return Promise.resolve(new Uint8Array(256 * 256 * 3));
-      },
-    });
-    tileTexture.setTile(differentTile);
-    assert.strictEqual(tile.getListeners('change').length, 1);
-    tileTexture.addEventListener('change', () => {
-      assert.strictEqual(tileTexture.bandCount, 3);
-      done();
-    });
-    differentTile.load();
-  });
+  it('updates metadata and unregisters change listener when setting a different tile', () =>
+    new Promise((resolve) => {
+      const tile = tileTexture.tile;
+      assert.strictEqual(tile.getListeners('change').length, 2);
+      const differentTile = new DataTile({
+        tileCoord: [1, 0, 1],
+        loader(z, x, y) {
+          return Promise.resolve(new Uint8Array(256 * 256 * 3));
+        },
+      });
+      tileTexture.setTile(differentTile);
+      assert.strictEqual(tile.getListeners('change').length, 1);
+      tileTexture.addEventListener('change', () => {
+        assert.strictEqual(tileTexture.bandCount, 3);
+        resolve();
+      });
+      differentTile.load();
+    }));
 });

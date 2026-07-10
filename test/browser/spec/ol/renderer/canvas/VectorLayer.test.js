@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {spy as sinonSpy} from 'sinon';
 import Feature from '../../../../../../src/ol/Feature.js';
 import Map from '../../../../../../src/ol/Map.js';
 import View from '../../../../../../src/ol/View.js';
@@ -45,6 +44,7 @@ describe('ol/renderer/canvas/VectorLayer', function () {
 
     afterEach(function () {
       disposeMap(map);
+      font.remove();
     });
 
     it('creates a new instance', function () {
@@ -80,105 +80,113 @@ describe('ol/renderer/canvas/VectorLayer', function () {
         style: layerStyle,
       });
       map.addLayer(layer);
-      const spy = sinonSpy(layer.getRenderer(), 'renderFeature');
+      const spy = vi.spyOn(layer.getRenderer(), 'renderFeature');
       map.renderSync();
-      assert.deepEqual(spy.getCall(0).args[2], layerStyle);
-      assert.strictEqual(spy.getCall(1).args[2], featureStyle);
+      assert.deepEqual(spy.mock.calls[0][2], layerStyle);
+      assert.strictEqual(spy.mock.calls[1][2], featureStyle);
 
       disposeMap(map);
     });
 
-    it('does not re-render for unavailable fonts', function (done) {
-      const layerStyle = new Style({
-        text: new Text({
-          text: 'layer',
-          font: '12px "Unavailable Font",sans-serif',
-        }),
-      });
+    it('does not re-render for unavailable fonts', () =>
+      new Promise((resolve, reject) => {
+        const layerStyle = new Style({
+          text: new Text({
+            text: 'layer',
+            font: '12px "Unavailable Font",sans-serif',
+          }),
+        });
 
-      const feature = new Feature(new Point([0, 0]));
-      const layer = new VectorLayer({
-        source: new VectorSource({
-          features: [feature],
-        }),
-        style: layerStyle,
-      });
-      map.addLayer(layer);
-      const revision = layer.getRevision();
-      setTimeout(function () {
-        try {
-          assert.strictEqual(layer.getRevision(), revision);
-          done();
-        } catch (e) {
-          done(e);
-        }
-      }, 1000);
-    });
-
-    it('does not re-render for available fonts', function (done) {
-      const layerStyle = new Style({
-        text: new Text({
-          text: 'layer',
-          font: '12px sans-serif',
-        }),
-      });
-
-      const feature = new Feature(new Point([0, 0]));
-      const layer = new VectorLayer({
-        source: new VectorSource({
-          features: [feature],
-        }),
-        style: layerStyle,
-      });
-      map.addLayer(layer);
-      const revision = layer.getRevision();
-      setTimeout(function () {
-        try {
-          assert.strictEqual(layer.getRevision(), revision);
-          done();
-        } catch (e) {
-          done(e);
-        }
-      }, 1000);
-    });
-
-    it('re-renders for fonts that become available', function (done) {
-      font.add();
-      const layerStyle = new Style({
-        text: new Text({
-          text: 'layer',
-          font: `12px "${fontFamily}",sans-serif`,
-        }),
-      });
-
-      const feature = new Feature(new Point([0, 0]));
-      const layer = new VectorLayer({
-        source: new VectorSource({
-          features: [feature],
-        }),
-        style: layerStyle,
-      });
-      map.addLayer(layer);
-      const revision = layer.getRevision();
-      checkedFonts.addEventListener(
-        'propertychange',
-        function onPropertyChange() {
-          checkedFonts.removeEventListener('propertychange', onPropertyChange);
+        const feature = new Feature(new Point([0, 0]));
+        const layer = new VectorLayer({
+          source: new VectorSource({
+            features: [feature],
+          }),
+          style: layerStyle,
+        });
+        map.addLayer(layer);
+        const revision = layer.getRevision();
+        setTimeout(function () {
           try {
-            font.remove();
-            assert.strictEqual(layer.getRevision(), revision + 1);
-            done();
+            assert.strictEqual(layer.getRevision(), revision);
+            resolve();
           } catch (e) {
-            done(e);
+            reject(e);
+            return;
           }
-        },
-      );
-    });
+        }, 1000);
+      }));
+
+    it('does not re-render for available fonts', () =>
+      new Promise((resolve, reject) => {
+        const layerStyle = new Style({
+          text: new Text({
+            text: 'layer',
+            font: '12px sans-serif',
+          }),
+        });
+
+        const feature = new Feature(new Point([0, 0]));
+        const layer = new VectorLayer({
+          source: new VectorSource({
+            features: [feature],
+          }),
+          style: layerStyle,
+        });
+        map.addLayer(layer);
+        const revision = layer.getRevision();
+        setTimeout(function () {
+          try {
+            assert.strictEqual(layer.getRevision(), revision);
+            resolve();
+          } catch (e) {
+            reject(e);
+            return;
+          }
+        }, 1000);
+      }));
+
+    it('re-renders for fonts that become available', () =>
+      new Promise((resolve, reject) => {
+        font.add();
+        const layerStyle = new Style({
+          text: new Text({
+            text: 'layer',
+            font: `12px "${fontFamily}",sans-serif`,
+          }),
+        });
+
+        const feature = new Feature(new Point([0, 0]));
+        const layer = new VectorLayer({
+          source: new VectorSource({
+            features: [feature],
+          }),
+          style: layerStyle,
+        });
+        map.addLayer(layer);
+        const revision = layer.getRevision();
+        checkedFonts.addEventListener(
+          'propertychange',
+          function onPropertyChange() {
+            checkedFonts.removeEventListener(
+              'propertychange',
+              onPropertyChange,
+            );
+            try {
+              assert.strictEqual(layer.getRevision(), revision + 1);
+              resolve();
+            } catch (e) {
+              reject(e);
+              return;
+            }
+          },
+        );
+      }));
   });
 
   describe('numeric labels', function () {
     let map;
-    this.beforeEach(function () {
+    beforeEach(function () {
       map = new Map({
         target: createMapDiv(100, 100),
         view: new View({
@@ -188,7 +196,7 @@ describe('ol/renderer/canvas/VectorLayer', function () {
       });
     });
 
-    this.afterEach(function () {
+    afterEach(function () {
       checkedFonts.getListeners('propertychange').forEach((listener) => {
         checkedFonts.removeEventListener('propertychange', listener);
       });
@@ -238,7 +246,7 @@ describe('ol/renderer/canvas/VectorLayer', function () {
     });
 
     it('calls callback once per feature with a layer as 2nd arg', function () {
-      const spy = sinonSpy();
+      const spy = vi.fn();
       const coordinate = [0, 0];
       const matches = [];
       const frameState = {
@@ -256,14 +264,14 @@ describe('ol/renderer/canvas/VectorLayer', function () {
         spy,
         matches,
       );
-      assert.strictEqual(spy.callCount, 1);
-      assert.strictEqual(spy.getCall(0).args[1], layer);
+      assert.strictEqual(spy.mock.calls.length, 1);
+      assert.strictEqual(spy.mock.calls[0][1], layer);
       assert.isEmpty(matches);
     });
 
     it('works with declutter: true when source has no features', () => {
       layer.setDeclutter(true);
-      const spy = sinonSpy();
+      const spy = vi.fn();
       const coordinate = [0, 0];
       const matches = [];
       const frameState = {
@@ -471,7 +479,7 @@ describe('ol/renderer/canvas/VectorLayer', function () {
     it('dispatches a postrender event when rendering', function () {
       const layer = renderer.getLayer();
       layer.getSource().addFeature(new Feature(new Point([0, 0])));
-      const postrenderSpy = sinonSpy();
+      const postrenderSpy = vi.fn();
       layer.once('postrender', postrenderSpy);
       frameState.layerStatesArray = [layer.getLayerState()];
       frameState.layerIndex = 0;
@@ -481,12 +489,12 @@ describe('ol/renderer/canvas/VectorLayer', function () {
       if (renderer.prepareFrame(frameState)) {
         container = renderer.renderFrame(frameState, null);
       }
-      assert.strictEqual(postrenderSpy.callCount, 1);
+      assert.strictEqual(postrenderSpy.mock.calls.length, 1);
       assert.notEqual(container, null);
     });
     it('renders an empty source if a postrender event listener is added', function () {
       const layer = renderer.getLayer();
-      const postrenderSpy = sinonSpy();
+      const postrenderSpy = vi.fn();
       layer.once('postrender', postrenderSpy);
       frameState.layerStatesArray = [layer.getLayerState()];
       frameState.layerIndex = 0;
@@ -501,65 +509,66 @@ describe('ol/renderer/canvas/VectorLayer', function () {
   });
 
   describe('hit detection', function () {
-    it('invalidates hitdetection image when map is moved horizontally', function (done) {
-      const layer = new VectorLayer({
-        source: new VectorSource({
-          wrapX: true,
-        }),
-      });
-      const renderer = new CanvasVectorLayerRenderer(layer);
-      const projection = getProjection('EPSG:3857');
-      const projExtent = projection.getExtent();
-      const worldWidth = getWidth(projExtent);
-      /** @type {import("../../../../../../src/ol/Map").FrameState} */
-      const frameState = {
-        viewHints: [],
-        pixelRatio: 1,
-        layerStatesArray: [layer.getLayerState()],
-        layerIndex: 0,
-        size: [100, 100],
-        viewState: {
-          projection: projection,
-          resolution: 200,
-          rotation: 0,
-        },
-      };
-
-      function setExtent(extent) {
-        frameState.extent = extent;
-        frameState.viewState.center = getCenter(extent);
-      }
-
-      layer.getSource().addFeature(new Feature(new Point([0, 0])));
-      setExtent([-10000 - worldWidth, -10000, 10000 - worldWidth, 10000]);
-      if (renderer.prepareFrame(frameState)) {
-        renderer.renderFrame(frameState, null);
-        renderer.getFeatures([50, 50]).then((features) => {
-          const imageData = renderer.hitDetectionImageData_;
-          assert.instanceOf(imageData, ImageData);
-          assert.lengthOf(features, 1);
-
-          setExtent([
-            5e8 - worldWidth,
-            -10000,
-            5e8 + 20000 - worldWidth,
-            10000,
-          ]);
-          if (renderer.prepareFrame(frameState)) {
-            renderer.renderFrame(frameState);
-            renderer.getFeatures([50, 50]).then((features) => {
-              assert.instanceOf(renderer.hitDetectionImageData_, ImageData);
-              assert.strictEqual(
-                renderer.hitDetectionImageData_ !== imageData,
-                true,
-              );
-              assert.lengthOf(features, 0);
-              done();
-            });
-          }
+    it('invalidates hitdetection image when map is moved horizontally', () =>
+      new Promise((resolve, reject) => {
+        const layer = new VectorLayer({
+          source: new VectorSource({
+            wrapX: true,
+          }),
         });
-      }
-    });
+        const renderer = new CanvasVectorLayerRenderer(layer);
+        const projection = getProjection('EPSG:3857');
+        const projExtent = projection.getExtent();
+        const worldWidth = getWidth(projExtent);
+        /** @type {import("../../../../../../src/ol/Map").FrameState} */
+        const frameState = {
+          viewHints: [],
+          pixelRatio: 1,
+          layerStatesArray: [layer.getLayerState()],
+          layerIndex: 0,
+          size: [100, 100],
+          viewState: {
+            projection: projection,
+            resolution: 200,
+            rotation: 0,
+          },
+        };
+
+        function setExtent(extent) {
+          frameState.extent = extent;
+          frameState.viewState.center = getCenter(extent);
+        }
+
+        layer.getSource().addFeature(new Feature(new Point([0, 0])));
+        setExtent([-10000 - worldWidth, -10000, 10000 - worldWidth, 10000]);
+        if (renderer.prepareFrame(frameState)) {
+          renderer.renderFrame(frameState, null);
+          renderer.getFeatures([50, 50]).then((features) => {
+            const imageData = renderer.hitDetectionImageData_;
+            assert.instanceOf(imageData, ImageData);
+            assert.lengthOf(features, 1);
+
+            setExtent([
+              5e8 - worldWidth,
+              -10000,
+              5e8 + 20000 - worldWidth,
+              10000,
+            ]);
+            if (renderer.prepareFrame(frameState)) {
+              renderer.renderFrame(frameState);
+              renderer.getFeatures([50, 50]).then((features) => {
+                assert.instanceOf(renderer.hitDetectionImageData_, ImageData);
+                assert.strictEqual(
+                  renderer.hitDetectionImageData_ !== imageData,
+                  true,
+                );
+                assert.lengthOf(features, 0);
+                resolve();
+              });
+            }
+          });
+        }
+      }));
   });
 
   describe('renderFrame', function () {
@@ -573,8 +582,8 @@ describe('ol/renderer/canvas/VectorLayer', function () {
         extent: extent,
       });
       renderer = layer.getRenderer();
-      renderer.renderWorlds = sinonSpy();
-      renderer.clipUnrotated = sinonSpy();
+      renderer.renderWorlds = vi.fn();
+      renderer.clipUnrotated = vi.fn();
       return {
         pixelRatio: 1,
         time: 1000000000000,
@@ -600,54 +609,55 @@ describe('ol/renderer/canvas/VectorLayer', function () {
       if (renderer.prepareFrame(frameState)) {
         renderer.renderFrame(frameState, null);
       }
-      assert.strictEqual(renderer.renderWorlds.callCount, 0);
-      assert.strictEqual(renderer.clipUnrotated.callCount, 0);
+      assert.strictEqual(renderer.renderWorlds.mock.calls.length, 0);
+      assert.strictEqual(renderer.clipUnrotated.mock.calls.length, 0);
     });
     it('renders if layer extent partially intersects view extent', function () {
       const frameState = createLayerFrameState([0, 0, 100, 100]);
       if (renderer.prepareFrame(frameState)) {
         renderer.renderFrame(frameState, null);
       }
-      assert.strictEqual(renderer.renderWorlds.callCount, 1);
-      assert.strictEqual(renderer.clipUnrotated.callCount, 1);
+      assert.strictEqual(renderer.renderWorlds.mock.calls.length, 1);
+      assert.strictEqual(renderer.clipUnrotated.mock.calls.length, 1);
     });
     it('renders withoutt clipping when layer extent covers view', function () {
       const frameState = createLayerFrameState([-200, -200, 200, 200]);
       if (renderer.prepareFrame(frameState)) {
         renderer.renderFrame(frameState, null);
       }
-      assert.strictEqual(renderer.renderWorlds.callCount, 1);
-      assert.strictEqual(renderer.clipUnrotated.callCount, 0);
+      assert.strictEqual(renderer.renderWorlds.mock.calls.length, 1);
+      assert.strictEqual(renderer.clipUnrotated.mock.calls.length, 0);
     });
   });
 
   describe('#renderDeclutter', () => {
-    it('does not throw on decluttered layer with postrender listener entering zoom range without loaded data', (done) => {
-      const vectorLayer = new VectorLayer({
-        background: '#1a2b39',
-        source: new VectorSource({
-          url: 'data:application/json;utf-8,{"type":"FeatureCollection","features":[{"type":"Feature","properties":{},"geometry":{"type":"Point","coordinates":[0,0]}}]}',
-          format: new GeoJSON(),
-        }),
-        minZoom: 3,
-        declutter: true,
-      });
-      const map = new Map({
-        layers: [vectorLayer],
-        target: document.createElement('div'),
-        view: new View({
-          center: [0, 0],
-          zoom: 2,
-        }),
-      });
-      vectorLayer.on('postrender', function postrender() {
-        if (map.getView().getZoom() > vectorLayer.getMinZoom()) {
-          vectorLayer.un('postrender', postrender);
-          done();
-        }
-      });
-      map.setSize([100, 100]);
-      map.getView().animate({zoom: 3.01});
-    });
+    it('does not throw on decluttered layer with postrender listener entering zoom range without loaded data', () =>
+      new Promise((resolve) => {
+        const vectorLayer = new VectorLayer({
+          background: '#1a2b39',
+          source: new VectorSource({
+            url: 'data:application/json;utf-8,{"type":"FeatureCollection","features":[{"type":"Feature","properties":{},"geometry":{"type":"Point","coordinates":[0,0]}}]}',
+            format: new GeoJSON(),
+          }),
+          minZoom: 3,
+          declutter: true,
+        });
+        const map = new Map({
+          layers: [vectorLayer],
+          target: document.createElement('div'),
+          view: new View({
+            center: [0, 0],
+            zoom: 2,
+          }),
+        });
+        vectorLayer.on('postrender', function postrender() {
+          if (map.getView().getZoom() > vectorLayer.getMinZoom()) {
+            vectorLayer.un('postrender', postrender);
+            resolve();
+          }
+        });
+        map.setSize([100, 100]);
+        map.getView().animate({zoom: 3.01});
+      }));
   });
 });

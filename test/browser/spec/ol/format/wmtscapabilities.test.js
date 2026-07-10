@@ -5,16 +5,20 @@ describe('ol.format.WMTSCapabilities', function () {
   describe('when parsing ogcsample.xml', function () {
     const parser = new WMTSCapabilities();
     let capabilities;
-    before(function (done) {
-      afterLoadText('spec/ol/format/wmts/ogcsample.xml', function (xml) {
-        try {
-          capabilities = parser.read(xml);
-        } catch (e) {
-          done(e);
-        }
-        done();
-      });
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText('spec/ol/format/wmts/ogcsample.xml', function (xml) {
+            try {
+              capabilities = parser.read(xml);
+            } catch (e) {
+              reject(e);
+              return;
+            }
+            resolve();
+          });
+        }),
+    );
 
     it('can read Capability.Contents.Layer', function () {
       assert.isArray(capabilities.Contents.Layer);
@@ -129,16 +133,20 @@ describe('ol.format.WMTSCapabilities', function () {
   describe('when parsing ign.xml', function () {
     const parser = new WMTSCapabilities();
     let capabilities;
-    before(function (done) {
-      afterLoadText('spec/ol/format/wmts/ign.xml', function (xml) {
-        try {
-          capabilities = parser.read(xml);
-        } catch (e) {
-          done(e);
-        }
-        done();
-      });
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText('spec/ol/format/wmts/ign.xml', function (xml) {
+            try {
+              capabilities = parser.read(xml);
+            } catch (e) {
+              reject(e);
+              return;
+            }
+            resolve();
+          });
+        }),
+    );
 
     it('can read Capability.Contents.Layer', function () {
       assert.isArray(capabilities.Contents.Layer);

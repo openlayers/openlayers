@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {spy as sinonSpy} from 'sinon';
 import Feature from '../../../../../../src/ol/Feature.js';
 import {UNDEFINED_PROP_VALUE} from '../../../../../../src/ol/expr/gpu.js';
 import LineString from '../../../../../../src/ol/geom/LineString.js';
@@ -224,7 +223,7 @@ describe('Render instructions utilities', function () {
       let consoleSpy, originalConsole;
       beforeEach(() => {
         originalConsole = console;
-        consoleSpy = sinonSpy();
+        consoleSpy = vi.fn();
         window.console = {
           ...console,
           warn: consoleSpy,
@@ -256,11 +255,11 @@ describe('Render instructions utilities', function () {
           SAMPLE_TRANSFORM,
         );
 
-        assert.strictEqual(
-          consoleSpy.calledWith(
-            'The "has" operator might return false positives.',
+        assert.isTrue(
+          consoleSpy.mock.calls.some(
+            (args) =>
+              args[0] === 'The "has" operator might return false positives.',
           ),
-          true,
         );
       });
     });

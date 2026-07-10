@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {spy as sinonSpy} from 'sinon';
 import Feature from '../../../../../src/ol/Feature.js';
 import Map from '../../../../../src/ol/Map.js';
 import TileState from '../../../../../src/ol/TileState.js';
@@ -113,31 +112,32 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function () {
       assert.instanceOf(source, RasterSource);
     });
 
-    it('defaults to "pixel" operation', function (done) {
-      const log = [];
+    it('defaults to "pixel" operation', () =>
+      new Promise((resolve) => {
+        const log = [];
 
-      const source = new RasterSource({
-        threads: 0,
-        sources: [redSource, greenSource, blueSource],
-        operation: function (inputs) {
-          log.push(inputs);
-          return inputs[0];
-        },
-      });
+        const source = new RasterSource({
+          threads: 0,
+          sources: [redSource, greenSource, blueSource],
+          operation: function (inputs) {
+            log.push(inputs);
+            return inputs[0];
+          },
+        });
 
-      source.once('afteroperations', function () {
-        assert.equal(log.length, 4);
-        const inputs = log[0];
-        const pixel = inputs[0];
-        assert.isArray(pixel);
-        done();
-      });
+        source.once('afteroperations', function () {
+          assert.equal(log.length, 4);
+          const inputs = log[0];
+          const pixel = inputs[0];
+          assert.isArray(pixel);
+          resolve();
+        });
 
-      map.getLayers().item(0).setSource(source);
-      const view = map.getView();
-      view.setCenter([0, 0]);
-      view.setZoom(0);
-    });
+        map.getLayers().item(0).setSource(source);
+        const view = map.getView();
+        view.setCenter([0, 0]);
+        view.setZoom(0);
+      }));
 
     it('uses resolutions from the first source where available', function () {
       greenSource.setResolutions([100, 10, 1]);
@@ -152,26 +152,27 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function () {
       assert.deepEqual(source.getResolutions(), [100, 10, 1]);
     });
 
-    it('accepts a "resolutions" option', function (done) {
-      const source = new RasterSource({
-        threads: 0,
-        sources: [redSource],
-        resolutions: [1],
-        operation: function (inputs) {
-          return inputs[0];
-        },
-      });
+    it('accepts a "resolutions" option', () =>
+      new Promise((resolve) => {
+        const source = new RasterSource({
+          threads: 0,
+          sources: [redSource],
+          resolutions: [1],
+          operation: function (inputs) {
+            return inputs[0];
+          },
+        });
 
-      source.on('afteroperations', function (event) {
-        assert.equal(event.resolution, 1);
-        done();
-      });
+        source.on('afteroperations', function (event) {
+          assert.equal(event.resolution, 1);
+          resolve();
+        });
 
-      map.getLayers().item(0).setSource(source);
-      const view = map.getView();
-      view.setCenter([0, 0]);
-      view.setZoom(0);
-    });
+        map.getLayers().item(0).setSource(source);
+        const view = map.getView();
+        view.setCenter([0, 0]);
+        view.setZoom(0);
+      }));
 
     it('uses the view resolution when "resolutions" are set to null', function () {
       redSource.setResolutions([100, 10, 1]);
@@ -201,34 +202,35 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function () {
       assert.strictEqual(source.processor_.disposed, true);
     });
 
-    it('allows operation type to be set to "image"', function (done) {
-      const log = [];
+    it('allows operation type to be set to "image"', () =>
+      new Promise((resolve) => {
+        const log = [];
 
-      const source = new RasterSource({
-        operationType: 'image',
-        threads: 0,
-        sources: [redSource, greenSource, blueSource],
-        operation: function (inputs) {
-          log.push(inputs);
-          return inputs[0];
-        },
-      });
+        const source = new RasterSource({
+          operationType: 'image',
+          threads: 0,
+          sources: [redSource, greenSource, blueSource],
+          operation: function (inputs) {
+            log.push(inputs);
+            return inputs[0];
+          },
+        });
 
-      source.once('afteroperations', function () {
-        assert.equal(log.length, 1);
-        const inputs = log[0];
-        const imageData = inputs[0];
-        assert.instanceOf(imageData.data, Uint8ClampedArray);
-        assert.strictEqual(imageData.width, 2);
-        assert.strictEqual(imageData.height, 2);
-        done();
-      });
+        source.once('afteroperations', function () {
+          assert.equal(log.length, 1);
+          const inputs = log[0];
+          const imageData = inputs[0];
+          assert.instanceOf(imageData.data, Uint8ClampedArray);
+          assert.strictEqual(imageData.width, 2);
+          assert.strictEqual(imageData.height, 2);
+          resolve();
+        });
 
-      map.getLayers().item(0).setSource(source);
-      const view = map.getView();
-      view.setCenter([0, 0]);
-      view.setZoom(0);
-    });
+        map.getLayers().item(0).setSource(source);
+        const view = map.getView();
+        view.setCenter([0, 0]);
+        view.setZoom(0);
+      }));
 
     it('passes the interpolate option to the parent source', function () {
       const source = new RasterSource({
@@ -296,46 +298,48 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function () {
   });
 
   describe('#setOperation()', function () {
-    it('allows operation to be set', function (done) {
-      let count = 0;
-      raster.setOperation(function (pixels) {
-        ++count;
-        const redPixel = pixels[0];
-        const greenPixel = pixels[1];
-        const bluePixel = pixels[2];
-        assert.deepEqual(redPixel, [255, 0, 0, 255]);
-        assert.deepEqual(greenPixel, [0, 255, 0, 255]);
-        assert.deepEqual(bluePixel, [0, 0, 255, 255]);
-        return pixels[0];
-      });
+    it('allows operation to be set', () =>
+      new Promise((resolve) => {
+        let count = 0;
+        raster.setOperation(function (pixels) {
+          ++count;
+          const redPixel = pixels[0];
+          const greenPixel = pixels[1];
+          const bluePixel = pixels[2];
+          assert.deepEqual(redPixel, [255, 0, 0, 255]);
+          assert.deepEqual(greenPixel, [0, 255, 0, 255]);
+          assert.deepEqual(bluePixel, [0, 0, 255, 255]);
+          return pixels[0];
+        });
 
-      const view = map.getView();
-      view.setCenter([0, 0]);
-      view.setZoom(0);
+        const view = map.getView();
+        view.setCenter([0, 0]);
+        view.setZoom(0);
 
-      raster.once('afteroperations', function (event) {
-        assert.equal(count, 4);
-        done();
-      });
-    });
+        raster.once('afteroperations', function (event) {
+          assert.equal(count, 4);
+          resolve();
+        });
+      }));
 
-    it('updates and re-runs the operation', function (done) {
-      const view = map.getView();
-      view.setCenter([0, 0]);
-      view.setZoom(0);
+    it('updates and re-runs the operation', () =>
+      new Promise((resolve) => {
+        const view = map.getView();
+        view.setCenter([0, 0]);
+        view.setZoom(0);
 
-      let count = 0;
-      raster.on('afteroperations', function (event) {
-        ++count;
-        if (count === 1) {
-          raster.setOperation(function (inputs) {
-            return inputs[0];
-          });
-        } else {
-          done();
-        }
-      });
-    });
+        let count = 0;
+        raster.on('afteroperations', function (event) {
+          ++count;
+          if (count === 1) {
+            raster.setOperation(function (inputs) {
+              return inputs[0];
+            });
+          } else {
+            resolve();
+          }
+        });
+      }));
 
     it('disposes the previous processor', function () {
       const previousProcessor = raster.processor_;
@@ -350,172 +354,178 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function () {
   });
 
   describe('beforeoperations', function () {
-    it('gets called before operations are run', function (done) {
-      let count = 0;
-      raster.setOperation(function (inputs) {
-        ++count;
-        return inputs[0];
-      });
+    it('gets called before operations are run', () =>
+      new Promise((resolve) => {
+        let count = 0;
+        raster.setOperation(function (inputs) {
+          ++count;
+          return inputs[0];
+        });
 
-      raster.once('beforeoperations', function (event) {
-        assert.equal(count, 0);
-        assert.strictEqual(!!event, true);
-        assert.isArray(event.extent);
-        assert.isNumber(event.resolution);
-        assert.isObject(event.data);
-        done();
-      });
+        raster.once('beforeoperations', function (event) {
+          assert.equal(count, 0);
+          assert.strictEqual(!!event, true);
+          assert.isArray(event.extent);
+          assert.isNumber(event.resolution);
+          assert.isObject(event.data);
+          resolve();
+        });
 
-      const view = map.getView();
-      view.setCenter([0, 0]);
-      view.setZoom(0);
-    });
+        const view = map.getView();
+        view.setCenter([0, 0]);
+        view.setZoom(0);
+      }));
 
-    it('allows data to be set for the operation', function (done) {
-      raster.setOperation(function (inputs, data) {
-        ++data.count;
-        return inputs[0];
-      });
+    it('allows data to be set for the operation', () =>
+      new Promise((resolve) => {
+        raster.setOperation(function (inputs, data) {
+          ++data.count;
+          return inputs[0];
+        });
 
-      raster.on('beforeoperations', function (event) {
-        event.data.count = 0;
-      });
+        raster.on('beforeoperations', function (event) {
+          event.data.count = 0;
+        });
 
-      raster.once('afteroperations', function (event) {
-        assert.equal(event.data.count, 4);
-        done();
-      });
+        raster.once('afteroperations', function (event) {
+          assert.equal(event.data.count, 4);
+          resolve();
+        });
 
-      const view = map.getView();
-      view.setCenter([0, 0]);
-      view.setZoom(0);
-    });
+        const view = map.getView();
+        view.setCenter([0, 0]);
+        view.setZoom(0);
+      }));
   });
 
   describe('afteroperations', function () {
-    it('gets called after operations are run', function (done) {
-      let count = 0;
-      raster.setOperation(function (inputs) {
-        ++count;
-        return inputs[0];
-      });
-
-      raster.once('afteroperations', function (event) {
-        assert.equal(count, 4);
-        assert.strictEqual(!!event, true);
-        assert.isArray(event.extent);
-        assert.isNumber(event.resolution);
-        assert.isObject(event.data);
-        done();
-      });
-
-      const view = map.getView();
-      view.setCenter([0, 0]);
-      view.setZoom(0);
-    });
-
-    it('receives data set by the operation', function (done) {
-      raster.setOperation(function (inputs, data) {
-        data.message = 'hello world';
-        return inputs[0];
-      });
-
-      raster.once('afteroperations', function (event) {
-        assert.equal(event.data.message, 'hello world');
-        done();
-      });
-
-      const view = map.getView();
-      view.setCenter([0, 0]);
-      view.setZoom(0);
-    });
-
-    it('is passed an array of data if more than one thread', function (done) {
-      const threads = 3;
-
-      raster = new RasterSource({
-        threads: threads,
-        sources: [redSource, greenSource, blueSource],
-        operation: function (inputs, data) {
-          data.prop = 'value';
+    it('gets called after operations are run', () =>
+      new Promise((resolve) => {
+        let count = 0;
+        raster.setOperation(function (inputs) {
+          ++count;
           return inputs[0];
-        },
-      });
+        });
 
-      layer.setSource(raster);
+        raster.once('afteroperations', function (event) {
+          assert.equal(count, 4);
+          assert.strictEqual(!!event, true);
+          assert.isArray(event.extent);
+          assert.isNumber(event.resolution);
+          assert.isObject(event.data);
+          resolve();
+        });
 
-      raster.once('afteroperations', function (event) {
-        assert.instanceOf(event.data, Array);
-        assert.lengthOf(event.data, threads);
-        assert.equal(event.data[0].prop, 'value');
-        done();
-      });
+        const view = map.getView();
+        view.setCenter([0, 0]);
+        view.setZoom(0);
+      }));
 
-      const view = map.getView();
-      view.setCenter([0, 0]);
-      view.setZoom(0);
-    });
+    it('receives data set by the operation', () =>
+      new Promise((resolve) => {
+        raster.setOperation(function (inputs, data) {
+          data.message = 'hello world';
+          return inputs[0];
+        });
 
-    it('discards stale worker results when a source changes mid-pass', function (done) {
-      const vectorSource = new VectorSource();
-      const source = new RasterSource({
-        threads: 0,
-        sources: [
-          new VectorImageLayer({
-            source: vectorSource,
-            style: new Style({
-              image: new Circle({
-                radius: 3,
-                fill: new Fill({color: 'blue'}),
+        raster.once('afteroperations', function (event) {
+          assert.equal(event.data.message, 'hello world');
+          resolve();
+        });
+
+        const view = map.getView();
+        view.setCenter([0, 0]);
+        view.setZoom(0);
+      }));
+
+    it('is passed an array of data if more than one thread', () =>
+      new Promise((resolve) => {
+        const threads = 3;
+
+        raster = new RasterSource({
+          threads: threads,
+          sources: [redSource, greenSource, blueSource],
+          operation: function (inputs, data) {
+            data.prop = 'value';
+            return inputs[0];
+          },
+        });
+
+        layer.setSource(raster);
+
+        raster.once('afteroperations', function (event) {
+          assert.instanceOf(event.data, Array);
+          assert.lengthOf(event.data, threads);
+          assert.equal(event.data[0].prop, 'value');
+          resolve();
+        });
+
+        const view = map.getView();
+        view.setCenter([0, 0]);
+        view.setZoom(0);
+      }));
+
+    it('discards stale worker results when a source changes mid-pass', () =>
+      new Promise((resolve) => {
+        const vectorSource = new VectorSource();
+        const source = new RasterSource({
+          threads: 0,
+          sources: [
+            new VectorImageLayer({
+              source: vectorSource,
+              style: new Style({
+                image: new Circle({
+                  radius: 3,
+                  fill: new Fill({color: 'blue'}),
+                }),
               }),
             }),
-          }),
-        ],
-        operation: function (inputs) {
-          return inputs[0];
-        },
-      });
+          ],
+          operation: function (inputs) {
+            return inputs[0];
+          },
+        });
 
-      layer.setSource(source);
+        layer.setSource(source);
 
-      const worker = source.processor_.workers_[0];
-      const postMessage = worker.postMessage;
-      let workerCompleteCount = 0;
-      worker.postMessage = function () {
-        const args = arguments;
+        const worker = source.processor_.workers_[0];
+        const postMessage = worker.postMessage;
+        let workerCompleteCount = 0;
+        worker.postMessage = function () {
+          const args = arguments;
+          setTimeout(function () {
+            ++workerCompleteCount;
+            postMessage.apply(worker, args);
+          }, 32);
+        };
+
+        let afterCount = 0;
+        source.on('afteroperations', function () {
+          ++afterCount;
+        });
+
         setTimeout(function () {
-          ++workerCompleteCount;
-          postMessage.apply(worker, args);
-        }, 32);
-      };
+          vectorSource.addFeature(new Feature(new Point([0, 0])));
+        }, 16);
 
-      let afterCount = 0;
-      source.on('afteroperations', function () {
-        ++afterCount;
-      });
+        source.once('afteroperations', function () {
+          setTimeout(function () {
+            assert.strictEqual(workerCompleteCount, 2);
+            assert.strictEqual(afterCount, 1);
+            const image = source.renderedImageCanvas_.getImage();
+            const context = image.getContext('2d');
+            assert.deepEqual(
+              Array.from(context.getImageData(1, 1, 1, 1).data),
+              [0, 0, 255, 255],
+            );
+            resolve();
+          }, 80);
+        });
 
-      setTimeout(function () {
-        vectorSource.addFeature(new Feature(new Point([0, 0])));
-      }, 16);
-
-      source.once('afteroperations', function () {
-        setTimeout(function () {
-          assert.strictEqual(workerCompleteCount, 2);
-          assert.strictEqual(afterCount, 1);
-          const image = source.renderedImageCanvas_.getImage();
-          const context = image.getContext('2d');
-          assert.deepEqual(
-            Array.from(context.getImageData(1, 1, 1, 1).data),
-            [0, 0, 255, 255],
-          );
-          done();
-        }, 80);
-      });
-
-      const view = map.getView();
-      view.setCenter([0, 0]);
-      view.setZoom(0);
-    });
+        const view = map.getView();
+        view.setCenter([0, 0]);
+        view.setZoom(0);
+      }));
   });
 
   describe('tile loading', function () {
@@ -525,46 +535,47 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function () {
       map2 = null;
     });
 
-    it('is initiated on the underlying source', function (done) {
-      const source = new XYZ({
-        url: 'spec/ol/data/osm-{z}-{x}-{y}.png',
-      });
+    it('is initiated on the underlying source', () =>
+      new Promise((resolve) => {
+        const source = new XYZ({
+          url: 'spec/ol/data/osm-{z}-{x}-{y}.png',
+        });
 
-      raster = new RasterSource({
-        threads: 0,
-        sources: [source],
-        operation: function (inputs) {
-          return inputs[0];
-        },
-      });
+        raster = new RasterSource({
+          threads: 0,
+          sources: [source],
+          operation: function (inputs) {
+            return inputs[0];
+          },
+        });
 
-      map2 = new Map({
-        target: target,
-        view: new View({
-          center: [0, 0],
-          zoom: 0,
-        }),
-        layers: [
-          new ImageLayer({
-            source: raster,
+        map2 = new Map({
+          target: target,
+          view: new View({
+            center: [0, 0],
+            zoom: 0,
           }),
-        ],
-      });
+          layers: [
+            new ImageLayer({
+              source: raster,
+            }),
+          ],
+        });
 
-      const tileCache = raster.layers_[0].getRenderer().tileCache_;
+        const tileCache = raster.layers_[0].getRenderer().tileCache_;
 
-      assert.equal(tileCache.getCount(), 0);
+        assert.equal(tileCache.getCount(), 0);
 
-      map2.once('moveend', function () {
-        assert.equal(tileCache.getCount(), 1);
-        const state = tileCache.peekLast().getState();
-        assert.strictEqual(
-          state === TileState.LOADING || state === TileState.LOADED,
-          true,
-        );
-        done();
-      });
-    });
+        map2.once('moveend', function () {
+          assert.equal(tileCache.getCount(), 1);
+          const state = tileCache.peekLast().getState();
+          assert.strictEqual(
+            state === TileState.LOADING || state === TileState.LOADED,
+            true,
+          );
+          resolve();
+        });
+      }));
   });
 });
 
@@ -584,270 +595,296 @@ where('Uint8ClampedArray').describe('Processor', function () {
   });
 
   describe('#process()', function () {
-    it('calls operation with input pixels', function (done) {
-      const processor = new Processor({
-        operation: function (inputs, meta) {
-          ++meta.count;
-          const pixel = inputs[0];
-          for (let i = 0, ii = pixel.length; i < ii; ++i) {
-            meta.sum += pixel[i];
-          }
-          return pixel;
-        },
-      });
+    it('calls operation with input pixels', () =>
+      new Promise((resolve, reject) => {
+        const processor = new Processor({
+          operation: function (inputs, meta) {
+            ++meta.count;
+            const pixel = inputs[0];
+            for (let i = 0, ii = pixel.length; i < ii; ++i) {
+              meta.sum += pixel[i];
+            }
+            return pixel;
+          },
+        });
 
-      const array = new Uint8ClampedArray([1, 2, 3, 4, 5, 6, 7, 8]);
-      const input = new ImageData(array, 1, 2);
+        const array = new Uint8ClampedArray([1, 2, 3, 4, 5, 6, 7, 8]);
+        const input = new ImageData(array, 1, 2);
 
-      processor.process([input], {count: 0, sum: 0}, function (err, output, m) {
-        if (err) {
-          done(err);
-          return;
-        }
-        assert.equal(m.count, 2);
-        assert.equal(m.sum, 36);
-        done();
-      });
-    });
-
-    it('calls callback with processed image data', function (done) {
-      const processor = new Processor({
-        operation: function (inputs) {
-          const pixel = inputs[0];
-          pixel[0] *= 2;
-          pixel[1] *= 2;
-          pixel[2] *= 2;
-          pixel[3] *= 2;
-          return pixel;
-        },
-      });
-
-      const array = new Uint8ClampedArray([1, 2, 3, 4, 5, 6, 7, 8]);
-      const input = new ImageData(array, 1, 2);
-
-      processor.process([input], {}, function (err, output, m) {
-        if (err) {
-          done(err);
-          return;
-        }
-        assert.instanceOf(output, ImageData);
-        assert.deepEqual(
-          output.data,
-          new Uint8ClampedArray([2, 4, 6, 8, 10, 12, 14, 16]),
+        processor.process(
+          [input],
+          {count: 0, sum: 0},
+          function (err, output, m) {
+            if (err) {
+              reject(err);
+              return;
+            }
+            assert.equal(m.count, 2);
+            assert.equal(m.sum, 36);
+            resolve();
+          },
         );
-        done();
-      });
-    });
+      }));
 
-    it('allows library functions to be called', function (done) {
-      const lib = {
-        sum: function (a, b) {
-          return a + b;
-        },
-        diff: function (a, b) {
-          return a - b;
-        },
-      };
+    it('calls callback with processed image data', () =>
+      new Promise((resolve, reject) => {
+        const processor = new Processor({
+          operation: function (inputs) {
+            const pixel = inputs[0];
+            pixel[0] *= 2;
+            pixel[1] *= 2;
+            pixel[2] *= 2;
+            pixel[3] *= 2;
+            return pixel;
+          },
+        });
 
-      const normalizedDiff = function (pixels) {
-        const pixel = pixels[0];
-        const r = pixel[0];
-        const g = pixel[1];
-        // eslint-disable-next-line no-undef
-        const nd = diff(r, g) / sum(r, g);
-        const index = Math.round((255 * (nd + 1)) / 2);
-        return [index, index, index, pixel[3]];
-      };
+        const array = new Uint8ClampedArray([1, 2, 3, 4, 5, 6, 7, 8]);
+        const input = new ImageData(array, 1, 2);
 
-      const processor = new Processor({
-        operation: normalizedDiff,
-        lib: lib,
-      });
-
-      const array = new Uint8ClampedArray([10, 2, 0, 0, 5, 8, 0, 1]);
-      const input = new ImageData(array, 1, 2);
-
-      processor.process([input], {}, function (err, output, m) {
-        if (err) {
-          done(err);
-          return;
-        }
-        assert.instanceOf(output, ImageData);
-        const v0 = Math.round((255 * (1 + 8 / 12)) / 2);
-        const v1 = Math.round((255 * (1 + -3 / 13)) / 2);
-        assert.deepEqual(
-          output.data,
-          new Uint8ClampedArray([v0, v0, v0, 0, v1, v1, v1, 1]),
-        );
-
-        done();
-      });
-    });
-
-    it('calls callbacks for each call', function (done) {
-      const processor = new Processor({
-        operation: identity,
-      });
-
-      let calls = 0;
-
-      function createCallback(index) {
-        return function (err, output, meta) {
+        processor.process([input], {}, function (err, output, m) {
           if (err) {
-            done(err);
+            reject(err);
             return;
           }
           assert.instanceOf(output, ImageData);
-          ++calls;
+          assert.deepEqual(
+            output.data,
+            new Uint8ClampedArray([2, 4, 6, 8, 10, 12, 14, 16]),
+          );
+          resolve();
+        });
+      }));
+
+    it('allows library functions to be called', () =>
+      new Promise((resolve, reject) => {
+        const lib = {
+          sum: function (a, b) {
+            return a + b;
+          },
+          diff: function (a, b) {
+            return a - b;
+          },
         };
-      }
 
-      for (let i = 0; i < 5; ++i) {
-        const input = new ImageData(new Uint8ClampedArray([1, 2, 3, 4]), 1, 1);
-        processor.process([input], {}, createCallback(i));
-      }
+        const normalizedDiff = function (pixels) {
+          const pixel = pixels[0];
+          const r = pixel[0];
+          const g = pixel[1];
+          // eslint-disable-next-line no-undef
+          const nd = diff(r, g) / sum(r, g);
+          const index = Math.round((255 * (nd + 1)) / 2);
+          return [index, index, index, pixel[3]];
+        };
 
-      setTimeout(function () {
-        assert.strictEqual(calls, 5);
-        done();
-      }, 1000);
-    });
+        const processor = new Processor({
+          operation: normalizedDiff,
+          lib: lib,
+        });
 
-    it('respects max queue length', function (done) {
-      const processor = new Processor({
-        queue: 1,
-        operation: identity,
-      });
+        const array = new Uint8ClampedArray([10, 2, 0, 0, 5, 8, 0, 1]);
+        const input = new ImageData(array, 1, 2);
 
-      const log = [];
-
-      function createCallback(index) {
-        return function (err, output, meta) {
+        processor.process([input], {}, function (err, output, m) {
           if (err) {
-            done(err);
+            reject(err);
             return;
           }
-          log.push(output);
-        };
-      }
+          assert.instanceOf(output, ImageData);
+          const v0 = Math.round((255 * (1 + 8 / 12)) / 2);
+          const v1 = Math.round((255 * (1 + -3 / 13)) / 2);
+          assert.deepEqual(
+            output.data,
+            new Uint8ClampedArray([v0, v0, v0, 0, v1, v1, v1, 1]),
+          );
 
-      for (let i = 0; i < 5; ++i) {
-        const input = new ImageData(new Uint8ClampedArray([1, 2, 3, 4]), 1, 1);
-        processor.process([input], {}, createCallback(i));
-      }
+          resolve();
+        });
+      }));
 
-      setTimeout(function () {
-        assert.lengthOf(log, 5);
-        assert.strictEqual(log[0], null);
-        assert.strictEqual(log[1], null);
-        assert.strictEqual(log[2], null);
-        assert.instanceOf(log[3], ImageData);
-        assert.instanceOf(log[4], ImageData);
-        done();
-      }, 1000);
-    });
+    it('calls callbacks for each call', () =>
+      new Promise((resolve, reject) => {
+        const processor = new Processor({
+          operation: identity,
+        });
 
-    it('can run on multiple threads', function (done) {
-      const processor = new Processor({
-        threads: 2,
-        operation: identity,
-      });
+        let calls = 0;
 
-      const input = new ImageData(new Uint8ClampedArray([1, 2, 3, 4]), 1, 1);
-      processor.process([input], {}, function (err) {
-        if (err) {
-          done(err);
+        function createCallback(index) {
+          return function (err, output, meta) {
+            if (err) {
+              reject(err);
+              return;
+            }
+            assert.instanceOf(output, ImageData);
+            ++calls;
+          };
         }
-      });
 
-      processor.dispose();
-      setTimeout(done, 20);
-    });
+        for (let i = 0; i < 5; ++i) {
+          const input = new ImageData(
+            new Uint8ClampedArray([1, 2, 3, 4]),
+            1,
+            1,
+          );
+          processor.process([input], {}, createCallback(i));
+        }
+
+        setTimeout(function () {
+          assert.strictEqual(calls, 5);
+          resolve();
+        }, 1000);
+      }));
+
+    it('respects max queue length', () =>
+      new Promise((resolve, reject) => {
+        const processor = new Processor({
+          queue: 1,
+          operation: identity,
+        });
+
+        const log = [];
+
+        function createCallback(index) {
+          return function (err, output, meta) {
+            if (err) {
+              reject(err);
+              return;
+            }
+            log.push(output);
+          };
+        }
+
+        for (let i = 0; i < 5; ++i) {
+          const input = new ImageData(
+            new Uint8ClampedArray([1, 2, 3, 4]),
+            1,
+            1,
+          );
+          processor.process([input], {}, createCallback(i));
+        }
+
+        setTimeout(function () {
+          assert.lengthOf(log, 5);
+          assert.strictEqual(log[0], null);
+          assert.strictEqual(log[1], null);
+          assert.strictEqual(log[2], null);
+          assert.instanceOf(log[3], ImageData);
+          assert.instanceOf(log[4], ImageData);
+          resolve();
+        }, 1000);
+      }));
+
+    it('can run on multiple threads', () =>
+      new Promise((resolve, reject) => {
+        const processor = new Processor({
+          threads: 2,
+          operation: identity,
+        });
+
+        const input = new ImageData(new Uint8ClampedArray([1, 2, 3, 4]), 1, 1);
+        processor.process([input], {}, function (err) {
+          if (err) {
+            reject(err);
+          }
+        });
+
+        processor.dispose();
+        setTimeout(resolve, 20);
+      }));
   });
 
   describe('#process() - faux worker', function () {
     let identitySpy;
     beforeEach(function () {
-      identitySpy = sinonSpy(identity);
+      identitySpy = vi.fn(identity);
     });
 
-    it('calls operation with input pixels', function (done) {
-      const processor = new Processor({
-        threads: 0,
-        operation: identitySpy,
-      });
+    it('calls operation with input pixels', () =>
+      new Promise((resolve, reject) => {
+        const processor = new Processor({
+          threads: 0,
+          operation: identitySpy,
+        });
 
-      const array = new Uint8ClampedArray([1, 2, 3, 4, 5, 6, 7, 8]);
-      const input = new ImageData(array, 1, 2);
+        const array = new Uint8ClampedArray([1, 2, 3, 4, 5, 6, 7, 8]);
+        const input = new ImageData(array, 1, 2);
 
-      processor.process([input], {}, function (err, output, m) {
-        if (err) {
-          done(err);
-          return;
-        }
-        assert.strictEqual(identitySpy.callCount, 2);
-        const first = identitySpy.getCall(0);
-        assert.lengthOf(first.args, 2);
-        done();
-      });
-    });
+        processor.process([input], {}, function (err, output, m) {
+          if (err) {
+            reject(err);
+            return;
+          }
+          assert.strictEqual(identitySpy.mock.calls.length, 2);
+          const first = identitySpy.mock.calls[0];
+          assert.lengthOf(first, 2);
+          resolve();
+        });
+      }));
 
-    it('passes meta object to operations', function (done) {
-      const processor = new Processor({
-        threads: 0,
-        operation: identitySpy,
-      });
+    it('passes meta object to operations', () =>
+      new Promise((resolve, reject) => {
+        const processor = new Processor({
+          threads: 0,
+          operation: identitySpy,
+        });
 
-      const array = new Uint8ClampedArray([1, 2, 3, 4]);
-      const input = new ImageData(array, 1, 1);
-      const meta = {foo: 'bar'};
+        const array = new Uint8ClampedArray([1, 2, 3, 4]);
+        const input = new ImageData(array, 1, 1);
+        const meta = {foo: 'bar'};
 
-      processor.process([input], meta, function (err, output, m) {
-        if (err) {
-          done(err);
-          return;
-        }
-        assert.deepEqual(m, meta);
-        assert.strictEqual(identitySpy.callCount, 1);
-        done();
-      });
-    });
+        processor.process([input], meta, function (err, output, m) {
+          if (err) {
+            reject(err);
+            return;
+          }
+          assert.deepEqual(m, meta);
+          assert.strictEqual(identitySpy.mock.calls.length, 1);
+          resolve();
+        });
+      }));
   });
 
   describe('#dispose()', function () {
-    it('stops callbacks from being called', function (done) {
-      const processor = new Processor({
-        operation: identity,
-      });
+    it('stops callbacks from being called', () =>
+      new Promise((resolve, reject) => {
+        const processor = new Processor({
+          operation: identity,
+        });
 
-      const array = new Uint8ClampedArray([1, 2, 3, 4, 5, 6, 7, 8]);
-      const input = new ImageData(array, 1, 2);
+        const array = new Uint8ClampedArray([1, 2, 3, 4, 5, 6, 7, 8]);
+        const input = new ImageData(array, 1, 2);
 
-      processor.process([input], {}, function () {
-        done(new Error('Expected abort to stop callback from being called'));
-      });
+        processor.process([input], {}, function () {
+          reject(
+            new Error('Expected abort to stop callback from being called'),
+          );
+        });
 
-      processor.dispose();
-      setTimeout(done, 500);
-    });
+        processor.dispose();
+        setTimeout(resolve, 500);
+      }));
   });
 
   describe('#dispose() - faux worker', function () {
-    it('stops callbacks from being called', function (done) {
-      const processor = new Processor({
-        threads: 0,
-        operation: identity,
-      });
+    it('stops callbacks from being called', () =>
+      new Promise((resolve, reject) => {
+        const processor = new Processor({
+          threads: 0,
+          operation: identity,
+        });
 
-      const array = new Uint8ClampedArray([1, 2, 3, 4, 5, 6, 7, 8]);
-      const input = new ImageData(array, 1, 2);
+        const array = new Uint8ClampedArray([1, 2, 3, 4, 5, 6, 7, 8]);
+        const input = new ImageData(array, 1, 2);
 
-      processor.process([input], {}, function () {
-        done(new Error('Expected abort to stop callback from being called'));
-      });
+        processor.process([input], {}, function () {
+          reject(
+            new Error('Expected abort to stop callback from being called'),
+          );
+        });
 
-      processor.dispose();
-      setTimeout(done, 20);
-    });
+        processor.dispose();
+        setTimeout(resolve, 20);
+      }));
   });
 });

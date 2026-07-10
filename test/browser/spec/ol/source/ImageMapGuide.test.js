@@ -36,31 +36,32 @@ describe('ol/source/ImageMapGuide', function () {
       disposeMap(map);
     });
 
-    it('reloads from server', function (done) {
-      const srcs = [];
-      const source = new ImageMapGuide(options);
-      source.setImageLoadFunction(function (image, src) {
-        srcs.push(src);
-        image.state = ImageState.LOADED;
-        source.loading = false;
-      });
-      map.addLayer(new ImageLayer({source: source}));
-      map.once('rendercomplete', function () {
-        source.updateParams({'MAPDEFINITION': 'newValue'});
-        map.once('rendercomplete', function () {
-          assert.strictEqual(srcs.length, 2);
-          assert.strictEqual(
-            new URL(srcs[0]).searchParams.get('MAPDEFINITION'),
-            'mdf',
-          );
-          assert.strictEqual(
-            new URL(srcs[1]).searchParams.get('MAPDEFINITION'),
-            'newValue',
-          );
-          done();
+    it('reloads from server', () =>
+      new Promise((resolve) => {
+        const srcs = [];
+        const source = new ImageMapGuide(options);
+        source.setImageLoadFunction(function (image, src) {
+          srcs.push(src);
+          image.state = ImageState.LOADED;
+          source.loading = false;
         });
-      });
-    });
+        map.addLayer(new ImageLayer({source: source}));
+        map.once('rendercomplete', function () {
+          source.updateParams({'MAPDEFINITION': 'newValue'});
+          map.once('rendercomplete', function () {
+            assert.strictEqual(srcs.length, 2);
+            assert.strictEqual(
+              new URL(srcs[0]).searchParams.get('MAPDEFINITION'),
+              'mdf',
+            );
+            assert.strictEqual(
+              new URL(srcs[1]).searchParams.get('MAPDEFINITION'),
+              'newValue',
+            );
+            resolve();
+          });
+        });
+      }));
   });
 
   describe('#setParams', function () {

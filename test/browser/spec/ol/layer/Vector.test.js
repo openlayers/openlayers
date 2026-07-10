@@ -78,12 +78,13 @@ describe('ol.layer.Vector', function () {
       assert.strictEqual(layer.getStyle(), style);
     });
 
-    it('dispatches the change event', function (done) {
-      layer.on('change', function () {
-        done();
-      });
-      layer.setStyle(style);
-    });
+    it('dispatches the change event', () =>
+      new Promise((resolve) => {
+        layer.on('change', function () {
+          resolve();
+        });
+        layer.setStyle(style);
+      }));
 
     it('updates the internal style function', function () {
       assert.strictEqual(layer.getStyleFunction(), createDefaultStyle);
@@ -227,222 +228,228 @@ describe('ol.layer.Vector', function () {
       }
     });
 
-    it('detects features properly', function (done) {
-      const source = new VectorSource({
-        features: [
-          new Feature({
-            geometry: new Point([-1000000, 0]),
-            name: 'feature1',
+    it('detects features properly', () =>
+      new Promise((resolve) => {
+        const source = new VectorSource({
+          features: [
+            new Feature({
+              geometry: new Point([-1000000, 0]),
+              name: 'feature1',
+            }),
+            new Feature({
+              geometry: new Point([1000000, 0]),
+              name: 'feature2',
+            }),
+          ],
+        });
+
+        const feature = new Feature({
+          geometry: new Point([-1000000, 0]),
+          name: 'feature with no size',
+        });
+
+        const testImage = new ImageStyle({
+          opacity: 1,
+          displacement: [],
+        });
+
+        testImage.getImageState = () => {};
+        testImage.listenImageChange = () => {};
+        testImage.getImageSize = () => {};
+
+        feature.setStyle([
+          new Style({
+            image: testImage,
           }),
-          new Feature({
-            geometry: new Point([1000000, 0]),
-            name: 'feature2',
-          }),
-        ],
-      });
+        ]);
 
-      const feature = new Feature({
-        geometry: new Point([-1000000, 0]),
-        name: 'feature with no size',
-      });
+        source.addFeature(feature);
 
-      const testImage = new ImageStyle({
-        opacity: 1,
-        displacement: [],
-      });
+        const layer = new VectorLayer({
+          source,
+        });
+        map.addLayer(layer);
+        map.renderSync();
 
-      testImage.getImageState = () => {};
-      testImage.listenImageChange = () => {};
-      testImage.getImageSize = () => {};
-
-      feature.setStyle([
-        new Style({
-          image: testImage,
-        }),
-      ]);
-
-      source.addFeature(feature);
-
-      const layer = new VectorLayer({
-        source,
-      });
-      map.addLayer(layer);
-      map.renderSync();
-
-      const pixel = map.getPixelFromCoordinate([-1000000, 0]);
-
-      layer.getFeatures(pixel).then(function (features) {
-        assert.equal(features.length, 1);
-        assert.strictEqual(features[0].get('name'), 'feature1');
-        done();
-      });
-    });
-
-    it('detects features properly on rotated view', function (done) {
-      map.getView().setRotation(Math.PI / 4);
-      map.renderSync();
-      const source = new VectorSource({
-        features: [
-          new Feature({
-            geometry: new Point([-1000000, 0]),
-            name: 'feature1',
-          }),
-          new Feature({
-            geometry: new Point([1000000, 0]),
-            name: 'feature2',
-          }),
-        ],
-      });
-
-      const feature = new Feature({
-        geometry: new Point([-1000000, 0]),
-        name: 'feature with no size',
-      });
-
-      const testImage = new ImageStyle({
-        opacity: 1,
-        displacement: [],
-      });
-
-      testImage.getImageState = () => {};
-      testImage.listenImageChange = () => {};
-      testImage.getImageSize = () => {};
-
-      feature.setStyle([
-        new Style({
-          image: testImage,
-        }),
-      ]);
-
-      source.addFeature(feature);
-
-      const layer = new VectorLayer({
-        source,
-      });
-      map.addLayer(layer);
-      map.renderSync();
-
-      const pixel = map.getPixelFromCoordinate([-1000000, 0]);
-
-      layer.getFeatures(pixel).then(function (features) {
-        assert.equal(features.length, 1);
-        assert.strictEqual(features[0].get('name'), 'feature1');
-        done();
-      });
-    });
-
-    it('detects zero opacity images', function (done) {
-      const source = new VectorSource({
-        features: [
-          new Feature({
-            geometry: new Point([-1000000, 0]),
-            name: 'feature1',
-          }),
-          new Feature({
-            geometry: new Point([1000000, 0]),
-            name: 'feature2',
-          }),
-        ],
-      });
-
-      const style = new Style({
-        image: new Icon({
-          src: 'spec/ol/data/dot.png',
-          opacity: 0,
-        }),
-      });
-
-      const layer = new VectorLayer({
-        source,
-        style,
-      });
-      map.addLayer(layer);
-
-      map.once('rendercomplete', () => {
         const pixel = map.getPixelFromCoordinate([-1000000, 0]);
 
         layer.getFeatures(pixel).then(function (features) {
           assert.equal(features.length, 1);
           assert.strictEqual(features[0].get('name'), 'feature1');
-          done();
+          resolve();
         });
-      });
-    });
+      }));
 
-    it('detects feature styles when layer style is null', function (done) {
-      const source = new VectorSource({
-        features: [
-          new Feature({
-            geometry: new Point([-1000000, 0]),
-            name: 'feature1',
+    it('detects features properly on rotated view', () =>
+      new Promise((resolve) => {
+        map.getView().setRotation(Math.PI / 4);
+        map.renderSync();
+        const source = new VectorSource({
+          features: [
+            new Feature({
+              geometry: new Point([-1000000, 0]),
+              name: 'feature1',
+            }),
+            new Feature({
+              geometry: new Point([1000000, 0]),
+              name: 'feature2',
+            }),
+          ],
+        });
+
+        const feature = new Feature({
+          geometry: new Point([-1000000, 0]),
+          name: 'feature with no size',
+        });
+
+        const testImage = new ImageStyle({
+          opacity: 1,
+          displacement: [],
+        });
+
+        testImage.getImageState = () => {};
+        testImage.listenImageChange = () => {};
+        testImage.getImageSize = () => {};
+
+        feature.setStyle([
+          new Style({
+            image: testImage,
           }),
-          new Feature({
-            geometry: new Point([1000000, 0]),
-            name: 'feature2',
-          }),
-        ],
-      });
+        ]);
 
-      const style = new Style({
-        image: new Icon({
-          src: 'spec/ol/data/dot.png',
-          opacity: 0,
-        }),
-      });
+        source.addFeature(feature);
 
-      source.forEachFeature((feature) => {
-        feature.setStyle(style);
-      });
+        const layer = new VectorLayer({
+          source,
+        });
+        map.addLayer(layer);
+        map.renderSync();
 
-      const layer = new VectorLayer({
-        source,
-        style: null,
-      });
-      map.addLayer(layer);
-
-      map.once('rendercomplete', () => {
         const pixel = map.getPixelFromCoordinate([-1000000, 0]);
 
         layer.getFeatures(pixel).then(function (features) {
           assert.equal(features.length, 1);
           assert.strictEqual(features[0].get('name'), 'feature1');
-          done();
+          resolve();
         });
-      });
-    });
+      }));
 
-    it('hits lines even if they are dashed', function (done) {
-      const geometry = new LineString([
-        [-1e6, 0],
-        [1e6, 0],
-      ]);
-      const feature = new Feature(geometry);
-      const layer = new VectorLayer({
-        source: new VectorSource({
-          features: [feature],
-        }),
-        style: new Style({
-          stroke: new Stroke({
-            color: 'black',
-            width: 8,
-            lineDash: [10, 20],
+    it('detects zero opacity images', () =>
+      new Promise((resolve) => {
+        const source = new VectorSource({
+          features: [
+            new Feature({
+              geometry: new Point([-1000000, 0]),
+              name: 'feature1',
+            }),
+            new Feature({
+              geometry: new Point([1000000, 0]),
+              name: 'feature2',
+            }),
+          ],
+        });
+
+        const style = new Style({
+          image: new Icon({
+            src: 'spec/ol/data/dot.png',
+            opacity: 0,
           }),
-        }),
-      });
-      map.addLayer(layer);
-      map.renderSync();
+        });
 
-      const pixel = map.getPixelFromCoordinate([0, 0]);
+        const layer = new VectorLayer({
+          source,
+          style,
+        });
+        map.addLayer(layer);
 
-      layer
-        .getFeatures(pixel)
-        .then(function (features) {
-          assert.equal(features.length, 1);
-          assert.strictEqual(features[0], feature);
-          done();
-        }, done)
-        .catch(done);
-    });
+        map.once('rendercomplete', () => {
+          const pixel = map.getPixelFromCoordinate([-1000000, 0]);
+
+          layer.getFeatures(pixel).then(function (features) {
+            assert.equal(features.length, 1);
+            assert.strictEqual(features[0].get('name'), 'feature1');
+            resolve();
+          });
+        });
+      }));
+
+    it('detects feature styles when layer style is null', () =>
+      new Promise((resolve) => {
+        const source = new VectorSource({
+          features: [
+            new Feature({
+              geometry: new Point([-1000000, 0]),
+              name: 'feature1',
+            }),
+            new Feature({
+              geometry: new Point([1000000, 0]),
+              name: 'feature2',
+            }),
+          ],
+        });
+
+        const style = new Style({
+          image: new Icon({
+            src: 'spec/ol/data/dot.png',
+            opacity: 0,
+          }),
+        });
+
+        source.forEachFeature((feature) => {
+          feature.setStyle(style);
+        });
+
+        const layer = new VectorLayer({
+          source,
+          style: null,
+        });
+        map.addLayer(layer);
+
+        map.once('rendercomplete', () => {
+          const pixel = map.getPixelFromCoordinate([-1000000, 0]);
+
+          layer.getFeatures(pixel).then(function (features) {
+            assert.equal(features.length, 1);
+            assert.strictEqual(features[0].get('name'), 'feature1');
+            resolve();
+          });
+        });
+      }));
+
+    it('hits lines even if they are dashed', () =>
+      new Promise((resolve, reject) => {
+        const done = (err) => (err ? reject(err) : resolve());
+        const geometry = new LineString([
+          [-1e6, 0],
+          [1e6, 0],
+        ]);
+        const feature = new Feature(geometry);
+        const layer = new VectorLayer({
+          source: new VectorSource({
+            features: [feature],
+          }),
+          style: new Style({
+            stroke: new Stroke({
+              color: 'black',
+              width: 8,
+              lineDash: [10, 20],
+            }),
+          }),
+        });
+        map.addLayer(layer);
+        map.renderSync();
+
+        const pixel = map.getPixelFromCoordinate([0, 0]);
+
+        layer
+          .getFeatures(pixel)
+          .then(function (features) {
+            assert.equal(features.length, 1);
+            assert.strictEqual(features[0], feature);
+            done();
+          }, done)
+          .catch(done);
+      }));
 
     it('detects features with user projection', () => {
       useGeographic();

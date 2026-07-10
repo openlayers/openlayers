@@ -40,38 +40,42 @@ describe('ol/interaction/DragBox', () => {
     return simulatedEvent;
   }
 
-  beforeEach((done) => {
-    dragBox = new DragBox({
-      condition: always,
-    });
-    map = new Map({
-      target: createMapDiv(width, height),
-      interactions: [],
-      constrols: [],
-      view: new View({
-        center: [0, 0],
-        zoom: 0,
+  beforeEach(
+    () =>
+      new Promise((resolve) => {
+        dragBox = new DragBox({
+          condition: always,
+        });
+        map = new Map({
+          target: createMapDiv(width, height),
+          interactions: [],
+          constrols: [],
+          view: new View({
+            center: [0, 0],
+            zoom: 0,
+          }),
+        });
+        map.once('rendercomplete', () => resolve());
       }),
-    });
-    map.once('rendercomplete', () => done());
-  });
+  );
 
   afterEach(() => {
     disposeMap(map);
   });
 
-  it('clears the drag box', (done) => {
-    try {
-      map.addInteraction(dragBox);
-      simulateEvent('pointermove', 10, 10);
-      simulateEvent('pointerdown', 10, 10);
-      simulateEvent('pointerdrag', 20, 20);
-      assert.strictEqual(dragBox.box_.map_, map);
-      map.removeInteraction(dragBox);
-      assert.strictEqual(dragBox.box_.map_, null);
-      done();
-    } catch (error) {
-      done(error);
-    }
-  });
+  it('clears the drag box', () =>
+    new Promise((resolve, reject) => {
+      try {
+        map.addInteraction(dragBox);
+        simulateEvent('pointermove', 10, 10);
+        simulateEvent('pointerdown', 10, 10);
+        simulateEvent('pointerdrag', 20, 20);
+        assert.strictEqual(dragBox.box_.map_, map);
+        map.removeInteraction(dragBox);
+        assert.strictEqual(dragBox.box_.map_, null);
+        resolve();
+      } catch (error) {
+        reject(error);
+      }
+    }));
 });

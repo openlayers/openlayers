@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {spy as sinonSpy} from 'sinon';
 import Feature from '../../../../../../src/ol/Feature.js';
 import {stringToGlsl} from '../../../../../../src/ol/expr/gpu.js';
 import LineString from '../../../../../../src/ol/geom/LineString.js';
@@ -450,39 +449,39 @@ describe('VectorStyleRenderer', () => {
           geometryBatch,
           SAMPLE_TRANSFORM,
         );
-        sinonSpy(helper, 'bindBuffer');
-        sinonSpy(helper, 'enableAttributes');
-        sinonSpy(helper, 'enableAttributesInstanced');
-        sinonSpy(helper, 'useProgram');
-        sinonSpy(helper, 'drawElements');
-        sinonSpy(helper, 'drawElementsInstanced');
-        preRenderCb = sinonSpy();
+        vi.spyOn(helper, 'bindBuffer');
+        vi.spyOn(helper, 'enableAttributes');
+        vi.spyOn(helper, 'enableAttributesInstanced');
+        vi.spyOn(helper, 'useProgram');
+        vi.spyOn(helper, 'drawElements');
+        vi.spyOn(helper, 'drawElementsInstanced');
+        preRenderCb = vi.fn();
         vectorStyleRenderer.render(buffers, SAMPLE_FRAMESTATE, preRenderCb);
       });
       it('uses programs for all render passes & geometry types', function () {
-        assert.strictEqual(helper.useProgram.callCount, 4);
+        assert.strictEqual(helper.useProgram.mock.calls.length, 4);
         const firstPass = vectorStyleRenderer.renderPasses_[0];
         const secondPass = vectorStyleRenderer.renderPasses_[1];
         assert.strictEqual(
-          helper.useProgram.getCall(0).firstArg,
+          helper.useProgram.mock.calls[0][0],
           firstPass.fillRenderPass.program,
         );
         assert.strictEqual(
-          helper.useProgram.getCall(1).firstArg,
+          helper.useProgram.mock.calls[1][0],
           firstPass.strokeRenderPass.program,
         );
         assert.strictEqual(
-          helper.useProgram.getCall(2).firstArg,
+          helper.useProgram.mock.calls[2][0],
           firstPass.symbolRenderPass.program,
         );
         assert.strictEqual(
-          helper.useProgram.getCall(3).firstArg,
+          helper.useProgram.mock.calls[3][0],
           secondPass.fillRenderPass.program,
         );
       });
       it('binds buffers for all render passes & geometry types', function () {
-        assert.strictEqual(helper.bindBuffer.callCount, 12);
-        const args = helper.bindBuffer.getCalls().map((call) => call.firstArg);
+        assert.strictEqual(helper.bindBuffer.mock.calls.length, 12);
+        const args = helper.bindBuffer.mock.calls.map((call) => call[0]);
 
         assert.equal(args[0], buffers.polygonBuffers[1]);
         assert.equal(args[1], buffers.polygonBuffers[0]);
@@ -498,47 +497,47 @@ describe('VectorStyleRenderer', () => {
         assert.equal(args[11], buffers.polygonBuffers[2]);
       });
       it('enables attributes for all render passes & geometry types', function () {
-        assert.strictEqual(helper.enableAttributes.callCount, 4);
+        assert.strictEqual(helper.enableAttributes.mock.calls.length, 4);
         const firstPass = vectorStyleRenderer.renderPasses_[0];
         const secondPass = vectorStyleRenderer.renderPasses_[1];
         assert.strictEqual(
-          helper.enableAttributes.getCall(0).firstArg,
+          helper.enableAttributes.mock.calls[0][0],
           firstPass.fillRenderPass.attributesDesc,
         );
         assert.strictEqual(
-          helper.enableAttributes.getCall(1).firstArg,
+          helper.enableAttributes.mock.calls[1][0],
           firstPass.strokeRenderPass.attributesDesc,
         );
         assert.strictEqual(
-          helper.enableAttributes.getCall(2).firstArg,
+          helper.enableAttributes.mock.calls[2][0],
           firstPass.symbolRenderPass.attributesDesc,
         );
         assert.strictEqual(
-          helper.enableAttributes.getCall(3).firstArg,
+          helper.enableAttributes.mock.calls[3][0],
           secondPass.fillRenderPass.attributesDesc,
         );
       });
       it('calls the pre render callback once per render pass & geometry type', function () {
-        assert.strictEqual(preRenderCb.callCount, 4);
+        assert.strictEqual(preRenderCb.mock.calls.length, 4);
       });
       it('renders all render passes & geometry types', function () {
-        assert.strictEqual(helper.drawElements.callCount, 2);
-        assert.strictEqual(helper.drawElementsInstanced.callCount, 2);
+        assert.strictEqual(helper.drawElements.mock.calls.length, 2);
+        assert.strictEqual(helper.drawElementsInstanced.mock.calls.length, 2);
 
-        assert.deepEqual(helper.drawElements.getCall(0).args, [
+        assert.deepEqual(helper.drawElements.mock.calls[0], [
           0,
           buffers.polygonBuffers[0].getSize(),
         ]);
-        assert.deepEqual(helper.drawElements.getCall(1).args, [
+        assert.deepEqual(helper.drawElements.mock.calls[1], [
           0,
           buffers.polygonBuffers[0].getSize(),
         ]);
-        assert.deepEqual(helper.drawElementsInstanced.getCall(0).args, [
+        assert.deepEqual(helper.drawElementsInstanced.mock.calls[0], [
           0,
           buffers.lineStringBuffers[0].getSize(),
           6, // segments count
         ]);
-        assert.deepEqual(helper.drawElementsInstanced.getCall(1).args, [
+        assert.deepEqual(helper.drawElementsInstanced.mock.calls[1], [
           0,
           buffers.pointBuffers[0].getSize(),
           2, // symbols count
@@ -553,12 +552,12 @@ describe('VectorStyleRenderer', () => {
       fillOnlyShaders.builder = new ShaderBuilder().setFillColorExpression(
         'vec4(1.0)',
       );
-      sinonSpy(helper, 'flushBufferData');
-      sinonSpy(helper, 'enableAttributes');
-      sinonSpy(helper, 'enableAttributesInstanced');
-      sinonSpy(helper, 'useProgram');
-      sinonSpy(helper, 'drawElements');
-      sinonSpy(helper, 'drawElementsInstanced');
+      vi.spyOn(helper, 'flushBufferData');
+      vi.spyOn(helper, 'enableAttributes');
+      vi.spyOn(helper, 'enableAttributesInstanced');
+      vi.spyOn(helper, 'useProgram');
+      vi.spyOn(helper, 'drawElements');
+      vi.spyOn(helper, 'drawElementsInstanced');
       vectorStyleRenderer = new VectorStyleRenderer(
         fillOnlyShaders,
         {},
@@ -568,39 +567,39 @@ describe('VectorStyleRenderer', () => {
         geometryBatch,
         SAMPLE_TRANSFORM,
       );
-      preRenderCb = sinonSpy();
+      preRenderCb = vi.fn();
       vectorStyleRenderer.render(buffers, SAMPLE_FRAMESTATE, preRenderCb);
     });
     it('only loads buffer data for one geometry type', function () {
-      assert.strictEqual(helper.flushBufferData.callCount, 3);
+      assert.strictEqual(helper.flushBufferData.mock.calls.length, 3);
     });
     it('only does one render', function () {
-      assert.strictEqual(preRenderCb.callCount, 1);
+      assert.strictEqual(preRenderCb.mock.calls.length, 1);
     });
     it('only does the polygon render pass', function () {
-      assert.strictEqual(helper.enableAttributes.callCount, 1);
+      assert.strictEqual(helper.enableAttributes.mock.calls.length, 1);
       const renderPass = vectorStyleRenderer.renderPasses_[0];
       assert.strictEqual(
-        helper.enableAttributes.firstCall.firstArg,
+        helper.enableAttributes.mock.calls[0][0],
         renderPass.fillRenderPass.attributesDesc,
       );
-      assert.strictEqual(helper.enableAttributesInstanced.callCount, 1);
+      assert.strictEqual(helper.enableAttributesInstanced.mock.calls.length, 1);
       assert.strictEqual(
-        helper.enableAttributesInstanced.firstCall.firstArg,
+        helper.enableAttributesInstanced.mock.calls[0][0],
         renderPass.fillRenderPass.instancedAttributesDesc,
       );
-      assert.strictEqual(helper.useProgram.callCount, 1);
+      assert.strictEqual(helper.useProgram.mock.calls.length, 1);
       assert.strictEqual(
-        helper.useProgram.firstCall.firstArg,
+        helper.useProgram.mock.calls[0][0],
         renderPass.fillRenderPass.program,
       );
-      assert.strictEqual(helper.drawElements.callCount, 1);
-      assert.deepEqual(helper.drawElements.firstCall.args, [
+      assert.strictEqual(helper.drawElements.mock.calls.length, 1);
+      assert.deepEqual(helper.drawElements.mock.calls[0], [
         0,
         buffers.polygonBuffers[0].getSize(),
       ]);
 
-      assert.strictEqual(helper.drawElementsInstanced.callCount, 0);
+      assert.strictEqual(helper.drawElementsInstanced.mock.calls.length, 0);
     });
   });
   describe('rendering only stroke', () => {
@@ -610,12 +609,12 @@ describe('VectorStyleRenderer', () => {
       strokeOnlyShaders.builder = new ShaderBuilder().setStrokeColorExpression(
         'vec4(1.0)',
       );
-      sinonSpy(helper, 'flushBufferData');
-      sinonSpy(helper, 'enableAttributes');
-      sinonSpy(helper, 'enableAttributesInstanced');
-      sinonSpy(helper, 'useProgram');
-      sinonSpy(helper, 'drawElements');
-      sinonSpy(helper, 'drawElementsInstanced');
+      vi.spyOn(helper, 'flushBufferData');
+      vi.spyOn(helper, 'enableAttributes');
+      vi.spyOn(helper, 'enableAttributesInstanced');
+      vi.spyOn(helper, 'useProgram');
+      vi.spyOn(helper, 'drawElements');
+      vi.spyOn(helper, 'drawElementsInstanced');
       vectorStyleRenderer = new VectorStyleRenderer(
         strokeOnlyShaders,
         {},
@@ -625,40 +624,40 @@ describe('VectorStyleRenderer', () => {
         geometryBatch,
         SAMPLE_TRANSFORM,
       );
-      preRenderCb = sinonSpy();
+      preRenderCb = vi.fn();
       vectorStyleRenderer.render(buffers, SAMPLE_FRAMESTATE, preRenderCb);
     });
     it('only loads buffer data for one geometry type', function () {
-      assert.strictEqual(helper.flushBufferData.callCount, 3);
+      assert.strictEqual(helper.flushBufferData.mock.calls.length, 3);
     });
     it('only does one render', function () {
-      assert.strictEqual(preRenderCb.callCount, 1);
+      assert.strictEqual(preRenderCb.mock.calls.length, 1);
     });
     it('only does the line string render pass', function () {
-      assert.strictEqual(helper.enableAttributes.callCount, 1);
+      assert.strictEqual(helper.enableAttributes.mock.calls.length, 1);
       const renderPass = vectorStyleRenderer.renderPasses_[0];
       assert.strictEqual(
-        helper.enableAttributes.firstCall.firstArg,
+        helper.enableAttributes.mock.calls[0][0],
         renderPass.strokeRenderPass.attributesDesc,
       );
-      assert.strictEqual(helper.enableAttributesInstanced.callCount, 1);
+      assert.strictEqual(helper.enableAttributesInstanced.mock.calls.length, 1);
       assert.strictEqual(
-        helper.enableAttributesInstanced.firstCall.firstArg,
+        helper.enableAttributesInstanced.mock.calls[0][0],
         renderPass.strokeRenderPass.instancedAttributesDesc,
       );
-      assert.strictEqual(helper.useProgram.callCount, 1);
+      assert.strictEqual(helper.useProgram.mock.calls.length, 1);
       assert.strictEqual(
-        helper.useProgram.firstCall.firstArg,
+        helper.useProgram.mock.calls[0][0],
         renderPass.strokeRenderPass.program,
       );
-      assert.strictEqual(helper.drawElementsInstanced.callCount, 1);
-      assert.deepEqual(helper.drawElementsInstanced.firstCall.args, [
+      assert.strictEqual(helper.drawElementsInstanced.mock.calls.length, 1);
+      assert.deepEqual(helper.drawElementsInstanced.mock.calls[0], [
         0,
         buffers.lineStringBuffers[0].getSize(),
         6, // segments count
       ]);
 
-      assert.strictEqual(helper.drawElements.callCount, 0);
+      assert.strictEqual(helper.drawElements.mock.calls.length, 0);
     });
   });
   describe('rendering only symbol', () => {
@@ -668,12 +667,12 @@ describe('VectorStyleRenderer', () => {
       symbolOnlyShaders.builder = new ShaderBuilder().setSymbolColorExpression(
         'vec4(1.)',
       );
-      sinonSpy(helper, 'flushBufferData');
-      sinonSpy(helper, 'enableAttributes');
-      sinonSpy(helper, 'enableAttributesInstanced');
-      sinonSpy(helper, 'useProgram');
-      sinonSpy(helper, 'drawElements');
-      sinonSpy(helper, 'drawElementsInstanced');
+      vi.spyOn(helper, 'flushBufferData');
+      vi.spyOn(helper, 'enableAttributes');
+      vi.spyOn(helper, 'enableAttributesInstanced');
+      vi.spyOn(helper, 'useProgram');
+      vi.spyOn(helper, 'drawElements');
+      vi.spyOn(helper, 'drawElementsInstanced');
       vectorStyleRenderer = new VectorStyleRenderer(
         symbolOnlyShaders,
         {},
@@ -683,40 +682,40 @@ describe('VectorStyleRenderer', () => {
         geometryBatch,
         SAMPLE_TRANSFORM,
       );
-      preRenderCb = sinonSpy();
+      preRenderCb = vi.fn();
       vectorStyleRenderer.render(buffers, SAMPLE_FRAMESTATE, preRenderCb);
     });
     it('only loads buffer data for one geometry type', function () {
-      assert.strictEqual(helper.flushBufferData.callCount, 3);
+      assert.strictEqual(helper.flushBufferData.mock.calls.length, 3);
     });
     it('only does one render', function () {
-      assert.strictEqual(preRenderCb.callCount, 1);
+      assert.strictEqual(preRenderCb.mock.calls.length, 1);
     });
     it('only does the point render pass', function () {
-      assert.strictEqual(helper.enableAttributes.callCount, 1);
+      assert.strictEqual(helper.enableAttributes.mock.calls.length, 1);
       const renderPass = vectorStyleRenderer.renderPasses_[0];
       assert.strictEqual(
-        helper.enableAttributes.firstCall.firstArg,
+        helper.enableAttributes.mock.calls[0][0],
         renderPass.symbolRenderPass.attributesDesc,
       );
-      assert.strictEqual(helper.enableAttributesInstanced.callCount, 1);
+      assert.strictEqual(helper.enableAttributesInstanced.mock.calls.length, 1);
       assert.strictEqual(
-        helper.enableAttributesInstanced.firstCall.firstArg,
+        helper.enableAttributesInstanced.mock.calls[0][0],
         renderPass.symbolRenderPass.instancedAttributesDesc,
       );
-      assert.strictEqual(helper.useProgram.callCount, 1);
+      assert.strictEqual(helper.useProgram.mock.calls.length, 1);
       assert.strictEqual(
-        helper.useProgram.firstCall.firstArg,
+        helper.useProgram.mock.calls[0][0],
         renderPass.symbolRenderPass.program,
       );
-      assert.strictEqual(helper.drawElementsInstanced.callCount, 1);
-      assert.deepEqual(helper.drawElementsInstanced.firstCall.args, [
+      assert.strictEqual(helper.drawElementsInstanced.mock.calls.length, 1);
+      assert.deepEqual(helper.drawElementsInstanced.mock.calls[0], [
         0,
         buffers.pointBuffers[0].getSize(),
         buffers.pointBuffers[2].getSize() / 6,
       ]);
 
-      assert.strictEqual(helper.drawElements.callCount, 0);
+      assert.strictEqual(helper.drawElements.mock.calls.length, 0);
     });
   });
 

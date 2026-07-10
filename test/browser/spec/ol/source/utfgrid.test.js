@@ -13,20 +13,23 @@ describe('ol.source.UTFGrid', function () {
   let tileJson = null;
 
   // Load and parse the UTFGrid fixture
-  before(function (done) {
-    const client = new XMLHttpRequest();
-    client.addEventListener('load', function () {
-      tileJson = JSON.parse(this.responseText);
-      done();
-    });
-    client.addEventListener('error', function () {
-      done(new Error('Failed to fetch ' + url));
-    });
-    client.open('GET', url);
-    client.send();
-  });
+  beforeAll(
+    () =>
+      new Promise((resolve, reject) => {
+        const client = new XMLHttpRequest();
+        client.addEventListener('load', function () {
+          tileJson = JSON.parse(this.responseText);
+          resolve();
+        });
+        client.addEventListener('error', function () {
+          reject(new Error('Failed to fetch ' + url));
+        });
+        client.open('GET', url);
+        client.send();
+      }),
+  );
 
-  after(function () {
+  afterAll(function () {
     tileJson = null;
   });
 
@@ -57,37 +60,39 @@ describe('ol.source.UTFGrid', function () {
   });
 
   describe('change event (ready)', function () {
-    it('is fired when the source is ready', function (done) {
-      const source = new UTFGrid({
-        url: url,
-      });
-      assert.strictEqual(source.getState(), 'loading');
-      assert.strictEqual(source.tileGrid, null);
+    it('is fired when the source is ready', () =>
+      new Promise((resolve) => {
+        const source = new UTFGrid({
+          url: url,
+        });
+        assert.strictEqual(source.getState(), 'loading');
+        assert.strictEqual(source.tileGrid, null);
 
-      source.on('change', function (event) {
-        if (source.getState() === 'ready') {
-          assert.instanceOf(source.tileGrid, TileGrid);
-          done();
-        }
-      });
-    });
+        source.on('change', function (event) {
+          if (source.getState() === 'ready') {
+            assert.instanceOf(source.tileGrid, TileGrid);
+            resolve();
+          }
+        });
+      }));
   });
 
-  describe('change event (error)', function (done) {
-    it('is fired when the source fails to initialize', function (done) {
-      const source = new UTFGrid({
-        url: 'Bogus UTFGrid URL',
-      });
-      assert.strictEqual(source.getState(), 'loading');
-      assert.strictEqual(source.tileGrid, null);
+  describe('change event (error)', function () {
+    it('is fired when the source fails to initialize', () =>
+      new Promise((resolve) => {
+        const source = new UTFGrid({
+          url: 'Bogus UTFGrid URL',
+        });
+        assert.strictEqual(source.getState(), 'loading');
+        assert.strictEqual(source.tileGrid, null);
 
-      source.on('change', function (event) {
-        if (source.getState() === 'error') {
-          assert.strictEqual(source.tileGrid, null);
-          done();
-        }
-      });
-    });
+        source.on('change', function (event) {
+          if (source.getState() === 'error') {
+            assert.strictEqual(source.tileGrid, null);
+            resolve();
+          }
+        });
+      }));
   });
 
   describe('#handleTileJSONResponse', function () {
@@ -198,19 +203,25 @@ describe('ol.source.UTFGrid', function () {
     // grid for one tile (1/1/0) and store the result in a variable. This allows
     // us to overwrite getTile in a way that removes the dependency on an
     // external service. See below in the `beforeEach`-method.
-    before(function (done) {
-      const client = new XMLHttpRequest();
-      client.addEventListener('load', function () {
-        gridJson110 = JSON.parse(this.responseText);
-        done();
-      });
-      client.addEventListener('error', function () {
-        done(new Error('Failed to fetch local grid.json'));
-      });
-      client.open('GET', 'spec/ol/data/mapbox-geography-class-1-1-0.grid.json');
-      client.send();
-    });
-    after(function () {
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          const client = new XMLHttpRequest();
+          client.addEventListener('load', function () {
+            gridJson110 = JSON.parse(this.responseText);
+            resolve();
+          });
+          client.addEventListener('error', function () {
+            reject(new Error('Failed to fetch local grid.json'));
+          });
+          client.open(
+            'GET',
+            'spec/ol/data/mapbox-geography-class-1-1-0.grid.json',
+          );
+          client.send();
+        }),
+    );
+    afterAll(function () {
       gridJson110 = null;
     });
 
@@ -250,34 +261,36 @@ describe('ol.source.UTFGrid', function () {
       source = null;
     });
 
-    it('calls callback with data if found', function (done) {
-      const callback = function (data) {
-        assert.lengthOf(arguments, 1);
-        assert.notEqual(data, null);
-        assert.strictEqual('admin' in data, true);
-        assert.strictEqual(data.admin, 'Germany');
-        done();
-      };
-      source.forDataAtCoordinateAndResolution(
-        bonn3857,
-        resolutionZoom1,
-        callback,
-        true,
-      );
-    });
+    it('calls callback with data if found', () =>
+      new Promise((resolve) => {
+        const callback = function (data) {
+          assert.lengthOf(arguments, 1);
+          assert.notEqual(data, null);
+          assert.strictEqual('admin' in data, true);
+          assert.strictEqual(data.admin, 'Germany');
+          resolve();
+        };
+        source.forDataAtCoordinateAndResolution(
+          bonn3857,
+          resolutionZoom1,
+          callback,
+          true,
+        );
+      }));
 
-    it('calls callback with `null` if not found', function (done) {
-      const callback = function (data) {
-        assert.lengthOf(arguments, 1);
-        assert.strictEqual(data, null);
-        done();
-      };
-      source.forDataAtCoordinateAndResolution(
-        noState3857,
-        resolutionZoom1,
-        callback,
-        true,
-      );
-    });
+    it('calls callback with `null` if not found', () =>
+      new Promise((resolve) => {
+        const callback = function (data) {
+          assert.lengthOf(arguments, 1);
+          assert.strictEqual(data, null);
+          resolve();
+        };
+        source.forDataAtCoordinateAndResolution(
+          noState3857,
+          resolutionZoom1,
+          callback,
+          true,
+        );
+      }));
   });
 });

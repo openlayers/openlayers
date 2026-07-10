@@ -185,18 +185,21 @@ describe('ol/source/TileJSON', function () {
   describe('tileUrlFunction', function () {
     let source, tileGrid;
 
-    beforeEach(function (done) {
-      source = new TileJSON({
-        url: 'spec/ol/data/tilejson.json',
-      });
-      const key = source.on('change', function () {
-        if (source.getState() === 'ready') {
-          unByKey(key);
-          tileGrid = source.getTileGrid();
-          done();
-        }
-      });
-    });
+    beforeEach(
+      () =>
+        new Promise((resolve) => {
+          source = new TileJSON({
+            url: 'spec/ol/data/tilejson.json',
+          });
+          const key = source.on('change', function () {
+            if (source.getState() === 'ready') {
+              unByKey(key);
+              tileGrid = source.getTileGrid();
+              resolve();
+            }
+          });
+        }),
+    );
 
     it('uses the correct tile coordinates', function () {
       const coordinate = [829330.2064098881, 5933916.615134273];

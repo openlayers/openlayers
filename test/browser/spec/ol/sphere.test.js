@@ -193,17 +193,21 @@ describe('ol/sphere', function () {
   describe('getArea()', function () {
     let geometry;
     const expectedArea = 145652224192.4434;
-    before(function (done) {
-      afterLoadText('spec/ol/format/wkt/illinois.wkt', function (wkt) {
-        try {
-          const format = new WKT();
-          geometry = format.readGeometry(wkt);
-        } catch (e) {
-          done(e);
-        }
-        done();
-      });
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText('spec/ol/format/wkt/illinois.wkt', function (wkt) {
+            try {
+              const format = new WKT();
+              geometry = format.readGeometry(wkt);
+            } catch (e) {
+              reject(e);
+              return;
+            }
+            resolve();
+          });
+        }),
+    );
 
     it('calculates the area of Ilinois', function () {
       const area = getArea(geometry, {projection: 'EPSG:4326'});

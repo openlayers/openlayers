@@ -1,9 +1,14 @@
 import {assert} from 'chai';
 import CircleStyle from '../../../../../src/ol/style/Circle.js';
 import Fill from '../../../../../src/ol/style/Fill.js';
+import {shared as iconImageCache} from '../../../../../src/ol/style/IconImageCache.js';
 import Stroke from '../../../../../src/ol/style/Stroke.js';
 
 describe('ol/style/Circle', function () {
+  beforeEach(function () {
+    iconImageCache.clear();
+  });
+
   describe('#constructor', function () {
     it('creates a canvas (no fill-style)', function () {
       const style = new CircleStyle({radius: 10});

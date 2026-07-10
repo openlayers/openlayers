@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {spy as sinonSpy} from 'sinon';
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
 import {getCenter, scaleFromCenter} from '../../../../../src/ol/extent.js';
@@ -22,31 +21,34 @@ describe('ol.interaction.DragZoom', function () {
   const width = 360;
   const height = 180;
 
-  beforeEach(function (done) {
-    target = document.createElement('div');
-    const style = target.style;
-    style.position = 'absolute';
-    style.left = '-1000px';
-    style.top = '-1000px';
-    style.width = width + 'px';
-    style.height = height + 'px';
-    document.body.appendChild(target);
-    source = new VectorSource();
-    const layer = new VectorLayer({source: source});
-    map = new Map({
-      target: target,
-      layers: [layer],
-      view: new View({
-        projection: 'EPSG:4326',
-        center: [0, 0],
-        resolution: 1,
-        multiWorld: true,
+  beforeEach(
+    () =>
+      new Promise((resolve) => {
+        target = document.createElement('div');
+        const style = target.style;
+        style.position = 'absolute';
+        style.left = '-1000px';
+        style.top = '-1000px';
+        style.width = width + 'px';
+        style.height = height + 'px';
+        document.body.appendChild(target);
+        source = new VectorSource();
+        const layer = new VectorLayer({source: source});
+        map = new Map({
+          target: target,
+          layers: [layer],
+          view: new View({
+            projection: 'EPSG:4326',
+            center: [0, 0],
+            resolution: 1,
+            multiWorld: true,
+          }),
+        });
+        map.once('postrender', function () {
+          resolve();
+        });
       }),
-    });
-    map.once('postrender', function () {
-      done();
-    });
-  });
+  );
 
   afterEach(function () {
     disposeMap(map);
@@ -80,7 +82,7 @@ describe('ol.interaction.DragZoom', function () {
       });
       map.addInteraction(interaction);
       const view = map.getView();
-      view.fitInternal = sinonSpy();
+      view.fitInternal = vi.fn();
 
       const box = new RenderBox();
       const extent = [-110, 40, -90, 60];
@@ -89,8 +91,8 @@ describe('ol.interaction.DragZoom', function () {
 
       interaction.onBoxEnd();
 
-      assert.strictEqual(view.fitInternal.calledOnce, true);
-      assert.strictEqual(view.fitInternal.args[0][1].duration, 1);
+      assert.strictEqual(view.fitInternal.mock.calls.length, 1);
+      assert.strictEqual(view.fitInternal.mock.calls[0][1].duration, 1);
     });
     it('centers the view on the box geometry', function () {
       const interaction = new DragZoom({

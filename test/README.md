@@ -19,16 +19,16 @@ This will run all tests - browser, node and rendering.
 
 ## Browser tests
 
-To run the browser tests continuously:
+The browser tests run under Vitest. To run them once:
 
-    npm run karma
+    npm run test-browser
 
-After this, you can attach any browser and debug the tests like this:
+To run them in watch mode while developing:
 
- * open http://localhost:9876/debug.html
- * open the developer tools
- * add a breakpoint
- * refresh the page
+    npx vitest --config test/browser/vitest.config.mjs
+
+Add `--browser.headless=false` to that command to run the tests in a visible
+browser and debug with its devtools.
 
 ## Node tests
 

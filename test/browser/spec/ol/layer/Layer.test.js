@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {spy as sinonSpy} from 'sinon';
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
 import Group from '../../../../../src/ol/layer/Group.js';
@@ -571,31 +570,31 @@ describe('ol/layer/Layer', function () {
       const layer = new Layer({
         source: new Source({projection: projection}),
       });
-      sinonSpy(layer, 'changed');
+      vi.spyOn(layer, 'changed');
 
       const source = new Source({projection: projection});
       layer.set('source', source);
-      assert.strictEqual(layer.changed.calledOnce, true);
+      assert.strictEqual(layer.changed.mock.calls.length, 1);
     });
 
     it('sets up event listeners', function () {
-      sinonSpy(Layer.prototype, 'handleSourceChange_');
+      vi.spyOn(Layer.prototype, 'handleSourceChange_');
 
       const first = new Source({projection: projection});
       const layer = new Layer({source: first});
 
       first.setState('ready');
-      assert.strictEqual(layer.handleSourceChange_.calledOnce, true);
+      assert.strictEqual(layer.handleSourceChange_.mock.calls.length, 1);
 
       const second = new Source({projection: projection});
       layer.set('source', second);
 
-      assert.strictEqual(layer.handleSourceChange_.calledOnce, true);
+      assert.strictEqual(layer.handleSourceChange_.mock.calls.length, 1);
       second.setState('ready');
-      assert.strictEqual(layer.handleSourceChange_.callCount, 2);
+      assert.strictEqual(layer.handleSourceChange_.mock.calls.length, 2);
 
       // remove spy
-      Layer.prototype.handleSourceChange_.restore();
+      Layer.prototype.handleSourceChange_.mockRestore();
     });
   });
 
@@ -616,31 +615,31 @@ describe('ol/layer/Layer', function () {
       const layer = new Layer({
         source: new Source({projection: projection}),
       });
-      sinonSpy(layer, 'changed');
+      vi.spyOn(layer, 'changed');
 
       const source = new Source({projection: projection});
       layer.setSource(source);
-      assert.strictEqual(layer.changed.calledOnce, true);
+      assert.strictEqual(layer.changed.mock.calls.length, 1);
     });
 
     it('sets up event listeners', function () {
-      sinonSpy(Layer.prototype, 'handleSourceChange_');
+      vi.spyOn(Layer.prototype, 'handleSourceChange_');
 
       const first = new Source({projection: projection});
       const layer = new Layer({source: first});
 
       first.setState('ready');
-      assert.strictEqual(layer.handleSourceChange_.calledOnce, true);
+      assert.strictEqual(layer.handleSourceChange_.mock.calls.length, 1);
 
       const second = new Source({projection: projection});
       layer.setSource(second);
 
-      assert.strictEqual(layer.handleSourceChange_.calledOnce, true);
+      assert.strictEqual(layer.handleSourceChange_.mock.calls.length, 1);
       second.setState('ready');
-      assert.strictEqual(layer.handleSourceChange_.callCount, 2);
+      assert.strictEqual(layer.handleSourceChange_.mock.calls.length, 2);
 
       // remove spy
-      Layer.prototype.handleSourceChange_.restore();
+      Layer.prototype.handleSourceChange_.mockRestore();
     });
   });
 
@@ -672,10 +671,10 @@ describe('ol/layer/Layer', function () {
     });
 
     it('triggers a change event', function () {
-      const listener = sinonSpy();
+      const listener = vi.fn();
       layer.on('propertychange', listener);
       layer.setOpacity(0.4);
-      assert.strictEqual(listener.calledOnce, true);
+      assert.strictEqual(listener.mock.calls.length, 1);
     });
   });
 
@@ -702,14 +701,14 @@ describe('ol/layer/Layer', function () {
     });
 
     it('fires a change event', function () {
-      const listener = sinonSpy();
+      const listener = vi.fn();
       layer.on('propertychange', listener);
 
       layer.setVisible(false);
-      assert.strictEqual(listener.callCount, 1);
+      assert.strictEqual(listener.mock.calls.length, 1);
 
       layer.setVisible(true);
-      assert.strictEqual(listener.callCount, 2);
+      assert.strictEqual(listener.mock.calls.length, 2);
     });
   });
 
@@ -723,63 +722,66 @@ describe('ol/layer/Layer', function () {
     /** HTMLDivElement */
     let target;
 
-    beforeEach((done) => {
-      target = document.createElement('div');
-      target.style.width = '100px';
-      target.style.height = '100px';
-      document.body.appendChild(target);
+    beforeEach(
+      () =>
+        new Promise((resolve) => {
+          target = document.createElement('div');
+          target.style.width = '100px';
+          target.style.height = '100px';
+          document.body.appendChild(target);
 
-      layer = new TileLayer({
-        source: new XYZ({
-          url: 'spec/ol/data/osm-0-0-0.png',
+          layer = new TileLayer({
+            source: new XYZ({
+              url: 'spec/ol/data/osm-0-0-0.png',
+            }),
+          });
+
+          map = new Map({
+            target: target,
+            layers: [layer],
+            view: new View({
+              center: [0, 0],
+              zoom: 0,
+            }),
+          });
+
+          map.once('rendercomplete', () => resolve());
         }),
-      });
-
-      map = new Map({
-        target: target,
-        layers: [layer],
-        view: new View({
-          center: [0, 0],
-          zoom: 0,
-        }),
-      });
-
-      map.once('rendercomplete', () => done());
-    });
+    );
 
     afterEach(() => {
       disposeMap(map);
     });
 
     it('is called when a layer goes from visible to not visible', () => {
-      const spy = sinonSpy(layer, 'unrender');
+      const spy = vi.spyOn(layer, 'unrender');
       map.renderSync();
-      assert.strictEqual(spy.callCount, 0);
+      assert.strictEqual(spy.mock.calls.length, 0);
 
       layer.setVisible(false);
       map.renderSync();
-      assert.strictEqual(spy.callCount, 1);
+      assert.strictEqual(spy.mock.calls.length, 1);
     });
 
     it('is called when a layer is removed from the map', () => {
-      const spy = sinonSpy(layer, 'unrender');
+      const spy = vi.spyOn(layer, 'unrender');
       map.renderSync();
-      assert.strictEqual(spy.callCount, 0);
+      assert.strictEqual(spy.mock.calls.length, 0);
 
       map.removeLayer(layer);
       map.renderSync();
-      assert.strictEqual(spy.callCount, 1);
+      assert.strictEqual(spy.mock.calls.length, 1);
     });
 
     it('is called when a layer goes out of range', () => {
-      const spy = sinonSpy(layer, 'unrender');
+      const spy = vi.spyOn(layer, 'unrender');
       map.renderSync();
-      assert.strictEqual(spy.callCount, 0);
+      assert.strictEqual(spy.mock.calls.length, 0);
 
       layer.setMaxZoom(3);
       map.getView().setZoom(4);
       map.renderSync();
-      assert.strictEqual(spy.callCount, 1);
+      assert.strictEqual(spy.mock.calls.length, 1);
     });
   });
 
@@ -884,24 +886,24 @@ describe('ol/layer/Layer', function () {
       let mapRenderSpy;
 
       beforeEach(function () {
-        mapRenderSpy = sinonSpy(map, 'render');
+        mapRenderSpy = vi.spyOn(map, 'render');
       });
 
       afterEach(function () {
-        mapRenderSpy.restore();
+        mapRenderSpy.mockRestore();
       });
 
       it('requests a render frame', function () {
         const layer = new Layer({});
 
         layer.setMap(map);
-        assert.strictEqual(mapRenderSpy.callCount, 1);
+        assert.strictEqual(mapRenderSpy.mock.calls.length, 1);
 
         layer.setMap(null);
-        assert.strictEqual(mapRenderSpy.callCount, 2);
+        assert.strictEqual(mapRenderSpy.mock.calls.length, 2);
 
         layer.setMap(map);
-        assert.strictEqual(mapRenderSpy.callCount, 3);
+        assert.strictEqual(mapRenderSpy.mock.calls.length, 3);
       });
     });
 

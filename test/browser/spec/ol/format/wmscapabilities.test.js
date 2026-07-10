@@ -5,16 +5,20 @@ describe('ol.format.WMSCapabilities', function () {
   describe('when parsing ogcsample.xml (v1.3.0)', function () {
     const parser = new WMSCapabilities();
     let capabilities;
-    before(function (done) {
-      afterLoadText('spec/ol/format/wms/ogcsample130.xml', function (xml) {
-        try {
-          capabilities = parser.read(xml);
-        } catch (e) {
-          done(e);
-        }
-        done();
-      });
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText('spec/ol/format/wms/ogcsample130.xml', function (xml) {
+            try {
+              capabilities = parser.read(xml);
+            } catch (e) {
+              reject(e);
+              return;
+            }
+            resolve();
+          });
+        }),
+    );
 
     it('can read version', function () {
       assert.deepEqual(capabilities.version, '1.3.0');
@@ -179,16 +183,23 @@ describe('ol.format.WMSCapabilities', function () {
   describe('when parsing ogcsample.xml (v1.3.0) with SLD', function () {
     const parser = new WMSCapabilities();
     let capabilities;
-    before(function (done) {
-      afterLoadText('spec/ol/format/wms/ogcsample130_sld.xml', function (xml) {
-        try {
-          capabilities = parser.read(xml);
-        } catch (e) {
-          done(e);
-        }
-        done();
-      });
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText(
+            'spec/ol/format/wms/ogcsample130_sld.xml',
+            function (xml) {
+              try {
+                capabilities = parser.read(xml);
+              } catch (e) {
+                reject(e);
+                return;
+              }
+              resolve();
+            },
+          );
+        }),
+    );
 
     it('can read version', function () {
       assert.deepEqual(capabilities.version, '1.3.0');
@@ -384,16 +395,20 @@ describe('ol.format.WMSCapabilities', function () {
   describe('when parsing ogcsample.xml (v1.1.1)', function () {
     const parser = new WMSCapabilities();
     let capabilities;
-    before(function (done) {
-      afterLoadText('spec/ol/format/wms/ogcsample111.xml', function (xml) {
-        try {
-          capabilities = parser.read(xml);
-        } catch (e) {
-          done(e);
-        }
-        done();
-      });
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText('spec/ol/format/wms/ogcsample111.xml', function (xml) {
+            try {
+              capabilities = parser.read(xml);
+            } catch (e) {
+              reject(e);
+              return;
+            }
+            resolve();
+          });
+        }),
+    );
 
     it('can read version', function () {
       assert.deepEqual(capabilities.version, '1.1.1');
@@ -672,16 +687,23 @@ describe('ol.format.WMSCapabilities', function () {
   describe('when parsing ogcsample.xml (v1.1.1) with SLD', function () {
     const parser = new WMSCapabilities();
     let capabilities;
-    before(function (done) {
-      afterLoadText('spec/ol/format/wms/ogcsample111_sld.xml', function (xml) {
-        try {
-          capabilities = parser.read(xml);
-        } catch (e) {
-          done(e);
-        }
-        done();
-      });
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText(
+            'spec/ol/format/wms/ogcsample111_sld.xml',
+            function (xml) {
+              try {
+                capabilities = parser.read(xml);
+              } catch (e) {
+                reject(e);
+                return;
+              }
+              resolve();
+            },
+          );
+        }),
+    );
 
     it('can read version', function () {
       assert.deepEqual(capabilities.version, '1.1.1');
@@ -993,16 +1015,20 @@ describe('ol.format.WMSCapabilities', function () {
   describe('when parsing singlelayer.xml', function () {
     const parser = new WMSCapabilities();
     let capabilities;
-    before(function (done) {
-      afterLoadText('spec/ol/format/wms/singlelayer.xml', function (xml) {
-        try {
-          capabilities = parser.read(xml);
-        } catch (e) {
-          done(e);
-        }
-        done();
-      });
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText('spec/ol/format/wms/singlelayer.xml', function (xml) {
+            try {
+              capabilities = parser.read(xml);
+            } catch (e) {
+              reject(e);
+              return;
+            }
+            resolve();
+          });
+        }),
+    );
 
     it('can read version', function () {
       assert.deepEqual(capabilities.version, '1.3.0');

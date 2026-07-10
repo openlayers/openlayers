@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {spy as sinonSpy} from 'sinon';
 import ImageWrapper, {
   decode,
   decodeFallback,
@@ -26,88 +25,93 @@ describe('ol/Image', function () {
       assert.instanceOf(instance, ImageWrapper);
       assert.strictEqual(instance.getState(), ImageState.IDLE);
     });
-    it('creates a new instance with a loader', function (done) {
-      let instance = undefined;
-      const image = new Image();
-      const loader = (extent, resolution, pixelRatio) => {
-        assert.deepEqual(extent, [0, 0, 1, 1]);
-        assert.strictEqual(resolution, 1);
-        assert.strictEqual(pixelRatio, 1);
-        image.src =
-          'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
-        instance.setImage(image);
-        return load(image);
-      };
-      instance = new ImageWrapper(extent, resolution, pixelRatio, loader);
-      assert.instanceOf(instance, ImageWrapper);
-      assert.strictEqual(instance.getState(), ImageState.IDLE);
-      instance.addEventListener('change', function handleChange() {
-        if (instance.getState() === ImageState.LOADED) {
-          instance.removeEventListener('change', handleChange);
-          assert.strictEqual(instance.getImage(), image);
-          done();
-        }
-      });
-      instance.load();
-    });
+    it('creates a new instance with a loader', () =>
+      new Promise((resolve) => {
+        let instance = undefined;
+        const image = new Image();
+        const loader = (extent, resolution, pixelRatio) => {
+          assert.deepEqual(extent, [0, 0, 1, 1]);
+          assert.strictEqual(resolution, 1);
+          assert.strictEqual(pixelRatio, 1);
+          image.src =
+            'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
+          instance.setImage(image);
+          return load(image);
+        };
+        instance = new ImageWrapper(extent, resolution, pixelRatio, loader);
+        assert.instanceOf(instance, ImageWrapper);
+        assert.strictEqual(instance.getState(), ImageState.IDLE);
+        instance.addEventListener('change', function handleChange() {
+          if (instance.getState() === ImageState.LOADED) {
+            instance.removeEventListener('change', handleChange);
+            assert.strictEqual(instance.getImage(), image);
+            resolve();
+          }
+        });
+        instance.load();
+      }));
   });
   describe('HTML Image loading', function () {
     let handleLoad, handleError, img;
 
-    beforeEach(function () {
-      handleLoad = sinonSpy();
-      handleError = sinonSpy();
+    beforeEach(() => {
+      handleLoad = vi.fn();
+      handleError = vi.fn();
       img = new Image();
     });
 
-    it('handles load event', function (done) {
-      img.src = 'spec/ol/data/dot.png';
-      listenImage(img, handleLoad, handleError);
+    it('handles load event', () =>
+      new Promise((resolve) => {
+        img.src = 'spec/ol/data/dot.png';
+        listenImage(img, handleLoad, handleError);
 
-      setTimeout(function () {
-        assert.strictEqual(handleLoad.called, true);
-        assert.strictEqual(handleError.called, false);
-        done();
-      }, 200);
-    });
+        setTimeout(function () {
+          assert.isAbove(handleLoad.mock.calls.length, 0);
+          assert.strictEqual(handleError.mock.calls.length, 0);
+          resolve();
+        }, 200);
+      }));
 
-    it('handles load event when src is set later', function (done) {
-      listenImage(img, handleLoad, handleError);
-      img.src = 'spec/ol/data/dot.png';
+    it('handles load event when src is set later', () =>
+      new Promise((resolve) => {
+        listenImage(img, handleLoad, handleError);
+        img.src = 'spec/ol/data/dot.png';
 
-      setTimeout(function () {
-        assert.strictEqual(handleLoad.called, true);
-        assert.strictEqual(handleError.called, false);
-        done();
-      }, 200);
-    });
+        setTimeout(function () {
+          assert.isAbove(handleLoad.mock.calls.length, 0);
+          assert.strictEqual(handleError.mock.calls.length, 0);
+          resolve();
+        }, 200);
+      }));
 
-    it('handles error event', function (done) {
-      img.src = 'invalid.jpeg';
-      listenImage(img, handleLoad, handleError);
+    it('handles error event', () =>
+      new Promise((resolve) => {
+        img.src = 'invalid.jpeg';
+        listenImage(img, handleLoad, handleError);
 
-      setTimeout(function () {
-        assert.strictEqual(handleLoad.called, false);
-        assert.strictEqual(handleError.called, true);
-        done();
-      }, 500);
-    });
+        setTimeout(function () {
+          assert.strictEqual(handleLoad.mock.calls.length, 0);
+          assert.isAbove(handleError.mock.calls.length, 0);
+          resolve();
+        }, 500);
+      }));
 
-    it('handles cancelation', function (done) {
-      img.src = 'spec/ol/data/dot.png';
-      listenImage(img, handleLoad, handleError)();
+    it('handles cancelation', () =>
+      new Promise((resolve) => {
+        img.src = 'spec/ol/data/dot.png';
+        listenImage(img, handleLoad, handleError)();
 
-      setTimeout(function () {
-        assert.strictEqual(handleLoad.called, false);
-        assert.strictEqual(handleError.called, false);
-        done();
-      }, 200);
-    });
+        setTimeout(function () {
+          assert.strictEqual(handleLoad.mock.calls.length, 0);
+          assert.strictEqual(handleError.mock.calls.length, 0);
+          resolve();
+        }, 200);
+      }));
   });
 
   describe('Promise based loading', function () {
     let image;
-    this.beforeEach(function () {
+    beforeEach(() => {
       image = new Image();
     });
     it('load()', async () => {

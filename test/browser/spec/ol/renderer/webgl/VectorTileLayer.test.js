@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {spy as sinonSpy} from 'sinon';
 import Map from '../../../../../../src/ol/Map.js';
 import TileQueue from '../../../../../../src/ol/TileQueue.js';
 import TileState from '../../../../../../src/ol/TileState.js';
@@ -291,14 +290,14 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
         helper: renderer.helper,
         gutter: 4,
       });
-      sinonSpy(vectorTileLayer, 'changed');
+      vi.spyOn(vectorTileLayer, 'changed');
     });
     it('creates a TileGeometry instance', () => {
       assert.instanceOf(tileRepresentation, TileGeometry);
     });
     it('triggers a redraw of the layer when the tile representation is ready', () => {
       tileRepresentation.setReady();
-      assert.strictEqual(vectorTileLayer.changed.calledOnce, true);
+      assert.strictEqual(vectorTileLayer.changed.mock.calls.length, 1);
     });
   });
 
@@ -311,11 +310,11 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
       frameState.tileQueue.loadMoreTiles(Infinity, Infinity);
       await new Promise((resolve) => setTimeout(resolve, 150));
 
-      sinonSpy(renderer.helper, 'setUniformFloatValue');
-      sinonSpy(renderer.helper, 'setUniformFloatVec4');
-      sinonSpy(renderer.helper, 'setUniformMatrixValue');
-      sinonSpy(renderer.helper, 'bindTexture');
-      sinonSpy(renderer.styleRenderer_, 'render');
+      vi.spyOn(renderer.helper, 'setUniformFloatValue');
+      vi.spyOn(renderer.helper, 'setUniformFloatVec4');
+      vi.spyOn(renderer.helper, 'setUniformMatrixValue');
+      vi.spyOn(renderer.helper, 'bindTexture');
+      vi.spyOn(renderer.styleRenderer_, 'render');
 
       // this is required to keep a "snapshot" of the input matrix
       // (since the same object is reused for various calls)
@@ -334,53 +333,41 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
       assert.deepEqual(renderer.tileMaskTarget_.getSize(), [400, 200]);
     });
     it('sets TILE_ZOOM_LEVEL uniform three times for each tile and style renderer, plus two times for tile masks', () => {
-      const calls = renderer.helper.setUniformFloatValue
-        .getCalls()
-        .filter((c) => c.args[0] === Uniforms.TILE_ZOOM_LEVEL);
+      const calls = renderer.helper.setUniformFloatValue.mock.calls.filter(
+        (args) => args[0] === Uniforms.TILE_ZOOM_LEVEL,
+      );
       assert.strictEqual(calls.length, 14);
-      assertArrayLikeEqual(calls[0].args, [Uniforms.TILE_ZOOM_LEVEL, 2]);
-      assertArrayLikeEqual(calls[1].args, [Uniforms.TILE_ZOOM_LEVEL, 2]);
-      assertArrayLikeEqual(calls[2].args, [Uniforms.TILE_ZOOM_LEVEL, 2]);
-      assertArrayLikeEqual(calls[8].args, [Uniforms.TILE_ZOOM_LEVEL, 2]);
+      assertArrayLikeEqual(calls[0], [Uniforms.TILE_ZOOM_LEVEL, 2]);
+      assertArrayLikeEqual(calls[1], [Uniforms.TILE_ZOOM_LEVEL, 2]);
+      assertArrayLikeEqual(calls[2], [Uniforms.TILE_ZOOM_LEVEL, 2]);
+      assertArrayLikeEqual(calls[8], [Uniforms.TILE_ZOOM_LEVEL, 2]);
     });
     it('sets GLOBAL_ALPHA uniform three times for each tile and style renderer, plus two times for tile masks', () => {
-      const calls = renderer.helper.setUniformFloatValue
-        .getCalls()
-        .filter((c) => c.args[0] === Uniforms.GLOBAL_ALPHA);
+      const calls = renderer.helper.setUniformFloatValue.mock.calls.filter(
+        (args) => args[0] === Uniforms.GLOBAL_ALPHA,
+      );
       assert.strictEqual(calls.length, 14);
-      assertArrayLikeEqual(calls[0].args, [Uniforms.GLOBAL_ALPHA, 1]);
-      assertArrayLikeEqual(calls[1].args, [Uniforms.GLOBAL_ALPHA, 1]);
-      assertArrayLikeEqual(calls[2].args, [Uniforms.GLOBAL_ALPHA, 1]);
-      assertArrayLikeEqual(calls[8].args, [Uniforms.GLOBAL_ALPHA, 1]);
+      assertArrayLikeEqual(calls[0], [Uniforms.GLOBAL_ALPHA, 1]);
+      assertArrayLikeEqual(calls[1], [Uniforms.GLOBAL_ALPHA, 1]);
+      assertArrayLikeEqual(calls[2], [Uniforms.GLOBAL_ALPHA, 1]);
+      assertArrayLikeEqual(calls[8], [Uniforms.GLOBAL_ALPHA, 1]);
     });
     it('sets RENDER_EXTENT uniform three times for each tile and style renderer, plus two times for tile masks', () => {
-      const calls = renderer.helper.setUniformFloatVec4
-        .getCalls()
-        .filter((c) => c.args[0] === Uniforms.RENDER_EXTENT);
+      const calls = renderer.helper.setUniformFloatVec4.mock.calls.filter(
+        (args) => args[0] === Uniforms.RENDER_EXTENT,
+      );
       assert.strictEqual(calls.length, 14);
-      assertArrayLikeEqual(calls[0].args, [
-        Uniforms.RENDER_EXTENT,
-        [0, 0, 64, 64],
-      ]);
-      assertArrayLikeEqual(calls[1].args, [
-        Uniforms.RENDER_EXTENT,
-        [0, 0, 64, 64],
-      ]);
-      assertArrayLikeEqual(calls[2].args, [
-        Uniforms.RENDER_EXTENT,
-        [0, 0, 64, 64],
-      ]);
-      assertArrayLikeEqual(calls[8].args, [
-        Uniforms.RENDER_EXTENT,
-        [0, 0, 64, 64],
-      ]);
+      assertArrayLikeEqual(calls[0], [Uniforms.RENDER_EXTENT, [0, 0, 64, 64]]);
+      assertArrayLikeEqual(calls[1], [Uniforms.RENDER_EXTENT, [0, 0, 64, 64]]);
+      assertArrayLikeEqual(calls[2], [Uniforms.RENDER_EXTENT, [0, 0, 64, 64]]);
+      assertArrayLikeEqual(calls[8], [Uniforms.RENDER_EXTENT, [0, 0, 64, 64]]);
     });
     it('sets PROJECTION matrix uniform three times for each tile and style renderer, plus one time per tiles for their mask', () => {
-      const calls = renderer.helper.setUniformMatrixValue
-        .getCalls()
-        .filter((c) => c.args[0] === Uniforms.PROJECTION_MATRIX);
+      const calls = renderer.helper.setUniformMatrixValue.mock.calls.filter(
+        (args) => args[0] === Uniforms.PROJECTION_MATRIX,
+      );
       assert.strictEqual(calls.length, 14);
-      assertArrayLikeEqual(calls[0].args, [
+      assertArrayLikeEqual(calls[0], [
         Uniforms.PROJECTION_MATRIX,
         // 0.04   0     0     0      combination of:
         // 0      0.08  0     0        translate( 0 , -16 )  ->  subtract view center
@@ -388,7 +375,7 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
         // -2.56 -1.28  0     1        scale( 2 / ( 0.25 * 200px ) , 2 / ( 0.25 * 100px ) )  ->  divide by resolution and viewport size
         [0.04, 0, 0, 0, 0, 0.08, 0, 0, 0, 0, 1, 0, -2.56, -1.28, 0, 1],
       ]);
-      assertArrayLikeEqual(calls[2].args, [
+      assertArrayLikeEqual(calls[2], [
         Uniforms.PROJECTION_MATRIX,
         // 0.04   0     0     0      combination of:
         // 0      0.08  0     0        translate( 0 , -16 )  ->  subtract view center
@@ -396,7 +383,7 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
         // -2.56 -1.28  0     1        scale( 2 / ( 0.25 * 200px ) , 2 / ( 0.25 * 100px ) )  ->  divide by resolution and viewport size
         [0.04, 0, 0, 0, 0, 0.08, 0, 0, 0, 0, 1, 0, -2.56, -1.28, 0, 1],
       ]);
-      assertArrayLikeEqual(calls[8].args, [
+      assertArrayLikeEqual(calls[8], [
         Uniforms.PROJECTION_MATRIX,
         // 0.04   0     0     0      combination of:
         // 0      0.08  0     0        translate( 0 , -16 )  ->  subtract view center
@@ -406,11 +393,11 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
       ]);
     });
     it('sets INVERT_PROJECTION_MATRIX matrix uniform three times for each tile and style renderer, plus one time per tiles for their mask', () => {
-      const calls = renderer.helper.setUniformMatrixValue
-        .getCalls()
-        .filter((c) => c.args[0] === Uniforms.INVERT_PROJECTION_MATRIX);
+      const calls = renderer.helper.setUniformMatrixValue.mock.calls.filter(
+        (args) => args[0] === Uniforms.INVERT_PROJECTION_MATRIX,
+      );
       assert.strictEqual(calls.length, 14);
-      assertArrayLikeEqual(calls[0].args, [
+      assertArrayLikeEqual(calls[0], [
         Uniforms.INVERT_PROJECTION_MATRIX,
         // 25     0     0     0      combination of:
         // 0      12.5  0     0      * scale( 0.25 * 200px / 2 , 0.25 * 100px / 2 )  ->  view resolution and viewport size
@@ -418,26 +405,26 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
         // 64     16    0     1      * translate( 0 , 16 )  ->  add view center
         [25, 0, 0, 0, 0, 12.5, 0, 0, 0, 0, 1, 0, 64, 16, 0, 1],
       ]);
-      assertArrayLikeEqual(calls[2].args, [
+      assertArrayLikeEqual(calls[2], [
         Uniforms.INVERT_PROJECTION_MATRIX,
         [25, 0, 0, 0, 0, 12.5, 0, 0, 0, 0, 1, 0, 64, 16, 0, 1],
       ]);
-      assertArrayLikeEqual(calls[8].args, [
+      assertArrayLikeEqual(calls[8], [
         Uniforms.INVERT_PROJECTION_MATRIX,
         [25, 0, 0, 0, 0, 12.5, 0, 0, 0, 0, 1, 0, 0, 16, 0, 1],
       ]);
     });
     it('bind TILE_MASK_TEXTURE uniform three times for each tile and style renderer, plus one time before rendering tile masks', () => {
-      const calls = renderer.helper.bindTexture.getCalls();
+      const calls = renderer.helper.bindTexture.mock.calls;
       assert.strictEqual(calls.length, 13);
-      assertArrayLikeEqual(calls[0].args, [
+      assertArrayLikeEqual(calls[0], [
         renderer.tileMaskTarget_.getTexture(),
         0,
         Uniforms.TILE_MASK_TEXTURE,
       ]);
     });
     it('calls render for each tile on each renderer', () => {
-      assert.strictEqual(renderer.styleRenderer_.render.callCount, 2);
+      assert.strictEqual(renderer.styleRenderer_.render.mock.calls.length, 2);
     });
   });
 });

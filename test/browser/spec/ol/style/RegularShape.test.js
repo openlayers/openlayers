@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {spy as sinonSpy} from 'sinon';
 import Fill from '../../../../../src/ol/style/Fill.js';
 import RegularShape from '../../../../../src/ol/style/RegularShape.js';
 import Stroke from '../../../../../src/ol/style/Stroke.js';
@@ -229,9 +228,9 @@ describe('ol/style/RegularShape', function () {
     let canvas;
     beforeEach(function () {
       canvas = {
-        arc: sinonSpy(),
-        lineTo: sinonSpy(),
-        closePath: sinonSpy(),
+        arc: vi.fn(),
+        lineTo: vi.fn(),
+        closePath: vi.fn(),
       };
     });
     it('does not double the points without radius2', function () {
@@ -240,9 +239,9 @@ describe('ol/style/RegularShape', function () {
         points: 4,
       });
       style.createPath_(canvas);
-      assert.strictEqual(canvas.arc.callCount, 0);
-      assert.strictEqual(canvas.lineTo.callCount, 4);
-      assert.strictEqual(canvas.closePath.callCount, 1);
+      assert.strictEqual(canvas.arc.mock.calls.length, 0);
+      assert.strictEqual(canvas.lineTo.mock.calls.length, 4);
+      assert.strictEqual(canvas.closePath.mock.calls.length, 1);
     });
     it('doubles the points with radius2', function () {
       const style = new RegularShape({
@@ -251,9 +250,9 @@ describe('ol/style/RegularShape', function () {
         points: 4,
       });
       style.createPath_(canvas);
-      assert.strictEqual(canvas.arc.callCount, 0);
-      assert.strictEqual(canvas.lineTo.callCount, 8);
-      assert.strictEqual(canvas.closePath.callCount, 1);
+      assert.strictEqual(canvas.arc.mock.calls.length, 0);
+      assert.strictEqual(canvas.lineTo.mock.calls.length, 8);
+      assert.strictEqual(canvas.closePath.mock.calls.length, 1);
     });
     it('doubles the points when radius2 equals radius', function () {
       const style = new RegularShape({
@@ -262,9 +261,9 @@ describe('ol/style/RegularShape', function () {
         points: 4,
       });
       style.createPath_(canvas);
-      assert.strictEqual(canvas.arc.callCount, 0);
-      assert.strictEqual(canvas.lineTo.callCount, 8);
-      assert.strictEqual(canvas.closePath.callCount, 1);
+      assert.strictEqual(canvas.arc.mock.calls.length, 0);
+      assert.strictEqual(canvas.lineTo.mock.calls.length, 8);
+      assert.strictEqual(canvas.closePath.mock.calls.length, 1);
     });
   });
 

@@ -1,6 +1,5 @@
 import {assert} from 'chai';
 import proj4 from 'proj4';
-import {spy as sinonSpy} from 'sinon';
 import ImageTile from '../../../../../src/ol/ImageTile.js';
 import TileState from '../../../../../src/ol/TileState.js';
 import {listen} from '../../../../../src/ol/events.js';
@@ -121,47 +120,49 @@ describe('ol/source/TileImage', function () {
       addCommon();
     });
 
-    it('can handle source projection without extent and units', function (done) {
-      const source = createSource(
-        '4326_noextentnounits',
-        createXYZ({
-          extent: [-180, -90, 180, 90],
-          tileSize: [2, 2],
-        }),
-      );
-      const tile = source.getTile(0, 0, 0, 1, getProjection('EPSG:3857'));
-      assert.instanceOf(tile, ReprojTile);
+    it('can handle source projection without extent and units', () =>
+      new Promise((resolve) => {
+        const source = createSource(
+          '4326_noextentnounits',
+          createXYZ({
+            extent: [-180, -90, 180, 90],
+            tileSize: [2, 2],
+          }),
+        );
+        const tile = source.getTile(0, 0, 0, 1, getProjection('EPSG:3857'));
+        assert.instanceOf(tile, ReprojTile);
 
-      listen(tile, 'change', function () {
-        if (tile.getState() == 2) {
-          // LOADED
-          done();
-        }
-      });
-      tile.load();
-    });
+        listen(tile, 'change', function () {
+          if (tile.getState() == 2) {
+            // LOADED
+            resolve();
+          }
+        });
+        tile.load();
+      }));
 
-    it('can handle target projection without extent and units', function (done) {
-      const proj = getProjection('4326_noextentnounits');
-      const source = createSource();
-      source.setTileGridForProjection(
-        proj,
-        createXYZ({
-          extent: WORLD_EXTENT,
-          tileSize: [2, 2],
-        }),
-      );
-      const tile = source.getTile(0, 0, 0, 1, proj);
-      assert.instanceOf(tile, ReprojTile);
+    it('can handle target projection without extent and units', () =>
+      new Promise((resolve) => {
+        const proj = getProjection('4326_noextentnounits');
+        const source = createSource();
+        source.setTileGridForProjection(
+          proj,
+          createXYZ({
+            extent: WORLD_EXTENT,
+            tileSize: [2, 2],
+          }),
+        );
+        const tile = source.getTile(0, 0, 0, 1, proj);
+        assert.instanceOf(tile, ReprojTile);
 
-      listen(tile, 'change', function () {
-        if (tile.getState() == 2) {
-          // LOADED
-          done();
-        }
-      });
-      tile.load();
-    });
+        listen(tile, 'change', function () {
+          if (tile.getState() == 2) {
+            // LOADED
+            resolve();
+          }
+        });
+        tile.load();
+      }));
   });
 
   describe('tile load events', function () {
@@ -177,40 +178,41 @@ describe('ol/source/TileImage', function () {
       source.setTileLoadFunction(function (tile) {
         tile.setState(TileState.LOADED);
       });
-      const startSpy = sinonSpy();
+      const startSpy = vi.fn();
       source.on('tileloadstart', startSpy);
-      const endSpy = sinonSpy();
+      const endSpy = vi.fn();
       source.on('tileloadend', endSpy);
       const tile = source.getTile(0, 0, 0, 1, getProjection('EPSG:3857'));
       tile.load();
-      assert.strictEqual(startSpy.callCount, 1);
-      assert.strictEqual(endSpy.callCount, 1);
+      assert.strictEqual(startSpy.mock.calls.length, 1);
+      assert.strictEqual(endSpy.mock.calls.length, 1);
     });
 
-    it('works for loading-error-loading-loaded sequences', function (done) {
-      source.setTileLoadFunction(function (tile) {
-        tile.setState(
-          tile.state == TileState.ERROR ? TileState.LOADED : TileState.ERROR,
-        );
-      });
-      const startSpy = sinonSpy();
-      source.on('tileloadstart', startSpy);
-      const errorSpy = sinonSpy();
-      source.on('tileloaderror', function (e) {
-        setTimeout(function () {
-          e.tile.setState(TileState.LOADING);
-          e.tile.setState(TileState.LOADED);
-        }, 0);
-        errorSpy();
-      });
-      source.on('tileloadend', function () {
-        assert.strictEqual(startSpy.callCount, 2);
-        assert.strictEqual(errorSpy.callCount, 1);
-        done();
-      });
-      const tile = source.getTile(0, 0, 0, 1, getProjection('EPSG:3857'));
-      tile.load();
-    });
+    it('works for loading-error-loading-loaded sequences', () =>
+      new Promise((resolve) => {
+        source.setTileLoadFunction(function (tile) {
+          tile.setState(
+            tile.state == TileState.ERROR ? TileState.LOADED : TileState.ERROR,
+          );
+        });
+        const startSpy = vi.fn();
+        source.on('tileloadstart', startSpy);
+        const errorSpy = vi.fn();
+        source.on('tileloaderror', function (e) {
+          setTimeout(function () {
+            e.tile.setState(TileState.LOADING);
+            e.tile.setState(TileState.LOADED);
+          }, 0);
+          errorSpy();
+        });
+        source.on('tileloadend', function () {
+          assert.strictEqual(startSpy.mock.calls.length, 2);
+          assert.strictEqual(errorSpy.mock.calls.length, 1);
+          resolve();
+        });
+        const tile = source.getTile(0, 0, 0, 1, getProjection('EPSG:3857'));
+        tile.load();
+      }));
   });
 
   describe('transition option', function () {

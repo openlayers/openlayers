@@ -43,13 +43,14 @@ describe('ol/layer/VectorImage', function () {
       disposeMap(map);
     });
 
-    it('detects features properly', function (done) {
-      map.renderSync();
-      const pixel = map.getPixelFromCoordinate([-1000000, 0]);
-      layer.getFeatures(pixel).then(function (features) {
-        assert.strictEqual(features[0].get('name'), 'feature1');
-        done();
-      });
-    });
+    it('detects features properly', () =>
+      new Promise((resolve) => {
+        map.renderSync();
+        const pixel = map.getPixelFromCoordinate([-1000000, 0]);
+        layer.getFeatures(pixel).then(function (features) {
+          assert.strictEqual(features[0].get('name'), 'feature1');
+          resolve();
+        });
+      }));
   });
 });

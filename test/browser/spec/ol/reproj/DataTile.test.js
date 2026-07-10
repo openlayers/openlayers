@@ -89,108 +89,50 @@ describe('ol/reproj/DataTile', () => {
     assert.strictEqual(withoutTransition.getAlpha('test', 0), 1);
   });
 
-  it('pixel data reprojected from EPSG:4326 to EPSG:3857 exactly matches original', (done) => {
-    target.style.width = '512px';
-    map = new Map({
-      target: target,
-      view: new View({
-        center: [0, 0],
-        zoom: 1,
-        multiWorld: true,
-        projection: 'EPSG:4326',
-      }),
-    });
-
-    targetR.style.width = '512px';
-    targetR.style.height = '512px';
-    mapR = new Map({
-      target: targetR,
-      view: new View({
-        center: [0, 0],
-        zoom: 1,
-        multiWorld: true,
-      }),
-    });
-
-    const source = new DataTileSource({
-      loader: loader,
-      transition: 0,
-      projection: 'EPSG:4326',
-      maxResolution: 180 / 256,
-      maxZoom: 0,
-    });
-    const layer = new WebGLTileLayer({
-      source: source,
-    });
-    const layerR = new WebGLTileLayer({
-      source: source,
-    });
-    map.addLayer(layer);
-    map.once('rendercomplete', () => {
-      mapR.addLayer(layerR);
-      mapR.once('rendercomplete', () => {
-        for (let i = 0; i < 256; ++i) {
-          const pixelR = [i + 0.5, i * 2 + 1];
-          const coordinateR = mapR.getCoordinateFromPixel(pixelR);
-          const dataR = layerR.getData(pixelR);
-          const coordinate = transform(
-            coordinateR,
-            mapR.getView().getProjection(),
-            map.getView().getProjection(),
-          );
-          const pixel = map.getPixelFromCoordinate(coordinate);
-
-          const dataA = [];
-          for (let j = -1; j < 2; ++j) {
-            dataA.push(layer.getData([pixel[0], pixel[1] + j]).toString());
-          }
-          assert.include(dataA, dataR.toString());
-        }
-        done();
+  it('pixel data reprojected from EPSG:4326 to EPSG:3857 exactly matches original', () =>
+    new Promise((resolve) => {
+      target.style.width = '512px';
+      map = new Map({
+        target: target,
+        view: new View({
+          center: [0, 0],
+          zoom: 1,
+          multiWorld: true,
+          projection: 'EPSG:4326',
+        }),
       });
-    });
-  });
 
-  it('pixel data reprojected from EPSG:3857 to EPSG:4326 exactly matches original', (done) => {
-    map = new Map({
-      target: target,
-      view: new View({
-        center: [0, 0],
-        zoom: 0,
-        multiWorld: true,
-      }),
-    });
+      targetR.style.width = '512px';
+      targetR.style.height = '512px';
+      mapR = new Map({
+        target: targetR,
+        view: new View({
+          center: [0, 0],
+          zoom: 1,
+          multiWorld: true,
+        }),
+      });
 
-    targetR.style.width = '512px';
-    mapR = new Map({
-      target: targetR,
-      view: new View({
-        center: [0, 0],
-        zoom: 1,
-        multiWorld: true,
+      const source = new DataTileSource({
+        loader: loader,
+        transition: 0,
         projection: 'EPSG:4326',
-      }),
-    });
-
-    const source = new DataTileSource({
-      loader: loader,
-      transition: 0,
-      maxZoom: 0,
-    });
-    const layer = new WebGLTileLayer({
-      source: source,
-    });
-    const layerR = new WebGLTileLayer({
-      source: source,
-    });
-    map.addLayer(layer);
-    map.once('rendercomplete', () => {
-      mapR.addLayer(layerR);
-      mapR.once('rendercomplete', () => {
-        for (let i = 0; i < 256; ++i) {
-          const pixelR = [i + 0.5, i + 0.5];
-          const coordinateR = mapR.getCoordinateFromPixel(pixelR);
-          if (Math.abs(coordinateR[1]) < 84) {
+        maxResolution: 180 / 256,
+        maxZoom: 0,
+      });
+      const layer = new WebGLTileLayer({
+        source: source,
+      });
+      const layerR = new WebGLTileLayer({
+        source: source,
+      });
+      map.addLayer(layer);
+      map.once('rendercomplete', () => {
+        mapR.addLayer(layerR);
+        mapR.once('rendercomplete', () => {
+          for (let i = 0; i < 256; ++i) {
+            const pixelR = [i + 0.5, i * 2 + 1];
+            const coordinateR = mapR.getCoordinateFromPixel(pixelR);
             const dataR = layerR.getData(pixelR);
             const coordinate = transform(
               coordinateR,
@@ -200,176 +142,237 @@ describe('ol/reproj/DataTile', () => {
             const pixel = map.getPixelFromCoordinate(coordinate);
 
             const dataA = [];
-            for (let j = -3; j < 4; ++j) {
+            for (let j = -1; j < 2; ++j) {
               dataA.push(layer.getData([pixel[0], pixel[1] + j]).toString());
             }
             assert.include(dataA, dataR.toString());
           }
-        }
-        done();
+          resolve();
+        });
       });
-    });
-  });
+    }));
 
-  it('pixel data reprojected from EPSG:32636 to EPSG:32632 exactly matches original', (done) => {
-    proj4.defs(
-      'EPSG:32632',
-      '+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs',
-    );
-    proj4.defs(
-      'EPSG:32636',
-      '+proj=utm +zone=36 +datum=WGS84 +units=m +no_defs',
-    );
-    register(proj4);
+  it('pixel data reprojected from EPSG:3857 to EPSG:4326 exactly matches original', () =>
+    new Promise((resolve) => {
+      map = new Map({
+        target: target,
+        view: new View({
+          center: [0, 0],
+          zoom: 0,
+          multiWorld: true,
+        }),
+      });
 
-    getProjection('EPSG:32632').setExtent([-3500000, 0, 4500000, 10000000]);
-    getProjection('EPSG:32636').setExtent([-3500000, 0, 4500000, 10000000]);
+      targetR.style.width = '512px';
+      mapR = new Map({
+        target: targetR,
+        view: new View({
+          center: [0, 0],
+          zoom: 1,
+          multiWorld: true,
+          projection: 'EPSG:4326',
+        }),
+      });
 
-    const extent = [539660, 1835050, 543590, 1838980];
-    const tileGrid = createXYZ({extent: extent, maxZoom: 0});
+      const source = new DataTileSource({
+        loader: loader,
+        transition: 0,
+        maxZoom: 0,
+      });
+      const layer = new WebGLTileLayer({
+        source: source,
+      });
+      const layerR = new WebGLTileLayer({
+        source: source,
+      });
+      map.addLayer(layer);
+      map.once('rendercomplete', () => {
+        mapR.addLayer(layerR);
+        mapR.once('rendercomplete', () => {
+          for (let i = 0; i < 256; ++i) {
+            const pixelR = [i + 0.5, i + 0.5];
+            const coordinateR = mapR.getCoordinateFromPixel(pixelR);
+            if (Math.abs(coordinateR[1]) < 84) {
+              const dataR = layerR.getData(pixelR);
+              const coordinate = transform(
+                coordinateR,
+                mapR.getView().getProjection(),
+                map.getView().getProjection(),
+              );
+              const pixel = map.getPixelFromCoordinate(coordinate);
 
-    const source = new DataTileSource({
-      loader: loader,
-      transition: 0,
-      tileGrid: tileGrid,
-      projection: 'EPSG:32636',
-    });
-    const layer = new WebGLTileLayer({
-      source: source,
-    });
-    const layerR = new WebGLTileLayer({
-      source: source,
-    });
+              const dataA = [];
+              for (let j = -3; j < 4; ++j) {
+                dataA.push(layer.getData([pixel[0], pixel[1] + j]).toString());
+              }
+              assert.include(dataA, dataR.toString());
+            }
+          }
+          resolve();
+        });
+      });
+    }));
 
-    map = new Map({
-      target: target,
-      layers: [layer],
-      view: new View({
+  it('pixel data reprojected from EPSG:32636 to EPSG:32632 exactly matches original', () =>
+    new Promise((resolve) => {
+      proj4.defs(
+        'EPSG:32632',
+        '+proj=utm +zone=32 +datum=WGS84 +units=m +no_defs',
+      );
+      proj4.defs(
+        'EPSG:32636',
+        '+proj=utm +zone=36 +datum=WGS84 +units=m +no_defs',
+      );
+      register(proj4);
+
+      getProjection('EPSG:32632').setExtent([-3500000, 0, 4500000, 10000000]);
+      getProjection('EPSG:32636').setExtent([-3500000, 0, 4500000, 10000000]);
+
+      const extent = [539660, 1835050, 543590, 1838980];
+      const tileGrid = createXYZ({extent: extent, maxZoom: 0});
+
+      const source = new DataTileSource({
+        loader: loader,
+        transition: 0,
+        tileGrid: tileGrid,
         projection: 'EPSG:32636',
-      }),
-    });
-
-    mapR = new Map({
-      target: targetR,
-      layers: [layerR],
-      view: new View({
-        projection: 'EPSG:32632',
-      }),
-    });
-
-    map.getView().fit(extent);
-    map.once('rendercomplete', () => {
-      mapR
-        .getView()
-        .fit(
-          transformExtent(
-            extent,
-            map.getView().getProjection(),
-            mapR.getView().getProjection(),
-          ),
-        );
-      mapR.once('rendercomplete', () => {
-        for (let i = 1; i < 255; ++i) {
-          let pixel, coordinate, coordinateR, pixelR, dataR, dataA;
-          const emptyData = new Uint8Array([0, 0, 0, 0]);
-
-          pixel = [i + 0.5, i + 0.5];
-          coordinate = map.getCoordinateFromPixel(pixel);
-          coordinateR = transform(
-            coordinate,
-            map.getView().getProjection(),
-            mapR.getView().getProjection(),
-          );
-          pixelR = mapR.getPixelFromCoordinate(coordinateR);
-          dataR = layerR.getData(pixelR);
-
-          dataA = [];
-          for (let i = -1; i < 2; ++i) {
-            for (let j = -1; j < 2; ++j) {
-              const data = layer.getData([pixel[0] + i, pixel[1] + j]);
-              dataA.push(data.toString());
-            }
-          }
-          assert.include(dataA, dataR.toString());
-
-          pixel = [i + 0.5, 255.5 - i];
-          coordinate = map.getCoordinateFromPixel(pixel);
-          coordinateR = transform(
-            coordinate,
-            map.getView().getProjection(),
-            mapR.getView().getProjection(),
-          );
-          pixelR = mapR.getPixelFromCoordinate(coordinateR);
-          dataR = layerR.getData(pixelR);
-
-          dataA = [];
-          for (let i = -1; i < 2; ++i) {
-            for (let j = -1; j < 2; ++j) {
-              const data = layer.getData([pixel[0] + i, pixel[1] + j]);
-              dataA.push(data.toString());
-            }
-          }
-          assert.include(dataA, dataR.toString());
-
-          pixel = [i + 0.5, 1.5];
-          coordinate = map.getCoordinateFromPixel(pixel);
-          coordinateR = transform(
-            coordinate,
-            map.getView().getProjection(),
-            mapR.getView().getProjection(),
-          );
-          pixelR = mapR.getPixelFromCoordinate(coordinateR);
-          dataR = layerR.getData(pixelR);
-
-          dataA = [];
-          for (let i = -1; i < 2; ++i) {
-            for (let j = -1; j < 2; ++j) {
-              const data = layer.getData([pixel[0] + i, pixel[1] + j]);
-              dataA.push(data.toString());
-            }
-          }
-          assert.include(dataA, dataR.toString());
-
-          pixel = [1.5, i + 0.5];
-          coordinate = map.getCoordinateFromPixel(pixel);
-          coordinateR = transform(
-            coordinate,
-            map.getView().getProjection(),
-            mapR.getView().getProjection(),
-          );
-          pixelR = mapR.getPixelFromCoordinate(coordinateR);
-          dataR = layerR.getData(pixelR);
-
-          dataA = [];
-          for (let i = -1; i < 2; ++i) {
-            for (let j = -1; j < 2; ++j) {
-              const data = layer.getData([pixel[0] + i, pixel[1] + j]);
-              dataA.push(data.toString());
-            }
-          }
-          assert.include(dataA, dataR.toString());
-
-          pixel = [i + 0.5, 255.5];
-          coordinate = map.getCoordinateFromPixel(pixel);
-          coordinateR = transform(
-            coordinate,
-            map.getView().getProjection(),
-            mapR.getView().getProjection(),
-          );
-          pixelR = mapR.getPixelFromCoordinate(coordinateR);
-          dataR = layerR.getData(pixelR);
-
-          dataA = [];
-          for (let i = -1; i < 2; ++i) {
-            for (let j = -1; j < 2; ++j) {
-              const data = layer.getData([pixel[0] + i, pixel[1] + j]);
-              dataA.push((data || emptyData).toString());
-            }
-          }
-          assert.include(dataA, dataR.toString());
-        }
-        done();
       });
-    });
-  });
+      const layer = new WebGLTileLayer({
+        source: source,
+      });
+      const layerR = new WebGLTileLayer({
+        source: source,
+      });
+
+      map = new Map({
+        target: target,
+        layers: [layer],
+        view: new View({
+          projection: 'EPSG:32636',
+        }),
+      });
+
+      mapR = new Map({
+        target: targetR,
+        layers: [layerR],
+        view: new View({
+          projection: 'EPSG:32632',
+        }),
+      });
+
+      map.getView().fit(extent);
+      map.once('rendercomplete', () => {
+        mapR
+          .getView()
+          .fit(
+            transformExtent(
+              extent,
+              map.getView().getProjection(),
+              mapR.getView().getProjection(),
+            ),
+          );
+        mapR.once('rendercomplete', () => {
+          for (let i = 1; i < 255; ++i) {
+            let pixel, coordinate, coordinateR, pixelR, dataR, dataA;
+            const emptyData = new Uint8Array([0, 0, 0, 0]);
+
+            pixel = [i + 0.5, i + 0.5];
+            coordinate = map.getCoordinateFromPixel(pixel);
+            coordinateR = transform(
+              coordinate,
+              map.getView().getProjection(),
+              mapR.getView().getProjection(),
+            );
+            pixelR = mapR.getPixelFromCoordinate(coordinateR);
+            dataR = layerR.getData(pixelR);
+
+            dataA = [];
+            for (let i = -1; i < 2; ++i) {
+              for (let j = -1; j < 2; ++j) {
+                const data = layer.getData([pixel[0] + i, pixel[1] + j]);
+                dataA.push(data.toString());
+              }
+            }
+            assert.include(dataA, dataR.toString());
+
+            pixel = [i + 0.5, 255.5 - i];
+            coordinate = map.getCoordinateFromPixel(pixel);
+            coordinateR = transform(
+              coordinate,
+              map.getView().getProjection(),
+              mapR.getView().getProjection(),
+            );
+            pixelR = mapR.getPixelFromCoordinate(coordinateR);
+            dataR = layerR.getData(pixelR);
+
+            dataA = [];
+            for (let i = -1; i < 2; ++i) {
+              for (let j = -1; j < 2; ++j) {
+                const data = layer.getData([pixel[0] + i, pixel[1] + j]);
+                dataA.push(data.toString());
+              }
+            }
+            assert.include(dataA, dataR.toString());
+
+            pixel = [i + 0.5, 1.5];
+            coordinate = map.getCoordinateFromPixel(pixel);
+            coordinateR = transform(
+              coordinate,
+              map.getView().getProjection(),
+              mapR.getView().getProjection(),
+            );
+            pixelR = mapR.getPixelFromCoordinate(coordinateR);
+            dataR = layerR.getData(pixelR);
+
+            dataA = [];
+            for (let i = -1; i < 2; ++i) {
+              for (let j = -1; j < 2; ++j) {
+                const data = layer.getData([pixel[0] + i, pixel[1] + j]);
+                dataA.push(data.toString());
+              }
+            }
+            assert.include(dataA, dataR.toString());
+
+            pixel = [1.5, i + 0.5];
+            coordinate = map.getCoordinateFromPixel(pixel);
+            coordinateR = transform(
+              coordinate,
+              map.getView().getProjection(),
+              mapR.getView().getProjection(),
+            );
+            pixelR = mapR.getPixelFromCoordinate(coordinateR);
+            dataR = layerR.getData(pixelR);
+
+            dataA = [];
+            for (let i = -1; i < 2; ++i) {
+              for (let j = -1; j < 2; ++j) {
+                const data = layer.getData([pixel[0] + i, pixel[1] + j]);
+                dataA.push(data.toString());
+              }
+            }
+            assert.include(dataA, dataR.toString());
+
+            pixel = [i + 0.5, 255.5];
+            coordinate = map.getCoordinateFromPixel(pixel);
+            coordinateR = transform(
+              coordinate,
+              map.getView().getProjection(),
+              mapR.getView().getProjection(),
+            );
+            pixelR = mapR.getPixelFromCoordinate(coordinateR);
+            dataR = layerR.getData(pixelR);
+
+            dataA = [];
+            for (let i = -1; i < 2; ++i) {
+              for (let j = -1; j < 2; ++j) {
+                const data = layer.getData([pixel[0] + i, pixel[1] + j]);
+                dataA.push((data || emptyData).toString());
+              }
+            }
+            assert.include(dataA, dataR.toString());
+          }
+          resolve();
+        });
+      });
+    }));
 });

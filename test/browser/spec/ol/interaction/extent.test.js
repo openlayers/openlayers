@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {spy as sinonSpy} from 'sinon';
 import Map from '../../../../../src/ol/Map.js';
 import MapBrowserEvent from '../../../../../src/ol/MapBrowserEvent.js';
 import View from '../../../../../src/ol/View.js';
@@ -96,10 +95,10 @@ describe('ol.interaction.Extent', function () {
   describe('draw extent', function () {
     let spy;
     beforeEach(function () {
-      spy = sinonSpy(interaction, 'handleEvent');
+      spy = vi.spyOn(interaction, 'handleEvent');
     });
     afterEach(function () {
-      interaction.handleEvent.restore();
+      spy.mockRestore();
     });
 
     it('drawing extent works', function () {
@@ -117,7 +116,10 @@ describe('ol.interaction.Extent', function () {
       simulateEvent('pointerup', -10, -10, false, 0);
 
       assert.equal(interaction.getExtent(), null);
-      assert.strictEqual(spy.lastCall.returnValue, false);
+      assert.strictEqual(
+        spy.mock.results[spy.mock.results.length - 1].value,
+        false,
+      );
     });
 
     it('clicking off extent does not null extent if createCondition is false', function () {
@@ -128,7 +130,10 @@ describe('ol.interaction.Extent', function () {
       simulateEvent('pointerup', -10, -10, false, 0);
 
       assert.deepEqual(interaction.getExtent(), [-50, -50, 50, 50]);
-      assert.strictEqual(spy.lastCall.returnValue, true);
+      assert.strictEqual(
+        spy.mock.results[spy.mock.results.length - 1].value,
+        true,
+      );
     });
 
     it('clicking on extent does not null extent', function () {

@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {spy as sinonSpy, stub as sinonStub} from 'sinon';
 import Collection from '../../../../src/ol/Collection.js';
 import Feature from '../../../../src/ol/Feature.js';
 import ImageState from '../../../../src/ol/ImageState.js';
@@ -53,65 +52,67 @@ describe('ol/Map', function () {
       assert.instanceOf(map, Map);
     });
 
-    it('accepts a promise for view options', (done) => {
-      let resolve;
+    it('accepts a promise for view options', () =>
+      new Promise((resolve) => {
+        let resolveView;
 
-      const map = new Map({
-        view: new Promise((r) => {
-          resolve = r;
-        }),
-      });
+        const map = new Map({
+          view: new Promise((r) => {
+            resolveView = r;
+          }),
+        });
 
-      assert.instanceOf(map.getView(), View);
-      assert.strictEqual(map.getView().isDef(), false);
+        assert.instanceOf(map.getView(), View);
+        assert.strictEqual(map.getView().isDef(), false);
 
-      map.once('change:view', () => {
-        const view = map.getView();
-        assert.instanceOf(view, View);
-        assert.strictEqual(view.isDef(), true);
-        assert.deepEqual(view.getCenter(), [1, 2]);
-        assert.strictEqual(view.getZoom(), 3);
-        done();
-      });
+        map.once('change:view', () => {
+          const view = map.getView();
+          assert.instanceOf(view, View);
+          assert.strictEqual(view.isDef(), true);
+          assert.deepEqual(view.getCenter(), [1, 2]);
+          assert.strictEqual(view.getZoom(), 3);
+          resolve();
+        });
 
-      resolve({
-        center: [1, 2],
-        zoom: 3,
-      });
-    });
+        resolveView({
+          center: [1, 2],
+          zoom: 3,
+        });
+      }));
 
-    it('allows the view to be set with a promise later after construction', (done) => {
-      const map = new Map({
-        view: new View({zoom: 1, center: [0, 0]}),
-      });
+    it('allows the view to be set with a promise later after construction', () =>
+      new Promise((resolve) => {
+        const map = new Map({
+          view: new View({zoom: 1, center: [0, 0]}),
+        });
 
-      assert.instanceOf(map.getView(), View);
-      assert.strictEqual(map.getView().isDef(), true);
+        assert.instanceOf(map.getView(), View);
+        assert.strictEqual(map.getView().isDef(), true);
 
-      let resolve;
-      map.setView(
-        new Promise((r) => {
-          resolve = r;
-        }),
-      );
+        let resolveView;
+        map.setView(
+          new Promise((r) => {
+            resolveView = r;
+          }),
+        );
 
-      assert.instanceOf(map.getView(), View);
-      assert.strictEqual(map.getView().isDef(), false);
+        assert.instanceOf(map.getView(), View);
+        assert.strictEqual(map.getView().isDef(), false);
 
-      map.once('change:view', () => {
-        const view = map.getView();
-        assert.instanceOf(view, View);
-        assert.strictEqual(view.isDef(), true);
-        assert.deepEqual(view.getCenter(), [1, 2]);
-        assert.strictEqual(view.getZoom(), 3);
-        done();
-      });
+        map.once('change:view', () => {
+          const view = map.getView();
+          assert.instanceOf(view, View);
+          assert.strictEqual(view.isDef(), true);
+          assert.deepEqual(view.getCenter(), [1, 2]);
+          assert.strictEqual(view.getZoom(), 3);
+          resolve();
+        });
 
-      resolve({
-        center: [1, 2],
-        zoom: 3,
-      });
-    });
+        resolveView({
+          center: [1, 2],
+          zoom: 3,
+        });
+      }));
 
     it('creates a set of default interactions', function () {
       const map = new Map({});
@@ -365,51 +366,53 @@ describe('ol/Map', function () {
       disposeMap(map);
     });
 
-    it('are fired only once after view changes', function (done) {
-      const center = [10, 20];
-      const zoom = 3;
-      let startCalls = 0;
-      let endCalls = 0;
-      map.on('movestart', function () {
-        ++startCalls;
-        assert.strictEqual(startCalls, 1);
-      });
-      map.on('moveend', function () {
-        ++endCalls;
-        assert.strictEqual(endCalls, 1);
-        assert.deepEqual(view.getCenter(), center);
-        assert.strictEqual(view.getZoom(), zoom);
-        window.setTimeout(done, 1000);
-      });
+    it('are fired only once after view changes', () =>
+      new Promise((resolve) => {
+        const center = [10, 20];
+        const zoom = 3;
+        let startCalls = 0;
+        let endCalls = 0;
+        map.on('movestart', function () {
+          ++startCalls;
+          assert.strictEqual(startCalls, 1);
+        });
+        map.on('moveend', function () {
+          ++endCalls;
+          assert.strictEqual(endCalls, 1);
+          assert.deepEqual(view.getCenter(), center);
+          assert.strictEqual(view.getZoom(), zoom);
+          window.setTimeout(resolve, 1000);
+        });
 
-      view.setCenter(center);
-      view.setZoom(zoom);
-    });
+        view.setCenter(center);
+        view.setZoom(zoom);
+      }));
 
-    it('are fired in sequence', function (done) {
-      view.setCenter([0, 0]);
-      view.setResolution(0.703125);
-      map.renderSync();
-      const center = [10, 20];
-      const zoom = 3;
-      const calls = [];
-      map.on('movestart', function (e) {
-        calls.push('start');
-        assert.deepEqual(calls, ['start']);
-        assert.deepEqual(e.frameState.viewState.center, [0, 0]);
-        assert.strictEqual(e.frameState.viewState.resolution, 0.703125);
-      });
-      map.on('moveend', function () {
-        calls.push('end');
-        assert.deepEqual(calls, ['start', 'end']);
-        assert.deepEqual(view.getCenter(), center);
-        assert.strictEqual(view.getZoom(), zoom);
-        done();
-      });
+    it('are fired in sequence', () =>
+      new Promise((resolve) => {
+        view.setCenter([0, 0]);
+        view.setResolution(0.703125);
+        map.renderSync();
+        const center = [10, 20];
+        const zoom = 3;
+        const calls = [];
+        map.on('movestart', function (e) {
+          calls.push('start');
+          assert.deepEqual(calls, ['start']);
+          assert.deepEqual(e.frameState.viewState.center, [0, 0]);
+          assert.strictEqual(e.frameState.viewState.resolution, 0.703125);
+        });
+        map.on('moveend', function () {
+          calls.push('end');
+          assert.deepEqual(calls, ['start', 'end']);
+          assert.deepEqual(view.getCenter(), center);
+          assert.strictEqual(view.getZoom(), zoom);
+          resolve();
+        });
 
-      view.setCenter(center);
-      view.setZoom(zoom);
-    });
+        view.setCenter(center);
+        view.setZoom(zoom);
+      }));
   });
 
   describe('rendercomplete event', function () {
@@ -482,44 +485,46 @@ describe('ol/Map', function () {
         });
       });
 
-      it('triggers when all tiles and sources are loaded and faded in', function (done) {
-        const layers = map.getLayers().getArray();
-        map.once('rendercomplete', function () {
-          assert.strictEqual(map.tileQueue_.getTilesLoading(), 0);
-          assert.strictEqual(
-            layers[1]
-              .getSource()
-              .getImage(
-                map.getView().calculateExtent(),
-                map.getView().getResolution(),
-                1,
-                map.getView().getProjection(),
-              )
-              .getState(),
-            ImageState.LOADED,
+      it('triggers when all tiles and sources are loaded and faded in', () =>
+        new Promise((resolve) => {
+          const layers = map.getLayers().getArray();
+          map.once('rendercomplete', function () {
+            assert.strictEqual(map.tileQueue_.getTilesLoading(), 0);
+            assert.strictEqual(
+              layers[1]
+                .getSource()
+                .getImage(
+                  map.getView().calculateExtent(),
+                  map.getView().getResolution(),
+                  1,
+                  map.getView().getProjection(),
+                )
+                .getState(),
+              ImageState.LOADED,
+            );
+            assert.strictEqual(layers[2].getSource().getFeatures().length, 1);
+            assert.strictEqual(layers[6].getRenderer().ready, true);
+            resolve();
+          });
+          map.setView(
+            new View({
+              center: [0, 0],
+              zoom: 0,
+            }),
           );
-          assert.strictEqual(layers[2].getSource().getFeatures().length, 1);
-          assert.strictEqual(layers[6].getRenderer().ready, true);
-          done();
-        });
-        map.setView(
-          new View({
-            center: [0, 0],
-            zoom: 0,
-          }),
-        );
-      });
+        }));
 
-      it('ignores invisible layers', function (done) {
-        map.getLayers().forEach((layer, i) => layer.setVisible(i === 4));
-        map.setView(
-          new View({
-            center: [0, 0],
-            zoom: 0,
-          }),
-        );
-        map.once('rendercomplete', () => done());
-      });
+      it('ignores invisible layers', () =>
+        new Promise((resolve) => {
+          map.getLayers().forEach((layer, i) => layer.setVisible(i === 4));
+          map.setView(
+            new View({
+              center: [0, 0],
+              zoom: 0,
+            }),
+          );
+          map.once('rendercomplete', () => resolve());
+        }));
     });
 
     describe('with icons', function () {
@@ -566,91 +571,93 @@ describe('ol/Map', function () {
         };
       });
 
-      it('waits for icons to be loaded with ol/renderer/canvas/VectorTileLayer', function (done) {
-        const delayIconAtTile = 1;
-        let tilesRequested = 0;
-        const tileSize = 64;
-        const tileGrid = createXYZ({tileSize: tileSize});
-        map = new Map({
-          target: target,
-          view: new View({
-            center: [0, 0],
-            resolution: 1,
-          }),
-          layers: [
-            new VectorTileLayer({
-              source: new VectorTileSource({
-                tileSize: tileSize,
-                tileUrlFunction: (tileCoord) => tileCoord.join('/'),
-                tileLoadFunction: function (tile, url) {
-                  const coordinate = tileGrid.getTileCoordCenter(
-                    tile.getTileCoord(),
-                  );
-                  const feature = new Feature(new Point(coordinate));
-                  tile.setFeatures([feature]);
-                  if (tilesRequested++ === delayIconAtTile) {
-                    feature.setStyle(new Style({image: icon}));
-                  }
-                },
-              }),
-              style: new Style({
-                image: new Icon({
-                  src: 'spec/ol/data/dot.png',
+      it('waits for icons to be loaded with ol/renderer/canvas/VectorTileLayer', () =>
+        new Promise((resolve, reject) => {
+          const delayIconAtTile = 1;
+          let tilesRequested = 0;
+          const tileSize = 64;
+          const tileGrid = createXYZ({tileSize: tileSize});
+          map = new Map({
+            target: target,
+            view: new View({
+              center: [0, 0],
+              resolution: 1,
+            }),
+            layers: [
+              new VectorTileLayer({
+                source: new VectorTileSource({
+                  tileSize: tileSize,
+                  tileUrlFunction: (tileCoord) => tileCoord.join('/'),
+                  tileLoadFunction: function (tile, url) {
+                    const coordinate = tileGrid.getTileCoordCenter(
+                      tile.getTileCoord(),
+                    );
+                    const feature = new Feature(new Point(coordinate));
+                    tile.setFeatures([feature]);
+                    if (tilesRequested++ === delayIconAtTile) {
+                      feature.setStyle(new Style({image: icon}));
+                    }
+                  },
+                }),
+                style: new Style({
+                  image: new Icon({
+                    src: 'spec/ol/data/dot.png',
+                  }),
                 }),
               }),
-            }),
-          ],
-        });
-        let iconLoaded = false;
-        icon.listenImageChange(function (e) {
-          if (e.target.getImageState() === ImageState.LOADED) {
-            iconLoaded = true;
-          }
-        });
-        map.once('rendercomplete', function () {
-          try {
-            assert.isAbove(tilesRequested, delayIconAtTile);
-            assert.strictEqual(iconLoaded, true);
-            done();
-          } catch (e) {
-            done(e);
-          }
-        });
-      });
+            ],
+          });
+          let iconLoaded = false;
+          icon.listenImageChange(function (e) {
+            if (e.target.getImageState() === ImageState.LOADED) {
+              iconLoaded = true;
+            }
+          });
+          map.once('rendercomplete', function () {
+            try {
+              assert.isAbove(tilesRequested, delayIconAtTile);
+              assert.strictEqual(iconLoaded, true);
+              resolve();
+            } catch (e) {
+              reject(e);
+            }
+          });
+        }));
 
-      it('waits for icons to be loaded with ol/renderer/canvas/VectorLayer', function (done) {
-        map = new Map({
-          target: target,
-          view: new View({
-            center: [0, 0],
-            resolution: 1,
-          }),
-          layers: [
-            new VectorLayer({
-              source: new VectorSource({
-                features: [new Feature(new Point([0, 0]))],
-              }),
-              style: new Style({
-                image: icon,
-              }),
+      it('waits for icons to be loaded with ol/renderer/canvas/VectorLayer', () =>
+        new Promise((resolve, reject) => {
+          map = new Map({
+            target: target,
+            view: new View({
+              center: [0, 0],
+              resolution: 1,
             }),
-          ],
-        });
-        let iconLoaded = false;
-        icon.listenImageChange(function (e) {
-          if (e.target.getImageState() === ImageState.LOADED) {
-            iconLoaded = true;
-          }
-        });
-        map.once('rendercomplete', function () {
-          try {
-            assert.strictEqual(iconLoaded, true);
-            done();
-          } catch (e) {
-            done(e);
-          }
-        });
-      });
+            layers: [
+              new VectorLayer({
+                source: new VectorSource({
+                  features: [new Feature(new Point([0, 0]))],
+                }),
+                style: new Style({
+                  image: icon,
+                }),
+              }),
+            ],
+          });
+          let iconLoaded = false;
+          icon.listenImageChange(function (e) {
+            if (e.target.getImageState() === ImageState.LOADED) {
+              iconLoaded = true;
+            }
+          });
+          map.once('rendercomplete', function () {
+            try {
+              assert.strictEqual(iconLoaded, true);
+              resolve();
+            } catch (e) {
+              reject(e);
+            }
+          });
+        }));
     });
   });
 
@@ -720,23 +727,24 @@ describe('ol/Map', function () {
       map.getLayers().forEach((layer) => layer.dispose());
     });
 
-    it('is a reliable start-end sequence', function (done) {
-      let loading = 0;
-      map.on('loadstart', () => {
-        map.getView().setZoom(0.1);
-        loading++;
-      });
-      map.on('loadend', () => {
-        assert.strictEqual(loading, 1);
-        done();
-      });
-      map.setView(
-        new View({
-          center: [0, 0],
-          zoom: 0,
-        }),
-      );
-    });
+    it('is a reliable start-end sequence', () =>
+      new Promise((resolve) => {
+        let loading = 0;
+        map.on('loadstart', () => {
+          map.getView().setZoom(0.1);
+          loading++;
+        });
+        map.on('loadend', () => {
+          assert.strictEqual(loading, 1);
+          resolve();
+        });
+        map.setView(
+          new View({
+            center: [0, 0],
+            zoom: 0,
+          }),
+        );
+      }));
   });
 
   describe('#getFeaturesAtPixel', function () {
@@ -982,54 +990,55 @@ describe('ol/Map', function () {
       disposeMap(map);
       map = undefined;
     });
-    it('does hitdetection with image offset', function (done) {
-      const svg = `<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+    it('does hitdetection with image offset', () =>
+      new Promise((resolve, reject) => {
+        const svg = `<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
         <rect x="32" y="32" width="32" height="32" />
       </svg>`;
 
-      const feature = new Feature(new Point([0, 0]));
-      feature.setStyle(
-        new Style({
-          image: new Icon({
-            src: 'data:image/svg+xml;base64,' + window.btoa(svg),
-            color: [255, 0, 0, 1],
-            offset: [32, 32],
-            size: [32, 32],
-          }),
-        }),
-      );
-
-      map = new Map({
-        pixelRatio: 2,
-        controls: [],
-        interactions: [],
-        target: target,
-        layers: [
-          new VectorLayer({
-            source: new VectorSource({
-              features: [feature],
+        const feature = new Feature(new Point([0, 0]));
+        feature.setStyle(
+          new Style({
+            image: new Icon({
+              src: 'data:image/svg+xml;base64,' + window.btoa(svg),
+              color: [255, 0, 0, 1],
+              offset: [32, 32],
+              size: [32, 32],
             }),
           }),
-        ],
-        view: new View({
-          projection: 'EPSG:4326',
-          center: [0, 0],
-          resolution: 1,
-        }),
-      });
-      map.once('rendercomplete', function () {
-        const hit = map.forEachFeatureAtPixel(
-          map.getPixelFromCoordinate([0, 0]),
-          () => true,
         );
-        try {
-          assert.strictEqual(hit, true);
-          done();
-        } catch (e) {
-          done(e);
-        }
-      });
-    });
+
+        map = new Map({
+          pixelRatio: 2,
+          controls: [],
+          interactions: [],
+          target: target,
+          layers: [
+            new VectorLayer({
+              source: new VectorSource({
+                features: [feature],
+              }),
+            }),
+          ],
+          view: new View({
+            projection: 'EPSG:4326',
+            center: [0, 0],
+            resolution: 1,
+          }),
+        });
+        map.once('rendercomplete', function () {
+          const hit = map.forEachFeatureAtPixel(
+            map.getPixelFromCoordinate([0, 0]),
+            () => true,
+          );
+          try {
+            assert.strictEqual(hit, true);
+            resolve();
+          } catch (e) {
+            reject(e);
+          }
+        });
+      }));
   });
 
   describe('#render()', function () {
@@ -1061,82 +1070,91 @@ describe('ol/Map', function () {
     it('is called when the view.changed() is called', function () {
       const view = map.getView();
 
-      const spy = sinonSpy(map, 'render');
+      const spy = vi.spyOn(map, 'render');
       view.changed();
-      assert.strictEqual(spy.callCount, 1);
+      assert.strictEqual(spy.mock.calls.length, 1);
     });
 
     it('is not called on view changes after the view has been removed', function () {
       const view = map.getView();
       map.setView(null);
 
-      const spy = sinonSpy(map, 'render');
+      const spy = vi.spyOn(map, 'render');
       view.changed();
-      assert.strictEqual(spy.callCount, 0);
+      assert.strictEqual(spy.mock.calls.length, 0);
     });
 
-    it('calls renderFrame_ and results in a postrender event', function (done) {
-      const spy = sinonSpy(map, 'renderFrame_');
-      map.render();
-      map.once('postrender', function (event) {
-        assert.instanceOf(event, MapEvent);
-        assert.strictEqual(typeof spy.firstCall.args[0], 'number');
-        spy.restore();
-        assert.notEqual(event.frameState, null);
-        done();
-      });
-    });
+    it('calls renderFrame_ and results in a postrender event', () =>
+      new Promise((resolve) => {
+        const spy = vi.spyOn(map, 'renderFrame_');
+        map.render();
+        map.once('postrender', function (event) {
+          assert.instanceOf(event, MapEvent);
+          assert.strictEqual(typeof spy.mock.calls[0][0], 'number');
+          spy.mockRestore();
+          assert.notEqual(event.frameState, null);
+          resolve();
+        });
+      }));
 
-    it('layers dispatch prerender and postrender when not decluttering', function (done) {
-      const layer = new VectorLayer({source: new VectorSource()});
-      let prerender = false;
-      let postrender = false;
-      const renderDeferredSpy = sinonSpy(layer.getRenderer(), 'renderDeferred');
-      layer.on('prerender', () => (prerender = true));
-      layer.on('postrender', () => {
-        assert.strictEqual(renderDeferredSpy.callCount, 0);
-        renderDeferredSpy.restore();
-        postrender = true;
-      });
-      map.addLayer(layer);
-      map.once('postrender', () => {
-        try {
-          assert.strictEqual(prerender, true);
-          assert.strictEqual(postrender, true);
-          done();
-        } catch (e) {
-          done(e);
-        }
-      });
-      map.render();
-    });
+    it('layers dispatch prerender and postrender when not decluttering', () =>
+      new Promise((resolve, reject) => {
+        const layer = new VectorLayer({source: new VectorSource()});
+        let prerender = false;
+        let postrender = false;
+        const renderDeferredSpy = vi.spyOn(
+          layer.getRenderer(),
+          'renderDeferred',
+        );
+        layer.on('prerender', () => (prerender = true));
+        layer.on('postrender', () => {
+          assert.strictEqual(renderDeferredSpy.mock.calls.length, 0);
+          renderDeferredSpy.mockRestore();
+          postrender = true;
+        });
+        map.addLayer(layer);
+        map.once('postrender', () => {
+          try {
+            assert.strictEqual(prerender, true);
+            assert.strictEqual(postrender, true);
+            resolve();
+          } catch (e) {
+            reject(e);
+          }
+        });
+        map.render();
+      }));
 
-    it('layers dispatch prerender and postrender when decluttering', function (done) {
-      const layer = new VectorLayer({
-        source: new VectorSource(),
-        declutter: true,
-      });
-      let prerender = false;
-      let postrender = false;
-      const renderDeferredSpy = sinonSpy(layer.getRenderer(), 'renderDeferred');
-      layer.on('prerender', () => (prerender = true));
-      layer.on('postrender', () => {
-        assert.strictEqual(renderDeferredSpy.callCount, 1);
-        renderDeferredSpy.restore();
-        postrender = true;
-      });
-      map.addLayer(layer);
-      map.once('postrender', () => {
-        try {
-          assert.strictEqual(prerender, true);
-          assert.strictEqual(postrender, true);
-          done();
-        } catch (e) {
-          done(e);
-        }
-      });
-      map.render();
-    });
+    it('layers dispatch prerender and postrender when decluttering', () =>
+      new Promise((resolve, reject) => {
+        const layer = new VectorLayer({
+          source: new VectorSource(),
+          declutter: true,
+        });
+        let prerender = false;
+        let postrender = false;
+        const renderDeferredSpy = vi.spyOn(
+          layer.getRenderer(),
+          'renderDeferred',
+        );
+        layer.on('prerender', () => (prerender = true));
+        layer.on('postrender', () => {
+          assert.strictEqual(renderDeferredSpy.mock.calls.length, 1);
+          renderDeferredSpy.mockRestore();
+          postrender = true;
+        });
+        map.addLayer(layer);
+        map.once('postrender', () => {
+          try {
+            assert.strictEqual(prerender, true);
+            assert.strictEqual(postrender, true);
+            resolve();
+          } catch (e) {
+            reject(e);
+          }
+        });
+        map.render();
+      }));
 
     it('uses the same render frame for subsequent calls', function () {
       map.render();
@@ -1154,31 +1172,33 @@ describe('ol/Map', function () {
       assert.strictEqual(map.animationDelayKey_, undefined);
     });
 
-    it('results in an postrender event (for zero height map)', function (done) {
-      target.style.height = '0px';
-      map.updateSize();
+    it('results in an postrender event (for zero height map)', () =>
+      new Promise((resolve) => {
+        target.style.height = '0px';
+        map.updateSize();
 
-      map.render();
-      map.once('postrender', function (event) {
-        assert.instanceOf(event, MapEvent);
-        const frameState = event.frameState;
-        assert.strictEqual(frameState, null);
-        done();
-      });
-    });
+        map.render();
+        map.once('postrender', function (event) {
+          assert.instanceOf(event, MapEvent);
+          const frameState = event.frameState;
+          assert.strictEqual(frameState, null);
+          resolve();
+        });
+      }));
 
-    it('results in an postrender event (for zero width map)', function (done) {
-      target.style.width = '0px';
-      map.updateSize();
+    it('results in an postrender event (for zero width map)', () =>
+      new Promise((resolve) => {
+        target.style.width = '0px';
+        map.updateSize();
 
-      map.render();
-      map.once('postrender', function (event) {
-        assert.instanceOf(event, MapEvent);
-        const frameState = event.frameState;
-        assert.strictEqual(frameState, null);
-        done();
-      });
-    });
+        map.render();
+        map.once('postrender', function (event) {
+          assert.instanceOf(event, MapEvent);
+          const frameState = event.frameState;
+          assert.strictEqual(frameState, null);
+          resolve();
+        });
+      }));
   });
 
   describe('#handlePostRender()', function () {
@@ -1201,31 +1221,31 @@ describe('ol/Map', function () {
     });
 
     it('loads tiles when animating with calling reprioritize', function () {
-      const reprioritizeSpy = sinonSpy(map.tileQueue_, 'reprioritize');
-      const loadSpy = sinonSpy(map.tileQueue_, 'loadMoreTiles');
-      sinonStub(map.tileQueue_, 'isEmpty').returns(false);
-      sinonStub(map.tileQueue_, 'getTilesLoading').returns(0);
+      const reprioritizeSpy = vi.spyOn(map.tileQueue_, 'reprioritize');
+      const loadSpy = vi.spyOn(map.tileQueue_, 'loadMoreTiles');
+      vi.spyOn(map.tileQueue_, 'isEmpty').mockReturnValue(false);
+      vi.spyOn(map.tileQueue_, 'getTilesLoading').mockReturnValue(0);
 
       map.frameState_.viewHints = [1, 0];
       map.frameState_.time = Infinity; // guarantee lowOnFrameBudget is false
       map.handlePostRender();
 
-      assert.strictEqual(loadSpy.callCount, 1);
-      assert.strictEqual(reprioritizeSpy.callCount, 1);
+      assert.strictEqual(loadSpy.mock.calls.length, 1);
+      assert.strictEqual(reprioritizeSpy.mock.calls.length, 1);
     });
 
     it('loads tiles after animation ends without calling reprioritize', function () {
-      const reprioritizeSpy = sinonSpy(map.tileQueue_, 'reprioritize');
-      const loadSpy = sinonSpy(map.tileQueue_, 'loadMoreTiles');
-      sinonStub(map.tileQueue_, 'isEmpty').returns(false);
-      sinonStub(map.tileQueue_, 'getTilesLoading').returns(0);
+      const reprioritizeSpy = vi.spyOn(map.tileQueue_, 'reprioritize');
+      const loadSpy = vi.spyOn(map.tileQueue_, 'loadMoreTiles');
+      vi.spyOn(map.tileQueue_, 'isEmpty').mockReturnValue(false);
+      vi.spyOn(map.tileQueue_, 'getTilesLoading').mockReturnValue(0);
 
       map.frameState_.viewHints = [0, 0];
       map.frameState_.time = Infinity; // guarantee lowOnFrameBudget is false
       map.handlePostRender();
 
-      assert.strictEqual(loadSpy.callCount, 1);
-      assert.strictEqual(reprioritizeSpy.callCount, 0);
+      assert.strictEqual(loadSpy.mock.calls.length, 1);
+      assert.strictEqual(reprioritizeSpy.mock.calls.length, 0);
     });
   });
 
@@ -1297,43 +1317,44 @@ describe('ol/Map', function () {
       });
     });
 
-    it('detach and re-attach', function (done) {
-      const target = map.getTargetElement();
-      map.setTarget(null);
-      target.style.width = '100px';
-      target.style.height = '100px';
-      document.body.appendChild(target);
-      map.setTarget(target);
-      map.addLayer(
-        new VectorLayer({
-          source: new VectorSource({
-            features: [new Feature(new Point([0, 0]))],
-          }),
-        }),
-      );
-      map.getView().setCenter([0, 0]);
-      map.getView().setZoom(0);
-      map.renderSync();
-      try {
-        assert.instanceOf(target.querySelector('canvas'), HTMLCanvasElement);
+    it('detach and re-attach', () =>
+      new Promise((resolve, reject) => {
+        const target = map.getTargetElement();
         map.setTarget(null);
-        assert.strictEqual(target.querySelector('canvas'), null);
+        target.style.width = '100px';
+        target.style.height = '100px';
+        document.body.appendChild(target);
         map.setTarget(target);
-        map.once('rendercomplete', () => {
-          try {
-            assert.instanceOf(
-              target.querySelector('canvas'),
-              HTMLCanvasElement,
-            );
-            done();
-          } catch (e) {
-            done(e);
-          }
-        });
-      } finally {
-        target.remove();
-      }
-    });
+        map.addLayer(
+          new VectorLayer({
+            source: new VectorSource({
+              features: [new Feature(new Point([0, 0]))],
+            }),
+          }),
+        );
+        map.getView().setCenter([0, 0]);
+        map.getView().setZoom(0);
+        map.renderSync();
+        try {
+          assert.instanceOf(target.querySelector('canvas'), HTMLCanvasElement);
+          map.setTarget(null);
+          assert.strictEqual(target.querySelector('canvas'), null);
+          map.setTarget(target);
+          map.once('rendercomplete', () => {
+            try {
+              assert.instanceOf(
+                target.querySelector('canvas'),
+                HTMLCanvasElement,
+              );
+              resolve();
+            } catch (e) {
+              reject(e);
+            }
+          });
+        } finally {
+          target.remove();
+        }
+      }));
   });
 
   describe('#getPixelRatio() and #setPixelRatio()', function () {
@@ -1354,11 +1375,11 @@ describe('ol/Map', function () {
     });
 
     it('sets the pixel ratio and re-renders the map', function () {
-      const spy = sinonSpy(map, 'render');
+      const spy = vi.spyOn(map, 'render');
       map.setPixelRatio(2);
       assert.strictEqual(map.getPixelRatio(), 2);
-      assert.strictEqual(spy.called, true);
-      spy.restore();
+      assert.isAbove(spy.mock.calls.length, 0);
+      spy.mockRestore();
     });
   });
 
@@ -1676,44 +1697,48 @@ describe('ol/Map', function () {
         clearUserProjection();
       });
 
-      it('gets coordinates in user projection', function (done) {
-        map.renderSync();
-        const coordinateGeographic = map.getCoordinateFromPixel(screenCenter);
-        assert.approximately(
-          coordinateGeographic[0],
-          centerGeographic[0],
-          1e-5,
-        );
-        assert.approximately(
-          coordinateGeographic[1],
-          centerGeographic[1],
-          1e-5,
-        );
-        done();
-      });
+      it('gets coordinates in user projection', () =>
+        new Promise((resolve) => {
+          map.renderSync();
+          const coordinateGeographic = map.getCoordinateFromPixel(screenCenter);
+          assert.approximately(
+            coordinateGeographic[0],
+            centerGeographic[0],
+            1e-5,
+          );
+          assert.approximately(
+            coordinateGeographic[1],
+            centerGeographic[1],
+            1e-5,
+          );
+          resolve();
+        }));
 
-      it('gets coordinates in view projection', function (done) {
-        map.renderSync();
-        const coordinateMercator =
-          map.getCoordinateFromPixelInternal(screenCenter);
-        assert.approximately(coordinateMercator[0], centerMercator[0], 1e-5);
-        assert.approximately(coordinateMercator[1], centerMercator[1], 1e-5);
-        done();
-      });
+      it('gets coordinates in view projection', () =>
+        new Promise((resolve) => {
+          map.renderSync();
+          const coordinateMercator =
+            map.getCoordinateFromPixelInternal(screenCenter);
+          assert.approximately(coordinateMercator[0], centerMercator[0], 1e-5);
+          assert.approximately(coordinateMercator[1], centerMercator[1], 1e-5);
+          resolve();
+        }));
 
-      it('gets pixel from coordinates in user projection', function (done) {
-        map.renderSync();
-        const pixel = map.getPixelFromCoordinate(centerGeographic);
-        assert.deepEqual(pixel, screenCenter);
-        done();
-      });
+      it('gets pixel from coordinates in user projection', () =>
+        new Promise((resolve) => {
+          map.renderSync();
+          const pixel = map.getPixelFromCoordinate(centerGeographic);
+          assert.deepEqual(pixel, screenCenter);
+          resolve();
+        }));
 
-      it('gets pixel from coordinates in view projection', function (done) {
-        map.renderSync();
-        const pixel = map.getPixelFromCoordinateInternal(centerMercator);
-        assert.deepEqual(pixel, screenCenter);
-        done();
-      });
+      it('gets pixel from coordinates in view projection', () =>
+        new Promise((resolve) => {
+          map.renderSync();
+          const pixel = map.getPixelFromCoordinateInternal(centerMercator);
+          assert.deepEqual(pixel, screenCenter);
+          resolve();
+        }));
     });
   });
 
@@ -1748,7 +1773,7 @@ describe('ol/Map', function () {
     });
 
     it('calls handleEvent on interaction', function () {
-      const spy = sinonSpy(dragpan, 'handleEvent');
+      const spy = vi.spyOn(dragpan, 'handleEvent');
       map.handleMapBrowserEvent(
         new MapBrowserEvent(
           'pointermove',
@@ -1756,13 +1781,13 @@ describe('ol/Map', function () {
           new PointerEvent('pointermove'),
         ),
       );
-      assert.strictEqual(spy.callCount, 1);
-      spy.restore();
+      assert.strictEqual(spy.mock.calls.length, 1);
+      spy.mockRestore();
     });
 
     it('does not call handleEvent on interaction when map has no target', function () {
       map.setTarget(null);
-      const spy = sinonSpy(dragpan, 'handleEvent');
+      const spy = vi.spyOn(dragpan, 'handleEvent');
       map.handleMapBrowserEvent(
         new MapBrowserEvent(
           'pointermove',
@@ -1770,12 +1795,12 @@ describe('ol/Map', function () {
           new PointerEvent('pointermove'),
         ),
       );
-      assert.strictEqual(spy.callCount, 0);
-      spy.restore();
+      assert.strictEqual(spy.mock.calls.length, 0);
+      spy.mockRestore();
     });
 
     it('does not call handleEvent on interaction that has been removed', function () {
-      const spy = sinonSpy(dragpan, 'handleEvent');
+      const spy = vi.spyOn(dragpan, 'handleEvent');
       let callCount = 0;
       const interaction = new Interaction({
         handleEvent: function () {
@@ -1793,19 +1818,19 @@ describe('ol/Map', function () {
         ),
       );
       assert.strictEqual(callCount, 1);
-      assert.strictEqual(spy.callCount, 0);
-      spy.restore();
+      assert.strictEqual(spy.mock.calls.length, 0);
+      spy.mockRestore();
     });
 
     it('does not call handleEvent on interaction when MapBrowserEvent propagation stopped', function () {
       const select = new Select();
-      const selectStub = sinonStub(select, 'handleEvent');
-      selectStub.callsFake(function (e) {
+      const selectStub = vi.spyOn(select, 'handleEvent');
+      selectStub.mockImplementation(function (e) {
         e.stopPropagation();
         return true;
       });
       map.addInteraction(select);
-      const spy = sinonSpy(dragpan, 'handleEvent');
+      const spy = vi.spyOn(dragpan, 'handleEvent');
       map.handleMapBrowserEvent(
         new MapBrowserEvent(
           'pointermove',
@@ -1813,10 +1838,10 @@ describe('ol/Map', function () {
           new PointerEvent('pointermove'),
         ),
       );
-      assert.strictEqual(spy.callCount, 0);
-      assert.strictEqual(selectStub.callCount, 1);
-      spy.restore();
-      selectStub.restore();
+      assert.strictEqual(spy.mock.calls.length, 0);
+      assert.strictEqual(selectStub.mock.calls.length, 1);
+      spy.mockRestore();
+      selectStub.mockRestore();
     });
 
     describe('external map', () => {
@@ -1828,44 +1853,46 @@ describe('ol/Map', function () {
         iframe.height = '100';
         iframe.src = 'spec/ol/data/external-map.html';
         document.body.appendChild(iframe);
-        spy = sinonSpy(dragpan, 'handleDownEvent');
+        spy = vi.spyOn(dragpan, 'handleDownEvent');
       });
       afterEach(() => {
         map.setTarget(null);
         document.body.removeChild(iframe);
-        spy.restore();
+        spy.mockRestore();
       });
-      it('handles events from a map in a separate window', (done) => {
-        document.body.removeChild(map.getTargetElement());
-        map.setTarget(null);
-        const win = iframe.contentWindow;
-        win.addEventListener('DOMContentLoaded', () => {
-          map.setTarget(iframe.contentDocument.getElementById('map'));
-          win.postMessage('test');
-          setTimeout(() => {
-            assert.strictEqual(spy.callCount, 1);
-            assert.strictEqual(spy.firstCall.returnValue, true);
-            done();
-          }, 100);
-        });
-      });
-      it('observes size changes of a map in a separate window', (done) => {
-        document.body.removeChild(map.getTargetElement());
-        map.setTarget(null);
-        const win = iframe.contentWindow;
-        win.addEventListener('DOMContentLoaded', () => {
-          const externalTarget = iframe.contentDocument.getElementById('map');
-          map.setTarget(externalTarget);
-          map.once('change:size', () => {
-            assert.deepEqual(map.getSize(), [50, 50]);
-            done();
+      it('handles events from a map in a separate window', () =>
+        new Promise((resolve) => {
+          document.body.removeChild(map.getTargetElement());
+          map.setTarget(null);
+          const win = iframe.contentWindow;
+          win.addEventListener('DOMContentLoaded', () => {
+            map.setTarget(iframe.contentDocument.getElementById('map'));
+            win.postMessage('test');
+            setTimeout(() => {
+              assert.strictEqual(spy.mock.calls.length, 1);
+              assert.strictEqual(spy.mock.results[0].value, true);
+              resolve();
+            }, 100);
           });
-          // Trigger a resize in the external window; the ResizeObserver must
-          // pick this up even though the target belongs to another realm.
-          iframe.width = '50';
-          iframe.height = '50';
-        });
-      });
+        }));
+      it('observes size changes of a map in a separate window', () =>
+        new Promise((resolve) => {
+          document.body.removeChild(map.getTargetElement());
+          map.setTarget(null);
+          const win = iframe.contentWindow;
+          win.addEventListener('DOMContentLoaded', () => {
+            const externalTarget = iframe.contentDocument.getElementById('map');
+            map.setTarget(externalTarget);
+            map.once('change:size', () => {
+              assert.deepEqual(map.getSize(), [50, 50]);
+              resolve();
+            });
+            // Trigger a resize in the external window; the ResizeObserver must
+            // pick this up even though the target belongs to another realm.
+            iframe.width = '50';
+            iframe.height = '50';
+          });
+        }));
     });
   });
 
@@ -1886,19 +1913,20 @@ describe('ol/Map', function () {
       disposeMap(map, target);
     });
 
-    it('has updated the viewport when the change:size event is being dispatched', function (done) {
-      map = new Map({
-        target: target,
-        view: new View(),
-        layers: [],
-        controls: [],
-        interactions: [],
-      });
-      map.on('change:size', () => {
-        assert.deepEqual(map.getView().getViewportSize_(), [width, height]);
-        done();
-      });
-      document.body.appendChild(target);
-    });
+    it('has updated the viewport when the change:size event is being dispatched', () =>
+      new Promise((resolve) => {
+        map = new Map({
+          target: target,
+          view: new View(),
+          layers: [],
+          controls: [],
+          interactions: [],
+        });
+        map.on('change:size', () => {
+          assert.deepEqual(map.getView().getViewportSize_(), [width, height]);
+          resolve();
+        });
+        document.body.appendChild(target);
+      }));
   });
 });

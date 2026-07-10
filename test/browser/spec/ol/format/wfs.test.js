@@ -60,21 +60,28 @@ describe('ol.format.WFS', function () {
       'featureType': 'states',
     };
 
-    before(function (done) {
-      proj4.defs('urn:x-ogc:def:crs:EPSG:4326', proj4.defs('EPSG:4326'));
-      register(proj4);
-      afterLoadText('spec/ol/format/wfs/topp-states-wfs.xml', function (data) {
-        try {
-          xml = data;
-          features = new WFS(config).readFeatures(xml);
-        } catch (e) {
-          done(e);
-        }
-        done();
-      });
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          proj4.defs('urn:x-ogc:def:crs:EPSG:4326', proj4.defs('EPSG:4326'));
+          register(proj4);
+          afterLoadText(
+            'spec/ol/format/wfs/topp-states-wfs.xml',
+            function (data) {
+              try {
+                xml = data;
+                features = new WFS(config).readFeatures(xml);
+              } catch (e) {
+                reject(e);
+                return;
+              }
+              resolve();
+            },
+          );
+        }),
+    );
 
-    after(function () {
+    afterAll(function () {
       delete proj4.defs['urn:x-ogc:def:crs:EPSG:4326'];
       clearAllProjections();
       addCommon();
@@ -114,21 +121,25 @@ describe('ol.format.WFS', function () {
       'gmlFormat': new GML2(),
     };
 
-    before(function (done) {
-      proj4.defs('urn:x-ogc:def:crs:EPSG:4326', proj4.defs('EPSG:4326'));
-      register(proj4);
-      afterLoadText('spec/ol/format/wfs/polygonv2.xml', function (data) {
-        try {
-          xml = data;
-          features = new WFS(config).readFeatures(xml);
-        } catch (e) {
-          done(e);
-        }
-        done();
-      });
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          proj4.defs('urn:x-ogc:def:crs:EPSG:4326', proj4.defs('EPSG:4326'));
+          register(proj4);
+          afterLoadText('spec/ol/format/wfs/polygonv2.xml', function (data) {
+            try {
+              xml = data;
+              features = new WFS(config).readFeatures(xml);
+            } catch (e) {
+              reject(e);
+              return;
+            }
+            resolve();
+          });
+        }),
+    );
 
-    after(function () {
+    afterAll(function () {
       delete proj4.defs['urn:x-ogc:def:crs:EPSG:4326'];
       clearAllProjections();
       addCommon();
@@ -153,15 +164,18 @@ describe('ol.format.WFS', function () {
 
   describe('when parsing FeatureCollection', function () {
     let xml;
-    before(function (done) {
-      afterLoadText(
-        'spec/ol/format/wfs/EmptyFeatureCollection.xml',
-        function (_xml) {
-          xml = _xml;
-          done();
-        },
-      );
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText(
+            'spec/ol/format/wfs/EmptyFeatureCollection.xml',
+            function (_xml) {
+              xml = _xml;
+              resolve();
+            },
+          );
+        }),
+    );
     it('returns an empty array of features when none exist', function () {
       const result = new WFS().readFeatures(xml);
       assert.lengthOf(result, 0);
@@ -170,16 +184,23 @@ describe('ol.format.WFS', function () {
 
   describe('when parsing FeatureCollection', function () {
     let response;
-    before(function (done) {
-      afterLoadText('spec/ol/format/wfs/NumberOfFeatures.xml', function (xml) {
-        try {
-          response = new WFS().readFeatureCollectionMetadata(xml);
-        } catch (e) {
-          done(e);
-        }
-        done();
-      });
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText(
+            'spec/ol/format/wfs/NumberOfFeatures.xml',
+            function (xml) {
+              try {
+                response = new WFS().readFeatureCollectionMetadata(xml);
+              } catch (e) {
+                reject(e);
+                return;
+              }
+              resolve();
+            },
+          );
+        }),
+    );
     it('returns the correct number of features', function () {
       assert.equal(response.numberOfFeatures, 625);
     });
@@ -187,24 +208,28 @@ describe('ol.format.WFS', function () {
 
   describe('when parsing FeatureCollection', function () {
     let response;
-    before(function (done) {
-      proj4.defs(
-        'EPSG:28992',
-        '+proj=sterea +lat_0=52.15616055555555 ' +
-          '+lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 ' +
-          '+ellps=bessel +towgs84=565.417,50.3319,465.552,-0.398957,0.343988,' +
-          '-1.8774,4.0725 +units=m +no_defs',
-      );
-      register(proj4);
-      afterLoadText('spec/ol/format/wfs/boundedBy.xml', function (xml) {
-        try {
-          response = new WFS().readFeatureCollectionMetadata(xml);
-        } catch (e) {
-          done(e);
-        }
-        done();
-      });
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          proj4.defs(
+            'EPSG:28992',
+            '+proj=sterea +lat_0=52.15616055555555 ' +
+              '+lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 ' +
+              '+ellps=bessel +towgs84=565.417,50.3319,465.552,-0.398957,0.343988,' +
+              '-1.8774,4.0725 +units=m +no_defs',
+          );
+          register(proj4);
+          afterLoadText('spec/ol/format/wfs/boundedBy.xml', function (xml) {
+            try {
+              response = new WFS().readFeatureCollectionMetadata(xml);
+            } catch (e) {
+              reject(e);
+              return;
+            }
+            resolve();
+          });
+        }),
+    );
     it('returns the correct bounds', function () {
       assert.deepEqual(
         response.bounds,
@@ -215,19 +240,23 @@ describe('ol.format.WFS', function () {
 
   describe('when parsing TransactionResponse', function () {
     let response;
-    before(function (done) {
-      afterLoadText(
-        'spec/ol/format/wfs/TransactionResponse.xml',
-        function (xml) {
-          try {
-            response = new WFS().readTransactionResponse(xml);
-          } catch (e) {
-            done(e);
-          }
-          done();
-        },
-      );
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText(
+            'spec/ol/format/wfs/TransactionResponse.xml',
+            function (xml) {
+              try {
+                response = new WFS().readTransactionResponse(xml);
+              } catch (e) {
+                reject(e);
+                return;
+              }
+              resolve();
+            },
+          );
+        }),
+    );
     it('returns the correct TransactionResponse object', function () {
       assert.equal(response.transactionSummary.totalDeleted, 0);
       assert.equal(response.transactionSummary.totalInserted, 0);
@@ -880,12 +909,18 @@ describe('ol.format.WFS', function () {
 
   describe('when writing out a Transaction request', function () {
     let text;
-    before(function (done) {
-      afterLoadText('spec/ol/format/wfs/TransactionSrs.xml', function (xml) {
-        text = xml;
-        done();
-      });
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText(
+            'spec/ol/format/wfs/TransactionSrs.xml',
+            function (xml) {
+              text = xml;
+              resolve();
+            },
+          );
+        }),
+    );
     it('creates the correct srsName', function () {
       const format = new WFS();
       const insertFeature = new Feature({
@@ -912,12 +947,18 @@ describe('ol.format.WFS', function () {
 
   describe('when writing out a Transaction request', function () {
     let text;
-    before(function (done) {
-      afterLoadText('spec/ol/format/wfs/TransactionUpdate.xml', function (xml) {
-        text = xml;
-        done();
-      });
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText(
+            'spec/ol/format/wfs/TransactionUpdate.xml',
+            function (xml) {
+              text = xml;
+              resolve();
+            },
+          );
+        }),
+    );
 
     it('creates the correct update', function () {
       const format = new WFS();
@@ -1029,12 +1070,15 @@ describe('ol.format.WFS', function () {
   describe('when writing out a Transaction request', function () {
     let text;
     const filename = 'spec/ol/format/wfs/TransactionUpdateMultiGeoms.xml';
-    before(function (done) {
-      afterLoadText(filename, function (xml) {
-        text = xml;
-        done();
-      });
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText(filename, function (xml) {
+            text = xml;
+            resolve();
+          });
+        }),
+    );
 
     it('handles multiple geometries', function () {
       const format = new WFS();
@@ -1073,12 +1117,18 @@ describe('ol.format.WFS', function () {
 
   describe('when writing out a Transaction request', function () {
     let text;
-    before(function (done) {
-      afterLoadText('spec/ol/format/wfs/TransactionMulti.xml', function (xml) {
-        text = xml;
-        done();
-      });
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText(
+            'spec/ol/format/wfs/TransactionMulti.xml',
+            function (xml) {
+              text = xml;
+              resolve();
+            },
+          );
+        }),
+    );
 
     it('creates the correct transaction body', function () {
       const format = new WFS();
@@ -1115,12 +1165,15 @@ describe('ol.format.WFS', function () {
 
   describe('when writing out a Transaction request', function () {
     let text;
-    before(function (done) {
-      afterLoadText('spec/ol/format/wfs/Native.xml', function (xml) {
-        text = xml;
-        done();
-      });
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText('spec/ol/format/wfs/Native.xml', function (xml) {
+            text = xml;
+            resolve();
+          });
+        }),
+    );
 
     it('handles writing out Native', function () {
       const format = new WFS();
@@ -1145,12 +1198,15 @@ describe('ol.format.WFS', function () {
   describe('when writing out a Transaction request', function () {
     let text;
     const filename = 'spec/ol/format/wfs/TransactionMultiVersion100.xml';
-    before(function (done) {
-      afterLoadText(filename, function (xml) {
-        text = xml;
-        done();
-      });
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText(filename, function (xml) {
+            text = xml;
+            resolve();
+          });
+        }),
+    );
 
     it('handles the WFS version', function () {
       const format = new WFS();
@@ -1195,12 +1251,18 @@ describe('ol.format.WFS', function () {
 
   describe('when writing out a Transaction request', function () {
     let text;
-    before(function (done) {
-      afterLoadText('spec/ol/format/wfs/TransactionMulti.xml', function (xml) {
-        text = xml;
-        done();
-      });
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText(
+            'spec/ol/format/wfs/TransactionMulti.xml',
+            function (xml) {
+              text = xml;
+              resolve();
+            },
+          );
+        }),
+    );
 
     it('do not add feature prefix twice', function () {
       const format = new WFS();
@@ -1238,12 +1300,15 @@ describe('ol.format.WFS', function () {
   describe('when writing out a transaction request', function () {
     let text;
     const filename = 'spec/ol/format/wfs/TransactionMultiVersion100_3D.xml';
-    before(function (done) {
-      afterLoadText(filename, function (xml) {
-        text = xml;
-        done();
-      });
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText(filename, function (xml) {
+            text = xml;
+            resolve();
+          });
+        }),
+    );
 
     it('handles 3D in WFS 1.0.0', function () {
       const format = new WFS();
@@ -1286,15 +1351,18 @@ describe('ol.format.WFS', function () {
 
   describe('when writing out a Transaction request', function () {
     let text;
-    before(function (done) {
-      afterLoadText(
-        'spec/ol/format/wfs/TransactionMulti_3D.xml',
-        function (xml) {
-          text = xml;
-          done();
-        },
-      );
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText(
+            'spec/ol/format/wfs/TransactionMulti_3D.xml',
+            function (xml) {
+              text = xml;
+              resolve();
+            },
+          );
+        }),
+    );
 
     it('handles 3D in WFS 1.1.0', function () {
       const format = new WFS();
@@ -1373,15 +1441,18 @@ describe('ol.format.WFS', function () {
 
   describe('when writing out a GetFeature request', function () {
     let text;
-    before(function (done) {
-      afterLoadText(
-        'spec/ol/format/wfs/GetFeatureMultiple.xml',
-        function (xml) {
-          text = xml;
-          done();
-        },
-      );
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText(
+            'spec/ol/format/wfs/GetFeatureMultiple.xml',
+            function (xml) {
+              text = xml;
+              resolve();
+            },
+          );
+        }),
+    );
 
     it('handles writing multiple Query elements', function () {
       const format = new WFS();
@@ -1396,20 +1467,24 @@ describe('ol.format.WFS', function () {
 
   describe('when parsing GML from MapServer', function () {
     let features, feature;
-    before(function (done) {
-      afterLoadText('spec/ol/format/wfs/mapserver.xml', function (xml) {
-        try {
-          const config = {
-            'featureNS': 'http://mapserver.gis.umn.edu/mapserver',
-            'featureType': 'Historische_Messtischblaetter_WFS',
-          };
-          features = new WFS(config).readFeatures(xml);
-        } catch (e) {
-          done(e);
-        }
-        done();
-      });
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText('spec/ol/format/wfs/mapserver.xml', function (xml) {
+            try {
+              const config = {
+                'featureNS': 'http://mapserver.gis.umn.edu/mapserver',
+                'featureType': 'Historische_Messtischblaetter_WFS',
+              };
+              features = new WFS(config).readFeatures(xml);
+            } catch (e) {
+              reject(e);
+              return;
+            }
+            resolve();
+          });
+        }),
+    );
 
     it('creates 7 features', function () {
       assert.lengthOf(features, 7);
@@ -1426,22 +1501,26 @@ describe('ol.format.WFS', function () {
 
   describe('when parsing multiple feature types', function () {
     let features;
-    before(function (done) {
-      afterLoadText(
-        'spec/ol/format/gml/multiple-typenames.xml',
-        function (xml) {
-          try {
-            features = new WFS({
-              featureNS: 'http://localhost:8080/official',
-              featureType: ['planet_osm_polygon', 'planet_osm_line'],
-            }).readFeatures(xml);
-          } catch (e) {
-            done(e);
-          }
-          done();
-        },
-      );
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText(
+            'spec/ol/format/gml/multiple-typenames.xml',
+            function (xml) {
+              try {
+                features = new WFS({
+                  featureNS: 'http://localhost:8080/official',
+                  featureType: ['planet_osm_polygon', 'planet_osm_line'],
+                }).readFeatures(xml);
+              } catch (e) {
+                reject(e);
+                return;
+              }
+              resolve();
+            },
+          );
+        }),
+    );
 
     it('reads all features', function () {
       assert.strictEqual(features.length, 12);
@@ -1450,26 +1529,30 @@ describe('ol.format.WFS', function () {
 
   describe('when parsing multiple feature types separately', function () {
     let lineFeatures, polygonFeatures;
-    before(function (done) {
-      afterLoadText(
-        'spec/ol/format/gml/multiple-typenames.xml',
-        function (xml) {
-          try {
-            lineFeatures = new WFS({
-              featureNS: 'http://localhost:8080/official',
-              featureType: ['planet_osm_line'],
-            }).readFeatures(xml);
-            polygonFeatures = new WFS({
-              featureNS: 'http://localhost:8080/official',
-              featureType: ['planet_osm_polygon'],
-            }).readFeatures(xml);
-          } catch (e) {
-            done(e);
-          }
-          done();
-        },
-      );
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText(
+            'spec/ol/format/gml/multiple-typenames.xml',
+            function (xml) {
+              try {
+                lineFeatures = new WFS({
+                  featureNS: 'http://localhost:8080/official',
+                  featureType: ['planet_osm_line'],
+                }).readFeatures(xml);
+                polygonFeatures = new WFS({
+                  featureNS: 'http://localhost:8080/official',
+                  featureType: ['planet_osm_polygon'],
+                }).readFeatures(xml);
+              } catch (e) {
+                reject(e);
+                return;
+              }
+              resolve();
+            },
+          );
+        }),
+    );
 
     it('reads all features', function () {
       assert.strictEqual(lineFeatures.length, 3);
@@ -1479,19 +1562,23 @@ describe('ol.format.WFS', function () {
 
   describe('when parsing multiple feature types', function () {
     let features;
-    before(function (done) {
-      afterLoadText(
-        'spec/ol/format/gml/multiple-typenames.xml',
-        function (xml) {
-          try {
-            features = new WFS().readFeatures(xml);
-          } catch (e) {
-            done(e);
-          }
-          done();
-        },
-      );
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText(
+            'spec/ol/format/gml/multiple-typenames.xml',
+            function (xml) {
+              try {
+                features = new WFS().readFeatures(xml);
+              } catch (e) {
+                reject(e);
+                return;
+              }
+              resolve();
+            },
+          );
+        }),
+    );
 
     it('reads all features with autoconfigure', function () {
       assert.strictEqual(features.length, 12);
@@ -1500,19 +1587,23 @@ describe('ol.format.WFS', function () {
 
   describe('when parsing multiple feature types (MapServer)', function () {
     let features;
-    before(function (done) {
-      afterLoadText(
-        'spec/ol/format/gml/multiple-typenames-mapserver.xml',
-        function (xml) {
-          try {
-            features = new WFS().readFeatures(xml);
-          } catch (e) {
-            done(e);
-          }
-          done();
-        },
-      );
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText(
+            'spec/ol/format/gml/multiple-typenames-mapserver.xml',
+            function (xml) {
+              try {
+                features = new WFS().readFeatures(xml);
+              } catch (e) {
+                reject(e);
+                return;
+              }
+              resolve();
+            },
+          );
+        }),
+    );
 
     it('reads all features', function () {
       assert.strictEqual(features.length, 5);
@@ -1524,26 +1615,30 @@ describe('ol.format.WFS', function () {
 
   describe('when parsing multiple feature types separately (MapServer)', function () {
     let busFeatures, infoFeatures;
-    before(function (done) {
-      afterLoadText(
-        'spec/ol/format/gml/multiple-typenames-mapserver.xml',
-        function (xml) {
-          try {
-            busFeatures = new WFS({
-              featureNS: 'http://mapserver.gis.umn.edu/mapserver',
-              featureType: ['bus_stop'],
-            }).readFeatures(xml);
-            infoFeatures = new WFS({
-              featureNS: 'http://mapserver.gis.umn.edu/mapserver',
-              featureType: ['information'],
-            }).readFeatures(xml);
-          } catch (e) {
-            done(e);
-          }
-          done();
-        },
-      );
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText(
+            'spec/ol/format/gml/multiple-typenames-mapserver.xml',
+            function (xml) {
+              try {
+                busFeatures = new WFS({
+                  featureNS: 'http://mapserver.gis.umn.edu/mapserver',
+                  featureType: ['bus_stop'],
+                }).readFeatures(xml);
+                infoFeatures = new WFS({
+                  featureNS: 'http://mapserver.gis.umn.edu/mapserver',
+                  featureType: ['information'],
+                }).readFeatures(xml);
+              } catch (e) {
+                reject(e);
+                return;
+              }
+              resolve();
+            },
+          );
+        }),
+    );
 
     it('reads all features', function () {
       assert.strictEqual(busFeatures.length, 3);
@@ -1610,20 +1705,23 @@ describe('ol.format.WFS', function () {
   });
 
   describe('WFS 2.0.0', function () {
-    before(function (done) {
-      proj4.defs(
-        'http://www.opengis.net/def/crs/EPSG/0/26713',
-        '+proj=utm +zone=13 +ellps=clrk66 +datum=NAD27 +units=m +no_defs',
-      );
-      proj4.defs(
-        'urn:ogc:def:crs:EPSG::26713',
-        '+proj=utm +zone=13 +ellps=clrk66 +datum=NAD27 +units=m +no_defs',
-      );
-      register(proj4);
-      done();
-    });
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          proj4.defs(
+            'http://www.opengis.net/def/crs/EPSG/0/26713',
+            '+proj=utm +zone=13 +ellps=clrk66 +datum=NAD27 +units=m +no_defs',
+          );
+          proj4.defs(
+            'urn:ogc:def:crs:EPSG::26713',
+            '+proj=utm +zone=13 +ellps=clrk66 +datum=NAD27 +units=m +no_defs',
+          );
+          register(proj4);
+          resolve();
+        }),
+    );
 
-    after(function () {
+    afterAll(function () {
       delete proj4.defs['http://www.opengis.net/def/crs/EPSG/0/26713'];
       delete proj4.defs['urn:ogc:def:crs:EPSG::26713'];
       clearAllProjections();

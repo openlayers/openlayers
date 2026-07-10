@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {spy as sinonSpy, useFakeTimers} from 'sinon';
 import Map from '../../../../src/ol/Map.js';
 import MapBrowserEventHandler from '../../../../src/ol/MapBrowserEventHandler.js';
 import {listen} from '../../../../src/ol/events.js';
@@ -8,7 +7,6 @@ import {DEVICE_PIXEL_RATIO} from '../../../../src/ol/has.js';
 
 describe('ol/MapBrowserEventHandler', function () {
   describe('#emulateClick_', function () {
-    let clock;
     let handler;
     let clickSpy;
     let singleclickSpy;
@@ -16,7 +14,7 @@ describe('ol/MapBrowserEventHandler', function () {
     let target;
 
     beforeEach(function () {
-      clock = useFakeTimers();
+      vi.useFakeTimers();
       target = document.createElement('div');
       handler = new MapBrowserEventHandler(
         new Map({
@@ -24,18 +22,18 @@ describe('ol/MapBrowserEventHandler', function () {
         }),
       );
 
-      clickSpy = sinonSpy();
+      clickSpy = vi.fn();
       listen(handler, 'click', clickSpy);
 
-      singleclickSpy = sinonSpy();
+      singleclickSpy = vi.fn();
       listen(handler, 'singleclick', singleclickSpy);
 
-      dblclickSpy = sinonSpy();
+      dblclickSpy = vi.fn();
       listen(handler, 'dblclick', dblclickSpy);
     });
 
     afterEach(function () {
-      clock.restore();
+      vi.useRealTimers();
     });
 
     it('emulates click', function () {
@@ -44,7 +42,7 @@ describe('ol/MapBrowserEventHandler', function () {
       (event.target = target), (event.clientX = 0);
       event.clientY = 0;
       handler.emulateClick_(event);
-      assert.isOk(clickSpy.called);
+      assert.isAbove(clickSpy.mock.calls.length, 0);
     });
 
     it('emulates singleclick', function () {
@@ -54,16 +52,16 @@ describe('ol/MapBrowserEventHandler', function () {
       event.clientX = 0;
       event.clientY = 0;
       handler.emulateClick_(event);
-      assert.isNotOk(singleclickSpy.called);
-      assert.isNotOk(dblclickSpy.called);
+      assert.strictEqual(singleclickSpy.mock.calls.length, 0);
+      assert.strictEqual(dblclickSpy.mock.calls.length, 0);
 
-      clock.tick(250);
-      assert.isOk(singleclickSpy.calledOnce);
-      assert.isNotOk(dblclickSpy.called);
+      vi.advanceTimersByTime(250);
+      assert.strictEqual(singleclickSpy.mock.calls.length, 1);
+      assert.strictEqual(dblclickSpy.mock.calls.length, 0);
 
       handler.emulateClick_(event);
-      assert.isOk(singleclickSpy.calledOnce);
-      assert.isNotOk(dblclickSpy.called);
+      assert.strictEqual(singleclickSpy.mock.calls.length, 1);
+      assert.strictEqual(dblclickSpy.mock.calls.length, 0);
     });
 
     it('emulates dblclick', function () {
@@ -73,16 +71,16 @@ describe('ol/MapBrowserEventHandler', function () {
       event.clientX = 0;
       event.clientY = 0;
       handler.emulateClick_(event);
-      assert.isNotOk(singleclickSpy.called);
-      assert.isNotOk(dblclickSpy.called);
+      assert.strictEqual(singleclickSpy.mock.calls.length, 0);
+      assert.strictEqual(dblclickSpy.mock.calls.length, 0);
 
       handler.emulateClick_(event);
-      assert.isNotOk(singleclickSpy.called);
-      assert.isOk(dblclickSpy.calledOnce);
+      assert.strictEqual(singleclickSpy.mock.calls.length, 0);
+      assert.strictEqual(dblclickSpy.mock.calls.length, 1);
 
-      clock.tick(250);
-      assert.isNotOk(singleclickSpy.called);
-      assert.isOk(dblclickSpy.calledOnce);
+      vi.advanceTimersByTime(250);
+      assert.strictEqual(singleclickSpy.mock.calls.length, 0);
+      assert.strictEqual(dblclickSpy.mock.calls.length, 1);
     });
   });
 
@@ -190,15 +188,14 @@ describe('ol/MapBrowserEventHandler', function () {
         defaultPrevented: true,
       };
       const event = {
-        preventDefault: sinonSpy(),
+        preventDefault: vi.fn(),
       };
       handler.handleTouchMove_(event);
-      assert.strictEqual(event.preventDefault.callCount, 1);
+      assert.strictEqual(event.preventDefault.mock.calls.length, 1);
     });
   });
 
   describe('dblclick', function () {
-    let clock;
     let handler;
     let clickSpy;
     let singleclickSpy;
@@ -207,7 +204,7 @@ describe('ol/MapBrowserEventHandler', function () {
     let element, down1, down2, up1, up2;
 
     beforeEach(function () {
-      clock = useFakeTimers();
+      vi.useFakeTimers();
       target = document.createElement('div');
       handler = new MapBrowserEventHandler(
         new Map({
@@ -237,50 +234,50 @@ describe('ol/MapBrowserEventHandler', function () {
       up2.button = 0;
       up2.pointerId = 2;
 
-      clickSpy = sinonSpy();
+      clickSpy = vi.fn();
       listen(handler, 'click', clickSpy);
 
-      singleclickSpy = sinonSpy();
+      singleclickSpy = vi.fn();
       listen(handler, 'singleclick', singleclickSpy);
 
-      dblclickSpy = sinonSpy();
+      dblclickSpy = vi.fn();
       listen(handler, 'dblclick', dblclickSpy);
     });
 
     afterEach(function () {
-      clock.restore();
+      vi.useRealTimers();
     });
 
     it('emulates dblclick', function () {
       element.dispatchEvent(down1);
       document.dispatchEvent(up1);
-      assert.isNotOk(singleclickSpy.called);
-      assert.isNotOk(dblclickSpy.called);
+      assert.strictEqual(singleclickSpy.mock.calls.length, 0);
+      assert.strictEqual(dblclickSpy.mock.calls.length, 0);
 
       element.dispatchEvent(down2);
       document.dispatchEvent(up2);
-      assert.isNotOk(singleclickSpy.called);
-      assert.isOk(dblclickSpy.called);
+      assert.strictEqual(singleclickSpy.mock.calls.length, 0);
+      assert.isAbove(dblclickSpy.mock.calls.length, 0);
 
-      clock.tick(250);
-      assert.isNotOk(singleclickSpy.called);
-      assert.isOk(dblclickSpy.called);
+      vi.advanceTimersByTime(250);
+      assert.strictEqual(singleclickSpy.mock.calls.length, 0);
+      assert.isAbove(dblclickSpy.mock.calls.length, 0);
     });
 
     it('does not emulate dblclick and singleclick when multiple pointers are active', function () {
       element.dispatchEvent(down1);
       element.dispatchEvent(down2);
-      assert.isNotOk(singleclickSpy.called);
-      assert.isNotOk(dblclickSpy.called);
+      assert.strictEqual(singleclickSpy.mock.calls.length, 0);
+      assert.strictEqual(dblclickSpy.mock.calls.length, 0);
 
       document.dispatchEvent(up1);
       document.dispatchEvent(up2);
-      assert.isNotOk(singleclickSpy.called);
-      assert.isNotOk(dblclickSpy.called);
+      assert.strictEqual(singleclickSpy.mock.calls.length, 0);
+      assert.strictEqual(dblclickSpy.mock.calls.length, 0);
 
-      clock.tick(250);
-      assert.isNotOk(singleclickSpy.called);
-      assert.isNotOk(dblclickSpy.called);
+      vi.advanceTimersByTime(250);
+      assert.strictEqual(singleclickSpy.mock.calls.length, 0);
+      assert.strictEqual(dblclickSpy.mock.calls.length, 0);
     });
   });
 

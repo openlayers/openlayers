@@ -98,65 +98,71 @@ describe('ol.style.Icon', function () {
       assert.strictEqual(original.iconImage_, clone.iconImage_);
       assert.strictEqual(original.getSrc(), clone.getSrc());
     });
-    it('copies all values with src without shared IconImageCache', function (done) {
-      const original = new Icon({
-        src: src,
-      });
-      iconImageCache.clear();
+    it('copies all values with src without shared IconImageCache', () =>
+      new Promise((resolve) => {
+        const original = new Icon({
+          src: src,
+        });
+        iconImageCache.clear();
 
-      const clone = original.clone();
+        const clone = original.clone();
 
-      original.load();
-      clone.load();
-      Promise.all([
-        new Promise(function (resolve) {
-          original.iconImage_.addEventListener('change', resolve);
-        }),
-        new Promise(function (resolve) {
-          clone.iconImage_.addEventListener('change', resolve);
-        }),
-      ]).then(function () {
-        assert.strictEqual(original.getSrc(), clone.getSrc());
-        assert.notEqual(original.iconImage_, clone.iconImage_);
-        assert.strictEqual(original.getImage(1).width, clone.getImage(1).width);
-        assert.strictEqual(
-          original.getImage(1).height,
-          clone.getImage(1).height,
-        );
-        done();
-      });
-    });
+        original.load();
+        clone.load();
+        Promise.all([
+          new Promise(function (resolve) {
+            original.iconImage_.addEventListener('change', resolve);
+          }),
+          new Promise(function (resolve) {
+            clone.iconImage_.addEventListener('change', resolve);
+          }),
+        ]).then(function () {
+          assert.strictEqual(original.getSrc(), clone.getSrc());
+          assert.notEqual(original.iconImage_, clone.iconImage_);
+          assert.strictEqual(
+            original.getImage(1).width,
+            clone.getImage(1).width,
+          );
+          assert.strictEqual(
+            original.getImage(1).height,
+            clone.getImage(1).height,
+          );
+          resolve();
+        });
+      }));
 
-    it('preserves the scale', (done) => {
-      const original = new Icon({
-        src: 'spec/ol/data/dot.png',
-      });
-      original.setScale(2);
-      assert.strictEqual(original.getScale(), 2);
-      const clone = original.clone();
-      assert.deepEqual(original.getScale(), clone.getScale());
-      original.load();
-      original.getImage(1).addEventListener('load', () => {
+    it('preserves the scale', () =>
+      new Promise((resolve) => {
+        const original = new Icon({
+          src: 'spec/ol/data/dot.png',
+        });
+        original.setScale(2);
+        assert.strictEqual(original.getScale(), 2);
         const clone = original.clone();
         assert.deepEqual(original.getScale(), clone.getScale());
-        done();
-      });
-    });
+        original.load();
+        original.getImage(1).addEventListener('load', () => {
+          const clone = original.clone();
+          assert.deepEqual(original.getScale(), clone.getScale());
+          resolve();
+        });
+      }));
 
-    it('preserves width and height', (done) => {
-      const original = new Icon({
-        src: 'spec/ol/data/dot.png',
-        width: 42,
-        height: 24,
-      });
-      const clone = original.clone();
-      clone.listenImageChange(() => {
-        assert.deepEqual(clone.getWidth(), 42);
-        assert.deepEqual(clone.getHeight(), 24);
-        done();
-      });
-      clone.load();
-    });
+    it('preserves width and height', () =>
+      new Promise((resolve) => {
+        const original = new Icon({
+          src: 'spec/ol/data/dot.png',
+          width: 42,
+          height: 24,
+        });
+        const clone = original.clone();
+        clone.listenImageChange(() => {
+          assert.deepEqual(clone.getWidth(), 42);
+          assert.deepEqual(clone.getHeight(), 24);
+          resolve();
+        });
+        clone.load();
+      }));
 
     it('the clone does not reference the same objects as the original', function () {
       const original = new Icon({
@@ -213,18 +219,19 @@ describe('ol.style.Icon', function () {
       assert.notEqual(icon.iconImage_, oldIconImage);
     });
 
-    it('loads the new image', function (done) {
-      const icon = new Icon({
-        src,
-      });
-      icon.setSrc(newSrc);
-      assert.strictEqual(icon.getImageState(), ImageState.IDLE);
-      icon.load();
-      icon.listenImageChange(() => {
-        assert.strictEqual(icon.getImageState(), ImageState.LOADED);
-        done();
-      });
-    });
+    it('loads the new image', () =>
+      new Promise((resolve) => {
+        const icon = new Icon({
+          src,
+        });
+        icon.setSrc(newSrc);
+        assert.strictEqual(icon.getImageState(), ImageState.IDLE);
+        icon.load();
+        icon.listenImageChange(() => {
+          assert.strictEqual(icon.getImageState(), ImageState.LOADED);
+          resolve();
+        });
+      }));
   });
 
   describe('#getAnchor', function () {
@@ -406,55 +413,57 @@ describe('ol.style.Icon', function () {
   });
 
   describe('#getImageSize', function () {
-    it('uses the cache', function (done) {
-      const src = './spec/ol/data/dot.png';
-      const iconImage = new IconImage(new Image(), src);
-      iconImageCache.set(src, null, iconImage);
-      iconImage.load();
+    it('uses the cache', () =>
+      new Promise((resolve, reject) => {
+        const src = './spec/ol/data/dot.png';
+        const iconImage = new IconImage(new Image(), src);
+        iconImageCache.set(src, null, iconImage);
+        iconImage.load();
 
-      const iconStyle = new Icon({
-        src: src,
-      });
-      iconImage.addEventListener('change', function changed() {
-        if (iconImage.getImageState() === ImageState.LOADED) {
-          iconImage.removeEventListener('change', changed);
-          try {
-            assert.deepEqual(iconStyle.getImage(), iconImage.getImage());
-            assert.instanceOf(iconStyle.getImage(), HTMLImageElement);
-            assert.deepEqual(iconStyle.getImageSize(), [
-              iconStyle.getImage().width,
-              iconStyle.getImage().height,
-            ]);
-            done();
-          } catch (e) {
-            done(e);
+        const iconStyle = new Icon({
+          src: src,
+        });
+        iconImage.addEventListener('change', function changed() {
+          if (iconImage.getImageState() === ImageState.LOADED) {
+            iconImage.removeEventListener('change', changed);
+            try {
+              assert.deepEqual(iconStyle.getImage(), iconImage.getImage());
+              assert.instanceOf(iconStyle.getImage(), HTMLImageElement);
+              assert.deepEqual(iconStyle.getImageSize(), [
+                iconStyle.getImage().width,
+                iconStyle.getImage().height,
+              ]);
+              resolve();
+            } catch (e) {
+              reject(e);
+            }
           }
-        }
-      });
-    });
+        });
+      }));
 
-    it('has the image size after the image has finished loading', function (done) {
-      const image = new Image();
-      const iconStyle = new Icon({
-        img: image,
-      });
-      iconStyle.iconImage_.addEventListener('change', function changed() {
-        if (iconStyle.getImageState() === ImageState.LOADED) {
-          iconStyle.iconImage_.removeEventListener('change', changed);
-          try {
-            assert.deepEqual(iconStyle.getImageSize(), [
-              image.width,
-              image.height,
-            ]);
-            done();
-          } catch (e) {
-            done(e);
+    it('has the image size after the image has finished loading', () =>
+      new Promise((resolve, reject) => {
+        const image = new Image();
+        const iconStyle = new Icon({
+          img: image,
+        });
+        iconStyle.iconImage_.addEventListener('change', function changed() {
+          if (iconStyle.getImageState() === ImageState.LOADED) {
+            iconStyle.iconImage_.removeEventListener('change', changed);
+            try {
+              assert.deepEqual(iconStyle.getImageSize(), [
+                image.width,
+                image.height,
+              ]);
+              resolve();
+            } catch (e) {
+              reject(e);
+            }
           }
-        }
-      });
-      image.src = './spec/ol/data/dot.png';
-      iconStyle.load();
-    });
+        });
+        image.src = './spec/ol/data/dot.png';
+        iconStyle.load();
+      }));
   });
 
   describe('#width/height', function () {
@@ -462,109 +471,117 @@ describe('ol.style.Icon', function () {
     const src =
       'data:image/gif;base64,' +
       'R0lGODlhAwAEAIABAP7+/vDy9SH+EUNyZWF0ZWQgd2l0aCBHSU1QACH5BAEKAAEALAAAAAADAAQAAAIDhI9WADs=';
-    it('scale is set correctly if configured with width only', function (done) {
-      const iconStyle = new Icon({
-        src,
-        width: 6,
-      });
-      const iconImage = iconStyle.iconImage_;
-      iconImage.addEventListener('change', function () {
-        assert.deepEqual(iconStyle.getScale(), 2);
-        done();
-      });
-      iconStyle.load();
-    });
-    it('scale is set correctly if configured with height only', function (done) {
-      const iconStyle = new Icon({
-        src,
-        height: 12,
-      });
-      const iconImage = iconStyle.iconImage_;
-      iconImage.addEventListener('change', function () {
-        assert.deepEqual(iconStyle.getScale(), 3);
-        done();
-      });
-      iconStyle.load();
-    });
-    it('scale is set correctly if used with width and height', function (done) {
-      const iconStyle = new Icon({
-        src,
-        width: 6,
-        height: 12,
-      });
-      const iconImage = iconStyle.iconImage_;
-      iconImage.addEventListener('change', function () {
-        assert.deepEqual(iconStyle.getScale(), [2, 3]);
-        done();
-      });
-      iconStyle.load();
-    });
-    it('getWidth returns the expected value', function (done) {
-      const iconStyle = new Icon({
-        src,
-        width: 10,
-      });
-      iconStyle.listenImageChange(() => {
-        assert.deepEqual(iconStyle.getWidth(), 10);
-        done();
-      });
-      iconStyle.load();
-    });
-    it('getHeight returns the expected value', function (done) {
-      const iconStyle = new Icon({
-        src,
-        height: 20,
-      });
-      iconStyle.listenImageChange(() => {
-        assert.deepEqual(iconStyle.getHeight(), 20);
-        done();
-      });
-      iconStyle.load();
-    });
-    it('setScale updates the width and height', function (done) {
-      const iconStyle = new Icon({
-        src,
-      });
-      const iconImage = iconStyle.iconImage_;
-      iconImage.addEventListener('change', function () {
-        iconStyle.setScale(2);
-        assert.deepEqual(iconStyle.getWidth(), 6);
-        assert.deepEqual(iconStyle.getHeight(), 8);
-        done();
-      });
-      iconStyle.load();
-    });
-    it('setScale with array updates the width and height', function (done) {
-      const iconStyle = new Icon({
-        src,
-      });
-      const iconImage = iconStyle.iconImage_;
-      iconImage.addEventListener('change', function () {
-        iconStyle.setScale([3, 4]);
-        assert.deepEqual(iconStyle.getWidth(), 9);
-        assert.deepEqual(iconStyle.getHeight(), 16);
-        done();
-      });
-      iconStyle.load();
-    });
-    it('setScale overrides initial width and height', function (done) {
-      const iconStyle = new Icon({
-        src,
-        width: 42,
-        height: 24,
-      });
-      iconStyle.setScale(1);
-      iconStyle.listenImageChange(() => {
-        try {
-          assert.deepEqual(iconStyle.getWidth(), 3);
-          assert.deepEqual(iconStyle.getHeight(), 4);
-          assert.deepEqual(iconStyle.getScale(), 1);
-          done();
-        } catch (e) {
-          done(e);
-        }
-      });
-      iconStyle.load();
-    });
+    it('scale is set correctly if configured with width only', () =>
+      new Promise((resolve) => {
+        const iconStyle = new Icon({
+          src,
+          width: 6,
+        });
+        const iconImage = iconStyle.iconImage_;
+        iconImage.addEventListener('change', function () {
+          assert.deepEqual(iconStyle.getScale(), 2);
+          resolve();
+        });
+        iconStyle.load();
+      }));
+    it('scale is set correctly if configured with height only', () =>
+      new Promise((resolve) => {
+        const iconStyle = new Icon({
+          src,
+          height: 12,
+        });
+        const iconImage = iconStyle.iconImage_;
+        iconImage.addEventListener('change', function () {
+          assert.deepEqual(iconStyle.getScale(), 3);
+          resolve();
+        });
+        iconStyle.load();
+      }));
+    it('scale is set correctly if used with width and height', () =>
+      new Promise((resolve) => {
+        const iconStyle = new Icon({
+          src,
+          width: 6,
+          height: 12,
+        });
+        const iconImage = iconStyle.iconImage_;
+        iconImage.addEventListener('change', function () {
+          assert.deepEqual(iconStyle.getScale(), [2, 3]);
+          resolve();
+        });
+        iconStyle.load();
+      }));
+    it('getWidth returns the expected value', () =>
+      new Promise((resolve) => {
+        const iconStyle = new Icon({
+          src,
+          width: 10,
+        });
+        iconStyle.listenImageChange(() => {
+          assert.deepEqual(iconStyle.getWidth(), 10);
+          resolve();
+        });
+        iconStyle.load();
+      }));
+    it('getHeight returns the expected value', () =>
+      new Promise((resolve) => {
+        const iconStyle = new Icon({
+          src,
+          height: 20,
+        });
+        iconStyle.listenImageChange(() => {
+          assert.deepEqual(iconStyle.getHeight(), 20);
+          resolve();
+        });
+        iconStyle.load();
+      }));
+    it('setScale updates the width and height', () =>
+      new Promise((resolve) => {
+        const iconStyle = new Icon({
+          src,
+        });
+        const iconImage = iconStyle.iconImage_;
+        iconImage.addEventListener('change', function () {
+          iconStyle.setScale(2);
+          assert.deepEqual(iconStyle.getWidth(), 6);
+          assert.deepEqual(iconStyle.getHeight(), 8);
+          resolve();
+        });
+        iconStyle.load();
+      }));
+    it('setScale with array updates the width and height', () =>
+      new Promise((resolve) => {
+        const iconStyle = new Icon({
+          src,
+        });
+        const iconImage = iconStyle.iconImage_;
+        iconImage.addEventListener('change', function () {
+          iconStyle.setScale([3, 4]);
+          assert.deepEqual(iconStyle.getWidth(), 9);
+          assert.deepEqual(iconStyle.getHeight(), 16);
+          resolve();
+        });
+        iconStyle.load();
+      }));
+    it('setScale overrides initial width and height', () =>
+      new Promise((resolve, reject) => {
+        const iconStyle = new Icon({
+          src,
+          width: 42,
+          height: 24,
+        });
+        iconStyle.setScale(1);
+        iconStyle.listenImageChange(() => {
+          try {
+            assert.deepEqual(iconStyle.getWidth(), 3);
+            assert.deepEqual(iconStyle.getHeight(), 4);
+            assert.deepEqual(iconStyle.getScale(), 1);
+            resolve();
+          } catch (e) {
+            reject(e);
+          }
+        });
+        iconStyle.load();
+      }));
   });
 });

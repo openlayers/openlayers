@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {spy as sinonSpy, stub as sinonStub} from 'sinon';
 import Feature from '../../../../../src/ol/Feature.js';
 import TileState from '../../../../../src/ol/TileState.js';
 import VectorRenderTile from '../../../../../src/ol/VectorRenderTile.js';
@@ -14,7 +13,7 @@ import TileGeometry from '../../../../../src/ol/webgl/TileGeometry.js';
 import {assertArrayLikeEqual} from '../../../../util/equal.js';
 
 class MockRenderer {
-  generateBuffers = sinonStub().callsFake(
+  generateBuffers = vi.fn(
     () => new Promise((resolve) => (this.endGenerate_ = resolve)),
   );
   endGenerate_ = null;
@@ -54,7 +53,7 @@ describe('ol/webgl/TileGeometry', function () {
       styleRenderer,
     );
   });
-  this.afterEach(() => {
+  afterEach(() => {
     helper.dispose();
   });
 
@@ -71,57 +70,60 @@ describe('ol/webgl/TileGeometry', function () {
     /** @type {Array<Feature>} */
     let features;
 
-    beforeEach((done) => {
-      features = [
-        new Feature({
-          geometry: new Point([10, 20]),
-        }),
-        new Feature({
-          geometry: new Polygon([
-            [100, 101],
-            [102, 103],
-            [104, 105],
-            [100, 101],
-          ]),
-        }),
-      ];
-      const sourceTile = new VectorTile(
-        [3, 2, 1],
-        TileState.LOADED,
-        'http://source',
-        null,
-        VOID,
-      );
-      sourceTile.extent = [-100, -200, 300, 400];
-      sourceTile.setFeatures(features);
-      const newTile = new VectorRenderTile(
-        [3, 2, 1],
-        TileState.LOADED,
-        [3, 2, 1],
-        () => [sourceTile],
-        () => {},
-      );
+    beforeEach(
+      () =>
+        new Promise((resolve) => {
+          features = [
+            new Feature({
+              geometry: new Point([10, 20]),
+            }),
+            new Feature({
+              geometry: new Polygon([
+                [100, 101],
+                [102, 103],
+                [104, 105],
+                [100, 101],
+              ]),
+            }),
+          ];
+          const sourceTile = new VectorTile(
+            [3, 2, 1],
+            TileState.LOADED,
+            'http://source',
+            null,
+            VOID,
+          );
+          sourceTile.extent = [-100, -200, 300, 400];
+          sourceTile.setFeatures(features);
+          const newTile = new VectorRenderTile(
+            [3, 2, 1],
+            TileState.LOADED,
+            [3, 2, 1],
+            () => [sourceTile],
+            () => {},
+          );
 
-      sinonSpy(tileGeometry.batch_, 'clear');
-      sinonSpy(tileGeometry.batch_, 'addFeatures');
-      tileGeometry.setTile(newTile);
-      setTimeout(done, 10);
-    });
+          vi.spyOn(tileGeometry.batch_, 'clear');
+          vi.spyOn(tileGeometry.batch_, 'addFeatures');
+          tileGeometry.setTile(newTile);
+          setTimeout(resolve, 10);
+        }),
+    );
     it('first clears the geometry batch', () => {
-      assert.strictEqual(tileGeometry.batch_.clear.calledOnce, true);
+      assert.strictEqual(tileGeometry.batch_.clear.mock.calls.length, 1);
     });
     it('adds all features from the source tiles into the batch', () => {
-      assert.strictEqual(tileGeometry.batch_.addFeatures.calledOnce, true);
-      assert.strictEqual(
-        tileGeometry.batch_.addFeatures.calledWith(features),
-        true,
+      assert.strictEqual(tileGeometry.batch_.addFeatures.mock.calls.length, 1);
+      assert.deepEqual(
+        tileGeometry.batch_.addFeatures.mock.calls[0][0],
+        features,
       );
     });
     it('calls generateBuffers for each renderer with the tile origin as transform', () => {
       const originTransform = [1, 0, 0, 1, 100, 200];
-      assert.strictEqual(styleRenderer.generateBuffers.callCount, 1);
+      assert.strictEqual(styleRenderer.generateBuffers.mock.calls.length, 1);
       assert.deepEqual(
-        styleRenderer.generateBuffers.getCall(0).args[1],
+        styleRenderer.generateBuffers.mock.calls[0][1],
         originTransform,
       );
     });
@@ -142,7 +144,7 @@ describe('ol/webgl/TileGeometry', function () {
     describe('#dispose', () => {
       let deleteBufferSpy;
       beforeEach(async () => {
-        deleteBufferSpy = sinonSpy(helper, 'deleteBuffer');
+        deleteBufferSpy = vi.spyOn(helper, 'deleteBuffer');
         // generate buffers and dispose the tile
         styleRenderer.endGenerate_({
           pointBuffers: [{}, {}],
@@ -152,7 +154,7 @@ describe('ol/webgl/TileGeometry', function () {
         tileGeometry.dispose();
       });
       it('deletes webgl buffers', () => {
-        assert.strictEqual(deleteBufferSpy.callCount, 4);
+        assert.strictEqual(deleteBufferSpy.mock.calls.length, 4);
       });
     });
   });

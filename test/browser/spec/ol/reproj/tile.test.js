@@ -58,17 +58,18 @@ describe('ol.reproj.Tile', function () {
     );
   }
 
-  it('changes state as expected', function (done) {
-    const tile = createTile(1);
-    assert.strictEqual(tile.getState(), 0);
-    listen(tile, 'change', function () {
-      if (tile.getState() == 2) {
-        // LOADED
-        done();
-      }
-    });
-    tile.load();
-  });
+  it('changes state as expected', () =>
+    new Promise((resolve) => {
+      const tile = createTile(1);
+      assert.strictEqual(tile.getState(), 0);
+      listen(tile, 'change', function () {
+        if (tile.getState() == 2) {
+          // LOADED
+          resolve();
+        }
+      });
+      tile.load();
+    }));
 
   it('is empty when outside target tile grid', function () {
     const proj4326 = getProjection('EPSG:4326');
@@ -108,31 +109,33 @@ describe('ol.reproj.Tile', function () {
     assert.strictEqual(tile.getState(), 4);
   });
 
-  it('respects tile size of target tile grid', function (done) {
-    const tile = createTile(1, [100, 40]);
-    listen(tile, 'change', function () {
-      if (tile.getState() == 2) {
-        // LOADED
-        const canvas = tile.getImage();
-        assert.strictEqual(canvas.width, 100);
-        assert.strictEqual(canvas.height, 40);
-        done();
-      }
-    });
-    tile.load();
-  });
+  it('respects tile size of target tile grid', () =>
+    new Promise((resolve) => {
+      const tile = createTile(1, [100, 40]);
+      listen(tile, 'change', function () {
+        if (tile.getState() == 2) {
+          // LOADED
+          const canvas = tile.getImage();
+          assert.strictEqual(canvas.width, 100);
+          assert.strictEqual(canvas.height, 40);
+          resolve();
+        }
+      });
+      tile.load();
+    }));
 
-  it('respects pixelRatio', function (done) {
-    const tile = createTile(3, [60, 20]);
-    listen(tile, 'change', function () {
-      if (tile.getState() == 2) {
-        // LOADED
-        const canvas = tile.getImage();
-        assert.strictEqual(canvas.width, 180);
-        assert.strictEqual(canvas.height, 60);
-        done();
-      }
-    });
-    tile.load();
-  });
+  it('respects pixelRatio', () =>
+    new Promise((resolve) => {
+      const tile = createTile(3, [60, 20]);
+      listen(tile, 'change', function () {
+        if (tile.getState() == 2) {
+          // LOADED
+          const canvas = tile.getImage();
+          assert.strictEqual(canvas.width, 180);
+          assert.strictEqual(canvas.height, 60);
+          resolve();
+        }
+      });
+      tile.load();
+    }));
 });

@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {spy as sinonSpy} from 'sinon';
 import Disposable from '../../../../../src/ol/Disposable.js';
 import Feature from '../../../../../src/ol/Feature.js';
 import Map from '../../../../../src/ol/Map.js';
@@ -686,138 +685,142 @@ describe('ol/renderer/Map.js', function () {
           map.addLayer(layer);
         });
 
-        this.afterEach(function () {
+        afterEach(function () {
           map.removeLayer(layer);
         });
 
-        it('with wide stroke', function (done) {
-          layer.setStyle({
-            'text-value': 'X',
-            'text-font': 'bold 100px sans-serif',
-            'text-baseline': 'top',
-            'text-offset-y': -50,
-            'text-stroke-width': 20,
-            'text-stroke-color': 'black',
-            'text-fill-color': 'none',
-            'text-placement': 'line',
-            'text-overflow': true,
-          });
-          map.once('rendercomplete', () => {
-            try {
-              const hit = map.forEachFeatureAtPixel(
-                [50, 50],
-                (feature, layer, geometry) => ({
-                  feature,
-                  layer,
-                  geometry,
-                }),
-              );
-              assert.isOk(hit);
-              assert.strictEqual(hit.feature, feature);
-              assert.strictEqual(hit.layer, layer);
-              assert.strictEqual(hit.geometry, geometry);
-              done();
-            } catch (e) {
-              done(e);
-            }
-          });
-        });
+        it('with wide stroke', () =>
+          new Promise((resolve, reject) => {
+            layer.setStyle({
+              'text-value': 'X',
+              'text-font': 'bold 100px sans-serif',
+              'text-baseline': 'top',
+              'text-offset-y': -50,
+              'text-stroke-width': 20,
+              'text-stroke-color': 'black',
+              'text-fill-color': 'none',
+              'text-placement': 'line',
+              'text-overflow': true,
+            });
+            map.once('rendercomplete', () => {
+              try {
+                const hit = map.forEachFeatureAtPixel(
+                  [50, 50],
+                  (feature, layer, geometry) => ({
+                    feature,
+                    layer,
+                    geometry,
+                  }),
+                );
+                assert.isOk(hit);
+                assert.strictEqual(hit.feature, feature);
+                assert.strictEqual(hit.layer, layer);
+                assert.strictEqual(hit.geometry, geometry);
+                resolve();
+              } catch (e) {
+                reject(e);
+              }
+            });
+          }));
 
-        it('with no fill', function (done) {
-          layer.setStyle({
-            'text-value': 'X',
-            'text-font': 'bold 100px sans-serif',
-            'text-baseline': 'top',
-            'text-offset-y': -50,
-            'text-stroke-width': 1,
-            'text-stroke-color': 'black',
-            'text-fill-color': 'none',
-            'text-placement': 'line',
-            'text-overflow': true,
-          });
-          map.once('rendercomplete', () => {
-            try {
-              const hit = map.forEachFeatureAtPixel(
-                [50, 50],
-                (feature, layer, geometry) => ({
-                  feature,
-                  layer,
-                  geometry,
-                }),
-              );
-              assert.strictEqual(hit, undefined);
-              done();
-            } catch (e) {
-              done(e);
-            }
-          });
-        });
+        it('with no fill', () =>
+          new Promise((resolve, reject) => {
+            layer.setStyle({
+              'text-value': 'X',
+              'text-font': 'bold 100px sans-serif',
+              'text-baseline': 'top',
+              'text-offset-y': -50,
+              'text-stroke-width': 1,
+              'text-stroke-color': 'black',
+              'text-fill-color': 'none',
+              'text-placement': 'line',
+              'text-overflow': true,
+            });
+            map.once('rendercomplete', () => {
+              try {
+                const hit = map.forEachFeatureAtPixel(
+                  [50, 50],
+                  (feature, layer, geometry) => ({
+                    feature,
+                    layer,
+                    geometry,
+                  }),
+                );
+                assert.strictEqual(hit, undefined);
+                resolve();
+              } catch (e) {
+                reject(e);
+              }
+            });
+          }));
 
-        it('with transparent fill', function (done) {
-          layer.setStyle({
-            'text-value': 'X',
-            'text-font': 'bold 100px sans-serif',
-            'text-baseline': 'top',
-            'text-offset-y': -50,
-            'text-stroke-width': 1,
-            'text-stroke-color': 'black',
-            'text-fill-color': 'transparent',
-            'text-placement': 'line',
-            'text-overflow': true,
-          });
-          map.once('rendercomplete', () => {
-            try {
-              const hit = map.forEachFeatureAtPixel(
-                [50, 50],
-                (feature, layer, geometry) => ({
-                  feature,
-                  layer,
-                  geometry,
-                }),
-              );
-              assert.isOk(hit);
-              assert.strictEqual(hit.feature, feature);
-              assert.strictEqual(hit.layer, layer);
-              assert.strictEqual(hit.geometry, geometry);
-              done();
-            } catch (e) {
-              done(e);
-            }
-          });
-        });
+        it('with transparent fill', () =>
+          new Promise((resolve, reject) => {
+            layer.setStyle({
+              'text-value': 'X',
+              'text-font': 'bold 100px sans-serif',
+              'text-baseline': 'top',
+              'text-offset-y': -50,
+              'text-stroke-width': 1,
+              'text-stroke-color': 'black',
+              'text-fill-color': 'transparent',
+              'text-placement': 'line',
+              'text-overflow': true,
+            });
+            map.once('rendercomplete', () => {
+              try {
+                const hit = map.forEachFeatureAtPixel(
+                  [50, 50],
+                  (feature, layer, geometry) => ({
+                    feature,
+                    layer,
+                    geometry,
+                  }),
+                );
+                assert.isOk(hit);
+                assert.strictEqual(hit.feature, feature);
+                assert.strictEqual(hit.layer, layer);
+                assert.strictEqual(hit.geometry, geometry);
+                resolve();
+              } catch (e) {
+                reject(e);
+              }
+            });
+          }));
 
-        it('with transparent fill', function (done) {
-          layer.setStyle({
-            'text-value': 'X',
-            'text-font': 'bold 100px sans-serif',
-            'text-baseline': 'top',
-            'text-offset-y': -50,
-            'text-stroke-width': 1,
-            'text-stroke-color': 'black',
-            'text-fill-color': 'transparent',
-            'text-placement': 'line',
-            'text-overflow': true,
-          });
-          map.once('rendercomplete', () => {
-            try {
-              const hit = map.forEachFeatureAtPixel(
-                [50, 50],
-                (feature, layer, geometry) => ({
-                  feature,
-                  layer,
-                  geometry,
-                }),
-              );
-              assert.isOk(hit);
-              assert.strictEqual(hit.feature, feature);
-              assert.strictEqual(hit.layer, layer);
-              assert.strictEqual(hit.geometry, geometry);
-              done();
-            } catch (e) {
-              done(e);
-            }
-          });
-        });
+        it('with transparent fill', () =>
+          new Promise((resolve, reject) => {
+            layer.setStyle({
+              'text-value': 'X',
+              'text-font': 'bold 100px sans-serif',
+              'text-baseline': 'top',
+              'text-offset-y': -50,
+              'text-stroke-width': 1,
+              'text-stroke-color': 'black',
+              'text-fill-color': 'transparent',
+              'text-placement': 'line',
+              'text-overflow': true,
+            });
+            map.once('rendercomplete', () => {
+              try {
+                const hit = map.forEachFeatureAtPixel(
+                  [50, 50],
+                  (feature, layer, geometry) => ({
+                    feature,
+                    layer,
+                    geometry,
+                  }),
+                );
+                assert.isOk(hit);
+                assert.strictEqual(hit.feature, feature);
+                assert.strictEqual(hit.layer, layer);
+                assert.strictEqual(hit.geometry, geometry);
+                resolve();
+              } catch (e) {
+                reject(e);
+              }
+            });
+          }));
       });
 
       it('prioritizes closer features when no direct hit is found', function () {
@@ -948,11 +951,11 @@ describe('ol/renderer/Map.js', function () {
         new Feature(new Point([660000 - resolution * 12, 190000])),
       );
       map.renderSync();
-      const spy = sinonSpy(CanvasRenderingContext2D.prototype, 'drawImage');
+      const spy = vi.spyOn(CanvasRenderingContext2D.prototype, 'drawImage');
       const features = map.getFeaturesAtPixel([50, 44]);
       assert.strictEqual(features.length, 1);
-      assert.strictEqual(spy.callCount, 2);
-      spy.restore();
+      assert.strictEqual(spy.mock.calls.length, 2);
+      spy.mockRestore();
     });
   });
 
@@ -1003,10 +1006,10 @@ describe('ol/renderer/Map.js', function () {
           layers: [layer],
           view: new View({center: [0, 0], zoom: 1, rotation: 0}),
         });
-        const spy = sinonSpy(CanvasRenderingContext2D.prototype, 'drawImage');
+        const spy = vi.spyOn(CanvasRenderingContext2D.prototype, 'drawImage');
         map.renderSync();
-        assert.strictEqual(spy.callCount, 0);
-        spy.restore();
+        assert.strictEqual(spy.mock.calls.length, 0);
+        spy.mockRestore();
         map.dispose();
       });
     });
