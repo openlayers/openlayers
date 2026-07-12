@@ -6,8 +6,12 @@ import {createCanvasContext2D} from '../../../../../../src/ol/dom.js';
 import {VOID} from '../../../../../../src/ol/functions.js';
 import WebGLTileLayer from '../../../../../../src/ol/layer/WebGLTile.js';
 import {get} from '../../../../../../src/ol/proj.js';
-import {newTileRepresentationLookup} from '../../../../../../src/ol/renderer/webgl/TileLayerBase.js';
+import {
+  getCacheKey,
+  newTileRepresentationLookup,
+} from '../../../../../../src/ol/renderer/webgl/TileLayerBase.js';
 import DataTile from '../../../../../../src/ol/source/DataTile.js';
+import {createXYZ} from '../../../../../../src/ol/tilegrid.js';
 import {create} from '../../../../../../src/ol/transform.js';
 import {getUid} from '../../../../../../src/ol/util.js';
 import TileTexture from '../../../../../../src/ol/webgl/TileTexture.js';
@@ -100,6 +104,23 @@ describe('ol/renderer/webgl/TileLayer', function () {
     assert.strictEqual(frameState.tileQueue.getCount(), 1);
     assert.strictEqual(Object.keys(frameState.wantedTiles).length, 1);
     assert.strictEqual(renderer.tileRepresentationCache.count_, 1);
+  });
+
+  it('#findStaleTile_() ends the transition so the stale tile does not loop', () => {
+    const source = tileLayer.getSource();
+    const tile = source.getTile(0, 0, 0);
+    renderer.tileRepresentationCache.set(
+      getCacheKey(source, [0, 0, 0], 'stale'),
+      {
+        ready: true,
+        tile,
+        dispose() {},
+      },
+    );
+    renderer.prependStaleKey('stale');
+    const endTransition = vi.spyOn(tile, 'endTransition');
+    renderer.findStaleTile_([0, 0, 0], newTileRepresentationLookup());
+    assert.strictEqual(endTransition.mock.calls.length, 1);
   });
 
   describe('enqueueTiles()', () => {
@@ -289,5 +310,38 @@ describe('ol/renderer/webgl/TileLayer', function () {
     it('creates a TileTexture instance', () => {
       assert.instanceOf(tileRepresentation, TileTexture);
     });
+  });
+
+  describe('stale tiles', () => {
+    let staleMap;
+    afterEach(() => {
+      disposeMap(staleMap);
+    });
+
+    it('remembers the previous source key as stale when the key changes', () =>
+      new Promise((resolve) => {
+        const layer = new WebGLTileLayer({
+          source: new DataTile({
+            tileSize: 1,
+            tileGrid: createXYZ(),
+            loader: () => new Uint8Array([1, 2, 3, 255]),
+          }),
+        });
+        staleMap = new Map({
+          target: createMapDiv(100, 100),
+          layers: [layer],
+          view: new View({center: [0, 0], zoom: 2}),
+        });
+        staleMap.once('rendercomplete', () => {
+          const renderer = layer.getRenderer();
+          const previousKey = layer.getSource().getKey();
+          assert.deepEqual(renderer.getStaleKeys(), []);
+          layer.getSource().setKey('changed');
+          staleMap.once('rendercomplete', () => {
+            assert.include(renderer.getStaleKeys(), previousKey);
+            resolve();
+          });
+        });
+      }));
   });
 });

@@ -90,6 +90,24 @@ function addTileRepresentationToLookup(
 }
 
 /**
+ * Remove a tile representation from the lookup.
+ * @param {TileRepresentationLookup} tileRepresentationLookup Lookup of tile representations by zoom level.
+ * @param {AbstractTileRepresentation} tileRepresentation A tile representation.
+ * @param {number} z The zoom level.
+ */
+function removeTileRepresentationFromLookup(
+  tileRepresentationLookup,
+  tileRepresentation,
+  z,
+) {
+  const representations = tileRepresentationLookup.representationsByZ[z];
+  if (representations) {
+    representations.delete(tileRepresentation);
+  }
+  tileRepresentationLookup.tileIds.delete(getUid(tileRepresentation.tile));
+}
+
+/**
  * @param {import("../../Map.js").FrameState} frameState Frame state.
  * @param {import("../../extent.js").Extent} extent The frame extent.
  * @return {import("../../extent.js").Extent} Frame extent intersected with layer extents.
@@ -119,10 +137,11 @@ function getRenderExtent(frameState, extent) {
 /**
  * @param {import("../../source/Tile.js").default} source The source.
  * @param {import('../../tilecoord.js').TileCoord} tileCoord The tile coordinate.
+ * @param {string} [key] The source key to use; defaults to the current key.
  * @return {string} The cache key.
  */
-export function getCacheKey(source, tileCoord) {
-  return `${getUid(source)},${source.getKey()},${getTileCoordKey(tileCoord)}`;
+export function getCacheKey(source, tileCoord, key = source.getKey()) {
+  return `${getUid(source)},${key},${getTileCoordKey(tileCoord)}`;
 }
 
 /**
@@ -214,6 +233,8 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
      * @protected
      */
     this.tileRepresentationCache = new LRUCache(cacheSize);
+
+    this.maxStaleKeys = cacheSize * 0.5;
 
     /**
      * @protected
@@ -577,6 +598,8 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
       tileSource.zDirection,
     );
 
+    this.updateStaleKeys(tileSource.getKey());
+
     /**
      * @type {TileRepresentationLookup}
      */
@@ -633,6 +656,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
         }
         const tileCoord = tile.tileCoord;
 
+        const tileCoordKey = getTileCoordKey(tileCoord);
         if (tileRepresentation.ready) {
           const alpha = tile.getAlpha(uid, time);
           if (alpha === 1) {
@@ -641,10 +665,26 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
             continue;
           }
           blend = true;
-          const tileCoordKey = getTileCoordKey(tileCoord);
           alphaLookup[tileCoordKey] = alpha;
         }
         this.renderComplete = false;
+
+        // look for a tile from a previous key before falling back to other zoom levels
+        const hasStaleTile = this.findStaleTile_(
+          tileCoord,
+          tileRepresentationLookup,
+        );
+        if (hasStaleTile) {
+          // show the stale tile at full opacity until the new tile has faded in
+          delete alphaLookup[tileCoordKey];
+          removeTileRepresentationFromLookup(
+            tileRepresentationLookup,
+            tileRepresentation,
+            z,
+          );
+          frameState.animate = true;
+          continue;
+        }
 
         // first look for child tiles (at z + 1)
         const coveredByChildren = this.findAltTiles_(
@@ -763,6 +803,43 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
    */
   beforeFinalize(frameState) {
     return;
+  }
+
+  /**
+   * Look for a ready tile at the same coordinate from a previous source key.
+   * A match is added to the provided lookup at the target zoom level.
+   * @param {import("../../tilecoord.js").TileCoord} tileCoord The target tile coordinate.
+   * @param {TileRepresentationLookup} tileRepresentationLookup Lookup of
+   * tile representations by zoom level.
+   * @return {boolean} A stale tile was found and added to the lookup.
+   * @private
+   */
+  findStaleTile_(tileCoord, tileRepresentationLookup) {
+    const tileRepresentationCache = this.tileRepresentationCache;
+    const source = this.getLayer().getRenderSource();
+    const z = tileCoord[0];
+    const staleKeys = this.getStaleKeys();
+    for (let i = 0, ii = staleKeys.length; i < ii; ++i) {
+      const cacheKey = getCacheKey(source, tileCoord, staleKeys[i]);
+      if (tileRepresentationCache.containsKey(cacheKey)) {
+        const tileRepresentation = tileRepresentationCache.get(cacheKey);
+        if (
+          tileRepresentation.ready &&
+          !lookupHasTile(tileRepresentationLookup, tileRepresentation.tile)
+        ) {
+          // end the transition so the stale tile renders opaque and is not
+          // re-processed as a target tile (which could loop)
+          tileRepresentation.tile.endTransition(getUid(this));
+          addTileRepresentationToLookup(
+            tileRepresentationLookup,
+            tileRepresentation,
+            z,
+          );
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   /**

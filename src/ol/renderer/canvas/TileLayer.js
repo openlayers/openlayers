@@ -156,12 +156,6 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
 
     /**
      * @private
-     * @type {string}
-     */
-    this.renderedSourceKey_;
-
-    /**
-     * @private
      * @type {number}
      */
     this.renderedSourceRevision_;
@@ -606,13 +600,7 @@ class CanvasTileLayerRenderer extends CanvasLayerRenderer {
     const z = tileGrid.getZForResolution(viewResolution, tileSource.zDirection);
     const tileResolution = tileGrid.getResolution(z);
 
-    const sourceKey = tileSource.getKey();
-    if (!this.renderedSourceKey_) {
-      this.renderedSourceKey_ = sourceKey;
-    } else if (this.renderedSourceKey_ !== sourceKey) {
-      this.prependStaleKey(this.renderedSourceKey_);
-      this.renderedSourceKey_ = sourceKey;
-    }
+    this.updateStaleKeys(tileSource.getKey());
 
     let frameExtent = frameState.extent;
     const tilePixelRatio = tileSource.getTilePixelRatio(pixelRatio);
