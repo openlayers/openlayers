@@ -1,5 +1,5 @@
-import {spy as sinonSpy, stub as sinonStub} from 'sinon';
 import {assert} from 'chai';
+import {spy as sinonSpy, stub as sinonStub} from 'sinon';
 import Map from '../../../../../../src/ol/Map.js';
 import TileQueue from '../../../../../../src/ol/TileQueue.js';
 import TileState from '../../../../../../src/ol/TileState.js';
@@ -172,7 +172,7 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
   });
 
   it('does include the post processing step for text rendering', () => {
-    expect(renderer.postProcesses_).to.eql([]);
+    assert.deepEqual(renderer.postProcesses_, []);
   });
 
   describe('#afterHelperCreated', () => {
@@ -247,7 +247,7 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
         assert.include(builder.getSymbolColorExpression(), 'a_prop_size');
       });
       it('does not include the post processing step for text rendering', () => {
-        expect(renderer.postProcesses_).to.eql([]);
+        assert.deepEqual(renderer.postProcesses_, []);
       });
     });
 
@@ -274,7 +274,7 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
         );
       });
       it('does not include the post processing step for text rendering', () => {
-        expect(renderer.postProcesses_).to.eql([]);
+        assert.deepEqual(renderer.postProcesses_, []);
       });
     });
   });
@@ -312,14 +312,16 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
         () => null,
         () => null,
       );
-      expect(renderer.postProcesses_.length).to.be(2);
-      expect(renderer.postProcesses_[0].fragmentShader).to.eql(
+      assert.strictEqual(renderer.postProcesses_.length, 2);
+      assert.deepEqual(
+        renderer.postProcesses_[0].fragmentShader,
         mockPostProcess.fragmentShader,
       );
-      expect(renderer.postProcesses_[0].vertexShader).to.eql(
+      assert.deepEqual(
+        renderer.postProcesses_[0].vertexShader,
         mockPostProcess.vertexShader,
       );
-      expect(renderer.postProcesses_[1]).to.eql(POST_PROCESS);
+      assert.deepEqual(renderer.postProcesses_[1], POST_PROCESS);
     });
 
     describe('when a style without text is set later on', () => {
@@ -330,7 +332,7 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
       });
 
       it('does not include the text post processing step', () => {
-        expect(renderer.postProcesses_).to.eql([POST_PROCESS]);
+        assert.deepEqual(renderer.postProcesses_, [POST_PROCESS]);
       });
     });
 
@@ -339,7 +341,8 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
         renderer.renderFrame(frameState);
       });
       it('calls styleRenderer.finalizeTextRender once', () => {
-        expect(renderer.styleRenderer_.finalizeTextRender.calledOnce).to.be(
+        assert.strictEqual(
+          renderer.styleRenderer_.finalizeTextRender.calledOnce,
           true,
         );
       });
@@ -362,20 +365,20 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
         renderer.renderFrame(frameState);
         finalizeTextRenderResolver();
         await new Promise((resolve) => setTimeout(resolve)); // awaiting next tick
-        expect(vectorTileLayer.changed.callCount).to.be(1);
+        assert.strictEqual(vectorTileLayer.changed.callCount, 1);
 
         // no update to the layer in the meantime: layer.changed() should not be called again
         renderer.renderFrame(frameState);
         finalizeTextRenderResolver();
         await new Promise((resolve) => setTimeout(resolve));
-        expect(vectorTileLayer.changed.callCount).to.be(1);
+        assert.strictEqual(vectorTileLayer.changed.callCount, 1);
 
         // after a layer update: layer.changed should be called once more
         vectorTileLayer.revision_++;
         renderer.renderFrame(frameState);
         finalizeTextRenderResolver();
         await new Promise((resolve) => setTimeout(resolve));
-        expect(vectorTileLayer.changed.callCount).to.be(2);
+        assert.strictEqual(vectorTileLayer.changed.callCount, 2);
       });
     });
   });
@@ -538,7 +541,10 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
       assert.strictEqual(renderer.styleRenderer_.render.mock.calls.length, 2);
     });
     it('does not call styleRenderer.finalizeTextRender (no text style)', () => {
-      expect(renderer.styleRenderer_.finalizeTextRender.called).to.be(false);
+      assert.strictEqual(
+        renderer.styleRenderer_.finalizeTextRender.called,
+        false,
+      );
     });
   });
 });

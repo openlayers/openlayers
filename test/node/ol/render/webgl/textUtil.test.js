@@ -1,4 +1,4 @@
-import expect from 'expect.js';
+import {assert} from 'chai';
 import {
   ColorType,
   SizeType,
@@ -44,22 +44,24 @@ import LabelsArray from '../../../../../src/ol/webgl/LabelsArray.js';
 describe('ol/render/webgl/textUtil', function () {
   describe('hasTextStyle', function () {
     it('works on single style', function () {
-      expect(
+      assert.strictEqual(
         hasTextStyle({
           'fill-color': 'red',
           'text-value': 'foo',
           'text-font': 'bold 12px "Open Sans", "Arial Unicode MS", sans-serif',
         }),
-      ).to.be(true);
-      expect(
+        true,
+      );
+      assert.strictEqual(
         hasTextStyle({
           'fill-color': 'red',
           'text-font': 'bold 12px "Open Sans", "Arial Unicode MS", sans-serif',
         }),
-      ).to.be(false);
+        false,
+      );
     });
     it('works on multiple simple styles', function () {
-      expect(
+      assert.strictEqual(
         hasTextStyle([
           {
             'fill-color': ['get', 'color'],
@@ -72,8 +74,9 @@ describe('ol/render/webgl/textUtil', function () {
             'text-value': ['get', 'name'],
           },
         ]),
-      ).to.be(true);
-      expect(
+        true,
+      );
+      assert.strictEqual(
         hasTextStyle([
           {
             'fill-color': ['get', 'color'],
@@ -85,10 +88,11 @@ describe('ol/render/webgl/textUtil', function () {
             'fill-color': 'white',
           },
         ]),
-      ).to.be(false);
+        false,
+      );
     });
     it('works on multiple style rules', function () {
-      expect(
+      assert.strictEqual(
         hasTextStyle([
           {
             style: {
@@ -114,8 +118,9 @@ describe('ol/render/webgl/textUtil', function () {
             },
           },
         ]),
-      ).to.be(true);
-      expect(
+        true,
+      );
+      assert.strictEqual(
         hasTextStyle([
           {
             style: {
@@ -133,10 +138,11 @@ describe('ol/render/webgl/textUtil', function () {
             filter: ['==', ['get', 'id'], ['var', 'highlightedId']],
           },
         ]),
-      ).to.be(false);
+        false,
+      );
     });
     it('works on style rules with multiple styles', function () {
-      expect(
+      assert.strictEqual(
         hasTextStyle([
           {
             style: [
@@ -154,8 +160,9 @@ describe('ol/render/webgl/textUtil', function () {
             filter: ['>', ['get', 'size'], 10],
           },
         ]),
-      ).to.be(true);
-      expect(
+        true,
+      );
+      assert.strictEqual(
         hasTextStyle([
           {
             style: [
@@ -172,25 +179,27 @@ describe('ol/render/webgl/textUtil', function () {
             filter: ['==', ['get', 'id'], ['var', 'highlightedId']],
           },
         ]),
-      ).to.be(false);
+        false,
+      );
     });
   });
 
   describe('stripNonTextStyleProperties', function () {
     it('only keeps the style properties relevant to text rendering (single style)', function () {
-      expect(
+      assert.deepEqual(
         stripNonTextStyleProperties({
           'fill-color': 'red',
           'text-value': 'foo',
           'text-font': 'bold 12px "Open Sans", "Arial Unicode MS", sans-serif',
         }),
-      ).to.eql({
-        'text-value': 'foo',
-        'text-font': 'bold 12px "Open Sans", "Arial Unicode MS", sans-serif',
-      });
+        {
+          'text-value': 'foo',
+          'text-font': 'bold 12px "Open Sans", "Arial Unicode MS", sans-serif',
+        },
+      );
     });
     it('only keeps the style properties relevant to text rendering (multiple simple styles)', function () {
-      expect(
+      assert.deepEqual(
         stripNonTextStyleProperties([
           {
             'fill-color': ['get', 'color'],
@@ -209,17 +218,19 @@ describe('ol/render/webgl/textUtil', function () {
               'bold 12px "Open Sans", "Arial Unicode MS", sans-serif',
           },
         ]),
-      ).to.eql([
-        {},
-        {'text-value': ['get', 'name']},
-        {
-          'text-value': 'foo',
-          'text-font': 'bold 12px "Open Sans", "Arial Unicode MS", sans-serif',
-        },
-      ]);
+        [
+          {},
+          {'text-value': ['get', 'name']},
+          {
+            'text-value': 'foo',
+            'text-font':
+              'bold 12px "Open Sans", "Arial Unicode MS", sans-serif',
+          },
+        ],
+      );
     });
     it('only keeps the style properties relevant to text rendering (multiple style rules)', function () {
-      expect(
+      assert.deepEqual(
         stripNonTextStyleProperties([
           {
             style: {
@@ -245,22 +256,55 @@ describe('ol/render/webgl/textUtil', function () {
             },
           },
         ]),
-      ).to.eql([
-        {style: {}, filter: ['>', ['get', 'size'], 10]},
-        {
-          style: {
-            'text-value': ['get', 'name'],
+        [
+          {style: {}, filter: ['>', ['get', 'size'], 10]},
+          {
+            style: {
+              'text-value': ['get', 'name'],
+            },
+            filter: ['==', ['get', 'id'], ['var', 'highlightedId']],
           },
-          filter: ['==', ['get', 'id'], ['var', 'highlightedId']],
-        },
-        {
-          style: {
-            'text-value': 'foo',
-            'text-font':
-              'bold 12px "Open Sans", "Arial Unicode MS", sans-serif',
+          {
+            style: {
+              'text-value': 'foo',
+              'text-font':
+                'bold 12px "Open Sans", "Arial Unicode MS", sans-serif',
+            },
           },
-        },
-      ]);
+        ],
+      );
+    });
+    it('only keeps the style properties relevant to text rendering (style rules with multiple styles)', function () {
+      assert.deepEqual(
+        stripNonTextStyleProperties([
+          {
+            style: [
+              {
+                'fill-color': ['get', 'color'],
+                'stroke-width': 2,
+                'circle-radius': ['get', 'size'],
+                'circle-fill-color': 'red',
+              },
+              {
+                'fill-color': 'white',
+                'text-value': ['get', 'name'],
+              },
+            ],
+            filter: ['==', ['get', 'id'], ['var', 'highlightedId']],
+          },
+        ]),
+        [
+          {
+            style: [
+              {},
+              {
+                'text-value': ['get', 'name'],
+              },
+            ],
+            filter: ['==', ['get', 'id'], ['var', 'highlightedId']],
+          },
+        ],
+      );
     });
   });
 
@@ -295,7 +339,7 @@ describe('ol/render/webgl/textUtil', function () {
         () => mockCanvas,
         () => textOverlayFrameState,
       );
-      expect(postProcess.fragmentShader).to.be.a('string');
+      assert.typeOf(postProcess.fragmentShader, 'string');
 
       const overlayMatrixFn =
         postProcess.uniforms[TextUniforms.TEXT_OVERLAY_MATRIX];
@@ -325,7 +369,7 @@ describe('ol/render/webgl/textUtil', function () {
         expectedMatrix,
       );
 
-      expect(overlayMatrixFn(currentFrameState)).to.eql(expectedMatrix);
+      assert.deepEqual(overlayMatrixFn(currentFrameState), expectedMatrix);
     });
   });
 
@@ -501,10 +545,10 @@ describe('ol/render/webgl/textUtil', function () {
           styleFunction,
         );
 
-        expect(textBuilder.calls.length).to.be(4); // 2 polygons, 1 style rule without line placement, 2 calls for each
+        assert.strictEqual(textBuilder.calls.length, 4); // 2 polygons, 1 style rule without line placement, 2 calls for each
         // first polygon
-        expect(textBuilder.calls[0]).to.eql(['setTextStyle', '# ef']);
-        expect(textBuilder.calls[1]).to.eql([
+        assert.deepEqual(textBuilder.calls[0], ['setTextStyle', '# ef']);
+        assert.deepEqual(textBuilder.calls[1], [
           'drawText',
           'Polygon',
           [
@@ -513,8 +557,8 @@ describe('ol/render/webgl/textUtil', function () {
           ],
         ]);
         // second polygon
-        expect(textBuilder.calls[2]).to.eql(['setTextStyle', '# gh']);
-        expect(textBuilder.calls[3]).to.eql([
+        assert.deepEqual(textBuilder.calls[2], ['setTextStyle', '# gh']);
+        assert.deepEqual(textBuilder.calls[3], [
           'drawText',
           'Polygon',
           [3, 3, 4, 3, 4, 4, 3, 4, 3, 3],
@@ -536,38 +580,38 @@ describe('ol/render/webgl/textUtil', function () {
           styleFunction,
         );
 
-        expect(textBuilder.calls.length).to.be(10); // 2 polygons (3 linear rings) + 2 lines, 1 style rule with line placement, 2 calls for each
+        assert.strictEqual(textBuilder.calls.length, 10); // 2 polygons (3 linear rings) + 2 lines, 1 style rule with line placement, 2 calls for each
         // first linear ring
-        expect(textBuilder.calls[0]).to.eql(['setTextStyle', 'feature']);
-        expect(textBuilder.calls[1]).to.eql([
+        assert.deepEqual(textBuilder.calls[0], ['setTextStyle', 'feature']);
+        assert.deepEqual(textBuilder.calls[1], [
           'drawText',
           'LineString',
           [1, 1, 0, 2, 1, 0, 2, 2, 0, 2, 4, 0, 1, 4, 0, 1, 1, 0],
         ]);
         // second linear ring
-        expect(textBuilder.calls[2]).to.eql(['setTextStyle', 'feature']);
-        expect(textBuilder.calls[3]).to.eql([
+        assert.deepEqual(textBuilder.calls[2], ['setTextStyle', 'feature']);
+        assert.deepEqual(textBuilder.calls[3], [
           'drawText',
           'LineString',
           [1.5, 1.5, 0, 1.5, 1.75, 0, 1.75, 1.75, 0, 1.75, 1.5, 0, 1.5, 1.5, 0],
         ]);
         // third linear ring
-        expect(textBuilder.calls[4]).to.eql(['setTextStyle', 'feature']);
-        expect(textBuilder.calls[5]).to.eql([
+        assert.deepEqual(textBuilder.calls[4], ['setTextStyle', 'feature']);
+        assert.deepEqual(textBuilder.calls[5], [
           'drawText',
           'LineString',
           [3, 3, 0, 4, 3, 0, 4, 4, 0, 3, 4, 0, 3, 3, 0],
         ]);
         // first line
-        expect(textBuilder.calls[6]).to.eql(['setTextStyle', 'feature']);
-        expect(textBuilder.calls[7]).to.eql([
+        assert.deepEqual(textBuilder.calls[6], ['setTextStyle', 'feature']);
+        assert.deepEqual(textBuilder.calls[7], [
           'drawText',
           'LineString',
           [1, 2, 0, 3, 4, 0, 5, 6, 0],
         ]);
         // second line
-        expect(textBuilder.calls[8]).to.eql(['setTextStyle', 'feature']);
-        expect(textBuilder.calls[9]).to.eql([
+        assert.deepEqual(textBuilder.calls[8], ['setTextStyle', 'feature']);
+        assert.deepEqual(textBuilder.calls[9], [
           'drawText',
           'LineString',
           [1, 1, 0, 2, 2, 0, 3, 3, 0, 4, 4, 0],
@@ -589,15 +633,15 @@ describe('ol/render/webgl/textUtil', function () {
           styleFunction,
         );
 
-        expect(textBuilder.calls.length).to.eql(4); // 2 points, 1 style rule without line placement, 2 calls for each
+        assert.deepEqual(textBuilder.calls.length, 4); // 2 points, 1 style rule without line placement, 2 calls for each
 
         // first point
-        expect(textBuilder.calls[0]).to.eql(['setTextStyle', '# ab']);
-        expect(textBuilder.calls[1]).to.eql(['drawText', 'Point', [1, 2]]);
+        assert.deepEqual(textBuilder.calls[0], ['setTextStyle', '# ab']);
+        assert.deepEqual(textBuilder.calls[1], ['drawText', 'Point', [1, 2]]);
 
         // second point
-        expect(textBuilder.calls[2]).to.eql(['setTextStyle', '# cd']);
-        expect(textBuilder.calls[3]).to.eql(['drawText', 'Point', [3, 4]]);
+        assert.deepEqual(textBuilder.calls[2], ['setTextStyle', '# cd']);
+        assert.deepEqual(textBuilder.calls[3], ['drawText', 'Point', [3, 4]]);
       });
     });
   });

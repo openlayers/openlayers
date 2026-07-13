@@ -1,4 +1,4 @@
-import expect from 'expect.js';
+import {assert} from 'chai';
 import LabelsArray from '../../../../src/ol/webgl/LabelsArray.js';
 
 describe('ol/webgl/LabelsArray.js', () => {
@@ -76,7 +76,7 @@ describe('ol/webgl/LabelsArray.js', () => {
     it('returns a Uint8Array containing the labels', () => {
       labelsArray.push('foo');
       labelsArray.push('bar');
-      expect(labelsArray.getArray()).to.be.a(Uint8Array);
+      assert.instanceOf(labelsArray.getArray(), Uint8Array);
 
       const array = labelsArray.getArray();
       assert.equal(array[0], 'f'.charCodeAt(0));

@@ -1,4 +1,5 @@
 import {assert} from 'chai';
+import {spy as sinonSpy} from 'sinon';
 import Feature from '../../../../../../src/ol/Feature.js';
 import {stringToGlsl} from '../../../../../../src/ol/expr/gpu.js';
 import LineString from '../../../../../../src/ol/geom/LineString.js';
@@ -164,8 +165,8 @@ describe('VectorStyleRenderer', () => {
       assert.lengthOf(vectorStyleRenderer.renderPasses_, 2);
     });
     it('creates a VectorStyleRenderer without text rendering', () => {
-      expect(vectorStyleRenderer.hasText_).to.be(false);
-      expect(vectorStyleRenderer.textOverlayWorker_).to.be(undefined);
+      assert.strictEqual(vectorStyleRenderer.hasText_, false);
+      assert.strictEqual(vectorStyleRenderer.textOverlayWorker_, undefined);
     });
     it('initializes two render passes with the proper attributes', () => {
       const firstPass = vectorStyleRenderer.renderPasses_[0];
@@ -617,7 +618,7 @@ describe('VectorStyleRenderer', () => {
       try {
         await vectorStyleRenderer.finalizeTextRender(SAMPLE_FRAMESTATE);
       } catch (e) {
-        expect().fail(e);
+        assert.fail(e);
       }
     });
   });
@@ -767,8 +768,8 @@ describe('VectorStyleRenderer', () => {
     });
 
     it('creates a VectorStyleRenderer with text rendering', () => {
-      expect(vectorStyleRenderer.hasText_).to.be(true);
-      expect(vectorStyleRenderer.textOverlayWorker_).not.to.be(undefined);
+      assert.strictEqual(vectorStyleRenderer.hasText_, true);
+      assert.notStrictEqual(vectorStyleRenderer.textOverlayWorker_, undefined);
     });
 
     describe('generateBuffers', () => {
@@ -786,12 +787,12 @@ describe('VectorStyleRenderer', () => {
           vectorStyleRenderer.textOverlayWorker_.postMessage.getCall(
             0,
           ).firstArg;
-        expect(message.type).to.be('BUILD_INSTRUCTIONS');
-        expect(message.polygonRenderInstructions).to.be.a(ArrayBuffer);
-        expect(message.lineStringRenderInstructions).to.be.a(ArrayBuffer);
-        expect(message.pointRenderInstructions).to.be.a(ArrayBuffer);
-        expect(message.labelsArray).to.be.a(Uint8Array);
-        expect(message.style).to.eql([
+        assert.strictEqual(message.type, 'BUILD_INSTRUCTIONS');
+        assert.instanceOf(message.polygonRenderInstructions, ArrayBuffer);
+        assert.instanceOf(message.lineStringRenderInstructions, ArrayBuffer);
+        assert.instanceOf(message.pointRenderInstructions, ArrayBuffer);
+        assert.instanceOf(message.labelsArray, Uint8Array);
+        assert.deepEqual(message.style, [
           {
             style: {
               'circle-radius': ['get', 'size'],
@@ -806,24 +807,25 @@ describe('VectorStyleRenderer', () => {
             },
           },
         ]);
-        expect(message.customAttributesSizes).to.eql({
+        assert.deepEqual(message.customAttributesSizes, {
           prop_size: 1,
           prop_id: 1,
           prop_label: 3,
         });
-        expect(message.renderInstructionsTransform).to.eql(SAMPLE_TRANSFORM);
-        expect(message.resolution).to.eql(
+        assert.deepEqual(message.renderInstructionsTransform, SAMPLE_TRANSFORM);
+        assert.strictEqual(
+          message.resolution,
           SAMPLE_FRAMESTATE.viewState.resolution,
         );
       });
       it('stores a text instructions key', () => {
-        expect(buffers.textInstructionsKey).to.be.a('string');
+        assert.typeOf(buffers.textInstructionsKey, 'string');
       });
       it('generates buffers only for symbol geometry', () => {
-        expect(buffers.polygonBuffers).to.be(null);
-        expect(buffers.lineStringBuffers).to.be(null);
-        expect(buffers.pointBuffers).to.be.a(Array);
-        expect(buffers.pointBuffers[0]).to.be.a(WebGLArrayBuffer);
+        assert.strictEqual(buffers.polygonBuffers, null);
+        assert.strictEqual(buffers.lineStringBuffers, null);
+        assert.instanceOf(buffers.pointBuffers, Array);
+        assert.instanceOf(buffers.pointBuffers[0], WebGLArrayBuffer);
       });
     });
     describe('render', () => {
@@ -839,17 +841,19 @@ describe('VectorStyleRenderer', () => {
         vectorStyleRenderer.render(buffers, SAMPLE_FRAMESTATE, preRenderCb);
       });
       it('calls prerender callback', () => {
-        expect(preRenderCb.callCount).to.be(1);
+        assert.strictEqual(preRenderCb.callCount, 1);
       });
       it('uses program for symbol render pass', function () {
-        expect(helper.useProgram.callCount).to.be(1); // one render pass, one program for symbols
+        assert.strictEqual(helper.useProgram.callCount, 1); // one render pass, one program for symbols
         const firstPass = vectorStyleRenderer.renderPasses_[0];
-        expect(helper.useProgram.getCall(0).firstArg).to.be(
+        assert.strictEqual(
+          helper.useProgram.getCall(0).firstArg,
           firstPass.symbolRenderPass.program,
         );
       });
       it('adds the text instructions key to the text overlay render list', () => {
-        expect(vectorStyleRenderer.textOverlayRenderList_).to.eql(
+        assert.deepEqual(
+          vectorStyleRenderer.textOverlayRenderList_,
           new Set([buffers.textInstructionsKey]),
         );
       });
@@ -874,41 +878,66 @@ describe('VectorStyleRenderer', () => {
         sinonSpy(vectorStyleRenderer.textOverlayWorker_, 'postMessage');
         sinonSpy(vectorStyleRenderer.textOverlayContext_, 'clearRect');
         sinonSpy(vectorStyleRenderer.textOverlayContext_, 'drawImage');
+
+        // this does a copy of the `batchesToRender` Set, otherwise we can't properly test its value afterwards (because it's mutated)
+        vectorStyleRenderer.textOverlayWorker_.postMessage = new Proxy(
+          vectorStyleRenderer.textOverlayWorker_.postMessage,
+          {
+            apply(target, thisArg, [message, ...args]) {
+              return target.call(
+                thisArg,
+                {
+                  ...message,
+                  batchesToRender: new Set(message.batchesToRender),
+                },
+                ...args,
+              );
+            },
+          },
+        );
+
         await vectorStyleRenderer.finalizeTextRender(SAMPLE_FRAMESTATE);
       });
       it('asks for a render of the text overlay worker', async () => {
-        expect(
+        assert.strictEqual(
           vectorStyleRenderer.textOverlayWorker_.postMessage.callCount,
-        ).to.be(1);
+          1,
+        );
         const firstMessage =
           vectorStyleRenderer.textOverlayWorker_.postMessage.getCall(
             0,
           ).firstArg;
-        expect(firstMessage.type).to.be('RENDER');
-        expect(firstMessage.frameState).to.eql(
+        assert.strictEqual(firstMessage.type, 'RENDER');
+        assert.deepEqual(
+          firstMessage.frameState,
           serializeFrameState(SAMPLE_FRAMESTATE),
         );
-        expect(firstMessage.batchesToRender).to.eql(
+        assert.deepEqual(
+          firstMessage.batchesToRender,
           new Set([buffers.textInstructionsKey]),
         );
       });
       it('clears the overlay canvas on the main thread and renders the data coming from the worker', async () => {
-        expect(
+        assert.strictEqual(
           vectorStyleRenderer.textOverlayContext_.clearRect.callCount,
-        ).to.be(1);
-        expect(
+          1,
+        );
+        assert.deepEqual(
           vectorStyleRenderer.textOverlayContext_.clearRect.getCall(0).args,
-        ).to.eql([0, 0, ...SAMPLE_FRAMESTATE.size]);
+          [0, 0, ...SAMPLE_FRAMESTATE.size],
+        );
 
-        expect(
+        assert.strictEqual(
           vectorStyleRenderer.textOverlayContext_.drawImage.callCount,
-        ).to.be(1);
-        expect(
+          1,
+        );
+        assert.instanceOf(
           vectorStyleRenderer.textOverlayContext_.drawImage.getCall(0).args[0],
-        ).to.be.an(ImageBitmap);
+          ImageBitmap,
+        );
       });
       it('clears text overlay render list', () => {
-        expect(vectorStyleRenderer.textOverlayRenderList_).to.eql(new Set());
+        assert.deepEqual(vectorStyleRenderer.textOverlayRenderList_, new Set());
       });
     });
 
@@ -922,10 +951,12 @@ describe('VectorStyleRenderer', () => {
         await vectorStyleRenderer.finalizeTextRender(SAMPLE_FRAMESTATE);
       });
       it('does not touch the overlay canvas', async () => {
-        expect(vectorStyleRenderer.textOverlayContext_.clearRect.called).to.be(
+        assert.strictEqual(
+          vectorStyleRenderer.textOverlayContext_.clearRect.called,
           false,
         );
-        expect(vectorStyleRenderer.textOverlayContext_.drawImage.called).to.be(
+        assert.strictEqual(
+          vectorStyleRenderer.textOverlayContext_.drawImage.called,
           false,
         );
       });
@@ -935,9 +966,10 @@ describe('VectorStyleRenderer', () => {
       it('terminates its worker', () => {
         sinonSpy(vectorStyleRenderer.textOverlayWorker_, 'terminate');
         vectorStyleRenderer.dispose();
-        expect(
+        assert.strictEqual(
           vectorStyleRenderer.textOverlayWorker_.terminate.callCount,
-        ).to.be(1);
+          1,
+        );
       });
     });
   });
@@ -972,8 +1004,8 @@ describe('VectorStyleRenderer', () => {
     });
 
     it('creates a VectorStyleRenderer with text rendering', () => {
-      expect(vectorStyleRenderer.hasText_).to.be(true);
-      expect(vectorStyleRenderer.textOverlayWorker_).not.to.be(undefined);
+      assert.strictEqual(vectorStyleRenderer.hasText_, true);
+      assert.notStrictEqual(vectorStyleRenderer.textOverlayWorker_, undefined);
     });
   });
 
@@ -999,8 +1031,8 @@ describe('VectorStyleRenderer', () => {
     });
 
     it('creates a VectorStyleRenderer with text rendering', () => {
-      expect(vectorStyleRenderer.hasText_).to.be(true);
-      expect(vectorStyleRenderer.textOverlayWorker_).not.to.be(undefined);
+      assert.strictEqual(vectorStyleRenderer.hasText_, true);
+      assert.notStrictEqual(vectorStyleRenderer.textOverlayWorker_, undefined);
     });
 
     describe('generateBuffers', () => {
@@ -1012,12 +1044,12 @@ describe('VectorStyleRenderer', () => {
         );
       });
       it('creates a text instructions key', () => {
-        expect(buffers.textInstructionsKey).to.be.a('string');
+        assert.typeOf(buffers.textInstructionsKey, 'string');
       });
       it('generates no buffers only for symbol geometry', () => {
-        expect(buffers.polygonBuffers).to.be(null);
-        expect(buffers.lineStringBuffers).to.be(null);
-        expect(buffers.pointBuffers).to.be(null);
+        assert.strictEqual(buffers.polygonBuffers, null);
+        assert.strictEqual(buffers.lineStringBuffers, null);
+        assert.strictEqual(buffers.pointBuffers, null);
       });
     });
     describe('render', () => {
@@ -1037,21 +1069,21 @@ describe('VectorStyleRenderer', () => {
         vectorStyleRenderer.render(buffers, SAMPLE_FRAMESTATE, preRenderCb);
       });
       it('does not use programs', function () {
-        expect(helper.useProgram.callCount).to.be(0);
+        assert.strictEqual(helper.useProgram.callCount, 0);
       });
       it('does not bind buffers', function () {
-        expect(helper.bindBuffer.callCount).to.be(0);
+        assert.strictEqual(helper.bindBuffer.callCount, 0);
       });
       it('does not enable attributes', function () {
-        expect(helper.enableAttributes.callCount).to.be(0);
-        expect(helper.enableAttributesInstanced.callCount).to.be(0);
+        assert.strictEqual(helper.enableAttributes.callCount, 0);
+        assert.strictEqual(helper.enableAttributesInstanced.callCount, 0);
       });
       it('does not draw any geometry', function () {
-        expect(helper.drawElements.callCount).to.be(0);
-        expect(helper.drawElementsInstanced.callCount).to.be(0);
+        assert.strictEqual(helper.drawElements.callCount, 0);
+        assert.strictEqual(helper.drawElementsInstanced.callCount, 0);
       });
       it('does not call prerender callback', () => {
-        expect(preRenderCb.callCount).to.be(0);
+        assert.strictEqual(preRenderCb.callCount, 0);
       });
     });
   });
@@ -1282,11 +1314,11 @@ describe('VectorStyleRenderer', () => {
   describe('toFlatStyleLike', function () {
     it('returns a single FlatStyle as-is (no copy)', function () {
       const flatStyle = {'fill-color': 'red', 'stroke-width': 2};
-      expect(toFlatStyleLike(flatStyle)).to.be(flatStyle);
+      assert.strictEqual(toFlatStyleLike(flatStyle), flatStyle);
     });
     it('returns an array of FlatStyles as-is (no copy)', function () {
       const flatStyles = [{'fill-color': 'red'}, {'stroke-color': 'blue'}];
-      expect(toFlatStyleLike(flatStyles)).to.be(flatStyles);
+      assert.strictEqual(toFlatStyleLike(flatStyles), flatStyles);
     });
     it('returns an array of Rules as-is (no copy)', function () {
       const rules = [
@@ -1296,7 +1328,7 @@ describe('VectorStyleRenderer', () => {
         },
         {style: {'fill-color': 'green'}},
       ];
-      expect(toFlatStyleLike(rules)).to.be(rules);
+      assert.strictEqual(toFlatStyleLike(rules), rules);
     });
     it('returns an array with the sourceRule for a single shader', function () {
       const sourceRule = {style: {'fill-color': 'blue'}};
@@ -1306,7 +1338,7 @@ describe('VectorStyleRenderer', () => {
         uniforms: {},
         sourceRule,
       };
-      expect(toFlatStyleLike(shader)).to.eql([sourceRule]);
+      assert.deepEqual(toFlatStyleLike(shader), [sourceRule]);
     });
     it('returns an array of sourceRules for an array of shaders', function () {
       const sourceRule1 = {style: {'fill-color': 'blue'}};
@@ -1325,7 +1357,7 @@ describe('VectorStyleRenderer', () => {
           sourceRule: sourceRule2,
         },
       ];
-      expect(toFlatStyleLike(shaders)).to.eql([sourceRule1, sourceRule2]);
+      assert.deepEqual(toFlatStyleLike(shaders), [sourceRule1, sourceRule2]);
     });
     it('returns null for a single custom shader', function () {
       const shader = {
@@ -1335,7 +1367,7 @@ describe('VectorStyleRenderer', () => {
         attributes: [],
         uniforms: {},
       };
-      expect(toFlatStyleLike(shader)).to.be(null);
+      assert.strictEqual(toFlatStyleLike(shader), null);
     });
     it('returns null for an array of custom shaders', function () {
       const shaders = [
@@ -1352,7 +1384,7 @@ describe('VectorStyleRenderer', () => {
           uniforms: {},
         },
       ];
-      expect(toFlatStyleLike(shaders)).to.be(null);
+      assert.strictEqual(toFlatStyleLike(shaders), null);
     });
     it('returns null for a mixed array where at least one shader has no sourceRule', function () {
       const sourceRule = {style: {'fill-color': 'blue'}};
@@ -1369,7 +1401,7 @@ describe('VectorStyleRenderer', () => {
           uniforms: {},
         },
       ];
-      expect(toFlatStyleLike(shaders)).to.be(null);
+      assert.strictEqual(toFlatStyleLike(shaders), null);
     });
   });
 });

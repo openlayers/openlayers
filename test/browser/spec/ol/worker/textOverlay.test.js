@@ -1,3 +1,4 @@
+import {assert} from 'chai';
 import Feature from '../../../../../src/ol/Feature.js';
 import Point from '../../../../../src/ol/geom/Point.js';
 import {get as getProjection} from '../../../../../src/ol/proj.js';
@@ -125,12 +126,12 @@ describe('ol/worker/textOverlay', () => {
           batchesToRender: new Set(),
         };
         const response = await postWorkerMessage(message);
-        expect(response.type).to.eql(TextOverlayWorkerMessageType.RENDER);
+        assert.deepEqual(response.type, TextOverlayWorkerMessageType.RENDER);
         const imageData = response.imageData;
-        expect(imageData).to.be.an(ImageBitmap);
-        expect(imageData.width).to.be(10);
-        expect(imageData.height).to.be(10);
-        expect(areAllPixelsTransparent(imageData)).to.be(true);
+        assert.instanceOf(imageData, ImageBitmap);
+        assert.strictEqual(imageData.width, 10);
+        assert.strictEqual(imageData.height, 10);
+        assert.strictEqual(areAllPixelsTransparent(imageData), true);
       });
 
       it('builds canvas rending batch on the worker, sends back a batch id which can be used to render feature text', async () => {
@@ -164,7 +165,7 @@ describe('ol/worker/textOverlay', () => {
         ]);
 
         const textInstructionsKey = response.instructionsSetKey;
-        expect(textInstructionsKey).to.be.a('string');
+        assert.typeOf(textInstructionsKey, 'string');
 
         // without adding this key to the render list, the canvas given back is still empty
         message = {
@@ -173,7 +174,7 @@ describe('ol/worker/textOverlay', () => {
           batchesToRender: new Set([]),
         };
         response = await postWorkerMessage(message);
-        expect(areAllPixelsTransparent(response.imageData)).to.be(true);
+        assert.strictEqual(areAllPixelsTransparent(response.imageData), true);
 
         // now we're adding the instructions set key to the render list, so the text should be rendered on the canvas
         message = {
@@ -183,7 +184,7 @@ describe('ol/worker/textOverlay', () => {
         };
         response = await postWorkerMessage(message);
 
-        expect(areAllPixelsTransparent(response.imageData)).to.be(false);
+        assert.strictEqual(areAllPixelsTransparent(response.imageData), false);
       });
 
       it('does not draw anything if the style is only a circle', async () => {
@@ -224,7 +225,7 @@ describe('ol/worker/textOverlay', () => {
         response = await postWorkerMessage(message);
 
         // the canvas is still empty
-        expect(areAllPixelsTransparent(response.imageData)).to.be(true);
+        assert.strictEqual(areAllPixelsTransparent(response.imageData), true);
       });
     });
   });

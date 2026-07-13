@@ -53,7 +53,7 @@ describe('ol/render/webgl/serialize.js', function () {
           ...frameStateWithoutUnsupportedProps
         } = frameState;
 
-        assert.equal(roundTripResult, frameStateWithoutUnsupportedProps);
+        assert.deepEqual(roundTripResult, frameStateWithoutUnsupportedProps);
       });
       it('generates a cloneable object in between', () => {
         const serialized = serializeFrameState(frameState);

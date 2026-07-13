@@ -169,11 +169,13 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       () => null,
       () => null,
     );
-    expect(renderer.postProcesses_.length).to.be(1);
-    expect(renderer.postProcesses_[0].fragmentShader).to.eql(
+    assert.strictEqual(renderer.postProcesses_.length, 1);
+    assert.deepEqual(
+      renderer.postProcesses_[0].fragmentShader,
       mockPostProcess.fragmentShader,
     );
-    expect(renderer.postProcesses_[0].vertexShader).to.eql(
+    assert.deepEqual(
+      renderer.postProcesses_[0].vertexShader,
       mockPostProcess.vertexShader,
     );
   });
@@ -266,7 +268,7 @@ describe('ol/renderer/webgl/VectorLayer', () => {
         );
       });
       it('does not include the post processing step for text rendering', () => {
-        expect(renderer.postProcesses_).to.eql([]);
+        assert.deepEqual(renderer.postProcesses_, []);
       });
     });
 
@@ -291,7 +293,7 @@ describe('ol/renderer/webgl/VectorLayer', () => {
         assert.isTrue(spy.mock.calls.some((call) => call[0] === SAMPLE_STYLE));
       });
       it('does not include the post processing step for text rendering', () => {
-        expect(renderer.postProcesses_).to.eql([]);
+        assert.deepEqual(renderer.postProcesses_, []);
       });
     });
   });
@@ -320,7 +322,7 @@ describe('ol/renderer/webgl/VectorLayer', () => {
     });
 
     it('does not include the text post processing step', () => {
-      expect(renderer.postProcesses_).to.eql([POST_PROCESS]);
+      assert.deepEqual(renderer.postProcesses_, [POST_PROCESS]);
     });
 
     describe('when a style with text is set later on', () => {
@@ -335,21 +337,26 @@ describe('ol/renderer/webgl/VectorLayer', () => {
           () => null,
           () => null,
         );
-        expect(renderer.postProcesses_.length).to.be(2);
-        expect(renderer.postProcesses_[0].fragmentShader).to.eql(
+        assert.strictEqual(renderer.postProcesses_.length, 2);
+        assert.deepEqual(
+          renderer.postProcesses_[0].fragmentShader,
           mockPostProcess.fragmentShader,
         );
-        expect(renderer.postProcesses_[0].vertexShader).to.eql(
+        assert.deepEqual(
+          renderer.postProcesses_[0].vertexShader,
           mockPostProcess.vertexShader,
         );
-        expect(renderer.postProcesses_[1]).to.eql(POST_PROCESS);
+        assert.deepEqual(renderer.postProcesses_[1], POST_PROCESS);
       });
     });
 
     it('does not call styleRenderer.finalizeTextRender after renderFrame', () => {
       renderer.prepareFrame(frameState);
       renderer.renderFrame(frameState);
-      expect(renderer.styleRenderer_.finalizeTextRender.called).to.be(false);
+      assert.strictEqual(
+        renderer.styleRenderer_.finalizeTextRender.called,
+        false,
+      );
     });
   });
 
@@ -438,7 +445,10 @@ describe('ol/renderer/webgl/VectorLayer', () => {
         assert.strictEqual(vectorSource.loadFeatures.mock.calls.length, 1);
       });
       it('does not regenerate the buffers', () => {
-        expect(renderer.styleRenderer_.generateBuffers.called).to.be(false);
+        assert.strictEqual(
+          renderer.styleRenderer_.generateBuffers.called,
+          false,
+        );
       });
     });
     describe('on source change', () => {
@@ -454,13 +464,18 @@ describe('ol/renderer/webgl/VectorLayer', () => {
         assert.strictEqual(vectorSource.loadFeatures.mock.calls.length, 2);
       });
       it('regenerates the buffers', () => {
-        expect(renderer.styleRenderer_.generateBuffers.callCount).to.be(1);
-        expect(
+        assert.strictEqual(
+          renderer.styleRenderer_.generateBuffers.callCount,
+          1,
+        );
+        assert.deepEqual(
           renderer.styleRenderer_.generateBuffers.getCall(0).args[1],
-        ).to.eql([0.04, 0, 0, 0.08, 0, -1.28]); // transform made from the current frame state
-        expect(
+          [0.04, -0, 0, 0.08, 0, -1.28],
+        ); // transform made from the current frame state
+        assert.deepEqual(
           renderer.styleRenderer_.generateBuffers.getCall(0).args[2],
-        ).to.eql(frameState.viewState.resolution);
+          frameState.viewState.resolution,
+        );
       });
     });
     describe('on view change', () => {
@@ -476,7 +491,10 @@ describe('ol/renderer/webgl/VectorLayer', () => {
         assert.strictEqual(vectorSource.loadFeatures.mock.calls.length, 2);
       });
       it('regenerates the buffers', () => {
-        expect(renderer.styleRenderer_.generateBuffers.callCount).to.be(1);
+        assert.strictEqual(
+          renderer.styleRenderer_.generateBuffers.callCount,
+          1,
+        );
       });
     });
   });
@@ -612,7 +630,10 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       assert.strictEqual(renderer.helper.finalizeDraw.mock.calls.length, 1);
     });
     it('calls styleRenderer.finalizeTextRender once', () => {
-      expect(renderer.styleRenderer_.finalizeTextRender.calledOnce).to.be(true);
+      assert.strictEqual(
+        renderer.styleRenderer_.finalizeTextRender.calledOnce,
+        true,
+      );
     });
     it("does not delete any buffer if it's the first render", () => {
       assert.strictEqual(renderer.helper.deleteBuffer.mock.calls.length, 0);
@@ -673,26 +694,26 @@ describe('ol/renderer/webgl/VectorLayer', () => {
         renderer.renderFrame(newFrameState);
         finalizeTextRenderResolver();
         await new Promise((resolve) => setTimeout(resolve)); // awaiting next tick
-        expect(vectorLayer.changed.callCount).to.be(1);
+        assert.strictEqual(vectorLayer.changed.callCount, 1);
 
         // asking for an identical render: layer.changed() should not be called again
         renderer.renderFrame(newFrameState);
         finalizeTextRenderResolver();
         await new Promise((resolve) => setTimeout(resolve));
-        expect(vectorLayer.changed.callCount).to.be(1);
+        assert.strictEqual(vectorLayer.changed.callCount, 1);
 
         // different extent: layer.changed should be called once more
         renderer.renderFrame(frameState);
         finalizeTextRenderResolver();
         await new Promise((resolve) => setTimeout(resolve));
-        expect(vectorLayer.changed.callCount).to.be(2);
+        assert.strictEqual(vectorLayer.changed.callCount, 2);
 
         // source updated extent: layer.changed should be called once more
         vectorSource.changed();
         renderer.renderFrame(frameState);
         finalizeTextRenderResolver();
         await new Promise((resolve) => setTimeout(resolve));
-        expect(vectorLayer.changed.callCount).to.be(3);
+        assert.strictEqual(vectorLayer.changed.callCount, 3);
       });
 
       it('does not call layer.changed() if the renderer was disposed in the meantime', () => {
@@ -864,10 +885,11 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       assert.strictEqual(deleteBufferSpy.mock.calls.length, 9);
     });
     it('disposes of the style renderer', () => {
-      expect(renderer.styleRenderer_.dispose.calledOnce).to.be(true);
+      assert.strictEqual(renderer.styleRenderer_.dispose.calledOnce, true);
     });
     it('disposes of the text rendering instructions', () => {
-      expect(renderer.styleRenderer_.disposeTextInstructions.calledOnce).to.be(
+      assert.strictEqual(
+        renderer.styleRenderer_.disposeTextInstructions.calledOnce,
         true,
       );
     });

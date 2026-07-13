@@ -17,7 +17,7 @@ class MockRenderer {
     () => new Promise((resolve) => (this.endGenerate_ = resolve)),
   );
   endGenerate_ = null;
-  disposeTextInstructions = sinonStub();
+  disposeTextInstructions = vi.fn();
 }
 
 describe('ol/webgl/TileGeometry', function () {
@@ -68,7 +68,7 @@ describe('ol/webgl/TileGeometry', function () {
       assert.instanceOf(tileGeometry.batch_, MixedGeometryBatch);
     });
     it('computes the resolution of the tile content according its z coordinate', () => {
-      expect(tileGeometry.wantedResolution).to.be(grid.getResolution(3));
+      assert.strictEqual(tileGeometry.wantedResolution, grid.getResolution(3));
     });
   });
 
@@ -132,7 +132,8 @@ describe('ol/webgl/TileGeometry', function () {
         styleRenderer.generateBuffers.mock.calls[0][1],
         originTransform,
       );
-      expect(styleRenderer.generateBuffers.getCall(0).args[2]).to.eql(
+      assert.deepEqual(
+        styleRenderer.generateBuffers.mock.calls[0][2],
         tileGeometry.wantedResolution,
       );
     });
@@ -166,7 +167,10 @@ describe('ol/webgl/TileGeometry', function () {
         assert.strictEqual(deleteBufferSpy.mock.calls.length, 4);
       });
       it('disposes text instructions', () => {
-        expect(styleRenderer.disposeTextInstructions.calledOnce).to.be(true);
+        assert.strictEqual(
+          styleRenderer.disposeTextInstructions.mock.calls.length,
+          1,
+        );
       });
     });
   });
