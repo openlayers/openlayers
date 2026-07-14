@@ -1,0 +1,16 @@
+---
+layout: example.html
+title: WMS Time (WebGL)
+shortdesc: Smooth tile transitions on a WebGL tile layer when changing the time dimension of a tiled WMS layer.
+docs: >
+  Demonstrates smooth reloading of layers when changing the time dimension continuously. When the source key changes
+  by calling `updateParams()` on the source, the renderer keeps the previous frame's tiles visible until the new ones
+  load, so the animation stays smooth instead of flashing. Data shown: IEM generated CONUS composite of NWS NEXRAD WSR-88D level III base reflectivity.
+tags: "wms, time, dimensions, transition, nexrad, webgl"
+---
+<div id="map" class="map"></div>
+<div role="group" aria-label="Animation controls">
+  <button id="play" type="button">Play</button>
+  <button id="pause" type="button">Pause</button>
+  <span id="info"></span>
+</div>

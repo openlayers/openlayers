@@ -44,6 +44,12 @@ class LayerRenderer extends Observable {
      * @protected
      */
     this.maxStaleKeys = maxStaleKeys;
+
+    /**
+     * @type {string}
+     * @protected
+     */
+    this.renderedSourceKey_;
   }
 
   /**
@@ -60,6 +66,20 @@ class LayerRenderer extends Observable {
     this.staleKeys_.unshift(key);
     if (this.staleKeys_.length > this.maxStaleKeys) {
       this.staleKeys_.length = this.maxStaleKeys;
+    }
+  }
+
+  /**
+   * Remember the previous source key as stale when the key changes.
+   * @param {string} sourceKey The current source key.
+   * @protected
+   */
+  updateStaleKeys(sourceKey) {
+    if (!this.renderedSourceKey_) {
+      this.renderedSourceKey_ = sourceKey;
+    } else if (this.renderedSourceKey_ !== sourceKey) {
+      this.prependStaleKey(this.renderedSourceKey_);
+      this.renderedSourceKey_ = sourceKey;
     }
   }
 
