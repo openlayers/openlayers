@@ -163,6 +163,37 @@ class Source extends BaseObject {
   }
 
   /**
+   * Resolve once the source is ready to be used (its state is `ready`), or
+   * reject if it fails to load (its state is `error`). Sources that configure
+   * asynchronously can use this to expose data (e.g. dimensions) through a
+   * promise instead of the `change` event.
+   * @return {Promise<void>} Resolves when the source is ready.
+   * @protected
+   */
+  ready() {
+    const state = this.getState();
+    if (state === 'ready') {
+      return Promise.resolve();
+    }
+    if (state === 'error') {
+      return Promise.reject(new Error('Source failed to load'));
+    }
+    return new Promise((resolve, reject) => {
+      const onChange = () => {
+        const changedState = this.getState();
+        if (changedState === 'ready') {
+          this.un('change', onChange);
+          resolve();
+        } else if (changedState === 'error') {
+          this.un('change', onChange);
+          reject(new Error('Source failed to load'));
+        }
+      };
+      this.on('change', onChange);
+    });
+  }
+
+  /**
    * Get the state of the source, see {@link import("./Source.js").State} for possible states.
    * @return {import("./Source.js").State} State.
    * @api
