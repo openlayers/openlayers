@@ -4,7 +4,7 @@ title: Sentinel Hub Custom Format
 shortdesc: Updating the format used by the Sentinel Hub source.
 docs: >
   This example demonstrates how a custom format can be used to render tiles from Sentinel Hub.
-  Select a format from the dropdown and click the update button to change the format.
+  Select a format from the dropdown to change the format.
   See the Sentinel Hub [Examples](https://docs.sentinel-hub.com/api/latest/data/sentinel-2-l2a/examples/#true-color-multi-part-reponse-different-formats-and-sampletype) for more information.
 tags: "Sentinel Hub, process"
 ---
@@ -16,8 +16,8 @@ tags: "Sentinel Hub, process"
       <option value="image/png">image/png</option>
       <option value="image/jpeg">image/jpeg</option>
       <option value="image/webp">image/webp</option>
-      <option value="">None (will use service's default format)</option>
-      <option value="not supported">not supported (will throw an error)</option>
+      <option value="">None (will result in an error)</option>
+      <option value="not supported">not supported (will result in an error)</option>
     </select>
   </label>
 </form>
