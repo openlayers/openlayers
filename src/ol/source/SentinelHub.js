@@ -598,13 +598,14 @@ class SentinelHub extends DataTileSource {
     if (!this.token_ || !this.evalscript_ || !this.inputData_) {
       return;
     }
-    this.setKey(this.getKeyForConfig_());
-    const state = this.getState();
-    if (state === 'ready') {
-      this.changed();
-      return;
+    const alreadyReady = this.getState() === 'ready';
+    if (!alreadyReady) {
+      this.setState('ready');
     }
-    this.setState('ready');
+    this.setKey(this.getKeyForConfig_());
+    if (alreadyReady) {
+      this.changed();
+    }
   }
 
   getKeyForConfig_() {
