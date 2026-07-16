@@ -1285,8 +1285,8 @@ describe('ol/render/webgl/style', () => {
           `!((a_geometryType == ${stringToGlsl('LineString')}) && operator_in_0(a_prop_type))`,
         );
         assertAttributeDescriptors(result.attributes, {
-          geometryType: {size: 1},
-          prop_type: {size: 1},
+          geometryType: {size: 3, callback: {}},
+          prop_type: {size: 3, callback: {}},
         });
       });
     });
@@ -1364,12 +1364,12 @@ describe('ol/render/webgl/style', () => {
       });
       it('returns attributes with their callbacks in the result', () => {
         assertAttributeDescriptors(parseResult.attributes, {
-          prop_iconSize: {size: 2},
-          prop_color: {size: 2},
-          prop_lineType: {size: 1},
-          prop_lineWidth: {size: 1},
-          prop_transparent: {size: 1},
-          prop_fillColor: {size: 2},
+          prop_iconSize: {size: 2, callback: {}},
+          prop_color: {size: 2, callback: {}},
+          prop_lineType: {size: 3, callback: {}},
+          prop_lineWidth: {size: 1, callback: {}},
+          prop_transparent: {size: 1, callback: {}},
+          prop_fillColor: {size: 2, callback: {}},
         });
       });
       it('processes the feature attributes according to their types', () => {
@@ -1390,8 +1390,9 @@ describe('ol/render/webgl/style', () => {
           parseResult.attributes['prop_color'].callback(feature),
           packColor(asArray('pink')),
         );
-        assert.isNumber(
+        assert.equal(
           parseResult.attributes['prop_lineType'].callback(feature),
+          'low',
         );
         assert.deepEqual(
           parseResult.attributes['prop_lineWidth'].callback(feature),
@@ -1515,8 +1516,8 @@ describe('ol/render/webgl/style', () => {
       });
       it('returns attributes with their callbacks in the result', () => {
         assertAttributeDescriptors(parseResult.attributes, {
-          featureId: {size: 1},
-          geometryType: {size: 1},
+          featureId: {size: 1, callback: {}},
+          geometryType: {size: 3, callback: {}},
         });
       });
       it('processes the feature geometry properly', () => {
@@ -1537,6 +1538,46 @@ describe('ol/render/webgl/style', () => {
         assert.equal(callback(feature), stringToGlsl('1234'));
         feature.setId(101);
         assert.deepEqual(callback(feature), 101);
+      });
+    });
+
+    describe('pick up variables and properties in text properties', () => {
+      let parseResult;
+      beforeEach(() => {
+        parseResult = parseLiteralStyle({
+          'circle-radius': 4,
+          'circle-fill-color': 'orange',
+          'text-value': ['concat', 'label:', ['get', 'label']],
+          'text-font': 'bold 100px sans-serif',
+          'text-baseline': 'top',
+          'text-offset-y': ['get', 'offset_y'],
+          'text-stroke-width': 4,
+          'text-stroke-color': 'black',
+          'text-fill-color': ['var', 'textColor'],
+        });
+      });
+      it('adds attributes and uniforms to the shader builder', () => {
+        assert.deepEqual(parseResult.builder.uniforms_, [
+          {name: 'u_var_textColor', type: 'vec4'},
+        ]);
+      });
+      it('returns attributes and uniforms in the result', () => {
+        assert.deepEqual(parseResult.builder.attributes_, [
+          {
+            name: 'a_prop_label',
+            type: 'float',
+            varyingName: 'v_prop_label',
+            varyingType: 'float',
+            varyingExpression: 'a_prop_label',
+          },
+          {
+            name: 'a_prop_offset_y',
+            type: 'float',
+            varyingName: 'v_prop_offset_y',
+            varyingType: 'float',
+            varyingExpression: 'a_prop_offset_y',
+          },
+        ]);
       });
     });
   });
@@ -1575,9 +1616,11 @@ describe('ol/render/webgl/style', () => {
         ],
       });
 
-      assert.isNumber(
+      assert.equal(
         result.attributes.prop_foo.callback({get: () => 'green'}),
+        'green',
       );
+      assert.strictEqual(result.attributes.prop_foo.size, 3);
     });
   });
 

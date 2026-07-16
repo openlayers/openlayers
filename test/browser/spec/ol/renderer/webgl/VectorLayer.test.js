@@ -1,4 +1,5 @@
 import {assert} from 'chai';
+import {spy as sinonSpy, stub as sinonStub} from 'sinon';
 import Feature from '../../../../../../src/ol/Feature.js';
 import Map from '../../../../../../src/ol/Map.js';
 import View from '../../../../../../src/ol/View.js';
@@ -10,6 +11,7 @@ import {get as getProjection} from '../../../../../../src/ol/proj.js';
 import Projection from '../../../../../../src/ol/proj/Projection.js';
 import {ShaderBuilder} from '../../../../../../src/ol/render/webgl/ShaderBuilder.js';
 import VectorStyleRenderer, * as ol_render_webgl_vectorstylerenderer from '../../../../../../src/ol/render/webgl/VectorStyleRenderer.js';
+import {createPostProcessDefinition} from '../../../../../../src/ol/render/webgl/textUtil.js';
 import WebGLVectorLayerRenderer from '../../../../../../src/ol/renderer/webgl/VectorLayer.js';
 import VectorSource from '../../../../../../src/ol/source/Vector.js';
 import VectorEventType from '../../../../../../src/ol/source/VectorEventType.js';
@@ -46,6 +48,7 @@ const SAMPLE_RULES = [
       'circle-radius': 3,
       'fill-color': ['get', 'color'],
       'stroke-width': 2,
+      'text-value': 'hello world',
     },
   },
 ];
@@ -148,8 +151,8 @@ describe('ol/renderer/webgl/VectorLayer', () => {
   });
 
   afterEach(() => {
-    vectorLayer.dispose();
     renderer.dispose();
+    vectorLayer.dispose();
     map.dispose();
   });
 
@@ -159,6 +162,22 @@ describe('ol/renderer/webgl/VectorLayer', () => {
 
   it('do not create renderer initially', () => {
     assert.deepEqual(renderer.styleRenderer_, null);
+  });
+
+  it('does include the post processing step for text rendering', () => {
+    const mockPostProcess = createPostProcessDefinition(
+      () => null,
+      () => null,
+    );
+    assert.strictEqual(renderer.postProcesses_.length, 1);
+    assert.deepEqual(
+      renderer.postProcesses_[0].fragmentShader,
+      mockPostProcess.fragmentShader,
+    );
+    assert.deepEqual(
+      renderer.postProcesses_[0].vertexShader,
+      mockPostProcess.vertexShader,
+    );
   });
 
   describe('#afterHelperCreated', () => {
@@ -226,11 +245,6 @@ describe('ol/renderer/webgl/VectorLayer', () => {
   });
 
   describe('#reset', () => {
-    beforeEach(() => {
-      // first call prepareFrame to initialize the helper
-      renderer.prepareFrame(frameState);
-    });
-
     describe('use shaders', () => {
       let spy;
       beforeEach(() => {
@@ -239,6 +253,7 @@ describe('ol/renderer/webgl/VectorLayer', () => {
         renderer.reset({
           style: SAMPLE_SHADERS,
         });
+        renderer.prepareFrame(frameState);
       });
       afterEach(() => {
         spy.mockClear();
@@ -252,6 +267,9 @@ describe('ol/renderer/webgl/VectorLayer', () => {
           spy.mock.calls.some((call) => call[0] === SAMPLE_SHADERS),
         );
       });
+      it('does not include the post processing step for text rendering', () => {
+        assert.deepEqual(renderer.postProcesses_, []);
+      });
     });
 
     describe('use a single style', () => {
@@ -262,6 +280,7 @@ describe('ol/renderer/webgl/VectorLayer', () => {
         renderer.reset({
           style: SAMPLE_STYLE,
         });
+        renderer.prepareFrame(frameState);
       });
       afterEach(() => {
         spy.mockClear();
@@ -273,6 +292,71 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       it('passes the correct styles to renderer', () => {
         assert.isTrue(spy.mock.calls.some((call) => call[0] === SAMPLE_STYLE));
       });
+      it('does not include the post processing step for text rendering', () => {
+        assert.deepEqual(renderer.postProcesses_, []);
+      });
+    });
+  });
+
+  describe('style without text & with post processes', () => {
+    const POST_PROCESS = {
+      hello: 'world',
+    };
+    beforeEach(() => {
+      renderer = new WebGLVectorLayerRenderer(vectorLayer, {
+        style: [
+          {
+            style: {
+              'circle-radius': 4,
+            },
+          },
+        ],
+        postProcesses: [POST_PROCESS],
+      });
+
+      // this will initialize the style renderer
+      renderer.prepareFrame(frameState);
+      renderer.renderFrame(frameState);
+
+      sinonSpy(renderer.styleRenderer_, 'finalizeTextRender');
+    });
+
+    it('does not include the text post processing step', () => {
+      assert.deepEqual(renderer.postProcesses_, [POST_PROCESS]);
+    });
+
+    describe('when a style with text is set later on', () => {
+      beforeEach(() => {
+        renderer.reset({
+          style: SAMPLE_RULES,
+        });
+      });
+
+      it('does include the post processing step for text rendering', () => {
+        const mockPostProcess = createPostProcessDefinition(
+          () => null,
+          () => null,
+        );
+        assert.strictEqual(renderer.postProcesses_.length, 2);
+        assert.deepEqual(
+          renderer.postProcesses_[0].fragmentShader,
+          mockPostProcess.fragmentShader,
+        );
+        assert.deepEqual(
+          renderer.postProcesses_[0].vertexShader,
+          mockPostProcess.vertexShader,
+        );
+        assert.deepEqual(renderer.postProcesses_[1], POST_PROCESS);
+      });
+    });
+
+    it('does not call styleRenderer.finalizeTextRender after renderFrame', () => {
+      renderer.prepareFrame(frameState);
+      renderer.renderFrame(frameState);
+      assert.strictEqual(
+        renderer.styleRenderer_.finalizeTextRender.called,
+        false,
+      );
     });
   });
 
@@ -351,6 +435,7 @@ describe('ol/renderer/webgl/VectorLayer', () => {
     });
     describe('new frame without change', () => {
       beforeEach(() => {
+        sinonSpy(renderer.styleRenderer_, 'generateBuffers');
         toRender = renderer.prepareFrame(frameState);
       });
       it('requires rendering', () => {
@@ -359,10 +444,17 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       it('does not load the data again', () => {
         assert.strictEqual(vectorSource.loadFeatures.mock.calls.length, 1);
       });
+      it('does not regenerate the buffers', () => {
+        assert.strictEqual(
+          renderer.styleRenderer_.generateBuffers.called,
+          false,
+        );
+      });
     });
     describe('on source change', () => {
       beforeEach(() => {
         vectorSource.changed();
+        sinonSpy(renderer.styleRenderer_, 'generateBuffers');
         toRender = renderer.prepareFrame(frameState);
       });
       it('requires rendering', () => {
@@ -370,11 +462,26 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       });
       it('loads the data again', () => {
         assert.strictEqual(vectorSource.loadFeatures.mock.calls.length, 2);
+      });
+      it('regenerates the buffers', () => {
+        assert.strictEqual(
+          renderer.styleRenderer_.generateBuffers.callCount,
+          1,
+        );
+        assert.deepEqual(
+          renderer.styleRenderer_.generateBuffers.getCall(0).args[1],
+          [0.04, -0, 0, 0.08, 0, -1.28],
+        ); // transform made from the current frame state
+        assert.deepEqual(
+          renderer.styleRenderer_.generateBuffers.getCall(0).args[2],
+          frameState.viewState.resolution,
+        );
       });
     });
     describe('on view change', () => {
       beforeEach(() => {
         frameState.extent = [0, 10, 0, 10];
+        sinonSpy(renderer.styleRenderer_, 'generateBuffers');
         toRender = renderer.prepareFrame(frameState);
       });
       it('requires rendering', () => {
@@ -382,12 +489,20 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       });
       it('loads the data again', () => {
         assert.strictEqual(vectorSource.loadFeatures.mock.calls.length, 2);
+      });
+      it('regenerates the buffers', () => {
+        assert.strictEqual(
+          renderer.styleRenderer_.generateBuffers.callCount,
+          1,
+        );
       });
     });
   });
 
   describe('#renderFrame', () => {
     const withHit = 2;
+    let newFrameState;
+    let finalizeTextRenderStub;
 
     beforeEach(async () => {
       // call once without tracking in order to initialize helper
@@ -404,6 +519,10 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       vi.spyOn(renderer.helper, 'finalizeDraw');
       vi.spyOn(renderer.helper, 'deleteBuffer');
       vi.spyOn(renderer.styleRenderer_, 'render');
+      finalizeTextRenderStub = sinonStub(
+        renderer.styleRenderer_,
+        'finalizeTextRender',
+      ).returns(Promise.resolve());
 
       // this is required to keep a "snapshot" of the input vec2
       // (since the same object is reused for various calls)
@@ -426,8 +545,7 @@ describe('ol/renderer/webgl/VectorLayer', () => {
           },
         },
       );
-
-      renderer.renderFrame({
+      newFrameState = {
         ...frameState,
         viewState: {
           ...frameState.viewState,
@@ -435,7 +553,8 @@ describe('ol/renderer/webgl/VectorLayer', () => {
           resolution: 0.5,
           center: [16, 0],
         },
-      });
+      };
+      renderer.renderFrame(newFrameState);
     });
     it('sets PROJECTION matrix uniform once for each geometry type', () => {
       const calls = renderer.helper.setUniformMatrixValue.mock.calls.filter(
@@ -510,6 +629,12 @@ describe('ol/renderer/webgl/VectorLayer', () => {
     it('calls helper.finalizeDraw once', () => {
       assert.strictEqual(renderer.helper.finalizeDraw.mock.calls.length, 1);
     });
+    it('calls styleRenderer.finalizeTextRender once', () => {
+      assert.strictEqual(
+        renderer.styleRenderer_.finalizeTextRender.calledOnce,
+        true,
+      );
+    });
     it("does not delete any buffer if it's the first render", () => {
       assert.strictEqual(renderer.helper.deleteBuffer.mock.calls.length, 0);
     });
@@ -550,6 +675,52 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       });
       it('deletes previous buffers', () => {
         assert.strictEqual(renderer.helper.deleteBuffer.mock.calls.length, 9);
+      });
+    });
+
+    describe('text overlay rerender', () => {
+      let finalizeTextRenderResolver;
+
+      beforeEach(() => {
+        finalizeTextRenderStub.returns(
+          new Promise((resolve) => {
+            finalizeTextRenderResolver = resolve;
+          }),
+        );
+        sinonSpy(vectorLayer, 'changed');
+      });
+
+      it('calls layer.changed() after the text overlay is ready to be rendered', async () => {
+        renderer.renderFrame(newFrameState);
+        finalizeTextRenderResolver();
+        await new Promise((resolve) => setTimeout(resolve)); // awaiting next tick
+        assert.strictEqual(vectorLayer.changed.callCount, 1);
+
+        // asking for an identical render: layer.changed() should not be called again
+        renderer.renderFrame(newFrameState);
+        finalizeTextRenderResolver();
+        await new Promise((resolve) => setTimeout(resolve));
+        assert.strictEqual(vectorLayer.changed.callCount, 1);
+
+        // different extent: layer.changed should be called once more
+        renderer.renderFrame(frameState);
+        finalizeTextRenderResolver();
+        await new Promise((resolve) => setTimeout(resolve));
+        assert.strictEqual(vectorLayer.changed.callCount, 2);
+
+        // source updated extent: layer.changed should be called once more
+        vectorSource.changed();
+        renderer.renderFrame(frameState);
+        finalizeTextRenderResolver();
+        await new Promise((resolve) => setTimeout(resolve));
+        assert.strictEqual(vectorLayer.changed.callCount, 3);
+      });
+
+      it('does not call layer.changed() if the renderer was disposed in the meantime', () => {
+        renderer.renderFrame(frameState);
+        renderer.dispose();
+        finalizeTextRenderResolver();
+        assert.strictEqual(vectorLayer.changed.callCount, 0);
       });
     });
   });
@@ -691,6 +862,8 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       await new Promise((resolve) => setTimeout(resolve, 150));
       vi.spyOn(vectorSource, 'removeEventListener');
       deleteBufferSpy = vi.spyOn(renderer.helper, 'deleteBuffer');
+      sinonSpy(renderer.styleRenderer_, 'dispose');
+      sinonSpy(renderer.styleRenderer_, 'disposeTextInstructions');
       renderer.dispose();
     });
     it('unlistens to source events', () => {
@@ -710,6 +883,15 @@ describe('ol/renderer/webgl/VectorLayer', () => {
     });
     it('deletes webgl buffers', () => {
       assert.strictEqual(deleteBufferSpy.mock.calls.length, 9);
+    });
+    it('disposes of the style renderer', () => {
+      assert.strictEqual(renderer.styleRenderer_.dispose.calledOnce, true);
+    });
+    it('disposes of the text rendering instructions', () => {
+      assert.strictEqual(
+        renderer.styleRenderer_.disposeTextInstructions.calledOnce,
+        true,
+      );
     });
   });
 });

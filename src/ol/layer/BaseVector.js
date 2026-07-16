@@ -2,10 +2,7 @@
  * @module ol/layer/BaseVector
  */
 import RBush from 'rbush';
-import {
-  flatStylesToStyleFunction,
-  rulesToStyleFunction,
-} from '../render/canvas/style.js';
+import {flatStyleLikeToStyleFunction} from '../render/canvas/style.js';
 import Style, {
   createDefaultStyle,
   toFunction as toStyleFunction,
@@ -311,20 +308,11 @@ function toStyleLike(style) {
   if (style instanceof Style) {
     return style;
   }
-  if (!Array.isArray(style)) {
-    return flatStylesToStyleFunction([style]);
-  }
-  if (style.length === 0) {
+  if (Array.isArray(style) && style.length === 0) {
     return [];
   }
-
-  const length = style.length;
-  const first = style[0];
-
-  if (first instanceof Style) {
-    /**
-     * @type {Array<Style>}
-     */
+  if (Array.isArray(style) && style[0] instanceof Style) {
+    const length = style.length;
     const styles = new Array(length);
     for (let i = 0; i < length; ++i) {
       const candidate = style[i];
@@ -336,24 +324,9 @@ function toStyleLike(style) {
     return styles;
   }
 
-  if ('style' in first) {
-    /**
-     * @type {Array<import("../style/flat.js").Rule>}
-     */
-    const rules = new Array(length);
-    for (let i = 0; i < length; ++i) {
-      const candidate = style[i];
-      if (!('style' in candidate)) {
-        throw new Error('Expected a list of rules with a style property');
-      }
-      rules[i] = candidate;
-    }
-    return rulesToStyleFunction(rules);
-  }
-
-  const flatStyles =
-    /** @type {Array<import("../style/flat.js").FlatStyle>} */ (style);
-  return flatStylesToStyleFunction(flatStyles);
+  const flatStyleLike =
+    /** @type {import("../style/flat.js").FlatStyleLike} */ (style);
+  return flatStyleLikeToStyleFunction(flatStyleLike);
 }
 
 export default BaseVectorLayer;

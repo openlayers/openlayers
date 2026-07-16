@@ -17,6 +17,7 @@ class MockRenderer {
     () => new Promise((resolve) => (this.endGenerate_ = resolve)),
   );
   endGenerate_ = null;
+  disposeTextInstructions = vi.fn();
 }
 
 describe('ol/webgl/TileGeometry', function () {
@@ -28,6 +29,7 @@ describe('ol/webgl/TileGeometry', function () {
 
   let styleRenderer;
   let helper;
+  let grid;
 
   beforeEach(function () {
     tile = new VectorRenderTile(
@@ -39,15 +41,16 @@ describe('ol/webgl/TileGeometry', function () {
     );
     styleRenderer = new MockRenderer();
     helper = new WebGLHelper();
+    grid = createXYZ({
+      tileSize: [256, 256],
+      maxZoom: 5,
+      extent: [-128, -128, 128, 128],
+    });
 
     tileGeometry = new TileGeometry(
       {
         tile,
-        grid: createXYZ({
-          tileSize: [256, 256],
-          maxZoom: 5,
-          extent: [-128, -128, 128, 128],
-        }),
+        grid,
         helper,
       },
       styleRenderer,
@@ -63,6 +66,9 @@ describe('ol/webgl/TileGeometry', function () {
     });
     it('creates a new geometry batch', () => {
       assert.instanceOf(tileGeometry.batch_, MixedGeometryBatch);
+    });
+    it('computes the resolution of the tile content according its z coordinate', () => {
+      assert.strictEqual(tileGeometry.wantedResolution, grid.getResolution(3));
     });
   });
 
@@ -126,6 +132,10 @@ describe('ol/webgl/TileGeometry', function () {
         styleRenderer.generateBuffers.mock.calls[0][1],
         originTransform,
       );
+      assert.deepEqual(
+        styleRenderer.generateBuffers.mock.calls[0][2],
+        tileGeometry.wantedResolution,
+      );
     });
     it('becomes ready when each of the renderers have finished generating buffers', async () => {
       assert.strictEqual(tileGeometry.ready, false);
@@ -155,6 +165,12 @@ describe('ol/webgl/TileGeometry', function () {
       });
       it('deletes webgl buffers', () => {
         assert.strictEqual(deleteBufferSpy.mock.calls.length, 4);
+      });
+      it('disposes text instructions', () => {
+        assert.strictEqual(
+          styleRenderer.disposeTextInstructions.mock.calls.length,
+          1,
+        );
       });
     });
   });

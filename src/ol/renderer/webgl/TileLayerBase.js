@@ -801,9 +801,7 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @protected
    */
-  beforeFinalize(frameState) {
-    return;
-  }
+  beforeFinalize(frameState) {}
 
   /**
    * Look for a ready tile at the same coordinate from a previous source key.

@@ -1,14 +1,18 @@
 import {assert} from 'chai';
+import {spy as sinonSpy} from 'sinon';
 import Feature from '../../../../../../src/ol/Feature.js';
 import {stringToGlsl} from '../../../../../../src/ol/expr/gpu.js';
 import LineString from '../../../../../../src/ol/geom/LineString.js';
 import Point from '../../../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../../../src/ol/geom/Polygon.js';
+import {get as getProjection} from '../../../../../../src/ol/proj.js';
 import MixedGeometryBatch from '../../../../../../src/ol/render/webgl/MixedGeometryBatch.js';
 import {ShaderBuilder} from '../../../../../../src/ol/render/webgl/ShaderBuilder.js';
 import VectorStyleRenderer, {
   convertStyleToShaders,
+  toFlatStyleLike,
 } from '../../../../../../src/ol/render/webgl/VectorStyleRenderer.js';
+import {serializeFrameState} from '../../../../../../src/ol/render/webgl/serialize.js';
 import {
   compose as composeTransform,
   create as createTransform,
@@ -73,7 +77,9 @@ const SAMPLE_FRAMESTATE = {
     center: [0, 10],
     resolution: 1,
     rotation: 0,
+    projection: getProjection('EPSG:3857'),
   },
+  layerStatesArray: [],
   size: [10, 10],
 };
 
@@ -98,18 +104,21 @@ describe('VectorStyleRenderer', () => {
         id: 1,
         size: 1000,
         color: 'red',
+        label: 'first',
         geometry: new Point([10, 20]),
       }),
       new Feature({
         id: 2,
         size: 2000,
         color: 'blue',
+        label: 'second',
         geometry: new Point([30, 40]),
       }),
       new Feature({
         id: 3,
         size: 3000,
         color: 'green',
+        label: 'third',
         geometry: new Polygon([
           [
             [10, 10],
@@ -154,6 +163,10 @@ describe('VectorStyleRenderer', () => {
         u_var_highlightedId: {},
       });
       assert.lengthOf(vectorStyleRenderer.renderPasses_, 2);
+    });
+    it('creates a VectorStyleRenderer without text rendering', () => {
+      assert.strictEqual(vectorStyleRenderer.hasText_, false);
+      assert.strictEqual(vectorStyleRenderer.textOverlayWorker_, undefined);
     });
     it('initializes two render passes with the proper attributes', () => {
       const firstPass = vectorStyleRenderer.renderPasses_[0];
@@ -601,6 +614,13 @@ describe('VectorStyleRenderer', () => {
 
       assert.strictEqual(helper.drawElementsInstanced.mock.calls.length, 0);
     });
+    it('does not throw when calling finalizeTextRender', async () => {
+      try {
+        await vectorStyleRenderer.finalizeTextRender(SAMPLE_FRAMESTATE);
+      } catch (e) {
+        assert.fail(e);
+      }
+    });
   });
   describe('rendering only stroke', () => {
     let buffers, preRenderCb;
@@ -719,6 +739,355 @@ describe('VectorStyleRenderer', () => {
     });
   });
 
+  describe('rendering text alongside symbol', () => {
+    /**
+     * @type {Array<import('../../../../../../src/ol/style/flat.js').Rule>}
+     */
+    const SAMPLE_STYLE_TEXT_AND_CIRCLE = [
+      {
+        style: {
+          'circle-radius': ['get', 'size'],
+          'circle-fill-color': [
+            'match',
+            ['get', 'id'],
+            ['var', 'highlightedId'],
+            'white',
+            'red',
+          ],
+          'text-value': ['get', 'label'],
+        },
+      },
+    ];
+
+    beforeEach(() => {
+      vectorStyleRenderer = new VectorStyleRenderer(
+        SAMPLE_STYLE_TEXT_AND_CIRCLE,
+        {},
+        helper,
+      );
+    });
+
+    it('creates a VectorStyleRenderer with text rendering', () => {
+      assert.strictEqual(vectorStyleRenderer.hasText_, true);
+      assert.notStrictEqual(vectorStyleRenderer.textOverlayWorker_, undefined);
+    });
+
+    describe('generateBuffers', () => {
+      let buffers;
+      beforeEach(async () => {
+        sinonSpy(vectorStyleRenderer.textOverlayWorker_, 'postMessage');
+        buffers = await vectorStyleRenderer.generateBuffers(
+          geometryBatch,
+          SAMPLE_TRANSFORM,
+          SAMPLE_FRAMESTATE.viewState.resolution,
+        );
+      });
+      it('sends a message to worker with render instructions and style', () => {
+        const message =
+          vectorStyleRenderer.textOverlayWorker_.postMessage.getCall(
+            0,
+          ).firstArg;
+        assert.strictEqual(message.type, 'BUILD_INSTRUCTIONS');
+        assert.instanceOf(message.polygonRenderInstructions, ArrayBuffer);
+        assert.instanceOf(message.lineStringRenderInstructions, ArrayBuffer);
+        assert.instanceOf(message.pointRenderInstructions, ArrayBuffer);
+        assert.instanceOf(message.labelsArray, Uint8Array);
+        assert.deepEqual(message.style, [
+          {
+            style: {
+              'circle-radius': ['get', 'size'],
+              'circle-fill-color': [
+                'match',
+                ['get', 'id'],
+                ['var', 'highlightedId'],
+                'white',
+                'red',
+              ],
+              'text-value': ['get', 'label'],
+            },
+          },
+        ]);
+        assert.deepEqual(message.customAttributesSizes, {
+          prop_size: 1,
+          prop_id: 1,
+          prop_label: 3,
+        });
+        assert.deepEqual(message.renderInstructionsTransform, SAMPLE_TRANSFORM);
+        assert.strictEqual(
+          message.resolution,
+          SAMPLE_FRAMESTATE.viewState.resolution,
+        );
+      });
+      it('stores a text instructions key', () => {
+        assert.typeOf(buffers.textInstructionsKey, 'string');
+      });
+      it('generates buffers only for symbol geometry', () => {
+        assert.strictEqual(buffers.polygonBuffers, null);
+        assert.strictEqual(buffers.lineStringBuffers, null);
+        assert.instanceOf(buffers.pointBuffers, Array);
+        assert.instanceOf(buffers.pointBuffers[0], WebGLArrayBuffer);
+      });
+    });
+    describe('render', () => {
+      let buffers, preRenderCb;
+      beforeEach(async () => {
+        buffers = await vectorStyleRenderer.generateBuffers(
+          geometryBatch,
+          SAMPLE_TRANSFORM,
+        );
+        sinonSpy(helper, 'useProgram');
+        sinonSpy(vectorStyleRenderer.textOverlayWorker_, 'postMessage');
+        preRenderCb = sinonSpy();
+        vectorStyleRenderer.render(buffers, SAMPLE_FRAMESTATE, preRenderCb);
+      });
+      it('calls prerender callback', () => {
+        assert.strictEqual(preRenderCb.callCount, 1);
+      });
+      it('uses program for symbol render pass', function () {
+        assert.strictEqual(helper.useProgram.callCount, 1); // one render pass, one program for symbols
+        const firstPass = vectorStyleRenderer.renderPasses_[0];
+        assert.strictEqual(
+          helper.useProgram.getCall(0).firstArg,
+          firstPass.symbolRenderPass.program,
+        );
+      });
+      it('adds the text instructions key to the text overlay render list', () => {
+        assert.deepEqual(
+          vectorStyleRenderer.textOverlayRenderList_,
+          new Set([buffers.textInstructionsKey]),
+        );
+      });
+    });
+    describe('finalizeTextRender', () => {
+      let buffers;
+
+      beforeEach(async () => {
+        buffers = await vectorStyleRenderer.generateBuffers(
+          geometryBatch,
+          SAMPLE_TRANSFORM,
+        );
+        const preRenderCb = sinonSpy();
+        vectorStyleRenderer.render(buffers, SAMPLE_FRAMESTATE, preRenderCb);
+
+        // set the overlay canvas to the right size
+        vectorStyleRenderer.textOverlayCanvas_.width =
+          SAMPLE_FRAMESTATE.size[0];
+        vectorStyleRenderer.textOverlayCanvas_.height =
+          SAMPLE_FRAMESTATE.size[1];
+
+        sinonSpy(vectorStyleRenderer.textOverlayWorker_, 'postMessage');
+        sinonSpy(vectorStyleRenderer.textOverlayContext_, 'clearRect');
+        sinonSpy(vectorStyleRenderer.textOverlayContext_, 'drawImage');
+
+        // this does a copy of the `batchesToRender` Set, otherwise we can't properly test its value afterwards (because it's mutated)
+        vectorStyleRenderer.textOverlayWorker_.postMessage = new Proxy(
+          vectorStyleRenderer.textOverlayWorker_.postMessage,
+          {
+            apply(target, thisArg, [message, ...args]) {
+              return target.call(
+                thisArg,
+                {
+                  ...message,
+                  batchesToRender: new Set(message.batchesToRender),
+                },
+                ...args,
+              );
+            },
+          },
+        );
+
+        await vectorStyleRenderer.finalizeTextRender(SAMPLE_FRAMESTATE);
+      });
+      it('asks for a render of the text overlay worker', async () => {
+        assert.strictEqual(
+          vectorStyleRenderer.textOverlayWorker_.postMessage.callCount,
+          1,
+        );
+        const firstMessage =
+          vectorStyleRenderer.textOverlayWorker_.postMessage.getCall(
+            0,
+          ).firstArg;
+        assert.strictEqual(firstMessage.type, 'RENDER');
+        assert.deepEqual(
+          firstMessage.frameState,
+          serializeFrameState(SAMPLE_FRAMESTATE),
+        );
+        assert.deepEqual(
+          firstMessage.batchesToRender,
+          new Set([buffers.textInstructionsKey]),
+        );
+      });
+      it('clears the overlay canvas on the main thread and renders the data coming from the worker', async () => {
+        assert.strictEqual(
+          vectorStyleRenderer.textOverlayContext_.clearRect.callCount,
+          1,
+        );
+        assert.deepEqual(
+          vectorStyleRenderer.textOverlayContext_.clearRect.getCall(0).args,
+          [0, 0, ...SAMPLE_FRAMESTATE.size],
+        );
+
+        assert.strictEqual(
+          vectorStyleRenderer.textOverlayContext_.drawImage.callCount,
+          1,
+        );
+        assert.instanceOf(
+          vectorStyleRenderer.textOverlayContext_.drawImage.getCall(0).args[0],
+          ImageBitmap,
+        );
+      });
+      it('clears text overlay render list', () => {
+        assert.deepEqual(vectorStyleRenderer.textOverlayRenderList_, new Set());
+      });
+    });
+
+    describe('finalizeTextRender, with a text instructions key not built beforehand', () => {
+      beforeEach(async () => {
+        vectorStyleRenderer.textOverlayRenderList_.clear();
+        vectorStyleRenderer.textOverlayRenderList_.add('awrongkey'); // we're asking for a key that doesn't have render instructions built
+
+        sinonSpy(vectorStyleRenderer.textOverlayContext_, 'clearRect');
+        sinonSpy(vectorStyleRenderer.textOverlayContext_, 'drawImage');
+        await vectorStyleRenderer.finalizeTextRender(SAMPLE_FRAMESTATE);
+      });
+      it('does not touch the overlay canvas', async () => {
+        assert.strictEqual(
+          vectorStyleRenderer.textOverlayContext_.clearRect.called,
+          false,
+        );
+        assert.strictEqual(
+          vectorStyleRenderer.textOverlayContext_.drawImage.called,
+          false,
+        );
+      });
+    });
+
+    describe('dispose', () => {
+      it('terminates its worker', () => {
+        sinonSpy(vectorStyleRenderer.textOverlayWorker_, 'terminate');
+        vectorStyleRenderer.dispose();
+        assert.strictEqual(
+          vectorStyleRenderer.textOverlayWorker_.terminate.callCount,
+          1,
+        );
+      });
+    });
+  });
+
+  describe('rendering style containing text and converted to shaders', () => {
+    /**
+     * @type {import('../../../../../../src/ol/render/webgl/VectorStyleRenderer.js').StyleShaders}
+     */
+    const SAMPLE_SHADERS_WITH_TEXT = convertStyleToShaders(
+      [
+        {
+          style: {
+            'text-value': ['get', 'label'],
+          },
+        },
+        {
+          style: {
+            'fill-color': 'white',
+            'stroke-color': 'white',
+          },
+        },
+      ],
+      {},
+    );
+
+    beforeEach(() => {
+      vectorStyleRenderer = new VectorStyleRenderer(
+        SAMPLE_SHADERS_WITH_TEXT,
+        {},
+        helper,
+      );
+    });
+
+    it('creates a VectorStyleRenderer with text rendering', () => {
+      assert.strictEqual(vectorStyleRenderer.hasText_, true);
+      assert.notStrictEqual(vectorStyleRenderer.textOverlayWorker_, undefined);
+    });
+  });
+
+  describe('rendering text alone', () => {
+    /**
+     * @type {Array<import('../../../../../../src/ol/style/flat.js').Rule>}
+     */
+    const SAMPLE_STYLE_TEXT = [
+      {
+        style: {
+          'text-value': ['get', 'label'],
+          'text-font': '10px sans-serif',
+        },
+      },
+    ];
+
+    beforeEach(() => {
+      vectorStyleRenderer = new VectorStyleRenderer(
+        SAMPLE_STYLE_TEXT,
+        {},
+        helper,
+      );
+    });
+
+    it('creates a VectorStyleRenderer with text rendering', () => {
+      assert.strictEqual(vectorStyleRenderer.hasText_, true);
+      assert.notStrictEqual(vectorStyleRenderer.textOverlayWorker_, undefined);
+    });
+
+    describe('generateBuffers', () => {
+      let buffers;
+      beforeEach(async () => {
+        buffers = await vectorStyleRenderer.generateBuffers(
+          geometryBatch,
+          SAMPLE_TRANSFORM,
+        );
+      });
+      it('creates a text instructions key', () => {
+        assert.typeOf(buffers.textInstructionsKey, 'string');
+      });
+      it('generates no buffers only for symbol geometry', () => {
+        assert.strictEqual(buffers.polygonBuffers, null);
+        assert.strictEqual(buffers.lineStringBuffers, null);
+        assert.strictEqual(buffers.pointBuffers, null);
+      });
+    });
+    describe('render', () => {
+      let buffers, preRenderCb;
+      beforeEach(async () => {
+        buffers = await vectorStyleRenderer.generateBuffers(
+          geometryBatch,
+          SAMPLE_TRANSFORM,
+        );
+        sinonSpy(helper, 'bindBuffer');
+        sinonSpy(helper, 'enableAttributes');
+        sinonSpy(helper, 'enableAttributesInstanced');
+        sinonSpy(helper, 'useProgram');
+        sinonSpy(helper, 'drawElements');
+        sinonSpy(helper, 'drawElementsInstanced');
+        preRenderCb = sinonSpy();
+        vectorStyleRenderer.render(buffers, SAMPLE_FRAMESTATE, preRenderCb);
+      });
+      it('does not use programs', function () {
+        assert.strictEqual(helper.useProgram.callCount, 0);
+      });
+      it('does not bind buffers', function () {
+        assert.strictEqual(helper.bindBuffer.callCount, 0);
+      });
+      it('does not enable attributes', function () {
+        assert.strictEqual(helper.enableAttributes.callCount, 0);
+        assert.strictEqual(helper.enableAttributesInstanced.callCount, 0);
+      });
+      it('does not draw any geometry', function () {
+        assert.strictEqual(helper.drawElements.callCount, 0);
+        assert.strictEqual(helper.drawElementsInstanced.callCount, 0);
+      });
+      it('does not call prerender callback', () => {
+        assert.strictEqual(preRenderCb.callCount, 0);
+      });
+    });
+  });
+
   describe('convertStyleToShaders', function () {
     it('breaks down a single flat style', function () {
       const style = {
@@ -733,8 +1102,16 @@ describe('VectorStyleRenderer', () => {
             .setFillColorExpression('vec4(1.0, 0.0, 0.0, 1.0)')
             .setStrokeColorExpression('vec4(0.0, 0.0, 1.0, 1.0)')
             .setStrokeWidthExpression('2.0'),
-          'attributes': {},
-          'uniforms': {},
+          attributes: {},
+          uniforms: {},
+          sourceRule: {
+            // this keeps track of what the original flat style rule looked like
+            style: {
+              'fill-color': 'red',
+              'stroke-color': 'blue',
+              'stroke-width': 2,
+            },
+          },
         },
       ]);
     });
@@ -754,15 +1131,26 @@ describe('VectorStyleRenderer', () => {
           builder: new ShaderBuilder().setFillColorExpression(
             'vec4(1.0, 0.0, 0.0, 1.0)',
           ),
-          'attributes': {},
-          'uniforms': {},
+          attributes: {},
+          uniforms: {},
+          sourceRule: {
+            style: {
+              'fill-color': 'red',
+            },
+          },
         },
         {
           builder: new ShaderBuilder()
             .setStrokeColorExpression('vec4(0.0, 0.0, 1.0, 1.0)')
             .setStrokeWidthExpression('2.0'),
-          'attributes': {},
-          'uniforms': {},
+          attributes: {},
+          uniforms: {},
+          sourceRule: {
+            style: {
+              'stroke-color': 'blue',
+              'stroke-width': 2,
+            },
+          },
         },
       ]);
     });
@@ -920,6 +1308,100 @@ describe('VectorStyleRenderer', () => {
       };
       const result = convertStyleToShaders(shader);
       assert.deepEqual(result, [shader]);
+    });
+  });
+
+  describe('toFlatStyleLike', function () {
+    it('returns a single FlatStyle as-is (no copy)', function () {
+      const flatStyle = {'fill-color': 'red', 'stroke-width': 2};
+      assert.strictEqual(toFlatStyleLike(flatStyle), flatStyle);
+    });
+    it('returns an array of FlatStyles as-is (no copy)', function () {
+      const flatStyles = [{'fill-color': 'red'}, {'stroke-color': 'blue'}];
+      assert.strictEqual(toFlatStyleLike(flatStyles), flatStyles);
+    });
+    it('returns an array of Rules as-is (no copy)', function () {
+      const rules = [
+        {
+          filter: ['==', ['get', 'type'], 'road'],
+          style: {'stroke-color': 'gray'},
+        },
+        {style: {'fill-color': 'green'}},
+      ];
+      assert.strictEqual(toFlatStyleLike(rules), rules);
+    });
+    it('returns an array with the sourceRule for a single shader', function () {
+      const sourceRule = {style: {'fill-color': 'blue'}};
+      const shader = {
+        builder: new ShaderBuilder(),
+        attributes: [],
+        uniforms: {},
+        sourceRule,
+      };
+      assert.deepEqual(toFlatStyleLike(shader), [sourceRule]);
+    });
+    it('returns an array of sourceRules for an array of shaders', function () {
+      const sourceRule1 = {style: {'fill-color': 'blue'}};
+      const sourceRule2 = {style: {'stroke-color': 'red'}};
+      const shaders = [
+        {
+          builder: new ShaderBuilder(),
+          attributes: [],
+          uniforms: {},
+          sourceRule: sourceRule1,
+        },
+        {
+          builder: new ShaderBuilder(),
+          attributes: [],
+          uniforms: {},
+          sourceRule: sourceRule2,
+        },
+      ];
+      assert.deepEqual(toFlatStyleLike(shaders), [sourceRule1, sourceRule2]);
+    });
+    it('returns null for a single custom shader', function () {
+      const shader = {
+        builder: new ShaderBuilder().setFillColorExpression(
+          'vec4(1.0, 0.0, 0.0, 1.0)',
+        ),
+        attributes: [],
+        uniforms: {},
+      };
+      assert.strictEqual(toFlatStyleLike(shader), null);
+    });
+    it('returns null for an array of custom shaders', function () {
+      const shaders = [
+        {
+          builder: new ShaderBuilder().setFillColorExpression(
+            'vec4(1.0, 0.0, 0.0, 1.0)',
+          ),
+          attributes: [],
+          uniforms: {},
+        },
+        {
+          builder: new ShaderBuilder().setStrokeWidthExpression('2.0'),
+          attributes: [],
+          uniforms: {},
+        },
+      ];
+      assert.strictEqual(toFlatStyleLike(shaders), null);
+    });
+    it('returns null for a mixed array where at least one shader has no sourceRule', function () {
+      const sourceRule = {style: {'fill-color': 'blue'}};
+      const shaders = [
+        {
+          builder: new ShaderBuilder(),
+          attributes: [],
+          uniforms: {},
+          sourceRule,
+        },
+        {
+          builder: new ShaderBuilder().setStrokeWidthExpression('2.0'),
+          attributes: [],
+          uniforms: {},
+        },
+      ];
+      assert.strictEqual(toFlatStyleLike(shaders), null);
     });
   });
 });

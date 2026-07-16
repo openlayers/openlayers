@@ -115,6 +115,18 @@ describe('ol/webgl/WebGLHelper', function () {
         assert.deepEqual(h.postProcessPasses_[1].uniforms_[0].value, 4);
       });
     });
+
+    describe('with empty post process array', function () {
+      beforeEach(function () {
+        h = new WebGLHelper({
+          postProcesses: [],
+        });
+      });
+
+      it('has a default rendering pass as well', function () {
+        assert.strictEqual(h.postProcessPasses_.length, 1);
+      });
+    });
   });
 
   describe('operations', function () {
@@ -285,6 +297,32 @@ describe('ol/webgl/WebGLHelper', function () {
         );
 
         h.makeProjectionTransform(SAMPLE_FRAMESTATE, given);
+
+        assert.deepEqual(
+          given.map((val) => val.toFixed(15)),
+          expected.map((val) => val.toFixed(15)),
+        );
+      });
+
+      it('gives out the correct transform (rotation ignored)', function () {
+        const scaleX =
+          2 /
+          SAMPLE_FRAMESTATE.size[0] /
+          SAMPLE_FRAMESTATE.viewState.resolution;
+        const scaleY =
+          2 /
+          SAMPLE_FRAMESTATE.size[1] /
+          SAMPLE_FRAMESTATE.viewState.resolution;
+        const given = createTransform();
+        const expected = createTransform();
+        scaleTransform(expected, scaleX, scaleY);
+        translateTransform(
+          expected,
+          -SAMPLE_FRAMESTATE.viewState.center[0],
+          -SAMPLE_FRAMESTATE.viewState.center[1],
+        );
+
+        h.makeProjectionTransform(SAMPLE_FRAMESTATE, given, true);
 
         assert.deepEqual(
           given.map((val) => val.toFixed(15)),

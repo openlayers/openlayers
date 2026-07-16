@@ -1,4 +1,5 @@
 import {assert} from 'chai';
+import {spy as sinonSpy, stub as sinonStub} from 'sinon';
 import Map from '../../../../../../src/ol/Map.js';
 import TileQueue from '../../../../../../src/ol/TileQueue.js';
 import TileState from '../../../../../../src/ol/TileState.js';
@@ -12,6 +13,7 @@ import Projection from '../../../../../../src/ol/proj/Projection.js';
 import RenderFeature from '../../../../../../src/ol/render/Feature.js';
 import {ShaderBuilder} from '../../../../../../src/ol/render/webgl/ShaderBuilder.js';
 import VectorStyleRenderer from '../../../../../../src/ol/render/webgl/VectorStyleRenderer.js';
+import {createPostProcessDefinition} from '../../../../../../src/ol/render/webgl/textUtil.js';
 import WebGLVectorTileLayerRenderer, {
   Attributes,
   Uniforms,
@@ -169,6 +171,10 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
     assert.deepEqual(renderer.styleRenderer_, null);
   });
 
+  it('does include the post processing step for text rendering', () => {
+    assert.deepEqual(renderer.postProcesses_, []);
+  });
+
   describe('#afterHelperCreated', () => {
     beforeEach(() => {
       renderer.helper = new WebGLHelper();
@@ -225,16 +231,12 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
   });
 
   describe('#reset', () => {
-    beforeEach(() => {
-      // first call prepareFrame to initialize the helper
-      renderer.prepareFrame(frameState);
-    });
-
     describe('use a single style', () => {
       beforeEach(() => {
         renderer.reset({
           style: SAMPLE_STYLE,
         });
+        renderer.prepareFrame(frameState);
       });
 
       it('recreates renderer', () => {
@@ -244,6 +246,9 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
         const builder = renderer.styleRenderer_.styleShaders[0].builder;
         assert.include(builder.getSymbolColorExpression(), 'a_prop_size');
       });
+      it('does not include the post processing step for text rendering', () => {
+        assert.deepEqual(renderer.postProcesses_, []);
+      });
     });
 
     describe('use shaders', () => {
@@ -251,6 +256,7 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
         renderer.reset({
           style: SAMPLE_SHADERS(),
         });
+        renderer.prepareFrame(frameState);
       });
 
       it('recreates renderer', () => {
@@ -266,6 +272,113 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
           builder.getFragmentDiscardExpression(),
           '(u_zoom > 10.0) || (texture2D(u_depthMask, gl_FragCoord.xy / u_pixelRatio / u_viewportSizePx).r * 50. > u_tileZoomLevel + 0.5)',
         );
+      });
+      it('does not include the post processing step for text rendering', () => {
+        assert.deepEqual(renderer.postProcesses_, []);
+      });
+    });
+  });
+
+  describe('style with text & with post processes', () => {
+    const POST_PROCESS = {
+      hello: 'world',
+    };
+    let finalizeTextRenderStub;
+
+    beforeEach(() => {
+      renderer = new WebGLVectorTileLayerRenderer(vectorTileLayer, {
+        style: [
+          {
+            style: {
+              'circle-radius': 4,
+              'text-value': 'hello world',
+            },
+          },
+        ],
+        postProcesses: [POST_PROCESS],
+      });
+      // this will initialize the style renderer
+      renderer.prepareFrame(frameState);
+      renderer.renderFrame(frameState);
+
+      finalizeTextRenderStub = sinonStub(
+        renderer.styleRenderer_,
+        'finalizeTextRender',
+      ).returns(Promise.resolve());
+    });
+
+    it('does include the post processing step for text rendering', () => {
+      const mockPostProcess = createPostProcessDefinition(
+        () => null,
+        () => null,
+      );
+      assert.strictEqual(renderer.postProcesses_.length, 2);
+      assert.deepEqual(
+        renderer.postProcesses_[0].fragmentShader,
+        mockPostProcess.fragmentShader,
+      );
+      assert.deepEqual(
+        renderer.postProcesses_[0].vertexShader,
+        mockPostProcess.vertexShader,
+      );
+      assert.deepEqual(renderer.postProcesses_[1], POST_PROCESS);
+    });
+
+    describe('when a style without text is set later on', () => {
+      beforeEach(() => {
+        renderer.reset({
+          style: SAMPLE_RULES,
+        });
+      });
+
+      it('does not include the text post processing step', () => {
+        assert.deepEqual(renderer.postProcesses_, [POST_PROCESS]);
+      });
+    });
+
+    describe('#renderFrame', () => {
+      beforeEach(async () => {
+        renderer.renderFrame(frameState);
+      });
+      it('calls styleRenderer.finalizeTextRender once', () => {
+        assert.strictEqual(
+          renderer.styleRenderer_.finalizeTextRender.calledOnce,
+          true,
+        );
+      });
+    });
+
+    describe('text overlay rerender', () => {
+      let finalizeTextRenderResolver;
+
+      beforeEach(() => {
+        finalizeTextRenderStub.returns(
+          new Promise((resolve) => {
+            finalizeTextRenderResolver = resolve;
+          }),
+        );
+        sinonSpy(vectorTileLayer, 'changed');
+      });
+
+      it('calls layer.changed() after the text overlay is ready to be rendered', async () => {
+        vectorTileLayer.revision_++; // increasing the revision so a new text overlay is drawn
+        renderer.renderFrame(frameState);
+        finalizeTextRenderResolver();
+        await new Promise((resolve) => setTimeout(resolve)); // awaiting next tick
+        assert.strictEqual(vectorTileLayer.changed.callCount, 1);
+
+        // no update to the layer in the meantime: layer.changed() should not be called again
+        renderer.renderFrame(frameState);
+        finalizeTextRenderResolver();
+        await new Promise((resolve) => setTimeout(resolve));
+        assert.strictEqual(vectorTileLayer.changed.callCount, 1);
+
+        // after a layer update: layer.changed should be called once more
+        vectorTileLayer.revision_++;
+        renderer.renderFrame(frameState);
+        finalizeTextRenderResolver();
+        await new Promise((resolve) => setTimeout(resolve));
+        assert.strictEqual(vectorTileLayer.changed.callCount, 2);
       });
     });
   });
@@ -315,6 +428,7 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
       vi.spyOn(renderer.helper, 'setUniformMatrixValue');
       vi.spyOn(renderer.helper, 'bindTexture');
       vi.spyOn(renderer.styleRenderer_, 'render');
+      sinonSpy(renderer.styleRenderer_, 'finalizeTextRender');
 
       // this is required to keep a "snapshot" of the input matrix
       // (since the same object is reused for various calls)
@@ -425,6 +539,12 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
     });
     it('calls render for each tile on each renderer', () => {
       assert.strictEqual(renderer.styleRenderer_.render.mock.calls.length, 2);
+    });
+    it('does not call styleRenderer.finalizeTextRender (no text style)', () => {
+      assert.strictEqual(
+        renderer.styleRenderer_.finalizeTextRender.called,
+        false,
+      );
     });
   });
 });

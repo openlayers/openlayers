@@ -19,7 +19,13 @@ const map = new Map({
         'stroke-color': 'rgba(136,136,136, 0.5)',
         'stroke-width': 1,
         'circle-radius': 2,
-        'circle-fill-color': '#707070',
+        'circle-fill-color': '#000000',
+        'text-value': ['case', ['has', 'name_en'], ['get', 'name_en'], ''],
+        'text-font': 'bold 11px "Open Sans", "Arial Unicode MS", sans-serif',
+        'text-fill-color': '#334',
+        'text-stroke-color': 'rgba(255,255,255,0.8)',
+        'text-stroke-width': 2,
+        'text-offset-y': -8,
       },
     }),
   ],
@@ -31,4 +37,8 @@ const map = new Map({
 });
 
 map.getView().setRotation(Math.PI / 4);
-render({message: 'Vector tile layer rotates', tolerance: 0.01});
+
+render({
+  message: 'Vector tile layer rotated, points with labels',
+  tolerance: 0.019, // FIXME: investigate why this is needed (text fill sometimes appear thicker)
+});

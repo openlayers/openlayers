@@ -9,10 +9,10 @@ import {getUid} from '../util.js';
 import {create, fromTransform} from '../vec/mat4.js';
 import {
   FLOAT,
+  getContext,
   UNSIGNED_BYTE,
   UNSIGNED_INT,
   UNSIGNED_SHORT,
-  getContext,
 } from '../webgl.js';
 import ContextEventType from '../webgl/ContextEventType.js';
 import WebGLPostProcessingPass from './PostProcessingPass.js';
@@ -408,7 +408,7 @@ class WebGLHelper extends Disposable {
      * @type {Array<WebGLPostProcessingPass>}
      * @private
      */
-    this.postProcessPasses_ = options.postProcesses
+    this.postProcessPasses_ = options.postProcesses?.length
       ? options.postProcesses.map(
           (options) =>
             new WebGLPostProcessingPass({
@@ -1048,11 +1048,12 @@ class WebGLHelper extends Disposable {
    * The resulting transform can be used to convert world space coordinates to view coordinates in the [-1, 1] range.
    * @param {import("../Map.js").FrameState} frameState Frame state.
    * @param {import("../transform.js").Transform} transform Transform to update.
+   * @param {boolean} [ignoreRotation] If true, view rotation will not be added to the transform
    * @return {import("../transform.js").Transform} The updated transform object.
    */
-  makeProjectionTransform(frameState, transform) {
+  makeProjectionTransform(frameState, transform, ignoreRotation) {
     const size = frameState.size;
-    const rotation = frameState.viewState.rotation;
+    const rotation = ignoreRotation ? 0 : frameState.viewState.rotation;
     const resolution = frameState.viewState.resolution;
     const center = frameState.viewState.center;
     composeTransform(
