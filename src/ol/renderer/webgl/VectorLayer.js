@@ -16,7 +16,6 @@ import MixedGeometryBatch from '../../render/webgl/MixedGeometryBatch.js';
 import VectorStyleRenderer, {
   toFlatStyleLike,
 } from '../../render/webgl/VectorStyleRenderer.js';
-import {colorDecodeId} from '../../render/webgl/encodeUtil.js';
 import {
   createPostProcessDefinition,
   hasTextStyle,
@@ -31,6 +30,7 @@ import {
 import {DefaultUniform} from '../../webgl/Helper.js';
 import WebGLRenderTarget from '../../webgl/RenderTarget.js';
 import WebGLLayerRenderer from './Layer.js';
+import {hitDetectFeaturesAtPixel} from './hitDetectUtil.js';
 import {applyVectorUniforms, VectorUniforms} from './vectorUtil.js';
 import {getWorldParameters} from './worldUtil.js';
 
@@ -606,23 +606,19 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
       coordinate.slice(),
     );
 
-    const data = this.hitRenderTarget_?.readPixel(pixel[0] / 2, pixel[1] / 2);
-    if (!data) {
+    const hitRenderTarget = this.hitRenderTarget_;
+    if (!hitRenderTarget) {
       return undefined;
     }
-    const color = [data[0] / 255, data[1] / 255, data[2] / 255, data[3] / 255];
-    const ref = colorDecodeId(color);
-    const feature = this.batch_.getFeatureFromRef(ref);
-    if (feature) {
-      return callback(
-        feature,
-        this.getLayer(),
-        /** @type {import("../../geom/SimpleGeometry.js").default} */ (
-          /** @type {unknown} */ (null)
-        ),
-      );
-    }
-    return undefined;
+    return hitDetectFeaturesAtPixel(
+      hitRenderTarget,
+      pixel,
+      hitTolerance,
+      (ref) => this.batch_.getFeatureFromRef(ref),
+      this.getLayer(),
+      callback,
+      matches,
+    );
   }
 
   /**
