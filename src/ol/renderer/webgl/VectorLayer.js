@@ -545,8 +545,8 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
         return;
       }
       hitRenderTarget.setSize([
-        Math.floor(frameState.size[0] / 2),
-        Math.floor(frameState.size[1] / 2),
+        Math.ceil(frameState.size[0] / 2),
+        Math.ceil(frameState.size[1] / 2),
       ]);
       this.helper.prepareDrawToRenderTarget(frameState, hitRenderTarget, true);
     }
