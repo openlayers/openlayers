@@ -26,7 +26,7 @@ jobs:
       - name: Set Node.js Version
         uses: actions/setup-node@v7
         with:
-          node-version: '24'
+          node-version-file: '.nvmrc'
 
       - name: Install Dependencies
         run: npm ci
@@ -45,7 +45,7 @@ jobs:
       - name: Set Node.js Version
         uses: actions/setup-node@v7
         with:
-          node-version: '24'
+          node-version-file: '.nvmrc'
 
       - name: Install Dependencies
         run: npm ci
@@ -67,7 +67,7 @@ jobs:
       - name: Set Node.js Version
         uses: actions/setup-node@v7
         with:
-          node-version: '24'
+          node-version-file: '.nvmrc'
 
       - name: Install Dependencies
         run: npm ci
@@ -86,7 +86,7 @@ jobs:
       - name: Set Node.js Version
         uses: actions/setup-node@v7
         with:
-          node-version: '24'
+          node-version-file: '.nvmrc'
 
       - name: Install Dependencies
         run: npm ci
@@ -105,7 +105,7 @@ jobs:
       - name: Set Node.js Version
         uses: actions/setup-node@v7
         with:
-          node-version: '24'
+          node-version-file: '.nvmrc'
 
       - name: Install Dependencies
         run: npm ci
