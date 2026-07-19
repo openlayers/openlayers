@@ -1433,12 +1433,9 @@ function iconStyleParser(node, objectStack) {
       if (imageState === ImageState.IDLE || imageState === ImageState.LOADING) {
         const listener = function () {
           const imageState = imageStyle.getImageState();
-          if (
-            !(
-              imageState === ImageState.IDLE ||
-              imageState === ImageState.LOADING
-            )
-          ) {
+          if (!(
+            imageState === ImageState.IDLE || imageState === ImageState.LOADING
+          )) {
             const imageSize = imageStyle.getSize();
             if (imageSize && imageSize.length == 2) {
               const resizeScale = scaleForSize(imageSize);

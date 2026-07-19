@@ -8,36 +8,10 @@ import handlebars from 'handlebars';
 import {marked} from 'marked';
 import path, {dirname} from 'path';
 import {fileURLToPath} from 'url';
-import sources from 'webpack-sources';
-import flatConfig from '../../eslint.config.js';
+import flatConfig from '../eslint.config.js';
 
-/**
- * @typedef {Object} Options
- * @property {string} templates path to templates
- * @property {string} common name of the common chunk.html templates dir
- */
-
-/**
- * @typedef {Object} TemplateConfig
- * @property {string} filename base name of the example's files
- * @property {string} layout html Template name from the template dir
- * @property {string} title text for the html title
- * @property {string} shortdesc Short description for the example list index.html
- * @property {string} [docs] Description under the map
- * @property {Array<string>} tags Tags for this example
- * @property {boolean} [experimental=false] Display a notice about using non-api code
- * @property {Array<string>} [resources] Additional js/css files to include
- * @property {Array<{key: string, value: string}} [cloak] Hide sensitive information / access keys
- */
-
-/**
- * @typedef {Object} PackageJson
- * @property {string} version Package version
- * @property {Object<string, string>} devDependencies Development dependencies
- */
-
-const RawSource = sources.RawSource;
 const baseDir = dirname(fileURLToPath(import.meta.url));
+const root = path.join(baseDir, '..');
 
 const isCssRegEx = /\.css(\?.*)?$/;
 const isJsRegEx = /\.js(\?.*)?$/;
@@ -46,16 +20,13 @@ const isTemplateJs = /\/(?:bootstrap(?:\.bundle)?)(?:\.min)?\.js(?:\?.*)?$/;
 const isTemplateCss =
   /\/(?:bootstrap|fontawesome-free@[\d.]+\/css\/(?:fontawesome|brands|solid))(?:\.min)?\.css(?:\?.*)?$/;
 
-const exampleDirContents = fs
-  .readdirSync(path.join(baseDir, '..'))
+const exampleNames = fs
+  .readdirSync(baseDir)
   .filter((name) => /^(?!index).*\.html$/.test(name))
   .map((name) => name.replace(/\.html$/, ''));
 
-/**
- * @return {Promise<PackageJson>} package.json content
- */
 function getPackageInfo() {
-  return fse.readJSON(path.resolve(baseDir, '../../package.json'));
+  return fse.readJSON(path.resolve(root, 'package.json'));
 }
 
 handlebars.registerHelper(
@@ -63,9 +34,6 @@ handlebars.registerHelper(
   (str) => new handlebars.SafeString(marked(str, {async: false})),
 );
 
-/**
- * Used to doube-escape the title when stored as data-* attribute.
- */
 handlebars.registerHelper('escape', (text) => {
   return handlebars.Utils.escapeExpression(text);
 });
@@ -82,15 +50,9 @@ handlebars.registerHelper('indent', (text, options) => {
     .join('\n');
 });
 
-/**
- * Returns the object with the keys inserted in alphabetic order.
- * When exporting with `JSON.stringify(obj)` the keys are sorted.
- * @param {Object<string, *>} obj Any object
- * @return {Object<string, *>} New object
- */
 function sortObjectByKey(obj) {
   return Object.keys(obj)
-    .sort() // sort twice to get predictable, case insensitive order
+    .sort()
     .sort((a, b) => a.localeCompare(b, 'en', {sensitivity: 'base'}))
     .reduce((idx, tag) => {
       idx[tag] = obj[tag];
@@ -98,13 +60,7 @@ function sortObjectByKey(obj) {
     }, {});
 }
 
-/**
- * Create an index of tags belonging to examples
- * @param {Array<{tags: Array<string>}>} exampleData Array of example data objects.
- * @return {Object<string,Array<number>>} Word index.
- */
 function createTagIndex(exampleData) {
-  /** @type {Object<string,Array<number>>} */
   const index = {};
   exampleData.forEach((data, i) => {
     data.tags.forEach((tag) => {
@@ -120,17 +76,8 @@ function createTagIndex(exampleData) {
   return index;
 }
 
-/**
- * Create an inverted index of keywords from examples.  Property names are
- * lowercased words.  Property values are objects mapping example index to word
- * count.
- * @param {Array<{shortdesc: string, title: string, tags: Array<string>}>} exampleData Array of example data objects.
- * @return {Object<string, Object<number, number>>} Word index.
- */
 function createWordIndex(exampleData) {
-  /** @type {Object<string, Object<number, number>>} */
   const index = {};
-  /** @type {Array<'shortdesc'|'title'|'tags'>} */
   const keys = ['shortdesc', 'title', 'tags'];
   exampleData.forEach((data, i) => {
     keys.forEach((key) => {
@@ -154,12 +101,6 @@ function createWordIndex(exampleData) {
   return index;
 }
 
-/**
- * Gets dependencies from the js source.
- * @param {string} jsSource Source.
- * @param {PackageJson} pkg Package info.
- * @return {Object<string, string>} dependencies
- */
 function getDependencies(jsSource, pkg) {
   const dependencies = {
     ol: pkg.version,
@@ -181,113 +122,13 @@ function getDependencies(jsSource, pkg) {
   return dependencies;
 }
 
-export default class ExampleBuilder {
-  /**
-   * A webpack plugin that builds the html files for our examples.
-   * @param {Options} config Plugin configuration.
-   */
+class ExampleBuilder {
   constructor(config) {
-    this.name = 'ExampleBuilder';
     this.templates = config.templates;
-    this.common = config.common;
     this.linter = new eslint.Linter({configType: 'flat'});
-    /** @type {Object<string,{original: string, cleaned: string}>} */
     this.lintCache = {};
   }
 
-  /**
-   * Called by webpack.
-   * @param {import('webpack').Compiler} compiler The webpack compiler.
-   */
-  apply(compiler) {
-    compiler.hooks.compilation.tap(this.name, (compilation) => {
-      compilation.hooks.additionalAssets.tapPromise(this.name, async () => {
-        await this.addAssets(compilation.assets, compiler.context);
-      });
-    });
-  }
-
-  /**
-   * @param {import('webpack').CompilationAssets} assets Assets
-   * @param {string} dir Examples dir
-   */
-  async addAssets(assets, dir) {
-    const jsAssetRE = /^[\w-]+\.js$/;
-    const names = [];
-    for (const filename in assets) {
-      if (!jsAssetRE.test(filename)) {
-        continue;
-      }
-
-      const name = filename.replace(/\.js$/, '');
-      if (!exampleDirContents.includes(name)) {
-        continue;
-      }
-
-      names.push(name);
-    }
-
-    if (names.length === 0) {
-      return;
-    }
-
-    const exampleData = await Promise.all(
-      names.map((name) => this.parseExample(dir, name)),
-    );
-
-    const examples = exampleData.map((data) => ({
-      link: data.filename,
-      title: data.title,
-      shortdesc: data.shortdesc,
-      tags: data.tags,
-    }));
-
-    examples.sort((a, b) =>
-      a.title.localeCompare(b.title, 'en', {sensitivity: 'base'}),
-    );
-    const tagIndex = createTagIndex(examples);
-    const info = {
-      examples: examples,
-      // Tags for main page... TODO: implement index tag links
-      // tagIndex: sortObjectByKey(tagIndex),
-      wordIndex: sortObjectByKey(createWordIndex(examples)),
-    };
-    exampleData.forEach((data) => {
-      data.tags = data.tags.map((tag) => {
-        const tagExamples = tagIndex[tag.toLowerCase()];
-        return {
-          tag: tag,
-          examples: tagExamples.map((exampleIdx) => {
-            const example = examples[exampleIdx];
-            return {
-              link: example.link,
-              title: example.title,
-              isCurrent: data.filename === example.link,
-            };
-          }),
-        };
-      });
-    });
-
-    const pkg = await getPackageInfo();
-    await Promise.all(
-      exampleData.map(async (data) => {
-        const newAssets = await this.render(data, pkg);
-        for (const file in newAssets) {
-          assets[file] = new RawSource(newAssets[file]);
-        }
-      }),
-    );
-
-    const indexSource = `const info = ${JSON.stringify(info)};`;
-    assets['examples-info.js'] = new RawSource(indexSource);
-  }
-
-  /**
-   * @param {string} dir Examles dir
-   * @param {string} name Example name
-   * @return {TemplateConfig} Config from the examles's html template file
-   */
   async parseExample(dir, name) {
     const htmlName = `${name}.html`;
     const htmlPath = path.join(dir, htmlName);
@@ -301,15 +142,10 @@ export default class ExampleBuilder {
       filename: htmlName,
       dir: dir,
       name: name,
-      // process tags
       tags: data.tags ? data.tags.replace(/[\s"]+/g, '').split(',') : [],
     });
   }
 
-  /**
-   * @param {string} source A string
-   * @return {string} Same string without a newline character at end
-   */
   ensureNewLineAtEnd(source) {
     if (source[source.length - 1] !== '\n') {
       source += '\n';
@@ -317,29 +153,16 @@ export default class ExampleBuilder {
     return source;
   }
 
-  /**
-   * @param {string} source Source code
-   * @return {string} Transformed source
-   */
   transformJsSource(source) {
-    return (
-      source
-        // remove "../src/" prefix to have the same import syntax as the documentation
-        .replaceAll(
-          /(["'])(\.\.\/src\/ol\/[^"']+\.js)\1/g,
-          (full, quote, path) => "'" + path.slice(7) + "'",
-        )
-        // Remove worker loader import and modify `new Worker()` to add source
-        .replaceAll(/import Worker from 'worker-loader![^\n]*\n/g, '')
-        .replace('new Worker()', "new Worker('./worker.js', {type: 'module'})")
-    );
+    return source
+      .replaceAll(
+        /(["'])(\.\.\/src\/ol\/[^"']+\.js)\1/g,
+        (full, quote, importPath) => "'" + importPath.slice(7) + "'",
+      )
+      .replaceAll(/import Worker from 'worker-loader![^\n]*\n/g, '')
+      .replace('new Worker()', "new Worker('./worker.js', {type: 'module'})");
   }
 
-  /**
-   * @param {string} source Source file
-   * @param {Array<{key: string, value: string}>|undefined} cloak Replacement rules
-   * @return {string} The source with all keys replaced by value
-   */
   cloakSource(source, cloak) {
     if (cloak) {
       for (const entry of cloak) {
@@ -349,12 +172,6 @@ export default class ExampleBuilder {
     return source;
   }
 
-  /**
-   * Remove `@type {...}` comments
-   * @param {string} cacheKey Cache key
-   * @param {string} sourceCode Source code
-   * @return {string} Cleaned up source code
-   */
   removeTypeComments(cacheKey, sourceCode) {
     let cacheItem = this.lintCache[cacheKey];
     if (!cacheItem || cacheItem.original !== sourceCode) {
@@ -384,17 +201,10 @@ export default class ExampleBuilder {
     return cacheItem.cleaned;
   }
 
-  /**
-   * @param {TemplateConfig} data Config for this example
-   * @param {PackageJson} pkg Data from package.json
-   * @return {Object<string, string>} Asset for this example
-   */
   async render(data, pkg) {
-    /** @type {Object<string, string>} */
     const assets = {};
     const readOptions = {encoding: 'utf8'};
 
-    // add in script tag
     const jsName = `${data.name}.js`;
     const jsPath = path.join(data.dir, jsName);
     let jsSource = await fse.readFile(jsPath, {encoding: 'utf8'});
@@ -405,6 +215,7 @@ export default class ExampleBuilder {
     data.js = {
       local: [],
       remote: [],
+      module: jsName,
       source: jsSource,
     };
 
@@ -460,7 +271,6 @@ export default class ExampleBuilder {
       source: undefined,
     };
 
-    // add additional resources
     if (data.resources) {
       data.resources.forEach((resource) => {
         const absoluteUrl = /^https?:\/\//.test(resource)
@@ -484,9 +294,6 @@ export default class ExampleBuilder {
       });
     }
 
-    data.js.local.push(`${this.common}.js`, jsName);
-
-    // check for example css
     const cssName = `${data.name}.css`;
     const cssPath = path.join(data.dir, cssName);
     try {
@@ -494,7 +301,7 @@ export default class ExampleBuilder {
       data.css.local.push(cssName);
       data.css.source = this.ensureNewLineAtEnd(assets[cssName]);
     } catch {
-      // pass, no css for this example
+      // pass
     }
 
     const templatePath = path.join(this.templates, data.layout);
@@ -503,4 +310,182 @@ export default class ExampleBuilder {
     assets[data.filename] = handlebars.compile(templateSource)(data);
     return assets;
   }
+}
+
+async function buildExamples(builder) {
+  const exampleData = await Promise.all(
+    exampleNames.map((name) => builder.parseExample(baseDir, name)),
+  );
+
+  const examples = exampleData.map((data) => ({
+    link: data.filename,
+    title: data.title,
+    shortdesc: data.shortdesc,
+    tags: data.tags,
+  }));
+
+  examples.sort((a, b) =>
+    a.title.localeCompare(b.title, 'en', {sensitivity: 'base'}),
+  );
+  const tagIndex = createTagIndex(examples);
+  const info = {
+    examples: examples,
+    wordIndex: sortObjectByKey(createWordIndex(examples)),
+  };
+  exampleData.forEach((data) => {
+    data.tags = data.tags.map((tag) => {
+      const tagExamples = tagIndex[tag.toLowerCase()];
+      return {
+        tag: tag,
+        examples: tagExamples.map((exampleIdx) => {
+          const example = examples[exampleIdx];
+          return {
+            link: example.link,
+            title: example.title,
+            isCurrent: data.filename === example.link,
+          };
+        }),
+      };
+    });
+  });
+
+  const pkg = await getPackageInfo();
+  const assets = {
+    'examples-info.js': `const info = ${JSON.stringify(info)};`,
+  };
+  await Promise.all(
+    exampleData.map(async (data) => {
+      Object.assign(assets, await builder.render(data, pkg));
+    }),
+  );
+  return assets;
+}
+
+function sendFile(res, filePath, contentType) {
+  res.statusCode = 200;
+  res.setHeader('Content-Type', contentType);
+  fs.createReadStream(filePath).pipe(res);
+}
+
+export default function exampleBuilder(config) {
+  const builder = new ExampleBuilder(config);
+  let cachedAssets;
+
+  async function getAssets() {
+    if (!cachedAssets) {
+      cachedAssets = await buildExamples(builder);
+    }
+    return cachedAssets;
+  }
+
+  return {
+    name: 'example-builder',
+    transform(code, id) {
+      if (!id.includes(`${path.sep}examples${path.sep}`) || id.includes('?')) {
+        return null;
+      }
+      const match = code.match(
+        /import\s+(\w+)\s+from\s+['"]worker-loader!(.+?)['"]/,
+      );
+      if (!match) {
+        return null;
+      }
+      const [, binding, workerPath] = match;
+      return {
+        code: code
+          .replace(/import\s+\w+\s+from\s+['"]worker-loader!.+?['"];?\n?/, '')
+          .replace(
+            new RegExp(`new\\s+${binding}\\(\\)`),
+            `new Worker(new URL('${workerPath}', import.meta.url), {type: 'module'})`,
+          ),
+        map: null,
+      };
+    },
+    configureServer(server) {
+      server.watcher.on('change', (file) => {
+        if (
+          file.startsWith(baseDir) &&
+          (file.endsWith('.html') ||
+            file.endsWith('.js') ||
+            file.endsWith('.css'))
+        ) {
+          cachedAssets = undefined;
+        }
+      });
+
+      server.middlewares.use(async (req, res, next) => {
+        try {
+          const url = req.url?.split('?')[0];
+          if (!url) {
+            return next();
+          }
+
+          if (url === '/examples-info.js') {
+            const assets = await getAssets();
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/javascript');
+            res.end(assets['examples-info.js']);
+            return;
+          }
+
+          if (url === '/theme/ol.css') {
+            sendFile(res, path.join(root, 'src', 'ol', 'ol.css'), 'text/css');
+            return;
+          }
+
+          if (url.startsWith('/theme/')) {
+            const themePath = path.join(
+              root,
+              'site',
+              'src',
+              'theme',
+              url.slice('/theme/'.length),
+            );
+            if (fs.existsSync(themePath) && fs.statSync(themePath).isFile()) {
+              const ext = path.extname(themePath);
+              const types = {
+                '.css': 'text/css',
+                '.svg': 'image/svg+xml',
+                '.png': 'image/png',
+                '.jpg': 'image/jpeg',
+                '.webp': 'image/webp',
+              };
+              sendFile(
+                res,
+                themePath,
+                types[ext] || 'application/octet-stream',
+              );
+              return;
+            }
+          }
+
+          const htmlMatch = url.match(/^\/([\w-]+)\.html$/);
+          if (htmlMatch && exampleNames.includes(htmlMatch[1])) {
+            const assets = await getAssets();
+            const html = assets[`${htmlMatch[1]}.html`];
+            if (html) {
+              res.statusCode = 200;
+              res.setHeader('Content-Type', 'text/html');
+              res.end(html);
+              return;
+            }
+          }
+
+          next();
+        } catch (err) {
+          next(err);
+        }
+      });
+    },
+    async generateBundle() {
+      const assets = await buildExamples(builder);
+      for (const [fileName, source] of Object.entries(assets)) {
+        this.emitFile({
+          type: 'asset',
+          fileName,
+          source,
+        });
+      }
+    },
+  };
 }

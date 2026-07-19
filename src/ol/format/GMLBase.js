@@ -159,7 +159,7 @@ class GMLBase extends XMLFeature {
       const prefix = 'p';
       const defaultPrefix = 'p0';
       if (!featureType && node.childNodes) {
-        (featureType = []), (featureNS = {});
+        ((featureType = []), (featureNS = {}));
         for (let i = 0, ii = node.childNodes.length; i < ii; ++i) {
           const child = /** @type {Element} */ (node.childNodes[i]);
           if (child.nodeType === 1) {

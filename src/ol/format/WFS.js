@@ -665,12 +665,10 @@ class WFS extends XMLFeature {
     if (node.firstElementChild && node.firstElementChild.firstElementChild) {
       node = node.firstElementChild.firstElementChild;
       for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
-        if (
-          !(
-            n.childNodes.length === 0 ||
-            (n.childNodes.length === 1 && n.firstChild.nodeType === 3)
-          )
-        ) {
+        if (!(
+          n.childNodes.length === 0 ||
+          (n.childNodes.length === 1 && n.firstChild.nodeType === 3)
+        )) {
           const objectStack = [{}];
           this.gmlFormat_.readGeometryElement(n, objectStack);
           return getProjection(objectStack.pop().srsName);

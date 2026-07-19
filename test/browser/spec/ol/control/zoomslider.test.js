@@ -129,8 +129,8 @@ describe('ol.control.ZoomSlider', function () {
       control.element.firstChild.style.height = '10px';
       map.renderSync();
       const event = new Event();
-      (event.type = 'pointerdown'),
-        (event.target = control.element.firstElementChild);
+      ((event.type = 'pointerdown'),
+        (event.target = control.element.firstElementChild));
       event.clientX = control.widthLimit_;
       event.clientY = 0;
       control.element.dispatchEvent(event);

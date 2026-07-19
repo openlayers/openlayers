@@ -421,7 +421,15 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
       renderer.prepareFrame(frameState);
       renderer.renderFrame(frameState);
       frameState.tileQueue.loadMoreTiles(Infinity, Infinity);
-      await new Promise((resolve) => setTimeout(resolve, 150));
+      await vi.waitFor(() => {
+        let ready = 0;
+        renderer.tileRepresentationCache.forEach((rep) => {
+          if (rep.ready) {
+            ready++;
+          }
+        });
+        assert.isAbove(ready, 0);
+      });
 
       vi.spyOn(renderer.helper, 'setUniformFloatValue');
       vi.spyOn(renderer.helper, 'setUniformFloatVec4');
@@ -430,13 +438,13 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
       vi.spyOn(renderer.styleRenderer_, 'render');
       sinonSpy(renderer.styleRenderer_, 'finalizeTextRender');
 
-      // this is required to keep a "snapshot" of the input matrix
-      // (since the same object is reused for various calls)
+      // Snapshot reused matrix arguments so mock.calls keep the values from
+      // each call (the same objects are mutated across calls).
       renderer.helper.setUniformMatrixValue = new Proxy(
         renderer.helper.setUniformMatrixValue,
         {
           apply(target, thisArg, [uniform, value]) {
-            return target.call(thisArg, uniform, [...value]);
+            return Reflect.apply(target, thisArg, [uniform, [...value]]);
           },
         },
       );

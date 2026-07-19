@@ -11,19 +11,12 @@ import png from 'pngjs';
 import {launch} from 'puppeteer';
 import serveStatic from 'serve-static';
 import {fileURLToPath} from 'url';
-import webpack from 'webpack';
-import webpackMiddleware from 'webpack-dev-middleware';
+import {createServer} from 'vite';
 import yargs from 'yargs';
 import {hideBin} from 'yargs/helpers';
-import config from './webpack.config.js';
+import viteConfig from './vite.config.mjs';
 
 const baseDir = dirname(fileURLToPath(import.meta.url));
-
-const compiler = webpack(Object.assign({mode: 'development'}, config));
-
-function getHref(entry) {
-  return path.dirname(entry).slice(1) + '/';
-}
 
 const staticHandler = serveStatic(baseDir);
 
@@ -32,11 +25,20 @@ const defaultHandler = serveStatic(path.join(baseDir, 'default'));
 const srcHandler = serveStatic(path.join(baseDir, '..', '..', 'src'));
 
 function indexHandler(req, res) {
+  const casesDir = path.join(baseDir, 'cases');
   const items = [];
-  for (const key in config.entry) {
-    const href = getHref(config.entry[key]);
+  const caseDirs = fs.readdirSync(casesDir).filter((name) => {
+    try {
+      fs.accessSync(path.join(casesDir, name, 'main.js'));
+      return true;
+    } catch {
+      return false;
+    }
+  });
+  caseDirs.forEach((c) => {
+    const href = `/cases/${c}/`;
     items.push(`<li><a href="${href}">${href}</a></li>`);
-  }
+  });
   const markup = `<!DOCTYPE html><body><ul>${items.join('')}</ul></body>`;
 
   res.writeHead(404, {
@@ -59,24 +61,22 @@ function notFound(req, res) {
   };
 }
 
-function serve(options) {
-  const webpackHandler = webpackMiddleware(compiler, {
-    writeToDisk: false,
+async function serve(options) {
+  const vite = await createServer({
+    ...viteConfig,
+    configFile: false,
+    appType: 'custom',
+    server: {middlewareMode: true},
   });
 
   return new Promise((resolve, reject) => {
     const app = express();
     app.use(serveStatic(path.join(baseDir, '..', '..', 'build', 'full')));
+    app.use(vite.middlewares);
     app.use((req, res) => {
       if (req.url === '/favicon.ico') {
         res.writeHead(204);
         res.end();
-        return;
-      }
-
-      const ext = path.extname(req.url);
-      if (ext === '.js' || ext === '.map') {
-        webpackHandler(req, res, notFound(req, res));
         return;
       }
 
@@ -91,7 +91,10 @@ function serve(options) {
       options.log.info(
         `test server listening http://${address.address}:${address.port}/`,
       );
-      resolve(() => server.close(() => process.exit(0)));
+      resolve(async () => {
+        await vite.close();
+        server.close(() => process.exit(0));
+      });
     });
   });
 }
@@ -178,8 +181,9 @@ async function renderPage(page, entry, options) {
       resolve(config || {});
     };
   });
+  const href = `/${path.dirname(entry)}/`;
   options.log.debug('navigating', entry);
-  await page.goto(`http://${options.host}:${options.port}${getHref(entry)}`, {
+  await page.goto(`http://${options.host}:${options.port}${href}`, {
     waitUntil: 'networkidle0',
   });
   const config = await renderCalled;
@@ -401,7 +405,16 @@ if (esMain(import.meta)) {
     })
     .parse();
 
-  const entries = Object.keys(config.entry).map((key) => config.entry[key]);
+  const casesDir = path.join(baseDir, 'cases');
+  const caseDirs = fs.readdirSync(casesDir).filter((name) => {
+    try {
+      fs.accessSync(path.join(casesDir, name, 'main.js'));
+      return true;
+    } catch {
+      return false;
+    }
+  });
+  const entries = caseDirs.map((c) => `cases/${c}/main.js`);
 
   options.log = new LogLevel({name: 'rendering', level: options.logLevel});
 
