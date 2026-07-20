@@ -1,0 +1,31 @@
+---
+layout: example.html
+title: GeoZarr dimensions
+shortdesc: Stepping through the time dimension of a GeoZarr cube with a slider.
+docs: >
+
+  A GeoZarr array can have non-spatial dimensions such as `time`. This example steps through the
+  `time` axis of a Sentinel-1 radar cube with a slider: `getDimensions()` reports the axis with its
+  size and units, `updateDimensions()` reloads the chosen slice in place, and `getValue` reads the
+  axis value to label it with the acquisition date.
+
+
+  The cube images the 2021 Cumbre Vieja eruption on La Palma as a dual-polarization composite: the
+  VV and VH bands (vertical transmit, vertical vs. horizontal receive) map to red and green, and
+  their ratio to blue.
+
+tags: "zarr, geozarr, sentinel-1, time, dimensions"
+experimental: true
+---
+<div id="map" class="map"></div>
+<div class="row mt-2 g-2 align-items-center">
+  <div class="col-auto">
+    <label class="col-form-label" for="time">Time</label>
+  </div>
+  <div class="col-auto">
+    <input type="range" class="form-range align-middle" id="time" min="0" max="0" value="0" step="1" style="width: 220px;" disabled>
+  </div>
+  <div class="col-auto">
+    <span id="time-label" class="text-body-secondary">loading…</span>
+  </div>
+</div>

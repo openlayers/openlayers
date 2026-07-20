@@ -1,0 +1,70 @@
+---
+layout: example.html
+title: GeoZarr storytelling
+shortdesc: Exploring Sentinel-1 event scenarios across orbit groups and time in GeoZarr cubes.
+docs: >
+
+  A tour of Sentinel-1 radar imaging through a set of event scenarios stored as GeoZarr cubes. Pick
+  a scene from the **URL** dropdown, switch look direction with the **Group** dropdown where a cube
+  has both `ascending` and `descending` orbit passes, and step through **time** to watch each one
+  unfold as a dual-polarization radar composite.
+
+
+  *Swiss Alps — the Valais (32TLS)*: the default scene, and the only one here carrying both `ascending`
+  and `descending` groups. Over the Rhône valley from Lake Geneva up into the high Alps, radiometric
+  terrain correction (RTC) evens out the slope-driven brightness of raw SAR, so the lakes read radar-dark
+  while forest, rock and snow separate by surface roughness. Switch the **Group** to compare how the two
+  look directions light the valleys.
+
+
+  The **URL** dropdown also offers four event scenarios; step through **time** to watch each unfold:
+
+
+  *Valencia DANA flood (30SYJ, ascending)*, 26 → 31 Oct 2024: floodwater across the plain and the
+  Albufera lagoon turns radar-dark while the built-up city stays bright, imaged straight through the
+  storm cloud that blinded optical satellites.
+
+
+  *La Palma — Cumbre Vieja eruption (28RBS, descending)*, Sep–Dec 2021: fresh, rough lava scatters
+  radar strongly and glows bright as the new lava delta grows into the Atlantic, day or night.
+
+
+  *Strait of Hormuz — Fujairah anchorage (40RDN, descending)*, 2026: the Gulf's main tanker anchorage
+  just outside the Strait of Hormuz, one of the world's busiest bunkering hubs. Every frame reveals the
+  fleet at anchor — on the radar-dark sea each tanker is a bright point target, with Fujairah port at the
+  coast. SAR sees the whole fleet through cloud and darkness, day or night, when optical imagery and AIS
+  can't.
+
+
+  *Bay of Bothnia sea ice (34WET, descending)*, Feb–Mar 2025: landfast ice locks the Luleå archipelago
+  while floes drift offshore; smooth new ice reads dark, ridged ice bright, shifting pass to pass.
+
+tags: "zarr, geozarr, sentinel-1, time, dimensions"
+experimental: true
+---
+<div id="map" class="map"></div>
+<div id="error" class="alert alert-danger mt-2" style="display: none;"></div>
+<div class="row mt-2 g-2">
+  <div class="col-auto">
+    <div class="input-group">
+      <label class="input-group-text" for="url-select">URL</label>
+      <select class="form-select" id="url-select">
+        <option value="https://s3.explorer.eopf.copernicus.eu/esa-zarr-sentinel-explorer-fra/tests-output/sentinel-1-grd-rtc-staging/s1-rtc-32TLS.zarr">S1 — Swiss Alps / Valais (32TLS, asc + desc)</option>
+        <option value="https://s3.explorer.eopf.copernicus.eu/esa-zarr-sentinel-explorer-fra/tests-output/sentinel-1-grd-rtc-staging/s1-rtc-30SYJ.zarr">S1 — Valencia DANA flood, Oct 2024 (30SYJ, ascending)</option>
+        <option value="https://s3.explorer.eopf.copernicus.eu/esa-zarr-sentinel-explorer-fra/tests-output/sentinel-1-grd-rtc-staging/s1-rtc-40RDN.zarr">S1 — Strait of Hormuz / Fujairah tanker anchorage, 2026 (40RDN, descending)</option>
+        <option value="https://s3.explorer.eopf.copernicus.eu/esa-zarr-sentinel-explorer-fra/tests-output/sentinel-1-grd-rtc-staging/s1-rtc-28RBS.zarr">S1 — La Palma lava delta, 2021 (28RBS, descending)</option>
+        <option value="https://s3.explorer.eopf.copernicus.eu/esa-zarr-sentinel-explorer-fra/tests-output/sentinel-1-grd-rtc-staging/s1-rtc-34WET.zarr">S1 — Bay of Bothnia sea ice, 2025 (34WET, descending)</option>
+        <option value="custom">Custom...</option>
+      </select>
+      <input type="text" class="form-control" id="custom-url" placeholder="Enter Zarr URL" style="display: none; width: 300px;">
+      <button class="btn btn-outline-secondary" id="load-url" type="button">Load</button>
+    </div>
+  </div>
+  <div class="col-auto" id="group-col" style="display: none;">
+    <div class="input-group">
+      <label class="input-group-text" for="group-select">Group</label>
+      <select class="form-select" id="group-select"></select>
+    </div>
+  </div>
+  <div class="col-auto" id="dims"></div>
+</div>
