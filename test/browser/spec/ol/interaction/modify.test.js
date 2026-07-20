@@ -2001,6 +2001,148 @@ describe('ol.interaction.Modify', function () {
       map.addInteraction(modify);
     });
 
+    it('keeps the ring consistent when the trace direction changes', function () {
+      const modifyFeature = new Feature(
+        new Polygon([
+          [
+            [200, 0],
+            [250, 0],
+            [250, -150],
+            [200, -150],
+            [200, 0],
+          ],
+        ]),
+      );
+      const traceSource = new VectorSource({
+        features: [
+          new Feature(
+            new Polygon([
+              [
+                [0, -50],
+                [100, -50],
+                [100, -100],
+                [0, -100],
+                [0, -50],
+              ],
+            ]),
+          ),
+        ],
+      });
+      map.removeInteraction(modify);
+      modify = new Modify({source, trace: true, traceSource});
+      map.addInteraction(modify);
+      source.addFeature(modifyFeature);
+
+      // drag 1: drop the [200,0] vertex on the target top edge at [50,-50], which
+      // becomes the trace anchor
+      simulateEvent('pointermove', 200, 0, null, 0);
+      simulateEvent('pointerdown', 200, 0, null, 0);
+      simulateEvent('pointerdrag', 50, 50, null, 0);
+      simulateEvent('pointerup', 50, 50, null, 0);
+
+      const round = () =>
+        modifyFeature
+          .getGeometry()
+          .getCoordinates()[0]
+          .map((c) => c.map((v) => Math.round(v * 1e6) / 1e6));
+
+      // drag 2: grab the ADJACENT vertex ([250,0]) and trace, moving forward
+      // past a vertex, back before it, then forward past two vertices.  The
+      // traced vertices must appear exactly once and in order - regression test
+      // for the stale segment index that used to scramble the ring.
+      simulateEvent('pointermove', 250, 0, null, 0);
+      simulateEvent('pointerdown', 250, 0, null, 0);
+
+      simulateEvent('pointerdrag', 100, 70, null, 0); // -> [100,-70], past [100,-50]
+      assert.deepEqual(round(), [
+        [50, -50],
+        [100, -50], // traced, once
+        [100, -70], // dragged end
+        [250, -150],
+        [200, -150],
+        [50, -50],
+      ]);
+
+      simulateEvent('pointerdrag', 60, 50, null, 0); // -> [60,-50], back before vertex
+      assert.deepEqual(round(), [
+        [50, -50],
+        [60, -50], // dragged end, traced vertex removed again
+        [250, -150],
+        [200, -150],
+        [50, -50],
+      ]);
+
+      simulateEvent('pointerdrag', 50, 90, null, 0); // -> [50,-90], past two vertices
+      simulateEvent('pointerup', 50, 90, null, 0);
+      assert.deepEqual(round(), [
+        [50, -50],
+        [100, -50], // traced, once
+        [100, -100], // traced, once
+        [50, -100], // dragged end on the bottom edge
+        [250, -150],
+        [200, -150],
+        [50, -50],
+      ]);
+    });
+
+    it('cancels tracing when the trace anchor itself is grabbed', function () {
+      const modifyFeature = new Feature(
+        new Polygon([
+          [
+            [200, 0],
+            [250, 0],
+            [250, -150],
+            [200, -150],
+            [200, 0],
+          ],
+        ]),
+      );
+      const traceSource = new VectorSource({
+        features: [
+          new Feature(
+            new Polygon([
+              [
+                [0, -50],
+                [100, -50],
+                [100, -100],
+                [0, -100],
+                [0, -50],
+              ],
+            ]),
+          ),
+        ],
+      });
+      map.removeInteraction(modify);
+      modify = new Modify({source, trace: true, traceSource});
+      map.addInteraction(modify);
+      source.addFeature(modifyFeature);
+
+      // drag 1: drop the [200,0] vertex on the target at [50,-50], the anchor
+      simulateEvent('pointermove', 200, 0, null, 0);
+      simulateEvent('pointerdown', 200, 0, null, 0);
+      simulateEvent('pointerdrag', 50, 50, null, 0);
+      simulateEvent('pointerup', 50, 50, null, 0);
+      assert.strictEqual(modify.traceState_.active, true);
+
+      // drag 2: grab that SAME vertex (the anchor) - tracing must be cancelled,
+      // so the vertex just follows the pointer without inserting traced points
+      simulateEvent('pointermove', 50, 50, null, 0);
+      simulateEvent('pointerdown', 50, 50, null, 0);
+      simulateEvent('pointerdrag', 90, 100, null, 0); // -> [90,-100]
+      assert.strictEqual(modify.traceState_.active, false);
+      assert.strictEqual(modify.traceSegments_, null);
+      assert.deepEqual(modifyFeature.getGeometry().getCoordinates(), [
+        [
+          [90, -100],
+          [250, 0],
+          [250, -150],
+          [200, -150],
+          [90, -100],
+        ],
+      ]);
+      simulateEvent('pointerup', 90, 100, null, 0);
+    });
+
     it('starts tracing with first edge drag, stops tracing with second edge drag', function () {
       const modifyFeature = new Feature(
         // a polygon we'll modify
@@ -2050,16 +2192,292 @@ describe('ol.interaction.Modify', function () {
 
       const geometry = modifyFeature.getGeometry();
 
-      assert.deepEqual(geometry.getCoordinates(), [
+      // the dragged end is snapped exactly onto the target edge, so round away
+      // floating point noise from the interpolation
+      const coordinates = geometry
+        .getCoordinates()[0]
+        .map((c) => c.map((value) => Math.round(value * 1e6) / 1e6));
+
+      assert.deepEqual(coordinates, [
+        [90, -100], // second drag point
+        [250, 0],
+        [250, -150],
+        [200, -150],
+        [50, -50], // first drag point
+        [100, -50], // traced point
+        [100, -100], // traced point
+        [90, -100], // closing vertex (matches the second drag point)
+      ]);
+    });
+
+    it('snaps the dragged vertex onto a target edge and releases it when pulled away', function () {
+      const modifyFeature = new Feature(
+        new Polygon([
+          [
+            [200, 0],
+            [250, 0],
+            [250, -150],
+            [200, -150],
+            [200, 0],
+          ],
+        ]),
+      );
+      const traceSource = new VectorSource({
+        features: [
+          new Feature(
+            new Polygon([
+              [
+                [0, -50],
+                [100, -50],
+                [100, -100],
+                [0, -100],
+                [0, -50],
+              ],
+            ]),
+          ),
+        ],
+      });
+      map.removeInteraction(modify);
+      modify = new Modify({source, trace: true, traceSource});
+      map.addInteraction(modify);
+      source.addFeature(modifyFeature);
+
+      // first drag activates tracing (onto the top edge of the trace target)
+      simulateEvent('pointermove', 200, 100, null, 0);
+      simulateEvent('pointerdown', 200, 100, null, 0);
+      simulateEvent('pointermove', 50, 50, null, 0);
+      simulateEvent('pointerdrag', 50, 50, null, 0);
+      simulateEvent('pointerup', 50, 50, null, 0);
+
+      // grab the far corner [250,-150], which is not connected to the trace
+      // start, then drag it NEAR the top edge (y=-50) but 5px off it
+      simulateEvent('pointermove', 250, 150, null, 0);
+      simulateEvent('pointerdown', 250, 150, null, 0);
+      simulateEvent('pointerdrag', 60, 45, null, 0);
+
+      // no target vertex has been passed, so tracing is not committed ...
+      assert.strictEqual(modify.traceState_.targetIndex, -1);
+      // ... but both the geometry vertex and the visible marker snap onto the
+      // target edge
+      assert.deepEqual(
+        modifyFeature.getGeometry().getCoordinates()[0][2],
+        [60, -50],
+      );
+      assert.deepEqual(
+        modify.vertexFeature_.getGeometry().getCoordinates(),
+        [60, -50],
+      );
+
+      // pull far away from the target (beyond the tolerance) -> the vertex is
+      // released and follows the pointer again
+      simulateEvent('pointerdrag', 60, 0, null, 0);
+      simulateEvent('pointerup', 60, 0, null, 0);
+      assert.deepEqual(
+        modifyFeature.getGeometry().getCoordinates()[0][2],
+        [60, 0],
+      );
+    });
+
+    it('keeps the dragged vertex when leaving the target before passing a vertex', function () {
+      const modifyFeature = new Feature(
+        new Polygon([
+          [
+            [200, 0],
+            [250, 0],
+            [250, -150],
+            [200, -150],
+            [200, 0],
+          ],
+        ]),
+      );
+      const traceSource = new VectorSource({
+        features: [
+          new Feature(
+            new Polygon([
+              [
+                [0, -50],
+                [100, -50],
+                [100, -100],
+                [0, -100],
+                [0, -50],
+              ],
+            ]),
+          ),
+        ],
+      });
+      map.removeInteraction(modify);
+      modify = new Modify({source, trace: true, traceSource});
+      map.addInteraction(modify);
+      source.addFeature(modifyFeature);
+
+      // first drag activates tracing (onto the top edge of the trace target)
+      simulateEvent('pointermove', 200, 100, null, 0);
+      simulateEvent('pointerdown', 200, 100, null, 0);
+      simulateEvent('pointermove', 50, 50, null, 0);
+      simulateEvent('pointerdrag', 50, 50, null, 0);
+      simulateEvent('pointerup', 50, 50, null, 0);
+
+      assert.strictEqual(modify.traceState_.active, true);
+      assert.strictEqual(modify.traceState_.targetIndex, -1);
+
+      // second drag: onto the target edge, then away without passing a vertex
+      simulateEvent('pointermove', 200, 0, null, 0);
+      simulateEvent('pointerdown', 200, 0, null, 0);
+      simulateEvent('pointerdrag', 70, 50, null, 0); // onto the top edge [70,-50]
+
+      // no target is picked because no target vertex has been passed
+      assert.strictEqual(modify.traceState_.targetIndex, -1);
+
+      simulateEvent('pointerdrag', 70, 30, null, 0); // away again [70,-30]
+      simulateEvent('pointerup', 70, 30, null, 0);
+
+      // the dragged vertex followed the pointer and was not lost
+      assert.deepEqual(modifyFeature.getGeometry().getCoordinates(), [
         [
-          [90, -100], // second drag point
+          [70, -30],
           [250, 0],
           [250, -150],
           [200, -150],
-          [50, -50], // first drag point
-          [100, -50], // traced point
-          [100, -100], // traced point
+          [50, -50],
+          [70, -30],
         ],
+      ]);
+    });
+
+    it('keeps the traced end following the pointer across drag frames', function () {
+      const modifyFeature = new Feature(
+        new Polygon([
+          [
+            [200, 0],
+            [250, 0],
+            [250, -150],
+            [200, -150],
+            [200, 0],
+          ],
+        ]),
+      );
+      const traceSource = new VectorSource({
+        features: [
+          new Feature(
+            new Polygon([
+              [
+                [0, -50],
+                [100, -50],
+                [100, -100],
+                [0, -100],
+                [0, -50],
+              ],
+            ]),
+          ),
+        ],
+      });
+      map.removeInteraction(modify);
+      modify = new Modify({source, trace: true, traceSource});
+      map.addInteraction(modify);
+      source.addFeature(modifyFeature);
+
+      // first drag activates tracing (onto the top edge of the trace target)
+      simulateEvent('pointermove', 200, 100, null, 0);
+      simulateEvent('pointerdown', 200, 100, null, 0);
+      simulateEvent('pointermove', 50, 50, null, 0);
+      simulateEvent('pointerdrag', 50, 50, null, 0);
+      simulateEvent('pointerup', 50, 50, null, 0);
+
+      // second drag: cross the [100,-50] vertex, then keep dragging along the
+      // right edge in a second frame
+      simulateEvent('pointermove', 200, 0, null, 0);
+      simulateEvent('pointerdown', 200, 0, null, 0);
+      simulateEvent('pointerdrag', 100, 70, null, 0); // past vertex -> [100,-70]
+      assert.strictEqual(modify.traceState_.targetIndex, 0);
+      simulateEvent('pointerdrag', 100, 90, null, 0); // continue -> [100,-90]
+      simulateEvent('pointerup', 100, 90, null, 0);
+
+      const coordinates = modifyFeature
+        .getGeometry()
+        .getCoordinates()[0]
+        .map((c) => c.map((value) => Math.round(value * 1e6) / 1e6));
+
+      // the traced vertex is inserted and the dragged end followed the pointer
+      // across the second frame (it does not freeze at [100,-70])
+      assert.deepEqual(coordinates, [
+        [100, -90],
+        [250, 0],
+        [250, -150],
+        [200, -150],
+        [50, -50],
+        [100, -50], // traced vertex
+        [100, -90], // closing vertex, follows the pointer
+      ]);
+    });
+
+    it('updates the segment rBush so traced vertices can be modified afterwards', function () {
+      const modifyFeature = new Feature(
+        new Polygon([
+          [
+            [200, 0],
+            [250, 0],
+            [250, -150],
+            [200, -150],
+            [200, 0],
+          ],
+        ]),
+      );
+      const traceSource = new VectorSource({
+        features: [
+          new Feature(
+            new Polygon([
+              [
+                [0, -50],
+                [100, -50],
+                [100, -100],
+                [0, -100],
+                [0, -50],
+              ],
+            ]),
+          ),
+        ],
+      });
+      map.removeInteraction(modify);
+      modify = new Modify({source, trace: true, traceSource});
+      map.addInteraction(modify);
+      source.addFeature(modifyFeature);
+
+      // first drag activates tracing (onto the top edge of the trace target)
+      simulateEvent('pointermove', 200, 100, null, 0);
+      simulateEvent('pointerdown', 200, 100, null, 0);
+      simulateEvent('pointermove', 50, 50, null, 0);
+      simulateEvent('pointerdrag', 50, 50, null, 0);
+      simulateEvent('pointerup', 50, 50, null, 0);
+
+      // second drag: trace across the [100,-50] vertex, inserting it into the
+      // modified geometry, then finish
+      simulateEvent('pointermove', 200, 0, null, 0);
+      simulateEvent('pointerdown', 200, 0, null, 0);
+      simulateEvent('pointerdrag', 100, 90, null, 0); // past vertex -> [100,-90]
+      simulateEvent('pointerup', 100, 90, null, 0);
+      assert.strictEqual(modify.traceState_.active, false);
+
+      // the traced vertex [100,-50] must now be in the segment rBush, so it can
+      // be grabbed and moved by a subsequent drag
+      simulateEvent('pointermove', 100, 50, null, 0);
+      simulateEvent('pointerdown', 100, 50, null, 0);
+      simulateEvent('pointerdrag', 120, 60, null, 0);
+      simulateEvent('pointerup', 120, 60, null, 0);
+
+      const coordinates = modifyFeature
+        .getGeometry()
+        .getCoordinates()[0]
+        .map((c) => c.map((value) => Math.round(value * 1e6) / 1e6));
+
+      // the previously traced vertex moved to the new pointer location
+      assert.deepEqual(coordinates, [
+        [100, -90],
+        [250, 0],
+        [250, -150],
+        [200, -150],
+        [50, -50],
+        [120, -60], // the traced vertex, now dragged to a new location
+        [100, -90],
       ]);
     });
   });

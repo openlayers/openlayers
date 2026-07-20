@@ -48,6 +48,7 @@ import {
   getCoordinate,
   getTraceTargetUpdate,
   getTraceTargets,
+  interpolateCoordinate,
 } from './tracing.js';
 
 /**
@@ -1195,8 +1196,39 @@ class Modify extends PointerInteraction {
   }
 
   /**
+   * Determine whether a trace from `fromIndex` to `toIndex` passes at least one
+   * vertex of the target (i.e. whether it would add any traced coordinates).
+   * The index math mirrors {@link addTracedCoordinates_}.
+   * @param {number} fromIndex The start index.
+   * @param {number} toIndex The end index.
+   * @return {boolean} At least one target vertex lies between the indices.
+   * @private
+   */
+  tracePassesVertex_(fromIndex, toIndex) {
+    if (fromIndex === toIndex) {
+      return false;
+    }
+    if (fromIndex < toIndex) {
+      const start = Math.ceil(fromIndex);
+      let end = Math.floor(toIndex);
+      if (end === toIndex) {
+        end -= 1;
+      }
+      return start <= end;
+    }
+    const start = Math.floor(fromIndex);
+    let end = Math.ceil(toIndex);
+    if (end === toIndex) {
+      end += 1;
+    }
+    return start >= end;
+  }
+
+  /**
    * Update the trace.
    * @param {import("../MapBrowserEvent.js").default} event Event.
+   * @return {import('../coordinate.js').Coordinate|undefined} The coordinate the
+   * dragged vertex was snapped onto a target edge, if any.
    * @private
    */
   updateTrace_(event) {
@@ -1229,47 +1261,63 @@ class Modify extends PointerInteraction {
       return;
     }
 
-    if (traceState.targetIndex !== updatedTraceTarget.index) {
-      // target changed
-      if (traceState.targetIndex !== -1) {
-        // remove points added during previous trace
-        const oldTarget = traceState.targets[traceState.targetIndex];
-        this.removeTracedCoordinates_(oldTarget.startIndex, oldTarget.endIndex);
-      } else {
-        for (const traceSegment of this.traceSegments_) {
-          const segmentData = traceSegment[0];
-          const geometry = segmentData.geometry;
-          const index = traceSegment[1];
-          const coordinates = geometry.getCoordinates();
-          const coordinatesArray = getCoordinatesArray(
-            coordinates,
-            geometry.getType(),
-            segmentData.depth,
-          );
-          coordinatesArray.splice(segmentData.index + index, 1);
-          geometry.setCoordinates(coordinates);
-          if (index === 0) {
-            segmentData.index -= 1;
-          }
-        }
-      }
-      // add points for the new target
-      const newTarget = traceState.targets[updatedTraceTarget.index];
-      this.addTracedCoordinates_(
-        newTarget,
-        newTarget.startIndex,
+    // Only commit to tracing a target once the drag has passed one of its
+    // vertices.  Before that we still snap the dragged vertex onto the target
+    // edge (below), but we keep `targetIndex` at -1 so that pulling the pointer
+    // beyond the tolerance releases the vertex instead of getting stuck on the
+    // target.
+    let commit = true;
+    if (traceState.targetIndex === -1) {
+      const candidateTarget = traceState.targets[updatedTraceTarget.index];
+      commit = this.tracePassesVertex_(
+        candidateTarget.startIndex,
         updatedTraceTarget.endIndex,
       );
-    } else {
-      // target stayed the same
-      const target = traceState.targets[traceState.targetIndex];
-      this.addOrRemoveTracedCoordinates_(target, updatedTraceTarget.endIndex);
     }
 
-    // modify the state with updated info
-    traceState.targetIndex = updatedTraceTarget.index;
-    const target = traceState.targets[traceState.targetIndex];
-    target.endIndex = updatedTraceTarget.endIndex;
+    if (commit) {
+      if (traceState.targetIndex !== updatedTraceTarget.index) {
+        // target changed
+        if (traceState.targetIndex !== -1) {
+          // remove points added during previous trace
+          const oldTarget = traceState.targets[traceState.targetIndex];
+          this.removeTracedCoordinates_(
+            oldTarget.startIndex,
+            oldTarget.endIndex,
+          );
+        }
+        // add points for the new target
+        const newTarget = traceState.targets[updatedTraceTarget.index];
+        this.addTracedCoordinates_(
+          newTarget,
+          newTarget.startIndex,
+          updatedTraceTarget.endIndex,
+        );
+      } else {
+        // target stayed the same
+        const target = traceState.targets[traceState.targetIndex];
+        this.addOrRemoveTracedCoordinates_(target, updatedTraceTarget.endIndex);
+      }
+
+      // modify the state with updated info
+      traceState.targetIndex = updatedTraceTarget.index;
+      traceState.targets[traceState.targetIndex].endIndex =
+        updatedTraceTarget.endIndex;
+    }
+
+    // Snap the dragged vertex (the moving end of the trace) onto the target
+    // edge so that the trace follows edges, not only vertices, and the geometry
+    // stays consistent with the vertex marker.  Moving all of the dragged
+    // vertex' segments keeps polygon rings closed.
+    const snapTarget = traceState.targets[updatedTraceTarget.index];
+    const snappedVertex = interpolateCoordinate(
+      snapTarget.coordinates,
+      updatedTraceTarget.endIndex,
+    );
+    for (const dragSegment of this.dragSegments_) {
+      this.updateGeometry_(snappedVertex.slice(), dragSegment);
+    }
+    return snappedVertex;
   }
 
   getTraceCandidates_(event) {
@@ -1355,6 +1403,34 @@ class Modify extends PointerInteraction {
   }
 
   /**
+   * Tracing splices coordinates into a ring next to the dragged vertex, but only
+   * adjusts the index of the trace segment itself.  The dragged vertex' other
+   * segments in `dragSegments_` reference the same ring, so their stored index
+   * must be shifted too - otherwise the next {@link updateGeometry_} writes the
+   * dragged vertex to the wrong coordinate and scrambles the ring.
+   * @param {SegmentData} traceSegmentData The trace segment (adjusted by the
+   * caller and skipped here).
+   * @param {number} atIndex Segments at or after this coordinate index shift.
+   * @param {number} delta Coordinates added (positive) or removed (negative).
+   * @private
+   */
+  shiftTracedSegmentIndices_(traceSegmentData, atIndex, delta) {
+    for (const dragSegment of this.dragSegments_) {
+      const segmentData = dragSegment[0];
+      if (
+        segmentData !== traceSegmentData &&
+        segmentData.geometry === traceSegmentData.geometry &&
+        (segmentData.depth === undefined ||
+          traceSegmentData.depth === undefined ||
+          equals(segmentData.depth, traceSegmentData.depth)) &&
+        segmentData.index >= atIndex
+      ) {
+        segmentData.index += delta;
+      }
+    }
+  }
+
+  /**
    * @param {number} fromIndex The start index.
    * @param {number} toIndex The end index.
    * @private
@@ -1397,7 +1473,12 @@ class Modify extends PointerInteraction {
           segmentData.depth,
         );
         coordinatesArray.splice(removeIndex, remove);
-        geometry.setCoordinates(coordinates);
+        this.setGeometryCoordinates_(geometry, coordinates);
+        this.shiftTracedSegmentIndices_(
+          segmentData,
+          removeIndex + remove,
+          -remove,
+        );
         if (index === 1) {
           segmentData.index -= remove;
         }
@@ -1456,7 +1537,12 @@ class Modify extends PointerInteraction {
           segmentData.depth,
         );
         coordinatesArray.splice(insertIndex, 0, ...newCoordinates);
-        geometry.setCoordinates(coordinates);
+        this.setGeometryCoordinates_(geometry, coordinates);
+        this.shiftTracedSegmentIndices_(
+          segmentData,
+          insertIndex,
+          newCoordinates.length,
+        );
         if (index === 1) {
           segmentData.index += newCoordinates.length;
         }
@@ -1624,6 +1710,14 @@ class Modify extends PointerInteraction {
           this.traceSegments_.push(dragSegment);
         }
       }
+      if (this.traceSegments_.length > 1) {
+        // Both segments of the dragged vertex are anchored at the trace start,
+        // i.e. the grabbed vertex is the anchor itself.  Tracing needs a fixed
+        // anchor distinct from the moving vertex, so cancel tracing and let this
+        // drag move the vertex freely.
+        this.deactivateTrace_();
+        this.traceSegments_ = null;
+      }
     }
     for (let i = 0, ii = this.dragSegments_.length; i < ii; ++i) {
       const dragSegment = this.dragSegments_[i];
@@ -1639,8 +1733,15 @@ class Modify extends PointerInteraction {
 
       this.updateGeometry_(vertex, dragSegment);
     }
-    this.updateTrace_(evt);
-    this.createOrUpdateVertexFeature_(vertex, features, geometries, true);
+    // when tracing snaps the dragged vertex onto a target edge, show the vertex
+    // marker at the snapped location rather than at the raw pointer
+    const snappedVertex = this.updateTrace_(evt);
+    this.createOrUpdateVertexFeature_(
+      snappedVertex || vertex,
+      features,
+      geometries,
+      true,
+    );
   }
 
   /**
@@ -1679,8 +1780,17 @@ class Modify extends PointerInteraction {
    * @override
    */
   handleUpEvent(evt) {
+    // Tracing inserts and removes vertices with guarded geometry mutations (so
+    // that dragSegments_ survive the drag). Those guarded mutations skip the
+    // segment rBush rebuild that handleFeatureChange_ would normally do, so the
+    // rBush no longer matches the traced geometry. Collect the affected features
+    // here and rebuild their segment data once the drag is over.
+    const tracedFeatures = this.traceState_.active ? new Set() : null;
     for (let i = this.dragSegments_.length - 1; i >= 0; --i) {
       const segmentData = this.dragSegments_[i][0];
+      if (tracedFeatures) {
+        tracedFeatures.add(segmentData.feature);
+      }
       const geometry = segmentData.geometry;
       if (geometry.getType() === 'Circle') {
         const circle = /** @type {import("../geom/Circle.js").default} */ (
@@ -1714,6 +1824,14 @@ class Modify extends PointerInteraction {
         );
       } else {
         this.rBush_.update(boundingExtent(segmentData.segment), segmentData);
+      }
+    }
+    if (tracedFeatures) {
+      for (const feature of tracedFeatures) {
+        this.removeFeature_(feature);
+        if (this.filter_(feature)) {
+          this.addFeature_(feature);
+        }
       }
     }
     if (this.featuresBeingModified_) {
