@@ -77,7 +77,7 @@ const source = new DataTile({
       ).data;
       const pixels = data.length / 4;
       const floatData = new Float32Array(data.buffer);
-      for (let i = 0, j = 0; i < pixels; ) {
+      for (let i = 0, j = 0; i < pixels;) {
         floatData[i++] = calculateElevation(data.slice(j, (j += 4)));
       }
       return floatData;

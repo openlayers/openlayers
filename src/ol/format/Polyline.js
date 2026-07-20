@@ -166,7 +166,7 @@ export function encodeDeltas(numbers, stride, factor) {
 
   const lastNumbers = new Array(stride).fill(0);
 
-  for (let i = 0, ii = numbers.length; i < ii; ) {
+  for (let i = 0, ii = numbers.length; i < ii;) {
     for (let d = 0; d < stride; ++d, ++i) {
       const value = numbers[i] * factor;
       const num = value < 0 ? Math.ceil(value - 0.5) : Math.round(value);
@@ -199,7 +199,7 @@ export function decodeDeltas(encoded, stride, factor) {
   const lastNumbers = new Array(stride).fill(0);
   const numbers = decodeSignedIntegers(encoded);
 
-  for (let i = 0, ii = numbers.length; i < ii; ) {
+  for (let i = 0, ii = numbers.length; i < ii;) {
     for (let d = 0; d < stride; ++d, ++i) {
       lastNumbers[d] += numbers[i];
       numbers[i] = lastNumbers[d] / factor;

@@ -508,8 +508,10 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       // call once without tracking in order to initialize helper
       renderer.prepareFrame(frameState);
       renderer.renderFrame(frameState);
-      // wait for buffer generation to complete
-      await new Promise((resolve) => setTimeout(resolve, 150));
+      await vi.waitFor(() => {
+        assert.ok(renderer.buffers_);
+        assert.isTrue(renderer.ready);
+      });
 
       vi.spyOn(renderer.helper, 'setUniformFloatValue');
       vi.spyOn(renderer.helper, 'setUniformFloatVec2');
@@ -524,27 +526,25 @@ describe('ol/renderer/webgl/VectorLayer', () => {
         'finalizeTextRender',
       ).returns(Promise.resolve());
 
-      // this is required to keep a "snapshot" of the input vec2
-      // (since the same object is reused for various calls)
+      // Snapshot reused vec2/matrix arguments so mock.calls keep the values
+      // from each call (the same objects are mutated across calls).
       renderer.helper.setUniformFloatVec2 = new Proxy(
         renderer.helper.setUniformFloatVec2,
         {
           apply(target, thisArg, [uniform, value]) {
-            return target.call(thisArg, uniform, [...value]);
+            return Reflect.apply(target, thisArg, [uniform, [...value]]);
           },
         },
       );
-
-      // this is required to keep a "snapshot" of the input matrix
-      // (since the same object is reused for various calls)
       renderer.helper.setUniformMatrixValue = new Proxy(
         renderer.helper.setUniformMatrixValue,
         {
           apply(target, thisArg, [uniform, value]) {
-            return target.call(thisArg, uniform, [...value]);
+            return Reflect.apply(target, thisArg, [uniform, [...value]]);
           },
         },
       );
+
       newFrameState = {
         ...frameState,
         viewState: {
@@ -671,7 +671,10 @@ describe('ol/renderer/webgl/VectorLayer', () => {
           ...frameState,
           extent: [0, 0, 10, 10],
         });
-        await new Promise((resolve) => setTimeout(resolve, 150));
+        await vi.waitFor(() => {
+          assert.ok(renderer.buffers_);
+          assert.isTrue(renderer.ready);
+        });
       });
       it('deletes previous buffers', () => {
         assert.strictEqual(renderer.helper.deleteBuffer.mock.calls.length, 9);
@@ -859,7 +862,10 @@ describe('ol/renderer/webgl/VectorLayer', () => {
     beforeEach(async () => {
       // first call prepareFrame to load initial data and register listeners
       renderer.prepareFrame(frameState);
-      await new Promise((resolve) => setTimeout(resolve, 150));
+      await vi.waitFor(() => {
+        assert.ok(renderer.buffers_);
+        assert.isTrue(renderer.ready);
+      });
       vi.spyOn(vectorSource, 'removeEventListener');
       deleteBufferSpy = vi.spyOn(renderer.helper, 'deleteBuffer');
       sinonSpy(renderer.styleRenderer_, 'dispose');

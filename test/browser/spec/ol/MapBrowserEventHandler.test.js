@@ -39,7 +39,7 @@ describe('ol/MapBrowserEventHandler', function () {
     it('emulates click', function () {
       const event = new OlEvent();
       event.type = 'pointerdown';
-      (event.target = target), (event.clientX = 0);
+      ((event.target = target), (event.clientX = 0));
       event.clientY = 0;
       handler.emulateClick_(event);
       assert.isAbove(clickSpy.mock.calls.length, 0);
