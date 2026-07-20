@@ -49,15 +49,12 @@ const source = new DataTile({
 const layer = new TileLayer({source, opacity: 0.8});
 const map = new Map({target: 'map', layers: [layer], view});
 
-let primed = false;
-map.on('rendercomplete', () => {
-  if (!primed) {
-    primed = true;
-    view.setZoom(targetZoom);
-    return;
-  }
-  render({
-    message: 'Lower-zoom fallback tile fills holes without double-blending',
-    tolerance: 0.005,
+map.once('rendercomplete', () => {
+  view.setZoom(targetZoom);
+  map.once('rendercomplete', () => {
+    render({
+      message: 'Lower-zoom fallback tile fills holes without double-blending',
+      tolerance: 0.005,
+    });
   });
 });

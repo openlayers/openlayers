@@ -52,15 +52,12 @@ const layer = new VectorTileLayer({
 
 const map = new Map({target: 'map', layers: [layer], view});
 
-let primed = false;
-map.on('rendercomplete', () => {
-  if (!primed) {
-    primed = true;
-    view.setZoom(targetZoom);
-    return;
-  }
-  render({
-    message: 'fallback vector tile clipped without double-blend',
-    tolerance: 0.005,
+map.once('rendercomplete', () => {
+  view.setZoom(targetZoom);
+  map.once('rendercomplete', () => {
+    render({
+      message: 'fallback vector tile clipped without double-blend',
+      tolerance: 0.005,
+    });
   });
 });
