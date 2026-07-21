@@ -988,3 +988,24 @@ export function wrapAndSliceX(extent, projection, multiWorld) {
 
   return [extent];
 }
+
+/**
+ * Subtract several rectangles from a base rectangle. Returns a set of disjoint
+ * rectangles that together cover the base rectangle minus the union of the
+ * subtracted rectangles, by repeatedly applying {@link module:ol/extent.getDifference}.
+ * @param {Extent} base Base rectangle.
+ * @param {Array<Extent>} subtract Rectangles to subtract.
+ * @return {Array<Extent>} Remainder rectangles.
+ */
+export function subtractExtents(base, subtract) {
+  let remainder = [base];
+  for (let i = 0, ii = subtract.length; i < ii && remainder.length > 0; ++i) {
+    /** @type {Array<Extent>} */
+    const next = [];
+    for (let j = 0, jj = remainder.length; j < jj; ++j) {
+      next.push(...getDifference(remainder[j], subtract[i]));
+    }
+    remainder = next;
+  }
+  return remainder;
+}
