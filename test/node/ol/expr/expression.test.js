@@ -568,6 +568,36 @@ describe('ol/expr/expression.js', () => {
         error:
           'the type expected from the var operator (number) did not have any overlap with the type of the corresponding style variables (string), variable name: myVar',
       },
+      {
+        name: 'index must be number (at)',
+        expression: ['at', 'one', ['literal', ['one', 'two', 'three']]],
+        error:
+          'failed to parse "at" expression: the index argument must be a number',
+      },
+      {
+        name: 'second argument must be an array (at)',
+        expression: ['at', 0, 'one'],
+        error:
+          'failed to parse "at" expression: the second argument must be an expression that returns an array',
+      },
+      {
+        name: 'must use an expression for array (at)',
+        expression: ['at', 0, ['one', 'two', 'three']],
+        error:
+          'failed to parse "at" expression: only "literal", "get" and "regex" expressions are supported',
+      },
+      {
+        name: 'literal must be an array (at)',
+        expression: ['at', 0, ['literal', 'two', 'three']],
+        error:
+          'failed to parse "at" expression: the literal operator must be followed by an array',
+      },
+      {
+        name: 'argument must be an array or string (length)',
+        expression: ['length', 3],
+        error:
+          'failed to parse "length" expression: only an array or string is allowed',
+      },
     ];
 
     for (const {name, expression, error, context} of cases) {

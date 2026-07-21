@@ -123,6 +123,22 @@ import {toSize} from '../size.js';
  *     If the input is a number, it is converted to a string as specified by the "NumberToString" algorithm of the ECMAScript
  *     Language Specification. If the input is a color, it is converted to a string of the form "rgba(r,g,b,a)". (Canvas only)
  *
+ * * String operators:
+ *   * `['concat', value1, ...valueN]` `concat` any number of strings together into a single string.
+ *   * `['regex', value, regex]` performs a regex match against the `value` and returns the matches as an array.
+ *     The regex must be a regex literal string (/.../) and can accepts flags as well, if no result is found, an empty array is returned.
+ *     `\` characters must be escaped.
+ *     e.g. `['regex', 'bold 12px sans-serif', '/(\\d+)px/']` would return ['12px', '12']
+ *
+ * * Lookup operators:
+ *   * `['length', [...]]` or `['length', 'string']` returns the length of a given array or string
+ *   * `['at', index, arr]` Returns the value at the specified index in an array or undefined.
+ *     This operator can only be used with the below types of arrays:
+ *     * A `literal` string array: `['at', 1, ['literal', ['one', 'two', 'three']]]` would return `'two'`
+ *     * A number array: `['at', 1, [1, 2, 3]]` would return `2`
+ *     * A `regex` array: `['at', 1, ['regex', '123', '/\\d/g']]` would return `'2'`
+ *     * An array from a `get` operator: Assuming `feature.get('array')` returns `[1, 2, 3]`, then `['at', 1, ['get', 'array']` would return `2`
+ *
  * Values can either be literals or another operator, as they will be evaluated recursively.
  * Literal values can be of the following types:
  * * `boolean`
@@ -434,6 +450,9 @@ export const Ops = {
   Palette: 'palette',
   ToString: 'to-string',
   Has: 'has',
+  Regex: 'regex',
+  At: 'at',
+  Length: 'length',
 };
 
 /**
@@ -606,6 +625,12 @@ const parsers = {
   [Ops.ToString]: createCallExpressionParser(
     hasArgsCount(1, 1),
     withArgsOfType(BooleanType | NumberType | StringType | ColorType),
+  ),
+  [Ops.At]: createCallExpressionParser(hasArgsCount(2, 2), withAtArgs),
+  [Ops.Length]: createCallExpressionParser(hasArgsCount(1, 1), withLengthArgs),
+  [Ops.Regex]: createCallExpressionParser(
+    hasArgsCount(2, 2),
+    withArgsOfType(StringType),
   ),
 };
 
@@ -1069,6 +1094,95 @@ function withInArgs(encoded, returnType, context) {
 
   const needle = parse(encoded[1], needleType, context);
   return [needle, ...args];
+}
+
+/**
+ * @type {ArgValidator}
+ */
+function withAtArgs(encoded, returnType, context) {
+  const idx = encoded[1];
+  let arr = encoded[2];
+
+  if (typeof idx !== 'number') {
+    throw new Error(
+      `failed to parse "at" expression: the index argument must be a number`,
+    );
+  }
+  const index = parse(idx, NumberType, context);
+
+  if (!Array.isArray(arr)) {
+    throw new Error(
+      `failed to parse "at" expression: the second argument must be an expression that returns an array`,
+    );
+  }
+
+
+  
+  if (typeof arr[0] === "string") {
+    if (!['literal', 'get', 'regex'].includes(arr[0])) {
+      throw new Error(
+        `failed to parse "at" expression: only "literal", "get" and "regex" expressions are supported`,
+      );
+    } 
+
+    if (arr[0] === 'literal') {
+      arr = arr[1];
+      if (!Array.isArray(arr)) {
+        throw new Error(
+        `failed to parse "at" expression: the literal operator must be followed by an array`,
+        );
+      }
+    } else {
+      return [index, parseCallExpression(arr, returnType, context)];
+    }
+  }
+
+  /** @type {Array<Expression>} */
+  const array = new Array(arr.length);
+  for (let i = 0; i < array.length; i++) {
+    try {
+      const arrayType = typeof arr[i] === 'string' ? StringType : NumberType;
+      const arg = parse(arr[i], arrayType, context);
+      array[i] = arg;
+    } catch (err) {
+      throw new Error(`failed to parse "at" array item ${i}: ${err.message}`);
+    }
+  }
+
+  return [index, ...array];
+}
+
+/**
+ * @type {ArgValidator}
+ */
+function withLengthArgs(encoded, returnType, context) {
+  const arrayOrString = encoded[1];
+
+  if (!Array.isArray(arrayOrString) && typeof arrayOrString !== 'string') {
+    throw new Error(
+      `failed to parse "length" expression: only an array or string is allowed`,
+    );
+  }
+
+  if (Array.isArray(arrayOrString)) {
+    const array = new Array(arrayOrString.length);
+    for (let i = 0; i < array.length; i++) {
+      try {
+        const arrayType =
+          typeof arrayOrString[i] === 'string' ? StringType : NumberType;
+        const arg = parse(arrayOrString[i], arrayType, context);
+        array[i] = arg;
+      } catch (err) {
+        throw new Error(
+          `failed to parse "length" array item ${i}: ${err.message}`,
+        );
+      }
+    }
+
+    return array;
+  }
+
+  return [parse(arrayOrString, StringType, context)];
 }
 
 /**
