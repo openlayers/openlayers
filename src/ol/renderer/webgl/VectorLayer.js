@@ -12,10 +12,12 @@ import {
   toUserExtent,
   toUserResolution,
 } from '../../proj.js';
+import {getPixelIndexArray} from '../../render/pixelIndexUtil.js';
 import MixedGeometryBatch from '../../render/webgl/MixedGeometryBatch.js';
 import VectorStyleRenderer, {
   toFlatStyleLike,
 } from '../../render/webgl/VectorStyleRenderer.js';
+import {colorDecodeId} from '../../render/webgl/encodeUtil.js';
 import {
   createPostProcessDefinition,
   hasTextStyle,
@@ -30,7 +32,6 @@ import {
 import {DefaultUniform} from '../../webgl/Helper.js';
 import WebGLRenderTarget from '../../webgl/RenderTarget.js';
 import WebGLLayerRenderer from './Layer.js';
-import {hitDetectFeaturesAtPixel} from './hitDetectUtil.js';
 import {applyVectorUniforms, VectorUniforms} from './vectorUtil.js';
 import {getWorldParameters} from './worldUtil.js';
 
@@ -41,6 +42,28 @@ export const Uniforms = {
   RENDER_EXTENT: 'u_renderExtent', // intersection of layer, source, and view extent
   GLOBAL_ALPHA: 'u_globalAlpha',
 };
+
+/**
+ * @type {Array<number>}
+ */
+const tmpColor = [0, 0, 0, 0];
+
+/**
+ * Decodes the feature ref found at the given texel of a hit detection render target.
+ * Returns 0 when no feature was rendered at this position.
+ * @param {import("../../webgl/RenderTarget.js").default} hitRenderTarget Hit detection render target
+ * @param {number} x Texel coordinate
+ * @param {number} y Texel coordinate
+ * @return {number} Decoded feature ref
+ */
+function readRefAtTexel(hitRenderTarget, x, y) {
+  const data = hitRenderTarget.readPixel(x, y);
+  tmpColor[0] = data[0] / 255;
+  tmpColor[1] = data[1] / 255;
+  tmpColor[2] = data[2] / 255;
+  tmpColor[3] = data[3] / 255;
+  return colorDecodeId(tmpColor);
+}
 
 /**
  * @typedef {import('../../render/webgl/VectorStyleRenderer.js').StyleShaders} StyleShaders
@@ -554,16 +577,48 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
       frameState.coordinateToPixelTransform,
       coordinate.slice(),
     );
+    const pixelX = Math.floor(pixel[0]);
+    const pixelY = Math.floor(pixel[1]);
+    const layer = this.getLayer();
 
-    return hitDetectFeaturesAtPixel(
-      this.hitRenderTarget_,
-      pixel,
-      hitTolerance,
-      (ref) => this.batch_.getFeatureFromRef(ref),
-      this.getLayer(),
-      callback,
-      matches,
-    );
+    hitTolerance = Math.round(hitTolerance);
+    const hitSize = hitTolerance * 2 + 1;
+    const indexes = getPixelIndexArray(hitTolerance);
+    const found = new Set();
+    for (let i = 0, ii = indexes.length; i < ii; ++i) {
+      const index = (indexes[i] - 3) / 4;
+      const x = hitTolerance - (index % hitSize);
+      const y = hitTolerance - ((index / hitSize) | 0);
+      const ref = readRefAtTexel(
+        this.hitRenderTarget_,
+        (pixelX + x) / 2,
+        (pixelY + y) / 2,
+      );
+      if (!ref || found.has(ref)) {
+        continue;
+      }
+      found.add(ref);
+      const feature = this.batch_.getFeatureFromRef(ref);
+      if (!feature) {
+        continue;
+      }
+      const distanceSq = x * x + y * y;
+      if (distanceSq === 0) {
+        const result = callback(feature, layer, null);
+        if (result) {
+          return result;
+        }
+      } else {
+        matches.push({
+          feature,
+          layer,
+          geometry: null,
+          distanceSq,
+          callback,
+        });
+      }
+    }
+    return undefined;
   }
 
   /**

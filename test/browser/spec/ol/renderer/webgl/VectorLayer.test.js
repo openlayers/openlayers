@@ -862,8 +862,8 @@ describe('ol/renderer/webgl/VectorLayer', () => {
             assert.strictEqual(matches[0].feature, centerPoint);
             assert.strictEqual(matches[0].layer, vectorLayer);
             assert.strictEqual(matches[0].callback, spy);
-            assert.isAbove(matches[0].distanceSq, 0);
-            assert.isAtMost(matches[0].distanceSq, 144);
+            // the closest css pixel covered by the circle is 9 pixels up
+            assert.strictEqual(matches[0].distanceSq, 81);
 
             // a larger tolerance also catches the diagonal line, further away
             spy = hitTest(0, 4, 40);
@@ -873,6 +873,9 @@ describe('ol/renderer/webgl/VectorLayer', () => {
             assert.include(found, diagonalLine);
             const circleMatch = matches.find((m) => m.feature === centerPoint);
             const lineMatch = matches.find((m) => m.feature === diagonalLine);
+            assert.strictEqual(matches.length, 2);
+            assert.strictEqual(circleMatch.distanceSq, 81);
+            assert.strictEqual(lineMatch.distanceSq, 1130);
             assert.isBelow(circleMatch.distanceSq, lineMatch.distanceSq);
 
             resolve();
