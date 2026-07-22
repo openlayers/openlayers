@@ -12,6 +12,7 @@ import {
   toUserExtent,
   toUserResolution,
 } from '../../proj.js';
+import {getPixelIndexArray} from '../../render/pixelIndexUtil.js';
 import MixedGeometryBatch from '../../render/webgl/MixedGeometryBatch.js';
 import VectorStyleRenderer, {
   toFlatStyleLike,
@@ -34,6 +35,8 @@ import WebGLLayerRenderer from './Layer.js';
 import {applyVectorUniforms, VectorUniforms} from './vectorUtil.js';
 import {getWorldParameters} from './worldUtil.js';
 
+export const HIT_DETECT_RESOLUTION = 0.5;
+
 export const Uniforms = {
   ...DefaultUniform,
   ...VectorUniforms,
@@ -41,6 +44,28 @@ export const Uniforms = {
   RENDER_EXTENT: 'u_renderExtent', // intersection of layer, source, and view extent
   GLOBAL_ALPHA: 'u_globalAlpha',
 };
+
+/**
+ * @type {Array<number>}
+ */
+const tmpColor = [0, 0, 0, 0];
+
+/**
+ * Decodes the feature ref found at the given texel of a hit detection render target.
+ * Returns 0 when no feature was rendered at this position.
+ * @param {import("../../webgl/RenderTarget.js").default} hitRenderTarget Hit detection render target
+ * @param {number} x Texel coordinate
+ * @param {number} y Texel coordinate
+ * @return {number} Decoded feature ref
+ */
+function readRefAtTexel(hitRenderTarget, x, y) {
+  const data = hitRenderTarget.readPixel(x, y);
+  tmpColor[0] = data[0] / 255;
+  tmpColor[1] = data[1] / 255;
+  tmpColor[2] = data[2] / 255;
+  tmpColor[3] = data[3] / 255;
+  return colorDecodeId(tmpColor);
+}
 
 /**
  * @typedef {import('../../render/webgl/VectorStyleRenderer.js').StyleShaders} StyleShaders
@@ -495,8 +520,8 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
 
     if (forHitDetection) {
       this.hitRenderTarget_.setSize([
-        Math.floor(frameState.size[0] / 2),
-        Math.floor(frameState.size[1] / 2),
+        Math.ceil(frameState.size[0] * HIT_DETECT_RESOLUTION),
+        Math.ceil(frameState.size[1] * HIT_DETECT_RESOLUTION),
       ]);
       this.helper.prepareDrawToRenderTarget(
         frameState,
@@ -554,13 +579,46 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
       frameState.coordinateToPixelTransform,
       coordinate.slice(),
     );
+    const texelX = Math.floor(pixel[0] * HIT_DETECT_RESOLUTION);
+    const texelY = Math.floor(pixel[1] * HIT_DETECT_RESOLUTION);
+    const layer = this.getLayer();
 
-    const data = this.hitRenderTarget_.readPixel(pixel[0] / 2, pixel[1] / 2);
-    const color = [data[0] / 255, data[1] / 255, data[2] / 255, data[3] / 255];
-    const ref = colorDecodeId(color);
-    const feature = this.batch_.getFeatureFromRef(ref);
-    if (feature) {
-      return callback(feature, this.getLayer(), null);
+    const toleranceSq = hitTolerance * hitTolerance;
+    hitTolerance = Math.ceil(hitTolerance * HIT_DETECT_RESOLUTION);
+    const hitSize = hitTolerance * 2 + 1;
+    const indexes = getPixelIndexArray(hitTolerance);
+    const found = new Set();
+    for (let i = 0, ii = indexes.length; i < ii; ++i) {
+      const index = (indexes[i] - 3) / 4;
+      const x = hitTolerance - (index % hitSize);
+      const y = hitTolerance - ((index / hitSize) | 0);
+      const ref = readRefAtTexel(this.hitRenderTarget_, texelX + x, texelY + y);
+      if (!ref || found.has(ref)) {
+        continue;
+      }
+      found.add(ref);
+      const feature = this.batch_.getFeatureFromRef(ref);
+      if (!feature) {
+        continue;
+      }
+      const distanceSq =
+        (x * x + y * y) / (HIT_DETECT_RESOLUTION * HIT_DETECT_RESOLUTION);
+      if (distanceSq > toleranceSq) {
+        continue;
+      } else if (distanceSq === 0) {
+        const result = callback(feature, layer, null);
+        if (result) {
+          return result;
+        }
+      } else {
+        matches.push({
+          feature,
+          layer,
+          geometry: null,
+          distanceSq,
+          callback,
+        });
+      }
     }
     return undefined;
   }

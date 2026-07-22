@@ -826,6 +826,142 @@ describe('ol/renderer/webgl/VectorLayer', () => {
         });
       }));
 
+    describe('with a hit tolerance', () => {
+      let matches;
+
+      function hitTest(x, y, tolerance) {
+        const spy = sinonSpy();
+        matches = [];
+        renderer.forEachFeatureAtCoordinate(
+          [x, y],
+          frameState,
+          tolerance,
+          spy,
+          matches,
+        );
+        return spy;
+      }
+
+      // the coordinate [0, 4] has no feature on it; in the hit target the
+      // closest feature is the center point circle, 5 texels (10 css pixels)
+      // away, followed by the diagonal line
+      it('finds features within the tolerance radius', () =>
+        new Promise((resolve) => {
+          renderer.prepareFrame(frameState);
+          // this will trigger when the rendering buffers are ready
+          vectorLayer.once('change', () => {
+            renderer.renderFrame(frameState);
+
+            // without tolerance, nothing is found
+            let spy = hitTest(0, 4, 0);
+            assert.strictEqual(spy.callCount, 0);
+            assert.strictEqual(matches.length, 0);
+
+            // the circle is within a 12px tolerance; it is not given to the
+            // callback but pushed as a match with its distance
+            spy = hitTest(0, 4, 12);
+            assert.strictEqual(spy.callCount, 0);
+            assert.strictEqual(matches.length, 1);
+            assert.strictEqual(matches[0].feature, centerPoint);
+            assert.strictEqual(matches[0].layer, vectorLayer);
+            assert.strictEqual(matches[0].callback, spy);
+            // the closest hit target texel is 5 texels (10 css pixels) up
+            assert.strictEqual(matches[0].distanceSq, 100);
+
+            // a larger tolerance also catches the diagonal line, further away
+            spy = hitTest(0, 4, 40);
+            assert.strictEqual(spy.callCount, 0);
+            const found = matches.map((m) => m.feature);
+            assert.include(found, centerPoint);
+            assert.include(found, diagonalLine);
+            const circleMatch = matches.find((m) => m.feature === centerPoint);
+            const lineMatch = matches.find((m) => m.feature === diagonalLine);
+            assert.strictEqual(matches.length, 2);
+            assert.strictEqual(circleMatch.distanceSq, 100);
+            assert.strictEqual(lineMatch.distanceSq, 1224);
+            assert.isBelow(circleMatch.distanceSq, lineMatch.distanceSq);
+
+            resolve();
+          });
+        }));
+
+      // [0, 5.75] maps to pixel [100, 91]; the closest texel covered by the
+      // circle is one texel (2 css pixels) up
+      it('measures tolerance distances between hit target texels', () =>
+        new Promise((resolve) => {
+          renderer.prepareFrame(frameState);
+          // this will trigger when the rendering buffers are ready
+          vectorLayer.once('change', () => {
+            renderer.renderFrame(frameState);
+
+            let spy = hitTest(0, 5.75, 0);
+            assert.strictEqual(spy.callCount, 0);
+            assert.strictEqual(matches.length, 0);
+
+            spy = hitTest(0, 5.75, 1);
+            assert.strictEqual(spy.callCount, 0);
+            assert.strictEqual(matches.length, 0);
+
+            spy = hitTest(0, 5.75, 2);
+            assert.strictEqual(spy.callCount, 0);
+            assert.strictEqual(matches.length, 1);
+            assert.strictEqual(matches[0].feature, centerPoint);
+            assert.strictEqual(matches[0].distanceSq, 4);
+
+            resolve();
+          });
+        }));
+
+      // [-15, 5] is directly on the diagonal line; the closest other feature
+      // is the center point circle, approx. 34px away
+      it('keeps scanning within tolerance when the direct hit callback returns falsy', () =>
+        new Promise((resolve) => {
+          renderer.prepareFrame(frameState);
+          // this will trigger when the rendering buffers are ready
+          vectorLayer.once('change', () => {
+            renderer.renderFrame(frameState);
+
+            // the falsy callback result does not stop the lookup: the line is
+            // given to the callback, the circle is pushed as a match
+            const spy = hitTest(-15, 5, 40);
+            assert.strictEqual(spy.callCount, 1);
+            assert.strictEqual(spy.getCall(0).args[0], diagonalLine);
+            assert.strictEqual(matches.length, 1);
+            assert.strictEqual(matches[0].feature, centerPoint);
+
+            // a truthy callback result stops the lookup right away
+            matches = [];
+            const result = renderer.forEachFeatureAtCoordinate(
+              [-15, 5],
+              frameState,
+              40,
+              (feature) => feature,
+              matches,
+            );
+            assert.strictEqual(result, diagonalLine);
+            assert.strictEqual(matches.length, 0);
+
+            resolve();
+          });
+        }));
+
+      it('invokes the callback directly for a feature exactly at the coordinate', () =>
+        new Promise((resolve) => {
+          renderer.prepareFrame(frameState);
+          // this will trigger when the rendering buffers are ready
+          vectorLayer.once('change', () => {
+            renderer.renderFrame(frameState);
+
+            const spy = hitTest(0, 16, 12);
+            assert.strictEqual(spy.callCount, 1);
+            assert.strictEqual(spy.getCall(0).args[0], centerPoint);
+            assert.strictEqual(matches.length, 0);
+
+            resolve();
+          });
+        }));
+    });
+
     describe('with a filter set', () => {
       beforeEach(() => {
         renderer = new WebGLVectorLayerRenderer(vectorLayer, {

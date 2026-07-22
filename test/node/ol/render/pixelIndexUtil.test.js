@@ -1,8 +1,8 @@
 import {assert} from 'chai';
-import {getPixelIndexArray} from '../../../../../../src/ol/render/canvas/ExecutorGroup.js';
+import {getPixelIndexArray} from '../../../../src/ol/render/pixelIndexUtil.js';
 
-describe('ol.render.canvas.ExecutorGroup', function () {
-  describe('#getPixelIndexArray', function () {
+describe('ol/render/pixelIndexUtil', function () {
+  describe('getPixelIndexArray()', function () {
     it('creates an array with every index within distance', function () {
       const radius = 10;
       const size = radius * 2 + 1;
