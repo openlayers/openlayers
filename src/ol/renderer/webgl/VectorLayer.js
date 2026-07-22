@@ -35,6 +35,8 @@ import WebGLLayerRenderer from './Layer.js';
 import {applyVectorUniforms, VectorUniforms} from './vectorUtil.js';
 import {getWorldParameters} from './worldUtil.js';
 
+export const HIT_DETECT_RESOLUTION = 0.5;
+
 export const Uniforms = {
   ...DefaultUniform,
   ...VectorUniforms,
@@ -518,8 +520,8 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
 
     if (forHitDetection) {
       this.hitRenderTarget_.setSize([
-        Math.ceil(frameState.size[0] / 2),
-        Math.ceil(frameState.size[1] / 2),
+        Math.ceil(frameState.size[0] * HIT_DETECT_RESOLUTION),
+        Math.ceil(frameState.size[1] * HIT_DETECT_RESOLUTION),
       ]);
       this.helper.prepareDrawToRenderTarget(
         frameState,
@@ -577,11 +579,12 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
       frameState.coordinateToPixelTransform,
       coordinate.slice(),
     );
-    const pixelX = Math.floor(pixel[0]);
-    const pixelY = Math.floor(pixel[1]);
+    const texelX = Math.floor(pixel[0] * HIT_DETECT_RESOLUTION);
+    const texelY = Math.floor(pixel[1] * HIT_DETECT_RESOLUTION);
     const layer = this.getLayer();
 
-    hitTolerance = Math.round(hitTolerance);
+    const toleranceSq = hitTolerance * hitTolerance;
+    hitTolerance = Math.ceil(hitTolerance * HIT_DETECT_RESOLUTION);
     const hitSize = hitTolerance * 2 + 1;
     const indexes = getPixelIndexArray(hitTolerance);
     const found = new Set();
@@ -589,11 +592,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
       const index = (indexes[i] - 3) / 4;
       const x = hitTolerance - (index % hitSize);
       const y = hitTolerance - ((index / hitSize) | 0);
-      const ref = readRefAtTexel(
-        this.hitRenderTarget_,
-        (pixelX + x) / 2,
-        (pixelY + y) / 2,
-      );
+      const ref = readRefAtTexel(this.hitRenderTarget_, texelX + x, texelY + y);
       if (!ref || found.has(ref)) {
         continue;
       }
@@ -602,8 +601,11 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
       if (!feature) {
         continue;
       }
-      const distanceSq = x * x + y * y;
-      if (distanceSq === 0) {
+      const distanceSq =
+        (x * x + y * y) / (HIT_DETECT_RESOLUTION * HIT_DETECT_RESOLUTION);
+      if (distanceSq > toleranceSq) {
+        continue;
+      } else if (distanceSq === 0) {
         const result = callback(feature, layer, null);
         if (result) {
           return result;

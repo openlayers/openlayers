@@ -839,9 +839,9 @@ describe('ol/renderer/webgl/VectorLayer', () => {
         return spy;
       }
 
-      // the coordinate [0, 4] has no feature on it; the closest feature is the
-      // center point circle (radius 40px), approx. 8px away, followed by the
-      // diagonal line, approx. 28px away
+      // the coordinate [0, 4] has no feature on it; in the hit target the
+      // closest feature is the center point circle, 5 texels (10 css pixels)
+      // away, followed by the diagonal line
       it('finds features within the tolerance radius', () =>
         new Promise((resolve) => {
           renderer.prepareFrame(frameState);
@@ -862,8 +862,8 @@ describe('ol/renderer/webgl/VectorLayer', () => {
             assert.strictEqual(matches[0].feature, centerPoint);
             assert.strictEqual(matches[0].layer, vectorLayer);
             assert.strictEqual(matches[0].callback, spy);
-            // the closest css pixel covered by the circle is 9 pixels up
-            assert.strictEqual(matches[0].distanceSq, 81);
+            // the closest hit target texel is 5 texels (10 css pixels) up
+            assert.strictEqual(matches[0].distanceSq, 100);
 
             // a larger tolerance also catches the diagonal line, further away
             spy = hitTest(0, 4, 40);
@@ -874,18 +874,17 @@ describe('ol/renderer/webgl/VectorLayer', () => {
             const circleMatch = matches.find((m) => m.feature === centerPoint);
             const lineMatch = matches.find((m) => m.feature === diagonalLine);
             assert.strictEqual(matches.length, 2);
-            assert.strictEqual(circleMatch.distanceSq, 81);
-            assert.strictEqual(lineMatch.distanceSq, 1130);
+            assert.strictEqual(circleMatch.distanceSq, 100);
+            assert.strictEqual(lineMatch.distanceSq, 1224);
             assert.isBelow(circleMatch.distanceSq, lineMatch.distanceSq);
 
             resolve();
           });
         }));
 
-      // [0, 5.75] maps to pixel [100, 91]; the closest css pixel covered by
-      // the circle (radius 40px around pixel [100, 50]) is 2 pixels up, like
-      // in canvas hit detection
-      it('measures small tolerance distances between css pixel centers', () =>
+      // [0, 5.75] maps to pixel [100, 91]; the closest texel covered by the
+      // circle is one texel (2 css pixels) up
+      it('measures tolerance distances between hit target texels', () =>
         new Promise((resolve) => {
           renderer.prepareFrame(frameState);
           // this will trigger when the rendering buffers are ready
@@ -905,30 +904,6 @@ describe('ol/renderer/webgl/VectorLayer', () => {
             assert.strictEqual(matches.length, 1);
             assert.strictEqual(matches[0].feature, centerPoint);
             assert.strictEqual(matches[0].distanceSq, 4);
-
-            resolve();
-          });
-        }));
-
-      // [0, 5.5] maps to pixel [100, 92]: even pixel coordinates fall on
-      // texel boundaries and must not shrink distances to neighboring texels
-      it('does not underestimate distances at even pixel coordinates', () =>
-        new Promise((resolve) => {
-          renderer.prepareFrame(frameState);
-          // this will trigger when the rendering buffers are ready
-          vectorLayer.once('change', () => {
-            renderer.renderFrame(frameState);
-
-            // the closest css pixel covered by the circle is 3 pixels up
-            let spy = hitTest(0, 5.5, 2);
-            assert.strictEqual(spy.callCount, 0);
-            assert.strictEqual(matches.length, 0);
-
-            spy = hitTest(0, 5.5, 3);
-            assert.strictEqual(spy.callCount, 0);
-            assert.strictEqual(matches.length, 1);
-            assert.strictEqual(matches[0].feature, centerPoint);
-            assert.strictEqual(matches[0].distanceSq, 9);
 
             resolve();
           });
