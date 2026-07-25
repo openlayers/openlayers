@@ -165,6 +165,32 @@ describe('ol/geom/flat/drawTextOnPath.js', function () {
     assert.strictEqual(instructions[1][4], 'oo');
   });
 
+  it('keeps a combined emoji as a single grapheme across segments', function () {
+    // '👍🏽' is a single grapheme cluster made of several UTF-16 code units; it
+    // must be measured and placed as a whole, never split across segments.
+    const text = 'f👍🏽oo';
+    const length = lineStringLength(angled, 0, angled.length, 2);
+    const startM = length / 2 - 20;
+    const instructions = drawTextOnPath(
+      angled,
+      0,
+      angled.length,
+      2,
+      text,
+      startM,
+      Infinity,
+      1,
+      measureAndCacheTextWidth,
+      '',
+      {},
+    );
+    assert.strictEqual(instructions.length, 2);
+    assert.strictEqual(instructions[0][4], 'f');
+    assert.strictEqual(instructions[1][4], '👍🏽oo');
+    // the emoji is never broken apart across the two segments
+    assert.strictEqual(instructions[0][4] + instructions[1][4], text);
+  });
+
   it('respects maxAngle', function () {
     const length = lineStringLength(angled, 0, angled.length, 2);
     const startM = length / 2 - 15;

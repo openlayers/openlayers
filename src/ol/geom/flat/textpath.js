@@ -4,6 +4,12 @@
 import {lerp} from '../../math.js';
 import {rotate} from './transform.js';
 
+// Intl.Segmenter only works for baseline >= 2024 in Firefox (version 125)
+const segmenter =
+  typeof Intl !== 'undefined' && Intl.Segmenter
+    ? new Intl.Segmenter(undefined, {granularity: 'grapheme'})
+    : null;
+
 /**
  * @param {Array<number>} flatCoordinates Path to put text on.
  * @param {number} offset Start offset of the `flatCoordinates`.
@@ -111,6 +117,8 @@ export function drawTextOnPath(
   // rendering across line segments
   text = text.replace(/\n/g, ' '); // ensure rendering in single-line as all calculations below don't handle multi-lines
 
+  // [...text] fallback does not work for combined emojis
+  text = segmenter ? Array.from(segmenter.segment(text), (s) => s.segment) : [...text];
   for (let i = 0, ii = text.length; i < ii;) {
     advance();
     let angle = Math.atan2(y2 - y1, x2 - x1);
@@ -142,9 +150,9 @@ export function drawTextOnPath(
     if (i === iStart) {
       continue;
     }
-    const chars = reverse
-      ? text.substring(ii - iStart, ii - i)
-      : text.substring(iStart, i);
+    const chars = (
+      reverse ? text.slice(ii - i, ii - iStart) : text.slice(iStart, i)
+    ).join('');
     interpolate =
       segmentLength === 0
         ? 0
