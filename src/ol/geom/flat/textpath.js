@@ -4,7 +4,16 @@
 import {lerp} from '../../math.js';
 import {rotate} from './transform.js';
 
-const segmenter = new Intl.Segmenter(undefined, {granularity: 'grapheme'})
+let segmenter;
+/**
+ * @return {Intl.Segmenter} A grapheme segmenter.
+ */
+function getSegmenter() {
+  if (!segmenter) {
+    segmenter = new Intl.Segmenter(undefined, {granularity: 'grapheme'});
+  }
+  return segmenter;
+}
 
 /**
  * @param {Array<number>} flatCoordinates Path to put text on.
@@ -113,7 +122,7 @@ export function drawTextOnPath(
   // rendering across line segments
   text = text.replace(/\n/g, ' '); // ensure rendering in single-line as all calculations below don't handle multi-lines
 
-  text = Array.from(segmenter.segment(text), (s) => s.segment);
+  text = Array.from(getSegmenter().segment(text), (s) => s.segment);
   for (let i = 0, ii = text.length; i < ii;) {
     advance();
     let angle = Math.atan2(y2 - y1, x2 - x1);
