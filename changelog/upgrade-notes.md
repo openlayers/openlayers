@@ -4,9 +4,9 @@
 
 #### Usage of Intl.Segmenter
 
-TextPath now relies on [Intl.Segmenter](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Segmenter),
-which is only available from Firefox 125 (2024).
-A polyfill is available on FormatJS: https://formatjs.github.io/docs/polyfills/intl-segmenter/.
+TextPath now relies on [Intl.Segmenter](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Segmenter).
+For support of very old browsers (e.g. Firefox before version 125),
+a polyfill is available: https://formatjs.github.io/docs/polyfills/intl-segmenter/.
 
 
 #### Deprecation of `ol/source/BingMaps`
