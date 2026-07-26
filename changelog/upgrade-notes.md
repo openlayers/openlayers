@@ -2,6 +2,13 @@
 
 ### Next Release
 
+#### Usage of Intl.Segmenter
+
+TextPath now relies on [Intl.Segmenter](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/Segmenter).
+For support of very old browsers (e.g. Firefox before version 125),
+a polyfill is available: https://formatjs.github.io/docs/polyfills/intl-segmenter/.
+
+
 #### Deprecation of `ol/source/BingMaps`
 
 Bing Maps for Enterprise is being retired on June 30th, 2028. The `BingMaps` source

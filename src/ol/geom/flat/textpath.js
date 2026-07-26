@@ -4,6 +4,17 @@
 import {lerp} from '../../math.js';
 import {rotate} from './transform.js';
 
+let segmenter;
+/**
+ * @return {Intl.Segmenter} A grapheme segmenter.
+ */
+function getSegmenter() {
+  if (!segmenter) {
+    segmenter = new Intl.Segmenter(undefined, {granularity: 'grapheme'});
+  }
+  return segmenter;
+}
+
 /**
  * @param {Array<number>} flatCoordinates Path to put text on.
  * @param {number} offset Start offset of the `flatCoordinates`.
@@ -111,7 +122,8 @@ export function drawTextOnPath(
   // rendering across line segments
   text = text.replace(/\n/g, ' '); // ensure rendering in single-line as all calculations below don't handle multi-lines
 
-  for (let i = 0, ii = text.length; i < ii;) {
+  const segments = Array.from(getSegmenter().segment(text), (s) => s.segment);
+  for (let i = 0, ii = segments.length; i < ii;) {
     advance();
     let angle = Math.atan2(y2 - y1, x2 - x1);
     if (reverse) {
@@ -130,7 +142,8 @@ export function drawTextOnPath(
     let charLength = 0;
     for (; i < ii; ++i) {
       const index = reverse ? ii - i - 1 : i;
-      const len = scale * measureAndCacheTextWidth(font, text[index], cache);
+      const len =
+        scale * measureAndCacheTextWidth(font, segments[index], cache);
       if (
         offset + stride < end &&
         segmentM + segmentLength < startM + charLength + len / 2
@@ -142,9 +155,9 @@ export function drawTextOnPath(
     if (i === iStart) {
       continue;
     }
-    const chars = reverse
-      ? text.substring(ii - iStart, ii - i)
-      : text.substring(iStart, i);
+    const chars = (
+      reverse ? segments.slice(ii - i, ii - iStart) : segments.slice(iStart, i)
+    ).join('');
     interpolate =
       segmentLength === 0
         ? 0
