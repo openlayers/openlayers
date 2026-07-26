@@ -11,30 +11,27 @@ function delay(ms) {
 
 describe('ol/layer/Layer.js', () => {
   describe('sourceready event', () => {
-    it('is dispatched when the source is ready', (done) => {
+    it('is dispatched when the source is ready', async () => {
       const source = new Source({state: 'loading'});
       const layer = new Layer({source: source});
 
-      function handler(event) {
-        assert.instanceOf(event, BaseEvent);
-        assert.strictEqual(event.target, layer);
-        done();
-      }
-      layer.on('sourceready', handler);
-
-      source.setState('ready');
+      const event = await new Promise((resolve) => {
+        layer.on('sourceready', resolve);
+        source.setState('ready');
+      });
+      assert.instanceOf(event, BaseEvent);
+      assert.strictEqual(event.target, layer);
     });
 
-    it('is dispatched even if the source is ready at construction', (done) => {
+    it('is dispatched even if the source is ready at construction', async () => {
       const source = new Source({});
       const layer = new Layer({source: source});
 
-      function handler(event) {
-        assert.instanceOf(event, BaseEvent);
-        assert.strictEqual(event.target, layer);
-        done();
-      }
-      layer.on('sourceready', handler);
+      const event = await new Promise((resolve) => {
+        layer.on('sourceready', resolve);
+      });
+      assert.instanceOf(event, BaseEvent);
+      assert.strictEqual(event.target, layer);
     });
 
     it('is not dispatched twice', async () => {

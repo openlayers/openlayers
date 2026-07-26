@@ -3,58 +3,48 @@ import {memoizeOne, toPromise} from '../../../src/ol/functions.js';
 
 describe('ol/functions.js', function () {
   describe('toPromise()', () => {
-    it('returns a promise given a getter for a value', (done) => {
+    it('returns a promise given a getter for a value', async () => {
       const getter = () => 'a value';
       const promise = toPromise(getter);
       assert.instanceOf(promise, Promise);
-      promise.then((value) => {
-        assert.strictEqual(value, 'a value');
-        done();
-      }, done);
+      assert.strictEqual(await promise, 'a value');
     });
 
-    it('returns a promise given a getter for a promise that resolves', (done) => {
+    it('returns a promise given a getter for a promise that resolves', async () => {
       const getter = () => Promise.resolve('a value');
       const promise = toPromise(getter);
       assert.instanceOf(promise, Promise);
-      promise.then((value) => {
-        assert.strictEqual(value, 'a value');
-        done();
-      }, done);
+      assert.strictEqual(await promise, 'a value');
     });
 
-    it('returns a promise that rejects given a getter that throws', (done) => {
+    it('returns a promise that rejects given a getter that throws', async () => {
       const getter = () => {
         throw new Error('an error');
       };
       const promise = toPromise(getter);
       assert.instanceOf(promise, Promise);
-      promise.then(
-        (value) => {
-          done(new Error(`expected promise to reject, got ${value}`));
-        },
-        (err) => {
-          assert.instanceOf(err, Error);
-          assert.strictEqual(err.message, 'an error');
-          done();
-        },
-      );
+      let error;
+      try {
+        await promise;
+      } catch (err) {
+        error = err;
+      }
+      assert.instanceOf(error, Error);
+      assert.strictEqual(error.message, 'an error');
     });
 
-    it('returns a promise that rejects given a getter for a promse that rejects', (done) => {
+    it('returns a promise that rejects given a getter for a promse that rejects', async () => {
       const getter = () => Promise.reject(new Error('an error'));
       const promise = toPromise(getter);
       assert.instanceOf(promise, Promise);
-      promise.then(
-        (value) => {
-          done(new Error(`expected promise to reject, got ${value}`));
-        },
-        (err) => {
-          assert.instanceOf(err, Error);
-          assert.strictEqual(err.message, 'an error');
-          done();
-        },
-      );
+      let error;
+      try {
+        await promise;
+      } catch (err) {
+        error = err;
+      }
+      assert.instanceOf(error, Error);
+      assert.strictEqual(error.message, 'an error');
     });
   });
 

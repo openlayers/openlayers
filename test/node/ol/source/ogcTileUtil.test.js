@@ -289,7 +289,7 @@ describe('ol/source/ogcTileUtil.js', () => {
   describe('getVectorTileUrlTemplate()', () => {
     let collectionLinks;
     let links;
-    before(async () => {
+    beforeAll(async () => {
       const collectionUrl = path.join(
         getDataDir(),
         'ogcapi/collections/ne_10m_admin_0_countries/tiles/WebMercatorQuad.json',
@@ -353,7 +353,7 @@ describe('ol/source/ogcTileUtil.js', () => {
 
   describe('getMapTileUrlTemplate()', () => {
     let links;
-    before(async () => {
+    beforeAll(async () => {
       const url = path.join(
         getDataDir(),
         'ogcapi/collections/blueMarble/map/tiles/WebMercatorQuad.json',

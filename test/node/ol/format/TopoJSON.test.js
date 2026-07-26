@@ -65,7 +65,7 @@ const nullGeometry = {
 
 describe('ol/format/TopoJSON.js', function () {
   let format;
-  before(function () {
+  beforeAll(function () {
     format = new TopoJSON();
   });
 
