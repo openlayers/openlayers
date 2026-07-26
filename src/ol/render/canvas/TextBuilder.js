@@ -533,6 +533,7 @@ class CanvasTextBuilder extends CanvasBuilder {
     const pixelRatio = this.pixelRatio;
     const baseline = TEXT_ALIGN[textState.textBaseline];
 
+    const offsetX = this.textOffsetX_ * pixelRatio;
     const offsetY = this.textOffsetY_ * pixelRatio;
     const text = this.text_;
     const strokeWidth = strokeState
@@ -556,6 +557,7 @@ class CanvasTextBuilder extends CanvasBuilder {
       1,
       this.declutterMode_,
       this.textKeepUpright_,
+      offsetX,
     ]);
     this.hitDetectionInstructions.push([
       CanvasInstruction.DRAW_CHARS,
@@ -574,6 +576,7 @@ class CanvasTextBuilder extends CanvasBuilder {
       1 / pixelRatio,
       this.declutterMode_,
       this.textKeepUpright_,
+      offsetX,
     ]);
   }
 
