@@ -8,6 +8,7 @@ import MultiPolygon from '../../../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../../../src/ol/geom/Polygon.js';
 import Executor from '../../../../../../src/ol/render/canvas/Executor.js';
+import CanvasInstruction from '../../../../../../src/ol/render/canvas/Instruction.js';
 import TextBuilder from '../../../../../../src/ol/render/canvas/TextBuilder.js';
 import Text from '../../../../../../src/ol/style/Text.js';
 import {create as createTransform} from '../../../../../../src/ol/transform.js';
@@ -332,5 +333,45 @@ describe('ol.render.canvas.TextBuilder', function () {
     const geometryWidths = builder.instructions[1][25];
     assert.lengthOf(geometryWidths, 1);
     assert.strictEqual(geometryWidths[0], 120);
+  });
+
+  describe('offsetX for text along a line', function () {
+    function drawCharsInstruction(offsetX, pixelRatio) {
+      const builder = new TextBuilder(
+        1,
+        [-180, -90, 180, 90],
+        0.02,
+        pixelRatio,
+      );
+      const feature = new Feature(
+        new LineString([
+          [-90, 0],
+          [90, 0],
+        ]),
+      );
+      builder.setTextStyle(
+        new Text({
+          text: 'text',
+          placement: 'line',
+          offsetX: offsetX,
+        }),
+      );
+      builder.drawText(feature.getGeometry(), feature);
+      return builder.instructions.find(
+        (instruction) => instruction[0] === CanvasInstruction.DRAW_CHARS,
+      );
+    }
+
+    it('passes the offset to the drawChars instruction, scaled by pixelRatio', function () {
+      const instruction = drawCharsInstruction(10, 2);
+      assert.isDefined(instruction);
+      assert.strictEqual(instruction[16], 20);
+    });
+
+    it('passes 0 when no offset is configured', function () {
+      const instruction = drawCharsInstruction(undefined, 1);
+      assert.isDefined(instruction);
+      assert.strictEqual(instruction[16], 0);
+    });
   });
 });

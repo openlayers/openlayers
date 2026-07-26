@@ -1028,6 +1028,7 @@ class Executor {
           declutterMode = instruction[14] || 'declutter';
 
           const textKeepUpright = /** @type {boolean} */ (instruction[15]);
+          const offsetX = /** @type {number} */ (instruction[16]);
           const textState = this.textStates[textKey];
           const font = textState.font;
           const textScale = [
@@ -1077,7 +1078,8 @@ class Executor {
                   label = this.createLabel(chars, textKey, '', strokeKey);
                   anchorX =
                     /** @type {number} */ (part[2]) +
-                    (textScale[0] < 0 ? -strokeWidth : strokeWidth);
+                    (textScale[0] < 0 ? -strokeWidth : strokeWidth) -
+                    offsetX;
                   anchorY =
                     baseline * label.height +
                     ((0.5 - baseline) * 2 * strokeWidth * textScale[1]) /
@@ -1124,7 +1126,7 @@ class Executor {
                   part = parts[c]; // x, y, anchorX, rotation, chunk
                   chars = /** @type {string} */ (part[4]);
                   label = this.createLabel(chars, textKey, fillKey, '');
-                  anchorX = /** @type {number} */ (part[2]);
+                  anchorX = /** @type {number} */ (part[2]) - offsetX;
                   anchorY = baseline * label.height - offsetY;
                   const dimensions = this.calculateImageOrLabelDimensions_(
                     label.width,
