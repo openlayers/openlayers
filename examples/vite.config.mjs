@@ -35,6 +35,7 @@ function copyDir(emitFile, from, to) {
 
 export default defineConfig({
   root: dir,
+  base: './',
   plugins: [
     olWorker(),
     exampleBuilder({
