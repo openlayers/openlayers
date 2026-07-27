@@ -5,7 +5,7 @@ import Point from '../../../../src/ol/geom/Point.js';
 import {transform} from '../../../../src/ol/proj.js';
 
 describe('ol/format/WKT.js', function () {
-  let format = new WKT();
+  const format = new WKT();
 
   describe('#readProjectionFromText', function () {
     it('returns the default projection', function () {
@@ -75,6 +75,7 @@ describe('ol/format/WKT.js', function () {
 
   describe('#readFeatures()', function () {
     it('transforms with dataProjection and featureProjection', function () {
+      const format = new WKT({splitCollection: true});
       const wkt = 'GEOMETRYCOLLECTION(POINT(1 2),POINT(4 5))';
       const features = format.readFeatures(wkt, {
         dataProjection: 'EPSG:4326',
@@ -98,6 +99,7 @@ describe('ol/format/WKT.js', function () {
 
   describe('#writeFeatures()', function () {
     it('transforms with dataProjection and featureProjection', function () {
+      const format = new WKT({splitCollection: true});
       const features = [
         new Feature(new Point([1, 2]).transform('EPSG:4326', 'EPSG:3857')),
         new Feature(new Point([4, 5]).transform('EPSG:4326', 'EPSG:3857')),
@@ -1062,7 +1064,7 @@ describe('ol/format/WKT.js', function () {
   });
 
   it('GeometryCollection split / merged correctly', function () {
-    format = new WKT({splitCollection: true});
+    const format = new WKT({splitCollection: true});
     const wkt = 'GEOMETRYCOLLECTION(POINT(4 6),LINESTRING(4 6,7 10))';
     const features = format.readFeatures(wkt);
     assert.deepEqual(features.length, 2);
@@ -1086,6 +1088,7 @@ describe('ol/format/WKT.js', function () {
   });
 
   it('Features read / written correctly', function () {
+    const format = new WKT({splitCollection: true});
     const wkt = 'GEOMETRYCOLLECTION(POINT(1 2),POINT(3 4))';
     const features = format.readFeatures(wkt);
     assert.deepEqual(features.length, 2);

@@ -260,13 +260,12 @@ describe('ol/Feature.js', function () {
       assert.strictEqual(feature.getId(), 2);
     });
 
-    it('dispatches the "change" event', function (done) {
+    it('dispatches the "change" event', async function () {
       const feature = new Feature();
-      feature.on('change', function () {
-        assert.strictEqual(feature.getId(), 'foo');
-        done();
-      });
+      const change = new Promise((resolve) => feature.once('change', resolve));
       feature.setId('foo');
+      await change;
+      assert.strictEqual(feature.getId(), 'foo');
     });
   });
 

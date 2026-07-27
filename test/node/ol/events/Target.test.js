@@ -25,14 +25,14 @@ describe('ol/events/Target.js', function () {
       assert.instanceOf(eventTarget, EventTarget);
       assert.instanceOf(eventTarget, Disposable);
     });
-    it('accepts a default target', function (done) {
+    it('accepts a default target', async function () {
       const defaultTarget = {};
       const target = new EventTarget(defaultTarget);
-      target.addEventListener('my-event', function (event) {
-        assert.deepEqual(event.target, defaultTarget);
-        done();
+      const event = await new Promise((resolve) => {
+        target.addEventListener('my-event', resolve);
+        target.dispatchEvent('my-event');
       });
-      target.dispatchEvent('my-event');
+      assert.deepEqual(event.target, defaultTarget);
     });
     it('does not initialize objects in advance', function () {
       assert.strictEqual(eventTarget.pendingRemovals_, null);

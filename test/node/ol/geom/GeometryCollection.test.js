@@ -46,11 +46,10 @@ describe('ol/geom/GeometryCollection.js', function () {
       assert.instanceOf(multi, Geometry);
     });
 
-    it('fires a change event when one of its component changes', function (done) {
-      multi.on('change', function () {
-        done();
-      });
+    it('fires a change event when one of its component changes', async function () {
+      const change = new Promise((resolve) => multi.once('change', resolve));
       point.setCoordinates([10, 10]);
+      await change;
     });
 
     it('deregister old components', function () {
@@ -61,13 +60,12 @@ describe('ol/geom/GeometryCollection.js', function () {
       point.setCoordinates([10, 10]);
     });
 
-    it('register new components', function (done) {
+    it('register new components', async function () {
       const point2 = new Point([10, 20]);
       multi.setGeometriesArray([point2]);
-      multi.on('change', function () {
-        done();
-      });
+      const change = new Promise((resolve) => multi.once('change', resolve));
       point2.setCoordinates([10, 10]);
+      await change;
     });
   });
 
