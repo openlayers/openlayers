@@ -1,6 +1,8 @@
 ## Upgrade notes
 
-### Next Release
+### Next release
+
+### 10.10.0
 
 #### Usage of Intl.Segmenter
 
