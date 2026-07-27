@@ -188,6 +188,8 @@ class ImageMapGuide extends ImageSource {
    */
   setParams(params) {
     this.params_ = Object.assign({}, params);
+    // Reset loader to pick up new params
+    this.loader = null;
     this.changed();
   }
 
