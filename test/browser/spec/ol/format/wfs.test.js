@@ -2112,5 +2112,38 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
       assert.include(xmlString, '<ValueReference>');
       assert.notInclude(xmlString, '<Name>');
     });
+
+    it('should filter on <fes:ResourceId> rather than <ogc:FeatureId>', () => {
+      const testFeature = new Feature();
+      testFeature.setId('12345');
+      testFeature.setProperties({
+        name: 'SampleFeature',
+      });
+      const testOptions = {
+        featureNS: 'http://foo',
+        featureType: 'FAULTS',
+        featurePrefix: 'foo',
+        gmlOptions: {srsName: 'EPSG:900913'},
+      };
+      const wfs = new WFS({version: '2.0.0'});
+      // One update and one delete, so both writeOgcFidFilter call sites are covered.
+      const serialized = wfs.writeTransaction(
+        [],
+        [testFeature],
+        [testFeature],
+        testOptions,
+      );
+      const resourceIds = serialized.getElementsByTagNameNS(
+        'http://www.opengis.net/fes/2.0',
+        'ResourceId',
+      );
+      assert.lengthOf(resourceIds, 2);
+      for (const resourceId of resourceIds) {
+        assert.strictEqual(resourceId.getAttribute('rid'), '12345');
+      }
+      const xmlString = new XMLSerializer().serializeToString(serialized);
+      assert.notInclude(xmlString, 'FeatureId');
+      assert.notInclude(xmlString, 'fid=');
+    });
   });
 });
