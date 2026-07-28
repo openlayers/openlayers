@@ -2113,36 +2113,46 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
       assert.notInclude(xmlString, '<Name>');
     });
 
-    it('round-trips a feature id through the filter and the insert results', () => {
-      const testFeature = new Feature();
-      testFeature.setId('12345');
-      testFeature.setProperties({
-        name: 'SampleFeature',
-      });
-      const wfs = new WFS({version: '2.0.0'});
-      const transaction = wfs.writeTransaction([], [testFeature], [], {
-        featureNS: 'http://foo',
-        featureType: 'FAULTS',
-        featurePrefix: 'foo',
-        gmlOptions: {srsName: 'EPSG:900913'},
-      });
-      const written = transaction.getElementsByTagNameNS(
-        'http://www.opengis.net/fes/2.0',
-        'ResourceId',
-      );
-      assert.lengthOf(written, 1);
+    it('writes a <fes:ResourceId> filter for the feature id', () => {
+      const text =
+        '<wfs:Transaction xmlns:wfs="http://www.opengis.net/wfs/2.0" ' +
+        '    service="WFS" version="2.0.0" ' +
+        '    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
+        '    xsi:schemaLocation="http://www.opengis.net/wfs/2.0 ' +
+        'http://schemas.opengis.net/wfs/2.0/wfs.xsd">' +
+        '  <wfs:Delete xmlns:foo="http://foo" typeName="foo:FAULTS">' +
+        '    <fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">' +
+        '      <fes:ResourceId rid="12345"/>' +
+        '    </fes:Filter>' +
+        '  </wfs:Delete>' +
+        '</wfs:Transaction>';
 
-      // Hand the element the writer produced straight back to the reader.
-      const response = wfs.readTransactionResponse(
+      const deleteFeature = new Feature();
+      deleteFeature.setId('12345');
+      const serialized = new WFS({version: '2.0.0'}).writeTransaction(
+        [],
+        [],
+        [deleteFeature],
+        {
+          featureNS: 'http://foo',
+          featureType: 'FAULTS',
+          featurePrefix: 'foo',
+        },
+      );
+      assertXmlEqual(serialized, parse(text));
+    });
+
+    it('reads insert ids from <fes:ResourceId> elements', () => {
+      const response = new WFS({version: '2.0.0'}).readTransactionResponse(
         '<wfs:TransactionResponse version="2.0.0"' +
-          ' xmlns:wfs="http://www.opengis.net/wfs/2.0"' +
-          ' xmlns:fes="http://www.opengis.net/fes/2.0">' +
-          '<wfs:InsertResults><wfs:Feature>' +
-          new XMLSerializer().serializeToString(written[0]) +
-          '</wfs:Feature></wfs:InsertResults>' +
+          '    xmlns:wfs="http://www.opengis.net/wfs/2.0"' +
+          '    xmlns:fes="http://www.opengis.net/fes/2.0">' +
+          '  <wfs:InsertResults>' +
+          '    <wfs:Feature><fes:ResourceId rid="FAULTS.12345"/></wfs:Feature>' +
+          '  </wfs:InsertResults>' +
           '</wfs:TransactionResponse>',
       );
-      assert.deepEqual(response.insertIds, ['12345']);
+      assert.deepEqual(response.insertIds, ['FAULTS.12345']);
     });
   });
 });
