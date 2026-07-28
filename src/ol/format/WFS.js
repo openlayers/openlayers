@@ -755,6 +755,11 @@ const OGC_FID_PARSERS = {
       return node.getAttribute('fid');
     }),
   },
+  'http://www.opengis.net/fes/2.0': {
+    'ResourceId': makeArrayPusher(function (node, objectStack) {
+      return node.getAttribute('rid');
+    }),
+  },
 };
 
 /**
@@ -816,11 +821,12 @@ function writeFeature(node, feature, objectStack) {
 function writeOgcFidFilter(node, fid, objectStack) {
   const context = objectStack[objectStack.length - 1];
   const version = context['version'];
-  const ns = OGCNS[version];
+  const ns = getFilterNS(version);
+  const isV2 = version === '2.0.0';
   const filter = createElementNS(ns, 'Filter');
-  const child = createElementNS(ns, 'FeatureId');
+  const child = createElementNS(ns, isV2 ? 'ResourceId' : 'FeatureId');
   filter.appendChild(child);
-  child.setAttribute('fid', /** @type {string} */ (fid));
+  child.setAttribute(isV2 ? 'rid' : 'fid', /** @type {string} */ (fid));
   node.appendChild(filter);
 }
 
