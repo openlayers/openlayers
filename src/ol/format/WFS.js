@@ -755,6 +755,11 @@ const OGC_FID_PARSERS = {
       return node.getAttribute('fid');
     }),
   },
+  'http://www.opengis.net/fes/2.0': {
+    'ResourceId': makeArrayPusher(function (node, objectStack) {
+      return node.getAttribute('rid');
+    }),
+  },
 };
 
 /**

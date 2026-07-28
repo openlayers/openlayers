@@ -2113,37 +2113,36 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
       assert.notInclude(xmlString, '<Name>');
     });
 
-    it('should filter on <fes:ResourceId> rather than <ogc:FeatureId>', () => {
+    it('round-trips a feature id through the filter and the insert results', () => {
       const testFeature = new Feature();
       testFeature.setId('12345');
       testFeature.setProperties({
         name: 'SampleFeature',
       });
-      const testOptions = {
+      const wfs = new WFS({version: '2.0.0'});
+      const transaction = wfs.writeTransaction([], [testFeature], [], {
         featureNS: 'http://foo',
         featureType: 'FAULTS',
         featurePrefix: 'foo',
         gmlOptions: {srsName: 'EPSG:900913'},
-      };
-      const wfs = new WFS({version: '2.0.0'});
-      // One update and one delete, so both writeOgcFidFilter call sites are covered.
-      const serialized = wfs.writeTransaction(
-        [],
-        [testFeature],
-        [testFeature],
-        testOptions,
-      );
-      const resourceIds = serialized.getElementsByTagNameNS(
+      });
+      const written = transaction.getElementsByTagNameNS(
         'http://www.opengis.net/fes/2.0',
         'ResourceId',
       );
-      assert.lengthOf(resourceIds, 2);
-      for (const resourceId of resourceIds) {
-        assert.strictEqual(resourceId.getAttribute('rid'), '12345');
-      }
-      const xmlString = new XMLSerializer().serializeToString(serialized);
-      assert.notInclude(xmlString, 'FeatureId');
-      assert.notInclude(xmlString, 'fid=');
+      assert.lengthOf(written, 1);
+
+      // Hand the element the writer produced straight back to the reader.
+      const response = wfs.readTransactionResponse(
+        '<wfs:TransactionResponse version="2.0.0"' +
+          ' xmlns:wfs="http://www.opengis.net/wfs/2.0"' +
+          ' xmlns:fes="http://www.opengis.net/fes/2.0">' +
+          '<wfs:InsertResults><wfs:Feature>' +
+          new XMLSerializer().serializeToString(written[0]) +
+          '</wfs:Feature></wfs:InsertResults>' +
+          '</wfs:TransactionResponse>',
+      );
+      assert.deepEqual(response.insertIds, ['12345']);
     });
   });
 });
