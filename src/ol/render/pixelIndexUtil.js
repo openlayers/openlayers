@@ -48,13 +48,7 @@ export function getPixelIndexArray(radius) {
     }
   }
 
-  const pixelIndex = [];
-  for (let i = 0, ii = distances.length; i < ii; ++i) {
-    if (distances[i]) {
-      pixelIndex.push(...distances[i]);
-    }
-  }
-
+  const pixelIndex = distances.flat();
   circlePixelIndexArrayCache[radius] = pixelIndex;
   return pixelIndex;
 }
