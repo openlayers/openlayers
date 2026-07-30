@@ -154,13 +154,10 @@ class ExampleBuilder {
   }
 
   transformJsSource(source) {
-    return source
-      .replaceAll(
-        /(["'])(\.\.\/src\/ol\/[^"']+\.js)\1/g,
-        (full, quote, importPath) => "'" + importPath.slice(7) + "'",
-      )
-      .replaceAll(/import Worker from 'worker-loader![^\n]*\n/g, '')
-      .replace('new Worker()', "new Worker('./worker.js', {type: 'module'})");
+    return source.replaceAll(
+      /(["'])(\.\.\/src\/ol\/[^"']+\.js)\1/g,
+      (full, quote, importPath) => "'" + importPath.slice(7) + "'",
+    );
   }
 
   cloakSource(source, cloak) {
@@ -254,7 +251,7 @@ class ExampleBuilder {
         name: data.name,
         dependencies: getDependencies(jsSources, pkg),
         devDependencies: {
-          vite: '^3.2.3',
+          vite: pkg.devDependencies.vite,
         },
         scripts: {
           start: 'vite',
@@ -380,27 +377,6 @@ export default function exampleBuilder(config) {
 
   return {
     name: 'example-builder',
-    transform(code, id) {
-      if (!id.includes(`${path.sep}examples${path.sep}`) || id.includes('?')) {
-        return null;
-      }
-      const match = code.match(
-        /import\s+(\w+)\s+from\s+['"]worker-loader!(.+?)['"]/,
-      );
-      if (!match) {
-        return null;
-      }
-      const [, binding, workerPath] = match;
-      return {
-        code: code
-          .replace(/import\s+\w+\s+from\s+['"]worker-loader!.+?['"];?\n?/, '')
-          .replace(
-            new RegExp(`new\\s+${binding}\\(\\)`),
-            `new Worker(new URL('${workerPath}', import.meta.url), {type: 'module'})`,
-          ),
-        map: null,
-      };
-    },
     configureServer(server) {
       server.watcher.on('change', (file) => {
         if (
