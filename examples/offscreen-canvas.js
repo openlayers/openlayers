@@ -1,4 +1,3 @@
-import Worker from 'worker-loader!./offscreen-canvas.worker.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import FullScreen from '../src/ol/control/FullScreen.js';
@@ -11,7 +10,10 @@ import {
   toString as toTransformString,
 } from '../src/ol/transform.js';
 
-const worker = new Worker();
+const worker = new Worker(
+  new URL('./offscreen-canvas.worker.js', import.meta.url),
+  {type: 'module'},
+);
 
 let container,
   transformContainer,

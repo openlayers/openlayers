@@ -155,8 +155,8 @@
       {{#each extraSources}}
       <details open>
         <summary class="source-heading">{{./name}}</summary>
-        <div class="row-fluid extra-source">
-          <pre><code class="language-{{./type}}">{{ ./source }}</code></pre>
+        <div class="row-fluid">
+          <pre><code class="language-{{./type}} example-extra-source" data-filename="{{./name}}">{{ ./source }}</code></pre>
         </div>
       </details>
       {{/each}}
