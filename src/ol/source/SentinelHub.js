@@ -25,10 +25,12 @@ const knownImageMediaTypes = {
 };
 
 /**
- * Default process API tile MIME type (`responses[].format.type`).
+ * Default process API tile MIME type (`responses[].format.type`), used when no
+ * format is provided to the {@link module:ol/source/SentinelHub~SentinelHub} constructor.
  * @type {string}
+ * @api
  */
-const defaultFormat = 'image/png';
+export const SENTINEL_HUB_DEFAULT_FORMAT = 'image/png';
 
 /**
  * @type {import('../size.js').Size}
@@ -408,12 +410,6 @@ class SentinelHub extends DataTileSource {
    * @param {Options} [options] Sentinel Hub options.
    */
   constructor(options) {
-    if (!knownImageMediaTypes[options.format]) {
-      throw new Error(
-        `Unsupported format: ${options.format}. Supported formats are: ${Object.keys(knownImageMediaTypes).join(', ')}`,
-      );
-    }
-
     /**
      * @type {Options}
      */
@@ -458,7 +454,10 @@ class SentinelHub extends DataTileSource {
      * @type {string}
      * @private
      */
-    this.format_ = config.format || defaultFormat;
+    this.format_ = SENTINEL_HUB_DEFAULT_FORMAT;
+    if (config.format) {
+      this.setFormat(config.format);
+    }
 
     /**
      * @type {string}
@@ -541,15 +540,28 @@ class SentinelHub extends DataTileSource {
 
   /**
    * Set the MIME type for process API tile responses (`responses[].format.type`).
+   * If no format or an unsupported format is provided, the source state will be set
+   * to `error` (see {@link module:ol/source/SentinelHub~SentinelHub#getError}) and the
+   * previously configured format is kept.
    *
    * @param {string} format Format type (for example `image/png` or `image/jpeg`).
    * @api
    */
   setFormat(format) {
+    if (!format) {
+      this.error_ = new Error(
+        `No format provided. Supported formats are: ${Object.keys(knownImageMediaTypes).join(', ')}`,
+      );
+      this.setState('error');
+      return;
+    }
+
     if (!knownImageMediaTypes[format]) {
-      throw new Error(
+      this.error_ = new Error(
         `Unsupported format: ${format}. Supported formats are: ${Object.keys(knownImageMediaTypes).join(', ')}`,
       );
+      this.setState('error');
+      return;
     }
     this.format_ = format;
     this.fireWhenReady_();
@@ -586,13 +598,14 @@ class SentinelHub extends DataTileSource {
     if (!this.token_ || !this.evalscript_ || !this.inputData_) {
       return;
     }
-    this.setKey(this.getKeyForConfig_());
-    const state = this.getState();
-    if (state === 'ready') {
-      this.changed();
-      return;
+    const alreadyReady = this.getState() === 'ready';
+    if (!alreadyReady) {
+      this.setState('ready');
     }
-    this.setState('ready');
+    this.setKey(this.getKeyForConfig_());
+    if (alreadyReady) {
+      this.changed();
+    }
   }
 
   getKeyForConfig_() {

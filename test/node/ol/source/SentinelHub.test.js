@@ -1,6 +1,7 @@
 import {assert} from 'chai';
 import {get as getProjection} from '../../../../src/ol/proj.js';
-import {
+import SentinelHub, {
+  SENTINEL_HUB_DEFAULT_FORMAT,
   getProjectionIdentifier,
   parseTokenClaims,
   serializeFunction,
@@ -33,6 +34,83 @@ describe('ol/source/SentinelHub.js', () => {
         clientHost: '224.123.123.155',
         account: '3fee1b29-f15b-a423-c6c1-29a02ff2face',
       });
+    });
+  });
+
+  describe('constructor', () => {
+    it('defaults to the default format when called with no options', () => {
+      const source = new SentinelHub();
+      assert.equal(source.format_, SENTINEL_HUB_DEFAULT_FORMAT);
+      assert.equal(source.getState(), 'loading');
+    });
+
+    it('defaults to the default format when no format option is provided', () => {
+      const source = new SentinelHub({});
+      assert.equal(source.format_, SENTINEL_HUB_DEFAULT_FORMAT);
+      assert.equal(source.getState(), 'loading');
+    });
+
+    it('accepts a known format', () => {
+      const source = new SentinelHub({format: 'image/jpeg'});
+      assert.equal(source.format_, 'image/jpeg');
+      assert.equal(source.getState(), 'loading');
+    });
+
+    it('sets the state to error for an unsupported format', () => {
+      const source = new SentinelHub({format: 'not-a-format'});
+      assert.equal(source.format_, SENTINEL_HUB_DEFAULT_FORMAT);
+      assert.equal(source.getState(), 'error');
+      assert.match(source.getError().message, /Unsupported format/);
+    });
+  });
+
+  describe('setFormat', () => {
+    it('sets the state to error and describes supported formats when called with no argument', () => {
+      const source = new SentinelHub({format: 'image/jpeg'});
+      source.setFormat();
+      assert.equal(source.format_, 'image/jpeg');
+      assert.equal(source.getState(), 'error');
+      assert.match(source.getError().message, /No format provided/);
+      assert.match(
+        source.getError().message,
+        /image\/png, image\/jpeg, image\/webp/,
+      );
+    });
+
+    it('updates the format for a known format', () => {
+      const source = new SentinelHub();
+      source.setFormat('image/webp');
+      assert.equal(source.format_, 'image/webp');
+      assert.equal(source.getState(), 'loading');
+    });
+
+    it('sets the state to error and keeps the previous format for an unsupported format', () => {
+      const source = new SentinelHub({format: 'image/jpeg'});
+      source.setFormat('not-a-format');
+      assert.equal(source.format_, 'image/jpeg');
+      assert.equal(source.getState(), 'error');
+      assert.match(source.getError().message, /Unsupported format/);
+    });
+
+    it('never reports the error state on a change event when recovering with a valid format', () => {
+      const source = new SentinelHub();
+      source.setAuth('token');
+      source.setData([{type: 'sentinel-2-l2a'}]);
+      source.setEvalscript({
+        setup: () => ({input: ['B04'], output: {bands: 1}}),
+        evaluatePixel: (sample) => [sample.B04],
+      });
+      assert.equal(source.getState(), 'ready');
+
+      source.setFormat('not-a-format');
+      assert.equal(source.getState(), 'error');
+
+      const states = [];
+      source.on('change', () => states.push(source.getState()));
+      source.setFormat('image/jpeg');
+
+      assert.equal(source.getState(), 'ready');
+      assert.notInclude(states, 'error');
     });
   });
 
