@@ -100,13 +100,13 @@ class Source extends BaseObject {
 
     /**
      * @protected
-     * @type {function(import("../View.js").ViewOptions):void}
+     * @type {null|function(import("../View.js").ViewOptions):void}
      */
     this.viewResolver = null;
 
     /**
      * @protected
-     * @type {function(Error):void}
+     * @type {null|function(Error):void}
      */
     this.viewRejector = null;
 

@@ -155,14 +155,14 @@ class ImageTileSource extends DataTileSource {
     options = options || {};
 
     /**
-     * @type {Loader}
+     * @type {Loader|undefined}
      */
     let loader = options.loader;
 
     /**
      * @type {string}
      */
-    let key;
+    let key = '';
 
     if (options.url) {
       loader = makeLoaderFromUrlLike(options.url);
@@ -172,7 +172,7 @@ class ImageTileSource extends DataTileSource {
     /**
      * @type {import('./Source.js').State}
      */
-    const state = !loader ? 'loading' : options.state;
+    const state = !loader ? 'loading' : (options.state ?? 'ready');
 
     const wrapX = options.wrapX === undefined ? true : options.wrapX;
 

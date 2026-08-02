@@ -197,7 +197,7 @@ export function addProjections(projections) {
  */
 export function get(projectionLike) {
   if (!(typeof projectionLike === 'string')) {
-    return projectionLike;
+    return projectionLike !== undefined ? projectionLike : null;
   }
   const projection = getProj(projectionLike);
   if (projection) {
@@ -233,20 +233,24 @@ export function get(projectionLike) {
  * @api
  */
 export function getPointResolution(projection, resolution, point, units) {
-  projection = get(projection);
+  const projectionObj = get(projection);
+  if (!projectionObj) {
+    return resolution;
+  }
   let pointResolution;
-  const getter = projection.getPointResolutionFunc();
+  const getter = projectionObj.getPointResolutionFunc();
   if (getter) {
     pointResolution = getter(resolution, point);
-    if (units && units !== projection.getUnits()) {
-      const metersPerUnit = projection.getMetersPerUnit();
+    if (units && units !== projectionObj.getUnits()) {
+      const metersPerUnit = projectionObj.getMetersPerUnit();
       if (metersPerUnit) {
         pointResolution =
-          (pointResolution * metersPerUnit) / METERS_PER_UNIT[units];
+          (pointResolution * metersPerUnit) /
+          /** @type {number} */ (METERS_PER_UNIT[units]);
       }
     }
   } else {
-    const projUnits = projection.getUnits();
+    const projUnits = projectionObj.getUnits();
     if ((projUnits == 'degrees' && !units) || units == 'degrees') {
       pointResolution = resolution;
     } else {
@@ -254,12 +258,12 @@ export function getPointResolution(projection, resolution, point, units) {
       // measuring its width and height on the normal sphere, and taking the
       // average of the width and height.
       const toEPSG4326 = getTransformFromProjections(
-        projection,
+        projectionObj,
         get('EPSG:4326'),
       );
       if (!toEPSG4326 && projUnits !== 'degrees') {
         // no transform is available
-        pointResolution = resolution * projection.getMetersPerUnit();
+        pointResolution = resolution * (projectionObj.getMetersPerUnit() ?? 1);
       } else {
         let vertices = [
           point[0] - resolution / 2,
@@ -271,14 +275,16 @@ export function getPointResolution(projection, resolution, point, units) {
           point[0],
           point[1] + resolution / 2,
         ];
-        vertices = toEPSG4326(vertices, vertices, 2);
+        if (toEPSG4326) {
+          vertices = toEPSG4326(vertices, vertices, 2);
+        }
         const width = getDistance(vertices.slice(0, 2), vertices.slice(2, 4));
         const height = getDistance(vertices.slice(4, 6), vertices.slice(6, 8));
         pointResolution = (width + height) / 2;
       }
       const metersPerUnit = units
         ? METERS_PER_UNIT[units]
-        : projection.getMetersPerUnit();
+        : projectionObj.getMetersPerUnit();
       if (metersPerUnit !== undefined) {
         pointResolution /= metersPerUnit;
       }
@@ -343,7 +349,7 @@ export function clearAllProjections() {
 /**
  * @param {Projection|string|undefined} projection Projection.
  * @param {string} defaultCode Default code.
- * @return {Projection} Projection.
+ * @return {Projection|null} Projection.
  */
 export function createProjection(projection, defaultCode) {
   if (!projection) {
@@ -413,6 +419,9 @@ export function createTransformFromCoordinateTransform(coordTransform) {
 export function addCoordinateTransforms(source, destination, forward, inverse) {
   const sourceProj = get(source);
   const destProj = get(destination);
+  if (!sourceProj || !destProj) {
+    return;
+  }
   addTransformFunc(
     sourceProj,
     destProj,
@@ -491,12 +500,15 @@ export function equivalent(projection1, projection2) {
  * Searches in the list of transform functions for the function for converting
  * coordinates from the source projection to the destination projection.
  *
- * @param {Projection} source Source Projection object.
- * @param {Projection} destination Destination Projection
+ * @param {Projection|null} source Source Projection object.
+ * @param {Projection|null} destination Destination Projection
  *     object.
  * @return {TransformFunction|null} Transform function.
  */
 export function getTransformFromProjections(source, destination) {
+  if (!source || !destination) {
+    return null;
+  }
   const sourceCode = source.getCode();
   const destinationCode = destination.getCode();
   let transformFunc = getTransformFunc(sourceCode, destinationCode);
@@ -529,7 +541,7 @@ export function getTransformFromProjections(source, destination) {
   }
 
   const intermediateCode = 'EPSG:4326';
-  if (!destinationTransforms) {
+  if (!destinationTransforms && sourceTransforms) {
     const toDestination = getTransformFunc(intermediateCode, destinationCode);
     if (toDestination) {
       transformFunc = composeTransformFuncs(
@@ -537,7 +549,7 @@ export function getTransformFromProjections(source, destination) {
         toDestination,
       );
     }
-  } else if (!sourceTransforms) {
+  } else if (!sourceTransforms && destinationTransforms) {
     const fromSource = getTransformFunc(sourceCode, intermediateCode);
     if (fromSource) {
       transformFunc = composeTransformFuncs(
@@ -545,7 +557,7 @@ export function getTransformFromProjections(source, destination) {
         destinationTransforms.forward,
       );
     }
-  } else {
+  } else if (sourceTransforms && destinationTransforms) {
     transformFunc = composeTransformFuncs(
       sourceTransforms.inverse,
       destinationTransforms.forward,
@@ -580,7 +592,7 @@ function composeTransformFuncs(t1, t2) {
  *
  * @param {ProjectionLike} source Source.
  * @param {ProjectionLike} destination Destination.
- * @return {TransformFunction} Transform function.
+ * @return {TransformFunction|null} Transform function.
  * @api
  */
 export function getTransform(source, destination) {
@@ -608,8 +620,8 @@ export function getTransform(source, destination) {
 export function transform(coordinate, source, destination) {
   const transformFunc = getTransform(source, destination);
   if (!transformFunc) {
-    const sourceCode = get(source).getCode();
-    const destinationCode = get(destination).getCode();
+    const sourceCode = get(source)?.getCode() ?? String(source);
+    const destinationCode = get(destination)?.getCode() ?? String(destination);
     throw new Error(
       `No transform available between ${sourceCode} and ${destinationCode}`,
     );
@@ -631,6 +643,9 @@ export function transform(coordinate, source, destination) {
  */
 export function transformExtent(extent, source, destination, stops) {
   const transformFunc = getTransform(source, destination);
+  if (!transformFunc) {
+    return extent.slice();
+  }
   return applyTransform(extent, transformFunc, undefined, stops);
 }
 
@@ -651,6 +666,11 @@ export function transformWithProjections(
     sourceProjection,
     destinationProjection,
   );
+  if (!transformFunc) {
+    throw new Error(
+      `No transform available between ${sourceProjection.getCode()} and ${destinationProjection.getCode()}`,
+    );
+  }
   return transformFunc(point);
 }
 
@@ -778,7 +798,7 @@ export function toUserResolution(resolution, sourceProjection) {
   if (!userProjection) {
     return resolution;
   }
-  const sourceMetersPerUnit = get(sourceProjection).getMetersPerUnit();
+  const sourceMetersPerUnit = get(sourceProjection)?.getMetersPerUnit();
   const userMetersPerUnit = userProjection.getMetersPerUnit();
   return sourceMetersPerUnit && userMetersPerUnit
     ? (resolution * sourceMetersPerUnit) / userMetersPerUnit
@@ -797,7 +817,7 @@ export function fromUserResolution(resolution, destProjection) {
   if (!userProjection) {
     return resolution;
   }
-  const destMetersPerUnit = get(destProjection).getMetersPerUnit();
+  const destMetersPerUnit = get(destProjection)?.getMetersPerUnit();
   const userMetersPerUnit = userProjection.getMetersPerUnit();
   return destMetersPerUnit && userMetersPerUnit
     ? (resolution * userMetersPerUnit) / destMetersPerUnit

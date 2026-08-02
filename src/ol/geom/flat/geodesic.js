@@ -6,12 +6,15 @@ import {get as getProjection, getTransform} from '../../proj.js';
 
 /**
  * @param {function(number): import("../../coordinate.js").Coordinate} interpolate Interpolate function.
- * @param {import("../../proj.js").TransformFunction} transform Transform from longitude/latitude to
+ * @param {import("../../proj.js").TransformFunction|null} transform Transform from longitude/latitude to
  *     projected coordinates.
  * @param {number} squaredTolerance Squared tolerance.
  * @return {Array<number>} Flat coordinates.
  */
 function line(interpolate, transform, squaredTolerance) {
+  if (!transform) {
+    return [];
+  }
   // FIXME reduce garbage generation
   // FIXME optimize stack operations
 
@@ -39,9 +42,11 @@ function line(interpolate, transform, squaredTolerance) {
 
   while (--maxIterations > 0 && fractionStack.length > 0) {
     // Pop the a coordinate off the stack
-    fracA = fractionStack.pop();
-    geoA = geoStack.pop();
-    a = stack.pop();
+    fracA = /** @type {number} */ (fractionStack.pop());
+    geoA = /** @type {import("../../coordinate.js").Coordinate} */ (
+      geoStack.pop()
+    );
+    a = /** @type {import("../../coordinate.js").Coordinate} */ (stack.pop());
     // Add the a coordinate if it has not been added yet
     key = fracA.toString();
     if (!(key in fractions)) {
@@ -49,9 +54,11 @@ function line(interpolate, transform, squaredTolerance) {
       fractions[key] = true;
     }
     // Pop the b coordinate off the stack
-    fracB = fractionStack.pop();
-    geoB = geoStack.pop();
-    b = stack.pop();
+    fracB = /** @type {number} */ (fractionStack.pop());
+    geoB = /** @type {import("../../coordinate.js").Coordinate} */ (
+      geoStack.pop()
+    );
+    b = /** @type {import("../../coordinate.js").Coordinate} */ (stack.pop());
     // Find the m point between the a and b coordinates
     fracM = (fracA + fracB) / 2;
     geoM = interpolate(fracM);
@@ -130,7 +137,10 @@ export function greatCircleArc(
         );
       return [toDegrees(lon), toDegrees(lat)];
     },
-    getTransform(geoProjection, projection),
+    getTransform(
+      /** @type {import("../../proj.js").ProjectionLike} */ (geoProjection),
+      projection,
+    ),
     squaredTolerance,
   );
 }
@@ -154,7 +164,12 @@ export function meridian(lon, lat1, lat2, projection, squaredTolerance) {
     function (frac) {
       return [lon, lat1 + (lat2 - lat1) * frac];
     },
-    getTransform(epsg4326Projection, projection),
+    getTransform(
+      /** @type {import("../../proj.js").ProjectionLike} */ (
+        epsg4326Projection
+      ),
+      projection,
+    ),
     squaredTolerance,
   );
 }
@@ -178,7 +193,12 @@ export function parallel(lat, lon1, lon2, projection, squaredTolerance) {
     function (frac) {
       return [lon1 + (lon2 - lon1) * frac, lat];
     },
-    getTransform(epsg4326Projection, projection),
+    getTransform(
+      /** @type {import("../../proj.js").ProjectionLike} */ (
+        epsg4326Projection
+      ),
+      projection,
+    ),
     squaredTolerance,
   );
 }

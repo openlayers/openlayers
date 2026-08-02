@@ -36,7 +36,7 @@ class BaseEvent {
 
     /**
      * The event target.
-     * @type {Object}
+     * @type {Object|null}
      * @api
      */
     this.target = null;

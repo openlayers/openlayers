@@ -76,6 +76,7 @@ export const Uniforms = {
  * Please note that the fragment shaders output should have premultiplied alpha, otherwise visual anomalies may occur.
  *
  * Note: this uses {@link module:ol/webgl/Helper~WebGLHelper} internally.
+ * @extends {WebGLLayerRenderer<import("../../layer/Vector.js").default>}
  */
 class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
   /**
@@ -89,7 +90,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
       [Uniforms.ONE]: 1,
     };
 
-    super(layer, {
+    super(/** @type {import("../../layer/Vector.js").default} */ (layer), {
       uniforms: uniforms,
       postProcesses: options.postProcesses ?? [],
     });
@@ -159,13 +160,13 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     this.hasText_ = false;
 
     /**
-     * @type {VectorStyleRenderer}
+     * @type {VectorStyleRenderer|null}
      * @public
      */
     this.styleRenderer_ = null;
 
     /**
-     * @type {import('../../render/webgl/VectorStyleRenderer.js').WebGLBuffers}
+     * @type {import('../../render/webgl/VectorStyleRenderer.js').WebGLBuffers|null}
      * @private
      */
     this.buffers_ = null;
@@ -183,7 +184,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
 
     /**
      * @private
-     * @type {Array<import("../../events.js").EventsKey|null>}
+     * @type {Array<import("../../events.js").EventsKey|null>|null}
      */
     this.sourceListenKeys_ = null;
 
@@ -196,37 +197,50 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
    */
   addInitialFeatures_(frameState) {
     const source = this.getLayer().getSource();
+    if (!source) {
+      return;
+    }
     const userProjection = getUserProjection();
+    /** @type {import("../../proj.js").TransformFunction|undefined} */
     let projectionTransform;
     if (userProjection) {
-      projectionTransform = getTransformFromProjections(
-        userProjection,
-        frameState.viewState.projection,
-      );
+      projectionTransform =
+        getTransformFromProjections(
+          userProjection,
+          frameState.viewState.projection,
+        ) ?? undefined;
     }
     this.batch_.addFeatures(source.getFeatures(), projectionTransform);
     this.sourceListenKeys_ = [
       listen(
         source,
         VectorEventType.ADDFEATURE,
-        this.handleSourceFeatureAdded_.bind(this, projectionTransform),
+        /** @type {import("../../events.js").ListenerFunction} */ (
+          this.handleSourceFeatureAdded_.bind(this, projectionTransform)
+        ),
       ),
       listen(
         source,
         VectorEventType.CHANGEFEATURE,
-        this.handleSourceFeatureChanged_.bind(this, projectionTransform),
+        /** @type {import("../../events.js").ListenerFunction} */ (
+          this.handleSourceFeatureChanged_.bind(this, projectionTransform)
+        ),
         this,
       ),
       listen(
         source,
         VectorEventType.REMOVEFEATURE,
-        this.handleSourceFeatureDelete_,
+        /** @type {import("../../events.js").ListenerFunction} */ (
+          this.handleSourceFeatureDelete_
+        ),
         this,
       ),
       listen(
         source,
         VectorEventType.CLEAR,
-        this.handleSourceFeatureClear_,
+        /** @type {import("../../events.js").ListenerFunction} */ (
+          this.handleSourceFeatureClear_
+        ),
         this,
       ),
     ];
@@ -248,8 +262,18 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
       // add the text overlay post-process
       this.setPostProcesses([
         createPostProcessDefinition(
-          () => this.styleRenderer_.getTextOverlayCanvas(),
-          () => this.styleRenderer_.getTextOverlayFrameState(),
+          () =>
+            /** @type {HTMLCanvasElement} */ (
+              /** @type {VectorStyleRenderer} */ (
+                this.styleRenderer_
+              ).getTextOverlayCanvas()
+            ),
+          () =>
+            /** @type {import('../../Map.js').FrameState} */ (
+              /** @type {VectorStyleRenderer} */ (
+                this.styleRenderer_
+              ).getTextOverlayFrameState()
+            ),
         ),
         ...this.getPostProcesses(),
       ]);
@@ -275,6 +299,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
   }
 
   /**
+   * @param {Options} options Options.
    * @override
    */
   reset(options) {
@@ -302,22 +327,28 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
   }
 
   /**
-   * @param {import("../../proj.js").TransformFunction} projectionTransform Transform function.
+   * @param {import("../../proj.js").TransformFunction|undefined} projectionTransform Transform function.
    * @param {import("../../source/Vector.js").VectorSourceEvent} event Event.
    * @private
    */
   handleSourceFeatureAdded_(projectionTransform, event) {
     const feature = event.feature;
+    if (!feature) {
+      return;
+    }
     this.batch_.addFeature(feature, projectionTransform);
   }
 
   /**
-   * @param {import("../../proj.js").TransformFunction} projectionTransform Transform function.
+   * @param {import("../../proj.js").TransformFunction|undefined} projectionTransform Transform function.
    * @param {import("../../source/Vector.js").VectorSourceEvent} event Event.
    * @private
    */
   handleSourceFeatureChanged_(projectionTransform, event) {
     const feature = event.feature;
+    if (!feature) {
+      return;
+    }
     this.batch_.changeFeature(feature, projectionTransform);
   }
 
@@ -327,6 +358,9 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
    */
   handleSourceFeatureDelete_(event) {
     const feature = event.feature;
+    if (!feature) {
+      return;
+    }
     this.batch_.removeFeature(feature);
   }
 
@@ -373,7 +407,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     this.renderWorlds(frameState, false, startWorld, endWorld, worldWidth);
 
     if (this.hasText_) {
-      this.styleRenderer_.finalizeTextRender(frameState).then(() => {
+      this.styleRenderer_?.finalizeTextRender(frameState).then(() => {
         if (this.skipNextTextRender_) {
           this.skipNextTextRender_ = false;
           return;
@@ -394,7 +428,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
 
     const canvas = this.helper.getCanvas();
 
-    if (this.hitDetectionEnabled_) {
+    if (this.hitDetectionEnabled_ && this.hitRenderTarget_) {
       this.renderWorlds(frameState, true, startWorld, endWorld, worldWidth);
       this.hitRenderTarget_.clearCachedData();
     }
@@ -418,11 +452,18 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
 
     const layer = this.getLayer();
     const vectorSource = layer.getSource();
+    if (!vectorSource) {
+      return true;
+    }
     const viewState = frameState.viewState;
     const viewNotMoving =
       !frameState.viewHints[ViewHint.ANIMATING] &&
       !frameState.viewHints[ViewHint.INTERACTING];
-    const extentChanged = !equals(this.previousExtent_, frameState.extent);
+    const frameExtent = frameState.extent;
+    if (!frameExtent) {
+      return true;
+    }
+    const extentChanged = !equals(this.previousExtent_, frameExtent);
     const sourceChanged = this.sourceRevision_ < vectorSource.getRevision();
     const layerChanged = this.layerRevision_ < layer.getRevision();
 
@@ -439,8 +480,8 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
       const resolution = viewState.resolution;
 
       const renderBuffer =
-        layer instanceof BaseVector ? layer.getRenderBuffer() : 0;
-      const extent = buffer(frameState.extent, renderBuffer * resolution);
+        (layer instanceof BaseVector ? layer.getRenderBuffer() : 0) ?? 0;
+      const extent = buffer(frameExtent, renderBuffer * resolution);
 
       const userProjection = getUserProjection();
       if (userProjection) {
@@ -455,13 +496,18 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
 
       this.ready = false;
 
+      const styleRenderer = this.styleRenderer_;
+      if (!styleRenderer) {
+        return true;
+      }
+
       const transform = this.helper.makeProjectionTransform(
         frameState,
         createTransform(),
         true,
       );
 
-      this.styleRenderer_
+      styleRenderer
         .generateBuffers(
           this.batch_,
           transform,
@@ -476,7 +522,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
           this.getLayer()?.changed();
         });
 
-      this.previousExtent_ = frameState.extent.slice();
+      this.previousExtent_ = frameExtent.slice();
     }
 
     return true;
@@ -494,15 +540,15 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     let world = startWorld;
 
     if (forHitDetection) {
-      this.hitRenderTarget_.setSize([
+      const hitRenderTarget = this.hitRenderTarget_;
+      if (!hitRenderTarget) {
+        return;
+      }
+      hitRenderTarget.setSize([
         Math.floor(frameState.size[0] / 2),
         Math.floor(frameState.size[1] / 2),
       ]);
-      this.helper.prepareDrawToRenderTarget(
-        frameState,
-        this.hitRenderTarget_,
-        true,
-      );
+      this.helper.prepareDrawToRenderTarget(frameState, hitRenderTarget, true);
     }
 
     do {
@@ -515,11 +561,16 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
         world * worldWidth,
         0,
       );
-      if (!this.buffers_) {
+      const buffers = this.buffers_;
+      if (!buffers) {
         continue;
       }
-      this.styleRenderer_.render(this.buffers_, frameState, () => {
-        this.applyUniforms_(this.buffers_.invertVerticesTransform, frameState);
+      const styleRenderer = this.styleRenderer_;
+      if (!styleRenderer) {
+        continue;
+      }
+      styleRenderer.render(buffers, frameState, () => {
+        this.applyUniforms_(buffers.invertVerticesTransform, frameState);
         this.helper.applyHitDetectionUniform(forHitDetection);
       });
     } while (++world < endWorld);
@@ -555,12 +606,21 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
       coordinate.slice(),
     );
 
-    const data = this.hitRenderTarget_.readPixel(pixel[0] / 2, pixel[1] / 2);
+    const data = this.hitRenderTarget_?.readPixel(pixel[0] / 2, pixel[1] / 2);
+    if (!data) {
+      return undefined;
+    }
     const color = [data[0] / 255, data[1] / 255, data[2] / 255, data[3] / 255];
     const ref = colorDecodeId(color);
     const feature = this.batch_.getFeatureFromRef(ref);
     if (feature) {
-      return callback(feature, this.getLayer(), null);
+      return callback(
+        feature,
+        this.getLayer(),
+        /** @type {import("../../geom/SimpleGeometry.js").default} */ (
+          /** @type {unknown} */ (null)
+        ),
+      );
     }
     return undefined;
   }
@@ -594,7 +654,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
       disposeBuffersOfType(buffers.polygonBuffers);
     }
     if (buffers.textInstructionsKey) {
-      this.styleRenderer_.disposeTextInstructions(buffers.textInstructionsKey);
+      this.styleRenderer_?.disposeTextInstructions(buffers.textInstructionsKey);
     }
   }
 
@@ -608,7 +668,9 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     }
     if (this.sourceListenKeys_) {
       this.sourceListenKeys_.forEach(function (key) {
-        unlistenByKey(key);
+        if (key) {
+          unlistenByKey(key);
+        }
       });
       this.sourceListenKeys_ = null;
     }

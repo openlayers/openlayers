@@ -77,7 +77,7 @@ export function rulesToStyleFunction(rules, parsingContext) {
   const evaluator = buildRuleSet(rules, parsingContext);
   const evaluationContext = newEvaluationContext();
   return function (feature, resolution) {
-    evaluationContext.properties = feature.getPropertiesInternal();
+    evaluationContext.properties = feature.getPropertiesInternal() ?? {};
     evaluationContext.resolution = resolution;
     if (parsingContext.featureId) {
       const id = feature.getId();
@@ -88,9 +88,10 @@ export function rulesToStyleFunction(rules, parsingContext) {
       }
     }
     if (parsingContext.geometryType) {
-      evaluationContext.geometryType = computeGeometryType(
-        feature.getGeometry(),
-      );
+      const geometry = feature.getGeometry();
+      if (geometry) {
+        evaluationContext.geometryType = computeGeometryType(geometry);
+      }
     }
     return evaluator(evaluationContext);
   };
@@ -124,7 +125,7 @@ export function flatStylesToStyleFunction(flatStyles, parsingContext) {
   const styles = new Array(length);
 
   return function (feature, resolution) {
-    evaluationContext.properties = feature.getPropertiesInternal();
+    evaluationContext.properties = feature.getPropertiesInternal() ?? {};
     evaluationContext.resolution = resolution;
     if (parsingContext.featureId) {
       const id = feature.getId();
@@ -135,9 +136,10 @@ export function flatStylesToStyleFunction(flatStyles, parsingContext) {
       }
     }
     if (parsingContext.geometryType) {
-      evaluationContext.geometryType = computeGeometryType(
-        feature.getGeometry(),
-      );
+      const geometry = feature.getGeometry();
+      if (geometry) {
+        evaluationContext.geometryType = computeGeometryType(geometry);
+      }
     }
     let nonNullCount = 0;
     for (let i = 0; i < length; ++i) {
@@ -220,8 +222,12 @@ export function buildRuleSet(rules, context) {
   for (let i = 0; i < length; ++i) {
     const rule = rules[i];
     const filter =
-      'filter' in rule
-        ? buildExpression(rule.filter, BooleanType, context)
+      'filter' in rule && rule.filter !== undefined
+        ? buildExpression(
+            /** @type {EncodedExpression} */ (rule.filter),
+            BooleanType,
+            context,
+          )
         : always;
 
     /**
@@ -358,7 +364,7 @@ function buildFill(flatStyle, prefix, context) {
   if (prefix + 'fill-pattern-src' in flatStyle) {
     evaluateColor = patternEvaluator(flatStyle, prefix + 'fill-', context);
   } else {
-    if (flatStyle[prefix + 'fill-color'] === 'none') {
+    if (getExpressionValue(flatStyle, prefix + 'fill-color') === 'none') {
       // avoids hit detection
       return (context) => null;
     }
@@ -379,7 +385,9 @@ function buildFill(flatStyle, prefix, context) {
     if (color === NO_COLOR) {
       return null;
     }
-    fill.setColor(color);
+    fill.setColor(
+      /** @type {import('../../colorlike.js').ColorLike} */ (color),
+    );
     return fill;
   };
 }
@@ -770,7 +778,7 @@ function buildIcon(flatStyle, context) {
 
   // required property
   const srcName = prefix + 'src';
-  const src = requireString(flatStyle[srcName], srcName);
+  const src = requireString(getExpressionValue(flatStyle, srcName), srcName);
 
   // settable properties
   const evaluateAnchor = coordinateEvaluator(
@@ -816,7 +824,9 @@ function buildIcon(flatStyle, context) {
     prefix + 'anchor-y-units',
   );
   const colorValue = getExpressionValue(flatStyle, prefix + 'color');
+  /** @type {import('../../colorlike.js').ColorLike|undefined} */
   let color;
+  /** @type {import('../../expr/cpu.js').ColorLikeEvaluator|null} */
   let evaluateColor = null;
   if (colorValue !== undefined) {
     const isColorExpression =
@@ -826,7 +836,9 @@ function buildIcon(flatStyle, context) {
     if (isColorExpression) {
       evaluateColor = colorLikeEvaluator(flatStyle, prefix + 'color', context);
     } else {
-      color = requireColorLike(colorValue, prefix + 'color');
+      color = /** @type {import('../../colorlike.js').ColorLike} */ (
+        requireColorLike(colorValue, prefix + 'color')
+      );
     }
   }
   const crossOrigin = optionalString(flatStyle, prefix + 'cross-origin');
@@ -854,6 +866,7 @@ function buildIcon(flatStyle, context) {
     declutterMode,
   };
 
+  /** @type {import('../../style/Icon.js').default|null} */
   let icon = null;
 
   return function (context) {
@@ -906,19 +919,21 @@ function buildShape(flatStyle, context) {
   // required property
   const pointsName = prefix + 'points';
   const radiusName = prefix + 'radius';
-  const points = requireNumber(flatStyle[pointsName], pointsName);
+  const points = requireNumber(
+    getExpressionValue(flatStyle, pointsName),
+    pointsName,
+  );
   if (!(radiusName in flatStyle)) {
     throw new Error(`Expected a number for ${radiusName}`);
   }
   const evaluateRadius = numberEvaluator(flatStyle, radiusName, context);
-  const initialRadius =
-    typeof flatStyle[radiusName] === 'number' ? flatStyle[radiusName] : 5;
+  const radiusValue = getExpressionValue(flatStyle, radiusName);
+  const initialRadius = typeof radiusValue === 'number' ? radiusValue : 5;
   const radius2Name = prefix + 'radius2';
   const evaluateRadius2 = numberEvaluator(flatStyle, radius2Name, context);
+  const radius2Value = getExpressionValue(flatStyle, radius2Name);
   const initialRadius2 =
-    typeof flatStyle[radius2Name] === 'number'
-      ? flatStyle[radius2Name]
-      : undefined;
+    typeof radius2Value === 'number' ? radius2Value : undefined;
 
   // settable properties
   const evaluateFill = buildFill(flatStyle, prefix, context);
@@ -1061,7 +1076,7 @@ function getExpressionValue(flatStyle, name) {
   if (!(name in flatStyle)) {
     return undefined;
   }
-  const value = flatStyle[name];
+  const value = /** @type {Record<string, *>} */ (flatStyle)[name];
   return value === undefined ? undefined : value;
 }
 
@@ -1099,6 +1114,12 @@ function stringEvaluator(flatStyle, name, context) {
   };
 }
 
+/**
+ * @param {FlatStyle} flatStyle The flat style.
+ * @param {string} prefix The property prefix.
+ * @param {ParsingContext} context The parsing context.
+ * @return {function(EvaluationContext): (Object|null)|null} Pattern evaluator function.
+ */
 function patternEvaluator(flatStyle, prefix, context) {
   const srcEvaluator = stringEvaluator(
     flatStyle,
@@ -1120,12 +1141,15 @@ function patternEvaluator(flatStyle, prefix, context) {
     prefix + 'color',
     context,
   );
-  return function (context) {
+  return function (/** @type {EvaluationContext} */ evalContext) {
+    if (!srcEvaluator) {
+      return null;
+    }
     return {
-      src: srcEvaluator(context),
-      offset: offsetEvaluator && offsetEvaluator(context),
-      size: patternSizeEvaluator && patternSizeEvaluator(context),
-      color: colorEvaluator && colorEvaluator(context),
+      src: srcEvaluator(evalContext),
+      offset: offsetEvaluator ? offsetEvaluator(evalContext) : null,
+      size: patternSizeEvaluator ? patternSizeEvaluator(evalContext) : null,
+      color: colorEvaluator ? colorEvaluator(evalContext) : null,
     };
   };
 }
@@ -1272,7 +1296,7 @@ function sizeLikeEvaluator(flatStyle, name, context) {
  * @return {number|undefined} A number or undefined.
  */
 function optionalNumber(flatStyle, property) {
-  const value = flatStyle[property];
+  const value = getExpressionValue(flatStyle, property);
   if (value === undefined) {
     return undefined;
   }
@@ -1288,7 +1312,7 @@ function optionalNumber(flatStyle, property) {
  * @return {import("../../size.js").Size|undefined} A size or undefined.
  */
 function optionalSize(flatStyle, property) {
-  const encoded = flatStyle[property];
+  const encoded = getExpressionValue(flatStyle, property);
   if (encoded === undefined) {
     return undefined;
   }
@@ -1314,7 +1338,7 @@ function optionalSize(flatStyle, property) {
  * @return {string|undefined} A string or undefined.
  */
 function optionalString(flatStyle, property) {
-  const encoded = flatStyle[property];
+  const encoded = getExpressionValue(flatStyle, property);
   if (encoded === undefined) {
     return undefined;
   }
@@ -1330,7 +1354,7 @@ function optionalString(flatStyle, property) {
  * @return {import("../../style/Icon.js").IconOrigin|undefined} An icon origin or undefined.
  */
 function optionalIconOrigin(flatStyle, property) {
-  const encoded = flatStyle[property];
+  const encoded = getExpressionValue(flatStyle, property);
   if (encoded === undefined) {
     return undefined;
   }
@@ -1353,7 +1377,7 @@ function optionalIconOrigin(flatStyle, property) {
  * @return {import("../../style/Icon.js").IconAnchorUnits|undefined} Icon anchor units or undefined.
  */
 function optionalIconAnchorUnits(flatStyle, property) {
-  const encoded = flatStyle[property];
+  const encoded = getExpressionValue(flatStyle, property);
   if (encoded === undefined) {
     return undefined;
   }
@@ -1369,7 +1393,7 @@ function optionalIconAnchorUnits(flatStyle, property) {
  * @return {Array<number>|undefined} An array of numbers or undefined.
  */
 function optionalNumberArray(flatStyle, property) {
-  const encoded = flatStyle[property];
+  const encoded = getExpressionValue(flatStyle, property);
   if (encoded === undefined) {
     return undefined;
   }
@@ -1379,10 +1403,10 @@ function optionalNumberArray(flatStyle, property) {
 /**
  * @param {FlatStyle} flatStyle The flat style.
  * @param {string} property The symbolizer property.
- * @return {import('../../style/Style.js').DeclutterMode} Icon declutter mode.
+ * @return {import('../../style/Style.js').DeclutterMode|undefined} Icon declutter mode.
  */
 function optionalDeclutterMode(flatStyle, property) {
-  const encoded = flatStyle[property];
+  const encoded = getExpressionValue(flatStyle, property);
   if (encoded === undefined) {
     return undefined;
   }

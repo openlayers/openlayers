@@ -23,7 +23,7 @@ exports.publish = function (data, opts) {
       return true;
     }
     return (
-      !['file', 'event', 'module'].includes(this.kind) &&
+      !['file', 'event', 'module', 'param'].includes(this.kind) &&
       this.meta &&
       this.meta.path &&
       !this.longname.startsWith('<anonymous>') &&

@@ -187,7 +187,7 @@ class DataTileSource extends TileSource {
 
     /**
      * @private
-     * @type {ReferrerPolicy}
+     * @type {ReferrerPolicy|undefined}
      */
     this.referrerPolicy_ = options.referrerPolicy;
 
@@ -292,8 +292,12 @@ class DataTileSource extends TileSource {
         pixelRatio: reprojTilePixelRatio,
         gutter: this.gutter_,
         hasAlpha: this.hasAlpha,
-        getTileFunction: (z, x, y, pixelRatio) =>
-          this.getTile(z, x, y, pixelRatio, undefined, tileCache),
+        getTileFunction: (
+          /** @type {number} */ z,
+          /** @type {number} */ x,
+          /** @type {number} */ y,
+          /** @type {number} */ pixelRatio,
+        ) => this.getTile(z, x, y, pixelRatio, undefined, tileCache),
         transformMatrix: this.transformMatrix,
       },
       /** @type {import("../reproj/DataTile.js").Options} */ (this.tileOptions),
@@ -327,7 +331,7 @@ class DataTileSource extends TileSource {
         x,
         y,
         projection,
-        sourceProjection,
+        sourceProjection || projection,
         tileCache,
       );
     }
@@ -335,6 +339,9 @@ class DataTileSource extends TileSource {
     const size = this.getTileSize(z);
 
     const sourceLoader = this.loader_;
+    if (!sourceLoader) {
+      return null;
+    }
 
     const controller = new AbortController();
 
@@ -366,8 +373,13 @@ class DataTileSource extends TileSource {
       loaderOptions.maxY = range.getHeight() - 1;
     }
     function loader() {
+      if (!sourceLoader) {
+        return Promise.reject(new Error('Missing tile loader'));
+      }
       return toPromise(function () {
-        return sourceLoader(requestZ, requestX, requestY, loaderOptions);
+        return /** @type {import("../DataTile.js").Data|Promise<import("../DataTile.js").Data>} */ (
+          sourceLoader(requestZ, requestX, requestY, loaderOptions)
+        );
       });
     }
 
@@ -388,7 +400,12 @@ class DataTileSource extends TileSource {
       /** @type {*} */ (new DataTile(options))
     );
     tile.key = this.getKey();
-    tile.addEventListener(EventType.CHANGE, this.handleTileChange_);
+    tile.addEventListener(
+      EventType.CHANGE,
+      /** @type {import("../events.js").ListenerFunction} */ (
+        this.handleTileChange_
+      ),
+    );
 
     tileCache?.set(cacheKey, tile);
     return tile;

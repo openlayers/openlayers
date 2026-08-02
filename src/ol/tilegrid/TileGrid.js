@@ -135,7 +135,7 @@ class TileGrid {
 
     /**
      * @private
-     * @type {Array<import("../coordinate.js").Coordinate>}
+     * @type {Array<import("../coordinate.js").Coordinate>|null}
      */
     this.origins_ = null;
     if (options.origins !== undefined) {
@@ -159,7 +159,7 @@ class TileGrid {
 
     /**
      * @private
-     * @type {Array<number|import("../size.js").Size>}
+     * @type {Array<number|import("../size.js").Size>|null}
      */
     this.tileSizes_ = null;
     if (options.tileSizes !== undefined) {
@@ -172,7 +172,7 @@ class TileGrid {
 
     /**
      * @private
-     * @type {number|import("../size.js").Size}
+     * @type {number|import("../size.js").Size|null}
      */
     this.tileSize_ =
       options.tileSize !== undefined
@@ -188,13 +188,13 @@ class TileGrid {
 
     /**
      * @private
-     * @type {import("../extent.js").Extent}
+     * @type {import("../extent.js").Extent|null}
      */
     this.extent_ = extent !== undefined ? extent : null;
 
     /**
      * @private
-     * @type {Array<import("../TileRange.js").default>}
+     * @type {Array<import("../TileRange.js").default>|null}
      */
     this.fullTileRanges_ = null;
 
@@ -280,7 +280,7 @@ class TileGrid {
         tileRange = createOrUpdateTileRange(x, x, y, y, tempTileRange);
       } else {
         tileRange = this.getTileRangeForExtentAndZ(
-          tileCoordExtent,
+          /** @type {import("../extent.js").Extent} */ (tileCoordExtent),
           z,
           tempTileRange,
         );
@@ -295,7 +295,7 @@ class TileGrid {
 
   /**
    * Get the extent for this tile grid, if it was configured.
-   * @return {import("../extent.js").Extent} Extent.
+   * @return {import("../extent.js").Extent|null} Extent.
    * @api
    */
   getExtent() {
@@ -330,7 +330,7 @@ class TileGrid {
     if (this.origin_) {
       return this.origin_;
     }
-    return this.origins_[z];
+    return this.origins_ ? this.origins_[z] : [0, 0];
   }
 
   /**
@@ -616,7 +616,7 @@ class TileGrid {
     if (this.tileSize_) {
       return this.tileSize_;
     }
-    return this.tileSizes_[z];
+    return this.tileSizes_ ? this.tileSizes_[z] : DEFAULT_TILE_SIZE;
   }
 
   /**

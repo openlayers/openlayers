@@ -113,7 +113,7 @@ class MultiPoint extends SimpleGeometry {
   /**
    * Return the point at the specified index.
    * @param {number} index Index.
-   * @return {Point} Point.
+   * @return {Point|null} Point.
    * @api
    */
   getPoint(index) {

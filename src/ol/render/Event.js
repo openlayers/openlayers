@@ -37,7 +37,7 @@ class RenderEvent extends Event {
      * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D|WebGLRenderingContext|undefined}
      * @api
      */
-    this.context = context;
+    this.context = context ?? undefined;
   }
 }
 

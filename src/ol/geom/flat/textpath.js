@@ -4,6 +4,9 @@
 import {lerp} from '../../math.js';
 import {rotate} from './transform.js';
 
+/**
+ * @type {Intl.Segmenter|undefined}
+ */
 let segmenter;
 /**
  * @return {Intl.Segmenter} A grapheme segmenter.

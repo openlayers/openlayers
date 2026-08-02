@@ -92,7 +92,7 @@ class TileArcGISRest extends TileImage {
 
     /**
      * @private
-     * @type {!Object}
+     * @type {!Object<string, *>}
      */
     this.params_ = Object.assign({}, options.params);
 

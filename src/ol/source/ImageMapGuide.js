@@ -26,7 +26,7 @@ import {createLoader} from './mapguide.js';
  * @property {import("../Image.js").LoadFunction} [imageLoadFunction] Optional function to load an image given a URL.
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.  By default,
  * linear interpolation is used when resampling.  Set to false to use the nearest neighbor instead.
- * @property {Object} [params] Additional parameters.
+ * @property {Object<string, string|number>} [params] Additional parameters.
  */
 
 /**
@@ -56,7 +56,7 @@ class ImageMapGuide extends ImageSource {
 
     /**
      * @private
-     * @type {ReferrerPolicy}
+     * @type {ReferrerPolicy|undefined}
      */
     this.referrerPolicy_ = options.referrerPolicy;
 
@@ -122,7 +122,7 @@ class ImageMapGuide extends ImageSource {
 
     /**
      * @private
-     * @type {import("../proj/Projection.js").default}
+     * @type {import("../proj/Projection.js").default|null}
      */
     this.loaderProjection_ = null;
   }
@@ -142,7 +142,7 @@ class ImageMapGuide extends ImageSource {
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
    * @param {import("../proj/Projection.js").default} projection Projection.
-   * @return {import("../Image.js").default} Single image.
+   * @return {import("../Image.js").default|null} Single image.
    * @override
    */
   getImageInternal(extent, resolution, pixelRatio, projection) {
@@ -155,15 +155,18 @@ class ImageMapGuide extends ImageSource {
       this.loader = createLoader({
         crossOrigin: this.crossOrigin_,
         referrerPolicy: this.referrerPolicy_,
-        params: this.params_,
+        params: /** @type {Object<string, string|number>} */ (this.params_),
         hidpi: this.hidpi_,
         metersPerUnit: this.metersPerUnit_,
         url: this.url_,
         useOverlay: this.useOverlay_,
         ratio: this.ratio_,
         load: (image, src) => {
-          this.image.setImage(image);
-          this.imageLoadFunction_(this.image, src);
+          const wrapper = /** @type {import("../Image.js").default} */ (
+            this.image
+          );
+          wrapper.setImage(image);
+          this.imageLoadFunction_(wrapper, src);
           return decode(image);
         },
       });

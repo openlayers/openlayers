@@ -27,7 +27,7 @@ class VectorRenderTile extends Tile {
    * @param {import("./tilecoord.js").TileCoord} tileCoord Tile coordinate.
    * @param {import("./TileState.js").default} state State.
    * @param {import("./tilecoord.js").TileCoord} urlTileCoord Wrapped tile coordinate for source urls.
-   * @param {function(VectorRenderTile):Array<import("./VectorTile.js").default>} getSourceTiles Function.
+   * @param {function(VectorRenderTile):Array<import("./VectorTile.js").default<import("./Feature.js").FeatureLike>>} getSourceTiles Function.
    * @param {function(VectorRenderTile):void} removeSourceTiles Function.
    */
   constructor(
@@ -69,7 +69,7 @@ class VectorRenderTile extends Tile {
     this.replayState_ = {};
 
     /**
-     * @type {Array<import("./VectorTile.js").default>}
+     * @type {Array<import("./VectorTile.js").default<import("./Feature.js").FeatureLike>>}
      */
     this.sourceTiles = [];
 
@@ -84,7 +84,7 @@ class VectorRenderTile extends Tile {
     this.wantedResolution;
 
     /**
-     * @type {!function():Array<import("./VectorTile.js").default>}
+     * @type {!function():Array<import("./VectorTile.js").default<import("./Feature.js").FeatureLike>>}
      */
     this.getSourceTiles = getSourceTiles.bind(undefined, this);
 
@@ -119,7 +119,7 @@ class VectorRenderTile extends Tile {
 
   /**
    * Get the Canvas for this tile.
-   * @return {HTMLCanvasElement|OffscreenCanvas} Canvas.
+   * @return {HTMLCanvasElement|OffscreenCanvas|null} Canvas.
    */
   getImage() {
     return this.hasContext() ? this.getContext().canvas : null;

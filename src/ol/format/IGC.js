@@ -71,9 +71,9 @@ class IGC extends TextFeature {
     options = options ? options : {};
 
     /**
-     * @type {import("../proj/Projection.js").default}
+     * @type {import("../proj/Projection.js").default|undefined}
      */
-    this.dataProjection = getProjection('EPSG:4326');
+    this.dataProjection = getProjection('EPSG:4326') ?? undefined;
 
     /**
      * @private
@@ -122,7 +122,7 @@ class IGC extends TextFeature {
    * @protected
    * @param {string} text Text.
    * @param {import("./Feature.js").ReadOptions} [options] Read options.
-   * @return {import("../Feature.js").default} Feature.
+   * @return {import("../Feature.js").default|null} Feature.
    * @override
    */
   readFeatureFromText(text, options) {

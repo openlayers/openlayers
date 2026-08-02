@@ -214,7 +214,7 @@ class Graticule extends VectorLayer {
     super(baseOptions);
 
     /**
-     * @type {import("../proj/Projection.js").default}
+     * @type {import("../proj/Projection.js").default|null}
      * @private
      */
     this.projection_ = null;
@@ -314,43 +314,43 @@ class Graticule extends VectorLayer {
     this.toLonLatTransform_ = undefined;
 
     /**
-     * @type {import("../coordinate.js").Coordinate}
+     * @type {import("../coordinate.js").Coordinate|null}
      * @private
      */
     this.projectionCenterLonLat_ = null;
 
     /**
-     * @type {import("../coordinate.js").Coordinate}
+     * @type {import("../coordinate.js").Coordinate|null}
      * @private
      */
     this.bottomLeft_ = null;
 
     /**
-     * @type {import("../coordinate.js").Coordinate}
+     * @type {import("../coordinate.js").Coordinate|null}
      * @private
      */
     this.bottomRight_ = null;
 
     /**
-     * @type {import("../coordinate.js").Coordinate}
+     * @type {import("../coordinate.js").Coordinate|null}
      * @private
      */
     this.topLeft_ = null;
 
     /**
-     * @type {import("../coordinate.js").Coordinate}
+     * @type {import("../coordinate.js").Coordinate|null}
      * @private
      */
     this.topRight_ = null;
 
     /**
-     * @type {Array<GraticuleLabelDataType>}
+     * @type {Array<GraticuleLabelDataType>|null}
      * @private
      */
     this.meridiansLabels_ = null;
 
     /**
-     * @type {Array<GraticuleLabelDataType>}
+     * @type {Array<GraticuleLabelDataType>|null}
      * @private
      */
     this.parallelsLabels_ = null;
@@ -420,7 +420,7 @@ class Graticule extends VectorLayer {
        */
       this.lonLabelStyle_ = (feature) => {
         const label = feature.get('graticule_label');
-        this.lonLabelStyleBase_.getText().setText(label);
+        this.lonLabelStyleBase_.getText()?.setText(label);
         return this.lonLabelStyleBase_;
       };
 
@@ -452,14 +452,19 @@ class Graticule extends VectorLayer {
        */
       this.latLabelStyle_ = (feature) => {
         const label = feature.get('graticule_label');
-        this.latLabelStyleBase_.getText().setText(label);
+        this.latLabelStyleBase_.getText()?.setText(label);
         return this.latLabelStyleBase_;
       };
 
       this.meridiansLabels_ = [];
       this.parallelsLabels_ = [];
 
-      this.addEventListener(EventType.POSTRENDER, this.drawLabels_.bind(this));
+      this.addEventListener(
+        EventType.POSTRENDER,
+        /** @type {import("../events.js").ListenerFunction} */ (
+          this.drawLabels_.bind(this)
+        ),
+      );
     }
 
     /**
@@ -527,7 +532,8 @@ class Graticule extends VectorLayer {
   strategyFunction(extent, resolution) {
     // extents may be passed in different worlds, to avoid endless loop we use only one
     let realWorldExtent = extent.slice();
-    if (this.projection_ && this.getSource().getWrapX()) {
+    const source = this.getSource();
+    if (this.projection_ && source?.getWrapX()) {
       wrapExtentX(realWorldExtent, this.projection_);
     }
     if (this.loadedExtent_) {
@@ -538,7 +544,7 @@ class Graticule extends VectorLayer {
         realWorldExtent = this.loadedExtent_.slice();
       } else {
         // we should not keep track of loaded extents
-        this.getSource().removeLoadedExtent(this.loadedExtent_);
+        source?.removeLoadedExtent(this.loadedExtent_);
       }
     }
     return [realWorldExtent];
@@ -606,7 +612,10 @@ class Graticule extends VectorLayer {
       this.featurePool_.push(feature);
     }
 
-    const featuresColl = source.getFeaturesCollection();
+    const featuresColl = source?.getFeaturesCollection();
+    if (!featuresColl) {
+      return;
+    }
     featuresColl.clear();
     let poolIndex = 0;
 
@@ -645,7 +654,7 @@ class Graticule extends VectorLayer {
       index,
     );
     if (intersects(lineString.getExtent(), extent)) {
-      if (this.meridiansLabels_) {
+      if (this.meridiansLabels_ && this.lonLabelFormatter_) {
         const text = this.lonLabelFormatter_(lon);
         if (index in this.meridiansLabels_) {
           this.meridiansLabels_[index].text = text;
@@ -701,10 +710,17 @@ class Graticule extends VectorLayer {
    * @private
    */
   drawLabels_(event) {
-    const rotation = event.frameState.viewState.rotation;
-    const resolution = event.frameState.viewState.resolution;
-    const size = event.frameState.size;
-    const extent = event.frameState.extent;
+    const frameState = event.frameState;
+    if (!frameState) {
+      return;
+    }
+    const rotation = frameState.viewState.rotation;
+    const resolution = frameState.viewState.resolution;
+    const size = frameState.size;
+    const extent = frameState.extent;
+    if (!extent) {
+      return;
+    }
     const rotationCenter = getCenter(extent);
     let rotationExtent = extent;
     if (rotation) {
@@ -721,11 +737,16 @@ class Graticule extends VectorLayer {
     let startWorld = 0;
     let endWorld = 0;
     let labelsAtStart = this.latLabelPosition_ < 0.5;
-    const projectionExtent = this.projection_.getExtent();
+    const projection = this.projection_;
+    if (!projection) {
+      return;
+    }
+    const projectionExtent = projection.getExtent();
     const worldWidth = getWidth(projectionExtent);
+    const source = this.getSource();
     if (
-      this.getSource().getWrapX() &&
-      this.projection_.canWrapX() &&
+      source?.getWrapX() &&
+      projection.canWrapX() &&
       !containsExtent(projectionExtent, extent)
     ) {
       startWorld = Math.floor((extent[0] - projectionExtent[0]) / worldWidth);
@@ -739,7 +760,7 @@ class Graticule extends VectorLayer {
       let poolIndex = this.meridians_.length + this.parallels_.length;
       let feature, index, l, textPoint;
 
-      if (this.meridiansLabels_) {
+      if (this.meridiansLabels_ && this.lonLabelFormatter_) {
         for (index = 0, l = this.meridiansLabels_.length; index < l; ++index) {
           const lineString = this.meridians_[index];
           if (!rotation && world === 0) {
@@ -754,10 +775,18 @@ class Graticule extends VectorLayer {
           feature = this.featurePool_[poolIndex++];
           feature.setGeometry(textPoint);
           feature.set('graticule_label', this.meridiansLabels_[index].text);
-          vectorContext.drawFeature(feature, this.lonLabelStyle_(feature));
+          if (this.lonLabelStyle_) {
+            const lonStyle = this.lonLabelStyle_(feature);
+            vectorContext.drawFeature(
+              feature,
+              /** @type {import("../style/Style.js").default} */ (
+                Array.isArray(lonStyle) ? lonStyle[0] : lonStyle
+              ),
+            );
+          }
         }
       }
-      if (this.parallelsLabels_) {
+      if (this.parallelsLabels_ && this.latLabelStyle_) {
         if (
           (world === startWorld && labelsAtStart) ||
           (world === endWorld && !labelsAtStart)
@@ -776,7 +805,13 @@ class Graticule extends VectorLayer {
             feature = this.featurePool_[poolIndex++];
             feature.setGeometry(textPoint);
             feature.set('graticule_label', this.parallelsLabels_[index].text);
-            vectorContext.drawFeature(feature, this.latLabelStyle_(feature));
+            const latStyle = this.latLabelStyle_(feature);
+            vectorContext.drawFeature(
+              feature,
+              /** @type {import("../style/Style.js").default} */ (
+                Array.isArray(latStyle) ? latStyle[0] : latStyle
+              ),
+            );
           }
         }
       }
@@ -805,11 +840,16 @@ class Graticule extends VectorLayer {
     }
 
     let wrapX = false;
-    const projectionExtent = this.projection_.getExtent();
+    const projection = this.projection_;
+    if (!projection || !this.toLonLatTransform_) {
+      return;
+    }
+    const projectionExtent = projection.getExtent();
     const worldWidth = getWidth(projectionExtent);
+    const source = this.getSource();
     if (
-      this.getSource().getWrapX() &&
-      this.projection_.canWrapX() &&
+      source?.getWrapX() &&
+      projection.canWrapX() &&
       !containsExtent(projectionExtent, extent)
     ) {
       if (getWidth(extent) >= worldWidth) {
@@ -874,19 +914,43 @@ class Graticule extends VectorLayer {
       // (for example the pole in a polar projection)
       // and extend the extent as appropriate
 
-      if (containsCoordinate(validExtentP, this.bottomLeft_)) {
+      if (
+        containsCoordinate(
+          validExtentP,
+          /** @type {import("../coordinate.js").Coordinate} */ (
+            this.bottomLeft_
+          ),
+        )
+      ) {
         minLon = this.minLon_;
         minLat = this.minLat_;
       }
-      if (containsCoordinate(validExtentP, this.bottomRight_)) {
+      if (
+        containsCoordinate(
+          validExtentP,
+          /** @type {import("../coordinate.js").Coordinate} */ (
+            this.bottomRight_
+          ),
+        )
+      ) {
         maxLon = this.maxLon_;
         minLat = this.minLat_;
       }
-      if (containsCoordinate(validExtentP, this.topLeft_)) {
+      if (
+        containsCoordinate(
+          validExtentP,
+          /** @type {import("../coordinate.js").Coordinate} */ (this.topLeft_),
+        )
+      ) {
         minLon = this.minLon_;
         maxLat = this.maxLat_;
       }
-      if (containsCoordinate(validExtentP, this.topRight_)) {
+      if (
+        containsCoordinate(
+          validExtentP,
+          /** @type {import("../coordinate.js").Coordinate} */ (this.topRight_),
+        )
+      ) {
         maxLon = this.maxLon_;
         maxLat = this.maxLat_;
       }
@@ -1012,6 +1076,9 @@ class Graticule extends VectorLayer {
    * @private
    */
   getInterval_(resolution) {
+    if (!this.projectionCenterLonLat_ || !this.fromLonLatTransform_) {
+      return -1;
+    }
     const centerLon = this.projectionCenterLonLat_[0];
     const centerLat = this.projectionCenterLonLat_[1];
     let interval = -1;
@@ -1053,7 +1120,7 @@ class Graticule extends VectorLayer {
       lon,
       minLat,
       maxLat,
-      this.projection_,
+      /** @type {import("../proj/Projection.js").default} */ (this.projection_),
       squaredTolerance,
     );
     let lineString = this.meridians_[index];
@@ -1095,7 +1162,10 @@ class Graticule extends VectorLayer {
         (lat - flatCoordinates[bottom])) /
         (flatCoordinates[top] - flatCoordinates[bottom]);
     const coordinate = [coordinate0, lat];
-    const point = this.meridiansLabels_[index].geom;
+    const point = this.meridiansLabels_?.[index]?.geom;
+    if (!point) {
+      return new Point(coordinate);
+    }
     point.setCoordinates(coordinate);
     return point;
   }
@@ -1123,7 +1193,7 @@ class Graticule extends VectorLayer {
       lat,
       minLon,
       maxLon,
-      this.projection_,
+      /** @type {import("../proj/Projection.js").default} */ (this.projection_),
       squaredTolerance,
     );
     let lineString = this.parallels_[index];
@@ -1164,7 +1234,10 @@ class Graticule extends VectorLayer {
         (lon - flatCoordinates[left])) /
         (flatCoordinates[right] - flatCoordinates[left]);
     const coordinate = [lon, coordinate1];
-    const point = this.parallelsLabels_[index].geom;
+    const point = this.parallelsLabels_?.[index]?.geom;
+    if (!point) {
+      return new Point(coordinate);
+    }
     point.setCoordinates(coordinate);
     return point;
   }
@@ -1184,6 +1257,9 @@ class Graticule extends VectorLayer {
    */
   updateProjectionInfo_(projection) {
     const epsg4326Projection = getProjection('EPSG:4326');
+    if (!epsg4326Projection) {
+      return;
+    }
 
     const worldExtent = projection.getWorldExtent();
 
@@ -1196,6 +1272,9 @@ class Graticule extends VectorLayer {
     // return longitudes which wrap the dateline
 
     const toLonLatTransform = getTransform(projection, epsg4326Projection);
+    if (!toLonLatTransform) {
+      return;
+    }
     if (this.minLon_ < this.maxLon_) {
       this.toLonLatTransform_ = toLonLatTransform;
     } else {
@@ -1220,10 +1299,14 @@ class Graticule extends VectorLayer {
     // Transform the extent to get the limits of the view projection extent
     // which should be available to the graticule
 
-    this.fromLonLatTransform_ = getTransform(epsg4326Projection, projection);
+    const fromLonLatTransform = getTransform(epsg4326Projection, projection);
+    if (!fromLonLatTransform) {
+      return;
+    }
+    this.fromLonLatTransform_ = fromLonLatTransform;
     const worldExtentP = applyTransform(
       [this.minLon_, this.minLat_, this.maxLon_, this.maxLat_],
-      this.fromLonLatTransform_,
+      fromLonLatTransform,
       undefined,
       8,
     );
@@ -1236,18 +1319,20 @@ class Graticule extends VectorLayer {
     // Determine the view projection coordinates of the extremities of the world extent
     // as these may lie inside a view extent (for example the pole in a polar projection)
 
-    this.bottomLeft_ = this.fromLonLatTransform_([this.minLon_, this.minLat_]);
-    this.bottomRight_ = this.fromLonLatTransform_([this.maxLon_, this.minLat_]);
-    this.topLeft_ = this.fromLonLatTransform_([this.minLon_, this.maxLat_]);
-    this.topRight_ = this.fromLonLatTransform_([this.maxLon_, this.maxLat_]);
+    this.bottomLeft_ = fromLonLatTransform([this.minLon_, this.minLat_]);
+    this.bottomRight_ = fromLonLatTransform([this.maxLon_, this.minLat_]);
+    this.topLeft_ = fromLonLatTransform([this.minLon_, this.maxLat_]);
+    this.topRight_ = fromLonLatTransform([this.maxLon_, this.maxLat_]);
 
     // Transform the projection center to lon lat
     // Some projections may have a void area at the poles
     // so replace any NaN latitudes with the min or max value closest to a pole
 
-    this.projectionCenterLonLat_ = this.toLonLatTransform_(
-      getCenter(projection.getExtent()),
-    );
+    const toLonLat = this.toLonLatTransform_;
+    if (!toLonLat) {
+      return;
+    }
+    this.projectionCenterLonLat_ = toLonLat(getCenter(projection.getExtent()));
     if (isNaN(this.projectionCenterLonLat_[1])) {
       this.projectionCenterLonLat_[1] =
         Math.abs(this.maxLat_) >= Math.abs(this.minLat_)

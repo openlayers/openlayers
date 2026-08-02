@@ -126,7 +126,7 @@ class Icon extends ImageStyle {
 
     /**
      * @private
-     * @type {Array<number>}
+     * @type {Array<number>|null}
      */
     this.normalizedAnchor_ = null;
 
@@ -160,7 +160,7 @@ class Icon extends ImageStyle {
 
     /**
      * @private
-     * @type {ReferrerPolicy}
+     * @type {ReferrerPolicy|undefined}
      */
     this.referrerPolicy_ = options.referrerPolicy;
 
@@ -174,7 +174,9 @@ class Icon extends ImageStyle {
     );
 
     if ((cacheKey === undefined || cacheKey.length === 0) && image) {
-      cacheKey = /** @type {HTMLImageElement} */ (image).src || getUid(image);
+      cacheKey =
+        /** @type {HTMLImageElement} */ (image).src ||
+        getUid(/** @type {Object} */ (image));
     }
     assert(
       cacheKey !== undefined && cacheKey.length > 0,
@@ -193,9 +195,11 @@ class Icon extends ImageStyle {
     if (options.src !== undefined) {
       imageState = ImageState.IDLE;
     } else if (image !== undefined) {
-      if ('complete' in image) {
-        if (image.complete) {
-          imageState = image.src ? ImageState.LOADED : ImageState.IDLE;
+      if ('complete' in /** @type {HTMLImageElement} */ (image)) {
+        if (/** @type {HTMLImageElement} */ (image).complete) {
+          imageState = /** @type {HTMLImageElement} */ (image).src
+            ? ImageState.LOADED
+            : ImageState.IDLE;
         } else {
           imageState = ImageState.LOADING;
         }
@@ -206,7 +210,7 @@ class Icon extends ImageStyle {
 
     /**
      * @private
-     * @type {import("../color.js").Color}
+     * @type {import("../color.js").Color|null}
      */
     this.color_ = options.color !== undefined ? asArray(options.color) : null;
 
@@ -239,13 +243,13 @@ class Icon extends ImageStyle {
 
     /**
      * @private
-     * @type {Array<number>}
+     * @type {Array<number>|null}
      */
     this.origin_ = null;
 
     /**
      * @private
-     * @type {import("../size.js").Size}
+     * @type {import("../size.js").Size|null}
      */
     this.size_ = options.size !== undefined ? options.size : null;
 
@@ -274,6 +278,9 @@ class Icon extends ImageStyle {
               return;
             }
             const imageSize = this.iconImage_.getSize();
+            if (!imageSize) {
+              return;
+            }
             this.setScale(
               calculateScale(
                 imageSize[0],
@@ -289,7 +296,12 @@ class Icon extends ImageStyle {
       }
       if (width !== undefined) {
         this.setScale(
-          calculateScale(width, height, options.width, options.height),
+          calculateScale(
+            width,
+            /** @type {number} */ (height),
+            options.width,
+            options.height,
+          ),
         );
       }
     }
@@ -339,7 +351,7 @@ class Icon extends ImageStyle {
   /**
    * Get the anchor point in pixels. The anchor determines the center point for the
    * symbolizer.
-   * @return {Array<number>} Anchor.
+   * @return {Array<number>|null} Anchor.
    * @api
    * @override
    */
@@ -410,7 +422,7 @@ class Icon extends ImageStyle {
 
   /**
    * Get the icon color.
-   * @return {import("../color.js").Color} Color.
+   * @return {import("../color.js").Color|null} Color.
    * @api
    */
   getColor() {
@@ -480,7 +492,7 @@ class Icon extends ImageStyle {
   }
 
   /**
-   * @return {import("../size.js").Size} Image size.
+   * @return {import("../size.js").Size|null} Image size.
    * @override
    */
   getImageSize() {
@@ -505,7 +517,7 @@ class Icon extends ImageStyle {
 
   /**
    * Get the origin of the symbolizer.
-   * @return {Array<number>} Origin.
+   * @return {Array<number>|null} Origin.
    * @api
    * @override
    */
@@ -568,7 +580,7 @@ class Icon extends ImageStyle {
 
   /**
    * Get the size of the icon (in pixels).
-   * @return {import("../size.js").Size} Image size.
+   * @return {import("../size.js").Size|null} Image size.
    * @api
    * @override
    */
@@ -578,7 +590,7 @@ class Icon extends ImageStyle {
 
   /**
    * Get the width of the icon (in pixels). Will return undefined when the icon image is not yet loaded.
-   * @return {number} Icon width (in pixels).
+   * @return {number|undefined} Icon width (in pixels).
    * @api
    */
   getWidth() {
@@ -587,14 +599,17 @@ class Icon extends ImageStyle {
       return this.size_[0] * scale[0];
     }
     if (this.iconImage_.getImageState() == ImageState.LOADED) {
-      return this.iconImage_.getSize()[0] * scale[0];
+      const size = this.iconImage_.getSize();
+      if (size) {
+        return size[0] * scale[0];
+      }
     }
     return undefined;
   }
 
   /**
    * Get the height of the icon (in pixels). Will return undefined when the icon image is not yet loaded.
-   * @return {number} Icon height (in pixels).
+   * @return {number|undefined} Icon height (in pixels).
    * @api
    */
   getHeight() {
@@ -603,7 +618,10 @@ class Icon extends ImageStyle {
       return this.size_[1] * scale[1];
     }
     if (this.iconImage_.getImageState() == ImageState.LOADED) {
-      return this.iconImage_.getSize()[1] * scale[1];
+      const size = this.iconImage_.getSize();
+      if (size) {
+        return size[1] * scale[1];
+      }
     }
     return undefined;
   }
@@ -625,7 +643,10 @@ class Icon extends ImageStyle {
    * @override
    */
   listenImageChange(listener) {
-    this.iconImage_.addEventListener(EventType.CHANGE, listener);
+    this.iconImage_.addEventListener(
+      EventType.CHANGE,
+      /** @type {import("../events.js").ListenerFunction} */ (listener),
+    );
   }
 
   /**
@@ -645,7 +666,10 @@ class Icon extends ImageStyle {
    * @override
    */
   unlistenImageChange(listener) {
-    this.iconImage_.removeEventListener(EventType.CHANGE, listener);
+    this.iconImage_.removeEventListener(
+      EventType.CHANGE,
+      /** @type {import("../events.js").ListenerFunction} */ (listener),
+    );
   }
 
   /**

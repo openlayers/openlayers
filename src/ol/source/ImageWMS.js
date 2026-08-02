@@ -65,7 +65,7 @@ class ImageWMS extends ImageSource {
 
     /**
      * @private
-     * @type {ReferrerPolicy}
+     * @type {ReferrerPolicy|undefined}
      */
     this.referrerPolicy_ = options.referrerPolicy;
 
@@ -92,7 +92,7 @@ class ImageWMS extends ImageSource {
 
     /**
      * @private
-     * @type {import("./wms.js").ServerType}
+     * @type {import("./wms.js").ServerType|undefined}
      */
     this.serverType_ = options.serverType;
 
@@ -116,9 +116,9 @@ class ImageWMS extends ImageSource {
 
     /**
      * @private
-     * @type {import("../proj/Projection.js").default}
+     * @type {import("../proj/Projection.js").default|undefined}
      */
-    this.loaderProjection_ = null;
+    this.loaderProjection_ = undefined;
   }
 
   /**
@@ -136,7 +136,10 @@ class ImageWMS extends ImageSource {
    * @api
    */
   getFeatureInfoUrl(coordinate, resolution, projection, params) {
-    const projectionObj = getProjection(projection);
+    const projectionObj =
+      /** @type {import("../proj/Projection.js").default} */ (
+        getProjection(projection)
+      );
     const sourceProjectionObj = this.getProjection();
 
     if (sourceProjectionObj && sourceProjectionObj !== projectionObj) {
@@ -149,8 +152,13 @@ class ImageWMS extends ImageSource {
       coordinate = transform(coordinate, projectionObj, sourceProjectionObj);
     }
 
+    const url = this.url_;
+    if (!url) {
+      return undefined;
+    }
+
     const options = {
-      url: this.url_,
+      url: url,
       params: {
         ...this.params_,
         ...params,
@@ -175,9 +183,13 @@ class ImageWMS extends ImageSource {
    * @api
    */
   getLegendUrl(resolution, params) {
+    const url = this.url_;
+    if (!url) {
+      return undefined;
+    }
     return getLegendUrl(
       {
-        url: this.url_,
+        url: url,
         params: {
           ...this.params_,
           ...params,
@@ -202,7 +214,7 @@ class ImageWMS extends ImageSource {
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
    * @param {import("../proj/Projection.js").default} projection Projection.
-   * @return {import("../Image.js").default} Single image.
+   * @return {import("../Image.js").default|null} Single image.
    * @override
    */
   getImageInternal(extent, resolution, pixelRatio, projection) {
@@ -222,8 +234,11 @@ class ImageWMS extends ImageSource {
         url: this.url_,
         ratio: this.ratio_,
         load: (image, src) => {
-          this.image.setImage(image);
-          this.imageLoadFunction_(this.image, src);
+          const wrapper = this.image;
+          if (wrapper) {
+            wrapper.setImage(image);
+            this.imageLoadFunction_(wrapper, src);
+          }
           return decode(image);
         },
       });

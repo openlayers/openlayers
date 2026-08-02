@@ -120,7 +120,7 @@ class ImageWrapper extends EventTarget {
   }
 
   /**
-   * @return {import('./DataTile.js').ImageLike} Image.
+   * @return {import('./DataTile.js').ImageLike|null} Image.
    */
   getImage() {
     return this.image_;
@@ -152,7 +152,8 @@ class ImageWrapper extends EventTarget {
    */
   load() {
     if (this.state == ImageState.IDLE) {
-      if (this.loader) {
+      const loader = this.loader;
+      if (loader) {
         this.state = ImageState.LOADING;
         this.changed();
         const resolution = this.getResolution();
@@ -160,23 +161,19 @@ class ImageWrapper extends EventTarget {
           ? resolution[0]
           : resolution;
         toPromise(() =>
-          this.loader(
-            this.getExtent(),
-            requestResolution,
-            this.getPixelRatio(),
-          ),
+          loader(this.getExtent(), requestResolution, this.getPixelRatio()),
         )
           .then((image) => {
             if ('image' in image) {
               this.image_ = image.image;
             }
-            if ('extent' in image) {
+            if ('extent' in image && image.extent) {
               this.extent = image.extent;
             }
-            if ('resolution' in image) {
+            if ('resolution' in image && image.resolution !== undefined) {
               this.resolution = image.resolution;
             }
-            if ('pixelRatio' in image) {
+            if ('pixelRatio' in image && image.pixelRatio !== undefined) {
               this.pixelRatio_ = image.pixelRatio;
             }
             if (

@@ -51,7 +51,7 @@ class BaseTileRepresentation extends EventTarget {
     this.gutter = options.gutter || 0;
 
     /**
-     * @type {import("../webgl/Helper.js").default}
+     * @type {import("./Helper.js").default|undefined}
      * @protected
      */
     this.helper = options.helper;
@@ -105,10 +105,10 @@ class BaseTileRepresentation extends EventTarget {
   }
 
   /**
-   * @param {import("./Helper.js").default} helper The WebGL helper.
+   * @param {import("./Helper.js").default|null} helper The WebGL helper.
    */
   setHelper(helper) {
-    this.helper = helper;
+    this.helper = /** @type {import("./Helper.js").default} */ (helper);
     if (this.helper && this.loaded) {
       this.uploadTile();
     }

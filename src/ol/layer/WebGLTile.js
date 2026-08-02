@@ -183,13 +183,15 @@ function parseStyle(style, bandCount, nodataBandIndex) {
     );
   }
 
+  const styleVariables = style.variables || {};
+
   for (const [variableName] of context.variables.entries()) {
-    if (!(variableName in style.variables)) {
+    if (!(variableName in styleVariables)) {
       throw new Error(`Missing '${variableName}' in style variables`);
     }
     const uniformName = uniformNameForVariable(variableName);
     uniforms[uniformName] = function () {
-      let value = style.variables[variableName];
+      let value = styleVariables[variableName];
       if (typeof value === 'string') {
         value = getStringNumberEquivalent(value);
       }
@@ -201,7 +203,8 @@ function parseStyle(style, bandCount, nodataBandIndex) {
     return `uniform float ${name};`;
   });
 
-  const textureCount = Math.ceil(bandCount / 4);
+  const bandCountValue = bandCount !== undefined ? bandCount : 4;
+  const textureCount = Math.ceil(bandCountValue / 4);
   uniformDeclarations.push(
     `uniform sampler2D ${Uniforms.TILE_TEXTURE_ARRAY}[${textureCount}];`,
   );
@@ -213,12 +216,16 @@ function parseStyle(style, bandCount, nodataBandIndex) {
   }
 
   // Ensure getBandValue function exists when nodata discard is needed
-  if (nodataBandIndex > 0 && !('getBandValue' in context.functions)) {
+  if (
+    nodataBandIndex &&
+    nodataBandIndex > 0 &&
+    !('getBandValue' in context.functions)
+  ) {
     let ifBlocks = '';
-    for (let i = 0; i < bandCount; i++) {
+    for (let i = 0; i < bandCountValue; i++) {
       const colorIndex = Math.floor(i / 4);
       let bandIndex = i % 4;
-      if (i === bandCount - 1 && bandIndex === 1) {
+      if (i === bandCountValue - 1 && bandIndex === 1) {
         // LUMINANCE_ALPHA - band 1 assigned to rgb and band 2 assigned to alpha
         bandIndex = 3;
       }
@@ -284,7 +291,7 @@ function parseStyle(style, bandCount, nodataBandIndex) {
     vertexShader: vertexShader,
     fragmentShader: fragmentShader,
     uniforms: uniforms,
-    paletteTextures: context.paletteTextures,
+    paletteTextures: context.paletteTextures || [],
   };
 }
 
@@ -296,7 +303,7 @@ function parseStyle(style, bandCount, nodataBandIndex) {
  * property on the layer object; for example, setting `title: 'My Title'` in the
  * options means that `title` is observable, and has get/set accessors.
  *
- * @extends BaseTileLayer<SourceType, WebGLTileLayerRenderer>
+ * @extends BaseTileLayer<SourceType, WebGLTileLayerRenderer<WebGLTileLayer>>
  * @fires import("../render/Event.js").RenderEvent#prerender
  * @fires import("../render/Event.js").RenderEvent#postrender
  * @api
@@ -314,10 +321,13 @@ class WebGLTileLayer extends BaseTileLayer {
     super(options);
 
     /**
-     * @type {Array<SourceType>|function(import("../extent.js").Extent, number):Array<SourceType>}
+     * @type {Array<SourceType>|function(import("../extent.js").Extent, number):Array<SourceType>|undefined}
      * @private
      */
-    this.sources_ = options.sources;
+    this.sources_ =
+      /** @type {Array<SourceType>|function(import("../extent.js").Extent, number):Array<SourceType>|undefined} */ (
+        options.sources
+      );
 
     /**
      * @type {SourceType|null}
@@ -370,17 +380,16 @@ class WebGLTileLayer extends BaseTileLayer {
    */
   getSources(extent, resolution) {
     const source = this.getSource();
-    return this.sources_
-      ? typeof this.sources_ === 'function'
-        ? this.sources_(extent, resolution)
-        : this.sources_
-      : source
-        ? [source]
-        : [];
+    if (this.sources_) {
+      return typeof this.sources_ === 'function'
+        ? this.sources_(extent, resolution) || []
+        : this.sources_;
+    }
+    return source ? [source] : [];
   }
 
   /**
-   * @return {SourceType} The source being rendered.
+   * @return {SourceType|null} The source being rendered.
    * @override
    */
   getRenderSource() {
@@ -401,7 +410,7 @@ class WebGLTileLayer extends BaseTileLayer {
    */
   handleSourceUpdate_() {
     if (this.hasRenderer()) {
-      this.getRenderer().clearCache();
+      this.getRenderer()?.clearCache();
     }
     const source = this.getSource();
     if (source) {
@@ -421,7 +430,7 @@ class WebGLTileLayer extends BaseTileLayer {
 
   /**
    * @private
-   * @return {SourceType} The first render source (or null).
+   * @return {SourceType|null} The first render source (or null).
    */
   getFirstSource_() {
     const max = Number.MAX_SAFE_INTEGER;
@@ -453,7 +462,10 @@ class WebGLTileLayer extends BaseTileLayer {
   getSourceBandCount_(projection) {
     const source = this.getFirstSource_();
     const bandCount = source && 'bandCount' in source ? source.bandCount : 4;
-    return this.usesCoverageBand_(source, projection)
+    return this.usesCoverageBand_(
+      /** @type {SourceType} */ (source),
+      projection,
+    )
       ? bandCount + 1
       : bandCount;
   }
@@ -499,7 +511,7 @@ class WebGLTileLayer extends BaseTileLayer {
    */
   applyShaders_(projection) {
     const parsedStyle = this.parseStyleForRender_(projection);
-    this.getRenderer().reset({
+    this.getRenderer()?.reset({
       vertexShader: parsedStyle.vertexShader,
       fragmentShader: parsedStyle.fragmentShader,
       uniforms: parsedStyle.uniforms,
@@ -530,6 +542,9 @@ class WebGLTileLayer extends BaseTileLayer {
    */
   renderSources(frameState, sources) {
     const layerRenderer = this.getRenderer();
+    if (!layerRenderer) {
+      return /** @type {HTMLElement} */ (document.createElement('div'));
+    }
     let canvas;
     for (let i = 0, ii = sources.length; i < ii; ++i) {
       this.renderedSource_ = sources[i];
@@ -537,7 +552,7 @@ class WebGLTileLayer extends BaseTileLayer {
         canvas = layerRenderer.renderFrame(frameState);
       }
     }
-    return canvas;
+    return canvas || /** @type {HTMLElement} */ (document.createElement('div'));
   }
 
   /**
@@ -549,7 +564,14 @@ class WebGLTileLayer extends BaseTileLayer {
    */
   render(frameState, target) {
     this.rendered = true;
+    if (!frameState) {
+      return /** @type {HTMLElement} */ (document.createElement('div'));
+    }
     const viewState = frameState.viewState;
+    const extent = frameState.extent;
+    if (!extent) {
+      return /** @type {HTMLElement} */ (document.createElement('div'));
+    }
 
     // Reprojecting an alpha-less source appends a coverage band, changing the
     // band layout the shaders must read.  Rebuild them when that changes (e.g.
@@ -565,7 +587,7 @@ class WebGLTileLayer extends BaseTileLayer {
       }
     }
 
-    const sources = this.getSources(frameState.extent, viewState.resolution);
+    const sources = this.getSources(extent, viewState.resolution);
     let ready = true;
     for (let i = 0, ii = sources.length; i < ii; ++i) {
       const source = sources[i];
@@ -582,7 +604,8 @@ class WebGLTileLayer extends BaseTileLayer {
       ready = ready && sourceState == 'ready';
     }
     const canvas = this.renderSources(frameState, sources);
-    if (this.getRenderer().renderComplete && ready) {
+    const renderer = this.getRenderer();
+    if (renderer?.renderComplete && ready) {
       // Fully rendered, done.
       this.renderedResolution_ = viewState.resolution;
       return canvas;
@@ -590,7 +613,7 @@ class WebGLTileLayer extends BaseTileLayer {
     // Render sources from previously fully rendered frames
     if (this.renderedResolution_ > 0.5 * viewState.resolution) {
       const altSources = this.getSources(
-        frameState.extent,
+        extent,
         this.renderedResolution_,
       ).filter((source) => !sources.includes(source));
       if (altSources.length > 0) {

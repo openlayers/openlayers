@@ -24,8 +24,8 @@ export const DEFAULT_RADIUS = 6371008.8;
 
 /**
  * Get the great circle distance (in meters) between two geographic coordinates.
- * @param {Array} c1 Starting coordinate.
- * @param {Array} c2 Ending coordinate.
+ * @param {import("./coordinate.js").Coordinate} c1 Starting coordinate.
+ * @param {import("./coordinate.js").Coordinate} c2 Ending coordinate.
  * @param {number} [radius] The sphere radius to use.  Defaults to the Earth's
  *     mean radius using the WGS84 ellipsoid.
  * @return {number} The great circle distance between the points (in meters).
@@ -48,7 +48,7 @@ export function getDistance(c1, c2, radius) {
 
 /**
  * Get the cumulative great circle length of linestring coordinates (geographic).
- * @param {Array} coordinates Linestring coordinates.
+ * @param {Array<import("./coordinate.js").Coordinate>} coordinates Linestring coordinates.
  * @param {number} radius The sphere radius to use.
  * @return {number} The length (in meters).
  */
@@ -92,7 +92,9 @@ export function getLength(geometry, options) {
       coordinates = /** @type {import("./geom/SimpleGeometry.js").default} */ (
         geometry
       ).getCoordinates();
-      length = getLengthInternal(coordinates, radius);
+      if (coordinates) {
+        length = getLengthInternal(coordinates, radius);
+      }
       break;
     }
     case 'MultiLineString':
@@ -100,8 +102,10 @@ export function getLength(geometry, options) {
       coordinates = /** @type {import("./geom/SimpleGeometry.js").default} */ (
         geometry
       ).getCoordinates();
-      for (i = 0, ii = coordinates.length; i < ii; ++i) {
-        length += getLengthInternal(coordinates[i], radius);
+      if (coordinates) {
+        for (i = 0, ii = coordinates.length; i < ii; ++i) {
+          length += getLengthInternal(coordinates[i], radius);
+        }
       }
       break;
     }
@@ -109,10 +113,12 @@ export function getLength(geometry, options) {
       coordinates = /** @type {import("./geom/SimpleGeometry.js").default} */ (
         geometry
       ).getCoordinates();
-      for (i = 0, ii = coordinates.length; i < ii; ++i) {
-        coords = coordinates[i];
-        for (j = 0, jj = coords.length; j < jj; ++j) {
-          length += getLengthInternal(coords[j], radius);
+      if (coordinates) {
+        for (i = 0, ii = coordinates.length; i < ii; ++i) {
+          coords = coordinates[i];
+          for (j = 0, jj = coords.length; j < jj; ++j) {
+            length += getLengthInternal(coords[j], radius);
+          }
         }
       }
       break;
@@ -207,11 +213,13 @@ export function getArea(geometry, options) {
       coordinates = /** @type {import("./geom/SimpleGeometry.js").default} */ (
         geometry
       ).getCoordinates();
-      for (i = 0, ii = coordinates.length; i < ii; ++i) {
-        coords = coordinates[i];
-        area += Math.abs(getAreaInternal(coords[0], radius));
-        for (j = 1, jj = coords.length; j < jj; ++j) {
-          area -= Math.abs(getAreaInternal(coords[j], radius));
+      if (coordinates) {
+        for (i = 0, ii = coordinates.length; i < ii; ++i) {
+          coords = coordinates[i];
+          area += Math.abs(getAreaInternal(coords[0], radius));
+          for (j = 1, jj = coords.length; j < jj; ++j) {
+            area -= Math.abs(getAreaInternal(coords[j], radius));
+          }
         }
       }
       break;

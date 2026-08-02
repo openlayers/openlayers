@@ -217,6 +217,14 @@ export function isType(type, expected) {
 }
 
 /**
+ * @param {unknown} err The caught error.
+ * @return {string} The error message.
+ */
+function getErrorMessage(err) {
+  return err instanceof Error ? err.message : String(err);
+}
+
+/**
  * @typedef {boolean|number|string|Array<number>} LiteralValue
  */
 
@@ -281,7 +289,7 @@ export function newParsingContext(inputVariables) {
 }
 
 /**
- * @typedef {LiteralValue|Array} EncodedExpression
+ * @typedef {LiteralValue|Array<*>} EncodedExpression
  */
 
 /**
@@ -437,7 +445,7 @@ export const Ops = {
 };
 
 /**
- * @typedef {function(Array, number, ParsingContext):Expression} Parser
+ * @typedef {function(Array<*>, number, ParsingContext):Expression} Parser
  *
  * Second argument is the expected type.
  */
@@ -698,7 +706,7 @@ function createVarExpressionParser() {
     }
 
     if (context.variables.has(name)) {
-      const existingType = context.variables.get(name);
+      const existingType = /** @type {number} */ (context.variables.get(name));
       type &= existingType;
       if (type === NoneType) {
         throw new Error(
@@ -892,8 +900,9 @@ function withMatchArgs(encoded, returnType, context) {
       const match = parse(encoded[i + 2], inputType, context);
       inputType &= match.type;
     } catch (err) {
+      const message = getErrorMessage(err);
       throw new Error(
-        `failed to parse argument ${i + 1} of match expression: ${err.message}`,
+        `failed to parse argument ${i + 1} of match expression: ${message}`,
       );
     }
     if (inputType === NoneType) {
@@ -908,8 +917,9 @@ function withMatchArgs(encoded, returnType, context) {
       const match = parse(encoded[i + 2], inputType, context);
       args[i] = match;
     } catch (err) {
+      const message = getErrorMessage(err);
       throw new Error(
-        `failed to parse argument ${i + 1} of match expression: ${err.message}`,
+        `failed to parse argument ${i + 1} of match expression: ${message}`,
       );
     }
     try {
@@ -917,7 +927,7 @@ function withMatchArgs(encoded, returnType, context) {
       args[i + 1] = output;
     } catch (err) {
       throw new Error(
-        `failed to parse argument ${i + 2} of match expression: ${err.message}`,
+        `failed to parse argument ${i + 2} of match expression: ${getErrorMessage(err)}`,
       );
     }
   }
@@ -931,7 +941,7 @@ function withMatchArgs(encoded, returnType, context) {
  * @type {ArgValidator}
  */
 function withInterpolateArgs(encoded, returnType, context) {
-  const interpolationType = encoded[1];
+  const interpolationType = /** @type {Array<*>} */ (encoded[1]);
   /**
    * @type {number}
    */
@@ -963,7 +973,7 @@ function withInterpolateArgs(encoded, returnType, context) {
     input = parse(encoded[2], NumberType, context);
   } catch (err) {
     throw new Error(
-      `failed to parse argument 1 in interpolate expression: ${err.message}`,
+      `failed to parse argument 1 in interpolate expression: ${getErrorMessage(err)}`,
     );
   }
 
@@ -974,7 +984,7 @@ function withInterpolateArgs(encoded, returnType, context) {
       args[i] = stop;
     } catch (err) {
       throw new Error(
-        `failed to parse argument ${i + 2} for interpolate expression: ${err.message}`,
+        `failed to parse argument ${i + 2} for interpolate expression: ${getErrorMessage(err)}`,
       );
     }
     try {
@@ -982,7 +992,7 @@ function withInterpolateArgs(encoded, returnType, context) {
       args[i + 1] = output;
     } catch (err) {
       throw new Error(
-        `failed to parse argument ${i + 3} for interpolate expression: ${err.message}`,
+        `failed to parse argument ${i + 3} for interpolate expression: ${getErrorMessage(err)}`,
       );
     }
   }
@@ -1003,7 +1013,7 @@ function withCaseArgs(encoded, returnType, context) {
       args[i] = condition;
     } catch (err) {
       throw new Error(
-        `failed to parse argument ${i} of case expression: ${err.message}`,
+        `failed to parse argument ${i} of case expression: ${getErrorMessage(err)}`,
       );
     }
     try {
@@ -1011,7 +1021,7 @@ function withCaseArgs(encoded, returnType, context) {
       args[i + 1] = output;
     } catch (err) {
       throw new Error(
-        `failed to parse argument ${i + 1} of case expression: ${err.message}`,
+        `failed to parse argument ${i + 1} of case expression: ${getErrorMessage(err)}`,
       );
     }
   }
@@ -1062,7 +1072,7 @@ function withInArgs(encoded, returnType, context) {
       args[i] = arg;
     } catch (err) {
       throw new Error(
-        `failed to parse haystack item ${i} for "in" expression: ${err.message}`,
+        `failed to parse haystack item ${i} for "in" expression: ${getErrorMessage(err)}`,
       );
     }
   }
@@ -1080,7 +1090,7 @@ function withPaletteArgs(encoded, returnType, context) {
     index = parse(encoded[1], NumberType, context);
   } catch (err) {
     throw new Error(
-      `failed to parse first argument in palette expression: ${err.message}`,
+      `failed to parse first argument in palette expression: ${getErrorMessage(err)}`,
     );
   }
   const colors = encoded[2];
@@ -1094,7 +1104,7 @@ function withPaletteArgs(encoded, returnType, context) {
       color = parse(colors[i], ColorType, context);
     } catch (err) {
       throw new Error(
-        `failed to parse color at index ${i} in palette expression: ${err.message}`,
+        `failed to parse color at index ${i} in palette expression: ${getErrorMessage(err)}`,
       );
     }
     if (!(color instanceof LiteralExpression)) {
@@ -1119,7 +1129,7 @@ function createCallExpressionParser(...validators) {
     /**
      * @type {Array<Expression>}
      */
-    let args;
+    let args = [];
     for (let i = 0; i < validators.length; i++) {
       const parsed = validators[i](encoded, returnType, context);
       if (i == validators.length - 1) {
@@ -1131,12 +1141,16 @@ function createCallExpressionParser(...validators) {
         args = parsed;
       }
     }
-    return new CallExpression(returnType, operator, ...args);
+    return new CallExpression(
+      returnType,
+      operator,
+      .../** @type {Array<Expression>} */ (args),
+    );
   };
 }
 
 /**
- * @param {Array} encoded The encoded expression.
+ * @param {Array<*>} encoded The encoded expression.
  * @param {ValueType} returnType The expected return type of the call expression.
  * @param {ParsingContext} context The parsing context.
  * @return {Expression} The parsed expression.

@@ -28,13 +28,13 @@ class ImageTile extends Tile {
 
     /**
      * @private
-     * @type {?string}
+     * @type {string|null|undefined}
      */
     this.crossOrigin_ = imageAttributes?.crossOrigin;
 
     /**
      * @private
-     * @type {ReferrerPolicy}
+     * @type {ReferrerPolicy|undefined}
      */
     this.referrerPolicy_ = imageAttributes?.referrerPolicy;
 
@@ -50,7 +50,7 @@ class ImageTile extends Tile {
 
     /**
      * @private
-     * @type {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas}
+     * @type {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas|null}
      */
     this.image_;
 
@@ -58,7 +58,7 @@ class ImageTile extends Tile {
       this.image_ = new OffscreenCanvas(1, 1);
     } else {
       this.image_ = new Image();
-      if (this.crossOrigin_ !== null) {
+      if (this.crossOrigin_ !== null && this.crossOrigin_ !== undefined) {
         this.image_.crossOrigin = this.crossOrigin_;
       }
       if (this.referrerPolicy_ !== undefined) {
@@ -81,7 +81,7 @@ class ImageTile extends Tile {
 
   /**
    * Get the HTML image element for this tile (may be a Canvas, OffscreenCanvas, Image, or Video).
-   * @return {HTMLCanvasElement|OffscreenCanvas|HTMLImageElement|HTMLVideoElement} Image.
+   * @return {HTMLCanvasElement|OffscreenCanvas|HTMLImageElement|HTMLVideoElement|null} Image.
    * @api
    */
   getImage() {
@@ -101,15 +101,15 @@ class ImageTile extends Tile {
 
   /**
    * Get the cross origin of the ImageTile.
-   * @return {string} Cross origin.
+   * @return {string|null} Cross origin.
    */
   getCrossOrigin() {
-    return this.crossOrigin_;
+    return this.crossOrigin_ ?? null;
   }
 
   /**
    * Get the referrer policy of the ImageTile.
-   * @return {ReferrerPolicy} Referrer policy.
+   * @return {ReferrerPolicy|undefined} Referrer policy.
    */
   getReferrerPolicy() {
     return this.referrerPolicy_;
@@ -189,7 +189,7 @@ class ImageTile extends Tile {
     if (this.state == TileState.ERROR) {
       this.state = TileState.IDLE;
       this.image_ = new Image();
-      if (this.crossOrigin_ !== null) {
+      if (this.crossOrigin_ !== null && this.crossOrigin_ !== undefined) {
         this.image_.crossOrigin = this.crossOrigin_;
       }
       if (this.referrerPolicy_ !== undefined) {
@@ -200,11 +200,14 @@ class ImageTile extends Tile {
       this.state = TileState.LOADING;
       this.changed();
       this.tileLoadFunction_(this, this.src_);
-      this.unlisten_ = listenImage(
-        this.image_,
-        this.handleImageLoad_.bind(this),
-        this.handleImageError_.bind(this),
-      );
+      const image = this.image_;
+      if (image) {
+        this.unlisten_ = listenImage(
+          image,
+          this.handleImageLoad_.bind(this),
+          this.handleImageError_.bind(this),
+        );
+      }
     }
   }
 

@@ -27,7 +27,7 @@ export const TextUniforms = {
  */
 export function hasTextStyle(style) {
   let result = false;
-  function check(style) {
+  function check(/** @type {import('../../style/flat.js').FlatStyle} */ style) {
     for (const prop in style) {
       if (prop === 'text-value') {
         result = true;
@@ -43,7 +43,9 @@ export function hasTextStyle(style) {
           check(rule.style[j]);
         }
       } else if ('style' in rule) {
-        check(rule.style);
+        check(
+          /** @type {import('../../style/flat.js').FlatStyle} */ (rule.style),
+        );
       } else {
         check(rule);
       }
@@ -63,10 +65,12 @@ export function hasTextStyle(style) {
  * NOTE: THIS MUTATES THE OBJECT
  */
 export function stripNonTextStyleProperties(style) {
-  function stripStyle(style) {
+  function stripStyle(
+    /** @type {import('../../style/flat.js').FlatStyle} */ style,
+  ) {
     for (const prop in style) {
       if (!prop.startsWith('text-') && prop !== 'z-index') {
-        delete style[prop];
+        delete (/** @type {Record<string, *>} */ (style)[prop]);
       }
     }
   }
@@ -78,7 +82,9 @@ export function stripNonTextStyleProperties(style) {
           stripStyle(rule.style[j]);
         }
       } else if ('style' in rule) {
-        stripStyle(rule.style);
+        stripStyle(
+          /** @type {import('../../style/flat.js').FlatStyle} */ (rule.style),
+        );
       } else {
         stripStyle(rule);
       }
@@ -172,6 +178,7 @@ export function createPostProcessDefinition(
   };
 }
 
+/** @type {Record<string, *>} */
 const textFeatureProps = {};
 const textFeature = new RenderFeature(
   'Point', // the feature holds a simple placeholder geometry
@@ -207,8 +214,14 @@ function readCustomAttributeValue(
   );
   const customAttrOffset = customAttributesKeys
     .slice(0, customAttrPosition)
-    .reduce((prev, curr) => prev + customAttributes[curr].size, 0);
-  const customAttrSize = customAttributes[customAttrName].size;
+    .reduce(
+      (prev, curr) =>
+        prev + /** @type {number} */ (customAttributes[curr].size),
+      0,
+    );
+  const customAttrSize = /** @type {number} */ (
+    customAttributes[customAttrName].size
+  );
 
   if (propertyType === StringType) {
     const start = customAttributesValues[customAttrOffset + 1];
@@ -445,8 +458,8 @@ export function convertPointRenderInstructionsToCanvasTextBuilder(
   let currentInstructionsIndex = 0;
   while (currentInstructionsIndex < renderInstructions.length) {
     const flatCoords = [
-      renderInstructions.at(currentInstructionsIndex),
-      renderInstructions.at(currentInstructionsIndex + 1),
+      renderInstructions[currentInstructionsIndex],
+      renderInstructions[currentInstructionsIndex + 1],
     ];
     currentInstructionsIndex += instructionsPerVertex;
     const customAttributesValues = new Float32Array(

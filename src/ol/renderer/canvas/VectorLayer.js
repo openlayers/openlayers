@@ -47,10 +47,11 @@ import CanvasLayerRenderer, {canvasPool} from './Layer.js';
  * @classdesc
  * Canvas renderer for vector layers.
  * @api
+ * @extends {CanvasLayerRenderer<import("../../layer/Vector.js").default>}
  */
 class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
   /**
-   * @param {import("../../layer/BaseVector.js").default} vectorLayer Vector layer.
+   * @param {import("../../layer/Vector.js").default} vectorLayer Vector layer.
    */
   constructor(vectorLayer) {
     super(vectorLayer);
@@ -72,7 +73,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     /**
      * @private
-     * @type {import("../../extent.js").Extent}
+     * @type {import("../../extent.js").Extent|null}
      */
     this.clipExtent_ = null;
 
@@ -86,7 +87,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     /**
      * @private
-     * @type {Array<import("../../Feature.js").default>}
+     * @type {Array<import("../../Feature.js").default>|null}
      */
     this.renderedFeatures_ = null;
 
@@ -122,13 +123,13 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     /**
      * @private
-     * @type {import("../../coordinate.js").Coordinate}
+     * @type {import("../../coordinate.js").Coordinate|null}
      */
     this.renderedCenter_ = null;
 
     /**
      * @private
-     * @type {import("../../proj/Projection.js").default}
+     * @type {import("../../proj/Projection.js").default|null}
      */
     this.renderedProjection_ = null;
 
@@ -152,7 +153,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     /**
      * @private
-     * @type {import("../../render/canvas/ExecutorGroup.js").default}
+     * @type {import("../../render/canvas/ExecutorGroup.js").default|null}
      */
     this.replayGroup_ = null;
 
@@ -170,7 +171,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     /**
      * @private
-     * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D}
+     * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D|null}
      */
     this.targetContext_ = null;
 
@@ -202,19 +203,38 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const snapToPixel = !(
       viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING]
     );
-    const context = this.context;
-    const width = Math.round((getWidth(extent) / resolution) * pixelRatio);
-    const height = Math.round((getHeight(extent) / resolution) * pixelRatio);
+    const context =
+      /** @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} */ (
+        this.context
+      );
+    const width = Math.round(
+      (getWidth(/** @type {import("../../extent.js").Extent} */ (extent)) /
+        resolution) *
+        pixelRatio,
+    );
+    const height = Math.round(
+      (getHeight(/** @type {import("../../extent.js").Extent} */ (extent)) /
+        resolution) *
+        pixelRatio,
+    );
 
-    const multiWorld = vectorSource.getWrapX() && projection.canWrapX();
+    const multiWorld =
+      /** @type {NonNullable<ReturnType<import("../../layer/Vector.js").default["getSource"]>>} */ (
+        vectorSource
+      ).getWrapX() && projection.canWrapX();
     const worldWidth = multiWorld ? getWidth(projectionExtent) : null;
+    const viewExtent = /** @type {import("../../extent.js").Extent} */ (extent);
     const endWorld = multiWorld
-      ? Math.ceil((extent[2] - projectionExtent[2]) / worldWidth) +
-        (this.extendX_ ? 2 : 1)
+      ? Math.ceil(
+          (viewExtent[2] - projectionExtent[2]) /
+            /** @type {number} */ (worldWidth),
+        ) + (this.extendX_ ? 2 : 1)
       : 1;
     let world = multiWorld
-      ? Math.floor((extent[0] - projectionExtent[0]) / worldWidth) -
-        (this.extendX_ ? 1 : 0)
+      ? Math.floor(
+          (viewExtent[0] - projectionExtent[0]) /
+            /** @type {number} */ (worldWidth),
+        ) - (this.extendX_ ? 1 : 0)
       : 0;
     do {
       let transform = this.getRenderTransform(
@@ -224,7 +244,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
         pixelRatio,
         width,
         height,
-        world * worldWidth,
+        world * /** @type {number} */ (worldWidth),
       );
       if (frameState.declutter) {
         transform = transform.slice(0);
@@ -241,7 +261,12 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
             ? DECLUTTER
             : NON_DECLUTTER,
         declutterable
-          ? declutter && frameState.declutter[declutter]
+          ? /** @type {import("rbush").default<import("../../render/canvas/Executor.js").DeclutterEntry>|null|undefined} */ (
+              declutter &&
+                /** @type {NonNullable<typeof frameState.declutter>} */ (
+                  frameState.declutter
+                )[declutter]
+            )
           : undefined,
       );
     } while (++world < endWorld);
@@ -252,10 +277,17 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
    */
   setDrawContext_() {
     if (this.opacity_ !== 1) {
-      this.targetContext_ = this.context;
+      this.targetContext_ =
+        /** @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} */ (
+          this.context
+        );
       this.context = createCanvasContext2D(
-        this.context.canvas.width,
-        this.context.canvas.height,
+        /** @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} */ (
+          this.context
+        ).canvas.width,
+        /** @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} */ (
+          this.context
+        ).canvas.height,
         canvasPool,
       );
     }
@@ -268,10 +300,24 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     if (this.opacity_ !== 1 && this.targetContext_) {
       const alpha = this.targetContext_.globalAlpha;
       this.targetContext_.globalAlpha = this.opacity_;
-      this.targetContext_.drawImage(this.context.canvas, 0, 0);
+      this.targetContext_.drawImage(
+        /** @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} */ (
+          this.context
+        ).canvas,
+        0,
+        0,
+      );
       this.targetContext_.globalAlpha = alpha;
-      releaseCanvas(this.context);
-      canvasPool.push(this.context.canvas);
+      releaseCanvas(
+        /** @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} */ (
+          this.context
+        ),
+      );
+      canvasPool.push(
+        /** @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} */ (
+          this.context
+        ).canvas,
+      );
       this.context = this.targetContext_;
       this.targetContext_ = null;
     }
@@ -298,11 +344,19 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       return;
     }
     if (this.clipExtent_) {
-      this.clipUnrotated(this.context, frameState, this.clipExtent_);
+      this.clipUnrotated(
+        /** @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} */ (
+          this.context
+        ),
+        frameState,
+        this.clipExtent_,
+      );
     }
     this.replayGroup_.renderDeferred();
     if (this.clipExtent_) {
-      this.context.restore();
+      /** @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} */ (
+        this.context
+      ).restore();
       this.clipExtent_ = null;
     }
     this.resetDrawContext_();
@@ -320,8 +374,11 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     this.opacity_ = layerState.opacity;
     const viewState = frameState.viewState;
 
-    this.prepareContainer(frameState, target);
-    const context = this.context;
+    this.prepareContainer(frameState, /** @type {HTMLElement} */ (target));
+    const context =
+      /** @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} */ (
+        this.context
+      );
 
     const replayGroup = this.replayGroup_;
     let render = replayGroup && !replayGroup.isEmpty();
@@ -330,7 +387,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
         this.getLayer().hasListener(RenderEventType.PRERENDER) ||
         this.getLayer().hasListener(RenderEventType.POSTRENDER);
       if (!hasRenderListeners) {
-        return this.container;
+        return /** @type {HTMLElement} */ (this.container);
       }
     }
 
@@ -345,9 +402,16 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     let clipped = false;
     if (render && layerState.extent && this.clipping) {
       const layerExtent = fromUserExtent(layerState.extent, projection);
-      render = intersectsExtent(layerExtent, frameState.extent);
+      render = intersectsExtent(
+        layerExtent,
+        /** @type {import("../../extent.js").Extent} */ (frameState.extent),
+      );
       const needsClip =
-        render && !containsExtent(layerExtent, frameState.extent);
+        render &&
+        !containsExtent(
+          layerExtent,
+          /** @type {import("../../extent.js").Extent} */ (frameState.extent),
+        );
       if (needsClip) {
         if (frameState.declutter) {
           // Store extent for deferred clipping
@@ -362,7 +426,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     if (render) {
       this.renderWorlds(
-        replayGroup,
+        /** @type {ExecutorGroup} */ (replayGroup),
         frameState,
         this.getLayer().getDeclutter() ? false : undefined,
       );
@@ -381,7 +445,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     if (!frameState.declutter) {
       this.resetDrawContext_();
     }
-    return this.container;
+    return /** @type {HTMLElement} */ (this.container);
   }
 
   /**
@@ -410,7 +474,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
         const height = size[1] * HIT_DETECT_RESOLUTION;
         transforms.push(
           this.getRenderTransform(
-            center,
+            /** @type {import("../../coordinate.js").Coordinate} */ (center),
             resolution,
             rotation,
             HIT_DETECT_RESOLUTION,
@@ -419,11 +483,19 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
             0,
           ).slice(),
         );
-        const source = layer.getSource();
-        const projectionExtent = projection.getExtent();
+        const source =
+          /** @type {NonNullable<ReturnType<import("../../layer/Vector.js").default["getSource"]>>} */ (
+            layer.getSource()
+          );
+        const projectionExtent =
+          /** @type {import("../../proj/Projection.js").default} */ (
+            projection
+          ).getExtent();
         if (
           source.getWrapX() &&
-          projection.canWrapX() &&
+          /** @type {import("../../proj/Projection.js").default} */ (
+            projection
+          ).canWrapX() &&
           !containsExtent(projectionExtent, extent)
         ) {
           let startX = extent[0];
@@ -435,7 +507,9 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
             offsetX = worldWidth * world;
             transforms.push(
               this.getRenderTransform(
-                center,
+                /** @type {import("../../coordinate.js").Coordinate} */ (
+                  center
+                ),
                 resolution,
                 rotation,
                 HIT_DETECT_RESOLUTION,
@@ -453,7 +527,9 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
             offsetX = worldWidth * world;
             transforms.push(
               this.getRenderTransform(
-                center,
+                /** @type {import("../../coordinate.js").Coordinate} */ (
+                  center
+                ),
                 resolution,
                 rotation,
                 HIT_DETECT_RESOLUTION,
@@ -469,17 +545,31 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
         this.hitDetectionImageData_ = createHitDetectionImageData(
           size,
           transforms,
-          this.renderedFeatures_,
+          /** @type {Array<import("../../Feature.js").default>} */ (
+            this.renderedFeatures_
+          ),
           layer.getStyleFunction(),
           extent,
           resolution,
           rotation,
           getSquaredRenderTolerance(resolution, this.renderedPixelRatio_),
-          userProjection ? projection : null,
+          userProjection
+            ? /** @type {import("../../proj/Projection.js").default} */ (
+                projection
+              )
+            : /** @type {import("../../proj/Projection.js").default|undefined} */ (
+                /** @type {unknown} */ (null)
+              ),
         );
       }
       resolve(
-        hitDetect(pixel, this.renderedFeatures_, this.hitDetectionImageData_),
+        hitDetect(
+          pixel,
+          /** @type {Array<import("../../Feature.js").default>} */ (
+            this.renderedFeatures_
+          ),
+          /** @type {ImageData} */ (this.hitDetectionImageData_),
+        ),
       );
     });
   }
@@ -553,9 +643,11 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       rotation,
       hitTolerance,
       featureCallback,
-      declutter
-        ? frameState.declutter?.[declutter]?.all().map((item) => item.value)
-        : null,
+      /** @type {Array<import("../../Feature.js").FeatureLike>} */ (
+        declutter
+          ? frameState.declutter?.[declutter]?.all().map((item) => item.value)
+          : /** @type {unknown} */ (null)
+      ),
     );
   }
 
@@ -621,8 +713,8 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     const center = viewState.center.slice();
     const extent = buffer(
-      frameStateExtent,
-      vectorLayerRenderBuffer * resolution,
+      /** @type {import("../../extent.js").Extent} */ (frameStateExtent),
+      /** @type {number} */ (vectorLayerRenderBuffer) * resolution,
     );
     const renderedExtent = extent.slice();
     const loadExtents = [extent.slice()];
@@ -641,7 +733,11 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     if (
       canWrapX &&
-      (!containsExtent(projectionExtent, frameState.extent) || this.extendX_)
+      (!containsExtent(
+        projectionExtent,
+        /** @type {import("../../extent.js").Extent} */ (frameState.extent),
+      ) ||
+        this.extendX_)
     ) {
       // For the replay group, we need an extent that intersects the real world
       // (-180° to +180°). To support geometries in a coordinate range from -540°
@@ -712,6 +808,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     );
 
     const userProjection = getUserProjection();
+    /** @type {import("../../proj.js").TransformFunction|undefined} */
     let userTransform;
     if (userProjection) {
       for (let i = 0, ii = loadExtents.length; i < ii; ++i) {
@@ -723,7 +820,10 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
           userProjection,
         );
       }
-      userTransform = getTransformFromProjections(userProjection, projection);
+      userTransform =
+        /** @type {import("../../proj.js").TransformFunction|undefined} */ (
+          getTransformFromProjections(userProjection, projection)
+        );
     } else {
       for (let i = 0, ii = loadExtents.length; i < ii; ++i) {
         vectorSource.loadFeatures(loadExtents[i], resolution, projection);
@@ -751,7 +851,9 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
             styles,
             replayGroup,
             userTransform,
-            this.getLayer().getDeclutter(),
+            /** @type {boolean|undefined} */ (
+              /** @type {unknown} */ (this.getLayer().getDeclutter())
+            ),
             index,
           );
           ready = ready && !dirty;

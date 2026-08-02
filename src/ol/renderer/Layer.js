@@ -29,7 +29,7 @@ class LayerRenderer extends Observable {
 
     /**
      * @private
-     * @type {LayerType}
+     * @type {LayerType|undefined}
      */
     this.layer_ = layer;
 
@@ -46,7 +46,7 @@ class LayerRenderer extends Observable {
     this.maxStaleKeys = maxStaleKeys;
 
     /**
-     * @type {string}
+     * @type {string|undefined}
      * @protected
      */
     this.renderedSourceKey_;
@@ -146,7 +146,7 @@ class LayerRenderer extends Observable {
    * @return {LayerType} Layer.
    */
   getLayer() {
-    return this.layer_;
+    return /** @type {LayerType} */ (this.layer_);
   }
 
   /**
@@ -180,7 +180,12 @@ class LayerRenderer extends Observable {
   loadImage(image) {
     let imageState = image.getState();
     if (imageState != ImageState.LOADED && imageState != ImageState.ERROR) {
-      image.addEventListener(EventType.CHANGE, this.boundHandleImageChange_);
+      image.addEventListener(
+        EventType.CHANGE,
+        /** @type {import("../events.js").ListenerFunction} */ (
+          this.boundHandleImageChange_
+        ),
+      );
     }
     if (imageState == ImageState.IDLE) {
       image.load();
@@ -209,7 +214,7 @@ class LayerRenderer extends Observable {
    * @override
    */
   disposeInternal() {
-    delete this.layer_;
+    this.layer_ = undefined;
     super.disposeInternal();
   }
 }

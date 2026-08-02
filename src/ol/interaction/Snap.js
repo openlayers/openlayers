@@ -98,161 +98,164 @@ import PointerInteraction from './Pointer.js';
 /***
  * @type {Object<string, Segmenter>}
  */
-const GEOMETRY_SEGMENTERS = {
-  /**
-   * @param {import("../geom/Circle.js").default} geometry Geometry.
-   * @param {import("../proj/Projection.js").default} projection Projection.
-   * @return {Array<Segment>} Segments
-   */
-  Circle(geometry, projection) {
-    let circleGeometry = geometry;
-    const userProjection = getUserProjection();
-    if (userProjection) {
-      circleGeometry = circleGeometry
-        .clone()
-        .transform(userProjection, projection);
-    }
-    const polygon = fromCircle(circleGeometry);
-    if (userProjection) {
-      polygon.transform(projection, userProjection);
-    }
-    return GEOMETRY_SEGMENTERS.Polygon(polygon);
-  },
-
-  /**
-   * @param {import("../geom/GeometryCollection.js").default} geometry Geometry.
-   * @param {import("../proj/Projection.js").default} projection Projection.
-   * @return {Array<Segment>} Segments
-   */
-  GeometryCollection(geometry, projection) {
-    /** @type {Array<Array<Segment>>} */
-    const segments = [];
-    const geometries = geometry.getGeometriesArray();
-    for (let i = 0; i < geometries.length; ++i) {
-      const segmenter = this[geometries[i].getType()];
-      if (segmenter) {
-        segments.push(segmenter(geometries[i], projection));
+const GEOMETRY_SEGMENTERS = /** @type {Object<string, Segmenter>} */ (
+  /** @type {unknown} */ ({
+    /**
+     * @param {import("../geom/Circle.js").default} geometry Geometry.
+     * @param {import("../proj/Projection.js").default} projection Projection.
+     * @return {Array<Segment>} Segments
+     */
+    Circle(geometry, projection) {
+      let circleGeometry = geometry;
+      const userProjection = getUserProjection();
+      if (userProjection) {
+        circleGeometry = circleGeometry
+          .clone()
+          .transform(userProjection, projection);
       }
-    }
-    return segments.flat();
-  },
+      const polygon = fromCircle(circleGeometry);
+      if (userProjection) {
+        polygon.transform(projection, userProjection);
+      }
+      return GEOMETRY_SEGMENTERS.Polygon(polygon);
+    },
 
-  /**
-   * @param {import("../geom/LineString.js").default} geometry Geometry.
-   * @return {Array<Segment>} Segments
-   */
-  LineString(geometry) {
-    /** @type {Array<Segment>} */
-    const segments = [];
-    const coordinates = geometry.getFlatCoordinates();
-    const stride = geometry.getStride();
-    for (let i = 0, ii = coordinates.length - stride; i < ii; i += stride) {
-      segments.push([
-        coordinates.slice(i, i + 2),
-        coordinates.slice(i + stride, i + stride + 2),
-      ]);
-    }
-    return segments;
-  },
+    /**
+     * @param {import("../geom/GeometryCollection.js").default} geometry Geometry.
+     * @param {import("../proj/Projection.js").default} projection Projection.
+     * @return {Array<Segment>} Segments
+     */
+    GeometryCollection(geometry, projection) {
+      /** @type {Array<Array<Segment>>} */
+      const segments = [];
+      const geometries = geometry.getGeometriesArray();
+      const segmenters = /** @type {Object<string, Segmenter>} */ (this);
+      for (let i = 0; i < geometries.length; ++i) {
+        const segmenter = segmenters[geometries[i].getType()];
+        if (segmenter) {
+          segments.push(segmenter(geometries[i], projection));
+        }
+      }
+      return segments.flat();
+    },
 
-  /**
-   * @param {import("../geom/MultiLineString.js").default} geometry Geometry.
-   * @return {Array<Segment>} Segments
-   */
-  MultiLineString(geometry) {
-    /** @type {Array<Segment>} */
-    const segments = [];
-    const coordinates = geometry.getFlatCoordinates();
-    const stride = geometry.getStride();
-    const ends = geometry.getEnds();
-    let offset = 0;
-    for (let i = 0, ii = ends.length; i < ii; ++i) {
-      const end = ends[i];
-      for (let j = offset, jj = end - stride; j < jj; j += stride) {
+    /**
+     * @param {import("../geom/LineString.js").default} geometry Geometry.
+     * @return {Array<Segment>} Segments
+     */
+    LineString(geometry) {
+      /** @type {Array<Segment>} */
+      const segments = [];
+      const coordinates = geometry.getFlatCoordinates();
+      const stride = geometry.getStride();
+      for (let i = 0, ii = coordinates.length - stride; i < ii; i += stride) {
         segments.push([
-          coordinates.slice(j, j + 2),
-          coordinates.slice(j + stride, j + stride + 2),
+          coordinates.slice(i, i + 2),
+          coordinates.slice(i + stride, i + stride + 2),
         ]);
       }
-      offset = end;
-    }
-    return segments;
-  },
+      return segments;
+    },
 
-  /**
-   * @param {import("../geom/MultiPoint.js").default} geometry Geometry.
-   * @return {Array<Segment>} Segments
-   */
-  MultiPoint(geometry) {
-    /** @type {Array<Segment>} */
-    const segments = [];
-    const coordinates = geometry.getFlatCoordinates();
-    const stride = geometry.getStride();
-    for (let i = 0, ii = coordinates.length; i < ii; i += stride) {
-      segments.push([coordinates.slice(i, i + 2)]);
-    }
-    return segments;
-  },
-
-  /**
-   * @param {import("../geom/MultiPolygon.js").default} geometry Geometry.
-   * @return {Array<Segment>} Segments
-   */
-  MultiPolygon(geometry) {
-    /** @type {Array<Segment>} */
-    const segments = [];
-    const coordinates = geometry.getFlatCoordinates();
-    const stride = geometry.getStride();
-    const endss = geometry.getEndss();
-    let offset = 0;
-    for (let i = 0, ii = endss.length; i < ii; ++i) {
-      const ends = endss[i];
-      for (let j = 0, jj = ends.length; j < jj; ++j) {
-        const end = ends[j];
-        for (let k = offset, kk = end - stride; k < kk; k += stride) {
+    /**
+     * @param {import("../geom/MultiLineString.js").default} geometry Geometry.
+     * @return {Array<Segment>} Segments
+     */
+    MultiLineString(geometry) {
+      /** @type {Array<Segment>} */
+      const segments = [];
+      const coordinates = geometry.getFlatCoordinates();
+      const stride = geometry.getStride();
+      const ends = geometry.getEnds();
+      let offset = 0;
+      for (let i = 0, ii = ends.length; i < ii; ++i) {
+        const end = ends[i];
+        for (let j = offset, jj = end - stride; j < jj; j += stride) {
           segments.push([
-            coordinates.slice(k, k + 2),
-            coordinates.slice(k + stride, k + stride + 2),
+            coordinates.slice(j, j + 2),
+            coordinates.slice(j + stride, j + stride + 2),
           ]);
         }
         offset = end;
       }
-    }
-    return segments;
-  },
+      return segments;
+    },
 
-  /**
-   * @param {import("../geom/Point.js").default} geometry Geometry.
-   * @return {Array<Segment>} Segments
-   */
-  Point(geometry) {
-    return [[geometry.getFlatCoordinates().slice(0, 2)]];
-  },
-
-  /**
-   * @param {import("../geom/Polygon.js").default} geometry Geometry.
-   * @return {Array<Segment>} Segments
-   */
-  Polygon(geometry) {
-    /** @type {Array<Segment>} */
-    const segments = [];
-    const coordinates = geometry.getFlatCoordinates();
-    const stride = geometry.getStride();
-    const ends = geometry.getEnds();
-    let offset = 0;
-    for (let i = 0, ii = ends.length; i < ii; ++i) {
-      const end = ends[i];
-      for (let j = offset, jj = end - stride; j < jj; j += stride) {
-        segments.push([
-          coordinates.slice(j, j + 2),
-          coordinates.slice(j + stride, j + stride + 2),
-        ]);
+    /**
+     * @param {import("../geom/MultiPoint.js").default} geometry Geometry.
+     * @return {Array<Segment>} Segments
+     */
+    MultiPoint(geometry) {
+      /** @type {Array<Segment>} */
+      const segments = [];
+      const coordinates = geometry.getFlatCoordinates();
+      const stride = geometry.getStride();
+      for (let i = 0, ii = coordinates.length; i < ii; i += stride) {
+        segments.push([coordinates.slice(i, i + 2)]);
       }
-      offset = end;
-    }
-    return segments;
-  },
-};
+      return segments;
+    },
+
+    /**
+     * @param {import("../geom/MultiPolygon.js").default} geometry Geometry.
+     * @return {Array<Segment>} Segments
+     */
+    MultiPolygon(geometry) {
+      /** @type {Array<Segment>} */
+      const segments = [];
+      const coordinates = geometry.getFlatCoordinates();
+      const stride = geometry.getStride();
+      const endss = geometry.getEndss();
+      let offset = 0;
+      for (let i = 0, ii = endss.length; i < ii; ++i) {
+        const ends = endss[i];
+        for (let j = 0, jj = ends.length; j < jj; ++j) {
+          const end = ends[j];
+          for (let k = offset, kk = end - stride; k < kk; k += stride) {
+            segments.push([
+              coordinates.slice(k, k + 2),
+              coordinates.slice(k + stride, k + stride + 2),
+            ]);
+          }
+          offset = end;
+        }
+      }
+      return segments;
+    },
+
+    /**
+     * @param {import("../geom/Point.js").default} geometry Geometry.
+     * @return {Array<Segment>} Segments
+     */
+    Point(geometry) {
+      return [[geometry.getFlatCoordinates().slice(0, 2)]];
+    },
+
+    /**
+     * @param {import("../geom/Polygon.js").default} geometry Geometry.
+     * @return {Array<Segment>} Segments
+     */
+    Polygon(geometry) {
+      /** @type {Array<Segment>} */
+      const segments = [];
+      const coordinates = geometry.getFlatCoordinates();
+      const stride = geometry.getStride();
+      const ends = geometry.getEnds();
+      let offset = 0;
+      for (let i = 0, ii = ends.length; i < ii; ++i) {
+        const end = ends[i];
+        for (let j = offset, jj = end - stride; j < jj; j += stride) {
+          segments.push([
+            coordinates.slice(j, j + 2),
+            coordinates.slice(j + stride, j + stride + 2),
+          ]);
+        }
+        offset = end;
+      }
+      return segments;
+    },
+  })
+);
 
 /**
  * @param  {import("../source/Vector.js").VectorSourceEvent|import("../Collection.js").CollectionEvent<import("../Feature.js").default>} evt Event.
@@ -277,7 +280,8 @@ function getFeatureFromEvent(evt) {
   return null;
 }
 
-const tempSegment = [];
+const tempSegment =
+  /** @type {Array<import("../coordinate.js").Coordinate>} */ ([]);
 /** @type {Array<import('../extent.js').Extent>} */
 const tempExtents = [];
 /** @type {Array<SegmentData>} */
@@ -449,13 +453,14 @@ class Snap extends PointerInteraction {
     const geometry = feature.getGeometry();
     if (geometry) {
       const segmenter = this.segmenters_[geometry.getType()];
-      if (segmenter) {
+      const map = this.getMap();
+      if (segmenter && map) {
         this.indexedFeaturesExtents_[feature_uid] =
           geometry.getExtent(createEmpty());
         const segments = segmenter.call(
           this.segmenters_,
           geometry,
-          this.getMap().getView().getProjection(),
+          map.getView().getProjection(),
         );
         let segmentCount = segments.length;
         for (let i = 0; i < segmentCount; ++i) {
@@ -535,8 +540,9 @@ class Snap extends PointerInteraction {
       this.featureChangeListenerKeys_[feature_uid] = listen(
         feature,
         EventType.CHANGE,
-        this.handleFeatureChange_,
-        this,
+        /** @type {import("../events.js").ListenerFunction} */ (
+          this.handleFeatureChange_.bind(this)
+        ),
       );
     }
   }
@@ -547,7 +553,8 @@ class Snap extends PointerInteraction {
    */
   getFeatures_() {
     /** @type {import("../Collection.js").default<import("../Feature.js").default>|Array<import("../Feature.js").default>} */
-    let features;
+    let features =
+      /** @type {import("../Collection.js").default<import("../Feature.js").default>|Array<import("../Feature.js").default>} */ ([]);
     if (this.features_) {
       features = this.features_;
     } else if (this.source_) {
@@ -578,25 +585,49 @@ class Snap extends PointerInteraction {
   handleEvent(evt) {
     const result = this.snapTo(evt.pixel, evt.coordinate, evt.map);
 
-    if (result) {
+    if (result && result.vertex && result.vertexPixel && result.feature) {
       evt.coordinate = result.vertex.slice(0, 2);
       evt.pixel = result.vertexPixel;
 
-      // Dispatch UNSNAP event if already snapped
-      if (this.snapped_ && !this.areSnapDataEqual_(this.snapped_, result)) {
-        this.dispatchEvent(new SnapEvent(SnapEventType.UNSNAP, this.snapped_));
-      }
-
-      this.snapped_ = {
+      /** @type {SnappedInfo} */
+      const snapInfo = {
         vertex: evt.coordinate,
         vertexPixel: evt.pixel,
         feature: result.feature,
         segment: result.segment,
       };
-      this.dispatchEvent(new SnapEvent(SnapEventType.SNAP, this.snapped_));
+
+      // Dispatch UNSNAP event if already snapped
+      if (this.snapped_ && !this.areSnapDataEqual_(this.snapped_, snapInfo)) {
+        this.dispatchEvent(
+          new SnapEvent(
+            SnapEventType.UNSNAP,
+            /** @type {{vertex: import("../coordinate.js").Coordinate, vertexPixel: import("../coordinate.js").Coordinate, feature: import("../Feature.js").default, segment: Segment|null}} */ (
+              this.snapped_
+            ),
+          ),
+        );
+      }
+
+      this.snapped_ = snapInfo;
+      this.dispatchEvent(
+        new SnapEvent(
+          SnapEventType.SNAP,
+          /** @type {{vertex: import("../coordinate.js").Coordinate, vertexPixel: import("../coordinate.js").Coordinate, feature: import("../Feature.js").default, segment: Segment|null}} */ (
+            snapInfo
+          ),
+        ),
+      );
     } else if (this.snapped_) {
       // Dispatch UNSNAP event if no longer snapped
-      this.dispatchEvent(new SnapEvent(SnapEventType.UNSNAP, this.snapped_));
+      this.dispatchEvent(
+        new SnapEvent(
+          SnapEventType.UNSNAP,
+          /** @type {{vertex: import("../coordinate.js").Coordinate, vertexPixel: import("../coordinate.js").Coordinate, feature: import("../Feature.js").default, segment: Segment|null}} */ (
+            this.snapped_
+          ),
+        ),
+      );
       this.snapped_ = null;
     }
 
@@ -712,14 +743,16 @@ class Snap extends PointerInteraction {
           listen(
             this.features_,
             CollectionEventType.ADD,
-            this.handleFeatureAdd_,
-            this,
+            /** @type {import("../events.js").ListenerFunction} */ (
+              this.handleFeatureAdd_.bind(this)
+            ),
           ),
           listen(
             this.features_,
             CollectionEventType.REMOVE,
-            this.handleFeatureRemove_,
-            this,
+            /** @type {import("../events.js").ListenerFunction} */ (
+              this.handleFeatureRemove_.bind(this)
+            ),
           ),
         );
       } else if (this.source_) {
@@ -727,14 +760,16 @@ class Snap extends PointerInteraction {
           listen(
             this.source_,
             VectorEventType.ADDFEATURE,
-            this.handleFeatureAdd_,
-            this,
+            /** @type {import("../events.js").ListenerFunction} */ (
+              this.handleFeatureAdd_.bind(this)
+            ),
           ),
           listen(
             this.source_,
             VectorEventType.REMOVEFEATURE,
-            this.handleFeatureRemove_,
-            this,
+            /** @type {import("../events.js").ListenerFunction} */ (
+              this.handleFeatureRemove_.bind(this)
+            ),
           ),
         );
       }
@@ -753,11 +788,15 @@ class Snap extends PointerInteraction {
   snapTo(pixel, pixelCoordinate, map) {
     const projection = map.getView().getProjection();
     const projectedCoordinate = fromUserCoordinate(pixelCoordinate, projection);
+    const resolution = map.getView().getResolution();
+    if (resolution === undefined) {
+      return null;
+    }
 
     const box = toUserExtent(
       buffer(
         boundingExtent([projectedCoordinate]),
-        map.getView().getResolution() * this.pixelTolerance_,
+        resolution * this.pixelTolerance_,
       ),
       projection,
     );
@@ -768,9 +807,12 @@ class Snap extends PointerInteraction {
       return null;
     }
 
+    /** @type {import("../coordinate.js").Coordinate|undefined} */
     let closestVertex;
     let minSquaredDistance = Infinity;
+    /** @type {import("../Feature.js").default|undefined} */
     let closestFeature;
+    /** @type {Segment|null} */
     let closestSegment = null;
 
     const squaredPixelTolerance = this.pixelTolerance_ * this.pixelTolerance_;
@@ -783,18 +825,22 @@ class Snap extends PointerInteraction {
       if (squaredPixelDistance > squaredPixelTolerance) {
         return null;
       }
-      return {
+      return /** @type {SnappedInfo} */ ({
         vertex: closestVertex,
-        vertexPixel: [Math.round(vertexPixel[0]), Math.round(vertexPixel[1])],
+        vertexPixel: /** @type {import("../pixel.js").Pixel} */ ([
+          Math.round(vertexPixel[0]),
+          Math.round(vertexPixel[1]),
+        ]),
         feature: closestFeature,
         segment: closestSegment,
-      };
+      });
     };
 
     if (this.vertex_ || this.intersection_) {
       for (let i = 0; i < segmentsLength; ++i) {
         const segmentData = segments[i];
-        if (segmentData.feature.getGeometry().getType() !== 'Circle') {
+        const segmentGeometry = segmentData.feature.getGeometry();
+        if (segmentGeometry && segmentGeometry.getType() !== 'Circle') {
           for (const vertex of segmentData.segment) {
             const tempVertexCoord = fromUserCoordinate(vertex, projection);
             const delta = squaredDistance(projectedCoordinate, tempVertexCoord);
@@ -820,8 +866,9 @@ class Snap extends PointerInteraction {
       for (let i = 0; i < segmentsLength; ++i) {
         let vertex = null;
         const segmentData = segments[i];
-        if (segmentData.feature.getGeometry().getType() === 'Circle') {
-          let circleGeometry = segmentData.feature.getGeometry();
+        const segmentGeometry = segmentData.feature.getGeometry();
+        if (segmentGeometry && segmentGeometry.getType() === 'Circle') {
+          let circleGeometry = segmentGeometry;
           const userProjection = getUserProjection();
           if (userProjection) {
             circleGeometry = circleGeometry
@@ -846,7 +893,7 @@ class Snap extends PointerInteraction {
           if (delta < minSquaredDistance) {
             closestVertex = toUserCoordinate(vertex, projection);
             closestSegment =
-              segmentData.feature.getGeometry().getType() === 'Circle'
+              segmentGeometry && segmentGeometry.getType() === 'Circle'
                 ? null
                 : segmentData.segment;
             minSquaredDistance = delta;

@@ -307,11 +307,11 @@ const compilers = {
   [Ops.Match]: createCompiler((compiledArgs) => {
     const input = compiledArgs[0];
     const fallback = compiledArgs[compiledArgs.length - 1];
-    let result = null;
+    let result = fallback;
     for (let i = compiledArgs.length - 3; i >= 1; i -= 2) {
       const match = compiledArgs[i];
       const output = compiledArgs[i + 1];
-      result = `(${input} == ${match} ? ${output} : ${result || fallback})`;
+      result = `(${input} == ${match} ? ${output} : ${result})`;
     }
     return result;
   }),
@@ -337,11 +337,11 @@ const compilers = {
   }),
   [Ops.Case]: createCompiler((compiledArgs) => {
     const fallback = compiledArgs[compiledArgs.length - 1];
-    let result = null;
+    let result = fallback;
     for (let i = compiledArgs.length - 3; i >= 0; i -= 2) {
       const condition = compiledArgs[i];
       const output = compiledArgs[i + 1];
-      result = `(${condition} ? ${output} : ${result || fallback})`;
+      result = `(${condition} ? ${output} : ${result})`;
     }
     return result;
   }),

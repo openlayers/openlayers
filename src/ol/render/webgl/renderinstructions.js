@@ -35,7 +35,8 @@ function pushCustomAttributesInRenderInstructions(
       renderInstructions[currentIndex + shift++] = labelLength;
       continue;
     }
-    let first = value?.[0] ?? value;
+    const arrayValue = Array.isArray(value) ? value : undefined;
+    let first = arrayValue ? arrayValue[0] : value;
     if (first === UNDEFINED_PROP_VALUE) {
       console.warn('The "has" operator might return false positives.'); // eslint-disable-line no-console
     }
@@ -44,22 +45,22 @@ function pushCustomAttributesInRenderInstructions(
     } else if (first === null) {
       first = 0;
     }
-    renderInstructions[currentIndex + shift++] = first;
+    renderInstructions[currentIndex + shift++] = /** @type {number} */ (first);
     if (!attr.size || attr.size === 1) {
       continue;
     }
     renderInstructions[currentIndex + shift++] =
-      value?.[1] ?? UNDEFINED_PROP_VALUE;
+      arrayValue?.[1] ?? UNDEFINED_PROP_VALUE;
     if (attr.size < 3) {
       continue;
     }
     renderInstructions[currentIndex + shift++] =
-      value?.[2] ?? UNDEFINED_PROP_VALUE;
+      arrayValue?.[2] ?? UNDEFINED_PROP_VALUE;
     if (attr.size < 4) {
       continue;
     }
     renderInstructions[currentIndex + shift++] =
-      value?.[3] ?? UNDEFINED_PROP_VALUE;
+      arrayValue?.[3] ?? UNDEFINED_PROP_VALUE;
   }
   return shift;
 }
@@ -160,6 +161,7 @@ export function generateLineStringRenderInstructions(
   }
 
   // loop on features to fill the render instructions
+  /** @type {Array<number>} */
   const flatCoords = [];
   let renderIndex = 0;
   for (const featureUid in batch.entries) {
@@ -231,11 +233,16 @@ export function generatePolygonRenderInstructions(
   }
 
   // loop on features to fill the render instructions
+  /** @type {Array<number>} */
   const flatCoords = [];
   let renderIndex = 0;
   for (const featureUid in batch.entries) {
     const batchEntry = batch.entries[featureUid];
     for (let i = 0, ii = batchEntry.flatCoordss.length; i < ii; i++) {
+      const ringsVerticesCounts = batchEntry.ringsVerticesCounts?.[i];
+      if (!ringsVerticesCounts) {
+        continue;
+      }
       flatCoords.length = batchEntry.flatCoordss[i].length;
       transform2D(
         batchEntry.flatCoordss[i],
@@ -254,17 +261,11 @@ export function generatePolygonRenderInstructions(
       );
 
       // ring count
-      renderInstructions[renderIndex++] =
-        batchEntry.ringsVerticesCounts[i].length;
+      renderInstructions[renderIndex++] = ringsVerticesCounts.length;
 
       // vertices count in each ring
-      for (
-        let j = 0, jj = batchEntry.ringsVerticesCounts[i].length;
-        j < jj;
-        j++
-      ) {
-        renderInstructions[renderIndex++] =
-          batchEntry.ringsVerticesCounts[i][j];
+      for (let j = 0, jj = ringsVerticesCounts.length; j < jj; j++) {
+        renderInstructions[renderIndex++] = ringsVerticesCounts[j];
       }
 
       // looping on points for positions

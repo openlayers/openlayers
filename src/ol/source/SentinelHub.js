@@ -128,7 +128,7 @@ const baseDelay = 500;
  * @typedef {Object} Orbit
  * @property {string} dateFrom The earliest date for all scenes included in the tile.
  * @property {string} dateTo The latest date for scenes included in the tile.
- * @property {Array} tiles Metadata for each tile.
+ * @property {Array<Object<string, *>>} tiles Metadata for each tile.
  */
 
 /**
@@ -335,7 +335,14 @@ export function getProjectionIdentifier(projection) {
   if (code.startsWith('EPSG:')) {
     return `${ogcId}EPSG/0/${code.slice(5)}`;
   }
-  if (equivalentProjections(projection, getProjection('EPSG:4326'))) {
+  if (
+    equivalentProjections(
+      projection,
+      /** @type {import("../proj/Projection.js").default} */ (
+        getProjection('EPSG:4326')
+      ),
+    )
+  ) {
     return `${ogcId}EPSG/0/4326`;
   }
 
@@ -408,16 +415,13 @@ class SentinelHub extends DataTileSource {
    * @param {Options} [options] Sentinel Hub options.
    */
   constructor(options) {
-    if (!knownImageMediaTypes[options.format]) {
+    const config = options || {};
+    const format = config.format || defaultFormat;
+    if (!knownImageMediaTypes[format]) {
       throw new Error(
-        `Unsupported format: ${options.format}. Supported formats are: ${Object.keys(knownImageMediaTypes).join(', ')}`,
+        `Unsupported format: ${format}. Supported formats are: ${Object.keys(knownImageMediaTypes).join(', ')}`,
       );
     }
-
-    /**
-     * @type {Options}
-     */
-    const config = options || {};
 
     super({
       state: 'loading',
@@ -458,7 +462,7 @@ class SentinelHub extends DataTileSource {
      * @type {string}
      * @private
      */
-    this.format_ = config.format || defaultFormat;
+    this.format_ = format;
 
     /**
      * @type {string}
@@ -516,7 +520,7 @@ class SentinelHub extends DataTileSource {
       token = await getToken(auth);
       claims = parseTokenClaims(token);
     } catch (error) {
-      this.error_ = error;
+      this.error_ = error instanceof Error ? error : new Error(String(error));
       this.setState('error');
       return;
     }
@@ -573,7 +577,7 @@ class SentinelHub extends DataTileSource {
       try {
         script = serializeEvalscript(evalscript);
       } catch (error) {
-        this.error_ = error;
+        this.error_ = error instanceof Error ? error : new Error(String(error));
         this.setState('error');
         return;
       }
@@ -613,10 +617,17 @@ class SentinelHub extends DataTileSource {
    * @private
    */
   async loadTile_(z, x, y, attempt) {
-    const tileGrid = this.getTileGrid();
+    const tileGrid = /** @type {import("../tilegrid/TileGrid.js").default} */ (
+      this.getTileGrid()
+    );
     const extent = tileGrid.getTileCoordExtent([z, x, y]);
     const tileSize = this.getTileSize(z);
-    const projection = this.getProjection();
+    const projection = /** @type {import("../proj/Projection.js").default} */ (
+      this.getProjection()
+    );
+    const inputData = /** @type {Array<ProcessRequestInputDataItem>} */ (
+      this.inputData_
+    );
 
     /**
      * @type {ProcessRequest}
@@ -627,7 +638,7 @@ class SentinelHub extends DataTileSource {
           bbox: extent,
           properties: {crs: getProjectionIdentifier(projection)},
         },
-        data: this.inputData_,
+        data: inputData,
       },
       output: {
         width: tileSize[0],

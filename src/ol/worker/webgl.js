@@ -16,7 +16,7 @@ import {
 /** @type {any} */
 const worker = self;
 
-worker.onmessage = (event) => {
+worker.onmessage = (/** @type {MessageEvent} */ event) => {
   const received = event.data;
   switch (received.type) {
     case WebGLWorkerMessageType.GENERATE_POINT_BUFFERS: {

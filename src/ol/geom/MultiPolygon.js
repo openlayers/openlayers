@@ -361,7 +361,7 @@ class MultiPolygon extends SimpleGeometry {
   /**
    * Return the polygon at the specified index.
    * @param {number} index Index.
-   * @return {Polygon} Polygon.
+   * @return {Polygon|null} Polygon.
    * @api
    */
   getPolygon(index) {

@@ -50,7 +50,7 @@ class DragPan extends PointerInteraction {
     this.kinetic_ = options.kinetic;
 
     /**
-     * @type {import("../pixel.js").Pixel}
+     * @type {import("../pixel.js").Pixel|null}
      */
     this.lastCentroid = null;
 
@@ -109,9 +109,12 @@ class DragPan extends PointerInteraction {
         ];
         const map = mapBrowserEvent.map;
         const view = map.getView();
-        scaleCoordinate(delta, view.getResolution());
-        rotateCoordinate(delta, view.getRotation());
-        view.adjustCenterInternal(delta);
+        const resolution = view.getResolution();
+        if (resolution !== undefined) {
+          scaleCoordinate(delta, resolution);
+          rotateCoordinate(delta, view.getRotation());
+          view.adjustCenterInternal(delta);
+        }
       }
     } else if (this.kinetic_) {
       // reset so we don't overestimate the kinetic energy after
@@ -137,16 +140,22 @@ class DragPan extends PointerInteraction {
         const distance = this.kinetic_.getDistance();
         const angle = this.kinetic_.getAngle();
         const center = view.getCenterInternal();
-        const centerpx = map.getPixelFromCoordinateInternal(center);
-        const dest = map.getCoordinateFromPixelInternal([
-          centerpx[0] - distance * Math.cos(angle),
-          centerpx[1] - distance * Math.sin(angle),
-        ]);
-        view.animateInternal({
-          center: view.getConstrainedCenter(dest),
-          duration: 500,
-          easing: easeOut,
-        });
+        if (center) {
+          const centerpx = /** @type {import("../pixel.js").Pixel} */ (
+            map.getPixelFromCoordinateInternal(center)
+          );
+          const dest = map.getCoordinateFromPixelInternal([
+            centerpx[0] - distance * Math.cos(angle),
+            centerpx[1] - distance * Math.sin(angle),
+          ]);
+          view.animateInternal({
+            center: view.getConstrainedCenter(
+              /** @type {import("../coordinate.js").Coordinate} */ (dest),
+            ),
+            duration: 500,
+            easing: easeOut,
+          });
+        }
       }
       if (this.panning_) {
         this.panning_ = false;

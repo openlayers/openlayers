@@ -84,7 +84,7 @@ export const PROJECTIONS = [
  */
 export function fromEPSG4326(input, output, dimension, stride) {
   const length = input.length;
-  dimension = dimension > 1 ? dimension : 2;
+  dimension = dimension !== undefined && dimension > 1 ? dimension : 2;
   stride = stride ?? dimension;
   if (output === undefined) {
     if (dimension > 2) {
@@ -118,7 +118,7 @@ export function fromEPSG4326(input, output, dimension, stride) {
  */
 export function toEPSG4326(input, output, dimension, stride) {
   const length = input.length;
-  dimension = dimension > 1 ? dimension : 2;
+  dimension = dimension !== undefined && dimension > 1 ? dimension : 2;
   stride = stride ?? dimension;
   if (output === undefined) {
     if (dimension > 2) {

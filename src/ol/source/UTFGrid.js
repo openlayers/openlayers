@@ -54,21 +54,21 @@ export class CustomTile extends Tile {
 
     /**
      * @private
-     * @type {Array<string>}
+     * @type {Array<string>|undefined}
      */
-    this.grid_ = null;
+    this.grid_ = undefined;
 
     /**
      * @private
-     * @type {Array<string>}
+     * @type {Array<string>|undefined}
      */
-    this.keys_ = null;
+    this.keys_ = undefined;
 
     /**
      * @private
      * @type {Object<string, Object>|undefined}
      */
-    this.data_ = null;
+    this.data_ = undefined;
 
     /**
      * @private
@@ -79,7 +79,7 @@ export class CustomTile extends Tile {
 
   /**
    * Get the image element for this tile.
-   * @return {HTMLImageElement} Image.
+   * @return {HTMLImageElement|null} Image.
    */
   getImage() {
     return null;
@@ -278,7 +278,7 @@ class UTFGrid extends TileSource {
    */
   constructor(options) {
     super({
-      projection: getProjection('EPSG:3857'),
+      projection: getProjection('EPSG:3857') ?? undefined,
       state: 'loading',
       wrapX: options.wrapX !== undefined ? options.wrapX : true,
       zDirection: options.zDirection,
@@ -311,7 +311,7 @@ class UTFGrid extends TileSource {
 
     /**
      * @private
-     * @type {LRUCache}
+     * @type {LRUCache<CustomTile>}
      */
     this.tileCache_ = new LRUCache(512);
 
@@ -397,7 +397,9 @@ class UTFGrid extends TileSource {
           tileCoord[1],
           tileCoord[2],
           1,
-          this.getProjection(),
+          /** @type {import("../proj/Projection.js").default} */ (
+            this.getProjection()
+          ),
         )
       );
       if (tile.getState() == TileState.IDLE) {
@@ -428,19 +430,30 @@ class UTFGrid extends TileSource {
    * @param {import("./TileJSON.js").Config} tileJSON Tile JSON.
    */
   handleTileJSONResponse(tileJSON) {
-    const epsg4326Projection = getProjection('EPSG:4326');
+    const epsg4326Projection =
+      /** @type {import("../proj/Projection.js").default} */ (
+        getProjection('EPSG:4326')
+      );
 
-    const sourceProjection = this.getProjection();
+    const sourceProjection =
+      /** @type {import("../proj/Projection.js").default} */ (
+        this.getProjection()
+      );
     let extent;
     if (tileJSON['bounds'] !== undefined) {
       const transform = getTransformFromProjections(
         epsg4326Projection,
         sourceProjection,
       );
-      extent = applyTransform(tileJSON['bounds'], transform);
+      extent = applyTransform(
+        tileJSON['bounds'],
+        /** @type {import("../proj.js").TransformFunction} */ (transform),
+      );
     }
 
-    const gridExtent = extentFromProjection(sourceProjection);
+    const gridExtent = /** @type {import("../extent.js").Extent} */ (
+      extentFromProjection(sourceProjection)
+    );
     const minZoom = tileJSON['minzoom'] || 0;
     const maxZoom = tileJSON['maxzoom'] || 22;
     const tileGrid = createXYZ({
@@ -461,13 +474,30 @@ class UTFGrid extends TileSource {
     this.tileUrlFunction_ = createFromTemplates(grids, tileGrid);
 
     if (tileJSON['attribution']) {
-      const attributionExtent = extent !== undefined ? extent : gridExtent;
-      this.setAttributions(function (frameState) {
-        if (intersects(attributionExtent, frameState.extent)) {
-          return [tileJSON['attribution']];
-        }
-        return null;
-      });
+      const attributionExtent = /** @type {import("../extent.js").Extent} */ (
+        extent !== undefined ? extent : gridExtent
+      );
+      this.setAttributions(
+        /** @type {import("./Source.js").AttributionLike} */ (
+          /** @type {unknown} */ (
+            function (
+              /** @type {import("../Map.js").FrameState} */ frameState,
+            ) {
+              if (
+                intersects(
+                  attributionExtent,
+                  /** @type {import("../extent.js").Extent} */ (
+                    frameState.extent
+                  ),
+                )
+              ) {
+                return [tileJSON['attribution']];
+              }
+              return null;
+            }
+          )
+        ),
+      );
     }
 
     this.setState('ready');
@@ -488,17 +518,32 @@ class UTFGrid extends TileSource {
       tileCoord,
       projection,
     );
+    if (!urlTileCoord) {
+      return new CustomTile(
+        tileCoord,
+        TileState.EMPTY,
+        '',
+        /** @type {import("../tilegrid/TileGrid.js").default} */ (
+          this.tileGrid
+        ).getTileCoordExtent(tileCoord),
+        this.preemptive_,
+        this.jsonp_,
+      );
+    }
     const tileUrl = this.tileUrlFunction_(urlTileCoord, pixelRatio, projection);
     const tileKey = `${this.getKey()},${getKeyZXY(z, x, y)}`;
     if (this.tileCache_.containsKey(tileKey)) {
-      return this.tileCache_.get(tileKey);
+      return /** @type {!CustomTile} */ (this.tileCache_.get(tileKey));
     }
     this.tileCache_.expireCache();
+    const tileGrid = /** @type {import("../tilegrid/TileGrid.js").default} */ (
+      this.tileGrid
+    );
     const tile = new CustomTile(
       tileCoord,
       tileUrl !== undefined ? TileState.IDLE : TileState.EMPTY,
       tileUrl !== undefined ? tileUrl : '',
-      this.tileGrid.getTileCoordExtent(tileCoord),
+      tileGrid.getTileCoordExtent(tileCoord),
       this.preemptive_,
       this.jsonp_,
     );

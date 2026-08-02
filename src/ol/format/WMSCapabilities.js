@@ -6,7 +6,7 @@ import {
   makeArrayPusher,
   makeObjectPropertyPusher,
   makeObjectPropertySetter,
-  makeStructureNS,
+  makeParsersNS,
   pushParseAndPop,
 } from '../xml.js';
 import XML from './XML.js';
@@ -30,26 +30,38 @@ const NAMESPACE_URIS = [
   'http://www.opengis.net/sld',
 ];
 
+/**
+ * @typedef {Object<string, *>} WMSObject
+ */
+
+/**
+ * @typedef {Object} BoundingBoxResult
+ * @property {Array<number|undefined>} extent Extent.
+ * @property {Array<number|undefined>} res Resolutions.
+ * @property {string|null} [crs] CRS.
+ * @property {string|null} [srs] SRS.
+ */
+
+/**
+ * @param {Array<*>} objectStack Object stack.
+ * @return {boolean} Whether version is 1.3 or higher.
+ */
 function isV13(objectStack) {
   return compareVersions(objectStack[0].version, '1.3') >= 0;
 }
 
 /**
- * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {import("../xml.js").ParsersNS}
  */
-// @ts-ignore
-const PARSERS = makeStructureNS(NAMESPACE_URIS, {
+const PARSERS = makeParsersNS(NAMESPACE_URIS, {
   'Service': makeObjectPropertySetter(readService),
   'Capability': makeObjectPropertySetter(readCapability),
 });
 
 /**
- * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {import("../xml.js").ParsersNS}
  */
-// @ts-ignore
-const CAPABILITY_PARSERS = makeStructureNS(NAMESPACE_URIS, {
+const CAPABILITY_PARSERS = makeParsersNS(NAMESPACE_URIS, {
   'Request': makeObjectPropertySetter(readRequest),
   'Exception': makeObjectPropertySetter(readException),
   'Layer': makeObjectPropertySetter(readCapabilityLayer),
@@ -86,7 +98,7 @@ class WMSCapabilities extends XML {
    * @override
    */
   readFromNode(node) {
-    this.version = node.getAttribute('version').trim();
+    this.version = node.getAttribute('version')?.trim();
     const wmsCapabilityObject = pushParseAndPop(
       {
         'version': this.version,
@@ -111,18 +123,14 @@ const COMMON_SERVICE_PARSERS = {
 };
 
 /**
- * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {import("../xml.js").ParsersNS}
  */
-// @ts-ignore
-const SERVICE_PARSERS = makeStructureNS(NAMESPACE_URIS, COMMON_SERVICE_PARSERS);
+const SERVICE_PARSERS = makeParsersNS(NAMESPACE_URIS, COMMON_SERVICE_PARSERS);
 
 /**
- * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {import("../xml.js").ParsersNS}
  */
-// @ts-ignore
-const SERVICE_PARSERS_V13 = makeStructureNS(NAMESPACE_URIS, {
+const SERVICE_PARSERS_V13 = makeParsersNS(NAMESPACE_URIS, {
   ...COMMON_SERVICE_PARSERS,
   'LayerLimit': makeObjectPropertySetter(readPositiveInteger),
   'MaxWidth': makeObjectPropertySetter(readPositiveInteger),
@@ -130,11 +138,9 @@ const SERVICE_PARSERS_V13 = makeStructureNS(NAMESPACE_URIS, {
 });
 
 /**
- * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {import("../xml.js").ParsersNS}
  */
-// @ts-ignore
-const CONTACT_INFORMATION_PARSERS = makeStructureNS(NAMESPACE_URIS, {
+const CONTACT_INFORMATION_PARSERS = makeParsersNS(NAMESPACE_URIS, {
   'ContactPersonPrimary': makeObjectPropertySetter(readContactPersonPrimary),
   'ContactPosition': makeObjectPropertySetter(readString),
   'ContactAddress': makeObjectPropertySetter(readContactAddress),
@@ -144,21 +150,17 @@ const CONTACT_INFORMATION_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 });
 
 /**
- * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {import("../xml.js").ParsersNS}
  */
-// @ts-ignore
-const CONTACT_PERSON_PARSERS = makeStructureNS(NAMESPACE_URIS, {
+const CONTACT_PERSON_PARSERS = makeParsersNS(NAMESPACE_URIS, {
   'ContactPerson': makeObjectPropertySetter(readString),
   'ContactOrganization': makeObjectPropertySetter(readString),
 });
 
 /**
- * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {import("../xml.js").ParsersNS}
  */
-// @ts-ignore
-const CONTACT_ADDRESS_PARSERS = makeStructureNS(NAMESPACE_URIS, {
+const CONTACT_ADDRESS_PARSERS = makeParsersNS(NAMESPACE_URIS, {
   'AddressType': makeObjectPropertySetter(readString),
   'Address': makeObjectPropertySetter(readString),
   'City': makeObjectPropertySetter(readString),
@@ -168,11 +170,9 @@ const CONTACT_ADDRESS_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 });
 
 /**
- * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {import("../xml.js").ParsersNS}
  */
-// @ts-ignore
-const EXCEPTION_PARSERS = makeStructureNS(NAMESPACE_URIS, {
+const EXCEPTION_PARSERS = makeParsersNS(NAMESPACE_URIS, {
   'Format': makeArrayPusher(readString),
 });
 
@@ -194,11 +194,9 @@ const COMMON_LAYER_PARSERS = {
 };
 
 /**
- * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {import("../xml.js").ParsersNS}
  */
-// @ts-ignore
-const LAYER_PARSERS = makeStructureNS(NAMESPACE_URIS, {
+const LAYER_PARSERS = makeParsersNS(NAMESPACE_URIS, {
   ...COMMON_LAYER_PARSERS,
   'SRS': makeObjectPropertyPusher(readString),
   'Extent': makeObjectPropertySetter(readExtent),
@@ -210,11 +208,9 @@ const LAYER_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 });
 
 /**
- * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {import("../xml.js").ParsersNS}
  */
-// @ts-ignore
-const LAYER_PARSERS_V13 = makeStructureNS(NAMESPACE_URIS, {
+const LAYER_PARSERS_V13 = makeParsersNS(NAMESPACE_URIS, {
   ...COMMON_LAYER_PARSERS,
   'CRS': makeObjectPropertyPusher(readString),
   'EX_GeographicBoundingBox': makeObjectPropertySetter(
@@ -226,22 +222,18 @@ const LAYER_PARSERS_V13 = makeStructureNS(NAMESPACE_URIS, {
 });
 
 /**
- * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {import("../xml.js").ParsersNS}
  */
-// @ts-ignore
-const ATTRIBUTION_PARSERS = makeStructureNS(NAMESPACE_URIS, {
+const ATTRIBUTION_PARSERS = makeParsersNS(NAMESPACE_URIS, {
   'Title': makeObjectPropertySetter(readString),
   'OnlineResource': makeObjectPropertySetter(readHref),
   'LogoURL': makeObjectPropertySetter(readSizedFormatOnlineresource),
 });
 
 /**
- * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {import("../xml.js").ParsersNS}
  */
-// @ts-ignore
-const EX_GEOGRAPHIC_BOUNDING_BOX_PARSERS = makeStructureNS(NAMESPACE_URIS, {
+const EX_GEOGRAPHIC_BOUNDING_BOX_PARSERS = makeParsersNS(NAMESPACE_URIS, {
   'westBoundLongitude': makeObjectPropertySetter(readDecimal),
   'eastBoundLongitude': makeObjectPropertySetter(readDecimal),
   'southBoundLatitude': makeObjectPropertySetter(readDecimal),
@@ -249,11 +241,9 @@ const EX_GEOGRAPHIC_BOUNDING_BOX_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 });
 
 /**
- * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {import("../xml.js").ParsersNS}
  */
-// @ts-ignore
-const REQUEST_PARSERS = makeStructureNS(NAMESPACE_URIS, {
+const REQUEST_PARSERS = makeParsersNS(NAMESPACE_URIS, {
   'GetCapabilities': makeObjectPropertySetter(readOperationType),
   'GetMap': makeObjectPropertySetter(readOperationType),
   'GetFeatureInfo': makeObjectPropertySetter(readOperationType),
@@ -262,40 +252,32 @@ const REQUEST_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 });
 
 /**
- * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {import("../xml.js").ParsersNS}
  */
-// @ts-ignore
-const OPERATIONTYPE_PARSERS = makeStructureNS(NAMESPACE_URIS, {
+const OPERATIONTYPE_PARSERS = makeParsersNS(NAMESPACE_URIS, {
   'Format': makeObjectPropertyPusher(readString),
   'DCPType': makeObjectPropertyPusher(readDCPType),
 });
 
 /**
- * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {import("../xml.js").ParsersNS}
  */
-// @ts-ignore
-const DCPTYPE_PARSERS = makeStructureNS(NAMESPACE_URIS, {
+const DCPTYPE_PARSERS = makeParsersNS(NAMESPACE_URIS, {
   'HTTP': makeObjectPropertySetter(readHTTP),
 });
 
 /**
- * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {import("../xml.js").ParsersNS}
  */
-// @ts-ignore
-const HTTP_PARSERS = makeStructureNS(NAMESPACE_URIS, {
+const HTTP_PARSERS = makeParsersNS(NAMESPACE_URIS, {
   'Get': makeObjectPropertySetter(readFormatOnlineresource),
   'Post': makeObjectPropertySetter(readFormatOnlineresource),
 });
 
 /**
- * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {import("../xml.js").ParsersNS}
  */
-// @ts-ignore
-const STYLE_PARSERS = makeStructureNS(NAMESPACE_URIS, {
+const STYLE_PARSERS = makeParsersNS(NAMESPACE_URIS, {
   'Name': makeObjectPropertySetter(readString),
   'Title': makeObjectPropertySetter(readString),
   'Abstract': makeObjectPropertySetter(readString),
@@ -305,21 +287,17 @@ const STYLE_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 });
 
 /**
- * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {import("../xml.js").ParsersNS}
  */
-// @ts-ignore
-const FORMAT_ONLINERESOURCE_PARSERS = makeStructureNS(NAMESPACE_URIS, {
+const FORMAT_ONLINERESOURCE_PARSERS = makeParsersNS(NAMESPACE_URIS, {
   'Format': makeObjectPropertySetter(readString),
   'OnlineResource': makeObjectPropertySetter(readHref),
 });
 
 /**
- * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {import("../xml.js").ParsersNS}
  */
-// @ts-ignore
-const KEYWORDLIST_PARSERS = makeStructureNS(NAMESPACE_URIS, {
+const KEYWORDLIST_PARSERS = makeParsersNS(NAMESPACE_URIS, {
   'Keyword': makeArrayPusher(readString),
 });
 
@@ -332,16 +310,21 @@ function readAttribution(node, objectStack) {
   return pushParseAndPop({}, ATTRIBUTION_PARSERS, node, objectStack);
 }
 
+/**
+ * @param {Element} node Node.
+ * @param {Array<*>} objectStack Object stack.
+ * @return {Object|undefined} User defined symbolization object.
+ */
 function readUserDefinedSymbolization(node, objectStack) {
   return {
-    'SupportSLD': !!readBooleanString(node.getAttribute('SupportSLD')),
-    'UserLayer': !!readBooleanString(node.getAttribute('UserLayer')),
-    'UserStyle': !!readBooleanString(node.getAttribute('UserStyle')),
-    'RemoteWFS': !!readBooleanString(node.getAttribute('RemoteWFS')),
+    'SupportSLD': !!readBooleanString(node.getAttribute('SupportSLD') ?? ''),
+    'UserLayer': !!readBooleanString(node.getAttribute('UserLayer') ?? ''),
+    'UserStyle': !!readBooleanString(node.getAttribute('UserStyle') ?? ''),
+    'RemoteWFS': !!readBooleanString(node.getAttribute('RemoteWFS') ?? ''),
     'InlineFeatureData': !!readBooleanString(
-      node.getAttribute('InlineFeatureData'),
+      node.getAttribute('InlineFeatureData') ?? '',
     ),
-    'RemoteWCS': !!readBooleanString(node.getAttribute('RemoteWCS')),
+    'RemoteWCS': !!readBooleanString(node.getAttribute('RemoteWCS') ?? ''),
   };
 }
 
@@ -353,17 +336,18 @@ function readUserDefinedSymbolization(node, objectStack) {
  */
 function readBoundingBox(node, objectStack, withCrs = true) {
   const extent = [
-    readDecimalString(node.getAttribute('minx')),
-    readDecimalString(node.getAttribute('miny')),
-    readDecimalString(node.getAttribute('maxx')),
-    readDecimalString(node.getAttribute('maxy')),
+    readDecimalString(node.getAttribute('minx') ?? ''),
+    readDecimalString(node.getAttribute('miny') ?? ''),
+    readDecimalString(node.getAttribute('maxx') ?? ''),
+    readDecimalString(node.getAttribute('maxy') ?? ''),
   ];
 
   const resolutions = [
-    readDecimalString(node.getAttribute('resx')),
-    readDecimalString(node.getAttribute('resy')),
+    readDecimalString(node.getAttribute('resx') ?? ''),
+    readDecimalString(node.getAttribute('resy') ?? ''),
   ];
 
+  /** @type {BoundingBoxResult} */
   const result = {
     extent,
     res: resolutions,
@@ -388,11 +372,8 @@ function readBoundingBox(node, objectStack, withCrs = true) {
  * @return {import("../extent.js").Extent|undefined} Bounding box object.
  */
 function readEXGeographicBoundingBox(node, objectStack) {
-  const geographicBoundingBox = pushParseAndPop(
-    {},
-    EX_GEOGRAPHIC_BOUNDING_BOX_PARSERS,
-    node,
-    objectStack,
+  const geographicBoundingBox = /** @type {WMSObject|undefined} */ (
+    pushParseAndPop({}, EX_GEOGRAPHIC_BOUNDING_BOX_PARSERS, node, objectStack)
   );
   if (!geographicBoundingBox) {
     return undefined;
@@ -491,14 +472,16 @@ function readException(node, objectStack) {
  * @return {Object|undefined} Layer object.
  */
 function readCapabilityLayer(node, objectStack) {
-  const layerObject = pushParseAndPop(
-    {},
-    isV13(objectStack) ? LAYER_PARSERS_V13 : LAYER_PARSERS,
-    node,
-    objectStack,
+  const layerObject = /** @type {WMSObject|undefined} */ (
+    pushParseAndPop(
+      {},
+      isV13(objectStack) ? LAYER_PARSERS_V13 : LAYER_PARSERS,
+      node,
+      objectStack,
+    )
   );
 
-  if (layerObject['Layer'] === undefined) {
+  if (layerObject && layerObject['Layer'] === undefined) {
     return Object.assign(layerObject, readLayer(node, objectStack));
   }
 
@@ -517,47 +500,51 @@ function readLayer(node, objectStack) {
     objectStack[objectStack.length - 1]
   );
 
-  const layerObject = pushParseAndPop(
-    {},
-    v13 ? LAYER_PARSERS_V13 : LAYER_PARSERS,
-    node,
-    objectStack,
+  const layerObject = /** @type {WMSObject} */ (
+    pushParseAndPop(
+      {},
+      v13 ? LAYER_PARSERS_V13 : LAYER_PARSERS,
+      node,
+      objectStack,
+    ) ?? {}
   );
 
-  if (!layerObject) {
+  if (!layerObject || Object.keys(layerObject).length === 0) {
     return undefined;
   }
-  let queryable = readBooleanString(node.getAttribute('queryable'));
+  let queryable = readBooleanString(node.getAttribute('queryable') ?? '');
   if (queryable === undefined) {
     queryable = parentLayerObject['queryable'];
   }
   layerObject['queryable'] = queryable !== undefined ? queryable : false;
 
-  let cascaded = readNonNegativeIntegerString(node.getAttribute('cascaded'));
+  let cascaded = readNonNegativeIntegerString(
+    node.getAttribute('cascaded') ?? '',
+  );
   if (cascaded === undefined) {
     cascaded = parentLayerObject['cascaded'];
   }
   layerObject['cascaded'] = cascaded;
 
-  let opaque = readBooleanString(node.getAttribute('opaque'));
+  let opaque = readBooleanString(node.getAttribute('opaque') ?? '');
   if (opaque === undefined) {
     opaque = parentLayerObject['opaque'];
   }
   layerObject['opaque'] = opaque !== undefined ? opaque : false;
 
-  let noSubsets = readBooleanString(node.getAttribute('noSubsets'));
+  let noSubsets = readBooleanString(node.getAttribute('noSubsets') ?? '');
   if (noSubsets === undefined) {
     noSubsets = parentLayerObject['noSubsets'];
   }
   layerObject['noSubsets'] = noSubsets !== undefined ? noSubsets : false;
 
-  let fixedWidth = readDecimalString(node.getAttribute('fixedWidth'));
+  let fixedWidth = readDecimalString(node.getAttribute('fixedWidth') ?? '');
   if (!fixedWidth) {
     fixedWidth = parentLayerObject['fixedWidth'];
   }
   layerObject['fixedWidth'] = fixedWidth;
 
-  let fixedHeight = readDecimalString(node.getAttribute('fixedHeight'));
+  let fixedHeight = readDecimalString(node.getAttribute('fixedHeight') ?? '');
   if (!fixedHeight) {
     fixedHeight = parentLayerObject['fixedHeight'];
   }
@@ -613,9 +600,13 @@ function readDimension(node, objectStack) {
   if (isV13(objectStack)) {
     Object.assign(dimensionObject, {
       'default': node.getAttribute('default'),
-      'multipleValues': readBooleanString(node.getAttribute('multipleValues')),
-      'nearestValue': readBooleanString(node.getAttribute('nearestValue')),
-      'current': readBooleanString(node.getAttribute('current')),
+      'multipleValues': readBooleanString(
+        node.getAttribute('multipleValues') ?? '',
+      ),
+      'nearestValue': readBooleanString(
+        node.getAttribute('nearestValue') ?? '',
+      ),
+      'current': readBooleanString(node.getAttribute('current') ?? ''),
       'values': readString(node),
     });
   }
@@ -631,7 +622,7 @@ function readExtent(node, objectStack) {
   return {
     'name': node.getAttribute('name'),
     'default': node.getAttribute('default'),
-    'nearestValue': readBooleanString(node.getAttribute('nearestValue')),
+    'nearestValue': readBooleanString(node.getAttribute('nearestValue') ?? ''),
   };
 }
 
@@ -642,8 +633,8 @@ function readExtent(node, objectStack) {
  */
 function readScaleHint(node, objectStack) {
   return {
-    'min': readDecimalString(node.getAttribute('min')),
-    'max': readDecimalString(node.getAttribute('max')),
+    'min': readDecimalString(node.getAttribute('min') ?? ''),
+    'max': readDecimalString(node.getAttribute('max') ?? ''),
   };
 }
 
@@ -698,11 +689,13 @@ function readOperationType(node, objectStack) {
  * @return {Object|undefined} Online resource object.
  */
 function readSizedFormatOnlineresource(node, objectStack) {
-  const formatOnlineresource = readFormatOnlineresource(node, objectStack);
+  const formatOnlineresource = /** @type {WMSObject|undefined} */ (
+    readFormatOnlineresource(node, objectStack)
+  );
   if (formatOnlineresource) {
     const size = [
-      readNonNegativeIntegerString(node.getAttribute('width')),
-      readNonNegativeIntegerString(node.getAttribute('height')),
+      readNonNegativeIntegerString(node.getAttribute('width') ?? ''),
+      readNonNegativeIntegerString(node.getAttribute('height') ?? ''),
     ];
     formatOnlineresource['size'] = size;
     return formatOnlineresource;
@@ -716,7 +709,9 @@ function readSizedFormatOnlineresource(node, objectStack) {
  * @return {Object|undefined} Authority URL object.
  */
 function readAuthorityURL(node, objectStack) {
-  const authorityObject = readFormatOnlineresource(node, objectStack);
+  const authorityObject = /** @type {WMSObject|undefined} */ (
+    readFormatOnlineresource(node, objectStack)
+  );
   if (authorityObject) {
     authorityObject['name'] = node.getAttribute('name');
     return authorityObject;
@@ -730,7 +725,9 @@ function readAuthorityURL(node, objectStack) {
  * @return {Object|undefined} Metadata URL object.
  */
 function readMetadataURL(node, objectStack) {
-  const metadataObject = readFormatOnlineresource(node, objectStack);
+  const metadataObject = /** @type {WMSObject|undefined} */ (
+    readFormatOnlineresource(node, objectStack)
+  );
   if (metadataObject) {
     metadataObject['type'] = node.getAttribute('type');
     return metadataObject;

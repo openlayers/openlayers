@@ -17,7 +17,7 @@ import {getRequestExtent} from './Image.js';
  * the image from the remote server.
  * @property {number} [ratio=1] Ratio. `1` means image requests are the size of the map viewport, `2` means
  * twice the width and height of the map viewport, and so on. Must be `1` or higher.
- * @property {Object} [params] Additional query parameters.
+ * @property {Object<string, string|number>} [params] Additional query parameters.
  * @property {function(HTMLImageElement, string): Promise<import('../DataTile.js').ImageLike>} [load] Function
  * to perform loading of the image. Receives the created `HTMLImageElement` and the desired `src` as argument and
  * returns a promise resolving to the loaded or decoded image. Default is {@link module:ol/Image.decode}.
@@ -74,7 +74,7 @@ export function createLoader(options) {
     const width = getWidth(extent) / resolution;
     const height = getHeight(extent) / resolution;
     const size = [width * pixelRatio, height * pixelRatio];
-    const src = getUrl(options.url, options.params, extent, size);
+    const src = getUrl(options.url, options.params || {}, extent, size);
     return load(image, src).then((image) => ({image, extent, pixelRatio}));
   };
 }

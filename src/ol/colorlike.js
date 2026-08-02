@@ -55,18 +55,18 @@ export function asColorLike(color) {
  */
 function asCanvasPattern(pattern) {
   if (!pattern.offset || !pattern.size) {
-    return iconCache.getPattern(pattern.src, pattern.color);
+    return iconCache.getPattern(pattern.src, pattern.color ?? null);
   }
 
   const cacheKey = pattern.src + ':' + pattern.offset;
 
-  const canvasPattern = iconCache.getPattern(cacheKey, pattern.color);
+  const canvasPattern = iconCache.getPattern(cacheKey, pattern.color ?? null);
   if (canvasPattern) {
     return canvasPattern;
   }
 
   const iconImage = iconCache.get(pattern.src, null);
-  if (iconImage.getImageState() !== ImageState.LOADED) {
+  if (!iconImage || iconImage.getImageState() !== ImageState.LOADED) {
     return null;
   }
   const patternCanvasContext = createCanvasContext2D(
@@ -87,10 +87,10 @@ function asCanvasPattern(pattern) {
   getIconImage(
     patternCanvasContext.canvas,
     cacheKey,
-    undefined,
+    {},
     ImageState.LOADED,
-    pattern.color,
+    pattern.color ?? null,
     true,
   );
-  return iconCache.getPattern(cacheKey, pattern.color);
+  return iconCache.getPattern(cacheKey, pattern.color ?? null);
 }

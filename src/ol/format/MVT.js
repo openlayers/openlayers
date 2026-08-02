@@ -17,6 +17,18 @@ import RenderFeature from '../render/Feature.js';
 import FeatureFormat, {transformGeometryWithOptions} from './Feature.js';
 
 /**
+ * @typedef {Object<string, *>} MVTObject
+ */
+
+/***
+ * @typedef {MVTObject & {keys: Array<string>, values: Array<*>, features: Array<number>, length?: number, name?: string, extent?: number, version?: number}} MVTLayer
+ */
+
+/***
+ * @typedef {MVTObject & {layer: MVTLayer, type: number, properties: MVTObject, id?: number, geometry?: number}} MVTRawFeature
+ */
+
+/**
  * @template {import("../Feature.js").FeatureLike} [FeatureType=import("../render/Feature.js").default]
  * @typedef {Object} Options
  * @property {import('./Feature.js').FeatureToFeatureClass<FeatureType>} [featureClass] Class for features returned by
@@ -81,7 +93,7 @@ class MVT extends FeatureFormat {
 
     /**
      * @private
-     * @type {string}
+     * @type {string|undefined}
      */
     this.idProperty_ = options.idProperty;
 
@@ -95,12 +107,15 @@ class MVT extends FeatureFormat {
    * Read the raw geometry from the pbf offset stored in a raw feature's geometry
    * property.
    * @param {PbfReader} pbf PBF.
-   * @param {Object} feature Raw feature.
+   * @param {MVTRawFeature} feature Raw feature.
    * @param {Array<number>} flatCoordinates Array to store flat coordinates in.
    * @param {Array<number>} ends Array to store ends in.
    * @private
    */
   readRawGeometry_(pbf, feature, flatCoordinates, ends) {
+    if (feature.geometry === undefined) {
+      return;
+    }
     pbf.pos = feature.geometry;
 
     const end = pbf.readVarint() + pbf.pos;
@@ -157,7 +172,7 @@ class MVT extends FeatureFormat {
   /**
    * @private
    * @param {PbfReader} pbf PBF
-   * @param {Object} rawFeature Raw Mapbox feature.
+   * @param {MVTRawFeature} rawFeature Raw Mapbox feature.
    * @param {import("./Feature.js").ReadOptions} options Read options.
    * @return {FeatureType|null} Feature.
    */
@@ -175,7 +190,7 @@ class MVT extends FeatureFormat {
       id = rawFeature.id;
     } else {
       id = values[this.idProperty_];
-      delete values[this.idProperty_];
+      values[this.idProperty_] = undefined;
     }
 
     values[this.layerName_] = rawFeature.layer.name;
@@ -211,6 +226,9 @@ class MVT extends FeatureFormat {
                 : geometryType === 'MultiLineString'
                   ? new MultiLineString(flatCoordinates, 'XY', ends)
                   : null;
+      }
+      if (!geom) {
+        return null;
       }
       const ctor = /** @type {typeof import("../Feature.js").default} */ (
         this.featureClass
@@ -249,13 +267,22 @@ class MVT extends FeatureFormat {
    */
   readFeatures(source, options) {
     const layers = this.layers_;
-    options = this.adaptOptions(options);
-    const dataProjection = get(options.dataProjection);
-    dataProjection.setWorldExtent(options.extent);
-    options.dataProjection = dataProjection;
+    const readOptions = /** @type {import("./Feature.js").ReadOptions} */ (
+      this.adaptOptions(options)
+    );
+    const dataProjection = get(readOptions.dataProjection);
+    if (!dataProjection) {
+      return [];
+    }
+    if (readOptions.extent) {
+      dataProjection.setWorldExtent(readOptions.extent);
+    }
+    readOptions.dataProjection = dataProjection;
 
     const pbf = new PbfReader(/** @type {ArrayBuffer} */ (source));
-    const pbfLayers = pbf.readFields(layersPBFReader, {});
+    const pbfLayers = /** @type {Object<string, MVTLayer>} */ (
+      pbf.readFields(layersPBFReader, {})
+    );
     const features = [];
     for (const name in pbfLayers) {
       if (layers && !layers.includes(name)) {
@@ -263,12 +290,21 @@ class MVT extends FeatureFormat {
       }
       const pbfLayer = pbfLayers[name];
 
-      const extent = pbfLayer ? [0, 0, pbfLayer.extent, pbfLayer.extent] : null;
-      dataProjection.setExtent(extent);
+      const extent = pbfLayer
+        ? /** @type {import("../extent.js").Extent} */ ([
+            0,
+            0,
+            pbfLayer.extent,
+            pbfLayer.extent,
+          ])
+        : null;
+      if (extent) {
+        dataProjection.setExtent(extent);
+      }
 
-      for (let i = 0, ii = pbfLayer.length; i < ii; ++i) {
+      for (let i = 0, ii = pbfLayer.length ?? 0; i < ii; ++i) {
         const rawFeature = readRawFeature(pbf, pbfLayer, i);
-        const feature = this.createFeature_(pbf, rawFeature, options);
+        const feature = this.createFeature_(pbf, rawFeature, readOptions);
         if (feature !== null) {
           features.push(feature);
         }
@@ -287,7 +323,7 @@ class MVT extends FeatureFormat {
    * @override
    */
   readProjection(source) {
-    return this.dataProjection;
+    return /** @type {Projection} */ (this.dataProjection);
   }
 
   /**
@@ -303,11 +339,12 @@ class MVT extends FeatureFormat {
 /**
  * Reader callback for parsing layers.
  * @param {number} tag The tag.
- * @param {Object} layers The layers object.
+ * @param {MVTObject} layers The layers object.
  * @param {PbfReader} pbf The PBF.
  */
 function layersPBFReader(tag, layers, pbf) {
   if (tag === 3) {
+    /** @type {MVTLayer} */
     const layer = {
       keys: [],
       values: [],
@@ -316,7 +353,7 @@ function layersPBFReader(tag, layers, pbf) {
     const end = pbf.readVarint() + pbf.pos;
     pbf.readFields(layerPBFReader, layer, end);
     layer.length = layer.features.length;
-    if (layer.length) {
+    if (layer.length && layer.name) {
       layers[layer.name] = layer;
     }
   }
@@ -325,7 +362,7 @@ function layersPBFReader(tag, layers, pbf) {
 /**
  * Reader callback for parsing layer.
  * @param {number} tag The tag.
- * @param {Object} layer The layer object.
+ * @param {MVTLayer} layer The layer object.
  * @param {PbfReader} pbf The PBF.
  */
 function layerPBFReader(tag, layer, pbf) {
@@ -368,7 +405,7 @@ function layerPBFReader(tag, layer, pbf) {
 /**
  * Reader callback for parsing feature.
  * @param {number} tag The tag.
- * @param {Object} feature The feature object.
+ * @param {MVTRawFeature} feature The feature object.
  * @param {PbfReader} pbf The PBF.
  */
 function featurePBFReader(tag, feature, pbf) {
@@ -391,14 +428,15 @@ function featurePBFReader(tag, feature, pbf) {
 /**
  * Read a raw feature from the pbf offset stored at index `i` in the raw layer.
  * @param {PbfReader} pbf PBF.
- * @param {Object} layer Raw layer.
+ * @param {MVTLayer} layer Raw layer.
  * @param {number} i Index of the feature in the raw layer's `features` array.
- * @return {Object} Raw feature.
+ * @return {MVTRawFeature} Raw feature.
  */
 function readRawFeature(pbf, layer, i) {
   pbf.pos = layer.features[i];
   const end = pbf.readVarint() + pbf.pos;
 
+  /** @type {MVTRawFeature} */
   const feature = {
     layer: layer,
     type: 0,
@@ -415,7 +453,7 @@ function readRawFeature(pbf, layer, i) {
  * @return {import("../render/Feature.js").Type} The geometry type.
  */
 function getGeometryType(type, numEnds) {
-  /** @type {import("../render/Feature.js").Type} */
+  /** @type {import("../render/Feature.js").Type|undefined} */
   let geometryType;
   if (type === 1) {
     geometryType = numEnds === 1 ? 'Point' : 'MultiPoint';
@@ -426,7 +464,7 @@ function getGeometryType(type, numEnds) {
     // MultiPolygon not relevant for rendering - winding order determines
     // outer rings of polygons.
   }
-  return geometryType;
+  return /** @type {import("../render/Feature.js").Type} */ (geometryType);
 }
 
 export default MVT;

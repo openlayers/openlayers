@@ -13,8 +13,10 @@ export function getWorldParameters(frameState, layer) {
   const multiWorld = vectorSource.getWrapX() && projection.canWrapX();
   const projectionExtent = projection.getExtent();
 
-  const extent = frameState.extent;
-  const worldWidth = multiWorld ? getWidth(projectionExtent) : null;
+  const extent = /** @type {import("../../extent.js").Extent} */ (
+    frameState.extent
+  );
+  const worldWidth = multiWorld ? getWidth(projectionExtent) : 0;
   const endWorld = multiWorld
     ? Math.ceil((extent[2] - projectionExtent[2]) / worldWidth) + 1
     : 1;
@@ -23,5 +25,5 @@ export function getWorldParameters(frameState, layer) {
     ? Math.floor((extent[0] - projectionExtent[0]) / worldWidth)
     : 0;
 
-  return [startWorld, endWorld, worldWidth];
+  return [startWorld, endWorld, multiWorld ? worldWidth : 0];
 }

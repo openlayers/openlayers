@@ -143,7 +143,7 @@ class DragAndDrop extends Interaction {
 
     /**
      * @private
-     * @type {import("../proj/Projection.js").default}
+     * @type {import("../proj/Projection.js").default|null}
      */
     this.projection_ = options.projection
       ? getProjection(options.projection)
@@ -157,7 +157,7 @@ class DragAndDrop extends Interaction {
 
     /**
      * @private
-     * @type {import("../source/Vector.js").default}
+     * @type {import("../source/Vector.js").default|null}
      */
     this.source_ = options.source || null;
 
@@ -174,8 +174,12 @@ class DragAndDrop extends Interaction {
    * @private
    */
   handleResult_(file, event) {
-    const result = event.target.result;
+    const target = /** @type {FileReader} */ (event.target);
+    const result = target.result;
     const map = this.getMap();
+    if (!map) {
+      return;
+    }
     let projection = this.projection_;
     if (!projection) {
       projection = getUserProjection();
@@ -192,13 +196,20 @@ class DragAndDrop extends Interaction {
       let input = result;
       if (this.readAsBuffer_ && format.getType() !== 'arraybuffer') {
         if (text === undefined) {
-          text = new TextDecoder().decode(result);
+          text =
+            typeof result === 'string'
+              ? result
+              : new TextDecoder().decode(/** @type {ArrayBuffer} */ (result));
         }
         input = text;
       }
-      const features = this.tryReadFeatures_(format, input, {
-        featureProjection: projection,
-      });
+      const features = this.tryReadFeatures_(
+        format,
+        /** @type {string} */ (input),
+        {
+          featureProjection: projection,
+        },
+      );
       if (features && features.length > 0) {
         if (this.source_) {
           this.source_.clear();
@@ -224,11 +235,38 @@ class DragAndDrop extends Interaction {
     const map = this.getMap();
     if (map) {
       const dropArea = this.target ? this.target : map.getViewport();
+      if (!dropArea) {
+        return;
+      }
       this.dropListenKeys_ = [
-        listen(dropArea, EventType.DROP, this.handleDrop, this),
-        listen(dropArea, EventType.DRAGENTER, this.handleStop, this),
-        listen(dropArea, EventType.DRAGOVER, this.handleStop, this),
-        listen(dropArea, EventType.DROP, this.handleStop, this),
+        listen(
+          dropArea,
+          EventType.DROP,
+          /** @type {import("../events.js").ListenerFunction} */ (
+            this.handleDrop.bind(this)
+          ),
+        ),
+        listen(
+          dropArea,
+          EventType.DRAGENTER,
+          /** @type {import("../events.js").ListenerFunction} */ (
+            this.handleStop.bind(this)
+          ),
+        ),
+        listen(
+          dropArea,
+          EventType.DRAGOVER,
+          /** @type {import("../events.js").ListenerFunction} */ (
+            this.handleStop.bind(this)
+          ),
+        ),
+        listen(
+          dropArea,
+          EventType.DROP,
+          /** @type {import("../events.js").ListenerFunction} */ (
+            this.handleStop.bind(this)
+          ),
+        ),
       ];
     }
   }
@@ -270,7 +308,7 @@ class DragAndDrop extends Interaction {
    * @param {string} text Text.
    * @param {import("../format/Feature.js").ReadOptions} options Read options.
    * @private
-   * @return {Array<import("../Feature.js").default>} Features.
+   * @return {Array<import("../Feature.js").default>|null} Features.
    */
   tryReadFeatures_(format, text, options) {
     try {
@@ -297,13 +335,22 @@ class DragAndDrop extends Interaction {
    * @param {DragEvent} event Event.
    */
   handleDrop(event) {
-    const files = event.dataTransfer.files;
+    const dataTransfer = event.dataTransfer;
+    if (!dataTransfer) {
+      return;
+    }
+    const files = dataTransfer.files;
     for (let i = 0, ii = files.length; i < ii; ++i) {
       const file = files.item(i);
+      if (!file) {
+        continue;
+      }
       const reader = new FileReader();
       reader.addEventListener(
         EventType.LOAD,
-        this.handleResult_.bind(this, file),
+        /** @type {EventListener} */ (
+          /** @type {unknown} */ (this.handleResult_.bind(this, file))
+        ),
       );
       if (this.readAsBuffer_) {
         reader.readAsArrayBuffer(file);
@@ -319,7 +366,10 @@ class DragAndDrop extends Interaction {
   handleStop(event) {
     event.stopPropagation();
     event.preventDefault();
-    event.dataTransfer.dropEffect = 'copy';
+    const dataTransfer = event.dataTransfer;
+    if (dataTransfer) {
+      dataTransfer.dropEffect = 'copy';
+    }
   }
 }
 

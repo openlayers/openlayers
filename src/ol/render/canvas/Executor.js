@@ -42,11 +42,15 @@ import {TEXT_ALIGN} from './TextBuilder.js';
  * @property {number} originY OriginY.
  * @property {Array<number>} scale Scale.
  * @property {DeclutterEntry} declutterBox DeclutterBox.
- * @property {import("../../transform.js").Transform} canvasTransform CanvasTransform.
+ * @property {import("../../transform.js").Transform|undefined} canvasTransform CanvasTransform.
  */
 
 /**
- * @typedef {{0: CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D, 1: import('../../size.js').Size, 2: import("../canvas.js").Label|HTMLImageElement|HTMLCanvasElement|HTMLVideoElement, 3: ImageOrLabelDimensions, 4: number, 5: Array<*>, 6: Array<*>}} ReplayImageOrLabelArgs
+ * @typedef {{args: ReplayImageOrLabelArgs, declutterMode: import('../../style/Style.js').DeclutterMode}} DeclutterImageWithTextEntry
+ * @typedef {Object<number, DeclutterImageWithTextEntry>} DeclutterImageWithTextMap
+ 
+/**
+ * @typedef {{0: CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D, 1: import('../../size.js').Size, 2: import("../canvas.js").Label|HTMLImageElement|HTMLCanvasElement|HTMLVideoElement, 3: ImageOrLabelDimensions, 4: number, 5: Array<*>|null, 6: Array<*>|null}} ReplayImageOrLabelArgs
  */
 
 /**
@@ -202,7 +206,7 @@ class Executor {
 
     /**
      * @private
-     * @type {Array<number>}
+     * @type {Array<number>|null}
      */
     this.pixelCoordinates_ = null;
 
@@ -241,13 +245,13 @@ class Executor {
 
     /**
      * @private
-     * @type {import("../canvas/ZIndexContext.js").default}
+     * @type {import("../canvas/ZIndexContext.js").default|null}
      */
     this.zIndexContext_ = deferredRendering ? new ZIndexContext() : null;
   }
 
   /**
-   * @return {ZIndexContext} ZIndex context.
+   * @return {import("../canvas/ZIndexContext.js").default|null} ZIndex context.
    */
   getZIndexContext() {
     return this.zIndexContext_;
@@ -270,8 +274,8 @@ class Executor {
     const textState = this.textStates[textKey];
     const pixelRatio = this.pixelRatio;
     const scale = [
-      textState.scale[0] * pixelRatio,
-      textState.scale[1] * pixelRatio,
+      /** @type {Array<number>} */ (textState.scale)[0] * pixelRatio,
+      /** @type {Array<number>} */ (textState.scale)[1] * pixelRatio,
     ];
     const align = textState.justify
       ? TEXT_ALIGN[textState.justify]
@@ -280,7 +284,11 @@ class Executor {
           textState.textAlign || defaultTextAlign,
         );
     const strokeWidth =
-      strokeKey && strokeState.lineWidth ? strokeState.lineWidth : 0;
+      strokeKey &&
+      /** @type {import("../canvas.js").StrokeState} */ (strokeState).lineWidth
+        ? /** @type {import("../canvas.js").StrokeState} */ (strokeState)
+            .lineWidth
+        : 0;
 
     const chunks = Array.isArray(text)
       ? text
@@ -291,6 +299,7 @@ class Executor {
       chunks,
     );
     const renderWidth = width + strokeWidth;
+    /** @type {Array<*>} */
     const contextInstructions = [];
     // make canvas 2 pixels wider to account for italic text width measurement errors
     const w = (renderWidth + 2) * scale[0];
@@ -304,7 +313,7 @@ class Executor {
     if (scale[0] != 1 || scale[1] != 1) {
       contextInstructions.push('scale', scale);
     }
-    if (strokeKey) {
+    if (strokeKey && strokeState) {
       contextInstructions.push('strokeStyle', strokeState.strokeStyle);
       contextInstructions.push('lineWidth', strokeWidth);
       contextInstructions.push('lineCap', strokeState.lineCap);
@@ -313,7 +322,7 @@ class Executor {
       contextInstructions.push('setLineDash', [strokeState.lineDash]);
       contextInstructions.push('lineDashOffset', strokeState.lineDashOffset);
     }
-    if (fillKey) {
+    if (fillKey && fillState) {
       contextInstructions.push('fillStyle', fillState.fillStyle);
     }
     contextInstructions.push('textBaseline', 'middle');
@@ -370,13 +379,13 @@ class Executor {
   }
 
   /**
-   * @param {CanvasRenderingContext2D} context Context.
+   * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
    * @param {import("../../coordinate.js").Coordinate} p1 1st point of the background box.
    * @param {import("../../coordinate.js").Coordinate} p2 2nd point of the background box.
    * @param {import("../../coordinate.js").Coordinate} p3 3rd point of the background box.
    * @param {import("../../coordinate.js").Coordinate} p4 4th point of the background box.
-   * @param {Array<*>} fillInstruction Fill instruction.
-   * @param {Array<*>} strokeInstruction Stroke instruction.
+   * @param {Array<*>|null} fillInstruction Fill instruction.
+   * @param {Array<*>|null} strokeInstruction Stroke instruction.
    */
   replayTextBackground_(
     context,
@@ -388,11 +397,11 @@ class Executor {
     strokeInstruction,
   ) {
     context.beginPath();
-    context.moveTo.apply(context, p1);
-    context.lineTo.apply(context, p2);
-    context.lineTo.apply(context, p3);
-    context.lineTo.apply(context, p4);
-    context.lineTo.apply(context, p1);
+    context.moveTo.apply(context, /** @type {[number, number]} */ (p1));
+    context.lineTo.apply(context, /** @type {[number, number]} */ (p2));
+    context.lineTo.apply(context, /** @type {[number, number]} */ (p3));
+    context.lineTo.apply(context, /** @type {[number, number]} */ (p4));
+    context.lineTo.apply(context, /** @type {[number, number]} */ (p1));
     if (fillInstruction) {
       this.alignAndScaleFill_ = /** @type {number} */ (fillInstruction[2]);
       context.fillStyle = /** @type {string} */ (fillInstruction[1]);
@@ -526,13 +535,30 @@ class Executor {
 
   /**
    * @private
-   * @param {CanvasRenderingContext2D} context Context.
+   * @param {ReplayImageOrLabelArgs} replayArgs Arguments.
+   * @return {boolean} The image or label was rendered.
+   */
+  replayImageOrLabelArgs_(replayArgs) {
+    return this.replayImageOrLabel_(
+      replayArgs[0],
+      replayArgs[1],
+      replayArgs[2],
+      replayArgs[3],
+      replayArgs[4],
+      replayArgs[5],
+      replayArgs[6],
+    );
+  }
+
+  /**
+   * @private
+   * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
    * @param {import('../../size.js').Size} scaledCanvasSize Scaled canvas size.
    * @param {import("../canvas.js").Label|HTMLImageElement|HTMLCanvasElement|HTMLVideoElement} imageOrLabel Image.
    * @param {ImageOrLabelDimensions} dimensions Dimensions.
    * @param {number} opacity Opacity.
-   * @param {Array<*>} fillInstruction Fill instruction.
-   * @param {Array<*>} strokeInstruction Stroke instruction.
+   * @param {Array<*>|null} fillInstruction Fill instruction.
+   * @param {Array<*>|null} strokeInstruction Stroke instruction.
    * @return {boolean} The image or label was rendered.
    */
   replayImageOrLabel_(
@@ -570,7 +596,7 @@ class Executor {
       }
       drawImageOrLabel(
         context,
-        dimensions.canvasTransform,
+        /** @type {?} */ (dimensions.canvasTransform),
         opacity,
         imageOrLabel,
         dimensions.originX,
@@ -649,7 +675,9 @@ class Executor {
       strokeState && strokeState.lineWidth ? strokeState.lineWidth : 0;
 
     // Remove the 2 pixels we added in createLabel() for the anchor
-    const width = label.width / pixelRatio - 2 * textState.scale[0];
+    const width =
+      label.width / pixelRatio -
+      2 * /** @type {Array<number>} */ (textState.scale)[0];
     const anchorX = align * width + 2 * (0.5 - align) * strokeWidth;
     const anchorY =
       (baseline * label.height) / pixelRatio +
@@ -709,11 +737,11 @@ class Executor {
     const ii = instructions.length; // end of instructions
     let d = 0; // data index
     let dd; // end of per-instruction data
-    const offsetCoords = [];
+    const offsetCoords = /** @type {Array<number>} */ ([]);
     let anchorX,
       anchorY,
       lineOffsetPx,
-      /** @type {import('../../style/Style.js').DeclutterMode} */
+      /** @type {import('../../style/Style.js').DeclutterMode|undefined} */
       declutterMode,
       prevX,
       prevY,
@@ -742,7 +770,7 @@ class Executor {
     // balance between batch size and number of fill/stroke instructions.
     const batchSize =
       this.instructions != instructions || this.overlaps ? 0 : 200;
-    let /** @type {import("../../Feature.js").FeatureLike} */ feature;
+    let /** @type {import("../../Feature.js").FeatureLike|undefined} */ feature;
     let x, y, currentGeometry;
     while (i < ii) {
       const instruction = instructions[i];
@@ -813,7 +841,8 @@ class Executor {
           const renderer = instruction[4];
           const fn = instruction[5];
           state.geometry = geometry;
-          state.feature = feature;
+          state.feature =
+            /** @type {import("../../Feature.js").FeatureLike} */ (feature);
           if (!(i in coordinateCache)) {
             coordinateCache[i] = [];
           }
@@ -854,7 +883,7 @@ class Executor {
           let width = /** @type {number} */ (instruction[13]);
           declutterMode = instruction[14] || 'declutter';
           const declutterImageWithText =
-            /** @type {{args: import("../canvas.js").DeclutterImageWithText, declutterMode: import('../../style/Style.js').DeclutterMode}} */ (
+            /** @type {DeclutterImageWithTextMap|undefined} */ (
               instruction[15]
             );
 
@@ -886,7 +915,9 @@ class Executor {
 
           let geometryWidths;
           if (instruction.length > 25) {
-            geometryWidths = /** @type {number} */ (instruction[25]);
+            geometryWidths = /** @type {Array<number>|undefined} */ (
+              instruction[25]
+            );
           }
 
           let padding, backgroundFillInstruction, backgroundStrokeInstruction;
@@ -935,7 +966,7 @@ class Executor {
               snapToPixel,
               padding,
               !!backgroundFillInstruction || !!backgroundStrokeInstruction,
-              feature,
+              /** @type {import("../../Feature.js").FeatureLike} */ (feature),
             );
             /** @type {ReplayImageOrLabelArgs} */
             const args = [
@@ -953,7 +984,13 @@ class Executor {
                 const index = dd - d;
                 if (!declutterImageWithText[index]) {
                   // We now have the image for an image+text combination.
-                  declutterImageWithText[index] = {args, declutterMode};
+                  declutterImageWithText[index] = {
+                    args,
+                    declutterMode:
+                      /** @type {import('../../style/Style.js').DeclutterMode} */ (
+                        declutterMode
+                      ),
+                  };
                   // Don't render anything for now, wait for the text.
                   continue;
                 }
@@ -964,11 +1001,14 @@ class Executor {
                 imageDeclutterBox = getDeclutterBox(imageArgs);
               }
               // We now have image and text for an image+text combination.
-              let renderImage, renderText;
+              /** @type {boolean|undefined} */
+              let renderImage;
+              /** @type {boolean|undefined} */
+              let renderText;
               if (
                 imageArgs &&
                 (imageDeclutterMode !== 'declutter' ||
-                  !declutterTree.collides(imageDeclutterBox))
+                  !declutterTree.collides(/** @type {?} */ (imageDeclutterBox)))
               ) {
                 renderImage = true;
               }
@@ -988,18 +1028,20 @@ class Executor {
               }
               if (renderImage) {
                 if (imageDeclutterMode !== 'none') {
-                  declutterTree.insert(imageDeclutterBox);
+                  declutterTree.insert(/** @type {?} */ (imageDeclutterBox));
                 }
-                this.replayImageOrLabel_.apply(this, imageArgs);
+                this.replayImageOrLabelArgs_(
+                  /** @type {ReplayImageOrLabelArgs} */ (imageArgs),
+                );
               }
               if (renderText) {
                 if (declutterMode !== 'none') {
                   declutterTree.insert(dimensions.declutterBox);
                 }
-                this.replayImageOrLabel_.apply(this, args);
+                this.replayImageOrLabelArgs_(args);
               }
             } else {
-              this.replayImageOrLabel_.apply(this, args);
+              this.replayImageOrLabelArgs_(args);
             }
           }
           ++i;
@@ -1032,8 +1074,10 @@ class Executor {
           const textState = this.textStates[textKey];
           const font = textState.font;
           const textScale = [
-            textState.scale[0] * measurePixelRatio,
-            textState.scale[1] * measurePixelRatio,
+            /** @type {Array<number>} */ (textState.scale)[0] *
+              measurePixelRatio,
+            /** @type {Array<number>} */ (textState.scale)[1] *
+              measurePixelRatio,
           ];
 
           let cachedWidths;
@@ -1051,7 +1095,11 @@ class Executor {
           if (overflow || textLength <= pathLength) {
             const textAlign = this.textStates[textKey].textAlign;
             const startM =
-              (pathLength - textLength) * horizontalTextAlign(text, textAlign);
+              (pathLength - textLength) *
+              horizontalTextAlign(
+                text,
+                /** @type {CanvasTextAlign} */ (textAlign),
+              );
             const parts = drawTextOnPath(
               pixelCoordinates,
               begin,
@@ -1101,7 +1149,9 @@ class Executor {
                     false,
                     defaultPadding,
                     false,
-                    feature,
+                    /** @type {import("../../Feature.js").FeatureLike} */ (
+                      feature
+                    ),
                   );
                   if (
                     declutterTree &&
@@ -1116,8 +1166,8 @@ class Executor {
                     label,
                     dimensions,
                     1,
-                    null,
-                    null,
+                    /** @type {Array<*>|null} */ (null),
+                    /** @type {Array<*>|null} */ (null),
                   ]);
                 }
               }
@@ -1144,7 +1194,9 @@ class Executor {
                     false,
                     defaultPadding,
                     false,
-                    feature,
+                    /** @type {import("../../Feature.js").FeatureLike} */ (
+                      feature
+                    ),
                   );
                   if (
                     declutterTree &&
@@ -1159,8 +1211,8 @@ class Executor {
                     label,
                     dimensions,
                     1,
-                    null,
-                    null,
+                    /** @type {Array<*>|null} */ (null),
+                    /** @type {Array<*>|null} */ (null),
                   ]);
                 }
               }
@@ -1168,7 +1220,7 @@ class Executor {
                 declutterTree.load(replayImageOrLabelArgs.map(getDeclutterBox));
               }
               for (let i = 0, ii = replayImageOrLabelArgs.length; i < ii; ++i) {
-                this.replayImageOrLabel_.apply(this, replayImageOrLabelArgs[i]);
+                this.replayImageOrLabelArgs_(replayImageOrLabelArgs[i]);
               }
             }
           }
@@ -1182,7 +1234,9 @@ class Executor {
             const result = featureCallback(
               feature,
               currentGeometry,
-              declutterMode,
+              /** @type {import('../../style/Style.js').DeclutterMode} */ (
+                declutterMode
+              ),
             );
             if (result) {
               return result;

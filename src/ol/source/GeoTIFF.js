@@ -122,7 +122,7 @@ const STATISTICS_MINIMUM = 'STATISTICS_MINIMUM';
 
 const defaultTileSize = 256;
 
-let workerPool;
+let /** @type {import('geotiff').Pool|undefined} */ workerPool;
 function getWorkerPool() {
   if (!workerPool) {
     workerPool = new Pool();
@@ -207,6 +207,7 @@ async function getProjectionFromKeys(
     }
     return projection || null;
   }
+  return null;
 }
 
 /**
@@ -258,14 +259,19 @@ function getImagesForTIFF(tiff) {
 const createCustomClient = (url, loader) => ({
   url,
   request: async (options) => {
-    const response = Object.assign(
-      await loader(url, options?.headers, options?.signal),
-      {
-        getHeader: (name) => response.headers.get(name),
-        getData: () => response.arrayBuffer(),
-      },
+    const response = await loader(
+      url,
+      options?.headers || {},
+      options?.signal || new AbortController().signal,
     );
-    return response;
+    return /** @type {import('geotiff').BaseResponse} */ (
+      /** @type {unknown} */ (
+        Object.assign(response, {
+          getHeader: (/** @type {string} */ name) => response.headers.get(name),
+          getData: () => response.arrayBuffer(),
+        })
+      )
+    );
   },
 });
 
@@ -284,12 +290,19 @@ function getImagesForSource(source, options) {
         'Source overviews are not supported when using a custom loader',
       );
     }
-    const client = createCustomClient(source.url, source.loader);
+    const client = createCustomClient(
+      /** @type {string} */ (source.url),
+      source.loader,
+    );
     request = tiffFromCustomClient(client, options);
   } else if (source.overviews) {
-    request = tiffFromUrls(source.url, source.overviews, options);
+    request = tiffFromUrls(
+      /** @type {string} */ (source.url),
+      source.overviews,
+      options,
+    );
   } else {
-    request = tiffFromUrl(source.url, options);
+    request = tiffFromUrl(/** @type {string} */ (source.url), options);
   }
   return request.then(getImagesForTIFF).then(function (images) {
     // For non-tiled (strip-encoded) images served over HTTP, re-open with a
@@ -308,7 +321,10 @@ function getImagesForSource(source, options) {
       const reopenOptions = Object.assign({}, options, {blockSize});
       let reopened;
       if (source.loader) {
-        const client = createCustomClient(source.url, source.loader);
+        const client = createCustomClient(
+          /** @type {string} */ (source.url),
+          source.loader,
+        );
         reopened = tiffFromCustomClient(client, reopenOptions);
       } else if (source.overviews) {
         reopened = tiffFromUrls(source.url, source.overviews, reopenOptions);
@@ -326,14 +342,14 @@ function getImagesForSource(source, options) {
  * @param {number|Array<number>|Array<Array<number>>} got Actual value.
  * @param {number} tolerance Accepted tolerance in fraction of expected between expected and got.
  * @param {string} message The error message.
- * @param {function(Error):void} rejector A function to be called with any error.
+ * @param {((function(Error): void)|null|undefined)} rejector A function to be called with any error.
  */
 function assertEqual(expected, got, tolerance, message, rejector) {
   if (Array.isArray(expected)) {
     const length = expected.length;
     if (!Array.isArray(got) || length != got.length) {
       const error = new Error(message);
-      rejector(error);
+      rejector?.(error);
       throw error;
     }
     for (let i = 0; i < length; ++i) {
@@ -349,7 +365,7 @@ function assertEqual(expected, got, tolerance, message, rejector) {
 }
 
 /**
- * @param {Array} array The data array.
+ * @param {Array<number>|Int8Array|Int16Array|Int32Array|Float32Array|Uint8Array|Uint16Array|Uint32Array} array The data array.
  * @return {number} The minimum value.
  */
 function getMinForDataType(array) {
@@ -369,7 +385,7 @@ function getMinForDataType(array) {
 }
 
 /**
- * @param {Array} array The data array.
+ * @param {Array<number>|Int8Array|Int16Array|Int32Array|Float32Array|Uint8Array|Uint16Array|Uint32Array|Uint8ClampedArray} array The data array.
  * @return {number} The maximum value.
  */
 function getMaxForDataType(array) {
@@ -461,8 +477,10 @@ class GeoTIFFSource extends DataTile {
     super({
       attributions: options.attributions,
       state: 'loading',
-      tileGrid: null,
-      projection: options.projection || null,
+      tileGrid: undefined,
+      projection: /** @type {import("../proj.js").ProjectionLike} */ (
+        options.projection || null
+      ),
       transition: options.transition,
       interpolate: options.interpolate !== false,
       wrapX: options.wrapX,
@@ -478,7 +496,7 @@ class GeoTIFFSource extends DataTile {
     const numSources = this.sourceInfo_.length;
 
     /**
-     * @type {Object}
+     * @type {GeoTIFFSourceOptions|undefined}
      * @private
      */
     this.sourceOptions_ = options.sourceOptions;
@@ -526,7 +544,7 @@ class GeoTIFFSource extends DataTile {
     this.normalize_ = options.normalize !== false;
 
     /**
-     * @type {Error}
+     * @type {Error|null}
      * @private
      */
     this.error_ = null;
@@ -550,7 +568,9 @@ class GeoTIFFSource extends DataTile {
     for (let i = 0; i < numSources; ++i) {
       requests[i] = getImagesForSource(
         this.sourceInfo_[i],
-        this.sourceOptions_,
+        /** @type {import('geotiff').SourceOptions} */ (
+          this.sourceOptions_ || {}
+        ),
       );
     }
     Promise.all(requests)
@@ -565,7 +585,7 @@ class GeoTIFFSource extends DataTile {
   }
 
   /**
-   * @return {Error} A source loading error. When the source state is `error`, use this function
+   * @return {Error|null} A source loading error. When the source state is `error`, use this function
    * to get more information about the error. To debug a faulty configuration, you may want to use
    * a listener like
    * ```js
@@ -649,10 +669,15 @@ class GeoTIFFSource extends DataTile {
    * @private
    */
   async configure_(sources) {
+    /** @type {Array<number>|undefined} */
     let extent;
+    /** @type {Array<number>|undefined} */
     let origin;
+    /** @type {Array<import("../size.js").Size>|undefined} */
     let commonRenderTileSizes;
+    /** @type {Array<import("../size.js").Size>|undefined} */
     let commonSourceTileSizes;
+    /** @type {Array<number>|undefined} */
     let resolutions;
     const samplesPerPixel = new Array(sources.length);
     const nodataValues = new Array(sources.length);
@@ -661,7 +686,9 @@ class GeoTIFFSource extends DataTile {
 
     const sourceCount = sources.length;
     for (let sourceIndex = 0; sourceIndex < sourceCount; ++sourceIndex) {
+      /** @type {Array<GeoTIFFImage>} */
       const images = [];
+      /** @type {Array<GeoTIFFImage>} */
       const masks = [];
       sources[sourceIndex].forEach((item) => {
         if (isMask(item)) {
@@ -736,14 +763,24 @@ class GeoTIFFSource extends DataTile {
       if (!extent) {
         extent = sourceExtent;
       } else {
-        getIntersection(extent, sourceExtent, extent);
+        getIntersection(
+          /** @type {import("../extent.js").Extent} */ (extent),
+          /** @type {import("../extent.js").Extent} */ (sourceExtent),
+          /** @type {import("../extent.js").Extent} */ (extent),
+        );
       }
 
       if (!origin) {
         origin = sourceOrigin;
       } else {
         const message = `Origin mismatch for source ${sourceIndex}, got [${sourceOrigin}] but expected [${origin}]`;
-        assertEqual(origin, sourceOrigin, 0, message, this.viewRejector);
+        assertEqual(
+          /** @type {Array<number>} */ (origin),
+          /** @type {Array<number>} */ (sourceOrigin),
+          0,
+          message,
+          this.viewRejector,
+        );
       }
 
       if (!resolutions) {
@@ -800,8 +837,12 @@ class GeoTIFFSource extends DataTile {
 
     for (let i = 0, ii = this.sourceImagery_.length; i < ii; ++i) {
       const sourceImagery = this.sourceImagery_[i];
-      while (sourceImagery.length < resolutions.length) {
-        sourceImagery.unshift(undefined);
+      while (
+        sourceImagery.length < /** @type {Array<number>} */ (resolutions).length
+      ) {
+        sourceImagery.unshift(
+          /** @type {GeoTIFFImage} */ (/** @type {unknown} */ (undefined)),
+        );
       }
     }
 
@@ -863,41 +904,66 @@ class GeoTIFFSource extends DataTile {
     this.nodataBandIndex = this.hasAlpha ? this.bandCount : undefined;
 
     const tileGrid = new TileGrid({
-      extent: extent,
+      extent: /** @type {Array<number>} */ (extent),
       minZoom: minZoom,
-      origin: origin,
-      resolutions: resolutions,
-      tileSizes: commonRenderTileSizes,
+      origin: /** @type {Array<number>} */ (origin),
+      resolutions: /** @type {Array<number>} */ (resolutions),
+      tileSizes: /** @type {Array<import("../size.js").Size>} */ (
+        commonRenderTileSizes
+      ),
     });
 
     this.tileGrid = tileGrid;
-    this.setTileSizes(commonSourceTileSizes);
+    this.setTileSizes(
+      /** @type {Array<import("../size.js").Size>} */ (commonSourceTileSizes),
+    );
 
     this.setLoader(this.loadTile_.bind(this));
     this.setState('ready');
 
     const zoom = 1;
-    if (resolutions.length === 2) {
-      resolutions = [resolutions[0], resolutions[1], resolutions[1] / 2];
-    } else if (resolutions.length === 1) {
-      resolutions = [resolutions[0] * 2, resolutions[0], resolutions[0] / 2];
+    const configuredResolutions = /** @type {Array<number>} */ (resolutions);
+    if (configuredResolutions.length === 2) {
+      resolutions = [
+        configuredResolutions[0],
+        configuredResolutions[1],
+        configuredResolutions[1] / 2,
+      ];
+    } else if (configuredResolutions.length === 1) {
+      resolutions = [
+        configuredResolutions[0] * 2,
+        configuredResolutions[0],
+        configuredResolutions[0] / 2,
+      ];
     }
 
-    let viewExtent = extent;
+    let viewExtent = /** @type {Array<number>} */ (extent);
     if (this.transformMatrix) {
       const matrix = makeInverse(createMatrix(), this.transformMatrix.slice());
       const transformFn = createTransformFromCoordinateTransform((input) =>
         applyMatrix(matrix, input),
       );
-      viewExtent = applyTransform(extent, transformFn);
+      viewExtent = applyTransform(
+        /** @type {Array<number>} */ (extent),
+        transformFn,
+      );
     }
 
-    this.viewResolver({
+    const projection = this.getProjection();
+    this.viewResolver?.({
       showFullExtent: true,
-      projection: this.projection,
+      projection: /** @type {import("../proj.js").ProjectionLike} */ (
+        projection
+      ),
       resolutions: resolutions,
-      center: toUserCoordinate(getCenter(viewExtent), this.projection),
-      extent: toUserExtent(viewExtent, this.projection),
+      center: toUserCoordinate(
+        getCenter(viewExtent),
+        /** @type {import("../proj.js").ProjectionLike} */ (projection),
+      ),
+      extent: toUserExtent(
+        viewExtent,
+        /** @type {import("../proj.js").ProjectionLike} */ (projection),
+      ),
       zoom: zoom,
     });
   }
@@ -907,7 +973,7 @@ class GeoTIFFSource extends DataTile {
    * @param {number} x The x tile index.
    * @param {number} y The y tile index.
    * @param {import('./DataTile.js').LoaderOptions} options The loader options.
-   * @return {Promise} The composed tile data.
+   * @return {Promise<import("../DataTile.js").Data>} The composed tile data.
    * @private
    */
   loadTile_(z, x, y, options) {
@@ -926,7 +992,9 @@ class GeoTIFFSource extends DataTile {
         Math.round((x + 1) * (sourceTileSize[0] * resolutionFactor)),
         Math.round((y + 1) * (sourceTileSize[1] * resolutionFactor)),
       ];
-      const image = this.sourceImagery_[sourceIndex][z];
+      const image = /** @type {GeoTIFFImage} */ (
+        this.sourceImagery_[sourceIndex][z]
+      );
       let samples;
       if (source.bands) {
         samples = source.bands.map(function (bandNumber) {
@@ -936,11 +1004,19 @@ class GeoTIFFSource extends DataTile {
 
       /** @type {number|Array<number>} */
       let fillValue;
-      if ('nodata' in source && source.nodata !== null) {
+      if (
+        'nodata' in source &&
+        source.nodata !== null &&
+        source.nodata !== undefined
+      ) {
         if (Array.isArray(source.nodata)) {
           if (samples) {
             fillValue = samples.map(function (sampleIndex) {
-              const v = source.nodata[sampleIndex];
+              const nodata = source.nodata;
+              const v =
+                Array.isArray(nodata) && nodata[sampleIndex] !== undefined
+                  ? nodata[sampleIndex]
+                  : undefined;
               return v !== undefined
                 ? v
                 : nodataValues[sourceIndex][sampleIndex];
@@ -955,7 +1031,9 @@ class GeoTIFFSource extends DataTile {
         }
       } else {
         if (!samples) {
-          fillValue = nodataValues[sourceIndex];
+          fillValue = /** @type {number|Array<number>} */ (
+            nodataValues[sourceIndex]
+          );
         } else {
           fillValue = samples.map(function (sampleIndex) {
             return nodataValues[sourceIndex][sampleIndex];
@@ -997,17 +1075,21 @@ class GeoTIFFSource extends DataTile {
       });
     }
 
-    return Promise.all(requests)
-      .then(this.composeTile_.bind(this, sourceTileSize))
-      .catch(function (error) {
-        logError(error);
-        throw error;
-      });
+    return /** @type {Promise<import("../DataTile.js").Data>} */ (
+      /** @type {unknown} */ (
+        Promise.all(requests)
+          .then(this.composeTile_.bind(this, sourceTileSize))
+          .catch(function (error) {
+            logError(error);
+            throw error;
+          })
+      )
+    );
   }
 
   /**
    * @param {import("../size.js").Size} sourceTileSize The source tile size.
-   * @param {Array} sourceSamples The source samples.
+   * @param {Array<Array<Int8Array|Uint8Array|Uint16Array|Uint32Array|Int16Array|Int32Array|Float32Array|null>|null>} sourceSamples The source samples.
    * @return {import("../DataTile.js").Data} The composed tile data.
    * @private
    */
@@ -1063,14 +1145,24 @@ class GeoTIFFSource extends DataTile {
             if (stats && STATISTICS_MINIMUM in stats) {
               min = parseFloat(stats[STATISTICS_MINIMUM]);
             } else {
-              min = getMinForDataType(sourceSamples[sourceIndex][0]);
+              const sampleData =
+                /** @type {Array<Int8Array|Uint8Array|Uint16Array|Uint32Array|Int16Array|Int32Array|Float32Array|null>|null} */ (
+                  sourceSamples[sourceIndex]
+                );
+              const firstBand = sampleData && sampleData[0];
+              min = firstBand ? getMinForDataType(firstBand) : 0;
             }
           }
           if (max === undefined) {
             if (stats && STATISTICS_MAXIMUM in stats) {
               max = parseFloat(stats[STATISTICS_MAXIMUM]);
             } else {
-              max = getMaxForDataType(sourceSamples[sourceIndex][0]);
+              const sampleData =
+                /** @type {Array<Int8Array|Uint8Array|Uint16Array|Uint32Array|Int16Array|Int32Array|Float32Array|null>|null} */ (
+                  sourceSamples[sourceIndex]
+                );
+              const firstBand = sampleData && sampleData[0];
+              max = firstBand ? getMaxForDataType(firstBand) : 255;
             }
           }
 
@@ -1115,7 +1207,11 @@ class GeoTIFFSource extends DataTile {
           ++sampleIndex
         ) {
           const sourceValue =
-            sourceSamples[sourceIndex][sampleIndex][pixelIndex];
+            /** @type {Int8Array|Uint8Array|Uint16Array|Uint32Array|Int16Array|Int32Array|Float32Array} */ (
+              /** @type {Array<Int8Array|Uint8Array|Uint16Array|Uint32Array|Int16Array|Int32Array|Float32Array|null>} */ (
+                sourceSamples[sourceIndex]
+              )[sampleIndex]
+            )[pixelIndex];
 
           let value;
           if (normalize) {
@@ -1146,8 +1242,18 @@ class GeoTIFFSource extends DataTile {
         }
         if (!transparent) {
           const maskIndex = sourceCount + sourceIndex;
-          const mask = sourceSamples[maskIndex];
-          if (mask && !mask[0][pixelIndex]) {
+          const mask =
+            /** @type {Array<Int8Array|Uint8Array|Uint16Array|Uint32Array|Int16Array|Int32Array|Float32Array|null>|null} */ (
+              sourceSamples[maskIndex]
+            );
+          if (
+            mask &&
+            !(
+              /** @type {Int8Array|Uint8Array|Uint16Array|Uint32Array|Int16Array|Int32Array|Float32Array} */ (
+                mask[0]
+              )[pixelIndex]
+            )
+          ) {
             transparent = true;
           }
         }

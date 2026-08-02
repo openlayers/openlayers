@@ -19,6 +19,20 @@ import {
   render as renderReprojected,
 } from './glreproj.js';
 
+/** @type {import('../size.js').Size} */
+const defaultSize = [256, 256];
+
+/**
+ * @typedef {Object} ReprojDataSource
+ * @property {import("../extent.js").Extent} extent Extent.
+ * @property {import("../extent.js").Extent|undefined} clipExtent Clip extent.
+ * @property {import("../DataTile.js").ArrayLike} data Tile data.
+ * @property {Float32ArrayConstructor|Uint8ClampedArrayConstructor} dataType Data type.
+ * @property {number} bytesPerPixel Bytes per pixel.
+ * @property {import('../size.js').Size} pixelSize Pixel size.
+ * @property {number} bandCount Band count.
+ */
+
 /**
  * @typedef {function(number, number, number, number) : import("../DataTile.js").default} TileGetter
  */
@@ -98,22 +112,22 @@ class ReprojDataTile extends DataTile {
     this.gutter_ = options.gutter;
 
     /**
-     * @type {import("../DataTile.js").Data}
+     * @type {import("../DataTile.js").Data|null}
      * @private
      */
     this.reprojData_ = null;
 
     /**
-     * @type {Error}
+     * @type {Error|null}
      * @private
      */
     this.reprojError_ = null;
 
     /**
-     * @type {import('../size.js').Size}
+     * @type {import('../size.js').Size|null}
      * @private
      */
-    this.reprojSize_ = undefined;
+    this.reprojSize_ = null;
 
     /**
      * @private
@@ -157,13 +171,13 @@ class ReprojDataTile extends DataTile {
 
     /**
      * @private
-     * @type {import("../extent.js").Extent}
+     * @type {import("../extent.js").Extent|null}
      */
     this.clipExtent_ = sourceProj.canWrapX()
       ? sourceTileGridExtent
         ? getIntersection(sourceProjExtent, sourceTileGridExtent)
         : sourceProjExtent
-      : sourceTileGridExtent;
+      : sourceTileGridExtent || null;
 
     const targetExtent = this.targetTileGrid_.getTileCoordExtent(
       this.wrappedTileCoord_,
@@ -222,7 +236,7 @@ class ReprojDataTile extends DataTile {
       sourceProj,
       targetProj,
       limitedTargetExtent,
-      maxSourceExtent,
+      maxSourceExtent || undefined,
       sourceResolution * errorThresholdInPixels,
       targetResolution,
       options.transformMatrix,
@@ -301,12 +315,12 @@ class ReprojDataTile extends DataTile {
    * @override
    */
   getSize() {
-    return this.reprojSize_;
+    return this.reprojSize_ || defaultSize;
   }
 
   /**
    * Get the data for the tile.
-   * @return {import("../DataTile.js").Data} Tile data.
+   * @return {import("../DataTile.js").Data|null} Tile data.
    * @override
    */
   getData() {
@@ -315,7 +329,7 @@ class ReprojDataTile extends DataTile {
 
   /**
    * Get any loading error.
-   * @return {Error} Loading error.
+   * @return {Error|null} Loading error.
    * @override
    */
   getError() {
@@ -326,6 +340,7 @@ class ReprojDataTile extends DataTile {
    * @private
    */
   reproject_() {
+    /** @type {Array<ReprojDataSource>} */
     const dataSources = [];
     let imageLike = false;
     this.sourceTiles_.forEach((source) => {
@@ -339,12 +354,20 @@ class ReprojDataTile extends DataTile {
        * @type {import("../DataTile.js").ArrayLike}
        */
       let tileData;
-      const arrayData = asArrayLike(tile.getData());
+      const rawData = tile.getData();
+      if (!rawData) {
+        return;
+      }
+      const arrayData = asArrayLike(rawData);
       if (arrayData) {
         tileData = arrayData;
       } else {
         imageLike = true;
-        tileData = toArray(asImageLike(tile.getData()));
+        const imageLikeData = asImageLike(rawData);
+        if (!imageLikeData) {
+          return;
+        }
+        tileData = toArray(imageLikeData);
       }
       const pixelSize = [size[0] + 2 * gutter, size[1] + 2 * gutter];
       const isFloat = tileData instanceof Float32Array;
@@ -446,8 +469,10 @@ class ReprojDataTile extends DataTile {
         const width = pixelSize[0];
         const height = pixelSize[1];
 
+        const dataS = /** @type {import("../DataTile.js").ArrayLike} */ (
+          dataSource.data
+        );
         const data = new dataSource.dataType(BANDS_PR_REPROJ * width * height);
-        const dataS = dataSource.data;
         for (
           let j = 0, p = 0, len = data.length;
           j < len;
@@ -458,7 +483,11 @@ class ReprojDataTile extends DataTile {
             if (band === coverageBand) {
               data[j + c] = opaque;
             } else if (band < bandCount) {
-              data[j + c] = dataS[p * bandCount + band];
+              const sourceValue =
+                /** @type {Float32Array|Uint8ClampedArray|Uint8Array} */ (
+                  dataS
+                )[p * bandCount + band];
+              data[j + c] = sourceValue;
             }
           }
           ++p;
@@ -538,7 +567,9 @@ class ReprojDataTile extends DataTile {
 
     if (imageLike) {
       const context = createCanvasContext2D(targetWidth, targetHeight);
-      const imageData = new ImageData(dataR, targetWidth);
+      context.putImageData(context.createImageData(outWidth, outHeight), 0, 0);
+      const imageData = context.getImageData(0, 0, outWidth, outHeight);
+      imageData.data.set(/** @type {Uint8ClampedArray} */ (dataR));
       context.putImageData(imageData, 0, 0);
       this.reprojData_ = context.canvas;
     } else {
@@ -585,7 +616,9 @@ class ReprojDataTile extends DataTile {
           }
         }
       });
-      this.sourcesListenerKeys_.push(sourceListenKey);
+      /** @type {!Array<import("../events.js").EventsKey>} */ (
+        this.sourcesListenerKeys_
+      ).push(sourceListenKey);
     });
 
     if (leftToLoad === 0) {
@@ -604,8 +637,10 @@ class ReprojDataTile extends DataTile {
    * @private
    */
   unlistenSources_() {
-    this.sourcesListenerKeys_.forEach(unlistenByKey);
-    this.sourcesListenerKeys_ = null;
+    if (this.sourcesListenerKeys_) {
+      this.sourcesListenerKeys_.forEach(unlistenByKey);
+      this.sourcesListenerKeys_ = null;
+    }
   }
 }
 

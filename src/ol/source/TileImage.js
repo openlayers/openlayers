@@ -77,7 +77,9 @@ class TileImage extends UrlTile {
       tileGrid: options.tileGrid,
       tileLoadFunction: options.tileLoadFunction
         ? options.tileLoadFunction
-        : defaultTileLoadFunction,
+        : /** @type {import("../Tile.js").LoadFunction} */ (
+            defaultTileLoadFunction
+          ),
       tilePixelRatio: options.tilePixelRatio,
       tileUrlFunction: options.tileUrlFunction,
       url: options.url,
@@ -100,7 +102,7 @@ class TileImage extends UrlTile {
 
     /**
      * @protected
-     * @type {ReferrerPolicy}
+     * @type {ReferrerPolicy|undefined}
      */
     this.referrerPolicy = options.referrerPolicy;
 
@@ -136,11 +138,8 @@ class TileImage extends UrlTile {
    * @override
    */
   getGutterForProjection(projection) {
-    if (
-      this.getProjection() &&
-      projection &&
-      !equivalent(this.getProjection(), projection)
-    ) {
+    const thisProj = this.getProjection();
+    if (thisProj && projection && !equivalent(thisProj, projection)) {
       return 0;
     }
     return this.getGutter();
@@ -215,7 +214,12 @@ class TileImage extends UrlTile {
       this.tileOptions,
     );
     tile.key = key;
-    tile.addEventListener(EventType.CHANGE, this.handleTileChange.bind(this));
+    tile.addEventListener(
+      EventType.CHANGE,
+      /** @type {import("../events.js").ListenerFunction} */ (
+        this.handleTileChange.bind(this)
+      ),
+    );
     return tile;
   }
 
@@ -248,10 +252,9 @@ class TileImage extends UrlTile {
     const key = this.getKey();
     const sourceTileGrid = this.getTileGridForProjection(sourceProjection);
     const targetTileGrid = this.getTileGridForProjection(projection);
-    const wrappedTileCoord = this.getTileCoordForTileUrlFunction(
-      tileCoord,
-      projection,
-    );
+    const wrappedTileCoord =
+      this.getTileCoordForTileUrlFunction(tileCoord, projection) ||
+      /** @type {import("../tilecoord.js").TileCoord} */ (tileCoord);
     const tile = new ReprojTile(
       sourceProjection,
       sourceTileGrid,
@@ -368,9 +371,15 @@ export function defaultTileLoadFunction(imageTile, src) {
       })
       .then((imageBitmap) => {
         const canvas = imageTile.getImage();
+        if (!canvas) {
+          return;
+        }
         canvas.width = imageBitmap.width;
         canvas.height = imageBitmap.height;
         const ctx = /** @type {OffscreenCanvas} */ (canvas).getContext('2d');
+        if (!ctx) {
+          return;
+        }
         ctx.drawImage(imageBitmap, 0, 0);
         imageBitmap.close?.();
         // mock the image 'load' event
@@ -378,7 +387,7 @@ export function defaultTileLoadFunction(imageTile, src) {
       })
       .catch(() => {
         const canvas = imageTile.getImage();
-        canvas.dispatchEvent(new Event('error'));
+        canvas?.dispatchEvent(new Event('error'));
       });
     return;
   }

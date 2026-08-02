@@ -75,7 +75,7 @@ class ImageCanvas extends ImageWrapper {
    * @override
    */
   load() {
-    if (this.state == ImageState.IDLE) {
+    if (this.state == ImageState.IDLE && this.loader_) {
       this.state = ImageState.LOADING;
       this.changed();
       this.loader_(this.handleLoad_.bind(this));

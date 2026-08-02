@@ -120,18 +120,20 @@ class Cluster extends VectorSource {
      * @protected
      */
     this.geometryFunction =
-      options.geometryFunction ||
-      function (feature) {
-        const geometry = /** @type {Point} */ (feature.getGeometry());
-        assert(
-          !geometry || geometry.getType() === 'Point',
-          'The default `geometryFunction` can only handle `Point` or null geometries',
-        );
-        return geometry;
-      };
+      /** @type {GeometryFunction<import("../Feature.js").FeatureLike>} */ (
+        options.geometryFunction ||
+          function (feature) {
+            const geometry = /** @type {Point} */ (feature.getGeometry());
+            assert(
+              !geometry || geometry.getType() === 'Point',
+              'The default `geometryFunction` can only handle `Point` or null geometries',
+            );
+            return geometry;
+          }
+      );
 
     /**
-     * @type {function(Point, Array<FeatureType>):Feature}
+     * @type {undefined|function(Point, Array<FeatureType>):Feature}
      * @private
      */
     this.createCustomCluster_ = options.createCluster;

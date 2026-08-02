@@ -104,12 +104,20 @@ export function getVectorContext(event) {
   }
 
   // canvas may be at a different pixel ratio than frameState.pixelRatio
-  const a = event.inversePixelTransform[0];
-  const b = event.inversePixelTransform[1];
-  const canvasPixelRatio = Math.sqrt(a * a + b * b);
+  const inversePixelTransform = event.inversePixelTransform;
   const frameState = event.frameState;
+  if (!inversePixelTransform || !frameState) {
+    throw new Error('Only works for render events from Canvas 2D layers');
+  }
+  const extent = frameState.extent;
+  if (!extent) {
+    throw new Error('Missing frame extent');
+  }
+  const a = inversePixelTransform[0];
+  const b = inversePixelTransform[1];
+  const canvasPixelRatio = Math.sqrt(a * a + b * b);
   const transform = multiplyTransform(
-    event.inversePixelTransform.slice(),
+    inversePixelTransform.slice(),
     frameState.coordinateToPixelTransform,
   );
   const squaredTolerance = getSquaredTolerance(
@@ -128,11 +136,11 @@ export function getVectorContext(event) {
   return new CanvasImmediateRenderer(
     event.context,
     canvasPixelRatio,
-    frameState.extent,
+    extent,
     transform,
     frameState.viewState.rotation,
     squaredTolerance,
-    userTransform,
+    userTransform || undefined,
   );
 }
 
@@ -145,5 +153,9 @@ export function getVectorContext(event) {
  * @api
  */
 export function getRenderPixel(event, pixel) {
-  return applyTransform(event.inversePixelTransform, pixel.slice(0));
+  const inversePixelTransform = event.inversePixelTransform;
+  if (!inversePixelTransform) {
+    throw new Error('Missing inversePixelTransform');
+  }
+  return applyTransform(inversePixelTransform, pixel.slice(0));
 }

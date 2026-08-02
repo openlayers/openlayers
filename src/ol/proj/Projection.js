@@ -84,7 +84,7 @@ class Projection {
      * with `TILE_PIXELS` units, this is the extent of the tile in
      * tile pixel space.
      * @private
-     * @type {import("../extent.js").Extent}
+     * @type {import("../extent.js").Extent|null}
      */
     this.extent_ = options.extent !== undefined ? options.extent : null;
 
@@ -93,7 +93,7 @@ class Projection {
      * `TILE_PIXELS` units, this is the extent of the tile in
      * projected coordinate space.
      * @private
-     * @type {import("../extent.js").Extent}
+     * @type {import("../extent.js").Extent|null}
      */
     this.worldExtent_ =
       options.worldExtent !== undefined ? options.worldExtent : null;
@@ -125,7 +125,7 @@ class Projection {
 
     /**
      * @private
-     * @type {import("../tilegrid/TileGrid.js").default}
+     * @type {import("../tilegrid/TileGrid.js").default|null}
      */
     this.defaultTileGrid_ = null;
 
@@ -158,7 +158,7 @@ class Projection {
    * @api
    */
   getExtent() {
-    return this.extent_;
+    return /** @type {import("../extent.js").Extent} */ (this.extent_);
   }
 
   /**
@@ -187,7 +187,7 @@ class Projection {
    * @api
    */
   getWorldExtent() {
-    return this.worldExtent_;
+    return /** @type {import("../extent.js").Extent} */ (this.worldExtent_);
   }
 
   /**
@@ -225,7 +225,7 @@ class Projection {
   }
 
   /**
-   * @return {import("../tilegrid/TileGrid.js").default} The default tile grid.
+   * @return {import("../tilegrid/TileGrid.js").default|null} The default tile grid.
    */
   getDefaultTileGrid() {
     return this.defaultTileGrid_;

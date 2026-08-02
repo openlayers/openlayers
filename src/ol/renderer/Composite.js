@@ -111,7 +111,8 @@ class CompositeMapRenderer extends MapRenderer {
     this.dispatchRenderEvent(RenderEventType.PRECOMPOSE, frameState);
 
     const layerStatesArray = frameState.layerStatesArray.sort(
-      (a, b) => a.zIndex - b.zIndex,
+      (a, b) =>
+        /** @type {number} */ (a.zIndex) - /** @type {number} */ (b.zIndex),
     );
     const declutter = layerStatesArray.some(
       (layerState) =>
@@ -154,7 +155,10 @@ class CompositeMapRenderer extends MapRenderer {
         continue;
       }
 
-      const element = layer.render(frameState, previousElement);
+      const element = layer.render(
+        frameState,
+        /** @type {HTMLElement} */ (previousElement),
+      );
       if (!element) {
         continue;
       }
@@ -170,39 +174,41 @@ class CompositeMapRenderer extends MapRenderer {
 
     replaceChildren(this.element_, this.children_);
 
-    for (const container of mapContext ? this.children_ : []) {
-      const canvas = container.firstElementChild || container;
-      const backgroundColor = container.style.backgroundColor;
-      if (backgroundColor && (!isCanvas(canvas) || canvas.width > 0)) {
-        mapContext.fillStyle = backgroundColor;
-        mapContext.fillRect(
-          0,
-          0,
-          mapContext.canvas.width,
-          mapContext.canvas.height,
-        );
+    if (mapContext) {
+      for (const container of this.children_) {
+        const canvas = container.firstElementChild || container;
+        const backgroundColor = container.style.backgroundColor;
+        if (backgroundColor && (!isCanvas(canvas) || canvas.width > 0)) {
+          mapContext.fillStyle = backgroundColor;
+          mapContext.fillRect(
+            0,
+            0,
+            mapContext.canvas.width,
+            mapContext.canvas.height,
+          );
+        }
+        if (!isCanvas(canvas) || canvas.width === 0) {
+          continue;
+        }
+        mapContext.save();
+        const opacity = container.style.opacity || canvas.style.opacity;
+        mapContext.globalAlpha = opacity === '' ? 1 : Number(opacity);
+        const transform = canvas.style.transform;
+        if (transform) {
+          // Get the transform parameters from the style's transform matrix
+          mapContext.transform(
+            .../** @type {[number, number, number, number, number, number]} */ (
+              fromString(transform)
+            ),
+          );
+        } else {
+          const w = parseFloat(canvas.style.width) / canvas.width;
+          const h = parseFloat(canvas.style.height) / canvas.height;
+          mapContext.transform(w, 0, 0, h, 0, 0);
+        }
+        mapContext.drawImage(canvas, 0, 0);
+        mapContext.restore();
       }
-      if (!isCanvas(canvas) || canvas.width === 0) {
-        continue;
-      }
-      mapContext.save();
-      const opacity = container.style.opacity || canvas.style.opacity;
-      mapContext.globalAlpha = opacity === '' ? 1 : Number(opacity);
-      const transform = canvas.style.transform;
-      if (transform) {
-        // Get the transform parameters from the style's transform matrix
-        mapContext.transform(
-          .../** @type {[number, number, number, number, number, number]} */ (
-            fromString(transform)
-          ),
-        );
-      } else {
-        const w = parseFloat(canvas.style.width) / canvas.width;
-        const h = parseFloat(canvas.style.height) / canvas.height;
-        mapContext.transform(w, 0, 0, h, 0, 0);
-      }
-      mapContext.drawImage(canvas, 0, 0);
-      mapContext.restore();
     }
 
     this.dispatchRenderEvent(RenderEventType.POSTCOMPOSE, frameState);
@@ -231,7 +237,7 @@ class CompositeMapRenderer extends MapRenderer {
       }
     }
     layerStates.forEach((layerState) =>
-      layerState.layer.renderDeferred(frameState),
+      layerState.layer?.renderDeferred(frameState),
     );
   }
 }

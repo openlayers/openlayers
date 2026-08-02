@@ -216,7 +216,10 @@ class BaseObject extends Observable {
    * @api
    */
   set(key, value, silent) {
-    const values = this.values_ || (this.values_ = {});
+    const values = /** @type {Object<string, *>} */ (
+      this.values_ ||
+        (this.values_ = /** @type {Partial<NoInfer<Properties>>} */ ({}))
+    );
     if (silent) {
       values[key] = value;
     } else {

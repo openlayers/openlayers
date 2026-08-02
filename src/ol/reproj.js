@@ -15,6 +15,9 @@ import {
 import {solveLinearSystem} from './math.js';
 import {getPointResolution, transform} from './proj.js';
 
+/**
+ * @type {boolean|undefined}
+ */
 let brokenDiagonalRendering_;
 
 /**
@@ -241,6 +244,10 @@ export function render(
 
   context.scale(pixelRatio, pixelRatio);
 
+  /**
+   * @param {number} value Value.
+   * @return {number} Rounded value.
+   */
   function pixelRound(value) {
     return Math.round(value * pixelRatio) / pixelRatio;
   }
@@ -252,53 +259,55 @@ export function render(
     extend(sourceDataExtent, src.extent);
   });
 
+  /** @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D|undefined} */
   let stitchContext;
   const stitchScale = pixelRatio / sourceResolution;
   // Round up Float32 scale values to prevent interpolation in Firefox.
   const inverseScale = (interpolate ? 1 : 1 + Math.pow(2, -24)) / stitchScale;
 
   if (!drawSingle || sources.length !== 1 || gutter !== 0) {
-    stitchContext = createCanvasContext2D(
+    const stitchCtx = createCanvasContext2D(
       Math.round(getWidth(sourceDataExtent) * stitchScale),
       Math.round(getHeight(sourceDataExtent) * stitchScale),
       canvasPool,
     );
+    stitchContext = stitchCtx;
 
     if (!interpolate) {
-      stitchContext.imageSmoothingEnabled = false;
+      stitchCtx.imageSmoothingEnabled = false;
     }
     if (sourceExtent && clipExtent) {
       const xPos = (sourceExtent[0] - sourceDataExtent[0]) * stitchScale;
       const yPos = -(sourceExtent[3] - sourceDataExtent[3]) * stitchScale;
       const width = getWidth(sourceExtent) * stitchScale;
       const height = getHeight(sourceExtent) * stitchScale;
-      stitchContext.rect(xPos, yPos, width, height);
-      stitchContext.clip();
+      stitchCtx.rect(xPos, yPos, width, height);
+      stitchCtx.clip();
     }
 
     sources.forEach(function (src, i, arr) {
       // This test should never fail -- but it does. Need to find a fix the upstream condition
       if (src.image.width > 0 && src.image.height > 0) {
         if (src.clipExtent) {
-          stitchContext.save();
+          stitchCtx.save();
           const xPos = (src.clipExtent[0] - sourceDataExtent[0]) * stitchScale;
           const yPos = -(src.clipExtent[3] - sourceDataExtent[3]) * stitchScale;
           const width = getWidth(src.clipExtent) * stitchScale;
           const height = getHeight(src.clipExtent) * stitchScale;
-          stitchContext.rect(
+          stitchCtx.rect(
             interpolate ? xPos : Math.round(xPos),
             interpolate ? yPos : Math.round(yPos),
             interpolate ? width : Math.round(xPos + width) - Math.round(xPos),
             interpolate ? height : Math.round(yPos + height) - Math.round(yPos),
           );
-          stitchContext.clip();
+          stitchCtx.clip();
         }
 
         const xPos = (src.extent[0] - sourceDataExtent[0]) * stitchScale;
         const yPos = -(src.extent[3] - sourceDataExtent[3]) * stitchScale;
         const srcWidth = getWidth(src.extent) * stitchScale;
         const srcHeight = getHeight(src.extent) * stitchScale;
-        stitchContext.drawImage(
+        stitchCtx.drawImage(
           src.image,
           gutter,
           gutter,
@@ -315,7 +324,7 @@ export function render(
         );
 
         if (src.clipExtent) {
-          stitchContext.restore();
+          stitchCtx.restore();
         }
       }
     });

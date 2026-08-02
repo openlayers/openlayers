@@ -40,9 +40,9 @@ export class CustomTile extends ImageTile {
 
     /**
      * @private
-     * @type {HTMLCanvasElement|OffscreenCanvas|HTMLImageElement|HTMLVideoElement}
+     * @type {HTMLCanvasElement|OffscreenCanvas|HTMLImageElement|HTMLVideoElement|undefined}
      */
-    this.zoomifyImage_ = null;
+    this.zoomifyImage_ = undefined;
 
     /**
      * @private
@@ -53,7 +53,7 @@ export class CustomTile extends ImageTile {
 
   /**
    * Get the image element for this tile.
-   * @return {HTMLCanvasElement|OffscreenCanvas|HTMLImageElement|HTMLVideoElement} Image.
+   * @return {HTMLCanvasElement|OffscreenCanvas|HTMLImageElement|HTMLVideoElement|null} Image.
    * @override
    */
   getImage() {
@@ -61,6 +61,9 @@ export class CustomTile extends ImageTile {
       return this.zoomifyImage_;
     }
     const image = super.getImage();
+    if (!image) {
+      return null;
+    }
     if (this.state == TileState.LOADED) {
       const tileSize = this.tileSize_;
       if (image.width == tileSize[0] && image.height == tileSize[1]) {
@@ -136,6 +139,7 @@ class Zoomify extends TileImage {
     const tilePixelRatio = options.tilePixelRatio || 1;
     const imageWidth = size[0];
     const imageHeight = size[1];
+    /** @type {Array<import("../size.js").Size>} */
     const tierSizeInTiles = [];
     const tileSize = options.tileSize || DEFAULT_TILE_SIZE;
     let tileSizeForTierSizeCalculation = tileSize * tilePixelRatio;
@@ -186,9 +190,10 @@ class Zoomify extends TileImage {
     }
     resolutions.reverse();
 
+    const imageExtent = options.extent || [0, -imageHeight, imageWidth, 0];
     const tileGrid = new TileGrid({
       tileSize: tileSize,
-      extent: options.extent || [0, -imageHeight, imageWidth, 0],
+      extent: imageExtent,
       resolutions: resolutions,
     });
 
@@ -223,6 +228,7 @@ class Zoomify extends TileImage {
             tileCoordX + tileCoordY * tierSizeInTiles[tileCoordZ][0];
           const tileGroup =
             ((tileIndex + tileCountUpToTier[tileCoordZ]) / tileWidth) | 0;
+          /** @type {Record<string, string | number>} */
           const localContext = {
             'z': tileCoordZ,
             'x': tileCoordX,
@@ -231,7 +237,7 @@ class Zoomify extends TileImage {
             'TileGroup': 'TileGroup' + tileGroup,
           };
           return template.replace(/\{(\w+?)\}/g, function (m, p) {
-            return localContext[p];
+            return String(localContext[p]);
           });
         }
       );
@@ -264,23 +270,31 @@ class Zoomify extends TileImage {
     /**
      * @type {number|import("../array.js").NearestDirectionFunction}
      */
-    this.zDirection = options.zDirection;
+    this.zDirection = options.zDirection ?? 0;
 
     // Server retina tile detection (non-standard):
     // Try loading the center tile for the highest resolution. If it is not
     // available, we are dealing with retina tiles, and need to adjust the
     // tile url calculation.
     const tileUrl = tileGrid.getTileCoordForCoordAndResolution(
-      getCenter(tileGrid.getExtent()),
+      getCenter(imageExtent),
       resolutions[resolutions.length - 1],
     );
-    const testTileUrl = tileUrlFunction(tileUrl, 1, null);
-    const image = new Image();
-    image.addEventListener('error', () => {
-      tileWidth = tileSize;
-      this.changed();
-    });
-    image.src = testTileUrl;
+    const testTileUrl = tileUrlFunction(
+      tileUrl,
+      1,
+      /** @type {import("../proj/Projection.js").default} */ (
+        /** @type {unknown} */ (null)
+      ),
+    );
+    if (testTileUrl) {
+      const image = new Image();
+      image.addEventListener('error', () => {
+        tileWidth = tileSize;
+        this.changed();
+      });
+      image.src = testTileUrl;
+    }
   }
 }
 

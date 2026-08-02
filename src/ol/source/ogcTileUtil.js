@@ -266,9 +266,9 @@ export function parseTileMatrixSet(
   let projection = sourceInfo.projection;
   if (!projection) {
     if (typeof tileMatrixSet.crs === 'string') {
-      projection = getProjection(tileMatrixSet.crs);
+      projection = getProjection(tileMatrixSet.crs) ?? undefined;
     } else if ('uri' in tileMatrixSet.crs) {
-      projection = getProjection(tileMatrixSet.crs.uri);
+      projection = getProjection(tileMatrixSet.crs.uri) ?? undefined;
     }
     if (!projection) {
       throw new Error(`Unsupported CRS: ${JSON.stringify(tileMatrixSet.crs)}`);
@@ -395,20 +395,23 @@ export function parseTileMatrixSet(
     const id = matrixIds[tileCoord[0]];
     const matrix = matrixLookup[id];
     const upsideDown = matrix.cornerOfOrigin === 'bottomLeft';
+    const tileCol = tileCoord[1];
+    const tileRow = upsideDown ? -tileCoord[2] - 1 : tileCoord[2];
 
+    /** @type {Record<string, string | number>} */
     const localContext = {
       tileMatrix: id,
-      tileCol: tileCoord[1],
-      tileRow: upsideDown ? -tileCoord[2] - 1 : tileCoord[2],
+      tileCol: tileCol,
+      tileRow: tileRow,
     };
 
     if (tileMatrixSetLimits) {
       const limit = limitLookup[matrix.id];
       if (
-        localContext.tileCol < limit.minTileCol ||
-        localContext.tileCol > limit.maxTileCol ||
-        localContext.tileRow < limit.minTileRow ||
-        localContext.tileRow > limit.maxTileRow
+        tileCol < limit.minTileCol ||
+        tileCol > limit.maxTileCol ||
+        tileRow < limit.minTileRow ||
+        tileRow > limit.maxTileRow
       ) {
         return undefined;
       }
@@ -424,8 +427,12 @@ export function parseTileMatrixSet(
       context,
     );
 
+    if (!tileUrlTemplate || base === undefined) {
+      return undefined;
+    }
+
     const url = tileUrlTemplate.replace(/\{(\w+?)\}/g, function (m, p) {
-      return localContext[p];
+      return String(localContext[p]);
     });
 
     return resolveUrl(base, url);
@@ -486,11 +493,14 @@ function parseTileSetMetadata(sourceInfo, tileSet) {
   }
   const tileMatrixSetDefinition = tileMatrixSetLink.href;
 
-  const url = resolveUrl(sourceInfo.url, tileMatrixSetDefinition);
-  return getJSON(url).then(function (tileMatrixSet) {
+  const url = resolveUrl(
+    /** @type {string} */ (sourceInfo.url),
+    tileMatrixSetDefinition,
+  );
+  return getJSON(url).then(function (tileMatrixSetJson) {
     return parseTileMatrixSet(
       sourceInfo,
-      tileMatrixSet,
+      /** @type {TileMatrixSet} */ (tileMatrixSetJson),
       tileUrlTemplate,
       tileMatrixSetLimits,
     );
@@ -502,7 +512,12 @@ function parseTileSetMetadata(sourceInfo, tileSet) {
  * @return {Promise<TileSetInfo>} Tile set info.
  */
 export function getTileSetInfo(sourceInfo) {
-  return getJSON(sourceInfo.url).then(function (tileSet) {
-    return parseTileSetMetadata(sourceInfo, tileSet);
-  });
+  return getJSON(/** @type {string} */ (sourceInfo.url)).then(
+    function (tileSetJson) {
+      return parseTileSetMetadata(
+        sourceInfo,
+        /** @type {TileSet} */ (tileSetJson),
+      );
+    },
+  );
 }

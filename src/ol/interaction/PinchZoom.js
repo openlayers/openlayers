@@ -36,7 +36,7 @@ class PinchZoom extends PointerInteraction {
 
     /**
      * @private
-     * @type {import("../coordinate.js").Coordinate}
+     * @type {import("../coordinate.js").Coordinate|null}
      */
     this.anchor_ = null;
 
@@ -88,13 +88,14 @@ class PinchZoom extends PointerInteraction {
     }
 
     // scale anchor point.
-    this.anchor_ = map.getCoordinateFromPixelInternal(
-      map.getEventPixel(centroidFromPointers(this.targetPointers)),
-    );
+    this.anchor_ =
+      map.getCoordinateFromPixelInternal(
+        map.getEventPixel(centroidFromPointers(this.targetPointers)),
+      ) ?? null;
 
     // scale, bypass the resolution constraint
     map.render();
-    view.adjustResolutionInternal(scaleDelta, this.anchor_);
+    view.adjustResolutionInternal(scaleDelta, this.anchor_ ?? undefined);
   }
 
   /**

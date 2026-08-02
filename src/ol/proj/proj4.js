@@ -71,8 +71,11 @@ export function register(proj4) {
     for (j = 0; j < len; ++j) {
       const code2 = projCodes[j];
       const proj2 = getCachedProjection(code2);
+      if (!proj1 || !proj2) {
+        continue;
+      }
       if (!getTransform(code1, code2)) {
-        if (proj4.defs[code1] === proj4.defs[code2]) {
+        if (proj4.defs(code1) === proj4.defs(code2)) {
           addEquivalentProjections([proj1, proj2]);
         } else {
           const transform = proj4(code1, code2);
@@ -152,13 +155,21 @@ export async function fromProjectionCode(code) {
   }
 
   if (proj4.defs(code)) {
-    return getCachedProjection(code);
+    const projection = getCachedProjection(code);
+    if (!projection) {
+      throw new Error(`Projection ${code} not found after registration`);
+    }
+    return projection;
   }
 
   proj4.defs(code, await projLookup(code));
   register(proj4);
 
-  return getCachedProjection(code);
+  const projection = getCachedProjection(code);
+  if (!projection) {
+    throw new Error(`Projection ${code} not found after registration`);
+  }
+  return projection;
 }
 
 /**
@@ -176,7 +187,7 @@ export function fromProjectionDefinition(def) {
   const proj4Def = proj4.defs(code);
   if (proj4Def.title) {
     // ...but use authority:code if available
-    proj4.defs(code, null);
+    proj4.defs(code, /** @type {?} */ (null));
     code = proj4Def.title;
     const projection = getCachedProjection(code);
     if (projection) {
@@ -185,7 +196,11 @@ export function fromProjectionDefinition(def) {
     proj4.defs(code, def);
   }
   register(proj4);
-  return getCachedProjection(code);
+  const projection = getCachedProjection(code);
+  if (!projection) {
+    throw new Error('Projection not found after registration');
+  }
+  return projection;
 }
 
 /**
@@ -269,6 +284,10 @@ export function epsgLookupMapTiler(key) {
       const results = json['results'];
       if (results?.length > 0) {
         const result = results.filter(
+          /**
+           * @param {*} r Result item.
+           * @return {boolean} Whether the result matches.
+           */
           (r) =>
             r['id']?.['authority'] === 'EPSG' && r['id']?.['code'] === code,
         )[0];
@@ -279,6 +298,10 @@ export function epsgLookupMapTiler(key) {
             const defaultTransform = result['default_transformation'];
             if (
               transforms.filter(
+                /**
+                 * @param {*} t Transform item.
+                 * @return {boolean} Whether the transform matches.
+                 */
                 (t) =>
                   t['id']?.['authority'] === defaultTransform?.['authority'] &&
                   t['id']?.['code'] === defaultTransform?.['code'] &&
@@ -290,6 +313,10 @@ export function epsgLookupMapTiler(key) {
             // otherwise use most accurate alternative without grids
             const transform = transforms
               .filter(
+                /**
+                 * @param {*} t Transform item.
+                 * @return {boolean} Whether the transform matches.
+                 */
                 (t) =>
                   t['grids']?.length === 0 &&
                   t['target_crs']?.['authority'] === 'EPSG' &&
@@ -297,9 +324,14 @@ export function epsgLookupMapTiler(key) {
                   t['deprecated'] === false &&
                   t['usable'] === true,
               )
-              .sort((t1, t2) => t1['accuracy'] - t2['accuracy'])[0]?.[
-              'exports'
-            ]?.['proj4'];
+              .sort(
+                /**
+                 * @param {*} t1 First transform.
+                 * @param {*} t2 Second transform.
+                 * @return {number} Sort order.
+                 */
+                (t1, t2) => t1['accuracy'] - t2['accuracy'],
+              )[0]?.['exports']?.['proj4'];
             if (transform) {
               return transform;
             }

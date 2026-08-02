@@ -20,7 +20,7 @@ import ImageSource from './Image.js';
  * this function is cached by the source. The this keyword inside the function
  * references the {@link module:ol/source/ImageCanvas~ImageCanvasSource}.
  *
- * @typedef {function(this:import("../ImageCanvas.js").default, import("../extent.js").Extent, number,
+ * @typedef {function(this:import("./ImageCanvas.js").default, import("../extent.js").Extent, number,
  *     number, import("../size.js").Size, import("../proj/Projection.js").default): HTMLCanvasElement} FunctionType
  */
 
@@ -68,13 +68,13 @@ class ImageCanvasSource extends ImageSource {
 
     /**
      * @private
-     * @type {FunctionType}
+     * @type {FunctionType|undefined}
      */
     this.canvasFunction_ = options.canvasFunction;
 
     /**
      * @private
-     * @type {import("../ImageCanvas.js").default}
+     * @type {import("../ImageCanvas.js").default|null}
      */
     this.canvas_ = null;
 
@@ -96,7 +96,7 @@ class ImageCanvasSource extends ImageSource {
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
    * @param {import("../proj/Projection.js").default} projection Projection.
-   * @return {import("../ImageCanvas.js").default} Single image.
+   * @return {import("../ImageCanvas.js").default|null} Single image.
    * @override
    */
   getImageInternal(extent, resolution, pixelRatio, projection) {
@@ -119,7 +119,7 @@ class ImageCanvasSource extends ImageSource {
     const height = getHeight(extent) / resolution;
     const size = [width * pixelRatio, height * pixelRatio];
 
-    const canvasElement = this.canvasFunction_.call(
+    const canvasElement = this.canvasFunction_?.call(
       this,
       extent,
       resolution,

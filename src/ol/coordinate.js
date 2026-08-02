@@ -144,11 +144,11 @@ export function closestOnSegment(coordinate, segment) {
 export function createStringXY(fractionDigits) {
   return (
     /**
-     * @param {Coordinate} coordinate Coordinate.
+     * @param {Coordinate|undefined} coordinate Coordinate.
      * @return {string} String XY.
      */
     function (coordinate) {
-      return toStringXY(coordinate, fractionDigits);
+      return toStringXY(/** @type {Coordinate} */ (coordinate), fractionDigits);
     }
   );
 }

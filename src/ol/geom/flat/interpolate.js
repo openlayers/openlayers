@@ -54,7 +54,7 @@ export function interpolatePoint(
       o = offset + index * stride;
     }
   }
-  dimension = dimension > 1 ? dimension : 2;
+  dimension = dimension !== undefined && dimension > 1 ? dimension : 2;
   dest = dest ? dest : new Array(dimension);
   for (let i = 0; i < dimension; ++i) {
     dest[i] =

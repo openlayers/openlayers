@@ -6,6 +6,7 @@ import {
   defaultFillStyle,
   defaultLineDash,
   defaultLineDashOffset,
+  defaultStrokeOffset,
   defaultStrokeStyle,
 } from '../canvas.js';
 import CanvasBuilder from './Builder.js';
@@ -37,7 +38,10 @@ class CanvasPolygonBuilder extends CanvasBuilder {
    * @return {number} End.
    */
   drawFlatCoordinatess_(flatCoordinates, offset, ends, stride, strokeOffset) {
-    const state = this.state;
+    const state = /** @type {import("../canvas.js").FillStrokeState} */ (
+      this.state
+    );
+    const strokeOffsetValue = strokeOffset ?? defaultStrokeOffset;
     const fill = state.fillStyle !== undefined;
     const stroke = state.strokeStyle !== undefined;
     const numEnds = ends.length;
@@ -58,14 +62,14 @@ class CanvasPolygonBuilder extends CanvasBuilder {
         CanvasInstruction.MOVE_TO_LINE_TO,
         myBegin,
         myEnd,
-        strokeOffset * this.pixelRatio,
+        strokeOffsetValue * this.pixelRatio,
         true,
       ]);
       this.hitDetectionInstructions.push([
         CanvasInstruction.MOVE_TO_LINE_TO,
         myBegin,
         myEnd,
-        strokeOffset,
+        strokeOffsetValue,
         true,
       ]);
       if (stroke) {
@@ -95,6 +99,9 @@ class CanvasPolygonBuilder extends CanvasBuilder {
    */
   drawCircle(circleGeometry, feature, index) {
     const state = this.state;
+    if (!state) {
+      return;
+    }
     const fillStyle = state.fillStyle;
     const strokeStyle = state.strokeStyle;
     const strokeOffset = state.strokeOffset;
@@ -110,7 +117,7 @@ class CanvasPolygonBuilder extends CanvasBuilder {
       return;
     }
     this.setFillStrokeStyles_();
-    this.beginGeometry(circleGeometry, feature, index);
+    this.beginGeometry(circleGeometry, feature, index ?? 0);
     if (state.fillStyle !== undefined) {
       this.hitDetectionInstructions.push([
         CanvasInstruction.SET_FILL_STYLE,
@@ -162,6 +169,9 @@ class CanvasPolygonBuilder extends CanvasBuilder {
    */
   drawPolygon(polygonGeometry, feature, index) {
     const state = this.state;
+    if (!state) {
+      return;
+    }
     const fillStyle = state.fillStyle;
     const strokeStyle = state.strokeStyle;
     const strokeOffset = state.strokeOffset;
@@ -177,7 +187,7 @@ class CanvasPolygonBuilder extends CanvasBuilder {
     }
 
     this.setFillStrokeStyles_();
-    this.beginGeometry(polygonGeometry, feature, index);
+    this.beginGeometry(polygonGeometry, feature, index ?? 0);
     if (state.fillStyle !== undefined) {
       this.hitDetectionInstructions.push([
         CanvasInstruction.SET_FILL_STYLE,
@@ -217,6 +227,9 @@ class CanvasPolygonBuilder extends CanvasBuilder {
    */
   drawMultiPolygon(multiPolygonGeometry, feature, index) {
     const state = this.state;
+    if (!state) {
+      return;
+    }
     const fillStyle = state.fillStyle;
     const strokeStyle = state.strokeStyle;
     const strokeOffset = state.strokeOffset;
@@ -231,7 +244,7 @@ class CanvasPolygonBuilder extends CanvasBuilder {
       return;
     }
     this.setFillStrokeStyles_();
-    this.beginGeometry(multiPolygonGeometry, feature, index);
+    this.beginGeometry(multiPolygonGeometry, feature, index ?? 0);
     if (state.fillStyle !== undefined) {
       this.hitDetectionInstructions.push([
         CanvasInstruction.SET_FILL_STYLE,
@@ -292,15 +305,25 @@ class CanvasPolygonBuilder extends CanvasBuilder {
    */
   setFillStrokeStyles_() {
     const state = this.state;
+    if (!state) {
+      return;
+    }
     this.updateFillStyle(state, this.createFill);
     this.updateStrokeStyle(state, this.applyStroke);
   }
 
+  /**
+   * @private
+   * @param {function(): void} drawGeometryCallback Draw callback.
+   * @return {boolean} Whether the stroke was drawn with an offset.
+   */
   handleStrokeOffset_(drawGeometryCallback) {
-    const state = this.state;
+    const state = /** @type {import("../canvas.js").FillStrokeState} */ (
+      this.state
+    );
     const fillStyle = state.fillStyle;
     const strokeStyle = state.strokeStyle;
-    const strokeOffset = state.strokeOffset;
+    const strokeOffset = state.strokeOffset ?? defaultStrokeOffset;
 
     // In case both fill style and stroke style are defined and the stroke style has an offset,
     // the stroke and fill should be done in separate steps, because offset stroke shape will

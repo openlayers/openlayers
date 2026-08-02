@@ -38,7 +38,7 @@ const GETFEATUREINFO_IMAGE_SIZE = [101, 101];
  * @param {import("../extent.js").Extent} extent Extent.
  * @param {import("../size.js").Size} size Size.
  * @param {import("../proj/Projection.js").default} projection Projection.
- * @param {Object} params WMS params. Will be modified in place.
+ * @param {Object<string, *>} params WMS params. Will be modified in place.
  * @return {string} Request URL.
  */
 export function getRequestUrl(baseUrl, extent, size, projection, params) {
@@ -63,7 +63,7 @@ export function getRequestUrl(baseUrl, extent, size, projection, params) {
  * @param {number} pixelRatio pixel ratio.
  * @param {import("../proj.js").Projection} projection Projection.
  * @param {string} url WMS service url.
- * @param {Object} params WMS params.
+ * @param {Object<string, *>} params WMS params.
  * @param {import("./wms.js").ServerType} serverType The type of the remote WMS server.
  * @return {string} Image src.
  */
@@ -112,9 +112,9 @@ export function getImageSrc(
 }
 
 /**
- * @param {Object} params WMS params.
+ * @param {Object<string, *>} params WMS params.
  * @param {string} request WMS `REQUEST`.
- * @return {Object} WMS params with required properties set.
+ * @return {Object<string, *>} WMS params with required properties set.
  */
 export function getRequestParams(params, request) {
   return Object.assign(
@@ -126,7 +126,7 @@ export function getRequestParams(params, request) {
       'STYLES': '',
       'TRANSPARENT': 'TRUE',
     },
-    params,
+    params || {},
   );
 }
 
@@ -162,7 +162,9 @@ export function getRequestParams(params, request) {
  */
 export function createLoader(options) {
   const hidpi = options.hidpi === undefined ? true : options.hidpi;
-  const projection = getProjection(options.projection || 'EPSG:3857');
+  const projection = /** @type {import("../proj/Projection.js").default} */ (
+    getProjection(options.projection || 'EPSG:3857')
+  );
   const ratio = options.ratio || 1.5;
   const load = options.load || decode;
   const crossOrigin = options.crossOrigin ?? null;
@@ -179,8 +181,8 @@ export function createLoader(options) {
       pixelRatio,
       projection,
       options.url,
-      getRequestParams(options.params, 'GetMap'),
-      options.serverType,
+      getRequestParams(options.params || {}, 'GetMap'),
+      /** @type {import("./wms.js").ServerType} */ (options.serverType),
     );
     const image = new Image();
     image.crossOrigin = crossOrigin;
@@ -208,7 +210,10 @@ export function getFeatureInfoUrl(options, coordinate, resolution) {
     return undefined;
   }
 
-  const projectionObj = getProjection(options.projection || 'EPSG:3857');
+  const projectionObj = /** @type {import("../proj/Projection.js").default} */ (
+    getProjection(options.projection || 'EPSG:3857')
+  );
+  const params = options.params || {};
 
   const extent = getForViewAndSize(
     coordinate,
@@ -217,15 +222,12 @@ export function getFeatureInfoUrl(options, coordinate, resolution) {
     GETFEATUREINFO_IMAGE_SIZE,
   );
 
+  /** @type {Object<string, *>} */
   const baseParams = {
-    'QUERY_LAYERS': options.params['LAYERS'],
+    'QUERY_LAYERS': params['LAYERS'],
     'INFO_FORMAT': 'application/json',
   };
-  Object.assign(
-    baseParams,
-    getRequestParams(options.params, 'GetFeatureInfo'),
-    options.params,
-  );
+  Object.assign(baseParams, getRequestParams(params, 'GetFeatureInfo'), params);
 
   const x = floor((coordinate[0] - extent[0]) / resolution, DECIMALS);
   const y = floor((extent[3] - coordinate[1]) / resolution, DECIMALS);
@@ -258,6 +260,7 @@ export function getLegendUrl(options, resolution) {
     return undefined;
   }
 
+  /** @type {Object<string, *>} */
   const baseParams = {
     'SERVICE': 'WMS',
     'VERSION': DEFAULT_VERSION,
@@ -266,13 +269,15 @@ export function getLegendUrl(options, resolution) {
   };
 
   if (resolution !== undefined) {
-    const mpu =
-      getProjection(options.projection || 'EPSG:3857').getMetersPerUnit() || 1;
+    const projection = /** @type {import("../proj/Projection.js").default} */ (
+      getProjection(options.projection || 'EPSG:3857')
+    );
+    const mpu = projection.getMetersPerUnit() || 1;
     const pixelSize = 0.00028;
     baseParams['SCALE'] = (resolution * mpu) / pixelSize;
   }
 
-  Object.assign(baseParams, options.params);
+  Object.assign(baseParams, options.params || {});
 
   if (options.params !== undefined && baseParams['LAYER'] === undefined) {
     const layers = baseParams['LAYERS'];

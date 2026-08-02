@@ -22,7 +22,7 @@ import Triangulation from './Triangulation.js';
 import {ERROR_THRESHOLD} from './common.js';
 
 /**
- * @typedef {function(import("../extent.js").Extent, number, number) : import("../Image.js").default} FunctionType
+ * @typedef {function(import("../extent.js").Extent, number, number) : import("../Image.js").default|null} FunctionType
  */
 
 /**
@@ -127,7 +127,7 @@ class ReprojImage extends ImageWrapper {
 
     /**
      * @private
-     * @type {import("../Image.js").default}
+     * @type {import("../Image.js").default|null}
      */
     this.sourceImage_ = sourceImage;
 
@@ -145,7 +145,7 @@ class ReprojImage extends ImageWrapper {
 
     /**
      * @private
-     * @type {HTMLCanvasElement|OffscreenCanvas}
+     * @type {HTMLCanvasElement|OffscreenCanvas|null}
      */
     this.canvas_ = null;
 
@@ -168,7 +168,7 @@ class ReprojImage extends ImageWrapper {
   }
 
   /**
-   * @return {HTMLCanvasElement|OffscreenCanvas} Image.
+   * @return {HTMLCanvasElement|OffscreenCanvas|null} Image.
    * @override
    */
   getImage() {
@@ -186,23 +186,31 @@ class ReprojImage extends ImageWrapper {
    * @private
    */
   reproject_() {
-    const sourceState = this.sourceImage_.getState();
+    const sourceImage = this.sourceImage_;
+    if (!sourceImage) {
+      return;
+    }
+    const sourceState = sourceImage.getState();
     if (sourceState == ImageState.LOADED) {
       const width = getWidth(this.targetExtent_) / this.targetResolution_;
       const height = getHeight(this.targetExtent_) / this.targetResolution_;
+      const image = sourceImage.getImage();
+      if (!image) {
+        return;
+      }
       this.canvas_ = renderReprojected(
         width,
         height,
         this.sourcePixelRatio_,
-        fromResolutionLike(this.sourceImage_.getResolution()),
+        fromResolutionLike(sourceImage.getResolution()),
         this.maxSourceExtent_,
         this.targetResolution_,
         this.targetExtent_,
         this.triangulation_,
         [
           {
-            extent: this.sourceImage_.getExtent(),
-            image: this.sourceImage_.getImage(),
+            extent: sourceImage.getExtent(),
+            image: image,
           },
         ],
         0,
@@ -221,28 +229,28 @@ class ReprojImage extends ImageWrapper {
    */
   load() {
     if (this.state == ImageState.IDLE) {
+      const sourceImage = this.sourceImage_;
+      if (!sourceImage) {
+        return;
+      }
       this.state = ImageState.LOADING;
       this.changed();
 
-      const sourceState = this.sourceImage_.getState();
+      const sourceState = sourceImage.getState();
       if (sourceState == ImageState.LOADED || sourceState == ImageState.ERROR) {
         this.reproject_();
       } else {
-        this.sourceListenerKey_ = listen(
-          this.sourceImage_,
-          EventType.CHANGE,
-          (e) => {
-            const sourceState = this.sourceImage_.getState();
-            if (
-              sourceState == ImageState.LOADED ||
-              sourceState == ImageState.ERROR
-            ) {
-              this.unlistenSource_();
-              this.reproject_();
-            }
-          },
-        );
-        this.sourceImage_.load();
+        this.sourceListenerKey_ = listen(sourceImage, EventType.CHANGE, () => {
+          const sourceState = sourceImage.getState();
+          if (
+            sourceState == ImageState.LOADED ||
+            sourceState == ImageState.ERROR
+          ) {
+            this.unlistenSource_();
+            this.reproject_();
+          }
+        });
+        sourceImage.load();
       }
     }
   }

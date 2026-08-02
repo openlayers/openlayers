@@ -31,6 +31,31 @@ import {
 } from './compileUtil.js';
 
 /**
+ * @param {import("../../style/flat.js").FlatStyle} style Style.
+ * @param {string} key Property key.
+ * @return {*} Style property value.
+ */
+function styleProp(style, key) {
+  return /** @type {Record<string, *>} */ (style)[key];
+}
+
+/**
+ * @param {import("../../expr/gpu.js").CompilationContext} context Compilation context.
+ * @param {import("../../expr/expression.js").EncodedExpression|undefined} value Expression value.
+ * @param {import("../../expr/expression.js").ValueType} expectedType Expected type.
+ * @param {import("../../expr/expression.js").ParsingContext} [parsingContext] Parsing context.
+ * @return {string} GLSL expression string.
+ */
+function styleExpressionToGlsl(context, value, expectedType, parsingContext) {
+  return expressionToGlsl(
+    context,
+    /** @type {import("../../expr/expression.js").EncodedExpression} */ (value),
+    expectedType,
+    parsingContext,
+  );
+}
+
+/**
  * see https://stackoverflow.com/questions/7616461/generate-a-hash-from-string-in-javascript
  * @param {Object|string} input The hash input, either an object or string
  * @return {string} Hash (if the object cannot be serialized, it is based on `getUid`)
@@ -50,21 +75,21 @@ export function computeHash(input) {
  */
 function parseCommonSymbolProperties(style, builder, vertContext, prefix) {
   if (`${prefix}radius` in style && prefix !== 'icon-') {
-    let radius = expressionToGlsl(
+    let radius = styleExpressionToGlsl(
       vertContext,
       style[`${prefix}radius`],
       NumberType,
     );
     if (`${prefix}radius2` in style) {
-      const radius2 = expressionToGlsl(
+      const radius2 = styleExpressionToGlsl(
         vertContext,
-        style[`${prefix}radius2`],
+        styleProp(style, `${prefix}radius2`),
         NumberType,
       );
       radius = `max(${radius}, ${radius2})`;
     }
     if (`${prefix}stroke-width` in style) {
-      radius = `(${radius} + ${expressionToGlsl(
+      radius = `(${radius} + ${styleExpressionToGlsl(
         vertContext,
         style[`${prefix}stroke-width`],
         NumberType,
@@ -73,7 +98,7 @@ function parseCommonSymbolProperties(style, builder, vertContext, prefix) {
     builder.setSymbolSizeExpression(`vec2(${radius} * 2. + 0.5)`); // adding some padding for antialiasing
   }
   if (`${prefix}scale` in style) {
-    const scale = expressionToGlsl(
+    const scale = styleExpressionToGlsl(
       vertContext,
       style[`${prefix}scale`],
       SizeType,
@@ -84,7 +109,7 @@ function parseCommonSymbolProperties(style, builder, vertContext, prefix) {
   }
   if (`${prefix}displacement` in style) {
     builder.setSymbolOffsetExpression(
-      expressionToGlsl(
+      styleExpressionToGlsl(
         vertContext,
         style[`${prefix}displacement`],
         NumberArrayType,
@@ -93,7 +118,11 @@ function parseCommonSymbolProperties(style, builder, vertContext, prefix) {
   }
   if (`${prefix}rotation` in style) {
     builder.setSymbolRotationExpression(
-      expressionToGlsl(vertContext, style[`${prefix}rotation`], NumberType),
+      styleExpressionToGlsl(
+        vertContext,
+        style[`${prefix}rotation`],
+        NumberType,
+      ),
     );
   }
   if (`${prefix}rotate-with-view` in style) {
@@ -145,14 +174,14 @@ function getColorFromDistanceField(
 function parseImageProperties(style, builder, uniforms, prefix, textureId) {
   const image = new Image();
   image.crossOrigin =
-    style[`${prefix}cross-origin`] === undefined
+    styleProp(style, `${prefix}cross-origin`) === undefined
       ? 'anonymous'
-      : style[`${prefix}cross-origin`];
+      : styleProp(style, `${prefix}cross-origin`);
   assert(
-    typeof style[`${prefix}src`] === 'string',
+    typeof styleProp(style, `${prefix}src`) === 'string',
     `WebGL layers do not support expressions for the ${prefix}src style property`,
   );
-  image.src = /** @type {string} */ (style[`${prefix}src`]);
+  image.src = /** @type {string} */ (styleProp(style, `${prefix}src`));
 
   // the size is provided asynchronously using a uniform
   uniforms[`u_texture${textureId}_size`] = () => {
@@ -182,7 +211,7 @@ function parseImageOffsetProperties(
   imageSize,
   sampleSize,
 ) {
-  let offsetExpression = expressionToGlsl(
+  let offsetExpression = styleExpressionToGlsl(
     context,
     style[`${prefix}offset`],
     SizeType,
@@ -223,20 +252,28 @@ function parseCircleProperties(style, builder, uniforms, context) {
   // OPACITY
   let opacity = null;
   if ('circle-opacity' in style) {
-    opacity = expressionToGlsl(context, style['circle-opacity'], NumberType);
+    opacity = styleExpressionToGlsl(
+      context,
+      style['circle-opacity'],
+      NumberType,
+    );
   }
 
   // SCALE
   let currentPoint = 'coordsPx';
   if ('circle-scale' in style) {
-    const scale = expressionToGlsl(context, style['circle-scale'], SizeType);
+    const scale = styleExpressionToGlsl(
+      context,
+      style['circle-scale'],
+      SizeType,
+    );
     currentPoint = `coordsPx / ${scale}`;
   }
 
   // FILL COLOR
   let fillColor = null;
   if ('circle-fill-color' in style) {
-    fillColor = expressionToGlsl(
+    fillColor = styleExpressionToGlsl(
       context,
       style['circle-fill-color'],
       ColorType,
@@ -246,7 +283,7 @@ function parseCircleProperties(style, builder, uniforms, context) {
   // STROKE COLOR
   let strokeColor = null;
   if ('circle-stroke-color' in style) {
-    strokeColor = expressionToGlsl(
+    strokeColor = styleExpressionToGlsl(
       context,
       style['circle-stroke-color'],
       ColorType,
@@ -254,12 +291,16 @@ function parseCircleProperties(style, builder, uniforms, context) {
   }
 
   // RADIUS
-  let radius = expressionToGlsl(context, style['circle-radius'], NumberType);
+  let radius = styleExpressionToGlsl(
+    context,
+    style['circle-radius'],
+    NumberType,
+  );
 
   // STROKE WIDTH
   let strokeWidth = null;
   if ('circle-stroke-width' in style) {
-    strokeWidth = expressionToGlsl(
+    strokeWidth = styleExpressionToGlsl(
       context,
       style['circle-stroke-width'],
       NumberType,
@@ -330,26 +371,38 @@ function parseShapeProperties(style, builder, uniforms, context) {
   // OPACITY
   let opacity = null;
   if ('shape-opacity' in style) {
-    opacity = expressionToGlsl(context, style['shape-opacity'], NumberType);
+    opacity = styleExpressionToGlsl(
+      context,
+      style['shape-opacity'],
+      NumberType,
+    );
   }
 
   // SCALE
   let currentPoint = 'coordsPx';
   if ('shape-scale' in style) {
-    const scale = expressionToGlsl(context, style['shape-scale'], SizeType);
+    const scale = styleExpressionToGlsl(
+      context,
+      style['shape-scale'],
+      SizeType,
+    );
     currentPoint = `coordsPx / ${scale}`;
   }
 
   // FILL COLOR
   let fillColor = null;
   if ('shape-fill-color' in style) {
-    fillColor = expressionToGlsl(context, style['shape-fill-color'], ColorType);
+    fillColor = styleExpressionToGlsl(
+      context,
+      style['shape-fill-color'],
+      ColorType,
+    );
   }
 
   // STROKE COLOR
   let strokeColor = null;
   if ('shape-stroke-color' in style) {
-    strokeColor = expressionToGlsl(
+    strokeColor = styleExpressionToGlsl(
       context,
       style['shape-stroke-color'],
       ColorType,
@@ -359,7 +412,7 @@ function parseShapeProperties(style, builder, uniforms, context) {
   // STROKE WIDTH
   let strokeWidth = null;
   if ('shape-stroke-width' in style) {
-    strokeWidth = expressionToGlsl(
+    strokeWidth = styleExpressionToGlsl(
       context,
       style['shape-stroke-width'],
       NumberType,
@@ -367,22 +420,30 @@ function parseShapeProperties(style, builder, uniforms, context) {
   }
 
   // SHAPE TYPE
-  const numPoints = expressionToGlsl(
+  const numPoints = styleExpressionToGlsl(
     context,
     style['shape-points'],
     NumberType,
   );
   let angle = '0.';
   if ('shape-angle' in style) {
-    angle = expressionToGlsl(context, style['shape-angle'], NumberType);
+    angle = styleExpressionToGlsl(context, style['shape-angle'], NumberType);
   }
   let shapeField;
-  let radius = expressionToGlsl(context, style['shape-radius'], NumberType);
+  let radius = styleExpressionToGlsl(
+    context,
+    style['shape-radius'],
+    NumberType,
+  );
   if (strokeWidth !== null) {
     radius = `${radius} + ${strokeWidth} * 0.5`;
   }
   if ('shape-radius2' in style) {
-    let radius2 = expressionToGlsl(context, style['shape-radius2'], NumberType);
+    let radius2 = styleExpressionToGlsl(
+      context,
+      style['shape-radius2'],
+      NumberType,
+    );
     if (strokeWidth !== null) {
       radius2 = `${radius2} + ${strokeWidth} * 0.5`;
     }
@@ -412,12 +473,12 @@ function parseIconProperties(style, builder, uniforms, context) {
   // COLOR
   let color = 'vec4(1.0)';
   if ('icon-color' in style) {
-    color = expressionToGlsl(context, style['icon-color'], ColorType);
+    color = styleExpressionToGlsl(context, style['icon-color'], ColorType);
   }
 
   // OPACITY
   if ('icon-opacity' in style) {
-    color = `${color} * vec4(1.0, 1.0, 1.0, ${expressionToGlsl(
+    color = `${color} * vec4(1.0, 1.0, 1.0, ${styleExpressionToGlsl(
       context,
       style['icon-opacity'],
       NumberType,
@@ -425,7 +486,7 @@ function parseIconProperties(style, builder, uniforms, context) {
   }
 
   // IMAGE & SIZE
-  const textureId = computeHash(style['icon-src']);
+  const textureId = computeHash(/** @type {string} */ (style['icon-src']));
   const sizeExpression = parseImageProperties(
     style,
     builder,
@@ -442,17 +503,17 @@ function parseIconProperties(style, builder, uniforms, context) {
   // override size if width/height were specified
   if ('icon-width' in style && 'icon-height' in style) {
     builder.setSymbolSizeExpression(
-      `vec2(${expressionToGlsl(
+      `vec2(${styleExpressionToGlsl(
         context,
         style['icon-width'],
         NumberType,
-      )}, ${expressionToGlsl(context, style['icon-height'], NumberType)})`,
+      )}, ${styleExpressionToGlsl(context, style['icon-height'], NumberType)})`,
     );
   }
 
   // tex coord
   if ('icon-offset' in style && 'icon-size' in style) {
-    const sampleSize = expressionToGlsl(
+    const sampleSize = styleExpressionToGlsl(
       context,
       style['icon-size'],
       NumberArrayType,
@@ -474,14 +535,14 @@ function parseIconProperties(style, builder, uniforms, context) {
   parseCommonSymbolProperties(style, builder, context, 'icon-');
 
   if ('icon-anchor' in style) {
-    const anchor = expressionToGlsl(
+    const anchor = styleExpressionToGlsl(
       context,
       style['icon-anchor'],
       NumberArrayType,
     );
     let scale = `1.0`;
     if (`icon-scale` in style) {
-      scale = expressionToGlsl(context, style[`icon-scale`], SizeType);
+      scale = styleExpressionToGlsl(context, style[`icon-scale`], SizeType);
     }
     let shiftPx;
     if (
@@ -527,11 +588,13 @@ function parseIconProperties(style, builder, uniforms, context) {
 function parseStrokeProperties(style, builder, uniforms, context) {
   if ('stroke-color' in style) {
     builder.setStrokeColorExpression(
-      expressionToGlsl(context, style['stroke-color'], ColorType),
+      styleExpressionToGlsl(context, style['stroke-color'], ColorType),
     );
   }
   if ('stroke-pattern-src' in style) {
-    const textureId = computeHash(style['stroke-pattern-src']);
+    const textureId = computeHash(
+      /** @type {string} */ (style['stroke-pattern-src']),
+    );
     const sizeExpression = parseImageProperties(
       style,
       builder,
@@ -542,7 +605,7 @@ function parseStrokeProperties(style, builder, uniforms, context) {
     let sampleSizeExpression = sizeExpression;
     let offsetExpression = 'vec2(0.)';
     if ('stroke-pattern-offset' in style && 'stroke-pattern-size' in style) {
-      sampleSizeExpression = expressionToGlsl(
+      sampleSizeExpression = styleExpressionToGlsl(
         context,
         style[`stroke-pattern-size`],
         NumberArrayType,
@@ -557,7 +620,7 @@ function parseStrokeProperties(style, builder, uniforms, context) {
     }
     let spacingExpression = '0.';
     if ('stroke-pattern-spacing' in style) {
-      spacingExpression = expressionToGlsl(
+      spacingExpression = styleExpressionToGlsl(
         context,
         style['stroke-pattern-spacing'],
         NumberType,
@@ -565,7 +628,7 @@ function parseStrokeProperties(style, builder, uniforms, context) {
     }
     let startOffsetExpression = '0.';
     if ('stroke-pattern-start-offset' in style) {
-      startOffsetExpression = expressionToGlsl(
+      startOffsetExpression = styleExpressionToGlsl(
         context,
         style['stroke-pattern-start-offset'],
         NumberType,
@@ -607,31 +670,31 @@ function parseStrokeProperties(style, builder, uniforms, context) {
 
   if ('stroke-width' in style) {
     builder.setStrokeWidthExpression(
-      expressionToGlsl(context, style['stroke-width'], NumberType),
+      styleExpressionToGlsl(context, style['stroke-width'], NumberType),
     );
   }
 
   if ('stroke-offset' in style) {
     builder.setStrokeOffsetExpression(
-      expressionToGlsl(context, style['stroke-offset'], NumberType),
+      styleExpressionToGlsl(context, style['stroke-offset'], NumberType),
     );
   }
 
   if ('stroke-line-cap' in style) {
     builder.setStrokeCapExpression(
-      expressionToGlsl(context, style['stroke-line-cap'], StringType),
+      styleExpressionToGlsl(context, style['stroke-line-cap'], StringType),
     );
   }
 
   if ('stroke-line-join' in style) {
     builder.setStrokeJoinExpression(
-      expressionToGlsl(context, style['stroke-line-join'], StringType),
+      styleExpressionToGlsl(context, style['stroke-line-join'], StringType),
     );
   }
 
   if ('stroke-miter-limit' in style) {
     builder.setStrokeMiterLimitExpression(
-      expressionToGlsl(context, style['stroke-miter-limit'], NumberType),
+      styleExpressionToGlsl(context, style['stroke-miter-limit'], NumberType),
     );
   }
 
@@ -649,9 +712,14 @@ function parseStrokeProperties(style, builder, uniforms, context) {
   return distanceSegment;
 }`;
 
-    let dashPattern = style['stroke-line-dash'].map((v) =>
-      expressionToGlsl(context, v, NumberType),
-    );
+    const strokeLineDash =
+      /** @type {import("../../expr/expression.js").EncodedExpression} */ (
+        style['stroke-line-dash']
+      );
+    let dashPattern =
+      /** @type {Array<import("../../expr/expression.js").EncodedExpression>} */ (
+        strokeLineDash
+      ).map((v) => styleExpressionToGlsl(context, v, NumberType));
     // if pattern has odd length, concatenate it with itself to be even
     if (dashPattern.length % 2 === 1) {
       dashPattern = [...dashPattern, ...dashPattern];
@@ -659,7 +727,7 @@ function parseStrokeProperties(style, builder, uniforms, context) {
 
     let offsetExpression = '0.';
     if ('stroke-line-dash-offset' in style) {
-      offsetExpression = expressionToGlsl(
+      offsetExpression = styleExpressionToGlsl(
         context,
         style['stroke-line-dash-offset'],
         NumberType,
@@ -667,7 +735,11 @@ function parseStrokeProperties(style, builder, uniforms, context) {
     }
 
     // define a function for this dash specifically
-    const uniqueDashKey = computeHash(style['stroke-line-dash']);
+    const uniqueDashKey = computeHash(
+      /** @type {import("../../expr/expression.js").EncodedExpression} */ (
+        style['stroke-line-dash']
+      ),
+    );
     const dashFunctionName = `dashDistanceField_${uniqueDashKey}`;
 
     const dashLengthsParamsDef = dashPattern
@@ -717,11 +789,13 @@ function parseStrokeProperties(style, builder, uniforms, context) {
 function parseFillProperties(style, builder, uniforms, context) {
   if ('fill-color' in style) {
     builder.setFillColorExpression(
-      expressionToGlsl(context, style['fill-color'], ColorType),
+      styleExpressionToGlsl(context, style['fill-color'], ColorType),
     );
   }
   if ('fill-pattern-src' in style) {
-    const textureId = computeHash(style['fill-pattern-src']);
+    const textureId = computeHash(
+      /** @type {string} */ (style['fill-pattern-src']),
+    );
     const sizeExpression = parseImageProperties(
       style,
       builder,
@@ -732,7 +806,7 @@ function parseFillProperties(style, builder, uniforms, context) {
     builder.setFillPatternSizeExpression(sizeExpression);
     let offsetExpression = 'vec2(0.)';
     if ('fill-pattern-offset' in style && 'fill-pattern-size' in style) {
-      const specifiedSizeExpression = expressionToGlsl(
+      const specifiedSizeExpression = styleExpressionToGlsl(
         context,
         style[`fill-pattern-size`],
         NumberArrayType,
@@ -780,10 +854,14 @@ function parseFillProperties(style, builder, uniforms, context) {
  * @param {import("../../expr/gpu.js").CompilationContext} context Shader compilation context
  */
 function parseTextProperties(style, builder, uniforms, context) {
-  function safeExpressionToGlsl(...args) {
+  /**
+   * @param {import("../../expr/gpu.js").CompilationContext} ctx Shader compilation context.
+   * @param {import("../../expr/expression.js").EncodedExpression|undefined} value Expression value.
+   * @param {import("../../expr/expression.js").ValueType} expectedType Expected expression type.
+   */
+  function safeExpressionToGlsl(ctx, value, expectedType) {
     try {
-      // @ts-ignore
-      expressionToGlsl(...args);
+      styleExpressionToGlsl(ctx, value, expectedType);
     } catch {
       // do nothing, expressions unsuppported in webgl might not be an issue since the text is rendered in canvas down the line
     }
@@ -972,7 +1050,7 @@ export function parseLiteralStyle(style, variables, filter) {
   // this is still needed in case a filter cannot be evaluated statically beforehand (e.g. depending on time)
   if (filter) {
     const filterContext = newParsingContext(variables);
-    const parsedFilter = expressionToGlsl(
+    const parsedFilter = styleExpressionToGlsl(
       context,
       filter,
       BooleanType,
@@ -991,8 +1069,14 @@ export function parseLiteralStyle(style, variables, filter) {
   const attributes = {};
 
   // Define attributes for special inputs
+  /**
+   * @param {string} contextPropName Compilation context property name.
+   * @param {string} glslPropName GLSL attribute or uniform name.
+   * @param {import("../../expr/expression.js").ValueType} type Value type.
+   * @param {(feature: import("../../Feature.js").FeatureLike) => *} callback Feature value callback.
+   */
   function defineSpecialInput(contextPropName, glslPropName, type, callback) {
-    if (!context[contextPropName]) {
+    if (!(/** @type {Object<string, *>} */ (context)[contextPropName])) {
       return;
     }
     const glslType = getGlslTypeFromType(type);
@@ -1008,8 +1092,13 @@ export function parseLiteralStyle(style, variables, filter) {
     'geometryType',
     GEOMETRY_TYPE_PROPERTY_NAME,
     StringType,
-    (feature) =>
-      getStringNumberEquivalent(computeGeometryType(feature.getGeometry())),
+    (feature) => {
+      const geometry = feature.getGeometry();
+      if (!geometry) {
+        return 0;
+      }
+      return getStringNumberEquivalent(computeGeometryType(geometry));
+    },
   );
   defineSpecialInput(
     'featureId',

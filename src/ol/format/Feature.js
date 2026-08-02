@@ -139,9 +139,9 @@ class FeatureFormat {
 
     /**
      * A list media types supported by the format in descending order of preference.
-     * @type {Array<string>}
+     * @type {Array<string>|undefined}
      */
-    this.supportedMediaTypes = null;
+    this.supportedMediaTypes = undefined;
   }
 
   /**
@@ -161,11 +161,14 @@ class FeatureFormat {
         dataProjection &&
         dataProjection.getUnits() === 'tile-pixels'
       ) {
-        dataProjection = getProjection(dataProjection);
-        dataProjection.setWorldExtent(options.extent);
+        const tileProjection = getProjection(dataProjection);
+        if (tileProjection) {
+          tileProjection.setWorldExtent(options.extent);
+          dataProjection = tileProjection;
+        }
       }
       options = {
-        dataProjection: dataProjection,
+        dataProjection: dataProjection ?? undefined,
         featureProjection: options.featureProjection,
       };
     }
@@ -206,7 +209,7 @@ class FeatureFormat {
    * @abstract
    * @param {Document|Element|Object|string} source Source.
    * @param {ReadOptions} [options] Read options.
-   * @return {FeatureType|Array<FeatureType>} Feature.
+   * @return {FeatureType|Array<FeatureType>|null} Feature.
    */
   readFeature(source, options) {
     return abstract();
@@ -230,7 +233,7 @@ class FeatureFormat {
    * @abstract
    * @param {Document|Element|Object|string} source Source.
    * @param {ReadOptions} [options] Read options.
-   * @return {import("../geom/Geometry.js").default} Geometry.
+   * @return {import("../geom/Geometry.js").default|null} Geometry.
    */
   readGeometry(source, options) {
     return abstract();
@@ -313,7 +316,10 @@ export function transformGeometryWithOptions(geometry, write, options) {
     if (fromProjection.getUnits() === 'tile-pixels') {
       transformed.transform(fromProjection, toProjection);
     } else {
-      transformed.applyTransform(getTransform(fromProjection, toProjection));
+      const transformFn = getTransform(fromProjection, toProjection);
+      if (transformFn) {
+        transformed.applyTransform(transformFn);
+      }
     }
   }
   if (
@@ -362,27 +368,25 @@ export function transformExtentWithOptions(extent, options) {
   return extent;
 }
 
-const GeometryConstructor = {
-  Point: Point,
-  LineString: LineString,
-  Polygon: Polygon,
-  MultiPoint: MultiPoint,
-  MultiLineString: MultiLineString,
-  MultiPolygon: MultiPolygon,
-};
-
+/**
+ * @param {Array<number>} flatCoordinates Flat coordinates.
+ * @param {Array<number>|Array<Array<number>>} ends Ends or endss.
+ * @param {number} stride Stride.
+ * @return {Array<number>} Oriented flat coordinates.
+ */
 function orientFlatCoordinates(flatCoordinates, ends, stride) {
   if (Array.isArray(ends[0])) {
-    // MultiPolagon
-    if (!linearRingssAreOriented(flatCoordinates, 0, ends, stride)) {
+    const endss = /** @type {Array<Array<number>>} */ (ends);
+    if (!linearRingssAreOriented(flatCoordinates, 0, endss, stride)) {
       flatCoordinates = flatCoordinates.slice();
-      orientLinearRingsArray(flatCoordinates, 0, ends, stride);
+      orientLinearRingsArray(flatCoordinates, 0, endss, stride);
     }
     return flatCoordinates;
   }
-  if (!linearRingsAreOriented(flatCoordinates, 0, ends, stride)) {
+  const endsArray = /** @type {Array<number>} */ (ends);
+  if (!linearRingsAreOriented(flatCoordinates, 0, endsArray, stride)) {
     flatCoordinates = flatCoordinates.slice();
-    orientLinearRings(flatCoordinates, 0, ends, stride);
+    orientLinearRings(flatCoordinates, 0, endsArray, stride);
   }
   return flatCoordinates;
 }
@@ -409,14 +413,18 @@ export function createRenderFeature(object, options) {
     throw new Error('Unsupported geometry type: ' + geometryType);
   }
 
-  const stride = geometry.layout.length;
+  const stride = (geometry.layout ?? 'XY').length;
   return transformGeometryWithOptions(
     new RenderFeature(
       geometryType,
       geometryType === 'Polygon'
-        ? orientFlatCoordinates(geometry.flatCoordinates, geometry.ends, stride)
+        ? orientFlatCoordinates(
+            geometry.flatCoordinates,
+            /** @type {Array<number>} */ (geometry.ends),
+            stride,
+          )
         : geometry.flatCoordinates,
-      geometry.ends?.flat(),
+      geometry.ends?.flat() ?? [],
       stride,
       object.properties || {},
       object.id,
@@ -429,7 +437,7 @@ export function createRenderFeature(object, options) {
 /**
  * @param {GeometryObject|null} object Geometry object.
  * @param {WriteOptions|ReadOptions} [options] Options.
- * @return {import("../geom/Geometry.js").default} Geometry.
+ * @return {import("../geom/Geometry.js").default|null} Geometry.
  */
 export function createGeometry(object, options) {
   if (!object) {
@@ -439,12 +447,50 @@ export function createGeometry(object, options) {
     const geometries = object.map((geometry) =>
       createGeometry(geometry, options),
     );
-    return new GeometryCollection(geometries);
+    return new GeometryCollection(
+      /** @type {Array<import("../geom/Geometry.js").default>} */ (geometries),
+    );
   }
-  const Geometry = GeometryConstructor[object.type];
-  return transformGeometryWithOptions(
-    new Geometry(object.flatCoordinates, object.layout || 'XY', object.ends),
-    false,
-    options,
-  );
+  const type =
+    /** @type {'Point'|'LineString'|'Polygon'|'MultiPoint'|'MultiLineString'|'MultiPolygon'} */ (
+      object.type
+    );
+  const layout = object.layout || 'XY';
+  /** @type {import("../geom/Geometry.js").default} */
+  let geometry;
+  switch (type) {
+    case 'Point':
+      geometry = new Point(object.flatCoordinates, layout);
+      break;
+    case 'LineString':
+      geometry = new LineString(object.flatCoordinates, layout);
+      break;
+    case 'Polygon':
+      geometry = new Polygon(
+        object.flatCoordinates,
+        layout,
+        /** @type {Array<number>} */ (object.ends),
+      );
+      break;
+    case 'MultiPoint':
+      geometry = new MultiPoint(object.flatCoordinates, layout);
+      break;
+    case 'MultiLineString':
+      geometry = new MultiLineString(
+        object.flatCoordinates,
+        layout,
+        /** @type {Array<number>} */ (object.ends),
+      );
+      break;
+    case 'MultiPolygon':
+      geometry = new MultiPolygon(
+        object.flatCoordinates,
+        layout,
+        /** @type {Array<Array<number>>} */ (object.ends),
+      );
+      break;
+    default:
+      throw new Error('Unsupported geometry type: ' + type);
+  }
+  return transformGeometryWithOptions(geometry, false, options);
 }

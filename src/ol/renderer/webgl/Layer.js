@@ -62,7 +62,7 @@ class WebGLLayerRenderer extends LayerRenderer {
     this.uniforms_ = options.uniforms;
 
     /**
-     * @type {WebGLHelper}
+     * @type {import("../../webgl/Helper.js").default}
      * @protected
      */
     this.helper;
@@ -119,7 +119,7 @@ class WebGLLayerRenderer extends LayerRenderer {
    * @param {Options} options Options.
    */
   reset(options) {
-    this.uniforms_ = options.uniforms;
+    this.uniforms_ = options.uniforms ?? {};
     if (this.helper) {
       this.helper.setUniforms(this.uniforms_);
     }
@@ -131,7 +131,9 @@ class WebGLLayerRenderer extends LayerRenderer {
   removeHelper() {
     if (this.helper) {
       this.helper.dispose();
-      delete this.helper;
+      this.helper = /** @type {import("../../webgl/Helper.js").default} */ (
+        /** @type {unknown} */ (undefined)
+      );
     }
   }
 
@@ -147,7 +149,9 @@ class WebGLLayerRenderer extends LayerRenderer {
       let groupNumber = -1;
       let className;
       for (let i = 0, ii = frameState.layerStatesArray.length; i < ii; i++) {
-        const layer = frameState.layerStatesArray[i].layer;
+        const layer = /** @type {import("../../layer/Layer.js").default} */ (
+          frameState.layerStatesArray[i].layer
+        );
         const renderer = layer.getRenderer();
         if (!(renderer instanceof WebGLLayerRenderer)) {
           incrementGroup = true;
@@ -225,7 +229,7 @@ class WebGLLayerRenderer extends LayerRenderer {
    * @return {Array<PostProcessesOptions>} Array of post processes
    */
   getPostProcesses() {
-    return this.postProcesses_;
+    return this.postProcesses_ ?? [];
   }
 
   /**

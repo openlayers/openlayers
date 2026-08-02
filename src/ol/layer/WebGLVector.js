@@ -65,6 +65,9 @@ class WebGLVectorLayer extends Layer {
    * @param {Options<VectorSourceType, FeatureType>} [options] Options.
    */
   constructor(options) {
+    options = /** @type {Options<VectorSourceType, FeatureType>} */ (
+      options ? options : {}
+    );
     const baseOptions = Object.assign({}, options);
 
     super(baseOptions);

@@ -119,6 +119,7 @@ class WMSGetFeatureInfo extends XMLFeature {
           parsers,
         );
         layerElement.setAttribute('namespaceURI', this.featureNS_);
+        /** @type {Array<import("../Feature.js").default>} */
         const layerFeatures = pushParseAndPop(
           [],
           // @ts-ignore
@@ -133,6 +134,7 @@ class WMSGetFeatureInfo extends XMLFeature {
       }
     }
     if (localName == 'FeatureCollection') {
+      /** @type {Array<import("../Feature.js").default>} */
       const gmlFeatures = pushParseAndPop(
         [],
         this.gmlFormat_.FEATURE_COLLECTION_PARSERS,

@@ -76,6 +76,9 @@ class DragRotateAndZoom extends PointerInteraction {
 
     const map = mapBrowserEvent.map;
     const size = map.getSize();
+    if (!size) {
+      return;
+    }
     const offset = mapBrowserEvent.pixel;
     const deltaX = offset[0] - size[0] / 2;
     const deltaY = size[1] / 2 - offset[1];

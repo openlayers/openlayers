@@ -97,7 +97,7 @@ export class SelectEvent extends Event {
    * @param {SelectEventType} type The event type.
    * @param {Array<import("../Feature.js").default>} selected Selected features.
    * @param {Array<import("../Feature.js").default>} deselected Deselected features.
-   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Associated
+   * @param {import("../MapBrowserEvent.js").default|undefined} mapBrowserEvent Associated
    *     {@link module:ol/MapBrowserEvent~MapBrowserEvent}.
    */
   constructor(type, selected, deselected, mapBrowserEvent) {
@@ -119,7 +119,7 @@ export class SelectEvent extends Event {
 
     /**
      * Associated {@link module:ol/MapBrowserEvent~MapBrowserEvent}.
-     * @type {import("../MapBrowserEvent.js").default}
+     * @type {import("../MapBrowserEvent.js").default|undefined}
      * @api
      */
     this.mapBrowserEvent = mapBrowserEvent;
@@ -128,7 +128,7 @@ export class SelectEvent extends Event {
 
 /**
  * Original feature styles to reset to when features are no longer selected.
- * @type {Object<number, import("../style/Style.js").default|Array<import("../style/Style.js").default>|import("../style/Style.js").StyleFunction>}
+ * @type {Object<string, import("../style/Style.js").default|Array<import("../style/Style.js").default>|import("../style/Style.js").StyleFunction|null|undefined>}
  */
 const originalFeatureStyles = {};
 
@@ -344,11 +344,13 @@ class Select extends Interaction {
     if (map) {
       this.features_.addEventListener(
         CollectionEventType.ADD,
-        this.boundAddFeature_,
+        /** @type {import("../events.js").Listener} */ (this.boundAddFeature_),
       );
       this.features_.addEventListener(
         CollectionEventType.REMOVE,
-        this.boundRemoveFeature_,
+        /** @type {import("../events.js").Listener} */ (
+          this.boundRemoveFeature_
+        ),
       );
 
       if (this.style_) {
@@ -357,11 +359,13 @@ class Select extends Interaction {
     } else {
       this.features_.removeEventListener(
         CollectionEventType.ADD,
-        this.boundAddFeature_,
+        /** @type {import("../events.js").Listener} */ (this.boundAddFeature_),
       );
       this.features_.removeEventListener(
         CollectionEventType.REMOVE,
-        this.boundRemoveFeature_,
+        /** @type {import("../events.js").Listener} */ (
+          this.boundRemoveFeature_
+        ),
       );
     }
   }
@@ -396,22 +400,24 @@ class Select extends Interaction {
 
   /**
    * @param {Feature} feature Feature of which to get the layer
-   * @return {VectorLayer} layer, if one was found.
+   * @return {VectorLayer|undefined} layer, if one was found.
    * @private
    */
   findLayerOfFeature_(feature) {
-    const layer = /** @type {VectorLayer} */ (
-      this.getMap()
-        .getAllLayers()
-        .find(function (layer) {
-          if (
-            layer instanceof VectorLayer &&
-            layer.getSource() &&
-            layer.getSource().hasFeature(feature)
-          ) {
-            return layer;
-          }
-        })
+    const map = this.getMap();
+    if (!map) {
+      return undefined;
+    }
+    const layer = /** @type {VectorLayer|undefined} */ (
+      map.getAllLayers().find(function (layer) {
+        if (
+          layer instanceof VectorLayer &&
+          layer.getSource() &&
+          layer.getSource().hasFeature(feature)
+        ) {
+          return layer;
+        }
+      })
     );
     return layer;
   }
@@ -440,7 +446,11 @@ class Select extends Interaction {
    * @private
    */
   restorePreviousStyle_(feature) {
-    const interactions = this.getMap().getInteractions().getArray();
+    const map = this.getMap();
+    if (!map) {
+      return;
+    }
+    const interactions = map.getInteractions().getArray();
     for (let i = interactions.length - 1; i >= 0; --i) {
       const interaction = interactions[i];
       if (
@@ -477,7 +487,7 @@ class Select extends Interaction {
    */
   selectFeature(feature) {
     const layer = this.findLayerOfFeature_(feature);
-    if (!this.layerFilter_(layer) || !this.filter_(feature, layer)) {
+    if (!layer || !this.layerFilter_(layer) || !this.filter_(feature, layer)) {
       return false;
     }
     const features = this.getFeatures();
@@ -655,10 +665,11 @@ function getDefaultStyleFunction() {
   extend(styles['GeometryCollection'], styles['LineString']);
 
   return function (feature) {
-    if (!feature.getGeometry()) {
+    const geometry = feature.getGeometry();
+    if (!geometry) {
       return null;
     }
-    return styles[feature.getGeometry().getType()];
+    return styles[geometry.getType()];
   };
 }
 

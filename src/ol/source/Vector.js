@@ -235,7 +235,12 @@ class VectorSource extends Source {
     } else if (this.url_ !== undefined) {
       assert(this.format_, '`format` must be set when `url` is set');
       // create a XHR feature loader for "url" and "format"
-      this.loader_ = xhr(this.url_, this.format_);
+      this.loader_ = xhr(
+        this.url_,
+        /** @type {import("../format/Feature.js").default<FeatureType>} */ (
+          this.format_
+        ),
+      );
     }
 
     /**
@@ -250,7 +255,7 @@ class VectorSource extends Source {
 
     /**
      * @private
-     * @type {RBush<FeatureType>}
+     * @type {RBush<FeatureType>|null}
      */
     this.featuresRtree_ = useSpatialIndex ? new RBush() : null;
 
@@ -292,9 +297,9 @@ class VectorSource extends Source {
      */
     this.featuresCollection_ = null;
 
-    /** @type {Collection<FeatureType>} */
+    /** @type {Collection<FeatureType>|undefined} */
     let collection;
-    /** @type {Array<FeatureType>} */
+    /** @type {Array<FeatureType>|undefined} */
     let features;
     if (Array.isArray(options.features)) {
       features = options.features;
@@ -372,11 +377,20 @@ class VectorSource extends Source {
       return;
     }
     this.featureChangeKeys_[featureKey] = [
-      listen(feature, EventType.CHANGE, this.handleFeatureChange_, this),
+      listen(
+        feature,
+        EventType.CHANGE,
+        /** @type {import("../events.js").ListenerFunction} */ (
+          this.handleFeatureChange_
+        ),
+        this,
+      ),
       listen(
         feature,
         ObjectEventType.PROPERTYCHANGE,
-        this.handleFeatureChange_,
+        /** @type {import("../events.js").ListenerFunction} */ (
+          this.handleFeatureChange_
+        ),
         this,
       ),
     ];
@@ -483,55 +497,63 @@ class VectorSource extends Source {
     let modifyingCollection = false;
     this.addEventListener(
       VectorEventType.ADDFEATURE,
-      /**
-       * @param {VectorSourceEvent<FeatureType>} evt The vector source event
-       */
-      function (evt) {
-        if (!modifyingCollection) {
-          modifyingCollection = true;
-          collection.push(evt.feature);
-          modifyingCollection = false;
+      /** @type {import("../events.js").ListenerFunction} */ (
+        /**
+         * @param {VectorSourceEvent<FeatureType>} evt The vector source event
+         */
+        function (evt) {
+          if (!modifyingCollection && evt.feature) {
+            modifyingCollection = true;
+            collection.push(evt.feature);
+            modifyingCollection = false;
+          }
         }
-      },
+      ),
     );
     this.addEventListener(
       VectorEventType.REMOVEFEATURE,
-      /**
-       * @param {VectorSourceEvent<FeatureType>} evt The vector source event
-       */
-      function (evt) {
-        if (!modifyingCollection) {
-          modifyingCollection = true;
-          collection.remove(evt.feature);
-          modifyingCollection = false;
+      /** @type {import("../events.js").ListenerFunction} */ (
+        /**
+         * @param {VectorSourceEvent<FeatureType>} evt The vector source event
+         */
+        function (evt) {
+          if (!modifyingCollection && evt.feature) {
+            modifyingCollection = true;
+            collection.remove(evt.feature);
+            modifyingCollection = false;
+          }
         }
-      },
+      ),
     );
     collection.addEventListener(
       CollectionEventType.ADD,
-      /**
-       * @param {import("../Collection.js").CollectionEvent<FeatureType>} evt The collection event
-       */
-      (evt) => {
-        if (!modifyingCollection) {
-          modifyingCollection = true;
-          this.addFeature(evt.element);
-          modifyingCollection = false;
+      /** @type {import("../events.js").ListenerFunction} */ (
+        /**
+         * @param {import("../Collection.js").CollectionEvent<FeatureType>} evt The collection event
+         */
+        (evt) => {
+          if (!modifyingCollection) {
+            modifyingCollection = true;
+            this.addFeature(evt.element);
+            modifyingCollection = false;
+          }
         }
-      },
+      ),
     );
     collection.addEventListener(
       CollectionEventType.REMOVE,
-      /**
-       * @param {import("../Collection.js").CollectionEvent<FeatureType>} evt The collection event
-       */
-      (evt) => {
-        if (!modifyingCollection) {
-          modifyingCollection = true;
-          this.removeFeature(evt.element);
-          modifyingCollection = false;
+      /** @type {import("../events.js").ListenerFunction} */ (
+        /**
+         * @param {import("../Collection.js").CollectionEvent<FeatureType>} evt The collection event
+         */
+        (evt) => {
+          if (!modifyingCollection) {
+            modifyingCollection = true;
+            this.removeFeature(evt.element);
+            modifyingCollection = false;
+          }
         }
-      },
+      ),
     );
     this.featuresCollection_ = collection;
   }
@@ -618,7 +640,7 @@ class VectorSource extends Source {
       const geometry = feature.getGeometry();
       if (
         geometry instanceof RenderFeature ||
-        geometry.intersectsCoordinate(coordinate)
+        (geometry && geometry.intersectsCoordinate(coordinate))
       ) {
         return callback(feature);
       }
@@ -680,7 +702,7 @@ class VectorSource extends Source {
         const geometry = feature.getGeometry();
         if (
           geometry instanceof RenderFeature ||
-          geometry.intersectsExtent(extent)
+          (geometry && geometry.intersectsExtent(extent))
         ) {
           const result = callback(feature);
           if (result) {
@@ -718,7 +740,7 @@ class VectorSource extends Source {
         extend(features, Object.values(this.nullGeometryFeatures_));
       }
     }
-    return features;
+    return features || [];
   }
 
   /**
@@ -758,11 +780,13 @@ class VectorSource extends Source {
         return this.featuresRtree_.getInExtent(extent);
       }
 
-      const extents = wrapAndSliceX(extent, projection);
-
-      return [].concat(
-        ...extents.map((anExtent) => this.featuresRtree_.getInExtent(anExtent)),
+      const rtree = this.featuresRtree_;
+      const extents = wrapAndSliceX(
+        extent,
+        /** @type {import("../proj/Projection.js").default} */ (projection),
       );
+
+      return extents.flatMap((anExtent) => rtree.getInExtent(anExtent));
     }
     if (this.featuresCollection_) {
       return this.featuresCollection_.getArray().slice(0);
@@ -798,7 +822,11 @@ class VectorSource extends Source {
     let minSquaredDistance = Infinity;
     const extent = [-Infinity, -Infinity, Infinity, Infinity];
     filter = filter ? filter : TRUE;
-    this.featuresRtree_.forEachInExtent(
+    const rtree = this.featuresRtree_;
+    if (!rtree) {
+      return null;
+    }
+    rtree.forEachInExtent(
       extent,
       /**
        * @param {FeatureType} feature Feature.
@@ -806,6 +834,9 @@ class VectorSource extends Source {
       function (feature) {
         if (filter(feature)) {
           const geometry = feature.getGeometry();
+          if (!geometry) {
+            return;
+          }
           const previousMinSquaredDistance = minSquaredDistance;
           minSquaredDistance =
             geometry instanceof RenderFeature
@@ -1036,7 +1067,9 @@ class VectorSource extends Source {
           extentToLoad,
           resolution,
           projection,
-          (features) => disableCallbacks || success(features),
+          (features) =>
+            disableCallbacks ||
+            success(/** @type {Array<FeatureType>} */ (features)),
           () => disableCallbacks || failure(),
         );
         if (loaded instanceof Promise) {
@@ -1044,8 +1077,11 @@ class VectorSource extends Source {
           disableCallbacks = true;
           loaded
             .then((features) => {
-              this.addFeatures(features);
-              success(features);
+              const typedFeatures = /** @type {Array<FeatureType>} */ (
+                features
+              );
+              this.addFeatures(typedFeatures);
+              success(typedFeatures);
             })
             .catch(failure);
         } else if (this.loader_.length < 4) {
@@ -1077,6 +1113,7 @@ class VectorSource extends Source {
    */
   removeLoadedExtent(extent) {
     const loadedExtentsRtree = this.loadedExtentsRtree_;
+    /** @type {Array<{extent: import("../extent.js").Extent}>} */
     const intersectingExtents = [];
     loadedExtentsRtree.forEachInExtent(extent, function (object) {
       intersectingExtents.push(object);
@@ -1203,7 +1240,14 @@ class VectorSource extends Source {
   setUrl(url) {
     assert(this.format_, '`format` must be set when `url` is set');
     this.url_ = url;
-    this.setLoader(xhr(url, this.format_));
+    this.setLoader(
+      xhr(
+        url,
+        /** @type {import("../format/Feature.js").default<FeatureType>} */ (
+          this.format_
+        ),
+      ),
+    );
   }
 
   /**

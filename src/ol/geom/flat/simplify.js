@@ -114,8 +114,8 @@ export function douglasPeucker(
   const stack = [offset, end - stride];
   let index = 0;
   while (stack.length > 0) {
-    const last = stack.pop();
-    const first = stack.pop();
+    const last = /** @type {number} */ (stack.pop());
+    const first = /** @type {number} */ (stack.pop());
     let maxSquaredDistance = 0;
     const x1 = flatCoordinates[first];
     const y1 = flatCoordinates[first + 1];

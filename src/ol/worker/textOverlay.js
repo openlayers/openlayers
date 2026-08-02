@@ -28,7 +28,10 @@ const worker = self;
 let textRenderAnimationFrameKey = 0;
 
 const canvas = new OffscreenCanvas(1, 1);
-const context = canvas.getContext('2d');
+/** @type {OffscreenCanvasRenderingContext2D} */
+const context = /** @type {OffscreenCanvasRenderingContext2D} */ (
+  canvas.getContext('2d')
+);
 
 /**
  * @typedef {Object} RenderBatch
@@ -45,6 +48,15 @@ const renderBatches = new Map();
 
 const tmpTransform = createTransform();
 
+/**
+ * @param {import('../coordinate.js').Coordinate} center Center.
+ * @param {number} resolution Resolution.
+ * @param {number} rotation Rotation.
+ * @param {number} width Width.
+ * @param {number} height Height.
+ * @param {number} offsetX Offset X.
+ * @return {import('../transform.js').Transform} Transform.
+ */
 function getRenderTransform(
   center,
   resolution,
@@ -62,7 +74,7 @@ function getRenderTransform(
   return composeTransform(tmpTransform, dx1, dy1, sx, sy, -rotation, dx2, dy2);
 }
 
-worker.onmessage = (event) => {
+worker.onmessage = (/** @type {MessageEvent} */ event) => {
   const received = event.data;
   switch (received.type) {
     case TextOverlayWorkerMessageType.RENDER: {
@@ -94,7 +106,6 @@ worker.onmessage = (event) => {
             /** @type {import('../render/webgl/constants.js').TextOverlayWorkerMessage} */
             const message = {
               type: TextOverlayWorkerMessageType.RENDER,
-              imageData: null,
               frameState: received.frameState,
               id: received.id,
             };

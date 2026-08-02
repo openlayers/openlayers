@@ -220,6 +220,8 @@ class Circle extends SimpleGeometry {
   }
 
   /**
+   * @param {import("../coordinate.js").Coordinate} coordinates Coordinates.
+   * @param {import("./Geometry.js").GeometryLayout} [layout] Layout.
    * @override
    */
   setCoordinates(coordinates, layout) {}

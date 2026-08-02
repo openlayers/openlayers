@@ -20,6 +20,14 @@ import {extend} from './array.js';
  */
 
 /**
+ * @typedef {Object<string, Object<string, (Parser|undefined)>>} ParsersNS
+ */
+
+/**
+ * @typedef {Object<string, Object<string, (Serializer|undefined)>>} SerializersNS
+ */
+
+/**
  * @type {string}
  */
 export const XML_SCHEMA_INSTANCE_URI =
@@ -63,7 +71,7 @@ export function getAllTextContent_(node, normalizeWhitespace, accumulator) {
     if (normalizeWhitespace) {
       accumulator.push(String(node.nodeValue).replace(/(\r\n|\r|\n)/g, ''));
     } else {
-      accumulator.push(node.nodeValue);
+      accumulator.push(String(node.nodeValue));
     }
   } else {
     let n;
@@ -105,7 +113,7 @@ export function parse(xml) {
 /**
  * Make an array extender function for extending the array at the top of the
  * object stack.
- * @param {function(this: T, Node, Array<*>): (Array<*>|undefined)} valueReader Value reader.
+ * @param {function(this: T, Element, Array<*>): (Array<*>|undefined)} valueReader Value reader.
  * @param {T} [thisArg] The object to use as `this` in `valueReader`.
  * @return {Parser} Parser.
  * @template T
@@ -113,7 +121,7 @@ export function parse(xml) {
 export function makeArrayExtender(valueReader, thisArg) {
   return (
     /**
-     * @param {Node} node Node.
+     * @param {Element} node Node.
      * @param {Array<*>} objectStack Object stack.
      * @this {*}
      */
@@ -159,7 +167,7 @@ export function makeArrayPusher(valueReader, thisArg) {
 /**
  * Make an object stack replacer function for replacing the object at the
  * top of the stack.
- * @param {function(this: T, Node, Array<*>): *} valueReader Value reader.
+ * @param {function(this: T, Element, Array<*>): *} valueReader Value reader.
  * @param {T} [thisArg] The object to use as `this` in `valueReader`.
  * @return {Parser} Parser.
  * @template T
@@ -167,7 +175,7 @@ export function makeArrayPusher(valueReader, thisArg) {
 export function makeReplacer(valueReader, thisArg) {
   return (
     /**
-     * @param {Node} node Node.
+     * @param {Element} node Node.
      * @param {Array<*>} objectStack Object stack.
      * @this {*}
      */
@@ -199,13 +207,14 @@ export function makeObjectPropertyPusher(valueReader, property, thisArg) {
     function (node, objectStack) {
       const value = valueReader.call(thisArg ?? this, node, objectStack);
       if (value !== undefined) {
-        const object = /** @type {!Object} */ (
+        const object = /** @type {Object<string, *>} */ (
           objectStack[objectStack.length - 1]
         );
         const name = property !== undefined ? property : node.localName;
+        /** @type {Array<*>} */
         let array;
         if (name in object) {
-          array = object[name];
+          array = /** @type {Array<*>} */ (object[name]);
         } else {
           array = [];
           object[name] = array;
@@ -234,7 +243,7 @@ export function makeObjectPropertySetter(valueReader, property, thisArg) {
     function (node, objectStack) {
       const value = valueReader.call(thisArg ?? this, node, objectStack);
       if (value !== undefined) {
-        const object = /** @type {!Object} */ (
+        const object = /** @type {Object<string, *>} */ (
           objectStack[objectStack.length - 1]
         );
         const name = property !== undefined ? property : node.localName;
@@ -248,7 +257,7 @@ export function makeObjectPropertySetter(valueReader, property, thisArg) {
  * Create a serializer that appends nodes written by its `nodeWriter` to its
  * designated parent. The parent is the `node` of the
  * {@link module:ol/xml~NodeStackItem} at the top of the `objectStack`.
- * @param {function(this: T, Node, V, Array<*>): void} nodeWriter Node writer.
+ * @param {function(this: T, Element, V, Array<*>): void} nodeWriter Node writer.
  * @param {T} [thisArg] The object to use as `this` in `nodeWriter`.
  * @return {Serializer} Serializer.
  * @template T, V
@@ -285,13 +294,16 @@ export function makeChildAppender(nodeWriter, thisArg) {
  * @template T, V
  */
 export function makeArraySerializer(nodeWriter, thisArg) {
-  let serializersNS, nodeFactory;
+  /** @type {SerializersNS|undefined} */
+  let serializersNS;
+  /** @type {function(*, Array<*>, (string|undefined)): (Node|undefined)|undefined} */
+  let nodeFactory;
   return function (node, value, objectStack) {
     if (serializersNS === undefined) {
       serializersNS = {};
-      const serializers = {};
+      const serializers = /** @type {Object<string, Serializer>} */ ({});
       serializers[node.localName] = nodeWriter;
-      serializersNS[node.namespaceURI] = serializers;
+      serializersNS[node.namespaceURI ?? ''] = serializers;
       nodeFactory = makeSimpleNodeFactory(node.localName);
     }
     serialize(serializersNS, nodeFactory, value, objectStack);
@@ -331,7 +343,10 @@ export function makeSimpleNodeFactory(fixedNodeName, fixedNamespaceURI) {
 
       const namespaceURI =
         fixedNamespaceURI !== undefined ? fixedNamespaceURI : node.namespaceURI;
-      return createElementNS(namespaceURI, /** @type {string} */ (nodeName));
+      return createElementNS(
+        namespaceURI ?? '',
+        /** @type {string} */ (nodeName),
+      );
     }
   );
 }
@@ -369,7 +384,7 @@ export function makeSequence(object, orderedKeys) {
  * Create a namespaced structure, using the same values for each namespace.
  * This can be used as a starting point for versioned parsers, when only a few
  * values are version specific.
- * @param {Array<string>} namespaceURIs Namespace URIs.
+ * @param {Array<string|null>} namespaceURIs Namespace URIs.
  * @param {T} structure Structure.
  * @param {Object<string, T>} [structureNS] Namespaced structure to add to.
  * @return {Object<string, T>} Namespaced structure.
@@ -379,15 +394,44 @@ export function makeStructureNS(namespaceURIs, structure, structureNS) {
   structureNS = structureNS !== undefined ? structureNS : {};
   let i, ii;
   for (i = 0, ii = namespaceURIs.length; i < ii; ++i) {
-    structureNS[namespaceURIs[i]] = structure;
+    structureNS[namespaceURIs[i] ?? ''] = structure;
   }
   return structureNS;
 }
 
 /**
+ * @param {Array<string|null>} namespaceURIs Namespace URIs.
+ * @param {Object<string, (Parser|undefined)>} structure Structure.
+ * @param {ParsersNS} [structureNS] Namespaced structure to add to.
+ * @return {ParsersNS} Namespaced structure.
+ */
+export function makeParsersNS(namespaceURIs, structure, structureNS) {
+  structureNS = structureNS !== undefined ? structureNS : {};
+  let i, ii;
+  for (i = 0, ii = namespaceURIs.length; i < ii; ++i) {
+    structureNS[namespaceURIs[i] ?? ''] = structure;
+  }
+  return /** @type {ParsersNS} */ (structureNS);
+}
+
+/**
+ * @param {Array<string|null>} namespaceURIs Namespace URIs.
+ * @param {Object<string, (Serializer|undefined)>} structure Structure.
+ * @param {SerializersNS} [structureNS] Namespaced structure to add to.
+ * @return {SerializersNS} Namespaced structure.
+ */
+export function makeSerializersNS(namespaceURIs, structure, structureNS) {
+  structureNS = structureNS !== undefined ? structureNS : {};
+  let i, ii;
+  for (i = 0, ii = namespaceURIs.length; i < ii; ++i) {
+    structureNS[namespaceURIs[i] ?? ''] = structure;
+  }
+  return /** @type {SerializersNS} */ (structureNS);
+}
+
+/**
  * Parse a node using the parsers and object stack.
- * @param {Object<string, Object<string, Parser>>} parsersNS
- *     Parsers by namespace.
+ * @param {ParsersNS} parsersNS Parsers by namespace.
  * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  * @param {*} [thisArg] The object to use as `this`.
@@ -395,7 +439,7 @@ export function makeStructureNS(namespaceURIs, structure, structureNS) {
 export function parseNode(parsersNS, node, objectStack, thisArg) {
   let n;
   for (n = node.firstElementChild; n; n = n.nextElementSibling) {
-    const parsers = parsersNS[n.namespaceURI];
+    const parsers = parsersNS[n.namespaceURI ?? ''];
     if (parsers !== undefined) {
       const parser = parsers[n.localName];
       if (parser !== undefined) {
@@ -408,8 +452,7 @@ export function parseNode(parsersNS, node, objectStack, thisArg) {
 /**
  * Push an object on top of the stack, parse and return the popped object.
  * @param {T} object Object.
- * @param {Object<string, Object<string, Parser>>} parsersNS
- *     Parsers by namespace.
+ * @param {ParsersNS} parsersNS Parsers by namespace.
  * @param {Element} node Node.
  * @param {Array<*>} objectStack Object stack.
  * @param {*} [thisArg] The object to use as `this`.
@@ -424,8 +467,7 @@ export function pushParseAndPop(object, parsersNS, node, objectStack, thisArg) {
 
 /**
  * Walk through an array of `values` and call a serializer for each value.
- * @param {Object<string, Object<string, Serializer>>} serializersNS
- *     Namespaced serializers.
+ * @param {SerializersNS} serializersNS Namespaced serializers.
  * @param {function(this: T, *, Array<*>, (string|undefined)): (Node|undefined)} nodeFactory
  *     Node factory. The `nodeFactory` creates the node whose namespace and name
  *     will be used to choose a node writer from `serializersNS`. This
@@ -458,18 +500,23 @@ export function serialize(
     value = values[i];
     if (value !== undefined) {
       node = nodeFactory.call(
-        thisArg,
+        /** @type {T} */ (thisArg),
         value,
         objectStack,
         keys !== undefined ? keys[i] : undefined,
       );
       if (node !== undefined) {
-        serializersNS[node.namespaceURI][node.localName].call(
-          thisArg,
-          node,
-          value,
-          objectStack,
-        );
+        const element = /** @type {Element} */ (node);
+        const serializer =
+          serializersNS[element.namespaceURI ?? '']?.[element.localName];
+        if (serializer) {
+          serializer.call(
+            /** @type {T} */ (thisArg),
+            element,
+            value,
+            objectStack,
+          );
+        }
       }
     }
   }
@@ -477,8 +524,7 @@ export function serialize(
 
 /**
  * @param {O} object Object.
- * @param {Object<string, Object<string, Serializer>>} serializersNS
- *     Namespaced serializers.
+ * @param {SerializersNS} serializersNS Namespaced serializers.
  * @param {function(this: T, *, Array<*>, (string|undefined)): (Node|undefined)} nodeFactory
  *     Node factory. The `nodeFactory` creates the node whose namespace and name
  *     will be used to choose a node writer from `serializersNS`. This
@@ -512,6 +558,7 @@ export function pushSerializeAndPop(
   return /** @type {O|undefined} */ (objectStack.pop());
 }
 
+/** @type {XMLSerializer|undefined} */
 let xmlSerializer_ = undefined;
 
 /**
@@ -532,9 +579,10 @@ export function getXMLSerializer() {
   if (xmlSerializer_ === undefined && typeof XMLSerializer !== 'undefined') {
     xmlSerializer_ = new XMLSerializer();
   }
-  return xmlSerializer_;
+  return /** @type {XMLSerializer} */ (xmlSerializer_);
 }
 
+/** @type {Document|undefined} */
 let document_ = undefined;
 
 /**
@@ -556,5 +604,5 @@ export function getDocument() {
   if (document_ === undefined && typeof document !== 'undefined') {
     document_ = document.implementation.createDocument('', '', null);
   }
-  return document_;
+  return /** @type {Document} */ (document_);
 }

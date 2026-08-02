@@ -306,11 +306,19 @@ class Geometry extends BaseObject {
    * @api
    */
   transform(source, destination) {
-    /** @type {import("../proj/Projection.js").default} */
     const sourceProj = getProjection(source);
+    if (!sourceProj) {
+      return this;
+    }
     const transformFn =
       sourceProj.getUnits() == 'tile-pixels'
-        ? function (inCoordinates, outCoordinates, stride) {
+        ? /**
+           * @param {Array<number>} inCoordinates Input coordinates.
+           * @param {Array<number>} outCoordinates Output coordinates.
+           * @param {number} stride Stride.
+           * @return {Array<number>} Output coordinates.
+           */
+          function (inCoordinates, outCoordinates, stride) {
             const pixelExtent = sourceProj.getExtent();
             const projectedExtent = sourceProj.getWorldExtent();
             const scale = getHeight(projectedExtent) / getHeight(pixelExtent);
@@ -339,7 +347,11 @@ class Geometry extends BaseObject {
             return transformed;
           }
         : getTransform(sourceProj, destination);
-    this.applyTransform(transformFn);
+    if (transformFn) {
+      this.applyTransform(
+        /** @type {import("../proj.js").TransformFunction} */ (transformFn),
+      );
+    }
     return this;
   }
 }

@@ -308,13 +308,14 @@ function parseStyle(style) {
   const uniforms = {};
 
   for (const [variableName] of context.variables.entries()) {
-    if (!(variableName in style.variables)) {
+    const variables = style.variables || {};
+    if (!(variableName in variables)) {
       throw new Error(`Missing '${variableName}' in style variables`);
     }
 
     const uniformName = uniformNameForVariable(variableName);
     uniforms[uniformName] = function () {
-      let value = style.variables[variableName];
+      let value = variables[variableName];
       if (typeof value === 'string') {
         value = getStringNumberEquivalent(value);
       }
@@ -405,9 +406,9 @@ class FlowLayer extends BaseTileLayer {
    */
   constructor(options) {
     const baseOptions = Object.assign({}, options);
-    delete baseOptions.maxSpeed;
-    delete baseOptions.speedFactor;
-    delete baseOptions.particles;
+    delete (/** @type {any} */ (baseOptions).maxSpeed);
+    delete (/** @type {any} */ (baseOptions).speedFactor);
+    delete (/** @type {any} */ (baseOptions).particles);
     super(baseOptions);
 
     /**
@@ -429,13 +430,13 @@ class FlowLayer extends BaseTileLayer {
      * @type {number}
      * @private
      */
-    this.speedFactor_ = options.speedFactor;
+    this.speedFactor_ = options.speedFactor ?? 0.001;
 
     /**
      * @type {number}
      * @private
      */
-    this.particles_ = options.particles;
+    this.particles_ = options.particles ?? 65536;
 
     /**
      * @type {Object<string, (string|number)>}
@@ -450,8 +451,9 @@ class FlowLayer extends BaseTileLayer {
    * @private
    */
   handleSourceUpdate_() {
-    if (this.hasRenderer()) {
-      this.getRenderer().clearCache();
+    const renderer = this.getRenderer();
+    if (renderer) {
+      renderer.clearCache();
     }
   }
 
@@ -472,7 +474,10 @@ class FlowLayer extends BaseTileLayer {
    */
   getSources(extent, resolution) {
     const source = this.getSource();
-    sources[0] = source;
+    sources.length = 0;
+    if (source) {
+      sources.push(source);
+    }
     return sources;
   }
 

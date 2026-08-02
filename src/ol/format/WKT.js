@@ -14,7 +14,7 @@ import TextFeature from './TextFeature.js';
 
 /**
  * Geometry constructors
- * @enum {function (new:import("../geom/Geometry.js").default, Array, import("../geom/Geometry.js").GeometryLayout)}
+ * @enum {function (new:import("../geom/Geometry.js").default, Array<*>, import("../geom/Geometry.js").GeometryLayout)}
  */
 const GeometryConstructor = {
   'POINT': Point,
@@ -541,7 +541,9 @@ class Parser {
         const geometries = this.parseGeometryCollectionText_();
         return new GeometryCollection(geometries);
       }
-      const ctor = GeometryConstructor[geomType];
+      const ctor = /** @type {Object<string, *>} */ (GeometryConstructor)[
+        geomType
+      ];
       if (!ctor) {
         throw new Error('Invalid geometry type: ' + geomType);
       }
@@ -585,7 +587,10 @@ class Parser {
         }
       }
 
-      return new ctor(coordinates, this.layout_);
+      return new ctor(
+        /** @type {Array<*>} */ (coordinates ?? []),
+        this.layout_,
+      );
     }
     throw new Error(this.formatErrorMessage_());
   }
@@ -709,7 +714,10 @@ class WKT extends TextFeature {
     }
     const geometries = [];
     for (let i = 0, ii = features.length; i < ii; ++i) {
-      geometries.push(features[i].getGeometry());
+      const geometry = features[i].getGeometry();
+      if (geometry) {
+        geometries.push(geometry);
+      }
     }
     const collection = new GeometryCollection(geometries);
     return this.writeGeometryText(collection, options);
@@ -838,13 +846,34 @@ function encodeGeometryLayout(geom) {
  * @type {Object<string, function(import("../geom/Geometry.js").default): string>}
  */
 const GeometryEncoder = {
-  'Point': encodePointGeometry,
-  'LineString': encodeLineStringGeometry,
-  'Polygon': encodePolygonGeometry,
-  'MultiPoint': encodeMultiPointGeometry,
-  'MultiLineString': encodeMultiLineStringGeometry,
-  'MultiPolygon': encodeMultiPolygonGeometry,
-  'GeometryCollection': encodeGeometryCollectionGeometry,
+  'Point':
+    /** @type {function(import("../geom/Geometry.js").default): string} */ (
+      encodePointGeometry
+    ),
+  'LineString':
+    /** @type {function(import("../geom/Geometry.js").default): string} */ (
+      encodeLineStringGeometry
+    ),
+  'Polygon':
+    /** @type {function(import("../geom/Geometry.js").default): string} */ (
+      encodePolygonGeometry
+    ),
+  'MultiPoint':
+    /** @type {function(import("../geom/Geometry.js").default): string} */ (
+      encodeMultiPointGeometry
+    ),
+  'MultiLineString':
+    /** @type {function(import("../geom/Geometry.js").default): string} */ (
+      encodeMultiLineStringGeometry
+    ),
+  'MultiPolygon':
+    /** @type {function(import("../geom/Geometry.js").default): string} */ (
+      encodeMultiPolygonGeometry
+    ),
+  'GeometryCollection':
+    /** @type {function(import("../geom/Geometry.js").default): string} */ (
+      encodeGeometryCollectionGeometry
+    ),
 };
 
 /**

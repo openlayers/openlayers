@@ -155,7 +155,7 @@ class OverviewMap extends Control {
 
     button.addEventListener(
       EventType.CLICK,
-      this.handleClick_.bind(this),
+      /** @type {EventListener} */ (this.handleClick_.bind(this)),
       false,
     );
 
@@ -168,7 +168,7 @@ class OverviewMap extends Control {
 
     /**
      * Explicitly given view to be used instead of a view derived from the main map.
-     * @type {View}
+     * @type {View|undefined}
      * @private
      */
     this.view_ = options.view;
@@ -214,7 +214,7 @@ class OverviewMap extends Control {
       CLASS_CONTROL +
       (this.collapsed_ && this.collapsible_ ? ' ' + CLASS_COLLAPSED : '') +
       (this.collapsible_ ? '' : ' ol-uncollapsible');
-    const element = this.element;
+    const element = /** @type {!HTMLElement} */ (this.element);
     element.className = cssClasses;
     element.appendChild(this.ovmapDiv_);
     element.appendChild(button);
@@ -226,14 +226,16 @@ class OverviewMap extends Control {
 
     /* Functions definition */
 
-    const computeDesiredMousePosition = (mousePosition) => {
+    const computeDesiredMousePosition = (
+      /** @type {PointerEvent} */ mousePosition,
+    ) => {
       return {
         clientX: mousePosition.clientX,
         clientY: mousePosition.clientY,
       };
     };
 
-    const move = function (event) {
+    const move = (/** @type {PointerEvent} */ event) => {
       const position = /** @type {?} */ (computeDesiredMousePosition(event));
       const coordinates = ovmap.getEventCoordinate(
         /** @type {MouseEvent} */ (position),
@@ -242,10 +244,13 @@ class OverviewMap extends Control {
       overlay.setPosition(coordinates);
     };
 
-    const endMoving = (event) => {
+    const endMoving = (/** @type {PointerEvent} */ event) => {
       const coordinates = ovmap.getEventCoordinateInternal(event);
 
       const map = this.getMap();
+      if (!map) {
+        return;
+      }
 
       map.getView().setCenterInternal(coordinates);
 
@@ -257,7 +262,11 @@ class OverviewMap extends Control {
     /* Binding */
 
     this.ovmapDiv_.addEventListener('pointerdown', (event) => {
-      const ownerDocument = this.getMap().getOwnerDocument();
+      const map = this.getMap();
+      if (!map) {
+        return;
+      }
+      const ownerDocument = map.getOwnerDocument();
       if (event.target === overlayBox) {
         ownerDocument.addEventListener('pointermove', move);
       }
@@ -294,7 +303,9 @@ class OverviewMap extends Control {
         listen(
           map,
           ObjectEventType.PROPERTYCHANGE,
-          this.handleMapPropertyChange_,
+          /** @type {import("../events.js").ListenerFunction} */ (
+            this.handleMapPropertyChange_
+          ),
           this,
         ),
       );
@@ -323,7 +334,11 @@ class OverviewMap extends Control {
       if (oldView) {
         this.unbindView_(oldView);
       }
-      const newView = this.getMap().getView();
+      const map = this.getMap();
+      if (!map) {
+        return;
+      }
+      const newView = map.getView();
       this.bindView_(newView);
     } else if (
       !this.ovmap_.isRendered() &&
@@ -378,7 +393,11 @@ class OverviewMap extends Control {
    */
   handleRotationChanged_() {
     if (this.rotateWithView_) {
-      this.ovmap_.getView().setRotation(this.getMap().getView().getRotation());
+      const map = this.getMap();
+      if (!map) {
+        return;
+      }
+      this.ovmap_.getView().setRotation(map.getView().getRotation());
     }
   }
 
@@ -395,6 +414,9 @@ class OverviewMap extends Control {
    */
   validateExtent_() {
     const map = this.getMap();
+    if (!map) {
+      return;
+    }
     const ovmap = this.ovmap_;
 
     if (!map.isRendered() || !ovmap.isRendered()) {
@@ -426,8 +448,14 @@ class OverviewMap extends Control {
       getBottomRight(extent),
     );
 
-    const boxWidth = Math.abs(topLeftPixel[0] - bottomRightPixel[0]);
-    const boxHeight = Math.abs(topLeftPixel[1] - bottomRightPixel[1]);
+    const boxWidth = Math.abs(
+      /** @type {import("../pixel.js").Pixel} */ (topLeftPixel)[0] -
+        /** @type {import("../pixel.js").Pixel} */ (bottomRightPixel)[0],
+    );
+    const boxHeight = Math.abs(
+      /** @type {import("../pixel.js").Pixel} */ (topLeftPixel)[1] -
+        /** @type {import("../pixel.js").Pixel} */ (bottomRightPixel)[1],
+    );
 
     const ovmapWidth = ovmapSize[0];
     const ovmapHeight = ovmapSize[1];
@@ -455,6 +483,9 @@ class OverviewMap extends Control {
     }
 
     const map = this.getMap();
+    if (!map) {
+      return;
+    }
     const ovmap = this.ovmap_;
 
     const mapSize = /** @type {import("../size.js").Size} */ (map.getSize());
@@ -480,6 +511,9 @@ class OverviewMap extends Control {
    */
   recenter_() {
     const map = this.getMap();
+    if (!map) {
+      return;
+    }
     const ovmap = this.ovmap_;
 
     const view = map.getView();
@@ -495,6 +529,9 @@ class OverviewMap extends Control {
    */
   updateBox_() {
     const map = this.getMap();
+    if (!map) {
+      return;
+    }
     const ovmap = this.ovmap_;
 
     if (!map.isRendered() || !ovmap.isRendered()) {
@@ -514,6 +551,9 @@ class OverviewMap extends Control {
     const center = view.getCenter();
     const resolution = view.getResolution();
     const ovresolution = ovview.getResolution();
+    if (resolution === undefined || ovresolution === undefined) {
+      return;
+    }
     const width = (mapSize[0] * resolution) / ovresolution;
     const height = (mapSize[1] * resolution) / ovresolution;
 
@@ -559,7 +599,11 @@ class OverviewMap extends Control {
    * @private
    */
   handleToggle_() {
-    this.element.classList.toggle(CLASS_COLLAPSED);
+    const element = this.element;
+    if (!element) {
+      return;
+    }
+    element.classList.toggle(CLASS_COLLAPSED);
     if (this.collapsed_) {
       replaceNode(this.collapseLabel_, this.label_);
     } else {
@@ -601,7 +645,11 @@ class OverviewMap extends Control {
       return;
     }
     this.collapsible_ = collapsible;
-    this.element.classList.toggle('ol-uncollapsible');
+    const element = this.element;
+    if (!element) {
+      return;
+    }
+    element.classList.toggle('ol-uncollapsible');
     if (!collapsible && this.collapsed_) {
       this.handleToggle_();
     }
@@ -649,7 +697,11 @@ class OverviewMap extends Control {
       return;
     }
     this.rotateWithView_ = rotateWithView;
-    if (this.getMap().getView().getRotation() !== 0) {
+    const map = this.getMap();
+    if (!map) {
+      return;
+    }
+    if (map.getView().getRotation() !== 0) {
       if (this.rotateWithView_) {
         this.handleRotationChanged_();
       } else {

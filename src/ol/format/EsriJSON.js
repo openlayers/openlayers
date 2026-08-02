@@ -31,6 +31,10 @@ import JSONFeature from './JSONFeature.js';
  */
 
 /**
+ * @typedef {Object<string, *>} EsriJSONObject
+ */
+
+/**
  * @typedef {Object} EsriJSONMultiPolygon
  * @property {Array<Array<Array<Array<number>>>>} rings Rings for the MultiPolygon.
  * @property {boolean} [hasM] If the polygon coordinates have an M value.
@@ -110,9 +114,11 @@ class EsriJSON extends JSONFeature {
     feature.setGeometry(geometry);
     if (esriJSONFeature.attributes) {
       feature.setProperties(esriJSONFeature.attributes, true);
-      const id = esriJSONFeature.attributes[idField];
-      if (id !== undefined) {
-        feature.setId(/** @type {number} */ (id));
+      if (idField) {
+        const id = esriJSONFeature.attributes[idField];
+        if (id !== undefined) {
+          feature.setId(/** @type {number} */ (id));
+        }
       }
     }
     return feature;
@@ -127,7 +133,8 @@ class EsriJSON extends JSONFeature {
    */
   readFeaturesFromObject(object, options) {
     options = options ? options : {};
-    if (object['features']) {
+    const esriObject = /** @type {EsriJSONObject} */ (object);
+    if (esriObject['features']) {
       const esriJSONFeatureSet = /** @type {EsriJSONFeatureSet} */ (object);
       /** @type {Array<import("../Feature.js").default>} */
       const features = [];
@@ -137,7 +144,7 @@ class EsriJSON extends JSONFeature {
           this.readFeatureFromObject(
             esriJSONFeatures[i],
             options,
-            object.objectIdFieldName,
+            esriJSONFeatureSet.objectIdFieldName,
           ),
         );
       }
@@ -154,11 +161,15 @@ class EsriJSON extends JSONFeature {
    * @override
    */
   readGeometryFromObject(object, options) {
-    return readGeometry(object, options);
+    const geometry = readGeometry(object, options);
+    if (!geometry) {
+      throw new Error('Cannot read geometry from object');
+    }
+    return geometry;
   }
 
   /**
-   * @param {Object} object Object.
+   * @param {EsriJSONObject} object Object.
    * @protected
    * @return {import("../proj/Projection.js").default} Projection.
    * @override
@@ -172,9 +183,12 @@ class EsriJSON extends JSONFeature {
         object['spatialReference']
       );
       const crs = spatialReference.wkid;
-      return getProjection('EPSG:' + crs);
+      const projection = getProjection('EPSG:' + crs);
+      if (projection) {
+        return projection;
+      }
     }
-    return null;
+    throw new Error('Unknown projection');
   }
 
   /**
@@ -213,12 +227,17 @@ class EsriJSON extends JSONFeature {
       const projection =
         options && (options.dataProjection || options.featureProjection);
       if (projection) {
-        object['geometry']['spatialReference'] =
-          /** @type {EsriJSONSpatialReferenceWkid} */ ({
-            wkid: Number(getProjection(projection).getCode().split(':').pop()),
-          });
+        const proj = getProjection(projection);
+        if (proj) {
+          object['geometry']['spatialReference'] =
+            /** @type {EsriJSONSpatialReferenceWkid} */ ({
+              wkid: Number(proj.getCode().split(':').pop()),
+            });
+        }
       }
-      delete properties[feature.getGeometryName()];
+      delete (
+        /** @type {Object<string, *>} */ (properties)[feature.getGeometryName()]
+      );
     }
     if (!isEmpty(properties)) {
       object['attributes'] = properties;
@@ -239,9 +258,14 @@ class EsriJSON extends JSONFeature {
    */
   writeFeaturesObject(features, options) {
     options = this.adaptOptions(options);
+    /** @type {Array<EsriJSONFeature>} */
     const objects = [];
     for (let i = 0, ii = features.length; i < ii; ++i) {
-      objects.push(this.writeFeatureObject(features[i], options));
+      objects.push(
+        /** @type {EsriJSONFeature} */ (
+          this.writeFeatureObject(features[i], options)
+        ),
+      );
     }
     return {
       'features': objects,
@@ -250,41 +274,52 @@ class EsriJSON extends JSONFeature {
 }
 
 /**
- * @param {EsriJSONGeometry} object Object.
+ * @param {EsriJSONObject} object Object.
  * @param {import("./Feature.js").ReadOptions} [options] Read options.
- * @return {import("../geom/Geometry.js").default} Geometry.
+ * @return {import("../geom/Geometry.js").default|null} Geometry.
  */
 function readGeometry(object, options) {
   if (!object) {
     return null;
   }
-  /** @type {import("../geom/Geometry.js").Type} */
+  let geomObject = /** @type {EsriJSONObject} */ (object);
+  /** @type {import("../geom/Geometry.js").Type|undefined} */
   let type;
-  if (typeof object['x'] === 'number' && typeof object['y'] === 'number') {
+  if (
+    typeof geomObject['x'] === 'number' &&
+    typeof geomObject['y'] === 'number'
+  ) {
     type = 'Point';
-  } else if (object['points']) {
+  } else if (geomObject['points']) {
     type = 'MultiPoint';
-  } else if (object['paths']) {
-    const esriJSONPolyline = /** @type {EsriJSONPolyline} */ (object);
+  } else if (geomObject['paths']) {
+    const esriJSONPolyline = /** @type {EsriJSONPolyline} */ (geomObject);
     if (esriJSONPolyline.paths.length === 1) {
       type = 'LineString';
     } else {
       type = 'MultiLineString';
     }
-  } else if (object['rings']) {
-    const esriJSONPolygon = /** @type {EsriJSONPolygon} */ (object);
+  } else if (geomObject['rings']) {
+    const esriJSONPolygon = /** @type {EsriJSONPolygon} */ (geomObject);
     const layout = getGeometryLayout(esriJSONPolygon);
     const rings = convertRings(esriJSONPolygon.rings, layout);
     if (rings.length === 1) {
       type = 'Polygon';
-      object = Object.assign({}, object, {['rings']: rings[0]});
+      geomObject = Object.assign({}, geomObject, {['rings']: rings[0]});
     } else {
       type = 'MultiPolygon';
-      object = Object.assign({}, object, {['rings']: rings});
+      geomObject = Object.assign({}, geomObject, {['rings']: rings});
     }
   }
+  if (!type) {
+    return null;
+  }
   const geometryReader = GEOMETRY_READERS[type];
-  return transformGeometryWithOptions(geometryReader(object), false, options);
+  return transformGeometryWithOptions(
+    geometryReader(geomObject),
+    false,
+    options,
+  );
 }
 
 /**
@@ -297,6 +332,7 @@ function readGeometry(object, options) {
  * @return {Array<!Array<!Array<!Array<number>>>>} Transformed rings.
  */
 function convertRings(rings, layout) {
+  /** @type {Array<number>} */
   const flatRing = [];
   const outerRings = [];
   const holes = [];
@@ -318,11 +354,14 @@ function convertRings(rings, layout) {
     }
   }
   while (holes.length) {
-    const hole = holes.shift();
+    const hole = /** @type {Array<Array<number>>} */ (holes.shift());
     let matched = false;
     // loop over all outer rings and see if they contain our hole.
     for (i = outerRings.length - 1; i >= 0; i--) {
       const outerRing = outerRings[i][0];
+      if (!outerRing) {
+        continue;
+      }
       const containsHole = containsExtent(
         new LinearRing(outerRing).getExtent(),
         new LinearRing(hole).getExtent(),
@@ -465,7 +504,7 @@ function writePointGeometry(geometry, options) {
 
 /**
  * @param {import("../geom/SimpleGeometry.js").default} geometry Geometry.
- * @return {Object} Object with boolean hasZ and hasM keys.
+ * @return {{hasZ: boolean, hasM: boolean}} Object with boolean hasZ and hasM keys.
  */
 function getHasZM(geometry) {
   const layout = geometry.getLayout();

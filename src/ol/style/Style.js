@@ -242,11 +242,11 @@ class Style {
     }
     return new Style({
       geometry: geometry ?? undefined,
-      fill: this.getFill() ? this.getFill().clone() : undefined,
-      image: this.getImage() ? this.getImage().clone() : undefined,
+      fill: this.getFill()?.clone(),
+      image: this.getImage()?.clone(),
       renderer: this.getRenderer() ?? undefined,
-      stroke: this.getStroke() ? this.getStroke().clone() : undefined,
-      text: this.getText() ? this.getText().clone() : undefined,
+      stroke: this.getStroke()?.clone(),
+      text: this.getText()?.clone(),
       zIndex: this.getZIndex(),
     });
   }
@@ -377,7 +377,7 @@ class Style {
 
   /**
    * Set the text style.
-   * @param {import("./Text.js").default} text Text style.
+   * @param {import("./Text.js").default|null} text Text style.
    * @api
    */
   setText(text) {

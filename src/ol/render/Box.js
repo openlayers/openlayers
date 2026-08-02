@@ -13,7 +13,7 @@ class RenderBox extends Disposable {
     super();
 
     /**
-     * @type {import("../geom/Polygon.js").default}
+     * @type {import("../geom/Polygon.js").default|null}
      * @private
      */
     this.geometry_ = null;
@@ -35,13 +35,13 @@ class RenderBox extends Disposable {
 
     /**
      * @private
-     * @type {import("../pixel.js").Pixel}
+     * @type {import("../pixel.js").Pixel|null}
      */
     this.startPixel_ = null;
 
     /**
      * @private
-     * @type {import("../pixel.js").Pixel}
+     * @type {import("../pixel.js").Pixel|null}
      */
     this.endPixel_ = null;
   }
@@ -60,6 +60,9 @@ class RenderBox extends Disposable {
   render_() {
     const startPixel = this.startPixel_;
     const endPixel = this.endPixel_;
+    if (!startPixel || !endPixel) {
+      return;
+    }
     const px = 'px';
     const style = this.element_.style;
     style.left = Math.min(startPixel[0], endPixel[0]) + px;
@@ -73,7 +76,10 @@ class RenderBox extends Disposable {
    */
   setMap(map) {
     if (this.map_) {
-      this.map_.getOverlayContainer().removeChild(this.element_);
+      const container = this.map_.getOverlayContainer();
+      if (container) {
+        container.removeChild(this.element_);
+      }
       const style = this.element_.style;
       style.left = 'inherit';
       style.top = 'inherit';
@@ -82,7 +88,10 @@ class RenderBox extends Disposable {
     }
     this.map_ = map;
     if (this.map_) {
-      this.map_.getOverlayContainer().appendChild(this.element_);
+      const container = this.map_.getOverlayContainer();
+      if (container) {
+        container.appendChild(this.element_);
+      }
     }
   }
 
@@ -107,22 +116,33 @@ class RenderBox extends Disposable {
 
     const startPixel = this.startPixel_;
     const endPixel = this.endPixel_;
+    if (!startPixel || !endPixel) {
+      return;
+    }
+
     const pixels = [
       startPixel,
       [startPixel[0], endPixel[1]],
       endPixel,
       [endPixel[0], startPixel[1]],
     ];
-    const coordinates = pixels.map(
-      this.map_.getCoordinateFromPixelInternal,
-      this.map_,
+    const map = this.map_;
+    const coordinates = pixels.map((pixel) =>
+      map.getCoordinateFromPixelInternal(pixel),
     );
+    const first = coordinates[0];
+    if (!first) {
+      return;
+    }
     // close the polygon
-    coordinates[4] = coordinates[0].slice();
+    coordinates[4] = first.slice();
+    const ring = /** @type {Array<import("../coordinate.js").Coordinate>} */ (
+      coordinates
+    );
     if (!this.geometry_) {
-      this.geometry_ = new Polygon([coordinates]);
+      this.geometry_ = new Polygon([ring]);
     } else {
-      this.geometry_.setCoordinates([coordinates]);
+      this.geometry_.setCoordinates([ring]);
     }
   }
 
@@ -130,7 +150,7 @@ class RenderBox extends Disposable {
    * @return {import("../geom/Polygon.js").default} Geometry.
    */
   getGeometry() {
-    return this.geometry_;
+    return /** @type {import("../geom/Polygon.js").default} */ (this.geometry_);
   }
 }
 

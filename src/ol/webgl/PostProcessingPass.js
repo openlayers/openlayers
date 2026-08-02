@@ -46,7 +46,7 @@ const DEFAULT_FRAGMENT_SHADER = `
 /**
  * @typedef {Object} UniformInternalDescription
  * @property {import("./Helper.js").UniformValue} value Value
- * @property {WebGLUniformLocation} location Location
+ * @property {WebGLUniformLocation|null} location Location
  * @property {WebGLTexture} [texture] Texture
  * @private
  */
@@ -136,13 +136,17 @@ class WebGLPostProcessingPass {
     this.depthBuffer_ = gl.createRenderbuffer();
 
     // compile the program for the frame buffer
-    const vertexShader = gl.createShader(gl.VERTEX_SHADER);
+    const vertexShader = /** @type {WebGLShader} */ (
+      gl.createShader(gl.VERTEX_SHADER)
+    );
     gl.shaderSource(
       vertexShader,
       options.vertexShader || DEFAULT_VERTEX_SHADER,
     );
     gl.compileShader(vertexShader);
-    const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+    const fragmentShader = /** @type {WebGLShader} */ (
+      gl.createShader(gl.FRAGMENT_SHADER)
+    );
     gl.shaderSource(
       fragmentShader,
       options.fragmentShader || DEFAULT_FRAGMENT_SHADER,
@@ -157,7 +161,9 @@ class WebGLPostProcessingPass {
     /**
      * @private
      */
-    this.renderTargetProgram_ = gl.createProgram();
+    this.renderTargetProgram_ = /** @type {WebGLProgram} */ (
+      gl.createProgram()
+    );
     gl.attachShader(this.renderTargetProgram_, vertexShader);
     gl.attachShader(this.renderTargetProgram_, fragmentShader);
     gl.linkProgram(this.renderTargetProgram_);
@@ -210,13 +216,17 @@ class WebGLPostProcessingPass {
      * @private
      */
     this.uniforms_ = [];
-    options.uniforms &&
-      Object.keys(options.uniforms).forEach((name) => {
+    if (options.uniforms) {
+      const uniforms = options.uniforms;
+      Object.keys(uniforms).forEach((name) => {
         this.uniforms_.push({
-          value: options.uniforms[name],
+          value: /** @type {import("./Helper.js").UniformValue} */ (
+            uniforms[name]
+          ),
           location: gl.getUniformLocation(this.renderTargetProgram_, name),
         });
       });
+    }
   }
 
   getRenderTargetTexture() {
@@ -409,7 +419,7 @@ class WebGLPostProcessingPass {
         if (!uniform.texture) {
           uniform.texture = gl.createTexture();
         }
-        gl.activeTexture(gl[`TEXTURE${textureSlot}`]);
+        gl.activeTexture(gl.TEXTURE0 + textureSlot);
         gl.bindTexture(gl.TEXTURE_2D, uniform.texture);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);

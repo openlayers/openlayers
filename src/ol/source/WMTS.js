@@ -120,7 +120,7 @@ class WMTS extends TileImage {
 
     /**
      * @private
-     * @type {!Object}
+     * @type {!Object<string, *>}
      */
     this.dimensions_ =
       options.dimensions !== undefined ? options.dimensions : {};
@@ -182,7 +182,7 @@ class WMTS extends TileImage {
    * Get the dimensions, i.e. those passed to the constructor through the
    * "dimensions" option, and possibly updated using the updateDimensions
    * method.
-   * @return {!Object} Dimensions.
+   * @return {!Object<string, *>} Dimensions.
    * @api
    */
   getDimensions() {
@@ -257,7 +257,7 @@ class WMTS extends TileImage {
 
   /**
    * Update the dimensions.
-   * @param {Object} dimensions Dimensions.
+   * @param {Object<string, *>} dimensions Dimensions.
    * @api
    */
   updateDimensions(dimensions) {
@@ -274,11 +274,11 @@ class WMTS extends TileImage {
 
     // context property names are lower case to allow for a case insensitive
     // replacement as some services use different naming conventions
-    const context = {
+    const context = /** @type {Record<string, string>} */ ({
       'layer': this.layer_,
       'style': this.style_,
       'tilematrixset': this.matrixSet_,
-    };
+    });
 
     if (requestEncoding == 'KVP') {
       Object.assign(context, {
@@ -316,18 +316,18 @@ class WMTS extends TileImage {
         if (!tileCoord) {
           return undefined;
         }
-        const localContext = {
+        const localContext = /** @type {Record<string, string | number>} */ ({
           'TileMatrix': tileGrid.getMatrixId(tileCoord[0]),
           'TileCol': tileCoord[1],
           'TileRow': tileCoord[2],
-        };
+        });
         Object.assign(localContext, dimensions);
         let url = template;
         if (requestEncoding == 'KVP') {
           url = appendParams(url, localContext);
         } else {
           url = url.replace(/\{(\w+?)\}/g, function (m, p) {
-            return encodeURIComponent(localContext[p]);
+            return encodeURIComponent(String(localContext[p]));
           });
         }
         return url;
@@ -340,8 +340,8 @@ export default WMTS;
 
 /**
  * Generate source options from a capabilities object.
- * @param {Object} wmtsCap An object representing the capabilities document.
- * @param {!Object} config Configuration properties for the layer.  Defaults for
+ * @param {Object<string, *>} wmtsCap An object representing the capabilities document.
+ * @param {Object<string, *>} config Configuration properties for the layer.  Defaults for
  *                  the layer will apply if not provided.
  *
  * Required config properties:
@@ -363,33 +363,46 @@ export default WMTS;
  * @api
  */
 export function optionsFromCapabilities(wmtsCap, config) {
-  const layers = wmtsCap['Contents']['Layer'];
-  const l = layers?.find(function (elt) {
+  const contents = /** @type {Object<string, *>} */ (wmtsCap['Contents']);
+  const layers = /** @type {Array<Object<string, *>>} */ (contents['Layer']);
+  const l = layers?.find(function (/** @type {Object<string, *>} */ elt) {
     return elt['Identifier'] == config['layer'];
   });
   if (!l) {
     return null;
   }
-  const tileMatrixSets = wmtsCap['Contents']['TileMatrixSet'];
+  const tileMatrixSets = /** @type {Array<Object<string, *>>} */ (
+    contents['TileMatrixSet']
+  );
   let idx;
   if (l['TileMatrixSetLink'].length > 1) {
     if ('projection' in config) {
-      idx = l['TileMatrixSetLink'].findIndex(function (elt) {
-        const tileMatrixSet = tileMatrixSets.find(function (el) {
-          return el['Identifier'] == elt['TileMatrixSet'];
-        });
-        const supportedCRS = tileMatrixSet['SupportedCRS'];
-        const proj1 = getProjection(supportedCRS);
-        const proj2 = getProjection(config['projection']);
-        if (proj1 && proj2) {
-          return equivalent(proj1, proj2);
-        }
-        return supportedCRS == config['projection'];
-      });
+      idx = l['TileMatrixSetLink'].findIndex(
+        function (/** @type {Object<string, *>} */ elt) {
+          const tileMatrixSet = tileMatrixSets.find(
+            function (/** @type {Object<string, *>} */ el) {
+              return el['Identifier'] == elt['TileMatrixSet'];
+            },
+          );
+          const supportedCRS = tileMatrixSet?.['SupportedCRS'];
+          const proj1 = getProjection(/** @type {string} */ (supportedCRS));
+          const proj2 = getProjection(
+            /** @type {import("../proj.js").ProjectionLike} */ (
+              config['projection']
+            ),
+          );
+          if (proj1 && proj2) {
+            return equivalent(proj1, proj2);
+          }
+          return supportedCRS == config['projection'];
+        },
+      );
     } else {
-      idx = l['TileMatrixSetLink'].findIndex(function (elt) {
-        return elt['TileMatrixSet'] == config['matrixSet'];
-      });
+      idx = l['TileMatrixSetLink'].findIndex(
+        function (/** @type {Object<string, *>} */ elt) {
+          return elt['TileMatrixSet'] == config['matrixSet'];
+        },
+      );
     }
   } else {
     idx = 0;
@@ -401,14 +414,14 @@ export function optionsFromCapabilities(wmtsCap, config) {
     /** @type {string} */
     (l['TileMatrixSetLink'][idx]['TileMatrixSet']);
   const matrixLimits =
-    /** @type {Array<Object>} */
+    /** @type {Array<Object<string, *>>|undefined} */
     (l['TileMatrixSetLink'][idx]['TileMatrixSetLimits']);
 
   let format = /** @type {string} */ (l['Format'][0]);
   if ('format' in config) {
-    format = config['format'];
+    format = /** @type {string} */ (config['format']);
   }
-  idx = l['Style'].findIndex(function (elt) {
+  idx = l['Style'].findIndex(function (/** @type {Object<string, *>} */ elt) {
     if ('style' in config) {
       return elt['Title'] == config['style'];
     }
@@ -419,58 +432,81 @@ export function optionsFromCapabilities(wmtsCap, config) {
   }
   const style = /** @type {string} */ (l['Style'][idx]['Identifier']);
 
+  /** @type {Object<string, *>} */
   const dimensions = {};
   if ('Dimension' in l) {
-    l['Dimension'].forEach(function (elt, index, array) {
-      const key = elt['Identifier'];
-      let value = elt['Default'];
-      if (value === undefined) {
-        value = elt['Value'][0];
-      }
-      dimensions[key] = value;
-    });
+    l['Dimension'].forEach(
+      function (
+        /** @type {Object<string, *>} */ elt,
+        /** @type {number} */ index,
+        /** @type {Array<Object<string, *>>} */ array,
+      ) {
+        const key = /** @type {string} */ (elt['Identifier']);
+        let value = elt['Default'];
+        if (value === undefined) {
+          value = /** @type {Array<*>} */ (elt['Value'])[0];
+        }
+        dimensions[key] = value;
+      },
+    );
   }
 
-  const matrixSets = wmtsCap['Contents']['TileMatrixSet'];
-  const matrixSetObj = matrixSets.find(function (elt) {
-    return elt['Identifier'] == matrixSet;
-  });
+  const matrixSets = /** @type {Array<Object<string, *>>} */ (
+    contents['TileMatrixSet']
+  );
+  const matrixSetObj = matrixSets.find(
+    function (/** @type {Object<string, *>} */ elt) {
+      return elt['Identifier'] == matrixSet;
+    },
+  );
+  if (!matrixSetObj) {
+    return null;
+  }
 
   let projection;
   const code = matrixSetObj['SupportedCRS'];
   if (code) {
-    projection = getProjection(code);
+    projection = getProjection(/** @type {string} */ (code));
   }
   if ('projection' in config) {
-    const projConfig = getProjection(config['projection']);
+    const projConfig = getProjection(
+      /** @type {import("../proj.js").ProjectionLike} */ (config['projection']),
+    );
     if (projConfig) {
       if (!projection || equivalent(projConfig, projection)) {
         projection = projConfig;
       }
     }
   }
+  if (!projection) {
+    return null;
+  }
 
   let wrapX = false;
   const switchXY = projection.getAxisOrientation().startsWith('ne');
 
-  let matrix = matrixSetObj.TileMatrix[0];
+  let matrix = /** @type {Object<string, *>} */ (matrixSetObj['TileMatrix'][0]);
 
-  // create default matrixLimit
+  /** @type {{MinTileCol: number, MinTileRow: number, MaxTileCol: number, MaxTileRow: number, TileMatrix: (string|undefined)}} */
   let selectedMatrixLimit = {
     MinTileCol: 0,
     MinTileRow: 0,
     // subtract one to end up at tile top left
-    MaxTileCol: matrix.MatrixWidth - 1,
-    MaxTileRow: matrix.MatrixHeight - 1,
+    MaxTileCol: /** @type {number} */ (matrix['MatrixWidth']) - 1,
+    MaxTileRow: /** @type {number} */ (matrix['MatrixHeight']) - 1,
+    TileMatrix: undefined,
   };
 
   //in case of matrix limits, use matrix limits to calculate extent
   if (matrixLimits) {
-    selectedMatrixLimit = matrixLimits[matrixLimits.length - 1];
-    const m = matrixSetObj.TileMatrix.find(
-      (tileMatrixValue) =>
-        tileMatrixValue.Identifier === selectedMatrixLimit.TileMatrix ||
-        matrixSetObj.Identifier + ':' + tileMatrixValue.Identifier ===
+    selectedMatrixLimit =
+      /** @type {{MinTileCol: number, MinTileRow: number, MaxTileCol: number, MaxTileRow: number, TileMatrix: (string|undefined)}} */ (
+        matrixLimits[matrixLimits.length - 1]
+      );
+    const m = matrixSetObj['TileMatrix'].find(
+      (/** @type {Object<string, *>} */ tileMatrixValue) =>
+        tileMatrixValue['Identifier'] === selectedMatrixLimit.TileMatrix ||
+        matrixSetObj['Identifier'] + ':' + tileMatrixValue['Identifier'] ===
           selectedMatrixLimit.TileMatrix,
     );
     if (m) {
@@ -479,19 +515,27 @@ export function optionsFromCapabilities(wmtsCap, config) {
   }
 
   const layerExtent = l['BoundingBox']?.find(
-    (bbox) =>
-      getProjection(bbox.crs) &&
-      equivalent(getProjection(bbox.crs), projection),
+    (/** @type {Object<string, *>} */ bbox) => {
+      const bboxProjection = getProjection(/** @type {string} */ (bbox['crs']));
+      return bboxProjection && equivalent(bboxProjection, projection);
+    },
   );
 
   const resolution =
-    (matrix.ScaleDenominator * 0.00028) / projection.getMetersPerUnit(); // WMTS 1.0.0: standardized rendering pixel size
+    /** @type {number} */ (matrix['ScaleDenominator'] * 0.00028) /
+    (projection.getMetersPerUnit() || 1); // WMTS 1.0.0: standardized rendering pixel size
+  const topLeftCorner = /** @type {import("../coordinate.js").Coordinate} */ (
+    /** @type {Array<number>} */ (matrix['TopLeftCorner'])
+  );
   const origin = switchXY
-    ? [matrix.TopLeftCorner[1], matrix.TopLeftCorner[0]]
-    : matrix.TopLeftCorner;
-  const tileSpanX = matrix.TileWidth * resolution;
-  const tileSpanY = matrix.TileHeight * resolution;
-  let matrixSetExtent = layerExtent?.extent ?? matrixSetObj['BoundingBox'];
+    ? /** @type {import("../coordinate.js").Coordinate} */ ([
+        topLeftCorner[1],
+        topLeftCorner[0],
+      ])
+    : topLeftCorner;
+  const tileSpanX = /** @type {number} */ (matrix['TileWidth']) * resolution;
+  const tileSpanY = /** @type {number} */ (matrix['TileHeight']) * resolution;
+  let matrixSetExtent = layerExtent?.['extent'] ?? matrixSetObj['BoundingBox'];
   if (matrixSetExtent && switchXY) {
     matrixSetExtent = [
       matrixSetExtent[1],
@@ -510,19 +554,26 @@ export function optionsFromCapabilities(wmtsCap, config) {
 
   if (
     matrixSetExtent !== undefined &&
-    !containsExtent(matrixSetExtent, extent)
+    !containsExtent(
+      /** @type {import("../extent.js").Extent} */ (matrixSetExtent),
+      extent,
+    )
   ) {
     const wgs84BoundingBox = l['WGS84BoundingBox'];
-    const wgs84ProjectionExtent = getProjection('EPSG:4326').getExtent();
-    extent = matrixSetExtent;
+    const wgs84Projection =
+      /** @type {import("../proj/Projection.js").default} */ (
+        getProjection('EPSG:4326')
+      );
+    const wgs84ProjectionExtent = wgs84Projection.getExtent();
+    extent = /** @type {import("../extent.js").Extent} */ (matrixSetExtent);
     if (wgs84BoundingBox) {
       wrapX =
         wgs84BoundingBox[0] === wgs84ProjectionExtent[0] &&
         wgs84BoundingBox[2] === wgs84ProjectionExtent[2];
     } else {
       const wgs84MatrixSetExtent = transformExtent(
-        matrixSetExtent,
-        matrixSetObj['SupportedCRS'],
+        /** @type {import("../extent.js").Extent} */ (matrixSetExtent),
+        /** @type {string} */ (matrixSetObj['SupportedCRS']),
         'EPSG:4326',
       );
       // Ignore slight deviation from the correct x limits
@@ -540,21 +591,30 @@ export function optionsFromCapabilities(wmtsCap, config) {
 
   /** @type {!Array<string>} */
   const urls = [];
-  let requestEncoding = config['requestEncoding'];
+  let requestEncoding = /** @type {string|undefined} */ (
+    config['requestEncoding']
+  );
   requestEncoding = requestEncoding !== undefined ? requestEncoding : '';
 
   if (
     'OperationsMetadata' in wmtsCap &&
-    'GetTile' in wmtsCap['OperationsMetadata']
+    'GetTile' in
+      /** @type {Object<string, *>} */ (wmtsCap['OperationsMetadata'])
   ) {
-    const gets = wmtsCap['OperationsMetadata']['GetTile']['DCP']['HTTP']['Get'];
+    const gets = /** @type {Array<Object<string, *>>} */ (
+      wmtsCap['OperationsMetadata']['GetTile']['DCP']['HTTP']['Get']
+    );
 
     for (let i = 0, ii = gets.length; i < ii; ++i) {
       if (gets[i]['Constraint']) {
-        const constraint = gets[i]['Constraint'].find(function (element) {
-          return element['name'] == 'GetEncoding';
-        });
-        const encodings = constraint['AllowedValues']['Value'];
+        const constraint = gets[i]['Constraint'].find(
+          function (/** @type {Object<string, *>} */ element) {
+            return element['name'] == 'GetEncoding';
+          },
+        );
+        const encodings = /** @type {Array<string>} */ (
+          constraint?.['AllowedValues']['Value']
+        );
 
         if (requestEncoding === '') {
           // requestEncoding not provided, use the first encoding from the list
@@ -575,21 +635,23 @@ export function optionsFromCapabilities(wmtsCap, config) {
   }
   if (urls.length === 0) {
     requestEncoding = 'REST';
-    l['ResourceURL'].forEach(function (element) {
-      if (element['resourceType'] === 'tile') {
-        format = element['format'];
-        urls.push(/** @type {string} */ (element['template']));
-      }
-    });
+    /** @type {Array<Object<string, *>>} */ (l['ResourceURL']).forEach(
+      function (/** @type {Object<string, *>} */ element) {
+        if (element['resourceType'] === 'tile') {
+          format = /** @type {string} */ (element['format']);
+          urls.push(/** @type {string} */ (element['template']));
+        }
+      },
+    );
   }
 
   return {
     urls: urls,
-    layer: config['layer'],
+    layer: /** @type {string} */ (config['layer']),
     matrixSet: matrixSet,
     format: format,
     projection: projection,
-    requestEncoding: requestEncoding,
+    requestEncoding: /** @type {RequestEncoding} */ (requestEncoding),
     tileGrid: tileGrid,
     style: style,
     dimensions: dimensions,

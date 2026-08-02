@@ -21,11 +21,11 @@ export function matchingChunk(maxAngle, flatCoordinates, offset, end, stride) {
   for (i = offset; i < end; i += stride) {
     const x2 = flatCoordinates[i];
     const y2 = flatCoordinates[i + 1];
-    if (x1 !== undefined) {
+    if (x1 !== undefined && y1 !== undefined) {
       x23 = x2 - x1;
       y23 = y2 - y1;
       m23 = Math.sqrt(x23 * x23 + y23 * y23);
-      if (x12 !== undefined) {
+      if (x12 !== undefined && y12 !== undefined && m12 !== undefined) {
         m += m12;
         acos = Math.acos((x12 * x23 + y12 * y23) / (m12 * m23));
         if (acos > maxAngle) {
@@ -45,6 +45,6 @@ export function matchingChunk(maxAngle, flatCoordinates, offset, end, stride) {
     x1 = x2;
     y1 = y2;
   }
-  m += m23;
+  m += m23 || 0;
   return m > chunkM ? [start, i] : [chunkStart, chunkEnd];
 }

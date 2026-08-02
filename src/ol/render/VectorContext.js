@@ -105,13 +105,13 @@ class VectorContext {
   drawText(geometry, feature, index) {}
 
   /**
-   * @param {import("../style/Fill.js").default} fillStyle Fill style.
-   * @param {import("../style/Stroke.js").default} strokeStyle Stroke style.
+   * @param {import("../style/Fill.js").default|null} fillStyle Fill style.
+   * @param {import("../style/Stroke.js").default|null} strokeStyle Stroke style.
    */
   setFillStrokeStyle(fillStyle, strokeStyle) {}
 
   /**
-   * @param {import("../style/Image.js").default} imageStyle Image style.
+   * @param {import("../style/Image.js").default|null} imageStyle Image style.
    * @param {import("../render/canvas.js").DeclutterImageWithText} [declutterImageWithText] Shared data for combined decluttering with a text style.
    */
   setImageStyle(imageStyle, declutterImageWithText) {}

@@ -73,19 +73,19 @@ class CanvasBuilder extends VectorContext {
 
     /**
      * @private
-     * @type {Array<*>}
+     * @type {Array<*>|null}
      */
     this.beginGeometryInstruction1_ = null;
 
     /**
      * @private
-     * @type {Array<*>}
+     * @type {Array<*>|null}
      */
     this.beginGeometryInstruction2_ = null;
 
     /**
      * @private
-     * @type {import("../../extent.js").Extent}
+     * @type {import("../../extent.js").Extent|null}
      */
     this.bufferedMaxExtent_ = null;
 
@@ -115,7 +115,7 @@ class CanvasBuilder extends VectorContext {
 
     /**
      * @protected
-     * @type {import("../canvas.js").FillStrokeState}
+     * @type {import("../canvas.js").FillStrokeState|null}
      */
     this.state = /** @type {import("../canvas.js").FillStrokeState} */ ({});
   }
@@ -252,13 +252,15 @@ class CanvasBuilder extends VectorContext {
    * @override
    */
   drawCustom(geometry, feature, renderer, hitDetectionRenderer, index) {
-    this.beginGeometry(geometry, feature, index);
+    this.beginGeometry(geometry, feature, /** @type {number} */ (index));
 
     const type = geometry.getType();
     const stride = geometry.getStride();
     const builderBegin = this.coordinates.length;
 
-    let flatCoordinates, builderEnd, builderEnds, builderEndss;
+    let flatCoordinates, builderEnd, builderEndss;
+    /** @type {Array<number>} */
+    let builderEnds;
     let offset;
 
     switch (type) {
@@ -274,6 +276,7 @@ class CanvasBuilder extends VectorContext {
           ).getEndss();
         offset = 0;
         for (let i = 0, ii = endss.length; i < ii; ++i) {
+          /** @type {Array<number>} */
           const myEnds = [];
           offset = this.drawCustomCoordinates_(
             flatCoordinates,
@@ -487,7 +490,7 @@ class CanvasBuilder extends VectorContext {
   }
 
   /**
-   * @param {import("../../style/Fill.js").default} fillStyle Fill style.
+   * @param {import("../../style/Fill.js").default|null} fillStyle Fill style.
    * @param {import('../canvas.js').FillStrokeState} [state] State.
    * @return {import('../canvas.js').FillStrokeState} State.
    */
@@ -513,7 +516,7 @@ class CanvasBuilder extends VectorContext {
   }
 
   /**
-   * @param {import("../../style/Stroke.js").default} strokeStyle Stroke style.
+   * @param {import("../../style/Stroke.js").default|null} strokeStyle Stroke style.
    * @param {import("../canvas.js").FillStrokeState} state State.
    * @return {import("../canvas.js").FillStrokeState} State.
    */
@@ -523,9 +526,9 @@ class CanvasBuilder extends VectorContext {
   ) {
     if (strokeStyle) {
       const strokeStyleColor = strokeStyle.getColor();
-      state.strokeStyle = asColorLike(
-        strokeStyleColor ? strokeStyleColor : defaultStrokeStyle,
-      );
+      state.strokeStyle =
+        asColorLike(strokeStyleColor ? strokeStyleColor : defaultStrokeStyle) ??
+        undefined;
       const strokeStyleLineCap = strokeStyle.getLineCap();
       state.lineCap =
         strokeStyleLineCap !== undefined ? strokeStyleLineCap : defaultLineCap;
@@ -572,12 +575,14 @@ class CanvasBuilder extends VectorContext {
   }
 
   /**
-   * @param {import("../../style/Fill.js").default} fillStyle Fill style.
-   * @param {import("../../style/Stroke.js").default} strokeStyle Stroke style.
+   * @param {import("../../style/Fill.js").default|null} fillStyle Fill style.
+   * @param {import("../../style/Stroke.js").default|null} strokeStyle Stroke style.
    * @override
    */
   setFillStrokeStyle(fillStyle, strokeStyle) {
-    const state = this.state;
+    const state = /** @type {import("../canvas.js").FillStrokeState} */ (
+      this.state
+    );
     this.fillStyleToState(fillStyle, state);
     this.strokeStyleToState(strokeStyle, state);
   }
@@ -612,12 +617,12 @@ class CanvasBuilder extends VectorContext {
     return [
       CanvasInstruction.SET_STROKE_STYLE,
       state.strokeStyle,
-      state.lineWidth * this.pixelRatio,
+      /** @type {number} */ (state.lineWidth) * this.pixelRatio,
       state.lineCap,
       state.lineJoin,
       state.miterLimit,
       state.lineDash ? this.applyPixelRatio(state.lineDash) : null,
-      state.lineDashOffset * this.pixelRatio,
+      /** @type {number} */ (state.lineDashOffset) * this.pixelRatio,
     ];
   }
 
@@ -653,7 +658,9 @@ class CanvasBuilder extends VectorContext {
       state.currentStrokeStyle != strokeStyle ||
       state.currentLineCap != lineCap ||
       (lineDash != state.currentLineDash &&
-        !equals(state.currentLineDash, lineDash)) ||
+        (!lineDash ||
+          !state.currentLineDash ||
+          !equals(state.currentLineDash, lineDash))) ||
       state.currentLineDashOffset != lineDashOffset ||
       state.currentLineJoin != lineJoin ||
       state.currentLineWidth != lineWidth ||
@@ -676,9 +683,11 @@ class CanvasBuilder extends VectorContext {
    * @param {import("../../Feature.js").FeatureLike} feature Feature.
    */
   endGeometry(feature) {
-    this.beginGeometryInstruction1_[2] = this.instructions.length;
+    /** @type {Array<*>} */ (this.beginGeometryInstruction1_)[2] =
+      this.instructions.length;
     this.beginGeometryInstruction1_ = null;
-    this.beginGeometryInstruction2_[2] = this.hitDetectionInstructions.length;
+    /** @type {Array<*>} */ (this.beginGeometryInstruction2_)[2] =
+      this.hitDetectionInstructions.length;
     this.beginGeometryInstruction2_ = null;
     const endGeometryInstruction = [CanvasInstruction.END_GEOMETRY, feature];
     this.instructions.push(endGeometryInstruction);

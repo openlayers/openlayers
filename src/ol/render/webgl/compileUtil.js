@@ -36,7 +36,7 @@ export function expressionToGlsl(
 ) {
   return buildExpression(
     value,
-    expectedType,
+    expectedType ?? 0,
     parsingContext ?? newParsingContext(compilationContext.inputVariables),
     compilationContext,
   );
@@ -177,7 +177,7 @@ export function generateUniformsFromContext(context, variables) {
     const uniformName = uniformNameForVariable(varName);
 
     uniforms[uniformName] = () => {
-      const value = variables[varName];
+      const value = variables?.[varName];
       if (varType === BooleanType) {
         return value ? 1 : 0;
       }
@@ -216,7 +216,9 @@ export function generateAttributesFromContext(context) {
   // Define attributes with their callback for each property used in the vertex shader
   for (const entry of context.properties.entries()) {
     const [propName, propType] = entry;
-    const callback = (feature) => {
+    const callback = (
+      /** @type {import("../../Feature.js").FeatureLike} */ feature,
+    ) => {
       const value = feature.get(propName);
       if (propType === ColorType) {
         return packColor([...asArray(value || '#eee')]);

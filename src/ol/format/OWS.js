@@ -4,7 +4,7 @@
 import {
   makeObjectPropertyPusher,
   makeObjectPropertySetter,
-  makeStructureNS,
+  makeParsersNS,
   pushParseAndPop,
 } from '../xml.js';
 import XML from './XML.js';
@@ -18,11 +18,9 @@ import {readString} from './xsd.js';
 const NAMESPACE_URIS = [null, 'http://www.opengis.net/ows/1.1'];
 
 /**
- * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {import("../xml.js").ParsersNS}
  */
-// @ts-ignore
-const PARSERS = makeStructureNS(NAMESPACE_URIS, {
+const PARSERS = makeParsersNS(NAMESPACE_URIS, {
   'ServiceIdentification': makeObjectPropertySetter(readServiceIdentification),
   'ServiceProvider': makeObjectPropertySetter(readServiceProvider),
   'OperationsMetadata': makeObjectPropertySetter(readOperationsMetadata),
@@ -45,11 +43,9 @@ class OWS extends XML {
 }
 
 /**
- * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {import("../xml.js").ParsersNS}
  */
-// @ts-ignore
-const ADDRESS_PARSERS = makeStructureNS(NAMESPACE_URIS, {
+const ADDRESS_PARSERS = makeParsersNS(NAMESPACE_URIS, {
   'DeliveryPoint': makeObjectPropertySetter(readString),
   'City': makeObjectPropertySetter(readString),
   'AdministrativeArea': makeObjectPropertySetter(readString),
@@ -59,106 +55,84 @@ const ADDRESS_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 });
 
 /**
- * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {import("../xml.js").ParsersNS}
  */
-// @ts-ignore
-const ALLOWED_VALUES_PARSERS = makeStructureNS(NAMESPACE_URIS, {
+const ALLOWED_VALUES_PARSERS = makeParsersNS(NAMESPACE_URIS, {
   'Value': makeObjectPropertyPusher(readValue),
 });
 
 /**
- * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {import("../xml.js").ParsersNS}
  */
-// @ts-ignore
-const CONSTRAINT_PARSERS = makeStructureNS(NAMESPACE_URIS, {
+const CONSTRAINT_PARSERS = makeParsersNS(NAMESPACE_URIS, {
   'AllowedValues': makeObjectPropertySetter(readAllowedValues),
 });
 
 /**
- * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {import("../xml.js").ParsersNS}
  */
-// @ts-ignore
-const CONTACT_INFO_PARSERS = makeStructureNS(NAMESPACE_URIS, {
+const CONTACT_INFO_PARSERS = makeParsersNS(NAMESPACE_URIS, {
   'Phone': makeObjectPropertySetter(readPhone),
   'Address': makeObjectPropertySetter(readAddress),
 });
 
 /**
- * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {import("../xml.js").ParsersNS}
  */
-// @ts-ignore
-const DCP_PARSERS = makeStructureNS(NAMESPACE_URIS, {
+const DCP_PARSERS = makeParsersNS(NAMESPACE_URIS, {
   'HTTP': makeObjectPropertySetter(readHttp),
 });
 
 /**
- * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {import("../xml.js").ParsersNS}
  */
-// @ts-ignore
-const HTTP_PARSERS = makeStructureNS(NAMESPACE_URIS, {
+const HTTP_PARSERS = makeParsersNS(NAMESPACE_URIS, {
   'Get': makeObjectPropertyPusher(readGet),
   'Post': undefined, // TODO
 });
 
 /**
- * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {import("../xml.js").ParsersNS}
  */
-// @ts-ignore
-const OPERATION_PARSERS = makeStructureNS(NAMESPACE_URIS, {
+const OPERATION_PARSERS = makeParsersNS(NAMESPACE_URIS, {
   'DCP': makeObjectPropertySetter(readDcp),
 });
 
 /**
- * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {import("../xml.js").ParsersNS}
  */
-// @ts-ignore
-const OPERATIONS_METADATA_PARSERS = makeStructureNS(NAMESPACE_URIS, {
+const OPERATIONS_METADATA_PARSERS = makeParsersNS(NAMESPACE_URIS, {
   'Operation': readOperation,
 });
 
 /**
- * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {import("../xml.js").ParsersNS}
  */
-// @ts-ignore
-const PHONE_PARSERS = makeStructureNS(NAMESPACE_URIS, {
+const PHONE_PARSERS = makeParsersNS(NAMESPACE_URIS, {
   'Voice': makeObjectPropertySetter(readString),
   'Facsimile': makeObjectPropertySetter(readString),
 });
 
 /**
- * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {import("../xml.js").ParsersNS}
  */
-// @ts-ignore
-const REQUEST_METHOD_PARSERS = makeStructureNS(NAMESPACE_URIS, {
+const REQUEST_METHOD_PARSERS = makeParsersNS(NAMESPACE_URIS, {
   'Constraint': makeObjectPropertyPusher(readConstraint),
 });
 
 /**
- * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {import("../xml.js").ParsersNS}
  */
-// @ts-ignore
-const SERVICE_CONTACT_PARSERS = makeStructureNS(NAMESPACE_URIS, {
+const SERVICE_CONTACT_PARSERS = makeParsersNS(NAMESPACE_URIS, {
   'IndividualName': makeObjectPropertySetter(readString),
   'PositionName': makeObjectPropertySetter(readString),
   'ContactInfo': makeObjectPropertySetter(readContactInfo),
 });
 
 /**
- * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {import("../xml.js").ParsersNS}
  */
-// @ts-ignore
-const SERVICE_IDENTIFICATION_PARSERS = makeStructureNS(NAMESPACE_URIS, {
+const SERVICE_IDENTIFICATION_PARSERS = makeParsersNS(NAMESPACE_URIS, {
   'Abstract': makeObjectPropertySetter(readString),
   'AccessConstraints': makeObjectPropertySetter(readString),
   'Fees': makeObjectPropertySetter(readString),
@@ -168,11 +142,9 @@ const SERVICE_IDENTIFICATION_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 });
 
 /**
- * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {import("../xml.js").ParsersNS}
  */
-// @ts-ignore
-const SERVICE_PROVIDER_PARSERS = makeStructureNS(NAMESPACE_URIS, {
+const SERVICE_PROVIDER_PARSERS = makeParsersNS(NAMESPACE_URIS, {
   'ProviderName': makeObjectPropertySetter(readString),
   'ProviderSite': makeObjectPropertySetter(readHref),
   'ServiceContact': makeObjectPropertySetter(readServiceContact),
@@ -261,11 +233,16 @@ function readHttp(node, objectStack) {
  */
 function readOperation(node, objectStack) {
   const name = node.getAttribute('name');
+  if (!name) {
+    return undefined;
+  }
   const value = pushParseAndPop({}, OPERATION_PARSERS, node, objectStack);
   if (!value) {
     return undefined;
   }
-  const object = /** @type {Object} */ (objectStack[objectStack.length - 1]);
+  const object = /** @type {Object<string, *>} */ (
+    objectStack[objectStack.length - 1]
+  );
   object[name] = value;
 }
 

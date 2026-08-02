@@ -27,6 +27,10 @@ import EventTarget from './events/Target.js';
  * @typedef {OnSignature<EventTypes, import("./events/Event.js").default, Return> & CombinedOnSignature<EventTypes, Return>} ObservableOnSignature
  */
 
+/***
+ * @typedef {Object & {ol_key?: import("./events.js").EventsKey|Array<import("./events.js").EventsKey>}} ListenerWithKey
+ */
+
 /**
  * @classdesc
  * Abstract base class; normally only used for creating subclasses and not
@@ -115,7 +119,7 @@ class Observable extends EventTarget {
     } else {
       key = listenOnce(this, /** @type {string} */ (type), listener);
     }
-    /** @type {Object} */ (listener).ol_key = key;
+    /** @type {ListenerWithKey} */ (listener).ol_key = key;
     return key;
   }
 
@@ -126,7 +130,7 @@ class Observable extends EventTarget {
    * @protected
    */
   unInternal(type, listener) {
-    const key = /** @type {Object} */ (listener).ol_key;
+    const key = /** @type {ListenerWithKey} */ (listener).ol_key;
     if (key) {
       unByKey(key);
     } else if (Array.isArray(type)) {

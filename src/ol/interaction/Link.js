@@ -112,22 +112,24 @@ class Link extends Interaction {
      * @type {Object<Params, boolean>}
      * @private
      */
-    this.params_ = options.params.reduce((acc, value) => {
-      acc[value] = true;
-      return acc;
-    }, {});
+    this.params_ = /** @type {Object<Params, boolean>} */ (
+      (options.params || []).reduce((acc, value) => {
+        acc[value] = true;
+        return acc;
+      }, /** @type {Object<Params, boolean>} */ ({}))
+    );
 
     /**
      * @private
      * @type {boolean}
      */
-    this.replace_ = options.replace;
+    this.replace_ = options.replace !== undefined ? options.replace : false;
 
     /**
      * @private
      * @type {string}
      */
-    this.prefix_ = options.prefix;
+    this.prefix_ = options.prefix !== undefined ? options.prefix : '';
 
     /**
      * @private
@@ -292,7 +294,9 @@ class Link extends Interaction {
       const value = params.get(key);
       if (key in this.trackedCallbacks_ && value !== this.trackedValues_[key]) {
         this.trackedValues_[key] = value;
-        this.trackedCallbacks_[key](value);
+        if (value !== null) {
+          this.trackedCallbacks_[key](value);
+        }
       }
     }
 
@@ -312,25 +316,37 @@ class Link extends Interaction {
      */
     const viewProperties = {};
 
-    const zoom = readNumber(this.get_(params, 'z'));
-    if ('z' in this.params_ && differentNumber(zoom, view.getZoom())) {
-      updateView = true;
-      viewProperties.zoom = zoom;
-    }
-
-    const rotation = readNumber(this.get_(params, 'r'));
-    if ('r' in this.params_ && differentNumber(rotation, view.getRotation())) {
-      updateView = true;
-      viewProperties.rotation = rotation;
-    }
-
-    const center = [
-      readNumber(this.get_(params, 'x')),
-      readNumber(this.get_(params, 'y')),
-    ];
+    const zoomParam = this.get_(params, 'z');
     if (
+      'z' in this.params_ &&
+      zoomParam !== null &&
+      differentNumber(readNumber(zoomParam), view.getZoom() ?? NaN)
+    ) {
+      updateView = true;
+      viewProperties.zoom = readNumber(zoomParam);
+    }
+
+    const rotationParam = this.get_(params, 'r');
+    if (
+      'r' in this.params_ &&
+      rotationParam !== null &&
+      differentNumber(readNumber(rotationParam), view.getRotation() ?? NaN)
+    ) {
+      updateView = true;
+      viewProperties.rotation = readNumber(rotationParam);
+    }
+
+    const xParam = this.get_(params, 'x');
+    const yParam = this.get_(params, 'y');
+    const center = [
+      xParam !== null ? readNumber(xParam) : NaN,
+      yParam !== null ? readNumber(yParam) : NaN,
+    ];
+    const viewCenter = view.getCenter();
+    if (
+      viewCenter &&
       ('x' in this.params_ || 'y' in this.params_) &&
-      differentArray(center, view.getCenter())
+      differentArray(center, viewCenter)
     ) {
       updateView = true;
       viewProperties.center = center;
@@ -343,10 +359,13 @@ class Link extends Interaction {
         if (viewProperties.center) {
           view.setCenter(viewProperties.center);
         }
-        if ('zoom' in viewProperties) {
+        if ('zoom' in viewProperties && viewProperties.zoom !== undefined) {
           view.setZoom(viewProperties.zoom);
         }
-        if ('rotation' in viewProperties) {
+        if (
+          'rotation' in viewProperties &&
+          viewProperties.rotation !== undefined
+        ) {
           view.setRotation(viewProperties.rotation);
         }
       }
@@ -428,6 +447,9 @@ class Link extends Interaction {
     const center = view.getCenter();
     const zoom = view.getZoom();
     const rotation = view.getRotation();
+    if (!center || zoom === undefined || rotation === undefined) {
+      return;
+    }
 
     const layers = map.getAllLayers();
     const visibilities = new Array(layers.length);

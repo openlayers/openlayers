@@ -91,13 +91,17 @@ class WMTSTileGrid extends TileGrid {
 export default WMTSTileGrid;
 
 /**
+ * @typedef {Object<string, *>} CapabilitiesMatrixSet
+ */
+
+/**
  * Create a tile grid from a WMTS capabilities matrix set and an
  * optional TileMatrixSetLimits.
- * @param {Object} matrixSet An object representing a matrixSet in the
+ * @param {CapabilitiesMatrixSet} matrixSet An object representing a matrixSet in the
  *     capabilities document.
  * @param {import("../extent.js").Extent} [extent] An optional extent to restrict the tile
  *     ranges the server provides.
- * @param {Array<Object>} [matrixLimits] An optional object representing
+ * @param {Array<CapabilitiesMatrixSet>} [matrixLimits] An optional object representing
  *     the available matrices for tileGrid.
  * @return {WMTSTileGrid} WMTS tileGrid instance.
  * @api
@@ -130,35 +134,50 @@ export function createFromCapabilitiesMatrixSet(
   const tileWidthPropName = 'TileWidth';
   const tileHeightPropName = 'TileHeight';
 
-  const code = matrixSet[supportedCRSPropName];
+  const code = /** @type {string} */ (matrixSet[supportedCRSPropName]);
   const projection = getProjection(code);
+  if (!projection) {
+    throw new Error(`Unsupported projection: ${code}`);
+  }
   const metersPerUnit = projection.getMetersPerUnit();
+  if (metersPerUnit === undefined) {
+    throw new Error(`Projection ${code} has no meters per unit`);
+  }
   // swap origin x and y coordinates if axis orientation is lat/long
   const switchOriginXY = projection.getAxisOrientation().startsWith('ne');
 
-  matrixSet[matrixIdsPropName].sort(function (a, b) {
-    return b[scaleDenominatorPropName] - a[scaleDenominatorPropName];
-  });
+  /** @type {Array<CapabilitiesMatrixSet>} */
+  const tileMatrices = matrixSet[matrixIdsPropName];
+  tileMatrices.sort(
+    function (
+      /** @type {CapabilitiesMatrixSet} */ a,
+      /** @type {CapabilitiesMatrixSet} */ b,
+    ) {
+      return b[scaleDenominatorPropName] - a[scaleDenominatorPropName];
+    },
+  );
 
-  matrixSet[matrixIdsPropName].forEach(function (elt) {
+  tileMatrices.forEach(function (/** @type {CapabilitiesMatrixSet} */ elt) {
     let matrixAvailable;
     // use of matrixLimits to filter TileMatrices from GetCapabilities
     // TileMatrixSet from unavailable matrix levels.
     if (matrixLimits.length > 0) {
-      matrixAvailable = matrixLimits.find(function (elt_ml) {
-        if (elt[identifierPropName] == elt_ml[matrixIdsPropName]) {
-          return true;
-        }
-        // Fallback for tileMatrix identifiers that don't get prefixed
-        // by their tileMatrixSet identifiers.
-        if (!elt[identifierPropName].includes(':')) {
-          return (
-            matrixSet[identifierPropName] + ':' + elt[identifierPropName] ===
-            elt_ml[matrixIdsPropName]
-          );
-        }
-        return false;
-      });
+      matrixAvailable = matrixLimits.find(
+        function (/** @type {CapabilitiesMatrixSet} */ elt_ml) {
+          if (elt[identifierPropName] == elt_ml[matrixIdsPropName]) {
+            return true;
+          }
+          // Fallback for tileMatrix identifiers that don't get prefixed
+          // by their tileMatrixSet identifiers.
+          if (!elt[identifierPropName].includes(':')) {
+            return (
+              matrixSet[identifierPropName] + ':' + elt[identifierPropName] ===
+              elt_ml[matrixIdsPropName]
+            );
+          }
+          return false;
+        },
+      );
     } else {
       matrixAvailable = true;
     }
@@ -182,13 +201,14 @@ export function createFromCapabilitiesMatrixSet(
         tileWidth == tileHeight ? tileWidth : [tileWidth, tileHeight],
       );
       sizes.push([elt['MatrixWidth'], elt['MatrixHeight']]);
-      if (matrixLimits.length > 0) {
+      if (matrixLimits.length > 0 && matrixAvailable !== true) {
+        const limits = /** @type {CapabilitiesMatrixSet} */ (matrixAvailable);
         tileRanges.push(
           new TileRange(
-            matrixAvailable['MinTileCol'],
-            matrixAvailable['MaxTileCol'],
-            matrixAvailable['MinTileRow'],
-            matrixAvailable['MaxTileRow'],
+            /** @type {number} */ (limits['MinTileCol']),
+            /** @type {number} */ (limits['MaxTileCol']),
+            /** @type {number} */ (limits['MinTileRow']),
+            /** @type {number} */ (limits['MaxTileRow']),
           ),
         );
       }

@@ -68,9 +68,9 @@ class OGCMapTile extends TileImage {
 
     const sourceInfo = {
       url: options.url,
-      projection: this.getProjection(),
+      projection: this.getProjection() || undefined,
       mediaType: options.mediaType,
-      context: options.context || null,
+      context: options.context || undefined,
       collections: options.collections,
     };
 
@@ -86,7 +86,9 @@ class OGCMapTile extends TileImage {
   handleTileSetInfo_(tileSetInfo) {
     this.tileGrid = tileSetInfo.grid;
     this.projection = tileSetInfo.projection;
-    this.setTileUrlFunction(tileSetInfo.urlFunction, tileSetInfo.urlTemplate);
+    if (tileSetInfo.urlFunction) {
+      this.setTileUrlFunction(tileSetInfo.urlFunction, tileSetInfo.urlTemplate);
+    }
     this.setState('ready');
   }
 

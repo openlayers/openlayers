@@ -55,8 +55,8 @@ class CircleStyle extends RegularShape {
   clone() {
     const scale = this.getScale();
     const style = new CircleStyle({
-      fill: this.getFill() ? this.getFill().clone() : undefined,
-      stroke: this.getStroke() ? this.getStroke().clone() : undefined,
+      fill: this.getFill()?.clone(),
+      stroke: this.getStroke()?.clone(),
       radius: this.getRadius(),
       scale: Array.isArray(scale) ? scale.slice() : scale,
       rotation: this.getRotation(),

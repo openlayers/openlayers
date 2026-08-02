@@ -43,6 +43,7 @@ export function memoizeOne(fn) {
   /** @type {Array<any>|undefined} */
   let lastArgs;
 
+  /** @type {*} */
   let lastThis;
 
   /**
@@ -54,7 +55,7 @@ export function memoizeOne(fn) {
     if (!lastArgs || this !== lastThis || !arrayEquals(nextArgs, lastArgs)) {
       lastThis = this;
       lastArgs = nextArgs;
-      lastResult = fn.apply(this, arguments);
+      lastResult = fn.apply(this, nextArgs);
     }
     return lastResult;
   };

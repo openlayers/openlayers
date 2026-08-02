@@ -38,8 +38,12 @@ class JSONFeature extends FeatureFormat {
    * @override
    */
   readFeature(source, options) {
+    const object = getObject(source);
+    if (!object) {
+      return /** @type {FeatureType} */ (/** @type {unknown} */ ([]));
+    }
     return this.readFeatureFromObject(
-      getObject(source),
+      object,
       this.getReadOptions(source, options),
     );
   }
@@ -55,8 +59,12 @@ class JSONFeature extends FeatureFormat {
    * @override
    */
   readFeatures(source, options) {
+    const object = getObject(source);
+    if (!object) {
+      return [];
+    }
     return this.readFeaturesFromObject(
-      getObject(source),
+      object,
       this.getReadOptions(source, options),
     );
   }
@@ -93,8 +101,12 @@ class JSONFeature extends FeatureFormat {
    * @override
    */
   readGeometry(source, options) {
+    const object = getObject(source);
+    if (!object) {
+      throw new Error('Expected a JSON object');
+    }
     return this.readGeometryFromObject(
-      getObject(source),
+      object,
       this.getReadOptions(source, options),
     );
   }
@@ -119,7 +131,11 @@ class JSONFeature extends FeatureFormat {
    * @override
    */
   readProjection(source) {
-    return this.readProjectionFromObject(getObject(source));
+    const object = getObject(source);
+    if (!object) {
+      throw new Error('Expected a JSON object');
+    }
+    return this.readProjectionFromObject(object);
   }
 
   /**
@@ -204,7 +220,7 @@ class JSONFeature extends FeatureFormat {
 
 /**
  * @param {Document|Element|Object|string} source Source.
- * @return {Object} Object.
+ * @return {Object|null} Object.
  */
 function getObject(source) {
   if (typeof source === 'string') {

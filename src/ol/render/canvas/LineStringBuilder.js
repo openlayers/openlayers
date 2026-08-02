@@ -4,6 +4,7 @@
 import {
   defaultLineDash,
   defaultLineDashOffset,
+  defaultStrokeOffset,
   defaultStrokeStyle,
 } from '../canvas.js';
 import CanvasBuilder from './Builder.js';
@@ -33,6 +34,8 @@ class CanvasLineStringBuilder extends CanvasBuilder {
    * @return {number} end.
    */
   drawFlatCoordinates_(flatCoordinates, offset, end, stride, strokeOffset) {
+    const strokeOffsetValue =
+      (strokeOffset ?? defaultStrokeOffset) * this.pixelRatio;
     const myBegin = this.coordinates.length;
     const myEnd = this.appendFlatLineCoordinates(
       flatCoordinates,
@@ -46,13 +49,13 @@ class CanvasLineStringBuilder extends CanvasBuilder {
       CanvasInstruction.MOVE_TO_LINE_TO,
       myBegin,
       myEnd,
-      strokeOffset * this.pixelRatio,
+      strokeOffsetValue,
     ]);
     this.hitDetectionInstructions.push([
       CanvasInstruction.MOVE_TO_LINE_TO,
       myBegin,
       myEnd,
-      strokeOffset,
+      strokeOffset ?? defaultStrokeOffset,
     ]);
     return end;
   }
@@ -65,6 +68,9 @@ class CanvasLineStringBuilder extends CanvasBuilder {
    */
   drawLineString(lineStringGeometry, feature, index) {
     const state = this.state;
+    if (!state) {
+      return;
+    }
     const strokeStyle = state.strokeStyle;
     const lineWidth = state.lineWidth;
     const strokeOffset = state.strokeOffset;
@@ -72,7 +78,7 @@ class CanvasLineStringBuilder extends CanvasBuilder {
       return;
     }
     this.updateStrokeStyle(state, this.applyStroke);
-    this.beginGeometry(lineStringGeometry, feature, index);
+    this.beginGeometry(lineStringGeometry, feature, index ?? 0);
     this.hitDetectionInstructions.push(
       [
         CanvasInstruction.SET_STROKE_STYLE,
@@ -107,6 +113,9 @@ class CanvasLineStringBuilder extends CanvasBuilder {
    */
   drawMultiLineString(multiLineStringGeometry, feature, index) {
     const state = this.state;
+    if (!state) {
+      return;
+    }
     const strokeStyle = state.strokeStyle;
     const lineWidth = state.lineWidth;
     const strokeOffset = state.strokeOffset;
@@ -114,7 +123,7 @@ class CanvasLineStringBuilder extends CanvasBuilder {
       return;
     }
     this.updateStrokeStyle(state, this.applyStroke);
-    this.beginGeometry(multiLineStringGeometry, feature, index);
+    this.beginGeometry(multiLineStringGeometry, feature, index ?? 0);
     this.hitDetectionInstructions.push(
       [
         CanvasInstruction.SET_STROKE_STYLE,
@@ -128,7 +137,7 @@ class CanvasLineStringBuilder extends CanvasBuilder {
       ],
       beginPathInstruction,
     );
-    const ends = multiLineStringGeometry.getEnds();
+    const ends = multiLineStringGeometry.getEnds() ?? [];
     const flatCoordinates = multiLineStringGeometry.getFlatCoordinates();
     const stride = multiLineStringGeometry.getStride();
     let offset = 0;
@@ -152,6 +161,7 @@ class CanvasLineStringBuilder extends CanvasBuilder {
   finish() {
     const state = this.state;
     if (
+      state &&
       state.lastStroke != undefined &&
       state.lastStroke != this.coordinates.length
     ) {

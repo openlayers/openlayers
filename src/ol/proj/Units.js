@@ -28,7 +28,7 @@ export function fromCode(code) {
 }
 
 /**
- * @typedef {Object} MetersPerUnitLookup
+ * @typedef {Object<string, number|undefined>} MetersPerUnitLookup
  * @property {number} radians Radians
  * @property {number} degrees Degrees
  * @property {number} ft  Feet

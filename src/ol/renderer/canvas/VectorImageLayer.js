@@ -22,13 +22,21 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
    * @param {import("../../layer/VectorImage.js").default} layer Vector image layer.
    */
   constructor(layer) {
-    super(layer);
+    super(
+      /** @type {import("../../layer/Image.js").default<any>} */ (
+        /** @type {unknown} */ (layer)
+      ),
+    );
 
     /**
      * @private
      * @type {import("./VectorLayer.js").default}
      */
-    this.vectorRenderer_ = new CanvasVectorLayerRenderer(layer);
+    this.vectorRenderer_ = new CanvasVectorLayerRenderer(
+      /** @type {import("../../layer/Vector.js").default} */ (
+        /** @type {unknown} */ (layer)
+      ),
+    );
 
     /**
      * @private
@@ -44,7 +52,7 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
 
     /**
      * @private
-     * @type {import("../../transform.js").Transform}
+     * @type {import("../../transform.js").Transform|null}
      */
     this.renderedPixelToCoordinateTransform_ = null;
   }
@@ -70,7 +78,12 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
     }
     const vectorPixel = apply(
       this.coordinateToVectorPixelTransform_,
-      apply(this.renderedPixelToCoordinateTransform_, pixel.slice()),
+      apply(
+        /** @type {import("../../transform.js").Transform} */ (
+          this.renderedPixelToCoordinateTransform_
+        ),
+        pixel.slice(),
+      ),
     );
     return this.vectorRenderer_.getFeatures(vectorPixel);
   }
@@ -96,7 +109,9 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
 
     const hints = frameState.viewHints;
     const vectorRenderer = this.vectorRenderer_;
-    let renderedExtent = frameState.extent;
+    let renderedExtent = /** @type {import("../../extent.js").Extent} */ (
+      frameState.extent
+    );
     if (this.layerImageRatio_ !== 1) {
       renderedExtent = renderedExtent.slice(0);
       scaleFromCenter(renderedExtent, this.layerImageRatio_);
@@ -109,8 +124,14 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
       !hints[ViewHint.INTERACTING] &&
       !isEmpty(renderedExtent)
     ) {
-      vectorRenderer.useContainer(null, null);
-      const context = vectorRenderer.context;
+      vectorRenderer.useContainer(
+        /** @type {HTMLElement} */ (/** @type {unknown} */ (null)),
+        /** @type {string} */ (/** @type {unknown} */ (null)),
+      );
+      const context =
+        /** @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} */ (
+          vectorRenderer.context
+        );
       const layerState = frameState.layerStatesArray[frameState.layerIndex];
       const imageLayerState = Object.assign({}, layerState, {opacity: 1});
       const imageFrameState = /** @type {import("../../Map.js").FrameState} */ (
@@ -144,7 +165,10 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
             vectorRenderer.replayGroupChanged
           ) {
             vectorRenderer.clipping = false;
-            vectorRenderer.renderFrame(imageFrameState, null);
+            vectorRenderer.renderFrame(
+              imageFrameState,
+              /** @type {HTMLElement} */ (/** @type {unknown} */ (null)),
+            );
             vectorRenderer.renderDeclutter(imageFrameState);
             vectorRenderer.renderDeferred(imageFrameState);
             callback();

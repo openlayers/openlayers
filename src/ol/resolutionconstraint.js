@@ -93,7 +93,7 @@ export function createSnapToResolutions(
               maxResolution,
               maxExtent,
               size,
-              showFullExtent,
+              !!showFullExtent,
             )
           : maxResolution;
 
@@ -156,7 +156,7 @@ export function createSnapToPower(
               maxResolution,
               maxExtent,
               size,
-              showFullExtent,
+              !!showFullExtent,
             )
           : maxResolution;
 
@@ -222,7 +222,7 @@ export function createMinMaxResolution(
               maxResolution,
               maxExtent,
               size,
-              showFullExtent,
+              !!showFullExtent,
             )
           : maxResolution;
 
