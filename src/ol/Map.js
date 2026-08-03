@@ -18,6 +18,7 @@ import {equals} from './array.js';
 import {assert} from './asserts.js';
 import {warn} from './console.js';
 import {defaults as defaultControls} from './control/defaults.js';
+import {wrapX as wrapXCoordinate, wrapXNearest} from './coordinate.js';
 import {isCanvas} from './dom.js';
 import {listen, unlistenByKey} from './events.js';
 import EventType from './events/EventType.js';
@@ -38,7 +39,11 @@ import {defaults as defaultInteractions} from './interaction/defaults.js';
 import LayerGroup, {GroupEvent} from './layer/Group.js';
 import Layer from './layer/Layer.js';
 import PointerEventType from './pointer/EventType.js';
-import {fromUserCoordinate, toUserCoordinate} from './proj.js';
+import {
+  fromUserCoordinate,
+  getUserProjection,
+  toUserCoordinate,
+} from './proj.js';
 import RenderEventType from './render/EventType.js';
 import CompositeMapRenderer from './renderer/Composite.js';
 import {hasArea} from './size.js';
@@ -91,6 +96,21 @@ import {getUid} from './util.js';
  * inside the radius around the given position will be checked for features.
  * @property {boolean} [checkWrapped=true] Check-Wrapped Will check for wrapped geometries inside the range of
  *   +/- 1 world width. Works only if a projection is used that can be wrapped.
+ */
+
+/**
+ * @typedef {Object} PixelToCoordinateOptions
+ * @property {boolean} [wrapX=false] Whether to wrap the coordinate to the
+ * projection extent. If `true`, the returned coordinate's longitude will be
+ * within the extent of the projection (e.g. `-180` to `180` for EPSG:4326).
+ */
+
+/**
+ * @typedef {Object} CoordinateToPixelOptions
+ * @property {boolean} [wrapX=false] Whether to find the pixel for the
+ * world copy of the coordinate nearest to the view center. If `true`, the
+ * returned pixel will be within the map viewport even if the coordinate is
+ * in a different world copy.
  */
 
 /**
@@ -877,14 +897,20 @@ class Map extends BaseObject {
    * Get the coordinate for a given pixel.  This returns a coordinate in the
    * user projection.
    * @param {import("./pixel.js").Pixel} pixel Pixel position in the map viewport.
+   * @param {PixelToCoordinateOptions} [options] Options.
    * @return {import("./coordinate.js").Coordinate} The coordinate for the pixel position.
    * @api
    */
-  getCoordinateFromPixel(pixel) {
-    return toUserCoordinate(
+  getCoordinateFromPixel(pixel, options) {
+    const coordinate = toUserCoordinate(
       this.getCoordinateFromPixelInternal(pixel),
       this.getView().getProjection(),
     );
+    if (options?.wrapX && coordinate) {
+      const projection = getUserProjection() || this.getView().getProjection();
+      wrapXCoordinate(coordinate, projection);
+    }
+    return coordinate;
   }
 
   /**
@@ -1009,14 +1035,21 @@ class Map extends BaseObject {
    * Get the pixel for a coordinate.  This takes a coordinate in the user
    * projection and returns the corresponding pixel.
    * @param {import("./coordinate.js").Coordinate} coordinate A map coordinate.
+   * @param {CoordinateToPixelOptions} [options] Options.
    * @return {import("./pixel.js").Pixel} A pixel position in the map viewport.
    * @api
    */
-  getPixelFromCoordinate(coordinate) {
-    const viewCoordinate = fromUserCoordinate(
-      coordinate,
-      this.getView().getProjection(),
-    );
+  getPixelFromCoordinate(coordinate, options) {
+    const view = this.getView();
+    const projection = view.getProjection();
+    let viewCoordinate = fromUserCoordinate(coordinate, projection);
+    if (options?.wrapX && this.frameState_) {
+      viewCoordinate = wrapXNearest(
+        viewCoordinate.slice(),
+        projection,
+        this.frameState_.viewState.center[0],
+      );
+    }
     return this.getPixelFromCoordinateInternal(viewCoordinate);
   }
 

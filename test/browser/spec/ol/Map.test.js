@@ -1740,6 +1740,64 @@ describe('ol/Map', function () {
           resolve();
         }));
     });
+
+    describe('getCoordinateFromPixel() and getPixelFromCoordinate() with wrapX', function () {
+      let target, map;
+
+      beforeEach(function () {
+        target = document.createElement('div');
+        target.style.width = '100px';
+        target.style.height = '100px';
+        document.body.appendChild(target);
+
+        useGeographic();
+
+        map = new Map({
+          target: target,
+          view: new View({
+            center: [200, 0],
+            zoom: 1,
+          }),
+          layers: [],
+        });
+      });
+
+      afterEach(function () {
+        disposeMap(map);
+        clearUserProjection();
+      });
+
+      it('getPixelFromCoordinate with wrapX returns screen pixel for wrapped coordinate', function (done) {
+        map.renderSync();
+        const size = map.getSize();
+        const centerPixel = [size[0] / 2, size[1] / 2];
+        // lon=-160 is one world (360°) to the left of view center lon=200
+        // without wrapX the pixel is far off-screen; with wrapX it maps to center
+        const coordinate = [-160, 0];
+        const pixelWithoutWrap = map.getPixelFromCoordinate(coordinate);
+        const pixelWithWrap = map.getPixelFromCoordinate(coordinate, {
+          wrapX: true,
+        });
+        expect(pixelWithoutWrap[0]).to.not.roughlyEqual(centerPixel[0], 1);
+        expect(pixelWithWrap[0]).to.roughlyEqual(centerPixel[0], 1);
+        expect(pixelWithWrap[1]).to.roughlyEqual(centerPixel[1], 1);
+        done();
+      });
+
+      it('getCoordinateFromPixel with wrapX returns canonical coordinate', function (done) {
+        map.renderSync();
+        const size = map.getSize();
+        const centerPixel = [size[0] / 2, size[1] / 2];
+        // center pixel maps to lon=200 (extended); wrapX wraps it to lon=-160
+        const coordinateWithoutWrap = map.getCoordinateFromPixel(centerPixel);
+        const coordinateWithWrap = map.getCoordinateFromPixel(centerPixel, {
+          wrapX: true,
+        });
+        expect(coordinateWithoutWrap[0]).to.roughlyEqual(200, 1e-5);
+        expect(coordinateWithWrap[0]).to.roughlyEqual(-160, 1e-5);
+        done();
+      });
+    });
   });
 
   describe('#handleMapBrowserEvent()', function () {
