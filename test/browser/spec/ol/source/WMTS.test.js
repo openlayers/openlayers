@@ -723,6 +723,67 @@ describe('ol/source/WMTS', function () {
     });
   });
 
+  describe('when creating options from capabilities with TileMatrixSetLimits', function () {
+    const parser = new WMTSCapabilities();
+    let capabilities;
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText(
+            'spec/ol/format/wmts/capabilities_with_tilematrixsetlimits.xml',
+            function (xml) {
+              try {
+                capabilities = parser.read(xml);
+              } catch (e) {
+                reject(e);
+                return;
+              }
+              resolve();
+            },
+          );
+        }),
+    );
+
+    it('does not derive the extent from the tile limits', function () {
+      const options = optionsFromCapabilities(capabilities, {
+        layer: 'wide_at_low_zoom',
+      });
+
+      // the layer covers [0, 0, 4000000, 4000000] at zoom level 0 and only
+      // [2000000, 1000000, 3000000, 2000000] at zoom level 2, so an extent
+      // taken from one of the limits would exclude tiles of the other levels
+      const extent = options.tileGrid.getExtent();
+
+      // compare with delta, due to rounding not the exact bounding box is returned...
+      const expectDelta = (value, expected) =>
+        assert.isBelow(Math.abs(value - expected), 1e-6);
+
+      expectDelta(extent[0], 0);
+      expectDelta(extent[1], -4000000);
+      expectDelta(extent[2], 8000000);
+      expectDelta(extent[3], 4000000);
+    });
+
+    it('restricts the tile ranges to the limits of each level', function () {
+      const options = optionsFromCapabilities(capabilities, {
+        layer: 'wide_at_low_zoom',
+      });
+      const tileGrid = options.tileGrid;
+
+      const r0 = tileGrid.getFullTileRange(0);
+      assert.equal(r0.minX, 0);
+      assert.equal(r0.maxX, 3);
+      assert.equal(r0.minY, 0);
+      assert.equal(r0.maxY, 3);
+
+      const r2 = tileGrid.getFullTileRange(2);
+      assert.equal(r2.minX, 8);
+      assert.equal(r2.maxX, 11);
+      assert.equal(r2.minY, 8);
+      assert.equal(r2.maxY, 11);
+    });
+  });
+
   describe('#setUrls()', function () {
     it('sets the URL for the source', function () {
       const source = new WMTS({});

@@ -485,34 +485,7 @@ export function optionsFromCapabilities(wmtsCap, config) {
   let wrapX = false;
   const switchXY = projection.getAxisOrientation().startsWith('ne');
 
-  let matrix = /** @type {Object<string, *>} */ (matrixSetObj['TileMatrix'][0]);
-
-  /** @type {{MinTileCol: number, MinTileRow: number, MaxTileCol: number, MaxTileRow: number, TileMatrix: (string|undefined)}} */
-  let selectedMatrixLimit = {
-    MinTileCol: 0,
-    MinTileRow: 0,
-    // subtract one to end up at tile top left
-    MaxTileCol: /** @type {number} */ (matrix['MatrixWidth']) - 1,
-    MaxTileRow: /** @type {number} */ (matrix['MatrixHeight']) - 1,
-    TileMatrix: undefined,
-  };
-
-  //in case of matrix limits, use matrix limits to calculate extent
-  if (matrixLimits) {
-    selectedMatrixLimit =
-      /** @type {{MinTileCol: number, MinTileRow: number, MaxTileCol: number, MaxTileRow: number, TileMatrix: (string|undefined)}} */ (
-        matrixLimits[matrixLimits.length - 1]
-      );
-    const m = matrixSetObj['TileMatrix'].find(
-      (/** @type {Object<string, *>} */ tileMatrixValue) =>
-        tileMatrixValue['Identifier'] === selectedMatrixLimit.TileMatrix ||
-        matrixSetObj['Identifier'] + ':' + tileMatrixValue['Identifier'] ===
-          selectedMatrixLimit.TileMatrix,
-    );
-    if (m) {
-      matrix = m;
-    }
-  }
+  const matrix = matrixSetObj.TileMatrix[0];
 
   const layerExtent = l['BoundingBox']?.find(
     (/** @type {Object<string, *>} */ bbox) => {
@@ -544,12 +517,12 @@ export function optionsFromCapabilities(wmtsCap, config) {
       matrixSetExtent[2],
     ];
   }
+  // by default the extent covers the whole first tile matrix
   let extent = [
-    origin[0] + tileSpanX * selectedMatrixLimit.MinTileCol,
-    // add one to get proper bottom/right coordinate
-    origin[1] - tileSpanY * (1 + selectedMatrixLimit.MaxTileRow),
-    origin[0] + tileSpanX * (1 + selectedMatrixLimit.MaxTileCol),
-    origin[1] - tileSpanY * selectedMatrixLimit.MinTileRow,
+    origin[0],
+    origin[1] - tileSpanY * matrix.MatrixHeight,
+    origin[0] + tileSpanX * matrix.MatrixWidth,
+    origin[1],
   ];
 
   if (
