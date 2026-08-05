@@ -1234,7 +1234,7 @@ describe('ol/Map', function () {
       assert.strictEqual(reprioritizeSpy.mock.calls.length, 1);
     });
 
-    it('loads tiles after animation ends without calling reprioritize', function () {
+    it('loads tiles after animation ends with calling reprioritize', function () {
       const reprioritizeSpy = vi.spyOn(map.tileQueue_, 'reprioritize');
       const loadSpy = vi.spyOn(map.tileQueue_, 'loadMoreTiles');
       vi.spyOn(map.tileQueue_, 'isEmpty').mockReturnValue(false);
@@ -1245,8 +1245,101 @@ describe('ol/Map', function () {
       map.handlePostRender();
 
       assert.strictEqual(loadSpy.mock.calls.length, 1);
-      assert.strictEqual(reprioritizeSpy.mock.calls.length, 0);
+      assert.strictEqual(reprioritizeSpy.mock.calls.length, 1);
     });
+  });
+
+  describe('tile loading after a view change', function () {
+    let map, target, requested;
+
+    beforeEach(function () {
+      target = document.createElement('div');
+      target.style.width = '100px';
+      target.style.height = '100px';
+      document.body.appendChild(target);
+      requested = [];
+      map = new Map({
+        target: target,
+        layers: [
+          new TileLayer({
+            source: new XYZ({
+              url: 'spec/ol/data/osm-{z}-{x}-{y}.png',
+              tileLoadFunction: function (tile) {
+                requested.push(tile.getKey());
+              },
+            }),
+          }),
+        ],
+        view: new View({center: [0, 0], zoom: 5}),
+      });
+    });
+
+    afterEach(function () {
+      disposeMap(map, target);
+    });
+
+    it('does not render a frame when no tiles are dropped', function () {
+      map.on('loadend', () => {});
+      map.renderSync();
+      const renderSpy = vi.spyOn(map, 'render');
+      // there is a queue to prune, and nothing in it is stale
+      assert.isFalse(map.tileQueue_.isEmpty());
+
+      map.handlePostRender();
+
+      assert.strictEqual(renderSpy.mock.calls.length, 0);
+    });
+
+    it('does not render a frame when nothing waits for the map to load', function () {
+      map.renderSync();
+      map.getLayers().item(0).setVisible(false);
+      map.renderSync();
+      const renderSpy = vi.spyOn(map, 'render');
+
+      map.handlePostRender();
+
+      // the queue was emptied, so there would have been something to recalculate
+      assert.isTrue(map.tileQueue_.isEmpty());
+      assert.strictEqual(renderSpy.mock.calls.length, 0);
+    });
+
+    it('does not load tiles for a size the map no longer has', function () {
+      // off a tile boundary, so the two sizes want different tiles
+      map.getView().setCenter([600000, 600000]);
+      target.style.width = '400px';
+      target.style.height = '400px';
+      map.updateSize();
+      map.renderSync();
+
+      target.style.width = '100px';
+      target.style.height = '100px';
+      map.updateSize();
+      map.renderSync();
+      const wanted = Object.keys(
+        Object.values(map.frameState_.wantedTiles)[0],
+      ).sort();
+      const queued = map.tileQueue_.getCount();
+
+      map.handlePostRender();
+
+      // the earlier size left tiles behind, or there is nothing to drop
+      assert.isAbove(queued, wanted.length);
+      assert.deepEqual(requested.sort(), wanted);
+    });
+
+    it('dispatches loadend when the queued tiles are no longer needed', () =>
+      new Promise((resolve) => {
+        map.once('loadend', () => resolve());
+
+        map.renderSync();
+        map.frameState_.viewHints = [1, 0];
+        map.frameState_.time = 0; // low on frame budget, so nothing is loaded
+        map.handlePostRender();
+
+        map.getLayers().item(0).setVisible(false);
+        map.renderSync();
+        map.handlePostRender();
+      }));
   });
 
   describe('dispose', function () {

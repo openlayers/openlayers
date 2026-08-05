@@ -1012,6 +1012,18 @@ class Map extends BaseObject {
   }
 
   /**
+   * @return {boolean} Something is listening for the map to finish loading.
+   * @private
+   */
+  hasLoadListener_() {
+    return (
+      this.hasListener(MapEventType.LOADSTART) ||
+      this.hasListener(MapEventType.LOADEND) ||
+      this.hasListener(RenderEventType.RENDERCOMPLETE)
+    );
+  }
+
+  /**
    * @return {boolean} Layers have sources that are still loading.
    */
   getLoadingOrNotReady() {
@@ -1281,8 +1293,12 @@ class Map extends BaseObject {
         maxNewLoads = lowOnFrameBudget ? 0 : 2;
       }
       if (tileQueue.getTilesLoading() < maxTotalLoading) {
-        if (animatingOrInteracting) {
-          tileQueue.reprioritize();
+        tileQueue.reprioritize();
+        if (tileQueue.isEmpty() && this.hasLoadListener_()) {
+          // Dropped tiles are still idle, so they fire no change event and
+          // nothing else would schedule the frame that recalculates
+          // `renderComplete_`, which is only read when someone is listening.
+          this.render();
         }
         tileQueue.loadMoreTiles(maxTotalLoading, maxNewLoads);
       }
@@ -1780,9 +1796,7 @@ class Map extends BaseObject {
     this.dispatchEvent(new MapEvent(MapEventType.POSTRENDER, this, frameState));
 
     this.renderComplete_ =
-      (this.hasListener(MapEventType.LOADSTART) ||
-        this.hasListener(MapEventType.LOADEND) ||
-        this.hasListener(RenderEventType.RENDERCOMPLETE)) &&
+      this.hasLoadListener_() &&
       !this.tileQueue_.getTilesLoading() &&
       !this.tileQueue_.getCount() &&
       !this.getLoadingOrNotReady();
