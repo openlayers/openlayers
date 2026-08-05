@@ -46,6 +46,16 @@ describe('ol/source/WMTS', function () {
       assert.deepEqual(options.crossOrigin, '');
     });
 
+    it('prioritizes matrixSet from config over projection', function () {
+      const options = optionsFromCapabilities(capabilities, {
+        layer: 'BlueMarbleNextGeneration',
+        projection: 'EPSG:3857',
+        matrixSet: 'google3857subset',
+      });
+
+      assert.strictEqual(options.matrixSet, 'google3857subset');
+    });
+
     it('can create KVP options from spec/ol/format/wmts/ogcsample.xml', function () {
       const options = optionsFromCapabilities(capabilities, {
         layer: 'BlueMarbleNextGeneration',

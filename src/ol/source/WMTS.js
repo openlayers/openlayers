@@ -376,15 +376,22 @@ export function optionsFromCapabilities(wmtsCap, config) {
   );
   let idx;
   if (l['TileMatrixSetLink'].length > 1) {
-    if ('projection' in config) {
+    if ('matrixSet' in config) {
       idx = l['TileMatrixSetLink'].findIndex(
         function (/** @type {Object<string, *>} */ elt) {
-          const tileMatrixSet = tileMatrixSets.find(
-            function (/** @type {Object<string, *>} */ el) {
-              return el['Identifier'] == elt['TileMatrixSet'];
-            },
-          );
-          const supportedCRS = tileMatrixSet?.['SupportedCRS'];
+          return elt['TileMatrixSet'] == config['matrixSet'];
+        },
+      );
+    } else if ('projection' in config) {
+      idx = l['TileMatrixSetLink'].findIndex(
+        function (/** @type {Object<string, *>} */ elt) {
+          const tileMatrixSet = tileMatrixSets.find(function (el) {
+            return el['Identifier'] == elt['TileMatrixSet'];
+          });
+          if (!tileMatrixSet || !('SupportedCRS' in tileMatrixSet)) {
+            return false;
+          }
+          const supportedCRS = tileMatrixSet['SupportedCRS'];
           const proj1 = getProjection(/** @type {string} */ (supportedCRS));
           const proj2 = getProjection(
             /** @type {import("../proj.js").ProjectionLike} */ (
@@ -398,11 +405,7 @@ export function optionsFromCapabilities(wmtsCap, config) {
         },
       );
     } else {
-      idx = l['TileMatrixSetLink'].findIndex(
-        function (/** @type {Object<string, *>} */ elt) {
-          return elt['TileMatrixSet'] == config['matrixSet'];
-        },
-      );
+      idx = 0;
     }
   } else {
     idx = 0;
