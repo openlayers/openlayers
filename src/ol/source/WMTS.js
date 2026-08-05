@@ -2,8 +2,8 @@
  * @module ol/source/WMTS
  */
 
-import {containsExtent} from '../extent.js';
-import {equivalent, get as getProjection, transformExtent} from '../proj.js';
+import {getWidth} from '../extent.js';
+import {equivalent, get as getProjection} from '../proj.js';
 import {createFromCapabilitiesMatrixSet} from '../tilegrid/WMTS.js';
 import {createFromTileUrlFunctions} from '../tileurlfunction.js';
 import {appendParams, expandUrl} from '../uri.js';
@@ -485,34 +485,7 @@ export function optionsFromCapabilities(wmtsCap, config) {
   let wrapX = false;
   const switchXY = projection.getAxisOrientation().startsWith('ne');
 
-  let matrix = /** @type {Object<string, *>} */ (matrixSetObj['TileMatrix'][0]);
-
-  /** @type {{MinTileCol: number, MinTileRow: number, MaxTileCol: number, MaxTileRow: number, TileMatrix: (string|undefined)}} */
-  let selectedMatrixLimit = {
-    MinTileCol: 0,
-    MinTileRow: 0,
-    // subtract one to end up at tile top left
-    MaxTileCol: /** @type {number} */ (matrix['MatrixWidth']) - 1,
-    MaxTileRow: /** @type {number} */ (matrix['MatrixHeight']) - 1,
-    TileMatrix: undefined,
-  };
-
-  //in case of matrix limits, use matrix limits to calculate extent
-  if (matrixLimits) {
-    selectedMatrixLimit =
-      /** @type {{MinTileCol: number, MinTileRow: number, MaxTileCol: number, MaxTileRow: number, TileMatrix: (string|undefined)}} */ (
-        matrixLimits[matrixLimits.length - 1]
-      );
-    const m = matrixSetObj['TileMatrix'].find(
-      (/** @type {Object<string, *>} */ tileMatrixValue) =>
-        tileMatrixValue['Identifier'] === selectedMatrixLimit.TileMatrix ||
-        matrixSetObj['Identifier'] + ':' + tileMatrixValue['Identifier'] ===
-          selectedMatrixLimit.TileMatrix,
-    );
-    if (m) {
-      matrix = m;
-    }
-  }
+  const matrix = matrixSetObj.TileMatrix[0];
 
   const layerExtent = l['BoundingBox']?.find(
     (/** @type {Object<string, *>} */ bbox) => {
@@ -521,66 +494,24 @@ export function optionsFromCapabilities(wmtsCap, config) {
     },
   );
 
-  const resolution =
-    /** @type {number} */ (matrix['ScaleDenominator'] * 0.00028) /
-    (projection.getMetersPerUnit() || 1); // WMTS 1.0.0: standardized rendering pixel size
-  const topLeftCorner = /** @type {import("../coordinate.js").Coordinate} */ (
-    /** @type {Array<number>} */ (matrix['TopLeftCorner'])
-  );
-  const origin = switchXY
-    ? /** @type {import("../coordinate.js").Coordinate} */ ([
-        topLeftCorner[1],
-        topLeftCorner[0],
-      ])
-    : topLeftCorner;
-  const tileSpanX = /** @type {number} */ (matrix['TileWidth']) * resolution;
-  const tileSpanY = /** @type {number} */ (matrix['TileHeight']) * resolution;
-  let matrixSetExtent = layerExtent?.['extent'] ?? matrixSetObj['BoundingBox'];
-  if (matrixSetExtent && switchXY) {
-    matrixSetExtent = [
-      matrixSetExtent[1],
-      matrixSetExtent[0],
-      matrixSetExtent[3],
-      matrixSetExtent[2],
-    ];
+  // The tile index bounds are given by the TileMatrixSetLimits, or by the
+  // MatrixWidth and MatrixHeight of each tile matrix, and are applied by the
+  // tile grid. Only a declared bounding box further limits the extent.
+  let extent = layerExtent?.extent ?? matrixSetObj['BoundingBox'];
+  if (extent && switchXY) {
+    extent = [extent[1], extent[0], extent[3], extent[2]];
   }
-  let extent = [
-    origin[0] + tileSpanX * selectedMatrixLimit.MinTileCol,
-    // add one to get proper bottom/right coordinate
-    origin[1] - tileSpanY * (1 + selectedMatrixLimit.MaxTileRow),
-    origin[0] + tileSpanX * (1 + selectedMatrixLimit.MaxTileCol),
-    origin[1] - tileSpanY * selectedMatrixLimit.MinTileRow,
-  ];
 
-  if (
-    matrixSetExtent !== undefined &&
-    !containsExtent(
-      /** @type {import("../extent.js").Extent} */ (matrixSetExtent),
-      extent,
-    )
-  ) {
-    const wgs84BoundingBox = l['WGS84BoundingBox'];
-    const wgs84Projection =
-      /** @type {import("../proj/Projection.js").default} */ (
-        getProjection('EPSG:4326')
-      );
-    const wgs84ProjectionExtent = wgs84Projection.getExtent();
-    extent = /** @type {import("../extent.js").Extent} */ (matrixSetExtent);
-    if (wgs84BoundingBox) {
-      wrapX =
-        wgs84BoundingBox[0] === wgs84ProjectionExtent[0] &&
-        wgs84BoundingBox[2] === wgs84ProjectionExtent[2];
-    } else {
-      const wgs84MatrixSetExtent = transformExtent(
-        /** @type {import("../extent.js").Extent} */ (matrixSetExtent),
-        /** @type {string} */ (matrixSetObj['SupportedCRS']),
-        'EPSG:4326',
-      );
-      // Ignore slight deviation from the correct x limits
-      wrapX =
-        wgs84MatrixSetExtent[0] - 1e-10 <= wgs84ProjectionExtent[0] &&
-        wgs84MatrixSetExtent[2] + 1e-10 >= wgs84ProjectionExtent[2];
-    }
+  const projectionExtent = projection.getExtent();
+  if (projection.canWrapX() && projectionExtent) {
+    const origin = switchXY
+      ? [matrix.TopLeftCorner[1], matrix.TopLeftCorner[0]]
+      : matrix.TopLeftCorner;
+    // Size of a pixel of a tile matrix that spans the world. Deviations below one
+    // pixel cannot be expressed by the tile matrix, so they are not significant.
+    const pixelWidth =
+      getWidth(projectionExtent) / (matrix.MatrixWidth * matrix.TileWidth);
+    wrapX = Math.abs(origin[0] - projectionExtent[0]) < pixelWidth;
   }
 
   const tileGrid = createFromCapabilitiesMatrixSet(

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Capabilities version="1.0.0"
+    xmlns="http://www.opengis.net/wmts/1.0"
+    xmlns:ows="http://www.opengis.net/ows/1.1"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+    <Contents>
+        <!-- A layer available over a wider area at low zoom levels than at high ones, without a BoundingBox -->
+        <Layer>
+            <ows:Title>Wide at low zoom</ows:Title>
+            <ows:Identifier>wide_at_low_zoom</ows:Identifier>
+            <Style isDefault="true">
+                <ows:Identifier>default</ows:Identifier>
+            </Style>
+            <Format>image/png</Format>
+            <ResourceURL format="image/png" resourceType="tile"
+                template="https://example.com/wmts/wide_at_low_zoom/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png"/>
+            <TileMatrixSetLink>
+                <TileMatrixSet>subset</TileMatrixSet>
+                <TileMatrixSetLimits>
+                    <TileMatrixLimits>
+                        <TileMatrix>0</TileMatrix>
+                        <MinTileRow>0</MinTileRow>
+                        <MaxTileRow>3</MaxTileRow>
+                        <MinTileCol>0</MinTileCol>
+                        <MaxTileCol>3</MaxTileCol>
+                    </TileMatrixLimits>
+                    <TileMatrixLimits>
+                        <TileMatrix>1</TileMatrix>
+                        <MinTileRow>2</MinTileRow>
+                        <MaxTileRow>5</MaxTileRow>
+                        <MinTileCol>2</MinTileCol>
+                        <MaxTileCol>5</MaxTileCol>
+                    </TileMatrixLimits>
+                    <TileMatrixLimits>
+                        <TileMatrix>2</TileMatrix>
+                        <MinTileRow>8</MinTileRow>
+                        <MaxTileRow>11</MaxTileRow>
+                        <MinTileCol>8</MinTileCol>
+                        <MaxTileCol>11</MaxTileCol>
+                    </TileMatrixLimits>
+                </TileMatrixSetLimits>
+            </TileMatrixSetLink>
+        </Layer>
+        <TileMatrixSet>
+            <ows:Identifier>subset</ows:Identifier>
+            <ows:SupportedCRS>urn:ogc:def:crs:EPSG::3857</ows:SupportedCRS>
+            <TileMatrix>
+                <ows:Identifier>0</ows:Identifier>
+                <ScaleDenominator>13950892.857142857</ScaleDenominator>
+                <TopLeftCorner>0 4000000</TopLeftCorner>
+                <TileWidth>256</TileWidth>
+                <TileHeight>256</TileHeight>
+                <MatrixWidth>8</MatrixWidth>
+                <MatrixHeight>8</MatrixHeight>
+            </TileMatrix>
+            <TileMatrix>
+                <ows:Identifier>1</ows:Identifier>
+                <ScaleDenominator>6975446.428571428</ScaleDenominator>
+                <TopLeftCorner>0 4000000</TopLeftCorner>
+                <TileWidth>256</TileWidth>
+                <TileHeight>256</TileHeight>
+                <MatrixWidth>16</MatrixWidth>
+                <MatrixHeight>16</MatrixHeight>
+            </TileMatrix>
+            <TileMatrix>
+                <ows:Identifier>2</ows:Identifier>
+                <ScaleDenominator>3487723.214285714</ScaleDenominator>
+                <TopLeftCorner>0 4000000</TopLeftCorner>
+                <TileWidth>256</TileWidth>
+                <TileHeight>256</TileHeight>
+                <MatrixWidth>32</MatrixWidth>
+                <MatrixHeight>32</MatrixHeight>
+            </TileMatrix>
+        </TileMatrixSet>
+    </Contents>
+</Capabilities>

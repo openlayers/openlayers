@@ -265,6 +265,28 @@ describe('ol.tilegrid.WMTS', function () {
       assert.equal(r19.maxY, 294060);
     });
 
+    it('can create a tile range for every TileMatrixLimits entry', function () {
+      const matrixSetObj = capabilities.Contents.TileMatrixSet[0];
+      const matrixLimitArray =
+        capabilities.Contents.Layer[0].TileMatrixSetLink[0].TileMatrixSetLimits;
+      const tileGrid = createFromCapabilitiesMatrixSet(
+        matrixSetObj,
+        undefined,
+        matrixLimitArray,
+      );
+
+      assert.lengthOf(matrixLimitArray, 20);
+      matrixLimitArray.forEach(function (limit) {
+        const z = tileGrid.matrixIds_.indexOf(limit.TileMatrix);
+        const range = tileGrid.getFullTileRange(z);
+        const at = ' at TileMatrix ' + limit.TileMatrix;
+        assert.equal(range.minX, limit.MinTileCol, 'minX' + at);
+        assert.equal(range.maxX, limit.MaxTileCol, 'maxX' + at);
+        assert.equal(range.minY, limit.MinTileRow, 'minY' + at);
+        assert.equal(range.maxY, limit.MaxTileRow, 'maxY' + at);
+      });
+    });
+
     it('can use prefixed matrixLimits', function () {
       const matrixSetObj = capabilities.Contents.TileMatrixSet[1];
       const matrixLimitArray =

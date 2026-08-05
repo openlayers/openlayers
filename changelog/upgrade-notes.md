@@ -2,6 +2,35 @@
 
 ### Next release
 
+#### The WMTS tile grid extent is no longer calculated from the tile matrices
+
+`optionsFromCapabilities` now only uses an advertised `BoundingBox` as the tile grid's
+extent, and `tileGrid.getExtent()` returns `null` when none is advertised. Tile requests
+are limited by the advertised tile matrix sizes and `TileMatrixSetLimits` instead, so
+layers that cover a wider area at low zoom levels than at high ones are no longer cut off.
+
+#### `wrapX` from `optionsFromCapabilities` is based on the tile matrix
+
+The world is now wrapped when the first tile matrix spans exactly the width of the
+projection's extent, instead of when the layer's `WGS84BoundingBox` covers the whole world.
+Sources that cover only part of the world on a world spanning tile matrix set - e.g. a
+national basemap on `GoogleMapsCompatible` - are now configured with the `wrapX` opzion set
+to `true`. If that's undesired, `wrapX` needs to be overriden to `false`.
+```js
+// Before
+new WMTS(optionsFromCapabilities(capabilities, {layer: 'my-layer'}));
+```
+```js
+// After - to keep the layer in a single world copy
+new WMTS({
+  ...optionsFromCapabilities(capabilities, {layer: 'my-layer'}),
+  wrapX: false,
+});
+```
+
+The `Layer`'s `WGS84BoundingBox` is no longer used, because the WMTS specification allows
+it to be approximate.
+
 ### 10.10.0
 
 #### Usage of Intl.Segmenter
