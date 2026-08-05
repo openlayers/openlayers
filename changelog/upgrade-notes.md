@@ -64,6 +64,20 @@ The following functions have been deprecated without replacement:
 - decodeFloats
 - encodeFloats
 
+#### Behavior of `minZoom` and `maxZoom` on layers
+
+The `minZoom` on `ol/layer/Base` and all subclasses is now inclusive, `maxZoom` is exclusive. This is the opposite of the previous behavior. This should be the desired and more intuitive behavior, so workarounds like subtracting a very small number from the desired `minZoom` like
+```js
+new Layer({
+  minZoom: desiredMinZoom - 1e-12
+})
+```
+are no longer necessary.
+
+### 10.5.0
+
+No changes should be needed to update to this release.  See the release changelog for new features and fixes.
+
 ### 10.4.0
 
 #### Deprecation of ol/layer/WebGLPoints
