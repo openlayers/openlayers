@@ -2154,5 +2154,16 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
       );
       assert.deepEqual(response.insertIds, ['FAULTS.12345']);
     });
+
+    it('WFS 1.1.0 resourceId filter', function () {
+      //const text = 'TBD';
+      const serialized = new WFS({version: '1.1.0'}).writeGetFeature({
+        srsName: 'EPSG:4326',
+        featureTypes: ['states'],
+        filter: resourceIdFilter(1),
+      });
+      expect(serialized).to.be.ok;
+      //expect(serialized.firstElementChild).to.xmleql(parse(text));
+    });
   });
 });
