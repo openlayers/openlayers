@@ -1,6 +1,5 @@
 import {assert} from 'chai';
 import proj4 from 'proj4';
-import {spy as sinonSpy} from 'sinon';
 import Point from '../../../../src/ol/geom/Point.js';
 import {
   get as getProjection,
@@ -191,13 +190,13 @@ describe('ol/geom/Point.js', function () {
     let point, transform;
     beforeEach(function () {
       point = new Point([1, 2]);
-      transform = sinonSpy();
+      transform = vi.fn();
     });
 
     it('calls a transform function', function () {
       point.applyTransform(transform);
-      assert.strictEqual(transform.calledOnce, true);
-      const args = transform.firstCall.args;
+      assert.strictEqual(transform.mock.calls.length, 1);
+      const args = transform.mock.calls[0];
       assert.lengthOf(args, 4);
 
       assert.strictEqual(args[0], point.getFlatCoordinates());

@@ -8,8 +8,8 @@ import HeatmapLayer from '../../../../../src/ol/layer/Heatmap.js';
 import * as ol_renderer_webgl_vectorlayer from '../../../../../src/ol/renderer/webgl/VectorLayer.js';
 import VectorSource from '../../../../../src/ol/source/Vector.js';
 
-// sinon can't spy on ES module exports, so the renderer module is mocked here
-// to capture how the renderer gets constructed.
+// vi.spyOn can't replace ES module exports, so the renderer module is mocked
+// here to capture how the renderer gets constructed.
 vi.mock('../../../../../src/ol/renderer/webgl/VectorLayer.js', {spy: true});
 
 describe('ol/layer/Heatmap', function () {

@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {spy as sinonSpy} from 'sinon';
 import {listen, listenOnce, unlistenByKey} from '../../../src/ol/events.js';
 import EventTarget from '../../../src/ol/events/Target.js';
 
@@ -8,17 +7,17 @@ describe('ol/events.js', function () {
 
   beforeEach(function () {
     target = new EventTarget();
-    add = sinonSpy(target, 'addEventListener');
+    add = vi.spyOn(target, 'addEventListener');
   });
 
   afterEach(function () {
-    target.addEventListener.restore();
+    target.addEventListener.mockRestore();
   });
 
   describe('listen()', function () {
     it('calls addEventListener on the target', function () {
       listen(target, 'foo', function () {});
-      assert.strictEqual(add.callCount, 1);
+      assert.strictEqual(add.mock.calls.length, 1);
     });
     it('returns a key', function () {
       const key = listen(target, 'foo', function () {});
@@ -38,53 +37,53 @@ describe('ol/events.js', function () {
       assert.strictEqual(target.listeners_['foo'].length, 3);
     });
     it('stops propagation when false is returned', () => {
-      const listener1 = sinonSpy(() => false);
-      const listener2 = sinonSpy();
+      const listener1 = vi.fn(() => false);
+      const listener2 = vi.fn();
       const target = new EventTarget();
       listen(target, 'bar', listener1);
       listen(target, 'bar', listener2);
       target.dispatchEvent('bar');
-      assert.strictEqual(listener1.calledOnce, true);
-      assert.strictEqual(listener2.calledOnce, false);
+      assert.strictEqual(listener1.mock.calls.length, 1);
+      assert.notStrictEqual(listener2.mock.calls.length, 1);
     });
   });
 
   describe('listenOnce()', function () {
     it('creates a one-off listener', function () {
       const target = new EventTarget();
-      const listener = sinonSpy();
+      const listener = vi.fn();
       listenOnce(target, 'foo', listener);
       target.dispatchEvent('foo');
-      assert.strictEqual(listener.callCount, 1);
+      assert.strictEqual(listener.mock.calls.length, 1);
       target.dispatchEvent('foo');
-      assert.strictEqual(listener.callCount, 1);
+      assert.strictEqual(listener.mock.calls.length, 1);
     });
     it('Adds the same listener twice', function () {
-      const listener = sinonSpy();
+      const listener = vi.fn();
       listenOnce(target, 'foo', listener);
       listenOnce(target, 'foo', listener);
       target.dispatchEvent('foo');
       target.dispatchEvent('foo');
       target.dispatchEvent('foo');
-      assert.strictEqual(listener.callCount, 2);
+      assert.strictEqual(listener.mock.calls.length, 2);
     });
     it('is called with the provided this argument', () => {
-      const listener = sinonSpy();
+      const listener = vi.fn();
       const target = new EventTarget();
       const that = {};
       listenOnce(target, 'bar', listener, that);
       target.dispatchEvent('bar');
-      assert.strictEqual(listener.thisValues[0], that);
+      assert.strictEqual(listener.mock.contexts[0], that);
     });
     it('stops propagation when false is returned', () => {
-      const listener1 = sinonSpy(() => false);
-      const listener2 = sinonSpy();
+      const listener1 = vi.fn(() => false);
+      const listener2 = vi.fn();
       const target = new EventTarget();
       listenOnce(target, 'bar', listener1);
       listenOnce(target, 'bar', listener2);
       target.dispatchEvent('bar');
-      assert.strictEqual(listener1.calledOnce, true);
-      assert.strictEqual(listener2.calledOnce, false);
+      assert.strictEqual(listener1.mock.calls.length, 1);
+      assert.notStrictEqual(listener2.mock.calls.length, 1);
     });
   });
 

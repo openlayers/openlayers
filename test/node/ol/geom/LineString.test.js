@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {spy as sinonSpy} from 'sinon';
 import {isEmpty} from '../../../../src/ol/extent.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import {assertArrayLikeEqual} from '../../../util/equal.js';
@@ -410,16 +409,16 @@ describe('ol/geom/LineString.js', function () {
       });
 
       it('remembers the minimum squared tolerance', function () {
-        sinonSpy(lineString, 'getSimplifiedGeometryInternal');
+        vi.spyOn(lineString, 'getSimplifiedGeometryInternal');
         const simplifiedGeometry1 = lineString.getSimplifiedGeometry(0.05);
         assert.strictEqual(
-          lineString.getSimplifiedGeometryInternal.callCount,
+          lineString.getSimplifiedGeometryInternal.mock.calls.length,
           1,
         );
         assert.strictEqual(simplifiedGeometry1, lineString);
         const simplifiedGeometry2 = lineString.getSimplifiedGeometry(0.01);
         assert.strictEqual(
-          lineString.getSimplifiedGeometryInternal.callCount,
+          lineString.getSimplifiedGeometryInternal.mock.calls.length,
           1,
         );
         assert.strictEqual(simplifiedGeometry2, lineString);

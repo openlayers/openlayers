@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {spy as sinonSpy} from 'sinon';
 import Feature from '../../../../../src/ol/Feature.js';
 import {
   getStringNumberEquivalent,
@@ -119,7 +118,7 @@ describe('ol/render/webgl/renderinstructions.js', function () {
 
   beforeEach(() => {
     labelsArray = new LabelsArray();
-    sinonSpy(labelsArray, 'push');
+    vi.spyOn(labelsArray, 'push');
   });
 
   describe('generatePointRenderInstructions', function () {
@@ -153,7 +152,9 @@ describe('ol/render/webgl/renderinstructions.js', function () {
         0,
         11,
       ]);
-      assert.equal(labelsArray.push.calledWith('hello world'), true);
+      assert.isTrue(
+        labelsArray.push.mock.calls.some((call) => call[0] === 'hello world'),
+      );
     });
   });
 
@@ -210,8 +211,12 @@ describe('ol/render/webgl/renderinstructions.js', function () {
         118,
         3,
       ]);
-      assert.equal(labelsArray.push.calledWith('foo'), true);
-      assert.equal(labelsArray.push.calledWith('bar'), true);
+      assert.isTrue(
+        labelsArray.push.mock.calls.some((call) => call[0] === 'foo'),
+      );
+      assert.isTrue(
+        labelsArray.push.mock.calls.some((call) => call[0] === 'bar'),
+      );
     });
   });
 
@@ -247,7 +252,9 @@ describe('ol/render/webgl/renderinstructions.js', function () {
         2,
         0,
       ]);
-      assert.equal(labelsArray.push.calledWith('foo'), true);
+      assert.isTrue(
+        labelsArray.push.mock.calls.some((call) => call[0] === 'foo'),
+      );
     });
   });
 
@@ -346,7 +353,7 @@ describe('ol/render/webgl/renderinstructions.js', function () {
       let consoleSpy, originalConsole;
       beforeEach(() => {
         originalConsole = console;
-        consoleSpy = sinonSpy();
+        consoleSpy = vi.fn();
         global.console = {
           ...console,
           warn: consoleSpy,
@@ -380,12 +387,10 @@ describe('ol/render/webgl/renderinstructions.js', function () {
         );
 
         assert.isTrue(
-          consoleSpy
-            .getCalls()
-            .some(
-              ({args}) =>
-                args[0] === 'The "has" operator might return false positives.',
-            ),
+          consoleSpy.mock.calls.some(
+            (args) =>
+              args[0] === 'The "has" operator might return false positives.',
+          ),
         );
       });
     });

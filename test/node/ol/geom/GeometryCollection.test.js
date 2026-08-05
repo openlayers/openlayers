@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {spy as sinonSpy} from 'sinon';
 import Geometry from '../../../../src/ol/geom/Geometry.js';
 import GeometryCollection from '../../../../src/ol/geom/GeometryCollection.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
@@ -187,10 +186,10 @@ describe('ol/geom/GeometryCollection.js', function () {
     });
 
     it('fires a change event', function () {
-      const listener = sinonSpy();
+      const listener = vi.fn();
       multi.on('change', listener);
       multi.setGeometries([point, line, poly]);
-      assert.strictEqual(listener.calledOnce, true);
+      assert.strictEqual(listener.mock.calls.length, 1);
     });
 
     it('updates the extent', function () {

@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {spy as sinonSpy} from 'sinon';
 import Disposable from '../../../src/ol/Disposable.js';
 
 describe('ol/Disposable.js', function () {
@@ -26,12 +25,12 @@ describe('ol/Disposable.js', function () {
   describe('#dispose()', function () {
     it('calls disposeInternal only once', function () {
       const disposable = new Disposable();
-      sinonSpy(disposable, 'disposeInternal');
-      assert.strictEqual(disposable.disposeInternal.called, false);
+      vi.spyOn(disposable, 'disposeInternal');
+      assert.strictEqual(disposable.disposeInternal.mock.calls.length, 0);
       disposable.dispose();
-      assert.strictEqual(disposable.disposeInternal.callCount, 1);
+      assert.strictEqual(disposable.disposeInternal.mock.calls.length, 1);
       disposable.dispose();
-      assert.strictEqual(disposable.disposeInternal.callCount, 1);
+      assert.strictEqual(disposable.disposeInternal.mock.calls.length, 1);
     });
   });
 });

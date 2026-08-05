@@ -276,7 +276,7 @@ describe('ol/array.js', function () {
       let origFunctionCall;
 
       it('does not use potentially slow methods (default & custom compare)', function () {
-        // Mockup (I failed to use sinon.spy and beforeEach-hooks)
+        // A vi.spyOn on Function#apply or Function#call would call itself
         origArraySlice = Array.prototype.slice;
         origFunctionApply = Function.prototype.apply;
         origFunctionCall = Function.prototype.call;

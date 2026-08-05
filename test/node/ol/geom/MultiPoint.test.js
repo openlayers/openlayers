@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {spy as sinonSpy} from 'sinon';
 import {isEmpty} from '../../../../src/ol/extent.js';
 import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
 import Point from '../../../../src/ol/geom/Point.js';
@@ -271,13 +270,13 @@ describe('ol/geom/MultiPoint.js', function () {
         [1, 2],
         [3, 4],
       ]);
-      transform = sinonSpy();
+      transform = vi.fn();
     });
 
     it('calls a transform function', function () {
       multi.applyTransform(transform);
-      assert.strictEqual(transform.calledOnce, true);
-      const args = transform.firstCall.args;
+      assert.strictEqual(transform.mock.calls.length, 1);
+      const args = transform.mock.calls[0];
       assert.lengthOf(args, 4);
 
       assert.strictEqual(args[0], multi.getFlatCoordinates());

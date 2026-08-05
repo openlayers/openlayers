@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {spy as sinonSpy} from 'sinon';
 import Event, {
   preventDefault,
   stopPropagation,
@@ -32,20 +31,20 @@ describe('ol/events/Event.js', function () {
   describe('ol.events.Event.preventDefault', function () {
     it('calls preventDefault on the event object', function () {
       const event = {
-        preventDefault: sinonSpy(),
+        preventDefault: vi.fn(),
       };
       preventDefault(event);
-      assert.strictEqual(event.preventDefault.called, true);
+      assert.isAbove(event.preventDefault.mock.calls.length, 0);
     });
   });
 
   describe('ol.events.Event.stopPropagation', function () {
     it('calls preventDefault on the event object', function () {
       const event = {
-        stopPropagation: sinonSpy(),
+        stopPropagation: vi.fn(),
       };
       stopPropagation(event);
-      assert.strictEqual(event.stopPropagation.called, true);
+      assert.isAbove(event.stopPropagation.mock.calls.length, 0);
     });
   });
 });

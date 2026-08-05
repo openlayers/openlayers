@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {spy as sinonSpy, stub as sinonStub} from 'sinon';
 import Feature from '../../../../../../src/ol/Feature.js';
 import Map from '../../../../../../src/ol/Map.js';
 import View from '../../../../../../src/ol/View.js';
@@ -23,8 +22,8 @@ import {getUid} from '../../../../../../src/ol/util.js';
 import WebGLHelper from '../../../../../../src/ol/webgl/Helper.js';
 import {assertArrayLikeEqual} from '../../../../../util/equal.js';
 
-// sinon can't spy on ES module exports, so the renderer module is mocked here
-// to capture how the style renderer gets constructed.
+// vi.spyOn can't replace ES module exports, so the renderer module is mocked
+// here to capture how the style renderer gets constructed.
 vi.mock('../../../../../../src/ol/render/webgl/VectorStyleRenderer.js', {
   spy: true,
 });
@@ -318,7 +317,7 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       renderer.prepareFrame(frameState);
       renderer.renderFrame(frameState);
 
-      sinonSpy(renderer.styleRenderer_, 'finalizeTextRender');
+      vi.spyOn(renderer.styleRenderer_, 'finalizeTextRender').mockClear();
     });
 
     it('does not include the text post processing step', () => {
@@ -354,8 +353,8 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       renderer.prepareFrame(frameState);
       renderer.renderFrame(frameState);
       assert.strictEqual(
-        renderer.styleRenderer_.finalizeTextRender.called,
-        false,
+        renderer.styleRenderer_.finalizeTextRender.mock.calls.length,
+        0,
       );
     });
   });
@@ -435,7 +434,7 @@ describe('ol/renderer/webgl/VectorLayer', () => {
     });
     describe('new frame without change', () => {
       beforeEach(() => {
-        sinonSpy(renderer.styleRenderer_, 'generateBuffers');
+        vi.spyOn(renderer.styleRenderer_, 'generateBuffers').mockClear();
         toRender = renderer.prepareFrame(frameState);
       });
       it('requires rendering', () => {
@@ -446,15 +445,15 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       });
       it('does not regenerate the buffers', () => {
         assert.strictEqual(
-          renderer.styleRenderer_.generateBuffers.called,
-          false,
+          renderer.styleRenderer_.generateBuffers.mock.calls.length,
+          0,
         );
       });
     });
     describe('on source change', () => {
       beforeEach(() => {
         vectorSource.changed();
-        sinonSpy(renderer.styleRenderer_, 'generateBuffers');
+        vi.spyOn(renderer.styleRenderer_, 'generateBuffers').mockClear();
         toRender = renderer.prepareFrame(frameState);
       });
       it('requires rendering', () => {
@@ -465,15 +464,15 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       });
       it('regenerates the buffers', () => {
         assert.strictEqual(
-          renderer.styleRenderer_.generateBuffers.callCount,
+          renderer.styleRenderer_.generateBuffers.mock.calls.length,
           1,
         );
         assert.deepEqual(
-          renderer.styleRenderer_.generateBuffers.getCall(0).args[1],
+          renderer.styleRenderer_.generateBuffers.mock.calls[0][1],
           [0.04, -0, 0, 0.08, 0, -1.28],
         ); // transform made from the current frame state
         assert.deepEqual(
-          renderer.styleRenderer_.generateBuffers.getCall(0).args[2],
+          renderer.styleRenderer_.generateBuffers.mock.calls[0][2],
           frameState.viewState.resolution,
         );
       });
@@ -481,7 +480,7 @@ describe('ol/renderer/webgl/VectorLayer', () => {
     describe('on view change', () => {
       beforeEach(() => {
         frameState.extent = [0, 10, 0, 10];
-        sinonSpy(renderer.styleRenderer_, 'generateBuffers');
+        vi.spyOn(renderer.styleRenderer_, 'generateBuffers').mockClear();
         toRender = renderer.prepareFrame(frameState);
       });
       it('requires rendering', () => {
@@ -492,7 +491,7 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       });
       it('regenerates the buffers', () => {
         assert.strictEqual(
-          renderer.styleRenderer_.generateBuffers.callCount,
+          renderer.styleRenderer_.generateBuffers.mock.calls.length,
           1,
         );
       });
@@ -520,11 +519,11 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       vi.spyOn(renderer.helper, 'prepareDraw');
       vi.spyOn(renderer.helper, 'finalizeDraw');
       vi.spyOn(renderer.helper, 'deleteBuffer');
-      vi.spyOn(renderer.styleRenderer_, 'render');
-      finalizeTextRenderStub = sinonStub(
-        renderer.styleRenderer_,
-        'finalizeTextRender',
-      ).returns(Promise.resolve());
+      vi.spyOn(renderer.styleRenderer_, 'render').mockClear();
+      finalizeTextRenderStub = vi
+        .spyOn(renderer.styleRenderer_, 'finalizeTextRender')
+        .mockClear()
+        .mockReturnValue(Promise.resolve());
 
       // Snapshot reused vec2/matrix arguments so mock.calls keep the values
       // from each call (the same objects are mutated across calls).
@@ -631,8 +630,8 @@ describe('ol/renderer/webgl/VectorLayer', () => {
     });
     it('calls styleRenderer.finalizeTextRender once', () => {
       assert.strictEqual(
-        renderer.styleRenderer_.finalizeTextRender.calledOnce,
-        true,
+        renderer.styleRenderer_.finalizeTextRender.mock.calls.length,
+        1,
       );
     });
     it("does not delete any buffer if it's the first render", () => {
@@ -685,45 +684,45 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       let finalizeTextRenderResolver;
 
       beforeEach(() => {
-        finalizeTextRenderStub.returns(
+        finalizeTextRenderStub.mockReturnValue(
           new Promise((resolve) => {
             finalizeTextRenderResolver = resolve;
           }),
         );
-        sinonSpy(vectorLayer, 'changed');
+        vi.spyOn(vectorLayer, 'changed');
       });
 
       it('calls layer.changed() after the text overlay is ready to be rendered', async () => {
         renderer.renderFrame(newFrameState);
         finalizeTextRenderResolver();
         await new Promise((resolve) => setTimeout(resolve)); // awaiting next tick
-        assert.strictEqual(vectorLayer.changed.callCount, 1);
+        assert.strictEqual(vectorLayer.changed.mock.calls.length, 1);
 
         // asking for an identical render: layer.changed() should not be called again
         renderer.renderFrame(newFrameState);
         finalizeTextRenderResolver();
         await new Promise((resolve) => setTimeout(resolve));
-        assert.strictEqual(vectorLayer.changed.callCount, 1);
+        assert.strictEqual(vectorLayer.changed.mock.calls.length, 1);
 
         // different extent: layer.changed should be called once more
         renderer.renderFrame(frameState);
         finalizeTextRenderResolver();
         await new Promise((resolve) => setTimeout(resolve));
-        assert.strictEqual(vectorLayer.changed.callCount, 2);
+        assert.strictEqual(vectorLayer.changed.mock.calls.length, 2);
 
         // source updated extent: layer.changed should be called once more
         vectorSource.changed();
         renderer.renderFrame(frameState);
         finalizeTextRenderResolver();
         await new Promise((resolve) => setTimeout(resolve));
-        assert.strictEqual(vectorLayer.changed.callCount, 3);
+        assert.strictEqual(vectorLayer.changed.mock.calls.length, 3);
       });
 
       it('does not call layer.changed() if the renderer was disposed in the meantime', () => {
         renderer.renderFrame(frameState);
         renderer.dispose();
         finalizeTextRenderResolver();
-        assert.strictEqual(vectorLayer.changed.callCount, 0);
+        assert.strictEqual(vectorLayer.changed.mock.calls.length, 0);
       });
     });
   });
@@ -868,8 +867,8 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       });
       vi.spyOn(vectorSource, 'removeEventListener');
       deleteBufferSpy = vi.spyOn(renderer.helper, 'deleteBuffer');
-      sinonSpy(renderer.styleRenderer_, 'dispose');
-      sinonSpy(renderer.styleRenderer_, 'disposeTextInstructions');
+      vi.spyOn(renderer.styleRenderer_, 'dispose').mockClear();
+      vi.spyOn(renderer.styleRenderer_, 'disposeTextInstructions').mockClear();
       renderer.dispose();
     });
     it('unlistens to source events', () => {
@@ -891,12 +890,12 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       assert.strictEqual(deleteBufferSpy.mock.calls.length, 9);
     });
     it('disposes of the style renderer', () => {
-      assert.strictEqual(renderer.styleRenderer_.dispose.calledOnce, true);
+      assert.strictEqual(renderer.styleRenderer_.dispose.mock.calls.length, 1);
     });
     it('disposes of the text rendering instructions', () => {
       assert.strictEqual(
-        renderer.styleRenderer_.disposeTextInstructions.calledOnce,
-        true,
+        renderer.styleRenderer_.disposeTextInstructions.mock.calls.length,
+        1,
       );
     });
   });

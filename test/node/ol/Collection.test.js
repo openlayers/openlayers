@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {spy as sinonSpy} from 'sinon';
 import Collection from '../../../src/ol/Collection.js';
 import CollectionEventType from '../../../src/ol/CollectionEventType.js';
 import {listen} from '../../../src/ol/events.js';
@@ -104,12 +103,12 @@ describe('ol/Collection.js', function () {
   describe('forEach', function () {
     let cb;
     beforeEach(function () {
-      cb = sinonSpy();
+      cb = vi.fn();
     });
     describe('on an empty collection', function () {
       it('does not call the callback', function () {
         collection.forEach(cb);
-        assert.strictEqual(cb.called, false);
+        assert.strictEqual(cb.mock.calls.length, 0);
       });
     });
     describe('on a non-empty collection', function () {
@@ -117,7 +116,7 @@ describe('ol/Collection.js', function () {
         collection.push(1);
         collection.push(2);
         collection.forEach(cb);
-        assert.deepEqual(cb.callCount, 2);
+        assert.deepEqual(cb.mock.calls.length, 2);
       });
     });
   });
@@ -131,11 +130,11 @@ describe('ol/Collection.js', function () {
     });
     it('fires a remove event', function () {
       const collection = new Collection([0, 1, 2]);
-      const cb = sinonSpy();
+      const cb = vi.fn();
       listen(collection, CollectionEventType.REMOVE, cb);
       assert.deepEqual(collection.remove(1), 1);
-      assert.strictEqual(cb.called, true);
-      assert.deepEqual(cb.lastCall.args[0].element, 1);
+      assert.isAbove(cb.mock.calls.length, 0);
+      assert.deepEqual(cb.mock.lastCall[0].element, 1);
     });
     it('does not remove more than one matching element', function () {
       const collection = new Collection([0, 1, 1, 2]);
@@ -233,28 +232,28 @@ describe('ol/Collection.js', function () {
     let collection, cb;
     beforeEach(function () {
       collection = new Collection([0, 1, 2]);
-      cb = sinonSpy();
+      cb = vi.fn();
       listen(collection, 'change:length', cb);
     });
 
     describe('insertAt', function () {
       it('triggers change:length event', function () {
         collection.insertAt(2, 3);
-        assert.strictEqual(cb.called, true);
+        assert.isAbove(cb.mock.calls.length, 0);
       });
     });
 
     describe('removeAt', function () {
       it('triggers change:length event', function () {
         collection.removeAt(0);
-        assert.strictEqual(cb.called, true);
+        assert.isAbove(cb.mock.calls.length, 0);
       });
     });
 
     describe('setAt', function () {
       it('does not trigger change:length event', function () {
         collection.setAt(1, 1);
-        assert.strictEqual(cb.called, false);
+        assert.strictEqual(cb.mock.calls.length, 0);
       });
     });
   });
@@ -277,23 +276,23 @@ describe('ol/Collection.js', function () {
     let collection, cb1, cb2;
     beforeEach(function () {
       collection = new Collection([1]);
-      cb1 = sinonSpy();
-      cb2 = sinonSpy();
+      cb1 = vi.fn();
+      cb2 = vi.fn();
     });
     describe('setAt', function () {
       it('triggers remove', function () {
         listen(collection, CollectionEventType.ADD, cb1);
         listen(collection, CollectionEventType.REMOVE, cb2);
         collection.setAt(0, 2);
-        assert.deepEqual(cb2.lastCall.args[0].element, 1);
-        assert.deepEqual(cb1.lastCall.args[0].element, 2);
+        assert.deepEqual(cb2.mock.lastCall[0].element, 1);
+        assert.deepEqual(cb1.mock.lastCall[0].element, 2);
       });
     });
     describe('pop', function () {
       it('triggers remove', function () {
         listen(collection, CollectionEventType.REMOVE, cb1);
         collection.pop();
-        assert.deepEqual(cb1.lastCall.args[0].element, 1);
+        assert.deepEqual(cb1.mock.lastCall[0].element, 1);
       });
     });
   });

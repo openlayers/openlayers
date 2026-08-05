@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {spy as sinonSpy} from 'sinon';
 import BaseObject from '../../../src/ol/Object.js';
 import {listen} from '../../../src/ol/events.js';
 
@@ -123,17 +122,17 @@ describe('ol/Object.js', function () {
     let listener1, listener2;
 
     beforeEach(function () {
-      listener1 = sinonSpy();
+      listener1 = vi.fn();
       listen(o, 'change:k', listener1);
 
-      listener2 = sinonSpy();
+      listener2 = vi.fn();
       listen(o, 'propertychange', listener2);
     });
 
     it('dispatches events', function () {
       o.notify('k', 1);
-      assert.strictEqual(listener1.calledOnce, true);
-      const args = listener1.firstCall.args;
+      assert.strictEqual(listener1.mock.calls.length, 1);
+      const args = listener1.mock.calls[0];
       assert.lengthOf(args, 1);
       const event = args[0];
       assert.strictEqual(event.key, 'k');
@@ -142,8 +141,8 @@ describe('ol/Object.js', function () {
 
     it('dispatches generic change events to bound objects', function () {
       o.notify('k', 1);
-      assert.strictEqual(listener2.calledOnce, true);
-      const args = listener2.firstCall.args;
+      assert.strictEqual(listener2.mock.calls.length, 1);
+      const args = listener2.mock.calls[0];
       assert.lengthOf(args, 1);
       const event = args[0];
       assert.strictEqual(event.key, 'k');
@@ -155,24 +154,24 @@ describe('ol/Object.js', function () {
     let listener1, listener2;
 
     beforeEach(function () {
-      listener1 = sinonSpy();
+      listener1 = vi.fn();
       listen(o, 'change:k', listener1);
 
-      listener2 = sinonSpy();
+      listener2 = vi.fn();
       listen(o, 'propertychange', listener2);
     });
 
     it('dispatches events to object', function () {
       o.set('k', 1);
-      assert.strictEqual(listener1.called, true);
+      assert.isAbove(listener1.mock.calls.length, 0);
 
       assert.deepEqual(o.getKeys(), ['k']);
     });
 
     it('dispatches generic change events to object', function () {
       o.set('k', 1);
-      assert.strictEqual(listener2.calledOnce, true);
-      const args = listener2.firstCall.args;
+      assert.strictEqual(listener2.mock.calls.length, 1);
+      const args = listener2.mock.calls[0];
       assert.lengthOf(args, 1);
       const event = args[0];
       assert.strictEqual(event.key, 'k');
@@ -181,8 +180,8 @@ describe('ol/Object.js', function () {
     it('dispatches events only if the value is different', function () {
       o.set('k', 1);
       o.set('k', 1);
-      assert.strictEqual(listener1.calledOnce, true);
-      assert.strictEqual(listener2.calledOnce, true);
+      assert.strictEqual(listener1.mock.calls.length, 1);
+      assert.strictEqual(listener2.mock.calls.length, 1);
     });
   });
 
@@ -191,13 +190,13 @@ describe('ol/Object.js', function () {
       o.setX = function (x) {
         this.set('x', x);
       };
-      sinonSpy(o, 'setX');
+      vi.spyOn(o, 'setX');
     });
 
     it('does not call the setter', function () {
       o.set('x', 1);
       assert.deepEqual(o.get('x'), 1);
-      assert.strictEqual(o.setX.called, false);
+      assert.strictEqual(o.setX.mock.calls.length, 0);
 
       assert.deepEqual(o.getKeys(), ['x']);
     });
@@ -208,12 +207,12 @@ describe('ol/Object.js', function () {
       o.getX = function () {
         return 1;
       };
-      sinonSpy(o, 'getX');
+      vi.spyOn(o, 'getX');
     });
 
     it('does not call the getter', function () {
       assert.strictEqual(o.get('x'), undefined);
-      assert.strictEqual(o.getX.called, false);
+      assert.strictEqual(o.getX.mock.calls.length, 0);
     });
   });
 
@@ -230,16 +229,16 @@ describe('ol/Object.js', function () {
     let listener1, listener2;
 
     beforeEach(function () {
-      listener1 = sinonSpy();
+      listener1 = vi.fn();
       listen(o, 'change:k', listener1);
-      listener2 = sinonSpy();
+      listener2 = vi.fn();
       listen(o, 'change:K', listener2);
     });
 
     it('dispatches the expected event', function () {
       o.set('K', 1);
-      assert.strictEqual(listener1.called, false);
-      assert.strictEqual(listener2.called, true);
+      assert.strictEqual(listener1.mock.calls.length, 0);
+      assert.isAbove(listener2.mock.calls.length, 0);
 
       assert.deepEqual(o.getKeys(), ['K']);
     });

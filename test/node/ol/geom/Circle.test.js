@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {spy as sinonSpy} from 'sinon';
 import Circle from '../../../../src/ol/geom/Circle.js';
 
 describe('ol/geom/Circle.js', function () {
@@ -146,10 +145,10 @@ describe('ol/geom/Circle.js', function () {
       });
 
       it('fires a change event', function () {
-        const spy = sinonSpy();
+        const spy = vi.fn();
         circle.on('change', spy);
         circle.setCenter([1, 2]);
-        assert.strictEqual(spy.calledOnce, true);
+        assert.strictEqual(spy.mock.calls.length, 1);
       });
     });
 
@@ -168,10 +167,10 @@ describe('ol/geom/Circle.js', function () {
       });
 
       it('fires a change event', function () {
-        const spy = sinonSpy();
+        const spy = vi.fn();
         circle.on('change', spy);
         circle.setRadius(2);
-        assert.strictEqual(spy.calledOnce, true);
+        assert.strictEqual(spy.mock.calls.length, 1);
       });
     });
 
