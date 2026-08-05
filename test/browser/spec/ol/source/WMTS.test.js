@@ -162,7 +162,7 @@ describe('ol/source/WMTS', function () {
       );
     });
 
-    it('uses extent of tile matrix instead of projection extent', function () {
+    it('uses tile ranges of tile matrix instead of projection extent', function () {
       const options = optionsFromCapabilities(capabilities, {
         layer: 'BlueMarbleNextGeneration',
         matrixSet: 'google3857subset',
@@ -170,10 +170,16 @@ describe('ol/source/WMTS', function () {
 
       // Since google3857subset defines subset of space defined by the google3857 matrix set:
       // - top left corner: -10000000, 10000000
-      // - calculated grid extent: [-10000000, 9999694.25188686, -9999694.25188686, 10000000]
-      // then the tile grid extent is only a part of the full projection extent.
+      // - one single tile at the first zoom level
+      // then the tiles cover only a part of the full projection extent.
 
-      const gridExtent = options.tileGrid.getExtent();
+      const tileRange = options.tileGrid.getFullTileRange(0);
+      assert.deepEqual(
+        [tileRange.minX, tileRange.maxX, tileRange.minY, tileRange.maxY],
+        [0, 0, 0, 0],
+      );
+
+      const gridExtent = options.tileGrid.getTileCoordExtent([0, 0, 0]);
       const gridBottomLeft = getBottomLeft(gridExtent);
       const gridTopRight = getTopRight(gridExtent);
       assert.deepEqual(Math.round(gridBottomLeft[0]), -10000000);
@@ -601,7 +607,7 @@ describe('ol/source/WMTS', function () {
     });
   });
 
-  describe('set wrap x by bounding box if available', function () {
+  describe('set wrap x from the tile matrix', function () {
     const parser = new WMTSCapabilities();
     let capabilities;
     beforeAll(
@@ -638,13 +644,13 @@ describe('ol/source/WMTS', function () {
       });
       assert.strictEqual(options.wrapX, true);
     });
-    it('does not set wrapx when wgs84 bb is set', function () {
+    it('sets wrapx when the tile matrix wraps, but the wgs84 bb does not', function () {
       const options = optionsFromCapabilities(capabilities, {
         layer: 'no-wrap-wgs84-bb',
         matrixSet: 'EPSG:3857',
         crossOrigin: 'anonymous',
       });
-      assert.strictEqual(options.wrapX, false);
+      assert.strictEqual(options.wrapX, true);
     });
     it('does not set wrapx when tile matrix does not wrap', function () {
       const options = optionsFromCapabilities(capabilities, {
@@ -653,6 +659,32 @@ describe('ol/source/WMTS', function () {
         crossOrigin: 'anonymous',
       });
       assert.strictEqual(options.wrapX, false);
+    });
+  });
+  describe('set wrap x from a rounded tile matrix', function () {
+    const parser = new WMTSCapabilities();
+    let capabilities;
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText('spec/ol/format/wmts/ign.xml', function (xml) {
+            try {
+              capabilities = parser.read(xml);
+            } catch (e) {
+              reject(e);
+              return;
+            }
+            resolve();
+          });
+        }),
+    );
+
+    it('sets wrapx when the tile matrix coordinates are rounded', function () {
+      // the tile matrices advertise a TopLeftCorner of whole meters
+      const options = optionsFromCapabilities(capabilities, {
+        layer: 'ORTHOIMAGERY.ORTHOPHOTOS',
+      });
+      assert.strictEqual(options.wrapX, true);
     });
   });
   describe('when creating options from capabilities with TileMatrixSetLink', function () {
@@ -751,17 +783,10 @@ describe('ol/source/WMTS', function () {
 
       // the layer covers [0, 0, 4000000, 4000000] at zoom level 0 and only
       // [2000000, 1000000, 3000000, 2000000] at zoom level 2, so an extent
-      // taken from one of the limits would exclude tiles of the other levels
-      const extent = options.tileGrid.getExtent();
-
-      // compare with delta, due to rounding not the exact bounding box is returned...
-      const expectDelta = (value, expected) =>
-        assert.isBelow(Math.abs(value - expected), 1e-6);
-
-      expectDelta(extent[0], 0);
-      expectDelta(extent[1], -4000000);
-      expectDelta(extent[2], 8000000);
-      expectDelta(extent[3], 4000000);
+      // taken from one of the limits would exclude tiles of the other levels.
+      // No bounding box is advertised, so the tile ranges of each level are
+      // the only limitation for tile requests.
+      assert.isNull(options.tileGrid.getExtent());
     });
 
     it('restricts the tile ranges to the limits of each level', function () {
