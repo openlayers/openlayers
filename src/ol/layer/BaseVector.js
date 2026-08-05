@@ -103,7 +103,7 @@ class BaseVectorLayer extends Layer {
 
     /**
      * @private
-     * @type {string}
+     * @type {string|undefined}
      */
     this.declutter_ = options.declutter ? String(options.declutter) : undefined;
 
@@ -116,7 +116,7 @@ class BaseVectorLayer extends Layer {
 
     /**
      * User provided style.
-     * @type {import("../style/Style.js").StyleLike|import("../style/flat.js").FlatStyleLike}
+     * @type {import("../style/Style.js").StyleLike|import("../style/flat.js").FlatStyleLike|null}
      * @private
      */
     this.style_ = null;
@@ -150,7 +150,7 @@ class BaseVectorLayer extends Layer {
   }
 
   /**
-   * @return {string} Declutter group.
+   * @return {string|undefined} Declutter group.
    * @override
    */
   getDeclutter() {
@@ -235,10 +235,19 @@ class BaseVectorLayer extends Layer {
    */
   renderDeclutter(frameState, layerState) {
     const declutterGroup = this.getDeclutter();
+    if (!declutterGroup) {
+      return;
+    }
+    if (!frameState.declutter) {
+      frameState.declutter = {};
+    }
     if (declutterGroup in frameState.declutter === false) {
       frameState.declutter[declutterGroup] = new RBush(9);
     }
-    this.getRenderer().renderDeclutter(frameState, layerState);
+    const renderer = this.getRenderer();
+    if (renderer) {
+      renderer.renderDeclutter(frameState, layerState);
+    }
   }
 
   /**
@@ -271,10 +280,12 @@ class BaseVectorLayer extends Layer {
    * @api
    */
   setStyle(style) {
-    this.style_ = style === undefined ? createDefaultStyle : style;
+    this.style_ = style === undefined ? createDefaultStyle : (style ?? null);
     const styleLike = toStyleLike(style);
     this.styleFunction_ =
-      style === null ? undefined : toStyleFunction(styleLike);
+      style === null || styleLike === null
+        ? undefined
+        : toStyleFunction(styleLike);
     this.changed();
   }
 

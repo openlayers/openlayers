@@ -307,10 +307,12 @@ class Overlay extends BaseObject {
       const container = this.stopEvent
         ? map.getOverlayContainerStopEvent()
         : map.getOverlayContainer();
-      if (this.insertFirst) {
-        container.insertBefore(this.element, container.childNodes[0] || null);
-      } else {
-        container.appendChild(this.element);
+      if (container) {
+        if (this.insertFirst) {
+          container.insertBefore(this.element, container.childNodes[0] || null);
+        } else {
+          container.appendChild(this.element);
+        }
       }
       this.performAutoPan();
     }
@@ -412,8 +414,17 @@ class Overlay extends BaseObject {
       return;
     }
 
-    const mapRect = this.getRect(map.getTargetElement(), map.getSize());
+    const mapSize = map.getSize();
     const element = this.getElement();
+    if (!mapSize || !element) {
+      return;
+    }
+
+    const targetElement = map.getTargetElement();
+    if (!targetElement) {
+      return;
+    }
+    const mapRect = this.getRect(targetElement, mapSize);
     const overlayRect = this.getRect(element, [
       outerWidth(element),
       outerHeight(element),
@@ -458,7 +469,9 @@ class Overlay extends BaseObject {
 
         const panOptions = panIntoViewOptions.animation || {};
         map.getView().animateInternal({
-          center: map.getCoordinateFromPixelInternal(newCenterPx),
+          center: /** @type {import("./coordinate.js").Coordinate} */ (
+            map.getCoordinateFromPixelInternal(newCenterPx)
+          ),
           duration: panOptions.duration,
           easing: panOptions.easing,
         });

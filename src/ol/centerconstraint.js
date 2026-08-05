@@ -31,8 +31,8 @@ export function createExtent(extent, onlyCenter, smooth) {
       if (!resolution && !onlyCenter) {
         return center;
       }
-      const viewWidth = onlyCenter ? 0 : size[0] * resolution;
-      const viewHeight = onlyCenter ? 0 : size[1] * resolution;
+      const viewWidth = onlyCenter ? 0 : size[0] * (resolution ?? 0);
+      const viewHeight = onlyCenter ? 0 : size[1] * (resolution ?? 0);
       const shiftX = centerShift ? centerShift[0] : 0;
       const shiftY = centerShift ? centerShift[1] : 0;
       let minX = extent[0] + viewWidth / 2 + shiftX;

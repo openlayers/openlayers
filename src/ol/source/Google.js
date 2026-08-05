@@ -256,7 +256,11 @@ class Google extends TileImage {
     ];
 
     this.tileGrid = createXYZ({
-      extent: extentFromProjection(this.getProjection()),
+      extent: extentFromProjection(
+        /** @type {import("../proj.js").ProjectionLike} */ (
+          this.getProjection()
+        ),
+      ),
       maxZoom: maxZoom,
       tileSize: tileSize,
     });
@@ -265,6 +269,12 @@ class Google extends TileImage {
     this.sessionTokenValue_ = session;
     const key = this.apiKey_;
     const tileUrl = this.tileUrl_;
+    /**
+     * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate.
+     * @param {number} pixelRatio Pixel ratio.
+     * @param {import("../proj/Projection.js").default} projection Projection.
+     * @return {string} Tile URL.
+     */
     this.tileUrlFunction = function (tileCoord, pixelRatio, projection) {
       const z = tileCoord[0];
       const x = tileCoord[1];
@@ -277,7 +287,11 @@ class Google extends TileImage {
     const timeout = Math.max(expiry - Date.now() - 60 * 1000, 1);
     this.sessionRefreshId_ = setTimeout(() => this.createSession_(), timeout);
 
-    this.setAttributions(this.fetchAttributions_.bind(this));
+    this.setAttributions(
+      /** @type {import("./Source.js").AttributionLike} */ (
+        /** @type {unknown} */ (this.fetchAttributions_.bind(this))
+      ),
+    );
     // even if the state is already ready, we want the change event
     this.setState('ready');
   }
@@ -295,15 +309,22 @@ class Google extends TileImage {
     ) {
       return this.previousViewportAttribution_;
     }
+    const extent = frameState.extent;
+    if (!extent) {
+      return this.previousViewportAttribution_;
+    }
     const [west, south] = toLonLat(
-      getBottomLeft(frameState.extent),
+      getBottomLeft(extent),
       frameState.viewState.projection,
     );
     const [east, north] = toLonLat(
-      getTopRight(frameState.extent),
+      getTopRight(extent),
       frameState.viewState.projection,
     );
     const tileGrid = this.getTileGrid();
+    if (!tileGrid) {
+      return this.previousViewportAttribution_;
+    }
     const zoom = tileGrid.getZForResolution(
       frameState.viewState.resolution,
       this.zDirection,

@@ -25,6 +25,10 @@ import JSONFeature from './JSONFeature.js';
  */
 
 /**
+ * @typedef {Object<string, *>} TopoJSONObject
+ */
+
+/**
  * @typedef {Object} Options
  * @property {import("../proj.js").ProjectionLike} [dataProjection='EPSG:4326'] Default data projection.
  * @property {string} [layerName] Set the name of the TopoJSON topology
@@ -75,12 +79,17 @@ class TopoJSON extends JSONFeature {
      */
     this.layers_ = options.layers ? options.layers : null;
 
+    const dataProjectionCode = options.dataProjection
+      ? options.dataProjection
+      : 'EPSG:4326';
+    const dataProjection = getProjection(dataProjectionCode);
+    if (!dataProjection) {
+      throw new Error('Unable to get data projection: ' + dataProjectionCode);
+    }
     /**
      * @type {import("../proj/Projection.js").default}
      */
-    this.dataProjection = getProjection(
-      options.dataProjection ? options.dataProjection : 'EPSG:4326',
-    );
+    this.dataProjection = dataProjection;
   }
 
   /**
@@ -91,10 +100,13 @@ class TopoJSON extends JSONFeature {
    * @override
    */
   readFeaturesFromObject(object, options) {
-    if (object.type == 'Topology') {
-      const topoJSONTopology = /** @type {TopoJSONTopology} */ (object);
+    const topoJSONObject = /** @type {TopoJSONObject} */ (object);
+    if (topoJSONObject.type == 'Topology') {
+      const topoJSONTopology = /** @type {TopoJSONTopology} */ (topoJSONObject);
       let transform,
+        /** @type {Array<number>|null} */
         scale = null,
+        /** @type {Array<number>|null} */
         translate = null;
       if (topoJSONTopology['transform']) {
         transform = topoJSONTopology['transform'];
@@ -102,7 +114,7 @@ class TopoJSON extends JSONFeature {
         translate = transform['translate'];
       }
       const arcs = topoJSONTopology['arcs'];
-      if (transform) {
+      if (transform && scale && translate) {
         transformArcs(arcs, scale, translate);
       }
       /** @type {Array<Feature>} */
@@ -159,22 +171,22 @@ class TopoJSON extends JSONFeature {
    * @override
    */
   readProjectionFromObject(object) {
-    return this.dataProjection;
+    return /** @type {import("../proj/Projection.js").default} */ (
+      this.dataProjection
+    );
   }
 }
 
-/**
- * @const
- * @type {Object<string, function(TopoJSONGeometry, Array, ...Array=): import("../geom/Geometry.js").default>}
- */
-const GEOMETRY_READERS = {
-  'Point': readPointGeometry,
-  'LineString': readLineStringGeometry,
-  'Polygon': readPolygonGeometry,
-  'MultiPoint': readMultiPointGeometry,
-  'MultiLineString': readMultiLineStringGeometry,
-  'MultiPolygon': readMultiPolygonGeometry,
-};
+/** @type {Object<string, function(TopoJSONGeometry, ...*): import("../geom/Geometry.js").default>} */
+const GEOMETRY_READERS =
+  /** @type {Object<string, function(TopoJSONGeometry, ...*): import("../geom/Geometry.js").default>} */ ({
+    'Point': readPointGeometry,
+    'LineString': readLineStringGeometry,
+    'Polygon': readPolygonGeometry,
+    'MultiPoint': readMultiPointGeometry,
+    'MultiLineString': readMultiLineStringGeometry,
+    'MultiPolygon': readMultiPolygonGeometry,
+  });
 
 /**
  * Concatenate arcs into a coordinate array.
@@ -315,8 +327,8 @@ function readMultiPolygonGeometry(object, arcs) {
  * @param {TopoJSONGeometryCollection} collection TopoJSON Geometry
  *     object.
  * @param {Array<Array<import("../coordinate.js").Coordinate>>} arcs Array of arcs.
- * @param {Array<number>} scale Scale for each dimension.
- * @param {Array<number>} translate Translation for each dimension.
+ * @param {Array<number>|null} scale Scale for each dimension.
+ * @param {Array<number>|null} translate Translation for each dimension.
  * @param {string|undefined} property Property to set the `GeometryCollection`'s parent
  *     object to.
  * @param {string} name Name of the `Topology`'s child object.
@@ -353,8 +365,8 @@ function readFeaturesFromGeometryCollection(
  *
  * @param {TopoJSONGeometry} object TopoJSON geometry object.
  * @param {Array<Array<import("../coordinate.js").Coordinate>>} arcs Array of arcs.
- * @param {Array<number>} scale Scale for each dimension.
- * @param {Array<number>} translate Translation for each dimension.
+ * @param {Array<number>|null} scale Scale for each dimension.
+ * @param {Array<number>|null} translate Translation for each dimension.
  * @param {string|undefined} property Property to set the `GeometryCollection`'s parent
  *     object to.
  * @param {string} name Name of the `Topology`'s child object.
@@ -381,13 +393,16 @@ function readFeatureFromGeometry(
     }
     geometry = transformGeometryWithOptions(geometry, false, options);
   }
-  const feature = new Feature({geometry: geometry});
+  const feature = new Feature();
+  feature.setGeometry(geometry);
   if (object.id !== undefined) {
     feature.setId(object.id);
   }
+  /** @type {Object<string, *>|undefined} */
   let properties = object.properties;
   if (property) {
     if (!properties) {
+      /** @type {Object<string, *>} */
       properties = {};
     }
     properties[property] = name;

@@ -131,7 +131,13 @@ export function renderFeature(
   }
   const loading = loadingPromises.length > 0;
   if (loading) {
-    Promise.all(loadingPromises).then(() => listener(null));
+    Promise.all(loadingPromises).then(() =>
+      listener(
+        /** @type {import("../events/Event.js").default} */ (
+          /** @type {unknown} */ (null)
+        ),
+      ),
+    );
   }
   renderFeatureInternal(
     replayGroup,
@@ -210,8 +216,8 @@ function renderGeometry(replayGroup, geometry, style, feature, index) {
   replay.drawCustom(
     /** @type {import("../geom/SimpleGeometry.js").default} */ (geometry),
     feature,
-    style.getRenderer(),
-    style.getHitDetectionRenderer(),
+    /** @type {Function} */ (style.getRenderer()),
+    /** @type {Function} */ (style.getHitDetectionRenderer()),
     index,
   );
 }
@@ -357,9 +363,11 @@ function renderPointGeometry(
   const imageStyle = style.getImage();
   const textStyle = style.getText();
   const hasText = textStyle && textStyle.getText();
-  /** @type {import("../render/canvas.js").DeclutterImageWithText} */
+  /** @type {import("../render/canvas.js").DeclutterImageWithText|undefined} */
   const declutterImageWithText =
-    declutter && imageStyle && hasText ? {} : undefined;
+    declutter && imageStyle && hasText
+      ? /** @type {import("../render/canvas.js").DeclutterImageWithText} */ ({})
+      : undefined;
   if (imageStyle) {
     if (imageStyle.getImageState() != ImageState.LOADED) {
       return;
@@ -395,9 +403,11 @@ function renderMultiPointGeometry(
   const hasImage = imageStyle && imageStyle.getOpacity() !== 0;
   const textStyle = style.getText();
   const hasText = textStyle && textStyle.getText();
-  /** @type {import("../render/canvas.js").DeclutterImageWithText} */
+  /** @type {import("../render/canvas.js").DeclutterImageWithText|undefined} */
   const declutterImageWithText =
-    declutter && hasImage && hasText ? {} : undefined;
+    declutter && hasImage && hasText
+      ? /** @type {import("../render/canvas.js").DeclutterImageWithText} */ ({})
+      : undefined;
   if (hasImage) {
     if (imageStyle.getImageState() != ImageState.LOADED) {
       return;

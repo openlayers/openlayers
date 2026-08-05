@@ -78,7 +78,9 @@ class TileJSON extends TileImage {
       cacheSize: options.cacheSize,
       crossOrigin: options.crossOrigin,
       interpolate: options.interpolate,
-      projection: getProjection('EPSG:3857'),
+      projection: /** @type {import("../proj.js").ProjectionLike} */ (
+        getProjection('EPSG:3857')
+      ),
       reprojectionErrorThreshold: options.reprojectionErrorThreshold,
       state: 'loading',
       tileLoadFunction: options.tileLoadFunction,
@@ -88,13 +90,13 @@ class TileJSON extends TileImage {
     });
 
     /**
-     * @type {Config}
+     * @type {Config|null}
      * @private
      */
     this.tileJSON_ = null;
 
     /**
-     * @type {number|import("../size.js").Size}
+     * @type {number|import("../size.js").Size|undefined}
      * @private
      */
     this.tileSize_ = options.tileSize;
@@ -150,7 +152,7 @@ class TileJSON extends TileImage {
   }
 
   /**
-   * @return {Config} The tilejson object.
+   * @return {Config|null} The tilejson object.
    * @api
    */
   getTileJSON() {
@@ -165,12 +167,20 @@ class TileJSON extends TileImage {
     const epsg4326Projection = getProjection('EPSG:4326');
 
     const sourceProjection = this.getProjection();
+    if (!sourceProjection || !epsg4326Projection) {
+      this.handleTileJSONError();
+      return;
+    }
     let extent;
     if (tileJSON['bounds'] !== undefined) {
       const transform = getTransformFromProjections(
         epsg4326Projection,
         sourceProjection,
       );
+      if (!transform) {
+        this.handleTileJSONError();
+        return;
+      }
       extent = applyTransform(tileJSON['bounds'], transform);
     }
 
@@ -189,12 +199,16 @@ class TileJSON extends TileImage {
 
     if (tileJSON['attribution'] && !this.getAttributions()) {
       const attributionExtent = extent !== undefined ? extent : gridExtent;
-      this.setAttributions(function (frameState) {
-        if (intersects(attributionExtent, frameState.extent)) {
-          return [tileJSON['attribution']];
-        }
-        return null;
-      });
+      this.setAttributions(
+        /** @type {import("./Source.js").Attribution} */ (
+          function (frameState) {
+            if (intersects(attributionExtent, frameState.extent)) {
+              return [tileJSON['attribution']];
+            }
+            return null;
+          }
+        ),
+      );
     }
     this.tileJSON_ = tileJSON;
     this.setState('ready');

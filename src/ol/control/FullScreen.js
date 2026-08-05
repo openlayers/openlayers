@@ -10,6 +10,14 @@ import Control from './Control.js';
 
 const events = ['fullscreenchange', 'webkitfullscreenchange'];
 
+/***
+ * @typedef {HTMLElement & {webkitRequestFullscreen?: function(): void}} FullScreenElement
+ */
+
+/***
+ * @typedef {Document & {webkitIsFullScreen?: boolean, webkitExitFullscreen?: function(): void}} FullScreenDocument
+ */
+
 /**
  * @enum {string}
  */
@@ -188,13 +196,14 @@ class FullScreen extends Control {
     this.button_.appendChild(this.labelNode_);
     this.button_.addEventListener(
       EventType.CLICK,
-      this.handleClick_.bind(this),
+      /** @type {EventListener} */ (this.handleClick_.bind(this)),
       false,
     );
     this.setClassName_(this.button_, this.isInFullscreen_);
 
-    this.element.className = `${this.cssClassName_} ${CLASS_UNSELECTABLE} ${CLASS_CONTROL}`;
-    this.element.appendChild(this.button_);
+    const element = /** @type {!HTMLElement} */ (this.element);
+    element.className = `${this.cssClassName_} ${CLASS_UNSELECTABLE} ${CLASS_CONTROL}`;
+    element.appendChild(this.button_);
   }
 
   /**
@@ -229,6 +238,9 @@ class FullScreen extends Control {
             : this.source_;
       } else {
         element = map.getTargetElement();
+      }
+      if (!element) {
+        return;
       }
       if (this.keys_) {
         requestFullScreenWithKeys(element);
@@ -319,9 +331,13 @@ class FullScreen extends Control {
     if (map) {
       const doc = map.getOwnerDocument();
       if (isFullScreenSupported(doc)) {
-        this.element.classList.remove(CLASS_UNSUPPORTED);
+        /** @type {!HTMLElement} */ (this.element).classList.remove(
+          CLASS_UNSUPPORTED,
+        );
       } else {
-        this.element.classList.add(CLASS_UNSUPPORTED);
+        /** @type {!HTMLElement} */ (this.element).classList.add(
+          CLASS_UNSUPPORTED,
+        );
       }
 
       for (let i = 0, ii = events.length; i < ii; ++i) {
@@ -339,10 +355,10 @@ class FullScreen extends Control {
  * @return {boolean} Fullscreen is supported by the current platform.
  */
 function isFullScreenSupported(doc) {
-  const body = doc.body;
+  const body = /** @type {FullScreenElement} */ (doc.body);
   return !!(
-    body['webkitRequestFullscreen'] ||
-    (body.requestFullscreen && doc.fullscreenEnabled)
+    body.webkitRequestFullscreen ||
+    ('requestFullscreen' in body && doc.fullscreenEnabled)
   );
 }
 
@@ -351,7 +367,8 @@ function isFullScreenSupported(doc) {
  * @return {boolean} Element is currently in fullscreen.
  */
 function isFullScreen(doc) {
-  return !!(doc['webkitIsFullScreen'] || doc.fullscreenElement);
+  const fullScreenDoc = /** @type {FullScreenDocument} */ (doc);
+  return !!(fullScreenDoc.webkitIsFullScreen || doc.fullscreenElement);
 }
 
 /**
@@ -359,10 +376,11 @@ function isFullScreen(doc) {
  * @param {HTMLElement} element Element to request fullscreen
  */
 function requestFullScreen(element) {
+  const fullScreenElement = /** @type {FullScreenElement} */ (element);
   if (element.requestFullscreen) {
     element.requestFullscreen();
-  } else if (element['webkitRequestFullscreen']) {
-    element['webkitRequestFullscreen']();
+  } else if (fullScreenElement.webkitRequestFullscreen) {
+    fullScreenElement.webkitRequestFullscreen();
   }
 }
 
@@ -371,8 +389,9 @@ function requestFullScreen(element) {
  * @param {HTMLElement} element Element to request fullscreen
  */
 function requestFullScreenWithKeys(element) {
-  if (element['webkitRequestFullscreen']) {
-    element['webkitRequestFullscreen']();
+  const fullScreenElement = /** @type {FullScreenElement} */ (element);
+  if (fullScreenElement.webkitRequestFullscreen) {
+    fullScreenElement.webkitRequestFullscreen();
   } else {
     requestFullScreen(element);
   }
@@ -383,10 +402,11 @@ function requestFullScreenWithKeys(element) {
  * @param {Document} doc The document to exit fullscren from
  */
 function exitFullScreen(doc) {
+  const fullScreenDoc = /** @type {FullScreenDocument} */ (doc);
   if (doc.exitFullscreen) {
     doc.exitFullscreen();
-  } else if (doc['webkitExitFullscreen']) {
-    doc['webkitExitFullscreen']();
+  } else if (fullScreenDoc.webkitExitFullscreen) {
+    fullScreenDoc.webkitExitFullscreen();
   }
 }
 

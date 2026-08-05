@@ -53,16 +53,18 @@ export function createHitDetectionImageData(
     context,
     HIT_DETECT_RESOLUTION,
     extent,
-    null,
+    [1, 0, 0, 1, 0, 0],
     rotation,
-    squaredTolerance,
+    squaredTolerance ?? 0,
     projection
-      ? getTransformFromProjections(getUserProjection(), projection)
-      : null,
+      ? (getTransformFromProjections(getUserProjection(), projection) ??
+          undefined)
+      : undefined,
   );
   const featureCount = features.length;
   // Stretch hit detection index to use the whole available color range
   const indexFactor = Math.floor((256 * 256 * 256 - 1) / featureCount);
+  /** @type {Object<number, Object<string, Array<*>>>} */
   const featuresByZIndex = {};
   for (let i = 1; i <= featureCount; ++i) {
     const feature = features[i - 1];
@@ -95,7 +97,9 @@ export function createHitDetectionImageData(
         stroke.setColor(color);
         stroke.setLineDash(null);
       }
-      style.setText(undefined);
+      style.setText(
+        /** @type {import("../../style/Text.js").default|null} */ (null),
+      );
       const image = originalStyle.getImage();
       if (image) {
         const imgSize = image.getImageSize();
@@ -115,12 +119,12 @@ export function createHitDetectionImageData(
         style.setImage(
           new Icon({
             img: img,
-            anchor: image.getAnchor(),
+            anchor: image.getAnchor() ?? undefined,
             anchorXUnits: 'pixels',
             anchorYUnits: 'pixels',
-            offset: image.getOrigin(),
+            offset: image.getOrigin() ?? undefined,
             opacity: 1,
-            size: image.getSize(),
+            size: image.getSize() ?? undefined,
             scale: image.getScale(),
             rotation: image.getRotation(),
             rotateWithView: image.getRotateWithView(),

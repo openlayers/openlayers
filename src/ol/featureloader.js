@@ -54,7 +54,7 @@ let withCredentials = false;
  * @param {import("./extent.js").Extent} extent Extent.
  * @param {number} resolution Resolution.
  * @param {import("./proj/Projection.js").default} projection Projection.
- * @param {function(Array<FeatureType>, import("./proj/Projection.js").default): void} success Success
+ * @param {function(Array<FeatureType>, import("./proj/Projection.js").default|undefined): void} success Success
  *      Function called with the loaded features and optionally with the data projection.
  * @param {function(): void} failure Failure
  *      Function called when loading failed.
@@ -155,7 +155,7 @@ export function xhr(url, format) {
       projection,
       /**
        * @param {Array<FeatureType>} features The loaded features.
-       * @param {import("./proj/Projection.js").default} dataProjection Data
+       * @param {import("./proj/Projection.js").default|undefined} dataProjection Data
        * projection.
        */
       (features, dataProjection) => {

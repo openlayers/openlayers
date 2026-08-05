@@ -58,7 +58,7 @@ class Rotate extends Control {
      * @type {HTMLElement}
      * @private
      */
-    this.label_ = null;
+    this.label_;
 
     if (typeof label === 'string') {
       this.label_ = document.createElement('span');
@@ -79,13 +79,13 @@ class Rotate extends Control {
 
     button.addEventListener(
       EventType.CLICK,
-      this.handleClick_.bind(this),
+      /** @type {EventListener} */ (this.handleClick_.bind(this)),
       false,
     );
 
     const cssClasses =
       className + ' ' + CLASS_UNSELECTABLE + ' ' + CLASS_CONTROL;
-    const element = this.element;
+    const element = /** @type {!HTMLElement} */ (this.element);
     element.className = cssClasses;
     element.appendChild(button);
 
@@ -113,7 +113,7 @@ class Rotate extends Control {
     this.rotation_ = undefined;
 
     if (this.autoHide_) {
-      this.element.classList.add(CLASS_HIDDEN);
+      /** @type {!HTMLElement} */ (this.element).classList.add(CLASS_HIDDEN);
     }
   }
 
@@ -135,6 +135,9 @@ class Rotate extends Control {
    */
   resetNorth_() {
     const map = this.getMap();
+    if (!map) {
+      return;
+    }
     const view = map.getView();
     if (!view) {
       // the map does not have a view, so we can't act
@@ -168,12 +171,13 @@ class Rotate extends Control {
     const rotation = frameState.viewState.rotation;
     if (rotation != this.rotation_) {
       const transform = 'rotate(' + rotation + 'rad)';
-      if (this.autoHide_) {
-        const contains = this.element.classList.contains(CLASS_HIDDEN);
+      const element = this.element;
+      if (this.autoHide_ && element) {
+        const contains = element.classList.contains(CLASS_HIDDEN);
         if (!contains && rotation === 0) {
-          this.element.classList.add(CLASS_HIDDEN);
+          element.classList.add(CLASS_HIDDEN);
         } else if (contains && rotation !== 0) {
-          this.element.classList.remove(CLASS_HIDDEN);
+          element.classList.remove(CLASS_HIDDEN);
         }
       }
       this.label_.style.transform = transform;

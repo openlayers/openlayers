@@ -200,7 +200,15 @@ class UrlTile extends TileSource {
     this.urls = urls;
     const key = urls.join('\n');
     if (this.generateTileUrlFunction_) {
-      this.setTileUrlFunction(createFromTemplates(urls, this.tileGrid), key);
+      this.setTileUrlFunction(
+        createFromTemplates(
+          urls,
+          /** @type {import("../tilegrid/TileGrid.js").default} */ (
+            this.tileGrid
+          ),
+        ),
+        key,
+      );
     } else {
       this.setKey(key);
     }

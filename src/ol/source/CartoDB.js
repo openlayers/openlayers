@@ -61,7 +61,7 @@ class CartoDB extends XYZ {
     });
 
     /**
-     * @type {string}
+     * @type {string|undefined}
      * @private
      */
     this.account_ = options.account;

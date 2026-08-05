@@ -39,7 +39,7 @@ class PinchRotate extends PointerInteraction {
 
     /**
      * @private
-     * @type {import("../coordinate.js").Coordinate}
+     * @type {import("../coordinate.js").Coordinate|null}
      */
     this.anchor_ = null;
 
@@ -110,14 +110,15 @@ class PinchRotate extends PointerInteraction {
     // rotate anchor point.
     // FIXME: should be the intersection point between the lines:
     //     touch0,touch1 and previousTouch0,previousTouch1
-    this.anchor_ = map.getCoordinateFromPixelInternal(
-      map.getEventPixel(centroidFromPointers(this.targetPointers)),
-    );
+    this.anchor_ =
+      map.getCoordinateFromPixelInternal(
+        map.getEventPixel(centroidFromPointers(this.targetPointers)),
+      ) ?? null;
 
     // rotate
     if (this.rotating_) {
       map.render();
-      view.adjustRotationInternal(rotationDelta, this.anchor_);
+      view.adjustRotationInternal(rotationDelta, this.anchor_ ?? undefined);
     }
   }
 

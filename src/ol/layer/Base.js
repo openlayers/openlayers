@@ -86,7 +86,7 @@ class BaseLayer extends BaseObject {
     this.un;
 
     /**
-     * @type {BackgroundColor|false}
+     * @type {BackgroundColor|false|undefined}
      * @private
      */
     this.background_ = options.background;
@@ -130,7 +130,7 @@ class BaseLayer extends BaseObject {
     this.setProperties(properties);
 
     /**
-     * @type {import("./Layer.js").State}
+     * @type {import("./Layer.js").State|null}
      * @private
      */
     this.state_ = null;
@@ -138,7 +138,7 @@ class BaseLayer extends BaseObject {
 
   /**
    * Get the background for this layer.
-   * @return {BackgroundColor|false} Layer background.
+   * @return {BackgroundColor|false|undefined} Layer background.
    */
   getBackground() {
     return this.background_;
@@ -299,7 +299,7 @@ class BaseLayer extends BaseObject {
 
   /**
    * Sets the background color.
-   * @param {BackgroundColor} [background] Background color.
+   * @param {BackgroundColor|undefined} [background] Background color.
    */
   setBackground(background) {
     this.background_ = background;
@@ -399,7 +399,7 @@ class BaseLayer extends BaseObject {
    */
   disposeInternal() {
     if (this.state_) {
-      this.state_.layer = null;
+      this.state_.layer = /** @type {?} */ (null);
       this.state_ = null;
     }
     super.disposeInternal();

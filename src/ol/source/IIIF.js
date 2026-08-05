@@ -48,6 +48,10 @@ import {CustomTile} from './Zoomify.js';
  * zoom levels. See {@link module:ol/tilegrid/TileGrid~TileGrid#getZForResolution}.
  */
 
+/**
+ * @param {number} percentage Percentage value.
+ * @return {string} Formatted percentage.
+ */
 function formatPercentage(percentage) {
   return percentage.toLocaleString('en', {maximumFractionDigits: 10});
 }
@@ -77,7 +81,7 @@ class IIIF extends TileImage {
         : '/');
     const version = partialOptions.version || Versions.VERSION2;
     const sizes = partialOptions.sizes || [];
-    const size = partialOptions.size;
+    const size = /** @type {import("../size.js").Size} */ (partialOptions.size);
     assert(
       size != undefined &&
         Array.isArray(size) &&
@@ -117,7 +121,12 @@ class IIIF extends TileImage {
         supports.includes('sizeByW') ||
         supports.includes('sizeByPct'));
 
-    let tileWidth, tileHeight, maxZoom;
+    /** @type {number} */
+    let tileWidth = DEFAULT_TILE_SIZE;
+    /** @type {number} */
+    let tileHeight = DEFAULT_TILE_SIZE;
+    /** @type {number} */
+    let maxZoom;
 
     resolutions.sort(function (a, b) {
       return b - a;
@@ -221,6 +230,7 @@ class IIIF extends TileImage {
       resolutions: resolutions,
     });
 
+    /** @type {import("../Tile.js").UrlFunction} */
     const tileUrlFunction = function (tileCoord, pixelRatio, projection) {
       let regionParam, sizeParam;
       const zoom = tileCoord[0];
@@ -347,7 +357,7 @@ class IIIF extends TileImage {
     /**
      * @type {number|import("../array.js").NearestDirectionFunction}
      */
-    this.zDirection = partialOptions.zDirection;
+    this.zDirection = partialOptions.zDirection ?? 0;
   }
 }
 

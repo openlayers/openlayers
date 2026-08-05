@@ -879,7 +879,7 @@ export function applyTransform(extent, transformFn, dest, stops) {
     return createOrUpdateEmpty(dest);
   }
   let coordinates = [];
-  if (stops > 1) {
+  if (stops !== undefined && stops > 1) {
     const width = extent[2] - extent[0];
     const height = extent[3] - extent[1];
     for (let i = 0; i < stops; ++i) {

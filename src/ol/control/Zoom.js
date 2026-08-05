@@ -82,7 +82,7 @@ class Zoom extends Control {
 
     inElement.addEventListener(
       EventType.CLICK,
-      this.handleClick_.bind(this, delta),
+      /** @type {EventListener} */ (this.handleClick_.bind(this, delta)),
       false,
     );
 
@@ -98,13 +98,13 @@ class Zoom extends Control {
 
     outElement.addEventListener(
       EventType.CLICK,
-      this.handleClick_.bind(this, -delta),
+      /** @type {EventListener} */ (this.handleClick_.bind(this, -delta)),
       false,
     );
 
     const cssClasses =
       className + ' ' + CLASS_UNSELECTABLE + ' ' + CLASS_CONTROL;
-    const element = this.element;
+    const element = /** @type {!HTMLElement} */ (this.element);
     element.className = cssClasses;
     element.appendChild(inElement);
     element.appendChild(outElement);
@@ -132,6 +132,9 @@ class Zoom extends Control {
    */
   zoomByDelta_(delta) {
     const map = this.getMap();
+    if (!map) {
+      return;
+    }
     const view = map.getView();
     if (!view) {
       // the map does not have a view, so we can't act
@@ -141,6 +144,9 @@ class Zoom extends Control {
     const currentZoom = view.getZoom();
     if (currentZoom !== undefined) {
       const newZoom = view.getConstrainedZoom(currentZoom + delta);
+      if (newZoom === undefined) {
+        return;
+      }
       if (this.duration_ > 0) {
         if (view.getAnimating()) {
           view.cancelAnimations();

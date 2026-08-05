@@ -56,13 +56,13 @@ class Control extends BaseObject {
 
     /**
      * @protected
-     * @type {HTMLElement}
+     * @type {HTMLElement|null}
      */
     this.element = element ? element : null;
 
     /**
      * @private
-     * @type {HTMLElement}
+     * @type {HTMLElement|null}
      */
     this.target_ = null;
 
@@ -124,12 +124,19 @@ class Control extends BaseObject {
     this.map_ = map;
     if (map) {
       const target = this.target_ ?? map.getOverlayContainerStopEvent();
-      if (this.element) {
+      if (this.element && target) {
         target.appendChild(this.element);
       }
       if (this.render !== VOID) {
         this.listenerKeys.push(
-          listen(map, MapEventType.POSTRENDER, this.render, this),
+          listen(
+            map,
+            MapEventType.POSTRENDER,
+            /** @type {import("../events.js").ListenerFunction} */ (
+              this.render
+            ),
+            this,
+          ),
         );
       }
       map.render();

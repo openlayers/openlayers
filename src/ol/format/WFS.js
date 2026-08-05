@@ -29,8 +29,12 @@ import {
 } from './xsd.js';
 
 /**
+ * @typedef {Object<string, *>} WFSObject
+ */
+
+/**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {import("../xml.js").ParsersNS}
  */
 const FEATURE_COLLECTION_PARSERS = {
   'http://www.opengis.net/gml': {
@@ -46,7 +50,7 @@ const FEATURE_COLLECTION_PARSERS = {
 
 /**
  * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {import("../xml.js").ParsersNS}
  */
 const TRANSACTION_SUMMARY_PARSERS = {
   'http://www.opengis.net/wfs': {
@@ -245,7 +249,7 @@ const SCHEMA_LOCATIONS = {
 };
 
 /**
- * @type {Object<string, object>}
+ * @type {Object<string, typeof GML2|typeof GML3|typeof GML32>}
  */
 const GML_FORMATS = {
   '2.0.0': GML32,
@@ -351,13 +355,8 @@ class WFS extends XMLFeature {
     } else {
       featuresNS = this.gmlFormat_.FEATURE_COLLECTION_PARSERS;
     }
-    let features = pushParseAndPop(
-      [],
-      featuresNS,
-      node,
-      objectStack,
-      this.gmlFormat_,
-    );
+    let /** @type {Array<import("../Feature.js").default>} */ features =
+        pushParseAndPop([], featuresNS, node, objectStack, this.gmlFormat_);
     if (!features) {
       features = [];
     }
@@ -421,7 +420,7 @@ class WFS extends XMLFeature {
    *     FeatureCollection metadata.
    */
   readFeatureCollectionMetadataFromDocument(doc) {
-    for (let n = /** @type {Node} */ (doc.firstChild); n; n = n.nextSibling) {
+    for (let n = doc.firstChild; n; n = n.nextSibling) {
       if (n.nodeType == Node.ELEMENT_NODE) {
         return this.readFeatureCollectionMetadataFromNode(
           /** @type {Element} */ (n),
@@ -439,7 +438,7 @@ class WFS extends XMLFeature {
   readFeatureCollectionMetadataFromNode(node) {
     const result = {};
     const value = readNonNegativeIntegerString(
-      node.getAttribute('numberOfFeatures'),
+      node.getAttribute('numberOfFeatures') ?? '',
     );
     result['numberOfFeatures'] = value;
     return pushParseAndPop(
@@ -456,7 +455,7 @@ class WFS extends XMLFeature {
    * @return {TransactionResponse|undefined} Transaction response.
    */
   readTransactionResponseFromDocument(doc) {
-    for (let n = /** @type {Node} */ (doc.firstChild); n; n = n.nextSibling) {
+    for (let n = doc.firstChild; n; n = n.nextSibling) {
       if (n.nodeType == Node.ELEMENT_NODE) {
         return this.readTransactionResponseFromNode(/** @type {Element} */ (n));
       }
@@ -537,7 +536,7 @@ class WFS extends XMLFeature {
           '`options.geometryName` must also be provided when `options.bbox` is set',
         );
         filter = this.combineBboxAndFilter(
-          options.geometryName,
+          /** @type {string} */ (options.geometryName),
           options.bbox,
           options.srsName,
           filter,
@@ -554,7 +553,10 @@ class WFS extends XMLFeature {
       );
     } else {
       // Write one query node per element in featuresType.
-      options.featureTypes.forEach((/** @type {FeatureType} */ featureType) => {
+      options.featureTypes.forEach((featureType) => {
+        if (typeof featureType === 'string') {
+          return;
+        }
         const completeFilter = this.combineBboxAndFilter(
           featureType.geometryName,
           featureType.bbox,
@@ -601,6 +603,7 @@ class WFS extends XMLFeature {
    * @api
    */
   writeTransaction(inserts, updates, deletes, options) {
+    /** @type {Array<WFSObject>} */
     const objectStack = [];
     const version = options.version ? options.version : this.version_;
     const node = createElementNS(WFSNS[version], 'Transaction');
@@ -644,7 +647,7 @@ class WFS extends XMLFeature {
 
   /**
    * @param {Document} doc Document.
-   * @return {import("../proj/Projection.js").default} Projection.
+   * @return {import("../proj/Projection.js").default|undefined} Projection.
    * @override
    */
   readProjectionFromDocument(doc) {
@@ -653,12 +656,12 @@ class WFS extends XMLFeature {
         return this.readProjectionFromNode(/** @type {Element} */ (n));
       }
     }
-    return null;
+    return undefined;
   }
 
   /**
    * @param {Element} node Node.
-   * @return {import("../proj/Projection.js").default} Projection.
+   * @return {import("../proj/Projection.js").default|undefined} Projection.
    * @override
    */
   readProjectionFromNode(node) {
@@ -667,16 +670,24 @@ class WFS extends XMLFeature {
       for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
         if (!(
           n.childNodes.length === 0 ||
-          (n.childNodes.length === 1 && n.firstChild.nodeType === 3)
+          (n.childNodes.length === 1 &&
+            n.firstChild &&
+            n.firstChild.nodeType === 3)
         )) {
-          const objectStack = [{}];
+          const objectStack = [/** @type {WFSObject} */ ({})];
           this.gmlFormat_.readGeometryElement(n, objectStack);
-          return getProjection(objectStack.pop().srsName);
+          const stackItem = objectStack.pop();
+          if (stackItem && stackItem['srsName']) {
+            return (
+              getProjection(/** @type {string} */ (stackItem['srsName'])) ??
+              undefined
+            );
+          }
         }
       }
     }
 
-    return null;
+    return undefined;
   }
 }
 
@@ -685,7 +696,7 @@ class WFS extends XMLFeature {
  * @param {*} baseObj Base object.
  * @param {string} version Version.
  * @param {WriteTransactionOptions} options Options.
- * @return {Object} Request object.
+ * @return {WFSObject} Request object.
  */
 function createTransactionRequest(node, baseObj, version, options) {
   const featurePrefix = options.featurePrefix
@@ -699,34 +710,36 @@ function createTransactionRequest(node, baseObj, version, options) {
   } else if (version === '2.0.0') {
     gmlVersion = 3.2;
   }
-  const obj = Object.assign(
-    {node},
-    {
-      version,
-      'featureNS': options.featureNS,
-      'featureType': options.featureType,
-      'featurePrefix': featurePrefix,
-      'gmlVersion': gmlVersion,
-      'hasZ': options.hasZ,
-      'srsName': options.srsName,
-    },
-    baseObj,
+  const obj = /** @type {WFSObject} */ (
+    Object.assign(
+      {node},
+      {
+        version,
+        'featureNS': options.featureNS,
+        'featureType': options.featureType,
+        'featurePrefix': featurePrefix,
+        'gmlVersion': gmlVersion,
+        'hasZ': options.hasZ,
+        'srsName': options.srsName,
+      },
+      baseObj,
+    )
   );
   return obj;
 }
 
 /**
  * @param {string} type Request type.
- * @param {Array<import("../Feature.js").default>} features Features.
- * @param {Array<*>} objectStack Object stack.
- * @param {Element} request Transaction Request.
+ * @param {Array<*>} values Values to serialize.
+ * @param {Array<WFSObject>} objectStack Object stack.
+ * @param {WFSObject} request Transaction request context.
  */
-function serializeTransactionRequest(type, features, objectStack, request) {
+function serializeTransactionRequest(type, values, objectStack, request) {
   pushSerializeAndPop(
     request,
     TRANSACTION_SERIALIZERS,
     makeSimpleNodeFactory(type),
-    features,
+    values,
     objectStack,
   );
 }
@@ -917,7 +930,7 @@ function writeUpdate(node, feature, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {Object} pair Property name and value.
+ * @param {{name: string, value: *}} pair Property name and value.
  * @param {Array<*>} objectStack Node stack.
  */
 function writeProperty(node, pair, objectStack) {
@@ -1027,7 +1040,9 @@ const GETFEATURE_SERIALIZERS = {
  * @param {Array<*>} objectStack Node stack.
  */
 function writeQuery(node, featureType, objectStack) {
-  const context = /** @type {Object} */ (objectStack[objectStack.length - 1]);
+  const context = /** @type {WFSObject} */ (
+    objectStack[objectStack.length - 1]
+  );
   const version = context['version'];
   const featurePrefix = context['featurePrefix'];
   const featureNS = context['featureNS'];
@@ -1078,7 +1093,9 @@ function writeQuery(node, featureType, objectStack) {
  * @param {Array<*>} objectStack Node stack.
  */
 function writeFilterCondition(node, filter, objectStack) {
-  const context = /** @type {Object} */ (objectStack[objectStack.length - 1]);
+  const context = /** @type {WFSObject} */ (
+    objectStack[objectStack.length - 1]
+  );
   /** @type {import("../xml.js").NodeStackItem} */
   const item = {node};
   Object.assign(item, {context});
@@ -1097,9 +1114,9 @@ function writeFilterCondition(node, filter, objectStack) {
  * @param {Array<*>} objectStack Node stack.
  */
 function writeBboxFilter(node, filter, objectStack) {
-  const parent = /** @type {Object} */ (objectStack[objectStack.length - 1]);
-  const context = parent['context'];
-  const version = context['version'];
+  const parent = /** @type {WFSObject} */ (objectStack[objectStack.length - 1]);
+  const context = /** @type {WFSObject} */ (parent['context']);
+  const version = /** @type {string} */ (context['version']);
   parent['srsName'] = filter.srsName;
   const format = GML_FORMATS[version];
 
@@ -1122,9 +1139,9 @@ function writeResourceIdFilter(node, filter, objectStack) {
  * @param {Array<*>} objectStack Node stack.
  */
 function writeSpatialFilter(node, filter, objectStack) {
-  const parent = /** @type {Object} */ (objectStack[objectStack.length - 1]);
-  const context = parent['context'];
-  const version = context['version'];
+  const parent = /** @type {WFSObject} */ (objectStack[objectStack.length - 1]);
+  const context = /** @type {WFSObject} */ (parent['context']);
+  const version = /** @type {string} */ (context['version']);
   parent['srsName'] = filter.srsName;
   const format = GML_FORMATS[version];
 
@@ -1138,9 +1155,9 @@ function writeSpatialFilter(node, filter, objectStack) {
  * @param {Array<*>} objectStack Node stack.
  */
 function writeDWithinFilter(node, filter, objectStack) {
-  const parent = /** @type {Object} */ (objectStack[objectStack.length - 1]);
-  const context = parent['context'];
-  const version = context['version'];
+  const parent = /** @type {WFSObject} */ (objectStack[objectStack.length - 1]);
+  const context = /** @type {WFSObject} */ (parent['context']);
+  const version = /** @type {string} */ (context['version']);
   writeSpatialFilter(node, filter, objectStack);
   const distance = createElementNS(getFilterNS(version), 'Distance');
   writeStringTextNode(distance, filter.distance.toString());
@@ -1158,8 +1175,8 @@ function writeDWithinFilter(node, filter, objectStack) {
  * @param {Array<*>} objectStack Node stack.
  */
 function writeDuringFilter(node, filter, objectStack) {
-  const parent = /** @type {Object} */ (objectStack[objectStack.length - 1]);
-  const context = parent['context'];
+  const parent = /** @type {WFSObject} */ (objectStack[objectStack.length - 1]);
+  const context = /** @type {WFSObject} */ (parent['context']);
   const version = context['version'];
 
   writeExpression(FESNS[version], 'ValueReference', node, filter.propertyName);
@@ -1182,8 +1199,8 @@ function writeDuringFilter(node, filter, objectStack) {
  * @param {Array<*>} objectStack Node stack.
  */
 function writeLogicalFilter(node, filter, objectStack) {
-  const parent = /** @type {Object} */ (objectStack[objectStack.length - 1]);
-  const context = parent['context'];
+  const parent = /** @type {WFSObject} */ (objectStack[objectStack.length - 1]);
+  const context = /** @type {WFSObject} */ (parent['context']);
   /** @type {import("../xml.js").NodeStackItem} */
   const item = {node};
   Object.assign(item, {context});
@@ -1206,8 +1223,8 @@ function writeLogicalFilter(node, filter, objectStack) {
  * @param {Array<*>} objectStack Node stack.
  */
 function writeNotFilter(node, filter, objectStack) {
-  const parent = /** @type {Object} */ (objectStack[objectStack.length - 1]);
-  const context = parent['context'];
+  const parent = /** @type {WFSObject} */ (objectStack[objectStack.length - 1]);
+  const context = /** @type {WFSObject} */ (parent['context']);
   /** @type {import("../xml.js").NodeStackItem} */
   const item = {node};
   Object.assign(item, {context});
@@ -1227,8 +1244,8 @@ function writeNotFilter(node, filter, objectStack) {
  * @param {Array<*>} objectStack Node stack.
  */
 function writeComparisonFilter(node, filter, objectStack) {
-  const parent = /** @type {Object} */ (objectStack[objectStack.length - 1]);
-  const context = parent['context'];
+  const parent = /** @type {WFSObject} */ (objectStack[objectStack.length - 1]);
+  const context = /** @type {WFSObject} */ (parent['context']);
   const version = context['version'];
   if (filter.matchCase !== undefined) {
     node.setAttribute('matchCase', filter.matchCase.toString());
@@ -1243,8 +1260,8 @@ function writeComparisonFilter(node, filter, objectStack) {
  * @param {Array<*>} objectStack Node stack.
  */
 function writeIsNullFilter(node, filter, objectStack) {
-  const parent = /** @type {Object} */ (objectStack[objectStack.length - 1]);
-  const context = parent['context'];
+  const parent = /** @type {WFSObject} */ (objectStack[objectStack.length - 1]);
+  const context = /** @type {WFSObject} */ (parent['context']);
   const version = context['version'];
   writePropertyName(version, node, filter.propertyName);
 }
@@ -1255,8 +1272,8 @@ function writeIsNullFilter(node, filter, objectStack) {
  * @param {Array<*>} objectStack Node stack.
  */
 function writeIsBetweenFilter(node, filter, objectStack) {
-  const parent = /** @type {Object} */ (objectStack[objectStack.length - 1]);
-  const context = parent['context'];
+  const parent = /** @type {WFSObject} */ (objectStack[objectStack.length - 1]);
+  const context = /** @type {WFSObject} */ (parent['context']);
   const version = context['version'];
   const ns = getFilterNS(version);
 
@@ -1277,8 +1294,8 @@ function writeIsBetweenFilter(node, filter, objectStack) {
  * @param {Array<*>} objectStack Node stack.
  */
 function writeIsLikeFilter(node, filter, objectStack) {
-  const parent = /** @type {Object} */ (objectStack[objectStack.length - 1]);
-  const context = parent['context'];
+  const parent = /** @type {WFSObject} */ (objectStack[objectStack.length - 1]);
+  const context = /** @type {WFSObject} */ (parent['context']);
   const version = context['version'];
   node.setAttribute('wildCard', filter.wildCard);
   node.setAttribute('singleChar', filter.singleChar);
@@ -1365,7 +1382,9 @@ export function writeFilter(filter, version) {
  * @param {Array<*>} objectStack Node stack.
  */
 function writeGetFeature(node, featureTypes, objectStack) {
-  const context = /** @type {Object} */ (objectStack[objectStack.length - 1]);
+  const context = /** @type {WFSObject} */ (
+    objectStack[objectStack.length - 1]
+  );
   const item = /** @type {import("../xml.js").NodeStackItem} */ (
     Object.assign({}, context)
   );
@@ -1379,7 +1398,7 @@ function writeGetFeature(node, featureTypes, objectStack) {
   );
 }
 
-function getFilterNS(version) {
+function getFilterNS(/** @type {string} */ version) {
   let ns;
   if (version === '2.0.0') {
     ns = FESNS[version];

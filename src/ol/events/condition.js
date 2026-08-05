@@ -79,6 +79,9 @@ export const altShiftKeysOnly = function (mapBrowserEvent) {
  */
 export const focus = function (event) {
   const targetElement = event.map.getTargetElement();
+  if (!targetElement) {
+    return false;
+  }
   const rootNode = targetElement.getRootNode();
   const activeElement = event.map.getOwnerDocument().activeElement;
 
@@ -95,6 +98,9 @@ export const focus = function (event) {
  */
 export const focusWithTabindex = function (event) {
   const targetElement = event.map.getTargetElement();
+  if (!targetElement) {
+    return true;
+  }
   const rootNode = targetElement.getRootNode();
   const tabIndexCandidate =
     rootNode instanceof ShadowRoot ? rootNode.host : targetElement;

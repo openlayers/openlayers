@@ -39,15 +39,35 @@ export function serializeFrameState(frameState) {
 }
 
 /**
- * @param {Object} serialized Serialized frame state
+ * @typedef {Object} SerializedFrameState
+ * @property {Object} viewState View state with projection code.
+ * @property {Array<number>} viewHints View hints.
+ * @property {number} pixelRatio Pixel ratio.
+ * @property {Array<number>} size Size.
+ * @property {import("../../extent.js").Extent} extent Extent.
+ * @property {import("../../transform.js").Transform} coordinateToPixelTransform Transform.
+ * @property {import("../../transform.js").Transform} pixelToCoordinateTransform Transform.
+ * @property {Array<Object>} layerStatesArray Layer states.
+ * @property {number} time Time.
+ * @property {number} layerIndex Layer index.
+ */
+
+/**
+ * @param {SerializedFrameState} serialized Serialized frame state
  * @return {import("../../Map.js").FrameState} Frame state
  */
 export function deserializeFrameState(serialized) {
-  return {
+  return /** @type {import("../../Map.js").FrameState} */ ({
     ...serialized,
     viewState: {
       ...serialized.viewState,
-      projection: getProjection(serialized.viewState.projection),
+      projection: getProjection(
+        /** @type {import("../../proj.js").ProjectionLike} */ (
+          /** @type {{projection: import("../../proj.js").ProjectionLike}} */ (
+            serialized.viewState
+          ).projection
+        ),
+      ),
     },
-  };
+  });
 }

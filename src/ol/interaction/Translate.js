@@ -157,14 +157,14 @@ class Translate extends PointerInteraction {
 
     /**
      * The last position we translated to.
-     * @type {import("../coordinate.js").Coordinate}
+     * @type {import("../coordinate.js").Coordinate|null}
      * @private
      */
     this.lastCoordinate_ = null;
 
     /**
      * The start position before translation started.
-     * @type {import("../coordinate.js").Coordinate}
+     * @type {import("../coordinate.js").Coordinate|null}
      * @private
      */
     this.startCoordinate_ = null;
@@ -218,7 +218,7 @@ class Translate extends PointerInteraction {
      * @type {Feature}
      * @private
      */
-    this.lastFeature_ = null;
+    this.lastFeature_ = /** @type {Feature} */ (/** @type {unknown} */ (null));
 
     this.addChangeListener(
       InteractionProperty.ACTIVE,
@@ -236,7 +236,9 @@ class Translate extends PointerInteraction {
     if (!event.originalEvent || !this.condition_(event)) {
       return false;
     }
-    this.lastFeature_ = this.featuresAtPixel_(event.pixel, event.map);
+    this.lastFeature_ = /** @type {Feature} */ (
+      this.featuresAtPixel_(event.pixel, event.map)
+    );
     if (!this.lastCoordinate_ && this.lastFeature_) {
       this.startCoordinate_ = event.coordinate;
       this.lastCoordinate_ = event.coordinate;
@@ -249,7 +251,9 @@ class Translate extends PointerInteraction {
           TranslateEventType.TRANSLATESTART,
           features,
           event.coordinate,
-          this.startCoordinate_,
+          /** @type {import("../coordinate.js").Coordinate} */ (
+            this.startCoordinate_
+          ),
           event,
         ),
       );
@@ -276,7 +280,9 @@ class Translate extends PointerInteraction {
           TranslateEventType.TRANSLATEEND,
           features,
           event.coordinate,
-          this.startCoordinate_,
+          /** @type {import("../coordinate.js").Coordinate} */ (
+            this.startCoordinate_
+          ),
           event,
         ),
       );
@@ -309,7 +315,10 @@ class Translate extends PointerInteraction {
       const userProjection = getUserProjection();
 
       features.forEach(function (feature) {
-        const geom = feature.getGeometry();
+        const geom =
+          /** @type {import("../geom/SimpleGeometry.js").default} */ (
+            feature.getGeometry()
+          );
         if (userProjection) {
           geom.transform(userProjection, projection);
           geom.translate(deltaX, deltaY);
@@ -327,7 +336,9 @@ class Translate extends PointerInteraction {
           TranslateEventType.TRANSLATING,
           features,
           newCoordinate,
-          this.startCoordinate_,
+          /** @type {import("../coordinate.js").Coordinate} */ (
+            this.startCoordinate_
+          ),
           event,
         ),
       );
@@ -340,7 +351,7 @@ class Translate extends PointerInteraction {
    * @override
    */
   handleMoveEvent(event) {
-    const elem = event.map.getViewport();
+    const elem = /** @type {HTMLElement} */ (event.map.getViewport());
 
     // Change the cursor to grab/grabbing if hovering any of the features managed
     // by the interaction
@@ -357,7 +368,7 @@ class Translate extends PointerInteraction {
    * features.
    * @param {import("../pixel.js").Pixel} pixel Pixel coordinate to test for intersection.
    * @param {import("../Map.js").default} map Map to test the intersection on.
-   * @return {Feature} Returns the feature found at the specified pixel
+   * @return {Feature|undefined} Returns the feature found at the specified pixel
    * coordinates.
    * @private
    */
@@ -420,7 +431,7 @@ class Translate extends PointerInteraction {
   }
 
   /**
-   * @param {import("../Map.js").default} oldMap Old map.
+   * @param {import("../Map.js").default|null} oldMap Old map.
    * @private
    */
   updateState_(oldMap) {
@@ -429,7 +440,7 @@ class Translate extends PointerInteraction {
     if (!map || !active) {
       map = map || oldMap;
       if (map) {
-        const elem = map.getViewport();
+        const elem = /** @type {HTMLElement} */ (map.getViewport());
         elem.classList.remove('ol-grab', 'ol-grabbing');
       }
     }

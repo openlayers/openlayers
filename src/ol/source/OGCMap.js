@@ -58,7 +58,7 @@ class OGCMap extends ImageSource {
 
     /**
      * @private
-     * @type {ReferrerPolicy}
+     * @type {ReferrerPolicy|undefined}
      */
     this.referrerPolicy_ = options.referrerPolicy;
 
@@ -103,7 +103,7 @@ class OGCMap extends ImageSource {
 
     /**
      * @private
-     * @type {import("../proj/Projection.js").default}
+     * @type {import("../proj/Projection.js").default|null}
      */
     this.loaderProjection_ = null;
   }
@@ -123,7 +123,7 @@ class OGCMap extends ImageSource {
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
    * @param {import("../proj/Projection.js").default} projection Projection.
-   * @return {import("../Image.js").default} Single image.
+   * @return {import("../Image.js").default|null} Single image.
    * @override
    */
   getImageInternal(extent, resolution, pixelRatio, projection) {
@@ -142,8 +142,11 @@ class OGCMap extends ImageSource {
         url: this.url_,
         ratio: this.ratio_,
         load: (image, src) => {
-          this.image.setImage(image);
-          this.imageLoadFunction_(this.image, src);
+          const wrapper = /** @type {import("../Image.js").default} */ (
+            this.image
+          );
+          wrapper.setImage(image);
+          this.imageLoadFunction_(wrapper, src);
           return decode(image);
         },
       });

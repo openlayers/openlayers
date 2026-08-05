@@ -26,7 +26,7 @@ class MapBrowserEventHandler extends Target {
     this.map_ = map;
 
     /**
-     * @type {ReturnType<typeof setTimeout>}
+     * @type {ReturnType<typeof setTimeout>|undefined}
      * @private
      */
     this.clickTimeoutId_;
@@ -64,6 +64,9 @@ class MapBrowserEventHandler extends Target {
     this.down_ = null;
 
     const element = this.map_.getViewport();
+    if (!element) {
+      throw new Error('Map viewport is required');
+    }
 
     /**
      * @type {Array<PointerEvent>}
@@ -79,17 +82,20 @@ class MapBrowserEventHandler extends Target {
 
     /**
      * @private
+     * @type {HTMLElement|undefined}
      */
     this.element_ = element;
 
     /**
-     * @type {?import("./events.js").EventsKey}
+     * @type {?import("./events.js").EventsKey|undefined}
      * @private
      */
     this.pointerdownListenerKey_ = listen(
       element,
       PointerEventType.POINTERDOWN,
-      this.handlePointerDown_,
+      /** @type {import("./events.js").ListenerFunction} */ (
+        this.handlePointerDown_
+      ),
       this,
     );
 
@@ -100,13 +106,15 @@ class MapBrowserEventHandler extends Target {
     this.originalPointerMoveEvent_;
 
     /**
-     * @type {?import("./events.js").EventsKey}
+     * @type {?import("./events.js").EventsKey|undefined}
      * @private
      */
     this.relayedListenerKey_ = listen(
       element,
       PointerEventType.POINTERMOVE,
-      this.relayMoveEvent_,
+      /** @type {import("./events.js").ListenerFunction} */ (
+        this.relayMoveEvent_
+      ),
       this,
     );
 
@@ -117,7 +125,7 @@ class MapBrowserEventHandler extends Target {
 
     this.element_.addEventListener(
       EventType.TOUCHMOVE,
-      this.boundHandleTouchMove_,
+      /** @type {EventListener} */ (this.boundHandleTouchMove_),
       PASSIVE_EVENT_LISTENERS ? {passive: false} : false,
     );
   }
@@ -222,7 +230,9 @@ class MapBrowserEventHandler extends Target {
       !this.dragging_ &&
       this.isMouseActionButton_(pointerEvent)
     ) {
-      this.emulateClick_(this.down_);
+      if (this.down_) {
+        this.emulateClick_(this.down_);
+      }
     }
 
     if (this.activePointers_.length === 0) {
@@ -269,14 +279,27 @@ class MapBrowserEventHandler extends Target {
 
     if (this.dragListenerKeys_.length === 0) {
       const doc = this.map_.getOwnerDocument();
+      const element = this.element_;
+      if (!element) {
+        return;
+      }
       this.dragListenerKeys_.push(
         listen(
           doc,
           MapBrowserEventType.POINTERMOVE,
-          this.handlePointerMove_,
+          /** @type {import("./events.js").ListenerFunction} */ (
+            this.handlePointerMove_
+          ),
           this,
         ),
-        listen(doc, MapBrowserEventType.POINTERUP, this.handlePointerUp_, this),
+        listen(
+          doc,
+          MapBrowserEventType.POINTERUP,
+          /** @type {import("./events.js").ListenerFunction} */ (
+            this.handlePointerUp_
+          ),
+          this,
+        ),
         /* Note that the listener for `pointercancel is set up on
          * `pointerEventHandler_` and not `documentPointerEventHandler_` like
          * the `pointerup` and `pointermove` listeners.
@@ -291,18 +314,26 @@ class MapBrowserEventHandler extends Target {
          * only registered there.
          */
         listen(
-          this.element_,
+          element,
           MapBrowserEventType.POINTERCANCEL,
-          this.handlePointerUp_,
+          /** @type {import("./events.js").ListenerFunction} */ (
+            this.handlePointerUp_
+          ),
           this,
         ),
       );
-      if (this.element_.getRootNode && this.element_.getRootNode() !== doc) {
+      if (element.getRootNode && element.getRootNode() !== doc) {
+        const rootNode =
+          /** @type {import("./events/Target.js").EventTargetLike} */ (
+            element.getRootNode()
+          );
         this.dragListenerKeys_.push(
           listen(
-            this.element_.getRootNode(),
+            rootNode,
             MapBrowserEventType.POINTERUP,
-            this.handlePointerUp_,
+            /** @type {import("./events.js").ListenerFunction} */ (
+              this.handlePointerUp_
+            ),
             this,
           ),
         );
@@ -381,11 +412,12 @@ class MapBrowserEventHandler extends Target {
    * @private
    */
   isMoving_(pointerEvent) {
+    const down = this.down_;
     return (
       this.dragging_ ||
-      Math.abs(pointerEvent.clientX - this.down_.clientX) >
-        this.moveTolerance_ ||
-      Math.abs(pointerEvent.clientY - this.down_.clientY) > this.moveTolerance_
+      (down !== null &&
+        (Math.abs(pointerEvent.clientX - down.clientX) > this.moveTolerance_ ||
+          Math.abs(pointerEvent.clientY - down.clientY) > this.moveTolerance_))
     );
   }
 
@@ -394,24 +426,27 @@ class MapBrowserEventHandler extends Target {
    * @override
    */
   disposeInternal() {
+    const element = this.element_;
     if (this.relayedListenerKey_) {
       unlistenByKey(this.relayedListenerKey_);
-      this.relayedListenerKey_ = null;
+      this.relayedListenerKey_ = undefined;
     }
-    this.element_.removeEventListener(
-      EventType.TOUCHMOVE,
-      this.boundHandleTouchMove_,
-    );
+    if (element) {
+      element.removeEventListener(
+        EventType.TOUCHMOVE,
+        /** @type {EventListener} */ (this.boundHandleTouchMove_),
+      );
+    }
 
     if (this.pointerdownListenerKey_) {
       unlistenByKey(this.pointerdownListenerKey_);
-      this.pointerdownListenerKey_ = null;
+      this.pointerdownListenerKey_ = undefined;
     }
 
     this.dragListenerKeys_.forEach(unlistenByKey);
     this.dragListenerKeys_.length = 0;
 
-    this.element_ = null;
+    this.element_ = /** @type {HTMLElement|undefined} */ (undefined);
     super.disposeInternal();
   }
 }

@@ -176,11 +176,20 @@ class LayerGroup extends BaseLayer {
 
     const layers = this.getLayers();
     this.layersListenerKeys_.push(
-      listen(layers, CollectionEventType.ADD, this.handleLayersAdd_, this),
+      listen(
+        layers,
+        CollectionEventType.ADD,
+        /** @type {import("../events.js").ListenerFunction} */ (
+          this.handleLayersAdd_
+        ),
+        this,
+      ),
       listen(
         layers,
         CollectionEventType.REMOVE,
-        this.handleLayersRemove_,
+        /** @type {import("../events.js").ListenerFunction} */ (
+          this.handleLayersRemove_
+        ),
         this,
       ),
     );
@@ -215,11 +224,20 @@ class LayerGroup extends BaseLayer {
 
     if (layer instanceof LayerGroup) {
       listenerKeys.push(
-        listen(layer, GroupEventType.ADDLAYER, this.handleLayerGroupAdd_, this),
+        listen(
+          layer,
+          GroupEventType.ADDLAYER,
+          /** @type {import("../events.js").ListenerFunction} */ (
+            this.handleLayerGroupAdd_
+          ),
+          this,
+        ),
         listen(
           layer,
           GroupEventType.REMOVELAYER,
-          this.handleLayerGroupRemove_,
+          /** @type {import("../events.js").ListenerFunction} */ (
+            this.handleLayerGroupRemove_
+          ),
           this,
         ),
       );

@@ -47,38 +47,38 @@
 /**
  * A literal boolean (e.g. `true`) or an expression that evaluates to a boolean (e.g. `['>', ['get', 'population'], 1_000_000]`).
  *
- * @typedef {boolean|Array} BooleanExpression
+ * @typedef {boolean|Array<*>} BooleanExpression
  */
 
 /**
  * A literal string (e.g. `'hello'`) or an expression that evaluates to a string (e.g. `['get', 'greeting']`).
  *
- * @typedef {string|Array} StringExpression
+ * @typedef {string|Array<*>} StringExpression
  */
 
 /**
  * A literal number (e.g. `42`) or an expression that evaluates to a number (e.g. `['+', 40, 2]`).
  *
- * @typedef {number|Array} NumberExpression
+ * @typedef {number|Array<*>} NumberExpression
  */
 
 /**
  * A CSS named color (e.g. `'blue'`), an array of 3 RGB values (e.g. `[0, 255, 0]`), an array of 4 RGBA values
  * (e.g. `[0, 255, 0, 0.5]`), or an expression that evaluates to one of these color types (e.g. `['get', 'color']`).
  *
- * @typedef {import("../color.js").Color|string|Array} ColorExpression
+ * @typedef {import("../color.js").Color|string|Array<*>} ColorExpression
  */
 
 /**
  * An array of numbers (e.g. `[1, 2, 3]`) or an expression that evaluates to the same (e.g. `['get', 'values']`).
  *
- * @typedef {Array<number>|Array} NumberArrayExpression
+ * @typedef {Array<number>|Array<*>} NumberArrayExpression
  */
 
 /**
  * An array of two numbers (e.g. `[10, 20]`) or an expression that evaluates to the same (e.g. `['get', 'size']`).
  *
- * @typedef {number|Array<number>|Array} SizeExpression
+ * @typedef {number|Array<number>|Array<*>} SizeExpression
  */
 
 /**

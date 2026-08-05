@@ -117,7 +117,7 @@ function uploadDataTexture(
 }
 
 /**
- * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D}
+ * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D|null}
  */
 let pixelContext = null;
 
@@ -170,7 +170,7 @@ class TileTexture extends BaseTileRepresentation {
       0, // P3
       0,
     ]);
-    this.helper.flushBufferData(coords);
+    options.helper.flushBufferData(coords);
 
     /**
      * @type {WebGLArrayBuffer}
@@ -187,7 +187,7 @@ class TileTexture extends BaseTileRepresentation {
   setHelper(helper) {
     const gl = this.helper?.getGL();
     if (gl) {
-      this.helper.deleteBuffer(this.coords);
+      this.helper?.deleteBuffer(this.coords);
       for (let i = 0; i < this.textures.length; ++i) {
         gl.deleteTexture(this.textures[i]);
       }
@@ -205,13 +205,16 @@ class TileTexture extends BaseTileRepresentation {
    */
   uploadTile() {
     const helper = this.helper;
+    if (!helper) {
+      return;
+    }
     const gl = helper.getGL();
     const tile = this.tile;
 
     this.textures.length = 0;
 
     /**
-     * @type {import("../DataTile.js").Data}
+     * @type {import("../DataTile.js").Data|import("../DataTile.js").ImageLike|null}
      */
     let data;
 
@@ -219,6 +222,10 @@ class TileTexture extends BaseTileRepresentation {
       data = tile.getImage();
     } else {
       data = tile.getData();
+    }
+
+    if (!data) {
+      return;
     }
 
     const image = asImageLike(data);
@@ -231,7 +238,11 @@ class TileTexture extends BaseTileRepresentation {
       return;
     }
 
-    data = asArrayLike(data);
+    const arrayData = asArrayLike(data);
+    if (!arrayData) {
+      return;
+    }
+    data = arrayData;
 
     const sourceTileSize = /** @type {DataTile} */ (tile).getSize();
     const pixelSize = [
@@ -242,7 +253,8 @@ class TileTexture extends BaseTileRepresentation {
     const pixelCount = pixelSize[0] * pixelSize[1];
     const DataType = isFloat ? Float32Array : Uint8Array;
     const bytesPerElement = DataType.BYTES_PER_ELEMENT;
-    const bytesPerRow = data.byteLength / pixelSize[1];
+    const arrayLike = /** @type {import("../DataTile.js").ArrayLike} */ (data);
+    const bytesPerRow = arrayLike.byteLength / pixelSize[1];
 
     this.bandCount = Math.floor(bytesPerRow / bytesPerElement / pixelSize[0]);
     const textureCount = Math.ceil(this.bandCount / 4);
@@ -277,7 +289,10 @@ class TileTexture extends BaseTileRepresentation {
     const colCount = pixelSize[0] * this.bandCount;
     for (let rowIndex = 0; rowIndex < pixelSize[1]; ++rowIndex) {
       for (let colIndex = 0; colIndex < colCount; ++colIndex) {
-        const dataValue = data[rowOffset + colIndex];
+        const dataValue =
+          /** @type {Float32Array|Uint8ClampedArray|Uint8Array} */ (arrayLike)[
+            rowOffset + colIndex
+          ];
 
         const pixelIndex = Math.floor(dataIndex / this.bandCount);
         const bandIndex = colIndex % this.bandCount;
@@ -324,7 +339,8 @@ class TileTexture extends BaseTileRepresentation {
     if (!pixelContext) {
       createPixelContext();
     }
-    pixelContext.clearRect(0, 0, 1, 1);
+    const context = /** @type {CanvasRenderingContext2D} */ (pixelContext);
+    context.clearRect(0, 0, 1, 1);
 
     const sourceWidth = image.width;
     const sourceHeight = image.height;
@@ -341,8 +357,8 @@ class TileTexture extends BaseTileRepresentation {
 
     let data;
     try {
-      pixelContext.drawImage(image, sourceCol, sourceRow, 1, 1, 0, 0, 1, 1);
-      data = pixelContext.getImageData(0, 0, 1, 1).data;
+      context.drawImage(image, sourceCol, sourceRow, 1, 1, 0, 0, 1, 1);
+      data = context.getImageData(0, 0, 1, 1).data;
     } catch {
       pixelContext = null;
       return null;
@@ -398,8 +414,11 @@ class TileTexture extends BaseTileRepresentation {
     }
 
     if (this.tile instanceof DataTile) {
-      const data = this.tile.getData();
-      const arrayData = asArrayLike(data);
+      const tileData = this.tile.getData();
+      if (!tileData) {
+        return null;
+      }
+      const arrayData = asArrayLike(tileData);
       if (arrayData) {
         const sourceSize = this.tile.getSize();
         return this.getArrayPixelData_(
@@ -409,10 +428,18 @@ class TileTexture extends BaseTileRepresentation {
           renderRow,
         );
       }
-      return this.getImagePixelData_(asImageLike(data), renderCol, renderRow);
+      const imageData = asImageLike(tileData);
+      if (!imageData) {
+        return null;
+      }
+      return this.getImagePixelData_(imageData, renderCol, renderRow);
     }
 
-    return this.getImagePixelData_(this.tile.getImage(), renderCol, renderRow);
+    const image = this.tile.getImage();
+    if (!image) {
+      return null;
+    }
+    return this.getImagePixelData_(image, renderCol, renderRow);
   }
 }
 

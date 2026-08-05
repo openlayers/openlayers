@@ -215,8 +215,12 @@ class VectorTileLayer extends BaseVectorLayer {
    * @api
    */
   getFeaturesInExtent(extent) {
+    const renderer = this.getRenderer();
+    if (!renderer) {
+      return [];
+    }
     return /** @type {Array<FeatureType>} */ (
-      /** @type {*} */ (this.getRenderer().getFeaturesInExtent(extent))
+      /** @type {*} */ (renderer.getFeaturesInExtent(extent))
     );
   }
 

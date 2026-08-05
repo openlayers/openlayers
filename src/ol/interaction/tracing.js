@@ -114,12 +114,16 @@ export function getTraceTargetUpdate(
   let newTargetIndex = -1;
   let newEndIndex = NaN;
 
-  for (
-    let targetIndex = 0;
-    targetIndex < traceState.targets.length;
-    ++targetIndex
-  ) {
-    const target = traceState.targets[targetIndex];
+  const targets = traceState.targets;
+  if (!targets) {
+    sharedUpdateInfo.index = newTargetIndex;
+    sharedUpdateInfo.endIndex = newEndIndex;
+    sharedUpdateInfo.closestTargetDistance = closestTargetDistance;
+    return sharedUpdateInfo;
+  }
+
+  for (let targetIndex = 0; targetIndex < targets.length; ++targetIndex) {
+    const target = targets[targetIndex];
     const coordinates = target.coordinates;
 
     let minSegmentDistance = Infinity;
@@ -144,22 +148,31 @@ export function getTraceTargetUpdate(
         // same target, maintain the same trace direction
         if (target.endIndex > target.startIndex) {
           // forward trace
-          if (endIndex < target.startIndex) {
+          if (endIndex !== undefined && endIndex < target.startIndex) {
             endIndex += coordinates.length;
           }
         } else if (target.endIndex < target.startIndex) {
           // reverse trace
-          if (endIndex > target.startIndex) {
+          if (endIndex !== undefined && endIndex > target.startIndex) {
             endIndex -= coordinates.length;
           }
         }
       }
-      newEndIndex = endIndex;
-      newTargetIndex = targetIndex;
+      if (endIndex !== undefined) {
+        newEndIndex = endIndex;
+        newTargetIndex = targetIndex;
+      }
     }
   }
 
-  const newTarget = traceState.targets[newTargetIndex];
+  if (newTargetIndex < 0) {
+    sharedUpdateInfo.index = newTargetIndex;
+    sharedUpdateInfo.endIndex = newEndIndex;
+    sharedUpdateInfo.closestTargetDistance = closestTargetDistance;
+    return sharedUpdateInfo;
+  }
+
+  const newTarget = targets[newTargetIndex];
   let considerBothDirections = newTarget.ring;
   if (traceState.targetIndex === newTargetIndex && considerBothDirections) {
     // only consider switching trace direction if close to the start
@@ -168,8 +181,11 @@ export function getTraceTargetUpdate(
       newEndIndex,
     );
     const pixel = map.getPixelFromCoordinate(newCoordinate);
-    const startPx = map.getPixelFromCoordinate(traceState.startCoord);
-    if (distance(pixel, startPx) > snapTolerance) {
+    const startCoord = traceState.startCoord;
+    if (
+      startCoord &&
+      distance(pixel, map.getPixelFromCoordinate(startCoord)) > snapTolerance
+    ) {
       considerBothDirections = false;
     }
   }
@@ -230,7 +246,9 @@ export function getTraceTargets(coordinate, features) {
   for (let i = 0; i < features.length; ++i) {
     const feature = features[i];
     const geometry = feature.getGeometry();
-    appendGeometryTraceTargets(coordinate, geometry, targets);
+    if (geometry) {
+      appendGeometryTraceTargets(coordinate, geometry, targets);
+    }
   }
 
   return targets;

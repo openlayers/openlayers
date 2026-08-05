@@ -126,7 +126,7 @@ class Target extends Disposable {
       }
       delete dispatching[type];
     }
-    return propagate;
+    return /** @type {boolean|undefined} */ (propagate);
   }
 
   /**

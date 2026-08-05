@@ -115,7 +115,7 @@ class Feature extends BaseObject {
     /**
      * User provided style.
      * @private
-     * @type {import("./style/Style.js").StyleLike}
+     * @type {import("./style/Style.js").StyleLike|null}
      */
     this.style_ = null;
 
@@ -216,7 +216,7 @@ class Feature extends BaseObject {
   /**
    * Get the feature's style. Will return what was provided to the
    * {@link module:ol/Feature~Feature#setStyle} method.
-   * @return {import("./style/Style.js").StyleLike|undefined} The feature style.
+   * @return {import("./style/Style.js").StyleLike|null|undefined} The feature style.
    * @api
    */
   getStyle() {
@@ -263,7 +263,7 @@ class Feature extends BaseObject {
   /**
    * Set the default geometry for the feature.  This will update the property
    * with the name returned by {@link module:ol/Feature~Feature#getGeometryName}.
-   * @param {Geometry|undefined} geometry The new geometry.
+   * @param {Geometry|null|undefined} geometry The new geometry.
    * @api
    * @observable
    */
@@ -276,12 +276,12 @@ class Feature extends BaseObject {
    * single style object, an array of styles, or a function that takes a
    * resolution and returns an array of styles. To unset the feature style, call
    * `setStyle()` without arguments or a falsey value.
-   * @param {import("./style/Style.js").StyleLike} [style] Style for this feature.
+   * @param {import("./style/Style.js").StyleLike|null|undefined} [style] Style for this feature.
    * @api
    * @fires module:ol/events/Event~BaseEvent#event:change
    */
   setStyle(style) {
-    this.style_ = style;
+    this.style_ = style ?? null;
     this.styleFunction_ = !style ? undefined : createStyleFunction(style);
     this.changed();
   }

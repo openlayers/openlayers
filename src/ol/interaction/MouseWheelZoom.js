@@ -133,7 +133,7 @@ class MouseWheelZoom extends Interaction {
 
     /**
      * @private
-     * @type {ReturnType<typeof setTimeout>}
+     * @type {ReturnType<typeof setTimeout>|undefined}
      */
     this.timeoutId_;
 
@@ -153,7 +153,7 @@ class MouseWheelZoom extends Interaction {
 
     /**
      * @private
-     * @type {ReturnType<typeof setTimeout>}
+     * @type {ReturnType<typeof setTimeout>|undefined}
      */
     this.trackpadTimeoutId_;
 
@@ -191,16 +191,28 @@ class MouseWheelZoom extends Interaction {
     if (map) {
       const doc = map.getOwnerDocument();
       this.ctrlKeyListenerKeys_.push(
-        listen(doc, 'keydown', (/** @type {KeyboardEvent} */ e) => {
-          if (e.key === 'Control') {
-            this.ctrlKeyPressed_ = true;
-          }
-        }),
-        listen(doc, 'keyup', (/** @type {KeyboardEvent} */ e) => {
-          if (e.key === 'Control') {
-            this.ctrlKeyPressed_ = false;
-          }
-        }),
+        listen(
+          doc,
+          'keydown',
+          /** @type {import("../events.js").ListenerFunction} */ (
+            (/** @type {KeyboardEvent} */ e) => {
+              if (e.key === 'Control') {
+                this.ctrlKeyPressed_ = true;
+              }
+            }
+          ),
+        ),
+        listen(
+          doc,
+          'keyup',
+          /** @type {import("../events.js").ListenerFunction} */ (
+            (/** @type {KeyboardEvent} */ e) => {
+              if (e.key === 'Control') {
+                this.ctrlKeyPressed_ = false;
+              }
+            }
+          ),
+        ),
       );
     }
   }
@@ -221,7 +233,9 @@ class MouseWheelZoom extends Interaction {
         ? 100
         : undefined,
       direction,
-      this.lastAnchor_ ? map.getCoordinateFromPixel(this.lastAnchor_) : null,
+      this.lastAnchor_
+        ? map.getCoordinateFromPixel(this.lastAnchor_)
+        : undefined,
     );
   }
 
@@ -305,7 +319,9 @@ class MouseWheelZoom extends Interaction {
       }
       view.adjustZoom(
         -delta / this.deltaPerZoom_,
-        this.lastAnchor_ ? map.getCoordinateFromPixel(this.lastAnchor_) : null,
+        this.lastAnchor_
+          ? map.getCoordinateFromPixel(this.lastAnchor_)
+          : undefined,
       );
       this.startTime_ = now;
       return false;
@@ -346,7 +362,9 @@ class MouseWheelZoom extends Interaction {
     zoomByDelta(
       view,
       delta,
-      this.lastAnchor_ ? map.getCoordinateFromPixel(this.lastAnchor_) : null,
+      this.lastAnchor_
+        ? map.getCoordinateFromPixel(this.lastAnchor_)
+        : undefined,
       this.duration_,
     );
 

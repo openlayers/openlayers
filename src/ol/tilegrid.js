@@ -94,7 +94,11 @@ export function createForExtent(extent, maxZoom, tileSize, corner) {
 export function createXYZ(options) {
   const xyzOptions = options || {};
 
-  const extent = xyzOptions.extent || getProjection('EPSG:3857').getExtent();
+  const extent = xyzOptions.extent || getProjection('EPSG:3857')?.getExtent();
+
+  if (!extent) {
+    throw new Error('Unable to determine extent for XYZ tile grid');
+  }
 
   const gridOptions = {
     extent: extent,
@@ -128,7 +132,7 @@ function resolutionsFromExtent(extent, maxZoom, tileSize, maxResolution) {
   const width = getWidth(extent);
 
   maxResolution =
-    maxResolution > 0
+    maxResolution !== undefined && maxResolution > 0
       ? maxResolution
       : Math.max(width / tileSize[0], height / tileSize[1]);
 
@@ -161,11 +165,20 @@ export function createForProjection(projection, maxZoom, tileSize, corner) {
  * @return {import("./extent.js").Extent} Extent.
  */
 export function extentFromProjection(projection) {
-  projection = getProjection(projection);
-  let extent = projection.getExtent();
+  const projectionObj = getProjection(projection);
+  if (!projectionObj) {
+    throw new Error('Unable to determine extent from unknown projection');
+  }
+  let extent = projectionObj.getExtent();
   if (!extent) {
+    const metersPerUnit = projectionObj.getMetersPerUnit();
+    if (metersPerUnit === undefined) {
+      throw new Error(
+        'Unable to determine extent from projection without units',
+      );
+    }
     const half =
-      (180 * METERS_PER_UNIT.degrees) / projection.getMetersPerUnit();
+      (180 * /** @type {number} */ (METERS_PER_UNIT.degrees)) / metersPerUnit;
     extent = createOrUpdate(-half, -half, half, half);
   }
   return extent;

@@ -69,15 +69,17 @@ class GeoJSON extends JSONFeature {
     /**
      * @type {import("../proj/Projection.js").default}
      */
-    this.dataProjection = getProjection(
-      options.dataProjection ? options.dataProjection : 'EPSG:4326',
-    );
+    this.dataProjection =
+      getProjection(
+        options.dataProjection ? options.dataProjection : 'EPSG:4326',
+      ) ?? undefined;
 
     if (options.featureProjection) {
       /**
        * @type {import("../proj/Projection.js").default}
        */
-      this.defaultFeatureProjection = getProjection(options.featureProjection);
+      this.defaultFeatureProjection =
+        getProjection(options.featureProjection) ?? undefined;
     }
 
     if (options.featureClass) {
@@ -112,12 +114,11 @@ class GeoJSON extends JSONFeature {
    * @override
    */
   readFeatureFromObject(object, options) {
-    /**
-     * @type {GeoJSONFeature}
-     */
-    let geoJSONFeature = null;
-    if (object['type'] === 'Feature') {
-      geoJSONFeature = /** @type {GeoJSONFeature} */ (object);
+    const geoJSONObject = /** @type {GeoJSONObject} */ (object);
+    /** @type {GeoJSONFeature} */
+    let geoJSONFeature;
+    if (geoJSONObject['type'] === 'Feature') {
+      geoJSONFeature = /** @type {GeoJSONFeature} */ (geoJSONObject);
     } else {
       geoJSONFeature = {
         'type': 'Feature',
@@ -126,14 +127,17 @@ class GeoJSON extends JSONFeature {
       };
     }
 
-    const geometry = readGeometryInternal(geoJSONFeature['geometry'], options);
+    const geometryObject = readGeometryInternal(
+      geoJSONFeature['geometry'],
+      options,
+    );
     if (this.featureClass === RenderFeature) {
       return /** @type {FeatureType|Array<FeatureType>} */ (
         createRenderFeature(
           {
-            geometry,
+            geometry: geometryObject ?? undefined,
             id: geoJSONFeature['id'],
-            properties: geoJSONFeature['properties'],
+            properties: geoJSONFeature['properties'] ?? undefined,
           },
           options,
         )
@@ -146,10 +150,16 @@ class GeoJSON extends JSONFeature {
     const feature = new FeatureClass();
     if (this.geometryName_) {
       feature.setGeometryName(this.geometryName_);
-    } else if (this.extractGeometryName_ && geoJSONFeature['geometry_name']) {
-      feature.setGeometryName(geoJSONFeature['geometry_name']);
+    } else if (
+      this.extractGeometryName_ &&
+      'geometry_name' in geoJSONFeature &&
+      geoJSONFeature['geometry_name']
+    ) {
+      feature.setGeometryName(
+        /** @type {string} */ (geoJSONFeature['geometry_name']),
+      );
     }
-    feature.setGeometry(createGeometry(geometry, options));
+    feature.setGeometry(createGeometry(geometryObject, options));
 
     if ('id' in geoJSONFeature) {
       feature.setId(geoJSONFeature['id']);
@@ -201,7 +211,11 @@ class GeoJSON extends JSONFeature {
    * @override
    */
   readGeometryFromObject(object, options) {
-    return readGeometry(object, options);
+    const geometry = readGeometry(object, options);
+    if (!geometry) {
+      throw new Error('Cannot read geometry from object');
+    }
+    return geometry;
   }
 
   /**
@@ -211,7 +225,11 @@ class GeoJSON extends JSONFeature {
    * @override
    */
   readProjectionFromObject(object) {
-    const crs = object['crs'];
+    const geoJSONObject =
+      /** @type {GeoJSONObject & {crs: ({type: string, properties: Object<string, *>}|undefined)}} */ (
+        object
+      );
+    const crs = geoJSONObject['crs'];
     let projection;
     if (crs) {
       if (crs['type'] == 'name') {
@@ -239,12 +257,13 @@ class GeoJSON extends JSONFeature {
   writeFeatureObject(feature, options) {
     options = this.adaptOptions(options);
 
-    /** @type {GeoJSONFeature} */
-    const object = {
-      'type': 'Feature',
-      geometry: null,
-      properties: null,
-    };
+    const object = /** @type {GeoJSONFeature} */ (
+      /** @type {unknown} */ ({
+        'type': 'Feature',
+        'geometry': null,
+        'properties': null,
+      })
+    );
 
     const id = feature.getId();
     if (id !== undefined) {
@@ -259,8 +278,9 @@ class GeoJSON extends JSONFeature {
     const geometry = feature.getGeometry();
     if (geometry) {
       object.geometry = writeGeometry(geometry, options);
-
-      delete properties[feature.getGeometryName()];
+      delete (
+        /** @type {Object<string, *>} */ (properties)[feature.getGeometryName()]
+      );
     }
 
     if (!isEmpty(properties)) {
@@ -308,7 +328,7 @@ class GeoJSON extends JSONFeature {
 /**
  * @param {GeoJSONGeometry|GeoJSONGeometryCollection} object Object.
  * @param {import("./Feature.js").ReadOptions} [options] Read options.
- * @return {import("./Feature.js").GeometryObject} Geometry.
+ * @return {import("./Feature.js").GeometryObject|null} Geometry.
  */
 function readGeometryInternal(object, options) {
   if (!object) {
@@ -366,10 +386,13 @@ function readGeometryInternal(object, options) {
 /**
  * @param {GeoJSONGeometry|GeoJSONGeometryCollection} object Object.
  * @param {import("./Feature.js").ReadOptions} [options] Read options.
- * @return {import("../geom/Geometry.js").default} Geometry.
+ * @return {import("../geom/Geometry.js").default|null} Geometry.
  */
 function readGeometry(object, options) {
   const geometryObject = readGeometryInternal(object, options);
+  if (!geometryObject) {
+    return null;
+  }
   return createGeometry(geometryObject, options);
 }
 
@@ -385,7 +408,11 @@ function readGeometryCollectionGeometry(object, options) {
      * @return {import("./Feature.js").GeometryObject} geometry Geometry.
      */
     function (geometry) {
-      return readGeometryInternal(geometry, options);
+      const geom = readGeometryInternal(geometry, options);
+      if (!geom) {
+        throw new Error('Invalid geometry in GeometryCollection');
+      }
+      return geom;
     },
   );
   return geometries;
@@ -426,7 +453,7 @@ function readLineStringGeometry(object) {
 function readMultiLineStringGeometry(object) {
   const coordinates = object['coordinates'];
   const stride = coordinates[0]?.[0]?.length || 2;
-  const flatCoordinates = [];
+  const flatCoordinates = /** @type {Array<number>} */ ([]);
   const ends = deflateCoordinatesArray(flatCoordinates, 0, coordinates, stride);
   return {
     type: 'MultiLineString',
@@ -455,7 +482,7 @@ function readMultiPointGeometry(object) {
  */
 function readMultiPolygonGeometry(object) {
   const coordinates = object['coordinates'];
-  const flatCoordinates = [];
+  const flatCoordinates = /** @type {Array<number>} */ ([]);
   const stride = coordinates[0]?.[0]?.[0].length || 2;
   const endss = deflateMultiCoordinatesArray(
     flatCoordinates,
@@ -477,7 +504,7 @@ function readMultiPolygonGeometry(object) {
  */
 function readPolygonGeometry(object) {
   const coordinates = object['coordinates'];
-  const flatCoordinates = [];
+  const flatCoordinates = /** @type {Array<number>} */ ([]);
   const stride = coordinates[0]?.[0]?.length;
   const ends = deflateCoordinatesArray(flatCoordinates, 0, coordinates, stride);
   return {

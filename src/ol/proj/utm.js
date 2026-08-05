@@ -243,7 +243,7 @@ export function zoneFromCode(code) {
 function makeTransformFunction(transformer, zone) {
   return function (input, output, dimension, stride) {
     const length = input.length;
-    dimension = dimension > 1 ? dimension : 2;
+    dimension = dimension !== undefined && dimension > 1 ? dimension : 2;
     stride = stride ?? dimension;
     if (!output) {
       if (dimension > 2) {

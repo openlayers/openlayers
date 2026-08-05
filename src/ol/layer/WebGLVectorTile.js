@@ -65,6 +65,9 @@ class WebGLVectorTileLayer extends BaseTileLayer {
    * @param {Options<VectorTileSourceType, FeatureType>} [options] Options.
    */
   constructor(options) {
+    options = /** @type {Options<VectorTileSourceType, FeatureType>} */ (
+      options ? options : {}
+    );
     const baseOptions = Object.assign({}, options);
 
     super(baseOptions);
@@ -90,12 +93,17 @@ class WebGLVectorTileLayer extends BaseTileLayer {
    * @override
    */
   createRenderer() {
-    return new WebGLVectorTileLayerRenderer(this, {
-      style: this.style_,
-      variables: this.styleVariables_,
-      disableHitDetection: this.hitDetectionDisabled_,
-      cacheSize: this.getCacheSize(),
-    });
+    return new WebGLVectorTileLayerRenderer(
+      /** @type {import('./VectorTile.js').default<any, any>} */ (
+        /** @type {unknown} */ (this)
+      ),
+      {
+        style: this.style_,
+        variables: this.styleVariables_,
+        disableHitDetection: this.hitDetectionDisabled_,
+        cacheSize: this.getCacheSize(),
+      },
+    );
   }
 
   /**

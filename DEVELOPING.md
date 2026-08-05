@@ -60,6 +60,8 @@ npm test
 
 See the [tests README](./test/README.md) for details.
 
+Before tests run, `pretest` typechecks the library with `npm run typecheck`. New and modified `src/ol` files must pass typechecking before merging.
+
 
 ## Adding examples
 

@@ -67,7 +67,7 @@ import LayerProperty from './Property.js';
  * @property {boolean} visible Visible.
  * @property {boolean} managed Managed.
  * @property {import("../extent.js").Extent} [extent] Extent.
- * @property {number} zIndex ZIndex.
+ * @property {number|undefined} zIndex ZIndex.
  * @property {number} maxResolution Maximum resolution.
  * @property {number} minResolution Minimum resolution.
  * @property {number} minZoom Minimum zoom.
@@ -97,7 +97,7 @@ import LayerProperty from './Property.js';
  * @fires import("../events/Event.js").BaseEvent#sourceready
  *
  * @template {import("../source/Source.js").default} [SourceType=import("../source/Source.js").default]
- * @template {import("../renderer/Layer.js").default} [RendererType=import("../renderer/Layer.js").default]
+ * @template {import("../renderer/Layer.js").default<*>} [RendererType=import("../renderer/Layer.js").default<*>]
  * @template {Object<string, *>} [Properties=Object<string, *>]
  * @extends {BaseLayer<NoInfer<Properties>>}
  * @api
@@ -147,7 +147,7 @@ class Layer extends BaseLayer {
 
     /**
      * @private
-     * @type {RendererType}
+     * @type {RendererType|null|undefined}
      */
     this.renderer_ = null;
 
@@ -236,7 +236,8 @@ class Layer extends BaseLayer {
    */
   handleSourceChange_() {
     this.changed();
-    if (this.sourceReady_ || this.getSource().getState() !== 'ready') {
+    const source = this.getSource();
+    if (!source || this.sourceReady_ || source.getState() !== 'ready') {
       return;
     }
     this.sourceReady_ = true;
@@ -316,12 +317,16 @@ class Layer extends BaseLayer {
     } else {
       frameState = view;
     }
-    if (!frameState.layerStatesArray && map) {
-      frameState.layerStatesArray = map.getLayerGroup().getLayerStatesArray();
+    const state =
+      /** @type {import("../View.js").ViewStateLayerStateExtent} */ (
+        frameState
+      );
+    if (!state.layerStatesArray && map) {
+      state.layerStatesArray = map.getLayerGroup().getLayerStatesArray();
     }
     let layerState;
-    if (frameState.layerStatesArray) {
-      layerState = frameState.layerStatesArray.find(
+    if (state.layerStatesArray) {
+      layerState = state.layerStatesArray.find(
         (layerState) => layerState.layer === this,
       );
       if (!layerState) {
@@ -334,8 +339,8 @@ class Layer extends BaseLayer {
     const layerExtent = this.getExtent();
 
     return (
-      inView(layerState, frameState.viewState) &&
-      (!layerExtent || intersects(layerExtent, frameState.extent))
+      inView(layerState, state.viewState) &&
+      (!layerExtent || intersects(layerExtent, state.extent))
     );
   }
 
@@ -356,7 +361,11 @@ class Layer extends BaseLayer {
     }
     const frameState =
       view instanceof View ? view.getViewStateAndExtent() : view;
-    let attributions = getAttributions(frameState);
+    let attributions = getAttributions(
+      /** @type {import("../View.js").ViewStateLayerStateExtent} */ (
+        frameState
+      ),
+    );
     if (!Array.isArray(attributions)) {
       attributions = [attributions];
     }
@@ -372,11 +381,18 @@ class Layer extends BaseLayer {
    * @return {HTMLElement|null} The rendered element.
    */
   render(frameState, target) {
-    const layerRenderer = this.getRenderer();
+    const layerRenderer = /** @type {RendererType} */ (this.getRenderer());
 
-    if (layerRenderer.prepareFrame(frameState)) {
+    if (
+      layerRenderer.prepareFrame(
+        /** @type {import("../Map.js").FrameState} */ (frameState),
+      )
+    ) {
       this.rendered = true;
-      return layerRenderer.renderFrame(frameState, target);
+      return layerRenderer.renderFrame(
+        /** @type {import("../Map.js").FrameState} */ (frameState),
+        target,
+      );
     }
     return null;
   }
@@ -388,7 +404,7 @@ class Layer extends BaseLayer {
     this.rendered = false;
   }
 
-  /** @return {string} Declutter */
+  /** @return {string|undefined} Declutter */
   getDeclutter() {
     return undefined;
   }
@@ -457,7 +473,9 @@ class Layer extends BaseLayer {
       this.mapPrecomposeKey_ = listen(
         map,
         RenderEventType.PRECOMPOSE,
-        this.handlePrecompose_,
+        /** @type {import("../events.js").ListenerFunction} */ (
+          this.handlePrecompose_
+        ),
         this,
       );
       this.mapRenderKey_ = listen(this, EventType.CHANGE, map.render, map);
@@ -472,7 +490,10 @@ class Layer extends BaseLayer {
   handlePrecompose_(renderEvent) {
     const layerStatesArray =
       /** @type {import("../render/Event.js").default} */ (renderEvent)
-        .frameState.layerStatesArray;
+        .frameState?.layerStatesArray;
+    if (!layerStatesArray) {
+      return;
+    }
     const layerState = this.getLayerState(false);
     assert(
       !layerStatesArray.some(
@@ -517,7 +538,7 @@ class Layer extends BaseLayer {
    * @protected
    */
   createRenderer() {
-    return null;
+    return /** @type {RendererType} */ (/** @type {unknown} */ (null));
   }
 
   /**

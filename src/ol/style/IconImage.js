@@ -11,7 +11,7 @@ import EventTarget from '../events/Target.js';
 import {shared as iconImageCache} from './IconImageCache.js';
 
 /**
- * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D}
+ * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D|null}
  */
 let taintedTestContext = null;
 
@@ -28,7 +28,7 @@ class IconImage extends EventTarget {
 
     /**
      * @private
-     * @type {HTMLImageElement|OffscreenCanvas|HTMLCanvasElement|ImageBitmap}
+     * @type {HTMLImageElement|OffscreenCanvas|HTMLCanvasElement|ImageBitmap|null}
      */
     this.hitDetectionImage_ = null;
 
@@ -42,11 +42,11 @@ class IconImage extends EventTarget {
      * @private
      * @type {string|null}
      */
-    this.crossOrigin_ = imageAttributes?.crossOrigin;
+    this.crossOrigin_ = imageAttributes?.crossOrigin ?? null;
 
     /**
      * @private
-     * @type {ReferrerPolicy}
+     * @type {ReferrerPolicy|undefined}
      */
     this.referrerPolicy_ = imageAttributes?.referrerPolicy;
 
@@ -112,12 +112,20 @@ class IconImage extends EventTarget {
    */
   isTainted_() {
     if (this.tainted_ === undefined && this.imageState_ === ImageState.LOADED) {
+      const image = this.image_;
+      if (!image) {
+        return false;
+      }
       if (!taintedTestContext) {
         taintedTestContext = createCanvasContext2D(1, 1, undefined, {
           willReadFrequently: true,
         });
       }
-      taintedTestContext.drawImage(this.image_, 0, 0);
+      taintedTestContext.drawImage(
+        /** @type {CanvasImageSource} */ (image),
+        0,
+        0,
+      );
       try {
         taintedTestContext.getImageData(0, 0, 1, 1);
         this.tainted_ = false;
@@ -149,7 +157,10 @@ class IconImage extends EventTarget {
    */
   handleImageLoad_() {
     this.imageState_ = ImageState.LOADED;
-    this.size_ = [this.image_.width, this.image_.height];
+    const image = this.image_;
+    if (image && 'width' in image && 'height' in image) {
+      this.size_ = [image.width, image.height];
+    }
     this.dispatchChangeEvent_();
   }
 
@@ -162,7 +173,12 @@ class IconImage extends EventTarget {
       this.initializeImage_();
     }
     this.replaceColor_(pixelRatio);
-    return this.canvas_[pixelRatio] ? this.canvas_[pixelRatio] : this.image_;
+    const image = this.image_;
+    return this.canvas_[pixelRatio]
+      ? this.canvas_[pixelRatio]
+      : /** @type {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas|ImageBitmap} */ (
+          image
+        );
   }
 
   /**
@@ -197,8 +213,14 @@ class IconImage extends EventTarget {
     }
     if (!this.hitDetectionImage_) {
       if (this.isTainted_()) {
-        const width = this.size_[0];
-        const height = this.size_[1];
+        const size = this.size_;
+        if (!size) {
+          return /** @type {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas|ImageBitmap} */ (
+            this.image_
+          );
+        }
+        const width = size[0];
+        const height = size[1];
         const context = createCanvasContext2D(width, height);
         context.fillRect(0, 0, width, height);
         this.hitDetectionImage_ = context.canvas;
@@ -206,12 +228,14 @@ class IconImage extends EventTarget {
         this.hitDetectionImage_ = this.image_;
       }
     }
-    return this.hitDetectionImage_;
+    return /** @type {HTMLImageElement|HTMLCanvasElement|OffscreenCanvas|ImageBitmap} */ (
+      this.hitDetectionImage_
+    );
   }
 
   /**
    * Get the size of the icon (in pixels).
-   * @return {import("../size.js").Size} Image size.
+   * @return {import("../size.js").Size|null} Image size.
    */
   getSize() {
     return this.size_;
@@ -267,6 +291,9 @@ class IconImage extends EventTarget {
     }
 
     const image = this.image_;
+    if (!image) {
+      return;
+    }
     const ctx = createCanvasContext2D(
       Math.ceil(image.width * pixelRatio),
       Math.ceil(image.height * pixelRatio),
@@ -274,14 +301,14 @@ class IconImage extends EventTarget {
     const canvas = ctx.canvas;
 
     ctx.scale(pixelRatio, pixelRatio);
-    ctx.drawImage(image, 0, 0);
+    ctx.drawImage(/** @type {CanvasImageSource} */ (image), 0, 0);
 
     ctx.globalCompositeOperation = 'multiply';
     ctx.fillStyle = asString(this.color_);
     ctx.fillRect(0, 0, canvas.width / pixelRatio, canvas.height / pixelRatio);
 
     ctx.globalCompositeOperation = 'destination-in';
-    ctx.drawImage(image, 0, 0);
+    ctx.drawImage(/** @type {CanvasImageSource} */ (image), 0, 0);
 
     this.canvas_[pixelRatio] = canvas;
   }
@@ -335,9 +362,16 @@ export function get(image, src, imageAttributes, imageState, color, pattern) {
       imageState,
       color,
     );
-    iconImageCache.set(src, color, iconImage, pattern);
+    if (src !== undefined) {
+      iconImageCache.set(src, color, iconImage, pattern);
+    }
   }
-  if (pattern && iconImage && !iconImageCache.getPattern(src, color)) {
+  if (
+    pattern &&
+    iconImage &&
+    src !== undefined &&
+    !iconImageCache.getPattern(src, color)
+  ) {
     iconImageCache.set(src, color, iconImage, pattern);
   }
   return iconImage;

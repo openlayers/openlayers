@@ -17,13 +17,13 @@ class CanvasImageBuilder extends CanvasBuilder {
 
     /**
      * @private
-     * @type {import('../../DataTile.js').ImageLike}
+     * @type {import('../../DataTile.js').ImageLike|null}
      */
     this.hitDetectionImage_ = null;
 
     /**
      * @private
-     * @type {import('../../DataTile.js').ImageLike}
+     * @type {import('../../DataTile.js').ImageLike|null}
      */
     this.image_ = null;
 
@@ -95,14 +95,14 @@ class CanvasImageBuilder extends CanvasBuilder {
 
     /**
      * @private
-     * @type {import('../../style/Style.js').DeclutterMode}
+     * @type {import('../../style/Style.js').DeclutterMode|undefined}
      */
     this.declutterMode_ = undefined;
 
     /**
      * Data shared with a text builder for combined decluttering.
      * @private
-     * @type {import("../canvas.js").DeclutterImageWithText}
+     * @type {import("../canvas.js").DeclutterImageWithText|undefined}
      */
     this.declutterImageWithText_ = undefined;
   }
@@ -121,30 +121,38 @@ class CanvasImageBuilder extends CanvasBuilder {
     ) {
       return;
     }
-    this.beginGeometry(pointGeometry, feature, index);
+    this.beginGeometry(pointGeometry, feature, index ?? 0);
     const flatCoordinates = pointGeometry.getFlatCoordinates();
     const stride = pointGeometry.getStride();
     const myBegin = this.coordinates.length;
     const myEnd = this.appendFlatPointCoordinates(flatCoordinates, stride);
+    const imagePixelRatio = this.imagePixelRatio_ ?? 1;
+    const anchorX = this.anchorX_ ?? 0;
+    const anchorY = this.anchorY_ ?? 0;
+    const height = this.height_ ?? 0;
+    const originX = this.originX_ ?? 0;
+    const originY = this.originY_ ?? 0;
+    const scale = this.scale_ ?? [1, 1];
+    const width = this.width_ ?? 0;
     this.instructions.push([
       CanvasInstruction.DRAW_IMAGE,
       myBegin,
       myEnd,
       this.image_,
       // Remaining arguments to DRAW_IMAGE are in alphabetical order
-      this.anchorX_ * this.imagePixelRatio_,
-      this.anchorY_ * this.imagePixelRatio_,
-      Math.ceil(this.height_ * this.imagePixelRatio_),
+      anchorX * imagePixelRatio,
+      anchorY * imagePixelRatio,
+      Math.ceil(height * imagePixelRatio),
       this.opacity_,
-      this.originX_ * this.imagePixelRatio_,
-      this.originY_ * this.imagePixelRatio_,
+      originX * imagePixelRatio,
+      originY * imagePixelRatio,
       this.rotateWithView_,
       this.rotation_,
       [
-        (this.scale_[0] * this.pixelRatio) / this.imagePixelRatio_,
-        (this.scale_[1] * this.pixelRatio) / this.imagePixelRatio_,
+        (scale[0] * this.pixelRatio) / imagePixelRatio,
+        (scale[1] * this.pixelRatio) / imagePixelRatio,
       ],
-      Math.ceil(this.width_ * this.imagePixelRatio_),
+      Math.ceil(width * imagePixelRatio),
       this.declutterMode_,
       this.declutterImageWithText_,
     ]);
@@ -180,7 +188,7 @@ class CanvasImageBuilder extends CanvasBuilder {
     if (!this.image_) {
       return;
     }
-    this.beginGeometry(multiPointGeometry, feature, index);
+    this.beginGeometry(multiPointGeometry, feature, index ?? 0);
     const flatCoordinates = multiPointGeometry.getFlatCoordinates();
     const filteredFlatCoordinates = [];
     for (
@@ -200,25 +208,33 @@ class CanvasImageBuilder extends CanvasBuilder {
     }
     const myBegin = this.coordinates.length;
     const myEnd = this.appendFlatPointCoordinates(filteredFlatCoordinates, 2);
+    const imagePixelRatio = this.imagePixelRatio_ ?? 1;
+    const anchorX = this.anchorX_ ?? 0;
+    const anchorY = this.anchorY_ ?? 0;
+    const height = this.height_ ?? 0;
+    const originX = this.originX_ ?? 0;
+    const originY = this.originY_ ?? 0;
+    const scale = this.scale_ ?? [1, 1];
+    const width = this.width_ ?? 0;
     this.instructions.push([
       CanvasInstruction.DRAW_IMAGE,
       myBegin,
       myEnd,
       this.image_,
       // Remaining arguments to DRAW_IMAGE are in alphabetical order
-      this.anchorX_ * this.imagePixelRatio_,
-      this.anchorY_ * this.imagePixelRatio_,
-      Math.ceil(this.height_ * this.imagePixelRatio_),
+      anchorX * imagePixelRatio,
+      anchorY * imagePixelRatio,
+      Math.ceil(height * imagePixelRatio),
       this.opacity_,
-      this.originX_ * this.imagePixelRatio_,
-      this.originY_ * this.imagePixelRatio_,
+      originX * imagePixelRatio,
+      originY * imagePixelRatio,
       this.rotateWithView_,
       this.rotation_,
       [
-        (this.scale_[0] * this.pixelRatio) / this.imagePixelRatio_,
-        (this.scale_[1] * this.pixelRatio) / this.imagePixelRatio_,
+        (scale[0] * this.pixelRatio) / imagePixelRatio,
+        (scale[1] * this.pixelRatio) / imagePixelRatio,
       ],
-      Math.ceil(this.width_ * this.imagePixelRatio_),
+      Math.ceil(width * imagePixelRatio),
       this.declutterMode_,
       this.declutterImageWithText_,
     ]);
@@ -276,6 +292,9 @@ class CanvasImageBuilder extends CanvasBuilder {
     const anchor = imageStyle.getAnchor();
     const size = imageStyle.getSize();
     const origin = imageStyle.getOrigin();
+    if (!anchor || !size || !origin) {
+      return;
+    }
     this.imagePixelRatio_ = imageStyle.getPixelRatio(this.pixelRatio);
     this.anchorX_ = anchor[0];
     this.anchorY_ = anchor[1];
@@ -290,7 +309,10 @@ class CanvasImageBuilder extends CanvasBuilder {
     this.scale_ = imageStyle.getScaleArray();
     this.width_ = size[0];
     this.declutterMode_ = imageStyle.getDeclutterMode();
-    this.declutterImageWithText_ = sharedData;
+    this.declutterImageWithText_ =
+      /** @type {import("../canvas.js").DeclutterImageWithText|undefined} */ (
+        sharedData
+      );
   }
 }
 

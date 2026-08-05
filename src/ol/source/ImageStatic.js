@@ -5,7 +5,6 @@
 import ImageWrapper, {decode} from '../Image.js';
 import EventType from '../events/EventType.js';
 import {intersects} from '../extent.js';
-import {get as getProjection} from '../proj.js';
 import ImageSource, {defaultImageLoadFunction} from './Image.js';
 import {createLoader} from './static.js';
 
@@ -46,7 +45,7 @@ class Static extends ImageSource {
     super({
       attributions: options.attributions,
       interpolate: options.interpolate,
-      projection: getProjection(options.projection),
+      projection: options.projection,
     });
 
     /**
@@ -63,7 +62,7 @@ class Static extends ImageSource {
 
     /**
      * @private
-     * @type {import("../Image.js").default}
+     * @type {import("../Image.js").default|null}
      */
     this.image = null;
 
@@ -77,16 +76,23 @@ class Static extends ImageSource {
         crossOrigin,
         referrerPolicy: options.referrerPolicy,
         load: (image, src) => {
-          this.image.setImage(image);
-          imageLoadFunction(this.image, src);
+          const wrapper = /** @type {import("../Image.js").default} */ (
+            this.image
+          );
+          wrapper.setImage(image);
+          imageLoadFunction(wrapper, src);
           return decode(image);
         },
       }),
     );
 
-    this.image.addEventListener(
+    /** @type {import("../Image.js").default} */
+    const image = this.image;
+    image.addEventListener(
       EventType.CHANGE,
-      this.handleImageChange.bind(this),
+      /** @type {import("../events.js").ListenerFunction} */ (
+        this.handleImageChange.bind(this)
+      ),
     );
   }
 
@@ -104,12 +110,13 @@ class Static extends ImageSource {
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
    * @param {import("../proj/Projection.js").default} projection Projection.
-   * @return {import("../Image.js").default} Single image.
+   * @return {import("../Image.js").default|null} Single image.
    * @override
    */
   getImageInternal(extent, resolution, pixelRatio, projection) {
-    if (intersects(extent, this.image.getExtent())) {
-      return this.image;
+    const image = this.image;
+    if (image && intersects(extent, image.getExtent())) {
+      return image;
     }
     return null;
   }

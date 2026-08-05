@@ -58,7 +58,12 @@ class TileQueue extends PriorityQueue {
     const added = super.enqueue(element);
     if (added) {
       const tile = element[0];
-      tile.addEventListener(EventType.CHANGE, this.boundHandleTileChange_);
+      tile.addEventListener(
+        EventType.CHANGE,
+        /** @type {import("./events.js").ListenerFunction} */ (
+          this.boundHandleTileChange_
+        ),
+      );
     }
     return added;
   }
@@ -83,7 +88,12 @@ class TileQueue extends PriorityQueue {
       state === TileState.EMPTY
     ) {
       if (state !== TileState.ERROR) {
-        tile.removeEventListener(EventType.CHANGE, this.boundHandleTileChange_);
+        tile.removeEventListener(
+          EventType.CHANGE,
+          /** @type {import("./events.js").ListenerFunction} */ (
+            this.boundHandleTileChange_
+          ),
+        );
       }
       const tileKey = tile.getKey();
       if (tileKey in this.tilesLoadingKeys_) {

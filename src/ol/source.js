@@ -64,6 +64,7 @@ export function sourcesFromTileGrid(tileGrid, factory) {
       extent = getIntersection(tileGridExtent, extent);
     }
     const z = tileGrid.getZForResolution(resolution);
+    /** @type {Array<import("./source/Source.js").default>} */
     const wantedSources = [];
     tileGrid.forEachTileCoord(extent, z, (tileCoord) => {
       const key = tileCoord.toString();

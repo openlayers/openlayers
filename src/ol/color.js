@@ -20,9 +20,12 @@ import {clamp, toFixed} from './math.js';
  */
 export const NO_COLOR = [NaN, NaN, NaN, 0];
 
+/**
+ * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D|undefined}
+ */
 let colorParseContext;
 /**
- * @return {CanvasRenderingContext2D} The color parse context
+ * @return {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} The color parse context
  */
 function getColorParseContext() {
   if (!colorParseContext) {

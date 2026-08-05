@@ -119,13 +119,13 @@ class DataTile extends Tile {
     this.loader_ = options.loader;
 
     /**
-     * @type {Data}
+     * @type {Data|null}
      * @private
      */
     this.data_ = null;
 
     /**
-     * @type {Error}
+     * @type {Error|null}
      * @private
      */
     this.error_ = null;
@@ -151,7 +151,7 @@ class DataTile extends Tile {
     if (this.size_) {
       return this.size_;
     }
-    const imageData = asImageLike(this.data_);
+    const imageData = asImageLike(/** @type {Data} */ (this.data_));
     if (imageData) {
       return [imageData.width, imageData.height];
     }
@@ -160,7 +160,7 @@ class DataTile extends Tile {
 
   /**
    * Get the data for the tile.
-   * @return {Data} Tile data.
+   * @return {Data|null} Tile data.
    * @api
    */
   getData() {
@@ -169,7 +169,7 @@ class DataTile extends Tile {
 
   /**
    * Get any loading error.
-   * @return {Error} Loading error.
+   * @return {Error|null} Loading error.
    * @api
    */
   getError() {

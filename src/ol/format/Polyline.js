@@ -42,7 +42,7 @@ class Polyline extends TextFeature {
     /**
      * @type {import("../proj/Projection.js").default}
      */
-    this.dataProjection = getProjection('EPSG:4326');
+    this.dataProjection = getProjection('EPSG:4326') ?? undefined;
 
     /**
      * @private

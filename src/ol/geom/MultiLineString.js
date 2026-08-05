@@ -215,7 +215,7 @@ class MultiLineString extends SimpleGeometry {
   /**
    * Return the linestring at the specified index.
    * @param {number} index Index.
-   * @return {LineString} LineString.
+   * @return {LineString|null} LineString.
    * @api
    */
   getLineString(index) {

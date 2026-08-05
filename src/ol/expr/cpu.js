@@ -25,8 +25,8 @@ import {ColorType, LiteralExpression, Ops, parse} from './expression.js';
 
 /**
  * @typedef {Object} EvaluationContext
- * @property {Object} properties The values for properties used in 'get' expressions.
- * @property {Object} variables The values for variables used in 'var' expressions.
+ * @property {Object<string, *>} properties The values for properties used in 'get' expressions.
+ * @property {Object<string, *>} variables The values for variables used in 'var' expressions.
  * @property {number} resolution The map resolution.
  * @property {string|number|null} featureId The feature id.
  * @property {string} geometryType Geometry type of the current object.
@@ -123,7 +123,7 @@ function compileExpression(expression, context) {
       return compileAccessorExpression(expression, context);
     }
     case Ops.Id: {
-      return (context) => context.featureId;
+      return (context) => context.featureId ?? '';
     }
     case Ops.GeometryType: {
       return (context) => context.geometryType;
@@ -131,7 +131,7 @@ function compileExpression(expression, context) {
     case Ops.Concat: {
       const args = expression.args.map((e) => compileExpression(e, context));
       return (context) =>
-        ''.concat(...args.map((arg) => arg(context).toString()));
+        ''.concat(...args.map((arg) => (arg(context) ?? '').toString()));
     }
     case Ops.Resolution: {
       return (context) => context.resolution;

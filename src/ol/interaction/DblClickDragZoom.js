@@ -47,6 +47,24 @@ class DblClickDragZoom extends Interaction {
     this.duration_ = options.duration !== undefined ? options.duration : 250;
 
     /**
+     * @private
+     * @type {import("../coordinate.js").Coordinate|null}
+     */
+    this.anchor_ = null;
+
+    /**
+     * @private
+     * @type {number|undefined}
+     */
+    this.lastDistance_;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.lastScaleDelta_ = 1;
+
+    /**
      * @type {boolean}
      * @private
      */
@@ -59,7 +77,7 @@ class DblClickDragZoom extends Interaction {
     this.handlingDoubleDownSequence_ = false;
 
     /**
-     * @type {ReturnType<typeof setTimeout>}
+     * @type {ReturnType<typeof setTimeout>|undefined}
      * @private
      */
     this.doubleTapTimeoutId_ = undefined;
@@ -133,6 +151,9 @@ class DblClickDragZoom extends Interaction {
 
     const touch0 = this.targetPointers[0];
     const touch1 = this.down_;
+    if (!touch1) {
+      return;
+    }
     const distance = touch0.clientY - touch1.clientY;
 
     if (this.lastDistance_ !== undefined) {

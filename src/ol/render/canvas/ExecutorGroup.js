@@ -50,11 +50,13 @@ let canvasReadsBenchmarked = false;
 function benchmarkCanvasReads() {
   let bestResult = 0;
   /**
-   * @param {boolean} willReadFrequently Will read frequently.
+   * @param {boolean|undefined} willReadFrequently Will read frequently.
    * @return {number} Operation count.
    */
   const measure = (willReadFrequently) => {
-    const context = createCanvasContext2D(1, 1, null, {willReadFrequently});
+    const context = createCanvasContext2D(1, 1, /** @type {?} */ (null), {
+      willReadFrequently,
+    });
     let count = 0;
     const start = performance.now();
     for (; performance.now() - start < 50; ++count) {
@@ -77,10 +79,10 @@ function benchmarkCanvasReads() {
 
 class ExecutorGroup {
   /**
-   * @param {import("../../extent.js").Extent} maxExtent Max extent for clipping. When a
+   * @param {import("../../extent.js").Extent|null} maxExtent Max extent for clipping. When a
    * `maxExtent` was set on the Builder for this executor group, the same `maxExtent`
    * should be set here, unless the target context does not exceed that extent (which
-   * can be the case when rendering to tiles).
+   * can be the case when rendering to tiles). Pass `null` to disable clipping.
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
    * @param {boolean} overlaps The executor group can have overlapping geometries.
@@ -100,7 +102,7 @@ class ExecutorGroup {
   ) {
     /**
      * @private
-     * @type {import("../../extent.js").Extent}
+     * @type {import("../../extent.js").Extent|null}
      */
     this.maxExtent_ = maxExtent;
 
@@ -136,7 +138,7 @@ class ExecutorGroup {
 
     /**
      * @private
-     * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D}
+     * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D|null}
      */
     this.hitDetectionContext_ = null;
 
@@ -148,7 +150,7 @@ class ExecutorGroup {
 
     /**
      * @private
-     * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D}
+     * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D|null}
      */
     this.renderedContext_ = null;
 
@@ -158,7 +160,7 @@ class ExecutorGroup {
      */
     this.deferredZIndexContexts_ = {};
 
-    this.createExecutors_(allInstructions, deferredRendering);
+    this.createExecutors_(allInstructions, !!deferredRendering);
   }
 
   /**
@@ -166,7 +168,9 @@ class ExecutorGroup {
    * @param {import("../../transform.js").Transform} transform Transform.
    */
   clip(context, transform) {
-    const flatClipCoords = this.getClipCoords(transform);
+    const flatClipCoords = /** @type {Array<number>} */ (
+      this.getClipCoords(transform)
+    );
     context.beginPath();
     context.moveTo(flatClipCoords[0], flatClipCoords[1]);
     context.lineTo(flatClipCoords[2], flatClipCoords[3]);
@@ -258,11 +262,14 @@ class ExecutorGroup {
       this.hitDetectionContext_ = createCanvasContext2D(
         contextSize,
         contextSize,
-        null,
+        /** @type {?} */ (null),
         {willReadFrequently},
       );
     }
-    const context = this.hitDetectionContext_;
+    const context =
+      /** @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} */ (
+        this.hitDetectionContext_
+      );
 
     if (
       context.canvas.width !== contextSize ||
@@ -291,6 +298,9 @@ class ExecutorGroup {
     /** @type {import("../canvas.js").BuilderType} */
     let builderType;
 
+    /** @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} */
+    const hitContext = context;
+
     /**
      * @param {import("../../Feature.js").FeatureLike} feature Feature.
      * @param {import("../../geom/SimpleGeometry.js").default} geometry Geometry.
@@ -298,7 +308,7 @@ class ExecutorGroup {
      * @return {T|undefined} Callback result.
      */
     function featureCallback(feature, geometry, declutterMode) {
-      const imageData = context.getImageData(
+      const imageData = hitContext.getImageData(
         0,
         0,
         contextSize,
@@ -320,7 +330,7 @@ class ExecutorGroup {
               return result;
             }
           }
-          context.clearRect(0, 0, contextSize, contextSize);
+          hitContext.clearRect(0, 0, contextSize, contextSize);
           break;
         }
       }
@@ -437,8 +447,8 @@ class ExecutorGroup {
               scaledCanvasSize,
               transform,
               viewRotation,
-              snapToPixel,
-              declutterTree,
+              /** @type {boolean} */ (snapToPixel),
+              /** @type {?} */ (declutterTree),
             );
           } else {
             zIndexContext.pushFunction((context) =>
@@ -447,8 +457,8 @@ class ExecutorGroup {
                 scaledCanvasSize,
                 transform,
                 viewRotation,
-                snapToPixel,
-                declutterTree,
+                /** @type {boolean} */ (snapToPixel),
+                /** @type {?} */ (declutterTree),
               ),
             );
           }
@@ -483,7 +493,11 @@ class ExecutorGroup {
     const zs = Object.keys(deferredZIndexContexts).map(Number).sort(ascending);
     for (let i = 0, ii = zs.length; i < ii; ++i) {
       deferredZIndexContexts[zs[i]].forEach((zIndexContext) => {
-        zIndexContext.draw(this.renderedContext_); // FIXME Pass clip to replay for temporarily enabling clip
+        zIndexContext.draw(
+          /** @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} */ (
+            this.renderedContext_
+          ),
+        ); // FIXME Pass clip to replay for temporarily enabling clip
         zIndexContext.clear();
       });
       deferredZIndexContexts[zs[i]].length = 0;

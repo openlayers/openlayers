@@ -105,7 +105,16 @@ class MapRenderer extends Disposable {
      * @return {T|undefined} Callback result.
      */
     function forEachFeatureAtCoordinate(managed, feature, layer, geometry) {
-      return callback.call(thisArg, feature, managed ? layer : null, geometry);
+      return callback.call(
+        thisArg,
+        feature,
+        managed
+          ? layer
+          : /** @type {import("../layer/Layer.js").default} */ (
+              /** @type {unknown} */ (null)
+            ),
+        /** @type {import("../geom/SimpleGeometry.js").default} */ (geometry),
+      );
     }
 
     const projection = viewState.projection;
@@ -126,7 +135,9 @@ class MapRenderer extends Disposable {
     for (let i = 0; i < offsets.length; i++) {
       for (let j = numLayers - 1; j >= 0; --j) {
         const layerState = layerStates[j];
-        const layer = layerState.layer;
+        const layer = /** @type {import("../layer/Layer.js").default} */ (
+          layerState.layer
+        );
         if (
           layer.hasRenderer() &&
           inView(layerState, viewState) &&

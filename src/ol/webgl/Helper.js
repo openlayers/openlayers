@@ -149,7 +149,7 @@ function getOrCreateContext(key) {
     canvas.height = 1;
     canvas.style.position = 'absolute';
     canvas.style.left = '0';
-    const context = getContext(canvas);
+    const context = /** @type {WebGLRenderingContext} */ (getContext(canvas));
     cacheItem = {users: 0, context};
     canvasCache[key] = cacheItem;
   }
@@ -351,7 +351,7 @@ class WebGLHelper extends Disposable {
 
     /**
      * @private
-     * @type {WebGLProgram}
+     * @type {WebGLProgram|null}
      */
     this.currentProgram_ = null;
 
@@ -365,11 +365,11 @@ class WebGLHelper extends Disposable {
 
     canvas.addEventListener(
       ContextEventType.LOST,
-      this.boundHandleWebGLContextLost_,
+      /** @type {EventListener} */ (this.boundHandleWebGLContextLost_),
     );
     canvas.addEventListener(
       ContextEventType.RESTORED,
-      this.boundHandleWebGLContextRestored_,
+      /** @type {EventListener} */ (this.boundHandleWebGLContextRestored_),
     );
 
     /**
@@ -380,7 +380,7 @@ class WebGLHelper extends Disposable {
 
     /**
      * @private
-     * @type {Object<string, Object<string, WebGLUniformLocation>>}
+     * @type {Object<string, Object<string, WebGLUniformLocation|null>>}
      */
     this.uniformLocationsByProgram_ = {};
 
@@ -495,7 +495,7 @@ class WebGLHelper extends Disposable {
       !!ext,
       "WebGL extension 'ANGLE_instanced_arrays' is required for vector rendering",
     );
-    return ext;
+    return /** @type {ANGLE_instanced_arrays} */ (ext);
   }
 
   /**
@@ -547,16 +547,14 @@ class WebGLHelper extends Disposable {
     const canvas = this.gl_.canvas;
     canvas.removeEventListener(
       ContextEventType.LOST,
-      this.boundHandleWebGLContextLost_,
+      /** @type {EventListener} */ (this.boundHandleWebGLContextLost_),
     );
     canvas.removeEventListener(
       ContextEventType.RESTORED,
-      this.boundHandleWebGLContextRestored_,
+      /** @type {EventListener} */ (this.boundHandleWebGLContextRestored_),
     );
 
     releaseCanvas(this.canvasCacheKey_);
-
-    delete this.gl_;
   }
 
   /**
@@ -763,7 +761,7 @@ class WebGLHelper extends Disposable {
       if (i === ii - 1) {
         this.postProcessPasses_[i].apply(
           frameState,
-          null,
+          undefined,
           preCompose,
           postCompose,
         );
@@ -823,7 +821,9 @@ class WebGLHelper extends Disposable {
    */
   applyHitDetectionUniform(enabled) {
     const loc = this.getUniformLocation(DefaultUniform.HIT_DETECTION);
-    this.getGL().uniform1i(loc, enabled ? 1 : 0);
+    if (loc) {
+      this.getGL().uniform1i(loc, enabled ? 1 : 0);
+    }
 
     // hit detection uses a fixed pixel ratio
     if (enabled) {
@@ -953,7 +953,7 @@ class WebGLHelper extends Disposable {
    */
   compileShader(source, type) {
     const gl = this.gl_;
-    const shader = gl.createShader(type);
+    const shader = /** @type {WebGLShader} */ (gl.createShader(type));
     gl.shaderSource(shader, source);
     gl.compileShader(shader);
     return shader;
@@ -1012,15 +1012,16 @@ class WebGLHelper extends Disposable {
   /**
    * Will get the location from the shader or the cache
    * @param {string} name Uniform name
-   * @return {WebGLUniformLocation} uniformLocation
+   * @return {WebGLUniformLocation|null} uniformLocation
    */
   getUniformLocation(name) {
-    const programUid = getUid(this.currentProgram_);
+    const programUid = getUid(/** @type {Object} */ (this.currentProgram_));
     if (this.uniformLocationsByProgram_[programUid] === undefined) {
       this.uniformLocationsByProgram_[programUid] = {};
     }
     if (this.uniformLocationsByProgram_[programUid][name] === undefined) {
       this.uniformLocationsByProgram_[programUid][name] =
+        this.currentProgram_ &&
         this.gl_.getUniformLocation(this.currentProgram_, name);
     }
     return this.uniformLocationsByProgram_[programUid][name];
@@ -1032,13 +1033,14 @@ class WebGLHelper extends Disposable {
    * @return {number} attribLocation
    */
   getAttributeLocation(name) {
-    const programUid = getUid(this.currentProgram_);
+    const programUid = getUid(/** @type {Object} */ (this.currentProgram_));
     if (this.attribLocationsByProgram_[programUid] === undefined) {
       this.attribLocationsByProgram_[programUid] = {};
     }
     if (this.attribLocationsByProgram_[programUid][name] === undefined) {
-      this.attribLocationsByProgram_[programUid][name] =
-        this.gl_.getAttribLocation(this.currentProgram_, name);
+      this.attribLocationsByProgram_[programUid][name] = this.currentProgram_
+        ? this.gl_.getAttribLocation(this.currentProgram_, name)
+        : -1;
     }
     return this.attribLocationsByProgram_[programUid][name];
   }
@@ -1164,7 +1166,7 @@ class WebGLHelper extends Disposable {
           instanced,
         );
       }
-      offset += attr.size * getByteSizeFromType(attr.type);
+      offset += attr.size * getByteSizeFromType(attr.type || FLOAT);
     }
   }
 
@@ -1284,7 +1286,7 @@ export function computeAttributesStride(attributes) {
   let stride = 0;
   for (let i = 0; i < attributes.length; i++) {
     const attr = attributes[i];
-    stride += attr.size * getByteSizeFromType(attr.type);
+    stride += attr.size * getByteSizeFromType(attr.type || FLOAT);
   }
   return stride;
 }

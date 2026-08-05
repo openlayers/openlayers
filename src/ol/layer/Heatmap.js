@@ -145,7 +145,7 @@ class Heatmap extends BaseVector {
 
     /**
      * @private
-     * @type {HTMLCanvasElement|OffscreenCanvas}
+     * @type {HTMLCanvasElement|OffscreenCanvas|null}
      */
     this.gradient_ = null;
 
@@ -319,12 +319,18 @@ class Heatmap extends BaseVector {
     ) {
       const weightFunction =
         typeof this.weight_ === 'string'
-          ? (feature) => feature.get(this.weight_)
-          : this.weight_;
+          ? /** @type {function(import('../Feature.js').FeatureLike): number|undefined} */ (
+              (feature) => feature.get(/** @type {string} */ (this.weight_))
+            )
+          : /** @type {function(import('../Feature.js').FeatureLike): number|undefined} */ (
+              this.weight_
+            );
       weightAttribute['prop_weight'] = {
         size: 1,
         callback: (feature) => {
-          const weightValue = weightFunction(feature);
+          const weightValue = weightFunction(
+            /** @type {import('../Feature.js').FeatureLike} */ (feature),
+          );
           return weightValue !== undefined ? clamp(weightValue, 0, 1) : 1;
         },
       };

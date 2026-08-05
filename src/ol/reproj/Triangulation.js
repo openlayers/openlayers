@@ -57,7 +57,7 @@ class Triangulation {
    * @param {import("../proj/Projection.js").default} sourceProj Source projection.
    * @param {import("../proj/Projection.js").default} targetProj Target projection.
    * @param {import("../extent.js").Extent} targetExtent Target extent to triangulate.
-   * @param {import("../extent.js").Extent} maxSourceExtent Maximal source extent that can be used.
+   * @param {import("../extent.js").Extent|undefined} maxSourceExtent Maximal source extent that can be used.
    * @param {number} errorThreshold Acceptable error (in source units).
    * @param {?number} destinationResolution The (optional) resolution of the destination.
    * @param {import("../transform.js").Transform} [sourceMatrix] Source transform matrix.
@@ -85,6 +85,7 @@ class Triangulation {
 
     /** @type {!Object<string, import("../coordinate.js").Coordinate>} */
     let transformInvCache = {};
+    /** @type {import("../proj.js").TransformFunction} */
     const transformInv = sourceMatrix
       ? createTransformFromCoordinateTransform((input) =>
           applyMatrix(
@@ -92,7 +93,9 @@ class Triangulation {
             transform(input, this.targetProj_, this.sourceProj_),
           ),
         )
-      : getTransform(this.targetProj_, this.sourceProj_);
+      : /** @type {import("../proj.js").TransformFunction} */ (
+          getTransform(this.targetProj_, this.sourceProj_)
+        );
 
     /**
      * @param {import("../coordinate.js").Coordinate} c A coordinate.
@@ -108,7 +111,7 @@ class Triangulation {
     };
 
     /**
-     * @type {import("../extent.js").Extent}
+     * @type {import("../extent.js").Extent|undefined}
      * @private
      */
     this.maxSourceExtent_ = maxSourceExtent;
@@ -143,20 +146,20 @@ class Triangulation {
       getWidth(maxSourceExtent) >= getWidth(this.sourceProj_.getExtent());
 
     /**
-     * @type {?number}
+     * @type {number|undefined}
      * @private
      */
     this.sourceWorldWidth_ = this.sourceProj_.getExtent()
       ? getWidth(this.sourceProj_.getExtent())
-      : null;
+      : undefined;
 
     /**
-     * @type {?number}
+     * @type {number|undefined}
      * @private
      */
     this.targetWorldWidth_ = this.targetProj_.getExtent()
       ? getWidth(this.targetProj_.getExtent())
-      : null;
+      : undefined;
 
     const destinationTopLeft = getTopLeft(targetExtent);
     const destinationTopRight = getTopRight(targetExtent);
@@ -204,6 +207,10 @@ class Triangulation {
     );
 
     if (this.wrapsXInSource_) {
+      const sourceWorldWidth = this.sourceWorldWidth_;
+      if (!sourceWorldWidth) {
+        return;
+      }
       let leftBound = Infinity;
       this.triangles_.forEach(function (triangle, i, arr) {
         leftBound = Math.min(
@@ -224,21 +231,21 @@ class Triangulation {
             triangle.source[2][0],
           ) -
             leftBound >
-          this.sourceWorldWidth_ / 2
+          sourceWorldWidth / 2
         ) {
           const newTriangle = [
             [triangle.source[0][0], triangle.source[0][1]],
             [triangle.source[1][0], triangle.source[1][1]],
             [triangle.source[2][0], triangle.source[2][1]],
           ];
-          if (newTriangle[0][0] - leftBound > this.sourceWorldWidth_ / 2) {
-            newTriangle[0][0] -= this.sourceWorldWidth_;
+          if (newTriangle[0][0] - leftBound > sourceWorldWidth / 2) {
+            newTriangle[0][0] -= sourceWorldWidth;
           }
-          if (newTriangle[1][0] - leftBound > this.sourceWorldWidth_ / 2) {
-            newTriangle[1][0] -= this.sourceWorldWidth_;
+          if (newTriangle[1][0] - leftBound > sourceWorldWidth / 2) {
+            newTriangle[1][0] -= sourceWorldWidth;
           }
-          if (newTriangle[2][0] - leftBound > this.sourceWorldWidth_ / 2) {
-            newTriangle[2][0] -= this.sourceWorldWidth_;
+          if (newTriangle[2][0] - leftBound > sourceWorldWidth / 2) {
+            newTriangle[2][0] -= sourceWorldWidth;
           }
 
           // Rarely (if the extent contains both the dateline and prime meridian)
@@ -254,7 +261,7 @@ class Triangulation {
             newTriangle[1][0],
             newTriangle[2][0],
           );
-          if (maxX - minX < this.sourceWorldWidth_ / 2) {
+          if (maxX - minX < sourceWorldWidth / 2) {
             triangle.source = newTriangle;
           }
         }
@@ -299,15 +306,16 @@ class Triangulation {
    */
   addQuad_(a, b, c, d, aSrc, bSrc, cSrc, dSrc, maxSubdivision) {
     const sourceQuadExtent = boundingExtent([aSrc, bSrc, cSrc, dSrc]);
-    const sourceCoverageX = this.sourceWorldWidth_
-      ? getWidth(sourceQuadExtent) / this.sourceWorldWidth_
-      : null;
-    const sourceWorldWidth = /** @type {number} */ (this.sourceWorldWidth_);
+    const sourceWorldWidth = this.sourceWorldWidth_;
+    const sourceCoverageX = sourceWorldWidth
+      ? getWidth(sourceQuadExtent) / sourceWorldWidth
+      : undefined;
 
     // when the quad is wrapped in the source projection
     // it covers most of the projection extent, but not fully
     const wrapsX =
       this.sourceProj_.canWrapX() &&
+      sourceCoverageX !== undefined &&
       sourceCoverageX > 0.5 &&
       sourceCoverageX < 1;
 
@@ -383,11 +391,10 @@ class Triangulation {
 
         let dx;
         if (wrapsX) {
+          const worldWidth = /** @type {number} */ (sourceWorldWidth);
           const centerSrcEstimX =
-            (modulo(aSrc[0], sourceWorldWidth) +
-              modulo(cSrc[0], sourceWorldWidth)) /
-            2;
-          dx = centerSrcEstimX - modulo(centerSrc[0], sourceWorldWidth);
+            (modulo(aSrc[0], worldWidth) + modulo(cSrc[0], worldWidth)) / 2;
+          dx = centerSrcEstimX - modulo(centerSrc[0], worldWidth);
         } else {
           dx = (aSrc[0] + cSrc[0]) / 2 - centerSrc[0];
         }

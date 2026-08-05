@@ -93,13 +93,13 @@ class RenderFeature {
 
     /**
      * @private
-     * @type {Array<number>}
+     * @type {Array<number>|null}
      */
     this.flatInteriorPoints_ = null;
 
     /**
      * @private
-     * @type {Array<number>}
+     * @type {Array<number>|null}
      */
     this.flatMidpoints_ = null;
 
@@ -173,7 +173,7 @@ class RenderFeature {
       this.flatInteriorPoints_ = getInteriorPointOfArray(
         this.flatCoordinates_,
         0,
-        this.ends_,
+        /** @type {Array<number>} */ (this.ends_),
         this.stride_,
         flatCenter,
         0,
@@ -187,7 +187,10 @@ class RenderFeature {
    */
   getFlatInteriorPoints() {
     if (!this.flatInteriorPoints_) {
-      const ends = inflateEnds(this.flatCoordinates_, this.ends_);
+      const ends = inflateEnds(
+        this.flatCoordinates_,
+        /** @type {Array<number>} */ (this.ends_),
+      );
       const flatCenters = linearRingssCenter(
         this.flatCoordinates_,
         0,
@@ -338,7 +341,9 @@ class RenderFeature {
    * @param {import("../proj.js").ProjectionLike} projection The data projection
    */
   transform(projection) {
-    projection = getProjection(projection);
+    projection = /** @type {import("../proj/Projection.js").default} */ (
+      getProjection(projection)
+    );
     const pixelExtent = projection.getExtent();
     const projectedExtent = projection.getWorldExtent();
     if (pixelExtent && projectedExtent) {
@@ -382,7 +387,7 @@ class RenderFeature {
     return new RenderFeature(
       this.type_,
       this.flatCoordinates_.slice(),
-      this.ends_?.slice(),
+      /** @type {Array<number>} */ (this.ends_?.slice()),
       this.stride_,
       Object.assign({}, this.properties_),
       this.id_,
@@ -411,6 +416,7 @@ class RenderFeature {
       }
       const simplifiedFlatCoordinates =
         this.simplifiedGeometry_.getFlatCoordinates();
+      /** @type {Array<number>|undefined} */
       let simplifiedEnds;
       switch (this.type_) {
         case 'LineString':
@@ -430,7 +436,7 @@ class RenderFeature {
           simplifiedFlatCoordinates.length = douglasPeuckerArray(
             simplifiedFlatCoordinates,
             0,
-            this.simplifiedGeometry_.ends_,
+            /** @type {Array<number>} */ (this.simplifiedGeometry_.ends_),
             this.simplifiedGeometry_.stride_,
             squaredTolerance,
             simplifiedFlatCoordinates,
@@ -443,7 +449,7 @@ class RenderFeature {
           simplifiedFlatCoordinates.length = quantizeArray(
             simplifiedFlatCoordinates,
             0,
-            this.simplifiedGeometry_.ends_,
+            /** @type {Array<number>} */ (this.simplifiedGeometry_.ends_),
             this.simplifiedGeometry_.stride_,
             Math.sqrt(squaredTolerance),
             simplifiedFlatCoordinates,
@@ -501,7 +507,7 @@ export function toGeometry(renderFeature) {
       );
     case 'Polygon':
       const flatCoordinates = renderFeature.getFlatCoordinates();
-      const ends = renderFeature.getEnds();
+      const ends = /** @type {Array<number>} */ (renderFeature.getEnds());
       const endss = inflateEnds(flatCoordinates, ends);
       return endss.length > 1
         ? new MultiPolygon(flatCoordinates, 'XY', endss)

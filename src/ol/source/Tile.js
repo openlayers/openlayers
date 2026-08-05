@@ -235,7 +235,7 @@ class TileSource extends Source {
    * returned.
    * @param {import("../tilecoord.js").TileCoord} tileCoord Tile coordinate.
    * @param {import("../proj/Projection.js").default} [projection] Projection.
-   * @return {import("../tilecoord.js").TileCoord} Tile coordinate to be passed to the tileUrlFunction or
+   * @return {import("../tilecoord.js").TileCoord|null} Tile coordinate to be passed to the tileUrlFunction or
    *     null if no tile URL should be created for the passed `tileCoord`.
    */
   getTileCoordForTileUrlFunction(tileCoord, projection) {
@@ -243,10 +243,28 @@ class TileSource extends Source {
       projection !== undefined ? projection : this.getProjection();
     const tileGrid =
       projection !== undefined
-        ? this.getTileGridForProjection(gridProjection)
-        : this.tileGrid || this.getTileGridForProjection(gridProjection);
-    if (this.getWrapX() && gridProjection.isGlobal()) {
-      tileCoord = wrapX(tileGrid, tileCoord, gridProjection);
+        ? this.getTileGridForProjection(
+            /** @type {import("../proj/Projection.js").default} */ (
+              gridProjection
+            ),
+          )
+        : this.tileGrid ||
+          this.getTileGridForProjection(
+            /** @type {import("../proj/Projection.js").default} */ (
+              gridProjection
+            ),
+          );
+    if (
+      this.getWrapX() &&
+      /** @type {import("../proj/Projection.js").default} */ (
+        gridProjection
+      ).isGlobal()
+    ) {
+      tileCoord = wrapX(
+        tileGrid,
+        tileCoord,
+        /** @type {import("../proj/Projection.js").default} */ (gridProjection),
+      );
     }
     return withinExtentAndZ(tileCoord, tileGrid) ? tileCoord : null;
   }

@@ -141,13 +141,13 @@ export class ShaderBuilder {
     this.texCoordExpression_ = 'vec4(0.0, 0.0, 1.0, 1.0)';
 
     /**
-     * @type {string}
+     * @type {string|null}
      * @private
      */
     this.fragmentDiscardExpression_ = null;
 
     /**
-     * @type {string}
+     * @type {string|null}
      * @private
      */
     this.shapeDiscardExpression_ = null;
@@ -205,7 +205,7 @@ export class ShaderBuilder {
 
     /**
      * @private
-     * @type {string}
+     * @type {string|null}
      */
     this.strokePatternLengthExpression_ = null;
 
@@ -225,7 +225,7 @@ export class ShaderBuilder {
 
     /**
      * @private
-     * @type {string}
+     * @type {string|null}
      */
     this.fillPatternSizeExpression_ = null;
 
@@ -378,7 +378,7 @@ export class ShaderBuilder {
   }
 
   /**
-   * @return {string} The current fragment discard expression; null if none has been set
+   * @return {string|null} The current fragment discard expression; null if none has been set
    */
   getFragmentDiscardExpression() {
     return this.fragmentDiscardExpression_;
@@ -399,7 +399,7 @@ export class ShaderBuilder {
   }
 
   /**
-   * @return {string} The current shape discard expression; null if none has been set
+   * @return {string|null} The current shape discard expression; null if none has been set
    */
   getShapeDiscardExpression() {
     return this.shapeDiscardExpression_;
@@ -504,7 +504,7 @@ export class ShaderBuilder {
   }
 
   /**
-   * @return {string} The current stroke pattern length expression.
+   * @return {string|null} The current stroke pattern length expression.
    */
   getStrokePatternLengthExpression() {
     return this.strokePatternLengthExpression_;
@@ -540,20 +540,20 @@ export class ShaderBuilder {
   }
 
   /**
-   * @return {string} The current fill pattern size expression.
+   * @return {string|null} The current fill pattern size expression.
    */
   getFillPatternSizeExpression() {
     return this.fillPatternSizeExpression_;
   }
 
-  addVertexShaderFunction(code) {
+  addVertexShaderFunction(/** @type {string} */ code) {
     if (this.vertexShaderFunctions_.includes(code)) {
       return this;
     }
     this.vertexShaderFunctions_.push(code);
     return this;
   }
-  addFragmentShaderFunction(code) {
+  addFragmentShaderFunction(/** @type {string} */ code) {
     if (this.fragmentShaderFunctions_.includes(code)) {
       return this;
     }

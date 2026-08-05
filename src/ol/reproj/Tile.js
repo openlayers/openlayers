@@ -18,7 +18,14 @@ import Triangulation from './Triangulation.js';
 import {ERROR_THRESHOLD} from './common.js';
 
 /**
- * @typedef {function(number, number, number, number) : (import("../ImageTile.js").default)} FunctionType
+ * @typedef {function(number, number, number, number) : import("../ImageTile.js").default} FunctionType
+ */
+
+/**
+ * @typedef {Object} ReprojTileSource
+ * @property {import("../extent.js").Extent} extent Extent.
+ * @property {import("../extent.js").Extent|undefined} clipExtent Clip extent.
+ * @property {import("../DataTile.js").ImageLike} image Image.
  */
 
 /**
@@ -86,7 +93,7 @@ class ReprojTile extends Tile {
 
     /**
      * @private
-     * @type {HTMLCanvasElement|OffscreenCanvas}
+     * @type {HTMLCanvasElement|OffscreenCanvas|null}
      */
     this.canvas_ = null;
 
@@ -128,10 +135,10 @@ class ReprojTile extends Tile {
 
     /**
      * @private
-     * @type {import("../extent.js").Extent}
+     * @type {import("../extent.js").Extent|undefined}
      */
     this.clipExtent_ = sourceProj.canWrapX()
-      ? sourceProj.getExtent()
+      ? sourceProj.getExtent() || undefined
       : undefined;
 
     const targetExtent = targetTileGrid.getTileCoordExtent(
@@ -189,7 +196,7 @@ class ReprojTile extends Tile {
       sourceProj,
       targetProj,
       limitedTargetExtent,
-      maxSourceExtent,
+      maxSourceExtent || undefined,
       sourceResolution * errorThresholdInPixels,
       targetResolution,
     );
@@ -264,7 +271,7 @@ class ReprojTile extends Tile {
 
   /**
    * Get the HTML Canvas element for this tile.
-   * @return {HTMLCanvasElement|OffscreenCanvas} Canvas.
+   * @return {HTMLCanvasElement|OffscreenCanvas|null} Canvas.
    */
   getImage() {
     return this.canvas_;
@@ -274,6 +281,7 @@ class ReprojTile extends Tile {
    * @private
    */
   reproject_() {
+    /** @type {Array<ReprojTileSource>} */
     const sources = [];
     this.sourceTiles_.forEach((source) => {
       const tile = source.tile;
@@ -286,10 +294,14 @@ class ReprojTile extends Tile {
           clipExtent[0] += source.offset;
           clipExtent[2] += source.offset;
         }
+        const image = tile.getImage();
+        if (!image) {
+          return;
+        }
         sources.push({
           extent: extent,
           clipExtent: clipExtent,
-          image: tile.getImage(),
+          image: image,
         });
       }
     });
@@ -316,7 +328,7 @@ class ReprojTile extends Tile {
         height,
         this.pixelRatio_,
         sourceResolution,
-        this.sourceTileGrid_.getExtent(),
+        this.sourceTileGrid_.getExtent() ?? targetExtent,
         targetResolution,
         targetExtent,
         this.triangulation_,
@@ -346,12 +358,16 @@ class ReprojTile extends Tile {
       let leftToLoad = 0;
 
       this.sourcesListenerKeys_ = [];
-      this.sourceTiles_.forEach(({tile}) => {
+      this.sourceTiles_.forEach((sourceTile) => {
+        const tile = sourceTile.tile;
+        if (!tile) {
+          return;
+        }
         const state = tile.getState();
         if (state == TileState.IDLE || state == TileState.LOADING) {
           leftToLoad++;
 
-          const sourceListenKey = listen(tile, EventType.CHANGE, (e) => {
+          const sourceListenKey = listen(tile, EventType.CHANGE, () => {
             const state = tile.getState();
             if (
               state == TileState.LOADED ||
@@ -366,14 +382,20 @@ class ReprojTile extends Tile {
               }
             }
           });
-          this.sourcesListenerKeys_.push(sourceListenKey);
+          /** @type {!Array<import("../events.js").EventsKey>} */ (
+            this.sourcesListenerKeys_
+          ).push(sourceListenKey);
         }
       });
 
       if (leftToLoad === 0) {
         setTimeout(this.reproject_.bind(this), 0);
       } else {
-        this.sourceTiles_.forEach(function ({tile}, i, arr) {
+        this.sourceTiles_.forEach(function (sourceTile) {
+          const tile = sourceTile.tile;
+          if (!tile) {
+            return;
+          }
           const state = tile.getState();
           if (state == TileState.IDLE) {
             tile.load();
@@ -387,8 +409,10 @@ class ReprojTile extends Tile {
    * @private
    */
   unlistenSources_() {
-    this.sourcesListenerKeys_.forEach(unlistenByKey);
-    this.sourcesListenerKeys_ = null;
+    if (this.sourcesListenerKeys_) {
+      this.sourcesListenerKeys_.forEach(unlistenByKey);
+      this.sourcesListenerKeys_ = null;
+    }
   }
 
   /**

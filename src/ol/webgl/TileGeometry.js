@@ -37,7 +37,7 @@ class TileGeometry extends BaseTileRepresentation {
     this.styleRenderer_ = styleRenderer;
 
     /**
-     * @type {import("../render/webgl/VectorStyleRenderer.js").WebGLBuffers}
+     * @type {import("../render/webgl/VectorStyleRenderer.js").WebGLBuffers|null}
      */
     this.buffers = null;
 
@@ -62,36 +62,61 @@ class TileGeometry extends BaseTileRepresentation {
    * @private
    */
   generateMaskBuffer_() {
-    const extent = this.tile.getSourceTiles()[0].extent;
+    const sourceTile = this.tile.getSourceTiles()[0];
+    const extent = sourceTile.extent;
+    if (!extent) {
+      return;
+    }
     const originX = extent[0];
     const originY = extent[1];
     const width = extent[2] - originX;
     const height = extent[3] - originY;
     this.maskVertices.fromArray([0, 0, width, 0, width, height, 0, height]);
-    this.helper.flushBufferData(this.maskVertices);
+    /** @type {import("./Helper.js").default} */ (this.helper).flushBufferData(
+      this.maskVertices,
+    );
   }
 
   /**
    * @override
    */
   uploadTile() {
+    if (!this.helper) {
+      return;
+    }
     this.generateMaskBuffer_();
 
     this.batch_.clear();
     const sourceTiles = this.tile.getSourceTiles();
-    const features = sourceTiles.reduce(
-      (accumulator, sourceTile) => accumulator.concat(sourceTile.getFeatures()),
-      [],
-    );
-    this.batch_.addFeatures(features);
+    /** @type {Array<import("../Feature.js").default|import("../render/Feature.js").default>} */
+    const features = [];
+    for (const sourceTile of sourceTiles) {
+      const tileFeatures = sourceTile.getFeatures();
+      if (!tileFeatures) {
+        continue;
+      }
+      for (let i = 0; i < tileFeatures.length; ++i) {
+        features.push(
+          /** @type {import("../Feature.js").default|import("../render/Feature.js").default} */ (
+            tileFeatures[i]
+          ),
+        );
+      }
+    }
 
-    const tileOriginX = sourceTiles[0].extent[0];
-    const tileOriginY = sourceTiles[0].extent[1];
+    const firstExtent = sourceTiles[0].extent;
+    if (!firstExtent) {
+      return;
+    }
+    const tileOriginX = firstExtent[0];
+    const tileOriginY = firstExtent[1];
     const transform = translateTransform(
       createTransform(),
       -tileOriginX,
       -tileOriginY,
     );
+
+    this.batch_.addFeatures(features);
 
     this.styleRenderer_
       .generateBuffers(this.batch_, transform, this.wantedResolution)
@@ -105,14 +130,15 @@ class TileGeometry extends BaseTileRepresentation {
    * @override
    */
   disposeInternal() {
-    if (this.buffers) {
+    const helper = this.helper;
+    if (this.buffers && helper) {
       /**
        * @param {Array<WebGLArrayBuffer>} typeBuffers Buffers
        */
       const disposeBuffersOfType = (typeBuffers) => {
         for (const buffer of typeBuffers) {
           if (buffer) {
-            this.helper.deleteBuffer(buffer);
+            helper.deleteBuffer(buffer);
           }
         }
       };
@@ -123,7 +149,7 @@ class TileGeometry extends BaseTileRepresentation {
       this.buffers.polygonBuffers &&
         disposeBuffersOfType(this.buffers.polygonBuffers);
       this.styleRenderer_.disposeTextInstructions(
-        this.buffers.textInstructionsKey,
+        this.buffers.textInstructionsKey ?? '',
       );
     }
     super.disposeInternal();

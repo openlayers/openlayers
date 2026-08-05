@@ -34,7 +34,7 @@ class Stroke {
 
     /**
      * @private
-     * @type {import("../color.js").Color|import("../colorlike.js").ColorLike}
+     * @type {import("../color.js").Color|import("../colorlike.js").ColorLike|null}
      */
     this.color_ = options.color !== undefined ? options.color : null;
 
@@ -91,7 +91,7 @@ class Stroke {
     return new Stroke({
       color: Array.isArray(color) ? color.slice() : color || undefined,
       lineCap: this.getLineCap(),
-      lineDash: this.getLineDash() ? this.getLineDash().slice() : undefined,
+      lineDash: this.getLineDash()?.slice(),
       lineDashOffset: this.getLineDashOffset(),
       lineJoin: this.getLineJoin(),
       miterLimit: this.getMiterLimit(),
@@ -102,7 +102,7 @@ class Stroke {
 
   /**
    * Get the stroke color.
-   * @return {import("../color.js").Color|import("../colorlike.js").ColorLike} Color.
+   * @return {import("../color.js").Color|import("../colorlike.js").ColorLike|null} Color.
    * @api
    */
   getColor() {

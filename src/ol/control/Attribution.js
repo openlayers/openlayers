@@ -165,7 +165,7 @@ class Attribution extends Control {
 
     this.toggleButton_.addEventListener(
       EventType.CLICK,
-      this.handleClick_.bind(this),
+      /** @type {EventListener} */ (this.handleClick_.bind(this)),
       false,
     );
 
@@ -177,7 +177,7 @@ class Attribution extends Control {
       CLASS_CONTROL +
       (this.collapsed_ && this.collapsible_ ? ' ' + CLASS_COLLAPSED : '') +
       (this.collapsible_ ? '' : ' ol-uncollapsible');
-    const element = this.element;
+    const element = /** @type {!HTMLElement} */ (this.element);
     element.className = cssClasses;
     element.appendChild(this.toggleButton_);
     element.appendChild(this.ulElement_);
@@ -203,9 +203,19 @@ class Attribution extends Control {
    * @private
    */
   collectSourceAttributions_(frameState) {
-    const layers = this.getMap().getAllLayers();
+    const map = this.getMap();
+    if (!map) {
+      return [];
+    }
+    const layers = map.getAllLayers();
     const visibleAttributions = new Set(
-      layers.flatMap((layer) => layer.getAttributions(frameState)),
+      layers.flatMap((layer) =>
+        layer.getAttributions(
+          /** @type {import("../View.js").ViewStateLayerStateExtent} */ (
+            frameState
+          ),
+        ),
+      ),
     );
     if (this.attributions_ !== undefined) {
       Array.isArray(this.attributions_)
@@ -227,9 +237,13 @@ class Attribution extends Control {
    * @param {?import("../Map.js").FrameState} frameState Frame state.
    */
   async updateElement_(frameState) {
+    const element = this.element;
+    if (!element) {
+      return;
+    }
     if (!frameState) {
       if (this.renderedVisible_) {
-        this.element.style.display = 'none';
+        element.style.display = 'none';
         this.renderedVisible_ = false;
       }
       return;
@@ -243,7 +257,7 @@ class Attribution extends Control {
 
     const visible = attributions.length > 0;
     if (this.renderedVisible_ != visible) {
-      this.element.style.display = visible ? '' : 'none';
+      element.style.display = visible ? '' : 'none';
       this.renderedVisible_ = visible;
     }
 
@@ -255,9 +269,9 @@ class Attribution extends Control {
 
     // append the attributions
     for (let i = 0, ii = attributions.length; i < ii; ++i) {
-      const element = document.createElement('li');
-      element.innerHTML = attributions[i];
-      this.ulElement_.appendChild(element);
+      const listItem = document.createElement('li');
+      listItem.innerHTML = attributions[i];
+      this.ulElement_.appendChild(listItem);
     }
 
     this.renderedAttributions_ = attributions;
@@ -277,7 +291,11 @@ class Attribution extends Control {
    * @private
    */
   handleToggle_() {
-    this.element.classList.toggle(CLASS_COLLAPSED);
+    const element = this.element;
+    if (!element) {
+      return;
+    }
+    element.classList.toggle(CLASS_COLLAPSED);
     if (this.collapsed_) {
       replaceNode(this.collapseLabel_, this.label_);
     } else {
@@ -306,7 +324,11 @@ class Attribution extends Control {
       return;
     }
     this.collapsible_ = collapsible;
-    this.element.classList.toggle('ol-uncollapsible');
+    const element = this.element;
+    if (!element) {
+      return;
+    }
+    element.classList.toggle('ol-uncollapsible');
     if (this.userCollapsed_) {
       this.handleToggle_();
     }

@@ -10,7 +10,9 @@ import generateInfo from './generate-info.js';
  */
 async function getSymbols() {
   const info = await generateInfo();
-  return info.symbols.filter((symbol) => symbol.kind != 'member');
+  return info.symbols.filter(
+    (symbol) => symbol.kind != 'member' && symbol.kind != 'param',
+  );
 }
 
 /**

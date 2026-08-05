@@ -30,8 +30,7 @@ import Within from './filter/Within.js';
  * @api
  */
 export function and(conditions) {
-  const params = [null].concat(Array.prototype.slice.call(arguments));
-  return new (Function.prototype.bind.apply(And, params))();
+  return Reflect.construct(And, Array.prototype.slice.call(arguments));
 }
 
 /**
@@ -42,8 +41,7 @@ export function and(conditions) {
  * @api
  */
 export function or(conditions) {
-  const params = [null].concat(Array.prototype.slice.call(arguments));
-  return new (Function.prototype.bind.apply(Or, params))();
+  return Reflect.construct(Or, Array.prototype.slice.call(arguments));
 }
 
 /**
@@ -296,6 +294,10 @@ export function during(propertyName, begin, end) {
   return new During(propertyName, begin, end);
 }
 
+/**
+ * @param {string} rid Resource id.
+ * @return {!ResourceId} `<ResourceId>` operator.
+ */
 export function resourceId(rid) {
   return new ResourceId(rid);
 }

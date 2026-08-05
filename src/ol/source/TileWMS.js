@@ -110,7 +110,7 @@ class TileWMS extends TileImage {
 
     /**
      * @private
-     * @type {!Object}
+     * @type {!Object<string, *>}
      */
     this.params_ = params;
 
@@ -122,7 +122,7 @@ class TileWMS extends TileImage {
 
     /**
      * @private
-     * @type {import("./wms.js").ServerType}
+     * @type {import("./wms.js").ServerType|undefined}
      */
     this.serverType_ = options.serverType;
 
@@ -157,8 +157,13 @@ class TileWMS extends TileImage {
    * @api
    */
   getFeatureInfoUrl(coordinate, resolution, projection, params) {
-    const projectionObj = getProjection(projection);
-    const sourceProjectionObj = this.getProjection() || projectionObj;
+    const projectionObj =
+      /** @type {import("../proj/Projection.js").default} */ (
+        getProjection(projection)
+      );
+    const sourceProjectionObj =
+      this.getProjection() ||
+      /** @type {import("../proj/Projection.js").default} */ (projectionObj);
 
     let tileGrid = this.getTileGrid();
     if (!tileGrid) {
@@ -192,6 +197,7 @@ class TileWMS extends TileImage {
       tileExtent = buffer(tileExtent, tileResolution * gutter, tileExtent);
     }
 
+    /** @type {Object<string, *>} */
     const baseParams = {
       'QUERY_LAYERS': this.params_['LAYERS'],
     };
@@ -211,7 +217,7 @@ class TileWMS extends TileImage {
       tileCoord,
       tileExtent,
       1,
-      sourceProjectionObj || projectionObj,
+      sourceProjectionObj,
       baseParams,
     );
   }
@@ -223,7 +229,7 @@ class TileWMS extends TileImage {
    *
    * @param {number} [resolution] Resolution. If set to undefined, `SCALE`
    *     will not be calculated and included in URL.
-   * @param {Object} [params] GetLegendGraphic params. If `LAYER` is set, the
+   * @param {Object<string, *>} [params] GetLegendGraphic params. If `LAYER` is set, the
    *     request is generated for this wms layer, else it will try to use the
    *     configured wms layer. Default `FORMAT` is `image/png`.
    *     `VERSION` should not be specified here.
@@ -231,10 +237,12 @@ class TileWMS extends TileImage {
    * @api
    */
   getLegendUrl(resolution, params) {
-    if (this.urls[0] === undefined) {
+    const urls = this.urls;
+    if (!urls || urls[0] === undefined) {
       return undefined;
     }
 
+    /** @type {Object<string, *>} */
     const baseParams = {
       'SERVICE': 'WMS',
       'VERSION': DEFAULT_VERSION,
@@ -243,7 +251,7 @@ class TileWMS extends TileImage {
     };
 
     if (params === undefined || params['LAYER'] === undefined) {
-      const layers = this.params_.LAYERS;
+      const layers = this.params_['LAYERS'];
       const isSingleLayer = !Array.isArray(layers) || layers.length === 1;
       if (!isSingleLayer) {
         return undefined;
@@ -252,8 +260,9 @@ class TileWMS extends TileImage {
     }
 
     if (resolution !== undefined) {
-      const mpu = this.getProjection()
-        ? this.getProjection().getMetersPerUnit()
+      const sourceProjection = this.getProjection();
+      const mpu = sourceProjection
+        ? sourceProjection.getMetersPerUnit() || 1
         : 1;
       const pixelSize = 0.00028;
       baseParams['SCALE'] = (resolution * mpu) / pixelSize;
@@ -261,7 +270,11 @@ class TileWMS extends TileImage {
 
     Object.assign(baseParams, params);
 
-    return appendParams(/** @type {string} */ (this.urls[0]), baseParams);
+    const url = urls[0];
+    if (!url) {
+      return undefined;
+    }
+    return appendParams(url, baseParams);
   }
 
   /**
@@ -313,7 +326,7 @@ class TileWMS extends TileImage {
       projection,
       url,
       params,
-      this.serverType_,
+      /** @type {import("./wms.js").ServerType} */ (this.serverType_),
     );
   }
 
@@ -341,7 +354,7 @@ class TileWMS extends TileImage {
   }
 
   /**
-   * @param {Object} params New URL paremeters.
+   * @param {Object<string, *>} params New URL paremeters.
    * @private
    */
   setParams_(params) {
@@ -352,7 +365,7 @@ class TileWMS extends TileImage {
 
   /**
    * Set the URL parameters passed to the WMS source.
-   * @param {Object} params New URL paremeters.
+   * @param {Object<string, *>} params New URL paremeters.
    * @api
    */
   setParams(params) {
@@ -362,7 +375,7 @@ class TileWMS extends TileImage {
   /**
    * Update the URL parameters. This method can be used to update a subset of the WMS
    * parameters. Call `setParams` to set all of the parameters.
-   * @param {Object} params Updated URL parameters.
+   * @param {Object<string, *>} params Updated URL parameters.
    * @api
    */
   updateParams(params) {

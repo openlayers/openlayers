@@ -126,6 +126,7 @@ import {getWorldParameters} from './worldUtil.js';
  * This uses {@link module:ol/webgl/Helper~WebGLHelper} internally.
  *
  * @api
+ * @extends {WebGLLayerRenderer<import("../../layer/WebGLPoints.js").default<any>>}
  */
 class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
   /**
@@ -137,10 +138,13 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     const projectionMatrixTransform = createTransform();
     uniforms[DefaultUniform.PROJECTION_MATRIX] = projectionMatrixTransform;
 
-    super(layer, {
-      uniforms: uniforms,
-      postProcesses: options.postProcesses,
-    });
+    super(
+      /** @type {import("../../layer/WebGLPoints.js").default<any>} */ (layer),
+      {
+        uniforms: uniforms,
+        postProcesses: options.postProcesses,
+      },
+    );
 
     /**
      * @private
@@ -265,7 +269,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     this.invertRenderTransform_ = createTransform();
 
     /**
-     * @type {Float32Array}
+     * @type {Float32Array|null}
      * @private
      */
     this.renderInstructions_ = new Float32Array(0);
@@ -341,30 +345,39 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     );
     /**
      * @private
+     * @type {Array<import("../../events.js").EventsKey|null>|null}
      */
     this.sourceListenKeys_ = [
       listen(
         source,
         VectorEventType.ADDFEATURE,
-        this.handleSourceFeatureAdded_,
+        /** @type {import("../../events.js").ListenerFunction} */ (
+          this.handleSourceFeatureAdded_
+        ),
         this,
       ),
       listen(
         source,
         VectorEventType.CHANGEFEATURE,
-        this.handleSourceFeatureChanged_,
+        /** @type {import("../../events.js").ListenerFunction} */ (
+          this.handleSourceFeatureChanged_
+        ),
         this,
       ),
       listen(
         source,
         VectorEventType.REMOVEFEATURE,
-        this.handleSourceFeatureDelete_,
+        /** @type {import("../../events.js").ListenerFunction} */ (
+          this.handleSourceFeatureDelete_
+        ),
         this,
       ),
       listen(
         source,
         VectorEventType.CLEAR,
-        this.handleSourceFeatureClear_,
+        /** @type {import("../../events.js").ListenerFunction} */ (
+          this.handleSourceFeatureClear_
+        ),
         this,
       ),
     ];
@@ -409,6 +422,9 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
    */
   handleSourceFeatureAdded_(event) {
     const feature = event.feature;
+    if (!feature) {
+      return;
+    }
     const geometry = feature.getGeometry();
     if (geometry && geometry.getType() === 'Point') {
       this.featureCache_[getUid(feature)] = {
@@ -426,6 +442,9 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
    */
   handleSourceFeatureChanged_(event) {
     const feature = event.feature;
+    if (!feature) {
+      return;
+    }
     const featureUid = getUid(feature);
     const item = this.featureCache_[featureUid];
     const geometry = feature.getGeometry();
@@ -457,6 +476,9 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
    */
   handleSourceFeatureDelete_(event) {
     const feature = event.feature;
+    if (!feature) {
+      return;
+    }
     const featureUid = getUid(feature);
     if (featureUid in this.featureCache_) {
       delete this.featureCache_[featureUid];
@@ -519,7 +541,11 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     const viewNotMoving =
       !frameState.viewHints[ViewHint.ANIMATING] &&
       !frameState.viewHints[ViewHint.INTERACTING];
-    const extentChanged = !equals(this.previousExtent_, frameState.extent);
+    const frameExtent = frameState.extent;
+    if (!frameExtent) {
+      return true;
+    }
+    const extentChanged = !equals(this.previousExtent_, frameExtent);
     const sourceChanged = this.sourceRevision_ < vectorSource.getRevision();
 
     if (sourceChanged) {
@@ -531,12 +557,12 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       const resolution = viewState.resolution;
 
       const renderBuffer =
-        layer instanceof BaseVector ? layer.getRenderBuffer() : 0;
-      const extent = buffer(frameState.extent, renderBuffer * resolution);
+        (layer instanceof BaseVector ? layer.getRenderBuffer() : 0) ?? 0;
+      const extent = buffer(frameExtent, renderBuffer * resolution);
       vectorSource.loadFeatures(extent, resolution, projection);
 
       this.rebuildBuffers_(frameState);
-      this.previousExtent_ = frameState.extent.slice();
+      this.previousExtent_ = frameExtent.slice();
     }
 
     this.helper.useProgram(this.program_, frameState);
@@ -617,7 +643,8 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       customAttributesSize: singleInstructionLength - 2,
     };
     // additional properties will be sent back as-is by the worker
-    message['projectionTransform'] = projectionTransform;
+    /** @type {Record<string, *>} */ (message)['projectionTransform'] =
+      projectionTransform;
     this.ready = false;
     this.worker_.postMessage(message, [renderInstructions.buffer]);
   }
@@ -661,7 +688,13 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     const source = this.getLayer().getSource();
     const feature = source.getFeatureByUid(uid);
     if (feature) {
-      return callback(feature, this.getLayer(), null);
+      return callback(
+        feature,
+        this.getLayer(),
+        /** @type {import("../../geom/SimpleGeometry.js").default} */ (
+          /** @type {unknown} */ (null)
+        ),
+      );
     }
     return undefined;
   }
@@ -721,10 +754,14 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
    */
   disposeInternal() {
     this.worker_.terminate();
-    this.sourceListenKeys_.forEach(function (key) {
-      unlistenByKey(key);
-    });
-    this.sourceListenKeys_ = null;
+    if (this.sourceListenKeys_) {
+      this.sourceListenKeys_.forEach(function (key) {
+        if (key) {
+          unlistenByKey(key);
+        }
+      });
+      this.sourceListenKeys_ = null;
+    }
     super.disposeInternal();
   }
 

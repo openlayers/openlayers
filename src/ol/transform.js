@@ -268,7 +268,7 @@ export function determinant(mat) {
 }
 
 /**
- * @type {Array}
+ * @type {Array<number>}
  */
 const matrixPrecision = [1e5, 1e5, 1e5, 1e5, 2, 2];
 

@@ -20,7 +20,7 @@ import {clear} from '../obj.js';
  * @typedef Label
  * @property {number} width Width.
  * @property {number} height Height.
- * @property {Array<string|number>} contextInstructions ContextInstructions.
+ * @property {Array<*>} contextInstructions ContextInstructions.
  */
 
 /**
@@ -28,7 +28,7 @@ import {clear} from '../obj.js';
  * @property {import("../colorlike.js").ColorLike} [currentFillStyle] Current FillStyle.
  * @property {import("../colorlike.js").ColorLike} [currentStrokeStyle] Current StrokeStyle.
  * @property {CanvasLineCap} [currentLineCap] Current LineCap.
- * @property {Array<number>} currentLineDash Current LineDash.
+ * @property {Array<number>|null} currentLineDash Current LineDash.
  * @property {number} [currentLineDashOffset] Current LineDashOffset.
  * @property {CanvasLineJoin} [currentLineJoin] Current LineJoin.
  * @property {number} [currentLineWidth] Current LineWidth.
@@ -38,7 +38,7 @@ import {clear} from '../obj.js';
  * @property {import("../colorlike.js").ColorLike} [fillStyle] FillStyle.
  * @property {import("../colorlike.js").ColorLike} [strokeStyle] StrokeStyle.
  * @property {CanvasLineCap} [lineCap] LineCap.
- * @property {Array<number>} lineDash LineDash.
+ * @property {Array<number>|null} lineDash LineDash.
  * @property {number} [lineDashOffset] LineDashOffset.
  * @property {CanvasLineJoin} [lineJoin] LineJoin.
  * @property {number} [lineWidth] LineWidth.
@@ -173,7 +173,7 @@ export const defaultLineWidth = 1;
 export const checkedFonts = new BaseObject();
 
 /**
- * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D}
+ * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D|null}
  */
 let measureContext = null;
 
@@ -219,7 +219,10 @@ function getFontKey(style, weight, family) {
  */
 export const registerFont = (function () {
   const retries = 100;
-  let timeout, fontFaceSet;
+  /** @type {ReturnType<typeof setTimeout>|undefined} */
+  let timeout;
+  /** @type {FontFaceSet} */
+  let fontFaceSet;
 
   /**
    * @param {string} fontSpec Css font spec
@@ -227,9 +230,12 @@ export const registerFont = (function () {
    */
   async function isAvailable(fontSpec) {
     await fontFaceSet.ready;
-    const font = getFontParameters(fontSpec);
-    const checkFamily = font.families[0].toLowerCase();
-    const checkWeight = font.weight;
+    const fontParams = getFontParameters(fontSpec);
+    if (!fontParams) {
+      return false;
+    }
+    const checkFamily = fontParams.families[0].toLowerCase();
+    const checkWeight = fontParams.weight;
     /** @type {Array<FontFace>} */
     const matching = [];
     fontFaceSet.forEach(
@@ -241,7 +247,7 @@ export const registerFont = (function () {
         const weight = fontWeights[f.weight] || f.weight;
         if (
           family === checkFamily &&
-          f.style === font.style &&
+          f.style === fontParams.style &&
           weight == checkWeight
         ) {
           matching.push(f);
@@ -295,21 +301,21 @@ export const registerFont = (function () {
     }
   }
 
-  return async function (fontSpec) {
+  return async function (/** @type {string} */ fontSpec) {
     if (!fontFaceSet) {
       fontFaceSet = WORKER_OFFSCREEN_CANVAS ? self.fonts : document.fonts;
     }
-    const font = getFontParameters(fontSpec);
-    if (!font) {
+    const fontParams = getFontParameters(fontSpec);
+    if (!fontParams) {
       return;
     }
-    const families = font.families;
+    const families = fontParams.families;
     let needCheck = false;
     for (const family of families) {
       if (genericFontFamilies.has(family)) {
         continue;
       }
-      const key = getFontKey(font.style, font.weight, family);
+      const key = getFontKey(fontParams.style, fontParams.weight, family);
       if (checkedFonts.get(key) !== undefined) {
         continue;
       }
@@ -332,15 +338,16 @@ export const measureTextHeight = (function () {
    * @type {HTMLDivElement}
    */
   let measureElement;
-  return function (fontSpec) {
+  return function (/** @type {string} */ fontSpec) {
     let height = textHeights[fontSpec];
     if (height == undefined) {
       if (WORKER_OFFSCREEN_CANVAS) {
-        const font = getFontParameters(fontSpec);
+        const fontParams = getFontParameters(fontSpec);
         const metrics = measureText(fontSpec, 'Žg');
-        const lineHeight = isNaN(Number(font.lineHeight))
-          ? 1.2
-          : Number(font.lineHeight);
+        const lineHeight =
+          !fontParams || isNaN(Number(fontParams.lineHeight))
+            ? 1.2
+            : Number(fontParams.lineHeight);
         height =
           lineHeight *
           (metrics.actualBoundingBoxAscent + metrics.actualBoundingBoxDescent);
@@ -489,13 +496,22 @@ export function drawImageOrLabel(
 
   if (opacity !== 1) {
     if (context.globalAlpha === undefined) {
-      context.globalAlpha = (context) => (context.globalAlpha *= opacity);
+      context.globalAlpha = function (
+        /** @type {CanvasRenderingContext2D} */ ctx,
+      ) {
+        return (ctx.globalAlpha *= opacity);
+      };
     } else {
-      context.globalAlpha *= opacity;
+      /** @type {CanvasRenderingContext2D} */ (context).globalAlpha *= opacity;
     }
   }
   if (transform) {
-    context.transform.apply(context, transform);
+    context.transform.apply(
+      context,
+      /** @type {[number, number, number, number, number, number]} */ (
+        transform
+      ),
+    );
   }
 
   if (/** @type {*} */ (labelOrImage).contextInstructions) {
@@ -545,15 +561,19 @@ export function drawImageOrLabel(
  * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
  */
 function executeLabelInstructions(label, context) {
+  const ctx = /** @type {CanvasRenderingContext2D} */ (context);
   const contextInstructions = label.contextInstructions;
   for (let i = 0, ii = contextInstructions.length; i < ii; i += 2) {
     if (Array.isArray(contextInstructions[i + 1])) {
-      context[contextInstructions[i]].apply(
-        context,
-        contextInstructions[i + 1],
-      );
+      const method = /** @type {string} */ (contextInstructions[i]);
+      /** @type {Function} */ (
+        /** @type {Object<string, *>} */ (ctx)[method]
+      ).apply(ctx, contextInstructions[i + 1]);
     } else {
-      context[contextInstructions[i]] = contextInstructions[i + 1];
+      const property = /** @type {string} */ (contextInstructions[i]);
+      // Context properties like `canvas` are read-only on the type; assign via index cast.
+      /** @type {Object<string, *>} */ (ctx)[property] =
+        contextInstructions[i + 1];
     }
   }
 }

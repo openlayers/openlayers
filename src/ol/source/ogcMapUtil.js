@@ -15,7 +15,7 @@ import {DECIMALS} from './common.js';
  * @param {import("../extent.js").Extent} extent Extent.
  * @param {import("../size.js").Size} size Size.
  * @param {import("../proj/Projection.js").default} projection Projection.
- * @param {Object} params OGC Map params. Will be modified in place.
+ * @param {Object<string, *>} params OGC Map params. Will be modified in place.
  * @return {string} Request URL.
  */
 export function getRequestUrl(baseUrl, extent, size, projection, params) {
@@ -39,7 +39,7 @@ export function getRequestUrl(baseUrl, extent, size, projection, params) {
  * @param {number} pixelRatio pixel ratio.
  * @param {import("../proj.js").Projection} projection Projection.
  * @param {string} url OGC Map service url.
- * @param {Object} params OGC Map params.
+ * @param {Object<string, *>} params OGC Map params.
  * @return {string} Image src.
  */
 export function getImageSrc(
@@ -93,7 +93,9 @@ export function getImageSrc(
  */
 export function createLoader(options) {
   const hidpi = options.hidpi === undefined ? true : options.hidpi;
-  const projection = getProjection(options.projection || 'EPSG:3857');
+  const projection = /** @type {import("../proj/Projection.js").default} */ (
+    getProjection(options.projection || 'EPSG:3857')
+  );
   const ratio = options.ratio || 1.5;
   const load = options.load || decode;
   const crossOrigin = options.crossOrigin ?? null;
@@ -109,7 +111,7 @@ export function createLoader(options) {
       pixelRatio,
       projection,
       options.url,
-      options.params,
+      options.params || {},
     );
     const image = new Image();
     image.crossOrigin = crossOrigin;

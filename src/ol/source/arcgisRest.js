@@ -16,7 +16,7 @@ import {DECIMALS} from './common.js';
  * @param {number} resolution Resolution.
  * @param {number} pixelRatio Pixel ratio.
  * @param {import("../proj/Projection.js").default} projection Projection.
- * @param {Object} params Params.
+ * @param {Record<string, *>} params Params.
  * @return {string} Request URL.
  */
 export function getRequestUrl(
@@ -106,6 +106,10 @@ export function createLoader(options) {
     Object.assign(params, options.params);
 
     extent = getRequestExtent(extent, resolution, pixelRatio, ratio);
+
+    if (!projection) {
+      return Promise.reject(new Error('Projection not configured'));
+    }
 
     const src = getRequestUrl(
       options.url,

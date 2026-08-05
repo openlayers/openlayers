@@ -99,7 +99,11 @@ class KeyboardPan extends Interaction {
       ) {
         const map = mapBrowserEvent.map;
         const view = map.getView();
-        const mapUnitsDelta = view.getResolution() * this.pixelDelta_;
+        const resolution = view.getResolution();
+        if (resolution === undefined) {
+          return true;
+        }
+        const mapUnitsDelta = resolution * this.pixelDelta_;
         let deltaX = 0,
           deltaY = 0;
         if (key == Key.DOWN) {

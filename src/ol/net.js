@@ -18,8 +18,15 @@ export function jsonp(url, callback, errback, callbackParam) {
   const script = document.createElement('script');
   const key = 'olc_' + getUid(callback);
   function cleanup() {
-    delete window[key];
-    script.parentNode.removeChild(script);
+    delete (
+      /** @type {Record<string, unknown>} */ (/** @type {unknown} */ (window))[
+        key
+      ]
+    );
+    const parent = script.parentNode;
+    if (parent) {
+      parent.removeChild(script);
+    }
   }
   script.async = true;
   script.src =
@@ -34,7 +41,9 @@ export function jsonp(url, callback, errback, callbackParam) {
       errback();
     }
   }, 10000);
-  window[key] = function (data) {
+  /** @type {Record<string, function(*): void>} */ (
+    /** @type {unknown} */ (window)
+  )[key] = function (data) {
     clearTimeout(timer);
     cleanup();
     callback(data);
@@ -91,14 +100,16 @@ export function getJSON(url) {
      * @param {ProgressEvent<XMLHttpRequest>} event The load event.
      */
     function onLoad(event) {
-      const client = event.target;
+      const client = /** @type {XMLHttpRequest} */ (event.target);
       // status will be 0 for file:// urls
       if (!client.status || (client.status >= 200 && client.status < 300)) {
         let data;
         try {
           data = JSON.parse(client.responseText);
         } catch (err) {
-          const message = 'Error parsing response text as JSON: ' + err.message;
+          const message =
+            'Error parsing response text as JSON: ' +
+            (err instanceof Error ? err.message : String(err));
           reject(new Error(message));
           return;
         }
@@ -113,12 +124,12 @@ export function getJSON(url) {
      * @param {ProgressEvent<XMLHttpRequest>} event The error event.
      */
     function onError(event) {
-      reject(new ClientError(event.target));
+      reject(new ClientError(/** @type {XMLHttpRequest} */ (event.target)));
     }
 
     const client = new XMLHttpRequest();
-    client.addEventListener('load', onLoad);
-    client.addEventListener('error', onError);
+    client.addEventListener('load', /** @type {EventListener} */ (onLoad));
+    client.addEventListener('error', /** @type {EventListener} */ (onError));
     client.open('GET', url);
     client.setRequestHeader('Accept', 'application/json');
     client.send();
@@ -137,7 +148,11 @@ export function resolveUrl(base, url) {
   return new URL(url, base).href;
 }
 
+/** @type {typeof XMLHttpRequest|undefined} */
 let originalXHR;
+/**
+ * @param {typeof XMLHttpRequest} xhr XMLHttpRequest constructor to use instead of the native one.
+ */
 export function overrideXHR(xhr) {
   if (typeof XMLHttpRequest !== 'undefined') {
     originalXHR = XMLHttpRequest;
@@ -146,5 +161,7 @@ export function overrideXHR(xhr) {
 }
 
 export function restoreXHR() {
-  globalThis.XMLHttpRequest = originalXHR;
+  if (originalXHR) {
+    globalThis.XMLHttpRequest = originalXHR;
+  }
 }

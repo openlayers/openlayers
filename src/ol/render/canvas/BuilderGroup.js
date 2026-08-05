@@ -60,16 +60,22 @@ class BuilderGroup {
   }
 
   /**
-   * @return {!Object<string, !Object<import("../canvas.js").BuilderType, import("./Builder.js").SerializableInstructions>>} The serializable instructions
+   * @return {!Object<string, !Object<import("../canvas.js").BuilderType, import("../canvas.js").SerializableInstructions>>} The serializable instructions
    */
   finish() {
+    /** @type {!Object<string, !Object<import("../canvas.js").BuilderType, import("../canvas.js").SerializableInstructions>>} */
     const builderInstructions = {};
     for (const zKey in this.buildersByZIndex_) {
       builderInstructions[zKey] = builderInstructions[zKey] || {};
       const builders = this.buildersByZIndex_[zKey];
       for (const builderKey in builders) {
-        const builderInstruction = builders[builderKey].finish();
-        builderInstructions[zKey][builderKey] = builderInstruction;
+        const builderInstruction =
+          builders[
+            /** @type {import("../canvas.js").BuilderType} */ (builderKey)
+          ].finish();
+        builderInstructions[zKey][
+          /** @type {import("../canvas.js").BuilderType} */ (builderKey)
+        ] = builderInstruction;
       }
     }
     return builderInstructions;

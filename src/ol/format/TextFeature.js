@@ -30,7 +30,7 @@ class TextFeature extends FeatureFormat {
    *
    * @param {Document|Element|Object|string} source Source.
    * @param {import("./Feature.js").ReadOptions} [options] Read options.
-   * @return {import("../Feature.js").default} Feature.
+   * @return {import("../Feature.js").default|null} Feature.
    * @api
    * @override
    */
@@ -46,7 +46,7 @@ class TextFeature extends FeatureFormat {
    * @param {string} text Text.
    * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @protected
-   * @return {import("../Feature.js").default} Feature.
+   * @return {import("../Feature.js").default|null} Feature.
    */
   readFeatureFromText(text, options) {
     return abstract();

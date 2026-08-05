@@ -23,10 +23,11 @@ import CanvasLayerRenderer from './Layer.js';
  * @classdesc
  * Canvas renderer for image layers.
  * @api
+ * @extends {CanvasLayerRenderer<import("../../layer/Image.js").default<import("../../source/Image.js").default>>}
  */
 class CanvasImageLayerRenderer extends CanvasLayerRenderer {
   /**
-   * @param {import("../../layer/Image.js").default} imageLayer Image layer.
+   * @param {import("../../layer/Image.js").default<import("../../source/Image.js").default>} imageLayer Image layer.
    */
   constructor(imageLayer) {
     super(imageLayer);
@@ -45,7 +46,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
   }
 
   /**
-   * @return {import('../../DataTile.js').ImageLike} Image.
+   * @return {import('../../DataTile.js').ImageLike|null} Image.
    */
   getImage() {
     return !this.image ? null : this.image.getImage();
@@ -67,7 +68,9 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
 
     const hints = frameState.viewHints;
 
-    let renderedExtent = frameState.extent;
+    let renderedExtent = /** @type {import("../../extent.js").Extent} */ (
+      frameState.extent
+    );
     if (layerState.extent !== undefined) {
       renderedExtent = getIntersection(
         renderedExtent,
@@ -82,7 +85,11 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
     ) {
       if (imageSource) {
         if (
-          !this.getLayer().rendered &&
+          !(
+            /** @type {{rendered: (boolean|undefined)}} */ (
+              /** @type {unknown} */ (this.getLayer())
+            ).rendered
+          ) &&
           this.renderedSourceRevision_ !== imageSource.getRevision()
         ) {
           this.image = null;
@@ -113,12 +120,12 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
 
   /**
    * @param {import("../../pixel.js").Pixel} pixel Pixel.
-   * @return {Uint8ClampedArray} Data at the pixel location.
+   * @return {Uint8ClampedArray|null} Data at the pixel location.
    * @override
    */
   getData(pixel) {
     const frameState = this.frameState;
-    if (!frameState) {
+    if (!frameState || !this.image) {
       return null;
     }
 
@@ -137,6 +144,9 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
 
     const imageExtent = this.image.getExtent();
     const img = this.image.getImage();
+    if (!img) {
+      return null;
+    }
 
     const imageMapWidth = getWidth(imageExtent);
     const col = Math.floor(
@@ -166,6 +176,9 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
    */
   renderFrame(frameState, target) {
     const image = this.image;
+    if (!image) {
+      return this.getContainerElement();
+    }
     const imageExtent = image.getExtent();
     const imageResolution = image.getResolution();
     const [imageResolutionX, imageResolutionY] = Array.isArray(imageResolution)
@@ -185,8 +198,8 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
     this.prepareContainer(frameState, target);
 
     // desired dimensions of the canvas in pixels
-    const width = this.context.canvas.width;
-    const height = this.context.canvas.height;
+    const width = this.getCanvasContext().canvas.width;
+    const height = this.getCanvasContext().canvas.height;
 
     const context = this.getRenderContext(frameState);
 
@@ -198,14 +211,20 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
         layerState.extent,
         viewState.projection,
       );
-      render = intersectsExtent(layerExtent, frameState.extent);
-      clipped = render && !containsExtent(layerExtent, frameState.extent);
+      const frameExtent = /** @type {import("../../extent.js").Extent} */ (
+        frameState.extent
+      );
+      render = intersectsExtent(layerExtent, frameExtent);
+      clipped = render && !containsExtent(layerExtent, frameExtent);
       if (clipped) {
         this.clipUnrotated(context, frameState, layerExtent);
       }
     }
 
     const img = image.getImage();
+    if (!img) {
+      return this.getContainerElement();
+    }
 
     const transform = composeTransform(
       this.tempTransform,
@@ -223,7 +242,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
     const dw = img.width * transform[0];
     const dh = img.height * transform[3];
 
-    if (!this.getLayer().getSource().getInterpolate()) {
+    if (!this.getLayer().getSource()?.getInterpolate()) {
       context.imageSmoothingEnabled = false;
     }
 
@@ -236,18 +255,18 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
         context.save();
         context.globalAlpha = opacity;
       }
-      context.drawImage(img, 0, 0, +img.width, +img.height, dx, dy, dw, dh);
+      context.drawImage(img, 0, 0, img.width, img.height, dx, dy, dw, dh);
       if (opacity !== 1) {
         context.restore();
       }
     }
-    this.postRender(this.context, frameState);
+    this.postRender(this.getCanvasContext(), frameState);
 
     if (clipped) {
       context.restore();
     }
     context.imageSmoothingEnabled = true;
-    return this.container;
+    return this.getContainerElement();
   }
 }
 

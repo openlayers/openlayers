@@ -39,6 +39,18 @@ import {assert} from '../asserts.js';
  */
 
 /**
+ * @typedef {Object} IIIFImageOptions
+ * @property {string|undefined} [url] Image service URL.
+ * @property {Array<Array<number>>|undefined} [sizes] Supported sizes.
+ * @property {Array<number>|undefined} [tileSize] Tile size.
+ * @property {Array<number>|undefined} [resolutions] Resolution factors.
+ * @property {Array<string>} [supports] Supported features.
+ * @property {Array<string>} [formats] Supported formats.
+ * @property {Array<string>} [qualities] Supported qualities.
+ * @property {string|undefined} [preferredFormat] Preferred format.
+ */
+
+/**
  * @typedef {Object<string,string|number|Array<number|string|IiifProfile|Object<string, number>|TileInfo>>}
  *    ImageInformationResponse
  */
@@ -152,30 +164,25 @@ const COMPLIANCE_VERSION2 =
 const COMPLIANCE_VERSION3 =
   /(^https?:\/\/iiif\.io\/api\/image\/3\/level[0-2](?:\.json)?$)|(^level[0-2]$)/;
 
+/**
+ * @param {IIIFInfo} iiifInfo IIIF info instance.
+ * @return {IIIFImageOptions} Options.
+ */
 function generateVersion1Options(iiifInfo) {
   let levelProfile = iiifInfo.getComplianceLevelSupportedFeatures();
   // Version 1.0 and 1.1 do not require a profile.
   if (levelProfile === undefined) {
     levelProfile = IIIF_PROFILE_VALUES[Versions.VERSION1]['level0'];
   }
+  const formats = iiifInfo.imageInfo.formats ?? [];
   return {
     url:
       iiifInfo.imageInfo['@id'] === undefined
         ? undefined
         : iiifInfo.imageInfo['@id'].replace(/\/?(?:info\.json)?$/g, ''),
-    supports: levelProfile.supports,
-    formats: [
-      ...levelProfile.formats,
-      iiifInfo.imageInfo.formats === undefined
-        ? []
-        : iiifInfo.imageInfo.formats,
-    ],
-    qualities: [
-      ...levelProfile.qualities,
-      iiifInfo.imageInfo.qualities === undefined
-        ? []
-        : iiifInfo.imageInfo.qualities,
-    ],
+    supports: levelProfile.supports ?? [],
+    formats: [...(levelProfile.formats ?? []), ...formats],
+    qualities: levelProfile.qualities ?? [],
     resolutions: iiifInfo.imageInfo.scale_factors,
     tileSize:
       iiifInfo.imageInfo.tile_width !== undefined
@@ -188,112 +195,145 @@ function generateVersion1Options(iiifInfo) {
   };
 }
 
+/**
+ * @param {IIIFInfo} iiifInfo IIIF info instance.
+ * @return {IIIFImageOptions} Options.
+ */
 function generateVersion2Options(iiifInfo) {
-  const levelProfile = iiifInfo.getComplianceLevelSupportedFeatures(),
-    additionalProfile =
-      Array.isArray(iiifInfo.imageInfo.profile) &&
-      iiifInfo.imageInfo.profile.length > 1,
-    profileSupports =
-      additionalProfile && iiifInfo.imageInfo.profile[1].supports
-        ? iiifInfo.imageInfo.profile[1].supports
-        : [],
-    profileFormats =
-      additionalProfile && iiifInfo.imageInfo.profile[1].formats
-        ? iiifInfo.imageInfo.profile[1].formats
-        : [],
-    profileQualities =
-      additionalProfile && iiifInfo.imageInfo.profile[1].qualities
-        ? iiifInfo.imageInfo.profile[1].qualities
-        : [];
+  const levelProfile =
+    iiifInfo.getComplianceLevelSupportedFeatures() ??
+    IIIF_PROFILE_VALUES['none']['none'];
+  const additionalProfile =
+    Array.isArray(iiifInfo.imageInfo.profile) &&
+    iiifInfo.imageInfo.profile.length > 1;
+  const profileSupports =
+    additionalProfile && iiifInfo.imageInfo.profile[1].supports
+      ? iiifInfo.imageInfo.profile[1].supports
+      : [];
+  const profileFormats =
+    additionalProfile && iiifInfo.imageInfo.profile[1].formats
+      ? iiifInfo.imageInfo.profile[1].formats
+      : [];
+  const profileQualities =
+    additionalProfile && iiifInfo.imageInfo.profile[1].qualities
+      ? iiifInfo.imageInfo.profile[1].qualities
+      : [];
   return {
     url: iiifInfo.imageInfo['@id'].replace(/\/?(?:info\.json)?$/g, ''),
     sizes:
       iiifInfo.imageInfo.sizes === undefined
         ? undefined
-        : iiifInfo.imageInfo.sizes.map(function (size) {
+        : /** @type {Array<{width: number, height: number}>} */ (
+            iiifInfo.imageInfo.sizes
+          ).map(function (size) {
             return [size.width, size.height];
           }),
     tileSize:
       iiifInfo.imageInfo.tiles === undefined
         ? undefined
         : [
-            iiifInfo.imageInfo.tiles.map(function (tile) {
-              return tile.width;
-            })[0],
-            iiifInfo.imageInfo.tiles.map(function (tile) {
-              return tile.height === undefined ? tile.width : tile.height;
-            })[0],
+            /** @type {Array<TileInfo>} */ (iiifInfo.imageInfo.tiles).map(
+              function (tile) {
+                return tile.width;
+              },
+            )[0],
+            /** @type {Array<TileInfo>} */ (iiifInfo.imageInfo.tiles).map(
+              function (tile) {
+                return tile.height === undefined ? tile.width : tile.height;
+              },
+            )[0],
           ],
     resolutions:
       iiifInfo.imageInfo.tiles === undefined
         ? undefined
-        : iiifInfo.imageInfo.tiles.map(function (tile) {
-            return tile.scaleFactors;
-          })[0],
-    supports: [...levelProfile.supports, ...profileSupports],
-    formats: [...levelProfile.formats, ...profileFormats],
-    qualities: [...levelProfile.qualities, ...profileQualities],
+        : /** @type {Array<TileInfo>} */ (iiifInfo.imageInfo.tiles).map(
+            function (tile) {
+              return tile.scaleFactors;
+            },
+          )[0],
+    supports: [...(levelProfile.supports ?? []), ...profileSupports],
+    formats: [...(levelProfile.formats ?? []), ...profileFormats],
+    qualities: [...(levelProfile.qualities ?? []), ...profileQualities],
   };
 }
 
+/**
+ * @param {IIIFInfo} iiifInfo IIIF info instance.
+ * @return {IIIFImageOptions} Options.
+ */
 function generateVersion3Options(iiifInfo) {
-  const levelProfile = iiifInfo.getComplianceLevelSupportedFeatures(),
-    formats =
-      iiifInfo.imageInfo.extraFormats === undefined
-        ? levelProfile.formats
-        : [...levelProfile.formats, ...iiifInfo.imageInfo.extraFormats],
-    preferredFormat =
-      iiifInfo.imageInfo.preferredFormats !== undefined &&
-      Array.isArray(iiifInfo.imageInfo.preferredFormats) &&
-      iiifInfo.imageInfo.preferredFormats.length > 0
-        ? iiifInfo.imageInfo.preferredFormats
-            .filter(function (format) {
-              return ['jpg', 'png', 'gif'].includes(format);
-            })
-            .reduce(function (acc, format) {
-              return acc === undefined && formats.includes(format)
-                ? format
-                : acc;
-            }, undefined)
-        : undefined;
+  const levelProfile =
+    iiifInfo.getComplianceLevelSupportedFeatures() ??
+    IIIF_PROFILE_VALUES['none']['none'];
+  const formats =
+    iiifInfo.imageInfo.extraFormats === undefined
+      ? (levelProfile.formats ?? [])
+      : [...(levelProfile.formats ?? []), ...iiifInfo.imageInfo.extraFormats];
+  const preferredFormat =
+    iiifInfo.imageInfo.preferredFormats !== undefined &&
+    Array.isArray(iiifInfo.imageInfo.preferredFormats) &&
+    iiifInfo.imageInfo.preferredFormats.length > 0
+      ? /** @type {Array<string>} */ (iiifInfo.imageInfo.preferredFormats)
+          .filter(function (format) {
+            return ['jpg', 'png', 'gif'].includes(format);
+          })
+          .reduce(function (acc, format) {
+            return acc === undefined && formats.includes(format) ? format : acc;
+          }, /** @type {string|undefined} */ (undefined))
+      : undefined;
   return {
     url: iiifInfo.imageInfo['id'],
     sizes:
       iiifInfo.imageInfo.sizes === undefined
         ? undefined
-        : iiifInfo.imageInfo.sizes.map(function (size) {
+        : /** @type {Array<{width: number, height: number}>} */ (
+            iiifInfo.imageInfo.sizes
+          ).map(function (size) {
             return [size.width, size.height];
           }),
     tileSize:
       iiifInfo.imageInfo.tiles === undefined
         ? undefined
-        : [
-            iiifInfo.imageInfo.tiles.map(function (tile) {
-              return tile.width;
-            })[0],
-            iiifInfo.imageInfo.tiles.map(function (tile) {
-              return tile.height;
-            })[0],
-          ],
+        : /** @type {Array<number>} */ ([
+            /** @type {Array<TileInfo>} */ (iiifInfo.imageInfo.tiles).map(
+              function (tile) {
+                return tile.width;
+              },
+            )[0],
+            /** @type {Array<TileInfo>} */ (iiifInfo.imageInfo.tiles).map(
+              function (tile) {
+                return tile.height;
+              },
+            )[0],
+          ]),
     resolutions:
       iiifInfo.imageInfo.tiles === undefined
         ? undefined
-        : iiifInfo.imageInfo.tiles.map(function (tile) {
-            return tile.scaleFactors;
-          })[0],
+        : /** @type {Array<TileInfo>} */ (iiifInfo.imageInfo.tiles).map(
+            function (tile) {
+              return tile.scaleFactors;
+            },
+          )[0],
     supports:
       iiifInfo.imageInfo.extraFeatures === undefined
-        ? levelProfile.supports
-        : [...levelProfile.supports, ...iiifInfo.imageInfo.extraFeatures],
+        ? (levelProfile.supports ?? [])
+        : [
+            ...(levelProfile.supports ?? []),
+            ...iiifInfo.imageInfo.extraFeatures,
+          ],
     formats: formats,
     qualities:
       iiifInfo.imageInfo.extraQualities === undefined
-        ? levelProfile.qualities
-        : [...levelProfile.qualities, ...iiifInfo.imageInfo.extraQualities],
+        ? (levelProfile.qualities ?? [])
+        : [
+            ...(levelProfile.qualities ?? []),
+            ...iiifInfo.imageInfo.extraQualities,
+          ],
     preferredFormat: preferredFormat,
   };
 }
 
+/** @type {Object<string, function(IIIFInfo): IIIFImageOptions>} */
 const versionFunctions = {};
 versionFunctions[Versions.VERSION1] = generateVersion1Options;
 versionFunctions[Versions.VERSION2] = generateVersion2Options;
@@ -377,7 +417,7 @@ class IIIFInfo {
       return undefined;
     }
     if (version === undefined) {
-      version = this.getImageApiVersion();
+      version = /** @type {Versions} */ (this.getImageApiVersion());
     }
     switch (version) {
       case Versions.VERSION1:
@@ -413,7 +453,7 @@ class IIIFInfo {
 
   /**
    * @param {Versions} version Optional IIIF image API version
-   * @return {string} Compliance level, on of 'level0', 'level1' or 'level2' or undefined
+   * @return {string|undefined} Compliance level, on of 'level0', 'level1' or 'level2' or undefined
    */
   getComplianceLevelFromProfile(version) {
     const complianceLevel = this.getComplianceLevelEntryFromProfile(version);
@@ -433,6 +473,9 @@ class IIIFInfo {
       return undefined;
     }
     const version = this.getImageApiVersion();
+    if (version === undefined) {
+      return undefined;
+    }
     const level = this.getComplianceLevelFromProfile(version);
     if (level === undefined) {
       return IIIF_PROFILE_VALUES['none']['none'];
@@ -463,16 +506,17 @@ class IIIFInfo {
       sizes: imageOptions.sizes,
       format:
         options.format !== undefined &&
-        imageOptions.formats.includes(options.format)
+        (imageOptions.formats ?? []).includes(options.format)
           ? options.format
           : imageOptions.preferredFormat !== undefined
             ? imageOptions.preferredFormat
             : 'jpg',
-      supports: imageOptions.supports,
+      supports: imageOptions.supports ?? [],
       quality:
-        options.quality && imageOptions.qualities.includes(options.quality)
+        options.quality &&
+        (imageOptions.qualities ?? []).includes(options.quality)
           ? options.quality
-          : imageOptions.qualities.includes('native')
+          : (imageOptions.qualities ?? []).includes('native')
             ? 'native'
             : 'default',
       resolutions: Array.isArray(imageOptions.resolutions)

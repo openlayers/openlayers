@@ -120,8 +120,9 @@ class ScaleLine extends Control {
     this.innerElement_ = document.createElement('div');
     this.innerElement_.className = className + '-inner';
 
-    this.element.className = className + ' ' + CLASS_UNSELECTABLE;
-    this.element.appendChild(this.innerElement_);
+    /** @type {!HTMLElement} */ (this.element).className =
+      className + ' ' + CLASS_UNSELECTABLE;
+    /** @type {!HTMLElement} */ (this.element).appendChild(this.innerElement_);
 
     /**
      * @private
@@ -232,8 +233,9 @@ class ScaleLine extends Control {
     const viewState = this.viewState_;
 
     if (!viewState) {
-      if (this.renderedVisible_) {
-        this.element.style.display = 'none';
+      const element = this.element;
+      if (this.renderedVisible_ && element) {
+        element.style.display = 'none';
         this.renderedVisible_ = false;
       }
       return;
@@ -261,7 +263,7 @@ class ScaleLine extends Control {
     let nominalCount = minWidth * pointResolution;
     let suffix = '';
     if (units == 'degrees') {
-      const metersPerDegree = METERS_PER_UNIT.degrees;
+      const metersPerDegree = /** @type {number} */ (METERS_PER_UNIT.degrees);
       nominalCount *= metersPerDegree;
       if (nominalCount < metersPerDegree / 60) {
         suffix = '\u2033'; // seconds
@@ -318,7 +320,9 @@ class ScaleLine extends Control {
     }
 
     let i = 3 * Math.floor(Math.log(minWidth * pointResolution) / Math.log(10));
-    let count, width, decimalCount;
+    let count, width;
+    /** @type {number} */
+    let decimalCount = 0;
     let previousCount = 0;
     let previousWidth, previousDecimalCount;
     while (true) {
@@ -327,14 +331,17 @@ class ScaleLine extends Control {
       count = LEADING_DIGITS[((i % 3) + 3) % 3] * decimal;
       width = Math.round(count / pointResolution);
       if (isNaN(width)) {
-        this.element.style.display = 'none';
+        const element = this.element;
+        if (element) {
+          element.style.display = 'none';
+        }
         this.renderedVisible_ = false;
         return;
       }
       if (maxWidth !== undefined && width >= maxWidth) {
         count = previousCount;
-        width = previousWidth;
-        decimalCount = previousDecimalCount;
+        width = /** @type {number} */ (previousWidth);
+        decimalCount = /** @type {number} */ (previousDecimalCount);
         break;
       } else if (width >= minWidth) {
         break;
@@ -359,7 +366,10 @@ class ScaleLine extends Control {
     }
 
     if (!this.renderedVisible_) {
-      this.element.style.display = '';
+      const element = this.element;
+      if (element) {
+        element.style.display = '';
+      }
       this.renderedVisible_ = true;
     }
   }
@@ -458,10 +468,14 @@ class ScaleLine extends Control {
    * @return {number} The appropriate scale.
    */
   getScaleForResolution() {
+    const viewState = this.viewState_;
+    if (!viewState) {
+      return 0;
+    }
     const resolution = getPointResolution(
-      this.viewState_.projection,
-      this.viewState_.resolution,
-      this.viewState_.center,
+      viewState.projection,
+      viewState.resolution,
+      viewState.center,
       'm',
     );
     const dpi = this.dpi_ || DEFAULT_DPI;

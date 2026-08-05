@@ -282,14 +282,14 @@ class FlowLayerRenderer extends WebGLTileLayerRenderer {
     this.previousPositionTexture_ = helper.createTexture(
       [this.particleCountSqrt_, this.particleCountSqrt_],
       particlePositions,
-      null,
+      undefined,
       true,
     );
 
     this.nextPositionTexture_ = helper.createTexture(
       [this.particleCountSqrt_, this.particleCountSqrt_],
       particlePositions,
-      null,
+      undefined,
       true,
     );
 
@@ -324,7 +324,7 @@ class FlowLayerRenderer extends WebGLTileLayerRenderer {
     this.nextTrailsTexture_ = helper.createTexture(
       [screenWidth, screenHeight],
       blank,
-      null,
+      undefined,
       true,
     );
 
@@ -334,7 +334,7 @@ class FlowLayerRenderer extends WebGLTileLayerRenderer {
     this.previousTrailsTexture_ = helper.createTexture(
       [screenWidth, screenHeight],
       blank,
-      null,
+      undefined,
       true,
     );
   }
@@ -363,7 +363,7 @@ class FlowLayerRenderer extends WebGLTileLayerRenderer {
     this.velocityTexture_ = helper.createTexture(
       size,
       null,
-      this.velocityTexture_,
+      this.velocityTexture_ ?? undefined,
     );
     gl.copyTexImage2D(
       gl.TEXTURE_2D,
@@ -391,9 +391,15 @@ class FlowLayerRenderer extends WebGLTileLayerRenderer {
     const helper = this.helper;
     const gl = helper.getGL();
 
-    helper.bindFrameBuffer(this.framebuffer_, this.nextTrailsTexture_);
+    helper.bindFrameBuffer(
+      this.framebuffer_ ?? null,
+      this.nextTrailsTexture_ ?? null,
+    );
 
-    this.drawTexture_(this.previousTrailsTexture_, this.fadeOpacity_);
+    this.drawTexture_(
+      this.previousTrailsTexture_ ?? undefined,
+      this.fadeOpacity_,
+    );
     this.drawParticleColor_(frameState);
 
     helper.bindInitialFrameBuffer();
@@ -402,7 +408,7 @@ class FlowLayerRenderer extends WebGLTileLayerRenderer {
 
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-    this.drawTexture_(this.nextTrailsTexture_, 1);
+    this.drawTexture_(this.nextTrailsTexture_ ?? undefined, 1);
     gl.disable(gl.BLEND);
 
     const current = this.nextTrailsTexture_;
@@ -411,10 +417,13 @@ class FlowLayerRenderer extends WebGLTileLayerRenderer {
   }
 
   /**
-   * @param {WebGLTexture} texture The texture to draw.
+   * @param {WebGLTexture|undefined} texture The texture to draw.
    * @param {number} opacity The opacity.
    */
   drawTexture_(texture, opacity) {
+    if (!texture) {
+      return;
+    }
     const helper = this.helper;
     const gl = helper.getGL();
 
@@ -439,8 +448,14 @@ class FlowLayerRenderer extends WebGLTileLayerRenderer {
 
     helper.bindAttribute(this.particleIndexBuffer_, A.INDEX, 1);
 
-    helper.bindTexture(this.previousPositionTexture_, 0, U.POSITION_TEXTURE);
-    helper.bindTexture(this.velocityTexture_, 1, U.VELOCITY_TEXTURE);
+    const previousPositionTexture = this.previousPositionTexture_;
+    if (previousPositionTexture) {
+      helper.bindTexture(previousPositionTexture, 0, U.POSITION_TEXTURE);
+    }
+    const velocityTexture = this.velocityTexture_;
+    if (velocityTexture) {
+      helper.bindTexture(velocityTexture, 1, U.VELOCITY_TEXTURE);
+    }
 
     this.helper.setUniformFloatValue(
       U.PARTICLE_COUNT_SQRT,
@@ -466,10 +481,19 @@ class FlowLayerRenderer extends WebGLTileLayerRenderer {
 
     helper.useProgram(this.particlePositionProgram_);
     gl.viewport(0, 0, this.particleCountSqrt_, this.particleCountSqrt_);
-    helper.bindFrameBuffer(this.framebuffer_, this.nextPositionTexture_);
+    helper.bindFrameBuffer(
+      this.framebuffer_ ?? null,
+      this.nextPositionTexture_ ?? null,
+    );
 
-    helper.bindTexture(this.previousPositionTexture_, 0, U.POSITION_TEXTURE);
-    helper.bindTexture(this.velocityTexture_, 1, U.VELOCITY_TEXTURE);
+    const previousPositionTexture = this.previousPositionTexture_;
+    if (previousPositionTexture) {
+      helper.bindTexture(previousPositionTexture, 0, U.POSITION_TEXTURE);
+    }
+    const velocityTexture = this.velocityTexture_;
+    if (velocityTexture) {
+      helper.bindTexture(velocityTexture, 1, U.VELOCITY_TEXTURE);
+    }
     helper.bindAttribute(this.quadBuffer_, A.POSITION, 2);
 
     helper.setUniformFloatValue(U.RANDOM_SEED, Math.random());

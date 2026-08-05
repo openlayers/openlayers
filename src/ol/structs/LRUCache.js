@@ -133,12 +133,12 @@ class LRUCache {
       this.oldest_ = /** @type {Entry} */ (this.oldest_.newer);
       this.oldest_.older = null;
     } else {
-      entry.newer.older = entry.older;
-      entry.older.newer = entry.newer;
+      /** @type {Entry} */ (entry.newer).older = entry.older;
+      /** @type {Entry} */ (entry.older).newer = entry.newer;
     }
     entry.newer = null;
     entry.older = this.newest_;
-    this.newest_.newer = entry;
+    /** @type {Entry} */ (this.newest_).newer = entry;
     this.newest_ = entry;
     return entry.value_;
   }
@@ -165,8 +165,8 @@ class LRUCache {
         this.oldest_.older = null;
       }
     } else {
-      entry.newer.older = entry.older;
-      entry.older.newer = entry.newer;
+      /** @type {Entry} */ (entry.newer).older = entry.older;
+      /** @type {Entry} */ (entry.older).newer = entry.newer;
     }
     delete this.entries_[key];
     --this.count_;
@@ -210,14 +210,14 @@ class LRUCache {
    * @return {T} Last value.
    */
   peekLast() {
-    return this.oldest_.value_;
+    return /** @type {Entry} */ (this.oldest_).value_;
   }
 
   /**
    * @return {string} Last key.
    */
   peekLastKey() {
-    return this.oldest_.key_;
+    return /** @type {Entry} */ (this.oldest_).key_;
   }
 
   /**
@@ -225,7 +225,7 @@ class LRUCache {
    * @return {string} The newest key.
    */
   peekFirstKey() {
-    return this.newest_.key_;
+    return /** @type {Entry} */ (this.newest_).key_;
   }
 
   /**
@@ -241,12 +241,12 @@ class LRUCache {
    * @return {T} value Value.
    */
   pop() {
-    const entry = this.oldest_;
+    const entry = /** @type {Entry} */ (this.oldest_);
     delete this.entries_[entry.key_];
     if (entry.newer) {
       entry.newer.older = null;
     }
-    this.oldest_ = /** @type {Entry} */ (entry.newer);
+    this.oldest_ = entry.newer;
     if (!this.oldest_) {
       this.newest_ = null;
     }

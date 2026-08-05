@@ -104,13 +104,13 @@ class CanvasImmediateRenderer extends VectorContext {
 
     /**
      * @private
-     * @type {number}
+     * @type {number|undefined}
      */
     this.squaredTolerance_ = squaredTolerance;
 
     /**
      * @private
-     * @type {import("../../proj.js").TransformFunction}
+     * @type {import("../../proj.js").TransformFunction|undefined}
      */
     this.userTransform_ = userTransform;
 
@@ -146,7 +146,7 @@ class CanvasImmediateRenderer extends VectorContext {
 
     /**
      * @private
-     * @type {import('../../DataTile.js').ImageLike}
+     * @type {import('../../DataTile.js').ImageLike|null}
      */
     this.image_ = null;
 
@@ -330,7 +330,12 @@ class CanvasImmediateRenderer extends VectorContext {
           -centerY,
         );
         context.save();
-        context.transform.apply(context, localTransform);
+        context.transform.apply(
+          context,
+          /** @type {[number, number, number, number, number, number]} */ (
+            localTransform
+          ),
+        );
         context.translate(centerX, centerY);
         context.scale(this.imageScale_[0], this.imageScale_[1]);
         context.drawImage(
@@ -441,6 +446,7 @@ class CanvasImmediateRenderer extends VectorContext {
    */
   moveToLineTo_(flatCoordinates, offset, end, stride, close, strokeOffset) {
     const context = this.context_;
+    const strokeOffsetPx = strokeOffset ?? 0;
     let pixelCoordinates = transform2D(
       flatCoordinates,
       offset,
@@ -449,7 +455,7 @@ class CanvasImmediateRenderer extends VectorContext {
       this.transform_,
       this.pixelCoordinates_,
     );
-    if (Math.abs(strokeOffset) > 0) {
+    if (Math.abs(strokeOffsetPx) > 0) {
       const n = pixelCoordinates.length;
       const isClosedLine =
         close ||
@@ -460,7 +466,7 @@ class CanvasImmediateRenderer extends VectorContext {
         0,
         n,
         2,
-        strokeOffset,
+        strokeOffsetPx,
         isClosedLine,
         pixelCoordinates,
       );
@@ -535,6 +541,9 @@ class CanvasImmediateRenderer extends VectorContext {
         this.transform_,
         this.pixelCoordinates_,
       );
+      if (!pixelCoordinates) {
+        return;
+      }
       const dx = pixelCoordinates[2] - pixelCoordinates[0];
       const dy = pixelCoordinates[3] - pixelCoordinates[1];
       const radius = Math.sqrt(dx * dx + dy * dy);
@@ -568,9 +577,9 @@ class CanvasImmediateRenderer extends VectorContext {
    * @override
    */
   setStyle(style) {
-    this.setFillStrokeStyle(style.getFill(), style.getStroke());
-    this.setImageStyle(style.getImage());
-    this.setTextStyle(style.getText());
+    this.setFillStrokeStyle(style.getFill() ?? null, style.getStroke() ?? null);
+    this.setImageStyle(style.getImage() ?? null);
+    this.setTextStyle(style.getText() ?? null);
   }
 
   /**
@@ -1032,8 +1041,8 @@ class CanvasImmediateRenderer extends VectorContext {
    * Set the fill and stroke style for subsequent draw operations.  To clear
    * either fill or stroke styles, pass null for the appropriate parameter.
    *
-   * @param {import("../../style/Fill.js").default} fillStyle Fill style.
-   * @param {import("../../style/Stroke.js").default} strokeStyle Stroke style.
+   * @param {import("../../style/Fill.js").default|null} fillStyle Fill style.
+   * @param {import("../../style/Stroke.js").default|null} strokeStyle Stroke style.
    * @override
    */
   setFillStrokeStyle(fillStyle, strokeStyle) {
@@ -1042,9 +1051,9 @@ class CanvasImmediateRenderer extends VectorContext {
     } else {
       const fillStyleColor = fillStyle.getColor();
       this.fillState_ = {
-        fillStyle: asColorLike(
-          fillStyleColor ? fillStyleColor : defaultFillStyle,
-        ),
+        fillStyle:
+          asColorLike(fillStyleColor ? fillStyleColor : defaultFillStyle) ||
+          defaultFillStyle,
       };
     }
     if (!strokeStyle) {
@@ -1086,9 +1095,10 @@ class CanvasImmediateRenderer extends VectorContext {
           strokeStyleMiterLimit !== undefined
             ? strokeStyleMiterLimit
             : defaultMiterLimit,
-        strokeStyle: asColorLike(
-          strokeStyleColor ? strokeStyleColor : defaultStrokeStyle,
-        ),
+        strokeStyle:
+          asColorLike(
+            strokeStyleColor ? strokeStyleColor : defaultStrokeStyle,
+          ) || defaultStrokeStyle,
         strokeOffset: (strokeOffset ?? 0) * this.pixelRatio_,
       };
     }
@@ -1098,7 +1108,7 @@ class CanvasImmediateRenderer extends VectorContext {
    * Set the image style for subsequent draw operations.  Pass null to remove
    * the image style.
    *
-   * @param {import("../../style/Image.js").default} imageStyle Image style.
+   * @param {import("../../style/Image.js").default|null} imageStyle Image style.
    * @override
    */
   setImageStyle(imageStyle) {
@@ -1110,6 +1120,10 @@ class CanvasImmediateRenderer extends VectorContext {
     const imagePixelRatio = imageStyle.getPixelRatio(this.pixelRatio_);
     const imageAnchor = imageStyle.getAnchor();
     const imageOrigin = imageStyle.getOrigin();
+    if (!imageAnchor || !imageOrigin) {
+      this.image_ = null;
+      return;
+    }
     this.image_ = imageStyle.getImage(this.pixelRatio_);
     this.imageAnchorX_ = imageAnchor[0] * imagePixelRatio;
     this.imageAnchorY_ = imageAnchor[1] * imagePixelRatio;
@@ -1131,7 +1145,7 @@ class CanvasImmediateRenderer extends VectorContext {
    * Set the text style for subsequent draw operations.  Pass null to
    * remove the text style.
    *
-   * @param {import("../../style/Text.js").default} textStyle Text style.
+   * @param {import("../../style/Text.js").default|null} textStyle Text style.
    * @override
    */
   setTextStyle(textStyle) {
@@ -1144,9 +1158,10 @@ class CanvasImmediateRenderer extends VectorContext {
       } else {
         const textFillStyleColor = textFillStyle.getColor();
         this.textFillState_ = {
-          fillStyle: asColorLike(
-            textFillStyleColor ? textFillStyleColor : defaultFillStyle,
-          ),
+          fillStyle:
+            asColorLike(
+              textFillStyleColor ? textFillStyleColor : defaultFillStyle,
+            ) || defaultFillStyle,
         };
       }
       const textStrokeStyle = textStyle.getStroke();
@@ -1184,9 +1199,10 @@ class CanvasImmediateRenderer extends VectorContext {
             textStrokeStyleMiterLimit !== undefined
               ? textStrokeStyleMiterLimit
               : defaultMiterLimit,
-          strokeStyle: asColorLike(
-            textStrokeStyleColor ? textStrokeStyleColor : defaultStrokeStyle,
-          ),
+          strokeStyle:
+            asColorLike(
+              textStrokeStyleColor ? textStrokeStyleColor : defaultStrokeStyle,
+            ) || defaultStrokeStyle,
         };
       }
       const textFont = textStyle.getFont();

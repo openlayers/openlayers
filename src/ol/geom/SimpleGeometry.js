@@ -338,7 +338,7 @@ export function getStrideForLayout(layout) {
  * @param {SimpleGeometry} simpleGeometry Simple geometry.
  * @param {import("../transform.js").Transform} transform Transform.
  * @param {Array<number>} [dest] Destination.
- * @return {Array<number>} Transformed flat coordinates.
+ * @return {Array<number>|null} Transformed flat coordinates.
  */
 export function transformGeom2D(simpleGeometry, transform, dest) {
   const flatCoordinates = simpleGeometry.getFlatCoordinates();

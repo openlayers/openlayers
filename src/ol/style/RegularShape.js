@@ -39,7 +39,7 @@ import ImageStyle from './Image.js';
 
 /**
  * @typedef {Object} RenderOptions
- * @property {import("../colorlike.js").ColorLike|undefined} strokeStyle StrokeStyle.
+ * @property {import("../colorlike.js").ColorLike|null|undefined} strokeStyle StrokeStyle.
  * @property {number} strokeWidth StrokeWidth.
  * @property {number} size Size.
  * @property {CanvasLineCap} lineCap LineCap.
@@ -154,12 +154,12 @@ class RegularShape extends ImageStyle {
   clone() {
     const scale = this.getScale();
     const style = new RegularShape({
-      fill: this.getFill() ? this.getFill().clone() : undefined,
+      fill: this.getFill()?.clone(),
       points: this.getPoints(),
       radius: this.getRadius(),
       radius2: this.getRadius2(),
       angle: this.getAngle(),
-      stroke: this.getStroke() ? this.getStroke().clone() : undefined,
+      stroke: this.getStroke()?.clone(),
       rotation: this.getRotation(),
       rotateWithView: this.getRotateWithView(),
       scale: Array.isArray(scale) ? scale.slice() : scale,
@@ -255,7 +255,7 @@ class RegularShape extends ImageStyle {
       const iconImage = new IconImage(
         image,
         undefined,
-        null,
+        {},
         ImageState.LOADED,
         null,
       );
@@ -561,7 +561,9 @@ class RegularShape extends ImageStyle {
       if (color === null) {
         color = defaultFillStyle;
       }
-      context.fillStyle = asColorLike(color);
+      context.fillStyle = /** @type {string|CanvasGradient|CanvasPattern} */ (
+        asColorLike(color)
+      );
       context.fill();
     }
     if (renderOptions.strokeStyle) {

@@ -132,7 +132,7 @@ class ImageSource extends Source {
 
     /**
      * @protected
-     * @type {import("../Image.js").Loader}
+     * @type {import("../Image.js").Loader|null}
      */
     this.loader = options.loader || null;
 
@@ -145,7 +145,7 @@ class ImageSource extends Source {
 
     /**
      * @private
-     * @type {import("../reproj/Image.js").default}
+     * @type {import("../reproj/Image.js").default|null}
      */
     this.reprojectedImage_ = null;
 
@@ -157,7 +157,7 @@ class ImageSource extends Source {
 
     /**
      * @protected
-     * @type {import("../Image.js").default}
+     * @type {import("../Image.js").default|null}
      */
     this.image = null;
 
@@ -181,7 +181,7 @@ class ImageSource extends Source {
 
     /**
      * @private
-     * @type {import("../proj/Projection.js").default}
+     * @type {import("../proj/Projection.js").default|null}
      */
     this.wantedProjection_ = null;
   }
@@ -220,7 +220,7 @@ class ImageSource extends Source {
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
    * @param {import("../proj/Projection.js").default} projection Projection.
-   * @return {import("../Image.js").default} Single image.
+   * @return {import("../Image.js").default|null} Single image.
    */
   getImage(extent, resolution, pixelRatio, projection) {
     const sourceProjection = this.getProjection();
@@ -255,7 +255,14 @@ class ImageSource extends Source {
       resolution,
       pixelRatio,
       (extent, resolution, pixelRatio) =>
-        this.getImageInternal(extent, resolution, pixelRatio, sourceProjection),
+        /** @type {import("../Image.js").default|null} */ (
+          this.getImageInternal(
+            extent,
+            resolution,
+            pixelRatio,
+            sourceProjection,
+          )
+        ),
       this.getInterpolate(),
     );
     this.reprojectedRevision_ = this.getRevision();
@@ -269,7 +276,7 @@ class ImageSource extends Source {
    * @param {number} resolution Resolution.
    * @param {number} pixelRatio Pixel ratio.
    * @param {import("../proj/Projection.js").default} projection Projection.
-   * @return {import("../Image.js").default} Single image.
+   * @return {import("../Image.js").default|null} Single image.
    * @protected
    */
   getImageInternal(extent, resolution, pixelRatio, projection) {
@@ -302,7 +309,9 @@ class ImageSource extends Source {
       );
       this.image.addEventListener(
         EventType.CHANGE,
-        this.handleImageChange.bind(this),
+        /** @type {import("../events.js").ListenerFunction} */ (
+          this.handleImageChange.bind(this)
+        ),
       );
     }
     return this.image;

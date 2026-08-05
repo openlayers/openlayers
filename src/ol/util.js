@@ -26,7 +26,10 @@ let uidCounter_ = 0;
  * @api
  */
 export function getUid(obj) {
-  return obj.ol_uid || (obj.ol_uid = String(++uidCounter_));
+  const uidObj = /** @type {{ol_uid: (string|undefined)}} */ (
+    /** @type {unknown} */ (obj)
+  );
+  return uidObj.ol_uid || (uidObj.ol_uid = String(++uidCounter_));
 }
 
 /**

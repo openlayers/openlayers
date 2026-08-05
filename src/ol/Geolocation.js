@@ -187,13 +187,17 @@ class Geolocation extends BaseObject {
    */
   handleProjectionChanged_() {
     const projection = this.getProjection();
-    if (projection) {
-      this.transform_ = getTransformFromProjections(
-        getProjection('EPSG:4326'),
+    const sourceProjection = getProjection('EPSG:4326');
+    if (projection && sourceProjection) {
+      const transform = getTransformFromProjections(
+        sourceProjection,
         projection,
       );
-      if (this.position_) {
-        this.set(Property.POSITION, this.transform_(this.position_));
+      if (transform) {
+        this.transform_ = transform;
+        if (this.position_) {
+          this.set(Property.POSITION, this.transform_(this.position_));
+        }
       }
     }
   }

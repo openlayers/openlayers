@@ -114,7 +114,9 @@ class MousePosition extends Control {
      * @private
      * @type {string}
      */
-    this.placeholder_ = this.renderOnMouseOut_ ? options.placeholder : '&#160;';
+    this.placeholder_ = this.renderOnMouseOut_
+      ? /** @type {string} */ (options.placeholder)
+      : '&#160;';
 
     /**
      * @private
@@ -181,6 +183,9 @@ class MousePosition extends Control {
    */
   handleMouseMove(event) {
     const map = this.getMap();
+    if (!map) {
+      return;
+    }
     this.updateHTML_(map.getEventPixel(event));
   }
 
@@ -205,12 +210,29 @@ class MousePosition extends Control {
     super.setMap(map);
     if (map) {
       const viewport = map.getViewport();
+      if (!viewport) {
+        return;
+      }
       this.listenerKeys.push(
-        listen(viewport, EventType.POINTERMOVE, this.handleMouseMove, this),
+        listen(
+          viewport,
+          EventType.POINTERMOVE,
+          /** @type {import("../events.js").ListenerFunction} */ (
+            this.handleMouseMove
+          ),
+          this,
+        ),
       );
       if (this.renderOnMouseOut_) {
         this.listenerKeys.push(
-          listen(viewport, EventType.POINTEROUT, this.handleMouseOut, this),
+          listen(
+            viewport,
+            EventType.POINTEROUT,
+            /** @type {import("../events.js").ListenerFunction} */ (
+              this.handleMouseOut
+            ),
+            this,
+          ),
         );
       }
       this.updateHTML_(null);
@@ -258,6 +280,9 @@ class MousePosition extends Control {
         }
       }
       const map = this.getMap();
+      if (!map) {
+        return;
+      }
       const coordinate = map.getCoordinateFromPixelInternal(pixel);
       if (coordinate) {
         const userProjection = getUserProjection();
@@ -267,7 +292,10 @@ class MousePosition extends Control {
             userProjection,
           );
         }
-        this.transform_(coordinate, coordinate);
+        const transform = this.transform_;
+        if (transform) {
+          transform(coordinate, coordinate);
+        }
         if (this.wrapX_) {
           const projection =
             userProjection || this.getProjection() || this.mapProjection_;
@@ -282,8 +310,11 @@ class MousePosition extends Control {
       }
     }
     if (!this.renderedHTML_ || html !== this.renderedHTML_) {
-      this.element.innerHTML = html;
-      this.renderedHTML_ = html;
+      const element = this.element;
+      if (element) {
+        element.innerHTML = html;
+        this.renderedHTML_ = html;
+      }
     }
   }
 

@@ -28,7 +28,7 @@ import {serializeFrameState} from './serialize.js';
 import {parseLiteralStyle} from './style.js';
 import {hasTextStyle} from './textUtil.js';
 
-const tmpColor = [];
+const tmpColor = /** @type {Array<number>} */ ([]);
 
 /** @type {Worker|undefined} */
 let WEBGL_WORKER;
@@ -58,7 +58,7 @@ function messageWorker(worker, message, transferables) {
   }
 
   return new Promise((resolve) => {
-    const handleMessage = (event) => {
+    const handleMessage = (/** @type {MessageEvent} */ event) => {
       const received = event.data;
 
       // this is not the response to our request: skip
@@ -227,7 +227,7 @@ class VectorStyleRenderer extends Disposable {
     if (this.hitDetectionEnabled_) {
       this.customAttributes_['hitColor'] = {
         callback() {
-          return colorEncodeIdAndPack(this.ref, tmpColor);
+          return colorEncodeIdAndPack(this.ref ?? 0, tmpColor);
         },
         size: 2,
       };
@@ -275,8 +275,12 @@ class VectorStyleRenderer extends Disposable {
       // set up each subpass
       if (styleShader.builder.getFillVertexShader()) {
         renderPass.fillRenderPass = {
-          vertexShader: styleShader.builder.getFillVertexShader(),
-          fragmentShader: styleShader.builder.getFillFragmentShader(),
+          vertexShader: /** @type {string} */ (
+            styleShader.builder.getFillVertexShader()
+          ),
+          fragmentShader: /** @type {string} */ (
+            styleShader.builder.getFillFragmentShader()
+          ),
           attributesDesc: [
             {
               name: Attributes.POSITION,
@@ -291,8 +295,12 @@ class VectorStyleRenderer extends Disposable {
       }
       if (styleShader.builder.getStrokeVertexShader()) {
         renderPass.strokeRenderPass = {
-          vertexShader: styleShader.builder.getStrokeVertexShader(),
-          fragmentShader: styleShader.builder.getStrokeFragmentShader(),
+          vertexShader: /** @type {string} */ (
+            styleShader.builder.getStrokeVertexShader()
+          ),
+          fragmentShader: /** @type {string} */ (
+            styleShader.builder.getStrokeFragmentShader()
+          ),
           attributesDesc: [
             {
               name: Attributes.LOCAL_POSITION,
@@ -348,8 +356,12 @@ class VectorStyleRenderer extends Disposable {
       }
       if (styleShader.builder.getSymbolVertexShader()) {
         renderPass.symbolRenderPass = {
-          vertexShader: styleShader.builder.getSymbolVertexShader(),
-          fragmentShader: styleShader.builder.getSymbolFragmentShader(),
+          vertexShader: /** @type {string} */ (
+            styleShader.builder.getSymbolVertexShader()
+          ),
+          fragmentShader: /** @type {string} */ (
+            styleShader.builder.getSymbolFragmentShader()
+          ),
           attributesDesc: [
             {
               name: Attributes.LOCAL_POSITION,
@@ -385,12 +397,13 @@ class VectorStyleRenderer extends Disposable {
       );
 
       /**
+       * @type {CanvasRenderingContext2D|null}
        * @private
        */
       this.textOverlayContext_ = this.textOverlayCanvas_.getContext('2d');
 
       /**
-       * @type {import("../../Map.js").FrameState}
+       * @type {import("../../Map.js").FrameState|null}
        * @private
        */
       this.textOverlayRenderFrameState_ = null;
@@ -474,9 +487,9 @@ class VectorStyleRenderer extends Disposable {
         : null,
     ]);
     return {
-      polygonBuffers: polygonBuffers,
-      lineStringBuffers: lineStringBuffers,
-      pointBuffers: pointBuffers,
+      polygonBuffers: polygonBuffers ?? null,
+      lineStringBuffers: lineStringBuffers ?? null,
+      pointBuffers: pointBuffers ?? null,
       invertVerticesTransform: invertVerticesTransform,
       textInstructionsKey,
     };
@@ -532,7 +545,7 @@ class VectorStyleRenderer extends Disposable {
    * @param {Float32Array|null} renderInstructions Render instructions
    * @param {import("../../geom/Geometry.js").Type} geometryType Geometry type
    * @param {import("../../transform.js").Transform} transform Transform to apply to coordinates
-   * @return {Promise<WebGLArrayBufferSet>|null} Indices buffer and vertices buffer; null if nothing to render
+   * @return {Promise<WebGLArrayBufferSet|undefined>|null} Indices buffer and vertices buffer; null if nothing to render
    * @private
    */
   generateBuffersForType_(renderInstructions, geometryType, transform) {
@@ -552,7 +565,7 @@ class VectorStyleRenderer extends Disposable {
         messageType = WebGLWorkerMessageType.GENERATE_POINT_BUFFERS;
         break;
       default:
-      // pass
+        return null;
     }
 
     /** @type {import('./constants.js').WebGLWorkerGenerateBuffersMessage} */
@@ -577,6 +590,13 @@ class VectorStyleRenderer extends Disposable {
         );
 
       // copy & flush received buffers to GPU
+      if (
+        !received.indicesBuffer ||
+        !received.vertexAttributesBuffer ||
+        !received.instanceAttributesBuffer
+      ) {
+        return;
+      }
       const indicesBuffer = new WebGLArrayBuffer(
         ELEMENT_ARRAY_BUFFER,
         DYNAMIC_DRAW,
@@ -602,7 +622,7 @@ class VectorStyleRenderer extends Disposable {
    * @param {import('../../webgl/LabelsArray.js').default} labelsArray Labels array
    * @param {import("../../transform.js").Transform} transform Transform to apply to coordinates
    * @param {number} resolution View resolution to be used as a basis when computing text overflow
-   * @return {Promise<string>|null} Resolves to a key corresponding to the text draw instructions; null if no text to render
+   * @return {Promise<string|null>|null} Resolves to a key corresponding to the text draw instructions; null if no text to render
    * @private
    */
   generateTextInstructions_(
@@ -645,11 +665,11 @@ class VectorStyleRenderer extends Disposable {
     /** @type {import('./constants.js').TextOverlayWorkerMessage} */
     const message = {
       type: TextOverlayWorkerMessageType.BUILD_INSTRUCTIONS,
-      polygonRenderInstructions,
-      lineStringRenderInstructions,
-      pointRenderInstructions,
+      polygonRenderInstructions: polygonRenderInstructions ?? undefined,
+      lineStringRenderInstructions: lineStringRenderInstructions ?? undefined,
+      pointRenderInstructions: pointRenderInstructions ?? undefined,
       labelsArray: labelsArray.getArray(),
-      style: this.flatStyle,
+      style: this.flatStyle ?? undefined,
       customAttributesSizes,
       renderInstructionsTransform: transform,
       resolution,
@@ -663,7 +683,7 @@ class VectorStyleRenderer extends Disposable {
           );
 
         // we're getting a key from the worker: these will be used later on to ask for render or disposal
-        return received.instructionsSetKey;
+        return received.instructionsSetKey ?? null;
       },
     );
   }
@@ -736,7 +756,12 @@ class VectorStyleRenderer extends Disposable {
 
     const usesInstancedRendering = subRenderPass.instancedAttributesDesc.length;
 
-    this.helper_.useProgram(subRenderPass.program, frameState);
+    const program = subRenderPass.program;
+    if (!program) {
+      return;
+    }
+
+    this.helper_.useProgram(program, frameState);
     this.helper_.bindBuffer(vertexAttributesBuffer);
     this.helper_.bindBuffer(indicesBuffer);
     this.helper_.enableAttributes(subRenderPass.attributesDesc);
@@ -767,7 +792,10 @@ class VectorStyleRenderer extends Disposable {
    * @private
    */
   renderText_(buffers) {
-    this.textOverlayRenderList_.add(buffers.textInstructionsKey);
+    const key = buffers.textInstructionsKey;
+    if (key) {
+      this.textOverlayRenderList_.add(key);
+    }
   }
 
   /**
@@ -779,6 +807,13 @@ class VectorStyleRenderer extends Disposable {
     if (!this.hasText_) {
       return Promise.resolve();
     }
+
+    const textOverlayCanvas = /** @type {HTMLCanvasElement} */ (
+      this.textOverlayCanvas_
+    );
+    const textOverlayContext = /** @type {CanvasRenderingContext2D} */ (
+      this.textOverlayContext_
+    );
 
     const message = {
       type: TextOverlayWorkerMessageType.RENDER,
@@ -792,25 +827,26 @@ class VectorStyleRenderer extends Disposable {
 
       // if no render data returned, do not process it
       if (received.imageData) {
-        this.textOverlayRenderFrameState_ = received.frameState;
+        this.textOverlayRenderFrameState_ =
+          received.frameState !== undefined ? received.frameState : null;
 
         // the rendered image data is copied to the canvas and then given back to the worker
         const imageData = received.imageData;
         if (
-          imageData.width !== this.textOverlayCanvas_.width ||
-          imageData.height !== this.textOverlayCanvas_.height
+          imageData.width !== textOverlayCanvas.width ||
+          imageData.height !== textOverlayCanvas.height
         ) {
-          this.textOverlayCanvas_.width = imageData.width;
-          this.textOverlayCanvas_.height = imageData.height;
+          textOverlayCanvas.width = imageData.width;
+          textOverlayCanvas.height = imageData.height;
         } else {
-          this.textOverlayContext_.clearRect(
+          textOverlayContext.clearRect(
             0,
             0,
-            this.textOverlayCanvas_.width,
-            this.textOverlayCanvas_.height,
+            textOverlayCanvas.width,
+            textOverlayCanvas.height,
           );
         }
-        this.textOverlayContext_.drawImage(imageData, 0, 0);
+        textOverlayContext.drawImage(imageData, 0, 0);
         imageData.close();
       }
 
@@ -820,7 +856,7 @@ class VectorStyleRenderer extends Disposable {
 
   /**
    * @param {import('../../webgl/Helper.js').default} helper Helper
-   * @param {WebGLBuffers} buffers WebGL Buffers to reload if any
+   * @param {WebGLBuffers|null} [buffers] WebGL Buffers to reload if any
    */
   setHelper(helper, buffers = null) {
     this.helper_ = helper;
@@ -908,7 +944,10 @@ export function toFlatStyleLike(styleOrShaders) {
       return null;
     }
     if (styleOrShaders.some((s) => 'builder' in s)) {
-      return styleOrShaders.map((style) => style.sourceRule);
+      return styleOrShaders.flatMap((style) => {
+        const sourceRule = /** @type {StyleShaders} */ (style).sourceRule;
+        return sourceRule ? [sourceRule] : [];
+      });
     }
     return /** @type {FlatStyleLike} */ (styleOrShaders);
   }
@@ -916,7 +955,11 @@ export function toFlatStyleLike(styleOrShaders) {
     if (!('sourceRule' in styleOrShaders)) {
       return null;
     }
-    return [styleOrShaders.sourceRule];
+    const sourceRule = /** @type {StyleShaders} */ (styleOrShaders).sourceRule;
+    if (!sourceRule) {
+      return null;
+    }
+    return [sourceRule];
   }
   return styleOrShaders;
 }
@@ -945,7 +988,7 @@ export function convertStyleToShaders(style, variables) {
     for (const rule of rules) {
       /** @type {Array<FlatStyle>} */
       const ruleStyles = Array.isArray(rule.style) ? rule.style : [rule.style];
-      /** @type {import("../../expr/expression.js").EncodedExpression} */
+      /** @type {import("../../expr/expression.js").EncodedExpression|undefined} */
       let currentFilter = rule.filter;
       if (rule.else && previousFilters.length) {
         currentFilter = [
@@ -979,7 +1022,7 @@ export function convertStyleToShaders(style, variables) {
 
   // array of flat styles: simply convert to shaders
   return /** @type {Array<FlatStyle>} */ (asArray).map((style) => ({
-    ...parseLiteralStyle(style, variables, null),
+    ...parseLiteralStyle(style, variables, undefined),
     sourceRule: {style},
   }));
 }

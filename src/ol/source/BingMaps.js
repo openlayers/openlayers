@@ -130,7 +130,9 @@ class BingMaps extends TileImage {
       cacheSize: options.cacheSize,
       crossOrigin: 'anonymous',
       interpolate: options.interpolate,
-      projection: getProjection('EPSG:3857'),
+      projection: /** @type {import("../proj.js").ProjectionLike} */ (
+        getProjection('EPSG:3857')
+      ),
       reprojectionErrorThreshold: options.reprojectionErrorThreshold,
       state: 'loading',
       tileLoadFunction: options.tileLoadFunction,
@@ -229,6 +231,10 @@ class BingMaps extends TileImage {
     const maxZoom = this.maxZoom_ == -1 ? resource.zoomMax : this.maxZoom_;
 
     const sourceProjection = this.getProjection();
+    if (!sourceProjection) {
+      this.setState('error');
+      return;
+    }
     const extent = extentFromProjection(sourceProjection);
     const scale = this.hidpi_ ? 2 : 1;
     const tileSize =
@@ -291,15 +297,21 @@ class BingMaps extends TileImage {
     );
 
     if (resource.imageryProviders) {
-      const transform = getTransformFromProjections(
-        getProjection('EPSG:4326'),
-        this.getProjection(),
-      );
+      const epsg4326 = getProjection('EPSG:4326');
+      const transform = getTransformFromProjections(epsg4326, sourceProjection);
+      if (!transform) {
+        this.setState('ready');
+        return;
+      }
 
       this.setAttributions((frameState) => {
+        /** @type {Array<string>} */
         const attributions = [];
         const viewState = frameState.viewState;
         const tileGrid = this.getTileGrid();
+        if (!tileGrid) {
+          return attributions;
+        }
         const z = tileGrid.getZForResolution(
           viewState.resolution,
           this.zDirection,
@@ -309,7 +321,7 @@ class BingMaps extends TileImage {
           z,
         );
         const zoom = tileCoord[0];
-        resource.imageryProviders.map(function (imageryProvider) {
+        resource.imageryProviders?.map(function (imageryProvider) {
           let intersecting = false;
           const coverageAreas = imageryProvider.coverageAreas;
           for (let i = 0, ii = coverageAreas.length; i < ii; ++i) {
@@ -324,7 +336,7 @@ class BingMaps extends TileImage {
               }
             }
           }
-          if (intersecting) {
+          if (intersecting && imageryProvider.attribution) {
             attributions.push(imageryProvider.attribution);
           }
         });

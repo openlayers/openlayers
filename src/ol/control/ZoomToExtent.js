@@ -67,13 +67,13 @@ class ZoomToExtent extends Control {
 
     button.addEventListener(
       EventType.CLICK,
-      this.handleClick_.bind(this),
+      /** @type {EventListener} */ (this.handleClick_.bind(this)),
       false,
     );
 
     const cssClasses =
       className + ' ' + CLASS_UNSELECTABLE + ' ' + CLASS_CONTROL;
-    const element = this.element;
+    const element = /** @type {!HTMLElement} */ (this.element);
     element.className = cssClasses;
     element.appendChild(button);
   }
@@ -92,6 +92,9 @@ class ZoomToExtent extends Control {
    */
   handleZoomToExtent() {
     const map = this.getMap();
+    if (!map) {
+      return;
+    }
     const view = map.getView();
     const extent = !this.extent
       ? view.getProjection().getExtent()

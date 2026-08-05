@@ -18,7 +18,7 @@ class IconImageCache {
     this.cache_ = {};
 
     /**
-     * @type {!Object<string, CanvasPattern>}
+     * @type {!Object<string, CanvasPattern|null>}
      * @private
      */
     this.patternCache_ = {};
@@ -72,7 +72,7 @@ class IconImageCache {
   /**
    * @param {string} src Src.
    * @param {import("../color.js").Color|string|null} color Color.
-   * @return {import("./IconImage.js").default} Icon image.
+   * @return {import("./IconImage.js").default|null} Icon image.
    */
   get(src, color) {
     const key = getCacheKey(src, color);
@@ -84,7 +84,7 @@ class IconImageCache {
   /**
    * @param {string} src Src.
    * @param {import("../color.js").Color|string|null} color Color.
-   * @return {CanvasPattern} Icon image.
+   * @return {CanvasPattern|null} Icon image.
    */
   getPattern(src, color) {
     const key = getCacheKey(src, color);
@@ -100,23 +100,31 @@ class IconImageCache {
   set(src, color, iconImage, pattern) {
     const key = getCacheKey(src, color);
     const update = key in this.cache_;
-    this.cache_[key] = iconImage;
-    if (pattern) {
+    if (iconImage) {
+      this.cache_[key] = iconImage;
+    }
+    if (pattern && iconImage) {
       if (iconImage.getImageState() === ImageState.IDLE) {
         iconImage.load();
       }
       if (iconImage.getImageState() === ImageState.LOADING) {
         iconImage.ready().then(() => {
-          this.patternCache_[key] = getSharedCanvasContext2D().createPattern(
+          const patternFill = getSharedCanvasContext2D().createPattern(
             iconImage.getImage(1),
             'repeat',
           );
+          if (patternFill) {
+            this.patternCache_[key] = patternFill;
+          }
         });
       } else {
-        this.patternCache_[key] = getSharedCanvasContext2D().createPattern(
+        const patternFill = getSharedCanvasContext2D().createPattern(
           iconImage.getImage(1),
           'repeat',
         );
+        if (patternFill) {
+          this.patternCache_[key] = patternFill;
+        }
       }
     }
     if (!update) {

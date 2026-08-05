@@ -21,7 +21,7 @@ class VectorTile extends Tile {
 
     /**
      * Extent of this tile; set by the source.
-     * @type {import("./extent.js").Extent}
+     * @type {import("./extent.js").Extent|null}
      */
     this.extent = null;
 
@@ -33,7 +33,7 @@ class VectorTile extends Tile {
 
     /**
      * @private
-     * @type {Array<FeatureType>}
+     * @type {Array<FeatureType>|null}
      */
     this.features_ = null;
 
@@ -45,7 +45,7 @@ class VectorTile extends Tile {
 
     /**
      * Feature projection of this tile; set by the source.
-     * @type {import("./proj/Projection.js").default}
+     * @type {import("./proj/Projection.js").default|null}
      */
     this.projection = null;
 
@@ -88,7 +88,7 @@ class VectorTile extends Tile {
 
   /**
    * Get the features for this tile. Geometries will be in the view projection.
-   * @return {Array<FeatureType>} Features.
+   * @return {Array<FeatureType>|null} Features.
    * @api
    */
   getFeatures() {
@@ -103,7 +103,7 @@ class VectorTile extends Tile {
     if (this.state == TileState.IDLE) {
       this.setState(TileState.LOADING);
       this.tileLoadFunction_(this, this.url_);
-      if (this.loader_) {
+      if (this.loader_ && this.extent && this.projection) {
         this.loader_(this.extent, this.resolution, this.projection);
       }
     }

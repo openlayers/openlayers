@@ -82,7 +82,7 @@ class WebGLTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     super(tileLayer, options);
 
     /**
-     * @type {WebGLProgram}
+     * @type {WebGLProgram|undefined}
      * @private
      */
     this.program_;
@@ -98,21 +98,8 @@ class WebGLTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     this.fragmentShader_ = options.fragmentShader;
 
     /**
-     * Tiles are rendered as a quad with the following structure:
-     *
-     *  [P3]---------[P2]
-     *   |`           |
-     *   |  `     B   |
-     *   |    `       |
-     *   |      `     |
-     *   |   A    `   |
-     *   |          ` |
-     *  [P0]---------[P1]
-     *
-     * Triangle A: P0, P1, P3
-     * Triangle B: P1, P2, P3
-     *
      * @private
+     * @type {WebGLArrayBuffer|undefined}
      */
     this.indices_ = new WebGLArrayBuffer(ELEMENT_ARRAY_BUFFER, STATIC_DRAW);
     this.indices_.fromArray([0, 1, 3, 1, 2, 3]);
@@ -170,7 +157,10 @@ class WebGLTileLayerRenderer extends WebGLBaseTileLayerRenderer {
       this.fragmentShader_,
       this.vertexShader_,
     );
-    this.helper.flushBufferData(this.indices_);
+    const indices = this.indices_;
+    if (indices) {
+      this.helper.flushBufferData(indices);
+    }
   }
 
   /**
@@ -188,6 +178,7 @@ class WebGLTileLayerRenderer extends WebGLBaseTileLayerRenderer {
   }
 
   /**
+   * @param {import("../../webgl/BaseTileRepresentation.js").TileRepresentationOptions<import("../../webgl/TileTexture.js").TileType>} options Tile representation options.
    * @override
    */
   createTileRepresentation(options) {
@@ -195,14 +186,30 @@ class WebGLTileLayerRenderer extends WebGLBaseTileLayerRenderer {
   }
 
   /**
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @param {boolean} tilesWithAlpha True if at least one of the rendered tiles has alpha.
    * @override
    */
   beforeTilesRender(frameState, tilesWithAlpha) {
     super.beforeTilesRender(frameState, tilesWithAlpha);
-    this.helper.useProgram(this.program_, frameState);
+    const program = this.program_;
+    if (program) {
+      this.helper.useProgram(program, frameState);
+    }
   }
 
   /**
+   * @param {TileTextureRepresentation} tileTexture Tile texture.
+   * @param {import("../../transform.js").Transform} tileTransform Tile transform.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @param {import("../../extent.js").Extent} renderExtent Render extent.
+   * @param {number} tileResolution Tile resolution.
+   * @param {import("../../size.js").Size} tileSize Tile size.
+   * @param {import("../../coordinate.js").Coordinate} tileOrigin Tile origin.
+   * @param {import("../../extent.js").Extent} tileExtent Tile extent.
+   * @param {number} depth Depth.
+   * @param {number} gutter Gutter.
+   * @param {number} alpha Alpha.
    * @override
    */
   renderTile(
@@ -220,7 +227,10 @@ class WebGLTileLayerRenderer extends WebGLBaseTileLayerRenderer {
   ) {
     const gl = this.helper.getGL();
     this.helper.bindBuffer(tileTexture.coords);
-    this.helper.bindBuffer(this.indices_);
+    const tileIndices = this.indices_;
+    if (tileIndices) {
+      this.helper.bindBuffer(tileIndices);
+    }
     this.helper.enableAttributes(attributeDescriptions);
 
     let textureSlot = 0;
@@ -300,12 +310,15 @@ class WebGLTileLayerRenderer extends WebGLBaseTileLayerRenderer {
       tileResolution,
     );
 
-    this.helper.drawElements(0, this.indices_.getSize());
+    const indices = this.indices_;
+    if (indices) {
+      this.helper.drawElements(0, indices.getSize());
+    }
   }
 
   /**
    * @param {import("../../pixel.js").Pixel} pixel Pixel.
-   * @return {Uint8ClampedArray|Uint8Array|Float32Array|DataView} Data at the pixel location.
+   * @return {Uint8ClampedArray|Uint8Array|Float32Array|DataView|null} Data at the pixel location.
    * @override
    */
   getData(pixel) {
@@ -357,7 +370,7 @@ class WebGLTileLayerRenderer extends WebGLBaseTileLayerRenderer {
         }
       }
     }
-    if (i < 0) {
+    if (i < 0 || !source || !tileGrid) {
       return null;
     }
 
@@ -392,7 +405,7 @@ class WebGLTileLayerRenderer extends WebGLBaseTileLayerRenderer {
         (tileOrigin[1] - coordinate[1]) / tileResolution -
         tileCoord[2] * tileSize[1];
 
-      return tileTexture.getPixelData(col, row);
+      return tileTexture.getPixelData(col, row) ?? null;
     }
     return null;
   }
@@ -410,12 +423,18 @@ class WebGLTileLayerRenderer extends WebGLBaseTileLayerRenderer {
       }
       this.paletteTextures_.length = 0;
 
-      gl.deleteProgram(this.program_);
-      delete this.program_;
-      helper.deleteBuffer(this.indices_);
+      const program = this.program_;
+      if (program) {
+        gl.deleteProgram(program);
+      }
+      this.program_ = undefined;
+      const indicesBuffer = this.indices_;
+      if (indicesBuffer) {
+        helper.deleteBuffer(indicesBuffer);
+      }
+      this.indices_ = undefined;
     }
     super.disposeInternal();
-    delete this.indices_;
   }
 }
 

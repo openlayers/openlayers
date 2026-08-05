@@ -215,7 +215,7 @@ class Text {
 
     /**
      * @private
-     * @type {import('../style/Style.js').DeclutterMode}
+     * @type {import('../style/Style.js').DeclutterMode|undefined}
      */
     this.declutterMode_ = options.declutterMode;
   }
@@ -243,17 +243,13 @@ class Text {
       textBaseline: this.getTextBaseline(),
       fill:
         this.getFill() instanceof Fill
-          ? this.getFill().clone()
+          ? /** @type {Fill} */ (this.getFill()).clone()
           : this.getFill(),
-      stroke: this.getStroke() ? this.getStroke().clone() : undefined,
+      stroke: this.getStroke()?.clone(),
       offsetX: this.getOffsetX(),
       offsetY: this.getOffsetY(),
-      backgroundFill: this.getBackgroundFill()
-        ? this.getBackgroundFill().clone()
-        : undefined,
-      backgroundStroke: this.getBackgroundStroke()
-        ? this.getBackgroundStroke().clone()
-        : undefined,
+      backgroundFill: this.getBackgroundFill()?.clone(),
+      backgroundStroke: this.getBackgroundStroke()?.clone(),
       padding: this.getPadding() || undefined,
       declutterMode: this.getDeclutterMode(),
     });
@@ -449,7 +445,7 @@ class Text {
 
   /**
    * Get the declutter mode of the shape
-   * @return {import("./Style.js").DeclutterMode} Shape's declutter mode
+   * @return {import("./Style.js").DeclutterMode|undefined} Shape's declutter mode
    * @api
    */
   getDeclutterMode() {

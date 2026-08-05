@@ -6,13 +6,17 @@ import {
   makeArrayPusher,
   makeObjectPropertyPusher,
   makeObjectPropertySetter,
-  makeStructureNS,
+  makeParsersNS,
   pushParseAndPop,
 } from '../xml.js';
 import OWS from './OWS.js';
 import XML from './XML.js';
 import {readHref} from './xlink.js';
 import {readDecimal, readPositiveInteger, readString} from './xsd.js';
+
+/**
+ * @typedef {Object<string, *>} WMTSObject
+ */
 
 /**
  * @const
@@ -27,11 +31,9 @@ const NAMESPACE_URIS = [null, 'http://www.opengis.net/wmts/1.0'];
 const OWS_NAMESPACE_URIS = [null, 'http://www.opengis.net/ows/1.1'];
 
 /**
- * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {import("../xml.js").ParsersNS}
  */
-// @ts-ignore
-const PARSERS = makeStructureNS(NAMESPACE_URIS, {
+const PARSERS = makeParsersNS(NAMESPACE_URIS, {
   'Contents': makeObjectPropertySetter(readContents),
 });
 
@@ -62,7 +64,9 @@ class WMTSCapabilities extends XML {
     if (version) {
       version = version.trim();
     }
-    let WMTSCapabilityObject = this.owsParser_.readFromNode(node);
+    let WMTSCapabilityObject = /** @type {WMTSObject} */ (
+      this.owsParser_.readFromNode(node)
+    );
     if (!WMTSCapabilityObject) {
       return null;
     }
@@ -78,21 +82,17 @@ class WMTSCapabilities extends XML {
 }
 
 /**
- * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {import("../xml.js").ParsersNS}
  */
-// @ts-ignore
-const CONTENTS_PARSERS = makeStructureNS(NAMESPACE_URIS, {
+const CONTENTS_PARSERS = makeParsersNS(NAMESPACE_URIS, {
   'Layer': makeObjectPropertyPusher(readLayer),
   'TileMatrixSet': makeObjectPropertyPusher(readTileMatrixSet),
 });
 
 /**
- * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {import("../xml.js").ParsersNS}
  */
-// @ts-ignore
-const LAYER_PARSERS = makeStructureNS(
+const LAYER_PARSERS = makeParsersNS(
   NAMESPACE_URIS,
   {
     'Style': makeObjectPropertyPusher(readStyle),
@@ -101,7 +101,7 @@ const LAYER_PARSERS = makeStructureNS(
     'Dimension': makeObjectPropertyPusher(readDimensions),
     'ResourceURL': makeObjectPropertyPusher(readResourceUrl),
   },
-  makeStructureNS(OWS_NAMESPACE_URIS, {
+  makeParsersNS(OWS_NAMESPACE_URIS, {
     'Title': makeObjectPropertySetter(readString),
     'Abstract': makeObjectPropertySetter(readString),
     'WGS84BoundingBox': makeObjectPropertySetter(readBoundingBox),
@@ -111,46 +111,38 @@ const LAYER_PARSERS = makeStructureNS(
 );
 
 /**
- * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {import("../xml.js").ParsersNS}
  */
-// @ts-ignore
-const STYLE_PARSERS = makeStructureNS(
+const STYLE_PARSERS = makeParsersNS(
   NAMESPACE_URIS,
   {
     'LegendURL': makeObjectPropertyPusher(readLegendUrl),
   },
-  makeStructureNS(OWS_NAMESPACE_URIS, {
+  makeParsersNS(OWS_NAMESPACE_URIS, {
     'Title': makeObjectPropertySetter(readString),
     'Identifier': makeObjectPropertySetter(readString),
   }),
 );
 
 /**
- * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {import("../xml.js").ParsersNS}
  */
-// @ts-ignore
-const TMS_LINKS_PARSERS = makeStructureNS(NAMESPACE_URIS, {
+const TMS_LINKS_PARSERS = makeParsersNS(NAMESPACE_URIS, {
   'TileMatrixSet': makeObjectPropertySetter(readString),
   'TileMatrixSetLimits': makeObjectPropertySetter(readTileMatrixLimitsList),
 });
 
 /**
- * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {import("../xml.js").ParsersNS}
  */
-// @ts-ignore
-const TMS_LIMITS_LIST_PARSERS = makeStructureNS(NAMESPACE_URIS, {
+const TMS_LIMITS_LIST_PARSERS = makeParsersNS(NAMESPACE_URIS, {
   'TileMatrixLimits': makeArrayPusher(readTileMatrixLimits),
 });
 
 /**
- * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {import("../xml.js").ParsersNS}
  */
-// @ts-ignore
-const TMS_LIMITS_PARSERS = makeStructureNS(NAMESPACE_URIS, {
+const TMS_LIMITS_PARSERS = makeParsersNS(NAMESPACE_URIS, {
   'TileMatrix': makeObjectPropertySetter(readString),
   'MinTileRow': makeObjectPropertySetter(readPositiveInteger),
   'MaxTileRow': makeObjectPropertySetter(readPositiveInteger),
@@ -159,43 +151,37 @@ const TMS_LIMITS_PARSERS = makeStructureNS(NAMESPACE_URIS, {
 });
 
 /**
- * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {import("../xml.js").ParsersNS}
  */
-// @ts-ignore
-const DIMENSION_PARSERS = makeStructureNS(
+const DIMENSION_PARSERS = makeParsersNS(
   NAMESPACE_URIS,
   {
     'Default': makeObjectPropertySetter(readString),
     'Value': makeObjectPropertyPusher(readString),
   },
-  makeStructureNS(OWS_NAMESPACE_URIS, {
+  makeParsersNS(OWS_NAMESPACE_URIS, {
     'Identifier': makeObjectPropertySetter(readString),
   }),
 );
 
 /**
- * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {import("../xml.js").ParsersNS}
  */
-// @ts-ignore
-const WGS84_BBOX_READERS = makeStructureNS(OWS_NAMESPACE_URIS, {
+const WGS84_BBOX_READERS = makeParsersNS(OWS_NAMESPACE_URIS, {
   'LowerCorner': makeArrayPusher(readCoordinates),
   'UpperCorner': makeArrayPusher(readCoordinates),
 });
 
 /**
- * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {import("../xml.js").ParsersNS}
  */
-// @ts-ignore
-const TMS_PARSERS = makeStructureNS(
+const TMS_PARSERS = makeParsersNS(
   NAMESPACE_URIS,
   {
     'WellKnownScaleSet': makeObjectPropertySetter(readString),
     'TileMatrix': makeObjectPropertyPusher(readTileMatrix),
   },
-  makeStructureNS(OWS_NAMESPACE_URIS, {
+  makeParsersNS(OWS_NAMESPACE_URIS, {
     'SupportedCRS': makeObjectPropertySetter(readString),
     'Identifier': makeObjectPropertySetter(readString),
     'BoundingBox': makeObjectPropertySetter(readBoundingBox),
@@ -203,11 +189,9 @@ const TMS_PARSERS = makeStructureNS(
 );
 
 /**
- * @const
- * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ * @type {import("../xml.js").ParsersNS}
  */
-// @ts-ignore
-const TM_PARSERS = makeStructureNS(
+const TM_PARSERS = makeParsersNS(
   NAMESPACE_URIS,
   {
     'TopLeftCorner': makeObjectPropertySetter(readCoordinates),
@@ -217,7 +201,7 @@ const TM_PARSERS = makeStructureNS(
     'MatrixWidth': makeObjectPropertySetter(readPositiveInteger),
     'MatrixHeight': makeObjectPropertySetter(readPositiveInteger),
   },
-  makeStructureNS(OWS_NAMESPACE_URIS, {
+  makeParsersNS(OWS_NAMESPACE_URIS, {
     'Identifier': makeObjectPropertySetter(readString),
   }),
 );
@@ -255,7 +239,9 @@ function readTileMatrixSet(node, objectStack) {
  * @return {Object|undefined} Style object.
  */
 function readStyle(node, objectStack) {
-  const style = pushParseAndPop({}, STYLE_PARSERS, node, objectStack);
+  const style = /** @type {WMTSObject|undefined} */ (
+    pushParseAndPop({}, STYLE_PARSERS, node, objectStack)
+  );
   if (!style) {
     return undefined;
   }
@@ -310,16 +296,18 @@ function readResourceUrl(node, objectStack) {
  * @return {Object|undefined} BBox object.
  */
 function readBoundingBox(node, objectStack) {
-  const coordinates = pushParseAndPop(
-    [],
-    WGS84_BBOX_READERS,
-    node,
-    objectStack,
+  /** @type {Array<Array<number>>} */
+  const coordinates = /** @type {Array<Array<number>>} */ (
+    pushParseAndPop([], WGS84_BBOX_READERS, node, objectStack) ?? []
   );
   if (coordinates.length != 2) {
     return undefined;
   }
-  return boundingExtent(coordinates);
+  return boundingExtent(
+    /** @type {[import("../coordinate.js").Coordinate, import("../coordinate.js").Coordinate]} */ (
+      coordinates
+    ),
+  );
 }
 
 /**
@@ -329,16 +317,21 @@ function readBoundingBox(node, objectStack) {
  */
 function readBoundingBoxWithCrs(node, objectStack) {
   const crs = node.getAttribute('crs');
-  const coordinates = pushParseAndPop(
-    [],
-    WGS84_BBOX_READERS,
-    node,
-    objectStack,
+  /** @type {Array<Array<number>>} */
+  const coordinates = /** @type {Array<Array<number>>} */ (
+    pushParseAndPop([], WGS84_BBOX_READERS, node, objectStack) ?? []
   );
   if (coordinates.length != 2) {
     return undefined;
   }
-  return {extent: boundingExtent(coordinates), crs: crs};
+  return {
+    extent: boundingExtent(
+      /** @type {[import("../coordinate.js").Coordinate, import("../coordinate.js").Coordinate]} */ (
+        coordinates
+      ),
+    ),
+    crs: crs,
+  };
 }
 
 /**
@@ -359,7 +352,11 @@ function readLegendUrl(node, objectStack) {
  * @return {Object|undefined} Coordinates object.
  */
 function readCoordinates(node, objectStack) {
-  const coordinates = readString(node).split(/\s+/);
+  const text = readString(node);
+  if (!text) {
+    return undefined;
+  }
+  const coordinates = text.split(/\s+/);
   if (!coordinates || coordinates.length != 2) {
     return undefined;
   }
