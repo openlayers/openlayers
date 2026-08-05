@@ -1278,29 +1278,15 @@ describe('ol/Map', function () {
       disposeMap(map, target);
     });
 
-    it('does not render a frame when no tiles are dropped', function () {
-      map.on('loadend', () => {});
+    it('keeps the completion state of the frame when no tiles are dropped', function () {
       map.renderSync();
-      const renderSpy = vi.spyOn(map, 'render');
+      const updateSpy = vi.spyOn(map, 'updateRenderComplete_');
       // there is a queue to prune, and nothing in it is stale
       assert.isFalse(map.tileQueue_.isEmpty());
 
       map.handlePostRender();
 
-      assert.strictEqual(renderSpy.mock.calls.length, 0);
-    });
-
-    it('does not render a frame when nothing waits for the map to load', function () {
-      map.renderSync();
-      map.getLayers().item(0).setVisible(false);
-      map.renderSync();
-      const renderSpy = vi.spyOn(map, 'render');
-
-      map.handlePostRender();
-
-      // the queue was emptied, so there would have been something to recalculate
-      assert.isTrue(map.tileQueue_.isEmpty());
-      assert.strictEqual(renderSpy.mock.calls.length, 0);
+      assert.strictEqual(updateSpy.mock.calls.length, 0);
     });
 
     it('does not load tiles for a size the map no longer has', function () {

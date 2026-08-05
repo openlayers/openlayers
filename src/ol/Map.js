@@ -1012,15 +1012,19 @@ class Map extends BaseObject {
   }
 
   /**
-   * @return {boolean} Something is listening for the map to finish loading.
+   * Determine whether the last rendered frame shows everything the map wants to
+   * show. Only relevant when something is listening for the map to finish
+   * loading, so the check is skipped otherwise.
    * @private
    */
-  hasLoadListener_() {
-    return (
-      this.hasListener(MapEventType.LOADSTART) ||
-      this.hasListener(MapEventType.LOADEND) ||
-      this.hasListener(RenderEventType.RENDERCOMPLETE)
-    );
+  updateRenderComplete_() {
+    this.renderComplete_ =
+      (this.hasListener(MapEventType.LOADSTART) ||
+        this.hasListener(MapEventType.LOADEND) ||
+        this.hasListener(RenderEventType.RENDERCOMPLETE)) &&
+      !this.tileQueue_.getTilesLoading() &&
+      !this.tileQueue_.getCount() &&
+      !this.getLoadingOrNotReady();
   }
 
   /**
@@ -1293,12 +1297,13 @@ class Map extends BaseObject {
         maxNewLoads = lowOnFrameBudget ? 0 : 2;
       }
       if (tileQueue.getTilesLoading() < maxTotalLoading) {
+        const count = tileQueue.getCount();
         tileQueue.reprioritize();
-        if (tileQueue.isEmpty() && this.hasLoadListener_()) {
-          // Dropped tiles are still idle, so they fire no change event and
-          // nothing else would schedule the frame that recalculates
-          // `renderComplete_`, which is only read when someone is listening.
-          this.render();
+        if (tileQueue.getCount() < count) {
+          // Dropped tiles are unwanted by the current frame and stay idle, so
+          // they fire no change event. Without updating here, the completion
+          // state read below would still account for them.
+          this.updateRenderComplete_();
         }
         tileQueue.loadMoreTiles(maxTotalLoading, maxNewLoads);
       }
@@ -1795,11 +1800,7 @@ class Map extends BaseObject {
 
     this.dispatchEvent(new MapEvent(MapEventType.POSTRENDER, this, frameState));
 
-    this.renderComplete_ =
-      this.hasLoadListener_() &&
-      !this.tileQueue_.getTilesLoading() &&
-      !this.tileQueue_.getCount() &&
-      !this.getLoadingOrNotReady();
+    this.updateRenderComplete_();
 
     if (!this.postRenderTimeoutHandle_) {
       this.postRenderTimeoutHandle_ = setTimeout(() => {
