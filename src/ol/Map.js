@@ -1012,6 +1012,22 @@ class Map extends BaseObject {
   }
 
   /**
+   * Determine whether the last rendered frame shows everything the map wants to
+   * show. Only relevant when something is listening for the map to finish
+   * loading, so the check is skipped otherwise.
+   * @private
+   */
+  updateRenderComplete_() {
+    this.renderComplete_ =
+      (this.hasListener(MapEventType.LOADSTART) ||
+        this.hasListener(MapEventType.LOADEND) ||
+        this.hasListener(RenderEventType.RENDERCOMPLETE)) &&
+      !this.tileQueue_.getTilesLoading() &&
+      !this.tileQueue_.getCount() &&
+      !this.getLoadingOrNotReady();
+  }
+
+  /**
    * @return {boolean} Layers have sources that are still loading.
    */
   getLoadingOrNotReady() {
@@ -1281,8 +1297,13 @@ class Map extends BaseObject {
         maxNewLoads = lowOnFrameBudget ? 0 : 2;
       }
       if (tileQueue.getTilesLoading() < maxTotalLoading) {
-        if (animatingOrInteracting) {
-          tileQueue.reprioritize();
+        const count = tileQueue.getCount();
+        tileQueue.reprioritize();
+        if (tileQueue.getCount() < count) {
+          // Dropped tiles are unwanted by the current frame and stay idle, so
+          // they fire no change event. Without updating here, the completion
+          // state read below would still account for them.
+          this.updateRenderComplete_();
         }
         tileQueue.loadMoreTiles(maxTotalLoading, maxNewLoads);
       }
@@ -1779,13 +1800,7 @@ class Map extends BaseObject {
 
     this.dispatchEvent(new MapEvent(MapEventType.POSTRENDER, this, frameState));
 
-    this.renderComplete_ =
-      (this.hasListener(MapEventType.LOADSTART) ||
-        this.hasListener(MapEventType.LOADEND) ||
-        this.hasListener(RenderEventType.RENDERCOMPLETE)) &&
-      !this.tileQueue_.getTilesLoading() &&
-      !this.tileQueue_.getCount() &&
-      !this.getLoadingOrNotReady();
+    this.updateRenderComplete_();
 
     if (!this.postRenderTimeoutHandle_) {
       this.postRenderTimeoutHandle_ = setTimeout(() => {
