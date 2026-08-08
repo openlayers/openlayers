@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {spy as sinonSpy} from 'sinon';
 import {
   forEach as forEachSegment,
   getIntersectionPoint,
@@ -17,11 +16,11 @@ describe('ol/geom/flat/segments.js', function () {
     describe('callback returns undefined', function () {
       it('executes the callback for each segment', function () {
         const args = [];
-        const spy = sinonSpy(function (point1, point2) {
+        const spy = vi.fn(function (point1, point2) {
           args.push([point1[0], point1[1], point2[0], point2[1]]);
         });
         const ret = forEachSegment(flatCoordinates, offset, end, stride, spy);
-        assert.strictEqual(spy.callCount, 3);
+        assert.strictEqual(spy.mock.calls.length, 3);
         assert.strictEqual(args[0][0], 0);
         assert.strictEqual(args[0][1], 0);
         assert.strictEqual(args[0][2], 1);
@@ -40,12 +39,12 @@ describe('ol/geom/flat/segments.js', function () {
     describe('callback returns true', function () {
       it('executes the callback for the first segment', function () {
         const args = [];
-        const spy = sinonSpy(function (point1, point2) {
+        const spy = vi.fn(function (point1, point2) {
           args.push([point1[0], point1[1], point2[0], point2[1]]);
           return true;
         });
         const ret = forEachSegment(flatCoordinates, offset, end, stride, spy);
-        assert.strictEqual(spy.callCount, 1);
+        assert.strictEqual(spy.mock.calls.length, 1);
         assert.strictEqual(args[0][0], 0);
         assert.strictEqual(args[0][1], 0);
         assert.strictEqual(args[0][2], 1);
@@ -54,14 +53,14 @@ describe('ol/geom/flat/segments.js', function () {
       });
     });
     it('returns coordinates with the correct stride', function () {
-      const spy = sinonSpy();
+      const spy = vi.fn();
       forEachSegment([0, 0, 0, 1, 1, 1, 2, 2, 2], 0, 9, 3, spy);
-      assert.strictEqual(spy.callCount, 2);
-      assert.deepEqual(spy.firstCall.args, [
+      assert.strictEqual(spy.mock.calls.length, 2);
+      assert.deepEqual(spy.mock.calls[0], [
         [0, 0, 0],
         [1, 1, 1],
       ]);
-      assert.deepEqual(spy.secondCall.args, [
+      assert.deepEqual(spy.mock.calls[1], [
         [1, 1, 1],
         [2, 2, 2],
       ]);

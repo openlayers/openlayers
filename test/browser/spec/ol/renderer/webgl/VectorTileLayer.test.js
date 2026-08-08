@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {spy as sinonSpy, stub as sinonStub} from 'sinon';
 import Map from '../../../../../../src/ol/Map.js';
 import TileQueue from '../../../../../../src/ol/TileQueue.js';
 import TileState from '../../../../../../src/ol/TileState.js';
@@ -301,10 +300,9 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
       renderer.prepareFrame(frameState);
       renderer.renderFrame(frameState);
 
-      finalizeTextRenderStub = sinonStub(
-        renderer.styleRenderer_,
-        'finalizeTextRender',
-      ).returns(Promise.resolve());
+      finalizeTextRenderStub = vi
+        .spyOn(renderer.styleRenderer_, 'finalizeTextRender')
+        .mockReturnValue(Promise.resolve());
     });
 
     it('does include the post processing step for text rendering', () => {
@@ -342,8 +340,8 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
       });
       it('calls styleRenderer.finalizeTextRender once', () => {
         assert.strictEqual(
-          renderer.styleRenderer_.finalizeTextRender.calledOnce,
-          true,
+          renderer.styleRenderer_.finalizeTextRender.mock.calls.length,
+          1,
         );
       });
     });
@@ -352,12 +350,12 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
       let finalizeTextRenderResolver;
 
       beforeEach(() => {
-        finalizeTextRenderStub.returns(
+        finalizeTextRenderStub.mockReturnValue(
           new Promise((resolve) => {
             finalizeTextRenderResolver = resolve;
           }),
         );
-        sinonSpy(vectorTileLayer, 'changed');
+        vi.spyOn(vectorTileLayer, 'changed');
       });
 
       it('calls layer.changed() after the text overlay is ready to be rendered', async () => {
@@ -365,20 +363,20 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
         renderer.renderFrame(frameState);
         finalizeTextRenderResolver();
         await new Promise((resolve) => setTimeout(resolve)); // awaiting next tick
-        assert.strictEqual(vectorTileLayer.changed.callCount, 1);
+        assert.strictEqual(vectorTileLayer.changed.mock.calls.length, 1);
 
         // no update to the layer in the meantime: layer.changed() should not be called again
         renderer.renderFrame(frameState);
         finalizeTextRenderResolver();
         await new Promise((resolve) => setTimeout(resolve));
-        assert.strictEqual(vectorTileLayer.changed.callCount, 1);
+        assert.strictEqual(vectorTileLayer.changed.mock.calls.length, 1);
 
         // after a layer update: layer.changed should be called once more
         vectorTileLayer.revision_++;
         renderer.renderFrame(frameState);
         finalizeTextRenderResolver();
         await new Promise((resolve) => setTimeout(resolve));
-        assert.strictEqual(vectorTileLayer.changed.callCount, 2);
+        assert.strictEqual(vectorTileLayer.changed.mock.calls.length, 2);
       });
     });
   });
@@ -436,7 +434,7 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
       vi.spyOn(renderer.helper, 'setUniformMatrixValue');
       vi.spyOn(renderer.helper, 'bindTexture');
       vi.spyOn(renderer.styleRenderer_, 'render');
-      sinonSpy(renderer.styleRenderer_, 'finalizeTextRender');
+      vi.spyOn(renderer.styleRenderer_, 'finalizeTextRender');
 
       // Snapshot reused matrix arguments so mock.calls keep the values from
       // each call (the same objects are mutated across calls).
@@ -550,8 +548,8 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
     });
     it('does not call styleRenderer.finalizeTextRender (no text style)', () => {
       assert.strictEqual(
-        renderer.styleRenderer_.finalizeTextRender.called,
-        false,
+        renderer.styleRenderer_.finalizeTextRender.mock.calls.length,
+        0,
       );
     });
   });

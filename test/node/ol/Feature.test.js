@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {spy as sinonSpy} from 'sinon';
 import Feature, {createStyleFunction} from '../../../src/ol/Feature.js';
 import Point from '../../../src/ol/geom/Point.js';
 import {isEmpty} from '../../../src/ol/obj.js';
@@ -229,10 +228,10 @@ describe('ol/Feature.js', function () {
       feature.set('altGeometry', point2);
       feature.setGeometryName('altGeometry');
 
-      const spy = sinonSpy();
+      const spy = vi.fn();
       feature.on('change', spy);
       point2.setCoordinates([0, 2]);
-      assert.strictEqual(spy.callCount, 1);
+      assert.strictEqual(spy.mock.calls.length, 1);
     });
 
     it('can use a different geometry name', function () {
@@ -337,10 +336,10 @@ describe('ol/Feature.js', function () {
 
     it('dispatches a change event', function () {
       const feature = new Feature();
-      const spy = sinonSpy();
+      const spy = vi.fn();
       feature.on('change', spy);
       feature.setStyle(style);
-      assert.strictEqual(spy.callCount, 1);
+      assert.strictEqual(spy.mock.calls.length, 1);
     });
   });
 
@@ -436,10 +435,10 @@ describe('ol/Feature.js', function () {
       const feature = new Feature({
         geometry: new Point([0, 0]),
       });
-      const spy = sinonSpy();
+      const spy = vi.fn();
       feature.on('change', spy);
       feature.setGeometry(null);
-      assert.strictEqual(spy.callCount, 1);
+      assert.strictEqual(spy.mock.calls.length, 1);
     });
   });
 });

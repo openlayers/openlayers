@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {spy as sinonSpy} from 'sinon';
 import Observable, {unByKey} from '../../../src/ol/Observable.js';
 import EventTarget from '../../../src/ol/events/Target.js';
 
@@ -16,27 +15,27 @@ describe('ol/Observable.js', function () {
     let observable, listener;
     beforeEach(function () {
       observable = new Observable();
-      listener = sinonSpy();
+      listener = vi.fn();
     });
 
     it('registers a listener for events of the given type', function () {
       observable.on('foo', listener);
 
       observable.dispatchEvent('foo');
-      assert.strictEqual(listener.calledOnce, true);
+      assert.strictEqual(listener.mock.calls.length, 1);
 
       observable.dispatchEvent('foo');
-      assert.strictEqual(listener.callCount, 2);
+      assert.strictEqual(listener.mock.calls.length, 2);
     });
 
     it('accepts an array of event types', function () {
       observable.on(['foo', 'bar'], listener);
 
       observable.dispatchEvent('foo');
-      assert.strictEqual(listener.calledOnce, true);
+      assert.strictEqual(listener.mock.calls.length, 1);
 
       observable.dispatchEvent('bar');
-      assert.strictEqual(listener.callCount, 2);
+      assert.strictEqual(listener.mock.calls.length, 2);
     });
 
     it('returns a listener key', function () {
@@ -50,17 +49,17 @@ describe('ol/Observable.js', function () {
     let observable, listener;
     beforeEach(function () {
       observable = new Observable();
-      listener = sinonSpy();
+      listener = vi.fn();
     });
 
     it('registers a listener that is only called once', function () {
       observable.once('foo', listener);
 
       observable.dispatchEvent('foo');
-      assert.strictEqual(listener.calledOnce, true);
+      assert.strictEqual(listener.mock.calls.length, 1);
 
       observable.dispatchEvent('foo');
-      assert.strictEqual(listener.callCount, 1);
+      assert.strictEqual(listener.mock.calls.length, 1);
     });
 
     it('is safe to dispatch events of same type in a once listener', function () {
@@ -82,16 +81,16 @@ describe('ol/Observable.js', function () {
       observable.once(['foo', 'bar'], listener);
 
       observable.dispatchEvent('foo');
-      assert.strictEqual(listener.calledOnce, true);
+      assert.strictEqual(listener.mock.calls.length, 1);
 
       observable.dispatchEvent('foo');
-      assert.strictEqual(listener.callCount, 1);
+      assert.strictEqual(listener.mock.calls.length, 1);
 
       observable.dispatchEvent('bar');
-      assert.strictEqual(listener.callCount, 2);
+      assert.strictEqual(listener.mock.calls.length, 2);
 
       observable.dispatchEvent('bar');
-      assert.strictEqual(listener.callCount, 2);
+      assert.strictEqual(listener.mock.calls.length, 2);
     });
 
     it('returns a listener key', function () {
@@ -104,7 +103,7 @@ describe('ol/Observable.js', function () {
       observable.once('foo', listener);
       observable.un('foo', listener);
       observable.dispatchEvent('foo');
-      assert.strictEqual(listener.callCount, 0);
+      assert.strictEqual(listener.mock.calls.length, 0);
     });
   });
 
@@ -112,18 +111,18 @@ describe('ol/Observable.js', function () {
     let observable, listener;
     beforeEach(function () {
       observable = new Observable();
-      listener = sinonSpy();
+      listener = vi.fn();
     });
 
     it('unregisters a previously registered listener', function () {
       observable.on('foo', listener);
 
       observable.dispatchEvent('foo');
-      assert.strictEqual(listener.calledOnce, true);
+      assert.strictEqual(listener.mock.calls.length, 1);
 
       observable.un('foo', listener);
       observable.dispatchEvent('foo');
-      assert.strictEqual(listener.calledOnce, true);
+      assert.strictEqual(listener.mock.calls.length, 1);
     });
   });
 
@@ -131,18 +130,18 @@ describe('ol/Observable.js', function () {
     let observable, listener;
     beforeEach(function () {
       observable = new Observable();
-      listener = sinonSpy();
+      listener = vi.fn();
     });
 
     it('unregisters a listener given the key returned by `on`', function () {
       const key = observable.on('foo', listener);
 
       observable.dispatchEvent('foo');
-      assert.strictEqual(listener.calledOnce, true);
+      assert.strictEqual(listener.mock.calls.length, 1);
 
       unByKey(key);
       observable.dispatchEvent('foo');
-      assert.strictEqual(listener.callCount, 1);
+      assert.strictEqual(listener.mock.calls.length, 1);
     });
   });
 });

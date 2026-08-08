@@ -1,5 +1,4 @@
 import {assert} from 'chai';
-import {spy as sinonSpy} from 'sinon';
 import Feature from '../../../../../../src/ol/Feature.js';
 import {stringToGlsl} from '../../../../../../src/ol/expr/gpu.js';
 import LineString from '../../../../../../src/ol/geom/LineString.js';
@@ -775,7 +774,7 @@ describe('VectorStyleRenderer', () => {
     describe('generateBuffers', () => {
       let buffers;
       beforeEach(async () => {
-        sinonSpy(vectorStyleRenderer.textOverlayWorker_, 'postMessage');
+        vi.spyOn(vectorStyleRenderer.textOverlayWorker_, 'postMessage');
         buffers = await vectorStyleRenderer.generateBuffers(
           geometryBatch,
           SAMPLE_TRANSFORM,
@@ -784,9 +783,7 @@ describe('VectorStyleRenderer', () => {
       });
       it('sends a message to worker with render instructions and style', () => {
         const message =
-          vectorStyleRenderer.textOverlayWorker_.postMessage.getCall(
-            0,
-          ).firstArg;
+          vectorStyleRenderer.textOverlayWorker_.postMessage.mock.calls[0][0];
         assert.strictEqual(message.type, 'BUILD_INSTRUCTIONS');
         assert.instanceOf(message.polygonRenderInstructions, ArrayBuffer);
         assert.instanceOf(message.lineStringRenderInstructions, ArrayBuffer);
@@ -835,19 +832,19 @@ describe('VectorStyleRenderer', () => {
           geometryBatch,
           SAMPLE_TRANSFORM,
         );
-        sinonSpy(helper, 'useProgram');
-        sinonSpy(vectorStyleRenderer.textOverlayWorker_, 'postMessage');
-        preRenderCb = sinonSpy();
+        vi.spyOn(helper, 'useProgram');
+        vi.spyOn(vectorStyleRenderer.textOverlayWorker_, 'postMessage');
+        preRenderCb = vi.fn();
         vectorStyleRenderer.render(buffers, SAMPLE_FRAMESTATE, preRenderCb);
       });
       it('calls prerender callback', () => {
-        assert.strictEqual(preRenderCb.callCount, 1);
+        assert.strictEqual(preRenderCb.mock.calls.length, 1);
       });
       it('uses program for symbol render pass', function () {
-        assert.strictEqual(helper.useProgram.callCount, 1); // one render pass, one program for symbols
+        assert.strictEqual(helper.useProgram.mock.calls.length, 1); // one render pass, one program for symbols
         const firstPass = vectorStyleRenderer.renderPasses_[0];
         assert.strictEqual(
-          helper.useProgram.getCall(0).firstArg,
+          helper.useProgram.mock.calls[0][0],
           firstPass.symbolRenderPass.program,
         );
       });
@@ -866,7 +863,7 @@ describe('VectorStyleRenderer', () => {
           geometryBatch,
           SAMPLE_TRANSFORM,
         );
-        const preRenderCb = sinonSpy();
+        const preRenderCb = vi.fn();
         vectorStyleRenderer.render(buffers, SAMPLE_FRAMESTATE, preRenderCb);
 
         // set the overlay canvas to the right size
@@ -875,9 +872,9 @@ describe('VectorStyleRenderer', () => {
         vectorStyleRenderer.textOverlayCanvas_.height =
           SAMPLE_FRAMESTATE.size[1];
 
-        sinonSpy(vectorStyleRenderer.textOverlayWorker_, 'postMessage');
-        sinonSpy(vectorStyleRenderer.textOverlayContext_, 'clearRect');
-        sinonSpy(vectorStyleRenderer.textOverlayContext_, 'drawImage');
+        vi.spyOn(vectorStyleRenderer.textOverlayWorker_, 'postMessage');
+        vi.spyOn(vectorStyleRenderer.textOverlayContext_, 'clearRect');
+        vi.spyOn(vectorStyleRenderer.textOverlayContext_, 'drawImage');
 
         // this does a copy of the `batchesToRender` Set, otherwise we can't properly test its value afterwards (because it's mutated)
         vectorStyleRenderer.textOverlayWorker_.postMessage = new Proxy(
@@ -900,13 +897,11 @@ describe('VectorStyleRenderer', () => {
       });
       it('asks for a render of the text overlay worker', async () => {
         assert.strictEqual(
-          vectorStyleRenderer.textOverlayWorker_.postMessage.callCount,
+          vectorStyleRenderer.textOverlayWorker_.postMessage.mock.calls.length,
           1,
         );
         const firstMessage =
-          vectorStyleRenderer.textOverlayWorker_.postMessage.getCall(
-            0,
-          ).firstArg;
+          vectorStyleRenderer.textOverlayWorker_.postMessage.mock.calls[0][0];
         assert.strictEqual(firstMessage.type, 'RENDER');
         assert.deepEqual(
           firstMessage.frameState,
@@ -919,20 +914,20 @@ describe('VectorStyleRenderer', () => {
       });
       it('clears the overlay canvas on the main thread and renders the data coming from the worker', async () => {
         assert.strictEqual(
-          vectorStyleRenderer.textOverlayContext_.clearRect.callCount,
+          vectorStyleRenderer.textOverlayContext_.clearRect.mock.calls.length,
           1,
         );
         assert.deepEqual(
-          vectorStyleRenderer.textOverlayContext_.clearRect.getCall(0).args,
+          vectorStyleRenderer.textOverlayContext_.clearRect.mock.calls[0],
           [0, 0, ...SAMPLE_FRAMESTATE.size],
         );
 
         assert.strictEqual(
-          vectorStyleRenderer.textOverlayContext_.drawImage.callCount,
+          vectorStyleRenderer.textOverlayContext_.drawImage.mock.calls.length,
           1,
         );
         assert.instanceOf(
-          vectorStyleRenderer.textOverlayContext_.drawImage.getCall(0).args[0],
+          vectorStyleRenderer.textOverlayContext_.drawImage.mock.calls[0][0],
           ImageBitmap,
         );
       });
@@ -946,28 +941,28 @@ describe('VectorStyleRenderer', () => {
         vectorStyleRenderer.textOverlayRenderList_.clear();
         vectorStyleRenderer.textOverlayRenderList_.add('awrongkey'); // we're asking for a key that doesn't have render instructions built
 
-        sinonSpy(vectorStyleRenderer.textOverlayContext_, 'clearRect');
-        sinonSpy(vectorStyleRenderer.textOverlayContext_, 'drawImage');
+        vi.spyOn(vectorStyleRenderer.textOverlayContext_, 'clearRect');
+        vi.spyOn(vectorStyleRenderer.textOverlayContext_, 'drawImage');
         await vectorStyleRenderer.finalizeTextRender(SAMPLE_FRAMESTATE);
       });
       it('does not touch the overlay canvas', async () => {
         assert.strictEqual(
-          vectorStyleRenderer.textOverlayContext_.clearRect.called,
-          false,
+          vectorStyleRenderer.textOverlayContext_.clearRect.mock.calls.length,
+          0,
         );
         assert.strictEqual(
-          vectorStyleRenderer.textOverlayContext_.drawImage.called,
-          false,
+          vectorStyleRenderer.textOverlayContext_.drawImage.mock.calls.length,
+          0,
         );
       });
     });
 
     describe('dispose', () => {
       it('terminates its worker', () => {
-        sinonSpy(vectorStyleRenderer.textOverlayWorker_, 'terminate');
+        vi.spyOn(vectorStyleRenderer.textOverlayWorker_, 'terminate');
         vectorStyleRenderer.dispose();
         assert.strictEqual(
-          vectorStyleRenderer.textOverlayWorker_.terminate.callCount,
+          vectorStyleRenderer.textOverlayWorker_.terminate.mock.calls.length,
           1,
         );
       });
@@ -1059,31 +1054,34 @@ describe('VectorStyleRenderer', () => {
           geometryBatch,
           SAMPLE_TRANSFORM,
         );
-        sinonSpy(helper, 'bindBuffer');
-        sinonSpy(helper, 'enableAttributes');
-        sinonSpy(helper, 'enableAttributesInstanced');
-        sinonSpy(helper, 'useProgram');
-        sinonSpy(helper, 'drawElements');
-        sinonSpy(helper, 'drawElementsInstanced');
-        preRenderCb = sinonSpy();
+        vi.spyOn(helper, 'bindBuffer');
+        vi.spyOn(helper, 'enableAttributes');
+        vi.spyOn(helper, 'enableAttributesInstanced');
+        vi.spyOn(helper, 'useProgram');
+        vi.spyOn(helper, 'drawElements');
+        vi.spyOn(helper, 'drawElementsInstanced');
+        preRenderCb = vi.fn();
         vectorStyleRenderer.render(buffers, SAMPLE_FRAMESTATE, preRenderCb);
       });
       it('does not use programs', function () {
-        assert.strictEqual(helper.useProgram.callCount, 0);
+        assert.strictEqual(helper.useProgram.mock.calls.length, 0);
       });
       it('does not bind buffers', function () {
-        assert.strictEqual(helper.bindBuffer.callCount, 0);
+        assert.strictEqual(helper.bindBuffer.mock.calls.length, 0);
       });
       it('does not enable attributes', function () {
-        assert.strictEqual(helper.enableAttributes.callCount, 0);
-        assert.strictEqual(helper.enableAttributesInstanced.callCount, 0);
+        assert.strictEqual(helper.enableAttributes.mock.calls.length, 0);
+        assert.strictEqual(
+          helper.enableAttributesInstanced.mock.calls.length,
+          0,
+        );
       });
       it('does not draw any geometry', function () {
-        assert.strictEqual(helper.drawElements.callCount, 0);
-        assert.strictEqual(helper.drawElementsInstanced.callCount, 0);
+        assert.strictEqual(helper.drawElements.mock.calls.length, 0);
+        assert.strictEqual(helper.drawElementsInstanced.mock.calls.length, 0);
       });
       it('does not call prerender callback', () => {
-        assert.strictEqual(preRenderCb.callCount, 0);
+        assert.strictEqual(preRenderCb.mock.calls.length, 0);
       });
     });
   });

@@ -1,6 +1,5 @@
 import {assert} from 'chai';
 import proj4 from 'proj4';
-import {spy as sinonSpy} from 'sinon';
 import * as _ol_extent_ from '../../../src/ol/extent.js';
 import {get, getTransform} from '../../../src/ol/proj.js';
 import {register} from '../../../src/ol/proj/proj4.js';
@@ -201,10 +200,10 @@ describe('ol/extent.js', function () {
     let callbackFalse;
     let callbackTrue;
     beforeEach(function () {
-      callbackFalse = sinonSpy(function () {
+      callbackFalse = vi.fn(function () {
         return false;
       });
-      callbackTrue = sinonSpy(function () {
+      callbackTrue = vi.fn(function () {
         return true;
       });
     });
@@ -212,16 +211,16 @@ describe('ol/extent.js', function () {
     it('calls the passed callback for each corner', function () {
       const extent = [1, 2, 3, 4];
       _ol_extent_.forEachCorner(extent, callbackFalse);
-      assert.strictEqual(callbackFalse.callCount, 4);
+      assert.strictEqual(callbackFalse.mock.calls.length, 4);
     });
 
     it('calls the passed callback with each corner', function () {
       const extent = [1, 2, 3, 4];
       _ol_extent_.forEachCorner(extent, callbackFalse);
-      const firstCallFirstArg = callbackFalse.args[0][0];
-      const secondCallFirstArg = callbackFalse.args[1][0];
-      const thirdCallFirstArg = callbackFalse.args[2][0];
-      const fourthCallFirstArg = callbackFalse.args[3][0];
+      const firstCallFirstArg = callbackFalse.mock.calls[0][0];
+      const secondCallFirstArg = callbackFalse.mock.calls[1][0];
+      const thirdCallFirstArg = callbackFalse.mock.calls[2][0];
+      const fourthCallFirstArg = callbackFalse.mock.calls[3][0];
       assert.deepEqual(firstCallFirstArg, [1, 2]);
       assert.deepEqual(secondCallFirstArg, [3, 2]);
       assert.deepEqual(thirdCallFirstArg, [3, 4]);
@@ -231,21 +230,21 @@ describe('ol/extent.js', function () {
     it('calls a truthy callback only once', function () {
       const extent = [1, 2, 3, 4];
       _ol_extent_.forEachCorner(extent, callbackTrue);
-      assert.strictEqual(callbackTrue.callCount, 1);
+      assert.strictEqual(callbackTrue.mock.calls.length, 1);
     });
 
     it('ensures that any corner can cancel the callback execution', function () {
       const extent = [1, 2, 3, 4];
-      const bottomLeftSpy = sinonSpy(function (corner) {
+      const bottomLeftSpy = vi.fn(function (corner) {
         return corner[0] === 1 && corner[1] === 2 ? true : false;
       });
-      const bottomRightSpy = sinonSpy(function (corner) {
+      const bottomRightSpy = vi.fn(function (corner) {
         return corner[0] === 3 && corner[1] === 2 ? true : false;
       });
-      const topRightSpy = sinonSpy(function (corner) {
+      const topRightSpy = vi.fn(function (corner) {
         return corner[0] === 3 && corner[1] === 4 ? true : false;
       });
-      const topLeftSpy = sinonSpy(function (corner) {
+      const topLeftSpy = vi.fn(function (corner) {
         return corner[0] === 1 && corner[1] === 4 ? true : false;
       });
 
@@ -254,17 +253,17 @@ describe('ol/extent.js', function () {
       _ol_extent_.forEachCorner(extent, topRightSpy);
       _ol_extent_.forEachCorner(extent, topLeftSpy);
 
-      assert.strictEqual(bottomLeftSpy.callCount, 1);
-      assert.strictEqual(bottomRightSpy.callCount, 2);
-      assert.strictEqual(topRightSpy.callCount, 3);
-      assert.strictEqual(topLeftSpy.callCount, 4);
+      assert.strictEqual(bottomLeftSpy.mock.calls.length, 1);
+      assert.strictEqual(bottomRightSpy.mock.calls.length, 2);
+      assert.strictEqual(topRightSpy.mock.calls.length, 3);
+      assert.strictEqual(topLeftSpy.mock.calls.length, 4);
     });
 
     it('returns false eventually, if no invocation returned a truthy value', function () {
       const extent = [1, 2, 3, 4];
-      const spy = sinonSpy(); // will return undefined for each corner
+      const spy = vi.fn(); // will return undefined for each corner
       const got = _ol_extent_.forEachCorner(extent, spy);
-      assert.strictEqual(spy.callCount, 4);
+      assert.strictEqual(spy.mock.calls.length, 4);
       assert.strictEqual(got, false);
     });
   });
