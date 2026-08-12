@@ -172,6 +172,92 @@ describe('ol/source/GeoZarr', function () {
     });
   });
 
+  describe('storeOptions', function () {
+    let fetchStub;
+
+    afterEach(function () {
+      if (fetchStub) {
+        fetchStub.mockRestore();
+        fetchStub = null;
+      }
+    });
+
+    function getRequestHeader(call, name) {
+      const [input, init] = call;
+      if (input instanceof Request) {
+        return input.headers.get(name);
+      }
+      return init && init.headers ? new Headers(init.headers).get(name) : null;
+    }
+
+    it('attaches configured headers to store requests', () =>
+      new Promise((resolve) => {
+        fetchStub = stubFetch(null);
+        const source = new GeoZarr({
+          url: ZARR_URL,
+          bands: ['b04'],
+          storeOptions: {
+            headers: {Authorization: 'Bearer test-token'},
+          },
+        });
+        source.on('change', function () {
+          if (source.getState() === 'ready') {
+            assert.isAbove(fetchStub.mock.calls.length, 0);
+            for (const call of fetchStub.mock.calls) {
+              assert.strictEqual(
+                getRequestHeader(call, 'Authorization'),
+                'Bearer test-token',
+              );
+            }
+            resolve();
+          }
+        });
+      }));
+
+    it('applies the configured credentials mode to store requests', () =>
+      new Promise((resolve) => {
+        fetchStub = stubFetch(null);
+        const source = new GeoZarr({
+          url: ZARR_URL,
+          bands: ['b04'],
+          storeOptions: {
+            credentials: 'include',
+          },
+        });
+        source.on('change', function () {
+          if (source.getState() === 'ready') {
+            assert.isAbove(fetchStub.mock.calls.length, 0);
+            for (const [input, init] of fetchStub.mock.calls) {
+              const credentials =
+                input instanceof Request
+                  ? input.credentials
+                  : init && init.credentials;
+              assert.strictEqual(credentials, 'include');
+            }
+            resolve();
+          }
+        });
+      }));
+
+    it('sends no extra headers by default', () =>
+      new Promise((resolve) => {
+        fetchStub = stubFetch(null);
+        const source = new GeoZarr({
+          url: ZARR_URL,
+          bands: ['b04'],
+        });
+        source.on('change', function () {
+          if (source.getState() === 'ready') {
+            assert.isAbove(fetchStub.mock.calls.length, 0);
+            for (const call of fetchStub.mock.calls) {
+              assert.isNull(getRequestHeader(call, 'Authorization'));
+            }
+            resolve();
+          }
+        });
+      }));
+  });
+
   describe('band data access', function () {
     let source;
 
