@@ -1,0 +1,43 @@
+---
+layout: example.html
+title: GeoZarr datacubes
+shortdesc: GeoZarr sources rendering bands from a single n-dimensional data array.
+docs: >
+
+  Besides one array per band, the GeoZarr source supports datacubes where all bands are
+  packed into a single n-dimensional data array (e.g. `(time, band, y, x)`): the `variable`
+  option names the array, and the `selector` option fixes its non-spatial dimensions by
+  index or coordinate label, with one dimension optionally selecting multiple bands.
+
+
+  The datasets above are real-world Zarr v2 and v3 stores from different producers, in
+  different projections and multiscale layouts. The extent, resolution, projection and
+  y-axis orientation are read from the store metadata (proj:/spatial: conventions,
+  `bounds`/`proj4`/`spatial_ref` attributes) or inferred from the coordinate arrays;
+  where the store provides neither (Delta FG CO2), the `extent` and `flipY` options
+  fill the gap. Data with non-square pixels (CMIP6) and south-up rows (Delta FG CO2)
+  is handled transparently.
+
+tags: "zarr, geozarr, datacube, multiscale"
+experimental: true
+---
+<div id="map" class="map"></div>
+<div class="row mt-2">
+  <div class="col-auto">
+    <div class="input-group">
+      <label class="input-group-text" for="dataset-select">Dataset</label>
+      <select class="form-select" id="dataset-select">
+        <option value="ftw-rgb" selected>FTW Field Predictions 2025 (RGB, multiscale v3)</option>
+        <option value="ftw-field-2024">FTW Field Probability 2024 (single band, multiscale v3)</option>
+        <option value="usgs-dem">USGS CONUS DEM 10m (multiscale v3)</option>
+        <option value="hurricane">Hurricane Florence — ERA5 surface pressure (v3)</option>
+        <option value="antarctic-era5">Antarctic ERA5 wind speed (v3, polar stereographic)</option>
+        <option value="polar">Thwaites Glacier ice velocity (v2, EPSG:3031)</option>
+        <option value="fgco2">Delta FG CO2 (v2, south-up)</option>
+        <option value="carbonplan-4d">Monthly average temperature (v2 pyramid, EPSG:3857)</option>
+        <option value="cmip6-tasmax">CMIP6 max. temperature (v2 pyramid)</option>
+        <option value="tos-con">Ocean surface temperature (v3 pyramid, EPSG:3857)</option>
+      </select>
+    </div>
+  </div>
+</div>
