@@ -3,6 +3,7 @@
  */
 
 import {equals as arrayEquals} from './array.js';
+import {isThenable} from './util.js';
 
 /**
  * Always returns true.
@@ -74,7 +75,7 @@ export function toPromise(getter) {
     } catch (err) {
       return Promise.reject(err);
     }
-    if (value instanceof Promise) {
+    if (isThenable(value)) {
       return value;
     }
     return Promise.resolve(value);

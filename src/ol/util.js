@@ -37,3 +37,16 @@ export function getUid(obj) {
  * @type {string}
  */
 export const VERSION = 'latest';
+
+/***
+ * Determine whether a value is thenable, i.e. it has `then` and `catch` methods.
+ * @param {*} value The value to check.
+ * @return {value is Promise<any>} The value is thenable.
+ */
+export function isThenable(value) {
+  return (
+    !!value &&
+    typeof value.then === 'function' &&
+    typeof value.catch === 'function'
+  );
+}
