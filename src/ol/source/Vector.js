@@ -17,7 +17,7 @@ import {all as allStrategy} from '../loadingstrategy.js';
 import {isEmpty} from '../obj.js';
 import RenderFeature from '../render/Feature.js';
 import RBush from '../structs/RBush.js';
-import {getUid} from '../util.js';
+import {getUid, isThenable} from '../util.js';
 import Source from './Source.js';
 import VectorEventType from './VectorEventType.js';
 
@@ -1072,7 +1072,7 @@ class VectorSource extends Source {
             success(/** @type {Array<FeatureType>} */ (features)),
           () => disableCallbacks || failure(),
         );
-        if (loaded instanceof Promise) {
+        if (isThenable(loaded)) {
           //TODO Remove this when the deprecatedsuccess and failure arguments are removed
           disableCallbacks = true;
           loaded
