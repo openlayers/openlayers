@@ -11,6 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{github.event.workflow_run.event == 'pull_request' && github.event.workflow_run.conclusion == 'success'}}
     steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          sparse-checkout: .nvmrc
       - uses: actions/setup-node@v7
         with:
           node-version-file: '.nvmrc'
