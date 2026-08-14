@@ -64,6 +64,48 @@ function createArrayMeta({
 }
 
 /**
+ * Wait for a source to finish configuring, successfully or not.
+ * @param {GeoZarr} source The source.
+ * @return {Promise<GeoZarr>} The source, once ready or in error.
+ */
+function settled(source) {
+  return new Promise((resolve) => {
+    source.on('change', function () {
+      const state = source.getState();
+      if (state === 'ready' || state === 'error') {
+        resolve(source);
+      }
+    });
+  });
+}
+
+/**
+ * Consolidated metadata (.zmetadata) for a minimal single-scale Zarr v2 store.
+ * @return {Object} The .zmetadata document.
+ */
+function v2Zmetadata() {
+  return {
+    zarr_consolidated_format: 1,
+    metadata: {
+      '.zgroup': {zarr_format: 2},
+      '.zattrs': {
+        'spatial:bbox': [0, 0, 256, 256],
+        'spatial:shape': [256, 256],
+        'proj:code': 'EPSG:4326',
+      },
+      'b04/.zarray': {
+        zarr_format: 2,
+        shape: [256, 256],
+        chunks: [256, 256],
+        dtype: '<f4',
+        fill_value: 0,
+      },
+      'b04/.zattrs': {_ARRAY_DIMENSIONS: ['y', 'x']},
+    },
+  };
+}
+
+/**
  * Stub fetch for a minimal v3 Zarr store with the given consolidated metadata
  * and custom group attributes (layout, bbox, etc.).
  * @param {Object|null} consolidatedMetadata Consolidated metadata, or null for none.
@@ -695,6 +737,67 @@ describe('ol/source/GeoZarr', function () {
           }
         });
       }));
+  });
+
+  describe('Zarr v2 store', function () {
+    let fetchStub;
+    let urls;
+
+    /**
+     * Stub fetch, serving .zmetadata and answering `missingStatus` elsewhere.
+     * @param {number} missingStatus Status for any other key.
+     */
+    function stubV2Store(missingStatus) {
+      urls = [];
+      fetchStub = vi
+        .spyOn(window, 'fetch')
+        .mockImplementation(function (input) {
+          const url = input instanceof Request ? input.url : input;
+          urls.push(url);
+          return Promise.resolve(
+            url.endsWith('/.zmetadata')
+              ? new Response(JSON.stringify(v2Zmetadata()))
+              : new Response(null, {status: missingStatus}),
+          );
+        });
+    }
+
+    afterEach(function () {
+      fetchStub.mockRestore();
+      fetchStub = null;
+    });
+
+    it('determines the version from zarr.json alone and opens as v2', async () => {
+      stubV2Store(404);
+      const source = await settled(
+        new GeoZarr({url: ZARR_URL, bands: ['b04']}),
+      );
+      // The missing zarr.json is the only version probe; the group is then
+      // opened as v2 off the consolidated .zmetadata.
+      assert.deepEqual(urls, [
+        `${ZARR_URL}/zarr.json`,
+        `${ZARR_URL}/.zmetadata`,
+      ]);
+      assert.deepEqual(source.tileGrid.getResolutions(), [1]);
+    });
+
+    it('reads a 403 on a missing key as absent, as S3 reports it', async () => {
+      stubV2Store(403);
+      const source = await settled(
+        new GeoZarr({url: ZARR_URL, bands: ['b04']}),
+      );
+      assert.strictEqual(source.getState(), 'ready');
+    });
+
+    it('reports a forbidden store as missing or denied', async () => {
+      fetchStub = vi.spyOn(window, 'fetch').mockImplementation(function () {
+        return Promise.resolve(new Response(null, {status: 403}));
+      });
+      const source = await settled(
+        new GeoZarr({url: ZARR_URL, bands: ['b04']}),
+      );
+      assert.match(source.error_.message, /missing, or access to it is denied/);
+    });
   });
 
   describe('multi-group bands', function () {

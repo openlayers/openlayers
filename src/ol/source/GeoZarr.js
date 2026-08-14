@@ -2,7 +2,14 @@
  * @module ol/source/GeoZarr
  */
 
-import {FetchStore, get, open, slice, withRangeCoalescing} from 'zarrita';
+import {
+  FetchStore,
+  NotFoundError,
+  get,
+  open,
+  slice,
+  withRangeCoalescing,
+} from 'zarrita';
 import {warn} from '../console.js';
 import {getCenter} from '../extent.js';
 import {get as getProjection, toUserCoordinate, toUserExtent} from '../proj.js';
@@ -166,12 +173,13 @@ export default class GeoZarr extends DataTileSource {
     this.fallbackFlipY_ = options.flipY;
 
     /**
-     * The zarrita open function, pinned to v2 when the store cannot be
-     * probed for v3 metadata (e.g. servers answering 403 for missing keys).
+     * The zarrita open function, pinned to the store's Zarr version by
+     * `configure_`. Never the unpinned `open`, which probes v2 metadata first
+     * and so requests keys that a v3 store does not have.
      * @type {Function}
      * @private
      */
-    this.openFn_ = open;
+    this.openFn_ = open.v3;
 
     /**
      * Group path prefix per tile matrix id, for stores whose levels are not
@@ -352,7 +360,15 @@ export default class GeoZarr extends DataTileSource {
         this.setState('ready');
       })
       .catch((err) => {
-        this.error_ = err;
+        // A 403 reads as a missing key, so the two causes are indistinguishable.
+        this.error_ =
+          err instanceof NotFoundError
+            ? new Error(
+                `GeoZarr: could not read ${this.url_}; it is missing, or ` +
+                  `access to it is denied.`,
+                {cause: err},
+              )
+            : err;
         this.setState('error');
       });
   }
@@ -360,13 +376,15 @@ export default class GeoZarr extends DataTileSource {
   async configure_() {
     const overrides = /** @type {RequestInit} */ (this.storeOptions_) || {};
     const store = /** @type {FetchStore} */ (
-      withRangeCoalescing(new FetchStore(this.url_, {overrides}))
+      withRangeCoalescing(
+        new FetchStore(this.url_, {overrides, fetch: storeFetch}),
+      )
     );
 
-    // Fetch group zarr.json once for both opening the group and extracting
-    // consolidated metadata. Without this, open() and the manual metadata
-    // read would each make a separate HTTP request for the same file.
+    // Fetch group zarr.json once for opening the group, extracting consolidated
+    // metadata, and pinning the detected Zarr version.
     const groupBytes = await probe(store, '/zarr.json');
+    this.openFn_ = groupBytes ? open.v3 : open.v2;
     if (groupBytes) {
       try {
         this.consolidatedMetadata_ = JSON.parse(
@@ -379,7 +397,7 @@ export default class GeoZarr extends DataTileSource {
 
     /** @type {Object<string, *>|null} */
     let v2Metadata = null;
-    if (!this.consolidatedMetadata_) {
+    if (!groupBytes) {
       // Zarr v2: consolidated metadata lives in .zmetadata
       const v2Bytes = await probe(store, '/.zmetadata');
       if (v2Bytes) {
@@ -409,13 +427,15 @@ export default class GeoZarr extends DataTileSource {
     const groupPromises = [];
     if (this.groupPaths_) {
       // Multi-group mode: open root, then each sub-group
-      const rootGroup = await open(cachedStore, {kind: 'group'});
+      const rootGroup = await this.openFn_(cachedStore, {kind: 'group'});
       for (const groupPath of this.groupPaths_) {
-        groupPromises.push(open(rootGroup.resolve(groupPath), {kind: 'group'}));
+        groupPromises.push(
+          this.openFn_(rootGroup.resolve(groupPath), {kind: 'group'}),
+        );
       }
     } else {
       // Single group mode
-      groupPromises.push(this.openGroup_(cachedStore));
+      groupPromises.push(this.openFn_(cachedStore, {kind: 'group'}));
     }
     this.groups_.push(...(await Promise.all(groupPromises)));
 
@@ -1137,26 +1157,6 @@ export default class GeoZarr extends DataTileSource {
   }
 
   /**
-   * Open the group, retrying as Zarr v2 without probing for v3 metadata
-   * first, for servers that answer 403 for missing keys.
-   * @param {*} source The store or location to open.
-   * @return {Promise<import('zarrita').Group<any>>} The opened group.
-   * @private
-   */
-  async openGroup_(source) {
-    try {
-      return await this.openFn_(source, {kind: 'group'});
-    } catch (err) {
-      if (this.openFn_ !== open) {
-        throw err;
-      }
-      const group = await open.v2(source, {kind: 'group'});
-      this.openFn_ = open.v2;
-      return group;
-    }
-  }
-
-  /**
    * @param {Object<string, *>} attributes The dataset attributes.
    * @param {FetchStore} store The store, for metadata requests not covered
    * by consolidated metadata.
@@ -1228,7 +1228,11 @@ export default class GeoZarr extends DataTileSource {
     // The dimension layout is the same for all levels
     let meta = levels.find((level) => level.meta)?.meta;
     if (!meta) {
-      meta = await getArrayMeta(store, levels[0].arrayPath);
+      meta = await getArrayMeta(
+        store,
+        levels[0].arrayPath,
+        this.openFn_ === open.v2,
+      );
       levels[0].meta = meta;
     }
     if (!meta || !Array.isArray(meta.shape)) {
@@ -2246,15 +2250,28 @@ function normalizeV2Metadata(v2Metadata) {
 }
 
 /**
- * Probe the store for an optional metadata document. Absence is an expected
- * outcome (version probing), and some servers answer 403 instead of 404 for
- * missing keys, which zarrita treats as an error.
+ * Probe the store for an optional metadata document. Absence yields
+ * `undefined`; any other failure is thrown, so that a server error is not
+ * mistaken for a missing document.
  * @param {FetchStore} store The store.
  * @param {string} key The key to probe.
  * @return {Promise<Uint8Array|undefined>} The document, if present.
  */
 function probe(store, key) {
-  return store.get(/** @type {`/${string}`} */ (key)).catch(() => undefined);
+  return store.get(/** @type {`/${string}`} */ (key));
+}
+
+/**
+ * Fetch for the Zarr store, reporting a 403 as a missing key. S3 answers 403
+ * for a key that is not there whenever the caller lacks `s3:ListBucket`, the
+ * usual setup for publicly readable objects.
+ * @param {Request} request The request.
+ * @return {Promise<Response>} The response.
+ */
+function storeFetch(request) {
+  return fetch(request).then((response) =>
+    response.status === 403 ? new Response(null, {status: 404}) : response,
+  );
 }
 
 /**
@@ -2262,31 +2279,32 @@ function probe(store, key) {
  * without consolidated metadata (Zarr v3 zarr.json or v2 .zarray/.zattrs).
  * @param {FetchStore} store The store.
  * @param {string} path The array path.
+ * @param {boolean} v2 Whether the store is Zarr v2.
  * @return {Promise<Object|undefined>} The array metadata (v3 shape).
  */
-async function getArrayMeta(store, path) {
+async function getArrayMeta(store, path, v2) {
   const decoder = new TextDecoder();
-  let bytes = await probe(store, `/${path}/zarr.json`);
-  if (bytes) {
-    return JSON.parse(decoder.decode(bytes));
+  if (!v2) {
+    const bytes = await probe(store, `/${path}/zarr.json`);
+    return bytes ? JSON.parse(decoder.decode(bytes)) : undefined;
   }
-  bytes = await probe(store, `/${path}/.zarray`);
-  if (bytes) {
-    const zarray = JSON.parse(decoder.decode(bytes));
-    const attrBytes = await probe(store, `/${path}/.zattrs`);
-    const attributes = attrBytes ? JSON.parse(decoder.decode(attrBytes)) : {};
-    return {
-      shape: zarray['shape'],
-      fill_value: zarray['fill_value'],
-      dimension_names: attributes['_ARRAY_DIMENSIONS'],
-      chunk_grid: {
-        name: 'regular',
-        configuration: {chunk_shape: zarray['chunks']},
-      },
-      attributes,
-    };
+  const bytes = await probe(store, `/${path}/.zarray`);
+  if (!bytes) {
+    return undefined;
   }
-  return undefined;
+  const zarray = JSON.parse(decoder.decode(bytes));
+  const attrBytes = await probe(store, `/${path}/.zattrs`);
+  const attributes = attrBytes ? JSON.parse(decoder.decode(attrBytes)) : {};
+  return {
+    shape: zarray['shape'],
+    fill_value: zarray['fill_value'],
+    dimension_names: attributes['_ARRAY_DIMENSIONS'],
+    chunk_grid: {
+      name: 'regular',
+      configuration: {chunk_shape: zarray['chunks']},
+    },
+    attributes,
+  };
 }
 
 /**
