@@ -396,19 +396,19 @@ class Map extends BaseObject {
 
       this.overlayContainer_ = document.createElement('div');
       this.overlayContainer_.style.position = 'absolute';
-      this.overlayContainer_.style.zIndex = '0';
       this.overlayContainer_.style.width = '100%';
       this.overlayContainer_.style.height = '100%';
       this.overlayContainer_.style.pointerEvents = 'none';
+      this.overlayContainer_.style.isolation = 'isolate';
       this.overlayContainer_.className = 'ol-overlaycontainer';
       this.viewport_.appendChild(this.overlayContainer_);
 
       this.overlayContainerStopEvent_ = document.createElement('div');
       this.overlayContainerStopEvent_.style.position = 'absolute';
-      this.overlayContainerStopEvent_.style.zIndex = '0';
       this.overlayContainerStopEvent_.style.width = '100%';
       this.overlayContainerStopEvent_.style.height = '100%';
       this.overlayContainerStopEvent_.style.pointerEvents = 'none';
+      this.overlayContainerStopEvent_.style.isolation = 'isolate';
       this.overlayContainerStopEvent_.className =
         'ol-overlaycontainer-stopevent';
       this.viewport_.appendChild(this.overlayContainerStopEvent_);
