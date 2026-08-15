@@ -903,6 +903,62 @@ describe('ol/source/GeoZarr', function () {
   describe('variable (datacube)', function () {
     let fetchStub;
 
+    /**
+     * Zarr v3 metadata and chunk bytes for a 1-D float64 coordinate array.
+     * @param {Array<number>} values The coordinate values.
+     * @return {{meta: Object, chunk: Uint8Array}} The metadata and its chunk.
+     */
+    function coordinateArray(values) {
+      return {
+        meta: {
+          zarr_format: 3,
+          node_type: 'array',
+          shape: [values.length],
+          data_type: 'float64',
+          fill_value: 0,
+          chunk_grid: {
+            name: 'regular',
+            configuration: {chunk_shape: [values.length]},
+          },
+          chunk_key_encoding: {
+            name: 'default',
+            configuration: {separator: '/'},
+          },
+          codecs: [{name: 'bytes', configuration: {endian: 'little'}}],
+          attributes: {},
+        },
+        chunk: new Uint8Array(new Float64Array(values).buffer),
+      };
+    }
+
+    /**
+     * Stub a v3 store with consolidated metadata, group attributes, and the
+     * chunk bytes of any coordinate arrays.
+     * @param {Object} metadata Consolidated metadata, by path.
+     * @param {Object} attributes The group attributes.
+     * @param {Object<string, Uint8Array>} [chunks] Chunk bytes, by path.
+     * @return {import('vitest').MockInstance} The fetch stub.
+     */
+    function stubDatacube(metadata, attributes, chunks) {
+      const group = JSON.stringify({
+        zarr_format: 3,
+        node_type: 'group',
+        attributes,
+        consolidated_metadata: {metadata},
+      });
+      return vi.spyOn(window, 'fetch').mockImplementation(function (input) {
+        const url = input instanceof Request ? input.url : input;
+        if (url === `${ZARR_URL}/zarr.json`) {
+          return Promise.resolve(new Response(group, {status: 200}));
+        }
+        const key = url.slice(`${ZARR_URL}/`.length);
+        if (chunks && key in chunks) {
+          return Promise.resolve(new Response(chunks[key], {status: 200}));
+        }
+        return Promise.resolve(new Response('', {status: 404}));
+      });
+    }
+
     afterEach(function () {
       if (fetchStub) {
         fetchStub.mockRestore();
@@ -910,7 +966,7 @@ describe('ol/source/GeoZarr', function () {
       }
     });
 
-    it('renders one band per selector entry from a single array', () =>
+    it('renders one band per selector entry, across pyramid levels', () =>
       new Promise((resolve) => {
         fetchStub = stubFetchWithAttrs(
           {
@@ -918,11 +974,20 @@ describe('ol/source/GeoZarr', function () {
               shape: [2, 3, 256, 256],
               dimensionNames: ['month', 'band', 'y', 'x'],
             }),
+            ['1/climate']: createArrayMeta({
+              shape: [2, 3, 128, 128],
+              dimensionNames: ['month', 'band', 'y', 'x'],
+            }),
           },
           {
             zarr_conventions: undefined,
             multiscales: [
-              {datasets: [{path: '0', 'spatial:shape': [256, 256]}]},
+              {
+                datasets: [
+                  {path: '0', 'spatial:shape': [256, 256]},
+                  {path: '1', 'spatial:shape': [128, 128]},
+                ],
+              },
             ],
           },
         );
@@ -933,11 +998,72 @@ describe('ol/source/GeoZarr', function () {
         });
         source.on('change', function () {
           if (source.getState() === 'ready') {
-            assert.deepEqual(source.tileGrid.getResolutions(), [1]);
+            assert.deepEqual(source.tileGrid.getResolutions(), [2, 1]);
             assert.deepEqual(source.bandExtraSelection_, [
               [1, 0, null, null],
               [1, 2, null, null],
             ]);
+            resolve();
+          }
+        });
+      }));
+
+    it('infers the extent and south-up rows from the coordinate arrays', () =>
+      new Promise((resolve) => {
+        // Ascending y coordinates mean the rows are stored south-up. The
+        // coordinates are pixel centers, so the extent is padded by half a pixel.
+        const x = coordinateArray([0.5, 1.5, 2.5, 3.5]);
+        const y = coordinateArray([0.5, 1.5, 2.5, 3.5]);
+        fetchStub = stubDatacube(
+          {
+            t2m: createArrayMeta({
+              shape: [2, 4, 4],
+              dimensionNames: ['time', 'y', 'x'],
+            }),
+            x: x.meta,
+            y: y.meta,
+          },
+          {},
+          {'x/c/0': x.chunk, 'y/c/0': y.chunk},
+        );
+        const source = new GeoZarr({
+          url: ZARR_URL,
+          variable: 't2m',
+          selector: {time: 1},
+        });
+        source.on('change', function () {
+          if (source.getState() === 'ready') {
+            assert.deepEqual(source.tileGrid.getExtent(), [0, 0, 4, 4]);
+            assert.strictEqual(source.levelRowInfo_['0'].flip, true);
+            assert.strictEqual(source.getProjection(), get('EPSG:4326'));
+            resolve();
+          }
+        });
+      }));
+
+    it('falls back to the extent and flipY options', () =>
+      new Promise((resolve) => {
+        // A store with neither spatial metadata nor coordinate arrays.
+        fetchStub = stubDatacube(
+          {
+            fgco2: createArrayMeta({
+              shape: [1, 180, 360],
+              dimensionNames: ['time', 'y', 'x'],
+            }),
+          },
+          {},
+        );
+        const source = new GeoZarr({
+          url: ZARR_URL,
+          variable: 'fgco2',
+          selector: {time: 0},
+          extent: [-180, -90, 180, 90],
+          flipY: true,
+        });
+        source.on('change', function () {
+          if (source.getState() === 'ready') {
+            assert.deepEqual(source.tileGrid.getExtent(), [-180, -90, 180, 90]);
+            assert.strictEqual(source.levelRowInfo_['0'].flip, true);
             resolve();
           }
         });
