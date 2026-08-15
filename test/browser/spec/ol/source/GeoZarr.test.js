@@ -711,7 +711,7 @@ describe('ol/source/GeoZarr', function () {
         source.on('change', function () {
           if (source.getState() === 'ready') {
             assert.deepEqual(source.tileGrid.getResolutions(), [1]);
-            assert.strictEqual(source.bandSingleScaleResolution_[0], 1);
+            assert.deepEqual(source.bandsByLevel_, {'0': ['b04']});
             resolve();
           }
         });
@@ -731,8 +731,6 @@ describe('ol/source/GeoZarr', function () {
         source.on('change', function () {
           if (source.getState() === 'ready') {
             assert.deepEqual(source.tileGrid.getResolutions(), [1]);
-            assert.strictEqual(source.bandsByLevel_, null);
-            assert.strictEqual(source.bandSingleScaleResolution_[0], 1);
             resolve();
           }
         });
@@ -896,6 +894,50 @@ describe('ol/source/GeoZarr', function () {
             assert.strictEqual(source.bandSingleScaleResolution_[0], undefined);
             assert.notEqual(source.bandSingleScaleResolution_[1], undefined);
             assert.include(source.bandsByLevel_['level0'], 'aot');
+            resolve();
+          }
+        });
+      }));
+  });
+
+  describe('variable (datacube)', function () {
+    let fetchStub;
+
+    afterEach(function () {
+      if (fetchStub) {
+        fetchStub.mockRestore();
+        fetchStub = null;
+      }
+    });
+
+    it('renders one band per selector entry from a single array', () =>
+      new Promise((resolve) => {
+        fetchStub = stubFetchWithAttrs(
+          {
+            ['0/climate']: createArrayMeta({
+              shape: [2, 3, 256, 256],
+              dimensionNames: ['month', 'band', 'y', 'x'],
+            }),
+          },
+          {
+            zarr_conventions: undefined,
+            multiscales: [
+              {datasets: [{path: '0', 'spatial:shape': [256, 256]}]},
+            ],
+          },
+        );
+        const source = new GeoZarr({
+          url: ZARR_URL,
+          variable: 'climate',
+          selector: {band: [0, 2], month: 1},
+        });
+        source.on('change', function () {
+          if (source.getState() === 'ready') {
+            assert.deepEqual(source.tileGrid.getResolutions(), [1]);
+            assert.deepEqual(source.bandExtraSelection_, [
+              [1, 0, null, null],
+              [1, 2, null, null],
+            ]);
             resolve();
           }
         });
