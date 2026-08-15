@@ -212,6 +212,24 @@ describe('ol/source/GeoZarr', function () {
       assert.deepEqual(source.bands_, bands);
       assert.strictEqual(source.bandCount, bands.length);
     });
+
+    it('rejects dimensions that select several bands ambiguously', function () {
+      const url = 'https://example.com/test.zarr';
+      assert.throws(
+        () =>
+          new GeoZarr({url, bands: ['climate'], dimensions: {band: [0, 1]}}),
+        /requires the `variable` option/,
+      );
+      assert.throws(
+        () =>
+          new GeoZarr({
+            url,
+            variable: 'climate',
+            dimensions: {band: [0, 1], time: [0, 1]},
+          }),
+        /at most one may/,
+      );
+    });
   });
 
   describe('storeOptions', function () {
@@ -966,7 +984,7 @@ describe('ol/source/GeoZarr', function () {
       }
     });
 
-    it('renders one band per selector entry, across pyramid levels', () =>
+    it('renders one band per dimension value, across pyramid levels', () =>
       new Promise((resolve) => {
         fetchStub = stubFetchWithAttrs(
           {
@@ -994,7 +1012,7 @@ describe('ol/source/GeoZarr', function () {
         const source = new GeoZarr({
           url: ZARR_URL,
           variable: 'climate',
-          selector: {band: [0, 2], month: 1},
+          dimensions: {band: [0, 2], month: 1},
         });
         source.on('change', function () {
           if (source.getState() === 'ready') {
@@ -1029,7 +1047,7 @@ describe('ol/source/GeoZarr', function () {
         const source = new GeoZarr({
           url: ZARR_URL,
           variable: 't2m',
-          selector: {time: 1},
+          dimensions: {time: 1},
         });
         source.on('change', function () {
           if (source.getState() === 'ready') {
@@ -1056,7 +1074,7 @@ describe('ol/source/GeoZarr', function () {
         const source = new GeoZarr({
           url: ZARR_URL,
           variable: 'fgco2',
-          selector: {time: 0},
+          dimensions: {time: 0},
           extent: [-180, -90, 180, 90],
           flipY: true,
         });
@@ -1310,7 +1328,7 @@ describe('ol/source/GeoZarr', function () {
         });
       }));
 
-    it('errors on a string (datetime-label) value as not yet implemented', () =>
+    it('errors on a label without a coordinate array to resolve it', () =>
       new Promise((resolve) => {
         fetchStub = stubFetch({
           ['level0/vv']: createArrayMeta({
@@ -1325,7 +1343,8 @@ describe('ol/source/GeoZarr', function () {
         });
         source.on('change', function () {
           if (source.getState() === 'error') {
-            assert.include(source.error_.message, 'not yet implemented');
+            assert.include(source.error_.message, 'Could not resolve label');
+            assert.include(source.error_.message, 'numeric index');
             resolve();
           }
         });

@@ -63,23 +63,21 @@ import {parseTileMatrixSet} from './ogcTileUtil.js';
  * To disable the opacity transition, pass `transition: 0`.
  * @property {boolean} [wrapX=false] Render tiles beyond the tile grid extent.
  * @property {ResampleMethod} [resample='linear'] Resampling method if bands are not available for all multi-scale levels.
- * @property {Object<string, number|string>} [dimensions] Fixed index for each non-spatial
- * dimension of the band arrays, keyed by dimension name (e.g. `{time: 0}` for the first time step
- * of a `[time, y, x]` cube); unspecified dimensions default to `0`. Names come from each array's
- * `dimension_names`, or are the axis position as a string when it has none. Only integer indices
- * are supported. Use the names from {@link getDimensions}, and change the selection on the fly with
+ * @property {Object<string, number|string|Array<number|string>>} [dimensions] How to slice
+ * each non-spatial dimension of the band arrays, keyed by dimension name (e.g. `{time: 0}` for
+ * the first time step of a `[time, y, x]` cube). Values are 0-based indices (number) or
+ * coordinate labels (string); unlisted dimensions default to index 0. Names come from each
+ * array's `dimension_names`, or are the axis position as a string when it has none; use the
+ * names from {@link getDimensions}. Labels are resolved against the dimension's coordinate
+ * array; if that array cannot be read, pass indices instead. With `variable`, at most one
+ * dimension may map to an array of values, whose entries are rendered as separate bands in
+ * the given order. Change the selection on the fly with
  * {@link module:ol/source/GeoZarr~GeoZarr#updateDimensions}.
  * @property {string} [variable] The name of an n-dimensional data array (variable) to
  * render, for stores where all bands are packed into a single array (e.g. a
  * `(time, band, y, x)` datacube). The array must exist within each multiscale level
- * group (or at the group root for single-scale stores). Mutually exclusive with `bands`.
- * @property {Object<string, number|string|Array<number|string>>} [selector] For
- * `variable` mode: how to slice each non-spatial dimension, keyed by dimension name
- * (from the array's `dimension_names`). Values are 0-based indices (number), coordinate
- * labels (string), or an array of these. At most one dimension may map to an array; its
- * entries are rendered as separate bands (in the given order). Unlisted non-spatial
- * dimensions default to index 0. Labels are resolved against the dimension's coordinate
- * array; if that array cannot be read, pass indices instead.
+ * group (or at the group root for single-scale stores). Mutually exclusive with `bands`,
+ * and required to select several bands from one dimension through `dimensions`.
  * @property {import("../extent.js").Extent} [extent] Fallback extent of the data, in
  * coordinates of the source projection. Only used when the store neither declares its
  * extent (`spatial:bbox` or `bounds` attributes) nor has coordinate arrays to infer it.
@@ -109,7 +107,7 @@ import {parseTileMatrixSet} from './ogcTileUtil.js';
  * Two data layouts are supported:
  * - One array per band (`bands` option), addressed by name at `<matrixId>/<bandName>`
  *   (multi-scale) or at the group root (single-scale).
- * - A single n-dimensional data array shared by all bands (`variable` + `selector`
+ * - A single n-dimensional data array shared by all bands (`variable` + `dimensions`
  *   options), e.g. a `(time, band, y, x)` datacube.
  *
  * Both layouts support Zarr v2 and v3.
@@ -143,8 +141,9 @@ export default class GeoZarr extends DataTileSource {
     this.storeOptions_ = options.storeOptions;
 
     /**
-     * Fixed index per non-spatial dimension name, from the `dimensions` option.
-     * @type {Object<string, number|string>}
+     * Selection per non-spatial dimension name, from the `dimensions` option.
+     * Coordinate labels are replaced by their index once resolved.
+     * @type {Object<string, number|string|Array<number|string>>}
      * @private
      */
     this.dimensions_ = options.dimensions || {};
@@ -154,12 +153,6 @@ export default class GeoZarr extends DataTileSource {
      * @private
      */
     this.variable_ = options.variable;
-
-    /**
-     * @type {Object<string, number|string|Array<number|string>>}
-     * @private
-     */
-    this.selector_ = options.selector || {};
 
     /**
      * @type {import("../extent.js").Extent|undefined}
@@ -200,7 +193,7 @@ export default class GeoZarr extends DataTileSource {
     this.levelRowInfo_ = null;
 
     /**
-     * The axis selected as multiple bands through the `selector` option,
+     * The axis selected as multiple bands through the `dimensions` option,
      * or -1.
      * @type {number}
      * @private
@@ -331,21 +324,29 @@ export default class GeoZarr extends DataTileSource {
      * Number of bands.
      * @type {number}
      */
-    this.bandCount = this.bands_.length;
-    if (this.variable_) {
-      let bandCount = 1;
-      for (const key in this.selector_) {
-        const value = this.selector_[key];
-        if (Array.isArray(value)) {
-          if (bandCount > 1) {
-            throw new Error(
-              'Only one selector dimension may select multiple values',
-            );
-          }
-          bandCount = value.length;
-        }
+    this.bandCount = this.variable_ ? 1 : this.bands_.length;
+    // A dimension listing several values renders one band per value. Only
+    // `variable` can do that, since `bands` names one array per band.
+    let multiName;
+    for (const name in this.dimensions_) {
+      const value = this.dimensions_[name];
+      if (!Array.isArray(value)) {
+        continue;
       }
-      this.bandCount = bandCount;
+      if (!this.variable_) {
+        throw new Error(
+          `GeoZarr: dimension "${name}" selects several bands, which requires ` +
+            'the `variable` option.',
+        );
+      }
+      if (multiName) {
+        throw new Error(
+          `GeoZarr: dimensions "${multiName}" and "${name}" both select ` +
+            'several bands; at most one may.',
+        );
+      }
+      multiName = name;
+      this.bandCount = value.length;
     }
 
     /**
@@ -507,9 +508,24 @@ export default class GeoZarr extends DataTileSource {
       throw new Error('Could not determine tile grid');
     }
 
+    // Replace coordinate labels by their index once, so that the per-band
+    // resolution below and `updateDimensions` can stay synchronous.
+    // (In `variable` mode, configureLevels_ resolves them per band instead.)
+    if (!this.variable_) {
+      for (const [name, value] of Object.entries(this.dimensions_)) {
+        if (typeof value === 'string') {
+          this.dimensions_[name] = await this.resolveCoordinateLabel_(
+            name,
+            value,
+            this.coordinateArray_(name)?.path ?? name,
+          );
+        }
+      }
+    }
+
     // Resolve, per band, the spatial axes and the fixed indices for any
     // non-spatial dimensions, and record the selectable dimensions.
-    // (In `variable` mode, configureDatacube_ resolves these instead.)
+    // (In `variable` mode, configureLevels_ resolves these instead.)
     for (let i = 0, ii = this.variable_ ? 0 : this.bands_.length; i < ii; ++i) {
       const arrayMeta = this.getBandArrayMeta_(
         this.bands_[i],
@@ -928,8 +944,9 @@ export default class GeoZarr extends DataTileSource {
    * another `time` slice) without rebuilding the source. Values are merged into
    * the current selection, so a partial update like `{time: 3}` leaves the other
    * dimensions untouched. Takes effect immediately when the source is `ready`,
-   * otherwise once it becomes ready.
-   * @param {Object<string, number|string>} dimensions Index per dimension name
+   * otherwise once it becomes ready. Only integer indices are accepted here;
+   * coordinate labels are resolved once, when the source configures.
+   * @param {Object<string, number>} dimensions Index per dimension name
    *     to change; see the `dimensions` constructor option.
    */
   updateDimensions(dimensions) {
@@ -947,7 +964,7 @@ export default class GeoZarr extends DataTileSource {
         return this.resolveExtraSelection_(arrayMeta, merged);
       }
       // In `variable` mode, merge into the current selection so the axes
-      // fixed through the `selector` option are kept.
+      // fixed through the `dimensions` option are kept.
       const dims = this.extraDimsOf_(arrayMeta);
       const current = this.bandExtraSelection_[i];
       const updated = current ? current.slice() : undefined;
@@ -962,7 +979,7 @@ export default class GeoZarr extends DataTileSource {
         if (dim.axis === this.multiAxis_) {
           throw new Error(
             `GeoZarr: dimension "${name}" selects the rendered bands; ` +
-              `set it through the \`selector\` option instead.`,
+              `set it when constructing the source instead.`,
           );
         }
         if (
@@ -1041,8 +1058,8 @@ export default class GeoZarr extends DataTileSource {
    * `null` at the two spatial axes (e.g. `[2, null, null]` for a `[time, y, x]`
    * array with `{time: 2}`).
    * @param {Object<string, *>|undefined} arrayMeta Zarr v3 array metadata.
-   * @param {Object<string, number|string>} dimensions The dimension indices
-   *     to resolve against.
+   * @param {Object<string, number|string|Array<number|string>>} dimensions The
+   *     dimension indices to resolve against.
    * @return {Array<number|null>|undefined} The extra-axis selection template.
    * @private
    */
@@ -1083,19 +1100,23 @@ export default class GeoZarr extends DataTileSource {
         index = 0; // unspecified extra dimension defaults to the first slice
       }
       if (typeof index === 'string') {
-        // Datetime-label selection is not implemented yet; only integer indices.
+        // Labels are resolved once, when the source configures.
         throw new Error(
-          `GeoZarr: datetime-label selection for dimension "${name}" is not yet ` +
-            `implemented; pass an integer index in the \`dimensions\` option.`,
+          `GeoZarr: coordinate labels cannot be passed to updateDimensions; ` +
+            `pass an integer index for dimension "${name}".`,
         );
       }
-      if (!Number.isInteger(index) || index < 0 || index >= dim.size) {
+      if (
+        !Number.isInteger(index) ||
+        /** @type {number} */ (index) < 0 ||
+        /** @type {number} */ (index) >= dim.size
+      ) {
         throw new Error(
           `GeoZarr: invalid index ${index} for dimension "${name}" ` +
             `(size ${dim.size}).`,
         );
       }
-      selection[dim.axis] = index;
+      selection[dim.axis] = /** @type {number} */ (index);
     }
     return selection;
   }
@@ -1350,7 +1371,7 @@ export default class GeoZarr extends DataTileSource {
     }
 
     if (variable) {
-      // Resolve the selector to per-axis indices; labels are resolved against
+      // Resolve the selection to per-axis indices; labels are resolved against
       // the finest level's coordinate arrays
       const finestPath = configured[configured.length - 1].path;
       /** @type {Array<{axis: number, indices: Array<number>}>} */
@@ -1363,16 +1384,9 @@ export default class GeoZarr extends DataTileSource {
         }
         const dimName = dimensionNames[axis];
         this.extraDimensions_.push({name: dimName, size: meta.shape[axis]});
-        // `dimensions` (also merged by updateDimensions) takes precedence
-        // over the initial `selector` for scalar values
-        let value =
-          dimName in this.dimensions_
-            ? this.dimensions_[dimName]
-            : this.selector_[dimName];
+        let value = this.dimensions_[dimName];
         if (value === undefined) {
-          warn(
-            `No selector value given for dimension "${dimName}", using index 0.`,
-          );
+          warn(`No value given for dimension "${dimName}", using index 0.`);
           value = 0;
         }
         /** @type {Array<number|string>} */
@@ -1389,7 +1403,11 @@ export default class GeoZarr extends DataTileSource {
             indices.push(v);
           } else {
             indices.push(
-              await this.resolveCoordinateLabel_(dimName, v, finestPath),
+              await this.resolveCoordinateLabel_(
+                dimName,
+                v,
+                arrayPathOf(finestPath, dimName),
+              ),
             );
           }
         }
@@ -1588,13 +1606,12 @@ export default class GeoZarr extends DataTileSource {
    * coordinate array.
    * @param {string} dimName The dimension name.
    * @param {string} label The label to resolve.
-   * @param {string} [levelPath] The level group path ('' for the root).
+   * @param {string} path The coordinate array path, relative to the group.
    * @return {Promise<number>} The index of the label.
    * @private
    */
-  async resolveCoordinateLabel_(dimName, label, levelPath = '') {
+  async resolveCoordinateLabel_(dimName, label, path) {
     try {
-      const path = levelPath ? `${levelPath}/${dimName}` : dimName;
       const array = await this.openArray_(0, path);
       const chunk = await get(array, [null]);
       const values = Array.from(chunk.data, (v) => String(v));

@@ -45,7 +45,7 @@ const datasets = {
       url: FTW_URL,
       variable: 'variables',
       // The three class probabilities as RGB, for the most recent year
-      selector: {band: [0, 1, 2], time: 1},
+      dimensions: {band: [0, 1, 2], time: 1},
     },
     style: rgb(0, 0.5),
   },
@@ -53,7 +53,7 @@ const datasets = {
     source: {
       url: FTW_URL,
       variable: 'variables',
-      selector: {band: [1], time: 0}, // band 1 is the `field` probability
+      dimensions: {band: [1], time: 0}, // band 1 is the `field` probability
     },
     style: ramp(0, 1, [
       [255, 255, 178],
@@ -76,7 +76,7 @@ const datasets = {
     source: {
       url: 'https://atlantis-vis-o.s3-ext.jc.rl.ac.uk/hurricanes/era5/florence',
       variable: 'surface_pressure',
-      selector: {time: 0},
+      dimensions: {time: 0},
     },
     style: ramp(96000, 103000, [
       [68, 1, 84],
@@ -110,7 +110,7 @@ const datasets = {
     source: {
       url: 'https://carbonplan-oae-efficiency.s3.us-west-2.amazonaws.com/fgco2-2021-180x360.zarr',
       variable: 'FG_CO2_2',
-      selector: {time: 0},
+      dimensions: {time: 0},
       // The store has neither spatial metadata nor coordinate arrays, so the
       // extent and the south-up orientation have to be provided.
       extent: [-180, -90, 180, 90],
@@ -127,7 +127,7 @@ const datasets = {
       url: 'https://carbonplan-maps.s3.us-west-2.amazonaws.com/v2/demo/4d/tavg-prec-month',
       variable: 'climate',
       // Bands can also be selected by coordinate label
-      selector: {band: ['tavg'], month: 0},
+      dimensions: {band: ['tavg'], month: 0},
     },
     style: ramp(-30, 30, [
       [5, 113, 176],
@@ -139,7 +139,7 @@ const datasets = {
     source: {
       url: 'https://carbonplan-benchmarks.s3.us-west-2.amazonaws.com/data/NEX-GDDP-CMIP6/ACCESS-CM2/historical/r1i1p1f1/tasmax/tasmax_day_ACCESS-CM2_historical_r1i1p1f1_gn/pyramids-v2-4326-True-128-1-0-0-f4-0-0-0-gzipL1-100',
       variable: 'tasmax',
-      selector: {time: 0},
+      dimensions: {time: 0},
     },
     style: ramp(250, 320, [
       [5, 113, 176],
@@ -152,7 +152,7 @@ const datasets = {
     source: {
       url: 'https://atlantis-vis-o.s3-ext.jc.rl.ac.uk/noc-npd-era5-demo/npd-eorca1-era5v1/gn/T1y/tos_con',
       variable: 'tos_con',
-      selector: {time: 0},
+      dimensions: {time: 0},
     },
     style: ramp(-2, 30, [
       [5, 48, 97],
