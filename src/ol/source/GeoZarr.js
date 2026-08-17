@@ -1323,7 +1323,7 @@ export default class GeoZarr extends DataTileSource {
 
     const extentWidth = extent[2] - extent[0];
     const extentHeight = extent[3] - extent[1];
-    /** @type {Array<{path: string, bands: Array<string>, meta: any, resolution: number, rowResolution: number, origin: import("../coordinate.js").Coordinate}>} */
+    /** @type {Array<{path: string, bands: Array<string>, meta: any, shape: Array<number>|undefined, resolution: number, rowResolution: number, origin: import("../coordinate.js").Coordinate}>} */
     const configured = [];
     for (const level of levels) {
       let resolution;
@@ -1355,6 +1355,7 @@ export default class GeoZarr extends DataTileSource {
         path: level.path,
         bands: level.bands,
         meta: level.meta,
+        shape: level.shape,
         resolution,
         rowResolution,
         origin,
@@ -1500,12 +1501,15 @@ export default class GeoZarr extends DataTileSource {
       const level = configured[i];
       this.bandsByLevel_[matrixIds[i]] = level.bands;
       this.levelPaths_[matrixIds[i]] = level.path;
+      let shapeY;
+      if (level.meta && Array.isArray(level.meta.shape)) {
+        shapeY = level.meta.shape[row];
+      } else if (Array.isArray(level.shape)) {
+        shapeY = level.shape[0];
+      }
       this.levelRowInfo_[matrixIds[i]] = {
         rowResolution: level.rowResolution,
-        shapeY:
-          level.meta && Array.isArray(level.meta.shape)
-            ? level.meta.shape[row]
-            : undefined,
+        shapeY,
         flip: flipY,
       };
     }
