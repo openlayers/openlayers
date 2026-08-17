@@ -64,6 +64,48 @@ function createArrayMeta({
 }
 
 /**
+ * Wait for a source to finish configuring, successfully or not.
+ * @param {GeoZarr} source The source.
+ * @return {Promise<GeoZarr>} The source, once ready or in error.
+ */
+function settled(source) {
+  return new Promise((resolve) => {
+    source.on('change', function () {
+      const state = source.getState();
+      if (state === 'ready' || state === 'error') {
+        resolve(source);
+      }
+    });
+  });
+}
+
+/**
+ * Consolidated metadata (.zmetadata) for a minimal single-scale Zarr v2 store.
+ * @return {Object} The .zmetadata document.
+ */
+function v2Zmetadata() {
+  return {
+    zarr_consolidated_format: 1,
+    metadata: {
+      '.zgroup': {zarr_format: 2},
+      '.zattrs': {
+        'spatial:bbox': [0, 0, 256, 256],
+        'spatial:shape': [256, 256],
+        'proj:code': 'EPSG:4326',
+      },
+      'b04/.zarray': {
+        zarr_format: 2,
+        shape: [256, 256],
+        chunks: [256, 256],
+        dtype: '<f4',
+        fill_value: 0,
+      },
+      'b04/.zattrs': {_ARRAY_DIMENSIONS: ['y', 'x']},
+    },
+  };
+}
+
+/**
  * Stub fetch for a minimal v3 Zarr store with the given consolidated metadata
  * and custom group attributes (layout, bbox, etc.).
  * @param {Object|null} consolidatedMetadata Consolidated metadata, or null for none.
@@ -169,6 +211,24 @@ describe('ol/source/GeoZarr', function () {
       });
       assert.deepEqual(source.bands_, bands);
       assert.strictEqual(source.bandCount, bands.length);
+    });
+
+    it('rejects dimensions that select several bands ambiguously', function () {
+      const url = 'https://example.com/test.zarr';
+      assert.throws(
+        () =>
+          new GeoZarr({url, bands: ['climate'], dimensions: {band: [0, 1]}}),
+        /requires the `variable` option/,
+      );
+      assert.throws(
+        () =>
+          new GeoZarr({
+            url,
+            variable: 'climate',
+            dimensions: {band: [0, 1], time: [0, 1]},
+          }),
+        /at most one may/,
+      );
     });
   });
 
@@ -669,7 +729,7 @@ describe('ol/source/GeoZarr', function () {
         source.on('change', function () {
           if (source.getState() === 'ready') {
             assert.deepEqual(source.tileGrid.getResolutions(), [1]);
-            assert.strictEqual(source.bandSingleScaleResolution_[0], 1);
+            assert.deepEqual(source.bandsByLevel_, {'0': ['b04']});
             resolve();
           }
         });
@@ -689,12 +749,71 @@ describe('ol/source/GeoZarr', function () {
         source.on('change', function () {
           if (source.getState() === 'ready') {
             assert.deepEqual(source.tileGrid.getResolutions(), [1]);
-            assert.strictEqual(source.bandsByLevel_, null);
-            assert.strictEqual(source.bandSingleScaleResolution_[0], 1);
             resolve();
           }
         });
       }));
+  });
+
+  describe('Zarr v2 store', function () {
+    let fetchStub;
+    let urls;
+
+    /**
+     * Stub fetch, serving .zmetadata and answering `missingStatus` elsewhere.
+     * @param {number} missingStatus Status for any other key.
+     */
+    function stubV2Store(missingStatus) {
+      urls = [];
+      fetchStub = vi
+        .spyOn(window, 'fetch')
+        .mockImplementation(function (input) {
+          const url = input instanceof Request ? input.url : input;
+          urls.push(url);
+          return Promise.resolve(
+            url.endsWith('/.zmetadata')
+              ? new Response(JSON.stringify(v2Zmetadata()))
+              : new Response(null, {status: missingStatus}),
+          );
+        });
+    }
+
+    afterEach(function () {
+      fetchStub.mockRestore();
+      fetchStub = null;
+    });
+
+    it('determines the version from zarr.json alone and opens as v2', async () => {
+      stubV2Store(404);
+      const source = await settled(
+        new GeoZarr({url: ZARR_URL, bands: ['b04']}),
+      );
+      // The missing zarr.json is the only version probe; the group is then
+      // opened as v2 off the consolidated .zmetadata.
+      assert.deepEqual(urls, [
+        `${ZARR_URL}/zarr.json`,
+        `${ZARR_URL}/.zmetadata`,
+      ]);
+      assert.deepEqual(source.tileGrid.getResolutions(), [1]);
+    });
+
+    it('reads a 403 on a missing key as absent, as S3 reports it', async () => {
+      stubV2Store(403);
+      const source = await settled(
+        new GeoZarr({url: ZARR_URL, bands: ['b04']}),
+      );
+      assert.strictEqual(source.getState(), 'ready');
+    });
+
+    it('reports a forbidden store as missing or denied', async () => {
+      fetchStub = vi.spyOn(window, 'fetch').mockImplementation(function () {
+        return Promise.resolve(new Response(null, {status: 403}));
+      });
+      const source = await settled(
+        new GeoZarr({url: ZARR_URL, bands: ['b04']}),
+      );
+      assert.match(source.error_.message, /missing, or access to it is denied/);
+    });
   });
 
   describe('multi-group bands', function () {
@@ -793,6 +912,176 @@ describe('ol/source/GeoZarr', function () {
             assert.strictEqual(source.bandSingleScaleResolution_[0], undefined);
             assert.notEqual(source.bandSingleScaleResolution_[1], undefined);
             assert.include(source.bandsByLevel_['level0'], 'aot');
+            resolve();
+          }
+        });
+      }));
+  });
+
+  describe('variable (datacube)', function () {
+    let fetchStub;
+
+    /**
+     * Zarr v3 metadata and chunk bytes for a 1-D float64 coordinate array.
+     * @param {Array<number>} values The coordinate values.
+     * @return {{meta: Object, chunk: Uint8Array}} The metadata and its chunk.
+     */
+    function coordinateArray(values) {
+      return {
+        meta: {
+          zarr_format: 3,
+          node_type: 'array',
+          shape: [values.length],
+          data_type: 'float64',
+          fill_value: 0,
+          chunk_grid: {
+            name: 'regular',
+            configuration: {chunk_shape: [values.length]},
+          },
+          chunk_key_encoding: {
+            name: 'default',
+            configuration: {separator: '/'},
+          },
+          codecs: [{name: 'bytes', configuration: {endian: 'little'}}],
+          attributes: {},
+        },
+        chunk: new Uint8Array(new Float64Array(values).buffer),
+      };
+    }
+
+    /**
+     * Stub a v3 store with consolidated metadata, group attributes, and the
+     * chunk bytes of any coordinate arrays.
+     * @param {Object} metadata Consolidated metadata, by path.
+     * @param {Object} attributes The group attributes.
+     * @param {Object<string, Uint8Array>} [chunks] Chunk bytes, by path.
+     * @return {import('vitest').MockInstance} The fetch stub.
+     */
+    function stubDatacube(metadata, attributes, chunks) {
+      const group = JSON.stringify({
+        zarr_format: 3,
+        node_type: 'group',
+        attributes,
+        consolidated_metadata: {metadata},
+      });
+      return vi.spyOn(window, 'fetch').mockImplementation(function (input) {
+        const url = input instanceof Request ? input.url : input;
+        if (url === `${ZARR_URL}/zarr.json`) {
+          return Promise.resolve(new Response(group, {status: 200}));
+        }
+        const key = url.slice(`${ZARR_URL}/`.length);
+        if (chunks && key in chunks) {
+          return Promise.resolve(new Response(chunks[key], {status: 200}));
+        }
+        return Promise.resolve(new Response('', {status: 404}));
+      });
+    }
+
+    afterEach(function () {
+      if (fetchStub) {
+        fetchStub.mockRestore();
+        fetchStub = null;
+      }
+    });
+
+    it('renders one band per dimension value, across pyramid levels', () =>
+      new Promise((resolve) => {
+        fetchStub = stubFetchWithAttrs(
+          {
+            ['0/climate']: createArrayMeta({
+              shape: [2, 3, 256, 256],
+              dimensionNames: ['month', 'band', 'y', 'x'],
+            }),
+            ['1/climate']: createArrayMeta({
+              shape: [2, 3, 128, 128],
+              dimensionNames: ['month', 'band', 'y', 'x'],
+            }),
+          },
+          {
+            zarr_conventions: undefined,
+            multiscales: [
+              {
+                datasets: [
+                  {path: '0', 'spatial:shape': [256, 256]},
+                  {path: '1', 'spatial:shape': [128, 128]},
+                ],
+              },
+            ],
+          },
+        );
+        const source = new GeoZarr({
+          url: ZARR_URL,
+          variable: 'climate',
+          dimensions: {band: [0, 2], month: 1},
+        });
+        source.on('change', function () {
+          if (source.getState() === 'ready') {
+            assert.deepEqual(source.tileGrid.getResolutions(), [2, 1]);
+            assert.deepEqual(source.bandExtraSelection_, [
+              [1, 0, null, null],
+              [1, 2, null, null],
+            ]);
+            resolve();
+          }
+        });
+      }));
+
+    it('infers the extent and south-up rows from the coordinate arrays', () =>
+      new Promise((resolve) => {
+        // Ascending y coordinates mean the rows are stored south-up. The
+        // coordinates are pixel centers, so the extent is padded by half a pixel.
+        const x = coordinateArray([0.5, 1.5, 2.5, 3.5]);
+        const y = coordinateArray([0.5, 1.5, 2.5, 3.5]);
+        fetchStub = stubDatacube(
+          {
+            t2m: createArrayMeta({
+              shape: [2, 4, 4],
+              dimensionNames: ['time', 'y', 'x'],
+            }),
+            x: x.meta,
+            y: y.meta,
+          },
+          {},
+          {'x/c/0': x.chunk, 'y/c/0': y.chunk},
+        );
+        const source = new GeoZarr({
+          url: ZARR_URL,
+          variable: 't2m',
+          dimensions: {time: 1},
+        });
+        source.on('change', function () {
+          if (source.getState() === 'ready') {
+            assert.deepEqual(source.tileGrid.getExtent(), [0, 0, 4, 4]);
+            assert.strictEqual(source.levelRowInfo_['0'].flip, true);
+            assert.strictEqual(source.getProjection(), get('EPSG:4326'));
+            resolve();
+          }
+        });
+      }));
+
+    it('falls back to the extent and flipY options', () =>
+      new Promise((resolve) => {
+        // A store with neither spatial metadata nor coordinate arrays.
+        fetchStub = stubDatacube(
+          {
+            fgco2: createArrayMeta({
+              shape: [1, 180, 360],
+              dimensionNames: ['time', 'y', 'x'],
+            }),
+          },
+          {},
+        );
+        const source = new GeoZarr({
+          url: ZARR_URL,
+          variable: 'fgco2',
+          dimensions: {time: 0},
+          extent: [-180, -90, 180, 90],
+          flipY: true,
+        });
+        source.on('change', function () {
+          if (source.getState() === 'ready') {
+            assert.deepEqual(source.tileGrid.getExtent(), [-180, -90, 180, 90]);
+            assert.strictEqual(source.levelRowInfo_['0'].flip, true);
             resolve();
           }
         });
@@ -1039,7 +1328,7 @@ describe('ol/source/GeoZarr', function () {
         });
       }));
 
-    it('errors on a string (datetime-label) value as not yet implemented', () =>
+    it('errors on a label without a coordinate array to resolve it', () =>
       new Promise((resolve) => {
         fetchStub = stubFetch({
           ['level0/vv']: createArrayMeta({
@@ -1054,7 +1343,8 @@ describe('ol/source/GeoZarr', function () {
         });
         source.on('change', function () {
           if (source.getState() === 'error') {
-            assert.include(source.error_.message, 'not yet implemented');
+            assert.include(source.error_.message, 'Could not resolve label');
+            assert.include(source.error_.message, 'numeric index');
             resolve();
           }
         });
