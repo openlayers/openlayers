@@ -346,7 +346,6 @@ export default class GeoZarr extends DataTileSource {
         );
       }
       multiName = name;
-      this.bandCount = value.length;
     }
 
     /**
@@ -1429,7 +1428,9 @@ export default class GeoZarr extends DataTileSource {
       // Materialize the datacube as the per-band state that loadTile_
       // consumes: each rendered band is the variable array with fixed indices
       // at the non-spatial axes.
-      const count = this.bandCount;
+      const multiSlot = slots.find((slot) => slot.axis === this.multiAxis_);
+      const count = multiSlot ? multiSlot.indices.length : 1;
+      this.bandCount = count;
       this.bands_ = new Array(count).fill(variable);
       this.bandGroupIndex_ = new Array(count).fill(0);
       this.bandSingleScaleResolution_ = new Array(count).fill(undefined);
