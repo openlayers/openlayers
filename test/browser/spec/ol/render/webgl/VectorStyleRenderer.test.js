@@ -758,12 +758,14 @@ describe('VectorStyleRenderer', () => {
       },
     ];
 
-    beforeEach(() => {
+    let textOverlayWorker;
+    beforeEach(async () => {
       vectorStyleRenderer = new VectorStyleRenderer(
         SAMPLE_STYLE_TEXT_AND_CIRCLE,
         {},
         helper,
       );
+      textOverlayWorker = await vectorStyleRenderer.textOverlayWorker_;
     });
 
     it('creates a VectorStyleRenderer with text rendering', () => {
@@ -774,7 +776,7 @@ describe('VectorStyleRenderer', () => {
     describe('generateBuffers', () => {
       let buffers;
       beforeEach(async () => {
-        vi.spyOn(vectorStyleRenderer.textOverlayWorker_, 'postMessage');
+        vi.spyOn(textOverlayWorker, 'postMessage');
         buffers = await vectorStyleRenderer.generateBuffers(
           geometryBatch,
           SAMPLE_TRANSFORM,
@@ -782,8 +784,7 @@ describe('VectorStyleRenderer', () => {
         );
       });
       it('sends a message to worker with render instructions and style', () => {
-        const message =
-          vectorStyleRenderer.textOverlayWorker_.postMessage.mock.calls[0][0];
+        const message = textOverlayWorker.postMessage.mock.calls[0][0];
         assert.strictEqual(message.type, 'BUILD_INSTRUCTIONS');
         assert.instanceOf(message.polygonRenderInstructions, ArrayBuffer);
         assert.instanceOf(message.lineStringRenderInstructions, ArrayBuffer);
@@ -833,7 +834,7 @@ describe('VectorStyleRenderer', () => {
           SAMPLE_TRANSFORM,
         );
         vi.spyOn(helper, 'useProgram');
-        vi.spyOn(vectorStyleRenderer.textOverlayWorker_, 'postMessage');
+        vi.spyOn(textOverlayWorker, 'postMessage');
         preRenderCb = vi.fn();
         vectorStyleRenderer.render(buffers, SAMPLE_FRAMESTATE, preRenderCb);
       });
@@ -872,13 +873,13 @@ describe('VectorStyleRenderer', () => {
         vectorStyleRenderer.textOverlayCanvas_.height =
           SAMPLE_FRAMESTATE.size[1];
 
-        vi.spyOn(vectorStyleRenderer.textOverlayWorker_, 'postMessage');
+        vi.spyOn(textOverlayWorker, 'postMessage');
         vi.spyOn(vectorStyleRenderer.textOverlayContext_, 'clearRect');
         vi.spyOn(vectorStyleRenderer.textOverlayContext_, 'drawImage');
 
         // this does a copy of the `batchesToRender` Set, otherwise we can't properly test its value afterwards (because it's mutated)
-        vectorStyleRenderer.textOverlayWorker_.postMessage = new Proxy(
-          vectorStyleRenderer.textOverlayWorker_.postMessage,
+        textOverlayWorker.postMessage = new Proxy(
+          textOverlayWorker.postMessage,
           {
             apply(target, thisArg, [message, ...args]) {
               return target.call(
@@ -896,12 +897,8 @@ describe('VectorStyleRenderer', () => {
         await vectorStyleRenderer.finalizeTextRender(SAMPLE_FRAMESTATE);
       });
       it('asks for a render of the text overlay worker', async () => {
-        assert.strictEqual(
-          vectorStyleRenderer.textOverlayWorker_.postMessage.mock.calls.length,
-          1,
-        );
-        const firstMessage =
-          vectorStyleRenderer.textOverlayWorker_.postMessage.mock.calls[0][0];
+        assert.strictEqual(textOverlayWorker.postMessage.mock.calls.length, 1);
+        const firstMessage = textOverlayWorker.postMessage.mock.calls[0][0];
         assert.strictEqual(firstMessage.type, 'RENDER');
         assert.deepEqual(
           firstMessage.frameState,
@@ -958,13 +955,11 @@ describe('VectorStyleRenderer', () => {
     });
 
     describe('dispose', () => {
-      it('terminates its worker', () => {
-        vi.spyOn(vectorStyleRenderer.textOverlayWorker_, 'terminate');
+      it('terminates its worker', async () => {
+        vi.spyOn(textOverlayWorker, 'terminate');
         vectorStyleRenderer.dispose();
-        assert.strictEqual(
-          vectorStyleRenderer.textOverlayWorker_.terminate.mock.calls.length,
-          1,
-        );
+        await vectorStyleRenderer.textOverlayWorker_;
+        assert.strictEqual(textOverlayWorker.terminate.mock.calls.length, 1);
       });
     });
   });

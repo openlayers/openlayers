@@ -11,6 +11,7 @@ export default {
     exports: 'default',
     file: 'build/full/ol.js',
     sourcemap: true,
+    inlineDynamicImports: true,
   },
   plugins: [
     resolve({moduleDirectories: ['build', 'node_modules']}),

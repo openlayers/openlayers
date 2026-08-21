@@ -11,7 +11,6 @@ import {ARRAY_BUFFER, DYNAMIC_DRAW, ELEMENT_ARRAY_BUFFER} from '../../webgl.js';
 import WebGLArrayBuffer from '../../webgl/Buffer.js';
 import {AttributeType} from '../../webgl/Helper.js';
 import LabelsArray from '../../webgl/LabelsArray.js';
-import {create as createTextOverlayWorker} from '../../worker/textOverlay.js';
 import {create as createWebGLWorker} from '../../worker/webgl.js';
 import {
   TextOverlayWorkerMessageType,
@@ -409,10 +408,12 @@ class VectorStyleRenderer extends Disposable {
       this.textOverlayRenderFrameState_ = null;
 
       /**
-       * @type {Worker}
+       * @type {Promise<Worker>}
        * @private
        */
-      this.textOverlayWorker_ = createTextOverlayWorker();
+      this.textOverlayWorker_ = import('../../worker/textOverlay.js').then(
+        ({create}) => create(),
+      );
 
       /** @type {Set<string>} */
       this.textOverlayRenderList_ = new Set();
@@ -675,8 +676,9 @@ class VectorStyleRenderer extends Disposable {
       resolution,
     };
 
-    return messageWorker(this.textOverlayWorker_, message, transferables).then(
-      (data) => {
+    return this.textOverlayWorker_
+      .then((worker) => messageWorker(worker, message, transferables))
+      .then((data) => {
         const received =
           /** @type {import('./constants.js').TextOverlayWorkerMessage} */ (
             data
@@ -684,8 +686,7 @@ class VectorStyleRenderer extends Disposable {
 
         // we're getting a key from the worker: these will be used later on to ask for render or disposal
         return received.instructionsSetKey ?? null;
-      },
-    );
+      });
   }
 
   /**
@@ -821,37 +822,41 @@ class VectorStyleRenderer extends Disposable {
       batchesToRender: this.textOverlayRenderList_,
     };
 
-    return messageWorker(this.textOverlayWorker_, message).then((data) => {
-      const received =
-        /** @type {import('./constants.js').TextOverlayWorkerMessage} */ (data);
-
-      // if no render data returned, do not process it
-      if (received.imageData) {
-        this.textOverlayRenderFrameState_ =
-          received.frameState !== undefined ? received.frameState : null;
-
-        // the rendered image data is copied to the canvas and then given back to the worker
-        const imageData = received.imageData;
-        if (
-          imageData.width !== textOverlayCanvas.width ||
-          imageData.height !== textOverlayCanvas.height
-        ) {
-          textOverlayCanvas.width = imageData.width;
-          textOverlayCanvas.height = imageData.height;
-        } else {
-          textOverlayContext.clearRect(
-            0,
-            0,
-            textOverlayCanvas.width,
-            textOverlayCanvas.height,
+    return this.textOverlayWorker_
+      .then((worker) => messageWorker(worker, message))
+      .then((data) => {
+        const received =
+          /** @type {import('./constants.js').TextOverlayWorkerMessage} */ (
+            data
           );
-        }
-        textOverlayContext.drawImage(imageData, 0, 0);
-        imageData.close();
-      }
 
-      this.textOverlayRenderList_.clear();
-    });
+        // if no render data returned, do not process it
+        if (received.imageData) {
+          this.textOverlayRenderFrameState_ =
+            received.frameState !== undefined ? received.frameState : null;
+
+          // the rendered image data is copied to the canvas and then given back to the worker
+          const imageData = received.imageData;
+          if (
+            imageData.width !== textOverlayCanvas.width ||
+            imageData.height !== textOverlayCanvas.height
+          ) {
+            textOverlayCanvas.width = imageData.width;
+            textOverlayCanvas.height = imageData.height;
+          } else {
+            textOverlayContext.clearRect(
+              0,
+              0,
+              textOverlayCanvas.width,
+              textOverlayCanvas.height,
+            );
+          }
+          textOverlayContext.drawImage(imageData, 0, 0);
+          imageData.close();
+        }
+
+        this.textOverlayRenderList_.clear();
+      });
   }
 
   /**
@@ -915,10 +920,12 @@ class VectorStyleRenderer extends Disposable {
    * @param {string} key Key corresponding to the instructions set to dispose
    */
   disposeTextInstructions(key) {
-    this.textOverlayWorker_?.postMessage({
-      type: TextOverlayWorkerMessageType.DISPOSE_INSTRUCTIONS,
-      instructionsSetKey: key,
-    });
+    this.textOverlayWorker_?.then((worker) =>
+      worker.postMessage({
+        type: TextOverlayWorkerMessageType.DISPOSE_INSTRUCTIONS,
+        instructionsSetKey: key,
+      }),
+    );
   }
 
   /**
@@ -926,7 +933,7 @@ class VectorStyleRenderer extends Disposable {
    * @override
    */
   disposeInternal() {
-    this.textOverlayWorker_?.terminate();
+    this.textOverlayWorker_?.then((worker) => worker.terminate());
     super.disposeInternal();
   }
 }
