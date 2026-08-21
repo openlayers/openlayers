@@ -2,6 +2,7 @@ import {assert} from 'chai';
 import {
   douglasPeucker,
   quantize,
+  quantizeArray,
   radialDistance,
   simplifyLineString,
 } from '../../../../../src/ol/geom/flat/simplify.js';
@@ -490,6 +491,75 @@ describe('ol/geom/flat/simplify.js', function () {
         8,
       );
       assert.deepEqual(simplifiedFlatCoordinates, [0, 0, 2, 0, 0, 0, 4, 0]);
+    });
+  });
+
+  describe('quantizeArray', function () {
+    it('keeps a ring that simplifies to a valid linear ring', function () {
+      const simplifiedFlatCoordinates = [];
+      const simplifiedEnds = [];
+      const offset = quantizeArray(
+        [0, 0, 0, 10, 10, 10, 10, 0, 0, 0],
+        0,
+        [10],
+        2,
+        1,
+        simplifiedFlatCoordinates,
+        0,
+        simplifiedEnds,
+      );
+      assert.strictEqual(offset, 10);
+      assert.deepEqual(
+        simplifiedFlatCoordinates,
+        [0, 0, 0, 10, 10, 10, 10, 0, 0, 0],
+      );
+      assert.deepEqual(simplifiedEnds, [10]);
+    });
+
+    it('keeps the original ring when quantization would collapse it', function () {
+      const flatCoordinates = [0, 0, 0, 1, 1, 1, 1, 0, 0, 0];
+      const simplifiedFlatCoordinates = [];
+      const simplifiedEnds = [];
+      const offset = quantizeArray(
+        flatCoordinates,
+        0,
+        [10],
+        2,
+        10,
+        simplifiedFlatCoordinates,
+        0,
+        simplifiedEnds,
+      );
+      assert.strictEqual(offset, 10);
+      assert.deepEqual(simplifiedFlatCoordinates, flatCoordinates);
+      assert.deepEqual(simplifiedEnds, [10]);
+    });
+
+    it('keeps the original ring for only the ring that collapses', function () {
+      const flatCoordinates = [
+        // exterior ring, survives simplification
+        0, 0, 0, 10, 10, 10, 10, 0, 0, 0,
+        // hole, collapses below a valid linear ring
+        1, 1, 1, 2, 2, 2, 2, 1, 1, 1,
+      ];
+      const simplifiedFlatCoordinates = [];
+      const simplifiedEnds = [];
+      const offset = quantizeArray(
+        flatCoordinates,
+        0,
+        [10, 20],
+        2,
+        10,
+        simplifiedFlatCoordinates,
+        0,
+        simplifiedEnds,
+      );
+      assert.strictEqual(offset, 20);
+      assert.deepEqual(
+        simplifiedFlatCoordinates,
+        [0, 0, 0, 10, 10, 10, 10, 0, 0, 0, 1, 1, 1, 2, 2, 2, 2, 1, 1, 1],
+      );
+      assert.deepEqual(simplifiedEnds, [10, 20]);
     });
   });
 });
