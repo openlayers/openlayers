@@ -28,6 +28,20 @@ describe('ol/expr/cpu.js', () => {
         name: 'interpolate (linear color)',
         type: ColorType,
         expression: ['interpolate', ['linear'], 0.5, 0, 'red', 1, [0, 255, 0]],
+        expected: [127.5, 127.5, 0, 1],
+      },
+      {
+        name: 'interpolate-hcl (linear color)',
+        type: ColorType,
+        expression: [
+          'interpolate-hcl',
+          ['linear'],
+          0.5,
+          0,
+          'red',
+          1,
+          [0, 255, 0],
+        ],
         expected: [209, 169, 0, 1],
       },
     ];

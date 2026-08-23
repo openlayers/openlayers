@@ -174,7 +174,8 @@ function compileExpression(expression, context) {
     case Ops.Match: {
       return compileMatchExpression(expression, context);
     }
-    case Ops.Interpolate: {
+    case Ops.Interpolate:
+    case Ops.InterpolateHcl: {
       return compileInterpolateExpression(expression, context);
     }
     case Ops.ToString: {
@@ -526,6 +527,12 @@ function compileInterpolateExpression(expression, context) {
   for (let i = 0; i < length; ++i) {
     args[i] = compileExpression(expression.args[i], context);
   }
+  const interpolateColorFn =
+    expression.operator === Ops.InterpolateHcl
+      ? // perceptual interpolation
+        interpolateHclColor
+      : // sRGB interpolation, equivalent to GLSL `mix()` in `gpu.js`
+        interpolateRgbColor;
   return (context) => {
     const base = args[0](context);
     const value = args[1](context);
@@ -544,7 +551,7 @@ function compileInterpolateExpression(expression, context) {
           return output;
         }
         if (isColor) {
-          return interpolateColor(
+          return interpolateColorFn(
             base,
             value,
             previousInput,
@@ -621,6 +628,7 @@ function interpolateNumber(base, value, input1, output1, input2, output2) {
 }
 
 /**
+ * Interpolate two colors component-wise in sRGB
  * @param {number} base The base.
  * @param {number} value The value.
  * @param {number} input1 The first input value.
@@ -629,7 +637,33 @@ function interpolateNumber(base, value, input1, output1, input2, output2) {
  * @param {import('../color.js').Color} rgba2 The second output value.
  * @return {import('../color.js').Color} The interpolated color.
  */
-function interpolateColor(base, value, input1, rgba1, input2, rgba2) {
+function interpolateRgbColor(base, value, input1, rgba1, input2, rgba2) {
+  const delta = input2 - input1;
+  if (delta === 0) {
+    return rgba1;
+  }
+  // channels are left unrounded, so that a pipeline applying gamma or contrast on top
+  // does not compound a quantization error at every stop
+  return [
+    interpolateNumber(base, value, input1, rgba1[0], input2, rgba2[0]),
+    interpolateNumber(base, value, input1, rgba1[1], input2, rgba2[1]),
+    interpolateNumber(base, value, input1, rgba1[2], input2, rgba2[2]),
+    interpolateNumber(base, value, input1, rgba1[3], input2, rgba2[3]),
+  ];
+}
+
+/**
+ * Interpolate two colors in the Hue-Chroma-Luminance space, for the
+ * `interpolate-hcl` operator.
+ * @param {number} base The base.
+ * @param {number} value The value.
+ * @param {number} input1 The first input value.
+ * @param {import('../color.js').Color} rgba1 The first output value.
+ * @param {number} input2 The second input value.
+ * @param {import('../color.js').Color} rgba2 The second output value.
+ * @return {import('../color.js').Color} The interpolated color.
+ */
+function interpolateHclColor(base, value, input1, rgba1, input2, rgba2) {
   const delta = input2 - input1;
   if (delta === 0) {
     return rgba1;
