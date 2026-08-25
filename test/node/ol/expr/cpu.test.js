@@ -903,4 +903,43 @@ describe('ol/expr/cpu.js', () => {
       });
     }
   });
+  describe('array and color expressions', () => {
+    it('assembles colors from numbers', () => {
+      const context = newEvaluationContext();
+      const rgb = buildExpression(
+        ['color', 10, 20, 30],
+        ColorType,
+        newParsingContext(),
+      );
+      assert.deepEqual(rgb(context), [10, 20, 30, 1]);
+
+      const gray = buildExpression(
+        ['color', 128, 0.5],
+        ColorType,
+        newParsingContext(),
+      );
+      assert.deepEqual(gray(context), [128, 128, 128, 0.5]);
+    });
+
+    it('builds number arrays', () => {
+      const context = newEvaluationContext();
+      context.variables = {size: 0.5};
+      const evaluator = buildExpression(
+        ['array', ['var', 'size'], 0.25],
+        NumberArrayType,
+        newParsingContext(),
+      );
+      assert.deepEqual(evaluator(context), [0.5, 0.25]);
+    });
+
+    it('scales an array used as a color, like vec4 in a shader', () => {
+      const context = newEvaluationContext();
+      const evaluator = buildExpression(
+        ['array', 0.5, 0, 1, 1],
+        ColorType,
+        newParsingContext(),
+      );
+      assert.deepEqual(evaluator(context), [127.5, 0, 255, 1]);
+    });
+  });
 });
