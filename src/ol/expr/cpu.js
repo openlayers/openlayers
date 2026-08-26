@@ -181,17 +181,82 @@ function compileExpression(expression, context) {
     case Ops.ToString: {
       return compileConvertExpression(expression, context);
     }
+    case Ops.Array: {
+      return compileArrayExpression(expression, context);
+    }
+    case Ops.Color: {
+      return compileColorExpression(expression, context);
+    }
     default: {
       throw new Error(`Unsupported operator ${operator}`);
     }
     // TODO: unimplemented
     // Ops.Zoom
     // Ops.Time
-    // Ops.Array
-    // Ops.Color
     // Ops.Band
     // Ops.Palette
   }
+}
+
+/**
+ * @param {import('./expression.js').CallExpression} expression The call expression.
+ * @param {import('./expression.js').ParsingContext} context The parsing context.
+ * @return {NumberArrayEvaluator} The evaluator function.
+ */
+function compileArrayExpression(expression, context) {
+  const length = expression.args.length;
+  const args = new Array(length);
+  for (let i = 0; i < length; ++i) {
+    args[i] = compileExpression(expression.args[i], context);
+  }
+  // A color array is a `vec4` in a shader, so its channels are in the 0 to 1 range.
+  if (expression.type === ColorType && (length === 3 || length === 4)) {
+    const alpha = length === 4 ? args[3] : null;
+    return (context) => [
+      /** @type {number} */ (args[0](context)) * 255,
+      /** @type {number} */ (args[1](context)) * 255,
+      /** @type {number} */ (args[2](context)) * 255,
+      alpha ? /** @type {number} */ (alpha(context)) : 1,
+    ];
+  }
+  return (context) => {
+    const values = new Array(length);
+    for (let i = 0; i < length; ++i) {
+      values[i] = args[i](context);
+    }
+    return values;
+  };
+}
+
+/**
+ * Assemble a color from numbers.  One or two arguments give a gray value and an optional
+ * alpha; three or four give red, green, blue and an optional alpha.  Channels are in the
+ * 0 to 255 range and alpha in the 0 to 1 range.
+ *
+ * @param {import('./expression.js').CallExpression} expression The call expression.
+ * @param {import('./expression.js').ParsingContext} context The parsing context.
+ * @return {ColorLikeEvaluator} The evaluator function.
+ */
+function compileColorExpression(expression, context) {
+  const length = expression.args.length;
+  const args = new Array(length);
+  for (let i = 0; i < length; ++i) {
+    args[i] = compileExpression(expression.args[i], context);
+  }
+  if (length < 3) {
+    const alpha = length === 2 ? args[1] : null;
+    return (context) => {
+      const gray = args[0](context);
+      return [gray, gray, gray, alpha ? alpha(context) : 1];
+    };
+  }
+  const alpha = length === 4 ? args[3] : null;
+  return (context) => [
+    args[0](context),
+    args[1](context),
+    args[2](context),
+    alpha ? alpha(context) : 1,
+  ];
 }
 
 /**
