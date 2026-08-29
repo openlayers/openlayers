@@ -27,9 +27,9 @@ import Layer from './Layer.js';
  * visible.
  * @property {number} [maxResolution] The maximum resolution (exclusive) below which this layer will
  * be visible.
- * @property {number} [minZoom] The minimum view zoom level (exclusive) above which this layer will be
+ * @property {number} [minZoom] The minimum view zoom level (inclusive) at which this layer will be
  * visible.
- * @property {number} [maxZoom] The maximum view zoom level (inclusive) at which this layer will
+ * @property {number} [maxZoom] The maximum view zoom level (exclusive) below which this layer will
  * be visible.
  * @property {VectorSourceType} [source] Source.
  * @property {import('../style/flat.js').FlatStyleLike} style Layer style.
