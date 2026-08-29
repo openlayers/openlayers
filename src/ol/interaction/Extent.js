@@ -48,7 +48,7 @@ import PointerInteraction from './Pointer.js';
 /**
  * @enum {string}
  */
-const ExtentEventType = {
+export const ExtentEventType = {
   /**
    * Triggered after the extent is changed
    * @event ExtentEvent#extentchanged

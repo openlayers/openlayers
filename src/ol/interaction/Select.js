@@ -16,7 +16,7 @@ import Interaction from './Interaction.js';
 /**
  * @enum {string}
  */
-const SelectEventType = {
+export const SelectEventType = {
   /**
    * Triggered when feature(s) has been (de)selected.
    * @event SelectEvent#select

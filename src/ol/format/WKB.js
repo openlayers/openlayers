@@ -21,7 +21,7 @@ import FeatureFormat, {transformGeometryWithOptions} from './Feature.js';
  * @const
  * @enum {number}
  */
-const WKBGeometryType = {
+export const WKBGeometryType = {
   POINT: 1,
   LINE_STRING: 2,
   POLYGON: 3,
