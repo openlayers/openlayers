@@ -1,10 +1,30 @@
 import {assert} from 'chai';
 import {
+  deflateCoordinate,
   deflateCoordinates,
   deflateCoordinatesArray,
 } from '../../../../../src/ol/geom/flat/deflate.js';
 
 describe('ol/geom/flat/deflate.js', function () {
+  describe('deflateCoordinate', function () {
+    let flatCoordinates;
+    beforeEach(function () {
+      flatCoordinates = [];
+    });
+
+    it('flattens a coordinate', function () {
+      const offset = deflateCoordinate(flatCoordinates, 0, [1, 2], 2);
+      assert.strictEqual(offset, 2);
+      assert.deepEqual(flatCoordinates, [1, 2]);
+    });
+
+    it('ignores ordinates beyond the stride', function () {
+      const offset = deflateCoordinate(flatCoordinates, 0, [1, 2, 3], 2);
+      assert.strictEqual(offset, 2);
+      assert.deepEqual(flatCoordinates, [1, 2]);
+    });
+  });
+
   describe('deflateCoordinates', function () {
     let flatCoordinates;
     beforeEach(function () {
