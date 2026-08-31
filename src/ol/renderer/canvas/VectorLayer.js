@@ -207,16 +207,20 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       /** @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} */ (
         this.context
       );
-    const width = Math.round(
-      (getWidth(/** @type {import("../../extent.js").Extent} */ (extent)) /
-        resolution) *
-        pixelRatio,
-    );
-    const height = Math.round(
-      (getHeight(/** @type {import("../../extent.js").Extent} */ (extent)) /
-        resolution) *
-        pixelRatio,
-    );
+    const width = this.screenAligned
+      ? Math.round(frameState.size[0] * pixelRatio)
+      : Math.round(
+          (getWidth(/** @type {import("../../extent.js").Extent} */ (extent)) /
+            resolution) *
+            pixelRatio,
+        );
+    const height = this.screenAligned
+      ? Math.round(frameState.size[1] * pixelRatio)
+      : Math.round(
+          (getHeight(/** @type {import("../../extent.js").Extent} */ (extent)) /
+            resolution) *
+            pixelRatio,
+        );
 
     const multiWorld =
       /** @type {NonNullable<ReturnType<import("../../layer/Vector.js").default["getSource"]>>} */ (
@@ -240,7 +244,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       let transform = this.getRenderTransform(
         center,
         resolution,
-        0,
+        this.screenAligned ? rotation : 0,
         pixelRatio,
         width,
         height,
