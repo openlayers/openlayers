@@ -1,0 +1,10 @@
+.data {
+  text-align: right;
+  font-family: monospace;
+}
+td {
+  padding-right: 10px;
+}
+input[type="range"] {
+  vertical-align: text-bottom;
+}

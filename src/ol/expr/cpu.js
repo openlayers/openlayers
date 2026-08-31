@@ -28,6 +28,7 @@ import {ColorType, LiteralExpression, Ops, parse} from './expression.js';
  * @property {Object<string, *>} properties The values for properties used in 'get' expressions.
  * @property {Object<string, *>} variables The values for variables used in 'var' expressions.
  * @property {number} resolution The map resolution.
+ * @property {number} zoom The view zoom level for the map resolution.
  * @property {string|number|null} featureId The feature id.
  * @property {string} geometryType Geometry type of the current object.
  */
@@ -40,6 +41,7 @@ export function newEvaluationContext() {
     variables: {},
     properties: {},
     resolution: NaN,
+    zoom: NaN,
     featureId: null,
     geometryType: '',
   };
@@ -136,6 +138,9 @@ function compileExpression(expression, context) {
     case Ops.Resolution: {
       return (context) => context.resolution;
     }
+    case Ops.Zoom: {
+      return (context) => context.zoom;
+    }
     case Ops.Any:
     case Ops.All:
     case Ops.Between:
@@ -191,7 +196,6 @@ function compileExpression(expression, context) {
       throw new Error(`Unsupported operator ${operator}`);
     }
     // TODO: unimplemented
-    // Ops.Zoom
     // Ops.Time
     // Ops.Band
     // Ops.Palette

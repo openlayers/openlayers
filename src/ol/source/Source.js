@@ -154,6 +154,15 @@ class Source extends BaseObject {
   }
 
   /**
+   * Set the projection of the source.  This does not transform existing
+   * features or tiles; it only records the CRS their coordinates are in.
+   * @param {import("../proj.js").ProjectionLike} projection Projection.
+   */
+  setProjection(projection) {
+    this.projection = getProjection(projection);
+  }
+
+  /**
    * @param {import("../proj/Projection.js").default} [projection] Projection.
    * @return {Array<number>|null} Resolutions.
    */

@@ -6,7 +6,6 @@ import {CLASS_UNSELECTABLE} from '../css.js';
 import {createMockDiv, isCanvas, replaceChildren} from '../dom.js';
 import {listen, unlistenByKey} from '../events.js';
 import {WORKER_OFFSCREEN_CANVAS} from '../has.js';
-import BaseVectorLayer from '../layer/BaseVector.js';
 import {inView} from '../layer/Layer.js';
 import RenderEvent from '../render/Event.js';
 import RenderEventType from '../render/EventType.js';
@@ -114,10 +113,8 @@ class CompositeMapRenderer extends MapRenderer {
       (a, b) =>
         /** @type {number} */ (a.zIndex) - /** @type {number} */ (b.zIndex),
     );
-    const declutter = layerStatesArray.some(
-      (layerState) =>
-        layerState.layer instanceof BaseVectorLayer &&
-        layerState.layer.getDeclutter(),
+    const declutter = layerStatesArray.some((layerState) =>
+      layerState.layer.getDeclutter(),
     );
     if (declutter) {
       // Some layers need decluttering, turn on deferred rendering hint

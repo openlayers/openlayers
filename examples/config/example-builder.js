@@ -396,6 +396,14 @@ export default function exampleBuilder(config) {
 
       server.middlewares.use(async (req, res, next) => {
         try {
+          // Templates link to ../examples/, and production URLs use that
+          // prefix. The Vite root is the examples directory, so strip it
+          // before matching (otherwise SPA fallback serves the index).
+          const rawUrl = req.url;
+          if (rawUrl === '/examples' || rawUrl?.startsWith('/examples/')) {
+            req.url = rawUrl.slice('/examples'.length) || '/';
+          }
+
           const url = req.url?.split('?')[0];
           if (!url) {
             return next();

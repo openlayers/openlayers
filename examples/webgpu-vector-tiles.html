@@ -1,0 +1,18 @@
+---
+layout: example.html
+title: WebGPU Vector Tiles
+shortdesc: Vector tiles with map-level decluttered labels on WebGPU.
+docs: >
+  Adjacent tiles share one declutter group so labels do not collide at tile edges.
+  Companion to the [Canvas Vector Tiles](canvas-vector-tiles.html) example.
+  The `Link` interaction keeps center, zoom, and rotation in the URL so you can
+  compare the same view in both renderers. WebGPU is required.
+tags: "webgpu, vector, tiles, declutter"
+experimental: true
+cloak:
+  - key: pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiY2t0cGdwMHVnMGdlbzMxbDhwazBic2xrNSJ9.WbcTL9uj8JPAsnT9mgb7oQ
+    value: Your Mapbox access token from https://mapbox.com/ here
+  - key: pk.eyJ1IjoicGxhbmV0IiwiYSI6ImNrOTF4eno1NTAwbmUzZm01bHc5djV4bnoifQ.oFybzMLDu9E9IrW2MZXZxw
+    value: Your Mapbox access token from https://mapbox.com/ here
+---
+<div id="map" class="map"></div>

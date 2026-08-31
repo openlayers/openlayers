@@ -1,0 +1,455 @@
+/**
+ * @module ol/render/webgpu/declutter
+ */
+import RBush from 'rbush';
+import {countMetric, endMetric, startMetric} from '../../webgpu/metrics.js';
+import {DECLUTTER_SHADER} from '../../webgpu/shaders.js';
+
+/**
+ * @typedef {Object} Label
+ * @property {number} minX Min x (screen pixels, or pixel offsets relative to `_anchor`).
+ * @property {number} minY Min y.
+ * @property {number} maxX Max x.
+ * @property {number} maxY Max y.
+ * @property {number} priority Lower is higher priority.
+ * @property {number} [zIndex] Style z-index. Higher paints later.
+ * @property {number} [classRank] Canvas class order.
+ * @property {number} [sequence] Render sequence. Same priority, the earlier sequence keeps the space.
+ * @property {number} [featureRef] Feature ref for hit testing.
+ * @property {number} [id] Stable id for tie-breaking when no sequence is set (feature uid).
+ * @property {Array<number>} [padding] Collision padding `[top, right, bottom, left]`.
+ * @property {import("../../style/Style.js").DeclutterMode} [mode='declutter'] Mode.
+ * @property {number} [pairId] Image+text pair id; both members shown or neither when mode is declutter.
+ * @property {number} [glyphStart] Glyph instance start.
+ * @property {number} [glyphCount] Glyph instance count.
+ * @property {number} [symbolIndex] Index into symbolInstances (stride `SYMBOL_STRIDE`).
+ * @property {string} [text] Displayed text; used for fade continuity across tile zooms.
+ * @property {import("../../coordinate.js").Coordinate} [_anchor] World-space anchor for point labels.
+ * @property {string} [_identityKey] Symbol content/style key used for cross-tile matching.
+ */
+
+export const MODE_DECLUTTER = 0;
+export const MODE_OBSTACLE = 1;
+export const MODE_NONE = 2;
+
+/**
+ * @typedef {{minX: number, minY: number, maxX: number, maxY: number}} DeclutterBox
+ */
+
+/**
+ * Shared RBush per declutter group and frame (WebGPU layers only).
+ * @type {Map<string, {frame: number, tree: import('rbush').default<DeclutterBox>}>}
+ */
+const groupTrees = new Map();
+
+/**
+ * Collision work extends beyond the viewport so accepted labels finish their
+ * transition before panning into view.
+ * @type {number}
+ */
+export const VIEWPORT_PADDING = 100;
+
+/**
+ * Transform-independent priority order cached for each reused LabelView box
+ * array.
+ * @type {WeakMap<Array<Label>, {signature: string, order: Array<{label: Label, index: number}>}>}
+ */
+const orderCache = new WeakMap();
+
+/**
+ * @param {import("../../style/Style.js").DeclutterMode|undefined} mode Mode.
+ * @return {number} Numeric mode.
+ */
+export function modeToInt(mode) {
+  if (mode === 'obstacle') {
+    return MODE_OBSTACLE;
+  }
+  if (mode === 'none') {
+    return MODE_NONE;
+  }
+  return MODE_DECLUTTER;
+}
+
+/**
+ * @typedef {{label: Label, index: number, members?: Array<number>, sticky?: boolean}} DeclutterItem
+ */
+
+/**
+ * @param {Set<number>|undefined} stickyIds Previously visible label ids.
+ * @return {function(DeclutterItem, DeclutterItem): number} Compare.
+ */
+function createCompare(stickyIds) {
+  const sticky = stickyIds && stickyIds.size ? stickyIds : undefined;
+  return (a, b) => {
+    if (sticky) {
+      const stickyA =
+        a.sticky === true ||
+        (a.label.id !== undefined && sticky.has(a.label.id));
+      const stickyB =
+        b.sticky === true ||
+        (b.label.id !== undefined && sticky.has(b.label.id));
+      if (stickyA !== stickyB) {
+        return stickyA ? -1 : 1;
+      }
+    }
+    if (a.label.priority !== b.label.priority) {
+      return a.label.priority - b.label.priority;
+    }
+    if (a.label.sequence !== undefined || b.label.sequence !== undefined) {
+      const seqA = a.label.sequence ?? a.index;
+      const seqB = b.label.sequence ?? b.index;
+      if (seqA !== seqB) {
+        return seqA - seqB;
+      }
+      return a.index - b.index;
+    }
+    const idA = a.label.id ?? a.index;
+    const idB = b.label.id ?? b.index;
+    if (idA !== idB) {
+      return idA - idB;
+    }
+    return a.index - b.index;
+  };
+}
+
+/**
+ * Collect ids of visible labels so later frames can prefer them.
+ *
+ * @param {Array<Label>} labels Labels.
+ * @param {Array<boolean>} visibility Visibility aligned with `labels`.
+ * @return {Set<number>} Visible ids.
+ */
+export function collectStickyIds(labels, visibility) {
+  /** @type {Set<number>} */
+  const ids = new Set();
+  for (let i = 0; i < labels.length; ++i) {
+    if (!visibility[i]) {
+      continue;
+    }
+    const id = labels[i].id;
+    if (id !== undefined) {
+      ids.add(id);
+    }
+  }
+  return ids;
+}
+
+/**
+ * Prefer previous winners unless the view zoomed out (resolution increased).
+ * Applies on zoom-in, pan, and rotation at a fixed zoom.
+ *
+ * @param {number|undefined} previousResolution Previous view resolution.
+ * @param {number} resolution Current resolution.
+ * @param {Set<number>} stickyIds Previous winners.
+ * @return {Set<number>|undefined} Sticky ids, or `undefined` when zooming out.
+ */
+export function stickyIdsForView(previousResolution, resolution, stickyIds) {
+  if (
+    previousResolution !== undefined &&
+    resolution <= previousResolution &&
+    stickyIds.size
+  ) {
+    return stickyIds;
+  }
+  return undefined;
+}
+
+/**
+ * CPU declutter matching Canvas greedy semantics: higher-priority labels
+ * claim space first (exact AABB, same as the Canvas RBush). Hidden labels do
+ * not occupy space. When labels carry a render sequence, the earlier one
+ * keeps the space. Otherwise a stable `id` (feature uid) is the tie-breaker
+ * so query order cannot flip winners while panning.
+ *
+ * When `stickyIds` is set (hysteresis on zoom-in, pan, and rotation),
+ * previously visible labels claim space before newcomers so a neighbor
+ * that just became unblocked cannot evict a label that was already shown.
+ *
+ * @param {Array<Label>} labels Labels (not necessarily sorted).
+ * @param {number} [cellSize] Ignored; kept for call-site compatibility.
+ * @param {number} [width] Ignored; kept for call-site compatibility.
+ * @param {number} [height] Ignored; kept for call-site compatibility.
+ * @param {string} [groupKey] Shared occupancy group (WebGPU layers only).
+ * @param {number} [frameIndex] Frame index; occupancy resets when this changes.
+ * @param {Set<number>} [stickyIds] Previously visible ids; prefer these first.
+ * @return {Array<boolean>} Visibility, aligned with the input array.
+ */
+export function resolveDeclutter(
+  labels,
+  cellSize = 8,
+  width = 2048,
+  height = 2048,
+  groupKey,
+  frameIndex,
+  stickyIds,
+) {
+  const metricStart = startMetric();
+  const compare = createCompare(stickyIds);
+  let signature = '';
+  for (const label of labels) {
+    signature += `${label.priority}/${label.id}/${label.sequence}/${label.pairId}/${label.mode};`;
+  }
+  let cachedOrder = orderCache.get(labels);
+  if (!cachedOrder || cachedOrder.signature !== signature) {
+    cachedOrder = {
+      signature,
+      order: labels
+        .map((label, index) => ({label, index}))
+        .sort(createCompare(undefined)),
+    };
+    orderCache.set(labels, cachedOrder);
+  }
+  const baseOrder = cachedOrder.order;
+  const order =
+    stickyIds && stickyIds.size
+      ? baseOrder
+          .filter(
+            (item) =>
+              item.label.id !== undefined && stickyIds.has(item.label.id),
+          )
+          .concat(
+            baseOrder.filter(
+              (item) =>
+                item.label.id === undefined || !stickyIds.has(item.label.id),
+            ),
+          )
+      : baseOrder;
+
+  // Group the image and text halves of a pair up front. Searching the whole
+  // list per item instead would be quadratic in the label count, which a busy
+  // vector tile view reaches easily.
+  /** @type {Map<number, Array<{label: Label, index: number}>>} */
+  const byPair = new Map();
+  for (const item of order) {
+    const pairId = item.label.pairId;
+    if (pairId === undefined || item.label.mode === 'none') {
+      continue;
+    }
+    const members = byPair.get(pairId);
+    if (members) {
+      members.push(item);
+    } else {
+      byPair.set(pairId, [item]);
+    }
+  }
+
+  /** @type {Array<DeclutterItem>} */
+  const units = [];
+  const consumed = new Set();
+
+  for (const item of order) {
+    if (consumed.has(item.index)) {
+      continue;
+    }
+    const pairId = item.label.pairId;
+    if (pairId !== undefined && item.label.mode !== 'none') {
+      const members = byPair.get(pairId) || [item];
+      for (const member of members) {
+        consumed.add(member.index);
+      }
+      /** @type {Label} */
+      const union = {
+        minX: Infinity,
+        minY: Infinity,
+        maxX: -Infinity,
+        maxY: -Infinity,
+        priority: Infinity,
+        id: Infinity,
+        mode: 'declutter',
+      };
+      let allObstacle = true;
+      let sticky = false;
+      let sequence;
+      for (const member of members) {
+        union.minX = Math.min(union.minX, member.label.minX);
+        union.minY = Math.min(union.minY, member.label.minY);
+        union.maxX = Math.max(union.maxX, member.label.maxX);
+        union.maxY = Math.max(union.maxY, member.label.maxY);
+        union.priority = Math.min(union.priority, member.label.priority);
+        union.id = Math.min(
+          union.id ?? Infinity,
+          member.label.id ?? member.index,
+        );
+        if (member.label.sequence !== undefined) {
+          sequence =
+            sequence === undefined
+              ? member.label.sequence
+              : Math.min(sequence, member.label.sequence);
+        }
+        if (member.label.mode !== 'obstacle') {
+          allObstacle = false;
+        }
+        if (member.label.id !== undefined && stickyIds?.has(member.label.id)) {
+          sticky = true;
+        }
+      }
+      union.mode = allObstacle ? 'obstacle' : 'declutter';
+      if (sequence !== undefined) {
+        union.sequence = sequence;
+      }
+      units.push({
+        label: union,
+        index: item.index,
+        members: members.map((m) => m.index),
+        sticky,
+      });
+      continue;
+    }
+    consumed.add(item.index);
+    units.push({
+      label: item.label,
+      index: item.index,
+      members: [item.index],
+      sticky: item.label.id !== undefined && stickyIds?.has(item.label.id),
+    });
+  }
+
+  units.sort(compare);
+
+  /** @type {import('rbush').default<DeclutterBox>} */
+  let tree;
+  if (groupKey !== undefined && frameIndex !== undefined) {
+    const key = groupKey;
+    const state = groupTrees.get(key);
+    if (!state || state.frame !== frameIndex) {
+      tree = new RBush(9);
+      groupTrees.set(key, {frame: frameIndex, tree});
+    } else {
+      tree = state.tree;
+    }
+  } else {
+    tree = new RBush(9);
+  }
+  const visible = new Array(labels.length).fill(false);
+  const seenIdentities = new Set();
+
+  for (const unit of units) {
+    const label = unit.label;
+    if (
+      label.maxX < -VIEWPORT_PADDING ||
+      label.minX > width + VIEWPORT_PADDING ||
+      label.maxY < -VIEWPORT_PADDING ||
+      label.minY > height + VIEWPORT_PADDING
+    ) {
+      continue;
+    }
+    if (label.id !== undefined && seenIdentities.has(label.id)) {
+      continue;
+    }
+    if (label.mode === 'none') {
+      for (const index of unit.members ?? [unit.index]) {
+        visible[index] = true;
+      }
+      if (label.id !== undefined) {
+        seenIdentities.add(label.id);
+      }
+      continue;
+    }
+    const box = {
+      minX: label.minX,
+      minY: label.minY,
+      maxX: label.maxX,
+      maxY: label.maxY,
+    };
+    if (label.mode !== 'obstacle' && tree.collides(box)) {
+      continue;
+    }
+    for (const index of unit.members ?? [unit.index]) {
+      visible[index] = true;
+    }
+    if (label.id !== undefined) {
+      seenIdentities.add(label.id);
+    }
+    tree.insert(box);
+  }
+  endMetric('resolveDeclutter', metricStart);
+  countMetric('declutterLabels', labels.length);
+  return visible;
+}
+
+/**
+ * Dispatch the GPU declutter compute pass. Labels must already be sorted by
+ * priority. Pair merging and shared occupancy groups are handled on the CPU
+ * (`resolveDeclutter`) so Canvas image+text all-or-nothing semantics hold;
+ * this shader implements the occupancy-grid claim for a single sorted list.
+ *
+ * @param {import("../../webgpu/Helper.js").default} helper Helper.
+ * @param {Array<Label>} labels Sorted labels.
+ * @param {number} width Viewport width.
+ * @param {number} height Viewport height.
+ * @param {number} [cellSize] Cell size.
+ * @return {GPUBuffer} Visibility buffer (u32 per label).
+ */
+export function dispatchDeclutterCompute(
+  helper,
+  labels,
+  width,
+  height,
+  cellSize = 8,
+) {
+  const device = helper.getDevice();
+  const count = labels.length;
+  const gridWidth = Math.max(1, Math.ceil(width / cellSize));
+  const gridHeight = Math.max(1, Math.ceil(height / cellSize));
+  const labelStride = 8; // 4 f32 aabb + 4 u32
+  const labelData = new ArrayBuffer(Math.max(count, 1) * labelStride * 4);
+  const f32 = new Float32Array(labelData);
+  const u32 = new Uint32Array(labelData);
+  for (let i = 0; i < count; ++i) {
+    const label = labels[i];
+    const o = i * labelStride;
+    f32[o] = label.minX;
+    f32[o + 1] = label.minY;
+    f32[o + 2] = label.maxX;
+    f32[o + 3] = label.maxY;
+    u32[o + 4] = label.priority >>> 0;
+    u32[o + 5] = modeToInt(label.mode);
+    u32[o + 6] = label.pairId ?? 0;
+  }
+
+  const labelBuffer = helper.createBuffer(
+    labelData,
+    GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+  );
+  const occupancyBuffer = helper.createBuffer(
+    new Uint32Array(Math.max(1, gridWidth * gridHeight)),
+    GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+  );
+  const visibilityBuffer = device.createBuffer({
+    size: Math.max(4, count * 4),
+    usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
+  });
+  const paramsData = new Uint32Array([count, gridWidth, gridHeight, 0]);
+  const paramsF32 = new Float32Array(paramsData.buffer);
+  paramsF32[3] = cellSize;
+  const paramsBuffer = helper.createBuffer(
+    paramsData,
+    GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+  );
+
+  const pipeline = helper.getComputePipeline('declutter', {
+    layout: 'auto',
+    compute: {
+      module: helper.createShaderModule(DECLUTTER_SHADER),
+      entryPoint: 'cs_main',
+    },
+  });
+  const encoder = helper.getEncoder();
+  const pass = encoder.beginComputePass();
+  pass.setPipeline(pipeline);
+  pass.setBindGroup(
+    0,
+    device.createBindGroup({
+      layout: pipeline.getBindGroupLayout(0),
+      entries: [
+        {binding: 0, resource: {buffer: labelBuffer}},
+        {binding: 1, resource: {buffer: occupancyBuffer}},
+        {binding: 2, resource: {buffer: visibilityBuffer}},
+        {binding: 3, resource: {buffer: paramsBuffer}},
+      ],
+    }),
+  );
+  pass.dispatchWorkgroups(1);
+  pass.end();
+  return visibilityBuffer;
+}
