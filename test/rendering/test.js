@@ -207,14 +207,28 @@ async function copyActualToExpected(entry) {
 async function renderEach(page, entries, options) {
   let fail = false;
   for (const entry of entries) {
-    const {tolerance = 0.005, message = ''} = await renderPage(
-      page,
-      entry,
-      options,
-    );
+    const {
+      tolerance = 0.005,
+      message = '',
+      skip = false,
+    } = await renderPage(page, entry, options);
+
+    if (skip) {
+      options.log.info('skipping', entry, message || '');
+      continue;
+    }
 
     if (options.fix) {
       await copyActualToExpected(entry);
+      continue;
+    }
+
+    // WebGPU cases skip until expected.png is generated with --fix on a GPU machine.
+    if (
+      /webgpu-/.test(entry) &&
+      !fs.existsSync(getExpectedScreenshotPath(entry))
+    ) {
+      options.log.info('skipping (no expected screenshot)', entry);
       continue;
     }
 

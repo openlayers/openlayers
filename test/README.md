@@ -3,6 +3,7 @@
 - browser - Unit/integration tests run in a browser
 - node - Unit tests run with Node.js
 - rendering - Tests that make assertions about rendered map output
+- performance - Benchmarks that measure rendering speed. See the [readme there](./performance/README.md).
 
 
 ## Run the test suite
@@ -38,4 +39,9 @@ The `test/node` directory contains tests using code that does not require a brow
 
 The `test/rendering` directory contains rendering tests which compare a rendered map with a
 reference image. See the [readme there](./rendering/readme.md) for details.
+
+## Performance benchmarks
+
+The `test/performance` directory contains benchmarks that measure rendering speed.
+They are not part of `npm test`. See the [readme there](./performance/README.md).
 

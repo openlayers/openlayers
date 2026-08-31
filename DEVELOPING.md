@@ -47,10 +47,28 @@ To run the examples you first need to start the dev server:
 npm run serve-examples
 ```
 
-Then, load <http://localhost:8080/> in your browser.
+Then, load <http://localhost:3000/> in your browser.
 
 To override the API tokens used in the examples (Mapbox, MapTiler, etc.) add the corresponding `*_KEY` entries to `examples/.env` (see `examples/.env.example`). That file is gitignored and is not used when building examples for the website.
 
+
+## Running benchmarks
+
+Benchmarks live in `test/performance` and are not published with the examples.
+See the [performance readme](./test/performance/README.md) for the case contract
+and for comparing two result files.
+
+To open the dev page:
+
+```shell
+npm run serve-bench
+```
+
+To run every case headlessly:
+
+```shell
+npm run bench
+```
 
 ## Running tests
 

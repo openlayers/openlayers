@@ -30,6 +30,8 @@ const DEFAULT_FILL_COLOR = '#333';
  * https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/font. Default is `'10px sans-serif'`
  * @property {number} [maxAngle=Math.PI/4] When `placement` is set to `'line'`, allow a maximum angle between adjacent characters.
  * The expected value is in radians, and the default is 45° (`Math.PI / 4`).
+ * @property {number} [maxWidth] Maximum text width in pixels before wrapping. Only supported by WebGPU layers when
+ * `placement` is set to `'point'`.
  * @property {number} [offsetX=0] Horizontal text offset in pixels. A positive will shift the text right.
  * @property {number} [offsetY=0] Vertical text offset in pixels. A positive will shift the text down.
  * @property {boolean} [overflow=false] For polygon labels or when `placement` is set to `'line'`, allow text to exceed
@@ -162,6 +164,12 @@ class Text {
 
     /**
      * @private
+     * @type {number|undefined}
+     */
+    this.maxWidth_ = options.maxWidth;
+
+    /**
+     * @private
      * @type {TextPlacement}
      */
     this.placement_ =
@@ -232,6 +240,7 @@ class Text {
       placement: this.getPlacement(),
       repeat: this.getRepeat(),
       maxAngle: this.getMaxAngle(),
+      maxWidth: this.getMaxWidth(),
       overflow: this.getOverflow(),
       rotation: this.getRotation(),
       rotateWithView: this.getRotateWithView(),
@@ -280,6 +289,15 @@ class Text {
    */
   getMaxAngle() {
     return this.maxAngle_;
+  }
+
+  /**
+   * Get the maximum text width before wrapping.
+   * @return {number|undefined} Maximum width in pixels.
+   * @api
+   */
+  getMaxWidth() {
+    return this.maxWidth_;
   }
 
   /**
@@ -480,6 +498,16 @@ class Text {
    */
   setMaxAngle(maxAngle) {
     this.maxAngle_ = maxAngle;
+  }
+
+  /**
+   * Set the maximum text width before wrapping.
+   *
+   * @param {number|undefined} maxWidth Maximum width in pixels.
+   * @api
+   */
+  setMaxWidth(maxWidth) {
+    this.maxWidth_ = maxWidth;
   }
 
   /**

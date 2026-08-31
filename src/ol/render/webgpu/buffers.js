@@ -1,0 +1,1228 @@
+/**
+ * @module ol/render/webgpu/buffers
+ */
+import {asArray} from '../../color.js';
+import {warn} from '../../console.js';
+import {createEmpty, extend as extendExtent, isEmpty} from '../../extent.js';
+import {inflateEnds} from '../../geom/flat/orient.js';
+import {fromCircle} from '../../geom/Polygon.js';
+import RenderFeature from '../../render/Feature.js';
+import {getUid} from '../../util.js';
+import {countMetric, endMetric, startMetric} from '../../webgpu/metrics.js';
+import {
+  CLASS_CIRCLE,
+  CLASS_IMAGE,
+  CLASS_LINE,
+  CLASS_POLYGON,
+  CLASS_TEXT,
+  compareDraw,
+} from './drawOrder.js';
+import {buildGeometryBuffers} from './geometryBuffers.js';
+import {layoutLineLabel, layoutPointLabel} from './glyphLayout.js';
+
+/**
+ * @typedef {import("./tessellate.js").TessellateOptions} VectorReprojOptions
+ */
+
+/**
+ * Floats per point symbol instance: anchor (2), pixel offset (2), size (2),
+ * fill color (4), hit color (4), stroke color (4), stroke width (1), and
+ * radius (1). The hit color stays at offset 10.
+ * @type {number}
+ */
+export const SYMBOL_STRIDE = 20;
+
+/**
+ * @param {number} id Feature ref.
+ * @return {Array<number>} RGBA 0-1.
+ */
+export function encodeHitColor(id) {
+  return [
+    (id & 255) / 255,
+    ((id >> 8) & 255) / 255,
+    ((id >> 16) & 255) / 255,
+    1,
+  ];
+}
+
+/**
+ * @param {Array<number>} color RGBA 0-1 (or 0-255 from readPixels).
+ * @return {number} Id.
+ */
+export function decodeHitColor(color) {
+  const r = color[0] > 1 ? color[0] : color[0] * 255;
+  const g = color[1] > 1 ? color[1] : color[1] * 255;
+  const b = color[2] > 1 ? color[2] : color[2] * 255;
+  return (Math.round(r) | (Math.round(g) << 8) | (Math.round(b) << 16)) >>> 0;
+}
+
+/**
+ * Warn only once, because a pattern is usually used by many features.
+ * @type {boolean}
+ */
+let patternWarned = false;
+
+/**
+ * @param {import("../../color.js").Color|import("../../colorlike.js").ColorLike|import("../../colorlike.js").PatternDescriptor|undefined} color Color.
+ * @return {Array<number>} RGBA 0-1. Patterns and gradients are not supported
+ * and come out transparent.
+ */
+function toRgba(color) {
+  if (typeof color !== 'string' && !Array.isArray(color)) {
+    if (color && !patternWarned) {
+      patternWarned = true;
+      warn(
+        'The WebGPU renderer does not yet support patterns and gradients, and draws them transparent.',
+      );
+    }
+    return [0, 0, 0, 0];
+  }
+  const array = asArray(color);
+  return [array[0] / 255, array[1] / 255, array[2] / 255, array[3] ?? 1];
+}
+
+/**
+ * @typedef {import("./geometryBuffers.js").LocalGrid} LocalGrid
+ */
+
+/**
+ * @typedef {Object} VectorBuffers
+ * @property {Int16Array} fillPositions Fill positions in grid units.
+ * @property {Uint32Array} fillStyles Style index per fill vertex.
+ * @property {Uint32Array} fillIndices Fill indices.
+ * @property {Int16Array} strokePositions Stroke positions in grid units.
+ * @property {Float32Array} strokeAttributes Normal x, normal y, width, and
+ *     distance along the line in drawn map units, per stroke vertex.
+ * @property {Uint32Array} strokeStyles Style index per stroke vertex.
+ * @property {Uint32Array} strokeIndices Stroke indices.
+ * @property {Float32Array} styles Styles, `STYLE_STRIDE` floats each.
+ * @property {LocalGrid} grid Grid the positions are expressed in.
+ * @property {Float32Array} symbolInstances Symbol instances.
+ * @property {Array<import("./glyphLayout.js").GlyphInstance>} glyphs Glyphs.
+ * @property {Array<import("./declutter.js").Label>} labels Declutter labels.
+ * @property {Object<number, import("../../Feature.js").FeatureLike>} featuresByRef Hit refs.
+ * @property {Array<import("./drawOrder.js").DrawCommand>} commands Paint order.
+ */
+
+/**
+ * Floats per style table entry: color (4), hit color (4), up to eight dash
+ * lengths (8), and dash offset, dash pattern length, dash count, and padding
+ * (4), matching the `Style` struct of the vector shaders.
+ * @type {number}
+ */
+export const STYLE_STRIDE = 20;
+
+/**
+ * Most dash lengths a style table entry holds. Longer patterns are truncated.
+ * @type {number}
+ */
+const MAX_DASHES = 8;
+
+/**
+ * Normalizes a line dash the way Canvas does: an odd number of lengths is
+ * repeated to make it even, and a pattern with a negative or non-finite length,
+ * or only zero lengths, means a solid line.
+ *
+ * @param {Array<number>|null|undefined} lineDash Line dash, in CSS pixels.
+ * @return {Array<number>} Dash lengths, empty for a solid line.
+ */
+export function normalizeLineDash(lineDash) {
+  if (!lineDash || lineDash.length === 0) {
+    return [];
+  }
+  let total = 0;
+  for (const length of lineDash) {
+    if (!(length >= 0) || !isFinite(length)) {
+      return [];
+    }
+    total += length;
+  }
+  if (total === 0) {
+    return [];
+  }
+  const dashes =
+    lineDash.length % 2 === 1 ? lineDash.concat(lineDash) : lineDash.slice();
+  return dashes.slice(0, MAX_DASHES);
+}
+
+/**
+ * @classdesc
+ * Collects the distinct styles of a batch, so vertices only carry an index
+ * instead of the `STYLE_STRIDE` floats of a style.
+ */
+class StyleTable {
+  constructor() {
+    /**
+     * @type {Array<number>}
+     */
+    this.values = [];
+
+    /**
+     * @private
+     * @type {Map<string, number>}
+     */
+    this.indices_ = new Map();
+  }
+
+  /**
+   * @param {Array<number>} color RGBA 0-1.
+   * @param {Array<number>} hit Hit color RGBA 0-1.
+   * @param {Array<number>} [lineDash] Dash lengths in CSS pixels, as returned
+   * by `normalizeLineDash`. Empty or omitted for a solid line.
+   * @param {number} [lineDashOffset] Dash offset in CSS pixels.
+   * @return {number} Style index.
+   */
+  add(color, hit, lineDash = [], lineDashOffset = 0) {
+    const key =
+      color.join(',') +
+      '|' +
+      hit.join(',') +
+      '|' +
+      lineDash.join(',') +
+      '|' +
+      (lineDash.length ? lineDashOffset : 0);
+    const existing = this.indices_.get(key);
+    if (existing !== undefined) {
+      return existing;
+    }
+    const index = this.values.length / STYLE_STRIDE;
+    this.values.push(...color, ...hit);
+    let total = 0;
+    for (let i = 0; i < MAX_DASHES; ++i) {
+      const length = lineDash[i] ?? 0;
+      total += length;
+      this.values.push(length);
+    }
+    this.values.push(
+      lineDash.length ? lineDashOffset : 0,
+      total,
+      lineDash.length,
+      0,
+    );
+    this.indices_.set(key, index);
+    return index;
+  }
+}
+
+/**
+ * Fallback extent for the local grid when the caller has no clip extent.
+ *
+ * @param {Array<import("../../Feature.js").FeatureLike>} features Features.
+ * @return {import("../../extent.js").Extent} Extent.
+ */
+function boundsOf(features) {
+  const extent = createEmpty();
+  for (const feature of features) {
+    const geometry = feature.getGeometry();
+    if (geometry) {
+      extendExtent(extent, geometry.getExtent());
+    }
+  }
+  return isEmpty(extent) ? [0, 0, 0, 0] : extent;
+}
+
+/**
+ * Labels, symbols, and hit references. These stay on the main thread because
+ * they need the font atlas and the feature objects.
+ *
+ * @typedef {Object} LabelData
+ * @property {Float32Array} symbolInstances Symbol instances.
+ * @property {Array<import("./glyphLayout.js").GlyphInstance>} glyphs Glyphs.
+ * @property {Array<import("./declutter.js").Label>} labels Declutter labels.
+ * @property {Object<number, import("../../Feature.js").FeatureLike>} featuresByRef Hit refs.
+ */
+
+/**
+ * Style evaluation and geometry extraction, with the resulting tessellation
+ * work described as plain data so it can run here or on a worker.
+ *
+ * @param {Array<import("../../Feature.js").FeatureLike>} features Features.
+ * @param {import("./style.js").StyleFunction} styleFunction Style function.
+ * @param {number} resolution Resolution.
+ * @param {import("../../webgpu/FontAtlas.js").default} atlas Atlas.
+ * @param {VectorReprojOptions} [reproj] Reprojection options.
+ * @param {number} [pixelRatio] Device pixel ratio for glyph rasterization.
+ * @param {number} [zoom] View zoom level, for `['zoom']` expressions.
+ * @param {import("../../render.js").OrderFunction|null} [renderOrder] Feature order. The default is uid order.
+ * @return {{request: import("./geometryBuffers.js").GeometryRequest, labelData: LabelData}} Work and labels.
+ */
+export function buildVectorRequest(
+  features,
+  styleFunction,
+  resolution,
+  atlas,
+  reproj,
+  pixelRatio = 1,
+  zoom = NaN,
+  renderOrder,
+) {
+  const metricStart = startMetric();
+  const styleTable = new StyleTable();
+  /** @type {Array<import("./geometryBuffers.js").GeometryJob>} */
+  const jobs = [];
+  /** @type {Array<number>} */
+  const coordinates = [];
+  /** @type {Array<number>} */
+  const symbolInstances = [];
+  /** @type {Array<import("./glyphLayout.js").GlyphInstance>} */
+  const glyphs = [];
+  /** @type {Array<import("./declutter.js").Label>} */
+  const labels = [];
+  /** @type {Object<number, import("../../Feature.js").FeatureLike>} */
+  const featuresByRef = {};
+
+  /** @type {BuildState} */
+  const state = {
+    jobs,
+    coordinates,
+    symbolInstances,
+    glyphs,
+    labels,
+    styleTable,
+    atlas,
+    reproj,
+    resolution,
+    pixelRatio,
+    nextPairId: 1,
+    nextSequence: 0,
+  };
+
+  let featureIndex = 0;
+  const sorted = features.slice();
+  if (renderOrder) {
+    sorted.sort(renderOrder);
+  } else {
+    sorted.sort((a, b) => Number(getUid(a)) - Number(getUid(b)));
+  }
+
+  for (const feature of sorted) {
+    const geometry = feature.getGeometry();
+    if (!geometry) {
+      continue;
+    }
+    const styles = styleFunction(feature, resolution, zoom);
+    if (!styles) {
+      continue;
+    }
+    const styleArray = Array.isArray(styles) ? styles : [styles];
+    const ref = ++featureIndex;
+    featuresByRef[ref] = feature;
+    const hit = encodeHitColor(ref);
+    const labelId = Number(getUid(feature));
+    const featureId = feature.getId();
+
+    for (let s = 0; s < styleArray.length; ++s) {
+      const style = styleArray[s];
+      const geom = style.getGeometryFunction()(feature) || geometry;
+      if (!geom) {
+        continue;
+      }
+      if (geom.getType() !== 'GeometryCollection') {
+        appendStyledGeometry(
+          state,
+          geom,
+          style,
+          String(s),
+          hit,
+          labelId,
+          featureId,
+          ref,
+        );
+        continue;
+      }
+      const members =
+        /** @type {import("../../geom/GeometryCollection.js").default} */ (
+          geom
+        ).getGeometriesArrayRecursive();
+      for (let m = 0; m < members.length; ++m) {
+        appendStyledGeometry(
+          state,
+          members[m],
+          style,
+          `${s}.${m}`,
+          hit,
+          labelId,
+          featureId,
+          ref,
+        );
+      }
+    }
+  }
+
+  endMetric('buildVectorRequest', metricStart);
+  countMetric('builtFeatures', sorted.length);
+
+  // The GPU stores anchors as float32. An absolute web mercator coordinate is
+  // only good to about a metre there, which is several pixels once the view is
+  // past zoom 16, and the error changes with the view matrix — labels shake
+  // while the local-grid geometry stays still. Keep the anchor relative to the
+  // same origin the grid uses; the label matrix adds it back in float64.
+  // Glyph instances stay absolute until they are packed, because declutter
+  // still projects them on the CPU.
+  packLabelsInDrawOrder(labels, glyphs, symbolInstances);
+
+  const gridExtent = reproj?.clipExtent || boundsOf(features);
+  const originX = gridExtent[0];
+  const originY = gridExtent[1];
+  for (let i = 0; i < symbolInstances.length; i += SYMBOL_STRIDE) {
+    symbolInstances[i] -= originX;
+    symbolInstances[i + 1] -= originY;
+  }
+
+  return {
+    request: {
+      jobs,
+      coordinates: new Float64Array(coordinates),
+      styles: new Float32Array(styleTable.values),
+      gridExtent,
+      clipExtent: reproj?.clipExtent,
+      maxSegmentLength: reproj?.maxSegmentLength,
+      maxSpanX: reproj?.maxSpanX,
+      worldWidth: reproj?.worldWidth,
+      warpGrid: reproj?.warpGrid,
+      warpExtent: reproj?.warpExtent,
+      maxTargetError: reproj?.maxTargetError,
+      maxTargetEdge: reproj?.maxTargetEdge,
+      projectToTarget: reproj?.projectToTarget,
+    },
+    labelData: {
+      symbolInstances: new Float32Array(symbolInstances),
+      glyphs,
+      labels,
+      featuresByRef,
+    },
+  };
+}
+
+/**
+ * What one `buildVectorRequest()` call accumulates, shared by every geometry it
+ * draws.
+ *
+ * @typedef {Object} BuildState
+ * @property {Array<import("./geometryBuffers.js").GeometryJob>} jobs Fill and stroke jobs.
+ * @property {Array<number>} coordinates Shared x/y pairs the jobs refer to.
+ * @property {Array<number>} symbolInstances Point symbol instances, `SYMBOL_STRIDE` floats each.
+ * @property {Array<import("./glyphLayout.js").GlyphInstance>} glyphs Glyphs.
+ * @property {Array<import("./declutter.js").Label>} labels Declutter labels.
+ * @property {StyleTable} styleTable Style table.
+ * @property {import("../../webgpu/FontAtlas.js").default} atlas Atlas.
+ * @property {VectorReprojOptions|undefined} reproj Reprojection options.
+ * @property {number} resolution Resolution.
+ * @property {number} pixelRatio Device pixel ratio for glyph rasterization.
+ * @property {number} nextPairId Next image and text pair id.
+ * @property {number} nextSequence Next render sequence.
+ */
+
+/**
+ * Sides for drawing a circle as a regular polygon, so the straight edges stay
+ * within half a pixel of the arc.
+ *
+ * @param {number} radius Radius in map units.
+ * @param {number} resolution Map units per pixel.
+ * @return {number} Side count, from 32 to 128.
+ */
+function circleSides(radius, resolution) {
+  if (!(radius > 0) || !(resolution > 0)) {
+    return 32;
+  }
+  const sides = Math.ceil(Math.PI * Math.sqrt(radius / resolution));
+  return Math.max(32, Math.min(128, sides));
+}
+
+/**
+ * Append the fills, strokes, symbols, and labels that one style gives one
+ * geometry. A geometry collection is drawn by calling this once per member,
+ * each with its own `styleKey` so their labels keep distinct identities.
+ *
+ * @param {BuildState} state Build state.
+ * @param {import("../../geom/Geometry.js").default|import("../../render/Feature.js").default} geom Geometry, never a collection.
+ * @param {import("../../style/Style.js").default} style Style.
+ * @param {string} styleKey Style index, plus member index for a collection member.
+ * @param {Array<number>} hit Hit color of the feature.
+ * @param {number} labelId Stable label id of the feature.
+ * @param {number|string|undefined} featureId Feature id.
+ * @param {number} featureRef Feature ref.
+ */
+function appendStyledGeometry(
+  state,
+  geom,
+  style,
+  styleKey,
+  hit,
+  labelId,
+  featureId,
+  featureRef,
+) {
+  const {jobs, coordinates, glyphs, labels, styleTable, atlas, reproj} = state;
+  const zIndex = style.getZIndex() || 0;
+  const type = geom.getType();
+  const sequence = state.nextSequence++;
+  /** @type {import("./drawOrder.js").DrawStamp} */
+  const stamp = {
+    zIndex,
+    classRank: classRankFor(type),
+    sequence,
+    featureRef,
+  };
+  const fill = style.getFill();
+  const stroke = style.getStroke();
+  const image = style.getImage();
+  const text = style.getText();
+  const rawText = text?.getText();
+  const textKey = Array.isArray(rawText) ? rawText.join('\n') : rawText || '';
+  const featureKey =
+    (featureId !== undefined ? String(featureId) : type) + '|' + textKey;
+
+  if (type === 'Circle' && (fill || stroke)) {
+    const circle = /** @type {import("../../geom/Circle.js").default} */ (geom);
+    const polygon = fromCircle(
+      circle,
+      circleSides(circle.getRadius(), state.resolution),
+    );
+    if (fill) {
+      appendFills(polygon, fill, hit, jobs, coordinates, styleTable, stamp);
+    }
+    if (stroke) {
+      appendStrokes(polygon, stroke, hit, jobs, coordinates, styleTable, stamp);
+    }
+  } else if (fill && (type === 'Polygon' || type === 'MultiPolygon')) {
+    appendFills(
+      /** @type {any} */ (geom),
+      fill,
+      hit,
+      jobs,
+      coordinates,
+      styleTable,
+      stamp,
+    );
+  }
+  if (
+    stroke &&
+    type !== 'Point' &&
+    type !== 'MultiPoint' &&
+    type !== 'Circle'
+  ) {
+    appendStrokes(
+      /** @type {any} */ (geom),
+      stroke,
+      hit,
+      jobs,
+      coordinates,
+      styleTable,
+      stamp,
+    );
+  }
+
+  const placement = text?.getPlacement ? text.getPlacement() : 'point';
+  const linePlacement =
+    text &&
+    placement === 'line' &&
+    (type === 'LineString' || type === 'MultiLineString');
+  const imageAnchors =
+    image && (type === 'Point' || type === 'MultiPoint')
+      ? getAnchors(/** @type {any} */ (geom), reproj)
+      : [];
+  const textAnchors =
+    text && !linePlacement ? getAnchors(/** @type {any} */ (geom), reproj) : [];
+  const maxAnchors = Math.max(imageAnchors.length, textAnchors.length);
+  for (let a = 0; a < maxAnchors; ++a) {
+    const pid =
+      imageAnchors[a] && textAnchors[a] ? state.nextPairId++ : undefined;
+    if (image && imageAnchors[a]) {
+      const anchor = imageAnchors[a];
+      const size = image.getSize() || [16, 16];
+      const symbolIndex = appendSymbolInstance(
+        state.symbolInstances,
+        image,
+        anchor,
+        hit,
+      );
+      labels.push({
+        minX: -size[0] / 2,
+        minY: -size[1] / 2,
+        maxX: size[0] / 2,
+        maxY: size[1] / 2,
+        priority: -zIndex,
+        zIndex,
+        classRank: CLASS_IMAGE,
+        sequence,
+        featureRef,
+        id: labelId,
+        mode: image.getDeclutterMode?.() || 'declutter',
+        pairId: pid,
+        glyphStart: 0,
+        glyphCount: 0,
+        symbolIndex,
+        _anchor: anchor,
+        _identityKey: `${featureKey}|${styleKey}|${a}|${pid ? 'pair' : 'image'}`,
+      });
+    }
+    if (!text || !textAnchors[a]) {
+      continue;
+    }
+    const start = glyphs.length;
+    const box = layoutPointLabel(
+      glyphs,
+      text,
+      textAnchors[a],
+      atlas,
+      hit,
+      state.pixelRatio,
+    );
+    if (!box) {
+      continue;
+    }
+    labels.push({
+      minX: box.minX,
+      minY: box.minY,
+      maxX: box.maxX,
+      maxY: box.maxY,
+      priority: -zIndex,
+      zIndex,
+      classRank: CLASS_TEXT,
+      sequence,
+      featureRef,
+      id: labelId,
+      mode: text.getDeclutterMode?.() || 'declutter',
+      pairId: pid,
+      padding: text.getPadding() || [0, 0, 0, 0],
+      glyphStart: start,
+      glyphCount: glyphs.length - start,
+      text: textKey,
+      _anchor: textAnchors[a],
+      _identityKey: `${featureKey}|${styleKey}|${a}|${pid ? 'pair' : 'text'}`,
+    });
+  }
+  if (!linePlacement) {
+    return;
+  }
+  const start = glyphs.length;
+  const box = layoutLineLabel(
+    glyphs,
+    text,
+    /** @type {any} */ (geom).getFlatCoordinates(),
+    state.resolution,
+    atlas,
+    hit,
+    state.pixelRatio,
+  );
+  if (!box) {
+    return;
+  }
+  const count = glyphs.length - start;
+  const middle = glyphs[start + Math.floor(count / 2)];
+  labels.push({
+    minX: box.minX,
+    minY: box.minY,
+    maxX: box.maxX,
+    maxY: box.maxY,
+    priority: -zIndex,
+    zIndex,
+    classRank: CLASS_TEXT,
+    sequence,
+    featureRef,
+    id: labelId,
+    mode: text.getDeclutterMode?.() || 'declutter',
+    padding: text.getPadding() || [0, 0, 0, 0],
+    glyphStart: start,
+    glyphCount: count,
+    text: textKey,
+    _anchor: middle ? [middle.x, middle.y] : undefined,
+    _identityKey: `${featureKey}|${styleKey}|line`,
+  });
+}
+
+/**
+ * Append one point symbol instance, laid out as `SYMBOL_STRIDE` describes.
+ *
+ * A circle style is drawn as Canvas draws it: a fill inside a stroke centred on
+ * the radius, with no fill at all when the style has none. Any other image is
+ * drawn as a disc filling its size, in its fill color or a placeholder orange.
+ *
+ * @param {Array<number>} symbolInstances Symbol instances.
+ * @param {import("../../style/Image.js").default} image Image style.
+ * @param {import("../../coordinate.js").Coordinate} anchor Anchor.
+ * @param {Array<number>} hit Hit color.
+ * @return {number} Index of the new instance.
+ */
+function appendSymbolInstance(symbolInstances, image, anchor, hit) {
+  const size = image.getSize() || [16, 16];
+  const scaleArray = image.getScaleArray?.() || [1, 1];
+  const scaleX = Array.isArray(scaleArray) ? scaleArray[0] : 1;
+  const scaleY = Array.isArray(scaleArray) ? scaleArray[1] : 1;
+  const shape = /** @type {any} */ (image);
+  const isCircle = typeof shape.getRadius === 'function';
+  const fillColor = shape.getFill?.()?.getColor?.();
+  const fill = toRgba(fillColor || (isCircle ? undefined : [255, 153, 0, 1]));
+  const stroke = isCircle ? shape.getStroke?.() : null;
+  const strokeColor = stroke
+    ? toRgba(stroke.getColor() || '#000')
+    : [0, 0, 0, 0];
+  const strokeWidth = stroke ? (stroke.getWidth() ?? 1) * scaleX : 0;
+  const radius = isCircle
+    ? shape.getRadius() * scaleX
+    : Math.min(size[0] * scaleX, size[1] * scaleY) / 2;
+  const symbolIndex = symbolInstances.length / SYMBOL_STRIDE;
+  symbolInstances.push(
+    anchor[0],
+    anchor[1],
+    0,
+    0,
+    size[0] * scaleX,
+    size[1] * scaleY,
+    fill[0],
+    fill[1],
+    fill[2],
+    fill[3],
+    hit[0],
+    hit[1],
+    hit[2],
+    hit[3],
+    strokeColor[0],
+    strokeColor[1],
+    strokeColor[2],
+    strokeColor[3],
+    strokeWidth,
+    radius,
+  );
+  return symbolIndex;
+}
+
+/**
+ * @param {import("./geometryBuffers.js").GeometryBuffers} geometry Geometry.
+ * @param {LabelData} labelData Labels.
+ * @return {VectorBuffers} Buffers.
+ */
+export function combineVectorBuffers(geometry, labelData) {
+  countMetric('fillTriangles', geometry.fillIndices.length / 3);
+  countMetric('strokeTriangles', geometry.strokeIndices.length / 3);
+  const commands = (geometry.ranges || []).concat(
+    labelCommands(labelData.labels),
+  );
+  commands.sort(compareDraw);
+  return {
+    fillPositions: geometry.fillPositions,
+    fillStyles: geometry.fillStyles,
+    fillIndices: geometry.fillIndices,
+    strokePositions: geometry.strokePositions,
+    strokeAttributes: geometry.strokeAttributes,
+    strokeStyles: geometry.strokeStyles,
+    strokeIndices: geometry.strokeIndices,
+    styles: geometry.styles,
+    grid: geometry.grid,
+    symbolInstances: labelData.symbolInstances,
+    glyphs: labelData.glyphs,
+    labels: labelData.labels,
+    featuresByRef: labelData.featuresByRef,
+    commands,
+  };
+}
+
+/**
+ * Build everything on the calling thread.
+ *
+ * @param {Array<import("../../Feature.js").FeatureLike>} features Features.
+ * @param {import("../../style/Style.js").StyleFunction} styleFunction Style function.
+ * @param {number} resolution Resolution.
+ * @param {import("../../webgpu/FontAtlas.js").default} atlas Atlas.
+ * @param {VectorReprojOptions} [reproj] Reprojection options.
+ * @param {number} [pixelRatio] Device pixel ratio for glyph rasterization.
+ * @param {number} [zoom] View zoom level.
+ * @param {import("../../render.js").OrderFunction|null} [renderOrder] Feature order.
+ * @return {VectorBuffers} Buffers.
+ */
+export function buildVectorBuffers(
+  features,
+  styleFunction,
+  resolution,
+  atlas,
+  reproj,
+  pixelRatio = 1,
+  zoom = NaN,
+  renderOrder,
+) {
+  const {request, labelData} = buildVectorRequest(
+    features,
+    styleFunction,
+    resolution,
+    atlas,
+    reproj,
+    pixelRatio,
+    zoom,
+    renderOrder,
+  );
+  const metricStart = startMetric();
+  const geometry = buildGeometryBuffers(request);
+  endMetric('mainThreadGeometry', metricStart);
+  return combineVectorBuffers(geometry, labelData);
+}
+
+/**
+ * Point / RenderFeature-compatible coordinate.
+ *
+ * @param {import("../../geom/Geometry.js").default|import("../../render/Feature.js").default} geometry Geometry.
+ * @return {import("../../coordinate.js").Coordinate} Coordinate.
+ */
+function pointCoordinate(geometry) {
+  const withCoords = /** @type {any} */ (geometry);
+  if (typeof withCoords.getCoordinates === 'function') {
+    const coordinates = withCoords.getCoordinates();
+    if (coordinates) {
+      return coordinates;
+    }
+  }
+  const flat = withCoords.getFlatCoordinates();
+  return [flat[0], flat[1]];
+}
+
+/**
+ * MultiPoint / RenderFeature-compatible coordinates.
+ *
+ * @param {import("../../geom/Geometry.js").default|import("../../render/Feature.js").default} geometry Geometry.
+ * @return {Array<import("../../coordinate.js").Coordinate>} Coordinates.
+ */
+function multiPointCoordinates(geometry) {
+  const withCoords = /** @type {any} */ (geometry);
+  if (typeof withCoords.getCoordinates === 'function') {
+    const coordinates = withCoords.getCoordinates();
+    if (coordinates) {
+      return coordinates;
+    }
+  }
+  const flat = withCoords.getFlatCoordinates();
+  const stride = withCoords.getStride?.() || 2;
+  /** @type {Array<import("../../coordinate.js").Coordinate>} */
+  const anchors = [];
+  for (let i = 0; i < flat.length; i += stride) {
+    anchors.push([flat[i], flat[i + 1]]);
+  }
+  return anchors;
+}
+
+/**
+ * Polygon label/symbol anchor. RenderFeature has no `getInteriorPoint()`.
+ *
+ * @param {import("../../geom/Geometry.js").default|import("../../render/Feature.js").default} geometry Geometry.
+ * @return {import("../../coordinate.js").Coordinate} Anchor.
+ */
+function polygonAnchor(geometry) {
+  const withInterior = /** @type {any} */ (geometry);
+  if (typeof withInterior.getInteriorPoint === 'function') {
+    return withInterior.getInteriorPoint().getCoordinates().slice(0, 2);
+  }
+  if (typeof withInterior.getFlatInteriorPoint === 'function') {
+    const interior = withInterior.getFlatInteriorPoint();
+    return [interior[0], interior[1]];
+  }
+  const extent = geometry.getExtent();
+  return [(extent[0] + extent[2]) / 2, (extent[1] + extent[3]) / 2];
+}
+
+/**
+ * @param {import("../../geom/Geometry.js").default} geometry Geometry.
+ * @param {VectorReprojOptions} [reproj] Reprojection.
+ * @return {Array<import("../../coordinate.js").Coordinate>} Anchors.
+ */
+function getAnchors(geometry, reproj) {
+  const type = geometry.getType();
+  /** @type {Array<import("../../coordinate.js").Coordinate>} */
+  let anchors;
+  if (type === 'Point') {
+    anchors = [pointCoordinate(geometry)];
+  } else if (type === 'MultiPoint') {
+    anchors = multiPointCoordinates(geometry);
+  } else if (type === 'Polygon') {
+    anchors = [polygonAnchor(geometry)];
+  } else {
+    const extent = geometry.getExtent();
+    anchors = [[(extent[0] + extent[2]) / 2, (extent[1] + extent[3]) / 2]];
+  }
+  // Labels are drawn in view coordinates, so their anchors are projected here
+  // even when the geometry is left in the source projection for a GPU warp.
+  const projectToTarget =
+    reproj?.projectAnchorsToTarget || reproj?.projectToTarget;
+  if (!projectToTarget) {
+    return anchors;
+  }
+  /** @type {Array<import("../../coordinate.js").Coordinate>} */
+  const projected = [];
+  for (const anchor of anchors) {
+    const p = projectToTarget(anchor);
+    if (p && isFinite(p[0]) && isFinite(p[1])) {
+      projected.push(p);
+    }
+  }
+  return projected;
+}
+
+/**
+ * @param {import("../../geom/Geometry.js").default} geometry Geometry.
+ * @param {import("../../style/Fill.js").default} fill Fill.
+ * @param {Array<number>} hit Hit color.
+ * @param {Array<import("./geometryBuffers.js").GeometryJob>} jobs Jobs.
+ * @param {Array<number>} coordinates Shared coordinates.
+ * @param {StyleTable} styleTable Style table.
+ * @param {import("./drawOrder.js").DrawStamp} stamp Draw stamp.
+ */
+function appendFills(
+  geometry,
+  fill,
+  hit,
+  jobs,
+  coordinates,
+  styleTable,
+  stamp,
+) {
+  const color = toRgba(/** @type {string|Array<number>} */ (fill.getColor()));
+  const styleIndex = styleTable.add(color, hit);
+  const type = geometry.getType();
+  if (type === 'Polygon') {
+    appendPolygon(
+      /** @type {import("../../geom/Polygon.js").default} */ (geometry),
+      styleIndex,
+      jobs,
+      coordinates,
+      stamp,
+    );
+  } else if (type === 'MultiPolygon') {
+    const polygons =
+      /** @type {import("../../geom/MultiPolygon.js").default} */ (
+        geometry
+      ).getPolygons();
+    for (const polygon of polygons) {
+      appendPolygon(polygon, styleIndex, jobs, coordinates, stamp);
+    }
+  }
+}
+
+/**
+ * Split MVT Polygon rings by winding before earcut (same as the WebGL path).
+ *
+ * @param {import("../../geom/Polygon.js").default|import("../../render/Feature.js").default} polygon Polygon.
+ * @param {number} styleIndex Style index.
+ * @param {Array<import("./geometryBuffers.js").GeometryJob>} jobs Jobs.
+ * @param {Array<number>} coordinates Shared coordinates.
+ * @param {import("./drawOrder.js").DrawStamp} stamp Draw stamp.
+ */
+function appendPolygon(polygon, styleIndex, jobs, coordinates, stamp) {
+  const stride = polygon.getStride();
+  const flat = polygon.getOrientedFlatCoordinates();
+  const ends = polygon.getEnds();
+  if (!ends || ends.length === 0) {
+    return;
+  }
+  const endss =
+    polygon instanceof RenderFeature && ends.length > 1
+      ? inflateEnds(flat, /** @type {Array<number>} */ (ends))
+      : [/** @type {Array<number>} */ (ends)];
+  const groups =
+    endss.length > 0 ? endss : [/** @type {Array<number>} */ (ends)];
+  for (let p = 0; p < groups.length; ++p) {
+    const polyEnds = groups[p];
+    const startIndex = p > 0 ? groups[p - 1][groups[p - 1].length - 1] : 0;
+    const start = coordinates.length / 2;
+    /** @type {Array<number>} */
+    const holes = [];
+    let offset = startIndex;
+    for (let r = 0; r < polyEnds.length; ++r) {
+      const end = polyEnds[r];
+      if (r > 0) {
+        holes.push(coordinates.length / 2 - start);
+      }
+      for (let i = offset; i < end; i += stride) {
+        coordinates.push(flat[i], flat[i + 1]);
+      }
+      offset = end;
+    }
+    const count = coordinates.length / 2 - start;
+    if (count < 3) {
+      coordinates.length = start * 2;
+      continue;
+    }
+    jobs.push(
+      withStamp({kind: 'fill', start, count, holes, styleIndex}, stamp),
+    );
+  }
+}
+
+/**
+ * @param {import("../../geom/Geometry.js").default} geometry Geometry.
+ * @param {import("../../style/Stroke.js").default} stroke Stroke.
+ * @param {Array<number>} hit Hit.
+ * @param {Array<import("./geometryBuffers.js").GeometryJob>} jobs Jobs.
+ * @param {Array<number>} coordinates Shared coordinates.
+ * @param {StyleTable} styleTable Style table.
+ * @param {import("./drawOrder.js").DrawStamp} stamp Draw stamp.
+ */
+function appendStrokes(
+  geometry,
+  stroke,
+  hit,
+  jobs,
+  coordinates,
+  styleTable,
+  stamp,
+) {
+  const color = toRgba(
+    /** @type {string|Array<number>} */ (stroke.getColor() || '#000'),
+  );
+  const styleIndex = styleTable.add(
+    color,
+    hit,
+    normalizeLineDash(stroke.getLineDash()),
+    stroke.getLineDashOffset() || 0,
+  );
+  const width = stroke.getWidth() || 1;
+  const type = geometry.getType();
+  if (type === 'LineString' || type === 'LinearRing') {
+    addLineJob(
+      /** @type {any} */ (geometry).getFlatCoordinates(),
+      0,
+      /** @type {any} */ (geometry).getFlatCoordinates().length,
+      /** @type {any} */ (geometry).getStride(),
+      styleIndex,
+      width,
+      false,
+      jobs,
+      coordinates,
+      stamp,
+    );
+  } else if (type === 'MultiLineString') {
+    const ends =
+      /** @type {import("../../geom/MultiLineString.js").default} */ (
+        geometry
+      ).getEnds();
+    const flat = /** @type {any} */ (geometry).getFlatCoordinates();
+    const stride = /** @type {any} */ (geometry).getStride();
+    let offset = 0;
+    for (const end of ends) {
+      addLineJob(
+        flat,
+        offset,
+        end,
+        stride,
+        styleIndex,
+        width,
+        false,
+        jobs,
+        coordinates,
+        stamp,
+      );
+      offset = end;
+    }
+  } else if (type === 'Polygon' || type === 'MultiPolygon') {
+    const rings =
+      type === 'Polygon'
+        ? [/** @type {import("../../geom/Polygon.js").default} */ (geometry)]
+        : /** @type {import("../../geom/MultiPolygon.js").default} */ (
+            geometry
+          ).getPolygons();
+    for (const polygon of rings) {
+      const flat = polygon.getOrientedFlatCoordinates();
+      const ends = polygon.getEnds();
+      const stride = polygon.getStride();
+      let offset = 0;
+      for (const end of ends) {
+        addLineJob(
+          flat,
+          offset,
+          end,
+          stride,
+          styleIndex,
+          width,
+          true,
+          jobs,
+          coordinates,
+          stamp,
+        );
+        offset = end;
+      }
+    }
+  }
+}
+
+/**
+ * @param {Array<number>} flat Flat coordinates.
+ * @param {number} from Start index into `flat`.
+ * @param {number} to End index into `flat`.
+ * @param {number} stride Stride.
+ * @param {number} styleIndex Style index.
+ * @param {number} width Stroke width.
+ * @param {boolean} skipClipEdges Drop segments lying on the clip extent.
+ * @param {Array<import("./geometryBuffers.js").GeometryJob>} jobs Jobs.
+ * @param {Array<number>} coordinates Shared coordinates.
+ * @param {import("./drawOrder.js").DrawStamp} stamp Draw stamp.
+ */
+function addLineJob(
+  flat,
+  from,
+  to,
+  stride,
+  styleIndex,
+  width,
+  skipClipEdges,
+  jobs,
+  coordinates,
+  stamp,
+) {
+  const start = coordinates.length / 2;
+  for (let i = from; i < to; i += stride) {
+    coordinates.push(flat[i], flat[i + 1]);
+  }
+  const count = coordinates.length / 2 - start;
+  if (count < 2) {
+    coordinates.length = start * 2;
+    return;
+  }
+  jobs.push(
+    withStamp(
+      {
+        kind: 'stroke',
+        start,
+        count,
+        styleIndex,
+        width,
+        skipClipEdges,
+      },
+      stamp,
+    ),
+  );
+}
+
+/**
+ * @param {string} type Geometry type.
+ * @return {number} Canvas class rank.
+ */
+function classRankFor(type) {
+  if (type === 'Circle') {
+    return CLASS_CIRCLE;
+  }
+  if (
+    type === 'LineString' ||
+    type === 'MultiLineString' ||
+    type === 'LinearRing'
+  ) {
+    return CLASS_LINE;
+  }
+  return CLASS_POLYGON;
+}
+
+/**
+ * @param {import("./geometryBuffers.js").GeometryJob} job Job.
+ * @param {import("./drawOrder.js").DrawStamp} stamp Draw stamp.
+ * @return {import("./geometryBuffers.js").GeometryJob} Stamped job.
+ */
+function withStamp(job, stamp) {
+  job.zIndex = stamp.zIndex;
+  job.classRank = stamp.classRank;
+  job.sequence = stamp.sequence;
+  job.featureRef = stamp.featureRef;
+  return job;
+}
+
+/**
+ * Pack glyph and symbol instances into draw order. The labels array itself
+ * stays in creation order so declutter visibility indices do not move.
+ *
+ * @param {Array<import("./declutter.js").Label>} labels Labels.
+ * @param {Array<import("./glyphLayout.js").GlyphInstance>} glyphs Glyphs.
+ * @param {Array<number>} symbolInstances Symbol instances.
+ */
+function packLabelsInDrawOrder(labels, glyphs, symbolInstances) {
+  /** @type {Array<import("./declutter.js").Label>} */
+  const glyphLabels = [];
+  /** @type {Array<import("./declutter.js").Label>} */
+  const symbolLabels = [];
+  for (let i = 0; i < labels.length; ++i) {
+    const label = labels[i];
+    if (label.glyphCount) {
+      glyphLabels.push(label);
+    } else if (label.symbolIndex !== undefined) {
+      symbolLabels.push(label);
+    }
+  }
+  glyphLabels.sort((a, b) =>
+    compareDraw(labelKey(a, 'glyph'), labelKey(b, 'glyph')),
+  );
+  /** @type {Array<import("./glyphLayout.js").GlyphInstance>} */
+  const nextGlyphs = [];
+  for (let i = 0; i < glyphLabels.length; ++i) {
+    const label = glyphLabels[i];
+    const start = label.glyphStart || 0;
+    const count = label.glyphCount || 0;
+    label.glyphStart = nextGlyphs.length;
+    for (let g = 0; g < count; ++g) {
+      nextGlyphs.push(glyphs[start + g]);
+    }
+  }
+  glyphs.length = 0;
+  for (let i = 0; i < nextGlyphs.length; ++i) {
+    glyphs.push(nextGlyphs[i]);
+  }
+
+  symbolLabels.sort((a, b) =>
+    compareDraw(labelKey(a, 'symbol'), labelKey(b, 'symbol')),
+  );
+  const nextSymbols = new Array(symbolInstances.length);
+  let cursor = 0;
+  for (let i = 0; i < symbolLabels.length; ++i) {
+    const label = symbolLabels[i];
+    const from = /** @type {number} */ (label.symbolIndex) * SYMBOL_STRIDE;
+    label.symbolIndex = cursor;
+    for (let k = 0; k < SYMBOL_STRIDE; ++k) {
+      nextSymbols[cursor * SYMBOL_STRIDE + k] = symbolInstances[from + k];
+    }
+    ++cursor;
+  }
+  for (let i = 0; i < nextSymbols.length; ++i) {
+    symbolInstances[i] = nextSymbols[i];
+  }
+}
+
+/**
+ * @param {import("./declutter.js").Label} label Label.
+ * @param {import("./drawOrder.js").DrawPipeline} pipeline Pipeline.
+ * @return {import("./drawOrder.js").DrawCommand} Sort key.
+ */
+function labelKey(label, pipeline) {
+  return {
+    zIndex: label.zIndex || 0,
+    classRank: label.classRank || 0,
+    sequence: label.sequence || 0,
+    pipeline,
+    start: 0,
+    count: 0,
+    featureRef: label.featureRef || 0,
+  };
+}
+
+/**
+ * @param {Array<import("./declutter.js").Label>} labels Labels.
+ * @return {Array<import("./drawOrder.js").DrawCommand>} Label commands.
+ */
+function labelCommands(labels) {
+  /** @type {Array<import("./drawOrder.js").DrawCommand>} */
+  const commands = [];
+  for (let i = 0; i < labels.length; ++i) {
+    const label = labels[i];
+    const key = label.glyphCount
+      ? labelKey(label, 'glyph')
+      : label.symbolIndex !== undefined
+        ? labelKey(label, 'symbol')
+        : null;
+    if (!key) {
+      continue;
+    }
+    commands.push({
+      zIndex: key.zIndex,
+      classRank: key.classRank,
+      sequence: key.sequence,
+      pipeline: key.pipeline,
+      start: label.glyphCount ? label.glyphStart || 0 : label.symbolIndex || 0,
+      count: label.glyphCount || 1,
+      featureRef: key.featureRef,
+      labelIndex: i,
+    });
+  }
+  return commands;
+}
