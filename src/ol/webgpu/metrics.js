@@ -1,8 +1,5 @@
 /**
  * @module ol/webgpu/metrics
- *
- * Opt-in counters for the WebGPU renderers, used by the performance benchmarks.
- * Disabled by default so an instrumented call site costs one boolean check.
  */
 
 let enabled = false;
@@ -25,9 +22,15 @@ let timers = {};
 let counters = {};
 
 /**
+ * @type {Object<string, number>}
+ */
+let gauges = {};
+
+/**
  * @typedef {Object} Metrics
  * @property {Object<string, Timer>} timers Accumulated timings.
  * @property {Object<string, number>} counters Accumulated counts.
+ * @property {Object<string, number>} gauges Maximum observed values.
  */
 
 /**
@@ -36,6 +39,7 @@ let counters = {};
 export function resetMetrics() {
   timers = {};
   counters = {};
+  gauges = {};
 }
 
 /**
@@ -70,13 +74,24 @@ export function endMetric(name, start) {
   if (!enabled) {
     return;
   }
+  recordMetric(name, performance.now() - start);
+}
+
+/**
+ * Record an already measured duration.
+ * @param {string} name Timer name.
+ * @param {number} duration Duration in milliseconds.
+ */
+export function recordMetric(name, duration) {
+  if (!enabled) {
+    return;
+  }
   let timer = timers[name];
   if (!timer) {
     timer = {calls: 0, total: 0, samples: []};
     timers[name] = timer;
   }
   ++timer.calls;
-  const duration = performance.now() - start;
   timer.total += duration;
   timer.samples.push(duration);
 }
@@ -93,6 +108,18 @@ export function countMetric(name, amount) {
 }
 
 /**
+ * Remember the largest value observed during the measurement interval.
+ * @param {string} name Gauge name.
+ * @param {number} value Value.
+ */
+export function maxMetric(name, value) {
+  if (!enabled) {
+    return;
+  }
+  gauges[name] = Math.max(gauges[name] ?? -Infinity, value);
+}
+
+/**
  * @return {Metrics} Snapshot of everything collected since the last reset.
  */
 export function readMetrics() {
@@ -105,5 +132,9 @@ export function readMetrics() {
       samples: timers[name].samples.slice(),
     };
   }
-  return {timers: timerCopy, counters: Object.assign({}, counters)};
+  return {
+    timers: timerCopy,
+    counters: Object.assign({}, counters),
+    gauges: Object.assign({}, gauges),
+  };
 }

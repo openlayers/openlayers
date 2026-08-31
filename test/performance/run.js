@@ -47,6 +47,8 @@ const SUMMARY_KEYS = [
   'cpuMs.p99',
   'slowFrames20',
   'slowFrames33',
+  'longTasks.count',
+  'longTasks.total',
 ];
 
 /**
@@ -147,6 +149,9 @@ async function openCase(page, url, options, caseName) {
     waitUntil: 'load',
     timeout: options.timeout,
   });
+  await page.waitForFunction(
+    () => typeof (/** @type {any} */ (window).olBenchmark?.run) === 'function',
+  );
 }
 
 /**
@@ -173,7 +178,10 @@ async function measure(options) {
   });
   try {
     const [width, height] = options.viewport.split('x').map(Number);
-    const page = await browser.newPage({viewport: {width, height}});
+    const page = await browser.newPage({
+      viewport: {width, height},
+      deviceScaleFactor: options.deviceScaleFactor,
+    });
     page.setDefaultTimeout(options.timeout);
     page.on('pageerror', (err) => logError('page error:', err.message));
     page.on('console', (message) => {
@@ -338,6 +346,11 @@ const options = yargs(hideBin(process.argv))
     describe: 'Browser viewport, as WIDTHxHEIGHT',
     type: 'string',
     default: '1024x768',
+  })
+  .option('device-scale-factor', {
+    describe: 'Browser device pixel ratio',
+    type: 'number',
+    default: 1,
   })
   .option('headless', {
     describe: 'Run the browser headless',
