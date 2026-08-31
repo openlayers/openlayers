@@ -160,6 +160,7 @@ function expectTextEquals(text, expected) {
   assert.deepEqual(text.getOffsetY(), expected.getOffsetY());
   assert.deepEqual(text.getPadding(), expected.getPadding());
   assert.deepEqual(text.getKeepUpright(), expected.getKeepUpright());
+  assert.deepEqual(text.getMaxWidth(), expected.getMaxWidth());
   assert.deepEqual(text.getTextAlign(), expected.getTextAlign());
   assert.deepEqual(text.getJustify(), expected.getJustify());
   assert.deepEqual(text.getTextBaseline(), expected.getTextBaseline());
@@ -384,11 +385,13 @@ describe('ol/render/canvas/style.js', () => {
         style: {
           'text-value': 'test',
           'text-keep-upright': false,
+          'text-max-width': 120,
         },
         expected: new Style({
           text: new Text({
             text: 'test',
             keepUpright: false,
+            maxWidth: 120,
           }),
         }),
       },

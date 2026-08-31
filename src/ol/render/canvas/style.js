@@ -554,6 +554,12 @@ function buildText(flatStyle, context) {
     context,
   );
 
+  const evaluateMaxWidth = numberEvaluator(
+    flatStyle,
+    prefix + 'max-width',
+    context,
+  );
+
   const evaluateOffsetX = numberEvaluator(
     flatStyle,
     prefix + 'offset-x',
@@ -653,6 +659,10 @@ function buildText(flatStyle, context) {
 
     if (evaluateMaxAngle) {
       text.setMaxAngle(evaluateMaxAngle(context));
+    }
+
+    if (evaluateMaxWidth) {
+      text.setMaxWidth(evaluateMaxWidth(context));
     }
 
     if (evaluateOffsetX) {

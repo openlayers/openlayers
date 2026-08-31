@@ -68,8 +68,12 @@ export const IMAGE_DECODE =
 export const CREATE_IMAGE_BITMAP = typeof createImageBitmap === 'function';
 
 /**
+ * WebGPU is available (`navigator.gpu`).
  * @type {boolean}
  */
+export const WEBGPU =
+  typeof navigator !== 'undefined' && 'gpu' in navigator && !!navigator.gpu;
+
 export const PASSIVE_EVENT_LISTENERS = (function () {
   let passive = false;
   try {

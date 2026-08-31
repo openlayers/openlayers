@@ -1,0 +1,6 @@
+.reprojection-form {
+  display: grid;
+  grid-template-columns: max-content max-content;
+  grid-gap: 5px;
+  gap: 5px;
+}
