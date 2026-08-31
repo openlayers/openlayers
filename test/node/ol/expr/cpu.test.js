@@ -162,6 +162,15 @@ describe('ol/expr/cpu.js', () => {
         expected: true,
       },
       {
+        name: 'zoom',
+        type: NumberType,
+        expression: ['zoom'],
+        context: {
+          zoom: 12.5,
+        },
+        expected: 12.5,
+      },
+      {
         name: 'concat (2 arguments)',
         type: StringType,
         expression: ['concat', ['get', 'val'], ' '],

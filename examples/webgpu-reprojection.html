@@ -1,0 +1,41 @@
+---
+layout: example.html
+title: WebGPU Reprojection
+shortdesc: GPU reprojection of WebGPU raster tiles, with vector features in the view CRS.
+docs: >
+  <p>
+    Use the CRS dropdown to change the projection of the view. Raster tiles are
+    reprojected at render time with a CPU-built mesh (source-tile textures,
+    GPU draw). Vector features stay in EPSG:4326 and are densified, triangulated
+    in the view CRS, and clipped — the same approach as WebGL reprojection.
+    There is no silent fallback if <code>navigator.gpu</code> is missing.
+  </p>
+  <p>
+    The labeled data tiles are in EPSG:4326. The basemap is in EPSG:3857.
+    Vector ecoregions stay in EPSG:4326 and are reprojected when drawing.
+  </p>
+tags: "webgpu, reprojection, vector, data tiles, proj4js"
+experimental: true
+cloak:
+  - key: get_your_own_D6rA4zTHduk6KOKTXzGB
+    value: Get your own API key at https://www.maptiler.com/cloud/
+---
+<div id="map" class="map"></div>
+<form class="reprojection-form">
+  <label for="view-projection">View projection:</label>
+  <select id="view-projection">
+    <option value="EPSG:3857">Spherical Mercator (EPSG:3857)</option>
+    <option value="EPSG:4326">WGS 84 (EPSG:4326)</option>
+    <option value="ESRI:54009">Mollweide (ESRI:54009)</option>
+    <option value="EPSG:27700">British National Grid (EPSG:27700)</option>
+    <option value="EPSG:23032">ED50 / UTM zone 32N (EPSG:23032)</option>
+    <option value="EPSG:2163">US National Atlas Equal Area (EPSG:2163)</option>
+    <option value="EPSG:3413">NSIDC Polar Stereographic North (EPSG:3413)</option>
+    <option value="EPSG:5479">RSRGD2000 / MSLC2000 (EPSG:5479)</option>
+  </select>
+  <label for="visible-raster">Data tiles:</label>
+  <input type="checkbox" id="visible-raster" checked />
+  <label for="visible-vector">Vector:</label>
+  <input type="checkbox" id="visible-vector" checked />
+</form>
+<div id="info">&nbsp;</div>

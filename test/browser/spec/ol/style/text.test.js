@@ -22,6 +22,13 @@ describe('ol.style.Text', function () {
       style.getFill().setColor();
       assert.strictEqual(style.getFill().getColor(), undefined);
     });
+
+    it('accepts a maximum width', function () {
+      const style = new Text({maxWidth: 120});
+      assert.strictEqual(style.getMaxWidth(), 120);
+      style.setMaxWidth(undefined);
+      assert.strictEqual(style.getMaxWidth(), undefined);
+    });
   });
 
   describe('#clone', function () {
@@ -35,6 +42,7 @@ describe('ol.style.Text', function () {
     it('copies all values', function () {
       const original = new Text({
         font: '12px serif',
+        maxWidth: 120,
         offsetX: 4,
         offsetY: 10,
         scale: 2,
@@ -60,6 +68,7 @@ describe('ol.style.Text', function () {
       });
       const clone = original.clone();
       assert.deepEqual(original.getFont(), clone.getFont());
+      assert.deepEqual(original.getMaxWidth(), clone.getMaxWidth());
       assert.deepEqual(original.getOffsetX(), clone.getOffsetX());
       assert.deepEqual(original.getOffsetY(), clone.getOffsetY());
       assert.deepEqual(original.getScale(), clone.getScale());

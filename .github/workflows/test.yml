@@ -119,3 +119,37 @@ jobs:
         with:
           name: rendering-tests
           path: test/rendering/cases/**/actual.png
+
+  performance:
+    name: Performance
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone Repository
+        uses: actions/checkout@v7.0.1
+
+      - name: Set Node.js Version
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Install Playwright Browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Benchmarks
+        run: |
+          npm run bench -- --out performance.json \
+            --browser-arg=--use-angle=swiftshader \
+            --browser-arg=--enable-features=Vulkan,UseSkiaRenderer \
+            --browser-arg=--use-vulkan=swiftshader
+
+      - name: Store Benchmark Results
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: performance
+          path: performance.json
+          if-no-files-found: ignore

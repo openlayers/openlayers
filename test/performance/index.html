@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Benchmarks</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        font-family: sans-serif;
+      }
+      .map {
+        width: 100%;
+        height: 400px;
+      }
+      .controls {
+        display: flex;
+        align-items: center;
+        gap: 0.75em;
+        margin: 0.75em;
+      }
+      #summary,
+      #output {
+        font-family: monospace;
+        font-size: 0.85em;
+      }
+      #output {
+        display: block;
+        width: calc(100% - 1.5em);
+        margin: 0 0.75em 0.75em;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="controls">
+      <label>
+        Case
+        <select id="case"></select>
+      </label>
+      <button id="start" type="button">Run benchmark</button>
+      <span id="summary">idle</span>
+    </div>
+    <div id="map" class="map"></div>
+    <textarea
+      id="output"
+      readonly
+      rows="12"
+      placeholder="results appear here as JSON"
+    ></textarea>
+    <script type="module" src="./page.js"></script>
+  </body>
+</html>
