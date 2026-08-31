@@ -63,9 +63,10 @@ export function createWorldPolygons(count, vertices) {
  * always yields the same geometry.
  * @param {import("../../src/ol/tilecoord.js").TileCoord} tileCoord Tile coordinate.
  * @param {import("../../src/ol/extent.js").Extent} extent Tile extent.
+ * @param {number} [density] Feature-count multiplier.
  * @return {Array<Feature>} Features in the tile projection.
  */
-export function createTileFeatures(tileCoord, extent) {
+export function createTileFeatures(tileCoord, extent, density = 1) {
   const [z, x, y] = tileCoord;
   const random = createRandom((z * 73856093) ^ (x * 19349663) ^ (y * 83492791));
   const minX = extent[0];
@@ -74,7 +75,7 @@ export function createTileFeatures(tileCoord, extent) {
   const height = extent[3] - extent[1];
   const features = [];
 
-  for (let i = 0; i < 12; ++i) {
+  for (let i = 0; i < 12 * density; ++i) {
     const cx = minX + random() * width;
     const cy = minY + random() * height;
     const rx = width * (0.02 + random() * 0.12);
@@ -89,7 +90,7 @@ export function createTileFeatures(tileCoord, extent) {
     features.push(new Feature(new Polygon([ring])));
   }
 
-  for (let i = 0; i < 24; ++i) {
+  for (let i = 0; i < 24 * density; ++i) {
     const steps = 6 + Math.floor(random() * 10);
     const coordinates = [];
     let px = minX + random() * width;
@@ -102,7 +103,7 @@ export function createTileFeatures(tileCoord, extent) {
     features.push(new Feature(new LineString(coordinates)));
   }
 
-  for (let i = 0; i < 6; ++i) {
+  for (let i = 0; i < 6 * density; ++i) {
     const feature = new Feature(
       new Point([minX + random() * width, minY + random() * height]),
     );

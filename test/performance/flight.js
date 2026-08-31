@@ -2,6 +2,7 @@
  * A fixed flight: each phase is a function of the frame index, never of
  * wall-clock time, so runs stay comparable when rendering gets slower.
  */
+import ViewHint from '../../src/ol/ViewHint.js';
 import {
   enableMetrics,
   readMetrics,
@@ -13,6 +14,7 @@ import {summarize} from './stats.js';
  * @typedef {Object} FlightPhase
  * @property {string} name Phase name.
  * @property {function(number): void} apply Apply progress in [0, 1].
+ * @property {boolean} [moving] Set the animating hint during the phase.
  */
 
 /**
@@ -51,6 +53,7 @@ export function createFlightPhases(view, minZoom, maxZoom) {
   return [
     {
       name: 'zoom-in',
+      moving: true,
       apply: (t) => {
         view.setCenter([0, 0]);
         view.setRotation(0);
@@ -102,6 +105,58 @@ export function createFlightPhases(view, minZoom, maxZoom) {
 }
 
 /**
+ * High-zoom tile churn followed by stationary frames while pending tile work
+ * completes. The eased pan approximates kinetic movement after pointer release.
+ * @param {import("../../src/ol/View.js").default} view View.
+ * @param {number} minZoom Minimum zoom.
+ * @param {number} maxZoom Maximum zoom.
+ * @param {number} [runOffset] Horizontal offset separating repeated runs.
+ * @return {Array<FlightPhase>} Phases.
+ */
+export function createOverzoomPhases(view, minZoom, maxZoom, runOffset = 0) {
+  const startX = runOffset * view.getResolutionForZoom(maxZoom) * 16000;
+  const distance = view.getResolutionForZoom(maxZoom) * 12000;
+  const endX = startX + distance;
+  return [
+    {
+      name: 'zoom-in',
+      apply: (t) => {
+        view.setCenter([startX, 0]);
+        view.setRotation(0);
+        view.setZoom(minZoom + (maxZoom - minZoom) * t);
+      },
+    },
+    {
+      name: 'kinetic-pan',
+      moving: true,
+      apply: (t) => {
+        view.setZoom(maxZoom);
+        view.setRotation(0);
+        const eased = 1 - Math.pow(1 - t, 3);
+        view.setCenter([startX + distance * eased, 0]);
+      },
+    },
+    {
+      name: 'settle',
+      apply: () => {
+        view.setZoom(maxZoom);
+        view.setRotation(0);
+        view.setCenter([endX, 0]);
+      },
+    },
+    {
+      name: 'zoom-out',
+      moving: true,
+      apply: (t) => {
+        view.setCenter([endX, 0]);
+        view.setRotation(0);
+        view.setZoom(maxZoom + (minZoom - maxZoom) * t);
+      },
+    },
+  ];
+}
+
+/**
  * @return {Promise<number>} Frame timestamp.
  */
 function nextFrame() {
@@ -129,6 +184,9 @@ function perFrameMetrics(metrics, frames) {
   }
   for (const name in metrics.counters) {
     out[name + 'PerFrame'] = metrics.counters[name] / divisor;
+  }
+  for (const name in metrics.gauges) {
+    out[name + 'Max'] = metrics.gauges[name];
   }
   return out;
 }
@@ -166,6 +224,7 @@ async function waitForRenderer(map, layer) {
  */
 export async function runFlight(options) {
   const {map, layer, phases, framesPerPhase, warmup, config} = options;
+  const view = map.getView();
   const ready = await waitForRenderer(map, layer);
   if (!ready) {
     return {error: 'WebGPU is not available'};
@@ -184,13 +243,33 @@ export async function runFlight(options) {
   const allFrameMs = [];
   /** @type {Array<number>} */
   const allCpuMs = [];
+  /** @type {Array<number>} */
+  const allLongTasks = [];
+  /** @type {Array<number>} */
+  const longTasks = [];
+  let longTaskObserver;
+  if (
+    typeof PerformanceObserver !== 'undefined' &&
+    PerformanceObserver.supportedEntryTypes?.includes('longtask')
+  ) {
+    longTaskObserver = new PerformanceObserver((list) => {
+      for (const entry of list.getEntries()) {
+        longTasks.push(entry.duration);
+      }
+    });
+    longTaskObserver.observe({type: 'longtask'});
+  }
 
   let previous = await nextFrame();
   for (const phase of phases) {
+    if (phase.moving) {
+      view.setHint(ViewHint.ANIMATING, 1);
+    }
     /** @type {Array<number>} */
     const frameMs = [];
     /** @type {Array<number>} */
     const cpuMs = [];
+    longTasks.length = 0;
     resetMetrics();
     for (let i = 0; i < framesPerPhase; ++i) {
       phase.apply(i / Math.max(1, framesPerPhase - 1));
@@ -202,16 +281,27 @@ export async function runFlight(options) {
       previous = now;
     }
     const metrics = readMetrics();
+    const phaseLongTasks = longTasks.slice();
     phaseResults.push({
       name: phase.name,
       frames: frameMs.length,
       frameMs: summarize(frameMs),
       cpuMs: summarize(cpuMs),
+      longTasks: {
+        count: phaseLongTasks.length,
+        total: phaseLongTasks.reduce((sum, duration) => sum + duration, 0),
+        ...summarize(phaseLongTasks),
+      },
       metrics: perFrameMetrics(metrics, frameMs.length),
     });
     allFrameMs.push(...frameMs);
     allCpuMs.push(...cpuMs);
+    allLongTasks.push(...phaseLongTasks);
+    if (phase.moving) {
+      view.setHint(ViewHint.ANIMATING, -1);
+    }
   }
+  longTaskObserver?.disconnect();
   enableMetrics(false);
 
   return {
@@ -221,6 +311,11 @@ export async function runFlight(options) {
     frames: allFrameMs.length,
     frameMs: summarize(allFrameMs),
     cpuMs: summarize(allCpuMs),
+    longTasks: {
+      count: allLongTasks.length,
+      total: allLongTasks.reduce((sum, duration) => sum + duration, 0),
+      ...summarize(allLongTasks),
+    },
     slowFrames20: allFrameMs.filter((value) => value > 20).length,
     slowFrames33: allFrameMs.filter((value) => value > 33).length,
     phases: phaseResults,
