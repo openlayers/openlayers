@@ -5,8 +5,9 @@ import WebGPUVectorTileLayer from '../../../../../../src/ol/layer/WebGPUVectorTi
 import {get as getProjection} from '../../../../../../src/ol/proj.js';
 import VectorTileSource from '../../../../../../src/ol/source/VectorTile.js';
 import {getCacheKey} from '../../../../../../src/ol/tilecoord.js';
-import {wrapX} from '../../../../../../src/ol/tilegrid.js';
+import {createXYZ, wrapX} from '../../../../../../src/ol/tilegrid.js';
 import TileState from '../../../../../../src/ol/TileState.js';
+import ViewHint from '../../../../../../src/ol/ViewHint.js';
 
 /**
  * @param {number} z Z.
@@ -105,6 +106,7 @@ describe('ol/renderer/webgpu/VectorTileLayer', () => {
       extent: tileGrid.getTileCoordExtent([0, 0, 0]),
       pixelRatio: 1,
       wantedTiles: {},
+      viewHints: [0, 0],
       tileQueue: {
         isKeyQueued: () => false,
         enqueue: () => {},
@@ -177,6 +179,79 @@ describe('ol/renderer/webgpu/VectorTileLayer', () => {
     assert.deepEqual(coords, ['1/0/0', '1/0/1', '1/1/0', '1/1/1']);
   });
 
+  it('reuses bounded source subdivisions across deeper overzoom tiles', async () => {
+    layer.dispose();
+    const sourceGrid = createXYZ({maxZoom: 0});
+    source = new VectorTileSource({
+      tileGrid: sourceGrid,
+      projection,
+      url: '{z}/{x}/{y}.pbf',
+    });
+    const sourceTile = /** @type {any} */ ({
+      tileCoord: [0, 0, 0],
+      extent: sourceGrid.getTileCoordExtent([0, 0, 0]),
+      getKey() {
+        return 'source/0/0/0';
+      },
+      getState() {
+        return TileState.LOADED;
+      },
+      getFeatures() {
+        return [new Feature(new Point([0, 0]))];
+      },
+    });
+    source.getTile = function (z, x, y) {
+      const tile = loadedTile(z, x, y);
+      tile.getSourceTiles = () => [sourceTile];
+      return tile;
+    };
+    layer = new WebGPUVectorTileLayer({
+      source,
+      style: {
+        'circle-radius': 2,
+        'circle-fill-color': '#000',
+      },
+    });
+    renderer = layer.createRenderer();
+
+    const batchesAtOne = await collectBatches(frameAtZ(1), 4);
+    const batchesAtTwo = await collectBatches(frameAtZ(2), 4);
+
+    assert.strictEqual(batchesAtOne.length, 4);
+    assert.strictEqual(batchesAtTwo.length, 4);
+    assert.isTrue(batchesAtOne.every((batch) => /^source\//.test(batch.key)));
+    assert.isTrue(batchesAtTwo.every((batch) => /^source\//.test(batch.key)));
+  });
+
+  it('defers batch preparation while the view is moving', async () => {
+    source.getTile = function (z, x, y) {
+      return loadedTile(z, x, y);
+    };
+    const frameState = frameAtZ(0);
+    frameState.viewHints[ViewHint.ANIMATING] = 1;
+
+    assert.isEmpty(renderer.collectBatches_(frameState));
+    assert.isEmpty(renderer.pendingKeys_);
+
+    frameState.viewHints[ViewHint.ANIMATING] = 0;
+    const batches = await collectBatches(frameState, 1);
+    assert.strictEqual(batches.length, 1);
+  });
+
+  it('prepares the tile nearest the view center first', () => {
+    source.getTile = function (z, x, y) {
+      return loadedTile(z, x, y);
+    };
+    const frameState = frameAtZ(1);
+    const tileGrid = source.getTileGridForProjection(projection);
+    frameState.viewState.center = tileGrid.getTileCoordCenter([1, 0, 0]);
+
+    renderer.collectBatches_(frameState);
+
+    assert.strictEqual(renderer.pendingKeys_.size, 1);
+    assert.match(Array.from(renderer.pendingKeys_)[0], /^1\/0\/0\//);
+  });
+
   it('offsets geometry of tiles repeated across the antimeridian', async () => {
     const tileGrid = source.getTileGridForProjection(projection);
     const worldExtent = tileGrid.getExtent();
@@ -196,6 +271,7 @@ describe('ol/renderer/webgpu/VectorTileLayer', () => {
       ],
       pixelRatio: 1,
       wantedTiles: {},
+      viewHints: [0, 0],
       tileQueue: {
         isKeyQueued: () => false,
         enqueue: () => {},

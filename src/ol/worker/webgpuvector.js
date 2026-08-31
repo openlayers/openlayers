@@ -12,10 +12,13 @@ worker.onmessage = (/** @type {MessageEvent} */ event) => {
   const request = received.request;
   request.coordinates = new Float64Array(request.coordinates);
   request.styles = new Float32Array(request.styles);
+  const buildStart = performance.now();
   const buffers = buildGeometryBuffers(request);
+  const buildDuration = performance.now() - buildStart;
   worker.postMessage(
     {
       id: received.id,
+      buildDuration,
       buffers: {
         fillPositions: buffers.fillPositions.buffer,
         fillStyles: buffers.fillStyles.buffer,
