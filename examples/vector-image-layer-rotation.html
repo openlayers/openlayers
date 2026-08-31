@@ -1,0 +1,60 @@
+---
+layout: example.html
+title: Vector Image Layer Rotation
+shortdesc: Effect of the VectorImageLayer rotateContent option on a rotated view.
+docs: >
+  <p>Both maps share one view and show the same fictional apron. The left map
+  is a plain <code>VectorLayer</code> - the
+  accuracy reference. The right map is a <code>VectorImageLayer</code>, with a
+  checkbox to toggle its <code>rotateContent</code> option.</p>
+  <p>A <code>VectorImageLayer</code> renders its vectors to an image and then
+  copies that image into the layer canvas. By default the image is rendered
+  north-up: on a rotated view its extent has fractional pixel dimensions, so
+  the copy lands on a fractional offset and gets resampled - and the whole
+  canvas is then rotated by the browser, resampling a second time. That double
+  resampling is the blur on the right with the checkbox off, and it also
+  rotates every symbol and label with the view, whatever their
+  <code>rotateWithView</code> setting says. The readout next to the checkbox
+  shows where the copy lands.</p>
+  <p>With <code>rotateContent</code> the image is rendered screen-aligned
+  instead: the view rotation is applied to the geometry, symbols and labels are
+  snapped to whole pixels at their final screen orientation, the settled copy
+  to the canvas is lossless, and <code>rotateWithView</code> behaves like on a
+  <code>VectorLayer</code>. When the view is settled, the right map is then at
+  least as crisp as the reference on the left - in exchange, the image has to
+  be re-rendered after every rotation change.</p>
+  <p>The two label kinds are sized differently on purpose. The apron name and
+  the guidance-line designator keep a fixed screen size, so their size relative
+  to the pavement changes as you zoom. The stand designators are sized in map
+  units instead - the font size tracks the view resolution, so a designator
+  keeps a fixed relationship to its stand box, and the labels are dropped once
+  the view is zoomed too far out to place them.</p>
+  <p>Both maps load north-up, where the layers render nearly identically. Use
+  the slider above, or rotate either map with <code>Alt+Shift+Drag</code>, and
+  toggle the checkbox to compare - the difference persists at any angle except
+  0. Panning and zooming stay in sync as well, since both maps share one
+  view.</p>
+tags: "rotate, vector, vectorimage, icon, svg, label, text, comparison"
+---
+<div style="margin-bottom: 8px;">
+  <label>
+    Rotation:
+    <input id="rotation" type="range" min="-180" max="180" step="0.01" value="0" style="width: 300px; vertical-align: middle;" />
+  </label>
+  <input id="rotation-number" type="number" min="-180" max="180" step="0.01" value="0" style="width: 90px;" />°
+  <label style="margin-left: 16px;">
+    <input id="rotate-content" type="checkbox" checked />
+    <code>rotateContent</code>
+  </label>
+  <span id="copy-info" style="margin-left: 12px; font-family: monospace; font-size: 12px;"></span>
+</div>
+<div style="display: flex; gap: 8px;">
+  <div style="flex: 1; min-width: 0;">
+    <p><code>VectorLayer</code> (reference)</p>
+    <div id="map-old" class="map" style="height: 800px; background: #000;"></div>
+  </div>
+  <div style="flex: 1; min-width: 0;">
+    <p><code>VectorImageLayer</code> (checkbox toggles <code>rotateContent</code>)</p>
+    <div id="map-new" class="map" style="height: 800px; background: #000;"></div>
+  </div>
+</div>
