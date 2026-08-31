@@ -608,7 +608,7 @@ describe('ol/format/GeoJSON.js', function () {
           coordinates: [],
         };
         const geometry = format.readGeometry(geojson);
-        assert.deepEqual(geometry.getCoordinates(), []);
+        assert.equal(geometry, null);
       });
     });
 
@@ -629,7 +629,7 @@ describe('ol/format/GeoJSON.js', function () {
         const geometry = format.readGeometry(geojson, {
           featureProjection: 'EPSG:3857',
         });
-        assert.deepEqual(geometry.getCoordinates(), []);
+        assert.equal(geometry, null);
       });
     });
   });
