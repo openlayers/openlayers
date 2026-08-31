@@ -29,6 +29,13 @@ One case, fewer frames:
 
     npm run bench -- --case webgpu-vector --frames 30 --runs 1
 
+The `webgpu-vector-tiles-overzoom` case uses deterministic procedural vector
+tiles with a source maximum zoom of 14 and drives the view from zoom 13 through
+17. It reports separate zoom, kinetic-pan, settle, and zoom-out phases together
+with long tasks and WebGPU renderer metrics. To exercise HiDPI behavior:
+
+    npm run bench -- --case webgpu-vector-tiles-overzoom --device-scale-factor 2
+
 Compare two checkouts. From the baseline checkout:
 
     npm run bench -- --out base.json
@@ -41,3 +48,7 @@ From the branch:
 Results are a trimmed mean of several flights. They are comparable only across
 runs on the same machine. CI uses a software WebGPU adapter, so those numbers
 are not comparable to a local GPU.
+
+The overzoom case deliberately avoids network data. Its seeded source
+reproduces source/render tile amplification and preparation churn without an
+external PMTiles fixture, keeping local and CI runs self-contained.
