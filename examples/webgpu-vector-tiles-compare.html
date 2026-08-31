@@ -1,0 +1,23 @@
+---
+layout: example.html
+title: Canvas2D and WebGPU Vector Tiles Side by Side
+shortdesc: Compares the Canvas2D and WebGPU vector tile renderers using the same Mapbox style.
+docs: >
+  The [VersaTiles Colorful](https://tiles.versatiles.org/assets/styles/colorful/style.json)
+  style is applied with `ol-mapbox-style`'s `applyStyle()` function to a
+  `VectorTile` layer (Canvas2D, left) and a `WebGPUVectorTile` layer (WebGPU, right).
+  Both maps share one view, so they always show the same extent.
+  WebGPU is required.
+tags: "webgpu, vector, tiles, mapbox, compare, versatiles"
+experimental: true
+---
+<div class="maps">
+  <div class="pane">
+    <div id="canvas-map" class="map"></div>
+    <div class="label">Canvas2D</div>
+  </div>
+  <div class="pane">
+    <div id="webgpu-map" class="map"></div>
+    <div class="label">WebGPU</div>
+  </div>
+</div>

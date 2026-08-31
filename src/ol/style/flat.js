@@ -147,6 +147,8 @@
  * @property {StringExpression} [text-font='10px sans-serif'] Font style as [CSS `font`](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/font) value.
  * @property {NumberExpression} [text-max-angle=Math.PI/4] When `text-placement` is set to `'line'`, allow a maximum angle between adjacent characters.
  * The expected value is in radians, and the default is 45° (`Math.PI / 4`).
+ * @property {NumberExpression} [text-max-width] Maximum text width in pixels before wrapping. Only supported by WebGPU
+ * layers when `text-placement` is set to `'point'`.
  * @property {NumberExpression} [text-offset-x=0] Horizontal text offset in pixels. A positive will shift the text right.
  * @property {NumberExpression} [text-offset-y=0] Vertical text offset in pixels. A positive will shift the text down.
  * @property {BooleanExpression} [text-overflow=false] For polygon labels or when `placement` is set to `'line'`, allow text to exceed
@@ -229,7 +231,7 @@
  * @property {SizeExpression} [icon-size] Icon size in pixel. Can be used together with `icon-offset` to define the
  * sub-rectangle to use from the origin (sprite) icon image. (Expressions only in WebGL)
  * @property {import("./Style.js").DeclutterMode} [icon-declutter-mode] Declutter mode (Canvas only)
- * @property {NumberExpression} [z-index] The zIndex of the style. (Canvas only)
+ * @property {NumberExpression} [z-index] The zIndex of the style.
  */
 
 /**
@@ -256,7 +258,7 @@
  * @property {SizeExpression} [shape-scale=1] Scale. Unless two-dimensional scaling is required a better
  * result may be obtained with appropriate settings for `shape-radius` and `shape-radius2`.
  * @property {import("./Style.js").DeclutterMode} [shape-declutter-mode] Declutter mode. (Canvas only)
- * @property {NumberExpression} [z-index] The zIndex of the style. (Canvas only)
+ * @property {NumberExpression} [z-index] The zIndex of the style.
  */
 
 /**
@@ -281,7 +283,7 @@
  * @property {BooleanExpression} [circle-rotate-with-view=false] Whether to rotate the shape with the view (Expression only supported in Canvas)
  * (meaningful only when used in conjunction with a two-dimensional scale).
  * @property {import("./Style.js").DeclutterMode} [circle-declutter-mode] Declutter mode (Canvas only)
- * @property {NumberExpression} [z-index] The zIndex of the style. (Canvas only)
+ * @property {NumberExpression} [z-index] The zIndex of the style.
  */
 
 /**
