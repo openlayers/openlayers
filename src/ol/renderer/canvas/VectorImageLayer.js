@@ -6,7 +6,14 @@ import ImageCanvas from '../../ImageCanvas.js';
 import ImageState from '../../ImageState.js';
 import ViewHint from '../../ViewHint.js';
 import EventType from '../../events/EventType.js';
-import {getHeight, getWidth, isEmpty, scaleFromCenter} from '../../extent.js';
+import {
+  equals,
+  getForViewAndSize,
+  getHeight,
+  getWidth,
+  isEmpty,
+  scaleFromCenter,
+} from '../../extent.js';
 import {fromResolutionLike} from '../../resolution.js';
 import {apply, compose, create} from '../../transform.js';
 import CanvasImageLayerRenderer from './ImageLayer.js';
@@ -43,6 +50,13 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
      * @type {number}
      */
     this.layerImageRatio_ = layer.getImageRatio();
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.rotateContent_ = layer.getRotateContent();
+    this.vectorRenderer_.screenAligned = this.rotateContent_;
 
     /**
      * @private
@@ -112,12 +126,53 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
     let renderedExtent = /** @type {import("../../extent.js").Extent} */ (
       frameState.extent
     );
-    if (this.layerImageRatio_ !== 1) {
-      renderedExtent = renderedExtent.slice(0);
-      scaleFromCenter(renderedExtent, this.layerImageRatio_);
+
+    // The extent stored on the image, the size of the rendered image in css
+    // pixels, and the rotation baked into the rendered image. With rotateContent
+    // the image is rendered screen-aligned: imageExtent describes its unrotated
+    // footprint, and the actual footprint is that extent rotated by
+    // imageRotation around its center.
+    let imageExtent, imageSize;
+    let imageRotation = 0;
+    if (this.rotateContent_) {
+      imageRotation = viewState.rotation;
+      // The device pixel dimensions the map viewport canvas will get, and a
+      // whole number of padding pixels per side for imageRatio, so the settled
+      // blit offset (canvas size - image size) / 2 is always an integer and
+      // the copy is lossless.
+      const canvasWidth = Math.round(frameState.size[0] * pixelRatio);
+      const canvasHeight = Math.round(frameState.size[1] * pixelRatio);
+      const padX = Math.round((canvasWidth * (this.layerImageRatio_ - 1)) / 2);
+      const padY = Math.round((canvasHeight * (this.layerImageRatio_ - 1)) / 2);
+      imageSize = [
+        (canvasWidth + 2 * padX) / pixelRatio,
+        (canvasHeight + 2 * padY) / pixelRatio,
+      ];
+      imageExtent = getForViewAndSize(
+        viewState.center,
+        viewResolution,
+        0,
+        imageSize,
+      );
+      // Axis-aligned bounding extent of the rotated image footprint, for
+      // feature loading and culling by the wrapped renderer.
+      renderedExtent = getForViewAndSize(
+        viewState.center,
+        viewResolution,
+        imageRotation,
+        imageSize,
+      );
+    } else {
+      if (this.layerImageRatio_ !== 1) {
+        renderedExtent = renderedExtent.slice(0);
+        scaleFromCenter(renderedExtent, this.layerImageRatio_);
+      }
+      imageSize = [
+        getWidth(renderedExtent) / viewResolution,
+        getHeight(renderedExtent) / viewResolution,
+      ];
+      imageExtent = renderedExtent;
     }
-    const width = getWidth(renderedExtent) / viewResolution;
-    const height = getHeight(renderedExtent) / viewResolution;
 
     if (
       !hints[ViewHint.ANIMATING] &&
@@ -137,12 +192,14 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
       const imageFrameState = /** @type {import("../../Map.js").FrameState} */ (
         Object.assign({}, frameState, {
           extent: renderedExtent,
-          size: [width, height],
-          viewState: /** @type {import("../../View.js").State} */ (
-            Object.assign({}, frameState.viewState, {
-              rotation: 0,
-            })
-          ),
+          size: imageSize,
+          viewState: this.rotateContent_
+            ? frameState.viewState
+            : /** @type {import("../../View.js").State} */ (
+                Object.assign({}, frameState.viewState, {
+                  rotation: 0,
+                })
+              ),
           layerStatesArray: [imageLayerState],
           layerIndex: 0,
           declutter: null,
@@ -155,14 +212,21 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
         };
       }
       const image = new ImageCanvas(
-        renderedExtent,
+        imageExtent,
         viewResolution,
         pixelRatio,
         context.canvas,
-        function (callback) {
+        (callback) => {
           if (
             vectorRenderer.prepareFrame(imageFrameState) &&
-            vectorRenderer.replayGroupChanged
+            (vectorRenderer.replayGroupChanged ||
+              // With rotateContent the image pixels depend on the rotation and
+              // the rendered footprint, so an unchanged replay group can still
+              // require a re-render.
+              (this.rotateContent_ &&
+                (!this.image ||
+                  this.image.getRotation() !== imageRotation ||
+                  !equals(this.image.getExtent(), imageExtent))))
           ) {
             vectorRenderer.clipping = false;
             vectorRenderer.renderFrame(
@@ -174,6 +238,7 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
             callback();
           }
         },
+        imageRotation,
       );
 
       image.addEventListener(EventType.CHANGE, () => {
@@ -188,11 +253,11 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
         this.renderedResolution = renderedResolution;
         this.coordinateToVectorPixelTransform_ = compose(
           this.coordinateToVectorPixelTransform_,
-          width / 2,
-          height / 2,
+          imageSize[0] / 2,
+          imageSize[1] / 2,
           1 / renderedResolution,
           -1 / renderedResolution,
-          0,
+          -imageRotation,
           -viewState.center[0],
           -viewState.center[1],
         );

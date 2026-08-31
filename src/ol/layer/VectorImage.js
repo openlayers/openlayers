@@ -48,6 +48,11 @@ import BaseVectorLayer from './BaseVector.js';
  * will be rendered.
  * @property {number} [imageRatio=1] Ratio by which the rendered extent should be larger than the
  * viewport extent. A larger ratio avoids cut images during panning, but will cause a decrease in performance.
+ * @property {boolean} [rotateContent=false] Render the vector content rotated when the view is
+ * rotated, instead of rotating the rendered image. Keeps rotated views crisp - when the view is not
+ * animating or interacting, the rendered image is copied to the screen without resampling - and
+ * makes point symbols and texts honor their `rotateWithView` setting, at the cost of re-rendering
+ * the image whenever a view change settles.
  * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
  */
 
@@ -55,7 +60,9 @@ import BaseVectorLayer from './BaseVector.js';
  * @classdesc
  * Vector data is rendered client-side, to an image. This layer type provides great performance
  * during panning and zooming, but point symbols and texts are always rotated with the view and
- * pixels are scaled during zoom animations. For more accurate rendering of vector data, use
+ * pixels are scaled during zoom animations. With `rotateContent: true`, the image is instead
+ * rendered screen-aligned, which keeps rotated views crisp and makes point symbols and texts
+ * honor their `rotateWithView` setting. For more accurate rendering of vector data, use
  * {@link module:ol/layer/Vector~VectorLayer} instead.
  *
  * Note that any property set in the options is set as a {@link module:ol/Object~BaseObject}
@@ -76,6 +83,7 @@ class VectorImageLayer extends BaseVectorLayer {
 
     const baseOptions = Object.assign({}, options);
     delete baseOptions.imageRatio;
+    delete baseOptions.rotateContent;
     super(baseOptions);
 
     /**
@@ -84,6 +92,13 @@ class VectorImageLayer extends BaseVectorLayer {
      */
     this.imageRatio_ =
       options.imageRatio !== undefined ? options.imageRatio : 1;
+
+    /**
+     * @type {boolean}
+     * @private
+     */
+    this.rotateContent_ =
+      options.rotateContent !== undefined ? options.rotateContent : false;
   }
 
   /**
@@ -91,6 +106,14 @@ class VectorImageLayer extends BaseVectorLayer {
    */
   getImageRatio() {
     return this.imageRatio_;
+  }
+
+  /**
+   * @return {boolean} Whether the vector content is rendered rotated, instead of
+   * rotating the rendered image.
+   */
+  getRotateContent() {
+    return this.rotateContent_;
   }
 
   /**

@@ -7,6 +7,23 @@ import VectorImageLayer from '../../../../../src/ol/layer/VectorImage.js';
 import VectorSource from '../../../../../src/ol/source/Vector.js';
 
 describe('ol/layer/VectorImage', function () {
+  describe('#getRotateContent()', function () {
+    it('is false by default', function () {
+      const layer = new VectorImageLayer();
+      assert.isFalse(layer.getRotateContent());
+    });
+
+    it('is true when the option is set', function () {
+      const layer = new VectorImageLayer({rotateContent: true});
+      assert.isTrue(layer.getRotateContent());
+    });
+
+    it('does not set an observable property', function () {
+      const layer = new VectorImageLayer({rotateContent: true});
+      assert.isUndefined(layer.get('rotateContent'));
+    });
+  });
+
   describe('#getFeatures()', function () {
     let map, layer;
 
@@ -48,6 +65,56 @@ describe('ol/layer/VectorImage', function () {
         map.renderSync();
         const pixel = map.getPixelFromCoordinate([-1000000, 0]);
         layer.getFeatures(pixel).then(function (features) {
+          assert.strictEqual(features[0].get('name'), 'feature1');
+          resolve();
+        });
+      }));
+  });
+
+  describe('#getFeatures() with rotateContent on a rotated view', function () {
+    let map, layer;
+
+    beforeEach(function () {
+      layer = new VectorImageLayer({
+        rotateContent: true,
+        source: new VectorSource({
+          features: [
+            new Feature({
+              geometry: new Point([-1000000, 0]),
+              name: 'feature1',
+            }),
+            new Feature({
+              geometry: new Point([1000000, 0]),
+              name: 'feature2',
+            }),
+          ],
+        }),
+      });
+      const container = document.createElement('div');
+      container.style.width = '256px';
+      container.style.height = '256px';
+      document.body.appendChild(container);
+      map = new Map({
+        target: container,
+        layers: [layer],
+        view: new View({
+          zoom: 2,
+          center: [0, 0],
+          rotation: Math.PI / 5,
+        }),
+      });
+    });
+
+    afterEach(function () {
+      disposeMap(map);
+    });
+
+    it('detects features properly', () =>
+      new Promise((resolve) => {
+        map.renderSync();
+        const pixel = map.getPixelFromCoordinate([-1000000, 0]);
+        layer.getFeatures(pixel).then(function (features) {
+          assert.strictEqual(features.length, 1);
           assert.strictEqual(features[0].get('name'), 'feature1');
           resolve();
         });
