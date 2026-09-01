@@ -44,6 +44,13 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
      * @type {number}
      */
     this.renderedSourceRevision_ = 0;
+
+    /**
+     * Rotation baked into the current image.
+     * @protected
+     * @type {number}
+     */
+    this.renderedRotation = 0;
   }
 
   /**
@@ -66,6 +73,11 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
     const viewResolution = viewState.resolution;
 
     const imageSource = this.getLayer().getSource();
+    const sourceRotates = !!imageSource?.rotates;
+    if (this.sourceRotates !== sourceRotates) {
+      this.sourceRotates = sourceRotates;
+      this.image = null;
+    }
 
     const hints = frameState.viewHints;
 
@@ -107,6 +119,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
         if (image) {
           if (this.loadImage(image)) {
             this.image = image;
+            this.renderedRotation = sourceRotates ? viewState.rotation : 0;
           } else if (image.getState() === ImageState.EMPTY) {
             this.image = null;
           }
@@ -149,7 +162,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
       return null;
     }
 
-    const imageRotation = this.image.getRotation();
+    const imageRotation = this.renderedRotation;
     if (imageRotation !== 0) {
       const imageCenter = getCenter(imageExtent);
       const cosRotation = Math.cos(-imageRotation);
@@ -199,7 +212,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
       ? imageResolution
       : [imageResolution, imageResolution];
     const imagePixelRatio = image.getPixelRatio();
-    const imageRotation = image.getRotation();
+    const imageRotation = this.renderedRotation;
     const layerState = frameState.layerStatesArray[frameState.layerIndex];
     const pixelRatio = frameState.pixelRatio;
     const viewState = frameState.viewState;
@@ -210,8 +223,6 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
       (pixelRatio * imageResolutionX) / (viewResolution * imagePixelRatio);
     const scaleY =
       (pixelRatio * imageResolutionY) / (viewResolution * imagePixelRatio);
-
-    this.screenAligned = imageRotation !== 0;
 
     this.prepareContainer(frameState, target);
 
@@ -245,7 +256,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
     }
 
     let transform, dw, dh;
-    if (imageRotation === 0) {
+    if (!this.sourceRotates) {
       transform = composeTransform(
         this.tempTransform,
         width / 2,
@@ -259,12 +270,9 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
       dw = img.width * transform[0];
       dh = img.height * transform[3];
     } else {
-      // The image content is already rotated by imageRotation (screen-aligned
-      // rendering): rotate the image pixels by the remaining delta around the
-      // image center, scale, and shift by the image-center offset measured in
-      // the rotated view frame. When the view is at the image's rotation,
-      // resolution and pixel ratio, this reduces to a whole-pixel translation,
-      // making the copy lossless.
+      // The image content is already rotated by imageRotation. Rotate by the
+      // remaining delta around the image center; when the view is settled at
+      // the image's rotation this reduces to a whole-pixel translation.
       const scale = pixelRatio / viewResolution;
       const cosRotation = Math.cos(viewRotation);
       const sinRotation = Math.sin(viewRotation);
@@ -291,7 +299,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
 
     if (
       !this.getLayer().getSource()?.getInterpolate() &&
-      (imageRotation === 0 || viewRotation === imageRotation)
+      (!this.sourceRotates || viewRotation === imageRotation)
     ) {
       context.imageSmoothingEnabled = false;
     }
@@ -299,7 +307,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
     this.preRender(context, frameState);
     if (render && dw >= 0.5 && dh >= 0.5) {
       const opacity = layerState.opacity;
-      if (imageRotation === 0) {
+      if (!this.sourceRotates) {
         const dx = transform[4];
         const dy = transform[5];
         if (opacity !== 1) {

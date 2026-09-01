@@ -10,10 +10,8 @@ const options: VectorImageLayerOptions<VectorSource<Feature<Point>>> = {
   source: new VectorSource({
     features: [new Feature(new Point([0, 0]))],
   }),
-  rotateContent: true,
 };
 export const layer1 = new VectorImageLayer(options);
-export const rotateContent: boolean = layer1.getRotateContent();
 
 export const layer2: VectorImageLayer<VectorSource<Feature<Point>>> =
   new VectorImageLayer({

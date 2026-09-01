@@ -207,14 +207,14 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       /** @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} */ (
         this.context
       );
-    const width = this.screenAligned
+    const width = this.sourceRotates
       ? Math.round(frameState.size[0] * pixelRatio)
       : Math.round(
           (getWidth(/** @type {import("../../extent.js").Extent} */ (extent)) /
             resolution) *
             pixelRatio,
         );
-    const height = this.screenAligned
+    const height = this.sourceRotates
       ? Math.round(frameState.size[1] * pixelRatio)
       : Math.round(
           (getHeight(/** @type {import("../../extent.js").Extent} */ (extent)) /
@@ -244,7 +244,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       let transform = this.getRenderTransform(
         center,
         resolution,
-        this.screenAligned ? rotation : 0,
+        this.sourceRotates ? rotation : 0,
         pixelRatio,
         width,
         height,

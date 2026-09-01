@@ -21,15 +21,11 @@ class ImageCanvas extends ImageWrapper {
    * @param {HTMLCanvasElement|OffscreenCanvas} canvas Canvas.
    * @param {Loader} [loader] Optional loader function to
    *     support asynchronous canvas drawing.
-   * @param {number} [rotation] The rotation baked into the canvas content, in
-   *     radians (same convention as the view rotation).
    */
-  constructor(extent, resolution, pixelRatio, canvas, loader, rotation) {
+  constructor(extent, resolution, pixelRatio, canvas, loader) {
     const state = loader !== undefined ? ImageState.IDLE : ImageState.LOADED;
 
     super(extent, resolution, pixelRatio, state);
-
-    this.rotation = rotation ?? 0;
 
     /**
      * Optional canvas loader function.

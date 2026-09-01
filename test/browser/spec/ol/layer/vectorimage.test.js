@@ -7,23 +7,6 @@ import VectorImageLayer from '../../../../../src/ol/layer/VectorImage.js';
 import VectorSource from '../../../../../src/ol/source/Vector.js';
 
 describe('ol/layer/VectorImage', function () {
-  describe('#getRotateContent()', function () {
-    it('is false by default', function () {
-      const layer = new VectorImageLayer();
-      assert.isFalse(layer.getRotateContent());
-    });
-
-    it('is true when the option is set', function () {
-      const layer = new VectorImageLayer({rotateContent: true});
-      assert.isTrue(layer.getRotateContent());
-    });
-
-    it('does not set an observable property', function () {
-      const layer = new VectorImageLayer({rotateContent: true});
-      assert.isUndefined(layer.get('rotateContent'));
-    });
-  });
-
   describe('#getFeatures()', function () {
     let map, layer;
 
@@ -71,12 +54,11 @@ describe('ol/layer/VectorImage', function () {
       }));
   });
 
-  describe('#getFeatures() with rotateContent on a rotated view', function () {
+  describe('#getFeatures() on a rotated view', function () {
     let map, layer;
 
     beforeEach(function () {
       layer = new VectorImageLayer({
-        rotateContent: true,
         source: new VectorSource({
           features: [
             new Feature({

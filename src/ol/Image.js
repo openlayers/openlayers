@@ -87,12 +87,6 @@ class ImageWrapper extends EventTarget {
 
     /**
      * @protected
-     * @type {number}
-     */
-    this.rotation = 0;
-
-    /**
-     * @protected
      * @type {import("./ImageState.js").default}
      */
     this.state =
@@ -144,17 +138,6 @@ class ImageWrapper extends EventTarget {
    */
   getResolution() {
     return /** @type {number} */ (this.resolution);
-  }
-
-  /**
-   * The rotation baked into the image content, in radians (same convention as
-   * the view rotation). The extent describes the unrotated footprint of the
-   * image; the actual footprint is that extent rotated by this angle around
-   * its center.
-   * @return {number} Rotation.
-   */
-  getRotation() {
-    return this.rotation;
   }
 
   /**

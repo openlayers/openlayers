@@ -1,10 +1,7 @@
 import {assert} from 'chai';
 import Feature from '../../../../../../src/ol/Feature.js';
 import ImageCanvas from '../../../../../../src/ol/ImageCanvas.js';
-import {
-  getForViewAndSize,
-  scaleFromCenter,
-} from '../../../../../../src/ol/extent.js';
+import {getForViewAndSize} from '../../../../../../src/ol/extent.js';
 import Point from '../../../../../../src/ol/geom/Point.js';
 import VectorImageLayer from '../../../../../../src/ol/layer/VectorImage.js';
 import {get as getProjection} from '../../../../../../src/ol/proj.js';
@@ -26,66 +23,6 @@ describe('ol/renderer/canvas/VectorImageLayer', function () {
   });
 
   describe('#prepareFrame', function () {
-    /** @type {VectorImageLayer} */
-    let layer;
-    /** @type {CanvasVectorImageLayerRenderer} */
-    let renderer;
-    let frameState;
-    beforeEach(function () {
-      layer = new VectorImageLayer({
-        imageRatio: 2,
-        source: new VectorSource({
-          features: [new Feature(new Point([0, 0]))],
-        }),
-      });
-      renderer = new CanvasVectorImageLayerRenderer(layer);
-      const projection = getProjection('EPSG:3857');
-      const projExtent = projection.getExtent();
-      const extent = [projExtent[0] - 25, -25, projExtent[0] + 25, 25];
-      frameState = {
-        layerStatesArray: [layer.getLayerState()],
-        layerIndex: 0,
-        extent: extent,
-        size: [100, 100],
-        pixelRatio: 1,
-        viewHints: [],
-        pixelToCoordinateTransform: create(),
-        viewState: {
-          center: [0, 0],
-          projection: projection,
-          resolution: 1,
-          rotation: 0,
-        },
-      };
-    });
-    it('creates a new image, also when no features are rendered', function () {
-      renderer.prepareFrame(frameState);
-      assert.instanceOf(renderer.image, ImageCanvas);
-
-      layer.getSource().clear();
-      renderer.prepareFrame(frameState);
-      const canvas = renderer.image.getImage();
-      const centerPixel = canvas
-        .getContext('2d')
-        .getImageData(canvas.width / 2, canvas.height / 2, 1, 1).data;
-      assert.deepEqual(Array.from(centerPixel), [0, 0, 0, 0]);
-    });
-    it('sets correct extent with imageRatio = 2', function () {
-      const extent = frameState.extent.slice();
-      scaleFromCenter(extent, 2);
-
-      renderer.prepareFrame(frameState);
-      const imageExtent = renderer.image.getExtent();
-      assert.deepEqual(imageExtent, extent);
-    });
-    it('keeps a north-up image on a rotated view', function () {
-      frameState.viewState.rotation = Math.PI / 7;
-      renderer.prepareFrame(frameState);
-      assert.strictEqual(renderer.image.getRotation(), 0);
-    });
-  });
-
-  describe('#prepareFrame with rotateContent', function () {
     /** @type {VectorImageLayer} */
     let layer;
     /** @type {CanvasVectorImageLayerRenderer} */
@@ -112,7 +49,6 @@ describe('ol/renderer/canvas/VectorImageLayer', function () {
     beforeEach(function () {
       layer = new VectorImageLayer({
         imageRatio: 2,
-        rotateContent: true,
         source: new VectorSource({
           features: [new Feature(new Point([0, 0]))],
         }),
@@ -120,14 +56,36 @@ describe('ol/renderer/canvas/VectorImageLayer', function () {
       renderer = new CanvasVectorImageLayerRenderer(layer);
     });
 
-    it('creates a screen-aligned image with padded size, extent and rotation', function () {
-      renderer.prepareFrame(createFrameState(Math.PI / 7, [100, 100]));
+    it('creates a new image, also when no features are rendered', function () {
+      const frameState = createFrameState(0, [100, 100]);
+      renderer.prepareFrame(frameState);
+      assert.instanceOf(renderer.image, ImageCanvas);
+
+      layer.getSource().clear();
+      renderer.prepareFrame(frameState);
+      const canvas = renderer.image.getImage();
+      const centerPixel = canvas
+        .getContext('2d')
+        .getImageData(canvas.width / 2, canvas.height / 2, 1, 1).data;
+      assert.deepEqual(Array.from(centerPixel), [0, 0, 0, 0]);
+    });
+
+    it('sets correct extent and size with imageRatio = 2', function () {
+      renderer.prepareFrame(createFrameState(0, [100, 100]));
       const image = renderer.image;
-      assert.strictEqual(image.getRotation(), Math.PI / 7);
-      // imageRatio 2 pads the 100x100 viewport by 50 device pixels per side
+      // imageRatio 2 pads the 100x100 viewport by 50 pixels per side
       assert.deepEqual(image.getExtent(), [-100, -100, 100, 100]);
       assert.strictEqual(image.getImage().width, 200);
       assert.strictEqual(image.getImage().height, 200);
+    });
+
+    it('renders screen-aligned on a rotated view', function () {
+      renderer.prepareFrame(createFrameState(Math.PI / 7, [100, 100]));
+      assert.strictEqual(renderer.renderedRotation, Math.PI / 7);
+      // the extent is the unrotated footprint of the screen-aligned image
+      assert.deepEqual(renderer.image.getExtent(), [-100, -100, 100, 100]);
+      assert.strictEqual(renderer.image.getImage().width, 200);
+      assert.strictEqual(renderer.image.getImage().height, 200);
     });
 
     it('re-renders the image when only the rotation changes', function () {
@@ -135,11 +93,11 @@ describe('ol/renderer/canvas/VectorImageLayer', function () {
       const image = renderer.image;
       renderer.prepareFrame(createFrameState(Math.PI / 4, [100, 100]));
       assert.notStrictEqual(renderer.image, image);
-      assert.strictEqual(renderer.image.getRotation(), Math.PI / 4);
+      assert.strictEqual(renderer.renderedRotation, Math.PI / 4);
     });
   });
 
-  describe('#renderFrame with rotateContent', function () {
+  describe('#renderFrame on a rotated view', function () {
     /** @type {VectorImageLayer} */
     let layer;
     /** @type {CanvasVectorImageLayerRenderer} */
@@ -149,7 +107,6 @@ describe('ol/renderer/canvas/VectorImageLayer', function () {
     beforeEach(function () {
       layer = new VectorImageLayer({
         imageRatio: 2,
-        rotateContent: true,
         source: new VectorSource({
           features: [new Feature(new Point([0, 0]))],
         }),

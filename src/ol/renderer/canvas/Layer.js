@@ -109,13 +109,10 @@ class CanvasLayerRenderer extends LayerRenderer {
     this.containerReused = false;
 
     /**
-     * When true, the layer content is rendered screen-aligned - any view
-     * rotation is baked into the rendered pixels - so `prepareContainer()`
-     * sizes the canvas from `frameState.size` and applies no rotation to the
-     * container transform.
+     * Rotation can be requested from the source.
      * @type {boolean}
      */
-    this.screenAligned = false;
+    this.sourceRotates = false;
 
     /**
      * @protected
@@ -304,12 +301,12 @@ class CanvasLayerRenderer extends LayerRenderer {
       frameState.extent
     );
     const resolution = frameState.viewState.resolution;
-    const rotation = this.screenAligned ? 0 : frameState.viewState.rotation;
+    const rotation = this.sourceRotates ? 0 : frameState.viewState.rotation;
     const pixelRatio = frameState.pixelRatio;
-    const width = this.screenAligned
+    const width = this.sourceRotates
       ? Math.round(frameState.size[0] * pixelRatio)
       : Math.round((getWidth(extent) / resolution) * pixelRatio);
-    const height = this.screenAligned
+    const height = this.sourceRotates
       ? Math.round(frameState.size[1] * pixelRatio)
       : Math.round((getHeight(extent) / resolution) * pixelRatio);
     // set forward and inverse pixel transforms

@@ -51,7 +51,7 @@ for (let i = -100; i <= 100; i += 25) {
         stroke: new Stroke({color: '#3399cc', width: 1}),
       }),
       text: new Text({
-        font: 'bold 16px Ubuntu',
+        font: 'italic bold 16px Ubuntu',
         text: text,
         offsetY: -20,
         fill: new Fill({color: '#000000'}),
@@ -67,7 +67,6 @@ new Map({
   layers: [
     new VectorImageLayer({
       source: source,
-      rotateContent: true,
     }),
   ],
   target: 'map',
