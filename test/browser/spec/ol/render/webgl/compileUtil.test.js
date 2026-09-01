@@ -135,15 +135,15 @@ describe('ol/render/webgl/compileUtil', () => {
           ['arrayVar', NumberArrayType],
           ['booleanVar', BooleanType],
         ]),
+        inputVariables: {
+          colorVar: '#FFF',
+          anotherColorVar: [51, 102, 0, 0.4],
+          stringVar: 'hello world',
+          arrayVar: [1, 2, 3],
+          booleanVar: true,
+        },
       };
-      const styleVariables = {
-        colorVar: '#FFF',
-        anotherColorVar: [51, 102, 0, 0.4],
-        stringVar: 'hello world',
-        arrayVar: [1, 2, 3],
-        booleanVar: true,
-      };
-      const uniforms = generateUniformsFromContext(context, styleVariables);
+      const uniforms = generateUniformsFromContext(context);
 
       assert.property(uniforms, 'u_var_colorVar');
       assert.property(uniforms, 'u_var_anotherColorVar');

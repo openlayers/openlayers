@@ -10,6 +10,7 @@ import {
   CallExpression,
   ColorType,
   isType,
+  newParsingContext,
   NumberArrayType,
   NumberType,
   Ops,
@@ -129,29 +130,31 @@ export function uniformNameForVariable(variableName) {
 
 /**
  * @typedef {Object} CompilationContext
- * @property {Map<string, ValueType>} variables Variables and their types (transferred from the parsing context)
- * @property {Map<string, ValueType>} properties Properties and their types (transferred from the parsing context)
+ * Inherits most of its properties from the ParsingContext type.
+ *
+ * @property {Map<string, ValueType>} variables Variables referenced with the 'var' operator; key is name, value is type.
+ * @property {Map<string, ValueType>} properties Properties referenced with the 'get' operator; key is name, value is type.
+ * @property {boolean} featureId The style uses the feature id.
+ * @property {boolean} geometryType The style uses the feature geometry type.
+ * @property {boolean} mCoordinate The style uses the M coordinate of geometries
+ * @property {boolean} mapState The style uses the map state (view state or time elapsed).
+ * @property {import('../style/flat.js').StyleVariables} [inputVariables] Variable values (i.e. style variables) given as input during parsing to help with type narrowing
+ *
  * @property {Object<string, string>} functions Lookup of functions used by the style.
  * @property {number} [bandCount] Number of bands per pixel.
- * @property {Array<PaletteTexture>} [paletteTextures] List of palettes used by the style.
- * @property {boolean} featureId Whether the feature ID is used in the expression
- * @property {boolean} geometryType Whether the geometry type is used in the expression
- * @property {import('../style/flat.js').StyleVariables} [inputVariables] Variable values (i.e. style variables) given as input during parsing to help with type narrowing
+ * @property {Array<PaletteTexture>} paletteTextures List of palettes used by the style.
  */
 
 /**
- * @param {import('../style/flat.js').StyleVariables} [inputVariables] Variable values (i.e. style variables) given as input during parsing to help with type narrowing
- * @return {CompilationContext} A new compilation context.
+ * @param {import('../style/flat.js').StyleVariables} [variables] Style variables
+ * @return {CompilationContext} New compilation context
  */
-export function newCompilationContext(inputVariables) {
+export function newCompilationContext(variables) {
   return {
-    variables: new Map(),
-    properties: new Map(),
-    functions: {},
+    ...newParsingContext(variables),
     bandCount: 0,
-    featureId: false,
-    geometryType: false,
-    inputVariables,
+    functions: {},
+    paletteTextures: [],
   };
 }
 
@@ -179,26 +182,11 @@ export const UNDEFINED_PROP_VALUE = -9999999;
 /**
  * @param {import('./expression.js').EncodedExpression} encoded The encoded expression.
  * @param {number} type The expected type.
- * @param {import('./expression.js').ParsingContext} parsingContext The parsing context.
  * @param {CompilationContext} compilationContext An existing compilation context
  * @return {CompiledExpression} The compiled expression.
  */
-export function buildExpression(
-  encoded,
-  type,
-  parsingContext,
-  compilationContext,
-) {
-  const expression = parse(encoded, type, parsingContext);
-  // add collected variables and properties to the compilation context
-  compilationContext.properties = new Map([
-    ...compilationContext.properties,
-    ...parsingContext.properties,
-  ]);
-  compilationContext.variables = new Map([
-    ...compilationContext.variables,
-    ...parsingContext.variables,
-  ]);
+export function buildExpression(encoded, type, compilationContext) {
+  const expression = parse(encoded, type, compilationContext);
   return compile(expression, type, compilationContext);
 }
 

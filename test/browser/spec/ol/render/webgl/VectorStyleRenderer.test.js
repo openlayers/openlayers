@@ -208,8 +208,8 @@ describe('VectorStyleRenderer', () => {
       assert.instanceOf(secondPass.fillRenderPass.program, WebGLProgram);
       assert.deepEqual(secondPass.fillRenderPass.attributesDesc, [
         {name: 'a_position', size: 2, type: FLOAT},
-        {name: null, size: 1, type: FLOAT},
-        {name: null, size: 2, type: FLOAT},
+        {name: 'a_prop_size', size: 1, type: FLOAT},
+        {name: 'a_prop_color', size: 2, type: FLOAT},
         {name: 'a_prop_id', size: 1, type: FLOAT},
       ]);
       assert.strictEqual(secondPass.strokeRenderPass, undefined);
@@ -282,8 +282,8 @@ describe('VectorStyleRenderer', () => {
       assert.deepEqual(secondPass.fillRenderPass.attributesDesc, [
         {name: 'a_position', size: 2, type: FLOAT},
         {name: 'a_hitColor', size: 2, type: FLOAT},
-        {name: null, size: 1, type: FLOAT},
-        {name: null, size: 2, type: FLOAT},
+        {name: 'a_prop_size', size: 1, type: FLOAT},
+        {name: 'a_prop_color', size: 2, type: FLOAT},
         {name: 'a_prop_id', size: 1, type: FLOAT},
       ]);
       assert.strictEqual(secondPass.strokeRenderPass, undefined);
@@ -1227,6 +1227,12 @@ describe('VectorStyleRenderer', () => {
           .setStrokeWidthExpression('2.0')
           .setShapeDiscardExpression(
             `!((!(a_prop_size > 10.0)) && (a_prop_type == ${stringToGlsl('road')}))`,
+          )
+          .addFragmentShaderFunction(
+            'float circleDistanceField(vec2 point, float radius) {\n  return length(point) - radius;\n}',
+          )
+          .addVertexShaderFunction(
+            'float circleDistanceField(vec2 point, float radius) {\n  return length(point) - radius;\n}',
           ),
       );
 
@@ -1240,6 +1246,12 @@ describe('VectorStyleRenderer', () => {
           .setStrokeWidthExpression('2.0')
           .setShapeDiscardExpression(
             `!((!(a_prop_size > 10.0)) && (!(a_prop_type == ${stringToGlsl('road')})))`,
+          )
+          .addFragmentShaderFunction(
+            'float circleDistanceField(vec2 point, float radius) {\n  return length(point) - radius;\n}',
+          )
+          .addVertexShaderFunction(
+            'float circleDistanceField(vec2 point, float radius) {\n  return length(point) - radius;\n}',
           ),
       );
 
@@ -1253,26 +1265,47 @@ describe('VectorStyleRenderer', () => {
           .setStrokeWidthExpression('1.0')
           .setShapeDiscardExpression(
             `!((!(a_prop_size > 10.0)) && (!(a_prop_type == ${stringToGlsl('road')})))`,
+          )
+          .addFragmentShaderFunction(
+            'float circleDistanceField(vec2 point, float radius) {\n  return length(point) - radius;\n}',
+          )
+          .addVertexShaderFunction(
+            'float circleDistanceField(vec2 point, float radius) {\n  return length(point) - radius;\n}',
           ),
       );
 
-      assert.deepEqual(result[6].attributes, {});
+      assert.hasAllKeys(result[6].attributes, ['prop_size', 'prop_type']);
       assert.deepEqual(
         result[6].builder,
         new ShaderBuilder()
+          .addAttribute('a_prop_size', 'float')
+          .addAttribute('a_prop_type', 'float')
           .setStrokeColorExpression('vec4(1.0, 1.0, 0.0, 1.0)')
-          .setStrokeWidthExpression('2.0'),
+          .setStrokeWidthExpression('2.0')
+          .addFragmentShaderFunction(
+            'float circleDistanceField(vec2 point, float radius) {\n  return length(point) - radius;\n}',
+          )
+          .addVertexShaderFunction(
+            'float circleDistanceField(vec2 point, float radius) {\n  return length(point) - radius;\n}',
+          ),
       );
 
-      assert.hasAllKeys(result[7].attributes, ['prop_type']);
+      assert.hasAllKeys(result[7].attributes, ['prop_size', 'prop_type']);
       assert.deepEqual(
         result[7].builder,
         new ShaderBuilder()
+          .addAttribute('a_prop_size', 'float')
           .addAttribute('a_prop_type', 'float')
           .setStrokeColorExpression('vec4(0.0, 0.0, 0.0, 1.0)')
           .setStrokeWidthExpression('2.0')
           .setShapeDiscardExpression(
             `!(a_prop_type == ${stringToGlsl('street')})`,
+          )
+          .addFragmentShaderFunction(
+            'float circleDistanceField(vec2 point, float radius) {\n  return length(point) - radius;\n}',
+          )
+          .addVertexShaderFunction(
+            'float circleDistanceField(vec2 point, float radius) {\n  return length(point) - radius;\n}',
           ),
       );
     });

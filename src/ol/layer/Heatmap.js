@@ -2,11 +2,7 @@
  * @module ol/layer/Heatmap
  */
 import {createCanvasContext2D} from '../dom.js';
-import {
-  BooleanType,
-  newParsingContext,
-  NumberType,
-} from '../expr/expression.js';
+import {BooleanType, NumberType} from '../expr/expression.js';
 import {newCompilationContext} from '../expr/gpu.js';
 import {clamp} from '../math.js';
 import {ShaderBuilder} from '../render/webgl/ShaderBuilder.js';
@@ -283,13 +279,8 @@ class Heatmap extends BaseVector {
     const builder = new ShaderBuilder();
 
     const context = newCompilationContext(this.styleVariables_);
-    const filterParsingContext = newParsingContext(this.styleVariables_);
-    const filterCompiled = expressionToGlsl(
-      context,
-      this.filter_,
-      BooleanType,
-      filterParsingContext,
-    );
+    const filterCompiled = expressionToGlsl(context, this.filter_, BooleanType);
+    const filterUsesMCoordinate = context.mCoordinate;
     let radiusCompiled = expressionToGlsl(
       context,
       this.getRadius(),
@@ -354,7 +345,7 @@ class Heatmap extends BaseVector {
       .setStrokeWidthExpression(`(${radiusCompiled} + ${blurCompiled}) * 2.`)
       .setFillColorExpression(`vec4(${weightExpression})`);
 
-    if (filterParsingContext.mCoordinate) {
+    if (filterUsesMCoordinate) {
       builder.setFragmentDiscardExpression(`!${filterCompiled}`);
     } else {
       builder.setShapeDiscardExpression(`!${filterCompiled}`);
@@ -362,7 +353,7 @@ class Heatmap extends BaseVector {
 
     applyContextToBuilder(builder, context);
     const attributes = generateAttributesFromContext(context);
-    const uniforms = generateUniformsFromContext(context, this.styleVariables_);
+    const uniforms = generateUniformsFromContext(context);
 
     return new WebGLVectorLayerRenderer(this, {
       className: this.getClassName(),

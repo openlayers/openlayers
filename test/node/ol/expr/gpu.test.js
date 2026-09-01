@@ -706,19 +706,13 @@ describe('ol/expr/gpu.js', () => {
 
     for (const c of cases) {
       it(`works for ${c.name}`, () => {
-        const parsingContext = newParsingContext(c.context?.inputVariables);
-        const compilationContext = c.context
+        const context = c.context
           ? {...newCompilationContext(), ...c.context}
           : newCompilationContext();
-        const result = buildExpression(
-          c.expression,
-          c.type,
-          parsingContext,
-          compilationContext,
-        );
+        const result = buildExpression(c.expression, c.type, context);
         assert.deepEqual(result, c.expected);
         if (c.contextAssertion) {
-          c.contextAssertion(compilationContext);
+          c.contextAssertion(context);
         }
       });
     }

@@ -7,7 +7,6 @@ import {
   BooleanType,
   ColorType,
   computeGeometryType,
-  newParsingContext,
   NumberArrayType,
   NumberType,
   SizeType,
@@ -17,7 +16,6 @@ import {
   FEATURE_ID_PROPERTY_NAME,
   GEOMETRY_TYPE_PROPERTY_NAME,
   getStringNumberEquivalent,
-  newCompilationContext,
   stringToGlsl,
 } from '../../expr/gpu.js';
 import {ShaderBuilder} from './ShaderBuilder.js';
@@ -43,15 +41,13 @@ function styleProp(style, key) {
  * @param {import("../../expr/gpu.js").CompilationContext} context Compilation context.
  * @param {import("../../expr/expression.js").EncodedExpression|undefined} value Expression value.
  * @param {import("../../expr/expression.js").ValueType} expectedType Expected type.
- * @param {import("../../expr/expression.js").ParsingContext} [parsingContext] Parsing context.
  * @return {string} GLSL expression string.
  */
-function styleExpressionToGlsl(context, value, expectedType, parsingContext) {
+function styleExpressionToGlsl(context, value, expectedType) {
   return expressionToGlsl(
     context,
     /** @type {import("../../expr/expression.js").EncodedExpression} */ (value),
     expectedType,
-    parsingContext,
   );
 }
 
@@ -70,19 +66,19 @@ export function computeHash(input) {
 /**
  * @param {import("../../style/flat.js").FlatStyle} style Style
  * @param {ShaderBuilder} builder Shader builder
- * @param {import("../../expr/gpu.js").CompilationContext} vertContext Vertex shader compilation context
+ * @param {import("../../expr/gpu.js").CompilationContext} context Compilation context
  * @param {'shape-'|'circle-'|'icon-'} prefix Properties prefix
  */
-function parseCommonSymbolProperties(style, builder, vertContext, prefix) {
+function parseCommonSymbolProperties(style, builder, context, prefix) {
   if (`${prefix}radius` in style && prefix !== 'icon-') {
     let radius = styleExpressionToGlsl(
-      vertContext,
+      context,
       style[`${prefix}radius`],
       NumberType,
     );
     if (`${prefix}radius2` in style) {
       const radius2 = styleExpressionToGlsl(
-        vertContext,
+        context,
         styleProp(style, `${prefix}radius2`),
         NumberType,
       );
@@ -90,7 +86,7 @@ function parseCommonSymbolProperties(style, builder, vertContext, prefix) {
     }
     if (`${prefix}stroke-width` in style) {
       radius = `(${radius} + ${styleExpressionToGlsl(
-        vertContext,
+        context,
         style[`${prefix}stroke-width`],
         NumberType,
       )} * 0.5)`;
@@ -99,7 +95,7 @@ function parseCommonSymbolProperties(style, builder, vertContext, prefix) {
   }
   if (`${prefix}scale` in style) {
     const scale = styleExpressionToGlsl(
-      vertContext,
+      context,
       style[`${prefix}scale`],
       SizeType,
     );
@@ -110,7 +106,7 @@ function parseCommonSymbolProperties(style, builder, vertContext, prefix) {
   if (`${prefix}displacement` in style) {
     builder.setSymbolOffsetExpression(
       styleExpressionToGlsl(
-        vertContext,
+        context,
         style[`${prefix}displacement`],
         NumberArrayType,
       ),
@@ -118,11 +114,7 @@ function parseCommonSymbolProperties(style, builder, vertContext, prefix) {
   }
   if (`${prefix}rotation` in style) {
     builder.setSymbolRotationExpression(
-      styleExpressionToGlsl(
-        vertContext,
-        style[`${prefix}rotation`],
-        NumberType,
-      ),
+      styleExpressionToGlsl(context, style[`${prefix}rotation`], NumberType),
     );
   }
   if (`${prefix}rotate-with-view` in style) {
@@ -199,7 +191,7 @@ function parseImageProperties(style, builder, uniforms, prefix, textureId) {
  * This will parse an image's offset properties provided by `<prefix>-offset`, `<prefix>-offset-origin` and `<prefix>-size`
  * @param {import("../../style/flat.js").FlatStyle} style Style
  * @param {'icon-'|'fill-pattern-'|'stroke-pattern-'} prefix Property prefix
- * @param {import("../../expr/gpu.js").CompilationContext} context Shader compilation context (vertex or fragment)
+ * @param {import("../../expr/gpu.js").CompilationContext} context Shader compilation context
  * @param {string} imageSize Pixel size of the full image as a GLSL expression
  * @param {string} sampleSize Pixel size of the sample in the image as a GLSL expression
  * @return {string} The offset expression
@@ -1022,13 +1014,11 @@ function parseTextProperties(style, builder, uniforms, context) {
  * {@link module:ol/renderer/webgl/PointsLayer~WebGLPointsLayerRenderer}.
  *
  * @param {import("../../style/flat.js").FlatStyle} style Flat style.
- * @param {import('../../style/flat.js').StyleVariables} [variables] Style variables.
+ * @param {import("../../expr/gpu.js").CompilationContext} context Compilation context
  * @param {import("../../expr/expression.js").EncodedExpression} [filter] Filter (if any)
  * @return {StyleParseResult} Result containing shader params, attributes and uniforms.
  */
-export function parseLiteralStyle(style, variables, filter) {
-  const context = newCompilationContext(variables);
-
+export function parseLiteralStyle(style, context, filter) {
   const builder = new ShaderBuilder();
 
   /** @type {Object<string,import("../../webgl/Helper.js").UniformValue>} */
@@ -1049,14 +1039,10 @@ export function parseLiteralStyle(style, variables, filter) {
   // note that the style filter may have already been applied earlier when building the rendering instructions
   // this is still needed in case a filter cannot be evaluated statically beforehand (e.g. depending on time)
   if (filter) {
-    const filterContext = newParsingContext(variables);
-    const parsedFilter = styleExpressionToGlsl(
-      context,
-      filter,
-      BooleanType,
-      filterContext,
-    );
-    if (filterContext.mCoordinate) {
+    // we're tracking whether the 'line-metric' operator is used in the filter
+    context.mCoordinate = false;
+    const parsedFilter = styleExpressionToGlsl(context, filter, BooleanType);
+    if (context.mCoordinate) {
       builder.setFragmentDiscardExpression(`!${parsedFilter}`);
     } else {
       builder.setShapeDiscardExpression(`!${parsedFilter}`);
@@ -1117,7 +1103,7 @@ export function parseLiteralStyle(style, variables, filter) {
     attributes: {...attributes, ...generateAttributesFromContext(context)},
     uniforms: {
       ...uniforms,
-      ...generateUniformsFromContext(context, variables),
+      ...generateUniformsFromContext(context),
     },
   };
 }

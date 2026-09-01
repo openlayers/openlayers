@@ -3,6 +3,7 @@
  */
 import Disposable from '../../Disposable.js';
 import {createCanvasContext2D} from '../../dom.js';
+import {newCompilationContext} from '../../expr/gpu.js';
 import {
   create as createTransform,
   makeInverse as makeInverseTransform,
@@ -978,6 +979,8 @@ export function toFlatStyleLike(styleOrShaders) {
  * @return {Array<StyleShaders>} Array of style shaders
  */
 export function convertStyleToShaders(style, variables) {
+  const context = newCompilationContext(variables);
+
   // possible cases:
   // - single shader
   // - multiple shaders
@@ -1014,7 +1017,7 @@ export function convertStyleToShaders(style, variables) {
       }
       // parse each style and convert to shader
       const styleShaders = ruleStyles.map((style) => ({
-        ...parseLiteralStyle(style, variables, currentFilter),
+        ...parseLiteralStyle(style, context, currentFilter),
         sourceRule: rule,
       }));
       shaders.push(...styleShaders);
@@ -1029,7 +1032,7 @@ export function convertStyleToShaders(style, variables) {
 
   // array of flat styles: simply convert to shaders
   return /** @type {Array<FlatStyle>} */ (asArray).map((style) => ({
-    ...parseLiteralStyle(style, variables, undefined),
+    ...parseLiteralStyle(style, context, undefined),
     sourceRule: {style},
   }));
 }
