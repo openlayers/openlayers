@@ -117,20 +117,85 @@ describe('ol/expr/expression.js', () => {
       assert.deepEqual(expression.value, [10, 20]);
     });
 
-    it('parses a get expression', () => {
-      const context = newParsingContext();
-      const expression = parse(['get', 'foo'], AnyType, context);
-      assert.instanceOf(expression, CallExpression);
-      assert.strictEqual(expression.operator, 'get');
-      assert.strictEqual(isType(expression.type, AnyType), true);
-      assert.strictEqual(context.properties.get('foo'), AnyType);
+    describe('get operator', () => {
+      it('parses the expression, stores the property with an indefinite type', () => {
+        const context = newParsingContext();
+        const expression = parse(['get', 'foo'], AnyType, context);
+        assert.instanceOf(expression, CallExpression);
+        assert.strictEqual(expression.operator, 'get');
+        assert.deepEqual(expression.args, [
+          new LiteralExpression(StringType, 'foo'),
+        ]);
+        assert.strictEqual(expression.type, AnyType);
+        assert.strictEqual(context.properties.get('foo'), AnyType);
+      });
+
+      it('given an expected type, stores the property with this type', () => {
+        const context = newParsingContext();
+        const expression = parse(['get', 'foo'], NumberArrayType, context);
+        assert.deepEqual(expression.args, [
+          new LiteralExpression(StringType, 'foo'),
+        ]);
+        assert.strictEqual(expression.type, NumberArrayType);
+        assert.strictEqual(context.properties.get('foo'), NumberArrayType);
+      });
+
+      it('for a nested property with an expected type, stores the root property with an indefinite type', () => {
+        const context = newParsingContext();
+        const expression = parse(
+          ['get', 'foo', 3, 'bla'],
+          NumberArrayType,
+          context,
+        );
+        assert.deepEqual(expression.args, [
+          new LiteralExpression(StringType, 'foo'),
+          new LiteralExpression(NumberType, 3),
+          new LiteralExpression(StringType, 'bla'),
+        ]);
+        assert.strictEqual(expression.type, NumberArrayType);
+        assert.deepEqual(Array.from(context.properties.keys()), ['foo']);
+        assert.strictEqual(context.properties.get('foo'), AnyType);
+      });
+
+      it('when reading an attribute several times, keep the most restrictive type for it', () => {
+        const context = newParsingContext();
+        context.properties.set('foo', NumberType | StringType | SizeType);
+        const expression = parse(
+          ['*', ['get', 'foo'], ['get', 'foo', 'bar']],
+          NumberType | ColorType,
+          context,
+        );
+        assert.strictEqual(expression.type, NumberType | ColorType);
+        assert.deepEqual(Array.from(context.properties.keys()), ['foo']);
+        assert.strictEqual(context.properties.get('foo'), NumberType);
+      });
     });
 
-    it('parses a get expression with a specific type', () => {
-      const context = newParsingContext();
-      const expression = parse(['get', 'foo'], NumberArrayType, context);
-      assert.strictEqual(isType(expression.type, NumberArrayType), true);
-      assert.strictEqual(context.properties.get('foo'), NumberArrayType);
+    describe('has operator', () => {
+      it('parses the expression with an expected type, stores the property with an indefinite type', () => {
+        const context = newParsingContext();
+        const expression = parse(['has', 'foo'], AnyType, context);
+        assert.instanceOf(expression, CallExpression);
+        assert.strictEqual(expression.operator, 'has');
+        assert.deepEqual(expression.args, [
+          new LiteralExpression(StringType, 'foo'),
+        ]);
+        assert.strictEqual(expression.type, BooleanType);
+        assert.strictEqual(context.properties.get('foo'), AnyType);
+      });
+
+      it('for a nested property with an expected type, stores the root property with an indefinite type', () => {
+        const context = newParsingContext();
+        const expression = parse(['has', 'foo', 3, 'bla'], AnyType, context);
+        assert.deepEqual(expression.args, [
+          new LiteralExpression(StringType, 'foo'),
+          new LiteralExpression(NumberType, 3),
+          new LiteralExpression(StringType, 'bla'),
+        ]);
+        assert.strictEqual(expression.type, BooleanType);
+        assert.deepEqual(Array.from(context.properties.keys()), ['foo']);
+        assert.strictEqual(context.properties.get('foo'), AnyType);
+      });
     });
 
     it('parses a var expression', () => {
@@ -567,6 +632,32 @@ describe('ol/expr/expression.js', () => {
         },
         error:
           'the type expected from the var operator (number) did not have any overlap with the type of the corresponding style variables (string), variable name: myVar',
+      },
+      {
+        name: 'expected another type than boolean from the has operator',
+        expression: ['+', ['has', 'myAttr'], 3],
+        error: 'The has operator returns a boolean, expected type: number',
+      },
+      {
+        name: 'no overlap between two get operators using the same property',
+        expression: [
+          '+',
+          ['get', 'myAttr'],
+          3,
+          ['case', ['get', 'myAttr'], 4, 5],
+        ],
+        error:
+          'the myAttr property read by a get operation was expected to match this type: boolean, got number',
+      },
+      {
+        name: 'no argument specified for get',
+        expression: ['get'],
+        error: 'expected at least one argument for get, got 0',
+      },
+      {
+        name: 'no argument specified for has',
+        expression: ['has'],
+        error: 'expected at least one argument for has, got 0',
       },
     ];
 
