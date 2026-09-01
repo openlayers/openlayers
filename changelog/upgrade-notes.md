@@ -2,6 +2,10 @@
 
 ### Next release
 
+#### Fixed GeoJSON parsing of geometries with empty coordinate arrays
+
+Previously, a GeoJSON geometry with an empty coordinates array (e.g. `{"type": "Point", "coordinates": []}`) produced a geometry with an empty coordinates array. We have now changed this to match the GeoJSON spec's recommendation to treat such geometries (except `GeometryCollection`) as `null` geometries. This change should not affect application code, unless it had special handling for geometries with empty coordinates arrays.
+
 #### The WMTS tile grid extent is no longer calculated from the tile matrices
 
 `optionsFromCapabilities` now only uses an advertised `BoundingBox` as the tile grid's
