@@ -2,6 +2,7 @@
  * @module ol/render/webgl/textUtil
  */
 import {ColorType, StringType} from '../../expr/expression.js';
+import {UNDEFINED_PROP_VALUE} from '../../expr/gpu.js';
 import LineString from '../../geom/LineString.js';
 import Point from '../../geom/Point.js';
 import Polygon from '../../geom/Polygon.js';
@@ -198,7 +199,7 @@ const textDecoder = new TextDecoder();
  * @param {import('./VectorStyleRenderer.js').AttributeDefinitions} customAttributes Custom attributes sizes
  * @param {Float32Array} customAttributesValues Flat array of custom attribute values for the feature
  * @param {Uint8Array} labels Encoded label bytes used for string properties
- * @return {string | Array<number> | number} Decoded custom attribute value
+ * @return {string | Array<number> | number | undefined} Decoded custom attribute value
  */
 function readCustomAttributeValue(
   propertyName,
@@ -222,6 +223,10 @@ function readCustomAttributeValue(
   const customAttrSize = /** @type {number} */ (
     customAttributes[customAttrName].size
   );
+
+  if (customAttributesValues[customAttrOffset] === UNDEFINED_PROP_VALUE) {
+    return undefined;
+  }
 
   if (propertyType === StringType) {
     const start = customAttributesValues[customAttrOffset + 1];
@@ -348,6 +353,9 @@ export function convertPolygonRenderInstructionsToCanvasTextBuilder(
         customAttributesValues,
         labels,
       );
+      if (textFeatureProps[propName] === undefined) {
+        delete textFeatureProps[propName];
+      }
     }
 
     drawTextGeometry(
@@ -418,6 +426,9 @@ export function convertLineStringRenderInstructionsToCanvasTextBuilder(
         customAttributesValues,
         labels,
       );
+      if (textFeatureProps[propName] === undefined) {
+        delete textFeatureProps[propName];
+      }
     }
 
     drawTextGeometry(
@@ -480,6 +491,9 @@ export function convertPointRenderInstructionsToCanvasTextBuilder(
         customAttributesValues,
         labels,
       );
+      if (textFeatureProps[propName] === undefined) {
+        delete textFeatureProps[propName];
+      }
     }
 
     drawTextGeometry(
