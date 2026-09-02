@@ -6,6 +6,36 @@
 
 Previously, a GeoJSON geometry with an empty coordinates array (e.g. `{"type": "Point", "coordinates": []}`) produced a geometry with an empty coordinates array. We have now changed this to match the GeoJSON spec's recommendation to treat such geometries (except `GeometryCollection`) as `null` geometries. This change should not affect application code, unless it had special handling for geometries with empty coordinates arrays.
 
+#### Fixed: `interpolate` mixed colors differently on the Canvas and WebGL renderers
+
+The `['interpolate', ...]` operator interpolated colors in the Hue-Chroma-Luminance space on
+the Canvas renderer, but component-wise in sRGB on the WebGL renderer. The same style
+produced different gradients depending on which renderer drew it, and neither behaviour was
+documented. Both now interpolate in sRGB.
+
+Gradients built with `interpolate` over colors will look slightly different on the Canvas
+renderer. To keep the previous appearance, use the new `interpolate-hcl` operator:
+
+```js
+// Before
+const style = {
+  'fill-color': ['interpolate', ['linear'], ['get', 'value'], 0, 'red', 1, 'green'],
+};
+```
+
+```js
+// After - to keep the perceptual gradient
+const style = {
+  'fill-color': ['interpolate-hcl', ['linear'], ['get', 'value'], 0, 'red', 1, 'green'],
+};
+```
+
+`interpolate-hcl` is only supported by the Canvas renderer for now.
+
+With the `['interpolate', ...]` operator, channels now keep their fractional part, so operations
+applied on top of an interpolated color are more accurate. Code reading back a color from an
+evaluated style may now see a fractional channel.
+
 #### The WMTS tile grid extent is no longer calculated from the tile matrices
 
 `optionsFromCapabilities` now only uses an advertised `BoundingBox` as the tile grid's

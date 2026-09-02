@@ -72,8 +72,12 @@ import {toSize} from '../size.js';
  *     the rate of increase from stop A to stop B (i.e. power to which the interpolation ratio is raised); a value
  *     of 1 is equivalent to `['linear']`.
  *     `input` and `stopX` values must all be of type `number`. `outputX` values can be `number` or `color` values.
+ *     Colors are interpolated component-wise in sRGB.
  *     Note: `input` will be clamped between `stop1` and `stopN`, meaning that all output values will be comprised
  *     between `output1` and `outputN`.
+ *   * `['interpolate-hcl', interpolation, input, stop1, output1, ...stopN, outputN]` works like `interpolate`, but
+ *     the `outputX` values must be colors, and they are interpolated in the Hue-Chroma-Luminance color space.
+ *     This keeps gradients bright where sRGB interpolation would take them through a muddy midpoint (Canvas only).
  *   * `['string', value1, value2, ...]` returns the first value in the list that evaluates to a string.
  *     An example would be to provide a default value for get: `['string', ['get', 'propertyname'], 'default value']]`
  *     (Canvas only).
@@ -110,9 +114,9 @@ import {toSize} from '../size.js';
  *
  * * Conversion operators:
  *   * `['array', value1, ...valueN]` creates a numerical array from `number` values; please note that the amount of
- *     values can currently only be 2, 3 or 4 (WebGL only).
+ *     values can currently only be 2, 3 or 4.
  *   * `['color', red, green, blue, alpha]` or `['color', shade, alpha]` creates a `color` value from `number` values;
- *     the `alpha` parameter is optional; if not specified, it will be set to 1 (WebGL only).
+ *     the `alpha` parameter is optional; if not specified, it will be set to 1.
  *     Note: `red`, `green` and `blue` or `shade` components must be values between 0 and 255; `alpha` between 0 and 1.
  *   * `['palette', index, colors]` picks a `color` value from an array of colors using the given index; the `index`
  *     expression must evaluate to a number; the items in the `colors` array must be strings with hex colors
@@ -430,6 +434,7 @@ export const Ops = {
   Match: 'match',
   Between: 'between',
   Interpolate: 'interpolate',
+  InterpolateHcl: 'interpolate-hcl',
   Coalesce: 'coalesce',
   Case: 'case',
   In: 'in',
@@ -579,6 +584,12 @@ const parsers = {
   [Ops.Interpolate]: createCallExpressionParser(
     hasArgsCount(6, Infinity),
     hasEvenArgs,
+    withInterpolateArgs,
+  ),
+  [Ops.InterpolateHcl]: createCallExpressionParser(
+    hasArgsCount(6, Infinity),
+    hasEvenArgs,
+    returnsColor,
     withInterpolateArgs,
   ),
   [Ops.Case]: createCallExpressionParser(
@@ -935,6 +946,18 @@ function withMatchArgs(encoded, returnType, context) {
   const input = parse(encoded[1], inputType, context);
 
   return [input, ...args, fallback];
+}
+
+/**
+ * Assert that the call is being used where a color is expected.
+ * @type {ArgValidator}
+ */
+function returnsColor(encoded, returnType, context) {
+  if (!includesType(returnType, ColorType)) {
+    throw new Error(
+      `the ${encoded[0]} operator can only return a color, got ${typeName(returnType)}`,
+    );
+  }
 }
 
 /**

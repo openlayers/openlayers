@@ -174,11 +174,18 @@ function compileExpression(expression, context) {
     case Ops.Match: {
       return compileMatchExpression(expression, context);
     }
-    case Ops.Interpolate: {
+    case Ops.Interpolate:
+    case Ops.InterpolateHcl: {
       return compileInterpolateExpression(expression, context);
     }
     case Ops.ToString: {
       return compileConvertExpression(expression, context);
+    }
+    case Ops.Array: {
+      return compileArrayExpression(expression, context);
+    }
+    case Ops.Color: {
+      return compileColorExpression(expression, context);
     }
     default: {
       throw new Error(`Unsupported operator ${operator}`);
@@ -186,11 +193,70 @@ function compileExpression(expression, context) {
     // TODO: unimplemented
     // Ops.Zoom
     // Ops.Time
-    // Ops.Array
-    // Ops.Color
     // Ops.Band
     // Ops.Palette
   }
+}
+
+/**
+ * @param {import('./expression.js').CallExpression} expression The call expression.
+ * @param {import('./expression.js').ParsingContext} context The parsing context.
+ * @return {NumberArrayEvaluator} The evaluator function.
+ */
+function compileArrayExpression(expression, context) {
+  const length = expression.args.length;
+  const args = new Array(length);
+  for (let i = 0; i < length; ++i) {
+    args[i] = compileExpression(expression.args[i], context);
+  }
+  // A color array is a `vec4` in a shader, so its channels are in the 0 to 1 range.
+  if (expression.type === ColorType && (length === 3 || length === 4)) {
+    const alpha = length === 4 ? args[3] : null;
+    return (context) => [
+      /** @type {number} */ (args[0](context)) * 255,
+      /** @type {number} */ (args[1](context)) * 255,
+      /** @type {number} */ (args[2](context)) * 255,
+      alpha ? /** @type {number} */ (alpha(context)) : 1,
+    ];
+  }
+  return (context) => {
+    const values = new Array(length);
+    for (let i = 0; i < length; ++i) {
+      values[i] = args[i](context);
+    }
+    return values;
+  };
+}
+
+/**
+ * Assemble a color from numbers.  One or two arguments give a gray value and an optional
+ * alpha; three or four give red, green, blue and an optional alpha.  Channels are in the
+ * 0 to 255 range and alpha in the 0 to 1 range.
+ *
+ * @param {import('./expression.js').CallExpression} expression The call expression.
+ * @param {import('./expression.js').ParsingContext} context The parsing context.
+ * @return {ColorLikeEvaluator} The evaluator function.
+ */
+function compileColorExpression(expression, context) {
+  const length = expression.args.length;
+  const args = new Array(length);
+  for (let i = 0; i < length; ++i) {
+    args[i] = compileExpression(expression.args[i], context);
+  }
+  if (length < 3) {
+    const alpha = length === 2 ? args[1] : null;
+    return (context) => {
+      const gray = args[0](context);
+      return [gray, gray, gray, alpha ? alpha(context) : 1];
+    };
+  }
+  const alpha = length === 4 ? args[3] : null;
+  return (context) => [
+    args[0](context),
+    args[1](context),
+    args[2](context),
+    alpha ? alpha(context) : 1,
+  ];
 }
 
 /**
@@ -526,6 +592,12 @@ function compileInterpolateExpression(expression, context) {
   for (let i = 0; i < length; ++i) {
     args[i] = compileExpression(expression.args[i], context);
   }
+  const interpolateColorFn =
+    expression.operator === Ops.InterpolateHcl
+      ? // perceptual interpolation
+        interpolateHclColor
+      : // sRGB interpolation, equivalent to GLSL `mix()` in `gpu.js`
+        interpolateRgbColor;
   return (context) => {
     const base = args[0](context);
     const value = args[1](context);
@@ -544,7 +616,7 @@ function compileInterpolateExpression(expression, context) {
           return output;
         }
         if (isColor) {
-          return interpolateColor(
+          return interpolateColorFn(
             base,
             value,
             previousInput,
@@ -621,6 +693,7 @@ function interpolateNumber(base, value, input1, output1, input2, output2) {
 }
 
 /**
+ * Interpolate two colors component-wise in sRGB
  * @param {number} base The base.
  * @param {number} value The value.
  * @param {number} input1 The first input value.
@@ -629,7 +702,33 @@ function interpolateNumber(base, value, input1, output1, input2, output2) {
  * @param {import('../color.js').Color} rgba2 The second output value.
  * @return {import('../color.js').Color} The interpolated color.
  */
-function interpolateColor(base, value, input1, rgba1, input2, rgba2) {
+function interpolateRgbColor(base, value, input1, rgba1, input2, rgba2) {
+  const delta = input2 - input1;
+  if (delta === 0) {
+    return rgba1;
+  }
+  // channels are left unrounded, so that a pipeline applying gamma or contrast on top
+  // does not compound a quantization error at every stop
+  return [
+    interpolateNumber(base, value, input1, rgba1[0], input2, rgba2[0]),
+    interpolateNumber(base, value, input1, rgba1[1], input2, rgba2[1]),
+    interpolateNumber(base, value, input1, rgba1[2], input2, rgba2[2]),
+    interpolateNumber(base, value, input1, rgba1[3], input2, rgba2[3]),
+  ];
+}
+
+/**
+ * Interpolate two colors in the Hue-Chroma-Luminance space, for the
+ * `interpolate-hcl` operator.
+ * @param {number} base The base.
+ * @param {number} value The value.
+ * @param {number} input1 The first input value.
+ * @param {import('../color.js').Color} rgba1 The first output value.
+ * @param {number} input2 The second input value.
+ * @param {import('../color.js').Color} rgba2 The second output value.
+ * @return {import('../color.js').Color} The interpolated color.
+ */
+function interpolateHclColor(base, value, input1, rgba1, input2, rgba2) {
   const delta = input2 - input1;
   if (delta === 0) {
     return rgba1;
