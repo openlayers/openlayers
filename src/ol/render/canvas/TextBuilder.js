@@ -227,6 +227,7 @@ class CanvasTextBuilder extends CanvasBuilder {
         }
       }
       if (
+        textState.textAlign === undefined &&
         (geometryType == 'LineString' || geometryType == 'MultiLineString') &&
         !containsExtent(this.getBufferedMaxExtent(), geometryExtent)
       ) {
