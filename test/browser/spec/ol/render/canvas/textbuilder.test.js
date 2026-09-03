@@ -335,6 +335,39 @@ describe('ol.render.canvas.TextBuilder', function () {
     assert.strictEqual(geometryWidths[0], 120);
   });
 
+  describe('line label clipping to the rendered extent', function () {
+    const geometry = new LineString([
+      [-360, 0],
+      [360, 0],
+    ]);
+    const feature = new Feature(geometry);
+
+    it('clips the line to the rendered extent when textAlign is not set', function () {
+      const builder = createBuilder();
+      builder.setTextStyle(
+        new Text({
+          text: 'text',
+          placement: 'line',
+        }),
+      );
+      builder.drawText(geometry, feature);
+      assert.deepEqual(builder.coordinates, [-180, 0, 180, 0]);
+    });
+
+    it('keeps the full line when textAlign is set explicitly', function () {
+      const builder = createBuilder();
+      builder.setTextStyle(
+        new Text({
+          text: 'text',
+          placement: 'line',
+          textAlign: 'center',
+        }),
+      );
+      builder.drawText(geometry, feature);
+      assert.deepEqual(builder.coordinates, [-360, 0, 360, 0]);
+    });
+  });
+
   describe('offsetX for text along a line', function () {
     function drawCharsInstruction(offsetX, pixelRatio) {
       const builder = new TextBuilder(
