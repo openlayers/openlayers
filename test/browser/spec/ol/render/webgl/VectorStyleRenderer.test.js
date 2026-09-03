@@ -753,7 +753,7 @@ describe('VectorStyleRenderer', () => {
             'white',
             'red',
           ],
-          'text-value': ['get', 'label'],
+          'text-value': ['coalesce', ['get', 'label'], ''],
         },
       },
     ];
@@ -801,7 +801,7 @@ describe('VectorStyleRenderer', () => {
                 'white',
                 'red',
               ],
-              'text-value': ['get', 'label'],
+              'text-value': ['coalesce', ['get', 'label'], ''],
             },
           },
         ]);
@@ -972,7 +972,7 @@ describe('VectorStyleRenderer', () => {
       [
         {
           style: {
-            'text-value': ['get', 'label'],
+            'text-value': ['coalesce', ['get', 'label'], ''],
           },
         },
         {
@@ -1006,7 +1006,7 @@ describe('VectorStyleRenderer', () => {
     const SAMPLE_STYLE_TEXT = [
       {
         style: {
-          'text-value': ['get', 'label'],
+          'text-value': ['coalesce', ['get', 'label'], ''],
           'text-font': '10px sans-serif',
         },
       },
