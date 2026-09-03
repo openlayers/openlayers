@@ -8,6 +8,23 @@ import {rotate} from './transform.js';
  * @type {Intl.Segmenter|undefined}
  */
 let segmenter;
+
+/**
+ * Matches characters of right-to-left scripts.
+ * @type {RegExp}
+ */
+export const rtlRegEx = new RegExp(
+  /* eslint-disable prettier/prettier */
+  '[' +
+    String.fromCharCode(0x00591) + '-' + String.fromCharCode(0x008ff) +
+    String.fromCharCode(0x0fb1d) + '-' + String.fromCharCode(0x0fdff) +
+    String.fromCharCode(0x0fe70) + '-' + String.fromCharCode(0x0fefc) +
+    String.fromCharCode(0x10800) + '-' + String.fromCharCode(0x10fff) +
+    String.fromCharCode(0x1e800) + '-' + String.fromCharCode(0x1efff) +
+  ']'
+  /* eslint-enable prettier/prettier */
+);
+
 /**
  * @return {Intl.Segmenter} A grapheme segmenter.
  */
@@ -126,6 +143,9 @@ export function drawTextOnPath(
   text = text.replace(/\n/g, ' '); // ensure rendering in single-line as all calculations below don't handle multi-lines
 
   const segments = Array.from(getSegmenter().segment(text), (s) => s.segment);
+  // Right-to-left text starts at the visual end of the path, so its chunks are
+  // placed in reverse order unless the path itself is reversed.
+  const reverseChunks = reverse !== rtlRegEx.test(text);
   for (let i = 0, ii = segments.length; i < ii;) {
     advance();
     let angle = Math.atan2(y2 - y1, x2 - x1);
@@ -144,7 +164,7 @@ export function drawTextOnPath(
     const iStart = i;
     let charLength = 0;
     for (; i < ii; ++i) {
-      const index = reverse ? ii - i - 1 : i;
+      const index = reverseChunks ? ii - i - 1 : i;
       const len =
         scale * measureAndCacheTextWidth(font, segments[index], cache);
       if (
@@ -159,7 +179,9 @@ export function drawTextOnPath(
       continue;
     }
     const chars = (
-      reverse ? segments.slice(ii - i, ii - iStart) : segments.slice(iStart, i)
+      reverseChunks
+        ? segments.slice(ii - i, ii - iStart)
+        : segments.slice(iStart, i)
     ).join('');
     interpolate =
       segmentLength === 0

@@ -165,6 +165,62 @@ describe('ol/geom/flat/drawTextOnPath.js', function () {
     assert.strictEqual(instructions[1][4], 'oo');
   });
 
+  it('renders right-to-left text in reverse chunk order', function () {
+    const length = lineStringLength(angled, 0, angled.length, 2);
+    const startM = length / 2 - 20;
+    const instructions = drawTextOnPath(
+      angled,
+      0,
+      angled.length,
+      2,
+      'ابجد',
+      startM,
+      Infinity,
+      1,
+      measureAndCacheTextWidth,
+      '',
+      {},
+    );
+    assert.deepEqual(instructions[0][3], (45 * Math.PI) / 180);
+    assert.strictEqual(instructions[0][4], 'جد');
+    assert.deepEqual(instructions[1][3], (-45 * Math.PI) / 180);
+    assert.strictEqual(instructions[1][4], 'اب');
+  });
+
+  it('renders right-to-left text upright on a reversed path', function () {
+    const reversedAngled = angled.slice().reverse();
+    // reverse() swapped x and y, swap them back
+    for (let i = 0; i < reversedAngled.length; i += 2) {
+      const x = reversedAngled[i + 1];
+      reversedAngled[i + 1] = reversedAngled[i];
+      reversedAngled[i] = x;
+    }
+    const length = lineStringLength(
+      reversedAngled,
+      0,
+      reversedAngled.length,
+      2,
+    );
+    const startM = length / 2 - 20;
+    const instructions = drawTextOnPath(
+      reversedAngled,
+      0,
+      reversedAngled.length,
+      2,
+      'ابجد',
+      startM,
+      Infinity,
+      1,
+      measureAndCacheTextWidth,
+      '',
+      {},
+    );
+    assert.deepEqual(instructions[0][3], (-45 * Math.PI) / 180);
+    assert.strictEqual(instructions[0][4], 'اب');
+    assert.deepEqual(instructions[1][3], (45 * Math.PI) / 180);
+    assert.strictEqual(instructions[1][4], 'جد');
+  });
+
   it('keeps a combined emoji as a single grapheme across segments', function () {
     // '👍🏽' is a single grapheme cluster made of several UTF-16 code units; it
     // must be measured and placed as a whole, never split across segments.
