@@ -1,10 +1,6 @@
 import {assert} from 'chai';
 import proj4 from 'proj4';
 import Feature from '../../../../../src/ol/Feature.js';
-import GML2 from '../../../../../src/ol/format/GML2.js';
-import GML3 from '../../../../../src/ol/format/GML3.js';
-import GML32 from '../../../../../src/ol/format/GML32.js';
-import WFS, {writeFilter} from '../../../../../src/ol/format/WFS.js';
 import {
   and as andFilter,
   bbox as bboxFilter,
@@ -26,10 +22,15 @@ import {
   resourceId as resourceIdFilter,
   within as withinFilter,
 } from '../../../../../src/ol/format/filter.js';
+import GML2 from '../../../../../src/ol/format/GML2.js';
+import GML3 from '../../../../../src/ol/format/GML3.js';
+import GML32 from '../../../../../src/ol/format/GML32.js';
+import WFS, {writeFilter} from '../../../../../src/ol/format/WFS.js';
 import LineString from '../../../../../src/ol/geom/LineString.js';
 import MultiLineString from '../../../../../src/ol/geom/MultiLineString.js';
 import MultiPoint from '../../../../../src/ol/geom/MultiPoint.js';
 import MultiPolygon from '../../../../../src/ol/geom/MultiPolygon.js';
+import Point from '../../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../../src/ol/geom/Polygon.js';
 import {
   addCommon,
@@ -1852,6 +1853,75 @@ describe('ol.format.WFS', function () {
       const features = wfs.readFeatures(parse(response));
       assert.strictEqual(features.length, 1);
       assert.instanceOf(features[0], Feature);
+    });
+
+    it('can parse GetFeature response with nested FeatureCollections', function () {
+      const response = `
+<?xml version="1.0" encoding="UTF-8"?>
+<wfs:FeatureCollection xmlns:sf="http://www.openplans.org/spearfish"
+    xmlns:wfs="http://www.opengis.net/wfs/2.0"
+    xmlns:gml="http://www.opengis.net/gml/3.2" numberMatched="3" numberReturned="3">
+    <wfs:member>
+        <wfs:FeatureCollection numberMatched="2" numberReturned="2">
+            <wfs:member>
+                <sf:bugsites gml:id="bugsites.1">
+                    <sf:the_geom>
+                        <gml:Point srsName="urn:ogc:def:crs:EPSG::26713" srsDimension="2">
+                            <gml:pos>590529 4914625</gml:pos>
+                        </gml:Point>
+                    </sf:the_geom>
+                    <sf:cat>1</sf:cat>
+                </sf:bugsites>
+            </wfs:member>
+            <wfs:member>
+                <sf:bugsites gml:id="bugsites.2">
+                    <sf:the_geom>
+                        <gml:Point srsName="urn:ogc:def:crs:EPSG::26713" srsDimension="2">
+                            <gml:pos>590530 4914626</gml:pos>
+                        </gml:Point>
+                    </sf:the_geom>
+                    <sf:cat>2</sf:cat>
+                </sf:bugsites>
+            </wfs:member>
+        </wfs:FeatureCollection>
+    </wfs:member>
+    <wfs:member>
+        <wfs:FeatureCollection numberMatched="1" numberReturned="1">
+            <wfs:member>
+                <sf:roads gml:id="roads.1">
+                    <sf:the_geom>
+                        <gml:Point srsName="urn:ogc:def:crs:EPSG::26713" srsDimension="2">
+                            <gml:pos>590531 4914627</gml:pos>
+                        </gml:Point>
+                    </sf:the_geom>
+                    <sf:name>Main</sf:name>
+                </sf:roads>
+            </wfs:member>
+        </wfs:FeatureCollection>
+    </wfs:member>
+</wfs:FeatureCollection>
+    `.trim();
+      // explicit feature types
+      let features = new WFS({
+        version: '2.0.0',
+        featureNS: 'http://www.openplans.org/spearfish',
+        featureType: ['bugsites', 'roads'],
+      }).readFeatures(parse(response));
+      assert.strictEqual(features.length, 3);
+      assert.deepEqual(
+        features.map((f) => f.getId()),
+        ['bugsites.1', 'bugsites.2', 'roads.1'],
+      );
+      assert.strictEqual(features[2].get('name'), 'Main');
+      assert.instanceOf(features[2].getGeometry(), Point);
+
+      // auto-detected feature types
+      features = new WFS({version: '2.0.0'}).readFeatures(parse(response));
+      assert.strictEqual(features.length, 3);
+      assert.deepEqual(
+        features.map((f) => f.getId()),
+        ['bugsites.1', 'bugsites.2', 'roads.1'],
+      );
     });
 
     describe('when writing out a Transaction request', function () {
