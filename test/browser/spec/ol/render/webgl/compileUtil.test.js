@@ -180,29 +180,35 @@ describe('ol/render/webgl/compileUtil', () => {
         nested: {123: {property: 42}},
       });
 
-      assert.property(attributes, 'prop_colorProp');
-      assert.deepEqual(attributes.prop_colorProp.size, 2);
-      assert.deepEqual(attributes.prop_colorProp.callback(feature), [255, 255]);
+      assert.property(attributes, 'a_prop_colorProp');
+      assert.deepEqual(attributes.a_prop_colorProp.size, 2);
+      assert.deepEqual(
+        attributes.a_prop_colorProp.callback(feature),
+        [255, 255],
+      );
 
-      assert.property(attributes, 'prop_stringProp');
-      assert.strictEqual(attributes.prop_stringProp.size, 3);
+      assert.property(attributes, 'a_prop_stringProp');
+      assert.strictEqual(attributes.a_prop_stringProp.size, 3);
       assert.strictEqual(
-        attributes.prop_stringProp.callback(feature),
+        attributes.a_prop_stringProp.callback(feature),
         'hello world',
       );
 
-      assert.property(attributes, 'prop_arrayProp');
-      assert.deepEqual(attributes.prop_arrayProp.size, 4);
-      assert.deepEqual(attributes.prop_arrayProp.callback(feature), [1, 2, 3]);
-
-      assert.property(attributes, 'prop_booleanProp');
-      assert.deepEqual(attributes.prop_booleanProp.size, 1);
-      assert.deepEqual(attributes.prop_booleanProp.callback(feature), 1);
-
-      assert.property(attributes, 'prop_nested_x_123_x_property');
-      assert.deepEqual(attributes.prop_nested_x_123_x_property.size, 1);
+      assert.property(attributes, 'a_prop_arrayProp');
+      assert.deepEqual(attributes.a_prop_arrayProp.size, 4);
       assert.deepEqual(
-        attributes.prop_nested_x_123_x_property.callback(feature),
+        attributes.a_prop_arrayProp.callback(feature),
+        [1, 2, 3],
+      );
+
+      assert.property(attributes, 'a_prop_booleanProp');
+      assert.deepEqual(attributes.a_prop_booleanProp.size, 1);
+      assert.deepEqual(attributes.a_prop_booleanProp.callback(feature), 1);
+
+      assert.property(attributes, 'a_prop_nested_x_123_x_property');
+      assert.deepEqual(attributes.a_prop_nested_x_123_x_property.size, 1);
+      assert.deepEqual(
+        attributes.a_prop_nested_x_123_x_property.callback(feature),
         42,
       );
     });
@@ -226,32 +232,35 @@ describe('ol/render/webgl/compileUtil', () => {
         nested: {},
       });
 
-      assert.property(attributes, 'prop_colorProp');
-      assert.deepEqual(attributes.prop_colorProp.size, 2);
+      assert.property(attributes, 'a_prop_colorProp');
+      assert.deepEqual(attributes.a_prop_colorProp.size, 2);
       assert.deepEqual(
-        attributes.prop_colorProp.callback(feature),
+        attributes.a_prop_colorProp.callback(feature),
         packColor([...asArray('#eee')]),
       );
 
-      assert.property(attributes, 'prop_stringProp');
-      assert.strictEqual(attributes.prop_stringProp.size, 3);
+      assert.property(attributes, 'a_prop_stringProp');
+      assert.strictEqual(attributes.a_prop_stringProp.size, 3);
       assert.strictEqual(
-        attributes.prop_stringProp.callback(feature),
+        attributes.a_prop_stringProp.callback(feature),
         undefined,
       );
 
-      assert.property(attributes, 'prop_arrayProp');
-      assert.deepEqual(attributes.prop_arrayProp.size, 4);
-      assert.deepEqual(attributes.prop_arrayProp.callback(feature), undefined);
-
-      assert.property(attributes, 'prop_booleanProp');
-      assert.deepEqual(attributes.prop_booleanProp.size, 1);
-      assert.deepEqual(attributes.prop_booleanProp.callback(feature), 0);
-
-      assert.property(attributes, 'prop_nested_x_123_x_property');
-      assert.deepEqual(attributes.prop_nested_x_123_x_property.size, 1);
+      assert.property(attributes, 'a_prop_arrayProp');
+      assert.deepEqual(attributes.a_prop_arrayProp.size, 4);
       assert.deepEqual(
-        attributes.prop_nested_x_123_x_property.callback(feature),
+        attributes.a_prop_arrayProp.callback(feature),
+        undefined,
+      );
+
+      assert.property(attributes, 'a_prop_booleanProp');
+      assert.deepEqual(attributes.a_prop_booleanProp.size, 1);
+      assert.deepEqual(attributes.a_prop_booleanProp.callback(feature), 0);
+
+      assert.property(attributes, 'a_prop_nested_x_123_x_property');
+      assert.deepEqual(attributes.a_prop_nested_x_123_x_property.size, 1);
+      assert.deepEqual(
+        attributes.a_prop_nested_x_123_x_property.callback(feature),
         undefined,
       );
     });

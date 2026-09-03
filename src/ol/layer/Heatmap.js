@@ -316,7 +316,7 @@ class Heatmap extends BaseVector {
           : /** @type {function(import('../Feature.js').FeatureLike): number|undefined} */ (
               this.weight_
             );
-      weightAttribute['prop_weight'] = {
+      weightAttribute['a_prop_weight'] = {
         size: 1,
         callback: (feature) => {
           const weightValue = weightFunction(

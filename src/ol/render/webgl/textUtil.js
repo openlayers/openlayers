@@ -197,7 +197,7 @@ const textDecoder = new TextDecoder();
 
 /**
  * @param {Record<string, *>} featureProps Feature properties object
- * @param {string} propertyName Name of the property (without the `prop_` prefix)
+ * @param {string} propertyName Name of the property (without the `a_prop_` prefix)
  * @param {import('../../expr/expression.js').ValueType} propertyType Type of the property (e.g. `StringType`, `ColorType`)
  * @param {Array<string>} customAttributesKeys Ordered keys of custom attributes
  * @param {import('./VectorStyleRenderer.js').AttributeDefinitions} customAttributes Custom attributes sizes
@@ -214,10 +214,7 @@ function applyCustomAttributeValue(
   labels,
 ) {
   const propertyPath = propertyName.split('##');
-  const customAttrName = attributeNameForProperty(...propertyPath).replace(
-    /^a_/,
-    '',
-  );
+  const customAttrName = attributeNameForProperty(...propertyPath);
   const customAttrPosition = customAttributesKeys.findIndex(
     (key) => key === customAttrName,
   );

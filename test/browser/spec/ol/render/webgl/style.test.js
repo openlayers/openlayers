@@ -62,7 +62,7 @@ describe('ol/render/webgl/style', () => {
         `vec2(mix(4.0, 8.0, clamp((a_prop_population - u_var_lower) / (u_var_higher - u_var_lower), 0.0, 1.0)) * 2. + 0.5)`,
       );
       assert.deepEqual(Object.keys(result.attributes).length, 1);
-      assert.property(result.attributes, 'prop_population');
+      assert.property(result.attributes, 'a_prop_population');
       assert.property(result.uniforms, lowerUniformName);
       assert.property(result.uniforms, higherUniformName);
     });
@@ -101,7 +101,7 @@ describe('ol/render/webgl/style', () => {
       );
       assert.deepEqual(result.builder.fragmentDiscardExpression_, null);
       assert.deepEqual(Object.keys(result.attributes).length, 1);
-      assert.property(result.attributes, 'prop_attr0');
+      assert.property(result.attributes, 'a_prop_attr0');
     });
 
     it('parses a style with a filter (involving a line-metric)', () => {
@@ -227,10 +227,10 @@ describe('ol/render/webgl/style', () => {
           );
           assert.deepEqual(result.builder.symbolRotateWithView_, true);
           assert.deepEqual(Object.keys(result.attributes).length, 4);
-          assert.property(result.attributes, 'prop_attr1');
-          assert.property(result.attributes, 'prop_heading');
-          assert.property(result.attributes, 'prop_color1');
-          assert.property(result.attributes, 'prop_color2');
+          assert.property(result.attributes, 'a_prop_attr1');
+          assert.property(result.attributes, 'a_prop_heading');
+          assert.property(result.attributes, 'a_prop_color1');
+          assert.property(result.attributes, 'a_prop_color2');
           assert.deepEqual(result.uniforms, {});
         });
       });
@@ -355,10 +355,10 @@ describe('ol/render/webgl/style', () => {
           );
           assert.deepEqual(result.builder.symbolRotateWithView_, true);
           assert.deepEqual(Object.keys(result.attributes).length, 4);
-          assert.property(result.attributes, 'prop_attr1');
-          assert.property(result.attributes, 'prop_heading');
-          assert.property(result.attributes, 'prop_color1');
-          assert.property(result.attributes, 'prop_color2');
+          assert.property(result.attributes, 'a_prop_attr1');
+          assert.property(result.attributes, 'a_prop_heading');
+          assert.property(result.attributes, 'a_prop_color1');
+          assert.property(result.attributes, 'a_prop_color2');
           assert.deepEqual(result.uniforms, {});
         });
       });
@@ -482,9 +482,9 @@ describe('ol/render/webgl/style', () => {
           );
           assert.deepEqual(result.builder.symbolRotateWithView_, true);
           assert.deepEqual(Object.keys(result.attributes).length, 3);
-          assert.property(result.attributes, 'prop_attr1');
-          assert.property(result.attributes, 'prop_heading');
-          assert.property(result.attributes, 'prop_color1');
+          assert.property(result.attributes, 'a_prop_attr1');
+          assert.property(result.attributes, 'a_prop_heading');
+          assert.property(result.attributes, 'a_prop_color1');
           assert.deepEqual(Object.keys(result.uniforms).length, 2);
           assert.property(result.uniforms, `u_texture${uid}_size`);
           assert.property(result.uniforms, `u_texture${uid}`);
@@ -900,9 +900,9 @@ describe('ol/render/webgl/style', () => {
             'dashDistanceField_450289113(currentLengthPx + (u_time * 5.0), currentRadiusPx, capType, v_width, (a_prop_size * 10.0), (a_prop_size * 20.0), 5.0, (a_prop_size * 20.0))',
           );
           assert.deepEqual(Object.keys(result.attributes).length, 3);
-          assert.property(result.attributes, 'prop_intensity');
-          assert.property(result.attributes, 'prop_offset');
-          assert.property(result.attributes, 'prop_size');
+          assert.property(result.attributes, 'a_prop_intensity');
+          assert.property(result.attributes, 'a_prop_offset');
+          assert.property(result.attributes, 'a_prop_size');
           assert.property(result.uniforms, 'u_var_width');
           assert.property(result.uniforms, 'u_var_capType');
           assert.property(result.uniforms, 'u_var_joinType');
@@ -1083,19 +1083,19 @@ describe('ol/render/webgl/style', () => {
           });
 
           assert.deepEqual(
-            result.attributes['prop_dashLength0'].callback(feature),
+            result.attributes['a_prop_dashLength0'].callback(feature),
             10,
           );
           assert.deepEqual(
-            result.attributes['prop_dashLength1'].callback(feature),
+            result.attributes['a_prop_dashLength1'].callback(feature),
             5,
           );
           assert.deepEqual(
-            result.attributes['prop_dashLength2'].callback(feature),
+            result.attributes['a_prop_dashLength2'].callback(feature),
             15,
           );
           assert.deepEqual(
-            result.attributes['prop_dashLength3'].callback(feature),
+            result.attributes['a_prop_dashLength3'].callback(feature),
             12,
           );
         });
@@ -1205,7 +1205,7 @@ describe('ol/render/webgl/style', () => {
             'mix(vec4(0.0, 0.0, 1.0, 1.0), vec4(1.0, 0.0, 0.0, 1.0), clamp(((a_prop_intensity * u_var_scale) - 0.0) / (10.0 - 0.0), 0.0, 1.0))',
           );
           assert.deepEqual(Object.keys(result.attributes).length, 1);
-          assert.property(result.attributes, 'prop_intensity');
+          assert.property(result.attributes, 'a_prop_intensity');
           assert.property(result.uniforms, 'u_var_scale');
         });
       });
@@ -1313,12 +1313,15 @@ describe('ol/render/webgl/style', () => {
         });
 
         it('registers pattern offset as a size-2 attribute', () => {
-          assert.include(Object.keys(result.attributes), 'prop_patternOffset');
-          assert.deepEqual(result.attributes['prop_patternOffset'].size, 2);
+          assert.include(
+            Object.keys(result.attributes),
+            'a_prop_patternOffset',
+          );
+          assert.deepEqual(result.attributes['a_prop_patternOffset'].size, 2);
         });
 
         it('extracts pattern offset values correctly from features', () => {
-          const callback = result.attributes['prop_patternOffset'].callback;
+          const callback = result.attributes['a_prop_patternOffset'].callback;
           const feature = new Feature({
             patternOffset: [15, 25],
           });
@@ -1326,7 +1329,7 @@ describe('ol/render/webgl/style', () => {
         });
 
         it('handles missing pattern offset gracefully', () => {
-          const callback = result.attributes['prop_patternOffset'].callback;
+          const callback = result.attributes['a_prop_patternOffset'].callback;
           const feature = new Feature({});
           assert.deepEqual(callback(feature), undefined);
         });
@@ -1357,8 +1360,8 @@ describe('ol/render/webgl/style', () => {
           `!((a_geometryType == ${stringToGlsl('LineString')}) && operator_in_0(a_prop_type))`,
         );
         assertAttributeDescriptors(result.attributes, {
-          geometryType: {size: 3, callback: {}},
-          prop_type: {size: 3, callback: {}},
+          a_geometryType: {size: 3, callback: {}},
+          a_prop_type: {size: 3, callback: {}},
         });
       });
     });
@@ -1439,12 +1442,12 @@ describe('ol/render/webgl/style', () => {
       });
       it('returns attributes with their callbacks in the result', () => {
         assertAttributeDescriptors(parseResult.attributes, {
-          prop_iconSize: {size: 2, callback: {}},
-          prop_color: {size: 2, callback: {}},
-          prop_lineType: {size: 3, callback: {}},
-          prop_lineWidth: {size: 1, callback: {}},
-          prop_transparent: {size: 1, callback: {}},
-          prop_fillColor: {size: 2, callback: {}},
+          a_prop_iconSize: {size: 2, callback: {}},
+          a_prop_color: {size: 2, callback: {}},
+          a_prop_lineType: {size: 3, callback: {}},
+          a_prop_lineWidth: {size: 1, callback: {}},
+          a_prop_transparent: {size: 1, callback: {}},
+          a_prop_fillColor: {size: 2, callback: {}},
         });
       });
       it('processes the feature attributes according to their types', () => {
@@ -1458,27 +1461,27 @@ describe('ol/render/webgl/style', () => {
           geometry: new Point([0, 0]),
         });
         assert.deepEqual(
-          parseResult.attributes['prop_iconSize'].callback(feature),
+          parseResult.attributes['a_prop_iconSize'].callback(feature),
           [12, 18],
         );
         assert.deepEqual(
-          parseResult.attributes['prop_color'].callback(feature),
+          parseResult.attributes['a_prop_color'].callback(feature),
           packColor(asArray('pink')),
         );
         assert.equal(
-          parseResult.attributes['prop_lineType'].callback(feature),
+          parseResult.attributes['a_prop_lineType'].callback(feature),
           'low',
         );
         assert.deepEqual(
-          parseResult.attributes['prop_lineWidth'].callback(feature),
+          parseResult.attributes['a_prop_lineWidth'].callback(feature),
           0.5,
         );
         assert.deepEqual(
-          parseResult.attributes['prop_fillColor'].callback(feature),
+          parseResult.attributes['a_prop_fillColor'].callback(feature),
           packColor(asArray('rgba(123, 240, 100, 0.3)')),
         );
         assert.deepEqual(
-          parseResult.attributes['prop_transparent'].callback(feature),
+          parseResult.attributes['a_prop_transparent'].callback(feature),
           1,
         );
       });
@@ -1591,12 +1594,12 @@ describe('ol/render/webgl/style', () => {
       });
       it('returns attributes with their callbacks in the result', () => {
         assertAttributeDescriptors(parseResult.attributes, {
-          featureId: {size: 1, callback: {}},
-          geometryType: {size: 3, callback: {}},
+          a_featureId: {size: 1, callback: {}},
+          a_geometryType: {size: 3, callback: {}},
         });
       });
       it('processes the feature geometry properly', () => {
-        const callback = parseResult.attributes['geometryType'].callback;
+        const callback = parseResult.attributes['a_geometryType'].callback;
         let feature = new Feature({
           geometry: new Point([0, 0]),
         });
@@ -1607,7 +1610,7 @@ describe('ol/render/webgl/style', () => {
         assert.equal(callback(feature), stringToGlsl('Polygon'));
       });
       it('reads the feature id properly', () => {
-        const callback = parseResult.attributes['featureId'].callback;
+        const callback = parseResult.attributes['a_featureId'].callback;
         const feature = new Feature();
         feature.setId('1234');
         assert.equal(callback(feature), stringToGlsl('1234'));
@@ -1698,10 +1701,10 @@ describe('ol/render/webgl/style', () => {
       );
 
       assert.equal(
-        result.attributes.prop_foo.callback({get: () => 'green'}),
+        result.attributes.a_prop_foo.callback({get: () => 'green'}),
         'green',
       );
-      assert.strictEqual(result.attributes.prop_foo.size, 3);
+      assert.strictEqual(result.attributes.a_prop_foo.size, 3);
     });
   });
 

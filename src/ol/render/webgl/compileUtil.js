@@ -223,7 +223,7 @@ export function generateAttributesFromContext(context) {
       return value;
     };
 
-    attributes[attributeName.replace(/^a_/, '')] = {
+    attributes[attributeName] = {
       size: getGlslSizeFromType(propType),
       callback,
     };

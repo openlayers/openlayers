@@ -172,8 +172,8 @@ const GET_BAND_VALUE_FUNC = 'getBandValue';
 
 export const PALETTE_TEXTURE_ARRAY = 'u_paletteTextures';
 
-export const FEATURE_ID_PROPERTY_NAME = 'featureId';
-export const GEOMETRY_TYPE_PROPERTY_NAME = 'geometryType';
+export const FEATURE_ID_PROPERTY_NAME = 'a_featureId';
+export const GEOMETRY_TYPE_PROPERTY_NAME = 'a_geometryType';
 
 /**
  * The value `-9999999` will be used to indicate that a property on a feature is not defined, similar to a "no data" value.
@@ -231,11 +231,11 @@ const compilers = {
   },
   [Ops.Id]: (context) => {
     context.featureId = true;
-    return 'a_' + FEATURE_ID_PROPERTY_NAME;
+    return FEATURE_ID_PROPERTY_NAME;
   },
   [Ops.GeometryType]: (context) => {
     context.geometryType = true;
-    return 'a_' + GEOMETRY_TYPE_PROPERTY_NAME;
+    return GEOMETRY_TYPE_PROPERTY_NAME;
   },
   [Ops.LineMetric]: () => 'currentLineMetric', // this variable is assumed to always be present in shaders, default is 0.
   [Ops.Var]: (context, expression) => {

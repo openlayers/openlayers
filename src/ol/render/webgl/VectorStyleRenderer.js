@@ -225,7 +225,7 @@ class VectorStyleRenderer extends Disposable {
 
     // add hit detection attribute if enabled
     if (this.hitDetectionEnabled_) {
-      this.customAttributes_['hitColor'] = {
+      this.customAttributes_['a_hitColor'] = {
         callback() {
           return colorEncodeIdAndPack(this.ref ?? 0, tmpColor);
         },
@@ -263,9 +263,10 @@ class VectorStyleRenderer extends Disposable {
 
       const customAttributesDesc = Object.entries(this.customAttributes_).map(
         ([name, value]) => {
-          const isUsed = name in styleShader.attributes || name === 'hitColor';
+          const isUsed =
+            name in styleShader.attributes || name === 'a_hitColor';
           return {
-            name: isUsed ? `a_${name}` : null, // giving a null name means this is only used for "spacing" in between attributes
+            name: isUsed ? name : null, // giving a null name means this is only used for "spacing" in between attributes
             size: value.size || 1,
             type: AttributeType.FLOAT,
           };

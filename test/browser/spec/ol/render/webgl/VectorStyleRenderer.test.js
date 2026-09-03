@@ -40,10 +40,10 @@ const SAMPLE_SHADERS = () => ({
     .setStrokeColorExpression('vec4(1.0)')
     .setSymbolColorExpression('vec4(1.0)'),
   attributes: {
-    prop_attr1: {
+    a_prop_attr1: {
       callback: (feature) => feature.get('test'),
     },
-    prop_attr2: {callback: () => [10, 20, 30], size: 3},
+    a_prop_attr2: {callback: () => [10, 20, 30], size: 3},
   },
   uniforms: {
     custom: () => 1234,
@@ -154,9 +154,9 @@ describe('VectorStyleRenderer', () => {
     });
     it('creates a VectorStyleRenderer with two render passes and all attributes and uniforms combined', () => {
       assertCustomAttributes(vectorStyleRenderer.customAttributes_, {
-        prop_color: {size: 2},
-        prop_size: {size: 1},
-        prop_id: {size: 1},
+        a_prop_color: {size: 2},
+        a_prop_size: {size: 1},
+        a_prop_id: {size: 1},
       });
       assertUniformCallbacks(vectorStyleRenderer.uniforms_, {
         u_var_highlightedId: {},
@@ -227,10 +227,10 @@ describe('VectorStyleRenderer', () => {
     });
     it('creates a VectorStyleRenderer with two render passes and all attributes and uniforms combined', () => {
       assertCustomAttributes(vectorStyleRenderer.customAttributes_, {
-        hitColor: {size: 2},
-        prop_color: {size: 2},
-        prop_size: {size: 1},
-        prop_id: {size: 1},
+        a_hitColor: {size: 2},
+        a_prop_color: {size: 2},
+        a_prop_size: {size: 1},
+        a_prop_id: {size: 1},
       });
       assertUniformCallbacks(vectorStyleRenderer.uniforms_, {
         u_var_highlightedId: {},
@@ -300,8 +300,8 @@ describe('VectorStyleRenderer', () => {
     });
     it('creates a VectorStyleRenderer with a single render pass', () => {
       assertCustomAttributes(vectorStyleRenderer.customAttributes_, {
-        prop_attr1: {},
-        prop_attr2: {size: 3},
+        a_prop_attr1: {},
+        a_prop_attr2: {size: 3},
       });
       assertUniformCallbacks(vectorStyleRenderer.uniforms_, {
         custom: {},
@@ -806,9 +806,9 @@ describe('VectorStyleRenderer', () => {
           },
         ]);
         assert.deepEqual(message.customAttributesSizes, {
-          prop_size: 1,
-          prop_id: 1,
-          prop_label: 3,
+          a_prop_size: 1,
+          a_prop_id: 1,
+          a_prop_label: 3,
         });
         assert.deepEqual(message.renderInstructionsTransform, SAMPLE_TRANSFORM);
         assert.strictEqual(
@@ -1181,7 +1181,7 @@ describe('VectorStyleRenderer', () => {
 
       assert.lengthOf(result, 8);
 
-      assert.hasAllKeys(result[0].attributes, ['prop_size']);
+      assert.hasAllKeys(result[0].attributes, ['a_prop_size']);
       assert.deepEqual(
         result[0].builder,
         new ShaderBuilder()
@@ -1190,7 +1190,7 @@ describe('VectorStyleRenderer', () => {
           .setShapeDiscardExpression('!(a_prop_size > 10.0)'),
       );
 
-      assert.hasAllKeys(result[1].attributes, ['prop_size']);
+      assert.hasAllKeys(result[1].attributes, ['a_prop_size']);
       assert.deepEqual(
         result[1].builder,
         new ShaderBuilder()
@@ -1199,7 +1199,7 @@ describe('VectorStyleRenderer', () => {
           .setShapeDiscardExpression('!(a_prop_size > 10.0)'),
       );
 
-      assert.hasAllKeys(result[2].attributes, ['prop_size']);
+      assert.hasAllKeys(result[2].attributes, ['a_prop_size']);
       assert.deepEqual(
         result[2].builder,
         new ShaderBuilder()
@@ -1217,7 +1217,7 @@ describe('VectorStyleRenderer', () => {
           .setShapeDiscardExpression('!(!(a_prop_size > 10.0))'),
       );
 
-      assert.hasAllKeys(result[3].attributes, ['prop_size', 'prop_type']);
+      assert.hasAllKeys(result[3].attributes, ['a_prop_size', 'a_prop_type']);
       assert.deepEqual(
         result[3].builder,
         new ShaderBuilder()
@@ -1236,7 +1236,7 @@ describe('VectorStyleRenderer', () => {
           ),
       );
 
-      assert.hasAllKeys(result[4].attributes, ['prop_size', 'prop_type']);
+      assert.hasAllKeys(result[4].attributes, ['a_prop_size', 'a_prop_type']);
       assert.deepEqual(
         result[4].builder,
         new ShaderBuilder()
@@ -1255,7 +1255,7 @@ describe('VectorStyleRenderer', () => {
           ),
       );
 
-      assert.hasAllKeys(result[5].attributes, ['prop_size', 'prop_type']);
+      assert.hasAllKeys(result[5].attributes, ['a_prop_size', 'a_prop_type']);
       assert.deepEqual(
         result[5].builder,
         new ShaderBuilder()
@@ -1274,7 +1274,7 @@ describe('VectorStyleRenderer', () => {
           ),
       );
 
-      assert.hasAllKeys(result[6].attributes, ['prop_size', 'prop_type']);
+      assert.hasAllKeys(result[6].attributes, ['a_prop_size', 'a_prop_type']);
       assert.deepEqual(
         result[6].builder,
         new ShaderBuilder()
@@ -1290,7 +1290,7 @@ describe('VectorStyleRenderer', () => {
           ),
       );
 
-      assert.hasAllKeys(result[7].attributes, ['prop_size', 'prop_type']);
+      assert.hasAllKeys(result[7].attributes, ['a_prop_size', 'a_prop_type']);
       assert.deepEqual(
         result[7].builder,
         new ShaderBuilder()

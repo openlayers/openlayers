@@ -456,19 +456,19 @@ describe('ol/render/webgl/textUtil', function () {
       ['nested##property##1234', StringType],
     ]);
     const customAttributes = {
-      'prop_label': {
+      'a_prop_label': {
         callback: (f) => f.get('label'),
         size: getGlslSizeFromType(StringType),
       },
-      'prop_size': {
+      'a_prop_size': {
         callback: (f) => f.get('size'),
         size: getGlslSizeFromType(SizeType),
       },
-      'prop_color': {
+      'a_prop_color': {
         callback: (f) => packColor(f.get('color')),
         size: getGlslSizeFromType(ColorType),
       },
-      'prop_nested_x_property_x_1234': {
+      'a_prop_nested_x_property_x_1234': {
         callback: (f) => f.get('nested')?.['property']?.[1234],
         size: getGlslSizeFromType(StringType),
       },

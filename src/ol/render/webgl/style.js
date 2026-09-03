@@ -1067,7 +1067,7 @@ export function parseLiteralStyle(style, context, filter) {
     }
     const glslType = getGlslTypeFromType(type);
     const attrSize = getGlslSizeFromType(type);
-    builder.addAttribute(`a_${glslPropName}`, glslType);
+    builder.addAttribute(glslPropName, glslType);
 
     attributes[glslPropName] = {
       size: attrSize,
