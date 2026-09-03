@@ -432,7 +432,14 @@ describe('ol/render/webgl/textUtil', function () {
       });
       const second = new Style({text: new Text({text: '#'})});
       return (feature) => {
-        second.getText().setText('# ' + feature.get('label'));
+        second
+          .getText()
+          .setText(
+            '# ' +
+              feature.get('label') +
+              ' ' +
+              feature.get('nested')?.['property']?.[1234],
+          );
         return [first, second];
       };
     }
@@ -446,6 +453,7 @@ describe('ol/render/webgl/textUtil', function () {
       ['label', StringType],
       ['size', SizeType],
       ['color', ColorType],
+      ['nested##property##1234', StringType],
     ]);
     const customAttributes = {
       'prop_label': {
@@ -459,6 +467,10 @@ describe('ol/render/webgl/textUtil', function () {
       'prop_color': {
         callback: (f) => packColor(f.get('color')),
         size: getGlslSizeFromType(ColorType),
+      },
+      'prop_nested_x_property_x_1234': {
+        callback: (f) => f.get('nested')?.['property']?.[1234],
+        size: getGlslSizeFromType(StringType),
       },
     };
 
@@ -477,12 +489,22 @@ describe('ol/render/webgl/textUtil', function () {
           size: [1000, 1000],
           color: [255, 200, 100],
           geometry: new Point([10, 20]),
+          nested: {
+            property: {
+              [1234]: 'ab',
+            },
+          },
         }),
         new Feature({
           label: 'cd',
           size: [2000, 2000],
           color: [255, 200, 100],
           geometry: new Point([30, 40]),
+          nested: {
+            property: {
+              [1234]: 'cd',
+            },
+          },
         }),
         new Feature({
           label: 'ef',
@@ -505,6 +527,9 @@ describe('ol/render/webgl/textUtil', function () {
               [15, 15],
             ],
           ]),
+          nested: {
+            property: {},
+          },
         }),
         new Feature({
           label: 'gh',
@@ -519,6 +544,7 @@ describe('ol/render/webgl/textUtil', function () {
               [30, 30],
             ],
           ]),
+          nested: {},
         }),
         new Feature({
           label: 'ij',
@@ -540,6 +566,11 @@ describe('ol/render/webgl/textUtil', function () {
             [30, 30],
             [40, 40],
           ]),
+          nested: {
+            property: {
+              [1234]: 'kl',
+            },
+          },
         }),
       ]);
 
@@ -582,7 +613,10 @@ describe('ol/render/webgl/textUtil', function () {
 
         assert.strictEqual(textBuilder.calls.length, 4); // 2 polygons, 1 style rule without line placement, 2 calls for each
         // first polygon
-        assert.deepEqual(textBuilder.calls[0], ['setTextStyle', '# ef']);
+        assert.deepEqual(textBuilder.calls[0], [
+          'setTextStyle',
+          '# ef undefined',
+        ]);
         assert.deepEqual(textBuilder.calls[1], [
           'drawText',
           'Polygon',
@@ -592,7 +626,10 @@ describe('ol/render/webgl/textUtil', function () {
           ],
         ]);
         // second polygon
-        assert.deepEqual(textBuilder.calls[2], ['setTextStyle', '# gh']);
+        assert.deepEqual(textBuilder.calls[2], [
+          'setTextStyle',
+          '# gh undefined',
+        ]);
         assert.deepEqual(textBuilder.calls[3], [
           'drawText',
           'Polygon',
@@ -671,11 +708,11 @@ describe('ol/render/webgl/textUtil', function () {
         assert.deepEqual(textBuilder.calls.length, 4); // 2 points, 1 style rule without line placement, 2 calls for each
 
         // first point
-        assert.deepEqual(textBuilder.calls[0], ['setTextStyle', '# ab']);
+        assert.deepEqual(textBuilder.calls[0], ['setTextStyle', '# ab ab']);
         assert.deepEqual(textBuilder.calls[1], ['drawText', 'Point', [1, 2]]);
 
         // second point
-        assert.deepEqual(textBuilder.calls[2], ['setTextStyle', '# cd']);
+        assert.deepEqual(textBuilder.calls[2], ['setTextStyle', '# cd cd']);
         assert.deepEqual(textBuilder.calls[3], ['drawText', 'Point', [3, 4]]);
       });
     });

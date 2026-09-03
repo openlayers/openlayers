@@ -117,6 +117,16 @@ export function uniformNameForVariable(variableName) {
 }
 
 /**
+ * Get the uniform name given a variable name.
+ * @param {Array<string>} propertyPathElements Strings comprising the nested path of the property accessed
+ * @return {string} The uniform name.
+ */
+export function attributeNameForProperty(...propertyPathElements) {
+  const propertyName = propertyPathElements.join('_x_'); // trying to make sure we don't get any name collision here
+  return `a_prop_${propertyName}`.replace(/[^0-9a-zA-Z_]/g, '_');
+}
+
+/**
  * @typedef {import('./expression.js').ParsingContext} ParsingContext
  */
 /**
@@ -210,9 +220,10 @@ function createCompiler(output) {
  */
 const compilers = {
   [Ops.Get]: (context, expression) => {
-    const firstArg = /** @type {LiteralExpression} */ (expression.args[0]);
-    const propName = /** @type {string} */ (firstArg.value);
-    let result = 'a_prop_' + propName;
+    const propPath = /** @type {Array<string>} */ (
+      expression.args.map((arg) => /** @type {LiteralExpression} */ (arg).value)
+    );
+    let result = attributeNameForProperty(...propPath);
     if (isType(expression.type, BooleanType)) {
       result = `(${result} > 0.0)`;
     }
@@ -237,9 +248,11 @@ const compilers = {
     return result;
   },
   [Ops.Has]: (context, expression) => {
-    const firstArg = /** @type {LiteralExpression} */ (expression.args[0]);
-    const propName = /** @type {string} */ (firstArg.value);
-    return `(a_prop_${propName} != ${numberToGlsl(UNDEFINED_PROP_VALUE)})`;
+    const propPath = /** @type {Array<string>} */ (
+      expression.args.map((arg) => /** @type {LiteralExpression} */ (arg).value)
+    );
+    const attrName = attributeNameForProperty(...propPath);
+    return `(${attrName} != ${numberToGlsl(UNDEFINED_PROP_VALUE)})`;
   },
   [Ops.Resolution]: () => 'u_resolution',
   [Ops.Zoom]: () => 'u_zoom',

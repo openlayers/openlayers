@@ -12,6 +12,7 @@ import {
   StringType,
 } from '../../expr/expression.js';
 import {
+  attributeNameForProperty,
   buildExpression,
   getStringNumberEquivalent,
   uniformNameForVariable,
@@ -127,7 +128,8 @@ export function applyContextToBuilder(builder, context) {
   for (const entry of context.properties.entries()) {
     const [propName, propType] = entry;
     const glslType = getGlslTypeFromType(propType);
-    const attributeName = `a_prop_${propName}`;
+    const attributeName = attributeNameForProperty(...propName.split('##'));
+
     if (propType === ColorType) {
       builder.addAttribute(
         attributeName,
@@ -202,10 +204,16 @@ export function generateAttributesFromContext(context) {
   // Define attributes with their callback for each property used in the vertex shader
   for (const entry of context.properties.entries()) {
     const [propName, propType] = entry;
+    const path = propName.split('##');
+    const attributeName = attributeNameForProperty(...path);
+
     const callback = (
       /** @type {import("../../Feature.js").FeatureLike} */ feature,
     ) => {
-      const value = feature.get(propName);
+      let value = feature.get(path[0]);
+      for (let i = 1; i < path.length; i++) {
+        value = value?.[path[i]];
+      }
       if (propType === ColorType) {
         return packColor([...asArray(value || '#eee')]);
       }
@@ -215,7 +223,7 @@ export function generateAttributesFromContext(context) {
       return value;
     };
 
-    attributes[`prop_${propName}`] = {
+    attributes[attributeName.replace(/^a_/, '')] = {
       size: getGlslSizeFromType(propType),
       callback,
     };

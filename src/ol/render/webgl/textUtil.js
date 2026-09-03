@@ -2,7 +2,10 @@
  * @module ol/render/webgl/textUtil
  */
 import {ColorType, StringType} from '../../expr/expression.js';
-import {UNDEFINED_PROP_VALUE} from '../../expr/gpu.js';
+import {
+  attributeNameForProperty,
+  UNDEFINED_PROP_VALUE,
+} from '../../expr/gpu.js';
 import LineString from '../../geom/LineString.js';
 import Point from '../../geom/Point.js';
 import Polygon from '../../geom/Polygon.js';
@@ -193,15 +196,16 @@ const textFeature = new RenderFeature(
 const textDecoder = new TextDecoder();
 
 /**
+ * @param {Record<string, *>} featureProps Feature properties object
  * @param {string} propertyName Name of the property (without the `prop_` prefix)
  * @param {import('../../expr/expression.js').ValueType} propertyType Type of the property (e.g. `StringType`, `ColorType`)
  * @param {Array<string>} customAttributesKeys Ordered keys of custom attributes
  * @param {import('./VectorStyleRenderer.js').AttributeDefinitions} customAttributes Custom attributes sizes
  * @param {Float32Array} customAttributesValues Flat array of custom attribute values for the feature
  * @param {Uint8Array} labels Encoded label bytes used for string properties
- * @return {string | Array<number> | number | undefined} Decoded custom attribute value
  */
-function readCustomAttributeValue(
+function applyCustomAttributeValue(
+  featureProps,
   propertyName,
   propertyType,
   customAttributesKeys,
@@ -209,7 +213,11 @@ function readCustomAttributeValue(
   customAttributesValues,
   labels,
 ) {
-  const customAttrName = `prop_${propertyName}`;
+  const propertyPath = propertyName.split('##');
+  const customAttrName = attributeNameForProperty(...propertyPath).replace(
+    /^a_/,
+    '',
+  );
   const customAttrPosition = customAttributesKeys.findIndex(
     (key) => key === customAttrName,
   );
@@ -224,18 +232,16 @@ function readCustomAttributeValue(
     customAttributes[customAttrName].size
   );
 
+  let value;
   if (customAttributesValues[customAttrOffset] === UNDEFINED_PROP_VALUE) {
-    return undefined;
-  }
-
-  if (propertyType === StringType) {
+    value = undefined;
+  } else if (propertyType === StringType) {
     const start = customAttributesValues[customAttrOffset + 1];
     const length = customAttributesValues[customAttrOffset + 2];
     const bytes = labels.slice(start, start + length);
-    return textDecoder.decode(bytes);
-  }
-  if (propertyType === ColorType) {
-    const value = unpackColor(
+    value = textDecoder.decode(bytes);
+  } else if (propertyType === ColorType) {
+    value = unpackColor(
       Array.from(
         customAttributesValues.slice(customAttrOffset, customAttrOffset + 2),
       ),
@@ -243,17 +249,34 @@ function readCustomAttributeValue(
     value[0] *= 255;
     value[1] *= 255;
     value[2] *= 255;
-    return value;
-  }
-  if (customAttrSize > 1) {
-    return Array.from(
+  } else if (customAttrSize > 1) {
+    value = Array.from(
       customAttributesValues.slice(
         customAttrOffset,
         customAttrOffset + customAttrSize,
       ),
     );
+  } else {
+    value = customAttributesValues[customAttrOffset];
   }
-  return customAttributesValues[customAttrOffset];
+
+  // apply to feature
+  let target = featureProps;
+  for (let i = 0; i < propertyPath.length; i++) {
+    const key = propertyPath[i];
+    if (value === undefined) {
+      if (key in target) {
+        delete target[key];
+      }
+    } else {
+      if (i === propertyPath.length - 1) {
+        target[key] = value;
+      } else {
+        target[key] = target[key] ?? {};
+      }
+    }
+    target = target[key] ?? {};
+  }
 }
 
 /**
@@ -345,7 +368,8 @@ export function convertPolygonRenderInstructionsToCanvasTextBuilder(
     const propEntries = Array.from(properties.entries());
     for (let i = 0; i < propEntries.length; i++) {
       const [propName, propType] = propEntries[i];
-      textFeatureProps[propName] = readCustomAttributeValue(
+      applyCustomAttributeValue(
+        textFeatureProps,
         propName,
         propType,
         customAttributesKeys,
@@ -353,9 +377,6 @@ export function convertPolygonRenderInstructionsToCanvasTextBuilder(
         customAttributesValues,
         labels,
       );
-      if (textFeatureProps[propName] === undefined) {
-        delete textFeatureProps[propName];
-      }
     }
 
     drawTextGeometry(
@@ -418,7 +439,8 @@ export function convertLineStringRenderInstructionsToCanvasTextBuilder(
     const propEntries = Array.from(properties.entries());
     for (let i = 0; i < propEntries.length; i++) {
       const [propName, propType] = propEntries[i];
-      textFeatureProps[propName] = readCustomAttributeValue(
+      applyCustomAttributeValue(
+        textFeatureProps,
         propName,
         propType,
         customAttributesKeys,
@@ -426,9 +448,6 @@ export function convertLineStringRenderInstructionsToCanvasTextBuilder(
         customAttributesValues,
         labels,
       );
-      if (textFeatureProps[propName] === undefined) {
-        delete textFeatureProps[propName];
-      }
     }
 
     drawTextGeometry(
@@ -483,7 +502,8 @@ export function convertPointRenderInstructionsToCanvasTextBuilder(
     const propEntries = Array.from(properties.entries());
     for (let i = 0; i < propEntries.length; i++) {
       const [propName, propType] = propEntries[i];
-      textFeatureProps[propName] = readCustomAttributeValue(
+      applyCustomAttributeValue(
+        textFeatureProps,
         propName,
         propType,
         customAttributesKeys,
@@ -491,9 +511,6 @@ export function convertPointRenderInstructionsToCanvasTextBuilder(
         customAttributesValues,
         labels,
       );
-      if (textFeatureProps[propName] === undefined) {
-        delete textFeatureProps[propName];
-      }
     }
 
     drawTextGeometry(

@@ -140,7 +140,7 @@ describe('ol/expr/expression.js', () => {
         assert.strictEqual(context.properties.get('foo'), NumberArrayType);
       });
 
-      it('for a nested property with an expected type, stores the root property with an indefinite type', () => {
+      it('given an expected type, stores the nested property path with this type', () => {
         const context = newParsingContext();
         const expression = parse(
           ['get', 'foo', 3, 'bla'],
@@ -153,15 +153,20 @@ describe('ol/expr/expression.js', () => {
           new LiteralExpression(StringType, 'bla'),
         ]);
         assert.strictEqual(expression.type, NumberArrayType);
-        assert.deepEqual(Array.from(context.properties.keys()), ['foo']);
-        assert.strictEqual(context.properties.get('foo'), AnyType);
+        assert.deepEqual(Array.from(context.properties.keys()), [
+          'foo##3##bla',
+        ]);
+        assert.strictEqual(
+          context.properties.get('foo##3##bla'),
+          NumberArrayType,
+        );
       });
 
       it('when reading an attribute several times, keep the most restrictive type for it', () => {
         const context = newParsingContext();
         context.properties.set('foo', NumberType | StringType | SizeType);
         const expression = parse(
-          ['*', ['get', 'foo'], ['get', 'foo', 'bar']],
+          ['*', ['get', 'foo'], ['+', ['get', 'foo'], 2]],
           NumberType | ColorType,
           context,
         );
@@ -184,7 +189,7 @@ describe('ol/expr/expression.js', () => {
         assert.strictEqual(context.properties.get('foo'), AnyType);
       });
 
-      it('for a nested property with an expected type, stores the root property with an indefinite type', () => {
+      it('parses the expression with an expected type, stores the nested property path with an indefinite type', () => {
         const context = newParsingContext();
         const expression = parse(['has', 'foo', 3, 'bla'], AnyType, context);
         assert.deepEqual(expression.args, [
@@ -193,8 +198,10 @@ describe('ol/expr/expression.js', () => {
           new LiteralExpression(StringType, 'bla'),
         ]);
         assert.strictEqual(expression.type, BooleanType);
-        assert.deepEqual(Array.from(context.properties.keys()), ['foo']);
-        assert.strictEqual(context.properties.get('foo'), AnyType);
+        assert.deepEqual(Array.from(context.properties.keys()), [
+          'foo##3##bla',
+        ]);
+        assert.strictEqual(context.properties.get('foo##3##bla'), AnyType);
       });
     });
 
@@ -648,6 +655,17 @@ describe('ol/expr/expression.js', () => {
         ],
         error:
           'the myAttr property read by a get operation was expected to match this type: boolean, got number',
+      },
+      {
+        name: 'no overlap between two get operators using the same nested property',
+        expression: [
+          '+',
+          ['get', 'myAttr', 2, 'bla'],
+          3,
+          ['case', ['get', 'myAttr', 2, 'bla'], 4, 5],
+        ],
+        error:
+          'the myAttr.2.bla property read by a get operation was expected to match this type: boolean, got number',
       },
       {
         name: 'no argument specified for get',

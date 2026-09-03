@@ -702,6 +702,30 @@ describe('ol/expr/gpu.js', () => {
           assert.deepEqual(context.properties.get('y'), NumberType);
         },
       },
+      {
+        name: 'nested property access (get)',
+        type: BooleanType,
+        expression: ['==', ['get', 'foo', 3, 'bar'], 1234],
+        expected: '(a_prop_foo_x_3_x_bar == 1234.0)',
+      },
+      {
+        name: 'nested property access (has)',
+        type: BooleanType,
+        expression: ['has', 'foo', 3, 'bar'],
+        expected: '(a_prop_foo_x_3_x_bar != -9999999.0)',
+      },
+      {
+        name: 'property name with special chars (get)',
+        type: BooleanType,
+        expression: ['==', ['get', 'ref:colour', 'highway=milestone'], 1234],
+        expected: '(a_prop_ref_colour_x_highway_milestone == 1234.0)',
+      },
+      {
+        name: 'nested property access (has)',
+        type: BooleanType,
+        expression: ['has', 'ref:colour', 'highway=milestone'],
+        expected: '(a_prop_ref_colour_x_highway_milestone != -9999999.0)',
+      },
     ];
 
     for (const c of cases) {

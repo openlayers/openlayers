@@ -268,7 +268,7 @@ export class CallExpression {
 /**
  * @typedef {Object} ParsingContext
  * @property {Map<string, ValueType>} variables Variables referenced with the 'var' operator; key is name, value is type.
- * @property {Map<string, ValueType>} properties Properties referenced with the 'get' operator; key is name, value is type.
+ * @property {Map<string, ValueType>} properties Properties referenced with the 'get' operator; key is name (or path to the sub property), value is type.
  * @property {boolean} featureId The style uses the feature id.
  * @property {boolean} geometryType The style uses the feature geometry type.
  * @property {boolean} mCoordinate The style uses the M coordinate of geometries
@@ -635,6 +635,8 @@ const parsers = {
  * returns the parsed arguments if any.  The second argument is the return type of the call expression.
  */
 
+const PROPERTY_PATH_SEPARATOR = '##';
+
 /**
  * This special expression parser reads style variables present in the context to narrow down
  * the expected return type of the 'var' operator
@@ -650,21 +652,24 @@ function createGetOrHasExpressionParser() {
       );
     }
     const args = new Array(argsCount);
-    const rootKey = String(encoded[1]);
-    args[0] = new LiteralExpression(StringType, rootKey);
+    args[0] = new LiteralExpression(StringType, encoded[1]);
 
-    const hasNestedAccess = args.length > 1;
-    const knownPropertyType =
-      hasNestedAccess || isHasOperator ? AnyType : returnType;
+    const knownPropertyType = isHasOperator ? AnyType : returnType;
+    const propertyPath = encoded.slice(1).join('.');
+    const propertyPathKey = encoded.slice(1).join(PROPERTY_PATH_SEPARATOR);
 
-    // register property, making sure that it hasn't been registered before with a more restrictive type
-    const existingPropertyType = context.properties.get(rootKey) ?? AnyType;
+    // register property (and nested path if any), making sure that it hasn't been registered before with a more restrictive type
+    const existingPropertyType =
+      context.properties.get(propertyPathKey) ?? AnyType;
     if (!overlapsType(existingPropertyType, knownPropertyType)) {
       throw new Error(
-        `the ${rootKey} property read by a get operation was expected to match this type: ${typeName(knownPropertyType)}, got ${typeName(existingPropertyType)}`,
+        `the ${propertyPath} property read by a get operation was expected to match this type: ${typeName(knownPropertyType)}, got ${typeName(existingPropertyType)}`,
       );
     }
-    context.properties.set(rootKey, existingPropertyType & knownPropertyType);
+    context.properties.set(
+      propertyPathKey,
+      existingPropertyType & knownPropertyType,
+    );
 
     for (let i = 1; i < argsCount; ++i) {
       const nestedKey = encoded[i + 1];
