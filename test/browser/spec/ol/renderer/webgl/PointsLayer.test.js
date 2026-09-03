@@ -372,6 +372,69 @@ describe('ol/renderer/webgl/PointsLayer', function () {
         });
       }));
 
+    it('correctly hit detects features with uids beyond Float32 precision', () =>
+      new Promise((resolve) => {
+        renderer.dispose();
+        // 2^24 + 1 is the first integer that cannot be represented in Float32
+        feature = new Feature({geometry: new Point([0, 0])});
+        feature.ol_uid = '16777217';
+        feature2 = new Feature({geometry: new Point([14, 14])});
+        feature2.ol_uid = '16777218';
+        layer = new VectorLayer({
+          source: new VectorSource({features: [feature, feature2]}),
+        });
+        renderer = new WebGLPointsLayerRenderer(layer, {
+          vertexShader: simpleVertexShader,
+          fragmentShader: simpleFragmentShader,
+          hitDetectionEnabled: true,
+        });
+        const transform = composeTransform(
+          createTransform(),
+          20,
+          20,
+          1,
+          -1,
+          0,
+          0,
+          0,
+        );
+        const frameState = Object.assign({}, baseFrameState, {
+          extent: [-20, -20, 20, 20],
+          size: [40, 40],
+          coordinateToPixelTransform: transform,
+          layerStatesArray: [layer.getLayerState()],
+        });
+
+        renderer.prepareFrame(frameState);
+        renderer.worker_.addEventListener('message', function () {
+          if (!renderer.renderInstructions_) {
+            return;
+          }
+          renderer.prepareFrame(frameState);
+          renderer.renderFrame(frameState);
+
+          function checkHit(x, y, expected) {
+            let found = null;
+            renderer.forEachFeatureAtCoordinate(
+              [x, y],
+              frameState,
+              0,
+              (feature) => {
+                found = feature;
+              },
+              null,
+            );
+            assert.strictEqual(found, expected);
+          }
+
+          checkHit(0, 0, feature);
+          checkHit(14, 14, feature2);
+          checkHit(7, 7, null);
+
+          resolve();
+        });
+      }));
+
     it('correctly hit detects with pixelratio != 1', () =>
       new Promise((resolve) => {
         const transform = composeTransform(

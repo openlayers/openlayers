@@ -318,6 +318,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
           this.renderInstructions_ = new Float32Array(
             event.data.renderInstructions,
           );
+          this.hitUids_ = received.hitUids;
           if (received.id === this.lastSentId) {
             this.ready = true;
           }
@@ -339,6 +340,14 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
      * @private
      */
     this.featureCount_ = 0;
+
+    /**
+     * Feature uids of the current render instructions, indexed by the id
+     * encoded in the hit detection color (minus one).
+     * @type {Array<string>}
+     * @private
+     */
+    this.hitUids_ = [];
 
     const source = /** @type {import("../../source/Vector.js").default} */ (
       this.getLayer().getSource()
@@ -598,6 +607,8 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     let tmpCoords = [];
     /** @type {Array<number>} */
     const tmpColor = [];
+    /** @type {Array<string>} */
+    const hitUids = [];
     let idx = -1;
     const projection = frameState.viewState.projection;
     for (const featureUid in this.featureCache_) {
@@ -616,13 +627,18 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
       renderInstructions[++idx] = tmpCoords[0];
       renderInstructions[++idx] = tmpCoords[1];
 
-      // for hit detection, the feature uid is saved in the opacity value
-      // and the index of the opacity value is encoded in the color values
+      // for hit detection, the feature uid is stored in `hitUids` and its
+      // index (starting at 1, 0 means no feature) is encoded in the color
+      // values. Uids are not stored in the instructions directly because they
+      // may exceed the integer precision of Float32.
       if (this.hitDetectionEnabled_) {
-        const hitColor = colorEncodeIdAndPack(idx + 3, tmpColor);
+        const hitColor = colorEncodeIdAndPack(
+          hitUids.push(featureUid),
+          tmpColor,
+        );
         renderInstructions[++idx] = hitColor[0];
         renderInstructions[++idx] = hitColor[1];
-        renderInstructions[++idx] = Number(featureUid);
+        renderInstructions[++idx] = hitUids.length - 1;
       }
 
       // pushing custom attributes
@@ -645,6 +661,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     // additional properties will be sent back as-is by the worker
     /** @type {Record<string, *>} */ (message)['projectionTransform'] =
       projectionTransform;
+    /** @type {Record<string, *>} */ (message)['hitUids'] = hitUids;
     this.ready = false;
     this.worker_.postMessage(message, [renderInstructions.buffer]);
   }
@@ -681,9 +698,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
 
     const data = this.hitRenderTarget_.readPixel(pixel[0] / 2, pixel[1] / 2);
     const color = [data[0] / 255, data[1] / 255, data[2] / 255, data[3] / 255];
-    const index = colorDecodeId(color);
-    const opacity = this.renderInstructions_[index];
-    const uid = Math.floor(opacity).toString();
+    const uid = this.hitUids_[colorDecodeId(color) - 1];
 
     const source = this.getLayer().getSource();
     const feature = source.getFeatureByUid(uid);
