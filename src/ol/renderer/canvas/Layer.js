@@ -109,6 +109,12 @@ class CanvasLayerRenderer extends LayerRenderer {
     this.containerReused = false;
 
     /**
+     * Rotation can be requested from the source.
+     * @type {boolean}
+     */
+    this.sourceRotates = false;
+
+    /**
      * @protected
      * @type {import("../../Map.js").FrameState|null|undefined}
      */
@@ -295,10 +301,14 @@ class CanvasLayerRenderer extends LayerRenderer {
       frameState.extent
     );
     const resolution = frameState.viewState.resolution;
-    const rotation = frameState.viewState.rotation;
+    const rotation = this.sourceRotates ? 0 : frameState.viewState.rotation;
     const pixelRatio = frameState.pixelRatio;
-    const width = Math.round((getWidth(extent) / resolution) * pixelRatio);
-    const height = Math.round((getHeight(extent) / resolution) * pixelRatio);
+    const width = this.sourceRotates
+      ? Math.round(frameState.size[0] * pixelRatio)
+      : Math.round((getWidth(extent) / resolution) * pixelRatio);
+    const height = this.sourceRotates
+      ? Math.round(frameState.size[1] * pixelRatio)
+      : Math.round((getHeight(extent) / resolution) * pixelRatio);
     // set forward and inverse pixel transforms
     composeTransform(
       this.pixelTransform,

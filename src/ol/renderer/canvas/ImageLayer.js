@@ -6,6 +6,7 @@ import ViewHint from '../../ViewHint.js';
 import {
   containsCoordinate,
   containsExtent,
+  getCenter,
   getHeight,
   getIntersection,
   getWidth,
@@ -43,6 +44,13 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
      * @type {number}
      */
     this.renderedSourceRevision_ = 0;
+
+    /**
+     * Rotation baked into the current image.
+     * @protected
+     * @type {number}
+     */
+    this.renderedRotation = 0;
   }
 
   /**
@@ -65,6 +73,11 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
     const viewResolution = viewState.resolution;
 
     const imageSource = this.getLayer().getSource();
+    const sourceRotates = !!imageSource?.rotates;
+    if (this.sourceRotates !== sourceRotates) {
+      this.sourceRotates = sourceRotates;
+      this.image = null;
+    }
 
     const hints = frameState.viewHints;
 
@@ -106,6 +119,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
         if (image) {
           if (this.loadImage(image)) {
             this.image = image;
+            this.renderedRotation = sourceRotates ? viewState.rotation : 0;
           } else if (image.getState() === ImageState.EMPTY) {
             this.image = null;
           }
@@ -148,6 +162,19 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
       return null;
     }
 
+    const imageRotation = this.renderedRotation;
+    if (imageRotation !== 0) {
+      const imageCenter = getCenter(imageExtent);
+      const cosRotation = Math.cos(-imageRotation);
+      const sinRotation = Math.sin(-imageRotation);
+      const deltaX = coordinate[0] - imageCenter[0];
+      const deltaY = coordinate[1] - imageCenter[1];
+      coordinate[0] =
+        imageCenter[0] + cosRotation * deltaX - sinRotation * deltaY;
+      coordinate[1] =
+        imageCenter[1] + sinRotation * deltaX + cosRotation * deltaY;
+    }
+
     const imageMapWidth = getWidth(imageExtent);
     const col = Math.floor(
       img.width * ((coordinate[0] - imageExtent[0]) / imageMapWidth),
@@ -185,11 +212,13 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
       ? imageResolution
       : [imageResolution, imageResolution];
     const imagePixelRatio = image.getPixelRatio();
+    const imageRotation = this.renderedRotation;
     const layerState = frameState.layerStatesArray[frameState.layerIndex];
     const pixelRatio = frameState.pixelRatio;
     const viewState = frameState.viewState;
     const viewCenter = viewState.center;
     const viewResolution = viewState.resolution;
+    const viewRotation = viewState.rotation;
     const scaleX =
       (pixelRatio * imageResolutionX) / (viewResolution * imagePixelRatio);
     const scaleY =
@@ -226,37 +255,83 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
       return this.getContainerElement();
     }
 
-    const transform = composeTransform(
-      this.tempTransform,
-      width / 2,
-      height / 2,
-      scaleX,
-      scaleY,
-      0,
-      (imagePixelRatio * (imageExtent[0] - viewCenter[0])) / imageResolutionX,
-      (imagePixelRatio * (viewCenter[1] - imageExtent[3])) / imageResolutionY,
-    );
+    let transform, dw, dh;
+    if (!this.sourceRotates) {
+      transform = composeTransform(
+        this.tempTransform,
+        width / 2,
+        height / 2,
+        scaleX,
+        scaleY,
+        0,
+        (imagePixelRatio * (imageExtent[0] - viewCenter[0])) / imageResolutionX,
+        (imagePixelRatio * (viewCenter[1] - imageExtent[3])) / imageResolutionY,
+      );
+      dw = img.width * transform[0];
+      dh = img.height * transform[3];
+    } else {
+      // The image content is already rotated by imageRotation. Rotate by the
+      // remaining delta around the image center; when the view is settled at
+      // the image's rotation this reduces to a whole-pixel translation.
+      const scale = pixelRatio / viewResolution;
+      const cosRotation = Math.cos(viewRotation);
+      const sinRotation = Math.sin(viewRotation);
+      const imageCenter = getCenter(imageExtent);
+      const centerX = imageCenter[0] - viewCenter[0];
+      const centerY = imageCenter[1] - viewCenter[1];
+      transform = composeTransform(
+        this.tempTransform,
+        width / 2 + scale * (cosRotation * centerX + sinRotation * centerY),
+        height / 2 + scale * (sinRotation * centerX - cosRotation * centerY),
+        scaleX,
+        scaleY,
+        viewRotation - imageRotation,
+        -img.width / 2,
+        -img.height / 2,
+      );
+      // The transform diagonal shrinks with the rotation delta; guard the draw
+      // with the true scale instead.
+      dw = img.width * scaleX;
+      dh = img.height * scaleY;
+    }
 
     this.renderedResolution = (imageResolutionY * pixelRatio) / imagePixelRatio;
 
-    const dw = img.width * transform[0];
-    const dh = img.height * transform[3];
-
-    if (!this.getLayer().getSource()?.getInterpolate()) {
+    if (
+      !this.getLayer().getSource()?.getInterpolate() &&
+      (!this.sourceRotates || viewRotation === imageRotation)
+    ) {
       context.imageSmoothingEnabled = false;
     }
 
     this.preRender(context, frameState);
     if (render && dw >= 0.5 && dh >= 0.5) {
-      const dx = transform[4];
-      const dy = transform[5];
       const opacity = layerState.opacity;
-      if (opacity !== 1) {
+      if (!this.sourceRotates) {
+        const dx = transform[4];
+        const dy = transform[5];
+        if (opacity !== 1) {
+          context.save();
+          context.globalAlpha = opacity;
+        }
+        context.drawImage(img, 0, 0, img.width, img.height, dx, dy, dw, dh);
+        if (opacity !== 1) {
+          context.restore();
+        }
+      } else {
         context.save();
-        context.globalAlpha = opacity;
-      }
-      context.drawImage(img, 0, 0, img.width, img.height, dx, dy, dw, dh);
-      if (opacity !== 1) {
+        if (opacity !== 1) {
+          context.globalAlpha = opacity;
+        }
+        context.setTransform(
+          transform[0],
+          transform[1],
+          transform[2],
+          transform[3],
+          transform[4],
+          transform[5],
+        );
+        context.drawImage(img, 0, 0);
         context.restore();
       }
     }
