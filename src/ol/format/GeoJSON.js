@@ -403,19 +403,15 @@ function readGeometry(object, options) {
  * @return {import("./Feature.js").GeometryCollectionObject} Geometry collection.
  */
 function readGeometryCollectionGeometry(object, options) {
-  const geometries = object['geometries'].map(
-    /**
-     * @param {GeoJSONGeometry} geometry Geometry.
-     * @return {import("./Feature.js").GeometryObject} geometry Geometry.
-     */
-    function (geometry) {
-      const geom = readGeometryInternal(geometry, options);
-      if (!geom) {
-        throw new Error('Invalid geometry in GeometryCollection');
-      }
-      return geom;
-    },
-  );
+  const geometryObjects = object['geometries'];
+  const geometries = [];
+  for (const geometry of geometryObjects) {
+    const geom = readGeometryInternal(geometry, options);
+    if (!geom) {
+      continue;
+    }
+    geometries.push(geom);
+  }
   return geometries;
 }
 
