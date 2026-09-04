@@ -10,7 +10,7 @@
  * @return {number} offset Offset.
  */
 export function deflateCoordinate(flatCoordinates, offset, coordinate, stride) {
-  for (let i = 0, ii = coordinate.length; i < ii; ++i) {
+  for (let i = 0; i < stride; ++i) {
     flatCoordinates[offset++] = coordinate[i];
   }
   return offset;

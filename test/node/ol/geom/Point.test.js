@@ -126,6 +126,24 @@ describe('ol/geom/Point.js', function () {
     });
   });
 
+  describe('#setCoordinates()', function () {
+    it('drops the extra dimensions when the layout is reduced', function () {
+      const geom = new Point([1, 2, 3], 'XYZ');
+      geom.setCoordinates(geom.getCoordinates(), 'XY');
+      assert.strictEqual(geom.getLayout(), 'XY');
+      assert.strictEqual(geom.getStride(), 2);
+      assert.deepEqual(geom.getFlatCoordinates(), [1, 2]);
+      assert.deepEqual(geom.getCoordinates(), [1, 2]);
+    });
+
+    it('keeps the extra dimensions when the layout is not reduced', function () {
+      const geom = new Point([1, 2]);
+      geom.setCoordinates([3, 4, 5, 6], 'XYZM');
+      assert.strictEqual(geom.getLayout(), 'XYZM');
+      assert.deepEqual(geom.getCoordinates(), [3, 4, 5, 6]);
+    });
+  });
+
   describe('#scale()', function () {
     it('scales a point', function () {
       const geom = new Point([1, 2]);
