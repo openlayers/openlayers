@@ -96,7 +96,7 @@ class JSONFeature extends FeatureFormat {
    *
    * @param {ArrayBuffer|Document|Element|Object|string} source Source.
    * @param {import("./Feature.js").ReadOptions} [options] Read options.
-   * @return {import("../geom/Geometry.js").default} Geometry.
+   * @return {import("../geom/Geometry.js").default|null} Geometry.
    * @api
    * @override
    */
@@ -116,7 +116,7 @@ class JSONFeature extends FeatureFormat {
    * @param {Object} object Object.
    * @param {import("./Feature.js").ReadOptions} [options] Read options.
    * @protected
-   * @return {import("../geom/Geometry.js").default} Geometry.
+   * @return {import("../geom/Geometry.js").default|null} Geometry.
    */
   readGeometryFromObject(object, options) {
     return abstract();

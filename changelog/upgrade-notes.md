@@ -2,6 +2,10 @@
 
 ### Next release
 
+#### Fixed GeoJSON parsing of geometries with empty coordinate arrays
+
+Previously, a GeoJSON geometry with an empty coordinates array (e.g. `{"type": "Point", "coordinates": []}`) produced a geometry with an empty coordinates array. We have now changed this to match the GeoJSON spec's recommendation to treat such geometries (except `GeometryCollection`) as `null` geometries. This change should not affect application code, unless it had special handling for geometries with empty coordinates arrays.
+
 #### Fixed: `interpolate` mixed colors differently on the Canvas and WebGL renderers
 
 The `['interpolate', ...]` operator interpolated colors in the Hue-Chroma-Luminance space on

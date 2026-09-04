@@ -608,8 +608,27 @@ describe('ol/format/GeoJSON.js', function () {
           coordinates: [],
         };
         const geometry = format.readGeometry(geojson);
-        assert.deepEqual(geometry.getCoordinates(), []);
+        assert.equal(geometry, null);
       });
+    });
+
+    it('omits geometry collection members with empty coordinate arrays', () => {
+      const geojson = {
+        type: 'GeometryCollection',
+        geometries: [
+          {type: 'Point', coordinates: [10, 20]},
+          {type: 'LineString', coordinates: []},
+          {type: 'Point', coordinates: [30, 40]},
+        ],
+      };
+      const geometry = format.readGeometry(geojson);
+      assert.instanceOf(geometry, GeometryCollection);
+      const geometries = geometry.getGeometries();
+      assert.strictEqual(geometries.length, 2);
+      assert.instanceOf(geometries[0], Point);
+      assert.deepEqual(geometries[0].getCoordinates(), [10, 20]);
+      assert.instanceOf(geometries[1], Point);
+      assert.deepEqual(geometries[1].getCoordinates(), [30, 40]);
     });
 
     it('works with empty coordinate array and reprojection', () => {
@@ -629,7 +648,7 @@ describe('ol/format/GeoJSON.js', function () {
         const geometry = format.readGeometry(geojson, {
           featureProjection: 'EPSG:3857',
         });
-        assert.deepEqual(geometry.getCoordinates(), []);
+        assert.equal(geometry, null);
       });
     });
   });
