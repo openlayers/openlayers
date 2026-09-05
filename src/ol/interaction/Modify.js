@@ -118,9 +118,8 @@ const ModifyEventType = {
  * @typedef {Object} Options
  * @property {import("../events/condition.js").Condition} [condition] A function that
  * takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
- * boolean to indicate whether that event will be considered to add or move a
- * vertex to the sketch. Default is
- * {@link module:ol/events/condition.primaryAction}.
+ * boolean to indicate whether that event will be considered to modify a
+ * vertex in the sketch. Default is {@link module:ol/events/condition.primaryAction}.
  * @property {import("../events/condition.js").Condition} [deleteCondition] A function
  * that takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a
  * boolean to indicate whether that event should be handled. By default,
@@ -1134,12 +1133,16 @@ class Modify extends PointerInteraction {
     ) {
       this.handlePointerMove_(mapBrowserEvent);
     }
-    if (this.vertexFeature_ && this.deleteCondition_(mapBrowserEvent)) {
+    if (
+      this.vertexFeature_ &&
+      this.condition_(mapBrowserEvent) &&
+      this.deleteCondition_(mapBrowserEvent)
+    ) {
       if (
         mapBrowserEvent.type != MapBrowserEventType.SINGLECLICK ||
         !this.ignoreNextSingleClick_
       ) {
-        handled = this.removePoint();
+        handled = this.removePoint(mapBrowserEvent.coordinate);
       } else {
         handled = true;
       }
