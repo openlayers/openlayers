@@ -102,6 +102,40 @@ describe('ol/source/Google', () => {
       }));
   });
 
+  describe('fetchSessionToken option', () => {
+    it('uses the provided function instead of the default', () =>
+      new Promise((resolve) => {
+        let calls = 0;
+        source = new Google({
+          key: validKey,
+          fetchSessionToken: async (url, config) => {
+            ++calls;
+            assert.strictEqual(config.method, 'POST');
+            assert.strictEqual(new URL(url).searchParams.get('key'), validKey);
+            const response = await fetchSessionToken(url, config);
+            const body = await response.json();
+            body.session = 'stored-session';
+            return new Response(JSON.stringify(body), {
+              status: 200,
+              headers: {'Content-Type': 'application/json'},
+            });
+          },
+        });
+
+        source.on('change', () => {
+          if (source.getState() !== 'ready') {
+            return;
+          }
+          assert.strictEqual(calls, 1);
+          const url = new URL(
+            source.tileUrlFunction([0, 0, 0], 1, source.getProjection()),
+          );
+          assert.strictEqual(url.searchParams.get('session'), 'stored-session');
+          resolve();
+        });
+      }));
+  });
+
   describe('tileUrlFunction()', () => {
     it('returns a url that includes the session and api key', () =>
       new Promise((resolve) => {
