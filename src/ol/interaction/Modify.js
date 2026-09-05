@@ -138,6 +138,9 @@ const ModifyEventType = {
  * function that takes a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and
  * returns a boolean to indicate whether a new vertex should be added to the sketch
  * features. Default is {@link module:ol/events/condition.always}.
+ * @property {import("../events/condition.js").Condition} [moveVertexCondition] A function that takes
+ * a {@link module:ol/MapBrowserEvent~MapBrowserEvent} and returns a boolean to indicate whether a vertex
+ * should be moved in the sketch features. Default is {@link module:ol/events/condition.always}.
  * @property {number} [pixelTolerance=10] Pixel tolerance for considering the
  * pointer close enough to a segment or vertex for editing.
  * @property {import("../style/Style.js").StyleLike|import("../style/flat.js").FlatStyleLike} [style]
@@ -339,6 +342,14 @@ class Modify extends PointerInteraction {
      */
     this.insertVertexCondition_ = options.insertVertexCondition
       ? options.insertVertexCondition
+      : always;
+
+    /**
+     * @type {import("../events/condition.js").Condition}
+     * @private
+     */
+    this.moveVertexCondition_ = options.moveVertexCondition
+      ? options.moveVertexCondition
       : always;
 
     /**
@@ -1816,6 +1827,10 @@ class Modify extends PointerInteraction {
    * @override
    */
   handleDragEvent(evt) {
+    if (!this.moveVertexCondition_(evt)) {
+      return;
+    }
+
     this.ignoreNextSingleClick_ = false;
     this.willModifyFeatures_(
       evt,
