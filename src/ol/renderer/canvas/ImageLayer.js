@@ -73,9 +73,8 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
     const viewResolution = viewState.resolution;
 
     const imageSource = this.getLayer().getSource();
-    const sourceRotates = !!imageSource?.rotates;
-    if (this.sourceRotates !== sourceRotates) {
-      this.sourceRotates = sourceRotates;
+    if (!imageSource?.rotates && this.renderedRotation !== 0) {
+      // The held image was produced rotated; the unrotated draw path cannot use it.
       this.image = null;
     }
 
@@ -119,7 +118,9 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
         if (image) {
           if (this.loadImage(image)) {
             this.image = image;
-            this.renderedRotation = sourceRotates ? viewState.rotation : 0;
+            this.renderedRotation = imageSource.rotates
+              ? viewState.rotation
+              : 0;
           } else if (image.getState() === ImageState.EMPTY) {
             this.image = null;
           }
@@ -213,6 +214,8 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
       : [imageResolution, imageResolution];
     const imagePixelRatio = image.getPixelRatio();
     const imageRotation = this.renderedRotation;
+    const imageSource = this.getLayer().getSource();
+    const sourceRotates = !!imageSource?.rotates;
     const layerState = frameState.layerStatesArray[frameState.layerIndex];
     const pixelRatio = frameState.pixelRatio;
     const viewState = frameState.viewState;
@@ -256,7 +259,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
     }
 
     let transform, dw, dh;
-    if (!this.sourceRotates) {
+    if (!sourceRotates) {
       transform = composeTransform(
         this.tempTransform,
         width / 2,
@@ -298,8 +301,8 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
     this.renderedResolution = (imageResolutionY * pixelRatio) / imagePixelRatio;
 
     if (
-      !this.getLayer().getSource()?.getInterpolate() &&
-      (!this.sourceRotates || viewRotation === imageRotation)
+      !imageSource?.getInterpolate() &&
+      (!sourceRotates || viewRotation === imageRotation)
     ) {
       context.imageSmoothingEnabled = false;
     }
@@ -307,7 +310,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
     this.preRender(context, frameState);
     if (render && dw >= 0.5 && dh >= 0.5) {
       const opacity = layerState.opacity;
-      if (!this.sourceRotates) {
+      if (!sourceRotates) {
         const dx = transform[4];
         const dy = transform[5];
         if (opacity !== 1) {

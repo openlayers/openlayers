@@ -44,9 +44,6 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
      */
     this.layerImageRatio_ = layer.getImageRatio();
 
-    this.sourceRotates = true;
-    this.vectorRenderer_.sourceRotates = true;
-
     /**
      * @private
      * @type {import("../../transform.js").Transform}

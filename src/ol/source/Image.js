@@ -180,12 +180,6 @@ class ImageSource extends Source {
     this.static_ = options.loader ? options.loader.length === 0 : false;
 
     /**
-     * Rotation can be requested from the source.
-     * @type {boolean}
-     */
-    this.rotates = false;
-
-    /**
      * @private
      * @type {import("../proj/Projection.js").default|null}
      */

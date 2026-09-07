@@ -27,6 +27,12 @@ describe('ol/source/Vector', function () {
     infiniteExtent = [-Infinity, -Infinity, Infinity, Infinity];
   });
 
+  describe('constructor', function () {
+    it('declares that rotation can be requested', function () {
+      assert.isTrue(new VectorSource().rotates);
+    });
+  });
+
   describe('when empty', function () {
     let vectorSource;
     beforeEach(function () {
