@@ -21,6 +21,7 @@ import {
   create as createTransform,
 } from '../../../../../../src/ol/transform.js';
 import {getUid} from '../../../../../../src/ol/util.js';
+import WebGLHelper from '../../../../../../src/ol/webgl/Helper.js';
 import {assertArrayLikeEqual} from '../../../../../util/equal.js';
 
 const baseFrameState = {
@@ -221,6 +222,35 @@ describe('ol/renderer/webgl/PointsLayer', function () {
           assertArrayLikeEqual(renderer.indicesBuffer_.getArray().length, 6);
 
           resolve();
+        });
+      }));
+
+    it('uploads the instance attributes buffer again when the helper is recreated', () =>
+      new Promise((resolve, reject) => {
+        layer.getSource().addFeature(
+          new Feature({
+            geometry: new Point([10, 20]),
+          }),
+        );
+        renderer.prepareFrame(frameState);
+
+        renderer.worker_.addEventListener('message', function (event) {
+          if (
+            event.data.type !== WebGLWorkerMessageType.GENERATE_POINT_BUFFERS
+          ) {
+            return;
+          }
+          renderer.removeHelper();
+          const spy = vi.spyOn(WebGLHelper.prototype, 'flushBufferData');
+          renderer.prepareFrame(frameState);
+          const uploaded = spy.mock.calls.map((call) => call[0]);
+          spy.mockRestore();
+          try {
+            assert.include(uploaded, renderer.instanceAttributesBuffer_);
+            resolve();
+          } catch (e) {
+            reject(e);
+          }
         });
       }));
 
