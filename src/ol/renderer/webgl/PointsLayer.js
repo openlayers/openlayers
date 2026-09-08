@@ -414,6 +414,9 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     if (this.indicesBuffer_.getArray()) {
       this.helper.flushBufferData(this.indicesBuffer_);
     }
+    if (this.instanceAttributesBuffer_.getArray()) {
+      this.helper.flushBufferData(this.instanceAttributesBuffer_);
+    }
   }
 
   /**
