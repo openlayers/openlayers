@@ -49,6 +49,8 @@ npm run serve-examples
 
 Then, load <http://localhost:8080/> in your browser.
 
+To override the API tokens used in the examples (Mapbox, MapTiler, etc.) add the corresponding `*_KEY` entries to `examples/.env` (see `examples/.env.example`). That file is gitignored and is not used when building examples for the website.
+
 
 ## Running tests
 

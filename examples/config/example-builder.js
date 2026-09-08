@@ -8,10 +8,12 @@ import handlebars from 'handlebars';
 import {marked} from 'marked';
 import path, {dirname} from 'path';
 import {fileURLToPath} from 'url';
-import flatConfig from '../eslint.config.js';
+import flatConfig from '../../eslint.config.js';
+import {demoTokens} from './demo-tokens.js';
 
-const baseDir = dirname(fileURLToPath(import.meta.url));
-const root = path.join(baseDir, '..');
+const configDir = dirname(fileURLToPath(import.meta.url));
+const examplesDir = path.join(configDir, '..');
+const repoRoot = path.join(examplesDir, '..');
 
 const isCssRegEx = /\.css(\?.*)?$/;
 const isJsRegEx = /\.js(\?.*)?$/;
@@ -21,12 +23,12 @@ const isTemplateCss =
   /\/(?:bootstrap|fontawesome-free@[\d.]+\/css\/(?:fontawesome|brands|solid))(?:\.min)?\.css(?:\?.*)?$/;
 
 const exampleNames = fs
-  .readdirSync(baseDir)
+  .readdirSync(examplesDir)
   .filter((name) => /^(?!index).*\.html$/.test(name))
   .map((name) => name.replace(/\.html$/, ''));
 
 function getPackageInfo() {
-  return fse.readJSON(path.resolve(root, 'package.json'));
+  return fse.readJSON(path.resolve(repoRoot, 'package.json'));
 }
 
 handlebars.registerHelper(
@@ -161,6 +163,9 @@ class ExampleBuilder {
   }
 
   cloakSource(source, cloak) {
+    for (const token of demoTokens) {
+      source = source.replaceAll(token.value, token.cloak);
+    }
     if (cloak) {
       for (const entry of cloak) {
         source = source.replaceAll(entry.key, entry.value);
@@ -311,7 +316,7 @@ class ExampleBuilder {
 
 async function buildExamples(builder) {
   const exampleData = await Promise.all(
-    exampleNames.map((name) => builder.parseExample(baseDir, name)),
+    exampleNames.map((name) => builder.parseExample(examplesDir, name)),
   );
 
   const examples = exampleData.map((data) => ({
@@ -380,7 +385,7 @@ export default function exampleBuilder(config) {
     configureServer(server) {
       server.watcher.on('change', (file) => {
         if (
-          file.startsWith(baseDir) &&
+          file.startsWith(examplesDir) &&
           (file.endsWith('.html') ||
             file.endsWith('.js') ||
             file.endsWith('.css'))
@@ -405,13 +410,17 @@ export default function exampleBuilder(config) {
           }
 
           if (url === '/theme/ol.css') {
-            sendFile(res, path.join(root, 'src', 'ol', 'ol.css'), 'text/css');
+            sendFile(
+              res,
+              path.join(repoRoot, 'src', 'ol', 'ol.css'),
+              'text/css',
+            );
             return;
           }
 
           if (url.startsWith('/theme/')) {
             const themePath = path.join(
-              root,
+              repoRoot,
               'site',
               'src',
               'theme',
