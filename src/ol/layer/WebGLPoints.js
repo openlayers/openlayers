@@ -1,6 +1,7 @@
 /**
  * @module ol/layer/WebGLPoints
  */
+import {newCompilationContext} from '../expr/gpu.js';
 import {parseLiteralStyle} from '../render/webgl/style.js';
 import WebGLPointsLayerRenderer from '../renderer/webgl/PointsLayer.js';
 import Layer from './Layer.js';
@@ -95,7 +96,7 @@ class WebGLPointsLayer extends Layer {
      */
     this.parseResult_ = parseLiteralStyle(
       options.style,
-      this.styleVariables_,
+      newCompilationContext(this.styleVariables_),
       options.filter,
     );
 
