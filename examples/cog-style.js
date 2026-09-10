@@ -109,7 +109,7 @@ const layer = new TileLayer({
     normalize: false,
     sources: [
       {
-        url: 'https://s2downloads.eox.at/demo/EOxCloudless/2020/rgbnir/s2cloudless2020-16bits_sinlge-file_z0-4.tif',
+        url: 'https://cloudlessdownloads.eox.at/api/public/dl/jvu06wnt/exploitation-ready-epsg-4326/exploitation-ready_eoxcloudless-sentinel-2-2024_zoom-1_4bands_16bit.tif',
       },
     ],
   }),
