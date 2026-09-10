@@ -81,6 +81,12 @@ class Source extends BaseObject {
     this.loading = false;
 
     /**
+     * Rotation can be requested from the source.
+     * @type {boolean}
+     */
+    this.rotates = false;
+
+    /**
      * @private
      * @type {import("./Source.js").State}
      */

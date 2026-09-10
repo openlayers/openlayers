@@ -197,6 +197,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const rotation = viewState.rotation;
     const projectionExtent = projection.getExtent();
     const vectorSource = this.getLayer().getSource();
+    const sourceRotates = !!vectorSource?.rotates;
     const declutter = this.getLayer().getDeclutter();
     const pixelRatio = frameState.pixelRatio;
     const viewHints = frameState.viewHints;
@@ -207,16 +208,20 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       /** @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} */ (
         this.context
       );
-    const width = Math.round(
-      (getWidth(/** @type {import("../../extent.js").Extent} */ (extent)) /
-        resolution) *
-        pixelRatio,
-    );
-    const height = Math.round(
-      (getHeight(/** @type {import("../../extent.js").Extent} */ (extent)) /
-        resolution) *
-        pixelRatio,
-    );
+    const width = sourceRotates
+      ? Math.round(frameState.size[0] * pixelRatio)
+      : Math.round(
+          (getWidth(/** @type {import("../../extent.js").Extent} */ (extent)) /
+            resolution) *
+            pixelRatio,
+        );
+    const height = sourceRotates
+      ? Math.round(frameState.size[1] * pixelRatio)
+      : Math.round(
+          (getHeight(/** @type {import("../../extent.js").Extent} */ (extent)) /
+            resolution) *
+            pixelRatio,
+        );
 
     const multiWorld =
       /** @type {NonNullable<ReturnType<import("../../layer/Vector.js").default["getSource"]>>} */ (
@@ -240,7 +245,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       let transform = this.getRenderTransform(
         center,
         resolution,
-        0,
+        sourceRotates ? rotation : 0,
         pixelRatio,
         width,
         height,
