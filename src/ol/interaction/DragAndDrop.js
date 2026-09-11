@@ -26,7 +26,7 @@ import Interaction from './Interaction.js';
 /**
  * @enum {string}
  */
-const DragAndDropEventType = {
+export const DragAndDropEventType = {
   /**
    * Triggered when features are added
    * @event DragAndDropEvent#addfeatures

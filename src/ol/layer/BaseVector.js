@@ -69,7 +69,7 @@ import Layer from './Layer.js';
  * @enum {string}
  * @private
  */
-const Property = {
+export const Property = {
   RENDER_ORDER: 'renderOrder',
 };
 

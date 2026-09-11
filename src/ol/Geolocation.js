@@ -14,7 +14,7 @@ import {
 /**
  * @enum {string}
  */
-const Property = {
+export const Property = {
   ACCURACY: 'accuracy',
   ACCURACY_GEOMETRY: 'accuracyGeometry',
   ALTITUDE: 'altitude',
@@ -30,7 +30,7 @@ const Property = {
 /**
  * @enum string
  */
-const GeolocationErrorType = {
+export const GeolocationErrorType = {
   /**
    * Triggered when a `GeolocationPositionError` occurs.
    * @event module:ol/Geolocation.GeolocationError#error
