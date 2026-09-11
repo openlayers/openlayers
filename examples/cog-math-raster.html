@@ -1,0 +1,15 @@
+---
+layout: example.html
+title: NDVI from a COG with a raster source
+shortdesc: Running a pixel operation over multi-band data tiles.
+docs: >
+  This example computes the Normalized Difference Vegetation Index (NDVI) from two Sentinel 2 bands
+  using an <code>ol/source/Raster</code> operation.  The raster source takes a <code>GeoTIFF</code> data
+  tile source as input, samples it at its native tile resolution, and runs a pixel operation that maps
+  NDVI to a color ramp.  Compare with the <a href="../cog-math.html">NDVI from a Sentinel 2 COG</a> example,
+  which uses a WebGL layer style instead.  Move the pointer over the map to read the NDVI value from
+  the source's <code>getData()</code> lookup.
+tags: "cog, ndvi, raster"
+---
+<div id="map" class="map"></div>
+<div>NDVI at pointer: <span id="output">&nbsp;</span></div>

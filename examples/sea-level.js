@@ -66,6 +66,21 @@ const map = new Map({
   }),
 });
 
+// getData() returns the input source values at a coordinate; here the single
+// input is the terrain-RGB source, so we decode its pixel to an elevation.
+const elevationOutput = document.getElementById('elevation');
+map.on(['pointermove', 'click'], function (event) {
+  const pixels = raster.getData(event.coordinate);
+  const pixel = pixels && pixels[0];
+  if (!pixel || !pixel[3]) {
+    elevationOutput.innerText = ' ';
+    return;
+  }
+  const height =
+    -10000 + (pixel[0] * 256 * 256 + pixel[1] * 256 + pixel[2]) * 0.1;
+  elevationOutput.innerText = Math.round(height) + ' m';
+});
+
 const control = document.getElementById('level');
 const output = document.getElementById('output');
 control.addEventListener('input', function () {

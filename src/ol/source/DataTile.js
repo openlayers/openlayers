@@ -1,7 +1,7 @@
 /**
  * @module ol/source/DataTile
  */
-import DataTile from '../DataTile.js';
+import DataTile, {asArrayLike} from '../DataTile.js';
 import TileState from '../TileState.js';
 import EventType from '../events/EventType.js';
 import {getHeight, getWidth} from '../extent.js';
@@ -195,6 +195,145 @@ class DataTileSource extends TileSource {
      * @type {import("../transform.js").Transform|null}
      */
     this.transformMatrix = null;
+  }
+
+  /**
+   * Read source data for an extent, resampled with nearest-neighbor sampling
+   * onto an output grid.  It returns the interleaved band values for every output
+   * pixel, sampled at the source level nearest the output resolution and kept in
+   * the tiles' own array type, so floating point precision is preserved.
+   * Sources with a gutter are not supported.
+   *
+   * @param {import("../extent.js").Extent} extent The output extent.
+   * @param {number} resolution The output resolution.
+   * @param {import("../proj/Projection.js").default} projection The projection.
+   * @param {import("../size.js").Size} size The output size in pixels.
+   * @param {import("../TileQueue.js").default} tileQueue A tile queue used to
+   *     load tiles that are not yet available.
+   * @param {import("../structs/LRUCache.js").default<import("../Tile.js").default>} tileCache
+   *     A tile cache in which to look up and store input tiles.
+   * @return {{data: Uint8Array|Uint8ClampedArray|Int8Array|Uint16Array|Int16Array|Uint32Array|Int32Array|Float32Array|Float64Array, width: number, height: number, bandCount: number}|null}
+   *     The resampled data, or `null` if not all covering tiles are loaded yet.
+   */
+  readData(extent, resolution, projection, size, tileQueue, tileCache) {
+    if (this.getGutterForProjection(projection)) {
+      throw new Error(
+        'ol/source/DataTile#readData does not support sources with a gutter',
+      );
+    }
+
+    const tileGrid = this.getTileGridForProjection(projection);
+
+    const z = tileGrid.getZForResolution(resolution);
+    const tileResolution = tileGrid.getResolution(z);
+
+    const sourceKey = getUid(this).toString();
+
+    const tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
+
+    /**
+     * Loaded tiles keyed by `x/y` within the level.
+     * @type {Object<string, DataTile>}
+     */
+    const tiles = {};
+    let ready = true;
+    for (let x = tileRange.minX; x <= tileRange.maxX; ++x) {
+      for (let y = tileRange.minY; y <= tileRange.maxY; ++y) {
+        const tile = /** @type {DataTile} */ (
+          /** @type {*} */ (this.getTile(z, x, y, 1, projection, tileCache))
+        );
+        if (!tile) {
+          continue;
+        }
+        const state = tile.getState();
+        if (state === TileState.LOADED) {
+          tiles[x + '/' + y] = tile;
+        } else if (state !== TileState.ERROR && state !== TileState.EMPTY) {
+          // IDLE or LOADING: queue it and wait for a load event to re-run
+          tileQueue.enqueue([tile, sourceKey, [z, x, y], tileResolution]);
+          ready = false;
+        }
+      }
+    }
+
+    if (!ready) {
+      tileQueue.loadMoreTiles(16, 16);
+      return null;
+    }
+
+    const width = size[0];
+    const height = size[1];
+
+    // a loaded tile to derive the array type and band count from
+    let sampleTile;
+    for (const key in tiles) {
+      sampleTile = tiles[key];
+      break;
+    }
+    if (!sampleTile) {
+      return null;
+    }
+    const sampleData =
+      /** @type {Uint8Array|Uint8ClampedArray|Float32Array} */ (
+        /** @type {*} */ (
+          asArrayLike(
+            /** @type {import("../DataTile.js").Data} */ (sampleTile.getData()),
+          )
+        )
+      );
+    if (!sampleData || sampleData instanceof DataView) {
+      throw new Error(
+        'ol/source/DataTile#readData only supports typed array tile data',
+      );
+    }
+    const sampleSize = sampleTile.getSize();
+    const bandCount = Math.round(
+      sampleData.length / (sampleSize[0] * sampleSize[1]),
+    );
+
+    const ArrayConstructor = /** @type {*} */ (sampleData.constructor);
+    const output = new ArrayConstructor(width * height * bandCount);
+
+    const originX = extent[0];
+    const originY = extent[3];
+    for (let row = 0; row < height; ++row) {
+      const mapY = originY - (row + 0.5) * resolution;
+      for (let col = 0; col < width; ++col) {
+        const mapX = originX + (col + 0.5) * resolution;
+        const tileCoord = tileGrid.getTileCoordForCoordAndZ([mapX, mapY], z);
+        const tile = tiles[tileCoord[1] + '/' + tileCoord[2]];
+        const outputOffset = (row * width + col) * bandCount;
+        if (!tile) {
+          // no covering tile: leave nodata (zeros)
+          continue;
+        }
+        const tileExtent = tileGrid.getTileCoordExtent(tileCoord);
+        const tileSize = tile.getSize();
+        let tileCol = Math.floor((mapX - tileExtent[0]) / tileResolution);
+        let tileRow = Math.floor((tileExtent[3] - mapY) / tileResolution);
+        if (tileCol < 0) {
+          tileCol = 0;
+        } else if (tileCol >= tileSize[0]) {
+          tileCol = tileSize[0] - 1;
+        }
+        if (tileRow < 0) {
+          tileRow = 0;
+        } else if (tileRow >= tileSize[1]) {
+          tileRow = tileSize[1] - 1;
+        }
+        const tileData = /** @type {*} */ (
+          asArrayLike(
+            /** @type {import("../DataTile.js").Data} */ (tile.getData()),
+          )
+        );
+        const inputOffset = (tileRow * tileSize[0] + tileCol) * bandCount;
+        for (let b = 0; b < bandCount; ++b) {
+          output[outputOffset + b] = tileData[inputOffset + b];
+        }
+      }
+    }
+
+    return {data: output, width, height, bandCount};
   }
 
   /**
