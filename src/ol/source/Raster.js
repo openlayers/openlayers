@@ -10,9 +10,15 @@ import EventType from '../events/EventType.js';
 import {equals, getCenter, getHeight, getWidth} from '../extent.js';
 import ImageLayer from '../layer/Image.js';
 import TileLayer from '../layer/Tile.js';
-import {create as createTransform} from '../transform.js';
+import LRUCache from '../structs/LRUCache.js';
+import {
+  apply as applyTransform,
+  create as createTransform,
+} from '../transform.js';
 import {getUid} from '../util.js';
+import DataTileSource from './DataTile.js';
 import ImageSource from './Image.js';
+import ImageTileSource from './ImageTile.js';
 import Source from './Source.js';
 import TileSource from './Tile.js';
 
@@ -23,18 +29,64 @@ import TileSource from './Tile.js';
  * @property {boolean} imageOps The operation is an image operation.
  * @property {number} width The width of the image.
  * @property {number} height The height of the image.
+ * @property {Array<number>} bandCounts The number of bands in each input.
+ * @property {Array<string>} dtypes The typed array constructor name of each input.
  */
 
-/* istanbul ignore next */
+/**
+ * A single input to an operation.  All inputs for a job share the same width
+ * and height (the output pixel dimensions); they may differ in band count and
+ * array type.  For image inputs, the data is `Uint8ClampedArray` RGBA (four
+ * bands); for data tile inputs, the data is the native interleaved array.
+ * @typedef {Uint8Array|Uint8ClampedArray|Int8Array|Uint16Array|Int16Array|Uint32Array|Int32Array|Float32Array|Float64Array} TypedArray
+ */
+
+/**
+ * @typedef {Object} Input
+ * @property {TypedArray} data Interleaved band data.
+ * @property {number} width Width in pixels.
+ * @property {number} height Height in pixels.
+ * @property {number} bandCount Number of bands per pixel.
+ */
+
 /**
  * Create a function for running operations.  This function is serialized for
  * use in a worker.
  * @param {function(Array<*>, Object):*} operation The operation.
- * @return {function(MinionData):ArrayBuffer} A function that takes an object with
- * buffers, meta, imageOps, width, and height properties and returns an array
- * buffer.
+ * @return {function(MinionData):ArrayBuffer} A function that takes a
+ * {@link MinionData} object and returns an array buffer of RGBA output.
  */
 function createMinion(operation) {
+  /**
+   * Create a typed array view of the given kind over a buffer.  The set of
+   * kinds mirrors the array types a data tile can carry.
+   * @param {string} dtype The typed array constructor name.
+   * @param {ArrayBuffer} buffer The buffer.
+   * @return {*} A typed array view.
+   */
+  function arrayForType(dtype, buffer) {
+    switch (dtype) {
+      case 'Float32Array':
+        return new Float32Array(buffer);
+      case 'Float64Array':
+        return new Float64Array(buffer);
+      case 'Int8Array':
+        return new Int8Array(buffer);
+      case 'Int16Array':
+        return new Int16Array(buffer);
+      case 'Int32Array':
+        return new Int32Array(buffer);
+      case 'Uint16Array':
+        return new Uint16Array(buffer);
+      case 'Uint32Array':
+        return new Uint32Array(buffer);
+      case 'Uint8Array':
+        return new Uint8Array(buffer);
+      default:
+        return new Uint8ClampedArray(buffer);
+    }
+  }
+
   return function (data) {
     // bracket notation for minification support
     const buffers = data['buffers'];
@@ -42,9 +94,10 @@ function createMinion(operation) {
     const imageOps = data['imageOps'];
     const width = data['width'];
     const height = data['height'];
+    const bandCounts = data['bandCounts'];
+    const dtypes = data['dtypes'];
 
     const numBuffers = buffers.length;
-    const numBytes = buffers[0].byteLength;
 
     if (imageOps) {
       const images = new Array(numBuffers);
@@ -59,26 +112,31 @@ function createMinion(operation) {
       return output.buffer;
     }
 
-    const output = new Uint8ClampedArray(numBytes);
     const arrays = new Array(numBuffers);
     const pixels = new Array(numBuffers);
     for (let b = 0; b < numBuffers; ++b) {
-      arrays[b] = new Uint8ClampedArray(buffers[b]);
-      pixels[b] = [0, 0, 0, 0];
+      arrays[b] = arrayForType(dtypes[b], buffers[b]);
+      pixels[b] = new Array(bandCounts[b]);
     }
-    for (let i = 0; i < numBytes; i += 4) {
+
+    const pixelCount = arrays[0].length / bandCounts[0];
+    const output = new Uint8ClampedArray(pixelCount * 4);
+    for (let i = 0; i < pixelCount; ++i) {
       for (let j = 0; j < numBuffers; ++j) {
         const array = arrays[j];
-        pixels[j][0] = array[i];
-        pixels[j][1] = array[i + 1];
-        pixels[j][2] = array[i + 2];
-        pixels[j][3] = array[i + 3];
+        const bandCount = bandCounts[j];
+        const pixel = pixels[j];
+        const offset = i * bandCount;
+        for (let b = 0; b < bandCount; ++b) {
+          pixel[b] = array[offset + b];
+        }
       }
-      const pixel = operation(pixels, meta);
-      output[i] = pixel[0];
-      output[i + 1] = pixel[1];
-      output[i + 2] = pixel[2];
-      output[i + 3] = pixel[3];
+      const result = operation(pixels, meta);
+      const offset = i * 4;
+      output[offset] = result[0];
+      output[offset + 1] = result[1];
+      output[offset + 2] = result[2];
+      output[offset + 3] = result[3];
     }
     return output.buffer;
   };
@@ -152,7 +210,8 @@ function createFauxWorker(config, onMessage) {
 /**
  * @typedef {Object} Job
  * @property {Object} meta Job metadata.
- * @property {Array<ImageData>} inputs Array of input data.
+ * @property {Array<Input>} inputs Array of input data, normalized by
+ *     {@link toInput} so every input carries a band count.
  * @property {JobCallback} callback Called when the job is complete.
  */
 
@@ -164,6 +223,51 @@ function createFauxWorker(config, onMessage) {
  * @property {number} queue The number of queued jobs to allow.
  * @property {boolean} [imageOps=false] Pass all the image data to the operation instead of a single pixel.
  */
+
+/**
+ * Normalize an operation input to a canonical {@link Input}.  `ImageData` is
+ * treated as four RGBA bands; anything already shaped like an `Input` is passed
+ * through.  This keeps the band count / array type knowledge in one place so the
+ * rest of the processor never special-cases `ImageData`.
+ * @param {Input|ImageData} input The input.
+ * @return {Input} The canonical input.
+ */
+function toInput(input) {
+  if ('bandCount' in input) {
+    return input;
+  }
+  return {
+    data: input.data,
+    width: input.width,
+    height: input.height,
+    bandCount: 4,
+  };
+}
+
+/**
+ * Get the buffer to hand a worker for one input and one thread.  With a single
+ * thread the whole buffer is transferred; with several, each thread gets the
+ * slice covering its pixel range, respecting the input's band count and element
+ * size.
+ * @param {Input} input The input.
+ * @param {number} startPixel The first pixel handled by the thread.
+ * @param {number} segmentPixels The number of pixels per thread.
+ * @param {number} threads The number of threads.
+ * @return {ArrayBuffer} The buffer to transfer.
+ */
+function sliceInput(input, startPixel, segmentPixels, threads) {
+  const buffer = /** @type {ArrayBuffer} */ (input.data.buffer);
+  if (threads === 1) {
+    return buffer;
+  }
+  const stride = input.bandCount * input.data.BYTES_PER_ELEMENT;
+  const start = Math.min(startPixel * stride, buffer.byteLength);
+  const end = Math.min(
+    (startPixel + segmentPixels) * stride,
+    buffer.byteLength,
+  );
+  return buffer.slice(start, end);
+}
 
 /**
  * @classdesc
@@ -248,7 +352,9 @@ export class Processor extends Disposable {
 
   /**
    * Run operation on input data.
-   * @param {Array<ImageData>} inputs Array of image data.
+   * @param {Array<Input|ImageData>} inputs Array of inputs.  All inputs share the
+   *     output pixel dimensions but may differ in band count and array type.
+   *     `ImageData` inputs are treated as four RGBA bands.
    * @param {Object} meta A user data object.  This is passed to all operations
    *     and must be serializable.
    * @param {function(Error|null, ImageData|null, Object): void} callback Called when work
@@ -257,7 +363,7 @@ export class Processor extends Disposable {
    */
   process(inputs, meta, callback) {
     this.enqueue_({
-      inputs: inputs,
+      inputs: inputs.map(toInput),
       meta: meta,
       callback: callback,
     });
@@ -289,45 +395,28 @@ export class Processor extends Disposable {
       return;
     }
     this.job_ = job;
-    const width = job.inputs[0].width;
-    const height = job.inputs[0].height;
-    const buffers = job.inputs.map(function (input) {
-      return input.data.buffer;
-    });
+    const inputs = job.inputs;
+    const width = inputs[0].width;
+    const height = inputs[0].height;
     const threads = this.workers_.length;
     this.running_ = threads;
-    if (threads === 1) {
-      this.workers_[0].postMessage(
-        {
-          buffers: buffers,
-          meta: job.meta,
-          imageOps: this.imageOps_,
-          width: width,
-          height: height,
-        },
-        buffers,
-      );
-      return;
-    }
 
-    const length = job.inputs[0].data.length;
-    const segmentLength = 4 * Math.ceil(length / 4 / threads);
+    // fields shared by every worker; only `buffers` differs per thread
+    const message = {
+      meta: job.meta,
+      imageOps: this.imageOps_,
+      width: width,
+      height: height,
+      bandCounts: inputs.map((input) => input.bandCount),
+      dtypes: inputs.map((input) => input.data.constructor.name),
+    };
+
+    const segmentPixels = Math.ceil((width * height) / threads);
     for (let i = 0; i < threads; ++i) {
-      const offset = i * segmentLength;
-      const slices = [];
-      for (let j = 0, jj = buffers.length; j < jj; ++j) {
-        slices.push(buffers[j].slice(offset, offset + segmentLength));
-      }
-      this.workers_[i].postMessage(
-        {
-          buffers: slices,
-          meta: job.meta,
-          imageOps: this.imageOps_,
-          width: width,
-          height: height,
-        },
-        slices,
+      const buffers = inputs.map((input) =>
+        sliceInput(input, i * segmentPixels, segmentPixels, threads),
       );
+      this.workers_[i].postMessage(Object.assign({buffers}, message), buffers);
     }
   }
 
@@ -356,16 +445,19 @@ export class Processor extends Disposable {
     if (!job) {
       return;
     }
+    const width = job.inputs[0].width;
+    const height = job.inputs[0].height;
     const threads = this.workers_.length;
     let data, meta;
     if (threads === 1) {
       data = new Uint8ClampedArray(this.dataLookup_[0]['buffer']);
       meta = this.dataLookup_[0]['meta'];
     } else {
-      const length = job.inputs[0].data.length;
-      data = new Uint8ClampedArray(length);
+      // output is RGBA (four bytes per pixel), aligned to the dispatch split
+      const pixelCount = width * height;
+      data = new Uint8ClampedArray(pixelCount * 4);
       meta = new Array(threads);
-      const segmentLength = 4 * Math.ceil(length / 4 / threads);
+      const segmentLength = 4 * Math.ceil(pixelCount / threads);
       for (let i = 0; i < threads; ++i) {
         const buffer = this.dataLookup_[i]['buffer'];
         const offset = i * segmentLength;
@@ -375,11 +467,7 @@ export class Processor extends Disposable {
     }
     this.job_ = null;
     this.dataLookup_ = {};
-    job.callback(
-      null,
-      new ImageData(data, job.inputs[0].width, job.inputs[0].height),
-      meta,
-    );
+    job.callback(null, new ImageData(data, width, height), meta);
     this.dispatch_();
   }
 
@@ -399,8 +487,11 @@ export class Processor extends Disposable {
  * A function that takes an array of input data, performs some operation, and
  * returns an array of output data.
  * For `pixel` type operations, the function will be called with an array of
- * pixels, where each pixel is an array of four numbers (`[r, g, b, a]`) in the
- * range of 0 - 255. It should return a single pixel array.
+ * pixels, one per input source, and should return a single pixel as an array of
+ * four numbers (`[r, g, b, a]`) in the range of 0 - 255.  For sources rendered
+ * as images, each input pixel is an `[r, g, b, a]` array; for data tile sources
+ * (see `sources`), each input pixel is an array of that source's band values in
+ * their native type (e.g. floating point).
  * For `'image'` type operations, functions will be called with an array of
  * [ImageData](https://developer.mozilla.org/en-US/docs/Web/API/ImageData)
  * and should return a single
@@ -489,7 +580,16 @@ export class RasterSourceEvent extends Event {
 /**
  * @typedef {Object} Options
  * @property {Array<import("./Source.js").default|import("../layer/Layer.js").default>} sources Input
- * sources or layers.
+ * sources or layers.  Most sources and layers are rendered to an image and read back as RGBA
+ * pixels.  {@link module:ol/source/DataTile~DataTileSource} inputs (such as
+ * {@link module:ol/source/GeoTIFF~GeoTIFFSource}) are instead sampled at their native tile
+ * resolution, which preserves the data type and precision of the tiles (e.g. `Float32Array`
+ * values are passed to the operation unchanged rather than clamped to bytes), and the operation
+ * receives all of the source's bands per pixel.  These data tile inputs have some limitations:
+ * only `'pixel'` operations are supported (an `'image'` operation still requires image inputs);
+ * resampling to the view resolution uses nearest neighbor regardless of the `interpolate` option;
+ * and the tile data must match the tile grid pixel for pixel, so sources with a gutter are not
+ * supported.
  * @property {Operation} [operation] Raster operation.
  * The operation will be called with data from input sources
  * and the output will be assigned to the raster source.
@@ -598,6 +698,13 @@ class RasterSource extends ImageSource {
     this.tileQueue_ = new TileQueue(function () {
       return 1;
     }, this.processSources_.bind(this));
+
+    /**
+     * Caches of input tiles for data tile sources, keyed by the source uid.
+     * @private
+     * @type {Object<string, import("../structs/LRUCache.js").default<import("../Tile.js").default>>}
+     */
+    this.inputTileCaches_ = {};
 
     /**
      * The most recently requested frame state.
@@ -803,6 +910,121 @@ class RasterSource extends ImageSource {
   }
 
   /**
+   * Get the operation input for one layer.  Data tile sources are sampled at
+   * their native tile resolution to preserve precision; other layers are
+   * rendered and read back as RGBA image data.
+   * @param {number} layerIndex The layer index.
+   * @param {import("./Source.js").default} source The layer's source.
+   * @param {import("../Map.js").FrameState} frameState The frame state.
+   * @return {Input|ImageData|null} The input, or `null` if it is not ready.
+   * @private
+   */
+  getInput_(layerIndex, source, frameState) {
+    if (readsArrayData(source)) {
+      return /** @type {DataTileSource} */ (source).readData(
+        /** @type {import("../extent.js").Extent} */ (frameState.extent),
+        frameState.viewState.resolution,
+        frameState.viewState.projection,
+        frameState.size,
+        frameState.tileQueue,
+        this.getInputTileCache_(source),
+      );
+    }
+    frameState.layerIndex = layerIndex;
+    frameState.renderTargets = {};
+    return getImageData(this.layers_[layerIndex], frameState);
+  }
+
+  /**
+   * Get (creating if needed) the input tile cache for a data tile source.
+   * @param {import("./Source.js").default} source The data tile source.
+   * @return {import("../structs/LRUCache.js").default<import("../Tile.js").default>} The cache.
+   * @private
+   */
+  getInputTileCache_(source) {
+    const sourceUid = getUid(source);
+    let tileCache = this.inputTileCaches_[sourceUid];
+    if (!tileCache) {
+      tileCache = new LRUCache();
+      this.inputTileCaches_[sourceUid] = tileCache;
+    }
+    return tileCache;
+  }
+
+  /**
+   * Get the input source values at a coordinate, as the operation receives them:
+   * one array of values per input source, in source order.  This is the lookup
+   * counterpart of the raster operation, returning the input data rather than
+   * the rendered output (which {@link module:ol/layer/Image~ImageLayer#getData}
+   * returns).  Data tile inputs yield their native band values (in the tiles'
+   * array type); other inputs yield the `[r, g, b, a]` values read back from
+   * their layer renderer.  Only meaningful after the source has rendered at
+   * least once; returns `null` otherwise, or if an input is not yet available.
+   * @param {import("../coordinate.js").Coordinate} coordinate The coordinate, in
+   *     the view projection.
+   * @return {Array<Array<number>|Uint8ClampedArray|Uint8Array|Float32Array>|null}
+   *     The values per input source.
+   * @api
+   */
+  getData(coordinate) {
+    const frameState = this.requestedFrameState_;
+    if (!frameState) {
+      return null;
+    }
+    const pixels = new Array(this.layers_.length);
+    for (let i = 0, ii = this.layers_.length; i < ii; ++i) {
+      const layer = this.layers_[i];
+      const source = layer.getSource();
+      if (source && readsArrayData(source)) {
+        // array data tile inputs are not rendered through a layer renderer, so
+        // sample them directly to preserve the native band values
+        const resolution = frameState.viewState.resolution;
+        const extent = /** @type {import("../extent.js").Extent} */ ([
+          coordinate[0] - resolution / 2,
+          coordinate[1] - resolution / 2,
+          coordinate[0] + resolution / 2,
+          coordinate[1] + resolution / 2,
+        ]);
+        const input = /** @type {DataTileSource} */ (source).readData(
+          extent,
+          resolution,
+          frameState.viewState.projection,
+          /** @type {import("../size.js").Size} */ ([1, 1]),
+          frameState.tileQueue,
+          this.getInputTileCache_(source),
+        );
+        if (!input) {
+          return null;
+        }
+        const pixel = new Array(input.bandCount);
+        for (let b = 0; b < input.bandCount; ++b) {
+          pixel[b] = input.data[b];
+        }
+        pixels[i] = pixel;
+        continue;
+      }
+
+      // other inputs are read back from the layer renderer the raster source has
+      // already rendered.  The frame state uses identity pixel/coordinate
+      // transforms, so passing the coordinate through gives the right pixel.
+      const renderer = layer.getRenderer();
+      const data = renderer?.getData(
+        applyTransform(
+          frameState.coordinateToPixelTransform,
+          /** @type {import("../pixel.js").Pixel} */ (coordinate.slice()),
+        ),
+      );
+      if (!data) {
+        return null;
+      }
+      pixels[i] = /** @type {Uint8ClampedArray|Uint8Array|Float32Array} */ (
+        data
+      );
+    }
+    return pixels;
+  }
+
+  /**
    * Start processing source data.
    * @private
    */
@@ -810,21 +1032,18 @@ class RasterSource extends ImageSource {
     const frameState = this.requestedFrameState_;
     const len = this.layers_.length;
     const sourceRevisions = new Array(len);
-    const imageDatas = new Array(len);
+    const inputs = new Array(len);
     for (let i = 0; i < len; ++i) {
       const source = this.layers_[i].getSource();
       if (!source) {
         return;
       }
       sourceRevisions[i] = source.getRevision();
-      frameState.layerIndex = i;
-      frameState.renderTargets = {};
-      const imageData = getImageData(this.layers_[i], frameState);
-      if (imageData) {
-        imageDatas[i] = imageData;
-      } else {
+      const input = this.getInput_(i, source, frameState);
+      if (!input) {
         return;
       }
+      inputs[i] = input;
     }
 
     const data = {};
@@ -832,7 +1051,7 @@ class RasterSource extends ImageSource {
       new RasterSourceEvent(RasterEventType.BEFOREOPERATIONS, frameState, data),
     );
     this.processor_?.process(
-      imageDatas,
+      inputs,
       data,
       this.onWorkerComplete_.bind(this, frameState, sourceRevisions),
     );
@@ -940,6 +1159,12 @@ class RasterSource extends ImageSource {
     if (this.processor_) {
       this.processor_.dispose();
     }
+    for (const uid in this.inputTileCaches_) {
+      const tileCache = this.inputTileCaches_[uid];
+      tileCache.forEach((tile) => tile.dispose());
+      tileCache.clear();
+      delete this.inputTileCaches_[uid];
+    }
     super.disposeInternal();
   }
 }
@@ -957,6 +1182,20 @@ RasterSource.prototype.dispose;
  * @private
  */
 let sharedContext = undefined;
+
+/**
+ * Determine whether a source's data should be sampled directly as typed arrays
+ * rather than rendered to an image and read back.  This is true for data tile
+ * sources that carry array data (e.g. GeoTIFF, GeoZarr), but not for image tile
+ * sources, whose tiles are images and are handled through the layer renderer.
+ * @param {import("./Source.js").default|null} source The source.
+ * @return {boolean} The source provides typed array data.
+ */
+function readsArrayData(source) {
+  return (
+    source instanceof DataTileSource && !(source instanceof ImageTileSource)
+  );
+}
 
 /**
  * Get image data from a layer.

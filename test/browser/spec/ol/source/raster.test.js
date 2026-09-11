@@ -7,6 +7,7 @@ import Point from '../../../../../src/ol/geom/Point.js';
 import ImageLayer from '../../../../../src/ol/layer/Image.js';
 import VectorImageLayer from '../../../../../src/ol/layer/VectorImage.js';
 import Projection from '../../../../../src/ol/proj/Projection.js';
+import DataTileSource from '../../../../../src/ol/source/DataTile.js';
 import Static from '../../../../../src/ol/source/ImageStatic.js';
 import RasterSource, {Processor} from '../../../../../src/ol/source/Raster.js';
 import Source from '../../../../../src/ol/source/Source.js';
@@ -16,6 +17,7 @@ import XYZ from '../../../../../src/ol/source/XYZ.js';
 import Circle from '../../../../../src/ol/style/Circle.js';
 import Fill from '../../../../../src/ol/style/Fill.js';
 import Style from '../../../../../src/ol/style/Style.js';
+import TileGrid from '../../../../../src/ol/tilegrid/TileGrid.js';
 
 const red =
   'data:image/gif;base64,R0lGODlhAQABAPAAAP8AAP///yH5BAAAAAAALAAAAAA' +
@@ -578,6 +580,104 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function () {
       }));
   });
 });
+
+where('Uint8ClampedArray').describe(
+  'ol.source.Raster - data tile sources',
+  function () {
+    let map, target, raster;
+
+    const projection = new Projection({
+      code: 'raster-image',
+      units: 'pixels',
+      extent: [-1, -1, 1, 1],
+    });
+
+    beforeEach(function () {
+      target = document.createElement('div');
+      const style = target.style;
+      style.position = 'absolute';
+      style.left = '-1000px';
+      style.top = '-1000px';
+      style.width = '2px';
+      style.height = '2px';
+      document.body.appendChild(target);
+    });
+
+    afterEach(function () {
+      if (map) {
+        disposeMap(map);
+      }
+      map = null;
+      if (raster) {
+        raster.dispose();
+      }
+    });
+
+    it('runs a pixel operation on native multi-band tile data', () =>
+      new Promise((resolve) => {
+        // one 2x2 tile covering the whole extent, two Float32 bands per pixel;
+        // pixel order is row-major, bands interleaved
+        const tileGrid = new TileGrid({
+          extent: [-1, -1, 1, 1],
+          origin: [-1, 1],
+          resolutions: [1],
+          tileSize: [2, 2],
+        });
+
+        const dataSource = new DataTileSource({
+          projection: projection,
+          tileGrid: tileGrid,
+          bandCount: 2,
+          loader: () =>
+            new Float32Array([
+              // (col 0, row 0)   (col 1, row 0)
+              10, 20, 30, 40,
+              // (col 0, row 1)   (col 1, row 1)
+              50, 60, 70, 80,
+            ]),
+        });
+
+        raster = new RasterSource({
+          threads: 0,
+          sources: [dataSource],
+          operation: function (pixels) {
+            const [a, b] = pixels[0];
+            return [a, b, 0, 255];
+          },
+        });
+
+        raster.once('afteroperations', function () {
+          const image = raster.renderedImageCanvas_.getImage();
+          const context = image.getContext('2d');
+          // top-left rendered pixel carries the first tile pixel's two bands
+          assert.deepEqual(
+            Array.from(context.getImageData(0, 0, 1, 1).data),
+            [10, 20, 0, 255],
+          );
+          // bottom-right rendered pixel carries the last tile pixel's two bands
+          assert.deepEqual(
+            Array.from(context.getImageData(1, 1, 1, 1).data),
+            [70, 80, 0, 255],
+          );
+          // getData returns the input bands at a coordinate, one array per source
+          assert.deepEqual(raster.getData([-0.5, 0.5]), [[10, 20]]);
+          assert.deepEqual(raster.getData([0.5, -0.5]), [[70, 80]]);
+          resolve();
+        });
+
+        map = new Map({
+          target: target,
+          view: new View({
+            projection: projection,
+            resolutions: [1],
+            center: [0, 0],
+            resolution: 1,
+          }),
+          layers: [new ImageLayer({source: raster})],
+        });
+      }));
+  },
+);
 
 where('Uint8ClampedArray').describe('Processor', function () {
   const identity = function (inputs) {
