@@ -1,7 +1,10 @@
 /**
  * @module ol/renderer/webgl/VectorTileLayer
  */
+import {assert} from '../../asserts.js';
 import EventType from '../../events/EventType.js';
+import {colorDecodeId} from '../../render/webgl/encodeUtil.js';
+import {createHitDetectionRefs} from '../../render/webgl/MixedGeometryBatch.js';
 import {ShaderBuilder} from '../../render/webgl/ShaderBuilder.js';
 import {
   createPostProcessDefinition,
@@ -13,6 +16,7 @@ import VectorStyleRenderer, {
   toFlatStyleLike,
 } from '../../render/webgl/VectorStyleRenderer.js';
 import {
+  apply as applyTransform,
   create as createTransform,
   makeInverse as makeInverseTransform,
   multiply as multiplyTransform,
@@ -65,6 +69,15 @@ export const Attributes = {
  */
 
 /**
+ * Everything needed to render a tile again in the hit detection pass
+ * @typedef {Object} HitDetectionTile
+ * @property {import("../../render/webgl/VectorStyleRenderer.js").WebGLBuffers} buffers Tile buffers
+ * @property {import("../../extent.js").Extent} tileExtent Tile extent
+ * @property {number} tileZ Tile zoom level
+ * @property {number} depth Depth
+ */
+
+/**
  * @classdesc
  * WebGL renderer for vector tile layers. Experimental.
  * @extends {WebGLBaseTileLayerRenderer<any, import("../../VectorRenderTile.js").default, import("../../webgl/TileGeometry.js").default>}
@@ -90,6 +103,26 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
      * @private
      */
     this.hitDetectionEnabled_ = !options.disableHitDetection;
+
+    /**
+     * Pool of hit detection refs shared by all tiles of the layer
+     * @type {import("../../render/webgl/MixedGeometryBatch.js").HitDetectionRefs}
+     * @private
+     */
+    this.hitDetectionRefs_ = createHitDetectionRefs();
+
+    /**
+     * @type {WebGLRenderTarget|null}
+     * @private
+     */
+    this.hitRenderTarget_ = null;
+
+    /**
+     * Tiles rendered in the current frame, to be rendered again in the hit detection pass
+     * @type {Array<HitDetectionTile>}
+     * @private
+     */
+    this.hitDetectionTiles_ = [];
 
     /**
      * @type {LayerStyle|null}
@@ -274,6 +307,9 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
   afterHelperCreated() {
     this.createRenderers_();
     this.initTileMask_();
+    if (this.hitDetectionEnabled_) {
+      this.hitRenderTarget_ = new WebGLRenderTarget(this.helper);
+    }
   }
 
   /**
@@ -286,6 +322,7 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
       /** @type {import("../../render/webgl/VectorStyleRenderer.js").default} */ (
         this.styleRenderer_
       ),
+      this.hitDetectionRefs_,
     );
     // redraw the layer when the tile is ready
     const listener = () => {
@@ -312,6 +349,8 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     if (layerChanged) {
       this.skipNextTextRender_ = false;
     }
+
+    this.hitDetectionTiles_.length = 0;
 
     this.helper.makeProjectionTransform(
       frameState,
@@ -352,6 +391,9 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
    */
   beforeFinalize(frameState) {
     const styleRenderer = this.styleRenderer_;
+    if (this.hitDetectionEnabled_ && styleRenderer) {
+      this.renderHitDetection_(frameState, styleRenderer);
+    }
     if (this.hasText_ && styleRenderer) {
       styleRenderer.finalizeTextRender(frameState).then(() => {
         if (this.skipNextTextRender_) {
@@ -489,7 +531,101 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
         depth,
         frameState,
       );
+      this.helper.applyHitDetectionUniform(false);
     });
+    if (this.hitDetectionEnabled_) {
+      this.hitDetectionTiles_.push({buffers, tileExtent, tileZ, depth});
+    }
+  }
+
+  /**
+   * Render all the tiles drawn in the current frame again into the hit detection
+   * render target, using hit detection colors instead of the actual style.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @param {VectorStyleRenderer} styleRenderer Style renderer.
+   * @private
+   */
+  renderHitDetection_(frameState, styleRenderer) {
+    const hitRenderTarget = this.hitRenderTarget_;
+    const tiles = this.hitDetectionTiles_;
+    if (!hitRenderTarget) {
+      tiles.length = 0;
+      return;
+    }
+    hitRenderTarget.setSize([
+      Math.floor(frameState.size[0] / 2),
+      Math.floor(frameState.size[1] / 2),
+    ]);
+    // depth testing is needed so that tiles from different zoom levels do not overwrite each other
+    this.helper.prepareDrawToRenderTarget(
+      frameState,
+      hitRenderTarget,
+      true,
+      true,
+    );
+    for (let i = 0, ii = tiles.length; i < ii; ++i) {
+      const tile = tiles[i];
+      styleRenderer.render(tile.buffers, frameState, () => {
+        this.applyUniforms_(
+          1,
+          tile.tileExtent,
+          tile.buffers.invertVerticesTransform,
+          tile.tileZ,
+          tile.depth,
+          frameState,
+        );
+        this.helper.applyHitDetectionUniform(true);
+      });
+    }
+    hitRenderTarget.clearCachedData();
+    tiles.length = 0;
+  }
+
+  /**
+   * @param {import("../../coordinate.js").Coordinate} coordinate Coordinate.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @param {number} hitTolerance Hit tolerance in pixels.
+   * @param {import("../vector.js").FeatureCallback<T>} callback Feature callback.
+   * @param {Array<import("../Map.js").HitMatch<T>>} matches The hit detected matches with tolerance.
+   * @return {T|undefined} Callback result.
+   * @template T
+   * @override
+   */
+  forEachFeatureAtCoordinate(
+    coordinate,
+    frameState,
+    hitTolerance,
+    callback,
+    matches,
+  ) {
+    assert(
+      this.hitDetectionEnabled_,
+      '`forEachFeatureAtCoordinate` cannot be used on a WebGL layer if the hit detection logic has been disabled using the `disableHitDetection: true` option.',
+    );
+    const hitRenderTarget = this.hitRenderTarget_;
+    if (!this.styleRenderer_ || !hitRenderTarget) {
+      return undefined;
+    }
+
+    const pixel = applyTransform(
+      frameState.coordinateToPixelTransform,
+      coordinate.slice(),
+    );
+
+    const data = hitRenderTarget.readPixel(pixel[0] / 2, pixel[1] / 2);
+    const color = [data[0] / 255, data[1] / 255, data[2] / 255, data[3] / 255];
+    const ref = colorDecodeId(color);
+    const feature = this.hitDetectionRefs_.refToFeature.get(ref);
+    if (feature) {
+      return callback(
+        feature,
+        this.getLayer(),
+        /** @type {import("../../geom/SimpleGeometry.js").default} */ (
+          /** @type {unknown} */ (null)
+        ),
+      );
+    }
+    return undefined;
   }
 
   /**
