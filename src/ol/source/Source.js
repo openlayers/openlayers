@@ -84,7 +84,7 @@ class Source extends BaseObject {
      * Rotation can be requested from the source.
      * @type {boolean}
      */
-    this.rotates = false;
+    this.canRotate = false;
 
     /**
      * @private

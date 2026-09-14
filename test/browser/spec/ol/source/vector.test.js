@@ -29,7 +29,7 @@ describe('ol/source/Vector', function () {
 
   describe('constructor', function () {
     it('declares that rotation can be requested', function () {
-      assert.isTrue(new VectorSource().rotates);
+      assert.isTrue(new VectorSource().canRotate);
     });
   });
 

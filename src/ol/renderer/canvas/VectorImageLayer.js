@@ -29,6 +29,12 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
     );
 
     /**
+     * @protected
+     * @type {boolean}
+     */
+    this.wantRotation = true;
+
+    /**
      * @private
      * @type {import("./VectorLayer.js").default}
      */
@@ -36,6 +42,7 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
       /** @type {import("../../layer/Vector.js").default} */ (
         /** @type {unknown} */ (layer)
       ),
+      {wantRotation: true},
     );
 
     /**

@@ -114,7 +114,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
         if (image) {
           if (this.loadImage(image)) {
             this.image = image;
-            this.renderedRotation = imageSource.rotates
+            this.renderedRotation = this.sourceRotates()
               ? viewState.rotation
               : 0;
           } else if (image.getState() === ImageState.EMPTY) {
@@ -211,7 +211,7 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
     const imagePixelRatio = image.getPixelRatio();
     const imageRotation = this.renderedRotation;
     const imageSource = this.getLayer().getSource();
-    const sourceRotates = !!imageSource?.rotates;
+    const sourceRotates = this.sourceRotates();
     const layerState = frameState.layerStatesArray[frameState.layerIndex];
     const pixelRatio = frameState.pixelRatio;
     const viewState = frameState.viewState;

@@ -192,7 +192,7 @@ class VectorSource extends Source {
     });
 
     // Vector data can be rendered at any rotation.
-    this.rotates = true;
+    this.canRotate = true;
 
     /***
      * @type {VectorSourceOnSignature<import("../events.js").EventsKey, FeatureType>}
