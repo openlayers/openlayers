@@ -73,10 +73,6 @@ class CanvasImageLayerRenderer extends CanvasLayerRenderer {
     const viewResolution = viewState.resolution;
 
     const imageSource = this.getLayer().getSource();
-    if (!imageSource?.rotates && this.renderedRotation !== 0) {
-      // The held image was produced rotated; the unrotated draw path cannot use it.
-      this.image = null;
-    }
 
     const hints = frameState.viewHints;
 
