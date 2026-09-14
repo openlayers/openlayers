@@ -1336,6 +1336,14 @@ describe('ol/tilegrid/TileGrid.js', function () {
       assert.strictEqual(range.maxY, 0);
     });
 
+    it('can be used to get the range of the same level', function () {
+      const range = tileGrid.getTileRangeForTileCoordAndZ([3, 4, 5], 3);
+      assert.strictEqual(range.minX, 4);
+      assert.strictEqual(range.maxX, 4);
+      assert.strictEqual(range.minY, 5);
+      assert.strictEqual(range.maxY, 5);
+    });
+
     const tileCoord = [15, 6239, 11751];
     tileGrid.forEachTileCoordParentTileRange(
       tileCoord,

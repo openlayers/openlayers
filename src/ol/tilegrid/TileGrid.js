@@ -410,8 +410,8 @@ class TileGrid {
     if (z === tileCoordZ) {
       return createOrUpdateTileRange(
         tileCoordX,
-        tileCoordY,
         tileCoordX,
+        tileCoordY,
         tileCoordY,
         tempTileRange,
       );
