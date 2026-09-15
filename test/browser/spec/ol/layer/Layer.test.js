@@ -217,7 +217,7 @@ describe('ol/layer/Layer', function () {
           resolution: 2,
           zoom: 2,
         },
-        inView: false,
+        inView: true,
       },
       {
         when: 'view zoom is equal to minZoom (with maxZoom)',
@@ -227,7 +227,7 @@ describe('ol/layer/Layer', function () {
           resolution: 2,
           zoom: 2,
         },
-        inView: false,
+        inView: true,
       },
       {
         when: 'view zoom is greater than minZoom',
@@ -255,7 +255,7 @@ describe('ol/layer/Layer', function () {
           resolution: 4,
           zoom: 4,
         },
-        inView: true,
+        inView: false,
       },
       {
         when: 'view zoom is equal to maxZoom (with minZoom)',
@@ -265,7 +265,7 @@ describe('ol/layer/Layer', function () {
           resolution: 4,
           zoom: 4,
         },
-        inView: true,
+        inView: false,
       },
       {
         when: 'view zoom is greater than maxZoom',
