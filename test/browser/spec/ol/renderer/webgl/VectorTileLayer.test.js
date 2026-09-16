@@ -108,7 +108,7 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
               [],
               2,
               {
-                'color': 'red',
+                color: 'red',
               },
               2,
             ),
@@ -452,41 +452,41 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
     it('sets the size of the tile mask target according to frame state', () => {
       assert.deepEqual(renderer.tileMaskTarget_.getSize(), [400, 200]);
     });
-    it('sets TILE_ZOOM_LEVEL uniform three times for each tile and style renderer, plus two times for tile masks', () => {
+    it('sets TILE_ZOOM_LEVEL uniform three times for each tile and style renderer (main and hit detection passes), plus two times for tile masks', () => {
       const calls = renderer.helper.setUniformFloatValue.mock.calls.filter(
         (args) => args[0] === Uniforms.TILE_ZOOM_LEVEL,
       );
-      assert.strictEqual(calls.length, 14);
+      assert.strictEqual(calls.length, 26);
       assertArrayLikeEqual(calls[0], [Uniforms.TILE_ZOOM_LEVEL, 2]);
       assertArrayLikeEqual(calls[1], [Uniforms.TILE_ZOOM_LEVEL, 2]);
       assertArrayLikeEqual(calls[2], [Uniforms.TILE_ZOOM_LEVEL, 2]);
       assertArrayLikeEqual(calls[8], [Uniforms.TILE_ZOOM_LEVEL, 2]);
     });
-    it('sets GLOBAL_ALPHA uniform three times for each tile and style renderer, plus two times for tile masks', () => {
+    it('sets GLOBAL_ALPHA uniform three times for each tile and style renderer (main and hit detection passes), plus two times for tile masks', () => {
       const calls = renderer.helper.setUniformFloatValue.mock.calls.filter(
         (args) => args[0] === Uniforms.GLOBAL_ALPHA,
       );
-      assert.strictEqual(calls.length, 14);
+      assert.strictEqual(calls.length, 26);
       assertArrayLikeEqual(calls[0], [Uniforms.GLOBAL_ALPHA, 1]);
       assertArrayLikeEqual(calls[1], [Uniforms.GLOBAL_ALPHA, 1]);
       assertArrayLikeEqual(calls[2], [Uniforms.GLOBAL_ALPHA, 1]);
       assertArrayLikeEqual(calls[8], [Uniforms.GLOBAL_ALPHA, 1]);
     });
-    it('sets RENDER_EXTENT uniform three times for each tile and style renderer, plus two times for tile masks', () => {
+    it('sets RENDER_EXTENT uniform three times for each tile and style renderer (main and hit detection passes), plus two times for tile masks', () => {
       const calls = renderer.helper.setUniformFloatVec4.mock.calls.filter(
         (args) => args[0] === Uniforms.RENDER_EXTENT,
       );
-      assert.strictEqual(calls.length, 14);
+      assert.strictEqual(calls.length, 26);
       assertArrayLikeEqual(calls[0], [Uniforms.RENDER_EXTENT, [0, 0, 64, 64]]);
       assertArrayLikeEqual(calls[1], [Uniforms.RENDER_EXTENT, [0, 0, 64, 64]]);
       assertArrayLikeEqual(calls[2], [Uniforms.RENDER_EXTENT, [0, 0, 64, 64]]);
       assertArrayLikeEqual(calls[8], [Uniforms.RENDER_EXTENT, [0, 0, 64, 64]]);
     });
-    it('sets PROJECTION matrix uniform three times for each tile and style renderer, plus one time per tiles for their mask', () => {
+    it('sets PROJECTION matrix uniform three times for each tile and style renderer (main and hit detection passes), plus one time per tiles for their mask', () => {
       const calls = renderer.helper.setUniformMatrixValue.mock.calls.filter(
         (args) => args[0] === Uniforms.PROJECTION_MATRIX,
       );
-      assert.strictEqual(calls.length, 14);
+      assert.strictEqual(calls.length, 26);
       assertArrayLikeEqual(calls[0], [
         Uniforms.PROJECTION_MATRIX,
         // 0.04   0     0     0      combination of:
@@ -512,11 +512,11 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
         [0.04, 0, 0, 0, 0, 0.08, 0, 0, 0, 0, 1, 0, 0, -1.28, 0, 1],
       ]);
     });
-    it('sets INVERT_PROJECTION_MATRIX matrix uniform three times for each tile and style renderer, plus one time per tiles for their mask', () => {
+    it('sets INVERT_PROJECTION_MATRIX matrix uniform three times for each tile and style renderer (main and hit detection passes), plus one time per tiles for their mask', () => {
       const calls = renderer.helper.setUniformMatrixValue.mock.calls.filter(
         (args) => args[0] === Uniforms.INVERT_PROJECTION_MATRIX,
       );
-      assert.strictEqual(calls.length, 14);
+      assert.strictEqual(calls.length, 26);
       assertArrayLikeEqual(calls[0], [
         Uniforms.INVERT_PROJECTION_MATRIX,
         // 25     0     0     0      combination of:
@@ -534,23 +534,223 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
         [25, 0, 0, 0, 0, 12.5, 0, 0, 0, 0, 1, 0, 0, 16, 0, 1],
       ]);
     });
-    it('bind TILE_MASK_TEXTURE uniform three times for each tile and style renderer, plus one time before rendering tile masks', () => {
+    it('bind TILE_MASK_TEXTURE uniform three times for each tile and style renderer (main and hit detection passes), plus one time before rendering tile masks', () => {
       const calls = renderer.helper.bindTexture.mock.calls;
-      assert.strictEqual(calls.length, 13);
+      assert.strictEqual(calls.length, 25);
       assertArrayLikeEqual(calls[0], [
         renderer.tileMaskTarget_.getTexture(),
         0,
         Uniforms.TILE_MASK_TEXTURE,
       ]);
     });
-    it('calls render for each tile on each renderer', () => {
-      assert.strictEqual(renderer.styleRenderer_.render.mock.calls.length, 2);
+    it('calls render for each tile on each renderer, for the main and the hit detection passes', () => {
+      assert.strictEqual(renderer.styleRenderer_.render.mock.calls.length, 4);
     });
     it('does not call styleRenderer.finalizeTextRender (no text style)', () => {
       assert.strictEqual(
         renderer.styleRenderer_.finalizeTextRender.mock.calls.length,
         0,
       );
+    });
+  });
+  describe('hit detection', () => {
+    describe('#afterHelperCreated', () => {
+      it('creates a hit detection render target', () => {
+        renderer.prepareFrame(frameState);
+        assert.instanceOf(renderer.hitRenderTarget_, WebGLRenderTarget);
+      });
+      it('does not create a hit detection render target if hit detection is disabled', () => {
+        renderer.dispose();
+        renderer = new WebGLVectorTileLayerRenderer(vectorTileLayer, {
+          style: SAMPLE_RULES,
+          disableHitDetection: true,
+        });
+        renderer.prepareFrame(frameState);
+        assert.isNull(renderer.hitRenderTarget_);
+      });
+    });
+
+    describe('#createTileRepresentation', () => {
+      it('shares the hit detection refs pool with all tiles', () => {
+        renderer.prepareFrame(frameState);
+        const tileRep1 = renderer.createTileRepresentation({
+          tile: new VectorRenderTile(
+            [0, 0, 0],
+            TileState.IDLE,
+            [0, 0, 0],
+            () => [],
+            () => {},
+          ),
+          grid: vectorTileLayer.getSource().getTileGrid(),
+          helper: renderer.helper,
+          gutter: 0,
+        });
+        const tileRep2 = renderer.createTileRepresentation({
+          tile: new VectorRenderTile(
+            [0, 1, 0],
+            TileState.IDLE,
+            [0, 1, 0],
+            () => [],
+            () => {},
+          ),
+          grid: vectorTileLayer.getSource().getTileGrid(),
+          helper: renderer.helper,
+          gutter: 0,
+        });
+        assert.strictEqual(tileRep1.batch_.refs_, renderer.hitDetectionRefs_);
+        assert.strictEqual(tileRep2.batch_.refs_, renderer.hitDetectionRefs_);
+      });
+    });
+
+    describe('#renderFrame', () => {
+      beforeEach(async () => {
+        renderer.prepareFrame(frameState);
+        renderer.renderFrame(frameState);
+        frameState.tileQueue.loadMoreTiles(Infinity, Infinity);
+        await vi.waitFor(() => {
+          let ready = 0;
+          renderer.tileRepresentationCache.forEach((rep) => {
+            if (rep.ready) {
+              ready++;
+            }
+          });
+          assert.strictEqual(ready, 2);
+        });
+        vi.spyOn(renderer.helper, 'prepareDrawToRenderTarget');
+        vi.spyOn(renderer.helper, 'applyHitDetectionUniform');
+        vi.spyOn(renderer.hitRenderTarget_, 'clearCachedData');
+        renderer.renderFrame(frameState);
+      });
+      it('assigns unique hit detection refs to the features of all tiles', () => {
+        const refToFeature = renderer.hitDetectionRefs_.refToFeature;
+        // 3 features per tile, 2 tiles
+        assert.strictEqual(refToFeature.size, 6);
+        assert.deepEqual(
+          [...refToFeature.keys()].sort((a, b) => a - b),
+          [1, 2, 3, 4, 5, 6],
+        );
+        assert.strictEqual(new Set(refToFeature.values()).size, 6);
+      });
+      it('renders to the hit detection render target with depth enabled and the hit detection uniform on', () => {
+        const calls =
+          renderer.helper.prepareDrawToRenderTarget.mock.calls.filter(
+            (args) => args[1] === renderer.hitRenderTarget_,
+          );
+        assert.lengthOf(calls, 1);
+        assert.isTrue(calls[0][3]);
+        // 2 tiles * 2 style shaders * 3 render passes
+        const uniformCalls =
+          renderer.helper.applyHitDetectionUniform.mock.calls.filter(
+            (args) => args[0] === true,
+          );
+        assert.lengthOf(uniformCalls, 12);
+      });
+      it('sizes the hit detection render target to half the frame state size', () => {
+        assert.deepEqual(renderer.hitRenderTarget_.getSize(), [100, 50]);
+      });
+      it('invalidates the cached hit detection data and clears the list of tiles', () => {
+        assert.strictEqual(
+          renderer.hitRenderTarget_.clearCachedData.mock.calls.length,
+          1,
+        );
+        assert.lengthOf(renderer.hitDetectionTiles_, 0);
+      });
+    });
+
+    describe('#forEachFeatureAtCoordinate', () => {
+      beforeEach(async () => {
+        renderer.prepareFrame(frameState);
+        renderer.renderFrame(frameState);
+        frameState.tileQueue.loadMoreTiles(Infinity, Infinity);
+        await vi.waitFor(() => {
+          let ready = 0;
+          renderer.tileRepresentationCache.forEach((rep) => {
+            if (rep.ready) {
+              ready++;
+            }
+          });
+          assert.strictEqual(ready, 2);
+        });
+        renderer.renderFrame(frameState);
+        frameState.coordinateToPixelTransform = create();
+      });
+      it('throws if hit detection is disabled', () => {
+        renderer.dispose();
+        renderer = new WebGLVectorTileLayerRenderer(vectorTileLayer, {
+          style: SAMPLE_RULES,
+          disableHitDetection: true,
+        });
+        assert.throws(() => {
+          renderer.forEachFeatureAtCoordinate(
+            [0, 0],
+            frameState,
+            0,
+            () => {},
+            [],
+          );
+        });
+      });
+      it('resolves the feature from the color read in the hit detection render target', () => {
+        const ref = 5;
+        const expected = renderer.hitDetectionRefs_.refToFeature.get(ref);
+        assert.instanceOf(expected, RenderFeature);
+        vi.spyOn(renderer.hitRenderTarget_, 'readPixel').mockReturnValue(
+          new Uint8Array([0, 0, 0, ref]),
+        );
+        const callback = vi.fn(() => 'result');
+        const result = renderer.forEachFeatureAtCoordinate(
+          [10, 20],
+          frameState,
+          0,
+          callback,
+          [],
+        );
+        assert.strictEqual(result, 'result');
+        assert.strictEqual(callback.mock.calls.length, 1);
+        assert.strictEqual(callback.mock.calls[0][0], expected);
+        assert.strictEqual(callback.mock.calls[0][1], vectorTileLayer);
+        // pixel coordinates are halved to match the hit detection render target size
+        assert.deepEqual(
+          renderer.hitRenderTarget_.readPixel.mock.calls[0],
+          [5, 10],
+        );
+      });
+      it('does not call the callback if no feature was hit', () => {
+        vi.spyOn(renderer.hitRenderTarget_, 'readPixel').mockReturnValue(
+          new Uint8Array([0, 0, 0, 0]),
+        );
+        const callback = vi.fn();
+        const result = renderer.forEachFeatureAtCoordinate(
+          [10, 20],
+          frameState,
+          0,
+          callback,
+          [],
+        );
+        assert.isUndefined(result);
+        assert.strictEqual(callback.mock.calls.length, 0);
+      });
+    });
+
+    describe('tile disposal', () => {
+      it('releases the hit detection refs of disposed tiles', async () => {
+        renderer.prepareFrame(frameState);
+        renderer.renderFrame(frameState);
+        frameState.tileQueue.loadMoreTiles(Infinity, Infinity);
+        await vi.waitFor(() => {
+          let ready = 0;
+          renderer.tileRepresentationCache.forEach((rep) => {
+            if (rep.ready) {
+              ready++;
+            }
+          });
+          assert.strictEqual(ready, 2);
+        });
+        assert.strictEqual(renderer.hitDetectionRefs_.refToFeature.size, 6);
+        renderer.clearCache();
+        assert.strictEqual(renderer.hitDetectionRefs_.refToFeature.size, 0);
+        assert.lengthOf(renderer.hitDetectionRefs_.free, 6);
+      });
     });
   });
 });
