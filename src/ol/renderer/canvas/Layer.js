@@ -55,6 +55,13 @@ class CanvasLayerRenderer extends LayerRenderer {
     super(layer);
 
     /**
+     * If possible, request viewport rotated content from the source.
+     * @protected
+     * @type {boolean}
+     */
+    this.wantRotation = false;
+
+    /**
      * HTMLElement container for the layer to be rendered in.
      * @protected
      * @type {HTMLElement|null}
@@ -295,10 +302,15 @@ class CanvasLayerRenderer extends LayerRenderer {
       frameState.extent
     );
     const resolution = frameState.viewState.resolution;
-    const rotation = frameState.viewState.rotation;
+    const sourceRotates = this.sourceRotates();
+    const rotation = sourceRotates ? 0 : frameState.viewState.rotation;
     const pixelRatio = frameState.pixelRatio;
-    const width = Math.round((getWidth(extent) / resolution) * pixelRatio);
-    const height = Math.round((getHeight(extent) / resolution) * pixelRatio);
+    const width = sourceRotates
+      ? Math.round(frameState.size[0] * pixelRatio)
+      : Math.round((getWidth(extent) / resolution) * pixelRatio);
+    const height = sourceRotates
+      ? Math.round(frameState.size[1] * pixelRatio)
+      : Math.round((getHeight(extent) / resolution) * pixelRatio);
     // set forward and inverse pixel transforms
     composeTransform(
       this.pixelTransform,
@@ -496,6 +508,14 @@ class CanvasLayerRenderer extends LayerRenderer {
       dx2,
       dy2,
     );
+  }
+
+  /**
+   * @protected
+   * @return {boolean} Request rotation from the source.
+   */
+  sourceRotates() {
+    return this.wantRotation && !!this.getLayer().getSource()?.canRotate;
   }
 
   /**

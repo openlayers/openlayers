@@ -9,7 +9,6 @@ import {
   buffer,
   containsExtent,
   createEmpty,
-  getHeight,
   getWidth,
   intersects as intersectsExtent,
   isEmpty,
@@ -44,6 +43,11 @@ import {
 import CanvasLayerRenderer, {canvasPool} from './Layer.js';
 
 /**
+ * @typedef {Object} VectorLayerRendererOptions
+ * @property {boolean} [wantRotation] If possible, request viewport rotated content from the source.
+ */
+
+/**
  * @classdesc
  * Canvas renderer for vector layers.
  * @api
@@ -52,8 +56,9 @@ import CanvasLayerRenderer, {canvasPool} from './Layer.js';
 class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
   /**
    * @param {import("../../layer/Vector.js").default} vectorLayer Vector layer.
+   * @param {VectorLayerRendererOptions} [options] Options.
    */
-  constructor(vectorLayer) {
+  constructor(vectorLayer, options) {
     super(vectorLayer);
 
     /** @private */
@@ -180,6 +185,10 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
      * @type {number}
      */
     this.opacity_ = 1;
+
+    if (options?.wantRotation !== undefined) {
+      this.wantRotation = options.wantRotation;
+    }
   }
 
   /**
@@ -207,16 +216,8 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       /** @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} */ (
         this.context
       );
-    const width = Math.round(
-      (getWidth(/** @type {import("../../extent.js").Extent} */ (extent)) /
-        resolution) *
-        pixelRatio,
-    );
-    const height = Math.round(
-      (getHeight(/** @type {import("../../extent.js").Extent} */ (extent)) /
-        resolution) *
-        pixelRatio,
-    );
+    const width = context.canvas.width;
+    const height = context.canvas.height;
 
     const multiWorld =
       /** @type {NonNullable<ReturnType<import("../../layer/Vector.js").default["getSource"]>>} */ (
@@ -240,7 +241,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       let transform = this.getRenderTransform(
         center,
         resolution,
-        0,
+        this.sourceRotates() ? rotation : 0,
         pixelRatio,
         width,
         height,

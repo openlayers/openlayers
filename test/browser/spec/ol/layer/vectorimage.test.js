@@ -53,4 +53,53 @@ describe('ol/layer/VectorImage', function () {
         });
       }));
   });
+
+  describe('#getFeatures() on a rotated view', function () {
+    let map, layer;
+
+    beforeEach(function () {
+      layer = new VectorImageLayer({
+        source: new VectorSource({
+          features: [
+            new Feature({
+              geometry: new Point([-1000000, 0]),
+              name: 'feature1',
+            }),
+            new Feature({
+              geometry: new Point([1000000, 0]),
+              name: 'feature2',
+            }),
+          ],
+        }),
+      });
+      const container = document.createElement('div');
+      container.style.width = '256px';
+      container.style.height = '256px';
+      document.body.appendChild(container);
+      map = new Map({
+        target: container,
+        layers: [layer],
+        view: new View({
+          zoom: 2,
+          center: [0, 0],
+          rotation: Math.PI / 5,
+        }),
+      });
+    });
+
+    afterEach(function () {
+      disposeMap(map);
+    });
+
+    it('detects features properly', () =>
+      new Promise((resolve) => {
+        map.renderSync();
+        const pixel = map.getPixelFromCoordinate([-1000000, 0]);
+        layer.getFeatures(pixel).then(function (features) {
+          assert.strictEqual(features.length, 1);
+          assert.strictEqual(features[0].get('name'), 'feature1');
+          resolve();
+        });
+      }));
+  });
 });
