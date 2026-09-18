@@ -32,6 +32,7 @@ export default {
   FOCUS: 'focus',
   KEYDOWN: 'keydown',
   KEYPRESS: 'keypress',
+  KEYUP: 'keyup',
   LOAD: 'load',
   RESIZE: 'resize',
   TOUCHMOVE: 'touchmove',

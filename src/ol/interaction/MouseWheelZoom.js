@@ -1,8 +1,6 @@
 /**
  * @module ol/interaction/MouseWheelZoom
  */
-import MapProperty from '../MapProperty.js';
-import {listen, unlistenByKey} from '../events.js';
 import EventType from '../events/EventType.js';
 import {all, always, focusWithTabindex} from '../events/condition.js';
 import {clamp} from '../math.js';
@@ -172,84 +170,6 @@ class MouseWheelZoom extends Interaction {
      * @type {boolean}
      */
     this.ctrlKeyPressed_ = false;
-
-    /**
-     * @private
-     * @type {Array<import('../events.js').EventsKey>}
-     */
-    this.ctrlKeyListenerKeys_ = [];
-
-    /**
-     * @private
-     * @type {() => void}
-     */
-    this.boundHandleMapTargetChange_ = this.handleMapTargetChange_.bind(this);
-  }
-
-  /**
-   * @private
-   */
-  handleMapTargetChange_() {
-    for (const key of this.ctrlKeyListenerKeys_) {
-      unlistenByKey(key);
-    }
-    this.ctrlKeyListenerKeys_.length = 0;
-    this.ctrlKeyPressed_ = false;
-
-    const map = this.getMap();
-    if (!map || !map.getTargetElement()) {
-      return;
-    }
-
-    const doc = map.getOwnerDocument();
-    this.ctrlKeyListenerKeys_.push(
-      listen(
-        doc,
-        'keydown',
-        /** @type {import("../events.js").ListenerFunction} */ (
-          (/** @type {KeyboardEvent} */ e) => {
-            if (e.key === 'Control') {
-              this.ctrlKeyPressed_ = true;
-            }
-          }
-        ),
-      ),
-      listen(
-        doc,
-        'keyup',
-        /** @type {import("../events.js").ListenerFunction} */ (
-          (/** @type {KeyboardEvent} */ e) => {
-            if (e.key === 'Control') {
-              this.ctrlKeyPressed_ = false;
-            }
-          }
-        ),
-      ),
-    );
-  }
-
-  /**
-   * @param {import('../Map.js').default|null} map Map.
-   * @override
-   */
-  setMap(map) {
-    const oldMap = this.getMap();
-    if (oldMap) {
-      oldMap.removeChangeListener(
-        MapProperty.TARGET,
-        this.boundHandleMapTargetChange_,
-      );
-    }
-
-    super.setMap(map);
-    this.handleMapTargetChange_();
-
-    if (map) {
-      map.addChangeListener(
-        MapProperty.TARGET,
-        this.boundHandleMapTargetChange_,
-      );
-    }
   }
 
   /**
@@ -286,6 +206,15 @@ class MouseWheelZoom extends Interaction {
       return true;
     }
     const type = mapBrowserEvent.type;
+    if (type === EventType.KEYDOWN || type === EventType.KEYUP) {
+      const keyEvent = /** @type {KeyboardEvent} */ (
+        mapBrowserEvent.originalEvent
+      );
+      if (keyEvent.key === 'Control') {
+        this.ctrlKeyPressed_ = type === EventType.KEYDOWN;
+      }
+      return true;
+    }
     if (type !== EventType.WHEEL) {
       return true;
     }

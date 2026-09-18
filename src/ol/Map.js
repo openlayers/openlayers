@@ -1249,7 +1249,8 @@ class Map extends BaseObject {
     if (
       eventType === PointerEventType.POINTERDOWN ||
       eventType === EventType.WHEEL ||
-      eventType === EventType.KEYDOWN
+      eventType === EventType.KEYDOWN ||
+      eventType === EventType.KEYUP
     ) {
       const doc = this.getOwnerDocument();
       const rootNode = /** @type {!HTMLElement} */ (this.viewport_).getRootNode
@@ -1489,6 +1490,14 @@ class Map extends BaseObject {
           listen(
             keyboardEventTarget,
             EventType.KEYDOWN,
+            /** @type {import("./events.js").ListenerFunction} */ (
+              this.handleBrowserEvent
+            ),
+            this,
+          ),
+          listen(
+            keyboardEventTarget,
+            EventType.KEYUP,
             /** @type {import("./events.js").ListenerFunction} */ (
               this.handleBrowserEvent
             ),
