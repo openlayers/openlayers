@@ -201,16 +201,28 @@ class MouseWheelZoom extends Interaction {
 
     const doc = map.getOwnerDocument();
     this.ctrlKeyListenerKeys_.push(
-      listen(doc, 'keydown', (e) => {
-        if (e.key === 'Control') {
-          this.ctrlKeyPressed_ = true;
-        }
-      }),
-      listen(doc, 'keyup', (e) => {
-        if (e.key === 'Control') {
-          this.ctrlKeyPressed_ = false;
-        }
-      }),
+      listen(
+        doc,
+        'keydown',
+        /** @type {import("../events.js").ListenerFunction} */ (
+          (/** @type {KeyboardEvent} */ e) => {
+            if (e.key === 'Control') {
+              this.ctrlKeyPressed_ = true;
+            }
+          }
+        ),
+      ),
+      listen(
+        doc,
+        'keyup',
+        /** @type {import("../events.js").ListenerFunction} */ (
+          (/** @type {KeyboardEvent} */ e) => {
+            if (e.key === 'Control') {
+              this.ctrlKeyPressed_ = false;
+            }
+          }
+        ),
+      ),
     );
   }
 

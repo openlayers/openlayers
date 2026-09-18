@@ -115,6 +115,30 @@ describe('ol.interaction.MouseWheelZoom', function () {
       assert.lengthOf(interaction.ctrlKeyListenerKeys_, 0);
       map.setTarget(target);
     });
+
+    it('rebinds listeners when the target document changes', function () {
+      const target = map.getTargetElement();
+      const iframe = document.createElement('iframe');
+      document.body.appendChild(iframe);
+      const externalTarget = iframe.contentDocument.createElement('div');
+      iframe.contentDocument.body.appendChild(externalTarget);
+
+      map.setTarget(externalTarget);
+
+      document.dispatchEvent(new KeyboardEvent('keydown', {key: 'Control'}));
+      assert.isFalse(interaction.ctrlKeyPressed_);
+
+      iframe.contentDocument.dispatchEvent(
+        new iframe.contentWindow.KeyboardEvent('keydown', {key: 'Control'}),
+      );
+      assert.isTrue(interaction.ctrlKeyPressed_);
+
+      iframe.contentDocument.dispatchEvent(
+        new iframe.contentWindow.KeyboardEvent('keyup', {key: 'Control'}),
+      );
+      map.setTarget(target);
+      document.body.removeChild(iframe);
+    });
   });
 
   describe('handleEvent()', function () {
