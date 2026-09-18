@@ -107,6 +107,16 @@ describe('ol.interaction.MouseWheelZoom', function () {
     });
   });
 
+  describe('target changes', function () {
+    it('unregisters document listeners when the map target is cleared', function () {
+      const target = map.getTargetElement();
+      map.setTarget(null);
+
+      assert.lengthOf(interaction.ctrlKeyListenerKeys_, 0);
+      map.setTarget(target);
+    });
+  });
+
   describe('handleEvent()', function () {
     it('works in DOM_DELTA_PIXEL mode (trackpad)', () =>
       new Promise((resolve) => {

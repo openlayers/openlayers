@@ -1,6 +1,7 @@
 /**
  * @module ol/interaction/MouseWheelZoom
  */
+import MapProperty from '../MapProperty.js';
 import {listen, unlistenByKey} from '../events.js';
 import EventType from '../events/EventType.js';
 import {all, always, focusWithTabindex} from '../events/condition.js';
@@ -177,6 +178,40 @@ class MouseWheelZoom extends Interaction {
      * @type {Array<import('../events.js').EventsKey>}
      */
     this.ctrlKeyListenerKeys_ = [];
+
+    /**
+     * @private
+     * @type {() => void}
+     */
+    this.boundHandleMapTargetChange_ = this.handleMapTargetChange_.bind(this);
+  }
+
+  /**
+   * @private
+   */
+  handleMapTargetChange_() {
+    this.ctrlKeyListenerKeys_.forEach(unlistenByKey);
+    this.ctrlKeyListenerKeys_.length = 0;
+    this.ctrlKeyPressed_ = false;
+
+    const map = this.getMap();
+    if (!map || !map.getTargetElement()) {
+      return;
+    }
+
+    const doc = map.getOwnerDocument();
+    this.ctrlKeyListenerKeys_.push(
+      listen(doc, 'keydown', (e) => {
+        if (e.key === 'Control') {
+          this.ctrlKeyPressed_ = true;
+        }
+      }),
+      listen(doc, 'keyup', (e) => {
+        if (e.key === 'Control') {
+          this.ctrlKeyPressed_ = false;
+        }
+      }),
+    );
   }
 
   /**
@@ -184,35 +219,21 @@ class MouseWheelZoom extends Interaction {
    * @override
    */
   setMap(map) {
-    this.ctrlKeyListenerKeys_.forEach(unlistenByKey);
-    this.ctrlKeyListenerKeys_.length = 0;
-    this.ctrlKeyPressed_ = false;
+    const oldMap = this.getMap();
+    if (oldMap) {
+      oldMap.removeChangeListener(
+        MapProperty.TARGET,
+        this.boundHandleMapTargetChange_,
+      );
+    }
+
     super.setMap(map);
+    this.handleMapTargetChange_();
+
     if (map) {
-      const doc = map.getOwnerDocument();
-      this.ctrlKeyListenerKeys_.push(
-        listen(
-          doc,
-          'keydown',
-          /** @type {import("../events.js").ListenerFunction} */ (
-            (/** @type {KeyboardEvent} */ e) => {
-              if (e.key === 'Control') {
-                this.ctrlKeyPressed_ = true;
-              }
-            }
-          ),
-        ),
-        listen(
-          doc,
-          'keyup',
-          /** @type {import("../events.js").ListenerFunction} */ (
-            (/** @type {KeyboardEvent} */ e) => {
-              if (e.key === 'Control') {
-                this.ctrlKeyPressed_ = false;
-              }
-            }
-          ),
-        ),
+      map.addChangeListener(
+        MapProperty.TARGET,
+        this.boundHandleMapTargetChange_,
       );
     }
   }
