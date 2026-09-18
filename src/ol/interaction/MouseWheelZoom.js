@@ -190,7 +190,9 @@ class MouseWheelZoom extends Interaction {
    * @private
    */
   handleMapTargetChange_() {
-    this.ctrlKeyListenerKeys_.forEach(unlistenByKey);
+    for (const key of this.ctrlKeyListenerKeys_) {
+      unlistenByKey(key);
+    }
     this.ctrlKeyListenerKeys_.length = 0;
     this.ctrlKeyPressed_ = false;
 
