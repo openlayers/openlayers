@@ -2,6 +2,7 @@ import {assert} from 'chai';
 import Feature from '../../../../../../src/ol/Feature.js';
 import {asArray} from '../../../../../../src/ol/color.js';
 import {
+  newCompilationContext,
   stringToGlsl,
   uniformNameForVariable,
 } from '../../../../../../src/ol/expr/gpu.js';
@@ -31,10 +32,10 @@ describe('ol/render/webgl/style', () => {
           'circle-fill-color': '#336699',
           'circle-opacity': 0.5,
         },
-        {
+        newCompilationContext({
           lower: 100,
           higher: 400,
-        },
+        }),
       );
 
       const lowerUniformName = uniformNameForVariable('lower');
@@ -61,7 +62,7 @@ describe('ol/render/webgl/style', () => {
         `vec2(mix(4.0, 8.0, clamp((a_prop_population - u_var_lower) / (u_var_higher - u_var_lower), 0.0, 1.0)) * 2. + 0.5)`,
       );
       assert.deepEqual(Object.keys(result.attributes).length, 1);
-      assert.property(result.attributes, 'prop_population');
+      assert.property(result.attributes, 'a_prop_population');
       assert.property(result.uniforms, lowerUniformName);
       assert.property(result.uniforms, higherUniformName);
     });
@@ -73,7 +74,7 @@ describe('ol/render/webgl/style', () => {
           'circle-fill-color': '#336699',
           'stroke-width': ['line-metric'],
         },
-        undefined,
+        newCompilationContext(),
         ['between', ['get', 'attr0'], 0, 10],
       );
 
@@ -100,7 +101,7 @@ describe('ol/render/webgl/style', () => {
       );
       assert.deepEqual(result.builder.fragmentDiscardExpression_, null);
       assert.deepEqual(Object.keys(result.attributes).length, 1);
-      assert.property(result.attributes, 'prop_attr0');
+      assert.property(result.attributes, 'a_prop_attr0');
     });
 
     it('parses a style with a filter (involving a line-metric)', () => {
@@ -109,7 +110,7 @@ describe('ol/render/webgl/style', () => {
           'circle-radius': 6,
           'circle-fill-color': '#336699',
         },
-        undefined,
+        newCompilationContext(),
         ['between', ['line-metric'], 0, 10],
       );
 
@@ -125,7 +126,7 @@ describe('ol/render/webgl/style', () => {
         {
           'stroke-width': ['line-metric'],
         },
-        undefined,
+        newCompilationContext(),
         ['between', ['get', 'attr0'], 0, 10],
       );
 
@@ -153,9 +154,9 @@ describe('ol/render/webgl/style', () => {
           ],
           'circle-fill-color': 'red',
         },
-        {
+        newCompilationContext({
           mySize: 'abcdef',
-        },
+        }),
       );
 
       assert.isAbove(result.uniforms[uniformName](), 0);
@@ -165,17 +166,20 @@ describe('ol/render/webgl/style', () => {
       let result;
       describe('contains all properties and expressions', () => {
         beforeEach(() => {
-          result = parseLiteralStyle({
-            'circle-radius': ['get', 'attr1'],
-            'circle-fill-color': ['get', 'color1'],
-            'circle-stroke-color': ['get', 'color2'],
-            'circle-stroke-width': ['+', 3, 4],
-            'circle-displacement': ['array', -2, 1],
-            'circle-scale': ['array', 1.5, 1.7],
-            'circle-opacity': ['*', 0.5, 0.75],
-            'circle-rotation': ['get', 'heading'],
-            'circle-rotate-with-view': true,
-          });
+          result = parseLiteralStyle(
+            {
+              'circle-radius': ['get', 'attr1'],
+              'circle-fill-color': ['get', 'color1'],
+              'circle-stroke-color': ['get', 'color2'],
+              'circle-stroke-width': ['+', 3, 4],
+              'circle-displacement': ['array', -2, 1],
+              'circle-scale': ['array', 1.5, 1.7],
+              'circle-opacity': ['*', 0.5, 0.75],
+              'circle-rotation': ['get', 'heading'],
+              'circle-rotate-with-view': true,
+            },
+            newCompilationContext(),
+          );
         });
         it('sets up builder accordingly', () => {
           assert.deepEqual(result.builder.uniforms_, []);
@@ -223,19 +227,22 @@ describe('ol/render/webgl/style', () => {
           );
           assert.deepEqual(result.builder.symbolRotateWithView_, true);
           assert.deepEqual(Object.keys(result.attributes).length, 4);
-          assert.property(result.attributes, 'prop_attr1');
-          assert.property(result.attributes, 'prop_heading');
-          assert.property(result.attributes, 'prop_color1');
-          assert.property(result.attributes, 'prop_color2');
+          assert.property(result.attributes, 'a_prop_attr1');
+          assert.property(result.attributes, 'a_prop_heading');
+          assert.property(result.attributes, 'a_prop_color1');
+          assert.property(result.attributes, 'a_prop_color2');
           assert.deepEqual(result.uniforms, {});
         });
       });
       describe('contains no stroke', () => {
         beforeEach(() => {
-          result = parseLiteralStyle({
-            'circle-radius': 10,
-            'circle-fill-color': 'rgba(255, 255, 255, 0.5)',
-          });
+          result = parseLiteralStyle(
+            {
+              'circle-radius': 10,
+              'circle-fill-color': 'rgba(255, 255, 255, 0.5)',
+            },
+            newCompilationContext(),
+          );
         });
         it('uses a simplified color expression', () => {
           assert.deepEqual(
@@ -246,11 +253,14 @@ describe('ol/render/webgl/style', () => {
       });
       describe('contains no fill', () => {
         beforeEach(() => {
-          result = parseLiteralStyle({
-            'circle-radius': 10,
-            'circle-stroke-color': 'red',
-            'circle-stroke-width': 4,
-          });
+          result = parseLiteralStyle(
+            {
+              'circle-radius': 10,
+              'circle-stroke-color': 'red',
+              'circle-stroke-width': 4,
+            },
+            newCompilationContext(),
+          );
         });
         it('uses a transparent fill color', () => {
           assert.deepEqual(
@@ -261,12 +271,15 @@ describe('ol/render/webgl/style', () => {
       });
       describe('contains no circle radius', () => {
         beforeEach(() => {
-          result = parseLiteralStyle({
-            'circle-fill-color': ['get', 'color1'],
-            'circle-stroke-color': ['get', 'color2'],
-            'circle-stroke-width': ['+', 3, 4],
-            'circle-rotation': ['get', 'heading'],
-          });
+          result = parseLiteralStyle(
+            {
+              'circle-fill-color': ['get', 'color1'],
+              'circle-stroke-color': ['get', 'color2'],
+              'circle-stroke-width': ['+', 3, 4],
+              'circle-rotation': ['get', 'heading'],
+            },
+            newCompilationContext(),
+          );
         });
         it('does not register the circle style', () => {
           assert.deepEqual(result.builder.hasSymbol_, false);
@@ -278,20 +291,23 @@ describe('ol/render/webgl/style', () => {
       let result;
       describe('contains all properties and expressions', () => {
         beforeEach(() => {
-          result = parseLiteralStyle({
-            'shape-points': ['-', 10, 3],
-            'shape-radius': ['get', 'attr1'],
-            'shape-radius2': ['*', 2, 5],
-            'shape-fill-color': ['get', 'color1'],
-            'shape-stroke-color': ['get', 'color2'],
-            'shape-stroke-width': ['+', 3, 4],
-            'shape-displacement': ['array', -2, 1],
-            'shape-scale': ['array', 1.5, 1.7],
-            'shape-opacity': ['*', 0.5, 0.75],
-            'shape-rotation': ['get', 'heading'],
-            'shape-rotate-with-view': true,
-            'shape-angle': ['*', 0.5, Math.PI],
-          });
+          result = parseLiteralStyle(
+            {
+              'shape-points': ['-', 10, 3],
+              'shape-radius': ['get', 'attr1'],
+              'shape-radius2': ['*', 2, 5],
+              'shape-fill-color': ['get', 'color1'],
+              'shape-stroke-color': ['get', 'color2'],
+              'shape-stroke-width': ['+', 3, 4],
+              'shape-displacement': ['array', -2, 1],
+              'shape-scale': ['array', 1.5, 1.7],
+              'shape-opacity': ['*', 0.5, 0.75],
+              'shape-rotation': ['get', 'heading'],
+              'shape-rotate-with-view': true,
+              'shape-angle': ['*', 0.5, Math.PI],
+            },
+            newCompilationContext(),
+          );
         });
         it('sets up builder accordingly', () => {
           assert.deepEqual(result.builder.uniforms_, []);
@@ -339,20 +355,23 @@ describe('ol/render/webgl/style', () => {
           );
           assert.deepEqual(result.builder.symbolRotateWithView_, true);
           assert.deepEqual(Object.keys(result.attributes).length, 4);
-          assert.property(result.attributes, 'prop_attr1');
-          assert.property(result.attributes, 'prop_heading');
-          assert.property(result.attributes, 'prop_color1');
-          assert.property(result.attributes, 'prop_color2');
+          assert.property(result.attributes, 'a_prop_attr1');
+          assert.property(result.attributes, 'a_prop_heading');
+          assert.property(result.attributes, 'a_prop_color1');
+          assert.property(result.attributes, 'a_prop_color2');
           assert.deepEqual(result.uniforms, {});
         });
       });
       describe('contains no stroke', () => {
         beforeEach(() => {
-          result = parseLiteralStyle({
-            'shape-points': 5,
-            'shape-radius': 10,
-            'shape-fill-color': 'rgba(255, 255, 255, 0.5)',
-          });
+          result = parseLiteralStyle(
+            {
+              'shape-points': 5,
+              'shape-radius': 10,
+              'shape-fill-color': 'rgba(255, 255, 255, 0.5)',
+            },
+            newCompilationContext(),
+          );
         });
         it('uses a simplified color expression', () => {
           assert.deepEqual(
@@ -363,12 +382,15 @@ describe('ol/render/webgl/style', () => {
       });
       describe('contains no fill', () => {
         beforeEach(() => {
-          result = parseLiteralStyle({
-            'shape-points': 5,
-            'shape-radius': 10,
-            'shape-stroke-color': 'red',
-            'shape-stroke-width': 4,
-          });
+          result = parseLiteralStyle(
+            {
+              'shape-points': 5,
+              'shape-radius': 10,
+              'shape-stroke-color': 'red',
+              'shape-stroke-width': 4,
+            },
+            newCompilationContext(),
+          );
         });
         it('uses a transparent fill color', () => {
           assert.deepEqual(
@@ -379,12 +401,15 @@ describe('ol/render/webgl/style', () => {
       });
       describe('contains no points count', () => {
         beforeEach(() => {
-          result = parseLiteralStyle({
-            'shape-fill-color': ['get', 'color1'],
-            'shape-stroke-color': ['get', 'color2'],
-            'shape-stroke-width': ['+', 3, 4],
-            'shape-rotation': ['get', 'heading'],
-          });
+          result = parseLiteralStyle(
+            {
+              'shape-fill-color': ['get', 'color1'],
+              'shape-stroke-color': ['get', 'color2'],
+              'shape-stroke-width': ['+', 3, 4],
+              'shape-rotation': ['get', 'heading'],
+            },
+            newCompilationContext(),
+          );
         });
         it('does not register the shape style', () => {
           assert.deepEqual(result.builder.hasSymbol_, false);
@@ -409,7 +434,7 @@ describe('ol/render/webgl/style', () => {
             'icon-size': ['array', 30, 40],
           };
           uid = computeHash(style['icon-src']);
-          result = parseLiteralStyle(style);
+          result = parseLiteralStyle(style, newCompilationContext());
         });
         it('sets up builder accordingly', () => {
           assert.deepEqual(result.builder.uniforms_, [
@@ -457,9 +482,9 @@ describe('ol/render/webgl/style', () => {
           );
           assert.deepEqual(result.builder.symbolRotateWithView_, true);
           assert.deepEqual(Object.keys(result.attributes).length, 3);
-          assert.property(result.attributes, 'prop_attr1');
-          assert.property(result.attributes, 'prop_heading');
-          assert.property(result.attributes, 'prop_color1');
+          assert.property(result.attributes, 'a_prop_attr1');
+          assert.property(result.attributes, 'a_prop_heading');
+          assert.property(result.attributes, 'a_prop_color1');
           assert.deepEqual(Object.keys(result.uniforms).length, 2);
           assert.property(result.uniforms, `u_texture${uid}_size`);
           assert.property(result.uniforms, `u_texture${uid}`);
@@ -477,7 +502,7 @@ describe('ol/render/webgl/style', () => {
             'icon-src': '../data/icon.png',
           };
           uid = computeHash(style['icon-src']);
-          result = parseLiteralStyle(style);
+          result = parseLiteralStyle(style, newCompilationContext());
         });
         it('registers a uniform for the icon size, which is set asynchronously', () => {
           assert.deepEqual(
@@ -499,11 +524,14 @@ describe('ol/render/webgl/style', () => {
       });
       describe('icon-width and icon-height properties', () => {
         beforeEach(() => {
-          result = parseLiteralStyle({
-            'icon-src': '../data/icon.png',
-            'icon-width': ['*', 10, 1.5],
-            'icon-height': ['*', 20, 0.5],
-          });
+          result = parseLiteralStyle(
+            {
+              'icon-src': '../data/icon.png',
+              'icon-width': ['*', 10, 1.5],
+              'icon-height': ['*', 20, 0.5],
+            },
+            newCompilationContext(),
+          );
         });
         it('overrides the size expression inferred from the icon', () => {
           assert.deepEqual(
@@ -519,7 +547,7 @@ describe('ol/render/webgl/style', () => {
             'icon-cross-origin': 'use-credentials',
           };
           uid = computeHash(style['icon-src']);
-          result = parseLiteralStyle(style);
+          result = parseLiteralStyle(style, newCompilationContext());
         });
         it('sets the crossOrigin attribute on the image', () => {
           const image = /** @type {Image} */ (
@@ -540,40 +568,52 @@ describe('ol/render/webgl/style', () => {
           };
         });
         it('top-left (default)', () => {
-          result = parseLiteralStyle({
-            ...style,
-            'icon-offset-origin': 'top-left',
-          });
+          result = parseLiteralStyle(
+            {
+              ...style,
+              'icon-offset-origin': 'top-left',
+            },
+            newCompilationContext(),
+          );
           assert.deepEqual(
             result.builder.texCoordExpression_,
             '(vec4((vec2(5.0, 10.0)).xyxy) + vec4(0., 0., vec2(20.0, 40.0))) / (vec2(40.0, 80.0)).xyxy',
           );
         });
         it('bottom-left', () => {
-          result = parseLiteralStyle({
-            ...style,
-            'icon-offset-origin': 'bottom-left',
-          });
+          result = parseLiteralStyle(
+            {
+              ...style,
+              'icon-offset-origin': 'bottom-left',
+            },
+            newCompilationContext(),
+          );
           assert.deepEqual(
             result.builder.texCoordExpression_,
             '(vec4((vec2(0., v_quadSizePx.y) + vec2(20.0, 40.0) * vec2(0., -1.) + vec2(5.0, 10.0) * vec2(1., -1.)).xyxy) + vec4(0., 0., vec2(20.0, 40.0))) / (vec2(40.0, 80.0)).xyxy',
           );
         });
         it('top-right', () => {
-          result = parseLiteralStyle({
-            ...style,
-            'icon-offset-origin': 'top-right',
-          });
+          result = parseLiteralStyle(
+            {
+              ...style,
+              'icon-offset-origin': 'top-right',
+            },
+            newCompilationContext(),
+          );
           assert.deepEqual(
             result.builder.texCoordExpression_,
             '(vec4((vec2(v_quadSizePx.x, 0.) + vec2(20.0, 40.0) * vec2(-1., 0.) + vec2(5.0, 10.0) * vec2(-1., 1.)).xyxy) + vec4(0., 0., vec2(20.0, 40.0))) / (vec2(40.0, 80.0)).xyxy',
           );
         });
         it('bottom-right', () => {
-          result = parseLiteralStyle({
-            ...style,
-            'icon-offset-origin': 'bottom-right',
-          });
+          result = parseLiteralStyle(
+            {
+              ...style,
+              'icon-offset-origin': 'bottom-right',
+            },
+            newCompilationContext(),
+          );
           assert.deepEqual(
             result.builder.texCoordExpression_,
             '(vec4((v_quadSizePx - vec2(20.0, 40.0) - vec2(5.0, 10.0)).xyxy) + vec4(0., 0., vec2(20.0, 40.0))) / (vec2(40.0, 80.0)).xyxy',
@@ -591,57 +631,72 @@ describe('ol/render/webgl/style', () => {
           };
         });
         it('only fractions', () => {
-          result = parseLiteralStyle({
-            ...style,
-            'icon-anchor': [0.2, 0.4],
-          });
+          result = parseLiteralStyle(
+            {
+              ...style,
+              'icon-anchor': [0.2, 0.4],
+            },
+            newCompilationContext(),
+          );
           assert.deepEqual(
             result.builder.symbolOffsetExpression_,
             'vec2(10.0, 15.0) + v_quadSizePx * vec2(0.5, -0.5) + vec2(0.2, 0.4) * v_quadSizePx * vec2(-1., 1.)',
           );
         });
         it('using pixels on X', () => {
-          result = parseLiteralStyle({
-            ...style,
-            'icon-anchor': [20, 0.4],
-            'icon-anchor-x-units': 'pixels',
-          });
+          result = parseLiteralStyle(
+            {
+              ...style,
+              'icon-anchor': [20, 0.4],
+              'icon-anchor-x-units': 'pixels',
+            },
+            newCompilationContext(),
+          );
           assert.deepEqual(
             result.builder.symbolOffsetExpression_,
             'vec2(10.0, 15.0) + v_quadSizePx * vec2(0.5, -0.5) + vec2(20.0, 0.4) * vec2(vec2(1.0).x, v_quadSizePx.y) * vec2(-1., 1.)',
           );
         });
         it('using pixels on Y', () => {
-          result = parseLiteralStyle({
-            ...style,
-            'icon-anchor': [0.2, 12],
-            'icon-anchor-y-units': 'pixels',
-          });
+          result = parseLiteralStyle(
+            {
+              ...style,
+              'icon-anchor': [0.2, 12],
+              'icon-anchor-y-units': 'pixels',
+            },
+            newCompilationContext(),
+          );
           assert.deepEqual(
             result.builder.symbolOffsetExpression_,
             'vec2(10.0, 15.0) + v_quadSizePx * vec2(0.5, -0.5) + vec2(0.2, 12.0) * vec2(v_quadSizePx.x, vec2(1.0).x) * vec2(-1., 1.)',
           );
         });
         it('using pixels on X and Y', () => {
-          result = parseLiteralStyle({
-            ...style,
-            'icon-anchor': [20, 12],
-            'icon-anchor-x-units': 'pixels',
-            'icon-anchor-y-units': 'pixels',
-          });
+          result = parseLiteralStyle(
+            {
+              ...style,
+              'icon-anchor': [20, 12],
+              'icon-anchor-x-units': 'pixels',
+              'icon-anchor-y-units': 'pixels',
+            },
+            newCompilationContext(),
+          );
           assert.deepEqual(
             result.builder.symbolOffsetExpression_,
             'vec2(10.0, 15.0) + v_quadSizePx * vec2(0.5, -0.5) + vec2(20.0, 12.0) * 1.0 * vec2(-1., 1.)',
           );
         });
         it('using pixels on X and Y with scale', () => {
-          result = parseLiteralStyle({
-            ...style,
-            'icon-anchor': [20, 12],
-            'icon-anchor-x-units': 'pixels',
-            'icon-anchor-y-units': 'pixels',
-            'icon-scale': [2, 3],
-          });
+          result = parseLiteralStyle(
+            {
+              ...style,
+              'icon-anchor': [20, 12],
+              'icon-anchor-x-units': 'pixels',
+              'icon-anchor-y-units': 'pixels',
+              'icon-scale': [2, 3],
+            },
+            newCompilationContext(),
+          );
           assert.deepEqual(
             result.builder.symbolOffsetExpression_,
             'vec2(10.0, 15.0) + v_quadSizePx * vec2(0.5, -0.5) + vec2(20.0, 12.0) * vec2(2.0, 3.0) * vec2(-1., 1.)',
@@ -661,40 +716,52 @@ describe('ol/render/webgl/style', () => {
           };
         });
         it('top-left (default)', () => {
-          result = parseLiteralStyle({
-            ...style,
-            'icon-anchor-origin': 'top-left',
-          });
+          result = parseLiteralStyle(
+            {
+              ...style,
+              'icon-anchor-origin': 'top-left',
+            },
+            newCompilationContext(),
+          );
           assert.deepEqual(
             result.builder.symbolOffsetExpression_,
             'vec2(10.0, 15.0) + v_quadSizePx * vec2(0.5, -0.5) + vec2(20.0, 0.4) * vec2(vec2(1.0).x, v_quadSizePx.y) * vec2(-1., 1.)',
           );
         });
         it('bottom-left', () => {
-          result = parseLiteralStyle({
-            ...style,
-            'icon-anchor-origin': 'bottom-left',
-          });
+          result = parseLiteralStyle(
+            {
+              ...style,
+              'icon-anchor-origin': 'bottom-left',
+            },
+            newCompilationContext(),
+          );
           assert.deepEqual(
             result.builder.symbolOffsetExpression_,
             'vec2(10.0, 15.0) + v_quadSizePx * 0.5 - vec2(20.0, 0.4) * vec2(vec2(1.0).x, v_quadSizePx.y)',
           );
         });
         it('top-right', () => {
-          result = parseLiteralStyle({
-            ...style,
-            'icon-anchor-origin': 'top-right',
-          });
+          result = parseLiteralStyle(
+            {
+              ...style,
+              'icon-anchor-origin': 'top-right',
+            },
+            newCompilationContext(),
+          );
           assert.deepEqual(
             result.builder.symbolOffsetExpression_,
             'vec2(10.0, 15.0) + v_quadSizePx * -0.5 + vec2(20.0, 0.4) * vec2(vec2(1.0).x, v_quadSizePx.y)',
           );
         });
         it('bottom-right', () => {
-          result = parseLiteralStyle({
-            ...style,
-            'icon-anchor-origin': 'bottom-right',
-          });
+          result = parseLiteralStyle(
+            {
+              ...style,
+              'icon-anchor-origin': 'bottom-right',
+            },
+            newCompilationContext(),
+          );
           assert.deepEqual(
             result.builder.symbolOffsetExpression_,
             'vec2(10.0, 15.0) + v_quadSizePx * vec2(-0.5, 0.5) + vec2(20.0, 0.4) * vec2(vec2(1.0).x, v_quadSizePx.y) * vec2(1., -1.)',
@@ -711,7 +778,7 @@ describe('ol/render/webgl/style', () => {
             'stroke-color': '#ff0000',
             'stroke-width': 4,
           };
-          result = parseLiteralStyle(style);
+          result = parseLiteralStyle(style, newCompilationContext());
         });
         it('parses style', () => {
           assert.deepEqual(result.builder.uniforms_, []);
@@ -772,7 +839,7 @@ describe('ol/render/webgl/style', () => {
             joinType: 'bevel',
             miterLimit: 20,
           };
-          result = parseLiteralStyle(style, variables);
+          result = parseLiteralStyle(style, newCompilationContext(variables));
         });
         it('parses style', () => {
           assert.deepEqual(result.builder.uniforms_, [
@@ -833,9 +900,9 @@ describe('ol/render/webgl/style', () => {
             'dashDistanceField_450289113(currentLengthPx + (u_time * 5.0), currentRadiusPx, capType, v_width, (a_prop_size * 10.0), (a_prop_size * 20.0), 5.0, (a_prop_size * 20.0))',
           );
           assert.deepEqual(Object.keys(result.attributes).length, 3);
-          assert.property(result.attributes, 'prop_intensity');
-          assert.property(result.attributes, 'prop_offset');
-          assert.property(result.attributes, 'prop_size');
+          assert.property(result.attributes, 'a_prop_intensity');
+          assert.property(result.attributes, 'a_prop_offset');
+          assert.property(result.attributes, 'a_prop_size');
           assert.property(result.uniforms, 'u_var_width');
           assert.property(result.uniforms, 'u_var_capType');
           assert.property(result.uniforms, 'u_var_joinType');
@@ -867,7 +934,7 @@ describe('ol/render/webgl/style', () => {
             'stroke-pattern-src': '../data/icon.png',
           };
           uid = computeHash(style['stroke-pattern-src']);
-          result = parseLiteralStyle(style);
+          result = parseLiteralStyle(style, newCompilationContext());
         });
         it('registers a uniform for the icon size, which is set asynchronously', () => {
           assert.deepEqual(Object.keys(result.uniforms).length, 2);
@@ -906,7 +973,7 @@ describe('ol/render/webgl/style', () => {
             'stroke-pattern-start-offset': ['+', 5, 5],
           };
           uid = computeHash(style['stroke-pattern-src']);
-          result = parseLiteralStyle(style);
+          result = parseLiteralStyle(style, newCompilationContext());
         });
         it('sets the color expression', () => {
           assert.include(
@@ -946,7 +1013,7 @@ describe('ol/render/webgl/style', () => {
             ],
             'stroke-line-dash-offset': ['get', 'dashOffset'],
           };
-          result = parseLiteralStyle(style);
+          result = parseLiteralStyle(style, newCompilationContext());
         });
 
         it('includes dash distance functions in the shader', () => {
@@ -1016,19 +1083,19 @@ describe('ol/render/webgl/style', () => {
           });
 
           assert.deepEqual(
-            result.attributes['prop_dashLength0'].callback(feature),
+            result.attributes['a_prop_dashLength0'].callback(feature),
             10,
           );
           assert.deepEqual(
-            result.attributes['prop_dashLength1'].callback(feature),
+            result.attributes['a_prop_dashLength1'].callback(feature),
             5,
           );
           assert.deepEqual(
-            result.attributes['prop_dashLength2'].callback(feature),
+            result.attributes['a_prop_dashLength2'].callback(feature),
             15,
           );
           assert.deepEqual(
-            result.attributes['prop_dashLength3'].callback(feature),
+            result.attributes['a_prop_dashLength3'].callback(feature),
             12,
           );
         });
@@ -1058,7 +1125,7 @@ describe('ol/render/webgl/style', () => {
             'stroke-pattern-size': [5, 10],
             'stroke-pattern-spacing': ['var', 'dashLength'],
           };
-          result = parseLiteralStyle(style);
+          result = parseLiteralStyle(style, newCompilationContext());
         });
 
         it('correctly combines the pattern length of both (using functions)', () => {
@@ -1101,7 +1168,7 @@ describe('ol/render/webgl/style', () => {
           const variables = {
             scale: 10,
           };
-          result = parseLiteralStyle(style, variables);
+          result = parseLiteralStyle(style, newCompilationContext(variables));
         });
         it('parses style', () => {
           const result = parseLiteralStyle(
@@ -1116,9 +1183,9 @@ describe('ol/render/webgl/style', () => {
                 'red',
               ],
             },
-            {
+            newCompilationContext({
               scale: 10,
-            },
+            }),
           );
 
           assert.deepEqual(result.builder.uniforms_, [
@@ -1138,7 +1205,7 @@ describe('ol/render/webgl/style', () => {
             'mix(vec4(0.0, 0.0, 1.0, 1.0), vec4(1.0, 0.0, 0.0, 1.0), clamp(((a_prop_intensity * u_var_scale) - 0.0) / (10.0 - 0.0), 0.0, 1.0))',
           );
           assert.deepEqual(Object.keys(result.attributes).length, 1);
-          assert.property(result.attributes, 'prop_intensity');
+          assert.property(result.attributes, 'a_prop_intensity');
           assert.property(result.uniforms, 'u_var_scale');
         });
       });
@@ -1148,7 +1215,7 @@ describe('ol/render/webgl/style', () => {
             'fill-pattern-src': '../data/icon.png',
           };
           uid = computeHash(style['fill-pattern-src']); // unique hash based on style
-          result = parseLiteralStyle(style);
+          result = parseLiteralStyle(style, newCompilationContext());
         });
         it('registers a uniform for the icon size, which is set asynchronously', () => {
           assert.deepEqual(Object.keys(result.uniforms).length, 2);
@@ -1185,7 +1252,7 @@ describe('ol/render/webgl/style', () => {
             'fill-pattern-size': [5, 5],
           };
           uid = computeHash(style['fill-pattern-src']);
-          result = parseLiteralStyle(style);
+          result = parseLiteralStyle(style, newCompilationContext());
         });
         it('sets the color expression', () => {
           assert.include(
@@ -1210,7 +1277,7 @@ describe('ol/render/webgl/style', () => {
             'fill-pattern-offset': ['get', 'patternOffset'],
             'fill-pattern-size': [5, 5],
           };
-          result = parseLiteralStyle(style);
+          result = parseLiteralStyle(style, newCompilationContext());
         });
 
         it('includes pattern sampling function in the shader', () => {
@@ -1246,12 +1313,15 @@ describe('ol/render/webgl/style', () => {
         });
 
         it('registers pattern offset as a size-2 attribute', () => {
-          assert.include(Object.keys(result.attributes), 'prop_patternOffset');
-          assert.deepEqual(result.attributes['prop_patternOffset'].size, 2);
+          assert.include(
+            Object.keys(result.attributes),
+            'a_prop_patternOffset',
+          );
+          assert.deepEqual(result.attributes['a_prop_patternOffset'].size, 2);
         });
 
         it('extracts pattern offset values correctly from features', () => {
-          const callback = result.attributes['prop_patternOffset'].callback;
+          const callback = result.attributes['a_prop_patternOffset'].callback;
           const feature = new Feature({
             patternOffset: [15, 25],
           });
@@ -1259,7 +1329,7 @@ describe('ol/render/webgl/style', () => {
         });
 
         it('handles missing pattern offset gracefully', () => {
-          const callback = result.attributes['prop_patternOffset'].callback;
+          const callback = result.attributes['a_prop_patternOffset'].callback;
           const feature = new Feature({});
           assert.deepEqual(callback(feature), undefined);
         });
@@ -1269,11 +1339,16 @@ describe('ol/render/webgl/style', () => {
     describe('filter', () => {
       let result;
       beforeEach(() => {
-        result = parseLiteralStyle({}, undefined, [
-          'all',
-          ['==', ['geometry-type'], 'LineString'],
-          ['in', ['get', 'type'], ['literal', ['road', 'path', 'street']]],
-        ]);
+        result = parseLiteralStyle(
+          {},
+          newCompilationContext(),
+          [
+            'all',
+            ['==', ['geometry-type'], 'LineString'],
+            ['in', ['get', 'type'], ['literal', ['road', 'path', 'street']]],
+          ],
+          newCompilationContext(),
+        );
       });
       it('adds the filter expression and attributes to the shader builder', () => {
         assert.include(
@@ -1285,8 +1360,8 @@ describe('ol/render/webgl/style', () => {
           `!((a_geometryType == ${stringToGlsl('LineString')}) && operator_in_0(a_prop_type))`,
         );
         assertAttributeDescriptors(result.attributes, {
-          geometryType: {size: 3, callback: {}},
-          prop_type: {size: 3, callback: {}},
+          a_geometryType: {size: 3, callback: {}},
+          a_prop_type: {size: 3, callback: {}},
         });
       });
     });
@@ -1294,27 +1369,30 @@ describe('ol/render/webgl/style', () => {
     describe('handle attributes of types other that number', () => {
       let parseResult;
       beforeEach(() => {
-        parseResult = parseLiteralStyle({
-          'fill-color': [
-            'case',
-            ['get', 'transparent'],
-            'transparent',
-            ['get', 'fillColor'],
-          ],
-          'stroke-width': [
-            'match',
-            ['get', 'lineType'],
-            'low',
-            ['get', 'lineWidth'],
-            'high',
-            ['*', ['get', 'lineWidth'], 2],
-            1.5,
-          ],
-          'circle-radius': 8,
-          'circle-fill-color': ['get', 'color'],
-          'circle-scale': ['get', 'iconSize'],
-          'stroke-color': 'red',
-        });
+        parseResult = parseLiteralStyle(
+          {
+            'fill-color': [
+              'case',
+              ['get', 'transparent'],
+              'transparent',
+              ['get', 'fillColor'],
+            ],
+            'stroke-width': [
+              'match',
+              ['get', 'lineType'],
+              'low',
+              ['get', 'lineWidth'],
+              'high',
+              ['*', ['get', 'lineWidth'], 2],
+              1.5,
+            ],
+            'circle-radius': 8,
+            'circle-fill-color': ['get', 'color'],
+            'circle-scale': ['get', 'iconSize'],
+            'stroke-color': 'red',
+          },
+          newCompilationContext(),
+        );
       });
       it('adds attributes to the shader builder', () => {
         assert.deepEqual(parseResult.builder.attributes_, [
@@ -1364,12 +1442,12 @@ describe('ol/render/webgl/style', () => {
       });
       it('returns attributes with their callbacks in the result', () => {
         assertAttributeDescriptors(parseResult.attributes, {
-          prop_iconSize: {size: 2, callback: {}},
-          prop_color: {size: 2, callback: {}},
-          prop_lineType: {size: 3, callback: {}},
-          prop_lineWidth: {size: 1, callback: {}},
-          prop_transparent: {size: 1, callback: {}},
-          prop_fillColor: {size: 2, callback: {}},
+          a_prop_iconSize: {size: 2, callback: {}},
+          a_prop_color: {size: 2, callback: {}},
+          a_prop_lineType: {size: 3, callback: {}},
+          a_prop_lineWidth: {size: 1, callback: {}},
+          a_prop_transparent: {size: 1, callback: {}},
+          a_prop_fillColor: {size: 2, callback: {}},
         });
       });
       it('processes the feature attributes according to their types', () => {
@@ -1383,27 +1461,27 @@ describe('ol/render/webgl/style', () => {
           geometry: new Point([0, 0]),
         });
         assert.deepEqual(
-          parseResult.attributes['prop_iconSize'].callback(feature),
+          parseResult.attributes['a_prop_iconSize'].callback(feature),
           [12, 18],
         );
         assert.deepEqual(
-          parseResult.attributes['prop_color'].callback(feature),
+          parseResult.attributes['a_prop_color'].callback(feature),
           packColor(asArray('pink')),
         );
         assert.equal(
-          parseResult.attributes['prop_lineType'].callback(feature),
+          parseResult.attributes['a_prop_lineType'].callback(feature),
           'low',
         );
         assert.deepEqual(
-          parseResult.attributes['prop_lineWidth'].callback(feature),
+          parseResult.attributes['a_prop_lineWidth'].callback(feature),
           0.5,
         );
         assert.deepEqual(
-          parseResult.attributes['prop_fillColor'].callback(feature),
+          parseResult.attributes['a_prop_fillColor'].callback(feature),
           packColor(asArray('rgba(123, 240, 100, 0.3)')),
         );
         assert.deepEqual(
-          parseResult.attributes['prop_transparent'].callback(feature),
+          parseResult.attributes['a_prop_transparent'].callback(feature),
           1,
         );
       });
@@ -1433,14 +1511,14 @@ describe('ol/render/webgl/style', () => {
             'circle-fill-color': ['var', 'color'],
             'circle-scale': ['var', 'iconSize'],
           },
-          {
+          newCompilationContext({
             iconSize: [12, 18],
             color: 'pink',
             lineType: 'low',
             lineWidth: 0.5,
             fillColor: 'rgba(51, 153, 102, 0.3)',
             transparent: true,
-          },
+          }),
         );
       });
       it('adds uniforms to the shader builder', () => {
@@ -1492,7 +1570,7 @@ describe('ol/render/webgl/style', () => {
               'blue',
             ],
           },
-          undefined,
+          newCompilationContext(),
           ['==', ['id'], 101],
         );
       });
@@ -1516,12 +1594,12 @@ describe('ol/render/webgl/style', () => {
       });
       it('returns attributes with their callbacks in the result', () => {
         assertAttributeDescriptors(parseResult.attributes, {
-          featureId: {size: 1, callback: {}},
-          geometryType: {size: 3, callback: {}},
+          a_featureId: {size: 1, callback: {}},
+          a_geometryType: {size: 3, callback: {}},
         });
       });
       it('processes the feature geometry properly', () => {
-        const callback = parseResult.attributes['geometryType'].callback;
+        const callback = parseResult.attributes['a_geometryType'].callback;
         let feature = new Feature({
           geometry: new Point([0, 0]),
         });
@@ -1532,7 +1610,7 @@ describe('ol/render/webgl/style', () => {
         assert.equal(callback(feature), stringToGlsl('Polygon'));
       });
       it('reads the feature id properly', () => {
-        const callback = parseResult.attributes['featureId'].callback;
+        const callback = parseResult.attributes['a_featureId'].callback;
         const feature = new Feature();
         feature.setId('1234');
         assert.equal(callback(feature), stringToGlsl('1234'));
@@ -1544,17 +1622,20 @@ describe('ol/render/webgl/style', () => {
     describe('pick up variables and properties in text properties', () => {
       let parseResult;
       beforeEach(() => {
-        parseResult = parseLiteralStyle({
-          'circle-radius': 4,
-          'circle-fill-color': 'orange',
-          'text-value': ['concat', 'label:', ['get', 'label']],
-          'text-font': 'bold 100px sans-serif',
-          'text-baseline': 'top',
-          'text-offset-y': ['get', 'offset_y'],
-          'text-stroke-width': 4,
-          'text-stroke-color': 'black',
-          'text-fill-color': ['var', 'textColor'],
-        });
+        parseResult = parseLiteralStyle(
+          {
+            'circle-radius': 4,
+            'circle-fill-color': 'orange',
+            'text-value': ['concat', 'label:', ['get', 'label']],
+            'text-font': 'bold 100px sans-serif',
+            'text-baseline': 'top',
+            'text-offset-y': ['get', 'offset_y'],
+            'text-stroke-width': 4,
+            'text-stroke-color': 'black',
+            'text-fill-color': ['var', 'textColor'],
+          },
+          newCompilationContext(),
+        );
       });
       it('adds attributes and uniforms to the shader builder', () => {
         assert.deepEqual(parseResult.builder.uniforms_, [
@@ -1602,25 +1683,28 @@ describe('ol/render/webgl/style', () => {
 
   describe('handle ambiguous match input', () => {
     it('parses a match', () => {
-      const result = parseLiteralStyle({
-        'icon-src':
-          'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==',
-        'icon-color': [
-          'match',
-          ['get', 'foo'],
-          'green',
-          [251, 173, 21, 0.5],
-          'red',
-          [251, 173, 21, 0.5],
-          [251, 173, 21, 0.5],
-        ],
-      });
+      const result = parseLiteralStyle(
+        {
+          'icon-src':
+            'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==',
+          'icon-color': [
+            'match',
+            ['get', 'foo'],
+            'green',
+            [251, 173, 21, 0.5],
+            'red',
+            [251, 173, 21, 0.5],
+            [251, 173, 21, 0.5],
+          ],
+        },
+        newCompilationContext(),
+      );
 
       assert.equal(
-        result.attributes.prop_foo.callback({get: () => 'green'}),
+        result.attributes.a_prop_foo.callback({get: () => 'green'}),
         'green',
       );
-      assert.strictEqual(result.attributes.prop_foo.size, 3);
+      assert.strictEqual(result.attributes.a_prop_foo.size, 3);
     });
   });
 
@@ -1630,13 +1714,13 @@ describe('ol/render/webgl/style', () => {
         {
           'stroke-width': 2,
         },
-        undefined,
+        newCompilationContext(),
         ['in', ['get', 'type'], ['literal', ['road', 'path', 'street']]],
       );
 
       assert.deepEqual(
         result.builder.vertexShaderFunctions_,
-        result.builder.vertexShaderFunctions_,
+        result.builder.fragmentShaderFunctions_,
       );
       assert.include(
         result.builder.fragmentShaderFunctions_,

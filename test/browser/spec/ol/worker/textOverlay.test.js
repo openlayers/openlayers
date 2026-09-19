@@ -84,7 +84,7 @@ describe('ol/worker/textOverlay', () => {
       };
 
       const customAttributes = {
-        prop_name: {
+        a_prop_name: {
           size: 3,
           callback: (feature) => feature.get('name'),
         },

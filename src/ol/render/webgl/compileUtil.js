@@ -7,12 +7,12 @@ import {asArray} from '../../color.js';
 import {
   BooleanType,
   ColorType,
-  newParsingContext,
   NumberArrayType,
   SizeType,
   StringType,
 } from '../../expr/expression.js';
 import {
+  attributeNameForProperty,
   buildExpression,
   getStringNumberEquivalent,
   uniformNameForVariable,
@@ -24,22 +24,10 @@ import {
  * @param {import("../../expr/gpu.js").CompilationContext} compilationContext Compilation context
  * @param {import("../../expr/expression.js").EncodedExpression} value Value
  * @param {number} [expectedType] Expected final type (can be several types combined)
- * @param {import("../../expr/expression.js").ParsingContext} [parsingContext] Optional parsing context to be used;
- * if not specified, a new context using input variables from the compilation context will be used
  * @return {string} GLSL-compatible output
  */
-export function expressionToGlsl(
-  compilationContext,
-  value,
-  expectedType,
-  parsingContext,
-) {
-  return buildExpression(
-    value,
-    expectedType ?? 0,
-    parsingContext ?? newParsingContext(compilationContext.inputVariables),
-    compilationContext,
-  );
+export function expressionToGlsl(compilationContext, value, expectedType) {
+  return buildExpression(value, expectedType ?? 0, compilationContext);
 }
 
 /**
@@ -140,7 +128,8 @@ export function applyContextToBuilder(builder, context) {
   for (const entry of context.properties.entries()) {
     const [propName, propType] = entry;
     const glslType = getGlslTypeFromType(propType);
-    const attributeName = `a_prop_${propName}`;
+    const attributeName = attributeNameForProperty(...propName.split('##'));
+
     if (propType === ColorType) {
       builder.addAttribute(
         attributeName,
@@ -164,10 +153,9 @@ export function applyContextToBuilder(builder, context) {
  * Generates a set of uniforms from variables collected in a compilation context,
  * to be fed to a WebGLHelper instance
  * @param {import("../../expr/gpu.js").CompilationContext} context Compilation context
- * @param {import('../../style/flat.js').StyleVariables} [variables] Style variables.
  * @return {Object<string,import("../../webgl/Helper.js").UniformValue>} Uniforms
  */
-export function generateUniformsFromContext(context, variables) {
+export function generateUniformsFromContext(context) {
   /** @type {Object<string,import("../../webgl/Helper.js").UniformValue>} */
   const uniforms = {};
 
@@ -177,7 +165,7 @@ export function generateUniformsFromContext(context, variables) {
     const uniformName = uniformNameForVariable(varName);
 
     uniforms[uniformName] = () => {
-      const value = variables?.[varName];
+      const value = context.inputVariables?.[varName];
       if (varType === BooleanType) {
         return value ? 1 : 0;
       }
@@ -216,10 +204,16 @@ export function generateAttributesFromContext(context) {
   // Define attributes with their callback for each property used in the vertex shader
   for (const entry of context.properties.entries()) {
     const [propName, propType] = entry;
+    const path = propName.split('##');
+    const attributeName = attributeNameForProperty(...path);
+
     const callback = (
       /** @type {import("../../Feature.js").FeatureLike} */ feature,
     ) => {
-      const value = feature.get(propName);
+      let value = feature.get(path[0]);
+      for (let i = 1; i < path.length; i++) {
+        value = value?.[path[i]];
+      }
       if (propType === ColorType) {
         return packColor([...asArray(value || '#eee')]);
       }
@@ -229,7 +223,7 @@ export function generateAttributesFromContext(context) {
       return value;
     };
 
-    attributes[`prop_${propName}`] = {
+    attributes[attributeName] = {
       size: getGlslSizeFromType(propType),
       callback,
     };

@@ -40,10 +40,10 @@ const SAMPLE_SHADERS = () => ({
     .setStrokeColorExpression('vec4(1.0)')
     .setSymbolColorExpression('vec4(1.0)'),
   attributes: {
-    prop_attr1: {
+    a_prop_attr1: {
       callback: (feature) => feature.get('test'),
     },
-    prop_attr2: {callback: () => [10, 20, 30], size: 3},
+    a_prop_attr2: {callback: () => [10, 20, 30], size: 3},
   },
   uniforms: {
     custom: () => 1234,
@@ -154,9 +154,9 @@ describe('VectorStyleRenderer', () => {
     });
     it('creates a VectorStyleRenderer with two render passes and all attributes and uniforms combined', () => {
       assertCustomAttributes(vectorStyleRenderer.customAttributes_, {
-        prop_color: {size: 2},
-        prop_size: {size: 1},
-        prop_id: {size: 1},
+        a_prop_color: {size: 2},
+        a_prop_size: {size: 1},
+        a_prop_id: {size: 1},
       });
       assertUniformCallbacks(vectorStyleRenderer.uniforms_, {
         u_var_highlightedId: {},
@@ -208,8 +208,8 @@ describe('VectorStyleRenderer', () => {
       assert.instanceOf(secondPass.fillRenderPass.program, WebGLProgram);
       assert.deepEqual(secondPass.fillRenderPass.attributesDesc, [
         {name: 'a_position', size: 2, type: FLOAT},
-        {name: null, size: 1, type: FLOAT},
-        {name: null, size: 2, type: FLOAT},
+        {name: 'a_prop_size', size: 1, type: FLOAT},
+        {name: 'a_prop_color', size: 2, type: FLOAT},
         {name: 'a_prop_id', size: 1, type: FLOAT},
       ]);
       assert.strictEqual(secondPass.strokeRenderPass, undefined);
@@ -227,10 +227,10 @@ describe('VectorStyleRenderer', () => {
     });
     it('creates a VectorStyleRenderer with two render passes and all attributes and uniforms combined', () => {
       assertCustomAttributes(vectorStyleRenderer.customAttributes_, {
-        hitColor: {size: 2},
-        prop_color: {size: 2},
-        prop_size: {size: 1},
-        prop_id: {size: 1},
+        a_hitColor: {size: 2},
+        a_prop_color: {size: 2},
+        a_prop_size: {size: 1},
+        a_prop_id: {size: 1},
       });
       assertUniformCallbacks(vectorStyleRenderer.uniforms_, {
         u_var_highlightedId: {},
@@ -282,8 +282,8 @@ describe('VectorStyleRenderer', () => {
       assert.deepEqual(secondPass.fillRenderPass.attributesDesc, [
         {name: 'a_position', size: 2, type: FLOAT},
         {name: 'a_hitColor', size: 2, type: FLOAT},
-        {name: null, size: 1, type: FLOAT},
-        {name: null, size: 2, type: FLOAT},
+        {name: 'a_prop_size', size: 1, type: FLOAT},
+        {name: 'a_prop_color', size: 2, type: FLOAT},
         {name: 'a_prop_id', size: 1, type: FLOAT},
       ]);
       assert.strictEqual(secondPass.strokeRenderPass, undefined);
@@ -300,8 +300,8 @@ describe('VectorStyleRenderer', () => {
     });
     it('creates a VectorStyleRenderer with a single render pass', () => {
       assertCustomAttributes(vectorStyleRenderer.customAttributes_, {
-        prop_attr1: {},
-        prop_attr2: {size: 3},
+        a_prop_attr1: {},
+        a_prop_attr2: {size: 3},
       });
       assertUniformCallbacks(vectorStyleRenderer.uniforms_, {
         custom: {},
@@ -753,7 +753,7 @@ describe('VectorStyleRenderer', () => {
             'white',
             'red',
           ],
-          'text-value': ['get', 'label'],
+          'text-value': ['coalesce', ['get', 'label'], ''],
         },
       },
     ];
@@ -801,14 +801,14 @@ describe('VectorStyleRenderer', () => {
                 'white',
                 'red',
               ],
-              'text-value': ['get', 'label'],
+              'text-value': ['coalesce', ['get', 'label'], ''],
             },
           },
         ]);
         assert.deepEqual(message.customAttributesSizes, {
-          prop_size: 1,
-          prop_id: 1,
-          prop_label: 3,
+          a_prop_size: 1,
+          a_prop_id: 1,
+          a_prop_label: 3,
         });
         assert.deepEqual(message.renderInstructionsTransform, SAMPLE_TRANSFORM);
         assert.strictEqual(
@@ -972,7 +972,7 @@ describe('VectorStyleRenderer', () => {
       [
         {
           style: {
-            'text-value': ['get', 'label'],
+            'text-value': ['coalesce', ['get', 'label'], ''],
           },
         },
         {
@@ -1006,7 +1006,7 @@ describe('VectorStyleRenderer', () => {
     const SAMPLE_STYLE_TEXT = [
       {
         style: {
-          'text-value': ['get', 'label'],
+          'text-value': ['coalesce', ['get', 'label'], ''],
           'text-font': '10px sans-serif',
         },
       },
@@ -1181,7 +1181,7 @@ describe('VectorStyleRenderer', () => {
 
       assert.lengthOf(result, 8);
 
-      assert.hasAllKeys(result[0].attributes, ['prop_size']);
+      assert.hasAllKeys(result[0].attributes, ['a_prop_size']);
       assert.deepEqual(
         result[0].builder,
         new ShaderBuilder()
@@ -1190,7 +1190,7 @@ describe('VectorStyleRenderer', () => {
           .setShapeDiscardExpression('!(a_prop_size > 10.0)'),
       );
 
-      assert.hasAllKeys(result[1].attributes, ['prop_size']);
+      assert.hasAllKeys(result[1].attributes, ['a_prop_size']);
       assert.deepEqual(
         result[1].builder,
         new ShaderBuilder()
@@ -1199,7 +1199,7 @@ describe('VectorStyleRenderer', () => {
           .setShapeDiscardExpression('!(a_prop_size > 10.0)'),
       );
 
-      assert.hasAllKeys(result[2].attributes, ['prop_size']);
+      assert.hasAllKeys(result[2].attributes, ['a_prop_size']);
       assert.deepEqual(
         result[2].builder,
         new ShaderBuilder()
@@ -1217,7 +1217,7 @@ describe('VectorStyleRenderer', () => {
           .setShapeDiscardExpression('!(!(a_prop_size > 10.0))'),
       );
 
-      assert.hasAllKeys(result[3].attributes, ['prop_size', 'prop_type']);
+      assert.hasAllKeys(result[3].attributes, ['a_prop_size', 'a_prop_type']);
       assert.deepEqual(
         result[3].builder,
         new ShaderBuilder()
@@ -1227,10 +1227,16 @@ describe('VectorStyleRenderer', () => {
           .setStrokeWidthExpression('2.0')
           .setShapeDiscardExpression(
             `!((!(a_prop_size > 10.0)) && (a_prop_type == ${stringToGlsl('road')}))`,
+          )
+          .addFragmentShaderFunction(
+            'float circleDistanceField(vec2 point, float radius) {\n  return length(point) - radius;\n}',
+          )
+          .addVertexShaderFunction(
+            'float circleDistanceField(vec2 point, float radius) {\n  return length(point) - radius;\n}',
           ),
       );
 
-      assert.hasAllKeys(result[4].attributes, ['prop_size', 'prop_type']);
+      assert.hasAllKeys(result[4].attributes, ['a_prop_size', 'a_prop_type']);
       assert.deepEqual(
         result[4].builder,
         new ShaderBuilder()
@@ -1240,10 +1246,16 @@ describe('VectorStyleRenderer', () => {
           .setStrokeWidthExpression('2.0')
           .setShapeDiscardExpression(
             `!((!(a_prop_size > 10.0)) && (!(a_prop_type == ${stringToGlsl('road')})))`,
+          )
+          .addFragmentShaderFunction(
+            'float circleDistanceField(vec2 point, float radius) {\n  return length(point) - radius;\n}',
+          )
+          .addVertexShaderFunction(
+            'float circleDistanceField(vec2 point, float radius) {\n  return length(point) - radius;\n}',
           ),
       );
 
-      assert.hasAllKeys(result[5].attributes, ['prop_size', 'prop_type']);
+      assert.hasAllKeys(result[5].attributes, ['a_prop_size', 'a_prop_type']);
       assert.deepEqual(
         result[5].builder,
         new ShaderBuilder()
@@ -1253,26 +1265,47 @@ describe('VectorStyleRenderer', () => {
           .setStrokeWidthExpression('1.0')
           .setShapeDiscardExpression(
             `!((!(a_prop_size > 10.0)) && (!(a_prop_type == ${stringToGlsl('road')})))`,
+          )
+          .addFragmentShaderFunction(
+            'float circleDistanceField(vec2 point, float radius) {\n  return length(point) - radius;\n}',
+          )
+          .addVertexShaderFunction(
+            'float circleDistanceField(vec2 point, float radius) {\n  return length(point) - radius;\n}',
           ),
       );
 
-      assert.deepEqual(result[6].attributes, {});
+      assert.hasAllKeys(result[6].attributes, ['a_prop_size', 'a_prop_type']);
       assert.deepEqual(
         result[6].builder,
         new ShaderBuilder()
+          .addAttribute('a_prop_size', 'float')
+          .addAttribute('a_prop_type', 'float')
           .setStrokeColorExpression('vec4(1.0, 1.0, 0.0, 1.0)')
-          .setStrokeWidthExpression('2.0'),
+          .setStrokeWidthExpression('2.0')
+          .addFragmentShaderFunction(
+            'float circleDistanceField(vec2 point, float radius) {\n  return length(point) - radius;\n}',
+          )
+          .addVertexShaderFunction(
+            'float circleDistanceField(vec2 point, float radius) {\n  return length(point) - radius;\n}',
+          ),
       );
 
-      assert.hasAllKeys(result[7].attributes, ['prop_type']);
+      assert.hasAllKeys(result[7].attributes, ['a_prop_size', 'a_prop_type']);
       assert.deepEqual(
         result[7].builder,
         new ShaderBuilder()
+          .addAttribute('a_prop_size', 'float')
           .addAttribute('a_prop_type', 'float')
           .setStrokeColorExpression('vec4(0.0, 0.0, 0.0, 1.0)')
           .setStrokeWidthExpression('2.0')
           .setShapeDiscardExpression(
             `!(a_prop_type == ${stringToGlsl('street')})`,
+          )
+          .addFragmentShaderFunction(
+            'float circleDistanceField(vec2 point, float radius) {\n  return length(point) - radius;\n}',
+          )
+          .addVertexShaderFunction(
+            'float circleDistanceField(vec2 point, float radius) {\n  return length(point) - radius;\n}',
           ),
       );
     });
