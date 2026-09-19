@@ -99,13 +99,9 @@ describe('ol.interaction.MouseWheelZoom', function () {
     });
 
     it('does not apply 3x multiplier when ctrl key is physically pressed', function () {
-      map
-        .getTargetElement()
-        .dispatchEvent(new KeyboardEvent('keydown', {key: 'Control'}));
+      document.dispatchEvent(new KeyboardEvent('keydown', {key: 'Control'}));
       map.handleMapBrowserEvent(makeTrackpadWheelEvent(true));
-      map
-        .getTargetElement()
-        .dispatchEvent(new KeyboardEvent('keyup', {key: 'Control'}));
+      document.dispatchEvent(new KeyboardEvent('keyup', {key: 'Control'}));
       assert.strictEqual(view.adjustZoom.mock.calls.length, 1);
       assert.approximately(view.adjustZoom.mock.calls[0][0], -1 / 300, 1e-10);
     });

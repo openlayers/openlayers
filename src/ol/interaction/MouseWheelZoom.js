@@ -162,14 +162,6 @@ class MouseWheelZoom extends Interaction {
      * @type {number}
      */
     this.deltaPerZoom_ = 300;
-
-    /**
-     * Tracks whether the Ctrl key is physically held down (as opposed to the
-     * browser synthesizing ctrlKey=true for pinch-to-zoom trackpad gestures).
-     * @private
-     * @type {boolean}
-     */
-    this.ctrlKeyPressed_ = false;
   }
 
   /**
@@ -206,15 +198,6 @@ class MouseWheelZoom extends Interaction {
       return true;
     }
     const type = mapBrowserEvent.type;
-    if (type === EventType.KEYDOWN || type === EventType.KEYUP) {
-      const keyEvent = /** @type {KeyboardEvent} */ (
-        mapBrowserEvent.originalEvent
-      );
-      if (keyEvent.key === 'Control') {
-        this.ctrlKeyPressed_ = type === EventType.KEYDOWN;
-      }
-      return true;
-    }
     if (type !== EventType.WHEEL) {
       return true;
     }
@@ -225,10 +208,7 @@ class MouseWheelZoom extends Interaction {
     );
     wheelEvent.preventDefault();
 
-    const isPinchToZoom = wheelEvent.ctrlKey && !this.ctrlKeyPressed_;
-    if (!wheelEvent.ctrlKey) {
-      this.ctrlKeyPressed_ = false;
-    }
+    const isPinchToZoom = wheelEvent.ctrlKey && !mapBrowserEvent.ctrlKey;
 
     if (this.useAnchor_) {
       this.lastAnchor_ = mapBrowserEvent.pixel;

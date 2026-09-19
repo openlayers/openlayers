@@ -1979,6 +1979,37 @@ describe('ol/Map', function () {
       selectStub.mockRestore();
     });
 
+    it('sets ctrlKey only when the Control key is physically pressed', function () {
+      const wheel = () =>
+        new MapBrowserEvent(
+          'wheel',
+          map,
+          new WheelEvent('wheel', {ctrlKey: true}),
+        );
+
+      const synthesized = wheel();
+      map.handleMapBrowserEvent(synthesized);
+      assert.isFalse(synthesized.ctrlKey);
+
+      document.dispatchEvent(new KeyboardEvent('keydown', {key: 'Control'}));
+      const physical = wheel();
+      map.handleMapBrowserEvent(physical);
+      assert.isTrue(physical.ctrlKey);
+
+      document.dispatchEvent(new KeyboardEvent('keyup', {key: 'Control'}));
+      const released = wheel();
+      map.handleMapBrowserEvent(released);
+      assert.isFalse(released.ctrlKey);
+
+      map.setTarget(null);
+      document.dispatchEvent(new KeyboardEvent('keydown', {key: 'Control'}));
+      map.setTarget(target);
+      const detached = wheel();
+      map.handleMapBrowserEvent(detached);
+      assert.isFalse(detached.ctrlKey);
+      document.dispatchEvent(new KeyboardEvent('keyup', {key: 'Control'}));
+    });
+
     describe('external map', () => {
       let iframe, spy;
 

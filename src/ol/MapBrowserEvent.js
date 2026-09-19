@@ -56,6 +56,14 @@ class MapBrowserEvent extends MapEvent {
      * @type {Array<PointerEvent>|undefined}
      */
     this.activePointers = activePointers;
+
+    /**
+     * The Control key is physically held down. Unlike `originalEvent.ctrlKey`,
+     * this is `false` for the wheel events that browsers synthesize with
+     * `ctrlKey: true` for trackpad pinch-to-zoom.
+     * @type {boolean}
+     */
+    this.ctrlKey = false;
   }
 
   /**
