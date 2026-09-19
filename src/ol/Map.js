@@ -309,6 +309,16 @@ class Map extends BaseObject {
     this.boundHandleBrowserEvent_ = this.handleBrowserEvent.bind(this);
 
     /**
+     * Whether the Control key is physically held down.
+     * @private
+     * @type {boolean}
+     */
+    this.ctrlKey_ = false;
+
+    /** @private */
+    this.boundHandleCtrlKey_ = this.handleCtrlKey_.bind(this);
+
+    /**
      * @type {number}
      * @private
      */
@@ -1236,9 +1246,26 @@ class Map extends BaseObject {
   }
 
   /**
+   * @param {Event} event Key event.
+   * @private
+   */
+  handleCtrlKey_(event) {
+    const keyEvent = /** @type {KeyboardEvent} */ (event);
+    this.ctrlKey_ =
+      keyEvent.key === 'Control'
+        ? keyEvent.type === EventType.KEYDOWN
+        : keyEvent.ctrlKey;
+  }
+
+  /**
    * @param {MapBrowserEvent} mapBrowserEvent The event to handle.
    */
   handleMapBrowserEvent(mapBrowserEvent) {
+    if (mapBrowserEvent.originalEvent.ctrlKey === false) {
+      // Recover from a missed keyup, e.g. when the window lost focus.
+      this.ctrlKey_ = false;
+    }
+    mapBrowserEvent.ctrlKey = this.ctrlKey_;
     if (!this.frameState_) {
       // With no view defined, we cannot translate pixels into geographical
       // coordinates so interactions cannot be used.
@@ -1397,6 +1424,14 @@ class Map extends BaseObject {
         unlistenByKey(targetChangeHandlerKeys[i]);
       }
       this.targetChangeHandlerKeys_ = null;
+      const doc = this.getOwnerDocument();
+      doc.removeEventListener(
+        EventType.KEYDOWN,
+        this.boundHandleCtrlKey_,
+        true,
+      );
+      doc.removeEventListener(EventType.KEYUP, this.boundHandleCtrlKey_, true);
+      this.ctrlKey_ = false;
       /** @type {!HTMLElement} */ (this.viewport_).removeEventListener(
         EventType.CONTEXTMENU,
         /** @type {EventListener} */ (this.boundHandleBrowserEvent_),
@@ -1473,6 +1508,11 @@ class Map extends BaseObject {
           /** @type {EventListener} */ (this.boundHandleBrowserEvent_),
           PASSIVE_EVENT_LISTENERS ? {passive: false} : false,
         );
+        // Track the physical Control key on the whole document, so it can be
+        // told apart from the ctrlKey browsers synthesize for trackpad pinch.
+        const doc = this.getOwnerDocument();
+        doc.addEventListener(EventType.KEYDOWN, this.boundHandleCtrlKey_, true);
+        doc.addEventListener(EventType.KEYUP, this.boundHandleCtrlKey_, true);
 
         let keyboardEventTarget;
         if (!this.keyboardEventTarget_) {
