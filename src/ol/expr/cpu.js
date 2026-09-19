@@ -9,7 +9,13 @@ import {
   toString,
   withAlpha,
 } from '../color.js';
-import {ColorType, LiteralExpression, Ops, parse} from './expression.js';
+import {
+  ColorType,
+  LiteralExpression,
+  NumberType,
+  Ops,
+  parse,
+} from './expression.js';
 
 /**
  * @typedef {import('./expression.js').ValueType} ValueType
@@ -319,6 +325,10 @@ function compileAccessorExpression(expression, context) {
           const keyExpression = /** @type {LiteralExpression} */ (args[i]);
           const key = /** @type {string|number} */ (keyExpression.value);
           value = value[key];
+        }
+        if (value === null && expression.type === NumberType) {
+          // consistent with the WebGL renderer, which reads null as 0
+          return 0;
         }
         return value;
       };
