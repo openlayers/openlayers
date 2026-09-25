@@ -349,6 +349,18 @@ describe('ol.style.Icon', function () {
         anchorBig[1] / scale,
       ]);
     });
+
+    it('handles a scale of zero correctly', function () {
+      const scale = 0;
+      const zeroScaleIcon = new Icon({
+        src: 'test.png',
+        size: size,
+        displacement: [20, 10],
+        scale: scale,
+      });
+      // making sure there's no divide by zero leading to [NaN, NaN] or [Infinity, Infinity] result
+      expect(zeroScaleIcon.getAnchor()).to.eql([0, 0]);
+    });
   });
 
   describe('#setAnchor', function () {
