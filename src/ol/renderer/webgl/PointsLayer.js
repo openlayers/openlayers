@@ -52,9 +52,9 @@ import {getWorldParameters} from './worldUtil.js';
  * @typedef {Object} Options
  * @property {string} [className='ol-layer'] A CSS class name to set to the canvas element.
  * @property {Array<CustomAttribute>} [attributes] These attributes will be read from the features in the source and then
- * passed to the GPU. The `name` property of each attribute will serve as its identifier:
- *  In the vertex shader as an `attribute` by prefixing it with `a_`
- *  In the fragment shader as a `varying` by prefixing it with `v_`
+ * passed to the GPU. The `name` property of each attribute should strat with `a_` and will serve as its identifier:
+ *  In the vertex shader as an `attribute`
+ *  In the fragment shader as a `varying`
  * Please note that these can only be numerical values.
  * @property {string} vertexShader Vertex shader source, mandatory.
  * @property {string} fragmentShader Fragment shader source, mandatory.
@@ -195,7 +195,7 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
     const customAttributes = options.attributes
       ? options.attributes.map(function (attribute) {
           return {
-            name: 'a_' + attribute.name,
+            name: attribute.name,
             size: 1,
             type: AttributeType.FLOAT,
           };

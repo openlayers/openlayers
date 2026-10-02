@@ -29,6 +29,9 @@ import {toSize} from '../size.js';
  *   * `['get', attributeName]` fetches a feature property value, similar to `feature.get('attributeName')`.
  *   * `['get', attributeName, keyOrArrayIndex, ...]` (Canvas only) Access nested properties and array items of a
  *     feature property. The result is `undefined` when there is nothing at the specified key or index.
+ *   * `['has', attributeName, keyOrArrayIndex, ...]` returns `true` if feature properties include the (nested) key `attributeName`,
+ *     `false` otherwise.
+ *     Note that for WebGL layers, the hardcoded value `-9999999` is used to distinguish when a property is not defined.
  *   * `['geometry-type']` returns a feature's geometry type as string, either: 'LineString', 'Point' or 'Polygon'
  *     `Multi*` values are returned as their singular equivalent
  *     `Circle` geometries are returned as 'Polygon'
@@ -82,7 +85,7 @@ import {toSize} from '../size.js';
  *     An example would be to provide a default value for get: `['string', ['get', 'propertyname'], 'default value']]`
  *     (Canvas only).
  *   * `['number', value1, value2, ...]` returns the first value in the list that evaluates to a number.
- *     An example would be to provide a default value for get: `['string', ['get', 'propertyname'], 42]]`
+ *     An example would be to provide a default value for get: `['number', ['get', 'propertyname'], 42]]`
  *     (Canvas only).
  *   * `['coalesce', value1, value2, ...]` returns the first value in the list which is not null or undefined.
  *     An example would be to provide a default value for get: `['coalesce', ['get','propertyname'], 'default value']]`
@@ -98,9 +101,6 @@ import {toSize} from '../size.js';
  *   * `['!', value1]` returns `false` if `value1` is `true` or greater than `0`, or `true` otherwise.
  *   * `['all', value1, value2, ...]` returns `true` if all the inputs are `true`, `false` otherwise.
  *   * `['any', value1, value2, ...]` returns `true` if any of the inputs are `true`, `false` otherwise.
- *   * `['has', attributeName, keyOrArrayIndex, ...]` returns `true` if feature properties include the (nested) key `attributeName`,
- *     `false` otherwise.
- *     Note that for WebGL layers, the hardcoded value `-9999999` is used to distinguish when a property is not defined.
  *   * `['between', value1, value2, value3]` returns `true` if `value1` is contained between `value2` and `value3`
  *     (inclusively), or `false` otherwise.
  *   * `['in', needle, haystack]` returns `true` if `needle` is found in `haystack`, and
@@ -268,7 +268,7 @@ export class CallExpression {
 /**
  * @typedef {Object} ParsingContext
  * @property {Map<string, ValueType>} variables Variables referenced with the 'var' operator; key is name, value is type.
- * @property {Map<string, ValueType>} properties Properties referenced with the 'get' operator; key is name, value is type.
+ * @property {Map<string, ValueType>} properties Properties referenced with the 'get' operator; key is name (or path to the sub property), value is type.
  * @property {boolean} featureId The style uses the feature id.
  * @property {boolean} geometryType The style uses the feature geometry type.
  * @property {boolean} mCoordinate The style uses the M coordinate of geometries
@@ -459,9 +459,9 @@ export const Ops = {
  * @type {Object<string, Parser>}
  */
 const parsers = {
-  [Ops.Get]: createCallExpressionParser(hasArgsCount(1, Infinity), withGetArgs),
+  [Ops.Get]: createGetOrHasExpressionParser(),
+  [Ops.Has]: createGetOrHasExpressionParser(),
   [Ops.Var]: createVarExpressionParser(),
-  [Ops.Has]: createCallExpressionParser(hasArgsCount(1, Infinity), withGetArgs),
   [Ops.Id]: createCallExpressionParser(usesFeatureId, withNoArgs),
   [Ops.Concat]: createCallExpressionParser(
     hasArgsCount(2, Infinity),
@@ -635,34 +635,72 @@ const parsers = {
  * returns the parsed arguments if any.  The second argument is the return type of the call expression.
  */
 
+const PROPERTY_PATH_SEPARATOR = '##';
+
 /**
- * @type {ArgValidator}
+ * This special expression parser reads style variables present in the context to narrow down
+ * the expected return type of the 'var' operator
+ * @return {Parser} The parser.
  */
-function withGetArgs(encoded, returnType, context) {
-  const argsCount = encoded.length - 1;
-  const args = new Array(argsCount);
-  for (let i = 0; i < argsCount; ++i) {
-    const key = encoded[i + 1];
-    switch (typeof key) {
-      case 'number': {
-        args[i] = new LiteralExpression(NumberType, key);
-        break;
+function createGetOrHasExpressionParser() {
+  return function (encoded, returnType, context) {
+    const isHasOperator = encoded[0] === 'has';
+    const argsCount = encoded.length - 1;
+    if (argsCount < 1) {
+      throw new Error(
+        `expected at least one argument for ${encoded[0]}, got ${argsCount}`,
+      );
+    }
+    const args = new Array(argsCount);
+    args[0] = new LiteralExpression(StringType, encoded[1]);
+
+    const knownPropertyType = isHasOperator ? AnyType : returnType;
+    const propertyPath = encoded.slice(1).join('.');
+    const propertyPathKey = encoded.slice(1).join(PROPERTY_PATH_SEPARATOR);
+
+    // register property (and nested path if any), making sure that it hasn't been registered before with a more restrictive type
+    const existingPropertyType =
+      context.properties.get(propertyPathKey) ?? AnyType;
+    if (!overlapsType(existingPropertyType, knownPropertyType)) {
+      throw new Error(
+        `the ${propertyPath} property read by a get operation was expected to match this type: ${typeName(knownPropertyType)}, got ${typeName(existingPropertyType)}`,
+      );
+    }
+    context.properties.set(
+      propertyPathKey,
+      existingPropertyType & knownPropertyType,
+    );
+
+    for (let i = 1; i < argsCount; ++i) {
+      const nestedKey = encoded[i + 1];
+      switch (typeof nestedKey) {
+        case 'number': {
+          args[i] = new LiteralExpression(NumberType, nestedKey);
+          break;
+        }
+        case 'string': {
+          args[i] = new LiteralExpression(StringType, nestedKey);
+          break;
+        }
+        default: {
+          throw new Error(
+            `expected a string key or numeric array index for a nested access in a get operation, got ${nestedKey}`,
+          );
+        }
       }
-      case 'string': {
-        args[i] = new LiteralExpression(StringType, key);
-        break;
-      }
-      default: {
+    }
+
+    if (isHasOperator) {
+      if (!overlapsType(returnType, BooleanType)) {
         throw new Error(
-          `expected a string key or numeric array index for a get operation, got ${key}`,
+          `The has operator returns a boolean, expected type: ${typeName(returnType)}`,
         );
       }
+      return new CallExpression(BooleanType, 'has', ...args);
     }
-    if (i === 0) {
-      context.properties.set(String(key), returnType);
-    }
-  }
-  return args;
+
+    return new CallExpression(returnType, 'get', ...args);
+  };
 }
 
 /**
