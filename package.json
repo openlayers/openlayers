@@ -129,7 +129,7 @@
     "topojson-client": "^3.1.0",
     "typescript": "6.0.3",
     "vite": "^8.1.5",
-    "vitest": "^4.1.8",
+    "vitest": "^5.0.3",
     "walk": "^2.3.9",
     "yargs": "^18.0.0"
   },
