@@ -26,6 +26,17 @@ describe('ol/format/WKT.js', function () {
         transform([1, 2], 'EPSG:4326', 'EPSG:3857'),
       );
     });
+
+    it('uses projections passed to the constructor', function () {
+      const format = new WKT({
+        dataProjection: 'EPSG:4326',
+        featureProjection: 'EPSG:3857',
+      });
+      assert.deepEqual(
+        format.readGeometry('POINT(1 2)').getCoordinates(),
+        transform([1, 2], 'EPSG:4326', 'EPSG:3857'),
+      );
+    });
   });
 
   describe('#writeGeometry()', function () {
@@ -35,6 +46,17 @@ describe('ol/format/WKT.js', function () {
         dataProjection: 'EPSG:4326',
         featureProjection: 'EPSG:3857',
       });
+      const got = format.readGeometry(wkt).getCoordinates();
+      assert.approximately(got[0], 1, 1e-6);
+      assert.approximately(got[1], 2, 1e-6);
+    });
+
+    it('uses projections passed to the constructor', function () {
+      const geom = new Point([1, 2]).transform('EPSG:4326', 'EPSG:3857');
+      const wkt = new WKT({
+        dataProjection: 'EPSG:4326',
+        featureProjection: 'EPSG:3857',
+      }).writeGeometry(geom);
       const got = format.readGeometry(wkt).getCoordinates();
       assert.approximately(got[0], 1, 1e-6);
       assert.approximately(got[1], 2, 1e-6);
