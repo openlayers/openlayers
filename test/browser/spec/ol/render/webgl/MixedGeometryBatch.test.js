@@ -10,7 +10,9 @@ import Point from '../../../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../../../src/ol/geom/Polygon.js';
 import {getTransform} from '../../../../../../src/ol/proj.js';
 import RenderFeature from '../../../../../../src/ol/render/Feature.js';
-import MixedGeometryBatch from '../../../../../../src/ol/render/webgl/MixedGeometryBatch.js';
+import MixedGeometryBatch, {
+  createHitDetectionRefs,
+} from '../../../../../../src/ol/render/webgl/MixedGeometryBatch.js';
 import {getUid} from '../../../../../../src/ol/util.js';
 
 describe('MixedGeometryBatch', function () {
@@ -85,8 +87,8 @@ describe('MixedGeometryBatch', function () {
         assert.lengthOf(Object.keys(mixedBatch.lineStringBatch.entries), 0);
       });
       it('assigns a hit detection ref to the entry', () => {
-        assert.strictEqual(mixedBatch.globalCounter_, 2);
-        assert.strictEqual(mixedBatch.freeGlobalRef_.length, 0);
+        assert.strictEqual(mixedBatch.refs_.counter, 2);
+        assert.strictEqual(mixedBatch.refs_.free.length, 0);
         assert.strictEqual(mixedBatch.getFeatureFromRef(1), feature1);
         assert.strictEqual(mixedBatch.getFeatureFromRef(2), feature2);
       });
@@ -504,9 +506,9 @@ describe('MixedGeometryBatch', function () {
         assert.strictEqual(mixedBatch.polygonBatch.ringsCount, 3);
       });
       it('keeps the removed ref for later use', () => {
-        assert.deepEqual(mixedBatch.freeGlobalRef_, [1]);
-        assert.strictEqual(mixedBatch.globalCounter_, 2);
-        assert.strictEqual(mixedBatch.refToFeature_.size, 1);
+        assert.deepEqual(mixedBatch.refs_.free, [1]);
+        assert.strictEqual(mixedBatch.refs_.counter, 2);
+        assert.strictEqual(mixedBatch.refs_.refToFeature.size, 1);
       });
     });
   });
@@ -1297,6 +1299,61 @@ describe('MixedGeometryBatch', function () {
     it('clears point batch', () => {
       assert.lengthOf(Object.keys(mixedBatch.pointBatch.entries), 0);
       assert.strictEqual(mixedBatch.pointBatch.geometriesCount, 0);
+    });
+
+    it('resets the hit detection refs', () => {
+      assert.strictEqual(mixedBatch.refs_.counter, 0);
+      assert.lengthOf(mixedBatch.refs_.free, 0);
+      assert.strictEqual(mixedBatch.refs_.refToFeature.size, 0);
+      assert.isTrue(mixedBatch.isEmpty());
+    });
+  });
+
+  describe('shared hit detection refs', () => {
+    let refs, batch1, batch2, feature1, feature2, feature3;
+    beforeEach(() => {
+      refs = createHitDetectionRefs();
+      batch1 = new MixedGeometryBatch(refs);
+      batch2 = new MixedGeometryBatch(refs);
+      feature1 = new Feature(new Point([101, 102]));
+      feature2 = new Feature(new Point([201, 202]));
+      feature3 = new Feature(new Point([301, 302]));
+      batch1.addFeature(feature1);
+      batch2.addFeature(feature2);
+      batch1.addFeature(feature3);
+    });
+
+    it('assigns unique refs across batches', () => {
+      assert.strictEqual(refs.counter, 3);
+      assert.strictEqual(batch1.pointBatch.entries[getUid(feature1)].ref, 1);
+      assert.strictEqual(batch2.pointBatch.entries[getUid(feature2)].ref, 2);
+      assert.strictEqual(batch1.pointBatch.entries[getUid(feature3)].ref, 3);
+    });
+
+    it('resolves features from any batch', () => {
+      assert.strictEqual(batch1.getFeatureFromRef(2), feature2);
+      assert.strictEqual(batch2.getFeatureFromRef(1), feature1);
+      assert.strictEqual(refs.refToFeature.get(3), feature3);
+    });
+
+    it('only releases its own refs when cleared', () => {
+      batch1.clear();
+      assert.isTrue(batch1.isEmpty());
+      assert.isFalse(batch2.isEmpty());
+      assert.strictEqual(refs.counter, 3);
+      assert.sameMembers(refs.free, [1, 3]);
+      assert.strictEqual(refs.refToFeature.size, 1);
+      assert.strictEqual(refs.refToFeature.get(2), feature2);
+      assert.isUndefined(batch2.getFeatureFromRef(1));
+    });
+
+    it('reuses released refs', () => {
+      batch1.removeFeature(feature1);
+      const feature4 = new Feature(new Point([401, 402]));
+      batch2.addFeature(feature4);
+      assert.strictEqual(batch2.pointBatch.entries[getUid(feature4)].ref, 1);
+      assert.strictEqual(refs.counter, 3);
+      assert.strictEqual(refs.refToFeature.get(1), feature4);
     });
   });
 

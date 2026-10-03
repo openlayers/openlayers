@@ -6,7 +6,9 @@ import VectorTile from '../../../../../src/ol/VectorTile.js';
 import {VOID} from '../../../../../src/ol/functions.js';
 import Point from '../../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../../src/ol/geom/Polygon.js';
-import MixedGeometryBatch from '../../../../../src/ol/render/webgl/MixedGeometryBatch.js';
+import MixedGeometryBatch, {
+  createHitDetectionRefs,
+} from '../../../../../src/ol/render/webgl/MixedGeometryBatch.js';
 import {createXYZ} from '../../../../../src/ol/tilegrid.js';
 import WebGLHelper from '../../../../../src/ol/webgl/Helper.js';
 import TileGeometry from '../../../../../src/ol/webgl/TileGeometry.js';
@@ -63,6 +65,20 @@ describe('ol/webgl/TileGeometry', function () {
   describe('tile provided initially', () => {
     it('assigns the given tile', () => {
       assert.instanceOf(tileGeometry.tile, VectorRenderTile);
+    });
+    it('uses the provided hit detection refs pool for its geometry batch', () => {
+      const refs = createHitDetectionRefs();
+      const withSharedRefs = new TileGeometry(
+        {
+          tile,
+          grid,
+          helper,
+        },
+        styleRenderer,
+        refs,
+      );
+      assert.strictEqual(withSharedRefs.batch_.refs_, refs);
+      withSharedRefs.dispose();
     });
     it('creates a new geometry batch', () => {
       assert.instanceOf(tileGeometry.batch_, MixedGeometryBatch);
@@ -171,6 +187,9 @@ describe('ol/webgl/TileGeometry', function () {
           styleRenderer.disposeTextInstructions.mock.calls.length,
           1,
         );
+      });
+      it('clears the geometry batch to release hit detection refs', () => {
+        assert.isTrue(tileGeometry.batch_.isEmpty());
       });
     });
   });
