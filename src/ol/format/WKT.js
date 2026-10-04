@@ -9,6 +9,7 @@ import MultiPoint from '../geom/MultiPoint.js';
 import MultiPolygon from '../geom/MultiPolygon.js';
 import Point from '../geom/Point.js';
 import Polygon from '../geom/Polygon.js';
+import {get as getProjection} from '../proj.js';
 import {transformGeometryWithOptions} from './Feature.js';
 import TextFeature from './TextFeature.js';
 
@@ -29,6 +30,8 @@ const GeometryConstructor = {
  * @typedef {Object} Options
  * @property {boolean} [splitCollection=false] Whether to split GeometryCollections into
  * multiple features on reading.
+ * @property {import("../proj.js").ProjectionLike} [dataProjection] Default data projection.
+ * @property {import("../proj.js").ProjectionLike} [featureProjection] Default feature projection.
  */
 
 /**
@@ -619,6 +622,10 @@ class WKT extends TextFeature {
      */
     this.splitCollection_ =
       options.splitCollection !== undefined ? options.splitCollection : false;
+
+    this.dataProjection = getProjection(options.dataProjection) ?? undefined;
+    this.defaultFeatureProjection =
+      getProjection(options.featureProjection) ?? undefined;
   }
 
   /**
