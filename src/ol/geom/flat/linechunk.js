@@ -13,7 +13,7 @@ export function lineChunk(chunkLength, flatCoordinates, offset, end, stride) {
   const chunks = [];
   let cursor = offset;
   let chunkM = 0;
-  let currentChunk = flatCoordinates.slice(offset, 2);
+  let currentChunk = flatCoordinates.slice(offset, offset + 2);
   while (chunkM < chunkLength && cursor + stride < end) {
     const [x1, y1] = currentChunk.slice(-2);
     const x2 = flatCoordinates[cursor + stride];

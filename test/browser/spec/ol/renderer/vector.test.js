@@ -208,5 +208,105 @@ describe('ol/renderer/vector', function () {
         drawMultiPolygonSpy.mockRestore();
       });
     });
+
+    describe('icon with placement: line', function () {
+      let lineIconStyle, lineStyle;
+
+      beforeEach(function () {
+        const canvas = document.createElement('canvas');
+        canvas.width = 2;
+        canvas.height = 2;
+        lineIconStyle = new Icon({
+          img: canvas,
+          size: [2, 2],
+          placement: 'line',
+        });
+        lineStyle = new Style({image: lineIconStyle});
+      });
+
+      it('dispatches LineString geometries to the Image builder', function () {
+        feature.setGeometry(
+          new LineString([
+            [0, 0],
+            [1, 1],
+          ]),
+        );
+        const imageReplay = builderGroup.getBuilder(
+          lineStyle.getZIndex(),
+          'Image',
+        );
+        const setImageStyleSpy = vi.spyOn(imageReplay, 'setImageStyle');
+        const drawLineStringSpy = vi
+          .spyOn(imageReplay, 'drawLineString')
+          .mockImplementation(VOID);
+        renderFeature(
+          builderGroup,
+          feature,
+          lineStyle,
+          squaredTolerance,
+          listener,
+        );
+        assert.strictEqual(setImageStyleSpy.mock.calls.length, 1);
+        assert.strictEqual(drawLineStringSpy.mock.calls.length, 1);
+        setImageStyleSpy.mockRestore();
+        drawLineStringSpy.mockRestore();
+      });
+
+      it('dispatches MultiLineString geometries to the Image builder', function () {
+        feature.setGeometry(
+          new MultiLineString([
+            [
+              [0, 0],
+              [1, 1],
+            ],
+          ]),
+        );
+        const imageReplay = builderGroup.getBuilder(
+          lineStyle.getZIndex(),
+          'Image',
+        );
+        const setImageStyleSpy = vi.spyOn(imageReplay, 'setImageStyle');
+        const drawMultiLineStringSpy = vi
+          .spyOn(imageReplay, 'drawMultiLineString')
+          .mockImplementation(VOID);
+        renderFeature(
+          builderGroup,
+          feature,
+          lineStyle,
+          squaredTolerance,
+          listener,
+        );
+        assert.strictEqual(setImageStyleSpy.mock.calls.length, 1);
+        assert.strictEqual(drawMultiLineStringSpy.mock.calls.length, 1);
+        setImageStyleSpy.mockRestore();
+        drawMultiLineStringSpy.mockRestore();
+      });
+
+      it('does not dispatch when placement is the default "point"', function () {
+        lineIconStyle.setPlacement('point');
+        feature.setGeometry(
+          new LineString([
+            [0, 0],
+            [1, 1],
+          ]),
+        );
+        const imageReplay = builderGroup.getBuilder(
+          lineStyle.getZIndex(),
+          'Image',
+        );
+        const drawLineStringSpy = vi
+          .spyOn(imageReplay, 'drawLineString')
+          .mockImplementation(VOID);
+        renderFeature(
+          builderGroup,
+          feature,
+          lineStyle,
+          squaredTolerance,
+          listener,
+        );
+        assert.strictEqual(drawLineStringSpy.mock.calls.length, 0);
+        drawLineStringSpy.mockRestore();
+      });
+    });
   });
 });

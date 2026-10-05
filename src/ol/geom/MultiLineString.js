@@ -171,10 +171,7 @@ class MultiLineString extends SimpleGeometry {
    * @api
    */
   getCoordinateAtM(m, extrapolate, interpolate) {
-    if (
-      (this.layout != 'XYM' && this.layout != 'XYZM') ||
-      this.flatCoordinates.length === 0
-    ) {
+    if (this.flatCoordinates.length === 0) {
       return null;
     }
     extrapolate = extrapolate !== undefined ? extrapolate : false;

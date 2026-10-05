@@ -1,7 +1,9 @@
 /**
  * @module ol/render/canvas/ImageBuilder
  */
-import {containsCoordinate} from '../../extent.js';
+import {containsCoordinate, intersects} from '../../extent.js';
+import {interpolatePoint} from '../../geom/flat/interpolate.js';
+import {lineChunk} from '../../geom/flat/linechunk.js';
 import CanvasBuilder from './Builder.js';
 import CanvasInstruction from './Instruction.js';
 
@@ -95,6 +97,12 @@ class CanvasImageBuilder extends CanvasBuilder {
 
     /**
      * @private
+     * @type {number|undefined}
+     */
+    this.repeat_ = undefined;
+
+    /**
+     * @private
      * @type {import('../../style/Style.js').DeclutterMode|undefined}
      */
     this.declutterMode_ = undefined;
@@ -126,55 +134,7 @@ class CanvasImageBuilder extends CanvasBuilder {
     const stride = pointGeometry.getStride();
     const myBegin = this.coordinates.length;
     const myEnd = this.appendFlatPointCoordinates(flatCoordinates, stride);
-    const imagePixelRatio = this.imagePixelRatio_ ?? 1;
-    const anchorX = this.anchorX_ ?? 0;
-    const anchorY = this.anchorY_ ?? 0;
-    const height = this.height_ ?? 0;
-    const originX = this.originX_ ?? 0;
-    const originY = this.originY_ ?? 0;
-    const scale = this.scale_ ?? [1, 1];
-    const width = this.width_ ?? 0;
-    this.instructions.push([
-      CanvasInstruction.DRAW_IMAGE,
-      myBegin,
-      myEnd,
-      this.image_,
-      // Remaining arguments to DRAW_IMAGE are in alphabetical order
-      anchorX * imagePixelRatio,
-      anchorY * imagePixelRatio,
-      Math.ceil(height * imagePixelRatio),
-      this.opacity_,
-      originX * imagePixelRatio,
-      originY * imagePixelRatio,
-      this.rotateWithView_,
-      this.rotation_,
-      [
-        (scale[0] * this.pixelRatio) / imagePixelRatio,
-        (scale[1] * this.pixelRatio) / imagePixelRatio,
-      ],
-      Math.ceil(width * imagePixelRatio),
-      this.declutterMode_,
-      this.declutterImageWithText_,
-    ]);
-    this.hitDetectionInstructions.push([
-      CanvasInstruction.DRAW_IMAGE,
-      myBegin,
-      myEnd,
-      this.hitDetectionImage_,
-      // Remaining arguments to DRAW_IMAGE are in alphabetical order
-      this.anchorX_,
-      this.anchorY_,
-      this.height_,
-      1,
-      this.originX_,
-      this.originY_,
-      this.rotateWithView_,
-      this.rotation_,
-      this.scale_,
-      this.width_,
-      this.declutterMode_,
-      this.declutterImageWithText_,
-    ]);
+    this.appendImageInstruction_(myBegin, myEnd, this.rotation_);
     this.endGeometry(feature);
   }
 
@@ -208,6 +168,116 @@ class CanvasImageBuilder extends CanvasBuilder {
     }
     const myBegin = this.coordinates.length;
     const myEnd = this.appendFlatPointCoordinates(filteredFlatCoordinates, 2);
+    this.appendImageInstruction_(myBegin, myEnd, this.rotation_);
+    this.endGeometry(feature);
+  }
+
+  /**
+   * @param {import("../../geom/LineString.js").default|import("../Feature.js").default} lineStringGeometry Line string geometry.
+   * @param {import("../../Feature.js").FeatureLike} feature Feature.
+   * @param {number} [index] Render order index.
+   * @override
+   */
+  drawLineString(lineStringGeometry, feature, index) {
+    if (!this.image_) {
+      return;
+    }
+    const geometryExtent = lineStringGeometry.getExtent();
+    if (this.maxExtent && !intersects(this.maxExtent, geometryExtent)) {
+      return;
+    }
+    this.beginGeometry(lineStringGeometry, feature, index ?? 0);
+    const flatCoordinates = lineStringGeometry.getFlatCoordinates();
+    const stride = lineStringGeometry.getStride();
+    this.drawChunkedImages_(flatCoordinates, 0, flatCoordinates.length, stride);
+    this.endGeometry(feature);
+  }
+
+  /**
+   * @param {import("../../geom/MultiLineString.js").default|import("../Feature.js").default} multiLineStringGeometry MultiLineString geometry.
+   * @param {import("../../Feature.js").FeatureLike} feature Feature.
+   * @param {number} [index] Render order index.
+   * @override
+   */
+  drawMultiLineString(multiLineStringGeometry, feature, index) {
+    if (!this.image_) {
+      return;
+    }
+    const geometryExtent = multiLineStringGeometry.getExtent();
+    if (this.maxExtent && !intersects(this.maxExtent, geometryExtent)) {
+      return;
+    }
+    this.beginGeometry(multiLineStringGeometry, feature, index ?? 0);
+    const ends =
+      /** @type {import("../../geom/MultiLineString.js").default} */ (
+        multiLineStringGeometry
+      ).getEnds();
+    const flatCoordinates = multiLineStringGeometry.getFlatCoordinates();
+    const stride = multiLineStringGeometry.getStride();
+    let offset = 0;
+    for (let i = 0, ii = ends.length; i < ii; ++i) {
+      this.drawChunkedImages_(flatCoordinates, offset, ends[i], stride);
+      offset = ends[i];
+    }
+    this.endGeometry(feature);
+  }
+
+  /**
+   * Split a sub-line into equal-length chunks (or a single chunk when `repeat_` is not
+   * set) and draw one image per chunk, rotated to follow that chunk's own start/end
+   * tangent.
+   * @param {Array<number>} flatCoordinates Flat coordinates.
+   * @param {number} offset Offset.
+   * @param {number} end End.
+   * @param {number} stride Stride.
+   * @private
+   */
+  drawChunkedImages_(flatCoordinates, offset, end, stride) {
+    const chunkLength = this.repeat_
+      ? this.repeat_ * this.resolution
+      : Infinity;
+    const chunks = lineChunk(chunkLength, flatCoordinates, offset, end, stride);
+    for (let i = 0, ii = chunks.length; i < ii; ++i) {
+      const chunk = chunks[i];
+      if (chunk.length < 4) {
+        continue;
+      }
+      const x0 = chunk[0];
+      const y0 = chunk[1];
+      const x1 = chunk[chunk.length - 2];
+      const y1 = chunk[chunk.length - 1];
+      // the y axis is flipped between map coordinates and canvas pixels
+      const rotation = Math.atan2(y0 - y1, x1 - x0);
+      const anchor = interpolatePoint(chunk, 0, chunk.length, 2, 0.5);
+      this.drawImageAtCoordinate_(anchor, rotation);
+    }
+  }
+
+  /**
+   * Push one `DRAW_IMAGE` instruction for a single anchor coordinate, using the
+   * provided rotation instead of the image style's own fixed rotation.
+   * @param {import("../../coordinate.js").Coordinate} coordinate Coordinate to draw the image at.
+   * @param {number} rotation Rotation (radians).
+   * @private
+   */
+  drawImageAtCoordinate_(coordinate, rotation) {
+    const myBegin = this.coordinates.length;
+    const myEnd = this.appendFlatPointCoordinates(coordinate, 2);
+    if (myEnd === myBegin) {
+      return;
+    }
+    this.appendImageInstruction_(myBegin, myEnd, rotation);
+  }
+
+  /**
+   * Append one `DRAW_IMAGE` instruction (and its hit-detection counterpart) covering the
+   * coordinates in `this.coordinates` between `myBegin` and `myEnd`.
+   * @param {number} myBegin Begin index into `this.coordinates`.
+   * @param {number} myEnd End index into `this.coordinates`.
+   * @param {number|undefined} rotation Rotation (radians).
+   * @private
+   */
+  appendImageInstruction_(myBegin, myEnd, rotation) {
     const imagePixelRatio = this.imagePixelRatio_ ?? 1;
     const anchorX = this.anchorX_ ?? 0;
     const anchorY = this.anchorY_ ?? 0;
@@ -229,7 +299,7 @@ class CanvasImageBuilder extends CanvasBuilder {
       originX * imagePixelRatio,
       originY * imagePixelRatio,
       this.rotateWithView_,
-      this.rotation_,
+      rotation,
       [
         (scale[0] * this.pixelRatio) / imagePixelRatio,
         (scale[1] * this.pixelRatio) / imagePixelRatio,
@@ -251,13 +321,12 @@ class CanvasImageBuilder extends CanvasBuilder {
       this.originX_,
       this.originY_,
       this.rotateWithView_,
-      this.rotation_,
+      rotation,
       this.scale_,
       this.width_,
       this.declutterMode_,
       this.declutterImageWithText_,
     ]);
-    this.endGeometry(feature);
   }
 
   /**
@@ -280,6 +349,7 @@ class CanvasImageBuilder extends CanvasBuilder {
     this.rotateWithView_ = undefined;
     this.rotation_ = undefined;
     this.width_ = undefined;
+    this.repeat_ = undefined;
     return super.finish();
   }
 
@@ -308,6 +378,10 @@ class CanvasImageBuilder extends CanvasBuilder {
     this.rotation_ = imageStyle.getRotation();
     this.scale_ = imageStyle.getScaleArray();
     this.width_ = size[0];
+    this.repeat_ =
+      typeof (/** @type {?} */ (imageStyle).getRepeat) === 'function'
+        ? /** @type {?} */ (imageStyle).getRepeat()
+        : undefined;
     this.declutterMode_ = imageStyle.getDeclutterMode();
     this.declutterImageWithText_ =
       /** @type {import("../canvas.js").DeclutterImageWithText|undefined} */ (
