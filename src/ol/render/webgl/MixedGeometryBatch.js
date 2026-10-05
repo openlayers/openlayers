@@ -51,6 +51,27 @@ import {getUid} from '../../util.js';
  */
 
 /**
+ * Pool of hit detection refs. Refs are numerical ids encoded as colors in the hit detection render pass;
+ * the pool maps them back to features.
+ * @typedef {Object} HitDetectionRefs
+ * @property {number} counter Highest ref allocated so far
+ * @property {Array<number>} free Refs that were released and can be reused. The precision in WebGL shaders is limited,
+ * so refs are kept as small as possible by reusing freed up references.
+ * @property {Map<number, Feature|RenderFeature>} refToFeature Lookup of features by ref
+ */
+
+/**
+ * @return {HitDetectionRefs} A new, empty pool of hit detection refs
+ */
+export function createHitDetectionRefs() {
+  return {
+    counter: 0,
+    free: [],
+    refToFeature: new Map(),
+  };
+}
+
+/**
  * @classdesc This class is used to group several geometries of various types together for faster rendering.
  * Three inner batches are maintained for polygons, lines and points. Each time a feature is added, changed or removed
  * from the batch, these inner batches are modified accordingly in order to keep them up-to-date.
@@ -70,18 +91,23 @@ import {getUid} from '../../util.js';
  * the WebGL buffers.
  */
 class MixedGeometryBatch {
-  constructor() {
+  /**
+   * @param {HitDetectionRefs} [hitDetectionRefs] Pool of hit detection refs; when provided, the pool
+   * is shared with other batches so that refs stay unique across all of them (e.g. across vector tiles).
+   */
+  constructor(hitDetectionRefs) {
     /**
+     * Whether the hit detection refs pool is shared with other batches
      * @private
      */
-    this.globalCounter_ = 0;
+    this.sharedRefs_ = !!hitDetectionRefs;
 
     /**
      * Refs are used as keys for hit detection.
-     * @type {Map<number, Feature|RenderFeature>}
+     * @type {HitDetectionRefs}
      * @private
      */
-    this.refToFeature_ = new Map();
+    this.refs_ = hitDetectionRefs ?? createHitDetectionRefs();
 
     /**
      * Features are split in "entries", which are individual geometries. We use the following map to share a single ref for all those entries.
@@ -89,14 +115,6 @@ class MixedGeometryBatch {
      * @private
      */
     this.uidToRef_ = new Map();
-
-    /**
-     * The precision in WebGL shaders is limited.
-     * To keep the refs as small as possible we maintain an array of freed up references.
-     * @type {Array<number>}
-     * @private
-     */
-    this.freeGlobalRef_ = [];
 
     /**
      * @type {PolygonGeometryBatch}
@@ -511,11 +529,11 @@ class MixedGeometryBatch {
     const currentRef = this.uidToRef_.get(featureUid);
 
     // the ref starts at 1 to distinguish from white color (no feature)
-    const ref =
-      currentRef || this.freeGlobalRef_.pop() || ++this.globalCounter_;
+    const refs = this.refs_;
+    const ref = currentRef || refs.free.pop() || ++refs.counter;
     entry.ref = ref;
     if (!currentRef) {
-      this.refToFeature_.set(ref, entry.feature);
+      refs.refToFeature.set(ref, entry.feature);
       this.uidToRef_.set(featureUid, ref);
     }
     return entry;
@@ -531,9 +549,9 @@ class MixedGeometryBatch {
     if (!ref) {
       throw new Error('This feature has no ref: ' + featureUid);
     }
-    this.refToFeature_.delete(ref);
+    this.refs_.refToFeature.delete(ref);
     this.uidToRef_.delete(featureUid);
-    this.freeGlobalRef_.push(ref);
+    this.refs_.free.push(ref);
   }
 
   /**
@@ -579,9 +597,18 @@ class MixedGeometryBatch {
     this.lineStringBatch.verticesCount = 0;
     this.pointBatch.entries = {};
     this.pointBatch.geometriesCount = 0;
-    this.globalCounter_ = 0;
-    this.freeGlobalRef_ = [];
-    this.refToFeature_.clear();
+    const refs = this.refs_;
+    if (this.sharedRefs_) {
+      // only release the refs owned by this batch
+      for (const ref of this.uidToRef_.values()) {
+        refs.refToFeature.delete(ref);
+        refs.free.push(ref);
+      }
+    } else {
+      refs.counter = 0;
+      refs.free.length = 0;
+      refs.refToFeature.clear();
+    }
     this.uidToRef_.clear();
   }
 
@@ -591,11 +618,11 @@ class MixedGeometryBatch {
    * @return {Feature|RenderFeature|undefined} feature
    */
   getFeatureFromRef(ref) {
-    return this.refToFeature_.get(ref);
+    return this.refs_.refToFeature.get(ref);
   }
 
   isEmpty() {
-    return this.globalCounter_ === 0;
+    return this.uidToRef_.size === 0;
   }
 
   /**
@@ -605,13 +632,12 @@ class MixedGeometryBatch {
    * @return {MixedGeometryBatch} Filtered geometry batch
    */
   filter(featureFilter) {
-    const filtered = new MixedGeometryBatch();
-    filtered.globalCounter_ = this.globalCounter_;
+    const filtered = new MixedGeometryBatch(this.refs_);
     filtered.uidToRef_ = this.uidToRef_;
-    filtered.refToFeature_ = this.refToFeature_;
     let empty = true;
-    for (const feature of this.refToFeature_.values()) {
-      if (featureFilter(feature)) {
+    for (const ref of this.uidToRef_.values()) {
+      const feature = this.refs_.refToFeature.get(ref);
+      if (feature && featureFilter(feature)) {
         filtered.addFeature(feature);
         empty = false;
       }
