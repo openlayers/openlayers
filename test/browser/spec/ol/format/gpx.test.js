@@ -203,6 +203,28 @@ describe('ol.format.GPX', function () {
       assertXmlEqual(serialized, parse(text));
     });
 
+    it('does not copy ele and time to rtepts that lack them', function () {
+      const text =
+        '<gpx xmlns="http://www.topografix.com/GPX/1/1" ' +
+        'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
+        'xsi:schemaLocation="http://www.topografix.com/GPX/1/1 ' +
+        'http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="OpenLayers">' +
+        '  <rte>' +
+        '    <rtept lat="1" lon="2">' +
+        '      <ele>3</ele>' +
+        '      <time>2010-01-10T09:29:12Z</time>' +
+        '    </rtept>' +
+        '    <rtept lat="5" lon="6"/>' +
+        '    <rtept lat="7" lon="8">' +
+        '      <time>2010-01-10T09:30:12Z</time>' +
+        '    </rtept>' +
+        '  </rte>' +
+        '</gpx>';
+      const fs = format.readFeatures(text);
+      const serialized = format.writeFeaturesNode(fs);
+      assertXmlEqual(serialized, parse(text));
+    });
+
     it('does not write rte attributes in rtepts', function () {
       const text =
         '<gpx xmlns="http://www.topografix.com/GPX/1/1" ' +
@@ -416,6 +438,39 @@ describe('ol.format.GPX', function () {
         ],
       ]);
       assert.strictEqual(g.getLayout(), 'XYZM');
+      const serialized = format.writeFeaturesNode(fs);
+      assertXmlEqual(serialized, parse(text));
+    });
+
+    it('does not copy ele and time to trkpts that lack them', function () {
+      const text =
+        '<gpx xmlns="http://www.topografix.com/GPX/1/1" ' +
+        'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
+        'xsi:schemaLocation="http://www.topografix.com/GPX/1/1 ' +
+        'http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="OpenLayers">' +
+        '  <trk>' +
+        '    <trkseg>' +
+        '      <trkpt lat="1" lon="2">' +
+        '        <ele>3</ele>' +
+        '        <time>2010-01-10T09:29:12Z</time>' +
+        '      </trkpt>' +
+        '      <trkpt lat="5" lon="6"/>' +
+        '      <trkpt lat="7" lon="8">' +
+        '        <ele>9</ele>' +
+        '      </trkpt>' +
+        '    </trkseg>' +
+        '  </trk>' +
+        '</gpx>';
+      const fs = format.readFeatures(text);
+      const g = fs[0].getGeometry();
+      assert.strictEqual(g.getLayout(), 'XYZM');
+      assert.deepEqual(g.getCoordinates(), [
+        [
+          [2, 1, 3, 1263115752],
+          [6, 5, 0, 0],
+          [8, 7, 9, 0],
+        ],
+      ]);
       const serialized = format.writeFeaturesNode(fs);
       assertXmlEqual(serialized, parse(text));
     });
