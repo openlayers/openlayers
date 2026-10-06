@@ -348,11 +348,11 @@ class CanvasImageBuilder extends CanvasBuilder {
    * @private
    */
   drawAnchoredImages_(flatCoordinates, offset, end, stride) {
-    const chunkLength = this.repeat_
+    const repeatLength = this.repeat_
       ? this.repeat_ * this.resolution
       : Infinity;
     const anchors = lineAnchors(
-      chunkLength,
+      repeatLength,
       flatCoordinates,
       offset,
       end,

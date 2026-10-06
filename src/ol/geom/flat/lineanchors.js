@@ -7,9 +7,9 @@ import {lineStringLength} from './length.js';
 /**
  * Compute evenly-spaced anchor points along a line (or ring), without allocating
  * per-chunk coordinate arrays. The number of anchors is the closest whole number of
- * `chunkLength`-sized intervals that fit the line's total length, so spacing is always
+ * `repeatLength`-sized intervals that fit the line's total length, so spacing is always
  * even (no short leftover interval at the end).
- * @param {number} chunkLength Nominal length of each interval.
+ * @param {number} repeatLength Nominal length of each interval.
  * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Start offset of the `flatCoordinates`.
  * @param {number} end End offset of the `flatCoordinates`.
@@ -20,7 +20,7 @@ import {lineStringLength} from './length.js';
  * flat `[x0, y0, rotation0, x1, y1, rotation1, ...]`.
  */
 export function lineAnchors(
-  chunkLength,
+  repeatLength,
   flatCoordinates,
   offset,
   end,
@@ -28,7 +28,7 @@ export function lineAnchors(
   withRotation,
 ) {
   const totalLength = lineStringLength(flatCoordinates, offset, end, stride);
-  const count = Math.max(1, Math.round(totalLength / chunkLength));
+  const count = Math.max(1, Math.round(totalLength / repeatLength));
   const interval = totalLength / count / 2;
 
   const result = [];
