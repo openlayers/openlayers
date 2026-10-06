@@ -11,6 +11,8 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import OSM from '../src/ol/source/OSM.js';
 import VectorSource from '../src/ol/source/Vector.js';
+import CircleStyle from '../src/ol/style/Circle.js';
+import Fill from '../src/ol/style/Fill.js';
 import Icon from '../src/ol/style/Icon.js';
 import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
@@ -174,6 +176,34 @@ const lineRotateWithLineFalseLayer = new VectorLayer({
   }),
 });
 
+// a static linestring styled with a `CircleStyle` instead of an `Icon`: `placement` and
+// `repeat` work the same way here too, since they live on the shared `ImageStyle` base
+// class that `Icon`, `CircleStyle`, and `RegularShape` all extend
+const lineCircleLayer = new VectorLayer({
+  source: new VectorSource({
+    features: [
+      new Feature(
+        new LineString([
+          [center[0] - 1800000, center[1] - 900000],
+          [center[0] - 300000, center[1] - 1100000],
+        ]),
+      ),
+    ],
+  }),
+  style: new Style({
+    stroke: new Stroke({
+      color: '#996633',
+      width: 2,
+    }),
+    image: new CircleStyle({
+      radius: 6,
+      fill: new Fill({color: '#ff3333'}),
+      placement: 'line',
+      repeat: 40,
+    }),
+  }),
+});
+
 // a static polygon with `placement: 'line'` and `repeat`: icons repeated around the
 // exterior ring only, each rotated to follow that edge's direction
 const polygonLineLayer = new VectorLayer({
@@ -300,6 +330,7 @@ const map = new Map({
     lineNoRepeatLayer,
     linePointPlacementLayer,
     lineRotateWithLineFalseLayer,
+    lineCircleLayer,
     polygonLineLayer,
     polygonPointLayer,
     polygonRotateWithLineFalseLayer,
