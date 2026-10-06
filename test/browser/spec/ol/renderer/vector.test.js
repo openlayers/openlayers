@@ -308,5 +308,77 @@ describe('ol/renderer/vector', function () {
         drawLineStringSpy.mockRestore();
       });
     });
+
+    describe('icon on polygon geometries', function () {
+      let polygonIconStyle, polygonStyle;
+
+      beforeEach(function () {
+        const canvas = document.createElement('canvas');
+        canvas.width = 2;
+        canvas.height = 2;
+        polygonIconStyle = new Icon({img: canvas, size: [2, 2]});
+        polygonStyle = new Style({image: polygonIconStyle});
+      });
+
+      it('dispatches Polygon geometries to the Image builder', function () {
+        feature.setGeometry(
+          new Polygon([
+            [
+              [0, 0],
+              [1, 1],
+              [1, 0],
+              [0, 0],
+            ],
+          ]),
+        );
+        const imageReplay = builderGroup.getBuilder(
+          polygonStyle.getZIndex(),
+          'Image',
+        );
+        const drawPolygonSpy = vi
+          .spyOn(imageReplay, 'drawPolygon')
+          .mockImplementation(VOID);
+        renderFeature(
+          builderGroup,
+          feature,
+          polygonStyle,
+          squaredTolerance,
+          listener,
+        );
+        assert.strictEqual(drawPolygonSpy.mock.calls.length, 1);
+        drawPolygonSpy.mockRestore();
+      });
+
+      it('dispatches MultiPolygon geometries to the Image builder', function () {
+        feature.setGeometry(
+          new MultiPolygon([
+            [
+              [
+                [0, 0],
+                [1, 1],
+                [1, 0],
+                [0, 0],
+              ],
+            ],
+          ]),
+        );
+        const imageReplay = builderGroup.getBuilder(
+          polygonStyle.getZIndex(),
+          'Image',
+        );
+        const drawMultiPolygonSpy = vi
+          .spyOn(imageReplay, 'drawMultiPolygon')
+          .mockImplementation(VOID);
+        renderFeature(
+          builderGroup,
+          feature,
+          polygonStyle,
+          squaredTolerance,
+          listener,
+        );
+        assert.strictEqual(drawMultiPolygonSpy.mock.calls.length, 1);
+        drawMultiPolygonSpy.mockRestore();
+      });
+    });
   });
 });

@@ -251,6 +251,87 @@ class CanvasImageBuilder extends CanvasBuilder {
   }
 
   /**
+   * @param {import("../../geom/Polygon.js").default|import("../Feature.js").default} polygonGeometry Polygon geometry.
+   * @param {import("../../Feature.js").FeatureLike} feature Feature.
+   * @param {number} [index] Render order index.
+   * @override
+   */
+  drawPolygon(polygonGeometry, feature, index) {
+    if (!this.image_) {
+      return;
+    }
+    const geometryExtent = polygonGeometry.getExtent();
+    if (this.maxExtent && !intersects(this.maxExtent, geometryExtent)) {
+      return;
+    }
+    this.beginGeometry(polygonGeometry, feature, index ?? 0);
+    if (this.placement_ === 'line') {
+      // only the exterior ring is used for line placement
+      const end = /** @type {import("../../geom/Polygon.js").default} */ (
+        polygonGeometry
+      ).getEnds()[0];
+      const flatCoordinates = polygonGeometry.getFlatCoordinates();
+      const stride = polygonGeometry.getStride();
+      this.drawChunkedImages_(flatCoordinates, 0, end, stride);
+    } else {
+      const interiorPoint =
+        /** @type {import("../../geom/Polygon.js").default} */ (
+          polygonGeometry
+        ).getFlatInteriorPoint();
+      this.drawImageAtCoordinate_(
+        [interiorPoint[0], interiorPoint[1]],
+        this.rotation_,
+      );
+    }
+    this.endGeometry(feature);
+  }
+
+  /**
+   * @param {import("../../geom/MultiPolygon.js").default|import("../Feature.js").default} multiPolygonGeometry MultiPolygon geometry.
+   * @param {import("../../Feature.js").FeatureLike} feature Feature.
+   * @param {number} [index] Render order index.
+   * @override
+   */
+  drawMultiPolygon(multiPolygonGeometry, feature, index) {
+    if (!this.image_) {
+      return;
+    }
+    const geometryExtent = multiPolygonGeometry.getExtent();
+    if (this.maxExtent && !intersects(this.maxExtent, geometryExtent)) {
+      return;
+    }
+    this.beginGeometry(multiPolygonGeometry, feature, index ?? 0);
+    if (this.placement_ === 'line') {
+      const endss =
+        /** @type {import("../../geom/MultiPolygon.js").default} */ (
+          multiPolygonGeometry
+        ).getEndss();
+      const flatCoordinates = multiPolygonGeometry.getFlatCoordinates();
+      const stride = multiPolygonGeometry.getStride();
+      let offset = 0;
+      for (let i = 0, ii = endss.length; i < ii; ++i) {
+        // only the exterior ring of each polygon is used for line placement
+        const end = endss[i][0];
+        this.drawChunkedImages_(flatCoordinates, offset, end, stride);
+        offset = end;
+      }
+    } else {
+      const interiorPoints =
+        /** @type {import("../../geom/MultiPolygon.js").default} */ (
+          multiPolygonGeometry
+        ).getFlatInteriorPoints();
+      const midpoints = [];
+      for (let i = 0, ii = interiorPoints.length; i < ii; i += 3) {
+        midpoints.push(interiorPoints[i], interiorPoints[i + 1]);
+      }
+      const myBegin = this.coordinates.length;
+      const myEnd = this.appendFlatPointCoordinates(midpoints, 2);
+      this.appendImageInstruction_(myBegin, myEnd, this.rotation_);
+    }
+    this.endGeometry(feature);
+  }
+
+  /**
    * Split a sub-line into equal-length chunks (or a single chunk when `repeat_` is not
    * set) and draw one image per chunk, rotated to follow that chunk's own start/end
    * tangent.

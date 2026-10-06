@@ -5,6 +5,7 @@ import LineString from '../src/ol/geom/LineString.js';
 import MultiLineString from '../src/ol/geom/MultiLineString.js';
 import MultiPoint from '../src/ol/geom/MultiPoint.js';
 import Point from '../src/ol/geom/Point.js';
+import Polygon from '../src/ol/geom/Polygon.js';
 import Draw from '../src/ol/interaction/Draw.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
@@ -64,12 +65,12 @@ const multiLineStringLayer = new VectorLayer({
       new Feature(
         new MultiLineString([
           [
-            [center[0] - 1800000, center[1] - 1200000],
-            [center[0] - 300000, center[1] - 1500000],
+            [center[0] - 1800000, center[1]],
+            [center[0] - 300000, center[1] - 300000],
           ],
           [
-            [center[0] + 300000, center[1] - 1500000],
-            [center[0] + 1800000, center[1] - 800000],
+            [center[0] + 300000, center[1] - 300000],
+            [center[0] + 1800000, center[1] - 50000],
           ],
         ]),
       ),
@@ -95,8 +96,8 @@ const lineNoRepeatLayer = new VectorLayer({
     features: [
       new Feature(
         new LineString([
-          [center[0] - 1800000, center[1] - 1700000],
-          [center[0] - 300000, center[1] - 2000000],
+          [center[0] - 1800000, center[1] - 300000],
+          [center[0] - 300000, center[1] - 800000],
         ]),
       ),
     ],
@@ -121,8 +122,8 @@ const linePointPlacementLayer = new VectorLayer({
     features: [
       new Feature(
         new LineString([
-          [center[0] + 300000, center[1] - 2000000],
-          [center[0] + 1300000, center[1] - 1500000],
+          [center[0] + 300000, center[1] - 800000],
+          [center[0] + 1300000, center[1] - 300000],
         ]),
       ),
     ],
@@ -130,6 +131,69 @@ const linePointPlacementLayer = new VectorLayer({
   style: new Style({
     stroke: new Stroke({
       color: '#cc3366',
+      width: 2,
+    }),
+    image: new Icon({
+      src: 'data/arrow.png',
+      rotateWithView: true,
+      placement: 'point',
+    }),
+  }),
+});
+
+// a static polygon with `placement: 'line'` and `repeat`: icons repeated around the
+// exterior ring only, each rotated to follow that edge's direction
+const polygonLineLayer = new VectorLayer({
+  source: new VectorSource({
+    features: [
+      new Feature(
+        new Polygon([
+          [
+            [center[0] - 1800000, center[1] - 1400000],
+            [center[0] - 300000, center[1] - 1400000],
+            [center[0] - 300000, center[1] - 1700000],
+            [center[0] - 1800000, center[1] - 1700000],
+            [center[0] - 1800000, center[1] - 1400000],
+          ],
+        ]),
+      ),
+    ],
+  }),
+  style: new Style({
+    stroke: new Stroke({
+      color: '#9966cc',
+      width: 2,
+    }),
+    image: new Icon({
+      src: 'data/arrow.png',
+      rotateWithView: true,
+      placement: 'line',
+      repeat: 50,
+    }),
+  }),
+});
+
+// a static polygon with `placement: 'point'` (the default): a single icon at the
+// polygon's own interior point
+const polygonPointLayer = new VectorLayer({
+  source: new VectorSource({
+    features: [
+      new Feature(
+        new Polygon([
+          [
+            [center[0] + 300000, center[1] - 1400000],
+            [center[0] + 1800000, center[1] - 1400000],
+            [center[0] + 1800000, center[1] - 1700000],
+            [center[0] + 300000, center[1] - 1700000],
+            [center[0] + 300000, center[1] - 1400000],
+          ],
+        ]),
+      ),
+    ],
+  }),
+  style: new Style({
+    stroke: new Stroke({
+      color: '#ff9933',
       width: 2,
     }),
     image: new Icon({
@@ -166,6 +230,8 @@ const map = new Map({
     multiLineStringLayer,
     lineNoRepeatLayer,
     linePointPlacementLayer,
+    polygonLineLayer,
+    polygonPointLayer,
     lineStringLayer,
   ],
   target: 'map',
