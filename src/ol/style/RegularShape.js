@@ -34,6 +34,9 @@ import ImageStyle from './Image.js';
  * @property {boolean} [rotateWithView=false] Whether to rotate the shape with the view.
  * @property {number|import("../size.js").Size} [scale=1] Scale. Unless two dimensional scaling is required a better
  * result may be obtained with appropriate settings for `radius` and `radius2`.
+ * @property {import("./Image.js").ImageStylePlacement} [placement='point'] Placement.
+ * @property {number} [repeat] Repeat interval. When set, the shape will be repeated at this interval, which specifies
+ * the distance between two anchors in pixels. Only available when `placement` is set to `'line'`.
  * @property {import('./Style.js').DeclutterMode} [declutterMode] Declutter mode.
  */
 
@@ -69,6 +72,8 @@ class RegularShape extends ImageStyle {
       scale: options.scale !== undefined ? options.scale : 1,
       displacement:
         options.displacement !== undefined ? options.displacement : [0, 0],
+      placement: options.placement,
+      repeat: options.repeat,
       declutterMode: options.declutterMode,
     });
 
@@ -164,6 +169,8 @@ class RegularShape extends ImageStyle {
       rotateWithView: this.getRotateWithView(),
       scale: Array.isArray(scale) ? scale.slice() : scale,
       displacement: this.getDisplacement().slice(),
+      placement: this.getPlacement(),
+      repeat: this.getRepeat(),
       declutterMode: this.getDeclutterMode(),
     });
     style.setOpacity(this.getOpacity());

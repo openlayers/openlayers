@@ -378,10 +378,7 @@ class CanvasImageBuilder extends CanvasBuilder {
     this.rotation_ = imageStyle.getRotation();
     this.scale_ = imageStyle.getScaleArray();
     this.width_ = size[0];
-    this.repeat_ =
-      typeof (/** @type {?} */ (imageStyle).getRepeat) === 'function'
-        ? /** @type {?} */ (imageStyle).getRepeat()
-        : undefined;
+    this.repeat_ = imageStyle.getRepeat();
     this.declutterMode_ = imageStyle.getDeclutterMode();
     this.declutterImageWithText_ =
       /** @type {import("../canvas.js").DeclutterImageWithText|undefined} */ (

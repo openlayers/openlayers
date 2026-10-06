@@ -277,7 +277,7 @@ function renderLineStringGeometry(
     lineStringReplay.drawLineString(geometry, feature, index);
   }
   const imageStyle = style.getImage();
-  if (imageStyle && /** @type {?} */ (imageStyle).getPlacement?.() === 'line') {
+  if (imageStyle && imageStyle.getPlacement() === 'line') {
     if (imageStyle.getImageState() == ImageState.LOADED) {
       const imageReplay = builderGroup.getBuilder(style.getZIndex(), 'Image');
       imageReplay.setImageStyle(imageStyle);
@@ -316,7 +316,7 @@ function renderMultiLineStringGeometry(
     lineStringReplay.drawMultiLineString(geometry, feature, index);
   }
   const imageStyle = style.getImage();
-  if (imageStyle && /** @type {?} */ (imageStyle).getPlacement?.() === 'line') {
+  if (imageStyle && imageStyle.getPlacement() === 'line') {
     if (imageStyle.getImageState() == ImageState.LOADED) {
       const imageReplay = builderGroup.getBuilder(style.getZIndex(), 'Image');
       imageReplay.setImageStyle(imageStyle);

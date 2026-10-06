@@ -20,13 +20,6 @@ import ImageStyle from './Image.js';
  */
 
 /**
- * @typedef {'point' | 'line'} IconPlacement
- * Default icon placement is `'point'`. Note that
- * `'line'` requires the underlying geometry to be a {@link module:ol/geom/LineString~LineString} or
- * {@link module:ol/geom/MultiLineString~MultiLineString}.
- */
-
-/**
  * @typedef {Object} Options
  * @property {Array<number>} [anchor=[0.5, 0.5]] Anchor. Default value is the icon center.
  * @property {IconOrigin} [anchorOrigin='top-left'] Origin of the anchor: `bottom-left`, `bottom-right`,
@@ -59,7 +52,7 @@ import ImageStyle from './Image.js';
  * @property {import("../size.js").Size} [size] Icon size in pixels. Used together with `offset` to define the
  * sub-rectangle to use from the original (sprite) image.
  * @property {string} [src] Image source URI.
- * @property {IconPlacement} [placement='point'] Icon placement.
+ * @property {import("./Image.js").ImageStylePlacement} [placement='point'] Icon placement.
  * @property {number} [repeat] Repeat interval. When set, the icon will be repeated at this interval, which specifies
  * the distance between two icon anchors in pixels. Only available when `placement` is set to `'line'`.
  * @property {import("./Style.js").DeclutterMode} [declutterMode] Declutter mode.
@@ -125,6 +118,8 @@ class Icon extends ImageStyle {
       displacement:
         options.displacement !== undefined ? options.displacement : [0, 0],
       rotateWithView: rotateWithView,
+      placement: options.placement,
+      repeat: options.repeat,
       declutterMode: options.declutterMode,
     });
 
@@ -173,19 +168,6 @@ class Icon extends ImageStyle {
      * @type {ReferrerPolicy|undefined}
      */
     this.referrerPolicy_ = options.referrerPolicy;
-
-    /**
-     * @private
-     * @type {IconPlacement}
-     */
-    this.placement_ =
-      options.placement !== undefined ? options.placement : 'point';
-
-    /**
-     * @private
-     * @type {number|undefined}
-     */
-    this.repeat_ = options.repeat;
 
     const image = options.img !== undefined ? options.img : null;
 
@@ -601,43 +583,6 @@ class Icon extends ImageStyle {
       ImageState.IDLE,
       this.color_,
     );
-  }
-
-  /**
-   * Get the icon placement.
-   * @return {IconPlacement} Icon placement.
-   * @api
-   */
-  getPlacement() {
-    return this.placement_;
-  }
-
-  /**
-   * Set the icon placement.
-   *
-   * @param {IconPlacement} placement Placement.
-   * @api
-   */
-  setPlacement(placement) {
-    this.placement_ = placement;
-  }
-
-  /**
-   * Get the repeat interval of the icon.
-   * @return {number|undefined} Repeat interval in pixels.
-   * @api
-   */
-  getRepeat() {
-    return this.repeat_;
-  }
-
-  /**
-   * Set the repeat interval of the icon.
-   * @param {number|undefined} [repeat] Repeat interval in pixels.
-   * @api
-   */
-  setRepeat(repeat) {
-    this.repeat_ = repeat;
   }
 
   /**
