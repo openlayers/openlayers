@@ -68,6 +68,7 @@ describe('ol.style.Icon', function () {
         declutterMode: 'obstacle',
         placement: 'line',
         repeat: 50,
+        rotateWithLine: false,
       });
 
       const clone = original.clone();
@@ -82,6 +83,7 @@ describe('ol.style.Icon', function () {
       assert.deepEqual(original.getColor(), clone.getColor());
       assert.deepEqual(original.getPlacement(), clone.getPlacement());
       assert.deepEqual(original.getRepeat(), clone.getRepeat());
+      assert.deepEqual(original.getRotateWithLine(), clone.getRotateWithLine());
       assert.deepEqual(original.offset_, clone.offset_);
       assert.deepEqual(original.offsetOrigin_, clone.offsetOrigin_);
       assert.deepEqual(original.getScale(), clone.getScale());
@@ -406,6 +408,28 @@ describe('ol.style.Icon', function () {
       const iconStyle = new Icon({src: 'test.png', placement: 'line'});
       iconStyle.setRepeat(40);
       assert.strictEqual(iconStyle.getRepeat(), 40);
+    });
+  });
+
+  describe('#getRotateWithLine / #setRotateWithLine', function () {
+    it('defaults to true', function () {
+      const iconStyle = new Icon({src: 'test.png'});
+      assert.strictEqual(iconStyle.getRotateWithLine(), true);
+    });
+
+    it('returns the configured value', function () {
+      const iconStyle = new Icon({
+        src: 'test.png',
+        placement: 'line',
+        rotateWithLine: false,
+      });
+      assert.strictEqual(iconStyle.getRotateWithLine(), false);
+    });
+
+    it('changes the value', function () {
+      const iconStyle = new Icon({src: 'test.png', placement: 'line'});
+      iconStyle.setRotateWithLine(false);
+      assert.strictEqual(iconStyle.getRotateWithLine(), false);
     });
   });
 

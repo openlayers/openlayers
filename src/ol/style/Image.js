@@ -23,6 +23,9 @@ import {abstract} from '../util.js';
  * @property {ImageStylePlacement} [placement='point'] Placement.
  * @property {number} [repeat] Repeat interval. When set, the symbolizer will be repeated at this interval, which
  * specifies the distance between two anchors in pixels. Only available when `placement` is set to `'line'`.
+ * @property {boolean} [rotateWithLine=true] Whether to rotate the symbolizer to follow the local direction of the
+ * line. Only applies when `placement` is set to `'line'`. When `false`, the symbolizer keeps its own `rotation`
+ * (and `rotateWithView` behavior) at every anchor instead of following the line.
  * @property {import('../style/Style.js').DeclutterMode} [declutterMode] Declutter mode: `declutter`, `obstacle`, `none`.
  */
 
@@ -90,6 +93,13 @@ class ImageStyle {
 
     /**
      * @private
+     * @type {boolean}
+     */
+    this.rotateWithLine_ =
+      options.rotateWithLine !== undefined ? options.rotateWithLine : true;
+
+    /**
+     * @private
      * @type {import('../style/Style.js').DeclutterMode|undefined}
      */
     this.declutterMode_ = options.declutterMode;
@@ -110,6 +120,7 @@ class ImageStyle {
       displacement: this.getDisplacement().slice(),
       placement: this.getPlacement(),
       repeat: this.getRepeat(),
+      rotateWithLine: this.getRotateWithLine(),
       declutterMode: this.getDeclutterMode(),
     });
   }
@@ -211,6 +222,25 @@ class ImageStyle {
    */
   setRepeat(repeat) {
     this.repeat_ = repeat;
+  }
+
+  /**
+   * Get whether the symbolizer rotates to follow the line.
+   * @return {boolean} Rotate with line.
+   * @api
+   */
+  getRotateWithLine() {
+    return this.rotateWithLine_;
+  }
+
+  /**
+   * Set whether the symbolizer rotates to follow the line.
+   *
+   * @param {boolean} rotateWithLine Rotate with line.
+   * @api
+   */
+  setRotateWithLine(rotateWithLine) {
+    this.rotateWithLine_ = rotateWithLine;
   }
 
   /**

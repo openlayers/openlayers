@@ -37,6 +37,8 @@ import ImageStyle from './Image.js';
  * @property {import("./Image.js").ImageStylePlacement} [placement='point'] Placement.
  * @property {number} [repeat] Repeat interval. When set, the shape will be repeated at this interval, which specifies
  * the distance between two anchors in pixels. Only available when `placement` is set to `'line'`.
+ * @property {boolean} [rotateWithLine=true] Whether to rotate the shape to follow the local direction of the line.
+ * Only applies when `placement` is set to `'line'`.
  * @property {import('./Style.js').DeclutterMode} [declutterMode] Declutter mode.
  */
 
@@ -74,6 +76,7 @@ class RegularShape extends ImageStyle {
         options.displacement !== undefined ? options.displacement : [0, 0],
       placement: options.placement,
       repeat: options.repeat,
+      rotateWithLine: options.rotateWithLine,
       declutterMode: options.declutterMode,
     });
 
@@ -171,6 +174,7 @@ class RegularShape extends ImageStyle {
       displacement: this.getDisplacement().slice(),
       placement: this.getPlacement(),
       repeat: this.getRepeat(),
+      rotateWithLine: this.getRotateWithLine(),
       declutterMode: this.getDeclutterMode(),
     });
     style.setOpacity(this.getOpacity());

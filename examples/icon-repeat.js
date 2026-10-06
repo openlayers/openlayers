@@ -32,6 +32,7 @@ const pointLayer = new VectorLayer({
     image: new Icon({
       src: 'data/icon.png',
       rotateWithView: true,
+      anchor: [0.5, 1],
     }),
   }),
 });
@@ -52,7 +53,8 @@ const multiPointLayer = new VectorLayer({
   style: new Style({
     image: new Icon({
       src: 'data/icon.png',
-      rotateWithView: true,
+      rotateWithView: false,
+      anchor: [0.5, 1],
       rotation: Math.PI / 4,
     }),
   }),
@@ -134,9 +136,40 @@ const linePointPlacementLayer = new VectorLayer({
       width: 2,
     }),
     image: new Icon({
-      src: 'data/arrow.png',
+      src: 'data/icon.png',
       rotateWithView: true,
+      anchor: [0.5, 1],
       placement: 'point',
+    }),
+  }),
+});
+
+// a static linestring with `placement: 'line'` and `rotateWithLine: false`: icons are
+// still repeated along the line, but each one keeps the icon's own fixed rotation
+// instead of following the line's direction
+const lineRotateWithLineFalseLayer = new VectorLayer({
+  source: new VectorSource({
+    features: [
+      new Feature(
+        new LineString([
+          [center[0] + 2000000, center[1] - 300000],
+          [center[0] + 3500000, center[1] - 800000],
+        ]),
+      ),
+    ],
+  }),
+  style: new Style({
+    stroke: new Stroke({
+      color: '#339999',
+      width: 2,
+    }),
+    image: new Icon({
+      src: 'data/icon.png',
+      rotateWithView: true,
+      placement: 'line',
+      repeat: 50,
+      anchor: [0.5, 1],
+      rotateWithLine: false,
     }),
   }),
 });
@@ -197,9 +230,45 @@ const polygonPointLayer = new VectorLayer({
       width: 2,
     }),
     image: new Icon({
-      src: 'data/arrow.png',
+      src: 'data/icon.png',
       rotateWithView: true,
+      anchor: [0.5, 1],
       placement: 'point',
+    }),
+  }),
+});
+
+// a static polygon with `placement: 'line'` and `rotateWithLine: false`: icons are
+// still repeated around the exterior ring, but each one keeps the icon's own fixed
+// rotation instead of following that edge's direction
+const polygonRotateWithLineFalseLayer = new VectorLayer({
+  source: new VectorSource({
+    features: [
+      new Feature(
+        new Polygon([
+          [
+            [center[0] + 2300000, center[1] - 1400000],
+            [center[0] + 3800000, center[1] - 1400000],
+            [center[0] + 3800000, center[1] - 1700000],
+            [center[0] + 2300000, center[1] - 1700000],
+            [center[0] + 2300000, center[1] - 1400000],
+          ],
+        ]),
+      ),
+    ],
+  }),
+  style: new Style({
+    stroke: new Stroke({
+      color: '#669933',
+      width: 2,
+    }),
+    image: new Icon({
+      src: 'data/icon.png',
+      rotateWithView: true,
+      placement: 'line',
+      repeat: 50,
+      anchor: [0.5, 1],
+      rotateWithLine: false,
     }),
   }),
 });
@@ -230,8 +299,10 @@ const map = new Map({
     multiLineStringLayer,
     lineNoRepeatLayer,
     linePointPlacementLayer,
+    lineRotateWithLineFalseLayer,
     polygonLineLayer,
     polygonPointLayer,
+    polygonRotateWithLineFalseLayer,
     lineStringLayer,
   ],
   target: 'map',

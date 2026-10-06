@@ -2,8 +2,7 @@
  * @module ol/render/canvas/ImageBuilder
  */
 import {containsCoordinate, intersects} from '../../extent.js';
-import {interpolatePoint} from '../../geom/flat/interpolate.js';
-import {lineChunk} from '../../geom/flat/linechunk.js';
+import {lineAnchors} from '../../geom/flat/lineanchors.js';
 import CanvasBuilder from './Builder.js';
 import CanvasInstruction from './Instruction.js';
 
@@ -103,6 +102,12 @@ class CanvasImageBuilder extends CanvasBuilder {
 
     /**
      * @private
+     * @type {boolean|undefined}
+     */
+    this.rotateWithLine_ = undefined;
+
+    /**
+     * @private
      * @type {import('../../style/Image.js').ImageStylePlacement|undefined}
      */
     this.placement_ = undefined;
@@ -196,7 +201,7 @@ class CanvasImageBuilder extends CanvasBuilder {
     if (this.placement_ === 'line') {
       const flatCoordinates = lineStringGeometry.getFlatCoordinates();
       const stride = lineStringGeometry.getStride();
-      this.drawChunkedImages_(
+      this.drawAnchoredImages_(
         flatCoordinates,
         0,
         flatCoordinates.length,
@@ -234,7 +239,7 @@ class CanvasImageBuilder extends CanvasBuilder {
       const stride = multiLineStringGeometry.getStride();
       let offset = 0;
       for (let i = 0, ii = ends.length; i < ii; ++i) {
-        this.drawChunkedImages_(flatCoordinates, offset, ends[i], stride);
+        this.drawAnchoredImages_(flatCoordinates, offset, ends[i], stride);
         offset = ends[i];
       }
     } else {
@@ -272,7 +277,7 @@ class CanvasImageBuilder extends CanvasBuilder {
       ).getEnds()[0];
       const flatCoordinates = polygonGeometry.getFlatCoordinates();
       const stride = polygonGeometry.getStride();
-      this.drawChunkedImages_(flatCoordinates, 0, end, stride);
+      this.drawAnchoredImages_(flatCoordinates, 0, end, stride);
     } else {
       const interiorPoint =
         /** @type {import("../../geom/Polygon.js").default} */ (
@@ -312,7 +317,7 @@ class CanvasImageBuilder extends CanvasBuilder {
       for (let i = 0, ii = endss.length; i < ii; ++i) {
         // only the exterior ring of each polygon is used for line placement
         const end = endss[i][0];
-        this.drawChunkedImages_(flatCoordinates, offset, end, stride);
+        this.drawAnchoredImages_(flatCoordinates, offset, end, stride);
         offset = end;
       }
     } else {
@@ -332,33 +337,32 @@ class CanvasImageBuilder extends CanvasBuilder {
   }
 
   /**
-   * Split a sub-line into equal-length chunks (or a single chunk when `repeat_` is not
-   * set) and draw one image per chunk, rotated to follow that chunk's own start/end
-   * tangent.
+   * Compute evenly-spaced anchors (or a single anchor when `repeat_` is not set) along
+   * a sub-line, and draw one image per anchor. When `rotateWithLine_` is `true` (the
+   * default), each image is rotated to follow its own interval's start/end tangent;
+   * otherwise every image just keeps the image style's own fixed rotation.
    * @param {Array<number>} flatCoordinates Flat coordinates.
    * @param {number} offset Offset.
    * @param {number} end End.
    * @param {number} stride Stride.
    * @private
    */
-  drawChunkedImages_(flatCoordinates, offset, end, stride) {
+  drawAnchoredImages_(flatCoordinates, offset, end, stride) {
     const chunkLength = this.repeat_
       ? this.repeat_ * this.resolution
       : Infinity;
-    const chunks = lineChunk(chunkLength, flatCoordinates, offset, end, stride);
-    for (let i = 0, ii = chunks.length; i < ii; ++i) {
-      const chunk = chunks[i];
-      if (chunk.length < 4) {
-        continue;
-      }
-      const x0 = chunk[0];
-      const y0 = chunk[1];
-      const x1 = chunk[chunk.length - 2];
-      const y1 = chunk[chunk.length - 1];
-      // the y axis is flipped between map coordinates and canvas pixels
-      const rotation = Math.atan2(y0 - y1, x1 - x0);
-      const anchor = interpolatePoint(chunk, 0, chunk.length, 2, 0.5);
-      this.drawImageAtCoordinate_(anchor, rotation);
+    const anchors = lineAnchors(
+      chunkLength,
+      flatCoordinates,
+      offset,
+      end,
+      stride,
+      this.rotateWithLine_,
+    );
+    const step = this.rotateWithLine_ ? 3 : 2;
+    for (let i = 0, ii = anchors.length; i < ii; i += step) {
+      const rotation = this.rotateWithLine_ ? anchors[i + 2] : this.rotation_;
+      this.drawImageAtCoordinate_([anchors[i], anchors[i + 1]], rotation);
     }
   }
 
@@ -459,6 +463,7 @@ class CanvasImageBuilder extends CanvasBuilder {
     this.rotation_ = undefined;
     this.width_ = undefined;
     this.repeat_ = undefined;
+    this.rotateWithLine_ = undefined;
     this.placement_ = undefined;
     return super.finish();
   }
@@ -489,6 +494,7 @@ class CanvasImageBuilder extends CanvasBuilder {
     this.scale_ = imageStyle.getScaleArray();
     this.width_ = size[0];
     this.repeat_ = imageStyle.getRepeat();
+    this.rotateWithLine_ = imageStyle.getRotateWithLine();
     this.placement_ = imageStyle.getPlacement();
     this.declutterMode_ = imageStyle.getDeclutterMode();
     this.declutterImageWithText_ =

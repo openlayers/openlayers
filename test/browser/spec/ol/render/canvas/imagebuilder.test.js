@@ -69,6 +69,30 @@ describe('ol.render.canvas.ImageBuilder', function () {
       assert.deepEqual(builder.coordinates, [5, 0, 15, 0]);
     });
 
+    it("keeps the icon's own fixed rotation at every anchor when rotateWithLine is false", function () {
+      const builder = createBuilder();
+      builder.setImageStyle(
+        createIcon({
+          placement: 'line',
+          repeat: 10,
+          rotation: 0.5,
+          rotateWithLine: false,
+        }),
+      );
+      const geometry = new LineString([
+        [0, 0],
+        [20, 0],
+      ]);
+      builder.drawLineString(geometry, new Feature(geometry));
+
+      const drawImageInstructions = getDrawImageInstructions(builder);
+      assert.lengthOf(drawImageInstructions, 2);
+      drawImageInstructions.forEach((instruction) => {
+        assert.strictEqual(instruction[11], 0.5);
+      });
+      assert.deepEqual(builder.coordinates, [5, 0, 15, 0]);
+    });
+
     it('draws a single static icon at the midpoint for the default "point" placement', function () {
       const builder = createBuilder();
       builder.setImageStyle(createIcon({rotation: 0.5}));

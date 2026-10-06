@@ -55,6 +55,8 @@ import ImageStyle from './Image.js';
  * @property {import("./Image.js").ImageStylePlacement} [placement='point'] Icon placement.
  * @property {number} [repeat] Repeat interval. When set, the icon will be repeated at this interval, which specifies
  * the distance between two icon anchors in pixels. Only available when `placement` is set to `'line'`.
+ * @property {boolean} [rotateWithLine=true] Whether to rotate the icon to follow the local direction of the line.
+ * Only applies when `placement` is set to `'line'`.
  * @property {import("./Style.js").DeclutterMode} [declutterMode] Declutter mode.
  */
 
@@ -120,6 +122,7 @@ class Icon extends ImageStyle {
       rotateWithView: rotateWithView,
       placement: options.placement,
       repeat: options.repeat,
+      rotateWithLine: options.rotateWithLine,
       declutterMode: options.declutterMode,
     });
 
@@ -351,6 +354,7 @@ class Icon extends ImageStyle {
       displacement: this.getDisplacement().slice(),
       placement: this.getPlacement(),
       repeat: this.getRepeat(),
+      rotateWithLine: this.getRotateWithLine(),
       declutterMode: this.getDeclutterMode(),
     });
   }
