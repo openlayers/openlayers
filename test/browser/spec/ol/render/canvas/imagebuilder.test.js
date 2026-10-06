@@ -66,6 +66,22 @@ describe('ol.render.canvas.ImageBuilder', function () {
       });
       assert.deepEqual(builder.coordinates, [5, 0, 15, 0]);
     });
+
+    it('draws a single static icon at the midpoint for the default "point" placement', function () {
+      const builder = createBuilder();
+      builder.setImageStyle(createIcon({rotation: 0.5}));
+      const geometry = new LineString([
+        [0, 0],
+        [0, 10],
+      ]);
+      builder.drawLineString(geometry, new Feature(geometry));
+
+      const drawImageInstructions = getDrawImageInstructions(builder);
+      assert.lengthOf(drawImageInstructions, 1);
+      // no line-following rotation: just the icon's own fixed rotation
+      assert.strictEqual(drawImageInstructions[0][11], 0.5);
+      assert.deepEqual(builder.coordinates, [0, 5]);
+    });
   });
 
   describe('#drawMultiLineString', function () {
@@ -87,6 +103,27 @@ describe('ol.render.canvas.ImageBuilder', function () {
       const drawImageInstructions = getDrawImageInstructions(builder);
       assert.lengthOf(drawImageInstructions, 4);
       assert.deepEqual(builder.coordinates, [5, 0, 15, 0, 0, 105, 0, 115]);
+    });
+
+    it('draws one static icon per sub-line, at its own midpoint, for the default "point" placement', function () {
+      const builder = new CanvasImageBuilder(1, [-180, -90, 180, 200], 1, 1);
+      builder.setImageStyle(createIcon({rotation: 0.5}));
+      const geometry = new MultiLineString([
+        [
+          [0, 0],
+          [20, 0],
+        ],
+        [
+          [0, 100],
+          [0, 120],
+        ],
+      ]);
+      builder.drawMultiLineString(geometry, new Feature(geometry));
+
+      const drawImageInstructions = getDrawImageInstructions(builder);
+      assert.lengthOf(drawImageInstructions, 1);
+      assert.strictEqual(drawImageInstructions[0][11], 0.5);
+      assert.deepEqual(builder.coordinates, [10, 0, 0, 110]);
     });
   });
 });

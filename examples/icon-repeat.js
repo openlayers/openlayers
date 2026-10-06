@@ -1,6 +1,7 @@
 import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
+import LineString from '../src/ol/geom/LineString.js';
 import MultiLineString from '../src/ol/geom/MultiLineString.js';
 import MultiPoint from '../src/ol/geom/MultiPoint.js';
 import Point from '../src/ol/geom/Point.js';
@@ -28,7 +29,7 @@ const pointLayer = new VectorLayer({
   }),
   style: new Style({
     image: new Icon({
-      src: 'data/arrow.png',
+      src: 'data/icon.png',
       rotateWithView: true,
     }),
   }),
@@ -49,7 +50,7 @@ const multiPointLayer = new VectorLayer({
   }),
   style: new Style({
     image: new Icon({
-      src: 'data/arrow.png',
+      src: 'data/icon.png',
       rotateWithView: true,
       rotation: Math.PI / 4,
     }),
@@ -63,12 +64,12 @@ const multiLineStringLayer = new VectorLayer({
       new Feature(
         new MultiLineString([
           [
-            [center[0] - 1800000, center[1] - 1300000],
-            [center[0] - 300000, center[1] - 1600000],
+            [center[0] - 1800000, center[1] - 1200000],
+            [center[0] - 300000, center[1] - 1500000],
           ],
           [
-            [center[0] + 300000, center[1] - 1600000],
-            [center[0] + 1800000, center[1] - 900000],
+            [center[0] + 300000, center[1] - 1500000],
+            [center[0] + 1800000, center[1] - 800000],
           ],
         ]),
       ),
@@ -84,6 +85,57 @@ const multiLineStringLayer = new VectorLayer({
       rotateWithView: true,
       placement: 'line',
       repeat: 50,
+    }),
+  }),
+});
+
+// a static linestring with `placement: 'line'` but no `repeat`: a single centered icon
+const lineNoRepeatLayer = new VectorLayer({
+  source: new VectorSource({
+    features: [
+      new Feature(
+        new LineString([
+          [center[0] - 1800000, center[1] - 1700000],
+          [center[0] - 300000, center[1] - 2000000],
+        ]),
+      ),
+    ],
+  }),
+  style: new Style({
+    stroke: new Stroke({
+      color: '#33cc66',
+      width: 2,
+    }),
+    image: new Icon({
+      src: 'data/arrow.png',
+      rotateWithView: true,
+      placement: 'line',
+    }),
+  }),
+});
+
+// a static linestring with `placement: 'point'` (the default): a single icon at the
+// line's own midpoint, with no line-following rotation (just the icon's own `rotation`)
+const linePointPlacementLayer = new VectorLayer({
+  source: new VectorSource({
+    features: [
+      new Feature(
+        new LineString([
+          [center[0] + 300000, center[1] - 2000000],
+          [center[0] + 1300000, center[1] - 1500000],
+        ]),
+      ),
+    ],
+  }),
+  style: new Style({
+    stroke: new Stroke({
+      color: '#cc3366',
+      width: 2,
+    }),
+    image: new Icon({
+      src: 'data/arrow.png',
+      rotateWithView: true,
+      placement: 'point',
     }),
   }),
 });
@@ -112,6 +164,8 @@ const map = new Map({
     pointLayer,
     multiPointLayer,
     multiLineStringLayer,
+    lineNoRepeatLayer,
+    linePointPlacementLayer,
     lineStringLayer,
   ],
   target: 'map',

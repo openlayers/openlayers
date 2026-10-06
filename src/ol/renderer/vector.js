@@ -277,12 +277,10 @@ function renderLineStringGeometry(
     lineStringReplay.drawLineString(geometry, feature, index);
   }
   const imageStyle = style.getImage();
-  if (imageStyle && imageStyle.getPlacement() === 'line') {
-    if (imageStyle.getImageState() == ImageState.LOADED) {
-      const imageReplay = builderGroup.getBuilder(style.getZIndex(), 'Image');
-      imageReplay.setImageStyle(imageStyle);
-      imageReplay.drawLineString(geometry, feature, index);
-    }
+  if (imageStyle && imageStyle.getImageState() == ImageState.LOADED) {
+    const imageReplay = builderGroup.getBuilder(style.getZIndex(), 'Image');
+    imageReplay.setImageStyle(imageStyle);
+    imageReplay.drawLineString(geometry, feature, index);
   }
   const textStyle = style.getText();
   if (textStyle && textStyle.getText()) {
@@ -316,12 +314,10 @@ function renderMultiLineStringGeometry(
     lineStringReplay.drawMultiLineString(geometry, feature, index);
   }
   const imageStyle = style.getImage();
-  if (imageStyle && imageStyle.getPlacement() === 'line') {
-    if (imageStyle.getImageState() == ImageState.LOADED) {
-      const imageReplay = builderGroup.getBuilder(style.getZIndex(), 'Image');
-      imageReplay.setImageStyle(imageStyle);
-      imageReplay.drawMultiLineString(geometry, feature, index);
-    }
+  if (imageStyle && imageStyle.getImageState() == ImageState.LOADED) {
+    const imageReplay = builderGroup.getBuilder(style.getZIndex(), 'Image');
+    imageReplay.setImageStyle(imageStyle);
+    imageReplay.drawMultiLineString(geometry, feature, index);
   }
   const textStyle = style.getText();
   if (textStyle && textStyle.getText()) {

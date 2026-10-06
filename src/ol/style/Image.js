@@ -6,9 +6,11 @@ import {abstract} from '../util.js';
 
 /**
  * @typedef {'point' | 'line'} ImageStylePlacement
- * Default placement is `'point'`. Note that
- * `'line'` requires the underlying geometry to be a {@link module:ol/geom/LineString~LineString} or
- * {@link module:ol/geom/MultiLineString~MultiLineString}.
+ * Default placement is `'point'`. For a {@link module:ol/geom/LineString~LineString} or
+ * {@link module:ol/geom/MultiLineString~MultiLineString} geometry, `'point'` draws a single
+ * symbolizer at the geometry's own midpoint (one per sub-line for `MultiLineString`), using
+ * only the style's own `rotation`. `'line'` instead draws the symbolizer along the path,
+ * rotated to follow the local line direction, and repeated at the `repeat` interval when set.
  */
 
 /**

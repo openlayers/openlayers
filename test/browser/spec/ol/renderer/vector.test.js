@@ -282,7 +282,7 @@ describe('ol/renderer/vector', function () {
         drawMultiLineStringSpy.mockRestore();
       });
 
-      it('does not dispatch when placement is the default "point"', function () {
+      it('dispatches to the Image builder when placement is the default "point"', function () {
         lineIconStyle.setPlacement('point');
         feature.setGeometry(
           new LineString([
@@ -304,7 +304,7 @@ describe('ol/renderer/vector', function () {
           squaredTolerance,
           listener,
         );
-        assert.strictEqual(drawLineStringSpy.mock.calls.length, 0);
+        assert.strictEqual(drawLineStringSpy.mock.calls.length, 1);
         drawLineStringSpy.mockRestore();
       });
     });
