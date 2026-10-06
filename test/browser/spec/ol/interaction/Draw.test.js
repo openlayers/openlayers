@@ -1028,6 +1028,41 @@ describe('ol/interaction/Draw', function () {
       ]);
     });
 
+    it('snaps the sketch to the first or the last point, whichever is near', function () {
+      // first point
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
+
+      // second point
+      simulateEvent('pointermove', 30, 20);
+      simulateEvent('pointerdown', 30, 20);
+      simulateEvent('pointerup', 30, 20);
+
+      // third point
+      simulateEvent('pointermove', 40, 10);
+      simulateEvent('pointerdown', 40, 10);
+      simulateEvent('pointerup', 40, 10);
+
+      function sketchCoordinate() {
+        const ring = draw.sketchFeature_.getGeometry().getCoordinates()[0];
+        return ring[ring.length - 2];
+      }
+
+      // leave the click, then move near the last point
+      simulateEvent('pointermove', 25, 0);
+      simulateEvent('pointermove', 42, 12);
+      assert.deepEqual(sketchCoordinate(), [40, -10]);
+
+      // near the first point
+      simulateEvent('pointermove', 12, 22);
+      assert.deepEqual(sketchCoordinate(), [10, -20]);
+
+      // near the last point again
+      simulateEvent('pointermove', 42, 12);
+      assert.deepEqual(sketchCoordinate(), [40, -10]);
+    });
+
     it('supports freehand drawing for polygons', function () {
       // freehand sequence
       simulateEvent('pointermove', 10, 20);
