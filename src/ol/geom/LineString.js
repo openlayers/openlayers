@@ -166,6 +166,9 @@ class LineString extends SimpleGeometry {
    * @api
    */
   getCoordinateAtM(m, extrapolate) {
+    if (this.layout != 'XYM' && this.layout != 'XYZM') {
+      return null;
+    }
     extrapolate = extrapolate !== undefined ? extrapolate : false;
     return lineStringCoordinateAtM(
       this.flatCoordinates,
