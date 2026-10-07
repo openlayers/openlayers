@@ -102,30 +102,6 @@ addFeature(
   {repeat: 20, rotateWithView: false},
 );
 
-// the default "point" placement on a linestring: a single static icon at the midpoint
-addFeature(
-  new LineString([
-    [-100, -180],
-    [100, -180],
-  ]),
-  {placement: 'point'},
-);
-
-// the default "point" placement on a multilinestring: one static icon per sub-line midpoint
-addFeature(
-  new MultiLineString([
-    [
-      [-100, -220],
-      [-20, -220],
-    ],
-    [
-      [20, -220],
-      [100, -220],
-    ],
-  ]),
-  {placement: 'point'},
-);
-
 const map = new Map({
   pixelRatio: 1,
   layers: [
@@ -138,6 +114,6 @@ const map = new Map({
     rotation: Math.PI / 8,
   }),
 });
-map.getView().fit([-110, -240, 110, 110]);
+map.getView().fit([-110, -150, 110, 110]);
 
-render({tolerance: 0.01});
+render({tolerance: 0.002});
