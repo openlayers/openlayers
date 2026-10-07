@@ -821,12 +821,6 @@ function buildIcon(flatStyle, context) {
 
   const evaluateRepeat = numberEvaluator(flatStyle, prefix + 'repeat', context);
 
-  const evaluateRotateWithLine = booleanEvaluator(
-    flatStyle,
-    prefix + 'rotate-with-line',
-    context,
-  );
-
   // the remaining symbolizer properties are not currently settable
   const anchorOrigin = optionalIconOrigin(flatStyle, prefix + 'anchor-origin');
   const anchorXUnits = optionalIconAnchorUnits(
@@ -921,10 +915,6 @@ function buildIcon(flatStyle, context) {
 
     if (evaluateRepeat) {
       icon.setRepeat(evaluateRepeat(context));
-    }
-
-    if (evaluateRotateWithLine) {
-      icon.setRotateWithLine(evaluateRotateWithLine(context));
     }
 
     if (evaluateScale) {

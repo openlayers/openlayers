@@ -112,7 +112,6 @@ function expectImageEquals(image, expected) {
     assert.deepEqual(image.getColor(), expected.getColor());
     assert.deepEqual(image.getPlacement(), expected.getPlacement());
     assert.deepEqual(image.getRepeat(), expected.getRepeat());
-    assert.deepEqual(image.getRotateWithLine(), expected.getRotateWithLine());
     return;
   }
   if (expected instanceof RegularShape) {
@@ -769,21 +768,6 @@ describe('ol/render/canvas/style.js', () => {
           image: new Icon({
             src: 'icon.svg',
             placement: 'line',
-          }),
-        }),
-      },
-      {
-        name: 'icon-rotate-with-line false',
-        style: {
-          'icon-src': 'icon.svg',
-          'icon-placement': 'line',
-          'icon-rotate-with-line': false,
-        },
-        expected: new Style({
-          image: new Icon({
-            src: 'icon.svg',
-            placement: 'line',
-            rotateWithLine: false,
           }),
         }),
       },

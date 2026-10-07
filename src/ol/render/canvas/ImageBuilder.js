@@ -102,12 +102,6 @@ class CanvasImageBuilder extends CanvasBuilder {
 
     /**
      * @private
-     * @type {boolean|undefined}
-     */
-    this.rotateWithLine_ = undefined;
-
-    /**
-     * @private
      * @type {import('../../style/Image.js').ImageStylePlacement|undefined}
      */
     this.placement_ = undefined;
@@ -338,7 +332,7 @@ class CanvasImageBuilder extends CanvasBuilder {
 
   /**
    * Compute evenly-spaced anchors (or a single anchor when `repeat_` is not set) along
-   * a sub-line, and draw one image per anchor. When `rotateWithLine_` is `true` (the
+   * a sub-line, and draw one image per anchor. When `rotateWithView_` is `true` (the
    * default), each image is rotated to follow its own interval's start/end tangent;
    * otherwise every image just keeps the image style's own fixed rotation.
    * @param {Array<number>} flatCoordinates Flat coordinates.
@@ -357,11 +351,11 @@ class CanvasImageBuilder extends CanvasBuilder {
       offset,
       end,
       stride,
-      this.rotateWithLine_,
+      this.rotateWithView_,
     );
-    const step = this.rotateWithLine_ ? 3 : 2;
+    const step = this.rotateWithView_ ? 3 : 2;
     for (let i = 0, ii = anchors.length; i < ii; i += step) {
-      const rotation = this.rotateWithLine_ ? anchors[i + 2] : this.rotation_;
+      const rotation = this.rotateWithView_ ? anchors[i + 2] : this.rotation_;
       this.drawImageAtCoordinate_([anchors[i], anchors[i + 1]], rotation);
     }
   }
@@ -463,7 +457,6 @@ class CanvasImageBuilder extends CanvasBuilder {
     this.rotation_ = undefined;
     this.width_ = undefined;
     this.repeat_ = undefined;
-    this.rotateWithLine_ = undefined;
     this.placement_ = undefined;
     return super.finish();
   }
@@ -494,7 +487,6 @@ class CanvasImageBuilder extends CanvasBuilder {
     this.scale_ = imageStyle.getScaleArray();
     this.width_ = size[0];
     this.repeat_ = imageStyle.getRepeat();
-    this.rotateWithLine_ = imageStyle.getRotateWithLine();
     this.placement_ = imageStyle.getPlacement();
     this.declutterMode_ = imageStyle.getDeclutterMode();
     this.declutterImageWithText_ =

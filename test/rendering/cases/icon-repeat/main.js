@@ -17,7 +17,10 @@ function addFeature(geometry, iconOptions) {
     new Style({
       stroke: new Stroke({color: '#999', width: 1}),
       image: new Icon(
-        Object.assign({src: '/data/fish.png', placement: 'line'}, iconOptions),
+        Object.assign(
+          {src: '/data/fish.png', placement: 'line', rotateWithView: true},
+          iconOptions,
+        ),
       ),
     }),
   );

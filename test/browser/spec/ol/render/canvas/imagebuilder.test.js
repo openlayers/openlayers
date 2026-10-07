@@ -39,7 +39,9 @@ describe('ol.render.canvas.ImageBuilder', function () {
 
     it('draws a single centered image for the whole line when repeat is not set', function () {
       const builder = createBuilder();
-      builder.setImageStyle(createIcon({placement: 'line'}));
+      builder.setImageStyle(
+        createIcon({placement: 'line', rotateWithView: true}),
+      );
       const geometry = new LineString([
         [0, 0],
         [0, 10],
@@ -54,7 +56,9 @@ describe('ol.render.canvas.ImageBuilder', function () {
 
     it('draws one image per repeat chunk, rotated to follow the local tangent', function () {
       const builder = createBuilder();
-      builder.setImageStyle(createIcon({placement: 'line', repeat: 10}));
+      builder.setImageStyle(
+        createIcon({placement: 'line', repeat: 10, rotateWithView: true}),
+      );
       const geometry = new LineString([
         [0, 0],
         [20, 0],
@@ -69,14 +73,14 @@ describe('ol.render.canvas.ImageBuilder', function () {
       assert.deepEqual(builder.coordinates, [5, 0, 15, 0]);
     });
 
-    it("keeps the icon's own fixed rotation at every anchor when rotateWithLine is false", function () {
+    it("keeps the icon's own fixed rotation at every anchor when rotateWithView is false", function () {
       const builder = createBuilder();
       builder.setImageStyle(
         createIcon({
           placement: 'line',
           repeat: 10,
           rotation: 0.5,
-          rotateWithLine: false,
+          rotateWithView: false,
         }),
       );
       const geometry = new LineString([
@@ -166,7 +170,9 @@ describe('ol.render.canvas.ImageBuilder', function () {
 
     it('draws one image per repeat chunk along the exterior ring, rotated to follow the local tangent', function () {
       const builder = createBuilder();
-      builder.setImageStyle(createIcon({placement: 'line', repeat: 10}));
+      builder.setImageStyle(
+        createIcon({placement: 'line', repeat: 10, rotateWithView: true}),
+      );
       builder.drawPolygon(square, new Feature(square));
 
       const drawImageInstructions = getDrawImageInstructions(builder);

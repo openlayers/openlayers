@@ -220,12 +220,12 @@
  * @property {NumberExpression} [icon-height] Height of the icon. If not specified, the actual image height will be used. Cannot be combined
  * with `scale`. (Expressions only in WebGL)
  * @property {NumberExpression} [icon-rotation=0] Rotation in radians (positive rotation clockwise).
- * @property {BooleanExpression} [icon-rotate-with-view=false] Whether to rotate the icon with the view. (Expressions only supported in Canvas)
+ * @property {BooleanExpression} [icon-rotate-with-view=false] Whether to rotate the icon with the view. When
+ * `icon-placement` is set to `'line'`, this also controls whether the icon follows the local direction of the line
+ * (`true`) or keeps its own fixed `icon-rotation` (`false`). (Expressions only supported in Canvas)
  * @property {StringExpression} [icon-placement='point'] Icon placement. (Canvas only)
  * @property {NumberExpression} [icon-repeat] Repeat interval in pixels. When set, the icon will be repeated at this
  * interval. Only available when `icon-placement` is set to `'line'`. (Canvas only)
- * @property {BooleanExpression} [icon-rotate-with-line=true] Whether to rotate the icon to follow the local direction
- * of the line. Only applies when `icon-placement` is set to `'line'`. (Canvas only)
  * @property {SizeExpression} [icon-size] Icon size in pixel. Can be used together with `icon-offset` to define the
  * sub-rectangle to use from the origin (sprite) icon image. (Expressions only in WebGL)
  * @property {import("./Style.js").DeclutterMode} [icon-declutter-mode] Declutter mode (Canvas only)
