@@ -401,5 +401,10 @@ describe('ol/format/Polyline.js', function () {
         encodedFlatPoints,
       );
     });
+    it('does not change the geometry', function () {
+      const geometry = new LineString(points3857);
+      format.writeGeometry(geometry);
+      assert.deepEqual(geometry.getCoordinates(), points3857);
+    });
   });
 });
