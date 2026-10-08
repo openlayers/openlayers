@@ -435,7 +435,7 @@ class ScaleLine extends Control {
   }
 
   /**
-   * Creates the label for a marker marker at given position
+   * Creates the label for a marker at given position
    * @param {number} i The iterator
    * @param {number} width The width the scalebar will currently use
    * @param {boolean} isLast Flag indicating if we add the last step text

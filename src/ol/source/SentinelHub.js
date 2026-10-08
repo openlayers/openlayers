@@ -168,7 +168,7 @@ const baseDelay = 500;
 /**
  * @typedef {Object} ProcessRequestInput
  * @property {ProcessRequestInputBounds} bounds The bounding box of the input data.
- * @property {Array<ProcessRequestInputDataItem>} data The intput data.
+ * @property {Array<ProcessRequestInputDataItem>} data The input data.
  */
 
 /**

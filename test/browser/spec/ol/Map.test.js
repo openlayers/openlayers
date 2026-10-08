@@ -1369,7 +1369,7 @@ describe('ol/Map', function () {
       });
     });
 
-    describe('map container with negative width and heigth due to borders', () => {
+    describe('map container with negative width and height due to borders', () => {
       it('does not try to set a negative map size', () => {
         const target = map.getTargetElement();
         document.body.appendChild(target);

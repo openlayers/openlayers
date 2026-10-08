@@ -354,7 +354,7 @@ class TileWMS extends TileImage {
   }
 
   /**
-   * @param {Object<string, *>} params New URL paremeters.
+   * @param {Object<string, *>} params New URL parameters.
    * @private
    */
   setParams_(params) {
@@ -365,7 +365,7 @@ class TileWMS extends TileImage {
 
   /**
    * Set the URL parameters passed to the WMS source.
-   * @param {Object<string, *>} params New URL paremeters.
+   * @param {Object<string, *>} params New URL parameters.
    * @api
    */
   setParams(params) {

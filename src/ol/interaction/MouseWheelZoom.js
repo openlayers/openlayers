@@ -30,19 +30,19 @@ import Interaction, {zoomByDelta} from './Interaction.js';
  */
 
 /**
- * Mutliplier for the DOM_DELTA_LINE delta value.
+ * Multiplier for the DOM_DELTA_LINE delta value.
  * @type {number}
  */
 const DELTA_LINE_MULTIPLIER = 40;
 
 /**
- * Mutliplier for the DOM_DELTA_PAGE delta value.
+ * Multiplier for the DOM_DELTA_PAGE delta value.
  * @type {number}
  */
 const DELTA_PAGE_MULTIPLIER = 300;
 
 /**
- * Mutliplier for the delta value when using pinch-to-zoom
+ * Multiplier for the delta value when using pinch-to-zoom
  * @type {number}
  */
 const DELTA_TRACKPAD_PINCH_TO_ZOOM_MULTIPLIER = 3; // 5 = google maps. 3 = apple maps, MapLibre.

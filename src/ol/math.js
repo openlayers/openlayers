@@ -111,7 +111,7 @@ export function solveLinearSystem(mat) {
 }
 
 /**
- * Converts radians to to degrees.
+ * Converts radians to degrees.
  *
  * @param {number} angleInRadians Angle in radians.
  * @return {number} Angle in degrees.

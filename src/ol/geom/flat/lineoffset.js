@@ -2,7 +2,7 @@ import {angleBetween} from '../../coordinate.js';
 
 /**
  * Offsets a line string to the left / right along its segments direction.
- * Offset is applied to each segment of the line in the direciton of the segment normal (positive offset goes "right" relative to the line direction).
+ * Offset is applied to each segment of the line in the direction of the segment normal (positive offset goes "right" relative to the line direction).
  * For very sharp angles between segments, the function falls back to offsetting along the segment normal direction to avoid excessively long miters.
  *
  * Coordinates and the offset should be in the same units — either pixels or the same spatial reference system as the input line coordinates.

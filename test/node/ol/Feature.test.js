@@ -406,7 +406,7 @@ describe('ol/Feature.js', function () {
       assert.strictEqual(clone.get('barkey'), 'barval');
     });
 
-    it('clones features where the default geometry propetry is not a geometry', function () {
+    it('clones features where the default geometry property is not a geometry', function () {
       const f = new Feature();
       f.setGeometryName('__geometry');
       f.setGeometry(new Point([1, 1]));
