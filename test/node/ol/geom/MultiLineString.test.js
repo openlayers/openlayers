@@ -420,6 +420,40 @@ describe('ol/geom/MultiLineString.js', function () {
     });
   });
 
+  describe('with XY coordinates', function () {
+    let multiLineString;
+    beforeEach(function () {
+      // the last slot of the stride (y) is used as the "M" value here
+      multiLineString = new MultiLineString(
+        [
+          [
+            [1, 2],
+            [4, 5],
+          ],
+          [
+            [7, 8],
+            [10, 11],
+          ],
+        ],
+        'XY',
+      );
+    });
+
+    describe('#getCoordinateAtM', function () {
+      it('delegates to lineStringsCoordinateAtM() regardless of layout', function () {
+        assert.strictEqual(multiLineString.getLayout(), 'XY');
+        assert.deepEqual(
+          multiLineString.getCoordinateAtM(3.5, false, false),
+          [2.5, 3.5],
+        );
+        assert.strictEqual(
+          multiLineString.getCoordinateAtM(6.5, false, false),
+          null,
+        );
+      });
+    });
+  });
+
   describe('construct with 4D coordinates', function () {
     let multiLineString;
     beforeEach(function () {

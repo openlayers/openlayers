@@ -156,7 +156,7 @@ class LineString extends SimpleGeometry {
    * such coordinate exists.
    *
    * `extrapolate` controls extrapolation beyond the range of Ms in the
-   * MultiLineString. If `extrapolate` is `true` then Ms less than the first
+   * LineString. If `extrapolate` is `true` then Ms less than the first
    * M will return the first coordinate and Ms greater than the last M will
    * return the last coordinate.
    *
@@ -166,9 +166,6 @@ class LineString extends SimpleGeometry {
    * @api
    */
   getCoordinateAtM(m, extrapolate) {
-    if (this.layout != 'XYM' && this.layout != 'XYZM') {
-      return null;
-    }
     extrapolate = extrapolate !== undefined ? extrapolate : false;
     return lineStringCoordinateAtM(
       this.flatCoordinates,
