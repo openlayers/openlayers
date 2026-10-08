@@ -164,6 +164,12 @@ class MultiLineString extends SimpleGeometry {
    * `false` then the function will return `null` for Ms falling between
    * LineStrings.
    *
+   * If the layout has no M (`XY` or `XYZ`), `m` is the 2D length along the
+   * MultiLineString, measured from its first coordinate in the units of the
+   * coordinates. If `interpolate` is `true`, the straight-line distances
+   * between consecutive LineStrings are included in that length; otherwise
+   * they are not.
+   *
    * @param {number} m M.
    * @param {boolean} [extrapolate] Extrapolate. Default is `false`.
    * @param {boolean} [interpolate] Interpolate. Default is `false`.
@@ -184,6 +190,7 @@ class MultiLineString extends SimpleGeometry {
       m,
       extrapolate,
       interpolate,
+      this.layout == 'XYM' || this.layout == 'XYZM',
     );
   }
 

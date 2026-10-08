@@ -68,12 +68,41 @@ export function interpolatePoint(
 }
 
 /**
+ * Appends the coordinates of a line string to `measured`, each with the
+ * cumulative 2D length as M, continuing from the last M in `measured`.
  * @param {Array<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
  * @param {number} end End.
  * @param {number} stride Stride.
- * @param {number} m M.
+ * @param {Array<number>} measured Flat coordinates with stride `stride + 1`.
+ * @return {Array<number>} `measured`.
+ */
+function measure(flatCoordinates, offset, end, stride, measured) {
+  let length = measured.length ? measured[measured.length - 1] : 0;
+  let x1 = flatCoordinates[offset];
+  let y1 = flatCoordinates[offset + 1];
+  for (let i = offset; i < end; i += stride) {
+    const x2 = flatCoordinates[i];
+    const y2 = flatCoordinates[i + 1];
+    length += Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+    for (let j = 0; j < stride; ++j) {
+      measured.push(flatCoordinates[i + j]);
+    }
+    measured.push(length);
+    x1 = x2;
+    y1 = y2;
+  }
+  return measured;
+}
+
+/**
+ * @param {Array<number>} flatCoordinates Flat coordinates.
+ * @param {number} offset Offset.
+ * @param {number} end End.
+ * @param {number} stride Stride.
+ * @param {number} m M, or the 2D length along the line string if `hasM` is `false`.
  * @param {boolean} extrapolate Extrapolate.
+ * @param {boolean} [hasM] Whether the last ordinate of each coordinate is M (default is `true`).
  * @return {import("../../coordinate.js").Coordinate|null} Coordinate.
  */
 export function lineStringCoordinateAtM(
@@ -83,9 +112,22 @@ export function lineStringCoordinateAtM(
   stride,
   m,
   extrapolate,
+  hasM,
 ) {
   if (end == offset) {
     return null;
+  }
+  if (hasM === false) {
+    const measured = measure(flatCoordinates, offset, end, stride, []);
+    const coordinate = lineStringCoordinateAtM(
+      measured,
+      0,
+      measured.length,
+      stride + 1,
+      m,
+      extrapolate,
+    );
+    return coordinate && coordinate.slice(0, stride);
   }
   let coordinate;
   if (m < flatCoordinates[offset + stride - 1]) {
@@ -146,6 +188,9 @@ export function lineStringCoordinateAtM(
  * @param {number} m M.
  * @param {boolean} extrapolate Extrapolate.
  * @param {boolean} interpolate Interpolate.
+ * @param {boolean} [hasM] Whether the last ordinate of each coordinate is M (default is `true`).
+ * If `false`, `m` is the 2D length along the line strings, including the gaps between them
+ * when `interpolate` is `true`.
  * @return {import("../../coordinate.js").Coordinate|null} Coordinate.
  */
 export function lineStringsCoordinateAtM(
@@ -156,6 +201,7 @@ export function lineStringsCoordinateAtM(
   m,
   extrapolate,
   interpolate,
+  hasM,
 ) {
   if (interpolate) {
     return lineStringCoordinateAtM(
@@ -165,7 +211,28 @@ export function lineStringsCoordinateAtM(
       stride,
       m,
       extrapolate,
+      hasM,
     );
+  }
+  if (hasM === false) {
+    /** @type {Array<number>} */
+    const measured = [];
+    const measuredEnds = [];
+    for (let i = 0, ii = ends.length; i < ii; ++i) {
+      measure(flatCoordinates, offset, ends[i], stride, measured);
+      measuredEnds.push(measured.length);
+      offset = ends[i];
+    }
+    const coordinate = lineStringsCoordinateAtM(
+      measured,
+      0,
+      measuredEnds,
+      stride + 1,
+      m,
+      extrapolate,
+      false,
+    );
+    return coordinate && coordinate.slice(0, stride);
   }
   let coordinate;
   if (m < flatCoordinates[stride - 1]) {

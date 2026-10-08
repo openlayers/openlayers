@@ -517,26 +517,30 @@ describe('ol/geom/LineString.js', function () {
     });
   });
 
-  describe('with XY coordinates', function () {
-    let lineString;
-    beforeEach(function () {
-      // the last slot of the stride (y) is used as the "M" value here
-      lineString = new LineString(
-        [
-          [1, 2],
-          [4, 5],
-        ],
-        'XY',
-      );
+  describe('#getCoordinateAtM without M', function () {
+    it('uses the length along an XY line string as M', function () {
+      const lineString = new LineString([
+        [0, 0],
+        [3, 4],
+        [3, 10],
+      ]);
+      assert.deepEqual(lineString.getCoordinateAtM(0), [0, 0]);
+      assert.deepEqual(lineString.getCoordinateAtM(2.5), [1.5, 2]);
+      assert.deepEqual(lineString.getCoordinateAtM(5), [3, 4]);
+      assert.deepEqual(lineString.getCoordinateAtM(8), [3, 7]);
+      assert.deepEqual(lineString.getCoordinateAtM(11), [3, 10]);
+      assert.strictEqual(lineString.getCoordinateAtM(-1, false), null);
+      assert.deepEqual(lineString.getCoordinateAtM(-1, true), [0, 0]);
+      assert.strictEqual(lineString.getCoordinateAtM(12, false), null);
+      assert.deepEqual(lineString.getCoordinateAtM(12, true), [3, 10]);
     });
 
-    describe('#getCoordinateAtM', function () {
-      it('delegates to lineStringCoordinateAtM() regardless of layout', function () {
-        assert.strictEqual(lineString.getLayout(), 'XY');
-        assert.deepEqual(lineString.getCoordinateAtM(3.5), [2.5, 3.5]);
-        assert.strictEqual(lineString.getCoordinateAtM(1, false), null);
-        assert.deepEqual(lineString.getCoordinateAtM(1, true), [1, 1]);
-      });
+    it('interpolates but does not measure Z of an XYZ line string', function () {
+      const lineString = new LineString([
+        [0, 0, 10],
+        [3, 4, 20],
+      ]);
+      assert.deepEqual(lineString.getCoordinateAtM(2.5), [1.5, 2, 15]);
     });
   });
 
