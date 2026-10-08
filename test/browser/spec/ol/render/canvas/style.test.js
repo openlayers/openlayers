@@ -110,6 +110,8 @@ function expectImageEquals(image, expected) {
     const expectedSrc = expected.getSrc();
     assert.deepEqual(image.getSrc(), expectedSrc);
     assert.deepEqual(image.getColor(), expected.getColor());
+    assert.deepEqual(image.getPlacement(), expected.getPlacement());
+    assert.deepEqual(image.getRepeat(), expected.getRepeat());
     return;
   }
   if (expected instanceof RegularShape) {
@@ -736,6 +738,39 @@ describe('ol/render/canvas/style.js', () => {
         },
         error: 'No fill, stroke, point, or text symbolizer properties in style',
       },
+      {
+        name: 'icon-placement and icon-repeat static',
+        style: {
+          'icon-src': 'icon.svg',
+          'icon-placement': 'line',
+          'icon-repeat': 50,
+        },
+        expected: new Style({
+          image: new Icon({
+            src: 'icon.svg',
+            placement: 'line',
+            repeat: 50,
+          }),
+        }),
+      },
+      {
+        name: 'icon-placement dynamic expression',
+        style: {
+          'icon-src': 'icon.svg',
+          'icon-placement': ['get', 'placement'],
+        },
+        context: {
+          properties: {
+            placement: 'line',
+          },
+        },
+        expected: new Style({
+          image: new Icon({
+            src: 'icon.svg',
+            placement: 'line',
+          }),
+        }),
+      },
     ];
 
     for (const c of cases) {
@@ -760,5 +795,15 @@ describe('ol/render/canvas/style.js', () => {
         expectStyleEquals(evaluator(context), c.expected);
       });
     }
+
+    it('throws for an invalid icon-placement value when evaluated', () => {
+      const evaluator = buildStyle(
+        {'icon-src': 'icon.svg', 'icon-placement': 'oops'},
+        newParsingContext(),
+      );
+      assert.throws(() => {
+        evaluator(newEvaluationContext());
+      }, 'Expected point or line for icon-placement');
+    });
   });
 });

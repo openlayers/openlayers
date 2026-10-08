@@ -16,6 +16,9 @@ import RegularShape from './RegularShape.js';
  * (positive rotation clockwise, meaningful only when used in conjunction with a two dimensional scale).
  * @property {boolean} [rotateWithView=false] Whether to rotate the shape with the view
  * (meaningful only when used in conjunction with a two dimensional scale).
+ * @property {import("./Image.js").ImageStylePlacement} [placement='point'] Placement.
+ * @property {number} [repeat] Repeat interval. When set, the circle will be repeated at this interval, which specifies
+ * the distance between two anchors in pixels. Only available when `placement` is set to `'line'`.
  * @property {import('./Style.js').DeclutterMode} [declutterMode] Declutter mode
  */
 
@@ -42,6 +45,8 @@ class CircleStyle extends RegularShape {
         options.rotateWithView !== undefined ? options.rotateWithView : false,
       displacement:
         options.displacement !== undefined ? options.displacement : [0, 0],
+      placement: options.placement,
+      repeat: options.repeat,
       declutterMode: options.declutterMode,
     });
   }
@@ -62,6 +67,8 @@ class CircleStyle extends RegularShape {
       rotation: this.getRotation(),
       rotateWithView: this.getRotateWithView(),
       displacement: this.getDisplacement().slice(),
+      placement: this.getPlacement(),
+      repeat: this.getRepeat(),
       declutterMode: this.getDeclutterMode(),
     });
     style.setOpacity(this.getOpacity());

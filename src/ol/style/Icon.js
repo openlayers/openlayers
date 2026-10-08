@@ -52,6 +52,9 @@ import ImageStyle from './Image.js';
  * @property {import("../size.js").Size} [size] Icon size in pixels. Used together with `offset` to define the
  * sub-rectangle to use from the original (sprite) image.
  * @property {string} [src] Image source URI.
+ * @property {import("./Image.js").ImageStylePlacement} [placement='point'] Icon placement.
+ * @property {number} [repeat] Repeat interval. When set, the icon will be repeated at this interval, which specifies
+ * the distance between two icon anchors in pixels. Only available when `placement` is set to `'line'`.
  * @property {import("./Style.js").DeclutterMode} [declutterMode] Declutter mode.
  */
 
@@ -115,6 +118,8 @@ class Icon extends ImageStyle {
       displacement:
         options.displacement !== undefined ? options.displacement : [0, 0],
       rotateWithView: rotateWithView,
+      placement: options.placement,
+      repeat: options.repeat,
       declutterMode: options.declutterMode,
     });
 
@@ -344,6 +349,8 @@ class Icon extends ImageStyle {
       size: this.size_ !== null ? this.size_.slice() : undefined,
       src: this.getSrc(),
       displacement: this.getDisplacement().slice(),
+      placement: this.getPlacement(),
+      repeat: this.getRepeat(),
       declutterMode: this.getDeclutterMode(),
     });
   }

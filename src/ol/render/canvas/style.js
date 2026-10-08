@@ -813,6 +813,14 @@ function buildIcon(flatStyle, context) {
     context,
   );
 
+  const evaluatePlacement = stringEvaluator(
+    flatStyle,
+    prefix + 'placement',
+    context,
+  );
+
+  const evaluateRepeat = numberEvaluator(flatStyle, prefix + 'repeat', context);
+
   // the remaining symbolizer properties are not currently settable
   const anchorOrigin = optionalIconOrigin(flatStyle, prefix + 'anchor-origin');
   const anchorXUnits = optionalIconAnchorUnits(
@@ -895,6 +903,18 @@ function buildIcon(flatStyle, context) {
 
     if (evaluateRotateWithView) {
       icon.setRotateWithView(evaluateRotateWithView(context));
+    }
+
+    if (evaluatePlacement) {
+      const placement = evaluatePlacement(context);
+      if (placement !== 'point' && placement !== 'line') {
+        throw new Error('Expected point or line for icon-placement');
+      }
+      icon.setPlacement(placement);
+    }
+
+    if (evaluateRepeat) {
+      icon.setRepeat(evaluateRepeat(context));
     }
 
     if (evaluateScale) {

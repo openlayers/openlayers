@@ -276,6 +276,16 @@ function renderLineStringGeometry(
     lineStringReplay.setFillStrokeStyle(null, strokeStyle);
     lineStringReplay.drawLineString(geometry, feature, index);
   }
+  const imageStyle = style.getImage();
+  if (
+    imageStyle &&
+    imageStyle.getPlacement() === 'line' &&
+    imageStyle.getImageState() == ImageState.LOADED
+  ) {
+    const imageReplay = builderGroup.getBuilder(style.getZIndex(), 'Image');
+    imageReplay.setImageStyle(imageStyle);
+    imageReplay.drawLineString(geometry, feature, index);
+  }
   const textStyle = style.getText();
   if (textStyle && textStyle.getText()) {
     const textReplay = builderGroup.getBuilder(style.getZIndex(), 'Text');
@@ -307,6 +317,16 @@ function renderMultiLineStringGeometry(
     lineStringReplay.setFillStrokeStyle(null, strokeStyle);
     lineStringReplay.drawMultiLineString(geometry, feature, index);
   }
+  const imageStyle = style.getImage();
+  if (
+    imageStyle &&
+    imageStyle.getPlacement() === 'line' &&
+    imageStyle.getImageState() == ImageState.LOADED
+  ) {
+    const imageReplay = builderGroup.getBuilder(style.getZIndex(), 'Image');
+    imageReplay.setImageStyle(imageStyle);
+    imageReplay.drawMultiLineString(geometry, feature, index);
+  }
   const textStyle = style.getText();
   if (textStyle && textStyle.getText()) {
     const textReplay = builderGroup.getBuilder(style.getZIndex(), 'Text');
@@ -335,6 +355,16 @@ function renderMultiPolygonGeometry(
     const polygonReplay = builderGroup.getBuilder(style.getZIndex(), 'Polygon');
     polygonReplay.setFillStrokeStyle(fillStyle, strokeStyle);
     polygonReplay.drawMultiPolygon(geometry, feature, index);
+  }
+  const imageStyle = style.getImage();
+  if (
+    imageStyle &&
+    imageStyle.getPlacement() === 'line' &&
+    imageStyle.getImageState() == ImageState.LOADED
+  ) {
+    const imageReplay = builderGroup.getBuilder(style.getZIndex(), 'Image');
+    imageReplay.setImageStyle(imageStyle);
+    imageReplay.drawMultiPolygon(geometry, feature, index);
   }
   const textStyle = style.getText();
   if (textStyle && textStyle.getText()) {
@@ -437,6 +467,16 @@ function renderPolygonGeometry(builderGroup, geometry, style, feature, index) {
     const polygonReplay = builderGroup.getBuilder(style.getZIndex(), 'Polygon');
     polygonReplay.setFillStrokeStyle(fillStyle, strokeStyle);
     polygonReplay.drawPolygon(geometry, feature, index);
+  }
+  const imageStyle = style.getImage();
+  if (
+    imageStyle &&
+    imageStyle.getPlacement() === 'line' &&
+    imageStyle.getImageState() == ImageState.LOADED
+  ) {
+    const imageReplay = builderGroup.getBuilder(style.getZIndex(), 'Image');
+    imageReplay.setImageStyle(imageStyle);
+    imageReplay.drawPolygon(geometry, feature, index);
   }
   const textStyle = style.getText();
   if (textStyle && textStyle.getText()) {

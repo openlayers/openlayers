@@ -107,6 +107,8 @@ describe('ol/renderer/vector', function () {
           style.getZIndex(),
           'LineString',
         );
+        const imageReplay = builderGroup.getBuilder(style.getZIndex(), 'Image');
+        const setImageStyleSpy = vi.spyOn(imageReplay, 'setImageStyle');
         const setFillStrokeStyleSpy = vi.spyOn(
           lineStringReplay,
           'setFillStrokeStyle',
@@ -117,6 +119,8 @@ describe('ol/renderer/vector', function () {
         renderFeature(builderGroup, feature, style, squaredTolerance, listener);
         assert.isAbove(setFillStrokeStyleSpy.mock.calls.length, 0);
         assert.isAbove(drawLineStringSpy.mock.calls.length, 0);
+        assert.strictEqual(setImageStyleSpy.mock.calls.length, 0);
+        setImageStyleSpy.mockRestore();
         setFillStrokeStyleSpy.mockRestore();
         drawLineStringSpy.mockRestore();
       });
@@ -163,6 +167,8 @@ describe('ol/renderer/vector', function () {
           style.getZIndex(),
           'Polygon',
         );
+        const imageReplay = builderGroup.getBuilder(style.getZIndex(), 'Image');
+        const setImageStyleSpy = vi.spyOn(imageReplay, 'setImageStyle');
         const setFillStrokeStyleSpy = vi.spyOn(
           polygonReplay,
           'setFillStrokeStyle',
@@ -173,6 +179,8 @@ describe('ol/renderer/vector', function () {
         renderFeature(builderGroup, feature, style, squaredTolerance, listener);
         assert.isAbove(setFillStrokeStyleSpy.mock.calls.length, 0);
         assert.isAbove(drawPolygonSpy.mock.calls.length, 0);
+        assert.strictEqual(setImageStyleSpy.mock.calls.length, 0);
+        setImageStyleSpy.mockRestore();
         setFillStrokeStyleSpy.mockRestore();
         drawPolygonSpy.mockRestore();
       });
@@ -206,6 +214,212 @@ describe('ol/renderer/vector', function () {
         assert.isAbove(drawMultiPolygonSpy.mock.calls.length, 0);
         setFillStrokeStyleSpy.mockRestore();
         drawMultiPolygonSpy.mockRestore();
+      });
+    });
+
+    describe('icon with placement: line', function () {
+      let lineIconStyle, lineStyle;
+
+      beforeEach(function () {
+        const canvas = document.createElement('canvas');
+        canvas.width = 2;
+        canvas.height = 2;
+        lineIconStyle = new Icon({
+          img: canvas,
+          size: [2, 2],
+          placement: 'line',
+        });
+        lineStyle = new Style({image: lineIconStyle});
+      });
+
+      it('dispatches LineString geometries to the Image builder', function () {
+        feature.setGeometry(
+          new LineString([
+            [0, 0],
+            [1, 1],
+          ]),
+        );
+        const imageReplay = builderGroup.getBuilder(
+          lineStyle.getZIndex(),
+          'Image',
+        );
+        const setImageStyleSpy = vi.spyOn(imageReplay, 'setImageStyle');
+        const drawLineStringSpy = vi
+          .spyOn(imageReplay, 'drawLineString')
+          .mockImplementation(VOID);
+        renderFeature(
+          builderGroup,
+          feature,
+          lineStyle,
+          squaredTolerance,
+          listener,
+        );
+        assert.strictEqual(setImageStyleSpy.mock.calls.length, 1);
+        assert.strictEqual(drawLineStringSpy.mock.calls.length, 1);
+        setImageStyleSpy.mockRestore();
+        drawLineStringSpy.mockRestore();
+      });
+
+      it('dispatches MultiLineString geometries to the Image builder', function () {
+        feature.setGeometry(
+          new MultiLineString([
+            [
+              [0, 0],
+              [1, 1],
+            ],
+          ]),
+        );
+        const imageReplay = builderGroup.getBuilder(
+          lineStyle.getZIndex(),
+          'Image',
+        );
+        const setImageStyleSpy = vi.spyOn(imageReplay, 'setImageStyle');
+        const drawMultiLineStringSpy = vi
+          .spyOn(imageReplay, 'drawMultiLineString')
+          .mockImplementation(VOID);
+        renderFeature(
+          builderGroup,
+          feature,
+          lineStyle,
+          squaredTolerance,
+          listener,
+        );
+        assert.strictEqual(setImageStyleSpy.mock.calls.length, 1);
+        assert.strictEqual(drawMultiLineStringSpy.mock.calls.length, 1);
+        setImageStyleSpy.mockRestore();
+        drawMultiLineStringSpy.mockRestore();
+      });
+
+      it('does not dispatch to the Image builder when placement is the default "point"', function () {
+        lineIconStyle.setPlacement('point');
+        feature.setGeometry(
+          new LineString([
+            [0, 0],
+            [1, 1],
+          ]),
+        );
+        const imageReplay = builderGroup.getBuilder(
+          lineStyle.getZIndex(),
+          'Image',
+        );
+        const drawLineStringSpy = vi
+          .spyOn(imageReplay, 'drawLineString')
+          .mockImplementation(VOID);
+        renderFeature(
+          builderGroup,
+          feature,
+          lineStyle,
+          squaredTolerance,
+          listener,
+        );
+        assert.strictEqual(drawLineStringSpy.mock.calls.length, 0);
+        drawLineStringSpy.mockRestore();
+      });
+    });
+
+    describe('icon on polygon geometries', function () {
+      let polygonIconStyle, polygonStyle;
+
+      beforeEach(function () {
+        const canvas = document.createElement('canvas');
+        canvas.width = 2;
+        canvas.height = 2;
+        polygonIconStyle = new Icon({
+          img: canvas,
+          size: [2, 2],
+          placement: 'line',
+        });
+        polygonStyle = new Style({image: polygonIconStyle});
+      });
+
+      it('dispatches Polygon geometries to the Image builder', function () {
+        feature.setGeometry(
+          new Polygon([
+            [
+              [0, 0],
+              [1, 1],
+              [1, 0],
+              [0, 0],
+            ],
+          ]),
+        );
+        const imageReplay = builderGroup.getBuilder(
+          polygonStyle.getZIndex(),
+          'Image',
+        );
+        const drawPolygonSpy = vi
+          .spyOn(imageReplay, 'drawPolygon')
+          .mockImplementation(VOID);
+        renderFeature(
+          builderGroup,
+          feature,
+          polygonStyle,
+          squaredTolerance,
+          listener,
+        );
+        assert.strictEqual(drawPolygonSpy.mock.calls.length, 1);
+        drawPolygonSpy.mockRestore();
+      });
+
+      it('dispatches MultiPolygon geometries to the Image builder', function () {
+        feature.setGeometry(
+          new MultiPolygon([
+            [
+              [
+                [0, 0],
+                [1, 1],
+                [1, 0],
+                [0, 0],
+              ],
+            ],
+          ]),
+        );
+        const imageReplay = builderGroup.getBuilder(
+          polygonStyle.getZIndex(),
+          'Image',
+        );
+        const drawMultiPolygonSpy = vi
+          .spyOn(imageReplay, 'drawMultiPolygon')
+          .mockImplementation(VOID);
+        renderFeature(
+          builderGroup,
+          feature,
+          polygonStyle,
+          squaredTolerance,
+          listener,
+        );
+        assert.strictEqual(drawMultiPolygonSpy.mock.calls.length, 1);
+        drawMultiPolygonSpy.mockRestore();
+      });
+
+      it('does not dispatch to the Image builder when placement is the default "point"', function () {
+        polygonIconStyle.setPlacement('point');
+        feature.setGeometry(
+          new Polygon([
+            [
+              [0, 0],
+              [1, 1],
+              [1, 0],
+              [0, 0],
+            ],
+          ]),
+        );
+        const imageReplay = builderGroup.getBuilder(
+          polygonStyle.getZIndex(),
+          'Image',
+        );
+        const drawPolygonSpy = vi
+          .spyOn(imageReplay, 'drawPolygon')
+          .mockImplementation(VOID);
+        renderFeature(
+          builderGroup,
+          feature,
+          polygonStyle,
+          squaredTolerance,
+          listener,
+        );
+        assert.strictEqual(drawPolygonSpy.mock.calls.length, 0);
+        drawPolygonSpy.mockRestore();
       });
     });
   });

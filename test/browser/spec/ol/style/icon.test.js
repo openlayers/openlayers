@@ -66,6 +66,8 @@ describe('ol.style.Icon', function () {
         size: [10, 12],
         displacement: [5, 6],
         declutterMode: 'obstacle',
+        placement: 'line',
+        repeat: 50,
       });
 
       const clone = original.clone();
@@ -78,6 +80,8 @@ describe('ol.style.Icon', function () {
       assert.deepEqual(original.crossOrigin_, clone.crossOrigin_);
       assert.deepEqual(original.referrerPolicy_, clone.referrerPolicy_);
       assert.deepEqual(original.getColor(), clone.getColor());
+      assert.deepEqual(original.getPlacement(), clone.getPlacement());
+      assert.deepEqual(original.getRepeat(), clone.getRepeat());
       assert.deepEqual(original.offset_, clone.offset_);
       assert.deepEqual(original.offsetOrigin_, clone.offsetOrigin_);
       assert.deepEqual(original.getScale(), clone.getScale());
@@ -362,6 +366,46 @@ describe('ol.style.Icon', function () {
 
       iconStyle.setAnchor([0.5, 0.5]);
       assert.deepEqual(iconStyle.getAnchor(), [18, 24]);
+    });
+  });
+
+  describe('#getPlacement / #setPlacement', function () {
+    it("defaults to 'point'", function () {
+      const iconStyle = new Icon({src: 'test.png'});
+      assert.strictEqual(iconStyle.getPlacement(), 'point');
+    });
+
+    it('returns the configured placement', function () {
+      const iconStyle = new Icon({src: 'test.png', placement: 'line'});
+      assert.strictEqual(iconStyle.getPlacement(), 'line');
+    });
+
+    it('changes the placement', function () {
+      const iconStyle = new Icon({src: 'test.png'});
+      iconStyle.setPlacement('line');
+      assert.strictEqual(iconStyle.getPlacement(), 'line');
+    });
+  });
+
+  describe('#getRepeat / #setRepeat', function () {
+    it('defaults to undefined', function () {
+      const iconStyle = new Icon({src: 'test.png'});
+      assert.strictEqual(iconStyle.getRepeat(), undefined);
+    });
+
+    it('returns the configured repeat', function () {
+      const iconStyle = new Icon({
+        src: 'test.png',
+        placement: 'line',
+        repeat: 80,
+      });
+      assert.strictEqual(iconStyle.getRepeat(), 80);
+    });
+
+    it('changes the repeat', function () {
+      const iconStyle = new Icon({src: 'test.png', placement: 'line'});
+      iconStyle.setRepeat(40);
+      assert.strictEqual(iconStyle.getRepeat(), 40);
     });
   });
 
