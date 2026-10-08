@@ -76,6 +76,10 @@ import TileProperty from './TileProperty.js';
  * style. When set to `null`, only
  * features that have their own style will be rendered. See {@link module:ol/style/Style~Style} for the default style
  * which will be used if this is not set.
+ * @property {import("../style/flat.js").StyleVariables} [variables] Style variables. Each variable must
+ * hold a literal value (not an expression). They can be referenced from a
+ * [flat style]{@link module:ol/style/flat~FlatStyle} with the `['var', 'varName']` operator.
+ * To update them, use the {@link module:ol/layer/BaseVector~BaseVectorLayer#updateStyleVariables} method.
  * @property {import("./Base.js").BackgroundColor} [background] Background color for the layer. If not specified, no
  * background will be rendered.
  * @property {boolean} [updateWhileAnimating=false] When set to `true`, feature batches will be

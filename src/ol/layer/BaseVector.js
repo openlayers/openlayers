@@ -2,6 +2,7 @@
  * @module ol/layer/BaseVector
  */
 import RBush from 'rbush';
+import {newParsingContext} from '../expr/expression.js';
 import {flatStyleLikeToStyleFunction} from '../render/canvas/style.js';
 import Style, {
   createDefaultStyle,
@@ -54,6 +55,10 @@ import Layer from './Layer.js';
  * @property {import("../style/Style.js").StyleLike|import("../style/flat.js").FlatStyleLike|null} [style] Layer style. When set to `null`, only
  * features that have their own style will be rendered. See {@link module:ol/style/Style~Style} for the default style
  * which will be used if this is not set.
+ * @property {import("../style/flat.js").StyleVariables} [variables] Style variables. Each variable must
+ * hold a literal value (not an expression). They can be referenced from a
+ * [flat style]{@link module:ol/style/flat~FlatStyle} with the `['var', 'varName']` operator.
+ * To update them, use the {@link module:ol/layer/BaseVector~BaseVectorLayer#updateStyleVariables} method.
  * @property {import("./Base.js").BackgroundColor} [background] Background color for the layer. If not specified, no background
  * will be rendered.
  * @property {boolean} [updateWhileAnimating=false] When set to `true`, feature batches will
@@ -96,6 +101,7 @@ class BaseVectorLayer extends Layer {
     const baseOptions = Object.assign({}, options);
 
     delete baseOptions.style;
+    delete baseOptions.variables;
     delete baseOptions.renderBuffer;
     delete baseOptions.updateWhileAnimating;
     delete baseOptions.updateWhileInteracting;
@@ -127,6 +133,13 @@ class BaseVectorLayer extends Layer {
      * @private
      */
     this.styleFunction_ = undefined;
+
+    /**
+     * Referenced by the compiled style function, so it must be mutated in place, never reassigned.
+     * @type {import('../style/flat.js').StyleVariables}
+     * @protected
+     */
+    this.styleVariables = options.variables ?? {};
 
     this.setStyle(options.style);
 
@@ -281,11 +294,21 @@ class BaseVectorLayer extends Layer {
    */
   setStyle(style) {
     this.style_ = style === undefined ? createDefaultStyle : (style ?? null);
-    const styleLike = toStyleLike(style);
+    const styleLike = toStyleLike(style, this.styleVariables);
     this.styleFunction_ =
       style === null || styleLike === null
         ? undefined
         : toStyleFunction(styleLike);
+    this.changed();
+  }
+
+  /**
+   * Update any variables used by the layer style and trigger a re-render.
+   * @param {import('../style/flat.js').StyleVariables} variables Variables to update.
+   * @api
+   */
+  updateStyleVariables(variables) {
+    Object.assign(this.styleVariables, variables);
     this.changed();
   }
 
@@ -304,9 +327,10 @@ class BaseVectorLayer extends Layer {
  * styles, and arrays of rules are converted into style functions.
  *
  * @param {import("../style/Style.js").StyleLike|import("../style/flat.js").FlatStyleLike|null} [style] Layer style.
+ * @param {import("../style/flat.js").StyleVariables} [variables] Style variables, for flat styles.
  * @return {import("../style/Style.js").StyleLike|null} The style.
  */
-function toStyleLike(style) {
+function toStyleLike(style, variables) {
   if (style === undefined) {
     return createDefaultStyle;
   }
@@ -337,7 +361,10 @@ function toStyleLike(style) {
 
   const flatStyleLike =
     /** @type {import("../style/flat.js").FlatStyleLike} */ (style);
-  return flatStyleLikeToStyleFunction(flatStyleLike);
+  return flatStyleLikeToStyleFunction(
+    flatStyleLike,
+    newParsingContext(variables),
+  );
 }
 
 export default BaseVectorLayer;
