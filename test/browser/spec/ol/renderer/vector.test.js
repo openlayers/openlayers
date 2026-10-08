@@ -107,6 +107,8 @@ describe('ol/renderer/vector', function () {
           style.getZIndex(),
           'LineString',
         );
+        const imageReplay = builderGroup.getBuilder(style.getZIndex(), 'Image');
+        const setImageStyleSpy = vi.spyOn(imageReplay, 'setImageStyle');
         const setFillStrokeStyleSpy = vi.spyOn(
           lineStringReplay,
           'setFillStrokeStyle',
@@ -117,6 +119,8 @@ describe('ol/renderer/vector', function () {
         renderFeature(builderGroup, feature, style, squaredTolerance, listener);
         assert.isAbove(setFillStrokeStyleSpy.mock.calls.length, 0);
         assert.isAbove(drawLineStringSpy.mock.calls.length, 0);
+        assert.strictEqual(setImageStyleSpy.mock.calls.length, 0);
+        setImageStyleSpy.mockRestore();
         setFillStrokeStyleSpy.mockRestore();
         drawLineStringSpy.mockRestore();
       });
@@ -163,6 +167,8 @@ describe('ol/renderer/vector', function () {
           style.getZIndex(),
           'Polygon',
         );
+        const imageReplay = builderGroup.getBuilder(style.getZIndex(), 'Image');
+        const setImageStyleSpy = vi.spyOn(imageReplay, 'setImageStyle');
         const setFillStrokeStyleSpy = vi.spyOn(
           polygonReplay,
           'setFillStrokeStyle',
@@ -173,6 +179,8 @@ describe('ol/renderer/vector', function () {
         renderFeature(builderGroup, feature, style, squaredTolerance, listener);
         assert.isAbove(setFillStrokeStyleSpy.mock.calls.length, 0);
         assert.isAbove(drawPolygonSpy.mock.calls.length, 0);
+        assert.strictEqual(setImageStyleSpy.mock.calls.length, 0);
+        setImageStyleSpy.mockRestore();
         setFillStrokeStyleSpy.mockRestore();
         drawPolygonSpy.mockRestore();
       });
@@ -282,7 +290,7 @@ describe('ol/renderer/vector', function () {
         drawMultiLineStringSpy.mockRestore();
       });
 
-      it('dispatches to the Image builder when placement is the default "point"', function () {
+      it('does not dispatch to the Image builder when placement is the default "point"', function () {
         lineIconStyle.setPlacement('point');
         feature.setGeometry(
           new LineString([
@@ -304,7 +312,7 @@ describe('ol/renderer/vector', function () {
           squaredTolerance,
           listener,
         );
-        assert.strictEqual(drawLineStringSpy.mock.calls.length, 1);
+        assert.strictEqual(drawLineStringSpy.mock.calls.length, 0);
         drawLineStringSpy.mockRestore();
       });
     });
@@ -316,7 +324,11 @@ describe('ol/renderer/vector', function () {
         const canvas = document.createElement('canvas');
         canvas.width = 2;
         canvas.height = 2;
-        polygonIconStyle = new Icon({img: canvas, size: [2, 2]});
+        polygonIconStyle = new Icon({
+          img: canvas,
+          size: [2, 2],
+          placement: 'line',
+        });
         polygonStyle = new Style({image: polygonIconStyle});
       });
 
@@ -378,6 +390,36 @@ describe('ol/renderer/vector', function () {
         );
         assert.strictEqual(drawMultiPolygonSpy.mock.calls.length, 1);
         drawMultiPolygonSpy.mockRestore();
+      });
+
+      it('does not dispatch to the Image builder when placement is the default "point"', function () {
+        polygonIconStyle.setPlacement('point');
+        feature.setGeometry(
+          new Polygon([
+            [
+              [0, 0],
+              [1, 1],
+              [1, 0],
+              [0, 0],
+            ],
+          ]),
+        );
+        const imageReplay = builderGroup.getBuilder(
+          polygonStyle.getZIndex(),
+          'Image',
+        );
+        const drawPolygonSpy = vi
+          .spyOn(imageReplay, 'drawPolygon')
+          .mockImplementation(VOID);
+        renderFeature(
+          builderGroup,
+          feature,
+          polygonStyle,
+          squaredTolerance,
+          listener,
+        );
+        assert.strictEqual(drawPolygonSpy.mock.calls.length, 0);
+        drawPolygonSpy.mockRestore();
       });
     });
   });

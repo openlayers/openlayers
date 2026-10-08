@@ -277,7 +277,11 @@ function renderLineStringGeometry(
     lineStringReplay.drawLineString(geometry, feature, index);
   }
   const imageStyle = style.getImage();
-  if (imageStyle && imageStyle.getImageState() == ImageState.LOADED) {
+  if (
+    imageStyle &&
+    imageStyle.getPlacement() === 'line' &&
+    imageStyle.getImageState() == ImageState.LOADED
+  ) {
     const imageReplay = builderGroup.getBuilder(style.getZIndex(), 'Image');
     imageReplay.setImageStyle(imageStyle);
     imageReplay.drawLineString(geometry, feature, index);
@@ -314,7 +318,11 @@ function renderMultiLineStringGeometry(
     lineStringReplay.drawMultiLineString(geometry, feature, index);
   }
   const imageStyle = style.getImage();
-  if (imageStyle && imageStyle.getImageState() == ImageState.LOADED) {
+  if (
+    imageStyle &&
+    imageStyle.getPlacement() === 'line' &&
+    imageStyle.getImageState() == ImageState.LOADED
+  ) {
     const imageReplay = builderGroup.getBuilder(style.getZIndex(), 'Image');
     imageReplay.setImageStyle(imageStyle);
     imageReplay.drawMultiLineString(geometry, feature, index);
@@ -349,7 +357,11 @@ function renderMultiPolygonGeometry(
     polygonReplay.drawMultiPolygon(geometry, feature, index);
   }
   const imageStyle = style.getImage();
-  if (imageStyle && imageStyle.getImageState() == ImageState.LOADED) {
+  if (
+    imageStyle &&
+    imageStyle.getPlacement() === 'line' &&
+    imageStyle.getImageState() == ImageState.LOADED
+  ) {
     const imageReplay = builderGroup.getBuilder(style.getZIndex(), 'Image');
     imageReplay.setImageStyle(imageStyle);
     imageReplay.drawMultiPolygon(geometry, feature, index);
@@ -457,7 +469,11 @@ function renderPolygonGeometry(builderGroup, geometry, style, feature, index) {
     polygonReplay.drawPolygon(geometry, feature, index);
   }
   const imageStyle = style.getImage();
-  if (imageStyle && imageStyle.getImageState() == ImageState.LOADED) {
+  if (
+    imageStyle &&
+    imageStyle.getPlacement() === 'line' &&
+    imageStyle.getImageState() == ImageState.LOADED
+  ) {
     const imageReplay = builderGroup.getBuilder(style.getZIndex(), 'Image');
     imageReplay.setImageStyle(imageStyle);
     imageReplay.drawPolygon(geometry, feature, index);

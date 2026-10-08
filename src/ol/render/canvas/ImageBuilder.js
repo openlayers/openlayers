@@ -102,12 +102,6 @@ class CanvasImageBuilder extends CanvasBuilder {
 
     /**
      * @private
-     * @type {import('../../style/Image.js').ImageStylePlacement|undefined}
-     */
-    this.placement_ = undefined;
-
-    /**
-     * @private
      * @type {import('../../style/Style.js').DeclutterMode|undefined}
      */
     this.declutterMode_ = undefined;
@@ -192,20 +186,14 @@ class CanvasImageBuilder extends CanvasBuilder {
       return;
     }
     this.beginGeometry(lineStringGeometry, feature, index ?? 0);
-    if (this.placement_ === 'line') {
-      const flatCoordinates = lineStringGeometry.getFlatCoordinates();
-      const stride = lineStringGeometry.getStride();
-      this.drawAnchoredImages_(
-        flatCoordinates,
-        0,
-        flatCoordinates.length,
-        stride,
-      );
-    } else {
-      // no line-following rotation: a single icon at the line's own midpoint
-      const midpoint = lineStringGeometry.getFlatMidpoint();
-      this.drawImageAtCoordinate_([midpoint[0], midpoint[1]], this.rotation_);
-    }
+    const flatCoordinates = lineStringGeometry.getFlatCoordinates();
+    const stride = lineStringGeometry.getStride();
+    this.drawAnchoredImages_(
+      flatCoordinates,
+      0,
+      flatCoordinates.length,
+      stride,
+    );
     this.endGeometry(feature);
   }
 
@@ -224,27 +212,16 @@ class CanvasImageBuilder extends CanvasBuilder {
       return;
     }
     this.beginGeometry(multiLineStringGeometry, feature, index ?? 0);
-    if (this.placement_ === 'line') {
-      const ends =
-        /** @type {import("../../geom/MultiLineString.js").default} */ (
-          multiLineStringGeometry
-        ).getEnds();
-      const flatCoordinates = multiLineStringGeometry.getFlatCoordinates();
-      const stride = multiLineStringGeometry.getStride();
-      let offset = 0;
-      for (let i = 0, ii = ends.length; i < ii; ++i) {
-        this.drawAnchoredImages_(flatCoordinates, offset, ends[i], stride);
-        offset = ends[i];
-      }
-    } else {
-      // no line-following rotation: one icon per sub-line, at its own midpoint
-      const midpoints =
-        /** @type {import("../../geom/MultiLineString.js").default} */ (
-          multiLineStringGeometry
-        ).getFlatMidpoints();
-      const myBegin = this.coordinates.length;
-      const myEnd = this.appendFlatPointCoordinates(midpoints, 2);
-      this.appendImageInstruction_(myBegin, myEnd, this.rotation_);
+    const ends =
+      /** @type {import("../../geom/MultiLineString.js").default} */ (
+        multiLineStringGeometry
+      ).getEnds();
+    const flatCoordinates = multiLineStringGeometry.getFlatCoordinates();
+    const stride = multiLineStringGeometry.getStride();
+    let offset = 0;
+    for (let i = 0, ii = ends.length; i < ii; ++i) {
+      this.drawAnchoredImages_(flatCoordinates, offset, ends[i], stride);
+      offset = ends[i];
     }
     this.endGeometry(feature);
   }
@@ -264,24 +241,13 @@ class CanvasImageBuilder extends CanvasBuilder {
       return;
     }
     this.beginGeometry(polygonGeometry, feature, index ?? 0);
-    if (this.placement_ === 'line') {
-      // only the exterior ring is used for line placement
-      const end = /** @type {import("../../geom/Polygon.js").default} */ (
-        polygonGeometry
-      ).getEnds()[0];
-      const flatCoordinates = polygonGeometry.getFlatCoordinates();
-      const stride = polygonGeometry.getStride();
-      this.drawAnchoredImages_(flatCoordinates, 0, end, stride);
-    } else {
-      const interiorPoint =
-        /** @type {import("../../geom/Polygon.js").default} */ (
-          polygonGeometry
-        ).getFlatInteriorPoint();
-      this.drawImageAtCoordinate_(
-        [interiorPoint[0], interiorPoint[1]],
-        this.rotation_,
-      );
-    }
+    // only the exterior ring is used for line placement
+    const end = /** @type {import("../../geom/Polygon.js").default} */ (
+      polygonGeometry
+    ).getEnds()[0];
+    const flatCoordinates = polygonGeometry.getFlatCoordinates();
+    const stride = polygonGeometry.getStride();
+    this.drawAnchoredImages_(flatCoordinates, 0, end, stride);
     this.endGeometry(feature);
   }
 
@@ -300,32 +266,17 @@ class CanvasImageBuilder extends CanvasBuilder {
       return;
     }
     this.beginGeometry(multiPolygonGeometry, feature, index ?? 0);
-    if (this.placement_ === 'line') {
-      const endss =
-        /** @type {import("../../geom/MultiPolygon.js").default} */ (
-          multiPolygonGeometry
-        ).getEndss();
-      const flatCoordinates = multiPolygonGeometry.getFlatCoordinates();
-      const stride = multiPolygonGeometry.getStride();
-      let offset = 0;
-      for (let i = 0, ii = endss.length; i < ii; ++i) {
-        // only the exterior ring of each polygon is used for line placement
-        const end = endss[i][0];
-        this.drawAnchoredImages_(flatCoordinates, offset, end, stride);
-        offset = end;
-      }
-    } else {
-      const interiorPoints =
-        /** @type {import("../../geom/MultiPolygon.js").default} */ (
-          multiPolygonGeometry
-        ).getFlatInteriorPoints();
-      const midpoints = [];
-      for (let i = 0, ii = interiorPoints.length; i < ii; i += 3) {
-        midpoints.push(interiorPoints[i], interiorPoints[i + 1]);
-      }
-      const myBegin = this.coordinates.length;
-      const myEnd = this.appendFlatPointCoordinates(midpoints, 2);
-      this.appendImageInstruction_(myBegin, myEnd, this.rotation_);
+    const endss = /** @type {import("../../geom/MultiPolygon.js").default} */ (
+      multiPolygonGeometry
+    ).getEndss();
+    const flatCoordinates = multiPolygonGeometry.getFlatCoordinates();
+    const stride = multiPolygonGeometry.getStride();
+    let offset = 0;
+    for (let i = 0, ii = endss.length; i < ii; ++i) {
+      // only the exterior ring of each polygon is used for line placement
+      const end = endss[i][0];
+      this.drawAnchoredImages_(flatCoordinates, offset, end, stride);
+      offset = end;
     }
     this.endGeometry(feature);
   }
@@ -457,7 +408,6 @@ class CanvasImageBuilder extends CanvasBuilder {
     this.rotation_ = undefined;
     this.width_ = undefined;
     this.repeat_ = undefined;
-    this.placement_ = undefined;
     return super.finish();
   }
 
@@ -487,7 +437,6 @@ class CanvasImageBuilder extends CanvasBuilder {
     this.scale_ = imageStyle.getScaleArray();
     this.width_ = size[0];
     this.repeat_ = imageStyle.getRepeat();
-    this.placement_ = imageStyle.getPlacement();
     this.declutterMode_ = imageStyle.getDeclutterMode();
     this.declutterImageWithText_ =
       /** @type {import("../canvas.js").DeclutterImageWithText|undefined} */ (

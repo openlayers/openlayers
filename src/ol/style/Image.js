@@ -6,11 +6,13 @@ import {abstract} from '../util.js';
 
 /**
  * @typedef {'point' | 'line'} ImageStylePlacement
- * Default placement is `'point'`. For a {@link module:ol/geom/LineString~LineString} or
- * {@link module:ol/geom/MultiLineString~MultiLineString} geometry, `'point'` draws a single
- * symbolizer at the geometry's own midpoint (one per sub-line for `MultiLineString`), using
- * only the style's own `rotation`. `'line'` instead draws the symbolizer along the path,
- * repeated at the `repeat` interval when set, and rotated according to `rotateWithView`.
+ * Default placement is `'point'`, meaning the symbolizer is only drawn for `Point`/`MultiPoint`
+ * geometries. For a {@link module:ol/geom/LineString~LineString}, {@link module:ol/geom/MultiLineString~MultiLineString},
+ * {@link module:ol/geom/Polygon~Polygon} or {@link module:ol/geom/MultiPolygon~MultiPolygon} geometry, set `placement`
+ * to `'line'` to draw the symbolizer along the path (only the exterior ring for polygons), repeated at the `repeat`
+ * interval when set, and rotated according to `rotateWithView`. A single symbolizer at the geometry's own midpoint,
+ * using only the style's own fixed `rotation`, can be obtained with `placement: 'line'`, no `repeat`, and
+ * `rotateWithView: false`.
  */
 
 /**

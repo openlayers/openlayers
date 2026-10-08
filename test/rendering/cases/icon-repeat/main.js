@@ -89,18 +89,27 @@ addFeature(
   },
 );
 
-// rotateWithView true/false on a linestring, with a rotated view
+// displacement (shifted anchor) handling on a linestring
 addFeature(
   new LineString([
     [-100, -100],
-    [-20, -140],
+    [100, -100],
+  ]),
+  {displacement: [0, 20], repeat: 30},
+);
+
+// rotateWithView true/false on a linestring, with a rotated view
+addFeature(
+  new LineString([
+    [-100, -140],
+    [-20, -180],
   ]),
   {repeat: 20, rotateWithView: true},
 );
 addFeature(
   new LineString([
-    [20, -100],
-    [100, -140],
+    [20, -140],
+    [100, -180],
   ]),
   {repeat: 20, rotateWithView: false},
 );
@@ -117,6 +126,6 @@ const map = new Map({
     rotation: Math.PI / 8,
   }),
 });
-map.getView().fit([-110, -150, 110, 110]);
+map.getView().fit([-110, -190, 110, 110]);
 
 render({tolerance: 0.002});
