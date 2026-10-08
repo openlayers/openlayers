@@ -1256,18 +1256,17 @@ class Draw extends PointerInteraction {
     while (coordinate.length < stride) {
       coordinate.push(0);
     }
-    const finishCoordinate = this.finishCoordinate_;
     if (this.mode_ === 'Point') {
       last = /** @type {PointCoordType} */ (sketchCoords);
     } else if (this.mode_ === 'Polygon') {
       coordinates = /** @type {PolyCoordType} */ (sketchCoords)[0];
       last = coordinates[coordinates.length - 1];
       if (
-        finishCoordinate &&
-        this.atFinish_(map.getPixelFromCoordinate(coordinate))
+        this.atFinish_(map.getPixelFromCoordinate(coordinate)) &&
+        this.finishCoordinate_
       ) {
-        // snap to finish
-        coordinate = finishCoordinate.slice();
+        // snap to finish, which atFinish_ has just set
+        coordinate = this.finishCoordinate_.slice();
       }
     } else {
       coordinates = /** @type {LineCoordType} */ (sketchCoords);

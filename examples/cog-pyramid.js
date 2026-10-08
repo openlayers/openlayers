@@ -27,7 +27,7 @@ const pyramid = new WebGLTileLayer({
       new GeoTIFF({
         sources: [
           {
-            url: `https://s2downloads.eox.at/demo/EOxCloudless/2019/rgb/${z}/${y}/${x}.tif`,
+            url: `https://cloudlessdownloads.eox.at/api/public/dl/jvu06wnt/STACTA-TileDirectory-2025-viewing-basic-epsg-4326-zoom-6-0/${z}/${y}/${x}.tif`,
           },
         ],
       }),

@@ -993,7 +993,9 @@ function writeWptType(node, coordinate, objectStack) {
   const context = objectStack[objectStack.length - 1];
   const parentNode = context.node;
   const namespaceURI = parentNode.namespaceURI;
-  const properties = context['properties'];
+  // rtepts and trkpts share their parent's context, so copy the properties to
+  // keep the ele and time of one point from being written for the next.
+  const properties = Object.assign({}, context['properties']);
   //FIXME Projection handling
   node.setAttributeNS(null, 'lat', String(coordinate[1]));
   node.setAttributeNS(null, 'lon', String(coordinate[0]));

@@ -5,3 +5,13 @@
 .ol-touch .rotate-north {
   top: 80px;
 }
+.rotate-north svg {
+  width: 1em;
+  height: 1em;
+  vertical-align: middle;
+}
+.rotate-north.ol-hidden {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .25s linear, visibility 0s linear .25s;
+}

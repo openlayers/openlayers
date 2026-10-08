@@ -142,8 +142,8 @@ class Polyline extends TextFeature {
     );
     const flatCoordinates = geometry.getFlatCoordinates();
     const stride = geometry.getStride();
-    flipXY(flatCoordinates, 0, flatCoordinates.length, stride, flatCoordinates);
-    return encodeDeltas(flatCoordinates, stride, this.factor_);
+    const flipped = flipXY(flatCoordinates, 0, flatCoordinates.length, stride);
+    return encodeDeltas(flipped, stride, this.factor_);
   }
 }
 
