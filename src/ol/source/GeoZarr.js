@@ -2004,7 +2004,7 @@ function composeData(
 }
 
 /**
- * @param {DatasetAttributes} attributes Attriutes.
+ * @param {DatasetAttributes} attributes Attributes.
  * @return {import("../proj/Projection.js").default} The projection.
  */
 function getProjectionFromAttributes(attributes) {

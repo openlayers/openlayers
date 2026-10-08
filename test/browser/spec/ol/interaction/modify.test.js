@@ -2182,7 +2182,7 @@ describe('ol.interaction.Modify', function () {
       assert.strictEqual(modify.traceState_.active, true);
       assert.strictEqual(modify.traceState_.targetIndex, -1);
 
-      // decond drag ends tracing (right half of top edge)
+      // second drag ends tracing (right half of top edge)
       simulateEvent('pointermove', 200, 0, null, 0);
       simulateEvent('pointerdown', 200, 0, null, 0);
       simulateEvent('pointermove', 90, 100, null, 0);

@@ -87,7 +87,7 @@ describe('ol/control/MousePosition', function () {
         assert.strictEqual(element.innerHTML, 'some text');
       });
 
-      it('renders the last posisition if placeholder is not set and mouse moves outside the viewport', function () {
+      it('renders the last position if placeholder is not set and mouse moves outside the viewport', function () {
         const ctrl = new MousePosition();
         ctrl.setMap(map);
         map.renderSync();

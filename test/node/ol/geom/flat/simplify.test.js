@@ -274,7 +274,7 @@ describe('ol/geom/flat/simplify.js', function () {
       assert.deepEqual(dest, [0, 0, 3, 0]);
     });
 
-    it('does not elimnate points outside the tolerance', function () {
+    it('does not eliminate points outside the tolerance', function () {
       assert.strictEqual(
         douglasPeucker([0, 0, 1, 1, 2, 0], 0, 6, 2, 0.5, dest, 0),
         6,

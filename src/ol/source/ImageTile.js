@@ -41,7 +41,7 @@ import DataTileSource from './DataTile.js';
  * @property {import("../tilegrid/TileGrid.js").default} [tileGrid] Tile grid.
  * @property {import("./Source.js").State} [state] The source state.
  * @property {boolean} [wrapX=true] Render tiles beyond the antimeridian.
- * @property {number} [transition] Transition time when fading in new tiles (in miliseconds).
+ * @property {number} [transition] Transition time when fading in new tiles (in milliseconds).
  * @property {boolean} [interpolate=true] Use interpolated values when resampling.
  * @property {import('./DataTile.js').CrossOriginAttribute} [crossOrigin='anonymous'] The crossOrigin property to pass to loaders for image data.
  * @property {ReferrerPolicy} [referrerPolicy] The `referrerPolicy` property for loaded images.

@@ -15,7 +15,7 @@ let withCredentials = false;
  *
  * This function takes 3 arguments: an {@link module:ol/extent~Extent} representing
  * the area to be loaded, a `{number}` representing the resolution (map units per pixel), and a
- * {@link module:ol/proj/Projection~Projection} for the projection. The function is expeced to return
+ * {@link module:ol/proj/Projection~Projection} for the projection. The function is expected to return
  * a promise that resolves to an array of features.
  *
  * There are also a deprecated signature, with `void` as

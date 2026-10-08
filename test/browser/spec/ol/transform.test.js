@@ -31,7 +31,7 @@ describe('ol.transform', function () {
   });
 
   describe('reset()', function () {
-    it('resets tansform to an identity transform', function () {
+    it('resets transform to an identity transform', function () {
       const transform = [1, 2, 3, 4, 5, 6];
       assert.deepEqual(reset(transform), [1, 0, 0, 1, 0, 0]);
       assert.deepEqual(transform, [1, 0, 0, 1, 0, 0]);

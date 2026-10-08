@@ -141,7 +141,7 @@ export function getRequestParams(params, request) {
  * @property {Object<string,*>} [params] WMS request parameters.
  * At least a `LAYERS` param is required. `STYLES` is
  * `''` by default. `VERSION` is `1.3.0` by default. `WIDTH`, `HEIGHT` and `BBOX` will be set
- * dynamically. `CRS` (`SRS` for WMS version < 1.3.0) will is derived from the `proection` config.
+ * dynamically. `CRS` (`SRS` for WMS version < 1.3.0) is derived from the `projection` config.
  * @property {import("../proj.js").ProjectionLike} [projection] Projection. Default is 'EPSG:3857'.
  * @property {number} [ratio=1.5] Ratio. `1` means image requests are the size of the map viewport, `2` means
  * twice the width and height of the map viewport, and so on. Must be `1` or higher.

@@ -110,7 +110,7 @@ class TileDebug extends ImageTile {
         context.lineWidth = 4;
         context.strokeText(text, width / 2, height / 2, width);
         context.fillText(text, width / 2, height / 2, width);
-        // make the loader aysnc, so it behaves like other sources that fetch data from a remote server
+        // make the loader async, so it behaves like other sources that fetch data from a remote server
         return Promise.resolve(context.canvas);
       });
       this.setState('ready');

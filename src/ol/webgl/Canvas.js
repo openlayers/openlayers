@@ -189,7 +189,7 @@ export class Canvas {
  * @param {WebGLRenderingContext} gl Rendering Context.
  * @param {GLenum} type Type of shader.
  * @param {string} source source of shader.
- * @return {WebGLShader} [progam] The program.
+ * @return {WebGLShader} [program] The program.
  */
 function createShader(gl, type, source) {
   const shader = gl.createShader(type);
@@ -216,7 +216,7 @@ function createShader(gl, type, source) {
  * @param {WebGLRenderingContext} gl Rendering Context.
  * @param {string} fragmentSource Fragment shader source.
  * @param {string} vertexSource Vertex shader source.
- * @return {WebGLProgram} [progam] The program.
+ * @return {WebGLProgram} [program] The program.
  */
 export function createProgram(gl, fragmentSource, vertexSource) {
   const program = gl.createProgram();

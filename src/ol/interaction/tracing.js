@@ -334,7 +334,7 @@ function getSquaredDistance(a, b) {
 }
 
 /**
- * Get the cumulative squared distance along a ring path.  The end index index may be "wrapped" and it may
+ * Get the cumulative squared distance along a ring path.  The end index may be "wrapped" and it may
  * be less than the start index to indicate the direction of travel.  The start and end index may have
  * a fractional part to indicate a point between two coordinates.
  * @param {LineCoordType} coordinates Ring coordinates.

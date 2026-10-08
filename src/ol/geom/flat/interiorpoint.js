@@ -66,7 +66,7 @@ export function getInteriorPointOfArray(
   }
   if (isNaN(pointX)) {
     // There is no horizontal line that has its center point inside the linear
-    // ring.  Use the center of the the linear ring's extent.
+    // ring.  Use the center of the linear ring's extent.
     pointX = flatCenters[flatCentersOffset];
   }
   if (dest) {
