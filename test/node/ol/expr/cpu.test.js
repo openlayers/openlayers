@@ -932,6 +932,30 @@ describe('ol/expr/cpu.js', () => {
       assert.deepEqual(evaluator(context), [0.5, 0.25]);
     });
 
+    it('converts string color variables', () => {
+      const variables = {start: '#ff0000', end: '#0000ff'};
+      const context = newEvaluationContext(variables);
+      const evaluator = buildExpression(
+        [
+          'interpolate',
+          ['linear'],
+          ['get', 'value'],
+          0,
+          ['var', 'start'],
+          10,
+          ['var', 'end'],
+        ],
+        ColorType,
+        newParsingContext(variables),
+      );
+      context.properties = {value: 0};
+      assert.deepEqual(evaluator(context), [255, 0, 0, 1]);
+      context.properties = {value: 10};
+      assert.deepEqual(evaluator(context), [0, 0, 255, 1]);
+      context.properties = {value: 5};
+      assert.deepEqual(evaluator(context), [127.5, 0, 127.5, 1]);
+    });
+
     it('scales an array used as a color, like vec4 in a shader', () => {
       const context = newEvaluationContext();
       const evaluator = buildExpression(

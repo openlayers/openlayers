@@ -35,7 +35,9 @@ import {toSize} from '../size.js';
  *     `GeometryCollection` geometries are returned as the type of the first geometry found in the collection (WebGL only).
  *   * `['resolution']` returns the current resolution
  *   * `['time']` The time in seconds since the creation of the layer (WebGL only).
- *   * `['var', 'varName']` fetches a value from the style variables; will throw an error if that variable is undefined
+ *   * `['var', 'varName']` fetches a value from the style variables; on the canvas renderer, a variable that is not
+ *     defined evaluates to `undefined`, which properties expecting a color or a number reject with an error, as for a
+ *     missing feature property; on the WebGL renderer it evaluates to a zero value
  *   * `['zoom']` The current zoom level (WebGL only).
  *   * `['line-metric']` returns the M component of the current point on a line (WebGL only); in case where the geometry layout of the line
  *      does not contain an M component (e.g. XY or XYZ), 0 is returned; 0 is also returned for geometries other than lines.
