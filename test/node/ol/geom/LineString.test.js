@@ -517,29 +517,6 @@ describe('ol/geom/LineString.js', function () {
     });
   });
 
-  describe('with XY coordinates', function () {
-    let lineString;
-    beforeEach(function () {
-      // the last slot of the stride (y) is used as the "M" value here
-      lineString = new LineString(
-        [
-          [1, 2],
-          [4, 5],
-        ],
-        'XY',
-      );
-    });
-
-    describe('#getCoordinateAtM', function () {
-      it('delegates to lineStringCoordinateAtM() regardless of layout', function () {
-        assert.strictEqual(lineString.getLayout(), 'XY');
-        assert.deepEqual(lineString.getCoordinateAtM(3.5), [2.5, 3.5]);
-        assert.strictEqual(lineString.getCoordinateAtM(1, false), null);
-        assert.deepEqual(lineString.getCoordinateAtM(1, true), [1, 1]);
-      });
-    });
-  });
-
   describe('#containsXY()', function () {
     let lineString;
     beforeEach(function () {

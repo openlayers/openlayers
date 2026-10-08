@@ -89,11 +89,13 @@ addFeature(
   },
 );
 
-// displacement (shifted anchor) handling on a linestring
+// displacement (shifted anchor) handling on a linestring, following the line's
+// direction (not axis-aligned, so a wrongly screen-space-fixed displacement would
+// visibly fail to stay perpendicular to the line)
 addFeature(
   new LineString([
-    [-100, -100],
-    [100, -100],
+    [-100, -80],
+    [100, -120],
   ]),
   {displacement: [0, 20], repeat: 30},
 );
