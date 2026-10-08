@@ -14,6 +14,22 @@ docs: >
   Each rule can have a `filter` expression.  If this expression evaluates to true, the rule's `style` is
   applied.  A rule with `else: true` applies if no previous rules have applied.  The populated place labels
   are rendered with a list of rules given to the third layer.
-tags: "vector, style, expression"
+
+  Values that are neither literal nor derived from a feature can be provided as style variables.  These are
+  declared with the `variables` option and read with the `['var', 'name']` operator, and can be changed at
+  any time with `updateStyleVariables()` - here from the slider below the map, which sets the population a
+  place needs before it gets a label.
+tags: "vector, style, expression, variables"
 ---
 <div id="map" class="map"></div>
+<label for="min-population">
+  Label places above: <span id="min-population-value">5.0</span> million
+</label>
+<input
+  id="min-population"
+  type="range"
+  min="1"
+  max="10"
+  step="0.5"
+  value="5"
+/>
