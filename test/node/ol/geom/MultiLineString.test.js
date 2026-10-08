@@ -420,6 +420,65 @@ describe('ol/geom/MultiLineString.js', function () {
     });
   });
 
+  describe('#getCoordinateAtM without M', function () {
+    let multiLineString;
+    beforeEach(function () {
+      // parts of length 5 and 6, with a gap of 3 between them
+      multiLineString = new MultiLineString([
+        [
+          [0, 0],
+          [3, 4],
+        ],
+        [
+          [6, 4],
+          [6, 10],
+        ],
+      ]);
+    });
+
+    it('uses the length along the parts as M without interpolation', function () {
+      assert.deepEqual(multiLineString.getCoordinateAtM(2.5), [1.5, 2]);
+      assert.deepEqual(multiLineString.getCoordinateAtM(5), [3, 4]);
+      assert.deepEqual(multiLineString.getCoordinateAtM(7), [6, 6]);
+      assert.deepEqual(multiLineString.getCoordinateAtM(11), [6, 10]);
+      assert.strictEqual(multiLineString.getCoordinateAtM(-1, false), null);
+      assert.deepEqual(multiLineString.getCoordinateAtM(-1, true), [0, 0]);
+      assert.strictEqual(multiLineString.getCoordinateAtM(12, false), null);
+      assert.deepEqual(multiLineString.getCoordinateAtM(12, true), [6, 10]);
+    });
+
+    it('includes the gaps between parts with interpolation', function () {
+      assert.deepEqual(
+        multiLineString.getCoordinateAtM(5, false, true),
+        [3, 4],
+      );
+      assert.deepEqual(
+        multiLineString.getCoordinateAtM(6.5, false, true),
+        [4.5, 4],
+      );
+      assert.deepEqual(
+        multiLineString.getCoordinateAtM(8, false, true),
+        [6, 4],
+      );
+      assert.deepEqual(
+        multiLineString.getCoordinateAtM(10, false, true),
+        [6, 6],
+      );
+      assert.deepEqual(
+        multiLineString.getCoordinateAtM(14, false, true),
+        [6, 10],
+      );
+      assert.strictEqual(
+        multiLineString.getCoordinateAtM(15, false, true),
+        null,
+      );
+      assert.deepEqual(
+        multiLineString.getCoordinateAtM(15, true, true),
+        [6, 10],
+      );
+    });
+  });
+
   describe('construct with 4D coordinates', function () {
     let multiLineString;
     beforeEach(function () {

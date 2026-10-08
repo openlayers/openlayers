@@ -156,9 +156,13 @@ class LineString extends SimpleGeometry {
    * such coordinate exists.
    *
    * `extrapolate` controls extrapolation beyond the range of Ms in the
-   * MultiLineString. If `extrapolate` is `true` then Ms less than the first
+   * LineString. If `extrapolate` is `true` then Ms less than the first
    * M will return the first coordinate and Ms greater than the last M will
    * return the last coordinate.
+   *
+   * If the layout has no M (`XY` or `XYZ`), `m` is the 2D length along the
+   * LineString, measured from its first coordinate in the units of the
+   * coordinates (like {@link module:ol/geom/LineString~LineString#getLength}).
    *
    * @param {number} m M.
    * @param {boolean} [extrapolate] Extrapolate. Default is `false`.
@@ -166,9 +170,6 @@ class LineString extends SimpleGeometry {
    * @api
    */
   getCoordinateAtM(m, extrapolate) {
-    if (this.layout != 'XYM' && this.layout != 'XYZM') {
-      return null;
-    }
     extrapolate = extrapolate !== undefined ? extrapolate : false;
     return lineStringCoordinateAtM(
       this.flatCoordinates,
@@ -177,6 +178,7 @@ class LineString extends SimpleGeometry {
       this.stride,
       m,
       extrapolate,
+      this.layout == 'XYM' || this.layout == 'XYZM',
     );
   }
 
