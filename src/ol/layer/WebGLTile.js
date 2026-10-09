@@ -209,7 +209,7 @@ function parseStyle(style, bandCount, nodataBandIndex) {
     `uniform sampler2D ${Uniforms.TILE_TEXTURE_ARRAY}[${textureCount}];`,
   );
 
-  if (context.paletteTextures) {
+  if (context.paletteTextures.length) {
     uniformDeclarations.push(
       `uniform sampler2D ${PALETTE_TEXTURE_ARRAY}[${context.paletteTextures.length}];`,
     );

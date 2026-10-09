@@ -23,7 +23,7 @@ new Map({
             'stroke-color': 'rgba(0, 0, 255, 0.3)',
             'text-value': [
               'match',
-              ['!', ['get', 'name_en']],
+              ['!', ['has', 'name_en']],
               true,
               '',
               ['get', 'name_en'],
