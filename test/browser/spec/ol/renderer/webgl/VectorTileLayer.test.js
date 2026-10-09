@@ -378,6 +378,25 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
         await new Promise((resolve) => setTimeout(resolve));
         assert.strictEqual(vectorTileLayer.changed.mock.calls.length, 2);
       });
+
+      it('only lets the latest text overlay render call layer.changed()', async () => {
+        let resolveOlder, resolveLatest;
+        finalizeTextRenderStub
+          .mockReturnValueOnce(new Promise((r) => (resolveOlder = r)))
+          .mockReturnValueOnce(new Promise((r) => (resolveLatest = r)));
+        vectorTileLayer.revision_++;
+        renderer.renderFrame(frameState);
+        renderer.renderFrame(frameState);
+
+        // the older overlay is outdated: it must not use up the rerender
+        resolveOlder();
+        await new Promise((resolve) => setTimeout(resolve));
+        assert.strictEqual(vectorTileLayer.changed.mock.calls.length, 0);
+
+        resolveLatest();
+        await new Promise((resolve) => setTimeout(resolve));
+        assert.strictEqual(vectorTileLayer.changed.mock.calls.length, 1);
+      });
     });
   });
 

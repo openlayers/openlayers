@@ -718,6 +718,24 @@ describe('ol/renderer/webgl/VectorLayer', () => {
         assert.strictEqual(vectorLayer.changed.mock.calls.length, 3);
       });
 
+      it('only lets the latest text overlay render call layer.changed()', async () => {
+        let resolveOlder, resolveLatest;
+        finalizeTextRenderStub
+          .mockReturnValueOnce(new Promise((r) => (resolveOlder = r)))
+          .mockReturnValueOnce(new Promise((r) => (resolveLatest = r)));
+        renderer.renderFrame(newFrameState);
+        renderer.renderFrame(newFrameState);
+
+        // the older overlay is outdated: it must not use up the rerender
+        resolveOlder();
+        await new Promise((resolve) => setTimeout(resolve));
+        assert.strictEqual(vectorLayer.changed.mock.calls.length, 0);
+
+        resolveLatest();
+        await new Promise((resolve) => setTimeout(resolve));
+        assert.strictEqual(vectorLayer.changed.mock.calls.length, 1);
+      });
+
       it('does not call layer.changed() if the renderer was disposed in the meantime', () => {
         renderer.renderFrame(frameState);
         renderer.dispose();

@@ -123,6 +123,12 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     this.skipNextTextRender_ = false;
 
     /**
+     * Incremented on each text overlay render request; only the latest one may trigger a layer render
+     * @private
+     */
+    this.textRenderRequest_ = 0;
+
+    /**
      * @private
      */
     this.previousExtent_ = createEmpty();
@@ -407,7 +413,12 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     this.renderWorlds(frameState, false, startWorld, endWorld, worldWidth);
 
     if (this.hasText_) {
+      const textRenderRequest = ++this.textRenderRequest_;
       this.styleRenderer_?.finalizeTextRender(frameState).then(() => {
+        // a newer text overlay render was requested in the meantime: its outcome decides on the next render
+        if (textRenderRequest !== this.textRenderRequest_) {
+          return;
+        }
         if (this.skipNextTextRender_) {
           this.skipNextTextRender_ = false;
           return;
