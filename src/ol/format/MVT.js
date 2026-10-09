@@ -190,7 +190,7 @@ class MVT extends FeatureFormat {
       id = rawFeature.id;
     } else {
       id = values[this.idProperty_];
-      values[this.idProperty_] = undefined;
+      delete values[this.idProperty_];
     }
 
     values[this.layerName_] = rawFeature.layer.name;

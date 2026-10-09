@@ -103,6 +103,7 @@ where('ArrayBuffer.isView').describe('ol.format.MVT', function () {
       const first = features[0];
       assert.strictEqual(first.getId(), 1000000057590683);
       assert.strictEqual(first.get('osm_id'), undefined);
+      assert.strictEqual(first.getProperties().hasOwnProperty('osm_id'), false);
     });
 
     it('accepts custom idProperty (render features)', function () {
