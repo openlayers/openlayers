@@ -268,9 +268,13 @@ class RegularShape extends ImageStyle {
       );
       iconImageCache.set(cacheKey, null, iconImage);
       // Update the image in place to an ImageBitmap for better performance and lower memory usage
-      createImageBitmap(image).then((imageBitmap) => {
-        iconImage.setImage(imageBitmap);
-      });
+      createImageBitmap(image)
+        .then((imageBitmap) => {
+          iconImage.setImage(imageBitmap);
+        })
+        .catch(() => {
+          // Keep the canvas, e.g. when Safari could not allocate a backing store for it
+        });
     }
     return image;
   }
