@@ -134,6 +134,21 @@ describe('ol/worker/textOverlay', () => {
         assert.strictEqual(areAllPixelsTransparent(imageData), true);
       });
 
+      it('answers a render request replaced by a newer one', async () => {
+        message = {
+          type: TextOverlayWorkerMessageType.RENDER,
+          frameState,
+          batchesToRender: new Set(),
+        };
+        // both requests usually reach the worker before its next frame: the first one is then replaced, and must still be answered
+        const [replaced, latest] = await Promise.all([
+          postWorkerMessage(message),
+          postWorkerMessage(message),
+        ]);
+        assert.strictEqual(replaced.type, TextOverlayWorkerMessageType.RENDER);
+        assert.instanceOf(latest.imageData, ImageBitmap);
+      });
+
       it('builds canvas rending batch on the worker, sends back a batch id which can be used to render feature text', async () => {
         geomBatch.addFeature(
           new Feature({

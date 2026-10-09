@@ -417,6 +417,13 @@ class VectorStyleRenderer extends Disposable {
 
       /** @type {Set<string>} */
       this.textOverlayRenderList_ = new Set();
+
+      /**
+       * Incremented on each text overlay render request
+       * @type {number}
+       * @private
+       */
+      this.textRenderRequest_ = 0;
     }
 
     // this will initialize render passes with the given helper
@@ -802,12 +809,15 @@ class VectorStyleRenderer extends Disposable {
   /**
    * Render the geometries in the given buffers.
    * @param {import("../../Map.js").FrameState} frameState Frame state
-   * @return {Promise<void>} A promise resolving after the post rendering step is over
+   * @return {Promise<boolean>} A promise resolving after the post rendering step is over; resolves to `false`
+   * if a newer text overlay render was requested in the meantime, in which case its outcome is the one that matters
    */
   finalizeTextRender(frameState) {
     if (!this.hasText_) {
-      return Promise.resolve();
+      return Promise.resolve(false);
     }
+
+    const textRenderRequest = ++this.textRenderRequest_;
 
     const textOverlayCanvas = /** @type {HTMLCanvasElement} */ (
       this.textOverlayCanvas_
@@ -856,6 +866,8 @@ class VectorStyleRenderer extends Disposable {
         }
 
         this.textOverlayRenderList_.clear();
+
+        return textRenderRequest === this.textRenderRequest_;
       });
   }
 

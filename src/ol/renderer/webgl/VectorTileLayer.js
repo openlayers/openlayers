@@ -163,12 +163,6 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
      */
     this.skipNextTextRender_ = false;
 
-    /**
-     * Incremented on each text overlay render request; only the latest one may trigger a layer render
-     * @private
-     */
-    this.textRenderRequest_ = 0;
-
     this.applyOptions_(options);
   }
 
@@ -359,10 +353,9 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
   beforeFinalize(frameState) {
     const styleRenderer = this.styleRenderer_;
     if (this.hasText_ && styleRenderer) {
-      const textRenderRequest = ++this.textRenderRequest_;
-      styleRenderer.finalizeTextRender(frameState).then(() => {
+      styleRenderer.finalizeTextRender(frameState).then((latest) => {
         // a newer text overlay render was requested in the meantime: its outcome decides on the next render
-        if (textRenderRequest !== this.textRenderRequest_) {
+        if (!latest) {
           return;
         }
         if (this.skipNextTextRender_) {
