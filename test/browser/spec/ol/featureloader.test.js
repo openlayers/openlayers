@@ -105,5 +105,37 @@ describe('ol.featureloader', function () {
           }, 0);
         });
       }));
+
+    it('does not convert an error from a featuresloadend listener into a load error', () => {
+      // Respond synchronously, so the listener error reaches the caller.
+      vi.stubGlobal(
+        'XMLHttpRequest',
+        class {
+          status = 200;
+          responseText = '{"type":"FeatureCollection","features":[]}';
+          open() {}
+          send() {
+            this.onload();
+          }
+        },
+      );
+      try {
+        const loadErrorSpy = vi.fn();
+        source.setLoader(xhr(url, format));
+        source.on('featuresloadend', function () {
+          throw new Error('listener error');
+        });
+        source.on('featuresloaderror', loadErrorSpy);
+
+        assert.throws(
+          () =>
+            source.loadFeatures([-10000, -10000, 10000, 10000], 1, 'EPSG:3857'),
+          'listener error',
+        );
+        assert.strictEqual(loadErrorSpy.mock.calls.length, 0);
+      } finally {
+        vi.unstubAllGlobals();
+      }
+    });
   });
 });

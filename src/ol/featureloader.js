@@ -86,31 +86,34 @@ export function loadFeaturesXhr(
     // status will be 0 for file:// urls
     if (!xhr.status || (xhr.status >= 200 && xhr.status < 300)) {
       const type = format.getType();
-      try {
-        /** @type {Document|Node|Object|string|undefined} */
-        let source;
-        if (type == 'text' || type == 'json') {
-          source = xhr.responseText;
-        } else if (type == 'xml') {
-          source = xhr.responseXML || xhr.responseText;
-        } else if (type == 'arraybuffer') {
-          source = /** @type {ArrayBuffer} */ (xhr.response);
-        }
-        if (source) {
-          success(
-            /** @type {Array<FeatureType>} */
-            (
-              format.readFeatures(source, {
-                extent: extent,
-                featureProjection: projection,
-              })
-            ),
-            format.readProjection(source),
+      /** @type {Document|Node|Object|string|undefined} */
+      let source;
+      if (type == 'text' || type == 'json') {
+        source = xhr.responseText;
+      } else if (type == 'xml') {
+        source = xhr.responseXML || xhr.responseText;
+      } else if (type == 'arraybuffer') {
+        source = /** @type {ArrayBuffer} */ (xhr.response);
+      }
+      if (source) {
+        /** @type {Array<FeatureType>} */
+        let features;
+        /** @type {import("./proj/Projection.js").default|undefined} */
+        let dataProjection;
+        try {
+          features = /** @type {Array<FeatureType>} */ (
+            format.readFeatures(source, {
+              extent: extent,
+              featureProjection: projection,
+            })
           );
-        } else {
+          dataProjection = format.readProjection(source);
+        } catch {
           failure();
+          return;
         }
-      } catch {
+        success(features, dataProjection);
+      } else {
         failure();
       }
     } else {
