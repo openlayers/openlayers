@@ -407,7 +407,11 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     this.renderWorlds(frameState, false, startWorld, endWorld, worldWidth);
 
     if (this.hasText_) {
-      this.styleRenderer_?.finalizeTextRender(frameState).then(() => {
+      this.styleRenderer_?.finalizeTextRender(frameState).then((latest) => {
+        // a newer text overlay render was requested in the meantime: its outcome decides on the next render
+        if (!latest) {
+          return;
+        }
         if (this.skipNextTextRender_) {
           this.skipNextTextRender_ = false;
           return;

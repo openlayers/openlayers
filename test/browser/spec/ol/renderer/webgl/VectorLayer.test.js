@@ -523,7 +523,7 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       finalizeTextRenderStub = vi
         .spyOn(renderer.styleRenderer_, 'finalizeTextRender')
         .mockClear()
-        .mockReturnValue(Promise.resolve());
+        .mockReturnValue(Promise.resolve(true));
 
       // Snapshot reused vec2/matrix arguments so mock.calls keep the values
       // from each call (the same objects are mutated across calls).
@@ -694,34 +694,52 @@ describe('ol/renderer/webgl/VectorLayer', () => {
 
       it('calls layer.changed() after the text overlay is ready to be rendered', async () => {
         renderer.renderFrame(newFrameState);
-        finalizeTextRenderResolver();
+        finalizeTextRenderResolver(true);
         await new Promise((resolve) => setTimeout(resolve)); // awaiting next tick
         assert.strictEqual(vectorLayer.changed.mock.calls.length, 1);
 
         // asking for an identical render: layer.changed() should not be called again
         renderer.renderFrame(newFrameState);
-        finalizeTextRenderResolver();
+        finalizeTextRenderResolver(true);
         await new Promise((resolve) => setTimeout(resolve));
         assert.strictEqual(vectorLayer.changed.mock.calls.length, 1);
 
         // different extent: layer.changed should be called once more
         renderer.renderFrame(frameState);
-        finalizeTextRenderResolver();
+        finalizeTextRenderResolver(true);
         await new Promise((resolve) => setTimeout(resolve));
         assert.strictEqual(vectorLayer.changed.mock.calls.length, 2);
 
         // source updated extent: layer.changed should be called once more
         vectorSource.changed();
         renderer.renderFrame(frameState);
-        finalizeTextRenderResolver();
+        finalizeTextRenderResolver(true);
         await new Promise((resolve) => setTimeout(resolve));
         assert.strictEqual(vectorLayer.changed.mock.calls.length, 3);
+      });
+
+      it('only lets the latest text overlay render call layer.changed()', async () => {
+        let resolveOlder, resolveLatest;
+        finalizeTextRenderStub
+          .mockReturnValueOnce(new Promise((r) => (resolveOlder = r)))
+          .mockReturnValueOnce(new Promise((r) => (resolveLatest = r)));
+        renderer.renderFrame(newFrameState);
+        renderer.renderFrame(newFrameState);
+
+        // a newer overlay was requested: the older one must not use up the rerender
+        resolveOlder(false);
+        await new Promise((resolve) => setTimeout(resolve));
+        assert.strictEqual(vectorLayer.changed.mock.calls.length, 0);
+
+        resolveLatest(true);
+        await new Promise((resolve) => setTimeout(resolve));
+        assert.strictEqual(vectorLayer.changed.mock.calls.length, 1);
       });
 
       it('does not call layer.changed() if the renderer was disposed in the meantime', () => {
         renderer.renderFrame(frameState);
         renderer.dispose();
-        finalizeTextRenderResolver();
+        finalizeTextRenderResolver(true);
         assert.strictEqual(vectorLayer.changed.mock.calls.length, 0);
       });
     });

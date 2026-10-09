@@ -302,7 +302,7 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
 
       finalizeTextRenderStub = vi
         .spyOn(renderer.styleRenderer_, 'finalizeTextRender')
-        .mockReturnValue(Promise.resolve());
+        .mockReturnValue(Promise.resolve(true));
     });
 
     it('does include the post processing step for text rendering', () => {
@@ -361,22 +361,41 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
       it('calls layer.changed() after the text overlay is ready to be rendered', async () => {
         vectorTileLayer.revision_++; // increasing the revision so a new text overlay is drawn
         renderer.renderFrame(frameState);
-        finalizeTextRenderResolver();
+        finalizeTextRenderResolver(true);
         await new Promise((resolve) => setTimeout(resolve)); // awaiting next tick
         assert.strictEqual(vectorTileLayer.changed.mock.calls.length, 1);
 
         // no update to the layer in the meantime: layer.changed() should not be called again
         renderer.renderFrame(frameState);
-        finalizeTextRenderResolver();
+        finalizeTextRenderResolver(true);
         await new Promise((resolve) => setTimeout(resolve));
         assert.strictEqual(vectorTileLayer.changed.mock.calls.length, 1);
 
         // after a layer update: layer.changed should be called once more
         vectorTileLayer.revision_++;
         renderer.renderFrame(frameState);
-        finalizeTextRenderResolver();
+        finalizeTextRenderResolver(true);
         await new Promise((resolve) => setTimeout(resolve));
         assert.strictEqual(vectorTileLayer.changed.mock.calls.length, 2);
+      });
+
+      it('only lets the latest text overlay render call layer.changed()', async () => {
+        let resolveOlder, resolveLatest;
+        finalizeTextRenderStub
+          .mockReturnValueOnce(new Promise((r) => (resolveOlder = r)))
+          .mockReturnValueOnce(new Promise((r) => (resolveLatest = r)));
+        vectorTileLayer.revision_++;
+        renderer.renderFrame(frameState);
+        renderer.renderFrame(frameState);
+
+        // a newer overlay was requested: the older one must not use up the rerender
+        resolveOlder(false);
+        await new Promise((resolve) => setTimeout(resolve));
+        assert.strictEqual(vectorTileLayer.changed.mock.calls.length, 0);
+
+        resolveLatest(true);
+        await new Promise((resolve) => setTimeout(resolve));
+        assert.strictEqual(vectorTileLayer.changed.mock.calls.length, 1);
       });
     });
   });

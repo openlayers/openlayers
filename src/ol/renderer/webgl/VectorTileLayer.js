@@ -353,7 +353,11 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
   beforeFinalize(frameState) {
     const styleRenderer = this.styleRenderer_;
     if (this.hasText_ && styleRenderer) {
-      styleRenderer.finalizeTextRender(frameState).then(() => {
+      styleRenderer.finalizeTextRender(frameState).then((latest) => {
+        // a newer text overlay render was requested in the meantime: its outcome decides on the next render
+        if (!latest) {
+          return;
+        }
         if (this.skipNextTextRender_) {
           this.skipNextTextRender_ = false;
           return;

@@ -27,6 +27,12 @@ const worker = self;
 
 let textRenderAnimationFrameKey = 0;
 
+/**
+ * Id of the render request waiting for `textRenderAnimationFrameKey`
+ * @type {number|undefined}
+ */
+let pendingRenderId;
+
 const canvas = new OffscreenCanvas(1, 1);
 /** @type {OffscreenCanvasRenderingContext2D} */
 const context = /** @type {OffscreenCanvasRenderingContext2D} */ (
@@ -85,7 +91,15 @@ worker.onmessage = (/** @type {MessageEvent} */ event) => {
       if (textRenderAnimationFrameKey) {
         // cancel previously planned frame so they don't stack up
         cancelAnimationFrame(textRenderAnimationFrameKey);
+        // the cancelled request still gets an answer (without image) so that its sender stops waiting
+        /** @type {import('../render/webgl/constants.js').TextOverlayWorkerMessage} */
+        const message = {
+          type: TextOverlayWorkerMessageType.RENDER,
+          id: pendingRenderId,
+        };
+        worker.postMessage(message);
       }
+      pendingRenderId = received.id;
       textRenderAnimationFrameKey = requestAnimationFrame(() => {
         textRenderAnimationFrameKey = 0;
 

@@ -933,6 +933,16 @@ describe('VectorStyleRenderer', () => {
       });
     });
 
+    describe('finalizeTextRender, called again before the first one resolves', () => {
+      it('settles both calls and only reports the latest one as such', async () => {
+        const results = await Promise.all([
+          vectorStyleRenderer.finalizeTextRender(SAMPLE_FRAMESTATE),
+          vectorStyleRenderer.finalizeTextRender(SAMPLE_FRAMESTATE),
+        ]);
+        assert.deepEqual(results, [false, true]);
+      });
+    });
+
     describe('finalizeTextRender, with a text instructions key not built beforehand', () => {
       beforeEach(async () => {
         vectorStyleRenderer.textOverlayRenderList_.clear();
