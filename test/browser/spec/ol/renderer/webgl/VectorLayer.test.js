@@ -829,7 +829,7 @@ describe('ol/renderer/webgl/VectorLayer', () => {
       let matches;
 
       function hitTest(x, y, tolerance) {
-        const spy = sinonSpy();
+        const spy = vi.fn();
         matches = [];
         renderer.forEachFeatureAtCoordinate(
           [x, y],
@@ -853,13 +853,13 @@ describe('ol/renderer/webgl/VectorLayer', () => {
 
             // without tolerance, nothing is found
             let spy = hitTest(0, 4, 0);
-            assert.strictEqual(spy.callCount, 0);
+            assert.strictEqual(spy.mock.calls.length, 0);
             assert.strictEqual(matches.length, 0);
 
             // the circle is within a 12px tolerance; it is not given to the
             // callback but pushed as a match with its distance
             spy = hitTest(0, 4, 12);
-            assert.strictEqual(spy.callCount, 0);
+            assert.strictEqual(spy.mock.calls.length, 0);
             assert.strictEqual(matches.length, 1);
             assert.strictEqual(matches[0].feature, centerPoint);
             assert.strictEqual(matches[0].layer, vectorLayer);
@@ -869,7 +869,7 @@ describe('ol/renderer/webgl/VectorLayer', () => {
 
             // a larger tolerance also catches the diagonal line, further away
             spy = hitTest(0, 4, 40);
-            assert.strictEqual(spy.callCount, 0);
+            assert.strictEqual(spy.mock.calls.length, 0);
             const found = matches.map((m) => m.feature);
             assert.include(found, centerPoint);
             assert.include(found, diagonalLine);
@@ -894,15 +894,15 @@ describe('ol/renderer/webgl/VectorLayer', () => {
             renderer.renderFrame(frameState);
 
             let spy = hitTest(0, 5.75, 0);
-            assert.strictEqual(spy.callCount, 0);
+            assert.strictEqual(spy.mock.calls.length, 0);
             assert.strictEqual(matches.length, 0);
 
             spy = hitTest(0, 5.75, 1);
-            assert.strictEqual(spy.callCount, 0);
+            assert.strictEqual(spy.mock.calls.length, 0);
             assert.strictEqual(matches.length, 0);
 
             spy = hitTest(0, 5.75, 2);
-            assert.strictEqual(spy.callCount, 0);
+            assert.strictEqual(spy.mock.calls.length, 0);
             assert.strictEqual(matches.length, 1);
             assert.strictEqual(matches[0].feature, centerPoint);
             assert.strictEqual(matches[0].distanceSq, 4);
@@ -923,8 +923,8 @@ describe('ol/renderer/webgl/VectorLayer', () => {
             // the falsy callback result does not stop the lookup: the line is
             // given to the callback, the circle is pushed as a match
             const spy = hitTest(-15, 5, 40);
-            assert.strictEqual(spy.callCount, 1);
-            assert.strictEqual(spy.getCall(0).args[0], diagonalLine);
+            assert.strictEqual(spy.mock.calls.length, 1);
+            assert.strictEqual(spy.mock.calls[0][0], diagonalLine);
             assert.strictEqual(matches.length, 1);
             assert.strictEqual(matches[0].feature, centerPoint);
 
@@ -952,8 +952,8 @@ describe('ol/renderer/webgl/VectorLayer', () => {
             renderer.renderFrame(frameState);
 
             const spy = hitTest(0, 16, 12);
-            assert.strictEqual(spy.callCount, 1);
-            assert.strictEqual(spy.getCall(0).args[0], centerPoint);
+            assert.strictEqual(spy.mock.calls.length, 1);
+            assert.strictEqual(spy.mock.calls[0][0], centerPoint);
             assert.strictEqual(matches.length, 0);
 
             resolve();

@@ -643,6 +643,10 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
     const hitSize = hitTolerance * 2 + 1;
     const indexes = getPixelIndexArray(hitTolerance);
     const found = new Set();
+    const geometry =
+      /** @type {import("../../geom/SimpleGeometry.js").default} */ (
+        /** @type {unknown} */ (null)
+      );
     for (let i = 0, ii = indexes.length; i < ii; ++i) {
       const index = (indexes[i] - 3) / 4;
       const x = hitTolerance - (index % hitSize);
@@ -661,7 +665,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
       if (distanceSq > toleranceSq) {
         continue;
       } else if (distanceSq === 0) {
-        const result = callback(feature, layer, null);
+        const result = callback(feature, layer, geometry);
         if (result) {
           return result;
         }
@@ -669,7 +673,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
         matches.push({
           feature,
           layer,
-          geometry: null,
+          geometry,
           distanceSq,
           callback,
         });
