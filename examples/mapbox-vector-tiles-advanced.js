@@ -53,7 +53,7 @@ const map = new Map({
   ],
   target: 'map',
   view: new View({
-    center: [0,0],
+    center: [0, 0],
     minZoom: 1,
     zoom: 2,
   }),
