@@ -11,8 +11,7 @@ import Style from '../src/ol/style/Style.js';
 import Text from '../src/ol/style/Text.js';
 import TileGrid from '../src/ol/tilegrid/TileGrid.js';
 
-const key =
-  'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiY2t0cGdwMHVnMGdlbzMxbDhwazBic2xrNSJ9.WbcTL9uj8JPAsnT9mgb7oQ';
+const key = 'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiY2t0cGdwMHVnMGdlbzMxbDhwazBic2xrNSJ9.WbcTL9uj8JPAsnT9mgb7oQ';
 
 // Calculation of resolutions that match zoom levels 1, 3, 5, 7, 9, 11, 13, 15.
 const resolutions = [];
@@ -21,18 +20,18 @@ for (let i = 0; i <= 8; ++i) {
 }
 // Calculation of tile urls for zoom levels 1, 3, 5, 7, 9, 11, 13, 15.
 function tileUrlFunction(tileCoord) {
+  const z = tileCoord[0] * 2 - 1;
+  const x = tileCoord[1];
+  const y = tileCoord[2];
+  
+  // Dynamically cycle through subdomains a, b, c, d to spread the network load
+  const subdomain = 'abcd'.charAt(((tileCoord[1] << tileCoord[0]) + tileCoord[2]) % 4);
+
   return (
-    'https://{a-d}.tiles.mapbox.com/v4/mapbox.mapbox-streets-v6/' +
-    '{z}/{x}/{y}.vector.pbf?access_token=' +
+    `https://${subdomain}.tiles.mapbox.com/v4/mapbox.mapbox-streets-v6/` +
+    `${z}/${x}/${y}.vector.pbf?access_token=` +
     key
-  )
-    .replace('{z}', String(tileCoord[0] * 2 - 1))
-    .replace('{x}', String(tileCoord[1]))
-    .replace('{y}', String(tileCoord[2]))
-    .replace(
-      '{a-d}',
-      'abcd'.substr(((tileCoord[1] << tileCoord[0]) + tileCoord[2]) % 4, 1),
-    );
+  );
 }
 
 const map = new Map({
