@@ -19,7 +19,6 @@ for (let i = 0; i <= 8; ++i) {
   resolutions.push(156543.03392804097 / Math.pow(2, i * 2));
 }
 // Calculation of tile urls for zoom levels 1, 3, 5, 7, 9, 11, 13, 15.
-
 function tileUrlFunction(tileCoord) {
   const z = tileCoord[0] * 2 - 1;
   const x = tileCoord[1];
