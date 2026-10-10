@@ -11,8 +11,7 @@ import Style from '../src/ol/style/Style.js';
 import Text from '../src/ol/style/Text.js';
 import TileGrid from '../src/ol/tilegrid/TileGrid.js';
 
-const key =
-  'YOUR_MAPBOX_ACCESS_TOKEN';
+const key = 'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiY2t0cGdwMHVnMGdlbzMxbDhwazBic2xrNSJ9.WbcTL9uj8JPAsnT9mgb7oQ';
 
 // Calculation of resolutions that match zoom levels 1, 3, 5, 7, 9, 11, 13, 15.
 const resolutions = [];
@@ -24,11 +23,12 @@ for (let i = 0; i <= 8; ++i) {
 function tileUrlFunction(tileCoord) {
   const z = tileCoord[0] * 2 - 1;
   const x = tileCoord[1];
+  // The mathematical Y-axis inversion flip required for Mapbox v4 schemas:
   const y = tileCoord[2];
 
   return (
-    'https://api.mapbox.com/v4/mapbox.mapbox-streets-v8/' +
-    z + '/' + x + '/' + y + '.vector.pbf?access_token=' + key
+  'https://api.mapbox.com/v4/mapbox.mapbox-streets-v8/' +
+  z + '/' + x + '/' + y + '.vector.pbf?access_token=' + key
   );
 }
 
@@ -53,8 +53,8 @@ const map = new Map({
   ],
   target: 'map',
   view: new View({
-    center: [0, 0],
+    center: [0,0],
     minZoom: 1,
-    zoom: 4,
+    zoom: 2,
   }),
 });
