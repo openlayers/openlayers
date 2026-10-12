@@ -933,6 +933,20 @@ describe('VectorStyleRenderer', () => {
       });
     });
 
+    describe('finalizeTextRender, called again before the first one resolves', () => {
+      it('settles both calls and removes their worker listeners', async () => {
+        const worker = await vectorStyleRenderer.textOverlayWorker_;
+        const addListener = vi.spyOn(worker, 'addEventListener');
+        const removeListener = vi.spyOn(worker, 'removeEventListener');
+        await Promise.all([
+          vectorStyleRenderer.finalizeTextRender(SAMPLE_FRAMESTATE),
+          vectorStyleRenderer.finalizeTextRender(SAMPLE_FRAMESTATE),
+        ]);
+        assert.strictEqual(addListener.mock.calls.length, 2);
+        assert.strictEqual(removeListener.mock.calls.length, 2);
+      });
+    });
+
     describe('finalizeTextRender, with a text instructions key not built beforehand', () => {
       beforeEach(async () => {
         vectorStyleRenderer.textOverlayRenderList_.clear();
