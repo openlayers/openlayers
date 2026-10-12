@@ -420,6 +420,7 @@ export function quantizeArray(
 ) {
   for (let i = 0, ii = ends.length; i < ii; ++i) {
     const end = ends[i];
+    const ringOffset = simplifiedOffset;
     simplifiedOffset = quantize(
       flatCoordinates,
       offset,
@@ -429,6 +430,16 @@ export function quantizeArray(
       simplifiedFlatCoordinates,
       simplifiedOffset,
     );
+    // a linear ring needs at least 3 positions to be valid; if quantization
+    // collapsed the ring below that, keep the ring's original coordinates
+    // instead of an invalid ring (quantize() writes 2 ordinates per position)
+    if (simplifiedOffset - ringOffset < 6) {
+      simplifiedOffset = ringOffset;
+      for (let j = offset; j < end; j += stride) {
+        simplifiedFlatCoordinates[simplifiedOffset++] = flatCoordinates[j];
+        simplifiedFlatCoordinates[simplifiedOffset++] = flatCoordinates[j + 1];
+      }
+    }
     simplifiedEnds.push(simplifiedOffset);
     offset = end;
   }
