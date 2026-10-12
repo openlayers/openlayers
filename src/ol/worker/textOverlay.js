@@ -28,10 +28,10 @@ const worker = self;
 let textRenderAnimationFrameKey = 0;
 
 /**
- * Id of the render request waiting for `textRenderAnimationFrameKey`
+ * Id of the last render request received, answered by the frame planned in `textRenderAnimationFrameKey`
  * @type {number|undefined}
  */
-let pendingRenderId;
+let textRenderLastMessageId;
 
 const canvas = new OffscreenCanvas(1, 1);
 /** @type {OffscreenCanvasRenderingContext2D} */
@@ -95,11 +95,11 @@ worker.onmessage = (/** @type {MessageEvent} */ event) => {
         /** @type {import('../render/webgl/constants.js').TextOverlayWorkerMessage} */
         const message = {
           type: TextOverlayWorkerMessageType.RENDER,
-          id: pendingRenderId,
+          id: textRenderLastMessageId,
         };
         worker.postMessage(message);
       }
-      pendingRenderId = received.id;
+      textRenderLastMessageId = received.id;
       textRenderAnimationFrameKey = requestAnimationFrame(() => {
         textRenderAnimationFrameKey = 0;
 
