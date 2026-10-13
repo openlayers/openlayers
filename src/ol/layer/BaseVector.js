@@ -305,7 +305,6 @@ class BaseVectorLayer extends Layer {
   /**
    * Update any variables used by the layer style and trigger a re-render.
    * @param {import('../style/flat.js').StyleVariables} variables Variables to update.
-   * @api
    */
   updateStyleVariables(variables) {
     Object.assign(this.styleVariables, variables);
