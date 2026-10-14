@@ -16,7 +16,6 @@ import {
 import {
   collectStickyIds,
   resolveDeclutter,
-  stickyIdsForView,
   VIEWPORT_PADDING,
 } from '../../render/webgpu/declutter.js';
 import {buildGeometryBuffers} from '../../render/webgpu/geometryBuffers.js';
@@ -401,12 +400,6 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
      * @type {Array<boolean>|null}
      */
     this.visibility_ = null;
-
-    /**
-     * @private
-     * @type {number|undefined}
-     */
-    this.declutterResolution_;
 
     /**
      * @private
@@ -1396,18 +1389,12 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     this.updateIdentities_(frameState);
     const previousVisibility = this.visibility_;
     const count = view.getCount();
-    const resolution = frameState.viewState.resolution;
     const now = frameState.time || 0;
     const key = placementKey(this.labelVersion_, frameState);
     const runPlacement = this.placement_.shouldRun(key, now, frameState);
     if (runPlacement) {
       const start = performance.now();
       const screenLabels = view.toScreen(frameState);
-      const stickyIds = stickyIdsForView(
-        this.declutterResolution_,
-        resolution,
-        this.declutterStickyIds_,
-      );
       this.visibility_ = resolveDeclutter(
         screenLabels,
         8,
@@ -1415,9 +1402,8 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
         frameState.size[1],
         this.declutterGroup_,
         frameState.index,
-        stickyIds,
+        this.declutterStickyIds_,
       );
-      this.declutterResolution_ = resolution;
       this.declutterStickyIds_ = collectStickyIds(
         screenLabels,
         this.visibility_,
