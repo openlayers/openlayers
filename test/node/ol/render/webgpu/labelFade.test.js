@@ -103,6 +103,42 @@ describe('ol/render/webgpu/labelFade', () => {
     assert.strictEqual(fade.opacity(2, 1000), 1);
   });
 
+  it('does not retire an identity that remains in the current labels', () => {
+    const fade = new LabelFade(200);
+    const existing = {id: 1, text: 'Atlantic', _anchor: [0, 0]};
+    fade.update([existing], [true], 0, 100);
+    fade.update([existing], [true], 200, 100);
+
+    fade.update(
+      [{id: 2, text: 'Atlantic', _anchor: [1, 0]}, existing],
+      [false, true],
+      1000,
+      100,
+    );
+
+    assert.deepEqual(fade.transition(1), [0, 1, 0]);
+    assert.strictEqual(fade.opacity(1, 1000), 1);
+  });
+
+  it('does not match identities created during the same update', () => {
+    const fade = new LabelFade(200);
+    fade.update([{id: 1, text: 'Atlantic', _anchor: [0, 0]}], [true], 0, 100);
+    fade.update([{id: 1, text: 'Atlantic', _anchor: [0, 0]}], [true], 200, 100);
+
+    fade.update(
+      [
+        {id: 2, text: 'Atlantic', _anchor: [1, 0]},
+        {id: 3, text: 'Atlantic', _anchor: [2, 0]},
+        {id: 4, text: 'Atlantic', _anchor: [3, 0]},
+      ],
+      [false, true, false],
+      1000,
+      100,
+    );
+
+    assert.deepEqual(fade.transition(3), [0, 1, 1000]);
+  });
+
   it('fades in when the same text is farther than maxWorldDistance', () => {
     const fade = new LabelFade(200);
     fade.update([{id: 1, text: 'Montana', _anchor: [0, 0]}], [true], 0, 100);
