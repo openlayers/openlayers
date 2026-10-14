@@ -23,11 +23,17 @@ if (!navigator.gpu) {
   }
   source.addFeature(
     new Feature({
+      geometry: new Point([0, 45]),
+      name: 'Castlegar',
+    }),
+  );
+  source.addFeature(
+    new Feature({
       geometry: new LineString([
         [-50, -30],
         [50, -30],
       ]),
-      name: 'line-label',
+      name: 'Castlegar',
     }),
   );
 
@@ -64,7 +70,7 @@ if (!navigator.gpu) {
           'text-placement': 'line',
           'text-fill-color': '#000',
           'text-stroke-color': '#fff',
-          'text-stroke-width': 2,
+          'text-stroke-width': 3,
         },
       },
       {
@@ -77,7 +83,7 @@ if (!navigator.gpu) {
           'text-offset-y': -12,
           'text-fill-color': '#000',
           'text-stroke-color': '#fff',
-          'text-stroke-width': 2,
+          'text-stroke-width': 3,
         },
       },
     ],

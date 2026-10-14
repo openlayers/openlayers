@@ -201,6 +201,7 @@ function wrapText(text, font, maxWidth, scaleX) {
  * @property {number} strokeG Stroke color.
  * @property {number} strokeB Stroke color.
  * @property {number} strokeA Stroke color.
+ * @property {boolean} hasHalo Whether the glyph has visible halo coverage.
  * @property {number} hitR Hit.
  * @property {number} hitG Hit.
  * @property {number} hitB Hit.
@@ -343,6 +344,7 @@ export function layoutPointLabel(
   const strokeWidth = stroke ? stroke.getWidth() || 0 : 0;
   const color = fillColor(textStyle);
   const halo = strokeColor(textStyle);
+  const hasHalo = strokeWidth > 0 && halo[3] > 0;
 
   const lineHeights = [];
   const lineAscent = [];
@@ -405,6 +407,7 @@ export function layoutPointLabel(
         strokeG: halo[1],
         strokeB: halo[2],
         strokeA: halo[3],
+        hasHalo,
         hitR: hitColor[0],
         hitG: hitColor[1],
         hitB: hitColor[2],
@@ -503,6 +506,7 @@ export function layoutLineLabel(
   const strokeWidth = stroke ? stroke.getWidth() || 0 : 0;
   const color = fillColor(textStyle);
   const halo = strokeColor(textStyle);
+  const hasHalo = strokeWidth > 0 && halo[3] > 0;
   // All chunks share the label's middle as their map anchor and keep their
   // place along the path as a pixel offset. The label then stays in one piece
   // when the view resolution drifts from the layout resolution.
@@ -544,6 +548,7 @@ export function layoutLineLabel(
       strokeG: halo[1],
       strokeB: halo[2],
       strokeA: halo[3],
+      hasHalo,
       hitR: hitColor[0],
       hitG: hitColor[1],
       hitB: hitColor[2],

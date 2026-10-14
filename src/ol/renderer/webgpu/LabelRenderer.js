@@ -65,6 +65,14 @@ class LabelRenderer extends Disposable {
     this.glyphOpacity_ = new Float32Array(0);
 
     /**
+     * Prefix sum of glyphs with visible halos, for deciding whether a draw
+     * range needs the halo pass without scanning it every frame.
+     * @private
+     * @type {Uint32Array}
+     */
+    this.glyphHaloPrefix_ = new Uint32Array(0);
+
+    /**
      * @private
      * @type {number}
      */
@@ -135,6 +143,11 @@ class LabelRenderer extends Disposable {
       endMetric('packGlyphInstances', start);
       this.glyphOpacity_ = new Float32Array(this.glyphCount_ * 3);
       this.glyphOpacityBuffer_ = helper.createBuffer(this.glyphOpacity_, usage);
+      this.glyphHaloPrefix_ = new Uint32Array(this.glyphCount_ + 1);
+      for (let i = 0; i < this.glyphCount_; ++i) {
+        this.glyphHaloPrefix_[i + 1] =
+          this.glyphHaloPrefix_[i] + (buffers.glyphs[i].hasHalo ? 1 : 0);
+      }
     }
   }
 
@@ -298,15 +311,56 @@ class LabelRenderer extends Disposable {
       return;
     }
     const atlasTexture = atlas.upload(helper);
-    const pipeline = helper.getRenderPipeline(
-      'vector-glyph',
-      /** @type {any} */ ({}),
+    const end = Math.min(firstInstance + instanceCount, this.glyphCount_);
+    const hasHalo =
+      this.glyphHaloPrefix_[end] !== this.glyphHaloPrefix_[firstInstance];
+    if (hasHalo) {
+      this.drawGlyphPass_(
+        helper,
+        'vector-glyph-halo',
+        firstInstance,
+        instanceCount,
+        slot,
+        atlasTexture,
+        cornerBuffer,
+      );
+    }
+    this.drawGlyphPass_(
+      helper,
+      'vector-glyph-fill',
+      firstInstance,
+      instanceCount,
+      slot,
+      atlasTexture,
+      cornerBuffer,
     );
+  }
+
+  /**
+   * @param {import("../../webgpu/Helper.js").default} helper Helper.
+   * @param {'vector-glyph-halo'|'vector-glyph-fill'} name Pipeline name.
+   * @param {number} firstInstance First instance.
+   * @param {number} instanceCount Instance count.
+   * @param {import("./vectorUtil.js").FrameUniformSlot} slot Uniforms.
+   * @param {GPUTexture} atlasTexture Font atlas.
+   * @param {GPUBuffer} cornerBuffer Corner quad.
+   * @private
+   */
+  drawGlyphPass_(
+    helper,
+    name,
+    firstInstance,
+    instanceCount,
+    slot,
+    atlasTexture,
+    cornerBuffer,
+  ) {
+    const pipeline = helper.getRenderPipeline(name, /** @type {any} */ ({}));
     const pass = helper.getRenderPass();
     pass.setPipeline(pipeline);
     pass.setBindGroup(
       0,
-      slot.getBindGroup(helper, 'vector-glyph', pipeline, atlasTexture),
+      slot.getBindGroup(helper, name, pipeline, atlasTexture),
     );
     pass.setVertexBuffer(0, cornerBuffer);
     pass.setVertexBuffer(1, this.glyphBuffer_);
@@ -327,6 +381,7 @@ class LabelRenderer extends Disposable {
     this.symbolOpacityBuffer_ = null;
     this.glyphBuffer_ = null;
     this.glyphOpacityBuffer_ = null;
+    this.glyphHaloPrefix_ = new Uint32Array(0);
     this.symbolCount_ = 0;
     this.glyphCount_ = 0;
     this.labelOpacity_ = new Float32Array(0);
