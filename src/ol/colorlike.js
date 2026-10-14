@@ -15,6 +15,9 @@ import {shared as iconCache} from './style/IconImageCache.js';
  * Use this together with `offset` when the pattern image is a sprite sheet.
  * @property {import("./size.js").Size} [offset] Offset of the desired slice from the pattern image.
  * Use this together with `size` when the pattern image is a sprite sheet.
+ * @property {number} [scale=1] Scale of the pattern. One pattern image pixel covers
+ * `scale` css pixels, so e.g. a pattern image made for a pixel ratio of 2 needs
+ * a scale of 0.5.
  */
 
 /**
@@ -57,12 +60,35 @@ function asCanvasPattern(pattern) {
   if (!pattern.offset || !pattern.size) {
     return iconCache.getPattern(pattern.src, pattern.color ?? null);
   }
+  const cacheKey = pattern.src + ':' + pattern.offset;
+  const canvasPattern = iconCache.getPattern(cacheKey, pattern.color ?? null);
+  if (canvasPattern || !getPatternImage(pattern)) {
+    return canvasPattern;
+  }
+  return iconCache.getPattern(cacheKey, pattern.color ?? null);
+}
+
+/**
+ * Get the image a pattern repeats: the sprite slice when `offset` and `size`
+ * are set, tinted with `color`.
+ *
+ * @param {PatternDescriptor} pattern Pattern descriptor.
+ * @return {import("./style/IconImage.js").default|null} Loaded icon image, or
+ * null if the image referenced in the PatternDescriptor was not found in the
+ * icon image cache or has not loaded yet.
+ */
+export function getPatternImage(pattern) {
+  const color = pattern.color ?? null;
+  if (!pattern.offset || !pattern.size) {
+    const iconImage = iconCache.get(pattern.src, color);
+    return iconImage && iconImage.getImageState() === ImageState.LOADED
+      ? iconImage
+      : null;
+  }
 
   const cacheKey = pattern.src + ':' + pattern.offset;
-
-  const canvasPattern = iconCache.getPattern(cacheKey, pattern.color ?? null);
-  if (canvasPattern) {
-    return canvasPattern;
+  if (iconCache.getPattern(cacheKey, color)) {
+    return iconCache.get(cacheKey, color);
   }
 
   const iconImage = iconCache.get(pattern.src, null);
@@ -84,13 +110,12 @@ function asCanvasPattern(pattern) {
     pattern.size[0],
     pattern.size[1],
   );
-  getIconImage(
+  return getIconImage(
     patternCanvasContext.canvas,
     cacheKey,
     {},
     ImageState.LOADED,
-    pattern.color ?? null,
+    color,
     true,
   );
-  return iconCache.getPattern(cacheKey, pattern.color ?? null);
 }

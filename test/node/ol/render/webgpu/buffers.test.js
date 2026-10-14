@@ -5,6 +5,7 @@ import GeometryCollection from '../../../../../src/ol/geom/GeometryCollection.js
 import LineString from '../../../../../src/ol/geom/LineString.js';
 import Point from '../../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../../src/ol/geom/Polygon.js';
+import ImageState from '../../../../../src/ol/ImageState.js';
 import RenderFeature from '../../../../../src/ol/render/Feature.js';
 import {
   buildVectorBuffers,
@@ -17,6 +18,7 @@ import {
 } from '../../../../../src/ol/render/webgpu/buffers.js';
 import CircleStyle from '../../../../../src/ol/style/Circle.js';
 import Fill from '../../../../../src/ol/style/Fill.js';
+import {shared as iconImageCache} from '../../../../../src/ol/style/IconImageCache.js';
 import Stroke from '../../../../../src/ol/style/Stroke.js';
 import Style from '../../../../../src/ol/style/Style.js';
 
@@ -506,6 +508,61 @@ describe('ol/render/webgpu/buffers', () => {
     consoleWarn.mockRestore();
     assert.deepEqual(Array.from(buffers.styles.slice(0, 4)), [0, 0, 0, 0]);
     assert.strictEqual(calls, 1);
+  });
+
+  it('packs a loaded pattern fill into the image atlas, and reports it as pending while loading', () => {
+    const feature = new Feature(
+      new Polygon([
+        [
+          [0, 0],
+          [10, 0],
+          [10, 10],
+          [0, 0],
+        ],
+      ]),
+    );
+    const src = 'webgpu-buffers-pattern.png';
+    // A real Fill would start loading the image, which Node cannot do.
+    const fill = /** @type {any} */ ({
+      getColor: () => ({src, scale: 0.5}),
+      loading: () => true,
+    });
+    const style = new Style({fill});
+    const imageAtlas = /** @type {any} */ ({
+      add: () => ({texX0: 4, texY0: 8, texX1: 20, texY1: 40}),
+    });
+    const build = () =>
+      buildVectorRequest(
+        [feature],
+        () => style,
+        1,
+        /** @type {any} */ ({}),
+        undefined,
+        1,
+        NaN,
+        undefined,
+        imageAtlas,
+      );
+
+    const loading = build();
+    assert.lengthOf(loading.request.jobs, 0);
+    assert.deepEqual(loading.labelData.pendingImageStyles, [fill]);
+
+    iconImageCache.set(
+      src,
+      null,
+      /** @type {any} */ ({
+        getImageState: () => ImageState.LOADED,
+        getImage: () => ({width: 16, height: 32}),
+      }),
+    );
+    const loaded = build();
+    iconImageCache.clear();
+    assert.lengthOf(loaded.request.jobs, 1);
+    assert.deepEqual(
+      Array.from(loaded.request.styles.slice(8, 13)),
+      [4, 8, 16, 32, 0.5],
+    );
   });
 
   it('draws a circle without a fill as its stroke alone', () => {

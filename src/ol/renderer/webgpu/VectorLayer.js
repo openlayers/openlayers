@@ -455,7 +455,7 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
 
     /**
      * @private
-     * @type {WeakSet<import("../../style/Image.js").default>}
+     * @type {WeakSet<import("../../style/Image.js").default|import("../../style/Fill.js").default>}
      */
     this.loadingImages_ = new WeakSet();
 
@@ -798,9 +798,9 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
   }
 
   /**
-   * Rebuild when an image style becomes available.
+   * Rebuild when an image style or pattern fill becomes available.
    *
-   * @param {Array<import("../../style/Image.js").default>} images Images.
+   * @param {Array<import("../../style/Image.js").default|import("../../style/Fill.js").default>} images Images and pattern fills.
    * @private
    */
   watchImages_(images) {
