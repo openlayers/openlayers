@@ -4,7 +4,9 @@
 import {asArray} from '../../color.js';
 import {warn} from '../../console.js';
 import {createEmpty, extend as extendExtent, isEmpty} from '../../extent.js';
+import {lineChunk} from '../../geom/flat/linechunk.js';
 import {inflateEnds} from '../../geom/flat/orient.js';
+import {matchingChunk} from '../../geom/flat/straightchunk.js';
 import {fromCircle} from '../../geom/Polygon.js';
 import ImageState from '../../ImageState.js';
 import RenderFeature from '../../render/Feature.js';
@@ -640,40 +642,68 @@ function appendStyledGeometry(
   if (!linePlacement) {
     return;
   }
-  const start = glyphs.length;
-  const box = layoutLineLabel(
-    glyphs,
-    text,
-    /** @type {any} */ (geom).getFlatCoordinates(),
-    state.resolution,
-    atlas,
-    hit,
-    state.pixelRatio,
-  );
-  if (!box) {
-    return;
+  const flat = /** @type {any} */ (geom).getFlatCoordinates();
+  const ends =
+    type === 'MultiLineString'
+      ? /** @type {any} */ (geom).getEnds()
+      : [flat.length];
+  const stride = /** @type {any} */ (geom).getStride();
+  const repeat = text.getRepeat?.();
+  const maxAngle = text.getMaxAngle?.() ?? Math.PI / 4;
+  let offset = 0;
+  let pathIndex = 0;
+  for (const end of ends) {
+    const line = [];
+    for (let i = offset; i < end; i += stride) {
+      line.push(flat[i], flat[i + 1]);
+    }
+    offset = end;
+    const chunks = repeat
+      ? lineChunk(repeat * state.resolution, line, 0, line.length, 2)
+      : [line];
+    for (let chunk of chunks) {
+      if (text.getTextAlign() === undefined) {
+        const range = matchingChunk(maxAngle, chunk, 0, chunk.length, 2);
+        chunk = chunk.slice(range[0], range[1]);
+      }
+      const start = glyphs.length;
+      const box = layoutLineLabel(
+        glyphs,
+        text,
+        chunk,
+        state.resolution,
+        atlas,
+        hit,
+        state.pixelRatio,
+      );
+      if (!box) {
+        ++pathIndex;
+        continue;
+      }
+      const count = glyphs.length - start;
+      const middle = glyphs[start + Math.floor(count / 2)];
+      labels.push({
+        minX: box.minX,
+        minY: box.minY,
+        maxX: box.maxX,
+        maxY: box.maxY,
+        priority: -zIndex,
+        zIndex,
+        classRank: CLASS_TEXT,
+        sequence,
+        featureRef,
+        id: labelId,
+        mode: text.getDeclutterMode?.() || 'declutter',
+        padding: text.getPadding() || [0, 0, 0, 0],
+        glyphStart: start,
+        glyphCount: count,
+        text: textKey,
+        _anchor: middle ? [middle.x, middle.y] : undefined,
+        _identityKey: `${featureKey}|${styleKey}|line|${pathIndex}`,
+      });
+      ++pathIndex;
+    }
   }
-  const count = glyphs.length - start;
-  const middle = glyphs[start + Math.floor(count / 2)];
-  labels.push({
-    minX: box.minX,
-    minY: box.minY,
-    maxX: box.maxX,
-    maxY: box.maxY,
-    priority: -zIndex,
-    zIndex,
-    classRank: CLASS_TEXT,
-    sequence,
-    featureRef,
-    id: labelId,
-    mode: text.getDeclutterMode?.() || 'declutter',
-    padding: text.getPadding() || [0, 0, 0, 0],
-    glyphStart: start,
-    glyphCount: count,
-    text: textKey,
-    _anchor: middle ? [middle.x, middle.y] : undefined,
-    _identityKey: `${featureKey}|${styleKey}|line`,
-  });
 }
 
 /**
