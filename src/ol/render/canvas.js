@@ -187,6 +187,12 @@ let measureFont;
  */
 export const textHeights = {};
 
+/**
+ * Alphabetic baseline offset below the line-box center, by font.
+ * @type {!Object<string, number>}
+ */
+const textBaselines = {};
+
 const genericFontFamilies = new Set([
   'serif',
   'sans-serif',
@@ -389,6 +395,25 @@ function measureText(font, text) {
     measureFont = measureContext.font;
   }
   return measureContext.measureText(text);
+}
+
+/**
+ * Distance from the center of a line box down to the alphabetic baseline.
+ * Canvas point labels are drawn with `textBaseline: 'middle'` at that center,
+ * so this is the offset used to sit glyphs on the same baseline.
+ * @param {string} font Font to use for measuring.
+ * @return {number} Offset in CSS pixels.
+ */
+export function measureTextBaseline(font) {
+  let baseline = textBaselines[font];
+  if (baseline == undefined) {
+    const metrics = measureText(font, 'H');
+    const ascent = metrics.fontBoundingBoxAscent || 0;
+    const descent = metrics.fontBoundingBoxDescent || 0;
+    baseline = (ascent - descent) / 2;
+    textBaselines[font] = baseline;
+  }
+  return baseline;
 }
 
 /**
