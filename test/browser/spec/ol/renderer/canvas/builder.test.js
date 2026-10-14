@@ -619,6 +619,32 @@ describe('ol.render.canvas.Builder', function () {
     });
   });
 
+  describe('#fillStyleToState()', function () {
+    let builder;
+    beforeEach(function () {
+      builder = new CanvasBuilder(1, [-180, -90, 180, 90], 1, 2, true);
+    });
+
+    it('scales a pattern descriptor by the pixel ratio', function () {
+      const state = builder.fillStyleToState(
+        new Fill({color: {src: '/base/spec/ol/data/dot.png'}}),
+      );
+      assert.strictEqual(state.fillPatternScale, 2);
+    });
+
+    it('applies the scale of a pattern descriptor', function () {
+      const state = builder.fillStyleToState(
+        new Fill({color: {src: '/base/spec/ol/data/dot.png', scale: 0.5}}),
+      );
+      assert.strictEqual(state.fillPatternScale, 1);
+    });
+
+    it('does not scale a color', function () {
+      const state = builder.fillStyleToState(new Fill({color: 'red'}));
+      assert.strictEqual(state.fillPatternScale, 1);
+    });
+  });
+
   describe('#appendFlatLineCoordinates()', function () {
     let replay;
     beforeEach(function () {

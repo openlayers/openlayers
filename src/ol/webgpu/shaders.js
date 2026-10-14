@@ -115,11 +115,18 @@ struct FrameUniforms {
   fadeDuration: f32,
   // CSS pixels per map unit, for measuring dashes along a line.
   pixelsPerUnit: f32,
+  viewRotation: f32,
+  pixelRatio: f32,
+  // Where fill patterns start, in framebuffer pixels.
+  patternOrigin: vec2<f32>,
 }
 
 struct Style {
   color: vec4<f32>,
   hitColor: vec4<f32>,
+  // A fill has no dashes, so dashA holds its pattern's atlas rectangle in
+  // texels instead, with a zero width when there is none, and dashB.x holds
+  // the pattern's scale.
   dashA: vec4<f32>,
   dashB: vec4<f32>,
   // Dash offset, pattern length, dash count, padding; all lengths in CSS pixels.
@@ -130,11 +137,14 @@ struct Style {
 // straight to clip space.
 @group(0) @binding(0) var<uniform> uniforms: FrameUniforms;
 @group(0) @binding(1) var<storage, read> styles: array<Style>;
+@group(0) @binding(2) var patternTexture: texture_2d<f32>;
 
 struct VertexOut {
   @builtin(position) position: vec4<f32>,
   @location(0) color: vec4<f32>,
   @location(1) hitColor: vec4<f32>,
+  @location(2) @interpolate(flat) pattern: vec4<f32>,
+  @location(3) @interpolate(flat) patternScale: f32,
 }
 
 @vertex
@@ -147,6 +157,8 @@ fn vs_main(
   let style = styles[styleIndex];
   out.color = style.color;
   out.hitColor = style.hitColor;
+  out.pattern = style.dashA;
+  out.patternScale = style.dashB.x;
   return out;
 }
 
@@ -156,6 +168,13 @@ fn fs_main(in: VertexOut) -> @location(0) vec4<f32> {
     return in.hitColor;
   }
   var color = in.color;
+  if (in.pattern.z > 0.0) {
+    // Repeat the pattern at CSS pixel size times its scale, as Canvas does.
+    let px = (in.position.xy - uniforms.patternOrigin) / uniforms.pixelRatio;
+    let texel = in.pattern.xy +
+      floor(fract(px / (in.pattern.zw * in.patternScale)) * in.pattern.zw);
+    color = textureLoad(patternTexture, vec2<i32>(texel), 0);
+  }
   color.a = color.a * uniforms.globalAlpha;
   return vec4(color.rgb * color.a, color.a);
 }
@@ -261,11 +280,18 @@ struct FrameUniforms {
   fadeDuration: f32,
   // CSS pixels per map unit, for measuring dashes along a line.
   pixelsPerUnit: f32,
+  viewRotation: f32,
+  pixelRatio: f32,
+  // Where fill patterns start, in framebuffer pixels.
+  patternOrigin: vec2<f32>,
 }
 
 struct Style {
   color: vec4<f32>,
   hitColor: vec4<f32>,
+  // A fill has no dashes, so dashA holds its pattern's atlas rectangle in
+  // texels instead, with a zero width when there is none, and dashB.x holds
+  // the pattern's scale.
   dashA: vec4<f32>,
   dashB: vec4<f32>,
   // Dash offset, pattern length, dash count, padding; all lengths in CSS pixels.
@@ -274,11 +300,14 @@ struct Style {
 
 @group(0) @binding(0) var<uniform> uniforms: FrameUniforms;
 @group(0) @binding(1) var<storage, read> styles: array<Style>;
+@group(0) @binding(2) var patternTexture: texture_2d<f32>;
 
 struct VertexOut {
   @builtin(position) position: vec4<f32>,
   @location(0) color: vec4<f32>,
   @location(1) hitColor: vec4<f32>,
+  @location(2) @interpolate(flat) pattern: vec4<f32>,
+  @location(3) @interpolate(flat) patternScale: f32,
 }
 
 @vertex
@@ -298,6 +327,8 @@ fn vs_main(
   let style = styles[styleIndex];
   out.color = style.color;
   out.hitColor = style.hitColor;
+  out.pattern = style.dashA;
+  out.patternScale = style.dashB.x;
   return out;
 }
 
@@ -307,6 +338,13 @@ fn fs_main(in: VertexOut) -> @location(0) vec4<f32> {
     return in.hitColor;
   }
   var color = in.color;
+  if (in.pattern.z > 0.0) {
+    // Repeat the pattern at CSS pixel size times its scale, as Canvas does.
+    let px = (in.position.xy - uniforms.patternOrigin) / uniforms.pixelRatio;
+    let texel = in.pattern.xy +
+      floor(fract(px / (in.pattern.zw * in.patternScale)) * in.pattern.zw);
+    color = textureLoad(patternTexture, vec2<i32>(texel), 0);
+  }
   color.a = color.a * uniforms.globalAlpha;
   return vec4(color.rgb * color.a, color.a);
 }
