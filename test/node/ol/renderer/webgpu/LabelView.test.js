@@ -11,6 +11,7 @@ function frameState(pixelRatio = 2) {
     pixelRatio,
     size: [400, 300],
     coordinateToPixelTransform: [1, 0, 0, 1, 0, 0],
+    viewState: {rotation: 0},
   });
 }
 
@@ -115,6 +116,29 @@ describe('ol/renderer/webgpu/LabelView', () => {
     const box = viewOf(buffers, -50).toScreen(frameState())[0];
     assert.strictEqual(box.minX, 10 - 50 - 5 - LABEL_COLLISION_MARGIN);
     assert.deepEqual(label._anchor, [10, 20]);
+  });
+
+  it('uses rotated icon corners for collision bounds', () => {
+    const buffers = {
+      glyphs: [],
+      labels: [
+        {
+          minX: -10,
+          minY: -5,
+          maxX: 10,
+          maxY: 5,
+          glyphCount: 0,
+          _anchor: [20, 30],
+          _corners: [-10, -5, 10, -5, 10, 5, -10, 5],
+          _rotation: Math.PI / 2,
+        },
+      ],
+    };
+    const box = viewOf(buffers).toScreen(frameState())[0];
+    assert.closeTo(box.minX, 15 - LABEL_COLLISION_MARGIN, 1e-10);
+    assert.closeTo(box.maxX, 25 + LABEL_COLLISION_MARGIN, 1e-10);
+    assert.closeTo(box.minY, 20 - LABEL_COLLISION_MARGIN, 1e-10);
+    assert.closeTo(box.maxY, 40 + LABEL_COLLISION_MARGIN, 1e-10);
   });
 
   it('keeps pairs of different tiles independent', () => {

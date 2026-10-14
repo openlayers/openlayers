@@ -23,8 +23,12 @@ import {DECLUTTER_SHADER} from '../../webgpu/shaders.js';
  * @property {number} [glyphStart] Glyph instance start.
  * @property {number} [glyphCount] Glyph instance count.
  * @property {number} [symbolIndex] Index into symbolInstances (stride `SYMBOL_STRIDE`).
+ * @property {number} [iconIndex] Index into iconInstances (stride `ICON_STRIDE`).
  * @property {string} [text] Displayed text; used for fade continuity across tile zooms.
  * @property {import("../../coordinate.js").Coordinate} [_anchor] World-space anchor for point labels.
+ * @property {Array<number>} [_corners] Icon corners relative to the anchor.
+ * @property {number} [_rotation] Icon rotation.
+ * @property {boolean} [_rotateWithView] Whether the icon rotates with the view.
  * @property {string} [_identityKey] Symbol content/style key used for cross-tile matching.
  */
 

@@ -663,6 +663,98 @@ fn fs_main(in: VertexOut) -> @location(0) vec4<f32> {
 }
 `;
 
+export const ICON_SHADER = `
+struct FrameUniforms {
+  projectionMatrix: mat4x4<f32>,
+  renderExtent: vec4<f32>,
+  viewportSizePx: vec2<f32>,
+  globalAlpha: f32,
+  hitDetection: f32,
+  time: f32,
+  fadeDuration: f32,
+  pixelsPerUnit: f32,
+  viewRotation: f32,
+}
+
+@group(0) @binding(0) var<uniform> uniforms: FrameUniforms;
+@group(0) @binding(1) var atlasSampler: sampler;
+@group(0) @binding(2) var atlasTexture: texture_2d<f32>;
+
+struct VertexOut {
+  @builtin(position) position: vec4<f32>,
+  @location(0) texCoord: vec2<f32>,
+  @location(1) hitColor: vec4<f32>,
+  @location(2) @interpolate(flat) opacity: f32,
+}
+
+@vertex
+fn vs_main(
+  @location(0) position: vec2<f32>,
+  @location(1) offsetPx: vec2<f32>,
+  @location(2) sizePx: vec2<f32>,
+  @location(3) atlasPx: vec4<f32>,
+  @location(4) hitColor: vec4<f32>,
+  @location(5) styleOpacity: f32,
+  @location(6) angle: f32,
+  @location(7) rotateWithView: f32,
+  @location(8) corner: vec2<f32>,
+  @location(9) opacityTransition: vec3<f32>,
+) -> VertexOut {
+  var out: VertexOut;
+  let fadeProgress = clamp(
+    (uniforms.time - opacityTransition.z) / max(uniforms.fadeDuration, 0.0001),
+    0.0,
+    1.0
+  );
+  let opacity = mix(opacityTransition.x, opacityTransition.y, fadeProgress);
+  if (opacity <= 0.0 || styleOpacity <= 0.0) {
+    out.position = vec4(0.0, 0.0, 2.0, 1.0);
+    out.texCoord = vec2(0.0);
+    out.hitColor = vec4(0.0);
+    out.opacity = 0.0;
+    return out;
+  }
+  var clip = uniforms.projectionMatrix * vec4(position, 0.0, 1.0);
+  let local = corner * sizePx + offsetPx;
+  let rotation = angle + rotateWithView * uniforms.viewRotation;
+  let c = cos(rotation);
+  let s = sin(rotation);
+  let rotated = vec2(c * local.x - s * local.y, s * local.x + c * local.y);
+  clip = vec4(
+    clip.x + rotated.x / (uniforms.viewportSizePx.x * 0.5) * clip.w,
+    clip.y - rotated.y / (uniforms.viewportSizePx.y * 0.5) * clip.w,
+    clip.z,
+    clip.w
+  );
+  out.position = clip;
+  out.texCoord = mix(atlasPx.xy, atlasPx.zw, corner);
+  out.hitColor = hitColor;
+  out.opacity = opacity * styleOpacity;
+  return out;
+}
+
+@fragment
+fn fs_main(in: VertexOut) -> @location(0) vec4<f32> {
+  let atlasSize = vec2<f32>(textureDimensions(atlasTexture));
+  let sample = textureSample(
+    atlasTexture,
+    atlasSampler,
+    in.texCoord / atlasSize
+  );
+  if (sample.a < 0.01) {
+    discard;
+  }
+  if (uniforms.hitDetection > 0.5) {
+    return in.hitColor;
+  }
+  let alpha = sample.a * in.opacity * uniforms.globalAlpha;
+  if (alpha < 0.01) {
+    discard;
+  }
+  return vec4(sample.rgb * alpha, alpha);
+}
+`;
+
 export const GLYPH_SHADER = `
 struct FrameUniforms {
   projectionMatrix: mat4x4<f32>,

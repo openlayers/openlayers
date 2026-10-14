@@ -1,5 +1,6 @@
 import {assert} from 'chai';
 import LabelRenderer from '../../../../../src/ol/renderer/webgpu/LabelRenderer.js';
+import {ICON_STRIDE} from '../../../../../src/ol/renderer/webgpu/vectorUtil.js';
 
 /**
  * @return {Object} Helper stub that records buffer writes.
@@ -152,6 +153,47 @@ describe('ol/renderer/webgpu/LabelRenderer', () => {
         {instanceCount: 2, firstInstance: 1},
       ],
     );
+    renderer.dispose();
+  });
+
+  it('draws icon ranges with the image atlas and shared fade opacity', () => {
+    const helper = fakeHelper();
+    const renderer = new LabelRenderer();
+    renderer.setLabels(
+      /** @type {any} */ (helper),
+      /** @type {any} */ ({
+        labels: [
+          {
+            minX: 0,
+            minY: 0,
+            maxX: 1,
+            maxY: 1,
+            glyphCount: 0,
+            iconIndex: 0,
+          },
+        ],
+        glyphs: [],
+        symbolInstances: new Float32Array(0),
+        iconInstances: new Float32Array(ICON_STRIDE),
+      }),
+    );
+    renderer.setOpacities(new Float32Array([0, 1, 100]), 0);
+    const texture = {};
+    renderer.drawInstances(
+      /** @type {any} */ (helper),
+      'icon',
+      0,
+      1,
+      /** @type {any} */ ({getBindGroup: () => ({})}),
+      /** @type {any} */ ({}),
+      /** @type {any} */ ({}),
+      /** @type {any} */ ({upload: () => texture}),
+    );
+    assert.deepEqual(helper.pipelines, ['vector-icon']);
+    assert.deepEqual(helper.draws, [
+      {vertexCount: 4, instanceCount: 1, firstVertex: 0, firstInstance: 0},
+    ]);
+    assert.include(helper.writes, 3);
     renderer.dispose();
   });
 });

@@ -4,7 +4,7 @@
 import Disposable from '../../Disposable.js';
 import {packGlyphInstances} from '../../render/webgpu/glyphLayout.js';
 import {countMetric, endMetric, startMetric} from '../../webgpu/metrics.js';
-import {SYMBOL_STRIDE} from './vectorUtil.js';
+import {ICON_STRIDE, SYMBOL_STRIDE} from './vectorUtil.js';
 
 /**
  * @classdesc
@@ -50,6 +50,24 @@ class LabelRenderer extends Disposable {
      * @private
      * @type {GPUBuffer|null}
      */
+    this.iconBuffer_ = null;
+
+    /**
+     * @private
+     * @type {GPUBuffer|null}
+     */
+    this.iconOpacityBuffer_ = null;
+
+    /**
+     * @private
+     * @type {Float32Array}
+     */
+    this.iconOpacity_ = new Float32Array(0);
+
+    /**
+     * @private
+     * @type {GPUBuffer|null}
+     */
     this.glyphBuffer_ = null;
 
     /**
@@ -77,6 +95,12 @@ class LabelRenderer extends Disposable {
      * @type {number}
      */
     this.symbolCount_ = 0;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.iconCount_ = 0;
 
     /**
      * @private
@@ -116,6 +140,7 @@ class LabelRenderer extends Disposable {
     this.release_();
     this.buffers_ = buffers;
     this.symbolCount_ = buffers.symbolInstances.length / SYMBOL_STRIDE;
+    this.iconCount_ = (buffers.iconInstances?.length || 0) / ICON_STRIDE;
     this.glyphCount_ = buffers.glyphs.length;
     this.labelOpacity_ = new Float32Array(buffers.labels.length * 3);
     this.opacityDirty_ = true;
@@ -128,6 +153,11 @@ class LabelRenderer extends Disposable {
         this.symbolOpacity_,
         usage,
       );
+    }
+    if (this.iconCount_) {
+      this.iconBuffer_ = helper.createBuffer(buffers.iconInstances, usage);
+      this.iconOpacity_ = new Float32Array(this.iconCount_ * 3);
+      this.iconOpacityBuffer_ = helper.createBuffer(this.iconOpacity_, usage);
     }
     if (this.glyphCount_) {
       const start = startMetric();
@@ -191,6 +221,7 @@ class LabelRenderer extends Disposable {
       return;
     }
     this.symbolOpacity_?.fill(0);
+    this.iconOpacity_?.fill(0);
     this.glyphOpacity_?.fill(0);
     for (let i = 0; i < buffers.labels.length; ++i) {
       const transitionOffset = i * 3;
@@ -219,12 +250,22 @@ class LabelRenderer extends Disposable {
         this.symbolOpacity_[offset + 1] = targetOpacity;
         this.symbolOpacity_[offset + 2] = startTime;
       }
+      const iconIndex = label.iconIndex;
+      if (iconIndex !== undefined && iconIndex < this.iconCount_) {
+        const offset = iconIndex * 3;
+        this.iconOpacity_[offset] = startOpacity;
+        this.iconOpacity_[offset + 1] = targetOpacity;
+        this.iconOpacity_[offset + 2] = startTime;
+      }
     }
     if (this.symbolOpacityBuffer_) {
       helper.writeBuffer(this.symbolOpacityBuffer_, this.symbolOpacity_);
     }
     if (this.glyphOpacityBuffer_) {
       helper.writeBuffer(this.glyphOpacityBuffer_, this.glyphOpacity_);
+    }
+    if (this.iconOpacityBuffer_) {
+      helper.writeBuffer(this.iconOpacityBuffer_, this.iconOpacity_);
     }
     countMetric('opacityUploads');
     countMetric('transitionUploads');
@@ -236,8 +277,9 @@ class LabelRenderer extends Disposable {
    * @param {import("./vectorUtil.js").FrameUniformSlot} slot Uniforms for this set's world.
    * @param {import("../../webgpu/FontAtlas.js").default} atlas Atlas.
    * @param {GPUBuffer} cornerBuffer Corner quad.
+   * @param {import("../../webgpu/ImageAtlas.js").default} imageAtlas Image atlas.
    */
-  draw(helper, slot, atlas, cornerBuffer) {
+  draw(helper, slot, atlas, cornerBuffer, imageAtlas) {
     this.drawInstances(
       helper,
       'symbol',
@@ -246,6 +288,17 @@ class LabelRenderer extends Disposable {
       slot,
       atlas,
       cornerBuffer,
+      imageAtlas,
+    );
+    this.drawInstances(
+      helper,
+      'icon',
+      0,
+      this.iconCount_,
+      slot,
+      atlas,
+      cornerBuffer,
+      imageAtlas,
     );
     this.drawInstances(
       helper,
@@ -255,6 +308,7 @@ class LabelRenderer extends Disposable {
       slot,
       atlas,
       cornerBuffer,
+      imageAtlas,
     );
   }
 
@@ -264,12 +318,13 @@ class LabelRenderer extends Disposable {
    * can be a slice of the packed instances.
    *
    * @param {import("../../webgpu/Helper.js").default} helper Helper.
-   * @param {'symbol'|'glyph'} kind Instance kind.
+   * @param {'symbol'|'icon'|'glyph'} kind Instance kind.
    * @param {number} firstInstance First instance.
    * @param {number} instanceCount Instance count.
    * @param {import("./vectorUtil.js").FrameUniformSlot} slot Uniforms.
    * @param {import("../../webgpu/FontAtlas.js").default} atlas Atlas.
    * @param {GPUBuffer} cornerBuffer Corner quad.
+   * @param {import("../../webgpu/ImageAtlas.js").default} [imageAtlas] Image atlas.
    */
   drawInstances(
     helper,
@@ -279,12 +334,39 @@ class LabelRenderer extends Disposable {
     slot,
     atlas,
     cornerBuffer,
+    imageAtlas,
   ) {
     if (!this.buffers_ || !instanceCount) {
       return;
     }
     if (this.opacityDirty_) {
       this.updateOpacity_(helper);
+    }
+    if (kind === 'icon') {
+      if (!this.iconCount_ || !this.iconBuffer_ || !imageAtlas) {
+        return;
+      }
+      const pipeline = helper.getRenderPipeline(
+        'vector-icon',
+        /** @type {any} */ ({}),
+      );
+      const pass = helper.getRenderPass();
+      pass.setPipeline(pipeline);
+      pass.setBindGroup(
+        0,
+        slot.getBindGroup(
+          helper,
+          'vector-icon',
+          pipeline,
+          imageAtlas.upload(helper),
+        ),
+      );
+      pass.setVertexBuffer(0, cornerBuffer);
+      pass.setVertexBuffer(1, this.iconBuffer_);
+      pass.setVertexBuffer(2, this.iconOpacityBuffer_);
+      countMetric('drawCalls');
+      pass.draw(4, instanceCount, 0, firstInstance);
+      return;
     }
     if (kind === 'symbol') {
       if (!this.symbolCount_ || !this.symbolBuffer_) {
@@ -375,14 +457,19 @@ class LabelRenderer extends Disposable {
   release_() {
     this.symbolBuffer_?.destroy();
     this.symbolOpacityBuffer_?.destroy();
+    this.iconBuffer_?.destroy();
+    this.iconOpacityBuffer_?.destroy();
     this.glyphBuffer_?.destroy();
     this.glyphOpacityBuffer_?.destroy();
     this.symbolBuffer_ = null;
     this.symbolOpacityBuffer_ = null;
+    this.iconBuffer_ = null;
+    this.iconOpacityBuffer_ = null;
     this.glyphBuffer_ = null;
     this.glyphOpacityBuffer_ = null;
     this.glyphHaloPrefix_ = new Uint32Array(0);
     this.symbolCount_ = 0;
+    this.iconCount_ = 0;
     this.glyphCount_ = 0;
     this.labelOpacity_ = new Float32Array(0);
     this.buffers_ = null;

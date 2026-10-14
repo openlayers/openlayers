@@ -208,7 +208,8 @@
  * @property {ColorExpression} [icon-color] Color to tint the icon. If not specified,
  * the icon will be left as is.
  * @property {null|string} [icon-cross-origin] The `crossOrigin` attribute for loaded images. Note that you must provide a
- * `icon-cross-origin` value if you want to access pixel data with the Canvas renderer.
+ * `icon-cross-origin` value if you want to access pixel data with the Canvas renderer
+ * or upload a cross-origin image with the WebGPU renderer.
  * See https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image for more detail.
  * @property {SizeExpression} [icon-offset=[0, 0]] Offset, which, together with the size and the offset origin, define the
  * sub-rectangle to use from the original icon image.
@@ -230,7 +231,7 @@
  * interval. Only available when `icon-placement` is set to `'line'`. (Canvas only)
  * @property {SizeExpression} [icon-size] Icon size in pixel. Can be used together with `icon-offset` to define the
  * sub-rectangle to use from the origin (sprite) icon image. (Expressions only in WebGL)
- * @property {import("./Style.js").DeclutterMode} [icon-declutter-mode] Declutter mode (Canvas only)
+ * @property {import("./Style.js").DeclutterMode} [icon-declutter-mode] Declutter mode (Canvas and WebGPU)
  * @property {NumberExpression} [z-index] The zIndex of the style.
  */
 

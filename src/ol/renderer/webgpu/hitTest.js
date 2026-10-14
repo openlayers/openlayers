@@ -4,6 +4,7 @@
 import Geometry from '../../geom/Geometry.js';
 import {comparePaint} from '../../render/webgpu/drawOrder.js';
 import {extendGlyphBounds} from '../../render/webgpu/glyphLayout.js';
+import {imageBounds} from '../../render/webgpu/imageBounds.js';
 import {apply as applyTransform} from '../../transform.js';
 
 /**
@@ -55,6 +56,7 @@ export function hitFeatures(
       hitTolerance,
       visibility,
       featureCoordinate,
+      frameState.viewState.rotation,
     );
     if (!feature || seen.has(feature)) {
       continue;
@@ -72,6 +74,7 @@ export function hitFeatures(
  * @param {number} hitTolerance Hit tolerance.
  * @param {Array<boolean>|null|undefined} visibility Visibility.
  * @param {import("../../coordinate.js").Coordinate|null} featureCoordinate Feature coordinate.
+ * @param {number} viewRotation View rotation.
  * @return {import("../../Feature.js").FeatureLike|undefined} Feature.
  */
 function featureForItem(
@@ -81,10 +84,15 @@ function featureForItem(
   hitTolerance,
   visibility,
   featureCoordinate,
+  viewRotation,
 ) {
   const command = item.command;
   const buffers = item.buffers;
-  if (command.pipeline === 'symbol' || command.pipeline === 'glyph') {
+  if (
+    command.pipeline === 'symbol' ||
+    command.pipeline === 'icon' ||
+    command.pipeline === 'glyph'
+  ) {
     const index = command.labelIndex;
     if (index === undefined) {
       return undefined;
@@ -102,6 +110,7 @@ function featureForItem(
         transform,
         item.worldOffset,
         hitTolerance,
+        viewRotation,
       )
     ) {
       return undefined;
@@ -130,6 +139,7 @@ function featureForItem(
  * @param {import("../../transform.js").Transform} transform Coordinate to pixel.
  * @param {number} worldOffset World offset.
  * @param {number} tolerance Extra pixels.
+ * @param {number} viewRotation View rotation.
  * @return {boolean} The pixel is inside the label.
  */
 function labelContainsPixel(
@@ -139,6 +149,7 @@ function labelContainsPixel(
   transform,
   worldOffset,
   tolerance,
+  viewRotation,
 ) {
   const pad = tolerance || 0;
   if (label.glyphCount) {
@@ -173,10 +184,12 @@ function labelContainsPixel(
   }
   const shifted = [anchor[0] + worldOffset, anchor[1]];
   const p = applyTransform(transform, shifted);
+  const bounds = {minX: 0, minY: 0, maxX: 0, maxY: 0};
+  imageBounds(bounds, label, p[0], p[1], viewRotation);
   return (
-    pixel[0] >= p[0] + label.minX - pad &&
-    pixel[0] <= p[0] + label.maxX + pad &&
-    pixel[1] >= p[1] + label.minY - pad &&
-    pixel[1] <= p[1] + label.maxY + pad
+    pixel[0] >= bounds.minX - pad &&
+    pixel[0] <= bounds.maxX + pad &&
+    pixel[1] >= bounds.minY - pad &&
+    pixel[1] <= bounds.maxY + pad
   );
 }

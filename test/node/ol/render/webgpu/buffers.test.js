@@ -8,8 +8,10 @@ import Polygon from '../../../../../src/ol/geom/Polygon.js';
 import RenderFeature from '../../../../../src/ol/render/Feature.js';
 import {
   buildVectorBuffers,
+  buildVectorRequest,
   decodeHitColor,
   encodeHitColor,
+  ICON_STRIDE,
   STYLE_STRIDE,
   SYMBOL_STRIDE,
 } from '../../../../../src/ol/render/webgpu/buffers.js';
@@ -525,6 +527,81 @@ describe('ol/render/webgpu/buffers', () => {
     assert.strictEqual(instance.length, SYMBOL_STRIDE);
     assert.deepEqual(instance.slice(6, 10), [0, 0, 0, 0]);
     assert.deepEqual(instance.slice(14, 20), [1, 0, 0, 1, 1, 5]);
+  });
+
+  it('packs a non-circle image style as a textured icon', () => {
+    const source = {};
+    const image = /** @type {any} */ ({
+      getImageState: () => 2,
+      getAnchor: () => [3, 4],
+      getSize: () => [10, 8],
+      getOrigin: () => [5, 6],
+      getPixelRatio: () => 2,
+      getImage: () => source,
+      getHitDetectionImage: () => source,
+      getScaleArray: () => [2, 0.5],
+      getOpacity: () => 0.6,
+      getRotation: () => 0.25,
+      getRotateWithView: () => true,
+      getDeclutterMode: () => 'declutter',
+    });
+    const atlasData = [];
+    const imageAtlas = {
+      add(data) {
+        atlasData.push(data);
+        return {texX0: 10, texY0: 20, texX1: 30, texY1: 36};
+      },
+    };
+    const buffers = buildVectorBuffers(
+      [new Feature(new Point([0, 0]))],
+      () => new Style({image}),
+      1,
+      /** @type {any} */ ({}),
+      undefined,
+      1,
+      NaN,
+      undefined,
+      /** @type {any} */ (imageAtlas),
+    );
+    assert.strictEqual(buffers.iconInstances.length, ICON_STRIDE);
+    assert.deepEqual(
+      Array.from(buffers.iconInstances.slice(2, 10)),
+      [-6, -2, 20, 4, 10, 20, 30, 36],
+    );
+    assert.closeTo(buffers.iconInstances[10], 1 / 255, 1e-8);
+    assert.deepEqual(
+      Array.from(buffers.iconInstances.slice(11, 14)),
+      [0, 0, 1],
+    );
+    assert.closeTo(buffers.iconInstances[14], 0.6, 1e-7);
+    assert.strictEqual(buffers.iconInstances[15], 0.25);
+    assert.strictEqual(buffers.iconInstances[16], 1);
+    assert.strictEqual(atlasData.length, 1);
+    assert.strictEqual(atlasData[0].sourceX, 10);
+    assert.strictEqual(atlasData[0].sourceY, 12);
+    assert.strictEqual(buffers.commands[0].pipeline, 'icon');
+    assert.strictEqual(buffers.labels[0].iconIndex, 0);
+  });
+
+  it('starts idle image styles and reports them as pending', () => {
+    let state = 0;
+    let loads = 0;
+    const image = /** @type {any} */ ({
+      getImageState: () => state,
+      load() {
+        ++loads;
+        state = 1;
+      },
+    });
+    const {labelData} = buildVectorRequest(
+      [new Feature(new Point([0, 0]))],
+      () => new Style({image}),
+      1,
+      /** @type {any} */ ({}),
+    );
+    assert.strictEqual(loads, 1);
+    assert.deepEqual(labelData.pendingImageStyles, [image]);
+    assert.strictEqual(labelData.iconInstances.length, 0);
   });
 
   it('stores the dash pattern of a stroke, repeating an odd one', () => {

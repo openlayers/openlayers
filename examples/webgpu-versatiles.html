@@ -2,33 +2,12 @@
 layout: example.html
 title: VersaTiles Colorful (with WebGPU)
 shortdesc: The VersaTiles Colorful style rendered with WebGPU vector tile layers and flat styles.
-docs: |
-  This example stress tests the WebGPU vector tile renderer with the
-  [VersaTiles Colorful](https://tiles.versatiles.org/assets/styles/colorful/style.json)
-  style. Instead of using `ol-mapbox-style`, the example fetches the style
-  document and translates each of its layers into a `WebGPUVectorTile` layer
-  with a flat style rule. All layers share a single vector tile source and a
-  single declutter group, so the map renders about 250 WebGPU layers.
-
-  The view's `maxResolution` matches the resolution of Mapbox GL zoom level 0
-  (512 pixel tiles), so `['zoom']` expressions from the style can be used as-is.
-
-  These parts of the style are not rendered yet, because the WebGPU renderer
-  or flat styles do not support them:
-
-  - Icons and sprites (`icon-image` and the other `icon-*` properties), so the one-way arrow layers are skipped
-  - Fill patterns (`fill-pattern`)
-  - Dashed lines (`line-dasharray`)
-  - Line caps and joins (`line-cap`, `line-join`); all lines are drawn with the renderer's default geometry
-  - Text transforms (`text-transform: uppercase`)
-  - Symbol spacing along lines (`symbol-spacing`)
-
-  These rendering issues showed up while creating this example:
-
-  - Some labels placed along lines are cut off where they cross tile boundaries, e.g. street names at zoom level 13 in Berlin
-  - Within a layer, `z-index` only sets label priority; fills and strokes are drawn in feature order, so road casings of one feature can cover the fill of another. This is why every style layer gets its own WebGPU layer
-  - Zoom and resolution dependent properties are evaluated at the view zoom level when a tile batch is first built, and the batch is reused for all zoom levels until the tile changes, so line widths depend on the zoom level the tile was first rendered at
-  - Flat styles throw an error for `text-value` expressions that evaluate to numbers (e.g. house numbers), and labels did not render while that happened, so the example converts text values to strings
+docs: >
+  The [VersaTiles Colorful](https://tiles.versatiles.org/assets/styles/colorful/style.json)
+  style is fetched and translated into flat style rules on one `WebGPUVectorTile`
+  layer. The rules share a vector tile source and a declutter group. The view's
+  `maxResolution` matches Mapbox GL zoom level 0 (512 pixel tiles), so `['zoom']`
+  expressions from the style can be used as-is. WebGPU is required.
 tags: "webgpu, vector, tiles, declutter, versatiles, flat style"
 experimental: true
 ---
