@@ -417,6 +417,29 @@ export function measureTextBaseline(font) {
 }
 
 /**
+ * Distance between baselines of wrapped lines.
+ *
+ * An explicit line-height (`12px/1.2`, `12px/14px`) is the CSS line box.
+ * The default `normal` is not: some faces put several pixels of empty lead
+ * in that box, so wrapped labels get a gap about as tall as the letters.
+ * Those lines are spaced by the font's ink extent instead, which lets
+ * descenders and accents meet without the extra lead.
+ * @param {string} font Font to use for measuring.
+ * @return {number} Line height in CSS pixels.
+ */
+export function measureWrappedLineHeight(font) {
+  const params = getFontParameters(font);
+  if (!params || params.lineHeight !== 'normal') {
+    return measureTextHeight(font);
+  }
+  const metrics = measureText(font, 'Žg');
+  const ink =
+    (metrics.actualBoundingBoxAscent || 0) +
+    (metrics.actualBoundingBoxDescent || 0);
+  return ink > 0 ? ink : measureTextHeight(font);
+}
+
+/**
  * @param {string} font Font.
  * @param {string} text Text.
  * @return {number} Width.
