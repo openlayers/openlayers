@@ -873,7 +873,11 @@ export function createVectorPipelines(helper) {
   });
 
   const glyphModule = helper.createShaderModule(GLYPH_SHADER);
-  helper.getRenderPipeline('vector-glyph', {
+  /**
+   * @param {string} fragmentEntryPoint Fragment entry point.
+   * @return {GPURenderPipelineDescriptor} Pipeline descriptor.
+   */
+  const glyphPipeline = (fragmentEntryPoint) => ({
     layout: 'auto',
     vertex: {
       module: glyphModule,
@@ -907,11 +911,13 @@ export function createVectorPipelines(helper) {
     },
     fragment: {
       module: glyphModule,
-      entryPoint: 'fs_main',
+      entryPoint: fragmentEntryPoint,
       targets: [{format, blend: BLEND}],
     },
     primitive: {topology: 'triangle-strip'},
   });
+  helper.getRenderPipeline('vector-glyph-halo', glyphPipeline('fs_halo'));
+  helper.getRenderPipeline('vector-glyph-fill', glyphPipeline('fs_fill'));
 }
 
 /**
