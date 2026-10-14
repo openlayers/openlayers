@@ -2,7 +2,6 @@ import {assert} from 'chai';
 import {
   collectStickyIds,
   resolveDeclutter,
-  stickyIdsForView,
 } from '../../../../../src/ol/render/webgpu/declutter.js';
 
 describe('ol/render/webgpu/declutter', () => {
@@ -213,7 +212,7 @@ describe('ol/render/webgpu/declutter', () => {
     assert.deepEqual(resolveDeclutter(zoomedIn), [true, true, false]);
   });
 
-  it('keeps a previous winner with sticky ids (zoom-in or rotation)', () => {
+  it('keeps a previous winner with sticky ids', () => {
     const zoomedOut = [
       {minX: 0, minY: 0, maxX: 15, maxY: 8, priority: 0, id: 1},
       {minX: 8, minY: 0, maxX: 23, maxY: 8, priority: 0, id: 2},
@@ -284,14 +283,5 @@ describe('ol/render/webgpu/declutter', () => {
       64,
     );
     assert.deepEqual(visible, [false, true]);
-  });
-
-  it('applies hysteresis when zooming in or rotating, not when zooming out', () => {
-    const ids = new Set([1, 3]);
-    assert.strictEqual(stickyIdsForView(undefined, 10, ids), undefined);
-    assert.strictEqual(stickyIdsForView(10, 11, ids), undefined);
-    assert.strictEqual(stickyIdsForView(10, 10, ids), ids);
-    assert.strictEqual(stickyIdsForView(10, 5, ids), ids);
-    assert.strictEqual(stickyIdsForView(10, 10, new Set()), undefined);
   });
 });

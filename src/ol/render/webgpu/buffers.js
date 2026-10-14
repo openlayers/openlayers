@@ -333,7 +333,6 @@ export function buildVectorRequest(
     featuresByRef[ref] = feature;
     const hit = encodeHitColor(ref);
     const labelId = Number(getUid(feature));
-    const featureId = feature.getId();
 
     for (let s = 0; s < styleArray.length; ++s) {
       const style = styleArray[s];
@@ -342,16 +341,7 @@ export function buildVectorRequest(
         continue;
       }
       if (geom.getType() !== 'GeometryCollection') {
-        appendStyledGeometry(
-          state,
-          geom,
-          style,
-          String(s),
-          hit,
-          labelId,
-          featureId,
-          ref,
-        );
+        appendStyledGeometry(state, geom, style, String(s), hit, labelId, ref);
         continue;
       }
       const members =
@@ -366,7 +356,6 @@ export function buildVectorRequest(
           `${s}.${m}`,
           hit,
           labelId,
-          featureId,
           ref,
         );
       }
@@ -473,7 +462,6 @@ function circleSides(radius, resolution) {
  * @param {string} styleKey Style index, plus member index for a collection member.
  * @param {Array<number>} hit Hit color of the feature.
  * @param {number} labelId Stable label id of the feature.
- * @param {number|string|undefined} featureId Feature id.
  * @param {number} featureRef Feature ref.
  */
 function appendStyledGeometry(
@@ -483,7 +471,6 @@ function appendStyledGeometry(
   styleKey,
   hit,
   labelId,
-  featureId,
   featureRef,
 ) {
   const {jobs, coordinates, glyphs, labels, styleTable, atlas, reproj} = state;
@@ -503,8 +490,9 @@ function appendStyledGeometry(
   const text = style.getText();
   const rawText = text?.getText();
   const textKey = Array.isArray(rawText) ? rawText.join('\n') : rawText || '';
-  const featureKey =
-    (featureId !== undefined ? String(featureId) : type) + '|' + textKey;
+  // Not the feature id: vector tile ids are only unique within one tile, so
+  // the same label from a neighbor or another zoom level would never match.
+  const featureKey = type + '|' + textKey;
 
   if (type === 'Circle' && (fill || stroke)) {
     const circle = /** @type {import("../../geom/Circle.js").default} */ (geom);
