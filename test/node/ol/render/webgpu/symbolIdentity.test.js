@@ -44,11 +44,35 @@ describe('ol/render/webgpu/SymbolIdentityIndex', () => {
     assert.strictEqual(ids[0], ids[1]);
   });
 
+  it('shares one id between nearly coincident parent and child copies', () => {
+    const index = new SymbolIdentityIndex();
+    const parent = index.update([label('ocean', 100, 100)], [0], 1);
+    const both = index.update(
+      [label('ocean', 100.5, 100), label('ocean', 100, 100)],
+      [0, 0],
+      1,
+    );
+    assert.deepEqual(both, [parent[0], parent[0]]);
+  });
+
   it('matches across a wrapped-world jump', () => {
     const index = new SymbolIdentityIndex();
     const first = index.update([label('place', 2, 0)], [0], 1, 100);
     const wrapped = index.update([label('place', 2, 0)], [100], 1, 100);
     assert.deepEqual(wrapped, first);
+  });
+
+  it('keeps the id with the copy in the same world when a wrapped copy appears', () => {
+    const index = new SymbolIdentityIndex();
+    const [id] = index.update([label('country', 2, 0)], [0], 1, 100);
+    const ids = index.update(
+      [label('country', 2, 0), label('country', 2, 0)],
+      [-100, 0],
+      1,
+      100,
+    );
+    assert.strictEqual(ids[1], id);
+    assert.notStrictEqual(ids[0], id);
   });
 
   it('does not merge different style keys at the same anchor', () => {
