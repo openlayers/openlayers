@@ -6,6 +6,7 @@ import {ICON_STRIDE, SYMBOL_STRIDE} from '../../render/webgpu/buffers.js';
 import {comparePaint} from '../../render/webgpu/drawOrder.js';
 import {GLYPH_INSTANCE_STRIDE} from '../../render/webgpu/glyphLayout.js';
 import {fadeClock, LABEL_FADE_DURATION} from '../../render/webgpu/labelFade.js';
+import {apply as applyTransform} from '../../transform.js';
 import {countMetric} from '../../webgpu/metrics.js';
 import {
   localCoordinateToPixel,
@@ -23,7 +24,7 @@ import {
 } from '../../webgpu/shaders.js';
 
 export {ICON_STRIDE, SYMBOL_STRIDE};
-export const FRAME_UNIFORM_SIZE = 112;
+export const FRAME_UNIFORM_SIZE = 128;
 
 /** @type {GPUBlendState} */
 const BLEND = {
@@ -191,7 +192,7 @@ export class VectorGpuBuffers extends Disposable {
 
     /**
      * @private
-     * @type {Map<string, GPUBindGroup>}
+     * @type {Map<string, {bindGroup: GPUBindGroup, texture: GPUTexture|null}>}
      */
     this.bindGroups_ = new Map();
 
@@ -405,6 +406,16 @@ export class VectorGpuBuffers extends Disposable {
     data[25] = LABEL_FADE_DURATION;
     data[26] = 1 / frameState.viewState.resolution;
     data[27] = frameState.viewState.rotation;
+    // Canvas starts fill patterns at the pixel of map coordinate [0, 0], in
+    // steps of 512 CSS pixels.
+    const pixelRatio = frameState.pixelRatio;
+    const origin = applyTransform(
+      frameState.coordinateToPixelTransform,
+      [0, 0],
+    );
+    data[28] = pixelRatio;
+    data[30] = (origin[0] * pixelRatio) % (512 * pixelRatio);
+    data[31] = (origin[1] * pixelRatio) % (512 * pixelRatio);
     helper.writeBuffer(this.uniformBuffer_, data);
   }
 
@@ -412,28 +423,34 @@ export class VectorGpuBuffers extends Disposable {
    * @param {import("../../webgpu/Helper.js").default} helper Helper.
    * @param {string} name Pipeline name.
    * @param {GPURenderPipeline} pipeline Pipeline.
+   * @param {GPUTexture} [texture] Pattern texture bound at binding 2.
    * @return {GPUBindGroup} Bind group.
    */
-  getBindGroup(helper, name, pipeline) {
+  getBindGroup(helper, name, pipeline, texture) {
     const cached = this.bindGroups_.get(name);
-    if (cached) {
-      return cached;
+    if (cached && cached.texture === (texture || null)) {
+      return cached.bindGroup;
+    }
+    /** @type {Array<GPUBindGroupEntry>} */
+    const entries = [
+      {
+        binding: 0,
+        resource: {buffer: /** @type {GPUBuffer} */ (this.uniformBuffer_)},
+      },
+      {
+        binding: 1,
+        resource: {buffer: /** @type {GPUBuffer} */ (this.styleBuffer)},
+      },
+    ];
+    if (texture) {
+      entries.push({binding: 2, resource: texture.createView()});
     }
     countMetric('bindGroups');
     const bindGroup = helper.getDevice().createBindGroup({
       layout: pipeline.getBindGroupLayout(0),
-      entries: [
-        {
-          binding: 0,
-          resource: {buffer: /** @type {GPUBuffer} */ (this.uniformBuffer_)},
-        },
-        {
-          binding: 1,
-          resource: {buffer: /** @type {GPUBuffer} */ (this.styleBuffer)},
-        },
-      ],
+      entries,
     });
-    this.bindGroups_.set(name, bindGroup);
+    this.bindGroups_.set(name, {bindGroup, texture: texture || null});
     return bindGroup;
   }
 
@@ -969,10 +986,11 @@ export function createVectorPipelines(helper) {
 /**
  * @param {import("../../webgpu/Helper.js").default} helper Helper.
  * @param {VectorGpuBuffers} gpu Batch geometry.
+ * @param {GPUTexture} patternTexture Pattern atlas texture.
  * @param {number} [start] First index.
  * @param {number} [count] Index count. The whole buffer when omitted.
  */
-export function drawFills(helper, gpu, start = 0, count) {
+export function drawFills(helper, gpu, patternTexture, start = 0, count) {
   const indexCount = count === undefined ? gpu.fillIndexCount : count;
   if (!indexCount || !gpu.fillPositionBuffer || !gpu.fillIndexBuffer) {
     return;
@@ -982,7 +1000,10 @@ export function drawFills(helper, gpu, start = 0, count) {
   const pipeline = helper.getRenderPipeline(name, /** @type {any} */ ({}));
   const pass = helper.getRenderPass();
   pass.setPipeline(pipeline);
-  pass.setBindGroup(0, gpu.getBindGroup(helper, name, pipeline));
+  pass.setBindGroup(
+    0,
+    gpu.getBindGroup(helper, name, pipeline, patternTexture),
+  );
   pass.setVertexBuffer(
     0,
     warped ? gpu.fillWarpedBuffer : gpu.fillPositionBuffer,
@@ -1067,6 +1088,8 @@ export function paintBatches(helper, batches, atlas, imageAtlas, cornerBuffer) {
   items.sort((a, b) =>
     comparePaint(a.command, a.batch.tileOrder, b.command, b.batch.tileOrder),
   );
+  // Before any draw, because a new upload destroys the texture it replaces.
+  const patternTexture = imageAtlas.upload(helper);
 
   /** @type {PaintBatch|null} */
   let prepared = null;
@@ -1092,7 +1115,13 @@ export function paintBatches(helper, batches, atlas, imageAtlas, cornerBuffer) {
     }
     const pipeline = first.command.pipeline;
     if (pipeline === 'fill' && first.batch.gpu) {
-      drawFills(helper, first.batch.gpu, first.command.start, count);
+      drawFills(
+        helper,
+        first.batch.gpu,
+        patternTexture,
+        first.command.start,
+        count,
+      );
     } else if (pipeline === 'stroke' && first.batch.gpu) {
       drawStrokes(helper, first.batch.gpu, first.command.start, count);
     } else if (
