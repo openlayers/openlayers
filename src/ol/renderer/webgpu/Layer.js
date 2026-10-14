@@ -1,6 +1,7 @@
 /**
  * @module ol/renderer/webgpu/Layer
  */
+import {asArray} from '../../color.js';
 import LayerProperty from '../../layer/Property.js';
 import RenderEvent from '../../render/Event.js';
 import RenderEventType from '../../render/EventType.js';
@@ -119,6 +120,42 @@ class WebGPULayerRenderer extends LayerRenderer {
     }
 
     return this.prepareFrameInternal(frameState);
+  }
+
+  /**
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @return {string|undefined} Background color.
+   * @protected
+   */
+  getBackground(frameState) {
+    let background = this.getLayer().getBackground();
+    if (typeof background === 'function') {
+      background = background(frameState.viewState.resolution);
+    }
+    return background || undefined;
+  }
+
+  /**
+   * Premultiplied RGBA in 0..1 for the frame clear. Translucent geometry is
+   * blended in the render pass, so the clear has to be the layer background
+   * rather than transparent black, which would composite those fills over white.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @return {Array<number>|undefined} Clear color, or undefined for transparent.
+   * @protected
+   */
+  getClearColor(frameState) {
+    const background = this.getBackground(frameState);
+    if (!background) {
+      return undefined;
+    }
+    const color = asArray(background);
+    const alpha = color[3] === undefined ? 1 : color[3];
+    return [
+      (color[0] / 255) * alpha,
+      (color[1] / 255) * alpha,
+      (color[2] / 255) * alpha,
+      alpha,
+    ];
   }
 
   /**

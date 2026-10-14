@@ -959,7 +959,7 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
     }
     const buffers = this.buffers_;
     const gpu = this.gpu_;
-    helper.prepareDraw(frameState, false);
+    helper.prepareDraw(frameState, false, this.getClearColor(frameState));
     uniforms.begin();
     if (gpu && buffers) {
       if (this.cornerBuffer_) {
