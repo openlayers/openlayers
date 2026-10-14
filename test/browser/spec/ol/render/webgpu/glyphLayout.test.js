@@ -308,6 +308,11 @@ describe('ol/render/webgpu/glyphLayout', () => {
     const whole = straight[0];
     assert.closeTo(whole.x, 500, 1);
     assert.closeTo(whole.offsetX + whole.width / 2, 0, 2);
+    assert.closeTo(
+      whole.offsetY + atlas.getGlyph(font, text.getText()).ascent,
+      measureTextBaseline(font),
+      0.01,
+    );
 
     const split = [];
     layoutLineLabel(

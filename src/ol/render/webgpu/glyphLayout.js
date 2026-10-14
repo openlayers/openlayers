@@ -518,6 +518,14 @@ export function layoutLineLabel(
   const color = fillColor(textStyle);
   const halo = strokeColor(textStyle);
   const hasHalo = strokeWidth > 0 && halo[3] > 0;
+  const baselineKey = textStyle.getTextBaseline() || 'middle';
+  const baseline = /** @type {number} */ (
+    /** @type {any} */ (TEXT_ALIGN)[baselineKey] ?? 0.5
+  );
+  const baselineOffset =
+    measureTextBaseline(font) +
+    (0.5 - baseline) * measureTextHeight(font) +
+    (textStyle.getOffsetY() || 0);
   // All chunks share the label's middle as their map anchor and keep their
   // place along the path as a pixel offset. The label then stays in one piece
   // when the view resolution drifts from the layout resolution.
@@ -544,7 +552,7 @@ export function layoutLineLabel(
       x: anchorPixelX * resolution,
       y: -anchorPixelY * resolution,
       offsetX: c * dx + s * dy - anchorX - glyph.pad,
-      offsetY: -s * dx + c * dy - glyph.ascent,
+      offsetY: -s * dx + c * dy + baselineOffset - glyph.ascent,
       width: glyph.width,
       height: glyph.height,
       texX0: glyph.texX0,
