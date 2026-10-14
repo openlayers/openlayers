@@ -140,6 +140,7 @@ class LabelView {
    */
   toScreen(frameState) {
     const transform = frameState.coordinateToPixelTransform;
+    const viewRotation = frameState.viewState?.rotation || 0;
     const boxes = this.boxes_;
     boxes.length = this.labels.length;
     for (let i = 0; i < this.labels.length; ++i) {
@@ -177,7 +178,7 @@ class LabelView {
             transform[0] * x + transform[2] * glyph.y + transform[4];
           const pixelY =
             transform[1] * x + transform[3] * glyph.y + transform[5];
-          extendGlyphBounds(bounds, glyph, pixelX, pixelY);
+          extendGlyphBounds(bounds, glyph, pixelX, pixelY, viewRotation);
         }
         box.minX = bounds[0];
         box.minY = bounds[1];
@@ -190,13 +191,7 @@ class LabelView {
           transform[0] * x + transform[2] * anchor[1] + transform[4];
         const pixelY =
           transform[1] * x + transform[3] * anchor[1] + transform[5];
-        imageBounds(
-          box,
-          label,
-          pixelX,
-          pixelY,
-          frameState.viewState?.rotation || 0,
-        );
+        imageBounds(box, label, pixelX, pixelY, viewRotation);
         inflateBox(box, undefined, LABEL_COLLISION_MARGIN);
       } else {
         box.minX = label.minX;
