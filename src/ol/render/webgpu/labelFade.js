@@ -232,12 +232,19 @@ export class LabelFade {
       });
     }
 
+    const previous = new Map(this.entries_);
+    for (const id of current.keys()) {
+      if (previous.has(id)) {
+        used.add(id);
+      }
+    }
+
     let fading = false;
     for (const [id, value] of current) {
       let entry = this.entries_.get(id);
       if (!entry) {
         const matched = matchPrev(
-          this.entries_,
+          previous,
           used,
           value.label,
           maxWorldDistance,
