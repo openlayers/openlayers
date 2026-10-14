@@ -2,6 +2,7 @@
  * @module ol/render/webgpu/buffers
  */
 import {asArray} from '../../color.js';
+import {getPatternImage} from '../../colorlike.js';
 import {warn} from '../../console.js';
 import {createEmpty, extend as extendExtent, isEmpty} from '../../extent.js';
 import {lineChunk} from '../../geom/flat/linechunk.js';
@@ -75,16 +76,16 @@ export function decodeHitColor(color) {
 let patternWarned = false;
 
 /**
- * @param {import("../../color.js").Color|import("../../colorlike.js").ColorLike|import("../../colorlike.js").PatternDescriptor|undefined} color Color.
- * @return {Array<number>} RGBA 0-1. Patterns and gradients are not supported
- * and come out transparent.
+ * @param {import("../../color.js").Color|import("../../colorlike.js").ColorLike|import("../../colorlike.js").PatternDescriptor|null|undefined} color Color.
+ * @return {Array<number>} RGBA 0-1. Canvas patterns and gradients cannot be
+ * drawn and come out transparent.
  */
 function toRgba(color) {
   if (typeof color !== 'string' && !Array.isArray(color)) {
     if (color && !patternWarned) {
       patternWarned = true;
       warn(
-        'The WebGPU renderer does not yet support patterns and gradients, and draws them transparent.',
+        'The WebGPU renderer cannot draw CanvasPattern or CanvasGradient colors, and draws them transparent. Use a PatternDescriptor for polygon fill patterns.',
       );
     }
     return [0, 0, 0, 0];
@@ -120,7 +121,10 @@ function toRgba(color) {
 /**
  * Floats per style table entry: color (4), hit color (4), up to eight dash
  * lengths (8), and dash offset, dash pattern length, dash count, and padding
- * (4), matching the `Style` struct of the vector shaders.
+ * (4), matching the `Style` struct of the vector shaders. A fill has no dashes,
+ * so its first four dash lengths hold the atlas rectangle of its pattern
+ * instead, with a zero width when there is none, and the fifth holds the
+ * pattern's scale.
  * @type {number}
  */
 export const STYLE_STRIDE = 20;
@@ -215,6 +219,28 @@ class StyleTable {
     this.indices_.set(key, index);
     return index;
   }
+
+  /**
+   * @param {Array<number>} rect Pattern rectangle in the image atlas: x, y,
+   * width, and height in texels.
+   * @param {number} scale Pattern scale.
+   * @param {Array<number>} hit Hit color RGBA 0-1.
+   * @return {number} Style index.
+   */
+  addPattern(rect, scale, hit) {
+    const key = 'pattern|' + rect.join(',') + '|' + scale + '|' + hit.join(',');
+    const existing = this.indices_.get(key);
+    if (existing !== undefined) {
+      return existing;
+    }
+    const index = this.values.length / STYLE_STRIDE;
+    this.values.push(1, 1, 1, 1, ...hit, ...rect, scale);
+    for (let i = rect.length + 1; i < STYLE_STRIDE - 8; ++i) {
+      this.values.push(0);
+    }
+    this.indices_.set(key, index);
+    return index;
+  }
 }
 
 /**
@@ -244,7 +270,7 @@ function boundsOf(features) {
  * @property {Array<import("./glyphLayout.js").GlyphInstance>} glyphs Glyphs.
  * @property {Array<import("./declutter.js").Label>} labels Declutter labels.
  * @property {Object<number, import("../../Feature.js").FeatureLike>} featuresByRef Hit refs.
- * @property {Array<import("../../style/Image.js").default>} pendingImageStyles Images being loaded.
+ * @property {Array<import("../../style/Image.js").default|import("../../style/Fill.js").default>} pendingImageStyles Images and pattern fills being loaded.
  */
 
 /**
@@ -427,7 +453,7 @@ export function buildVectorRequest(
  * @property {StyleTable} styleTable Style table.
  * @property {import("../../webgpu/FontAtlas.js").default} atlas Atlas.
  * @property {import("../../webgpu/ImageAtlas.js").default|undefined} imageAtlas Image atlas.
- * @property {Set<import("../../style/Image.js").default>} pendingImageStyles Images being loaded.
+ * @property {Set<import("../../style/Image.js").default|import("../../style/Fill.js").default>} pendingImageStyles Images and pattern fills being loaded.
  * @property {VectorReprojOptions|undefined} reproj Reprojection options.
  * @property {number} resolution Resolution.
  * @property {number} pixelRatio Device pixel ratio for glyph rasterization.
@@ -501,7 +527,16 @@ function appendStyledGeometry(
       circleSides(circle.getRadius(), state.resolution),
     );
     if (fill) {
-      appendFills(polygon, fill, hit, jobs, coordinates, styleTable, stamp);
+      appendFills(
+        polygon,
+        fill,
+        hit,
+        jobs,
+        coordinates,
+        styleTable,
+        state,
+        stamp,
+      );
     }
     if (stroke) {
       appendStrokes(polygon, stroke, hit, jobs, coordinates, styleTable, stamp);
@@ -514,6 +549,7 @@ function appendStyledGeometry(
       jobs,
       coordinates,
       styleTable,
+      state,
       stamp,
     );
   }
@@ -1011,6 +1047,7 @@ function getAnchors(geometry, reproj) {
  * @param {Array<import("./geometryBuffers.js").GeometryJob>} jobs Jobs.
  * @param {Array<number>} coordinates Shared coordinates.
  * @param {StyleTable} styleTable Style table.
+ * @param {BuildState} state Build state, for the image atlas.
  * @param {import("./drawOrder.js").DrawStamp} stamp Draw stamp.
  */
 function appendFills(
@@ -1020,10 +1057,48 @@ function appendFills(
   jobs,
   coordinates,
   styleTable,
+  state,
   stamp,
 ) {
-  const color = toRgba(/** @type {string|Array<number>} */ (fill.getColor()));
-  const styleIndex = styleTable.add(color, hit);
+  const fillColor = fill.getColor();
+  let styleIndex;
+  if (
+    state.imageAtlas &&
+    fillColor &&
+    typeof fillColor === 'object' &&
+    'src' in fillColor
+  ) {
+    const patternImage = getPatternImage(fillColor);
+    if (!patternImage) {
+      // Like Canvas, draw nothing until the pattern image has loaded.
+      if (fill.loading()) {
+        state.pendingImageStyles.add(fill);
+      }
+      return;
+    }
+    const image = patternImage.getImage(1);
+    const entry = state.imageAtlas.add(
+      /** @type {import("../ImageStyle.js").ImageStyleData} */ ({
+        image,
+        sourceX: 0,
+        sourceY: 0,
+        sourceWidth: image.width,
+        sourceHeight: image.height,
+      }),
+    );
+    styleIndex = styleTable.addPattern(
+      [
+        entry.texX0,
+        entry.texY0,
+        entry.texX1 - entry.texX0,
+        entry.texY1 - entry.texY0,
+      ],
+      fillColor.scale ?? 1,
+      hit,
+    );
+  } else {
+    styleIndex = styleTable.add(toRgba(fillColor), hit);
+  }
   const type = geometry.getType();
   if (type === 'Polygon') {
     appendPolygon(

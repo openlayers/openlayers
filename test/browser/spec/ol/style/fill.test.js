@@ -49,7 +49,19 @@ describe('ol.style.Fill', function () {
           src: '/base/spec/ol/data/dot.png',
         },
       });
-      assert.deepEqual(fill.getKey(), '/base/spec/ol/data/dot.png:undefined');
+      assert.deepEqual(fill.getKey(), '/base/spec/ol/data/dot.png:undefined:1');
+    });
+    it('includes the scale of a pattern descriptor in the key', () => {
+      const fill = new Fill({
+        color: {
+          src: '/base/spec/ol/data/dot.png',
+          scale: 0.5,
+        },
+      });
+      assert.deepEqual(
+        fill.getKey(),
+        '/base/spec/ol/data/dot.png:undefined:0.5',
+      );
     });
     it('generates a key for a CanvasGradient', () => {
       const canvas = document.createElement('canvas');

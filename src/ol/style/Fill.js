@@ -105,7 +105,7 @@ class Fill {
     return fill instanceof CanvasPattern || fill instanceof CanvasGradient
       ? getUid(/** @type {Object} */ (fill))
       : typeof fill === 'object' && 'src' in fill
-        ? fill.src + ':' + fill.offset
+        ? fill.src + ':' + fill.offset + ':' + (fill.scale ?? 1)
         : asArray(fill).toString();
   }
 

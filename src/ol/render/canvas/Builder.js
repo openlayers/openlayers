@@ -504,7 +504,7 @@ class CanvasBuilder extends VectorContext {
         fillStyleColor &&
         typeof fillStyleColor === 'object' &&
         'src' in fillStyleColor
-          ? this.pixelRatio
+          ? this.pixelRatio * (fillStyleColor.scale ?? 1)
           : 1;
       state.fillStyle =
         asColorLike(fillStyleColor ? fillStyleColor : defaultFillStyle) ??
