@@ -30,7 +30,7 @@ export const CLASS_IMAGE = 3;
 export const CLASS_TEXT = 4;
 
 /**
- * @typedef {'fill'|'stroke'|'symbol'|'glyph'} DrawPipeline
+ * @typedef {'fill'|'stroke'|'symbol'|'icon'|'glyph'} DrawPipeline
  */
 
 /**
@@ -71,7 +71,10 @@ export function pipelineRank(pipeline) {
   if (pipeline === 'symbol') {
     return 2;
   }
-  return 3;
+  if (pipeline === 'icon') {
+    return 3;
+  }
+  return 4;
 }
 
 /**

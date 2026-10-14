@@ -41,6 +41,7 @@ import {buildWarpGrid, warpGridKey} from '../../render/webgpu/warpGrid.js';
 import {getWorkerPool} from '../../render/webgpu/workerPool.js';
 import ViewHint from '../../ViewHint.js';
 import FontAtlas from '../../webgpu/FontAtlas.js';
+import ImageAtlas from '../../webgpu/ImageAtlas.js';
 import {countMetric, endMetric, startMetric} from '../../webgpu/metrics.js';
 import {
   clipExtentToProjection,
@@ -449,6 +450,24 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
 
     /**
      * @private
+     * @type {ImageAtlas}
+     */
+    this.imageAtlas_ = new ImageAtlas();
+
+    /**
+     * @private
+     * @type {WeakSet<import("../../style/Image.js").default>}
+     */
+    this.loadingImages_ = new WeakSet();
+
+    /**
+     * @private
+     * @type {boolean}
+     */
+    this.imageChangeScheduled_ = false;
+
+    /**
+     * @private
      * @type {import("../../render/webgpu/buffers.js").VectorBuffers|null}
      */
     this.buffers_ = null;
@@ -661,6 +680,7 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
     // reused.
     this.uniforms_?.dispose();
     this.uniforms_ = new FrameUniformPool(helper);
+    this.imageAtlas_.dispose();
     this.gpu_?.dispose();
     this.gpu_ = null;
     this.labels_.clear();
@@ -785,6 +805,34 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
   }
 
   /**
+   * Rebuild when an image style becomes available.
+   *
+   * @param {Array<import("../../style/Image.js").default>} images Images.
+   * @private
+   */
+  watchImages_(images) {
+    for (const image of images) {
+      if (this.loadingImages_.has(image)) {
+        continue;
+      }
+      this.loadingImages_.add(image);
+      image.ready().then(() => {
+        this.loadingImages_.delete(image);
+        if (this.disposed || this.imageChangeScheduled_) {
+          return;
+        }
+        this.imageChangeScheduled_ = true;
+        requestAnimationFrame(() => {
+          this.imageChangeScheduled_ = false;
+          if (!this.disposed) {
+            this.getLayer().changed();
+          }
+        });
+      });
+    }
+  }
+
+  /**
    * @param {import("../../Map.js").FrameState} frameState Frame.
    * @private
    */
@@ -832,7 +880,9 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
       frameState.pixelRatio,
       frameState.viewState.zoom,
       this.renderOrder_(),
+      this.imageAtlas_,
     );
+    this.watchImages_(labelData.pendingImageStyles);
     this.pendingWarp_ = plan.warp;
 
     const pending = getWorkerPool().build(request);
@@ -989,6 +1039,7 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
           },
         ],
         this.atlas_,
+        this.imageAtlas_,
         this.cornerBuffer_,
       );
     }
@@ -1248,6 +1299,7 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
       unlistenByKey(this.sourceListenKey_);
     }
     this.releaseBuffers_();
+    this.imageAtlas_.dispose();
     this.uniforms_?.dispose();
     this.uniforms_ = null;
     this.labels_.dispose();
