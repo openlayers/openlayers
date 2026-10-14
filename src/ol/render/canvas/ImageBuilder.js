@@ -3,6 +3,7 @@
  */
 import {containsCoordinate, intersects} from '../../extent.js';
 import {lineAnchors} from '../../geom/flat/lineanchors.js';
+import {getImageStyleData} from '../ImageStyle.js';
 import CanvasBuilder from './Builder.js';
 import CanvasInstruction from './Instruction.js';
 
@@ -417,27 +418,25 @@ class CanvasImageBuilder extends CanvasBuilder {
    * @override
    */
   setImageStyle(imageStyle, sharedData) {
-    const anchor = imageStyle.getAnchor();
-    const size = imageStyle.getSize();
-    const origin = imageStyle.getOrigin();
-    if (!anchor || !size || !origin) {
+    const data = getImageStyleData(imageStyle, this.pixelRatio);
+    if (!data) {
       return;
     }
-    this.imagePixelRatio_ = imageStyle.getPixelRatio(this.pixelRatio);
-    this.anchorX_ = anchor[0];
-    this.anchorY_ = anchor[1];
-    this.hitDetectionImage_ = imageStyle.getHitDetectionImage();
-    this.image_ = imageStyle.getImage(this.pixelRatio);
-    this.height_ = size[1];
-    this.opacity_ = imageStyle.getOpacity();
-    this.originX_ = origin[0];
-    this.originY_ = origin[1];
-    this.rotateWithView_ = imageStyle.getRotateWithView();
-    this.rotation_ = imageStyle.getRotation();
-    this.scale_ = imageStyle.getScaleArray();
-    this.width_ = size[0];
+    this.imagePixelRatio_ = data.imagePixelRatio;
+    this.anchorX_ = data.anchorX / data.imagePixelRatio;
+    this.anchorY_ = data.anchorY / data.imagePixelRatio;
+    this.hitDetectionImage_ = data.hitDetectionImage;
+    this.image_ = data.image;
+    this.height_ = data.height;
+    this.opacity_ = data.opacity;
+    this.originX_ = data.sourceX / data.imagePixelRatio;
+    this.originY_ = data.sourceY / data.imagePixelRatio;
+    this.rotateWithView_ = data.rotateWithView;
+    this.rotation_ = data.rotation;
+    this.scale_ = data.scale;
+    this.width_ = data.width;
     this.repeat_ = imageStyle.getRepeat();
-    this.declutterMode_ = imageStyle.getDeclutterMode();
+    this.declutterMode_ = data.declutterMode;
     this.declutterImageWithText_ =
       /** @type {import("../canvas.js").DeclutterImageWithText|undefined} */ (
         sharedData

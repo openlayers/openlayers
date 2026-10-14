@@ -2,6 +2,7 @@
  * @module ol/renderer/webgpu/LabelView
  */
 import {extendGlyphBounds} from '../../render/webgpu/glyphLayout.js';
+import {imageBounds} from '../../render/webgpu/imageBounds.js';
 import {LABEL_COLLISION_MARGIN} from './vectorUtil.js';
 
 /**
@@ -189,10 +190,13 @@ class LabelView {
           transform[0] * x + transform[2] * anchor[1] + transform[4];
         const pixelY =
           transform[1] * x + transform[3] * anchor[1] + transform[5];
-        box.minX = pixelX + label.minX;
-        box.minY = pixelY + label.minY;
-        box.maxX = pixelX + label.maxX;
-        box.maxY = pixelY + label.maxY;
+        imageBounds(
+          box,
+          label,
+          pixelX,
+          pixelY,
+          frameState.viewState?.rotation || 0,
+        );
         inflateBox(box, undefined, LABEL_COLLISION_MARGIN);
       } else {
         box.minX = label.minX;

@@ -2,7 +2,7 @@
  * @module ol/renderer/webgpu/vectorUtil
  */
 import Disposable from '../../Disposable.js';
-import {SYMBOL_STRIDE} from '../../render/webgpu/buffers.js';
+import {ICON_STRIDE, SYMBOL_STRIDE} from '../../render/webgpu/buffers.js';
 import {comparePaint} from '../../render/webgpu/drawOrder.js';
 import {GLYPH_INSTANCE_STRIDE} from '../../render/webgpu/glyphLayout.js';
 import {fadeClock, LABEL_FADE_DURATION} from '../../render/webgpu/labelFade.js';
@@ -13,6 +13,7 @@ import {
 } from '../../webgpu/reproj.js';
 import {
   GLYPH_SHADER,
+  ICON_SHADER,
   SYMBOL_SHADER,
   VECTOR_FILL_SHADER,
   VECTOR_FILL_WARPED_SHADER,
@@ -21,7 +22,7 @@ import {
   VECTOR_WARP_SHADER,
 } from '../../webgpu/shaders.js';
 
-export {SYMBOL_STRIDE};
+export {ICON_STRIDE, SYMBOL_STRIDE};
 export const FRAME_UNIFORM_SIZE = 112;
 
 /** @type {GPUBlendState} */
@@ -403,6 +404,7 @@ export class VectorGpuBuffers extends Disposable {
     data[24] = fadeClock(frameState.time || 0);
     data[25] = LABEL_FADE_DURATION;
     data[26] = 1 / frameState.viewState.resolution;
+    data[27] = frameState.viewState.rotation;
     helper.writeBuffer(this.uniformBuffer_, data);
   }
 
@@ -872,6 +874,47 @@ export function createVectorPipelines(helper) {
     primitive: {topology: 'triangle-strip'},
   });
 
+  const iconModule = helper.createShaderModule(ICON_SHADER);
+  helper.getRenderPipeline('vector-icon', {
+    layout: 'auto',
+    vertex: {
+      module: iconModule,
+      entryPoint: 'vs_main',
+      buffers: [
+        {
+          arrayStride: 8,
+          stepMode: 'vertex',
+          attributes: [{shaderLocation: 8, offset: 0, format: 'float32x2'}],
+        },
+        {
+          arrayStride: ICON_STRIDE * 4,
+          stepMode: 'instance',
+          attributes: [
+            {shaderLocation: 0, offset: 0, format: 'float32x2'},
+            {shaderLocation: 1, offset: 8, format: 'float32x2'},
+            {shaderLocation: 2, offset: 16, format: 'float32x2'},
+            {shaderLocation: 3, offset: 24, format: 'float32x4'},
+            {shaderLocation: 4, offset: 40, format: 'float32x4'},
+            {shaderLocation: 5, offset: 56, format: 'float32'},
+            {shaderLocation: 6, offset: 60, format: 'float32'},
+            {shaderLocation: 7, offset: 64, format: 'float32'},
+          ],
+        },
+        {
+          arrayStride: 12,
+          stepMode: 'instance',
+          attributes: [{shaderLocation: 9, offset: 0, format: 'float32x3'}],
+        },
+      ],
+    },
+    fragment: {
+      module: iconModule,
+      entryPoint: 'fs_main',
+      targets: [{format, blend: BLEND}],
+    },
+    primitive: {topology: 'triangle-strip'},
+  });
+
   const glyphModule = helper.createShaderModule(GLYPH_SHADER);
   /**
    * @param {string} fragmentEntryPoint Fragment entry point.
@@ -998,9 +1041,10 @@ export function drawStrokes(helper, gpu, start = 0, count) {
  * @param {import("../../webgpu/Helper.js").default} helper Helper.
  * @param {Array<PaintBatch>} batches Batches.
  * @param {import("../../webgpu/FontAtlas.js").default} atlas Atlas.
+ * @param {import("../../webgpu/ImageAtlas.js").default} imageAtlas Image atlas.
  * @param {GPUBuffer|null} cornerBuffer Corner quad.
  */
-export function paintBatches(helper, batches, atlas, cornerBuffer) {
+export function paintBatches(helper, batches, atlas, imageAtlas, cornerBuffer) {
   /** @type {Array<{batch: PaintBatch, command: import("../../render/webgpu/drawOrder.js").DrawCommand}>} */
   const items = [];
   for (let i = 0; i < batches.length; ++i) {
@@ -1049,7 +1093,7 @@ export function paintBatches(helper, batches, atlas, cornerBuffer) {
     } else if (pipeline === 'stroke' && first.batch.gpu) {
       drawStrokes(helper, first.batch.gpu, first.command.start, count);
     } else if (
-      (pipeline === 'symbol' || pipeline === 'glyph') &&
+      (pipeline === 'symbol' || pipeline === 'icon' || pipeline === 'glyph') &&
       first.batch.labels &&
       first.batch.slot &&
       cornerBuffer
@@ -1062,6 +1106,7 @@ export function paintBatches(helper, batches, atlas, cornerBuffer) {
         first.batch.slot,
         atlas,
         cornerBuffer,
+        imageAtlas,
       );
     }
     i = j;

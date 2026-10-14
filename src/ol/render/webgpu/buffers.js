@@ -6,7 +6,10 @@ import {warn} from '../../console.js';
 import {createEmpty, extend as extendExtent, isEmpty} from '../../extent.js';
 import {inflateEnds} from '../../geom/flat/orient.js';
 import {fromCircle} from '../../geom/Polygon.js';
+import ImageState from '../../ImageState.js';
 import RenderFeature from '../../render/Feature.js';
+import {getImageStyleData} from '../../render/ImageStyle.js';
+import CircleStyle from '../../style/Circle.js';
 import {getUid} from '../../util.js';
 import {countMetric, endMetric, startMetric} from '../../webgpu/metrics.js';
 import {
@@ -31,6 +34,13 @@ import {layoutLineLabel, layoutPointLabel} from './glyphLayout.js';
  * @type {number}
  */
 export const SYMBOL_STRIDE = 20;
+
+/**
+ * Floats per textured image instance: anchor (2), pixel offset (2), size (2),
+ * atlas rectangle (4), hit color (4), opacity, rotation, and rotate-with-view.
+ * @type {number}
+ */
+export const ICON_STRIDE = 17;
 
 /**
  * @param {number} id Feature ref.
@@ -98,6 +108,7 @@ function toRgba(color) {
  * @property {Float32Array} styles Styles, `STYLE_STRIDE` floats each.
  * @property {LocalGrid} grid Grid the positions are expressed in.
  * @property {Float32Array} symbolInstances Symbol instances.
+ * @property {Float32Array} iconInstances Icon instances.
  * @property {Array<import("./glyphLayout.js").GlyphInstance>} glyphs Glyphs.
  * @property {Array<import("./declutter.js").Label>} labels Declutter labels.
  * @property {Object<number, import("../../Feature.js").FeatureLike>} featuresByRef Hit refs.
@@ -227,9 +238,11 @@ function boundsOf(features) {
  *
  * @typedef {Object} LabelData
  * @property {Float32Array} symbolInstances Symbol instances.
+ * @property {Float32Array} iconInstances Icon instances.
  * @property {Array<import("./glyphLayout.js").GlyphInstance>} glyphs Glyphs.
  * @property {Array<import("./declutter.js").Label>} labels Declutter labels.
  * @property {Object<number, import("../../Feature.js").FeatureLike>} featuresByRef Hit refs.
+ * @property {Array<import("../../style/Image.js").default>} pendingImageStyles Images being loaded.
  */
 
 /**
@@ -244,6 +257,7 @@ function boundsOf(features) {
  * @param {number} [pixelRatio] Device pixel ratio for glyph rasterization.
  * @param {number} [zoom] View zoom level, for `['zoom']` expressions.
  * @param {import("../../render.js").OrderFunction|null} [renderOrder] Feature order. The default is uid order.
+ * @param {import("../../webgpu/ImageAtlas.js").default} [imageAtlas] Image atlas.
  * @return {{request: import("./geometryBuffers.js").GeometryRequest, labelData: LabelData}} Work and labels.
  */
 export function buildVectorRequest(
@@ -255,6 +269,7 @@ export function buildVectorRequest(
   pixelRatio = 1,
   zoom = NaN,
   renderOrder,
+  imageAtlas,
 ) {
   const metricStart = startMetric();
   const styleTable = new StyleTable();
@@ -264,22 +279,29 @@ export function buildVectorRequest(
   const coordinates = [];
   /** @type {Array<number>} */
   const symbolInstances = [];
+  /** @type {Array<number>} */
+  const iconInstances = [];
   /** @type {Array<import("./glyphLayout.js").GlyphInstance>} */
   const glyphs = [];
   /** @type {Array<import("./declutter.js").Label>} */
   const labels = [];
   /** @type {Object<number, import("../../Feature.js").FeatureLike>} */
   const featuresByRef = {};
+  /** @type {Set<import("../../style/Image.js").default>} */
+  const pendingImageStyles = new Set();
 
   /** @type {BuildState} */
   const state = {
     jobs,
     coordinates,
     symbolInstances,
+    iconInstances,
     glyphs,
     labels,
     styleTable,
     atlas,
+    imageAtlas,
+    pendingImageStyles,
     reproj,
     resolution,
     pixelRatio,
@@ -359,7 +381,7 @@ export function buildVectorRequest(
   // same origin the grid uses; the label matrix adds it back in float64.
   // Glyph instances stay absolute until they are packed, because declutter
   // still projects them on the CPU.
-  packLabelsInDrawOrder(labels, glyphs, symbolInstances);
+  packLabelsInDrawOrder(labels, glyphs, symbolInstances, iconInstances);
 
   const gridExtent = reproj?.clipExtent || boundsOf(features);
   const originX = gridExtent[0];
@@ -367,6 +389,10 @@ export function buildVectorRequest(
   for (let i = 0; i < symbolInstances.length; i += SYMBOL_STRIDE) {
     symbolInstances[i] -= originX;
     symbolInstances[i + 1] -= originY;
+  }
+  for (let i = 0; i < iconInstances.length; i += ICON_STRIDE) {
+    iconInstances[i] -= originX;
+    iconInstances[i + 1] -= originY;
   }
 
   return {
@@ -387,9 +413,11 @@ export function buildVectorRequest(
     },
     labelData: {
       symbolInstances: new Float32Array(symbolInstances),
+      iconInstances: new Float32Array(iconInstances),
       glyphs,
       labels,
       featuresByRef,
+      pendingImageStyles: Array.from(pendingImageStyles),
     },
   };
 }
@@ -402,10 +430,13 @@ export function buildVectorRequest(
  * @property {Array<import("./geometryBuffers.js").GeometryJob>} jobs Fill and stroke jobs.
  * @property {Array<number>} coordinates Shared x/y pairs the jobs refer to.
  * @property {Array<number>} symbolInstances Point symbol instances, `SYMBOL_STRIDE` floats each.
+ * @property {Array<number>} iconInstances Icon instances, `ICON_STRIDE` floats each.
  * @property {Array<import("./glyphLayout.js").GlyphInstance>} glyphs Glyphs.
  * @property {Array<import("./declutter.js").Label>} labels Declutter labels.
  * @property {StyleTable} styleTable Style table.
  * @property {import("../../webgpu/FontAtlas.js").default} atlas Atlas.
+ * @property {import("../../webgpu/ImageAtlas.js").default|undefined} imageAtlas Image atlas.
+ * @property {Set<import("../../style/Image.js").default>} pendingImageStyles Images being loaded.
  * @property {VectorReprojOptions|undefined} reproj Reprojection options.
  * @property {number} resolution Resolution.
  * @property {number} pixelRatio Device pixel ratio for glyph rasterization.
@@ -530,32 +561,45 @@ function appendStyledGeometry(
       imageAnchors[a] && textAnchors[a] ? state.nextPairId++ : undefined;
     if (image && imageAnchors[a]) {
       const anchor = imageAnchors[a];
-      const size = image.getSize() || [16, 16];
-      const symbolIndex = appendSymbolInstance(
-        state.symbolInstances,
-        image,
-        anchor,
-        hit,
-      );
-      labels.push({
-        minX: -size[0] / 2,
-        minY: -size[1] / 2,
-        maxX: size[0] / 2,
-        maxY: size[1] / 2,
-        priority: -zIndex,
-        zIndex,
-        classRank: CLASS_IMAGE,
-        sequence,
-        featureRef,
-        id: labelId,
-        mode: image.getDeclutterMode?.() || 'declutter',
-        pairId: pid,
-        glyphStart: 0,
-        glyphCount: 0,
-        symbolIndex,
-        _anchor: anchor,
-        _identityKey: `${featureKey}|${styleKey}|${a}|${pid ? 'pair' : 'image'}`,
-      });
+      if (image instanceof CircleStyle) {
+        const size = image.getSize() || [16, 16];
+        const symbolIndex = appendSymbolInstance(
+          state.symbolInstances,
+          image,
+          anchor,
+          hit,
+        );
+        labels.push({
+          minX: -size[0] / 2,
+          minY: -size[1] / 2,
+          maxX: size[0] / 2,
+          maxY: size[1] / 2,
+          priority: -zIndex,
+          zIndex,
+          classRank: CLASS_IMAGE,
+          sequence,
+          featureRef,
+          id: labelId,
+          mode: image.getDeclutterMode?.() || 'declutter',
+          pairId: pid,
+          glyphStart: 0,
+          glyphCount: 0,
+          symbolIndex,
+          _anchor: anchor,
+          _identityKey: `${featureKey}|${styleKey}|${a}|${pid ? 'pair' : 'image'}`,
+        });
+      } else {
+        appendIconLabel(state, image, anchor, hit, {
+          priority: -zIndex,
+          zIndex,
+          classRank: CLASS_IMAGE,
+          sequence,
+          featureRef,
+          id: labelId,
+          pairId: pid,
+          identityKey: `${featureKey}|${styleKey}|${a}|${pid ? 'pair' : 'image'}`,
+        });
+      }
     }
     if (!text || !textAnchors[a]) {
       continue;
@@ -689,6 +733,89 @@ function appendSymbolInstance(symbolInstances, image, anchor, hit) {
 }
 
 /**
+ * Append a textured image label when its image is ready.
+ *
+ * @param {BuildState} state Build state.
+ * @param {import("../../style/Image.js").default} image Image style.
+ * @param {import("../../coordinate.js").Coordinate} anchor Anchor.
+ * @param {Array<number>} hit Hit color.
+ * @param {{priority:number,zIndex:number,classRank:number,sequence:number,featureRef:number,id:number,pairId:number|undefined,identityKey:string}} stamp Label values.
+ */
+function appendIconLabel(state, image, anchor, hit, stamp) {
+  let imageState = image.getImageState();
+  if (imageState === ImageState.IDLE) {
+    image.load();
+    imageState = image.getImageState();
+  }
+  if (imageState !== ImageState.LOADED) {
+    if (imageState !== ImageState.ERROR) {
+      state.pendingImageStyles.add(image);
+    }
+    return;
+  }
+  if (!state.imageAtlas) {
+    return;
+  }
+  const data = getImageStyleData(image, state.pixelRatio, false);
+  if (!data) {
+    return;
+  }
+  const atlas = state.imageAtlas.add(data);
+  const scaleX = data.scale[0];
+  const scaleY = data.scale[1];
+  const anchorX = data.anchorX / data.imagePixelRatio;
+  const anchorY = data.anchorY / data.imagePixelRatio;
+  const offsetX = -anchorX * scaleX;
+  const offsetY = -anchorY * scaleY;
+  const width = data.width * scaleX;
+  const height = data.height * scaleY;
+  const iconIndex = state.iconInstances.length / ICON_STRIDE;
+  state.iconInstances.push(
+    anchor[0],
+    anchor[1],
+    offsetX,
+    offsetY,
+    width,
+    height,
+    atlas.texX0,
+    atlas.texY0,
+    atlas.texX1,
+    atlas.texY1,
+    hit[0],
+    hit[1],
+    hit[2],
+    hit[3],
+    data.opacity,
+    data.rotation,
+    data.rotateWithView ? 1 : 0,
+  );
+  const x2 = offsetX + width;
+  const y2 = offsetY + height;
+  state.labels.push({
+    minX: Math.min(offsetX, x2),
+    minY: Math.min(offsetY, y2),
+    maxX: Math.max(offsetX, x2),
+    maxY: Math.max(offsetY, y2),
+    priority: stamp.priority,
+    zIndex: stamp.zIndex,
+    classRank: stamp.classRank,
+    sequence: stamp.sequence,
+    featureRef: stamp.featureRef,
+    id: stamp.id,
+    mode: data.declutterMode || 'declutter',
+    pairId: stamp.pairId,
+    glyphStart: 0,
+    glyphCount: 0,
+    iconIndex,
+    _anchor: anchor,
+    _corners: [offsetX, offsetY, x2, offsetY, x2, y2, offsetX, y2],
+    _rotation: data.rotation,
+    _rotateWithView: data.rotateWithView,
+    _identityKey: stamp.identityKey,
+  });
+}
+
+/**
  * @param {import("./geometryBuffers.js").GeometryBuffers} geometry Geometry.
  * @param {LabelData} labelData Labels.
  * @return {VectorBuffers} Buffers.
@@ -711,6 +838,7 @@ export function combineVectorBuffers(geometry, labelData) {
     styles: geometry.styles,
     grid: geometry.grid,
     symbolInstances: labelData.symbolInstances,
+    iconInstances: labelData.iconInstances,
     glyphs: labelData.glyphs,
     labels: labelData.labels,
     featuresByRef: labelData.featuresByRef,
@@ -729,6 +857,7 @@ export function combineVectorBuffers(geometry, labelData) {
  * @param {number} [pixelRatio] Device pixel ratio for glyph rasterization.
  * @param {number} [zoom] View zoom level.
  * @param {import("../../render.js").OrderFunction|null} [renderOrder] Feature order.
+ * @param {import("../../webgpu/ImageAtlas.js").default} [imageAtlas] Image atlas.
  * @return {VectorBuffers} Buffers.
  */
 export function buildVectorBuffers(
@@ -740,6 +869,7 @@ export function buildVectorBuffers(
   pixelRatio = 1,
   zoom = NaN,
   renderOrder,
+  imageAtlas,
 ) {
   const {request, labelData} = buildVectorRequest(
     features,
@@ -750,6 +880,7 @@ export function buildVectorBuffers(
     pixelRatio,
     zoom,
     renderOrder,
+    imageAtlas,
   );
   const metricStart = startMetric();
   const geometry = buildGeometryBuffers(request);
@@ -1121,24 +1252,29 @@ function withStamp(job, stamp) {
 }
 
 /**
- * Pack glyph and symbol instances into draw order. The labels array itself
+ * Pack glyph, symbol, and icon instances into draw order. The labels array itself
  * stays in creation order so declutter visibility indices do not move.
  *
  * @param {Array<import("./declutter.js").Label>} labels Labels.
  * @param {Array<import("./glyphLayout.js").GlyphInstance>} glyphs Glyphs.
  * @param {Array<number>} symbolInstances Symbol instances.
+ * @param {Array<number>} iconInstances Icon instances.
  */
-function packLabelsInDrawOrder(labels, glyphs, symbolInstances) {
+function packLabelsInDrawOrder(labels, glyphs, symbolInstances, iconInstances) {
   /** @type {Array<import("./declutter.js").Label>} */
   const glyphLabels = [];
   /** @type {Array<import("./declutter.js").Label>} */
   const symbolLabels = [];
+  /** @type {Array<import("./declutter.js").Label>} */
+  const iconLabels = [];
   for (let i = 0; i < labels.length; ++i) {
     const label = labels[i];
     if (label.glyphCount) {
       glyphLabels.push(label);
     } else if (label.symbolIndex !== undefined) {
       symbolLabels.push(label);
+    } else if (label.iconIndex !== undefined) {
+      iconLabels.push(label);
     }
   }
   glyphLabels.sort((a, b) =>
@@ -1177,6 +1313,24 @@ function packLabelsInDrawOrder(labels, glyphs, symbolInstances) {
   for (let i = 0; i < nextSymbols.length; ++i) {
     symbolInstances[i] = nextSymbols[i];
   }
+
+  iconLabels.sort((a, b) =>
+    compareDraw(labelKey(a, 'icon'), labelKey(b, 'icon')),
+  );
+  const nextIcons = new Array(iconInstances.length);
+  cursor = 0;
+  for (let i = 0; i < iconLabels.length; ++i) {
+    const label = iconLabels[i];
+    const from = /** @type {number} */ (label.iconIndex) * ICON_STRIDE;
+    label.iconIndex = cursor;
+    for (let k = 0; k < ICON_STRIDE; ++k) {
+      nextIcons[cursor * ICON_STRIDE + k] = iconInstances[from + k];
+    }
+    ++cursor;
+  }
+  for (let i = 0; i < nextIcons.length; ++i) {
+    iconInstances[i] = nextIcons[i];
+  }
 }
 
 /**
@@ -1209,7 +1363,9 @@ function labelCommands(labels) {
       ? labelKey(label, 'glyph')
       : label.symbolIndex !== undefined
         ? labelKey(label, 'symbol')
-        : null;
+        : label.iconIndex !== undefined
+          ? labelKey(label, 'icon')
+          : null;
     if (!key) {
       continue;
     }
@@ -1218,7 +1374,9 @@ function labelCommands(labels) {
       classRank: key.classRank,
       sequence: key.sequence,
       pipeline: key.pipeline,
-      start: label.glyphCount ? label.glyphStart || 0 : label.symbolIndex || 0,
+      start: label.glyphCount
+        ? label.glyphStart || 0
+        : (label.symbolIndex ?? label.iconIndex ?? 0),
       count: label.glyphCount || 1,
       featureRef: key.featureRef,
       labelIndex: i,
