@@ -113,7 +113,7 @@
     "marked": "18.0.7",
     "metalsmith": "^2.5.0",
     "monotone-chain-convex-hull": "^1.1.0",
-    "ol-mapbox-style": "^13.6.0",
+    "ol-mapbox-style": "^13.7.1",
     "ol-stac": "^1.2.0",
     "pixelmatch": "^7.1.0",
     "playwright": "^1.60.0",
