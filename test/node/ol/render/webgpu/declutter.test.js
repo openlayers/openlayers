@@ -2,6 +2,7 @@ import {assert} from 'chai';
 import {
   collectStickyIds,
   resolveDeclutter,
+  retainVisibleIdentities,
 } from '../../../../../src/ol/render/webgpu/declutter.js';
 
 describe('ol/render/webgpu/declutter', () => {
@@ -253,6 +254,17 @@ describe('ol/render/webgpu/declutter', () => {
         ),
       ],
       [10],
+    );
+  });
+
+  it('keeps a surviving copy visible when the placed copy has left', () => {
+    const visibility = [false, false];
+    assert.isTrue(
+      retainVisibleIdentities(visibility, [7, 7], new Set([7]), [40075016, 0]),
+    );
+    assert.deepEqual(visibility, [false, true]);
+    assert.isFalse(
+      retainVisibleIdentities(visibility, [7, 7], new Set([7]), [40075016, 0]),
     );
   });
 
