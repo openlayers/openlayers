@@ -1,5 +1,9 @@
 import {assert} from 'chai';
 import {
+  measureTextBaseline,
+  measureTextHeight,
+} from '../../../../../../src/ol/render/canvas.js';
+import {
   GLYPH_INSTANCE_STRIDE,
   layoutLineLabel,
   layoutPointLabel,
@@ -152,6 +156,45 @@ describe('ol/render/webgpu/glyphLayout', () => {
       glyphs[1].offsetY + metricsa.ascent,
       0.01,
     );
+  });
+
+  it('spaces wrapped lines by the canvas line height', () => {
+    const atlas = new FontAtlas();
+    const font = '16px/1.2 sans-serif';
+    const glyphs = [];
+    layoutPointLabel(
+      glyphs,
+      new Text({
+        text: 'Occidental\nAvenue\nSouth',
+        font,
+        fill: new Fill({color: '#000'}),
+        stroke: new Stroke({color: '#fff', width: 4}),
+        textBaseline: 'middle',
+      }),
+      [0, 0],
+      atlas,
+      [1, 0, 0, 1],
+    );
+
+    const lineHeight = measureTextHeight(font);
+    const baselineOffset = measureTextBaseline(font);
+    const lines = ['Occidental', 'Avenue', 'South'];
+    assert.strictEqual(glyphs.length, lines.join('').length);
+    let index = 0;
+    const alphabetic = [];
+    for (const line of lines) {
+      const metrics = atlas.getGlyph(font, line[0], 4);
+      alphabetic.push(glyphs[index].offsetY + metrics.ascent);
+      index += line.length;
+    }
+    assert.approximately(alphabetic[0], -lineHeight + baselineOffset, 0.01);
+    assert.approximately(alphabetic[1], baselineOffset, 0.01);
+    assert.approximately(alphabetic[2], lineHeight + baselineOffset, 0.01);
+    assert.approximately(alphabetic[1] - alphabetic[0], lineHeight, 0.01);
+    assert.approximately(alphabetic[2] - alphabetic[1], lineHeight, 0.01);
+    // The halo padding makes the atlas cell taller than the line box.
+    const cell = atlas.getGlyph(font, 'O', 4);
+    assert.isAbove(cell.height, lineHeight);
   });
 
   it('wraps point labels at word boundaries and preserves newlines', () => {
