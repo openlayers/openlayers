@@ -42,6 +42,7 @@ import TileState from '../../TileState.js';
 import {getUid} from '../../util.js';
 import ViewHint from '../../ViewHint.js';
 import FontAtlas from '../../webgpu/FontAtlas.js';
+import ImageAtlas from '../../webgpu/ImageAtlas.js';
 import {
   countMetric,
   endMetric,
@@ -237,6 +238,18 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
      * @type {FontAtlas}
      */
     this.atlas_ = new FontAtlas();
+
+    /**
+     * @private
+     * @type {ImageAtlas}
+     */
+    this.imageAtlas_ = new ImageAtlas();
+
+    /**
+     * @private
+     * @type {WeakSet<import("../../style/Image.js").default>}
+     */
+    this.loadingImages_ = new WeakSet();
 
     const cacheSize = options.cacheSize !== undefined ? options.cacheSize : 512;
 
@@ -470,6 +483,7 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     // reused.
     this.uniforms_?.dispose();
     this.uniforms_ = new FrameUniformPool(helper);
+    this.imageAtlas_.dispose();
     this.tileCache_.clear();
     this.labelKey_ = '';
     this.placement_.reset();
@@ -496,6 +510,27 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     }
     const source = this.getLayer().getRenderSource();
     return !!source && source.getState() === 'ready';
+  }
+
+  /**
+   * Rebuild cached tile batches when an image style becomes available.
+   *
+   * @param {Array<import("../../style/Image.js").default>} images Images.
+   * @private
+   */
+  watchImages_(images) {
+    for (const image of images) {
+      if (this.loadingImages_.has(image)) {
+        continue;
+      }
+      this.loadingImages_.add(image);
+      image.ready().then(() => {
+        this.loadingImages_.delete(image);
+        if (!this.disposed) {
+          this.getLayer().changed();
+        }
+      });
+    }
   }
 
   /**
@@ -625,7 +660,10 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
       clipExtent ? {clipExtent} : undefined,
       dpr,
       viewState.zoom,
+      undefined,
+      this.imageAtlas_,
     );
+    this.watchImages_(labelData.pendingImageStyles);
 
     // Tessellation is the expensive part, so hand it to a worker when the tile
     // will still be around to receive it. Until it comes back the renderer
@@ -1084,7 +1122,13 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
         });
       }
     }
-    paintBatches(helper, entries, this.atlas_, this.cornerBuffer_);
+    paintBatches(
+      helper,
+      entries,
+      this.atlas_,
+      this.imageAtlas_,
+      this.cornerBuffer_,
+    );
     helper.finalizeDraw(frameState);
   }
 
@@ -1485,6 +1529,7 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     this.tileCache_.clear();
     this.uniforms_?.dispose();
     this.uniforms_ = null;
+    this.imageAtlas_.dispose();
     super.disposeInternal();
   }
 }
