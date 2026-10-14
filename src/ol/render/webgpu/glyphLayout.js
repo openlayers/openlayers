@@ -4,7 +4,7 @@
 import {asArray} from '../../color.js';
 import {interpolatePoint} from '../../geom/flat/interpolate.js';
 import {lineStringLength} from '../../geom/flat/length.js';
-import {drawTextOnPath} from '../../geom/flat/textpath.js';
+import {drawTextOnPath, rtlRegEx} from '../../geom/flat/textpath.js';
 import {measureAndCacheTextWidth} from '../canvas.js';
 import {TEXT_ALIGN} from '../canvas/TextBuilder.js';
 
@@ -88,6 +88,25 @@ function getLineBreakCandidates(text) {
   }
 
   return Array.from(candidates).sort((a, b) => a - b);
+}
+
+/**
+ * Strings stored as separate font-atlas cells.
+ *
+ * Simple text is split into graphemes so repeated letters share a cell and
+ * combining marks stay with their base character. A line that contains a
+ * right-to-left script is kept intact. Those letters are separate graphemes,
+ * but their joining forms and visual order come from shaping the whole line,
+ * as canvas `fillText` does.
+ *
+ * @param {string} line Line of text.
+ * @return {Array<string>} Atlas strings in logical order.
+ */
+function atlasSegments(line) {
+  if (rtlRegEx.test(line)) {
+    return [line];
+  }
+  return Array.from(graphemeSegmenter.segment(line), (part) => part.segment);
 }
 
 /**
@@ -351,13 +370,12 @@ export function layoutPointLabel(
   const lineWidths = [];
   let totalHeight = 0;
   const lineGlyphs = [];
-  const segmenter = new Intl.Segmenter(undefined, {granularity: 'grapheme'});
   for (const line of lines) {
     /** @type {Array<import("../../webgpu/FontAtlas.js").GlyphMetrics>} */
     const glyphs = [];
     let maxAscent = 0;
     let maxHeight = 0;
-    for (const {segment} of segmenter.segment(line)) {
+    for (const segment of atlasSegments(line)) {
       const glyph = atlas.getGlyph(font, segment, strokeWidth, pixelRatio);
       glyphs.push(glyph);
       maxAscent = Math.max(maxAscent, glyph.ascent * scaleY);
