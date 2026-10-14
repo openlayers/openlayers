@@ -1,4 +1,5 @@
 import {assert} from 'chai';
+import {VIEWPORT_PADDING} from '../../../../../src/ol/render/webgpu/declutter.js';
 import {PlacementScheduler} from '../../../../../src/ol/render/webgpu/placement.js';
 
 /**
@@ -33,11 +34,41 @@ describe('ol/render/webgpu/PlacementScheduler', () => {
     assert.isTrue(scheduler.shouldRun('2', 1001, frame(0.5, 0, false)));
   });
 
-  it('does not place again for translation alone', () => {
+  it('does not place again for a pan within the declutter padding', () => {
     const scheduler = new PlacementScheduler();
-    scheduler.commit('1', 1000, 0, frame(1));
+    scheduler.commit('1', 1000, 0, frame(1, 0, false));
 
-    assert.isFalse(scheduler.shouldRun('1', 1001, frame(1, 1000)));
-    assert.isFalse(scheduler.shouldRun('1', 1001, frame(1, 1000, false)));
+    assert.isFalse(
+      scheduler.shouldRun('1', 1001, frame(1, VIEWPORT_PADDING, true)),
+    );
+    assert.isFalse(
+      scheduler.shouldRun('1', 1001, frame(1, VIEWPORT_PADDING, false)),
+    );
+  });
+
+  it('places labels again after panning farther than the declutter padding', () => {
+    const scheduler = new PlacementScheduler();
+    const settled = frame(1, 0, false);
+    scheduler.commit('1', 1000, 0, settled);
+
+    const north = frame(1, 0, false);
+    north.coordinateToPixelTransform[5] = -(VIEWPORT_PADDING + 1);
+    assert.isTrue(scheduler.shouldRun('1', 1001, north));
+
+    scheduler.commit('1', 1001, 0, north);
+    assert.isFalse(scheduler.shouldRun('1', 1002, north));
+  });
+
+  it('places a long pan immediately once the view settles', () => {
+    const scheduler = new PlacementScheduler();
+    scheduler.commit('1', 1000, 0, frame(1, 0, true));
+
+    const north = frame(1, 0, true);
+    north.coordinateToPixelTransform[5] = -(VIEWPORT_PADDING + 50);
+    assert.isFalse(scheduler.shouldRun('1', 1050, north));
+    assert.isTrue(scheduler.isDeferred('1', 1050, north));
+
+    north.viewHints = [0, 0];
+    assert.isTrue(scheduler.shouldRun('1', 1050, north));
   });
 });
