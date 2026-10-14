@@ -139,35 +139,17 @@ export function collectStickyIds(labels, visibility) {
 }
 
 /**
- * Prefer previous winners unless the view zoomed out (resolution increased).
- * Applies on zoom-in, pan, and rotation at a fixed zoom.
- *
- * @param {number|undefined} previousResolution Previous view resolution.
- * @param {number} resolution Current resolution.
- * @param {Set<number>} stickyIds Previous winners.
- * @return {Set<number>|undefined} Sticky ids, or `undefined` when zooming out.
- */
-export function stickyIdsForView(previousResolution, resolution, stickyIds) {
-  if (
-    previousResolution !== undefined &&
-    resolution <= previousResolution &&
-    stickyIds.size
-  ) {
-    return stickyIds;
-  }
-  return undefined;
-}
-
-/**
  * CPU declutter matching Canvas greedy semantics: higher-priority labels
  * claim space first (exact AABB, same as the Canvas RBush). Hidden labels do
  * not occupy space. When labels carry a render sequence, the earlier one
  * keeps the space. Otherwise a stable `id` (feature uid) is the tie-breaker
  * so query order cannot flip winners while panning.
  *
- * When `stickyIds` is set (hysteresis on zoom-in, pan, and rotation),
- * previously visible labels claim space before newcomers so a neighbor
- * that just became unblocked cannot evict a label that was already shown.
+ * When `stickyIds` is set, previously visible labels claim space before
+ * newcomers, so a neighbor that just became unblocked, or a copy from a tile
+ * that replaced another, cannot evict a label that was already shown. This
+ * holds while zooming out too: a label then only disappears when another
+ * label that was already shown takes its space.
  *
  * @param {Array<Label>} labels Labels (not necessarily sorted).
  * @param {number} [cellSize] Ignored; kept for call-site compatibility.
