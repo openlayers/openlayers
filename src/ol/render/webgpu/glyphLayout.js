@@ -4,6 +4,7 @@
 import {asArray} from '../../color.js';
 import {interpolatePoint} from '../../geom/flat/interpolate.js';
 import {lineStringLength} from '../../geom/flat/length.js';
+import {coordinates as reverseCoordinates} from '../../geom/flat/reverse.js';
 import {drawTextOnPath, rtlRegEx} from '../../geom/flat/textpath.js';
 import {
   measureAndCacheTextWidth,
@@ -14,11 +15,12 @@ import {TEXT_ALIGN} from '../canvas/TextBuilder.js';
 
 /**
  * Instance floats: position(2), offsetPx(2), sizePx(2), texCoord(4), fill(4),
- * stroke(4), hitColor(4), angle(1). Corner is a separate vertex buffer of 4 corners.
- * Per-instance stride without corner: 23 floats.
+ * stroke(4), hitColor(4), angle(1), rotateWithView(1), upright(2). Corner is a
+ * separate vertex buffer of 4 corners.
+ * Per-instance stride without corner: 26 floats.
  * @type {number}
  */
-export const GLYPH_INSTANCE_STRIDE = 23;
+export const GLYPH_INSTANCE_STRIDE = 26;
 
 /**
  * Text widths by font, then by text.
@@ -230,30 +232,67 @@ function wrapText(text, font, maxWidth, scaleX) {
  * @property {number} hitB Hit.
  * @property {number} hitA Hit.
  * @property {number} angle Angle.
+ * @property {boolean} [rotateWithView] Add the view rotation to `angle`.
+ * @property {number} [uprightX] Reading direction x of this glyph's line-label
+ * variant, in unrotated Y-down pixels. With `uprightY` zero too, the glyph is
+ * always drawn.
+ * @property {number} [uprightY] Reading direction y.
  */
 
 /**
+ * Whether a glyph is drawn at a view rotation. A kept-upright line label has
+ * one variant per reading direction, and only the one that reads left to right
+ * on screen is drawn. Must match the glyph shader.
+ * @param {GlyphInstance} glyph Glyph.
+ * @param {number} viewRotation View rotation.
+ * @return {boolean} The glyph is drawn.
+ */
+export function isGlyphDrawn(glyph, viewRotation) {
+  const x = glyph.uprightX || 0;
+  const y = glyph.uprightY || 0;
+  if (!x && !y) {
+    return true;
+  }
+  const c = Math.cos(viewRotation);
+  const s = Math.sin(viewRotation);
+  const dx = c * x - s * y;
+  return dx > 0 || (dx === 0 && s * x + c * y >= 0);
+}
+
+/**
  * Grow `bounds` by a glyph quad drawn at a pixel position, with the same
- * rotation the glyph shader applies.
+ * rotation the glyph shader applies. Glyphs the shader hides at this view
+ * rotation leave `bounds` alone.
  * @param {Array<number>} bounds `[minX, minY, maxX, maxY]`, updated in place.
  * @param {GlyphInstance} glyph Glyph.
  * @param {number} pixelX Pixel x of the glyph anchor.
  * @param {number} pixelY Pixel y of the glyph anchor.
+ * @param {number} [viewRotation] View rotation.
  */
-export function extendGlyphBounds(bounds, glyph, pixelX, pixelY) {
+export function extendGlyphBounds(
+  bounds,
+  glyph,
+  pixelX,
+  pixelY,
+  viewRotation = 0,
+) {
+  if (!isGlyphDrawn(glyph, viewRotation)) {
+    return;
+  }
   const x0 = glyph.offsetX;
   const y0 = glyph.offsetY;
   const x1 = x0 + glyph.width;
   const y1 = y0 + glyph.height;
-  if (!glyph.angle) {
+  const angle = glyph.angle + (glyph.rotateWithView ? viewRotation : 0);
+  if (!angle) {
     bounds[0] = Math.min(bounds[0], pixelX + x0);
     bounds[1] = Math.min(bounds[1], pixelY + y0);
     bounds[2] = Math.max(bounds[2], pixelX + x1);
     bounds[3] = Math.max(bounds[3], pixelY + y1);
     return;
   }
-  const c = Math.cos(glyph.angle);
-  const s = Math.sin(glyph.angle);
+  const c = Math.cos(angle);
+  const s = Math.sin(angle);
   for (let i = 0; i < 4; ++i) {
     const lx = i & 1 ? x1 : x0;
     const ly = i & 2 ? y1 : y0;
@@ -363,6 +402,7 @@ export function layoutPointLabel(
   const offsetX = textStyle.getOffsetX() || 0;
   const offsetY = textStyle.getOffsetY() || 0;
   const rotation = textStyle.getRotation() || 0;
+  const rotateWithView = !!textStyle.getRotateWithView();
   const stroke = textStyle.getStroke();
   const strokeWidth = stroke ? stroke.getWidth() || 0 : 0;
   const color = fillColor(textStyle);
@@ -424,6 +464,7 @@ export function layoutPointLabel(
         hitB: hitColor[2],
         hitA: hitColor[3],
         angle: rotation,
+        rotateWithView,
       });
       x += glyph.advance * scaleX;
     }
@@ -495,23 +536,60 @@ export function layoutLineLabel(
   if (!overflow && width > length) {
     return null;
   }
-  const result = drawTextOnPath(
-    pixelCoords,
-    0,
-    pixelCoords.length,
-    2,
-    text,
-    startM,
-    maxAngle,
-    1,
-    measureAndCacheTextWidth,
-    font,
-    widthCache,
-    0,
-    true,
-  );
-  if (!result) {
+  /**
+   * @param {Array<number>} path Pixel path.
+   * @return {Array<Array<*>>|null} Chunks reading along `path`.
+   */
+  const placeOnPath = (path) =>
+    drawTextOnPath(
+      path,
+      0,
+      path.length,
+      2,
+      text,
+      startM,
+      maxAngle,
+      1,
+      measureAndCacheTextWidth,
+      font,
+      widthCache,
+      0,
+      false,
+    );
+  const forward = placeOnPath(pixelCoords);
+  if (!forward) {
     return null;
+  }
+  // A tile's layout outlives view rotations, so a kept-upright label carries
+  // both reading directions and the shader draws the one that reads left to
+  // right on screen.
+  const variants = [{parts: forward, uprightX: 0, uprightY: 0}];
+  if (textStyle.getKeepUpright() ?? true) {
+    const first = forward[0];
+    const last = forward[forward.length - 1];
+    const directionX =
+      last[0] +
+      Math.cos(last[3]) * last[2] -
+      (first[0] - Math.cos(first[3]) * first[2]);
+    const directionY =
+      last[1] +
+      Math.sin(last[3]) * last[2] -
+      (first[1] - Math.sin(first[3]) * first[2]);
+    const directionLength = Math.hypot(directionX, directionY);
+    const reversedCoords = pixelCoords.slice();
+    reverseCoordinates(reversedCoords, 0, reversedCoords.length, 2);
+    const reversed = directionLength ? placeOnPath(reversedCoords) : null;
+    if (reversed) {
+      const uprightX = directionX / directionLength;
+      const uprightY = directionY / directionLength;
+      variants[0].uprightX = uprightX;
+      variants[0].uprightY = uprightY;
+      variants.push({
+        parts: reversed,
+        uprightX: -uprightX,
+        uprightY: -uprightY,
+      });
+    }
   }
   const stroke = textStyle.getStroke();
   const strokeWidth = stroke ? stroke.getWidth() || 0 : 0;
@@ -534,48 +612,53 @@ export function layoutLineLabel(
   const anchorPixelY = middle[1];
   const startIndex = out.length;
   const bounds = [Infinity, Infinity, -Infinity, -Infinity];
-  for (const entry of result) {
-    const gx = /** @type {number} */ (entry[0]);
-    const gy = /** @type {number} */ (entry[1]);
-    // The path point is the center of this chunk's advance, not its left edge.
-    const anchorX = /** @type {number} */ (entry[2]);
-    const angle = /** @type {number} */ (entry[3]);
-    const chunk = /** @type {string} */ (entry[4]);
-    const glyph = atlas.getGlyph(font, chunk, strokeWidth, pixelRatio);
-    // The shader rotates the offset by `angle`, so unrotate the shift from the
-    // shared anchor to this chunk's path point.
-    const dx = gx - anchorPixelX;
-    const dy = gy - anchorPixelY;
-    const c = Math.cos(angle);
-    const s = Math.sin(angle);
-    const instance = {
-      x: anchorPixelX * resolution,
-      y: -anchorPixelY * resolution,
-      offsetX: c * dx + s * dy - anchorX - glyph.pad,
-      offsetY: -s * dx + c * dy + baselineOffset - glyph.ascent,
-      width: glyph.width,
-      height: glyph.height,
-      texX0: glyph.texX0,
-      texY0: glyph.texY0,
-      texX1: glyph.texX1,
-      texY1: glyph.texY1,
-      r: color[0],
-      g: color[1],
-      b: color[2],
-      a: color[3],
-      strokeR: halo[0],
-      strokeG: halo[1],
-      strokeB: halo[2],
-      strokeA: halo[3],
-      hasHalo,
-      hitR: hitColor[0],
-      hitG: hitColor[1],
-      hitB: hitColor[2],
-      hitA: hitColor[3],
-      angle,
-    };
-    out.push(instance);
-    extendGlyphBounds(bounds, instance, 0, 0);
+  for (const {parts, uprightX, uprightY} of variants) {
+    for (const entry of parts) {
+      const gx = /** @type {number} */ (entry[0]);
+      const gy = /** @type {number} */ (entry[1]);
+      // The path point is the center of this chunk's advance, not its left edge.
+      const anchorX = /** @type {number} */ (entry[2]);
+      const angle = /** @type {number} */ (entry[3]);
+      const chunk = /** @type {string} */ (entry[4]);
+      const glyph = atlas.getGlyph(font, chunk, strokeWidth, pixelRatio);
+      // The shader rotates the offset by `angle`, so unrotate the shift from
+      // the shared anchor to this chunk's path point.
+      const dx = gx - anchorPixelX;
+      const dy = gy - anchorPixelY;
+      const c = Math.cos(angle);
+      const s = Math.sin(angle);
+      const instance = {
+        x: anchorPixelX * resolution,
+        y: -anchorPixelY * resolution,
+        offsetX: c * dx + s * dy - anchorX - glyph.pad,
+        offsetY: -s * dx + c * dy + baselineOffset - glyph.ascent,
+        width: glyph.width,
+        height: glyph.height,
+        texX0: glyph.texX0,
+        texY0: glyph.texY0,
+        texX1: glyph.texX1,
+        texY1: glyph.texY1,
+        r: color[0],
+        g: color[1],
+        b: color[2],
+        a: color[3],
+        strokeR: halo[0],
+        strokeG: halo[1],
+        strokeB: halo[2],
+        strokeA: halo[3],
+        hasHalo,
+        hitR: hitColor[0],
+        hitG: hitColor[1],
+        hitB: hitColor[2],
+        hitA: hitColor[3],
+        angle,
+        rotateWithView: true,
+        uprightX,
+        uprightY,
+      };
+      out.push(instance);
+      extendGlyphBounds(bounds, instance, 0, 0);
+    }
   }
   if (out.length === startIndex) {
     return null;
@@ -634,6 +717,9 @@ export function packGlyphInstances(
     data[o++] = inst.hitB;
     data[o++] = inst.hitA;
     data[o++] = inst.angle;
+    data[o++] = inst.rotateWithView ? 1 : 0;
+    data[o++] = inst.uprightX || 0;
+    data[o++] = inst.uprightY || 0;
   }
   return data;
 }
