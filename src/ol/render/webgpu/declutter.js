@@ -139,6 +139,54 @@ export function collectStickyIds(labels, visibility) {
 }
 
 /**
+ * Keep a label visible when the copy that won placement has left.
+ *
+ * Neighboring tiles store their own copy as hidden, because only one may
+ * draw. While placement is deferred, losing the winning tile would fade the
+ * label out even though another copy is still in the same place. One surviving
+ * copy, preferring the unwrapped world, stands in until placement runs.
+ *
+ * @param {Array<boolean>} visibility Visibility aligned with `identities`.
+ * @param {Array<number>} identities Persistent ids aligned with `visibility`.
+ * @param {Set<number>} stickyIds Ids visible after the last placement.
+ * @param {Array<number>} [worldOffsets] World x offsets aligned with `visibility`.
+ * @return {boolean} Whether a surviving copy was made visible.
+ */
+export function retainVisibleIdentities(
+  visibility,
+  identities,
+  stickyIds,
+  worldOffsets,
+) {
+  if (!stickyIds?.size) {
+    return false;
+  }
+  const seen = new Set();
+  for (let i = 0; i < visibility.length; ++i) {
+    if (visibility[i]) {
+      seen.add(identities[i]);
+    }
+  }
+  /** @type {Map<number, number>} */
+  const chosen = new Map();
+  for (let i = 0; i < visibility.length; ++i) {
+    const id = identities[i];
+    if (id === undefined || seen.has(id) || !stickyIds.has(id)) {
+      continue;
+    }
+    const current = chosen.get(id);
+    const unwrapped = !worldOffsets?.[i];
+    if (current === undefined || (unwrapped && worldOffsets?.[current])) {
+      chosen.set(id, i);
+    }
+  }
+  for (const index of chosen.values()) {
+    visibility[index] = true;
+  }
+  return chosen.size > 0;
+}
+
+/**
  * CPU declutter matching Canvas greedy semantics: higher-priority labels
  * claim space first (exact AABB, same as the Canvas RBush). Hidden labels do
  * not occupy space. When labels carry a render sequence, the earlier one

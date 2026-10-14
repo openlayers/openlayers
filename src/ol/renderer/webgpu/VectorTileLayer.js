@@ -16,6 +16,7 @@ import {
 import {
   collectStickyIds,
   resolveDeclutter,
+  retainVisibleIdentities,
   VIEWPORT_PADDING,
 } from '../../render/webgpu/declutter.js';
 import {buildGeometryBuffers} from '../../render/webgpu/geometryBuffers.js';
@@ -1416,6 +1417,14 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     } else if (this.placement_.isDeferred(key, now, frameState)) {
       // Keep rendering so the deferred pass happens once the budget allows.
       frameState.animate = true;
+    }
+    if (!runPlacement && this.visibility_) {
+      retainVisibleIdentities(
+        this.visibility_,
+        this.labelView_.identities,
+        this.declutterStickyIds_,
+        this.labelView_.worldOffsets,
+      );
     }
     const previous = this.visibility_;
     if (!previous || previous.length !== count) {
