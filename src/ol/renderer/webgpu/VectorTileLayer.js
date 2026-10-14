@@ -1085,10 +1085,45 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
       });
     }
     if (this.cornerBuffer_) {
+      // Tiles just outside the viewport still contribute labels. A polygon
+      // label can sit on screen while its tile no longer intersects the view,
+      // and that label wins declutter against the copy that would have been
+      // drawn. Paint those labels without their geometry.
+      const stillLabeling = new Set(this.declutterBatches_);
+      for (
+        let i = this.renderedBatches_.length;
+        i < this.declutterBatches_.length;
+        ++i
+      ) {
+        const batch = this.declutterBatches_[i];
+        const labels = batch.getLabelRenderer(helper);
+        if (this.opacities_) {
+          labels.setOpacities(this.opacities_, view.starts[i] ?? 0);
+        }
+        entries.push({
+          commands: batch.buffers.commands || [],
+          tileOrder: i,
+          gpu: null,
+          labels,
+          labelsOnly: true,
+          slot: labelUniforms(
+            uniforms,
+            frameState,
+            batch.buffers,
+            batch.worldOffset,
+          ),
+          prepare: () => {},
+        });
+      }
       const currentIds = new Set(view.identities);
-      let tileOrder = this.renderedBatches_.length;
+      let tileOrder = this.declutterBatches_.length;
       for (let r = 0; r < this.retiredBatches_.length; ++r) {
         const batch = this.retiredBatches_[r].batch;
+        // This tile is still a label source. Fading it out would clear the
+        // opacities just written above, and its replacement is itself.
+        if (stillLabeling.has(batch)) {
+          continue;
+        }
         const identities = batch.labelIdentities;
         if (!identities) {
           continue;
@@ -1187,7 +1222,8 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
 
   /**
    * Add already-built neighboring tiles as label candidates without drawing
-   * their geometry or initiating additional tile work.
+   * their geometry or initiating additional tile work. Their labels are drawn
+   * with the rendered tiles.
    * @param {import("../../Map.js").FrameState} frameState Frame.
    * @param {Array<TileBatch>} rendered Rendered batches.
    * @return {Array<TileBatch>} Rendered and neighboring label batches.
@@ -1254,10 +1290,10 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     if (!visibility) {
       return;
     }
-    for (let source = 0; source < this.renderedBatches_.length; ++source) {
+    for (let source = 0; source < this.declutterBatches_.length; ++source) {
       const start = starts[source] ?? 0;
-      const count = this.renderedBatches_[source].buffers.labels.length;
-      this.renderedBatches_[source].labelVisibility = visibility.slice(
+      const count = this.declutterBatches_[source].buffers.labels.length;
+      this.declutterBatches_[source].labelVisibility = visibility.slice(
         start,
         start + count,
       );
@@ -1363,7 +1399,8 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     const resolution = frameState.viewState.resolution;
     const now = frameState.time || 0;
     const key = placementKey(this.labelVersion_, frameState);
-    if (this.placement_.shouldRun(key, now, frameState)) {
+    const runPlacement = this.placement_.shouldRun(key, now, frameState);
+    if (runPlacement) {
       const start = performance.now();
       const screenLabels = view.toScreen(frameState);
       const stickyIds = stickyIdsForView(
@@ -1390,7 +1427,7 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
       endMetric('placement', start);
       countMetric('placementCommits');
       this.placement_.commit(key, now, duration, frameState);
-    } else if (this.placement_.isDeferred(key, now)) {
+    } else if (this.placement_.isDeferred(key, now, frameState)) {
       // Keep rendering so the deferred pass happens once the budget allows.
       frameState.animate = true;
     }
@@ -1405,7 +1442,8 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
       }
       this.visibility_ = visibility;
     }
-    if (this.updateOpacities_(frameState, previousVisibility)) {
+    const fading = this.updateOpacities_(frameState, previousVisibility);
+    if (fading) {
       frameState.animate = true;
     }
   }
@@ -1428,10 +1466,10 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
         extent ? getWidth(extent) : undefined,
       ),
     );
-    for (let i = 0; i < this.renderedBatches_.length; ++i) {
+    for (let i = 0; i < this.declutterBatches_.length; ++i) {
       const start = this.labelView_.starts[i] || 0;
-      const count = this.renderedBatches_[i].buffers.labels.length;
-      this.renderedBatches_[i].labelIdentities =
+      const count = this.declutterBatches_[i].buffers.labels.length;
+      this.declutterBatches_[i].labelIdentities =
         this.labelView_.identities.slice(start, start + count);
     }
     this.identityVersion_ = this.labelVersion_;
@@ -1439,7 +1477,8 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
 
   /**
    * Walk the paint order from the top, across the tiles currently drawn.
-   * Geometry uses containment. Icons and text use their label boxes.
+   * Labels from tiles kept only for declutter are included. Geometry uses
+   * containment. Icons and text use their label boxes.
    *
    * @param {import("../../coordinate.js").Coordinate} coordinate Coordinate.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
@@ -1462,12 +1501,28 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     }
     /** @type {Array<import("./hitTest.js").HitItem>} */
     const items = [];
-    for (let i = 0; i < this.renderedBatches_.length; ++i) {
-      const batch = this.renderedBatches_[i];
+    const batchCount = this.declutterGroup_
+      ? this.declutterBatches_.length
+      : this.renderedBatches_.length;
+    const batches = this.declutterGroup_
+      ? this.declutterBatches_
+      : this.renderedBatches_;
+    for (let i = 0; i < batchCount; ++i) {
+      const batch = batches[i];
       const commands = batch.buffers.commands || [];
+      const labelsOnly = i >= this.renderedBatches_.length;
       for (let c = 0; c < commands.length; ++c) {
+        const command = commands[c];
+        if (
+          labelsOnly &&
+          command.pipeline !== 'glyph' &&
+          command.pipeline !== 'symbol' &&
+          command.pipeline !== 'icon'
+        ) {
+          continue;
+        }
         items.push({
-          command: commands[c],
+          command,
           buffers: batch.buffers,
           worldOffset: batch.worldOffset || 0,
           labelOffset: this.labelView_.starts[i] || 0,

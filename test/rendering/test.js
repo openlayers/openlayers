@@ -188,8 +188,49 @@ async function renderPage(page, entry, options) {
   });
   const config = await renderCalled;
   options.log.debug('screenshot', entry);
-  await page.screenshot({path: getActualScreenshotPath(entry)});
+  await screenshotPage(page, getActualScreenshotPath(entry));
   return config;
+}
+
+/**
+ * Page.captureScreenshot does not return for a WebGPU canvas on current
+ * Chrome. A screencast frame is the same viewport image and does return.
+ * @param {import('puppeteer').Page} page The page to capture.
+ * @param {string} filePath Destination PNG.
+ */
+async function screenshotPage(page, filePath) {
+  const webgpu = await page.evaluate(() => {
+    const canvas = document.querySelector('canvas');
+    return !!(canvas && canvas.getContext('webgpu'));
+  });
+  if (!webgpu) {
+    await page.screenshot({path: filePath});
+    return;
+  }
+
+  const client = await page.createCDPSession();
+  try {
+    const frame = new Promise((resolve, reject) => {
+      const timer = setTimeout(
+        () => reject(new Error('screencast timed out')),
+        10000,
+      );
+      client.once('Page.screencastFrame', (params) => {
+        clearTimeout(timer);
+        resolve(params);
+      });
+    });
+    await client.send('Page.startScreencast', {
+      format: 'png',
+      everyNthFrame: 1,
+    });
+    const params = await frame;
+    await client.send('Page.screencastFrameAck', {sessionId: params.sessionId});
+    await client.send('Page.stopScreencast');
+    await fse.writeFile(filePath, Buffer.from(params.data, 'base64'));
+  } finally {
+    await client.detach();
+  }
 }
 
 async function touch(filepath) {

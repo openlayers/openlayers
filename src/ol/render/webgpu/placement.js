@@ -2,6 +2,7 @@
  * @module ol/render/webgpu/placement
  */
 import ViewHint from '../../ViewHint.js';
+import {VIEWPORT_PADDING} from './declutter.js';
 
 /**
  * Milliseconds of declutter work a frame should absorb before the next pass is
@@ -41,9 +42,10 @@ function viewNotMoving(frameState) {
  *
  * Placing labels means projecting every one of them and resolving collisions
  * across the whole map, which is far too much to repeat for each frame of a
- * pan. Translation moves every box equally and therefore cannot change which
- * boxes collide. Placement is invalidated only when the label set or the
- * linear part of the view transform changes.
+ * pan. A small translation moves every box equally, so it cannot change which
+ * boxes collide, and labels within the declutter padding are already placed.
+ * Panning farther than that padding brings in labels the last pass culled, so
+ * the placement has to run again or the view is left without them.
  */
 export class PlacementScheduler {
   /**
@@ -81,6 +83,34 @@ export class PlacementScheduler {
      * @type {boolean}
      */
     this.placed_ = false;
+
+    /**
+     * Pixel translation of the view transform at the last placement.
+     * @private
+     * @type {number}
+     */
+    this.originX_ = 0;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.originY_ = 0;
+  }
+
+  /**
+   * @param {import("../../Map.js").FrameState|undefined} frameState Frame state.
+   * @return {boolean} The view has panned farther than the declutter padding.
+   * @private
+   */
+  pannedBeyondPadding_(frameState) {
+    const transform = frameState?.coordinateToPixelTransform;
+    if (!transform) {
+      return false;
+    }
+    const dx = transform[4] - this.originX_;
+    const dy = transform[5] - this.originY_;
+    return dx * dx + dy * dy > VIEWPORT_PADDING * VIEWPORT_PADDING;
   }
 
   /**
@@ -93,15 +123,16 @@ export class PlacementScheduler {
     if (!this.placed_) {
       return true;
     }
+    const stale = key !== this.key_ || this.pannedBeyondPadding_(frameState);
     // Never throttle the final placement. It is the last frame's only chance
     // to replace a layout retained during the animation.
     if (frameState && viewNotMoving(frameState)) {
-      return key !== this.key_;
+      return stale;
     }
     if (now < this.deferUntil_) {
       return false;
     }
-    if (key !== this.key_) {
+    if (stale) {
       if (frameState && now < this.movingPlacementAfter_) {
         return false;
       }
@@ -116,13 +147,15 @@ export class PlacementScheduler {
    *
    * @param {string} key Describes the placement inputs.
    * @param {number} now Frame time.
+   * @param {import("../../Map.js").FrameState} [frameState] Frame state.
    * @return {boolean} A pass is pending.
    */
-  isDeferred(key, now) {
-    return (
-      key !== this.key_ &&
-      (now < this.deferUntil_ || now < this.movingPlacementAfter_)
-    );
+  isDeferred(key, now, frameState) {
+    const stale = key !== this.key_ || this.pannedBeyondPadding_(frameState);
+    if (!stale || (frameState && viewNotMoving(frameState))) {
+      return false;
+    }
+    return now < this.deferUntil_ || now < this.movingPlacementAfter_;
   }
 
   /**
@@ -138,6 +171,11 @@ export class PlacementScheduler {
       this.movingPlacementAfter_ = viewNotMoving(frameState)
         ? now
         : now + MOVING_PLACEMENT_INTERVAL;
+      const transform = frameState.coordinateToPixelTransform;
+      if (transform) {
+        this.originX_ = transform[4];
+        this.originY_ = transform[5];
+      }
     }
     this.deferUntil_ =
       duration > this.budget_ ? now + Math.min(MAX_DEFER, duration * 4) : now;
@@ -151,5 +189,7 @@ export class PlacementScheduler {
     this.deferUntil_ = 0;
     this.movingPlacementAfter_ = 0;
     this.placed_ = false;
+    this.originX_ = 0;
+    this.originY_ = 0;
   }
 }

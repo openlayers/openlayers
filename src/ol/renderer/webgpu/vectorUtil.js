@@ -1119,9 +1119,9 @@ export function paintBatches(helper, batches, atlas, imageAtlas, cornerBuffer) {
 /**
  * Identifies the inputs a declutter pass depends on, apart from where the view
  * has been panned to: which labels there are, and how the view scales and
- * rotates them. Translation is deliberately absent, because labels move with
- * the map and a pan alone does not invalidate a placement; the scheduler
- * handles that with a distance budget instead.
+ * rotates them. Translation is deliberately absent. A short pan does not
+ * change collisions, and the scheduler places again once the pan exceeds the
+ * declutter padding.
  *
  * @param {number} labelVersion Label set version.
  * @param {import("../../Map.js").FrameState} frameState Frame.
