@@ -6,18 +6,35 @@ import LabelRenderer from '../../../../../src/ol/renderer/webgpu/LabelRenderer.j
  */
 function fakeHelper() {
   const writes = [];
+  const pipelines = [];
+  const draws = [];
+  const pass = {
+    setPipeline(pipeline) {
+      pipelines.push(pipeline.name);
+    },
+    setBindGroup() {},
+    setVertexBuffer() {},
+    draw(vertexCount, instanceCount, firstVertex, firstInstance) {
+      draws.push({vertexCount, instanceCount, firstVertex, firstInstance});
+    },
+  };
   return {
     writes,
+    pipelines,
+    draws,
     createBuffer: () => ({destroy() {}}),
     writeBuffer: (buffer, data) => writes.push(data.length),
+    getRenderPipeline: (name) => ({name}),
+    getRenderPass: () => pass,
   };
 }
 
 /**
  * @param {number} count Label count.
+ * @param {Array<boolean>} [halos] Whether each glyph has a halo.
  * @return {Object} Buffers with one glyph per label.
  */
-function labelBuffers(count) {
+function labelBuffers(count, halos = []) {
   const labels = [];
   const glyphs = [];
   for (let i = 0; i < count; ++i) {
@@ -29,7 +46,15 @@ function labelBuffers(count) {
       glyphStart: i,
       glyphCount: 1,
     });
-    glyphs.push({x: i, y: 0, offsetX: 0, offsetY: 0, width: 1, height: 1});
+    glyphs.push({
+      x: i,
+      y: 0,
+      offsetX: 0,
+      offsetY: 0,
+      width: 1,
+      height: 1,
+      hasHalo: halos[i] || false,
+    });
   }
   return {labels, glyphs, symbolInstances: new Float32Array(0)};
 }
@@ -74,6 +99,59 @@ describe('ol/renderer/webgpu/LabelRenderer', () => {
     // change for it.
     opacities[0] = 0;
     assert.isFalse(renderer.setOpacities(opacities, 2));
+    renderer.dispose();
+  });
+
+  it('draws halos before fills only for ranges that contain halos', () => {
+    const helper = fakeHelper();
+    const renderer = new LabelRenderer();
+    renderer.setLabels(
+      /** @type {any} */ (helper),
+      /** @type {any} */ (labelBuffers(3, [false, true, false])),
+    );
+    const slot = {
+      getBindGroup: () => ({}),
+    };
+    const atlas = {
+      upload: () => ({}),
+    };
+
+    renderer.drawInstances(
+      /** @type {any} */ (helper),
+      'glyph',
+      0,
+      1,
+      /** @type {any} */ (slot),
+      /** @type {any} */ (atlas),
+      /** @type {any} */ ({}),
+    );
+    assert.deepEqual(helper.pipelines, ['vector-glyph-fill']);
+
+    helper.pipelines.length = 0;
+    helper.draws.length = 0;
+    renderer.drawInstances(
+      /** @type {any} */ (helper),
+      'glyph',
+      1,
+      2,
+      /** @type {any} */ (slot),
+      /** @type {any} */ (atlas),
+      /** @type {any} */ ({}),
+    );
+    assert.deepEqual(helper.pipelines, [
+      'vector-glyph-halo',
+      'vector-glyph-fill',
+    ]);
+    assert.deepEqual(
+      helper.draws.map(({instanceCount, firstInstance}) => ({
+        instanceCount,
+        firstInstance,
+      })),
+      [
+        {instanceCount: 2, firstInstance: 1},
+        {instanceCount: 2, firstInstance: 1},
+      ],
+    );
     renderer.dispose();
   });
 });

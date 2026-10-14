@@ -28,6 +28,7 @@ describe('ol/render/webgpu/glyphLayout', () => {
     assert.strictEqual(glyphs[0].r, 0);
     assert.strictEqual(glyphs[0].strokeR, 1);
     assert.strictEqual(glyphs[0].strokeA, 1);
+    assert.isTrue(glyphs[0].hasHalo);
     const packed = packGlyphInstances(glyphs);
     assert.strictEqual(packed.length, glyphs.length * GLYPH_INSTANCE_STRIDE);
     const relative = packGlyphInstances(glyphs, undefined, 1000, 2000);

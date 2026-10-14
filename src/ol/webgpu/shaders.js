@@ -740,7 +740,25 @@ fn vs_main(
 }
 
 @fragment
-fn fs_main(in: VertexOut) -> @location(0) vec4<f32> {
+fn fs_halo(in: VertexOut) -> @location(0) vec4<f32> {
+  let atlas = textureSample(atlasTexture, atlasSampler, in.texCoord);
+  if (atlas.a < 0.01) {
+    discard;
+  }
+  if (uniforms.hitDetection > 0.5) {
+    discard;
+  }
+  // Atlas red stores unpremultiplied halo coverage.
+  var color = in.strokeColor;
+  color.a = color.a * atlas.r * atlas.a * uniforms.globalAlpha;
+  if (color.a < 0.01) {
+    discard;
+  }
+  return vec4(color.rgb * color.a, color.a);
+}
+
+@fragment
+fn fs_fill(in: VertexOut) -> @location(0) vec4<f32> {
   let atlas = textureSample(atlasTexture, atlasSampler, in.texCoord);
   if (atlas.a < 0.01) {
     discard;
@@ -748,9 +766,12 @@ fn fs_main(in: VertexOut) -> @location(0) vec4<f32> {
   if (uniforms.hitDetection > 0.5) {
     return in.hitColor;
   }
-  // Atlas: white fill, black stroke, transparent background. Mix by luminance.
-  var color = mix(in.strokeColor, in.fillColor, atlas.r);
-  color.a = color.a * atlas.a * uniforms.globalAlpha;
+  // Atlas green stores unpremultiplied fill coverage.
+  var color = in.fillColor;
+  color.a = color.a * atlas.g * atlas.a * uniforms.globalAlpha;
+  if (color.a < 0.01) {
+    discard;
+  }
   return vec4(color.rgb * color.a, color.a);
 }
 `;
