@@ -389,4 +389,78 @@ describe('ol/render/webgpu/glyphLayout', () => {
     assert.approximately(left[0].offsetX, left[4].offsetX, 0.01);
     assert.isAbove(right[4].offsetX, right[0].offsetX);
   });
+
+  it('segments graphemes and shapes right-to-left lines', () => {
+    const atlas = new FontAtlas();
+    const font = '24px sans-serif';
+    const acute = 'e\u0301';
+    const acuteGlyphs = [];
+    layoutPointLabel(
+      acuteGlyphs,
+      new Text({text: acute, font, textAlign: 'left'}),
+      [0, 0],
+      atlas,
+      [1, 0, 0, 1],
+    );
+    assert.strictEqual(acute.length, 2);
+    assert.strictEqual(acuteGlyphs.length, 1);
+    const acuteMetrics = atlas.getGlyph(font, acute);
+    assert.strictEqual(acuteGlyphs[0].texX0, acuteMetrics.texX0);
+    assert.strictEqual(acuteGlyphs[0].texY0, acuteMetrics.texY0);
+
+    const tifinagh = 'ⵍⵣⵣⴰⵢⴻⵔ';
+    const tifinaghGlyphs = [];
+    layoutPointLabel(
+      tifinaghGlyphs,
+      new Text({text: tifinagh, font, textAlign: 'left'}),
+      [0, 0],
+      atlas,
+      [1, 0, 0, 1],
+    );
+    assert.strictEqual(tifinaghGlyphs.length, 7);
+    const first = atlas.getGlyph(font, 'ⵍ');
+    assert.strictEqual(tifinaghGlyphs[0].texX0, first.texX0);
+    assert.strictEqual(tifinaghGlyphs[0].texY0, first.texY0);
+
+    const arabic = 'الجزائر';
+    const arabicGlyphs = [];
+    layoutPointLabel(
+      arabicGlyphs,
+      new Text({text: arabic, font, textAlign: 'left'}),
+      [0, 0],
+      atlas,
+      [1, 0, 0, 1],
+    );
+    assert.strictEqual(arabicGlyphs.length, 1);
+    const context = document.createElement('canvas').getContext('2d');
+    context.font = font;
+    const shapedWidth = context.measureText(arabic).width;
+    let isolatedWidth = 0;
+    for (const {segment} of new Intl.Segmenter(undefined, {
+      granularity: 'grapheme',
+    }).segment(arabic)) {
+      isolatedWidth += context.measureText(segment).width;
+    }
+    const arabicMetrics = atlas.getGlyph(font, arabic);
+    assert.closeTo(arabicMetrics.advance, shapedWidth, 0.5);
+    assert.isAbove(Math.abs(arabicMetrics.advance - isolatedWidth), 1);
+    assert.strictEqual(arabicGlyphs[0].texX0, arabicMetrics.texX0);
+    assert.strictEqual(arabicGlyphs[0].texY0, arabicMetrics.texY0);
+
+    const mixed = 'ⵍⵣⵣⴰⵢⴻⵔ الجزائر';
+    const mixedGlyphs = [];
+    layoutPointLabel(
+      mixedGlyphs,
+      new Text({text: mixed, font, textAlign: 'left'}),
+      [0, 0],
+      atlas,
+      [1, 0, 0, 1],
+    );
+    assert.strictEqual(mixedGlyphs.length, 1);
+    const shaped = atlas.getGlyph(font, mixed);
+    assert.strictEqual(mixedGlyphs[0].texX0, shaped.texX0);
+    assert.strictEqual(mixedGlyphs[0].texY0, shaped.texY0);
+    assert.strictEqual(mixedGlyphs[0].texX1, shaped.texX1);
+    assert.strictEqual(mixedGlyphs[0].texY1, shaped.texY1);
+  });
 });
