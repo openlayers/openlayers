@@ -1108,7 +1108,7 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
       endMetric('placement', start);
       countMetric('placementCommits');
       this.placement_.commit(key, now, duration, frameState);
-    } else if (this.placement_.isDeferred(key, now)) {
+    } else if (this.placement_.isDeferred(key, now, frameState)) {
       // Keep rendering so the deferred pass happens once the budget allows.
       frameState.animate = true;
     }
