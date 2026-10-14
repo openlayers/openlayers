@@ -5,7 +5,11 @@ import {asArray} from '../../color.js';
 import {interpolatePoint} from '../../geom/flat/interpolate.js';
 import {lineStringLength} from '../../geom/flat/length.js';
 import {drawTextOnPath, rtlRegEx} from '../../geom/flat/textpath.js';
-import {measureAndCacheTextWidth} from '../canvas.js';
+import {
+  measureAndCacheTextWidth,
+  measureTextBaseline,
+  measureTextHeight,
+} from '../canvas.js';
 import {TEXT_ALIGN} from '../canvas/TextBuilder.js';
 
 /**
@@ -365,52 +369,41 @@ export function layoutPointLabel(
   const halo = strokeColor(textStyle);
   const hasHalo = strokeWidth > 0 && halo[3] > 0;
 
-  const lineHeights = [];
-  const lineAscent = [];
+  // Canvas draws each line with textBaseline 'middle' and steps by the
+  // CSS line box (measureTextHeight). Atlas cells are taller than that box
+  // because they include halo padding, so they are not the line height.
+  const lineHeight = measureTextHeight(font) * scaleY;
+  const baselineOffset = measureTextBaseline(font) * scaleY;
   const lineWidths = [];
-  let totalHeight = 0;
   const lineGlyphs = [];
   for (const line of lines) {
     /** @type {Array<import("../../webgpu/FontAtlas.js").GlyphMetrics>} */
     const glyphs = [];
-    let maxAscent = 0;
-    let maxHeight = 0;
     for (const segment of atlasSegments(line)) {
-      const glyph = atlas.getGlyph(font, segment, strokeWidth, pixelRatio);
-      glyphs.push(glyph);
-      maxAscent = Math.max(maxAscent, glyph.ascent * scaleY);
-      maxHeight = Math.max(maxHeight, glyph.height * scaleY);
-    }
-    if (!glyphs.length) {
-      const sample = atlas.getGlyph(font, 'M', strokeWidth, pixelRatio);
-      maxAscent = sample.ascent * scaleY;
-      maxHeight = sample.height * scaleY;
+      glyphs.push(atlas.getGlyph(font, segment, strokeWidth, pixelRatio));
     }
     lineGlyphs.push(glyphs);
-    lineAscent.push(maxAscent);
-    lineHeights.push(maxHeight);
-    const width =
-      measureAndCacheTextWidth(font, line, getWidthCache(font)) * scaleX;
-    lineWidths.push(width);
-    totalHeight += maxHeight;
+    lineWidths.push(
+      measureAndCacheTextWidth(font, line, getWidthCache(font)) * scaleX,
+    );
   }
 
-  let y = -totalHeight * baseline + offsetY;
+  const totalHeight = lines.length * lineHeight;
+  let lineCenter = -totalHeight * baseline + lineHeight / 2 + offsetY;
   const blockWidth = Math.max(...lineWidths);
   const blockLeft = -blockWidth * align + offsetX;
   const start = out.length;
   for (let i = 0; i < lines.length; ++i) {
     let x = blockLeft + (blockWidth - lineWidths[i]) * justify;
-    const glyphs = lineGlyphs[i];
-    const maxAscent = lineAscent[i];
-    for (const glyph of glyphs) {
+    const alphabetic = lineCenter + baselineOffset;
+    for (const glyph of lineGlyphs[i]) {
       const w = glyph.width * scaleX;
       const h = glyph.height * scaleY;
       out.push({
         x: anchor[0],
         y: anchor[1],
         offsetX: x,
-        offsetY: y + maxAscent - glyph.ascent * scaleY,
+        offsetY: alphabetic - glyph.ascent * scaleY,
         width: w,
         height: h,
         texX0: glyph.texX0,
@@ -434,7 +427,7 @@ export function layoutPointLabel(
       });
       x += glyph.advance * scaleX;
     }
-    y += lineHeights[i];
+    lineCenter += lineHeight;
   }
   if (out.length === start) {
     return null;
