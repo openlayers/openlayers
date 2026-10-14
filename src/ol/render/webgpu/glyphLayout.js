@@ -10,6 +10,7 @@ import {
   measureAndCacheTextWidth,
   measureTextBaseline,
   measureTextHeight,
+  measureWrappedLineHeight,
 } from '../canvas.js';
 import {TEXT_ALIGN} from '../canvas/TextBuilder.js';
 
@@ -409,10 +410,10 @@ export function layoutPointLabel(
   const halo = strokeColor(textStyle);
   const hasHalo = strokeWidth > 0 && halo[3] > 0;
 
-  // Canvas draws each line with textBaseline 'middle' and steps by the
-  // CSS line box (measureTextHeight). Atlas cells are taller than that box
-  // because they include halo padding, so they are not the line height.
-  const lineHeight = measureTextHeight(font) * scaleY;
+  // Atlas cells include halo padding, so they are not the line height.
+  // An explicit line-height is the CSS line box; the default `normal` is
+  // the font's ink extent, without the empty lead some faces add.
+  const lineHeight = measureWrappedLineHeight(font) * scaleY;
   const baselineOffset = measureTextBaseline(font) * scaleY;
   const lineWidths = [];
   const lineGlyphs = [];
