@@ -430,8 +430,10 @@ class WebGPUHelper extends Disposable {
   /**
    * @param {import("../Map.js").FrameState} frameState Frame state.
    * @param {boolean} [enableDepth] Depth testing.
+   * @param {Array<number>} [clearColor] Premultiplied RGBA 0-1 for the frame
+   * clear. Transparent black when omitted. Ignored after the frame is cleared.
    */
-  prepareDraw(frameState, enableDepth) {
+  prepareDraw(frameState, enableDepth, clearColor) {
     const canvas = this.cacheItem_.canvas;
     const size = frameState.size;
     const pixelRatio = frameState.pixelRatio;
@@ -497,7 +499,14 @@ class WebGPUHelper extends Disposable {
       view: /** @type {GPUTextureView} */ (item.colorView),
       loadOp,
       storeOp: 'store',
-      clearValue: {r: 0, g: 0, b: 0, a: 0},
+      clearValue: clearColor
+        ? {
+            r: clearColor[0],
+            g: clearColor[1],
+            b: clearColor[2],
+            a: clearColor[3] === undefined ? 1 : clearColor[3],
+          }
+        : {r: 0, g: 0, b: 0, a: 0},
     };
 
     /** @type {GPURenderPassDescriptor} */
