@@ -19,6 +19,7 @@ import {
   compose as composeTransform,
   create as createTransform,
 } from '../../transform.js';
+import {getImageStyleData} from '../ImageStyle.js';
 import VectorContext from '../VectorContext.js';
 import {
   defaultFillStyle,
@@ -1112,33 +1113,29 @@ class CanvasImmediateRenderer extends VectorContext {
    * @override
    */
   setImageStyle(imageStyle) {
-    let imageSize;
-    if (!imageStyle || !(imageSize = imageStyle.getSize())) {
+    if (!imageStyle) {
       this.image_ = null;
       return;
     }
-    const imagePixelRatio = imageStyle.getPixelRatio(this.pixelRatio_);
-    const imageAnchor = imageStyle.getAnchor();
-    const imageOrigin = imageStyle.getOrigin();
-    if (!imageAnchor || !imageOrigin) {
+    const data = getImageStyleData(imageStyle, this.pixelRatio_);
+    if (!data) {
       this.image_ = null;
       return;
     }
-    this.image_ = imageStyle.getImage(this.pixelRatio_);
-    this.imageAnchorX_ = imageAnchor[0] * imagePixelRatio;
-    this.imageAnchorY_ = imageAnchor[1] * imagePixelRatio;
-    this.imageHeight_ = imageSize[1] * imagePixelRatio;
-    this.imageOpacity_ = imageStyle.getOpacity();
-    this.imageOriginX_ = imageOrigin[0];
-    this.imageOriginY_ = imageOrigin[1];
-    this.imageRotateWithView_ = imageStyle.getRotateWithView();
-    this.imageRotation_ = imageStyle.getRotation();
-    const imageScale = imageStyle.getScaleArray();
+    this.image_ = data.image;
+    this.imageAnchorX_ = data.anchorX;
+    this.imageAnchorY_ = data.anchorY;
+    this.imageHeight_ = data.sourceHeight;
+    this.imageOpacity_ = data.opacity;
+    this.imageOriginX_ = data.sourceX;
+    this.imageOriginY_ = data.sourceY;
+    this.imageRotateWithView_ = data.rotateWithView;
+    this.imageRotation_ = data.rotation;
     this.imageScale_ = [
-      (imageScale[0] * this.pixelRatio_) / imagePixelRatio,
-      (imageScale[1] * this.pixelRatio_) / imagePixelRatio,
+      (data.scale[0] * this.pixelRatio_) / data.imagePixelRatio,
+      (data.scale[1] * this.pixelRatio_) / data.imagePixelRatio,
     ];
-    this.imageWidth_ = imageSize[0] * imagePixelRatio;
+    this.imageWidth_ = data.sourceWidth;
   }
 
   /**
