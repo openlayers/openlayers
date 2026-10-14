@@ -734,14 +734,16 @@ fn vs_main(
   out.fillColor = vec4(fillColor.rgb, fillColor.a * opacity);
   out.strokeColor = vec4(strokeColor.rgb, strokeColor.a * opacity);
   out.hitColor = hitColor;
-  let atlasSize = vec2<f32>(textureDimensions(atlasTexture));
-  out.texCoord = mix(atlasPx.xy, atlasPx.zw, corner) / atlasSize;
+  // Atlas pixels; vertex and fragment stage must not both use the texture, so
+  // defer normalizing by the atlas size to the fragment stage.
+  out.texCoord = mix(atlasPx.xy, atlasPx.zw, corner);
   return out;
 }
 
 @fragment
 fn fs_halo(in: VertexOut) -> @location(0) vec4<f32> {
-  let atlas = textureSample(atlasTexture, atlasSampler, in.texCoord);
+  let atlasSize = vec2<f32>(textureDimensions(atlasTexture));
+  let atlas = textureSample(atlasTexture, atlasSampler, in.texCoord / atlasSize);
   if (atlas.a < 0.01) {
     discard;
   }
@@ -759,7 +761,8 @@ fn fs_halo(in: VertexOut) -> @location(0) vec4<f32> {
 
 @fragment
 fn fs_fill(in: VertexOut) -> @location(0) vec4<f32> {
-  let atlas = textureSample(atlasTexture, atlasSampler, in.texCoord);
+  let atlasSize = vec2<f32>(textureDimensions(atlasTexture));
+  let atlas = textureSample(atlasTexture, atlasSampler, in.texCoord / atlasSize);
   if (atlas.a < 0.01) {
     discard;
   }
