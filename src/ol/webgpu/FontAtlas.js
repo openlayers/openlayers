@@ -34,7 +34,9 @@ function scaleFont(font, pixelRatio) {
 
 /**
  * @classdesc
- * Shelf-packed alpha font atlas rasterized with Canvas 2D.
+ * Shelf-packed font atlas rasterized with Canvas 2D. The red channel stores
+ * halo coverage and the green channel stores fill coverage. Keeping the masks
+ * independent lets the renderer draw every halo before any fill in a label.
  */
 class FontAtlas {
   constructor() {
@@ -52,9 +54,8 @@ class FontAtlas {
       alpha: true,
     });
     this.context_.clearRect(0, 0, this.size_, this.size_);
-    // White fill / black stroke: the glyph shader mixes by luminance.
-    this.context_.fillStyle = '#fff';
-    this.context_.strokeStyle = '#000';
+    this.context_.fillStyle = '#0f0';
+    this.context_.strokeStyle = '#f00';
 
     /**
      * @private
@@ -136,8 +137,13 @@ class FontAtlas {
     const y = this.shelfY_;
     this.context_.save();
     this.context_.font = scaledFont;
-    this.context_.fillStyle = '#fff';
-    this.context_.strokeStyle = '#000';
+    // Additive compositing preserves the independently antialiased coverage
+    // masks where the stroke and fill overlap. Canvas image data is
+    // unpremultiplied, so the shader multiplies each channel by alpha to
+    // recover its coverage.
+    this.context_.globalCompositeOperation = 'lighter';
+    this.context_.fillStyle = '#0f0';
+    this.context_.strokeStyle = '#f00';
     this.context_.textBaseline = 'alphabetic';
     this.context_.lineJoin = 'round';
     if (strokeWidth > 0) {
@@ -180,8 +186,8 @@ class FontAtlas {
     });
     nextContext.clearRect(0, 0, next, next);
     nextContext.drawImage(this.context_.canvas, 0, 0);
-    nextContext.fillStyle = '#fff';
-    nextContext.strokeStyle = '#000';
+    nextContext.fillStyle = '#0f0';
+    nextContext.strokeStyle = '#f00';
     this.context_ = nextContext;
     this.size_ = next;
     this.dirty_ = true;
