@@ -1,14 +1,11 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import {asArray} from '../src/ol/color.js';
-import {newEvaluationContext} from '../src/ol/expr/cpu.js';
-import {newParsingContext} from '../src/ol/expr/expression.js';
+import FullScreen from '../src/ol/control/FullScreen.js';
 import MVT from '../src/ol/format/MVT.js';
 import Link from '../src/ol/interaction/Link.js';
-import VectorTileLayer from '../src/ol/layer/VectorTile.js';
 import WebGPUVectorTileLayer from '../src/ol/layer/WebGPUVectorTile.js';
 import {fromLonLat} from '../src/ol/proj.js';
-import {buildRuleSet} from '../src/ol/render/canvas/style.js';
 import VectorTileSource from '../src/ol/source/VectorTile.js';
 
 const styleUrl =
@@ -258,56 +255,11 @@ function filter(layer) {
   return conditions.length === 1 ? conditions[0] : ['all', ...conditions];
 }
 
-/**
- * Creates a Canvas2D style function for flat style rules. Canvas2D style
- * functions do not provide `['zoom']`, so it is derived from the view.
- * @param {Array<Object>} rules Flat style rules.
- * @param {View} view View.
- * @return {import('../src/ol/style/Style.js').StyleFunction} Style function.
- */
-function canvasStyleFunction(rules, view) {
-  const evaluate = buildRuleSet(rules, newParsingContext());
-  const context = newEvaluationContext();
-  return (feature, resolution) => {
-    context.properties = feature.getPropertiesInternal() ?? {};
-    context.resolution = resolution;
-    context.zoom = view.getZoomForResolution(resolution);
-    return evaluate(context);
-  };
-}
-
 const styleBuilders = {
   fill: fillStyle,
   line: lineStyle,
   symbol: symbolStyle,
 };
-
-/**
- * @param {string} label Pane label.
- * @return {HTMLElement} Map target element.
- */
-function createPane(label) {
-  const pane = document.createElement('div');
-  pane.style.cssText = 'position: relative; flex: 1 1 0; min-width: 0';
-  const target = document.createElement('div');
-  target.className = 'map';
-  target.style.width = '100%';
-  const labelElement = document.createElement('div');
-  labelElement.textContent = label;
-  labelElement.style.cssText =
-    'position: absolute; top: .5em; left: 3em; padding: 2px 8px;' +
-    'background: rgba(255, 255, 255, .8); border-radius: 4px;' +
-    'font-weight: bold; pointer-events: none';
-  pane.append(target, labelElement);
-  return pane;
-}
-
-const container = document.getElementById('map');
-container.removeAttribute('class');
-container.style.cssText = 'display: flex; gap: 4px';
-const canvasPane = createPane('Canvas2D');
-const webgpuPane = createPane('WebGPU');
-container.append(canvasPane, webgpuPane);
 
 const view = new View({
   center: fromLonLat([13.388, 52.517]),
@@ -315,14 +267,11 @@ const view = new View({
   maxResolution,
 });
 
-const canvasMap = new Map({
-  target: canvasPane.firstElementChild,
+const map = new Map({
+  target: 'map',
   view,
 });
-const webgpuMap = new Map({
-  target: webgpuPane.firstElementChild,
-  view,
-});
+map.addControl(new FullScreen());
 
 Promise.all([
   fetch(styleUrl).then((response) => response.json()),
@@ -344,10 +293,7 @@ Promise.all([
     if (layer.type === 'background') {
       const paint = layer.paint || {};
       if (paint['background-color']) {
-        canvasMap.getTargetElement().style.background =
-          paint['background-color'];
-        webgpuMap.getTargetElement().style.background =
-          paint['background-color'];
+        map.getTargetElement().style.background = paint['background-color'];
       }
       return;
     }
@@ -359,19 +305,12 @@ Promise.all([
     rules.push({filter: filter(layer), style});
   });
 
-  canvasMap.addLayer(
-    new VectorTileLayer({
-      source: createSource(),
-      style: canvasStyleFunction(rules, view),
-      declutter: true,
-    }),
-  );
-  webgpuMap.addLayer(
+  map.addLayer(
     new WebGPUVectorTileLayer({
       source: createSource(),
       style: rules,
       declutter: true,
     }),
   );
-  canvasMap.addInteraction(new Link());
+  map.addInteraction(new Link());
 });
