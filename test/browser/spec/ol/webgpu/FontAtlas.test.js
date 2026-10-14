@@ -52,7 +52,7 @@ describe('ol/webgpu/FontAtlas', () => {
     assert.closeTo(large.advance, small.advance * 3, 1);
   });
 
-  it('encodes fill as white and stroke as black', () => {
+  it('encodes fill and halo coverage in independent channels', () => {
     const atlas = new FontAtlas();
     const glyph = atlas.getGlyph('24px sans-serif', 'O', 3);
     const canvas = atlas.getCanvas();
@@ -62,19 +62,34 @@ describe('ol/webgpu/FontAtlas', () => {
     const tw = glyph.texX1 - glyph.texX0;
     const th = glyph.texY1 - glyph.texY0;
     const data = context.getImageData(x, y, tw, th).data;
-    let maxR = 0;
-    let minOpaqueR = 255;
-    let opaque = 0;
+    let haloOnly = 0;
+    let fill = 0;
     for (let i = 0; i < data.length; i += 4) {
-      if (data[i + 3] > 200) {
-        opaque += 1;
-        maxR = Math.max(maxR, data[i]);
-        minOpaqueR = Math.min(minOpaqueR, data[i]);
+      if (data[i] > 100 && data[i + 1] < 20 && data[i + 3] > 100) {
+        ++haloOnly;
+      }
+      if (data[i + 1] > 200 && data[i + 3] > 200) {
+        ++fill;
       }
     }
-    assert.isAbove(opaque, 0);
-    assert.isAbove(maxR, 200);
-    assert.isBelow(minOpaqueR, 40);
+    assert.isAbove(haloOnly, 0);
+    assert.isAbove(fill, 0);
+
+    const withoutHalo = atlas.getGlyph('24px sans-serif', 'A');
+    const fillData = context.getImageData(
+      withoutHalo.texX0,
+      withoutHalo.texY0,
+      withoutHalo.texX1 - withoutHalo.texX0,
+      withoutHalo.texY1 - withoutHalo.texY0,
+    ).data;
+    let maxHalo = 0;
+    let maxFill = 0;
+    for (let i = 0; i < fillData.length; i += 4) {
+      maxHalo = Math.max(maxHalo, fillData[i]);
+      maxFill = Math.max(maxFill, fillData[i + 1]);
+    }
+    assert.strictEqual(maxHalo, 0);
+    assert.isAbove(maxFill, 200);
   });
 
   it('rasterizes more texels at a higher device pixel ratio', () => {
