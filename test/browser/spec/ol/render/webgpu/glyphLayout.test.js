@@ -4,7 +4,9 @@ import {
   measureTextHeight,
 } from '../../../../../../src/ol/render/canvas.js';
 import {
+  extendGlyphBounds,
   GLYPH_INSTANCE_STRIDE,
+  isGlyphDrawn,
   layoutLineLabel,
   layoutPointLabel,
   packGlyphInstances,
@@ -302,8 +304,9 @@ describe('ol/render/webgpu/glyphLayout', () => {
       placement: 'line',
       fill: new Fill({color: '#000'}),
     });
-    const straight = [];
-    layoutLineLabel(straight, text, [0, 0, 1000, 0], 1, atlas, [1, 0, 0, 1]);
+    const straightAll = [];
+    layoutLineLabel(straightAll, text, [0, 0, 1000, 0], 1, atlas, [1, 0, 0, 1]);
+    const straight = straightAll.filter((glyph) => isGlyphDrawn(glyph, 0));
     assert.strictEqual(straight.length, 1);
     const whole = straight[0];
     assert.closeTo(whole.x, 500, 1);
@@ -314,15 +317,16 @@ describe('ol/render/webgpu/glyphLayout', () => {
       0.01,
     );
 
-    const split = [];
+    const splitAll = [];
     layoutLineLabel(
-      split,
+      splitAll,
       text,
       [0, 0, 100, 0, 200, 0, 400, 0],
       1,
       atlas,
       [1, 0, 0, 1],
     );
+    const split = splitAll.filter((glyph) => isGlyphDrawn(glyph, 0));
     assert.isAbove(split.length, 1);
     for (const glyph of split) {
       // One shared anchor keeps the label rigid when the view zooms.
@@ -385,6 +389,66 @@ describe('ol/render/webgpu/glyphLayout', () => {
       }
       assert.isBelow(distance, glyph.height);
     }
+  });
+
+  it('rotates line labels with the view and keeps them upright', () => {
+    const atlas = new FontAtlas();
+    const text = new Text({
+      text: 'Hallesches Ufer',
+      font: '16px sans-serif',
+      placement: 'line',
+      fill: new Fill({color: '#000'}),
+    });
+    const glyphs = [];
+    layoutLineLabel(glyphs, text, [0, 0, 1000, 0], 1, atlas, [1, 0, 0, 1]);
+    assert.strictEqual(glyphs.length, 2);
+    for (const glyph of glyphs) {
+      assert.isTrue(glyph.rotateWithView);
+    }
+    const [forward, reversed] = glyphs;
+    assert.isTrue(isGlyphDrawn(forward, 0));
+    assert.isFalse(isGlyphDrawn(reversed, 0));
+    assert.isTrue(isGlyphDrawn(forward, 1.5));
+    assert.isFalse(isGlyphDrawn(reversed, 1.5));
+    assert.isFalse(isGlyphDrawn(forward, 2));
+    assert.isTrue(isGlyphDrawn(reversed, 2));
+    assert.isFalse(isGlyphDrawn(forward, -Math.PI));
+    assert.isTrue(isGlyphDrawn(reversed, -Math.PI));
+
+    // A horizontal label turned a quarter by the view stands vertically.
+    const bounds = [Infinity, Infinity, -Infinity, -Infinity];
+    for (const glyph of glyphs) {
+      extendGlyphBounds(bounds, glyph, 0, 0, Math.PI / 2);
+    }
+    assert.isAbove(bounds[3] - bounds[1], bounds[2] - bounds[0]);
+
+    const packed = packGlyphInstances(glyphs);
+    assert.strictEqual(packed[23], 1);
+    assert.strictEqual(packed[24], forward.uprightX);
+    assert.strictEqual(packed[25], forward.uprightY);
+  });
+
+  it('draws a line label in one direction when keepUpright is false', () => {
+    const atlas = new FontAtlas();
+    const glyphs = [];
+    layoutLineLabel(
+      glyphs,
+      new Text({
+        text: 'Hallesches Ufer',
+        font: '16px sans-serif',
+        placement: 'line',
+        keepUpright: false,
+        fill: new Fill({color: '#000'}),
+      }),
+      [1000, 0, 0, 0],
+      1,
+      atlas,
+      [1, 0, 0, 1],
+    );
+    assert.strictEqual(glyphs.length, 1);
+    assert.isTrue(isGlyphDrawn(glyphs[0], 0));
+    assert.isTrue(isGlyphDrawn(glyphs[0], Math.PI));
+    assert.closeTo(Math.abs(glyphs[0].angle), Math.PI, 1e-9);
   });
 
   it('does not wrap line-placement text', () => {

@@ -766,6 +766,7 @@ struct FrameUniforms {
   fadeDuration: f32,
   // CSS pixels per map unit, for measuring dashes along a line.
   pixelsPerUnit: f32,
+  viewRotation: f32,
 }
 
 @group(0) @binding(0) var<uniform> uniforms: FrameUniforms;
@@ -792,6 +793,8 @@ fn vs_main(
   @location(7) angle: f32,
   @location(8) corner: vec2<f32>,
   @location(9) opacityTransition: vec3<f32>,
+  @location(10) rotateWithView: f32,
+  @location(11) upright: vec2<f32>,
 ) -> VertexOut {
   var out: VertexOut;
   let fadeProgress = clamp(
@@ -800,7 +803,15 @@ fn vs_main(
     1.0
   );
   let opacity = mix(opacityTransition.x, opacityTransition.y, fadeProgress);
-  if (opacity <= 0.0) {
+  let viewC = cos(uniforms.viewRotation);
+  let viewS = sin(uniforms.viewRotation);
+  // Same rule as isGlyphDrawn(): of a kept-upright line label's two reading
+  // directions, only the one reading left to right on screen is drawn.
+  let readingX = viewC * upright.x - viewS * upright.y;
+  let readingY = viewS * upright.x + viewC * upright.y;
+  let upsideDown = (upright.x != 0.0 || upright.y != 0.0) &&
+    (readingX < 0.0 || (readingX == 0.0 && readingY < 0.0));
+  if (opacity <= 0.0 || upsideDown) {
     // Decluttered away this frame: collapse the quad instead of re-uploading
     // the instance buffer without it.
     out.position = vec4(0.0, 0.0, 2.0, 1.0);
@@ -812,8 +823,9 @@ fn vs_main(
   }
   var clip = uniforms.projectionMatrix * vec4(position, 0.0, 1.0);
   var local = corner * sizePx + offsetPx;
-  let c = cos(angle);
-  let s = sin(angle);
+  let rotation = angle + rotateWithView * uniforms.viewRotation;
+  let c = cos(rotation);
+  let s = sin(rotation);
   let rotated = vec2(c * local.x - s * local.y, s * local.x + c * local.y);
   // CSS pixels are Y-down; clip space is Y-up.
   clip = vec4(

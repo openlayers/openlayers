@@ -163,7 +163,7 @@ function labelContainsPixel(
       const x = glyph.x + worldOffset;
       const pixelX = transform[0] * x + transform[2] * glyph.y + transform[4];
       const pixelY = transform[1] * x + transform[3] * glyph.y + transform[5];
-      extendGlyphBounds(bounds, glyph, pixelX, pixelY);
+      extendGlyphBounds(bounds, glyph, pixelX, pixelY, viewRotation);
     }
     if (bounds[0] === Infinity) {
       return false;

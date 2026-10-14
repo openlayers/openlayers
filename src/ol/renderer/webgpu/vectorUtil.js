@@ -537,6 +537,7 @@ export class FrameUniformSlot extends Disposable {
     data[24] = fadeClock(frameState.time || 0);
     data[25] = LABEL_FADE_DURATION;
     data[26] = 1 / frameState.viewState.resolution;
+    data[27] = frameState.viewState.rotation;
     helper.writeBuffer(this.buffer, data);
   }
 
@@ -943,6 +944,8 @@ export function createVectorPipelines(helper) {
             {shaderLocation: 5, offset: 56, format: 'float32x4'},
             {shaderLocation: 6, offset: 72, format: 'float32x4'},
             {shaderLocation: 7, offset: 88, format: 'float32'},
+            {shaderLocation: 10, offset: 92, format: 'float32'},
+            {shaderLocation: 11, offset: 96, format: 'float32x2'},
           ],
         },
         {
