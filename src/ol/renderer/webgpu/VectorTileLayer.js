@@ -1013,7 +1013,7 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     if (!helper || !uniforms) {
       return;
     }
-    helper.prepareDraw(frameState, false);
+    helper.prepareDraw(frameState, false, this.getClearColor(frameState));
     uniforms.begin();
     /** @type {Array<import("./vectorUtil.js").PaintBatch>} */
     const entries = [];
