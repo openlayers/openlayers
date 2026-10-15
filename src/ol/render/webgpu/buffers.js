@@ -142,6 +142,14 @@ export function decodeHitColor(color) {
 let patternWarned = false;
 
 /**
+ * Half of one 8-bit alpha step. A smaller alpha is stored as 0, which is what
+ * the framebuffer would hold, and the fill and stroke builders then skip the
+ * geometry instead of tessellating something that cannot be seen.
+ * @type {number}
+ */
+const MIN_VISIBLE_ALPHA = 0.5 / 255;
+
+/**
  * @param {import("../../color.js").Color|import("../../colorlike.js").ColorLike|import("../../colorlike.js").PatternDescriptor|null|undefined} color Color.
  * @return {Array<number>} RGBA 0-1. Canvas patterns and gradients cannot be
  * drawn and come out transparent.
@@ -157,7 +165,11 @@ function toRgba(color) {
     return [0, 0, 0, 0];
   }
   const array = asArray(color);
-  return [array[0] / 255, array[1] / 255, array[2] / 255, array[3] ?? 1];
+  let alpha = array[3] ?? 1;
+  if (!(alpha >= MIN_VISIBLE_ALPHA)) {
+    alpha = 0;
+  }
+  return [array[0] / 255, array[1] / 255, array[2] / 255, alpha];
 }
 
 /**
@@ -1162,7 +1174,11 @@ function appendFills(
       hit,
     );
   } else {
-    styleIndex = styleTable.add(toRgba(fillColor), hit);
+    const color = toRgba(fillColor);
+    if (color[3] === 0) {
+      return;
+    }
+    styleIndex = styleTable.add(color, hit);
   }
   const type = geometry.getType();
   if (type === 'Polygon') {
@@ -1255,6 +1271,9 @@ function appendStrokes(
   const color = toRgba(
     /** @type {string|Array<number>} */ (stroke.getColor() || '#000'),
   );
+  if (color[3] === 0) {
+    return;
+  }
   const styleIndex = styleTable.add(
     color,
     hit,

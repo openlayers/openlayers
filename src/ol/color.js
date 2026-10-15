@@ -37,12 +37,21 @@ function getColorParseContext() {
   return colorParseContext;
 }
 
-const rgbModernRegEx =
-  /^rgba?\(\s*(\d+%?)\s+(\d+%?)\s+(\d+%?)(?:\s*\/\s*(\d+%|\d*\.\d+|[01]))?\s*\)$/i;
-const rgbLegacyAbsoluteRegEx =
-  /^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)(?:\s*,\s*(\d+%|\d*\.\d+|[01]))?\s*\)$/i;
-const rgbLegacyPercentageRegEx =
-  /^rgba?\(\s*(\d+%)\s*,\s*(\d+%)\s*,\s*(\d+%)(?:\s*,\s*(\d+%|\d*\.\d+|[01]))?\s*\)$/i;
+// A percentage, or a 0–1 number. A near-zero opacity is serialized in
+// scientific notation (`1e-7`, `4.96e-7`), which is still a CSS number.
+const alphaComponent = String.raw`(\d+%|\d*\.\d+(?:e[+-]?\d+)?|\d+e[+-]?\d+|[01])`;
+const rgbModernRegEx = new RegExp(
+  String.raw`^rgba?\(\s*(\d+%?)\s+(\d+%?)\s+(\d+%?)(?:\s*/\s*${alphaComponent})?\s*\)$`,
+  'i',
+);
+const rgbLegacyAbsoluteRegEx = new RegExp(
+  String.raw`^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)(?:\s*,\s*${alphaComponent})?\s*\)$`,
+  'i',
+);
+const rgbLegacyPercentageRegEx = new RegExp(
+  String.raw`^rgba?\(\s*(\d+%)\s*,\s*(\d+%)\s*,\s*(\d+%)(?:\s*,\s*${alphaComponent})?\s*\)$`,
+  'i',
+);
 const hexRegEx = /^#([\da-f]{3,4}|[\da-f]{6}|[\da-f]{8})$/i;
 
 /**
@@ -64,49 +73,65 @@ function throwInvalidColor(color) {
 }
 
 /**
+ * rgb() and hex, which cover almost every color a style produces. Returns null
+ * for anything else, including an rgb() string whose numbers this parser does
+ * not recognize; the canvas parser then gets that string.
  * @param {string} color Color string.
- * @return {Color} RGBa color array.
+ * @return {Color|null} RGBa color array, or null.
  */
-function parseRgba(color) {
-  // Fast lane for rgb(a) colors
+function parseColorFast(color) {
   if (color.toLowerCase().startsWith('rgb')) {
     const rgb =
       color.match(rgbLegacyAbsoluteRegEx) ||
       color.match(rgbModernRegEx) ||
       color.match(rgbLegacyPercentageRegEx);
-    if (rgb) {
-      const alpha = rgb[4];
-      const rgbDivider = 100 / 255;
-      return [
-        clamp((toColorComponent(rgb[1], rgbDivider) + 0.5) | 0, 0, 255),
-        clamp((toColorComponent(rgb[2], rgbDivider) + 0.5) | 0, 0, 255),
-        clamp((toColorComponent(rgb[3], rgbDivider) + 0.5) | 0, 0, 255),
-        alpha !== undefined ? clamp(toColorComponent(alpha, 100), 0, 1) : 1,
-      ];
+    if (!rgb) {
+      return null;
     }
-    throwInvalidColor(color);
+    const alpha = rgb[4];
+    const rgbDivider = 100 / 255;
+    return [
+      clamp((toColorComponent(rgb[1], rgbDivider) + 0.5) | 0, 0, 255),
+      clamp((toColorComponent(rgb[2], rgbDivider) + 0.5) | 0, 0, 255),
+      clamp((toColorComponent(rgb[3], rgbDivider) + 0.5) | 0, 0, 255),
+      alpha !== undefined ? clamp(toColorComponent(alpha, 100), 0, 1) : 1,
+    ];
   }
-  // Fast lane for hex colors (also with alpha)
-  if (color.startsWith('#')) {
-    if (hexRegEx.test(color)) {
-      const hex = color.substring(1);
-      const step = hex.length <= 4 ? 1 : 2;
-      const colorFromHex = [0, 0, 0, 255];
-      for (let i = 0, ii = hex.length; i < ii; i += step) {
-        let colorComponent = parseInt(hex.substring(i, i + step), 16);
-        if (step === 1) {
-          colorComponent += colorComponent << 4;
-        }
-        colorFromHex[i / step] = colorComponent;
+  if (color.startsWith('#') && hexRegEx.test(color)) {
+    const hex = color.substring(1);
+    const step = hex.length <= 4 ? 1 : 2;
+    const colorFromHex = [0, 0, 0, 255];
+    for (let i = 0, ii = hex.length; i < ii; i += step) {
+      let colorComponent = parseInt(hex.substring(i, i + step), 16);
+      if (step === 1) {
+        colorComponent += colorComponent << 4;
       }
-      colorFromHex[3] = colorFromHex[3] / 255;
-      return colorFromHex;
+      colorFromHex[i / step] = colorComponent;
     }
+    colorFromHex[3] = colorFromHex[3] / 255;
+    return colorFromHex;
+  }
+  return null;
+}
+
+/**
+ * @param {string} color Color string.
+ * @return {Color} RGBa color array.
+ */
+function parseRgba(color) {
+  const parsed = parseColorFast(color);
+  if (parsed) {
+    return parsed;
+  }
+  // Canvas accepts the rest of the CSS color syntax (a signed alpha, a
+  // fractional channel) and serializes it back to hex or rgba().
+  // See https://www.w3.org/TR/2021/SPSD-2dcontext-20210128/#serialization-of-a-color
+  let context;
+  try {
+    context = getColorParseContext();
+  } catch {
     throwInvalidColor(color);
   }
-  // Use canvas color serialization to parse the color into hex or rgba
-  // See https://www.w3.org/TR/2021/SPSD-2dcontext-20210128/#serialization-of-a-color
-  const context = getColorParseContext();
   context.fillStyle = '#abcdef';
   let invalidCheckFillStyle = context.fillStyle;
   context.fillStyle = color;
@@ -119,8 +144,13 @@ function parseRgba(color) {
     }
   }
   const colorString = context.fillStyle;
-  if (colorString.startsWith('#') || colorString.startsWith('rgba')) {
-    return parseRgba(colorString);
+  // Only the fast parser reads the serialized form. Calling parseRgba here
+  // would ask canvas to parse its own output again.
+  if (colorString !== color) {
+    const normalized = parseColorFast(colorString);
+    if (normalized) {
+      return normalized;
+    }
   }
   context.clearRect(0, 0, 1, 1);
   context.fillRect(0, 0, 1, 1);
