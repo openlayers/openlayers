@@ -258,11 +258,12 @@ fn main(@builtin(global_invocation_id) id: vec3<u32>) {
     let dx = (mix(n10.xy, n11.xy, fy) - mix(n00.xy, n01.xy, fy)) / warp.unitsPerCell.x;
     let dy = (top - bottom) / warp.unitsPerCell.y;
     let base = index * 4u;
-    let normal = vec2(inAttributes[base], inAttributes[base + 1u]);
-    let warped = dx * normal.x + dy * normal.y;
+    let extrusion = vec2(inAttributes[base], inAttributes[base + 1u]);
+    let warped = dx * extrusion.x + dy * extrusion.y;
     let scale = max(length(warped), 1e-12);
-    outAttributes[base] = warped.x / scale;
-    outAttributes[base + 1u] = warped.y / scale;
+    let extrusionLength = length(extrusion);
+    outAttributes[base] = warped.x / scale * extrusionLength;
+    outAttributes[base + 1u] = warped.y / scale * extrusionLength;
     outAttributes[base + 2u] = inAttributes[base + 2u];
     outAttributes[base + 3u] = inAttributes[base + 3u];
   }
@@ -437,12 +438,15 @@ fn vs_main(
   }
   var clip = uniforms.projectionMatrix * vec4(warped.xy, 0.0, 1.0);
   let width = max(normalWidth.z, 1.0);
-  // The centerline is rotated by projectionMatrix, so its normal must be
-  // rotated as well. Normalize after converting clip coordinates to pixels:
-  // clip-space x/y have different scales on a non-square viewport.
-  let clipNormal = uniforms.projectionMatrix * vec4(normalWidth.xy, 0.0, 0.0);
-  let screenNormal = normalize(clipNormal.xy * uniforms.viewportSizePx);
-  var offset = screenNormal * (width * 0.5);
+  // The centerline is rotated by projectionMatrix, so its extrusion must be
+  // rotated as well. Its direction is normalized in pixel space while its
+  // magnitude, which carries miter and cap extension, is preserved.
+  let clipExtrusion = uniforms.projectionMatrix * vec4(normalWidth.xy, 0.0, 0.0);
+  let extrusionPx = clipExtrusion.xy * uniforms.viewportSizePx;
+  let screenExtrusion =
+    extrusionPx / max(length(extrusionPx), 1e-12) *
+    length(normalWidth.xy);
+  var offset = screenExtrusion * (width * 0.5);
   clip = vec4(
     clip.xy + offset / (uniforms.viewportSizePx * 0.5) * clip.w,
     clip.z,
@@ -554,12 +558,15 @@ fn vs_main(
   var out: VertexOut;
   var clip = uniforms.projectionMatrix * vec4(vec2<f32>(position), 0.0, 1.0);
   let width = max(normalWidth.z, 1.0);
-  // The centerline is rotated by projectionMatrix, so its normal must be
-  // rotated as well. Normalize after converting clip coordinates to pixels:
-  // clip-space x/y have different scales on a non-square viewport.
-  let clipNormal = uniforms.projectionMatrix * vec4(normalWidth.xy, 0.0, 0.0);
-  let screenNormal = normalize(clipNormal.xy * uniforms.viewportSizePx);
-  var offset = screenNormal * (width * 0.5);
+  // The centerline is rotated by projectionMatrix, so its extrusion must be
+  // rotated as well. Its direction is normalized in pixel space while its
+  // magnitude, which carries miter and cap extension, is preserved.
+  let clipExtrusion = uniforms.projectionMatrix * vec4(normalWidth.xy, 0.0, 0.0);
+  let extrusionPx = clipExtrusion.xy * uniforms.viewportSizePx;
+  let screenExtrusion =
+    extrusionPx / max(length(extrusionPx), 1e-12) *
+    length(normalWidth.xy);
+  var offset = screenExtrusion * (width * 0.5);
   clip = vec4(
     clip.xy + offset / (uniforms.viewportSizePx * 0.5) * clip.w,
     clip.z,
