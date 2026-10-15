@@ -2,6 +2,28 @@
  * @module ol/webgpu/shaders
  */
 
+const VECTOR_CLIP_UNIFORMS = `
+  clipInfo: vec4<u32>,
+  clipExtents: array<vec4<f32>, 64>,
+`;
+
+const VECTOR_CLIP_FUNCTION = `
+fn insideRenderExtents(position: vec2<f32>) -> bool {
+  for (var i = 0u; i < uniforms.clipInfo.x; i = i + 1u) {
+    let extent = uniforms.clipExtents[i];
+    if (
+      position.x >= extent.x &&
+      position.y >= extent.y &&
+      position.x <= extent.z &&
+      position.y <= extent.w
+    ) {
+      return true;
+    }
+  }
+  return uniforms.clipInfo.x == 0u;
+}
+`;
+
 export const TILE_SHADER = `
 struct TileUniforms {
   tileTransform: mat4x4<f32>,
@@ -119,6 +141,7 @@ struct FrameUniforms {
   pixelRatio: f32,
   // Where fill patterns start, in framebuffer pixels.
   patternOrigin: vec2<f32>,
+  ${VECTOR_CLIP_UNIFORMS}
 }
 
 struct Style {
@@ -139,12 +162,15 @@ struct Style {
 @group(0) @binding(1) var<storage, read> styles: array<Style>;
 @group(0) @binding(2) var patternTexture: texture_2d<f32>;
 
+${VECTOR_CLIP_FUNCTION}
+
 struct VertexOut {
   @builtin(position) position: vec4<f32>,
   @location(0) color: vec4<f32>,
   @location(1) hitColor: vec4<f32>,
   @location(2) @interpolate(flat) pattern: vec4<f32>,
   @location(3) @interpolate(flat) patternScale: f32,
+  @location(4) localPosition: vec2<f32>,
 }
 
 @vertex
@@ -159,11 +185,15 @@ fn vs_main(
   out.hitColor = style.hitColor;
   out.pattern = style.dashA;
   out.patternScale = style.dashB.x;
+  out.localPosition = vec2<f32>(position);
   return out;
 }
 
 @fragment
 fn fs_main(in: VertexOut) -> @location(0) vec4<f32> {
+  if (!insideRenderExtents(in.localPosition)) {
+    discard;
+  }
   if (uniforms.hitDetection > 0.5) {
     return in.hitColor;
   }
@@ -285,6 +315,7 @@ struct FrameUniforms {
   pixelRatio: f32,
   // Where fill patterns start, in framebuffer pixels.
   patternOrigin: vec2<f32>,
+  ${VECTOR_CLIP_UNIFORMS}
 }
 
 struct Style {
@@ -303,12 +334,15 @@ struct Style {
 @group(0) @binding(1) var<storage, read> styles: array<Style>;
 @group(0) @binding(2) var patternTexture: texture_2d<f32>;
 
+${VECTOR_CLIP_FUNCTION}
+
 struct VertexOut {
   @builtin(position) position: vec4<f32>,
   @location(0) color: vec4<f32>,
   @location(1) hitColor: vec4<f32>,
   @location(2) @interpolate(flat) pattern: vec4<f32>,
   @location(3) @interpolate(flat) patternScale: f32,
+  @location(4) localPosition: vec2<f32>,
 }
 
 @vertex
@@ -322,6 +356,7 @@ fn vs_main(
     out.position = vec4(0.0, 0.0, 2.0, 1.0);
     out.color = vec4(0.0);
     out.hitColor = vec4(0.0);
+    out.localPosition = vec2(0.0);
     return out;
   }
   out.position = uniforms.projectionMatrix * vec4(warped.xy, 0.0, 1.0);
@@ -330,11 +365,15 @@ fn vs_main(
   out.hitColor = style.hitColor;
   out.pattern = style.dashA;
   out.patternScale = style.dashB.x;
+  out.localPosition = warped.xy;
   return out;
 }
 
 @fragment
 fn fs_main(in: VertexOut) -> @location(0) vec4<f32> {
+  if (!insideRenderExtents(in.localPosition)) {
+    discard;
+  }
   if (uniforms.hitDetection > 0.5) {
     return in.hitColor;
   }
@@ -362,6 +401,10 @@ struct FrameUniforms {
   fadeDuration: f32,
   // CSS pixels per map unit, for measuring dashes along a line.
   pixelsPerUnit: f32,
+  viewRotation: f32,
+  pixelRatio: f32,
+  patternOrigin: vec2<f32>,
+  ${VECTOR_CLIP_UNIFORMS}
 }
 
 struct Style {
@@ -376,12 +419,15 @@ struct Style {
 @group(0) @binding(0) var<uniform> uniforms: FrameUniforms;
 @group(0) @binding(1) var<storage, read> styles: array<Style>;
 
+${VECTOR_CLIP_FUNCTION}
+
 struct VertexOut {
   @builtin(position) position: vec4<f32>,
   @location(0) color: vec4<f32>,
   @location(1) hitColor: vec4<f32>,
   @location(2) distance: f32,
   @location(3) @interpolate(flat) styleIndex: u32,
+  @location(4) localPosition: vec2<f32>,
 }
 
 // Coverage of the dash pattern at a distance along the line, in CSS pixels:
@@ -434,6 +480,7 @@ fn vs_main(
     out.hitColor = vec4(0.0);
     out.distance = 0.0;
     out.styleIndex = styleIndex;
+    out.localPosition = vec2(0.0);
     return out;
   }
   var clip = uniforms.projectionMatrix * vec4(warped.xy, 0.0, 1.0);
@@ -458,11 +505,15 @@ fn vs_main(
   out.hitColor = style.hitColor;
   out.distance = normalWidth.w;
   out.styleIndex = styleIndex;
+  out.localPosition = warped.xy;
   return out;
 }
 
 @fragment
 fn fs_main(in: VertexOut) -> @location(0) vec4<f32> {
+  if (!insideRenderExtents(in.localPosition)) {
+    discard;
+  }
   let dash = dashCoverage(
     styles[in.styleIndex],
     in.distance * uniforms.pixelsPerUnit
@@ -490,6 +541,10 @@ struct FrameUniforms {
   fadeDuration: f32,
   // CSS pixels per map unit, for measuring dashes along a line.
   pixelsPerUnit: f32,
+  viewRotation: f32,
+  pixelRatio: f32,
+  patternOrigin: vec2<f32>,
+  ${VECTOR_CLIP_UNIFORMS}
 }
 
 struct Style {
@@ -504,12 +559,15 @@ struct Style {
 @group(0) @binding(0) var<uniform> uniforms: FrameUniforms;
 @group(0) @binding(1) var<storage, read> styles: array<Style>;
 
+${VECTOR_CLIP_FUNCTION}
+
 struct VertexOut {
   @builtin(position) position: vec4<f32>,
   @location(0) color: vec4<f32>,
   @location(1) hitColor: vec4<f32>,
   @location(2) distance: f32,
   @location(3) @interpolate(flat) styleIndex: u32,
+  @location(4) localPosition: vec2<f32>,
 }
 
 // Coverage of the dash pattern at a distance along the line, in CSS pixels:
@@ -578,11 +636,15 @@ fn vs_main(
   out.hitColor = style.hitColor;
   out.distance = normalWidth.w;
   out.styleIndex = styleIndex;
+  out.localPosition = vec2<f32>(position);
   return out;
 }
 
 @fragment
 fn fs_main(in: VertexOut) -> @location(0) vec4<f32> {
+  if (!insideRenderExtents(in.localPosition)) {
+    discard;
+  }
   let dash = dashCoverage(
     styles[in.styleIndex],
     in.distance * uniforms.pixelsPerUnit

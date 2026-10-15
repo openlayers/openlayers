@@ -1,11 +1,25 @@
 import {assert} from 'chai';
 import {
+  VECTOR_FILL_SHADER,
+  VECTOR_FILL_WARPED_SHADER,
   VECTOR_STROKE_SHADER,
   VECTOR_STROKE_WARPED_SHADER,
   VECTOR_WARP_SHADER,
 } from '../../../../src/ol/webgpu/shaders.js';
 
 describe('ol/webgpu/shaders', () => {
+  it('clips vector fragments to their render tile extents', () => {
+    for (const shader of [
+      VECTOR_FILL_SHADER,
+      VECTOR_FILL_WARPED_SHADER,
+      VECTOR_STROKE_SHADER,
+      VECTOR_STROKE_WARPED_SHADER,
+    ]) {
+      assert.include(shader, 'clipExtents: array<vec4<f32>, 64>');
+      assert.include(shader, 'insideRenderExtents(in.localPosition)');
+    }
+  });
+
   describe('vector stroke shaders', () => {
     it('transforms stroke extrusions into screen space and preserves magnitude', () => {
       for (const shader of [

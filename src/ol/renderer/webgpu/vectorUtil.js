@@ -24,7 +24,10 @@ import {
 } from '../../webgpu/shaders.js';
 
 export {ICON_STRIDE, SYMBOL_STRIDE};
+export const MAX_RENDER_CLIP_EXTENTS = 64;
 export const FRAME_UNIFORM_SIZE = 128;
+export const VECTOR_FRAME_UNIFORM_SIZE =
+  (36 + MAX_RENDER_CLIP_EXTENTS * 4) * Float32Array.BYTES_PER_ELEMENT;
 
 /** @type {GPUBlendState} */
 const BLEND = {
@@ -52,9 +55,9 @@ const localTransform = [1, 0, 0, 1, 0, 0];
  * style table, a uniform buffer for the grid-to-clip matrix, and the bind
  * groups tying them together.
  *
- * Geometry is uploaded once. A camera change only rewrites the 96-byte uniform
- * buffer, and the bind groups stay valid because every buffer they reference is
- * owned here.
+ * Geometry is uploaded once. A camera change only rewrites the uniform buffer,
+ * and the bind groups stay valid because every buffer they reference is owned
+ * here.
  */
 export class VectorGpuBuffers extends Disposable {
   /**
@@ -185,7 +188,7 @@ export class VectorGpuBuffers extends Disposable {
     this.uniformBuffer_ =
       this.fillIndexCount || this.strokeIndexCount
         ? helper.getDevice().createBuffer({
-            size: FRAME_UNIFORM_SIZE,
+            size: VECTOR_FRAME_UNIFORM_SIZE,
             usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
           })
         : null;
@@ -377,8 +380,17 @@ export class VectorGpuBuffers extends Disposable {
    * @param {import("../../Map.js").FrameState} frameState Frame.
    * @param {number} hitDetection Hit flag.
    * @param {number} [worldOffset] X offset in view coordinates.
+   * @param {Array<import("../../extent.js").Extent>|null} [clipExtents] Regions in world coordinates to draw.
    */
-  writeUniforms(helper, data, projMat, frameState, hitDetection, worldOffset) {
+  writeUniforms(
+    helper,
+    data,
+    projMat,
+    frameState,
+    hitDetection,
+    worldOffset,
+    clipExtents,
+  ) {
     if (!this.uniformBuffer_) {
       return;
     }
@@ -416,6 +428,26 @@ export class VectorGpuBuffers extends Disposable {
     data[28] = pixelRatio;
     data[30] = (origin[0] * pixelRatio) % (512 * pixelRatio);
     data[31] = (origin[1] * pixelRatio) % (512 * pixelRatio);
+    const clips = clipExtents || [];
+    // Drawing the whole batch is safer than dropping geometry if an unusually
+    // large viewport exhausts the fixed-size uniform array.
+    const clipCount =
+      clips.length <= MAX_RENDER_CLIP_EXTENTS ? clips.length : 0;
+    new Uint32Array(data.buffer)[32] = clipCount;
+    for (let i = 0; i < clipCount; ++i) {
+      const extent = /** @type {import("../../extent.js").Extent} */ (clips[i]);
+      const offset = 36 + i * 4;
+      const minX =
+        (extent[0] - (worldOffset || 0) - grid.originX) / grid.scaleX;
+      const minY = (extent[1] - grid.originY) / grid.scaleY;
+      const maxX =
+        (extent[2] - (worldOffset || 0) - grid.originX) / grid.scaleX;
+      const maxY = (extent[3] - grid.originY) / grid.scaleY;
+      data[offset] = Math.min(minX, maxX);
+      data[offset + 1] = Math.min(minY, maxY);
+      data[offset + 2] = Math.max(minX, maxX);
+      data[offset + 3] = Math.max(minY, maxY);
+    }
     helper.writeBuffer(this.uniformBuffer_, data);
   }
 
