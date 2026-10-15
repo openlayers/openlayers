@@ -357,7 +357,8 @@ class LabelRenderer extends Disposable {
   /**
    * Draw one contiguous run of symbol or glyph instances. `firstInstance`
    * applies to the instance step, including the opacity buffer, so a z-index
-   * can be a slice of the packed instances.
+   * can be a slice of the packed instances. A glyph run is split where the
+   * font atlas page changes, so each draw samples one texture.
    *
    * @param {import("../../webgpu/Helper.js").default} helper Helper.
    * @param {'symbol'|'icon'|'glyph'} kind Instance kind.
@@ -431,35 +432,49 @@ class LabelRenderer extends Disposable {
       pass.draw(4, instanceCount, 0, firstInstance);
       return;
     }
-    if (!this.glyphCount_ || !this.glyphBuffer_) {
+    if (!this.glyphCount_ || !this.glyphBuffer_ || !this.buffers_) {
       return;
     }
-    const atlasTexture = atlas.upload(helper);
     const end = Math.min(firstInstance + instanceCount, this.glyphCount_);
-    const hasHalo =
-      this.glyphHaloPrefix_[end] !== this.glyphHaloPrefix_[firstInstance];
-    if (hasHalo) {
-      this.drawGlyphPass_(
-        helper,
-        'vector-glyph-halo',
-        firstInstance,
-        instanceCount,
-        slot,
-        atlasTexture,
-        cornerBuffer,
-        encoder,
-      );
+    atlas.upload(helper);
+    const glyphs = this.buffers_.glyphs;
+    let start = firstInstance;
+    while (start < end) {
+      const page = glyphs[start].page || 0;
+      let stop = start + 1;
+      while (stop < end && (glyphs[stop].page || 0) === page) {
+        ++stop;
+      }
+      const atlasTexture = atlas.getTexture(page);
+      const count = stop - start;
+      if (atlasTexture) {
+        const hasHalo =
+          this.glyphHaloPrefix_[stop] !== this.glyphHaloPrefix_[start];
+        if (hasHalo) {
+          this.drawGlyphPass_(
+            helper,
+            'vector-glyph-halo',
+            start,
+            count,
+            slot,
+            atlasTexture,
+            cornerBuffer,
+            encoder,
+          );
+        }
+        this.drawGlyphPass_(
+          helper,
+          'vector-glyph-fill',
+          start,
+          count,
+          slot,
+          atlasTexture,
+          cornerBuffer,
+          encoder,
+        );
+      }
+      start = stop;
     }
-    this.drawGlyphPass_(
-      helper,
-      'vector-glyph-fill',
-      firstInstance,
-      instanceCount,
-      slot,
-      atlasTexture,
-      cornerBuffer,
-      encoder,
-    );
   }
 
   /**
