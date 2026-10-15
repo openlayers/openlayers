@@ -1028,9 +1028,9 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
         }
       }
     }
-    // Paint with the other layers on this canvas, in layer order, once
-    // decluttered layers have placed their labels. Painting here would put
-    // this layer under a decluttered layer below it.
+    // Every WebGPU layer on this canvas, including tile layers, paints in
+    // renderDeferred when any layer declutters. Painting here would put this
+    // layer under a decluttered layer below it, or over a tile layer above it.
     if (!frameState.declutter) {
       this.paintSorted_(frameState);
     }
@@ -1168,13 +1168,16 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
   }
 
   /**
-   * Paint a decluttered layer after placement, in ascending layer order.
+   * Paint this layer after placement, in ascending layer order.
+   *
+   * Layers without their own declutter group share this canvas. Drawing them
+   * here keeps their geometry in map order, with symbols and labels above
+   * that geometry and below any higher layer.
+   *
    * @param {import("../../Map.js").FrameState} frameState Frame.
    * @override
    */
   renderDeferred(frameState) {
-    // Also layers without their own declutter group: they share this canvas,
-    // and this pass is what draws them above the decluttered layers below.
     if (!frameState.declutter) {
       return;
     }

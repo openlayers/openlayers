@@ -28,7 +28,8 @@ import {countMetric} from './metrics.js';
  * @property {GPUCommandEncoder|null} encoder Pending encoder.
  * @property {GPUTextureView|null} colorView Current color view.
  * @property {GPUTexture|null} depthTexture Depth texture.
- * @property {boolean} cleared Whether this frame has been cleared.
+ * @property {boolean} cleared Whether this frame's color target has been cleared.
+ * @property {boolean} depthCleared Whether this frame's depth target has been cleared.
  * @property {GPUTextureFormat} format Canvas format.
  */
 
@@ -86,6 +87,7 @@ function acquireCanvas(key, device, format) {
       colorView: null,
       depthTexture: null,
       cleared: false,
+      depthCleared: false,
       format,
     };
     canvasCache[key] = item;
@@ -431,7 +433,9 @@ class WebGPUHelper extends Disposable {
    * @param {import("../Map.js").FrameState} frameState Frame state.
    * @param {boolean} [enableDepth] Depth testing.
    * @param {Array<number>} [clearColor] Premultiplied RGBA 0-1 for the frame
-   * clear. Transparent black when omitted. Ignored after the frame is cleared.
+   * clear. Transparent black when omitted. Ignored after the frame's color
+   * target has been cleared. Depth clears on the first depth pass of the
+   * frame, including when an earlier pass already loaded the color target.
    */
   prepareDraw(frameState, enableDepth, clearColor) {
     const canvas = this.cacheItem_.canvas;
@@ -454,6 +458,7 @@ class WebGPUHelper extends Disposable {
       if (item.depthTexture) {
         item.depthTexture.destroy();
         item.depthTexture = null;
+        item.depthCleared = false;
       }
     }
 
@@ -462,6 +467,7 @@ class WebGPUHelper extends Disposable {
       item.encoder = this.device_.createCommandEncoder();
       item.colorView = item.context.getCurrentTexture().createView();
       item.cleared = false;
+      item.depthCleared = false;
     } else if (!item.encoder) {
       // Additional pass this frame (shared canvas or declutter) after an
       // earlier submit. Reuse the current swap-chain texture.
@@ -477,6 +483,7 @@ class WebGPUHelper extends Disposable {
         format: 'depth24plus',
         usage: GPUTextureUsage.RENDER_ATTACHMENT,
       });
+      item.depthCleared = false;
     } else if (
       enableDepth &&
       item.depthTexture &&
@@ -489,10 +496,17 @@ class WebGPUHelper extends Disposable {
         format: 'depth24plus',
         usage: GPUTextureUsage.RENDER_ATTACHMENT,
       });
+      item.depthCleared = false;
     }
 
     const loadOp = /** @type {GPULoadOp} */ (item.cleared ? 'load' : 'clear');
     item.cleared = true;
+    const depthLoadOp = /** @type {GPULoadOp} */ (
+      item.depthCleared ? 'load' : 'clear'
+    );
+    if (enableDepth) {
+      item.depthCleared = true;
+    }
 
     /** @type {GPURenderPassColorAttachment} */
     const colorAttachment = {
@@ -517,7 +531,7 @@ class WebGPUHelper extends Disposable {
       passDescriptor.depthStencilAttachment = {
         view: item.depthTexture.createView(),
         depthClearValue: 1,
-        depthLoadOp: loadOp,
+        depthLoadOp,
         depthStoreOp: 'store',
       };
     }
