@@ -7,7 +7,7 @@ import {comparePaint} from '../../render/webgpu/drawOrder.js';
 import {GLYPH_INSTANCE_STRIDE} from '../../render/webgpu/glyphLayout.js';
 import {fadeClock, LABEL_FADE_DURATION} from '../../render/webgpu/labelFade.js';
 import {apply as applyTransform} from '../../transform.js';
-import {countMetric} from '../../webgpu/metrics.js';
+import {countMetric, endMetric, startMetric} from '../../webgpu/metrics.js';
 import {
   localCoordinateToPixel,
   projectionMatrixFromFrame,
@@ -989,8 +989,16 @@ export function createVectorPipelines(helper) {
  * @param {GPUTexture} patternTexture Pattern atlas texture.
  * @param {number} [start] First index.
  * @param {number} [count] Index count. The whole buffer when omitted.
+ * @param {GPURenderPassEncoder|GPURenderBundleEncoder} [encoder] Encoder.
  */
-export function drawFills(helper, gpu, patternTexture, start = 0, count) {
+export function drawFills(
+  helper,
+  gpu,
+  patternTexture,
+  start = 0,
+  count,
+  encoder,
+) {
   const indexCount = count === undefined ? gpu.fillIndexCount : count;
   if (!indexCount || !gpu.fillPositionBuffer || !gpu.fillIndexBuffer) {
     return;
@@ -998,7 +1006,7 @@ export function drawFills(helper, gpu, patternTexture, start = 0, count) {
   const warped = gpu.warped && gpu.fillWarpedBuffer;
   const name = warped ? 'vector-fill-warped' : 'vector-fill';
   const pipeline = helper.getRenderPipeline(name, /** @type {any} */ ({}));
-  const pass = helper.getRenderPass();
+  const pass = encoder || helper.getRenderPass();
   pass.setPipeline(pipeline);
   pass.setBindGroup(
     0,
@@ -1019,8 +1027,9 @@ export function drawFills(helper, gpu, patternTexture, start = 0, count) {
  * @param {VectorGpuBuffers} gpu Batch geometry.
  * @param {number} [start] First index.
  * @param {number} [count] Index count. The whole buffer when omitted.
+ * @param {GPURenderPassEncoder|GPURenderBundleEncoder} [encoder] Encoder.
  */
-export function drawStrokes(helper, gpu, start = 0, count) {
+export function drawStrokes(helper, gpu, start = 0, count, encoder) {
   const indexCount = count === undefined ? gpu.strokeIndexCount : count;
   if (!indexCount || !gpu.strokePositionBuffer || !gpu.strokeIndexBuffer) {
     return;
@@ -1028,7 +1037,7 @@ export function drawStrokes(helper, gpu, start = 0, count) {
   const warped = gpu.warped && gpu.strokeWarpedBuffer;
   const name = warped ? 'vector-stroke-warped' : 'vector-stroke';
   const pipeline = helper.getRenderPipeline(name, /** @type {any} */ ({}));
-  const pass = helper.getRenderPass();
+  const pass = encoder || helper.getRenderPass();
   pass.setPipeline(pipeline);
   pass.setBindGroup(0, gpu.getBindGroup(helper, name, pipeline));
   pass.setVertexBuffer(
@@ -1059,6 +1068,50 @@ export function drawStrokes(helper, gpu, start = 0, count) {
  */
 
 /**
+ * Stable draw commands recorded once and replayed while only uniforms and
+ * opacity buffers change.
+ *
+ * @typedef {Object} PaintCache
+ * @property {Array<PaintBatch>} [batches] Batch references used by the bundle.
+ * @property {GPUTexture} [patternTexture] Pattern/icon atlas texture.
+ * @property {GPUTexture} [fontTexture] Font atlas texture.
+ * @property {GPURenderBundle} [bundle] Recorded draw commands.
+ */
+
+/**
+ * @param {PaintCache} cache Cache.
+ * @param {Array<PaintBatch>} batches Current batches.
+ * @param {GPUTexture} patternTexture Pattern texture.
+ * @param {GPUTexture} fontTexture Font texture.
+ * @return {boolean} The bundle can be reused.
+ */
+function paintCacheMatches(cache, batches, patternTexture, fontTexture) {
+  if (
+    !cache.bundle ||
+    cache.patternTexture !== patternTexture ||
+    cache.fontTexture !== fontTexture ||
+    cache.batches?.length !== batches.length
+  ) {
+    return false;
+  }
+  for (let i = 0; i < batches.length; ++i) {
+    const previous = /** @type {Array<PaintBatch>} */ (cache.batches)[i];
+    const current = batches[i];
+    if (
+      previous.commands !== current.commands ||
+      previous.tileOrder !== current.tileOrder ||
+      previous.gpu !== current.gpu ||
+      previous.labels !== current.labels ||
+      previous.labelsOnly !== current.labelsOnly ||
+      previous.slot !== current.slot
+    ) {
+      return false;
+    }
+  }
+  return true;
+}
+
+/**
  * Draw every batch in one painter's order. Adjacent ranges that share a
  * pipeline and sit next to each other in the same batch become one draw.
  *
@@ -1067,8 +1120,30 @@ export function drawStrokes(helper, gpu, start = 0, count) {
  * @param {import("../../webgpu/FontAtlas.js").default} atlas Atlas.
  * @param {import("../../webgpu/ImageAtlas.js").default} imageAtlas Image atlas.
  * @param {GPUBuffer|null} cornerBuffer Corner quad.
+ * @param {PaintCache} [cache] Render bundle cache.
  */
-export function paintBatches(helper, batches, atlas, imageAtlas, cornerBuffer) {
+export function paintBatches(
+  helper,
+  batches,
+  atlas,
+  imageAtlas,
+  cornerBuffer,
+  cache,
+) {
+  const patternTexture = imageAtlas.upload(helper);
+  const fontTexture = atlas.upload(helper);
+  for (const batch of batches) {
+    batch.prepare();
+    batch.labels?.prepareDraw(helper);
+  }
+  if (cache && paintCacheMatches(cache, batches, patternTexture, fontTexture)) {
+    countMetric('paintBundleExecutions');
+    helper
+      .getRenderPass()
+      .executeBundles([/** @type {GPURenderBundle} */ (cache.bundle)]);
+    return;
+  }
+  const planStart = startMetric();
   /** @type {Array<{batch: PaintBatch, command: import("../../render/webgpu/drawOrder.js").DrawCommand}>} */
   const items = [];
   for (let i = 0; i < batches.length; ++i) {
@@ -1083,16 +1158,20 @@ export function paintBatches(helper, batches, atlas, imageAtlas, cornerBuffer) {
         continue;
       }
       items.push({batch, command});
+      countMetric('paintCommands');
+      countMetric(command.pipeline + 'Commands');
     }
   }
   items.sort((a, b) =>
     comparePaint(a.command, a.batch.tileOrder, b.command, b.batch.tileOrder),
   );
-  // Before any draw, because a new upload destroys the texture it replaces.
-  const patternTexture = imageAtlas.upload(helper);
-
-  /** @type {PaintBatch|null} */
-  let prepared = null;
+  endMetric('paintPlan', planStart);
+  const encodeStart = startMetric();
+  const encoder = cache
+    ? helper.getDevice().createRenderBundleEncoder({
+        colorFormats: [helper.getFormat()],
+      })
+    : undefined;
   for (let i = 0; i < items.length;) {
     const first = items[i];
     let count = first.command.count;
@@ -1109,10 +1188,6 @@ export function paintBatches(helper, batches, atlas, imageAtlas, cornerBuffer) {
       count += next.command.count;
       ++j;
     }
-    if (first.batch !== prepared) {
-      first.batch.prepare();
-      prepared = first.batch;
-    }
     const pipeline = first.command.pipeline;
     if (pipeline === 'fill' && first.batch.gpu) {
       drawFills(
@@ -1121,9 +1196,10 @@ export function paintBatches(helper, batches, atlas, imageAtlas, cornerBuffer) {
         patternTexture,
         first.command.start,
         count,
+        encoder,
       );
     } else if (pipeline === 'stroke' && first.batch.gpu) {
-      drawStrokes(helper, first.batch.gpu, first.command.start, count);
+      drawStrokes(helper, first.batch.gpu, first.command.start, count, encoder);
     } else if (
       (pipeline === 'symbol' || pipeline === 'icon' || pipeline === 'glyph') &&
       first.batch.labels &&
@@ -1139,10 +1215,20 @@ export function paintBatches(helper, batches, atlas, imageAtlas, cornerBuffer) {
         atlas,
         cornerBuffer,
         imageAtlas,
+        encoder,
       );
     }
     i = j;
   }
+  if (cache && encoder) {
+    cache.batches = batches.map((batch) => ({...batch}));
+    cache.patternTexture = patternTexture;
+    cache.fontTexture = fontTexture;
+    cache.bundle = encoder.finish();
+    countMetric('paintBundleBuilds');
+    helper.getRenderPass().executeBundles([cache.bundle]);
+  }
+  endMetric('paintEncode', encodeStart);
 }
 
 /**

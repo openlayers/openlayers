@@ -1,7 +1,7 @@
 /**
  * @module ol/render/webgpu/labelFade
  */
-import {countMetric} from '../../webgpu/metrics.js';
+import {countMetric, endMetric, startMetric} from '../../webgpu/metrics.js';
 
 /**
  * Fade-in duration for newly visible labels (ms).
@@ -116,13 +116,17 @@ export const LABEL_FADE_MATCH_PIXELS = 64;
  */
 
 /**
- * @param {Map<number, FadeEntry>} entries Previous entries.
+ * @typedef {Map<string, Map<string, Array<FadeEntry>>>} FadeSpatialIndex
+ */
+
+/**
+ * @param {FadeSpatialIndex} index Previous entries by text and anchor bucket.
  * @param {Set<number>} used Matched identities.
  * @param {FadeLabel} label Current label.
  * @param {number} [maxWorldDistance] Max world distance for text matching.
  * @return {FadeEntry|undefined} Nearby previous entry.
  */
-function matchPrev(entries, used, label, maxWorldDistance) {
+function matchPrev(index, used, label, maxWorldDistance) {
   const text = label.text;
   const anchor = label._anchor;
   if (
@@ -136,19 +140,30 @@ function matchPrev(entries, used, label, maxWorldDistance) {
   const maxDistSq = maxWorldDistance * maxWorldDistance;
   let best;
   let bestDistSq = Infinity;
-  for (const entry of entries.values()) {
-    if (used.has(entry.id)) {
-      continue;
-    }
-    if (entry.text !== text || entry.x === undefined || entry.y === undefined) {
-      continue;
-    }
-    const dx = entry.x - anchor[0];
-    const dy = entry.y - anchor[1];
-    const distSq = dx * dx + dy * dy;
-    if (distSq <= maxDistSq && distSq < bestDistSq) {
-      best = entry;
-      bestDistSq = distSq;
+  const buckets = index.get(text);
+  if (!buckets) {
+    return undefined;
+  }
+  const xCell = Math.floor(anchor[0] / maxWorldDistance);
+  const yCell = Math.floor(anchor[1] / maxWorldDistance);
+  for (let dxCell = -1; dxCell <= 1; ++dxCell) {
+    for (let dyCell = -1; dyCell <= 1; ++dyCell) {
+      const entries = buckets.get(xCell + dxCell + '/' + (yCell + dyCell));
+      if (!entries) {
+        continue;
+      }
+      for (const entry of entries) {
+        if (used.has(entry.id)) {
+          continue;
+        }
+        const dx = /** @type {number} */ (entry.x) - anchor[0];
+        const dy = /** @type {number} */ (entry.y) - anchor[1];
+        const distSq = dx * dx + dy * dy;
+        if (distSq <= maxDistSq && distSq < bestDistSq) {
+          best = entry;
+          bestDistSq = distSq;
+        }
+      }
     }
   }
   if (best) {
@@ -215,6 +230,7 @@ export class LabelFade {
    * @return {boolean} True if any current label is still fading.
    */
   update(labels, visibility, time, maxWorldDistance, identities) {
+    const metricStart = startMetric();
     const used = new Set();
     /** @type {Map<number, {label: FadeLabel, target: number}>} */
     const current = new Map();
@@ -233,6 +249,30 @@ export class LabelFade {
     }
 
     const previous = new Map(this.entries_);
+    /** @type {FadeSpatialIndex} */
+    const previousByText = new Map();
+    if (maxWorldDistance && maxWorldDistance > 0) {
+      for (const entry of previous.values()) {
+        if (!entry.text || entry.x === undefined || entry.y === undefined) {
+          continue;
+        }
+        let buckets = previousByText.get(entry.text);
+        if (!buckets) {
+          buckets = new Map();
+          previousByText.set(entry.text, buckets);
+        }
+        const bucketKey =
+          Math.floor(entry.x / maxWorldDistance) +
+          '/' +
+          Math.floor(entry.y / maxWorldDistance);
+        const bucket = buckets.get(bucketKey);
+        if (bucket) {
+          bucket.push(entry);
+        } else {
+          buckets.set(bucketKey, [entry]);
+        }
+      }
+    }
     for (const id of current.keys()) {
       if (previous.has(id)) {
         used.add(id);
@@ -244,7 +284,7 @@ export class LabelFade {
       let entry = this.entries_.get(id);
       if (!entry) {
         const matched = matchPrev(
-          previous,
+          previousByText,
           used,
           value.label,
           maxWorldDistance,
@@ -312,6 +352,7 @@ export class LabelFade {
         this.retired_.delete(id);
       }
     }
+    endMetric('labelFade', metricStart);
     return fading;
   }
 

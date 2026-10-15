@@ -313,12 +313,13 @@ class WebGPUHelper extends Disposable {
   /**
    * @param {GPUBuffer} buffer Buffer.
    * @param {ArrayBufferView} data Data.
+   * @param {number} [bufferOffset] Destination offset in bytes.
    */
-  writeBuffer(buffer, data) {
+  writeBuffer(buffer, data, bufferOffset = 0) {
     countMetric('gpuBufferWrites');
     this.device_.queue.writeBuffer(
       buffer,
-      0,
+      bufferOffset,
       /** @type {BufferSource} */ (data),
     );
   }

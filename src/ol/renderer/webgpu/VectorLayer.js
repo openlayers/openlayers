@@ -581,6 +581,12 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
     this.uniforms_ = null;
 
     /**
+     * @private
+     * @type {import("./vectorUtil.js").PaintCache}
+     */
+    this.paintCache_ = {};
+
+    /**
      * Scratch for the batch uniform write.
      * @private
      * @type {Float32Array}
@@ -673,6 +679,7 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
     // reused.
     this.uniforms_?.dispose();
     this.uniforms_ = new FrameUniformPool(helper);
+    this.paintCache_ = {};
     this.imageAtlas_.dispose();
     this.gpu_?.dispose();
     this.gpu_ = null;
@@ -1037,6 +1044,7 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
         this.atlas_,
         this.imageAtlas_,
         this.cornerBuffer_,
+        this.paintCache_,
       );
     }
     helper.finalizeDraw(frameState);

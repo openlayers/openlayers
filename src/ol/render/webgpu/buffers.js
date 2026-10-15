@@ -4,7 +4,12 @@
 import {asArray} from '../../color.js';
 import {getPatternImage} from '../../colorlike.js';
 import {warn} from '../../console.js';
-import {createEmpty, extend as extendExtent, isEmpty} from '../../extent.js';
+import {
+  createEmpty,
+  extend as extendExtent,
+  intersects,
+  isEmpty,
+} from '../../extent.js';
 import {lineChunk} from '../../geom/flat/linechunk.js';
 import {inflateEnds} from '../../geom/flat/orient.js';
 import {matchingChunk} from '../../geom/flat/straightchunk.js';
@@ -27,8 +32,69 @@ import {buildGeometryBuffers} from './geometryBuffers.js';
 import {layoutLineLabel, layoutPointLabel} from './glyphLayout.js';
 
 /**
- * @typedef {import("./tessellate.js").TessellateOptions} VectorReprojOptions
+ * @typedef {import("./tessellate.js").TessellateOptions & {
+ *   filterExtent?: import("../../extent.js").Extent
+ * }} VectorReprojOptions
  */
+
+/**
+ * @typedef {Object} ResolvedStyleGeometry
+ * @property {import("../../style/Style.js").default} style Style snapshot.
+ * @property {import("../../geom/Geometry.js").default|import("../../render/Feature.js").default} geometry Resolved geometry.
+ * @property {string} key Style/geometry key within the feature.
+ */
+
+/**
+ * Resolve a feature's function styles and alternate geometries once.
+ *
+ * @param {import("../../Feature.js").FeatureLike} feature Feature.
+ * @param {import("./style.js").StyleFunction} styleFunction Style function.
+ * @param {number} resolution Resolution.
+ * @param {number} zoom View zoom.
+ * @param {boolean} [snapshot] Clone mutable style instances for reuse.
+ * @return {Array<ResolvedStyleGeometry>} Resolved style geometries.
+ */
+export function resolveFeatureStyles(
+  feature,
+  styleFunction,
+  resolution,
+  zoom,
+  snapshot = false,
+) {
+  const geometry = feature.getGeometry();
+  if (!geometry) {
+    return [];
+  }
+  const styleStart = startMetric();
+  const styles = styleFunction(feature, resolution, zoom);
+  endMetric('styleEvaluation', styleStart);
+  if (!styles) {
+    return [];
+  }
+  const styleArray = Array.isArray(styles) ? styles : [styles];
+  /** @type {Array<ResolvedStyleGeometry>} */
+  const resolved = [];
+  for (let s = 0; s < styleArray.length; ++s) {
+    const original = styleArray[s];
+    const styledGeometry = original.getGeometryFunction()(feature) || geometry;
+    if (!styledGeometry) {
+      continue;
+    }
+    const style = snapshot ? original.clone() : original;
+    if (styledGeometry.getType() !== 'GeometryCollection') {
+      resolved.push({style, geometry: styledGeometry, key: String(s)});
+      continue;
+    }
+    const members =
+      /** @type {import("../../geom/GeometryCollection.js").default} */ (
+        styledGeometry
+      ).getGeometriesArrayRecursive();
+    for (let m = 0; m < members.length; ++m) {
+      resolved.push({style, geometry: members[m], key: `${s}.${m}`});
+    }
+  }
+  return resolved;
+}
 
 /**
  * Floats per point symbol instance: anchor (2), pixel offset (2), size (2),
@@ -286,6 +352,7 @@ function boundsOf(features) {
  * @param {number} [zoom] View zoom level, for `['zoom']` expressions.
  * @param {import("../../render.js").OrderFunction|null} [renderOrder] Feature order. The default is uid order.
  * @param {import("../../webgpu/ImageAtlas.js").default} [imageAtlas] Image atlas.
+ * @param {WeakMap<import("../../Feature.js").FeatureLike, Array<ResolvedStyleGeometry>>} [styleCache] Resolved style cache.
  * @return {{request: import("./geometryBuffers.js").GeometryRequest, labelData: LabelData}} Work and labels.
  */
 export function buildVectorRequest(
@@ -298,6 +365,7 @@ export function buildVectorRequest(
   zoom = NaN,
   renderOrder,
   imageAtlas,
+  styleCache,
 ) {
   const metricStart = startMetric();
   const styleTable = new StyleTable();
@@ -346,45 +414,42 @@ export function buildVectorRequest(
   }
 
   for (const feature of sorted) {
-    const geometry = feature.getGeometry();
-    if (!geometry) {
+    let resolved = styleCache?.get(feature);
+    if (!resolved) {
+      resolved = resolveFeatureStyles(
+        feature,
+        styleFunction,
+        resolution,
+        zoom,
+        !!styleCache,
+      );
+      styleCache?.set(feature, resolved);
+    }
+    if (!resolved.length) {
       continue;
     }
-    const styles = styleFunction(feature, resolution, zoom);
-    if (!styles) {
-      continue;
-    }
-    const styleArray = Array.isArray(styles) ? styles : [styles];
     const ref = ++featureIndex;
     featuresByRef[ref] = feature;
     const hit = encodeHitColor(ref);
     const labelId = Number(getUid(feature));
 
-    for (let s = 0; s < styleArray.length; ++s) {
-      const style = styleArray[s];
-      const geom = style.getGeometryFunction()(feature) || geometry;
-      if (!geom) {
+    for (const item of resolved) {
+      if (
+        reproj?.filterExtent &&
+        !intersects(item.geometry.getExtent(), reproj.filterExtent)
+      ) {
+        countMetric('filteredStyledGeometries');
         continue;
       }
-      if (geom.getType() !== 'GeometryCollection') {
-        appendStyledGeometry(state, geom, style, String(s), hit, labelId, ref);
-        continue;
-      }
-      const members =
-        /** @type {import("../../geom/GeometryCollection.js").default} */ (
-          geom
-        ).getGeometriesArrayRecursive();
-      for (let m = 0; m < members.length; ++m) {
-        appendStyledGeometry(
-          state,
-          members[m],
-          style,
-          `${s}.${m}`,
-          hit,
-          labelId,
-          ref,
-        );
-      }
+      appendStyledGeometry(
+        state,
+        item.geometry,
+        item.style,
+        item.key,
+        hit,
+        labelId,
+        ref,
+      );
     }
   }
 
