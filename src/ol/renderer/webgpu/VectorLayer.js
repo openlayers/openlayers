@@ -967,10 +967,11 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
         frameState.animate = true;
       }
     }
-    if (this.declutterGroup_) {
-      // Placement runs in renderDeclutter. Pixels are drawn afterward in
-      // renderDeferred, in ascending layer order, so a higher z-index polygon
-      // covers a lower z-index label in this same layer.
+    // Any decluttered layer paints in renderDeferred. Layers on this canvas
+    // have to wait for that pass too: painting now would put a layer above
+    // the decluttered one underneath its geometry. The hover outline in the
+    // vector layer example is that case.
+    if (frameState.declutter) {
       this.postRender(frameState);
       return helper.getCanvas();
     }
@@ -1045,7 +1046,9 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
    * @override
    */
   renderDeferred(frameState) {
-    if (!this.declutterGroup_) {
+    // Also layers without their own declutter group: they share this canvas,
+    // and this pass is what draws them above the decluttered layers below.
+    if (!frameState.declutter) {
       return;
     }
     this.paintSorted_(frameState);
