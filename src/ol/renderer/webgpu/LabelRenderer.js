@@ -125,6 +125,13 @@ class LabelRenderer extends Disposable {
      * @type {boolean}
      */
     this.opacityDirty_ = true;
+
+    /**
+     * Labels whose instance transitions differ from the GPU buffers.
+     * @private
+     * @type {Set<number>}
+     */
+    this.dirtyLabels_ = new Set();
   }
 
   /**
@@ -144,6 +151,7 @@ class LabelRenderer extends Disposable {
     this.glyphCount_ = buffers.glyphs.length;
     this.labelOpacity_ = new Float32Array(buffers.labels.length * 3);
     this.opacityDirty_ = true;
+    this.dirtyLabels_.clear();
 
     const usage = GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST;
     if (this.symbolCount_) {
@@ -186,6 +194,10 @@ class LabelRenderer extends Disposable {
    */
   setOpacityDirty() {
     this.opacityDirty_ = true;
+    const count = this.labelOpacity_.length / 3;
+    for (let i = 0; i < count; ++i) {
+      this.dirtyLabels_.add(i);
+    }
   }
 
   /**
@@ -198,10 +210,20 @@ class LabelRenderer extends Disposable {
   setOpacities(opacities, offset) {
     let changed = false;
     const sourceOffset = offset * 3;
-    for (let i = 0; i < this.labelOpacity_.length; ++i) {
-      const opacity = opacities[sourceOffset + i];
-      if (this.labelOpacity_[i] !== opacity) {
-        this.labelOpacity_[i] = opacity;
+    const count = this.labelOpacity_.length / 3;
+    for (let labelIndex = 0; labelIndex < count; ++labelIndex) {
+      const targetOffset = labelIndex * 3;
+      let labelChanged = false;
+      for (let component = 0; component < 3; ++component) {
+        const index = targetOffset + component;
+        const opacity = opacities[sourceOffset + index];
+        if (this.labelOpacity_[index] !== opacity) {
+          this.labelOpacity_[index] = opacity;
+          labelChanged = true;
+        }
+      }
+      if (labelChanged) {
+        this.dirtyLabels_.add(labelIndex);
         changed = true;
       }
     }
@@ -220,16 +242,16 @@ class LabelRenderer extends Disposable {
     if (!buffers) {
       return;
     }
-    this.symbolOpacity_?.fill(0);
-    this.iconOpacity_?.fill(0);
-    this.glyphOpacity_?.fill(0);
-    for (let i = 0; i < buffers.labels.length; ++i) {
+    let symbolMin = Infinity;
+    let symbolMax = -1;
+    let iconMin = Infinity;
+    let iconMax = -1;
+    let glyphMin = Infinity;
+    let glyphMax = -1;
+    for (const i of this.dirtyLabels_) {
       const transitionOffset = i * 3;
       const startOpacity = this.labelOpacity_[transitionOffset];
       const targetOpacity = this.labelOpacity_[transitionOffset + 1];
-      if (!startOpacity && !targetOpacity) {
-        continue;
-      }
       const startTime = this.labelOpacity_[transitionOffset + 2];
       const label = buffers.labels[i];
       if (label.glyphCount) {
@@ -240,6 +262,8 @@ class LabelRenderer extends Disposable {
           this.glyphOpacity_[offset + 1] = targetOpacity;
           this.glyphOpacity_[offset + 2] = startTime;
         }
+        glyphMin = Math.min(glyphMin, start);
+        glyphMax = Math.max(glyphMax, start + label.glyphCount);
       }
       const symbolIndex = /** @type {number|undefined} */ (
         /** @type {any} */ (label).symbolIndex
@@ -249,6 +273,8 @@ class LabelRenderer extends Disposable {
         this.symbolOpacity_[offset] = startOpacity;
         this.symbolOpacity_[offset + 1] = targetOpacity;
         this.symbolOpacity_[offset + 2] = startTime;
+        symbolMin = Math.min(symbolMin, symbolIndex);
+        symbolMax = Math.max(symbolMax, symbolIndex + 1);
       }
       const iconIndex = label.iconIndex;
       if (iconIndex !== undefined && iconIndex < this.iconCount_) {
@@ -256,19 +282,35 @@ class LabelRenderer extends Disposable {
         this.iconOpacity_[offset] = startOpacity;
         this.iconOpacity_[offset + 1] = targetOpacity;
         this.iconOpacity_[offset + 2] = startTime;
+        iconMin = Math.min(iconMin, iconIndex);
+        iconMax = Math.max(iconMax, iconIndex + 1);
       }
     }
-    if (this.symbolOpacityBuffer_) {
-      helper.writeBuffer(this.symbolOpacityBuffer_, this.symbolOpacity_);
+    if (this.symbolOpacityBuffer_ && symbolMax > symbolMin) {
+      helper.writeBuffer(
+        this.symbolOpacityBuffer_,
+        this.symbolOpacity_.subarray(symbolMin * 3, symbolMax * 3),
+        symbolMin * 3 * 4,
+      );
     }
-    if (this.glyphOpacityBuffer_) {
-      helper.writeBuffer(this.glyphOpacityBuffer_, this.glyphOpacity_);
+    if (this.glyphOpacityBuffer_ && glyphMax > glyphMin) {
+      helper.writeBuffer(
+        this.glyphOpacityBuffer_,
+        this.glyphOpacity_.subarray(glyphMin * 3, glyphMax * 3),
+        glyphMin * 3 * 4,
+      );
     }
-    if (this.iconOpacityBuffer_) {
-      helper.writeBuffer(this.iconOpacityBuffer_, this.iconOpacity_);
+    if (this.iconOpacityBuffer_ && iconMax > iconMin) {
+      helper.writeBuffer(
+        this.iconOpacityBuffer_,
+        this.iconOpacity_.subarray(iconMin * 3, iconMax * 3),
+        iconMin * 3 * 4,
+      );
     }
+    countMetric('dirtyOpacityLabels', this.dirtyLabels_.size);
     countMetric('opacityUploads');
     countMetric('transitionUploads');
+    this.dirtyLabels_.clear();
     this.opacityDirty_ = false;
   }
 
@@ -325,6 +367,7 @@ class LabelRenderer extends Disposable {
    * @param {import("../../webgpu/FontAtlas.js").default} atlas Atlas.
    * @param {GPUBuffer} cornerBuffer Corner quad.
    * @param {import("../../webgpu/ImageAtlas.js").default} [imageAtlas] Image atlas.
+   * @param {GPURenderPassEncoder|GPURenderBundleEncoder} [encoder] Encoder.
    */
   drawInstances(
     helper,
@@ -335,13 +378,12 @@ class LabelRenderer extends Disposable {
     atlas,
     cornerBuffer,
     imageAtlas,
+    encoder,
   ) {
     if (!this.buffers_ || !instanceCount) {
       return;
     }
-    if (this.opacityDirty_) {
-      this.updateOpacity_(helper);
-    }
+    this.prepareDraw(helper);
     if (kind === 'icon') {
       if (!this.iconCount_ || !this.iconBuffer_ || !imageAtlas) {
         return;
@@ -350,7 +392,7 @@ class LabelRenderer extends Disposable {
         'vector-icon',
         /** @type {any} */ ({}),
       );
-      const pass = helper.getRenderPass();
+      const pass = encoder || helper.getRenderPass();
       pass.setPipeline(pipeline);
       pass.setBindGroup(
         0,
@@ -376,7 +418,7 @@ class LabelRenderer extends Disposable {
         'vector-symbol',
         /** @type {any} */ ({}),
       );
-      const pass = helper.getRenderPass();
+      const pass = encoder || helper.getRenderPass();
       pass.setPipeline(pipeline);
       pass.setBindGroup(
         0,
@@ -405,6 +447,7 @@ class LabelRenderer extends Disposable {
         slot,
         atlasTexture,
         cornerBuffer,
+        encoder,
       );
     }
     this.drawGlyphPass_(
@@ -415,7 +458,18 @@ class LabelRenderer extends Disposable {
       slot,
       atlasTexture,
       cornerBuffer,
+      encoder,
     );
+  }
+
+  /**
+   * Upload changed opacity transitions before direct or bundled draws.
+   * @param {import("../../webgpu/Helper.js").default} helper Helper.
+   */
+  prepareDraw(helper) {
+    if (this.opacityDirty_) {
+      this.updateOpacity_(helper);
+    }
   }
 
   /**
@@ -426,6 +480,7 @@ class LabelRenderer extends Disposable {
    * @param {import("./vectorUtil.js").FrameUniformSlot} slot Uniforms.
    * @param {GPUTexture} atlasTexture Font atlas.
    * @param {GPUBuffer} cornerBuffer Corner quad.
+   * @param {GPURenderPassEncoder|GPURenderBundleEncoder} [encoder] Encoder.
    * @private
    */
   drawGlyphPass_(
@@ -436,9 +491,10 @@ class LabelRenderer extends Disposable {
     slot,
     atlasTexture,
     cornerBuffer,
+    encoder,
   ) {
     const pipeline = helper.getRenderPipeline(name, /** @type {any} */ ({}));
-    const pass = helper.getRenderPass();
+    const pass = encoder || helper.getRenderPass();
     pass.setPipeline(pipeline);
     pass.setBindGroup(
       0,

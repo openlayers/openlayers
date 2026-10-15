@@ -56,9 +56,41 @@ export const VIEWPORT_PADDING = 100;
 /**
  * Transform-independent priority order cached for each reused LabelView box
  * array.
- * @type {WeakMap<Array<Label>, {signature: string, order: Array<{label: Label, index: number}>}>}
+ * @type {WeakMap<Array<Label>, {
+ *   priorities: Array<number>,
+ *   ids: Array<number|undefined>,
+ *   sequences: Array<number|undefined>,
+ *   pairs: Array<number|undefined>,
+ *   modes: Array<import("../../style/Style.js").DeclutterMode|undefined>,
+ *   order: Array<{label: Label, index: number}>
+ * }>}
  */
 const orderCache = new WeakMap();
+
+/**
+ * Whether cached ordering fields still match mutable screen boxes.
+ * @param {NonNullable<ReturnType<typeof orderCache.get>>} cached Cache.
+ * @param {Array<Label>} labels Labels.
+ * @return {boolean} The cached order is valid.
+ */
+function sameOrder(cached, labels) {
+  if (cached.priorities.length !== labels.length) {
+    return false;
+  }
+  for (let i = 0; i < labels.length; ++i) {
+    const label = labels[i];
+    if (
+      cached.priorities[i] !== label.priority ||
+      cached.ids[i] !== label.id ||
+      cached.sequences[i] !== label.sequence ||
+      cached.pairs[i] !== label.pairId ||
+      cached.modes[i] !== label.mode
+    ) {
+      return false;
+    }
+  }
+  return true;
+}
 
 /**
  * @param {import("../../style/Style.js").DeclutterMode|undefined} mode Mode.
@@ -219,14 +251,14 @@ export function resolveDeclutter(
 ) {
   const metricStart = startMetric();
   const compare = createCompare(stickyIds);
-  let signature = '';
-  for (const label of labels) {
-    signature += `${label.priority}/${label.id}/${label.sequence}/${label.pairId}/${label.mode};`;
-  }
   let cachedOrder = orderCache.get(labels);
-  if (!cachedOrder || cachedOrder.signature !== signature) {
+  if (!cachedOrder || !sameOrder(cachedOrder, labels)) {
     cachedOrder = {
-      signature,
+      priorities: labels.map((label) => label.priority),
+      ids: labels.map((label) => label.id),
+      sequences: labels.map((label) => label.sequence),
+      pairs: labels.map((label) => label.pairId),
+      modes: labels.map((label) => label.mode),
       order: labels
         .map((label, index) => ({label, index}))
         .sort(createCompare(undefined)),

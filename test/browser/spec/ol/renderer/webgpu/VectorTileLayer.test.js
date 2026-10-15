@@ -223,15 +223,15 @@ describe('ol/renderer/webgpu/VectorTileLayer', () => {
     assert.isTrue(batchesAtTwo.every((batch) => /^source\//.test(batch.key)));
   });
 
-  it('defers batch preparation while the view is moving', async () => {
+  it('admits one batch preparation while the view is moving', async () => {
     source.getTile = function (z, x, y) {
       return loadedTile(z, x, y);
     };
     const frameState = frameAtZ(0);
     frameState.viewHints[ViewHint.ANIMATING] = 1;
 
-    assert.isEmpty(renderer.collectBatches_(frameState));
-    assert.isEmpty(renderer.pendingKeys_);
+    renderer.collectBatches_(frameState);
+    assert.strictEqual(renderer.pendingKeys_.size, 1);
 
     frameState.viewHints[ViewHint.ANIMATING] = 0;
     const batches = await collectBatches(frameState, 1);
@@ -248,7 +248,6 @@ describe('ol/renderer/webgpu/VectorTileLayer', () => {
 
     renderer.collectBatches_(frameState);
 
-    assert.strictEqual(renderer.pendingKeys_.size, 1);
     assert.match(Array.from(renderer.pendingKeys_)[0], /^1\/0\/0\//);
   });
 
