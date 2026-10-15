@@ -1,6 +1,9 @@
 import {assert} from 'chai';
 import {
   FrameUniformPool,
+  MAX_RENDER_CLIP_EXTENTS,
+  VECTOR_FRAME_UNIFORM_SIZE,
+  VectorGpuBuffers,
   placementKey,
 } from '../../../../../src/ol/renderer/webgpu/vectorUtil.js';
 import {
@@ -39,13 +42,19 @@ describe('ol/renderer/webgpu/vectorUtil', () => {
   it('gives each world offset its own uniform buffer', () => {
     // Uniforms written with queue.writeBuffer all land before the encoded pass
     // runs, so tiles drawn at different world offsets need separate buffers.
-    globalThis.GPUBufferUsage = /** @type {any} */ ({UNIFORM: 64, COPY_DST: 8});
+    globalThis.GPUBufferUsage = /** @type {any} */ ({
+      UNIFORM: 64,
+      COPY_DST: 8,
+    });
     /** @type {Array<{buffer: Object, matrix: Float32Array}>} */
     const writes = [];
     const helper = /** @type {any} */ ({
       getDevice: () => ({createBuffer: () => ({destroy() {}})}),
       writeBuffer(buffer, data) {
-        writes.push({buffer, matrix: Float32Array.from(data.subarray(0, 16))});
+        writes.push({
+          buffer,
+          matrix: Float32Array.from(data.subarray(0, 16)),
+        });
       },
     });
     const frame = /** @type {any} */ ({
@@ -79,7 +88,10 @@ describe('ol/renderer/webgpu/vectorUtil', () => {
     // in float32. Multiplying that by the view matrix cancels two huge terms
     // and the residual jumps by pixels as the resolution changes. Anchors
     // stored relative to a nearby origin stay on the float64 pixel.
-    globalThis.GPUBufferUsage = /** @type {any} */ ({UNIFORM: 64, COPY_DST: 8});
+    globalThis.GPUBufferUsage = /** @type {any} */ ({
+      UNIFORM: 64,
+      COPY_DST: 8,
+    });
     /** @type {Array<Float32Array>} */
     const matrices = [];
     const helper = /** @type {any} */ ({
@@ -163,5 +175,44 @@ describe('ol/renderer/webgpu/vectorUtil', () => {
     assert.strictEqual(placementKey(7, frame), key);
     frame.coordinateToPixelTransform[3] = 4.5;
     assert.notStrictEqual(placementKey(7, frame), key);
+  });
+
+  it('packs world clip extents in batch-local coordinates', () => {
+    let written;
+    const helper = /** @type {any} */ ({
+      writeBuffer(buffer, data) {
+        written = Float32Array.from(data);
+      },
+    });
+    const gpu = /** @type {any} */ (Object.create(VectorGpuBuffers.prototype));
+    gpu.uniformBuffer_ = {};
+    gpu.grid = {originX: 10, originY: 20, scaleX: 2, scaleY: -4};
+    const frame = /** @type {any} */ ({
+      size: [200, 100],
+      pixelRatio: 1,
+      viewState: {resolution: 1, rotation: 0},
+      coordinateToPixelTransform: [1, 0, 0, 1, 0, 0],
+      layerStatesArray: [{opacity: 1}],
+      layerIndex: 0,
+    });
+    const data = new Float32Array(VECTOR_FRAME_UNIFORM_SIZE / 4);
+
+    gpu.writeUniforms(helper, data, new Float32Array(16), frame, 0, 100, [
+      [112, 12, 120, 28],
+    ]);
+
+    assert.strictEqual(new Uint32Array(written.buffer)[32], 1);
+    assert.deepEqual(Array.from(written.subarray(36, 40)), [1, -2, 5, 2]);
+
+    gpu.writeUniforms(
+      helper,
+      data,
+      new Float32Array(16),
+      frame,
+      0,
+      100,
+      Array.from({length: MAX_RENDER_CLIP_EXTENTS + 1}, () => [0, 0, 1, 1]),
+    );
+    assert.strictEqual(new Uint32Array(written.buffer)[32], 0);
   });
 });

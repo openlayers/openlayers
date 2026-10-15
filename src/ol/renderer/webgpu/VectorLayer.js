@@ -56,11 +56,11 @@ import LabelView from './LabelView.js';
 import WebGPULayerRenderer from './Layer.js';
 import {
   createVectorPipelines,
-  FRAME_UNIFORM_SIZE,
   FrameUniformPool,
   labelUniforms,
   paintBatches,
   placementKey,
+  VECTOR_FRAME_UNIFORM_SIZE,
   VectorGpuBuffers,
 } from './vectorUtil.js';
 
@@ -591,7 +591,7 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
      * @private
      * @type {Float32Array}
      */
-    this.uniformData_ = new Float32Array(FRAME_UNIFORM_SIZE / 4);
+    this.uniformData_ = new Float32Array(VECTOR_FRAME_UNIFORM_SIZE / 4);
 
     /**
      * @private
