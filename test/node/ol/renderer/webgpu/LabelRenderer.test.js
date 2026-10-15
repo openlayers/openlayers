@@ -114,7 +114,8 @@ describe('ol/renderer/webgpu/LabelRenderer', () => {
       getBindGroup: () => ({}),
     };
     const atlas = {
-      upload: () => ({}),
+      upload() {},
+      getTexture: () => ({}),
     };
 
     renderer.drawInstances(
@@ -153,6 +154,56 @@ describe('ol/renderer/webgpu/LabelRenderer', () => {
         {instanceCount: 2, firstInstance: 1},
       ],
     );
+    renderer.dispose();
+  });
+
+  it('splits glyph draws when a range spans atlas pages', () => {
+    const helper = fakeHelper();
+    const renderer = new LabelRenderer();
+    const buffers = labelBuffers(3, [false, false, true]);
+    buffers.glyphs[0].page = 0;
+    buffers.glyphs[1].page = 0;
+    buffers.glyphs[2].page = 1;
+    renderer.setLabels(
+      /** @type {any} */ (helper),
+      /** @type {any} */ (buffers),
+    );
+    const textures = [{}, {}];
+    const bound = [];
+    renderer.drawInstances(
+      /** @type {any} */ (helper),
+      'glyph',
+      0,
+      3,
+      /** @type {any} */ ({
+        getBindGroup(...args) {
+          bound.push(args[3]);
+          return {};
+        },
+      }),
+      /** @type {any} */ ({
+        upload() {},
+        getTexture: (page) => textures[page],
+      }),
+      /** @type {any} */ ({}),
+    );
+    assert.deepEqual(helper.pipelines, [
+      'vector-glyph-fill',
+      'vector-glyph-halo',
+      'vector-glyph-fill',
+    ]);
+    assert.deepEqual(
+      helper.draws.map(({instanceCount, firstInstance}) => ({
+        instanceCount,
+        firstInstance,
+      })),
+      [
+        {instanceCount: 2, firstInstance: 0},
+        {instanceCount: 1, firstInstance: 2},
+        {instanceCount: 1, firstInstance: 2},
+      ],
+    );
+    assert.deepEqual(bound, [textures[0], textures[1], textures[1]]);
     renderer.dispose();
   });
 
