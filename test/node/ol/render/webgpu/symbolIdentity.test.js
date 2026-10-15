@@ -19,6 +19,17 @@ describe('ol/render/webgpu/SymbolIdentityIndex', () => {
     assert.deepEqual(child, parent);
   });
 
+  it('matches the nearest symbol across grid cell boundaries', () => {
+    const index = new SymbolIdentityIndex();
+    const first = index.update(
+      [label('icon', 31, -1), label('icon', 60, 0)],
+      [0, 0],
+      1,
+    );
+    const second = index.update([label('icon', 33, 1)], [0], 1);
+    assert.deepEqual(second, [first[0]]);
+  });
+
   it('keeps nearby equal text instances one-to-one', () => {
     const index = new SymbolIdentityIndex();
     const first = index.update(
