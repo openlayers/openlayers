@@ -45,6 +45,34 @@ describe('ol/webgpu/FontAtlas', () => {
     assert.instanceOf(atlas.getCanvas(), HTMLCanvasElement);
   });
 
+  it('opens another page instead of growing past 4096', () => {
+    const atlas = new FontAtlas();
+    const first = atlas.getGlyph('48px sans-serif', 'A');
+    const width = first.texX1 - first.texX0;
+    const height = first.texY1 - first.texY0;
+    const before = atlas
+      .getCanvas(0)
+      .getContext('2d')
+      .getImageData(first.texX0, first.texY0, width, height).data;
+    let moved;
+    for (let i = 0; atlas.getPageCount() < 2; ++i) {
+      assert.isBelow(i, 30);
+      moved = atlas.getGlyph('1800px sans-serif', String(i));
+    }
+    assert.strictEqual(atlas.getPageCount(), 2);
+    assert.strictEqual(first.page, 0);
+    assert.strictEqual(moved.page, 1);
+    assert.strictEqual(atlas.getCanvas(0).width, 4096);
+    assert.strictEqual(atlas.getCanvas(1).width, 4096);
+    assert.isAtMost(atlas.getCanvas(0).width, 4096);
+    assert.isAtMost(atlas.getCanvas(1).width, 4096);
+    const after = atlas
+      .getCanvas(0)
+      .getContext('2d')
+      .getImageData(first.texX0, first.texY0, width, height).data;
+    assert.deepEqual(after, before);
+  });
+
   it('measures glyph advances per font', () => {
     const atlas = new FontAtlas();
     const small = atlas.getGlyph('10px sans-serif', 'B');
