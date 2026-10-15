@@ -18,6 +18,23 @@ describe('ol/render/webgpu/style.js', () => {
       assert.strictEqual(style.getStroke().getWidth(), 3);
     });
 
+    it('compiles cap, join, and miter limit properties', () => {
+      const styleFunction = compileStyle({
+        'stroke-color': '#000',
+        'stroke-line-cap': 'square',
+        'stroke-line-join': 'miter',
+        'stroke-miter-limit': 4,
+      });
+      const style =
+        /** @type {import("../../../../../src/ol/style/Style.js").default} */ (
+          styleFunction(new Feature(), 1, 0)
+        );
+      const stroke = style.getStroke();
+      assert.strictEqual(stroke.getLineCap(), 'square');
+      assert.strictEqual(stroke.getLineJoin(), 'miter');
+      assert.strictEqual(stroke.getMiterLimit(), 4);
+    });
+
     it('draws nothing without a style', () => {
       assert.isUndefined(compileStyle(undefined)(new Feature(), 1, 11));
     });

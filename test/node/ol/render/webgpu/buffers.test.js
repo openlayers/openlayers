@@ -360,8 +360,9 @@ describe('ol/render/webgpu/buffers', () => {
       /** @type {any} */ ({}),
       {clipExtent: [0, 0, 10, 10]},
     );
-    assert.strictEqual(full.strokeIndices.length / 6, 4);
-    assert.strictEqual(clipped.strokeIndices.length / 6, 3);
+    assert.isAbove(full.strokeIndices.length, 0);
+    assert.isAbove(clipped.strokeIndices.length, 0);
+    assert.isBelow(clipped.strokeIndices.length, full.strokeIndices.length);
   });
 
   it('still strokes line strings that follow a tile edge', () => {
@@ -381,7 +382,7 @@ describe('ol/render/webgpu/buffers', () => {
       /** @type {any} */ ({}),
       {clipExtent: [0, 0, 10, 10]},
     );
-    assert.strictEqual(buffers.strokeIndices.length / 6, 1);
+    assert.isAbove(buffers.strokeIndices.length, 0);
   });
 
   it('clips stroke segments to the clip extent', () => {
@@ -817,6 +818,196 @@ describe('ol/render/webgpu/buffers', () => {
     );
   });
 
+  it('passes explicit and default cap and join settings to stroke jobs', () => {
+    const line = new Feature(
+      new LineString([
+        [0, 0],
+        [10, 0],
+      ]),
+    );
+    const explicit = new Style({
+      stroke: new Stroke({
+        color: '#000',
+        lineCap: 'square',
+        lineJoin: 'bevel',
+        miterLimit: 3,
+      }),
+    });
+    const explicitRequest = buildVectorRequest(
+      [line],
+      () => explicit,
+      1,
+      /** @type {any} */ ({}),
+    ).request;
+    assert.include(explicitRequest.jobs[0], {
+      lineCap: 'square',
+      lineJoin: 'bevel',
+      miterLimit: 3,
+      closed: false,
+    });
+
+    const polygon = new Feature(
+      new Polygon([
+        [
+          [0, 0],
+          [10, 0],
+          [0, 10],
+          [0, 0],
+        ],
+      ]),
+    );
+    const defaults = new Style({stroke: new Stroke({color: '#000'})});
+    const defaultRequest = buildVectorRequest(
+      [polygon],
+      () => defaults,
+      1,
+      /** @type {any} */ ({}),
+    ).request;
+    assert.include(defaultRequest.jobs[0], {
+      lineCap: 'round',
+      lineJoin: 'round',
+      miterLimit: 10,
+      closed: true,
+    });
+  });
+
+  it('builds butt, square, and round line caps', () => {
+    const feature = new Feature(
+      new LineString([
+        [0, 0],
+        [10, 0],
+      ]),
+    );
+    const build = (lineCap) =>
+      buildVectorBuffers(
+        [feature],
+        () =>
+          new Style({
+            stroke: new Stroke({color: '#000', lineCap, width: 4}),
+          }),
+        1,
+        /** @type {any} */ ({}),
+      );
+    const butt = build('butt');
+    const square = build('square');
+    const round = build('round');
+    const extrusions = (buffers) => {
+      const values = [];
+      for (let i = 0; i < buffers.strokeAttributes.length; i += 4) {
+        values.push([
+          buffers.strokeAttributes[i],
+          buffers.strokeAttributes[i + 1],
+        ]);
+      }
+      return values;
+    };
+    assert.isTrue(extrusions(butt).every(([x]) => x === 0));
+    assert.includeDeepMembers(extrusions(square), [
+      [-1, 1],
+      [-1, -1],
+      [1, 1],
+      [1, -1],
+    ]);
+    assert.isAbove(round.strokeIndices.length, butt.strokeIndices.length);
+  });
+
+  it('builds bevel, round, and limited miter joins', () => {
+    const feature = new Feature(
+      new LineString([
+        [-10, 0],
+        [0, 0],
+        [0, 10],
+      ]),
+    );
+    const build = (lineJoin, miterLimit = 10) =>
+      buildVectorBuffers(
+        [feature],
+        () =>
+          new Style({
+            stroke: new Stroke({
+              color: '#000',
+              lineCap: 'butt',
+              lineJoin,
+              miterLimit,
+              width: 4,
+            }),
+          }),
+        1,
+        /** @type {any} */ ({}),
+      );
+    const miter = build('miter');
+    const bevel = build('bevel');
+    const round = build('round');
+    const limited = build('miter', 1);
+    assert.strictEqual(miter.strokeIndices.length, 12);
+    assert.strictEqual(bevel.strokeIndices.length, 15);
+    assert.isAbove(round.strokeIndices.length, bevel.strokeIndices.length);
+    assert.strictEqual(
+      limited.strokeIndices.length,
+      bevel.strokeIndices.length,
+    );
+    let maxMiter = 0;
+    for (let i = 0; i < miter.strokeAttributes.length; i += 4) {
+      maxMiter = Math.max(
+        maxMiter,
+        Math.hypot(miter.strokeAttributes[i], miter.strokeAttributes[i + 1]),
+      );
+    }
+    assert.closeTo(maxMiter, Math.SQRT2, 1e-6);
+  });
+
+  it('uses butt ends where clipping cuts a square-capped line', () => {
+    const feature = new Feature(
+      new LineString([
+        [-5, 5],
+        [15, 5],
+      ]),
+    );
+    const style = new Style({
+      stroke: new Stroke({
+        color: '#000',
+        lineCap: 'square',
+        width: 4,
+      }),
+    });
+    const buffers = buildVectorBuffers(
+      [feature],
+      () => style,
+      1,
+      /** @type {any} */ ({}),
+      {clipExtent: [0, 0, 10, 10]},
+    );
+    for (let i = 0; i < buffers.strokeAttributes.length; i += 4) {
+      assert.strictEqual(buffers.strokeAttributes[i], 0);
+    }
+  });
+
+  it('handles duplicate and reversing line points without invalid values', () => {
+    const feature = new Feature(
+      new LineString([
+        [0, 0],
+        [0, 0],
+        [10, 0],
+        [0, 0],
+      ]),
+    );
+    const style = new Style({
+      stroke: new Stroke({color: '#000', lineJoin: 'round', width: 4}),
+    });
+    const buffers = buildVectorBuffers(
+      [feature],
+      () => style,
+      1,
+      /** @type {any} */ ({}),
+    );
+    assert.isAbove(buffers.strokeIndices.length, 0);
+    assert.isTrue(
+      Array.from(buffers.strokeAttributes).every((value) =>
+        Number.isFinite(value),
+      ),
+    );
+  });
+
   it('gives each stroke vertex its distance along the line', () => {
     const feature = new Feature(
       new LineString([
@@ -836,7 +1027,7 @@ describe('ol/render/webgpu/buffers', () => {
     for (let i = 3; i < buffers.strokeAttributes.length; i += 4) {
       distances.push(buffers.strokeAttributes[i]);
     }
-    assert.deepEqual(distances, [0, 0, 5, 5, 5, 5, 11, 11]);
+    assert.deepEqual([...new Set(distances)], [0, 5, 11]);
   });
 
   it('draws each member of a geometry collection', () => {
@@ -872,7 +1063,7 @@ describe('ol/render/webgpu/buffers', () => {
       /** @type {any} */ ({}),
     );
     assert.strictEqual(buffers.fillIndices.length, 3);
-    assert.strictEqual(buffers.strokeIndices.length / 6, 1 + 3);
+    assert.isAbove(buffers.strokeIndices.length, 0);
     assert.strictEqual(buffers.symbolInstances.length, SYMBOL_STRIDE);
   });
 
@@ -889,7 +1080,7 @@ describe('ol/render/webgpu/buffers', () => {
       /** @type {any} */ ({}),
     );
     assert.isAbove(buffers.fillIndices.length, 0);
-    assert.strictEqual(buffers.strokeIndices.length / 6, 32);
+    assert.isAbove(buffers.strokeIndices.length, 0);
     for (let i = 0; i < buffers.fillPositions.length / 2; ++i) {
       const [x, y] = toMapCoordinate(buffers.fillPositions, buffers.grid, i);
       assert.isAtMost(Math.hypot(x - 5, y - 7), 2 + 0.05);

@@ -15,6 +15,11 @@ import {inflateEnds} from '../../geom/flat/orient.js';
 import {matchingChunk} from '../../geom/flat/straightchunk.js';
 import {fromCircle} from '../../geom/Polygon.js';
 import ImageState from '../../ImageState.js';
+import {
+  defaultLineCap,
+  defaultLineJoin,
+  defaultMiterLimit,
+} from '../../render/canvas.js';
 import RenderFeature from '../../render/Feature.js';
 import {getImageStyleData} from '../../render/ImageStyle.js';
 import CircleStyle from '../../style/Circle.js';
@@ -1281,6 +1286,9 @@ function appendStrokes(
     stroke.getLineDashOffset() || 0,
   );
   const width = stroke.getWidth() || 1;
+  const lineCap = stroke.getLineCap() || defaultLineCap;
+  const lineJoin = stroke.getLineJoin() || defaultLineJoin;
+  const miterLimit = stroke.getMiterLimit() ?? defaultMiterLimit;
   const type = geometry.getType();
   if (type === 'LineString' || type === 'LinearRing') {
     addLineJob(
@@ -1290,6 +1298,10 @@ function appendStrokes(
       /** @type {any} */ (geometry).getStride(),
       styleIndex,
       width,
+      lineCap,
+      lineJoin,
+      miterLimit,
+      type === 'LinearRing',
       false,
       jobs,
       coordinates,
@@ -1311,6 +1323,10 @@ function appendStrokes(
         stride,
         styleIndex,
         width,
+        lineCap,
+        lineJoin,
+        miterLimit,
+        false,
         false,
         jobs,
         coordinates,
@@ -1338,6 +1354,10 @@ function appendStrokes(
           stride,
           styleIndex,
           width,
+          lineCap,
+          lineJoin,
+          miterLimit,
+          true,
           true,
           jobs,
           coordinates,
@@ -1356,6 +1376,10 @@ function appendStrokes(
  * @param {number} stride Stride.
  * @param {number} styleIndex Style index.
  * @param {number} width Stroke width.
+ * @param {CanvasLineCap} lineCap Line cap.
+ * @param {CanvasLineJoin} lineJoin Line join.
+ * @param {number} miterLimit Miter limit.
+ * @param {boolean} closed Whether the line is a closed ring.
  * @param {boolean} skipClipEdges Drop segments lying on the clip extent.
  * @param {Array<import("./geometryBuffers.js").GeometryJob>} jobs Jobs.
  * @param {Array<number>} coordinates Shared coordinates.
@@ -1368,6 +1392,10 @@ function addLineJob(
   stride,
   styleIndex,
   width,
+  lineCap,
+  lineJoin,
+  miterLimit,
+  closed,
   skipClipEdges,
   jobs,
   coordinates,
@@ -1390,6 +1418,10 @@ function addLineJob(
         count,
         styleIndex,
         width,
+        lineCap,
+        lineJoin,
+        miterLimit,
+        closed,
         skipClipEdges,
       },
       stamp,
