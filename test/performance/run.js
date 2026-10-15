@@ -16,7 +16,7 @@ import {fileURLToPath} from 'url';
 import {createServer} from 'vite';
 import yargs from 'yargs';
 import {hideBin} from 'yargs/helpers';
-import {trimmedMean} from './stats.js';
+import {formatExperience, trimmedMean} from './stats.js';
 import viteConfig from './vite.config.js';
 
 const baseDir = dirname(fileURLToPath(import.meta.url));
@@ -39,21 +39,14 @@ function logError(...args) {
  * Metrics lifted into the top-level summary and used for comparisons.
  */
 const SUMMARY_KEYS = [
-  'frameMs.p50',
-  'frameMs.p95',
-  'frameMs.p99',
-  'frameMs.max',
-  'cpuMs.p50',
-  'cpuMs.p95',
-  'cpuMs.p99',
-  'inputToFrameMs.p50',
-  'inputToFrameMs.p95',
-  'inputToFrameMs.p99',
-  'inputToFrameMs.max',
-  'slowFrames20',
-  'slowFrames33',
-  'blockedFrames',
-  'droppedFrames',
+  'experience.lateFrames',
+  'experience.droppedFrames',
+  'experience.stalls',
+  'experience.worstGapMs',
+  'experience.stallMs',
+  'experience.work.p95',
+  'experience.work.max',
+  'experience.overBudget',
   'settleMs',
   'longTasks.count',
   'longTasks.total',
@@ -106,13 +99,14 @@ function summarizeRuns(runs) {
   }
   for (const name of phaseNames) {
     const phaseKeys = [
-      'frameMs.p95',
-      'frameMs.p99',
-      'frameMs.max',
-      'inputToFrameMs.p95',
-      'inputToFrameMs.p99',
-      'blockedFrames',
-      'droppedFrames',
+      'experience.lateFrames',
+      'experience.droppedFrames',
+      'experience.stalls',
+      'experience.worstGapMs',
+      'experience.stallMs',
+      'experience.work.p95',
+      'experience.work.max',
+      'experience.overBudget',
       'settleMs',
       'longTasks.max',
     ];
@@ -252,13 +246,8 @@ async function measure(options) {
           throw new Error(`${caseName}: ${result.error}`);
         }
         runs.push(result);
-        log(
-          `${caseName} run ${i + 1}/${options.runs}: frame p50 ${result.frameMs.p50.toFixed(
-            1,
-          )}ms, p99 ${result.frameMs.p99.toFixed(
-            1,
-          )}ms, cpu p50 ${result.cpuMs.p50.toFixed(1)}ms`,
-        );
+        log(`${caseName} run ${i + 1}/${options.runs}:`);
+        log(formatExperience(result.experience).join('\n'));
       }
       cases[caseName] = {
         config: runs[0].config,
@@ -428,9 +417,10 @@ if (options.compare) {
     for (const caseName of Object.keys(result.cases)) {
       log('');
       log(caseName);
+      const width = Math.max(...SUMMARY_KEYS.map((name) => name.length));
       for (const name of SUMMARY_KEYS) {
         log(
-          `${name.padEnd(14)} ${result.cases[caseName].summary[name].toFixed(3)}`,
+          `${name.padEnd(width)} ${result.cases[caseName].summary[name].toFixed(3)}`,
         );
       }
     }

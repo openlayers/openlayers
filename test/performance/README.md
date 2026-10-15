@@ -6,8 +6,21 @@ published with the examples on the website.
 Each file in `cases/` is one benchmark. It exports a `name` and a `setup`
 function. `setup` receives the map element and the page query string, builds
 the map, and returns an object with a `run()` method. `run()` resolves to JSON
-with `frameMs`, `cpuMs`, `slowFrames20`, `slowFrames33`, `phases`, and
-`config`.
+with `experience`, `frameMs`, `cpuMs`, `phases`, and `config`.
+
+`experience` is the result to read. `displayMs` is the measured refresh
+interval. Presented-frame gaps (`gaps`) are only meaningful next to that
+interval: a p99 of 33 ms on a 30 Hz display means the map kept up with the
+screen. `lateFrames` counts gaps longer than 1.5× the display interval, and
+`droppedFrames` estimates how many refreshes those gaps skipped. `stalls`,
+`worstGapMs`, and `stallMs` describe gaps longer than 100 ms, which is long
+enough to feel like the map froze during a pan or zoom. `work` is renderer
+main-thread time. `overBudget` counts frames whose work exceeded 16.7 ms, so
+they cannot sustain 60 fps whatever refresh the display used for the run.
+
+`frameMs` and `cpuMs` stay in the JSON for diagnosis. Comparisons use the
+experience counts above, not raw gap percentiles, so a 30 Hz cadence is not
+reported as a regression.
 
 `flight.js` is the shared zoom, pan, and rotate script. A case can call
 `runFlight` with its own phases, or implement `run()` itself, as long as the

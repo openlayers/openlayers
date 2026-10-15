@@ -19,15 +19,18 @@
         gap: 0.75em;
         margin: 0.75em;
       }
-      #summary,
-      #output {
+      #summary {
+        margin: 0 0.75em 0.75em;
         font-family: monospace;
         font-size: 0.85em;
+        white-space: pre-line;
       }
       #output {
         display: block;
         width: calc(100% - 1.5em);
         margin: 0 0.75em 0.75em;
+        font-family: monospace;
+        font-size: 0.85em;
       }
     </style>
   </head>
@@ -38,8 +41,8 @@
         <select id="case"></select>
       </label>
       <button id="start" type="button">Run benchmark</button>
-      <span id="summary">idle</span>
     </div>
+    <div id="summary">idle</div>
     <div id="map" class="map"></div>
     <textarea
       id="output"
