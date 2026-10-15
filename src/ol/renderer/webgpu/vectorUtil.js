@@ -1074,7 +1074,8 @@ export function drawStrokes(helper, gpu, start = 0, count, encoder) {
  * @typedef {Object} PaintCache
  * @property {Array<PaintBatch>} [batches] Batch references used by the bundle.
  * @property {GPUTexture} [patternTexture] Pattern/icon atlas texture.
- * @property {GPUTexture} [fontTexture] Font atlas texture.
+ * @property {number} [fontRevision] Font atlas revision. Changes when a page
+ *     texture object is replaced, not when new texels are copied into it.
  * @property {GPURenderBundle} [bundle] Recorded draw commands.
  */
 
@@ -1082,14 +1083,14 @@ export function drawStrokes(helper, gpu, start = 0, count, encoder) {
  * @param {PaintCache} cache Cache.
  * @param {Array<PaintBatch>} batches Current batches.
  * @param {GPUTexture} patternTexture Pattern texture.
- * @param {GPUTexture} fontTexture Font texture.
+ * @param {number} fontRevision Font atlas revision.
  * @return {boolean} The bundle can be reused.
  */
-function paintCacheMatches(cache, batches, patternTexture, fontTexture) {
+function paintCacheMatches(cache, batches, patternTexture, fontRevision) {
   if (
     !cache.bundle ||
     cache.patternTexture !== patternTexture ||
-    cache.fontTexture !== fontTexture ||
+    cache.fontRevision !== fontRevision ||
     cache.batches?.length !== batches.length
   ) {
     return false;
@@ -1131,12 +1132,15 @@ export function paintBatches(
   cache,
 ) {
   const patternTexture = imageAtlas.upload(helper);
-  const fontTexture = atlas.upload(helper);
+  const fontRevision = atlas.upload(helper);
   for (const batch of batches) {
     batch.prepare();
     batch.labels?.prepareDraw(helper);
   }
-  if (cache && paintCacheMatches(cache, batches, patternTexture, fontTexture)) {
+  if (
+    cache &&
+    paintCacheMatches(cache, batches, patternTexture, fontRevision)
+  ) {
     countMetric('paintBundleExecutions');
     helper
       .getRenderPass()
@@ -1223,7 +1227,7 @@ export function paintBatches(
   if (cache && encoder) {
     cache.batches = batches.map((batch) => ({...batch}));
     cache.patternTexture = patternTexture;
-    cache.fontTexture = fontTexture;
+    cache.fontRevision = fontRevision;
     cache.bundle = encoder.finish();
     countMetric('paintBundleBuilds');
     helper.getRenderPass().executeBundles([cache.bundle]);
