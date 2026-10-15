@@ -11,7 +11,6 @@ import VectorSource from '../src/ol/source/Vector.js';
 
 const square = [-12e6, 3.5e6, -10e6, 5.5e6];
 const overlay = new VectorLayer({
-  declutter: 'separate',
   source: new VectorSource({
     features: [
       new Feature({

@@ -14,7 +14,8 @@ import {summarize} from './stats.js';
  * @typedef {Object} FlightPhase
  * @property {string} name Phase name.
  * @property {function(number): void} apply Apply progress in [0, 1].
- * @property {boolean} [moving] Set the animating hint during the phase.
+ * @property {boolean} [moving] Set the interacting hint during the phase. Not the
+ * animating hint: setting the center or zoom cancels animations, which resets it.
  * @property {boolean} [interacting] Set the interacting hint during the phase.
  * @property {boolean} [settle] Measure time to the first rendercomplete event.
  */
@@ -360,10 +361,7 @@ export async function runFlight(options) {
 
   let previous = await nextFrame();
   for (const phase of phases) {
-    if (phase.moving) {
-      view.setHint(ViewHint.ANIMATING, 1);
-    }
-    if (phase.interacting) {
+    if (phase.moving || phase.interacting) {
       view.setHint(ViewHint.INTERACTING, 1);
     }
     /** @type {Array<number>} */
@@ -442,10 +440,7 @@ export async function runFlight(options) {
     allCpuMs.push(...cpuMs);
     allInputToFrameMs.push(...inputToFrameMs);
     allLongTasks.push(...phaseLongTasks);
-    if (phase.moving) {
-      view.setHint(ViewHint.ANIMATING, -1);
-    }
-    if (phase.interacting) {
+    if (phase.moving || phase.interacting) {
       view.setHint(ViewHint.INTERACTING, -1);
     }
   }
