@@ -139,6 +139,18 @@ describe('ol/color', () => {
         fromString('rgba(255, 255, 0, 0.123456789012345678901234567890)'),
         [255, 255, 0, 0.12345678901234567890123456789],
       );
+      assert.deepEqual(
+        fromString('rgba(246,243,238,4.966666659420582e-7)'),
+        [246, 243, 238, 4.966666659420582e-7],
+      );
+      assert.deepEqual(
+        fromString('rgba(255, 255, 0, 1e-7)'),
+        [255, 255, 0, 1e-7],
+      );
+      assert.deepEqual(
+        fromString('rgb(255 122 127 / 4.96e-7)'),
+        [255, 122, 127, 4.96e-7],
+      );
     });
 
     it('ignores whitespace before, between & after numbers (rgba)', () => {

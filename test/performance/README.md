@@ -65,3 +65,64 @@ are not comparable to a local GPU.
 The overzoom case deliberately avoids network data. Its seeded source
 reproduces source/render tile amplification and preparation churn without an
 external PMTiles fixture, keeping local and CI runs self-contained.
+
+## VersaTiles navigation
+
+`versatiles.html` is a full-window WebGPU map of the VersaTiles Colorful style,
+for judging navigation by how it feels. The tiles are an offline excerpt and
+are not committed.
+
+Fetch the excerpt (zoom levels 12–14 around the focus view, plus the style,
+sprites, and Noto Sans), then start the bench server:
+
+    node test/performance/fetch-versatiles.js
+    npm run serve-bench
+
+Open `http://127.0.0.1:8123/versatiles.html`. The map starts at the focus view
+(`x=1813976.46267`, `y=6141328.17996`, zoom 14.16667). Zooming past 14 overzooms
+level 14 tiles, which is as far as the VersaTiles source goes. To use a zip
+that was already built:
+
+    node test/performance/fetch-versatiles.js --url https://example.com/versatiles-vienna.zip
+
+The page HUD (press `h` to hide it) shows what the page can see: `requestAnimationFrame`
+gaps against the measured refresh interval, and WebGPU queue time from submit
+until `onSubmittedWorkDone`. A blue bar is a frame that kept up, a yellow bar is
+a late frame, and a red bar is a refresh the animation callback missed. That is
+only part of what navigation feels like, because work that finishes late on the
+GPU can still miss the screen.
+
+Chrome's own frame classification is recorded separately. This opens the page
+in headed Chrome with the browser's frame overlay on (`--show-fps-counter`) and
+writes presented, partially presented, and dropped frames:
+
+    node test/performance/record-frames.js
+
+Navigate by hand. Each line printed is about one second: `presented` frames had
+every update on screen, `partial` frames were shown with an older map image for
+part of the update, and `dropped` frames never appeared. `fps` is presented plus
+partial per second, which is the frame rate the overlay shows. Press Enter or
+close the window. The JSON (default `test/performance/data/frame-session.json`)
+adds the share of frames that were partial or dropped, the longest run of
+dropped frames in a row, and the display refresh interval. A long dropped run
+is a hitch you can see; a single dropped frame usually is not.
+
+The trace flushes when it stops, so the recorder ends and restarts it about
+once a second. Frames during that short pause are not counted. If bundled
+Chromium is used instead of system Chrome, set
+`PLAYWRIGHT_BROWSERS_PATH` to the machine Playwright cache. `--seconds 20`
+ends the session on its own.
+
+## Profile a pan
+
+`profile-pan.js` repeats a drag at one view and writes a V8 CPU profile
+summary. The default view is the zoom-15 area where panning drops frames:
+
+    node test/performance/profile-pan.js
+    node test/performance/profile-pan.js --pans 4 --view 'x=1813830.60524&y=6141396.74283&z=15&r=0&l=1'
+
+The bench server must already be running, or the script starts one. Output
+goes to `test/performance/data/pan-profile.json` (gitignored). `topSelfTime`
+is main-thread time inside each function, not including functions it calls.
+The HUD lines in that file are the frame rate and missed frames for the same
+pans.
