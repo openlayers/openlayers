@@ -4,6 +4,9 @@ import Point from '../../../../../../src/ol/geom/Point.js';
 import WebGPUVectorTileLayer from '../../../../../../src/ol/layer/WebGPUVectorTile.js';
 import {get as getProjection} from '../../../../../../src/ol/proj.js';
 import VectorTileSource from '../../../../../../src/ol/source/VectorTile.js';
+import CircleStyle from '../../../../../../src/ol/style/Circle.js';
+import Fill from '../../../../../../src/ol/style/Fill.js';
+import Style from '../../../../../../src/ol/style/Style.js';
 import {getCacheKey} from '../../../../../../src/ol/tilecoord.js';
 import {createXYZ, wrapX} from '../../../../../../src/ol/tilegrid.js';
 import TileState from '../../../../../../src/ol/TileState.js';
@@ -221,6 +224,96 @@ describe('ol/renderer/webgpu/VectorTileLayer', () => {
     assert.strictEqual(batchesAtTwo.length, 4);
     assert.isTrue(batchesAtOne.every((batch) => /^source\//.test(batch.key)));
     assert.isTrue(batchesAtTwo.every((batch) => /^source\//.test(batch.key)));
+  });
+
+  it('filters original geometries before evaluating function styles', async () => {
+    layer.dispose();
+    const sourceGrid = createXYZ({maxZoom: 0});
+    source = new VectorTileSource({
+      tileGrid: sourceGrid,
+      projection,
+      url: '{z}/{x}/{y}.pbf',
+    });
+    const tileGrid = source.getTileGridForProjection(projection);
+    const renderCoord = [2, 0, 0];
+    const batchExtent = tileGrid.getTileCoordExtent([1, 0, 0]);
+    const resolution = tileGrid.getResolution(renderCoord[0]);
+    const center = [
+      (batchExtent[0] + batchExtent[2]) / 2,
+      (batchExtent[1] + batchExtent[3]) / 2,
+    ];
+    const inside = new Feature(new Point(center));
+    inside.setId('inside');
+    const buffered = new Feature(
+      new Point([batchExtent[2] + 50 * resolution, center[1]]),
+    );
+    buffered.setId('buffered');
+    const alternateOutside = new Feature(
+      new Point([center[0], center[1] + resolution]),
+    );
+    alternateOutside.setId('alternate-outside');
+    alternateOutside.set(
+      'draw',
+      new Point([batchExtent[2] + 200 * resolution, center[1]]),
+    );
+    const originalOutside = new Feature(
+      new Point([batchExtent[2] + 200 * resolution, center[1] + resolution]),
+    );
+    originalOutside.setId('original-outside');
+    originalOutside.set('draw', new Point(center));
+    const features = [inside, buffered, alternateOutside, originalOutside];
+    const sourceTile = /** @type {any} */ ({
+      tileCoord: [0, 0, 0],
+      projection,
+      getKey: () => 'source/0/0/0',
+      getState: () => TileState.LOADED,
+      getFeatures: () => features,
+    });
+    const renderTile = loadedTile(...renderCoord);
+    renderTile.getSourceTiles = () => [sourceTile];
+    const calls = [];
+    const image = new CircleStyle({
+      radius: 3,
+      fill: new Fill({color: '#000'}),
+    });
+    layer = new WebGPUVectorTileLayer({
+      source,
+      style: (feature) => {
+        calls.push(feature.getId());
+        return new Style({
+          geometry: feature.get('draw') || feature.getGeometry(),
+          image,
+        });
+      },
+    });
+    renderer = layer.createRenderer();
+
+    let batch = null;
+    for (let i = 0; i < 200 && !batch; ++i) {
+      renderer.batchBuildBudget_ = 1;
+      renderer.batchBuildDeadline_ = Infinity;
+      batch = renderer.getBatch_(
+        renderTile,
+        renderCoord,
+        {
+          projection,
+          resolution,
+          zoom: renderCoord[0],
+          center,
+        },
+        1,
+      );
+      if (!batch) {
+        await new Promise((resolve) => setTimeout(resolve, 10));
+      }
+    }
+
+    assert.sameMembers(calls, ['inside', 'buffered', 'alternate-outside']);
+    assert.lengthOf(batch.buffers.labels, 2);
+    assert.deepEqual(
+      batch.buffers.labels.map((label) => label._anchor),
+      [center, [batchExtent[2] + 50 * resolution, center[1]]],
+    );
   });
 
   it('admits one batch preparation while the view is moving', async () => {
