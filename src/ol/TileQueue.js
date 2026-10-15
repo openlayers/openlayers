@@ -131,6 +131,43 @@ class TileQueue extends PriorityQueue {
 export default TileQueue;
 
 /**
+ * Offset that puts a tile behind every tile at the destination of an
+ * animation. It exceeds the whole range of the zoom level term (65536 times
+ * the logarithm of resolutions from about 1e-3 to 1e6) plus the distance term
+ * of a tile within a viewport of the destination's center.
+ * @type {number}
+ */
+const BEHIND_DESTINATION = 1e7;
+
+/**
+ * Whether a tile is part of the view an animation ends in: inside the next
+ * extent (or straddling its edge, for tiles up to 512 pixels), and not finer
+ * than the zoom level drawn there. The level is not known here, so a tile
+ * counts when its resolution is more than half the next resolution, which
+ * admits the level nearest to it and every coarser one.
+ * @param {import('./Map.js').FrameState} frameState Frame state.
+ * @param {import("./coordinate.js").Coordinate} tileCenter Tile center.
+ * @param {number} tileResolution Tile resolution.
+ * @return {boolean} The tile is at the destination.
+ */
+function isAtDestination(frameState, tileCenter, tileResolution) {
+  const nextExtent = frameState.nextExtent;
+  const nextResolution = frameState.viewState.nextResolution;
+  if (!nextExtent || !nextResolution || !frameState.viewState.nextCenter) {
+    return false;
+  }
+  // Half a 512 pixel tile, for tiles straddling the edge of the next extent.
+  const margin = 256 * tileResolution;
+  return (
+    tileResolution > nextResolution / 2 &&
+    tileCenter[0] >= nextExtent[0] - margin &&
+    tileCenter[0] <= nextExtent[2] + margin &&
+    tileCenter[1] >= nextExtent[1] - margin &&
+    tileCenter[1] <= nextExtent[3] + margin
+  );
+}
+
+/**
  * @param {import('./Map.js').FrameState} frameState Frame state.
  * @param {import("./Tile.js").default} tile Tile.
  * @param {string} tileSourceKey Tile source key.
@@ -159,11 +196,19 @@ export function getTilePriority(
   // the center of the tile and the center of the viewport.  The factor of 65536
   // means that the prioritization should behave as desired for tiles up to
   // 65536 * Math.log(2) = 45426 pixels from the focus.
-  const center = frameState.viewState.center;
+  const viewState = frameState.viewState;
+  const atDestination = isAtDestination(frameState, tileCenter, tileResolution);
+  const center = atDestination
+    ? /** @type {import("./coordinate.js").Coordinate} */ (viewState.nextCenter)
+    : viewState.center;
   const deltaX = tileCenter[0] - center[0];
   const deltaY = tileCenter[1] - center[1];
-  return (
+  const priority =
     65536 * Math.log(tileResolution) +
-    Math.sqrt(deltaX * deltaX + deltaY * deltaY) / tileResolution
-  );
+    Math.sqrt(deltaX * deltaX + deltaY * deltaY) / tileResolution;
+  // During an animation, the tiles where it ends come before the tiles of the
+  // area it passes over, which are only on screen for a moment.
+  return frameState.nextExtent && !atDestination
+    ? priority + BEHIND_DESTINATION
+    : priority;
 }
