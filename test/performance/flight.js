@@ -8,7 +8,7 @@ import {
   readMetrics,
   resetMetrics,
 } from '../../src/ol/webgpu/metrics.js';
-import {summarize} from './stats.js';
+import {frameExperience, summarize} from './stats.js';
 
 /**
  * @typedef {Object} FlightPhase
@@ -298,6 +298,14 @@ async function waitForRenderer(map, layer, ready) {
  */
 
 /**
+ * Run a scripted flight.
+ *
+ * Presented-frame gaps are the time from one frame to the next. Render work
+ * in sync mode is the `renderSync` duration. In animate mode it is the time
+ * from the map `precompose` event to `postrender`. That brackets deferred
+ * declutter painting; a layer's own `prerender` and `postrender` do not,
+ * because decluttered vector layers paint later from `renderDeferred`.
+ *
  * @param {FlightOptions} options Options.
  * @return {Promise<Object>} Benchmark result.
  */
@@ -360,92 +368,119 @@ export async function runFlight(options) {
   }
 
   let previous = await nextFrame();
-  for (const phase of phases) {
-    if (phase.moving || phase.interacting) {
-      view.setHint(ViewHint.INTERACTING, 1);
+  let workStart = 0;
+  let workOpen = false;
+  /** @type {Array<number>} */
+  let phaseWorkMs = [];
+  const onPrecompose = () => {
+    workStart = performance.now();
+    workOpen = true;
+  };
+  const onWorkEnd = () => {
+    if (!workOpen) {
+      return;
     }
-    /** @type {Array<number>} */
-    const frameMs = [];
-    /** @type {Array<number>} */
-    const cpuMs = [];
-    /** @type {Array<number>} */
-    const inputToFrameMs = [];
-    let settleMs = 0;
-    const settleStart = performance.now();
-    const settleListener = phase.settle
-      ? () => {
-          if (!settleMs) {
-            settleMs = performance.now() - settleStart;
-          }
-        }
-      : null;
-    if (settleListener) {
-      map.once('rendercomplete', settleListener);
-    }
-    longTasks.length = 0;
-    resetMetrics();
-    for (let i = 0; i < framesPerPhase; ++i) {
-      const start = performance.now();
-      let rendered;
-      if (mode === 'animate') {
-        const renderedPromise = new Promise((resolve) =>
-          map.once('postrender', () => resolve(performance.now())),
-        );
-        phase.apply(i / Math.max(1, framesPerPhase - 1));
-        map.render();
-        rendered = await renderedPromise;
-        inputToFrameMs.push(/** @type {number} */ (rendered) - start);
-        const now = /** @type {number} */ (rendered);
-        frameMs.push(now - previous);
-        previous = now;
-      } else {
-        phase.apply(i / Math.max(1, framesPerPhase - 1));
-        map.renderSync();
-        cpuMs.push(performance.now() - start);
-        const now = await nextFrame();
-        frameMs.push(now - previous);
-        previous = now;
-      }
-    }
-    if (settleListener) {
-      map.un('rendercomplete', settleListener);
-      if (!settleMs) {
-        settleMs = performance.now() - settleStart;
-      }
-    }
-    const metrics = readMetrics();
-    const phaseLongTasks = longTasks.slice();
-    phaseResults.push({
-      name: phase.name,
-      frames: frameMs.length,
-      frameMs: summarize(frameMs),
-      cpuMs: summarize(cpuMs),
-      inputToFrameMs: summarize(inputToFrameMs),
-      blockedFrames: frameMs.filter((value) => value > targetFrameMs * 1.5)
-        .length,
-      droppedFrames: frameMs.reduce(
-        (sum, value) =>
-          sum + Math.max(0, Math.round(value / targetFrameMs) - 1),
-        0,
-      ),
-      settleMs,
-      longTasks: {
-        count: phaseLongTasks.length,
-        total: phaseLongTasks.reduce((sum, duration) => sum + duration, 0),
-        ...summarize(phaseLongTasks),
-      },
-      metrics: perFrameMetrics(metrics, frameMs.length),
-    });
-    allFrameMs.push(...frameMs);
-    allCpuMs.push(...cpuMs);
-    allInputToFrameMs.push(...inputToFrameMs);
-    allLongTasks.push(...phaseLongTasks);
-    if (phase.moving || phase.interacting) {
-      view.setHint(ViewHint.INTERACTING, -1);
-    }
+    phaseWorkMs.push(performance.now() - workStart);
+    workOpen = false;
+  };
+  if (mode === 'animate') {
+    map.on('precompose', onPrecompose);
+    map.on('postrender', onWorkEnd);
   }
-  longTaskObserver?.disconnect();
-  enableMetrics(false);
+  /** @type {Array<number>} */
+  const allWorkMs = [];
+  try {
+    for (const phase of phases) {
+      if (phase.moving || phase.interacting) {
+        view.setHint(ViewHint.INTERACTING, 1);
+      }
+      /** @type {Array<number>} */
+      const frameMs = [];
+      /** @type {Array<number>} */
+      const cpuMs = [];
+      /** @type {Array<number>} */
+      const inputToFrameMs = [];
+      /** @type {Array<number>} */
+      const animateWorkMs = [];
+      phaseWorkMs = animateWorkMs;
+      let settleMs = 0;
+      const settleStart = performance.now();
+      const settleListener = phase.settle
+        ? () => {
+            if (!settleMs) {
+              settleMs = performance.now() - settleStart;
+            }
+          }
+        : null;
+      if (settleListener) {
+        map.once('rendercomplete', settleListener);
+      }
+      longTasks.length = 0;
+      resetMetrics();
+      for (let i = 0; i < framesPerPhase; ++i) {
+        const start = performance.now();
+        let rendered;
+        if (mode === 'animate') {
+          const renderedPromise = new Promise((resolve) =>
+            map.once('postrender', () => resolve(performance.now())),
+          );
+          phase.apply(i / Math.max(1, framesPerPhase - 1));
+          map.render();
+          rendered = await renderedPromise;
+          inputToFrameMs.push(/** @type {number} */ (rendered) - start);
+          const now = /** @type {number} */ (rendered);
+          frameMs.push(now - previous);
+          previous = now;
+        } else {
+          phase.apply(i / Math.max(1, framesPerPhase - 1));
+          map.renderSync();
+          cpuMs.push(performance.now() - start);
+          const now = await nextFrame();
+          frameMs.push(now - previous);
+          previous = now;
+        }
+      }
+      if (settleListener) {
+        map.un('rendercomplete', settleListener);
+        if (!settleMs) {
+          settleMs = performance.now() - settleStart;
+        }
+      }
+      const metrics = readMetrics();
+      const phaseLongTasks = longTasks.slice();
+      const workMs = mode === 'animate' ? animateWorkMs : cpuMs;
+      phaseResults.push({
+        name: phase.name,
+        frames: frameMs.length,
+        frameMs: summarize(frameMs),
+        cpuMs: summarize(cpuMs),
+        inputToFrameMs: summarize(inputToFrameMs),
+        experience: frameExperience(frameMs, workMs, targetFrameMs),
+        settleMs,
+        longTasks: {
+          count: phaseLongTasks.length,
+          total: phaseLongTasks.reduce((sum, duration) => sum + duration, 0),
+          ...summarize(phaseLongTasks),
+        },
+        metrics: perFrameMetrics(metrics, frameMs.length),
+      });
+      allFrameMs.push(...frameMs);
+      allCpuMs.push(...cpuMs);
+      allInputToFrameMs.push(...inputToFrameMs);
+      allWorkMs.push(...workMs);
+      allLongTasks.push(...phaseLongTasks);
+      if (phase.moving || phase.interacting) {
+        view.setHint(ViewHint.INTERACTING, -1);
+      }
+    }
+  } finally {
+    if (mode === 'animate') {
+      map.un('precompose', onPrecompose);
+      map.un('postrender', onWorkEnd);
+    }
+    longTaskObserver?.disconnect();
+    enableMetrics(false);
+  }
 
   return {
     config,
@@ -456,19 +491,12 @@ export async function runFlight(options) {
     frameMs: summarize(allFrameMs),
     cpuMs: summarize(allCpuMs),
     inputToFrameMs: summarize(allInputToFrameMs),
+    experience: frameExperience(allFrameMs, allWorkMs, targetFrameMs),
     longTasks: {
       count: allLongTasks.length,
       total: allLongTasks.reduce((sum, duration) => sum + duration, 0),
       ...summarize(allLongTasks),
     },
-    slowFrames20: allFrameMs.filter((value) => value > 20).length,
-    slowFrames33: allFrameMs.filter((value) => value > 33).length,
-    blockedFrames: allFrameMs.filter((value) => value > targetFrameMs * 1.5)
-      .length,
-    droppedFrames: allFrameMs.reduce(
-      (sum, value) => sum + Math.max(0, Math.round(value / targetFrameMs) - 1),
-      0,
-    ),
     settleMs: Math.max(
       0,
       ...phaseResults.map((phase) => /** @type {number} */ (phase.settleMs)),
