@@ -57,11 +57,11 @@ import LabelView from './LabelView.js';
 import WebGPULayerRenderer from './Layer.js';
 import {
   createVectorPipelines,
-  FRAME_UNIFORM_SIZE,
   FrameUniformPool,
   labelUniforms,
   paintBatches,
   placementKey,
+  VECTOR_FRAME_UNIFORM_SIZE,
   VectorGpuBuffers,
 } from './vectorUtil.js';
 
@@ -148,6 +148,19 @@ class TileBatch extends Disposable {
      * @type {Array<import("../../extent.js").Extent>|null}
      */
     this.labelClipExtents = null;
+
+    /**
+     * Regions in which fallback geometry may be drawn. `null` means the whole
+     * batch extent.
+     * @type {Array<import("../../extent.js").Extent>|null}
+     */
+    this.geometryClipExtents = null;
+
+    /**
+     * Frame in which `geometryClipExtents` was assigned.
+     * @type {number}
+     */
+    this.geometryClipFrame = -1;
 
     /**
      * Frame in which `labelClipExtents` was assigned.
@@ -293,7 +306,7 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
      * @private
      * @type {Float32Array}
      */
-    this.uniformData_ = new Float32Array(FRAME_UNIFORM_SIZE / 4);
+    this.uniformData_ = new Float32Array(VECTOR_FRAME_UNIFORM_SIZE / 4);
 
     /**
      * @private
@@ -974,7 +987,6 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
    * @param {string} sourceKey Source revision key.
    * @param {import("../../View.js").State} viewState View state.
    * @param {number} pixelRatio Device pixel ratio.
-   * @param {Set<string>} added Render keys already queued for drawing.
    * @return {{covered: boolean, items: Array<{renderKey: string, batch: TileBatch}>}}
    * Coverage and batches to draw if committed.
    * @private
@@ -987,7 +999,6 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     sourceKey,
     viewState,
     pixelRatio,
-    added,
   ) {
     const altRange = tileGrid.getTileRangeForTileCoordAndZ(
       tileCoord,
@@ -1003,9 +1014,6 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     for (let x = altRange.minX; x <= altRange.maxX; ++x) {
       for (let y = altRange.minY; y <= altRange.maxY; ++y) {
         const renderKey = getCacheKey(source, sourceKey, altZ, x, y);
-        if (added.has(renderKey)) {
-          continue;
-        }
         if (!this.renderTiles_.containsKey(renderKey)) {
           covered = false;
           continue;
@@ -1054,6 +1062,13 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
           labelExtent[3],
         ]);
       }
+      if (batch.geometryClipFrame !== frameIndex) {
+        batch.geometryClipFrame = frameIndex;
+        batch.geometryClipExtents = [];
+      }
+      /** @type {Array<import("../../extent.js").Extent>} */ (
+        batch.geometryClipExtents
+      ).push(labelExtent.slice());
       if (added.has(item.renderKey)) {
         continue;
       }
@@ -1191,6 +1206,13 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
       if (batch) {
         batch.labelClipFrame = frameState.index;
         batch.labelClipExtents = null;
+        if (batch.geometryClipFrame !== frameState.index) {
+          batch.geometryClipFrame = frameState.index;
+          batch.geometryClipExtents = [];
+        }
+        /** @type {Array<import("../../extent.js").Extent>} */ (
+          batch.geometryClipExtents
+        ).push(tileGrid.getTileCoordExtent([z, entry.x, entry.y]));
         added.add(entry.renderKey);
         batches.push(batch);
         continue;
@@ -1209,7 +1231,6 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
         sourceKey,
         viewState,
         frameState.pixelRatio,
-        added,
       );
       if (children.covered) {
         this.commitAltTiles_(
@@ -1231,7 +1252,6 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
           sourceKey,
           viewState,
           frameState.pixelRatio,
-          added,
         );
         if (parents.covered) {
           this.commitAltTiles_(
@@ -1368,6 +1388,7 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
             frameState,
             0,
             worldOffset,
+            batch.geometryClipExtents,
           );
         },
       });
