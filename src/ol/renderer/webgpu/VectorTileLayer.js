@@ -1027,6 +1027,11 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
           frameState.animate = true;
         }
       }
+    }
+    // Paint with the other layers on this canvas, in layer order, once
+    // decluttered layers have placed their labels. Painting here would put
+    // this layer under a decluttered layer below it.
+    if (!frameState.declutter) {
       this.paintSorted_(frameState);
     }
     this.postRender(frameState);
@@ -1168,7 +1173,9 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
    * @override
    */
   renderDeferred(frameState) {
-    if (!this.declutterGroup_) {
+    // Also layers without their own declutter group: they share this canvas,
+    // and this pass is what draws them above the decluttered layers below.
+    if (!frameState.declutter) {
       return;
     }
     this.paintSorted_(frameState);
