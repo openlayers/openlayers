@@ -1,5 +1,5 @@
 ---
-layout: example.html
+layout: example-verbatim.html
 title: VersaTiles Colorful (with WebGPU)
 shortdesc: The VersaTiles Colorful style rendered with WebGPU vector tile layers and flat styles.
 docs: >
@@ -11,4 +11,30 @@ docs: >
 tags: "webgpu, vector, tiles, declutter, versatiles, flat style"
 experimental: true
 ---
-<div id="map" class="map"></div>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta
+      name="viewport"
+      content="initial-scale=1.0, user-scalable=no, width=device-width"
+    >
+    <title>VersaTiles Colorful (with WebGPU)</title>
+    <link rel="stylesheet" type="text/css" href="/theme/ol.css">
+    <link rel="stylesheet" type="text/css" href="webgpu-versatiles.css">
+    <style>
+      html,
+      body,
+      .map {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map" class="map"></div>
+    <script type="module" src="webgpu-versatiles.js"></script>
+  </body>
+</html>
