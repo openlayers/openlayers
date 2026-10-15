@@ -1,4 +1,5 @@
 import '../../src/ol/ol.css';
+import {formatExperience} from './stats.js';
 
 const caseLoaders = import.meta.glob('./cases/*.js');
 
@@ -57,17 +58,7 @@ function show(result) {
     summary.textContent = result.error;
     return;
   }
-  const rows = [
-    `frames ${result.frames}`,
-    `frame p50 ${result.frameMs.p50.toFixed(1)}ms`,
-    `p95 ${result.frameMs.p95.toFixed(1)}ms`,
-    `p99 ${result.frameMs.p99.toFixed(1)}ms`,
-    `cpu p50 ${result.cpuMs.p50.toFixed(1)}ms`,
-    `cpu p99 ${result.cpuMs.p99.toFixed(1)}ms`,
-    `>20ms ${result.slowFrames20}`,
-    `>33ms ${result.slowFrames33}`,
-  ];
-  summary.textContent = rows.join(' | ');
+  summary.textContent = formatExperience(result.experience).join('\n');
 }
 
 async function start() {
