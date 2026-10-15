@@ -94,6 +94,10 @@ function segmentOnClipEdge(x1, y1, x2, y2, extent, eps) {
  * @property {Array<number>} [holes] Ring starts relative to `start`, for fills.
  * @property {number} styleIndex Index into the style table.
  * @property {number} [width] Stroke width in pixels.
+ * @property {CanvasLineCap} [lineCap] Stroke cap.
+ * @property {CanvasLineJoin} [lineJoin] Stroke join.
+ * @property {number} [miterLimit] Stroke miter limit.
+ * @property {boolean} [closed] Whether the stroke is a closed ring.
  * @property {boolean} [skipClipEdges] Drop segments lying on the clip extent.
  * @property {number} [zIndex] Style z-index.
  * @property {number} [classRank] Canvas class order.
@@ -125,8 +129,8 @@ function segmentOnClipEdge(x1, y1, x2, y2, extent, eps) {
  * @property {Uint32Array} fillStyles Style index per fill vertex.
  * @property {Uint32Array} fillIndices Fill indices.
  * @property {Int16Array} strokePositions Stroke positions in grid units.
- * @property {Float32Array} strokeAttributes Normal x, normal y, width, and
- *     distance along the line in drawn map units, per stroke vertex.
+ * @property {Float32Array} strokeAttributes Extrusion x, extrusion y, width,
+ *     and distance along the line in drawn map units, per stroke vertex.
  * @property {Uint32Array} strokeStyles Style index per stroke vertex.
  * @property {Uint32Array} strokeIndices Stroke indices.
  * @property {Float32Array} styles Styles, `STYLE_STRIDE` floats each (see `buffers.js`).
@@ -332,18 +336,19 @@ function crossOf(xy, a, b, c) {
 }
 
 /**
- * Emits a quad per segment, each vertex carrying its distance along the line
- * for the dash pattern. Distances are measured where the line is drawn: after
- * the GPU warp when there is one, so dashes keep their length on screen. They
- * start again at zero for each part a clip cuts the line into, and keep
- * counting across segments that are left out.
+ * Emits a connected strip with cap and join geometry. Each vertex carries an
+ * extrusion vector and its distance along the line for the dash pattern.
+ * Distances are measured where the line is drawn: after the GPU warp when
+ * there is one, so dashes keep their length on screen. They start again at
+ * zero for each part a clip cuts the line into, and keep counting across
+ * segments that are left out.
  *
  * @param {Array<number>} xy Flat x/y pairs.
  * @param {GeometryJob} job Job.
  * @param {LocalGrid} grid Grid.
  * @param {import("./tessellate.js").TessellateOptions} reproj Tessellation options.
  * @param {Array<number>} positions Positions out.
- * @param {Array<number>} attributes Normal x, normal y, width, and distance out.
+ * @param {Array<number>} attributes Extrusion x, extrusion y, width, and distance out.
  * @param {Array<number>} styleIndices Style indices out.
  * @param {Array<number>} indices Indices out.
  */
@@ -377,13 +382,26 @@ function emitStroke(
       return;
     }
   }
-  const width = job.width || 1;
   const eps = clipExtent ? clipEdgeEpsilon(clipExtent) : 0;
   const maxEdge = reproj.maxTargetEdge || 0;
   const drawnLength = drawnSegmentLength(reproj);
   let offset = 0;
   for (const end of ends) {
+    /** @type {Array<{x: number, y: number, distance: number}>} */
+    let run = [];
     let distance = 0;
+    const partStart = offset;
+    const partClosed =
+      !!job.closed &&
+      parts[offset] === parts[end - 2] &&
+      parts[offset + 1] === parts[end - 1];
+    const realStart =
+      !clipExtent ||
+      (parts[offset] === projected[0] && parts[offset + 1] === projected[1]);
+    const realEnd =
+      !clipExtent ||
+      (parts[end - 2] === projected[projected.length - 2] &&
+        parts[end - 1] === projected[projected.length - 1]);
     for (let i = offset; i < end - 2; i += 2) {
       const x1 = parts[i];
       const y1 = parts[i + 1];
@@ -392,54 +410,365 @@ function emitStroke(
       const d1 = distance;
       distance += drawnLength(x1, y1, x2, y2);
       const d2 = distance;
-      if (
-        job.skipClipEdges &&
-        clipExtent &&
-        segmentOnClipEdge(x1, y1, x2, y2, clipExtent, eps)
-      ) {
+      const skipped =
+        (job.skipClipEdges &&
+          clipExtent &&
+          segmentOnClipEdge(x1, y1, x2, y2, clipExtent, eps)) ||
+        (maxEdge > 0 && Math.hypot(x2 - x1, y2 - y1) > maxEdge);
+      if (skipped) {
+        emitStrokeRun(
+          run,
+          false,
+          'butt',
+          'butt',
+          job,
+          grid,
+          positions,
+          attributes,
+          styleIndices,
+          indices,
+        );
+        run = [];
         continue;
       }
-      const dx = x2 - x1;
-      const dy = y2 - y1;
-      const len = Math.hypot(dx, dy) || 1;
-      if (maxEdge > 0 && len > maxEdge) {
-        continue;
+      if (!run.length) {
+        run.push({x: x1, y: y1, distance: d1});
       }
-      const nx = -dy / len;
-      const ny = dx / len;
-      const lx1 = toLocal(x1, grid.originX, grid.scaleX);
-      const ly1 = toLocal(y1, grid.originY, grid.scaleY);
-      const lx2 = toLocal(x2, grid.originX, grid.scaleX);
-      const ly2 = toLocal(y2, grid.originY, grid.scaleY);
-      const base = positions.length / 2;
-      positions.push(lx1, ly1, lx1, ly1, lx2, ly2, lx2, ly2);
-      attributes.push(
-        nx,
-        ny,
-        width,
-        d1,
-        -nx,
-        -ny,
-        width,
-        d1,
-        nx,
-        ny,
-        width,
-        d2,
-        -nx,
-        -ny,
-        width,
-        d2,
+      if (run[run.length - 1].x !== x2 || run[run.length - 1].y !== y2) {
+        run.push({x: x2, y: y2, distance: d2});
+      }
+    }
+    if (run.length >= 2) {
+      const startsAtPart =
+        run[0].x === parts[partStart] && run[0].y === parts[partStart + 1];
+      const endsAtPart =
+        run[run.length - 1].x === parts[end - 2] &&
+        run[run.length - 1].y === parts[end - 1];
+      emitStrokeRun(
+        run,
+        partClosed && startsAtPart && endsAtPart,
+        startsAtPart && realStart ? job.lineCap || 'round' : 'butt',
+        endsAtPart && realEnd ? job.lineCap || 'round' : 'butt',
+        job,
+        grid,
+        positions,
+        attributes,
+        styleIndices,
+        indices,
       );
-      styleIndices.push(
-        job.styleIndex,
-        job.styleIndex,
-        job.styleIndex,
-        job.styleIndex,
-      );
-      indices.push(base, base + 1, base + 2, base + 1, base + 3, base + 2);
     }
     offset = end;
+  }
+}
+
+/**
+ * @typedef {{x: number, y: number, distance: number}} StrokePoint
+ */
+
+/**
+ * @typedef {{x: number, y: number}} StrokeVector
+ */
+
+/**
+ * @typedef {Object} StrokeMeshWriter
+ * @property {function(number, number, number, number, number): number} vertex Add a vertex.
+ * @property {function(number, number, number, number, number, number, number): Array<number>} pair Add a left/right pair.
+ * @property {function(number, number, number): void} triangle Add a triangle.
+ * @property {number} left Last left-side vertex.
+ * @property {number} right Last right-side vertex.
+ */
+
+/**
+ * @param {Array<StrokePoint>} input Points.
+ * @param {boolean} closed Closed ring.
+ * @param {CanvasLineCap} startCap Start cap.
+ * @param {CanvasLineCap} endCap End cap.
+ * @param {GeometryJob} job Job.
+ * @param {LocalGrid} grid Grid.
+ * @param {Array<number>} positions Positions out.
+ * @param {Array<number>} attributes Attributes out.
+ * @param {Array<number>} styleIndices Style indices out.
+ * @param {Array<number>} indices Indices out.
+ */
+function emitStrokeRun(
+  input,
+  closed,
+  startCap,
+  endCap,
+  job,
+  grid,
+  positions,
+  attributes,
+  styleIndices,
+  indices,
+) {
+  const points = [];
+  for (const point of input) {
+    const last = points[points.length - 1];
+    if (!last || last.x !== point.x || last.y !== point.y) {
+      points.push(point);
+    } else {
+      last.distance = point.distance;
+    }
+  }
+  if (points.length < 2) {
+    return;
+  }
+  const width = job.width || 1;
+  const writer = createStrokeMeshWriter(
+    job.styleIndex,
+    width,
+    grid,
+    positions,
+    attributes,
+    styleIndices,
+    indices,
+  );
+  /**
+   * @param {StrokePoint} a Start.
+   * @param {StrokePoint} b End.
+   * @return {StrokeVector} Left normal.
+   */
+  const normal = (a, b) => {
+    const dx = b.x - a.x;
+    const dy = b.y - a.y;
+    const length = Math.hypot(dx, dy);
+    return length ? {x: -dy / length, y: dx / length} : {x: 0, y: 1};
+  };
+  const firstNormal = normal(points[0], points[1]);
+  const first = points[0];
+  addCapPair(writer, first, firstNormal, closed ? 'butt' : startCap, -1);
+  if (!closed && startCap === 'round') {
+    addRoundCap(writer, first, firstNormal, -1);
+  }
+  for (let i = 1; i < points.length - 1; ++i) {
+    addJoin(
+      writer,
+      points[i],
+      normal(points[i - 1], points[i]),
+      normal(points[i], points[i + 1]),
+      job.lineJoin || 'round',
+      job.miterLimit ?? 10,
+    );
+  }
+  const last = points[points.length - 1];
+  const lastNormal = normal(points[points.length - 2], last);
+  if (closed) {
+    addJoin(
+      writer,
+      last,
+      lastNormal,
+      firstNormal,
+      job.lineJoin || 'round',
+      job.miterLimit ?? 10,
+    );
+  } else {
+    addCapPair(writer, last, lastNormal, endCap, 1);
+    if (endCap === 'round') {
+      addRoundCap(writer, last, lastNormal, 1);
+    }
+  }
+}
+
+/**
+ * @param {number} styleIndex Style index.
+ * @param {number} width Width.
+ * @param {LocalGrid} grid Grid.
+ * @param {Array<number>} positions Positions out.
+ * @param {Array<number>} attributes Attributes out.
+ * @param {Array<number>} styleIndices Style indices out.
+ * @param {Array<number>} indices Indices out.
+ * @return {StrokeMeshWriter} Writer.
+ */
+function createStrokeMeshWriter(
+  styleIndex,
+  width,
+  grid,
+  positions,
+  attributes,
+  styleIndices,
+  indices,
+) {
+  const writer = /** @type {StrokeMeshWriter} */ ({
+    left: -1,
+    right: -1,
+    vertex(x, y, ex, ey, distance) {
+      const index = positions.length / 2;
+      positions.push(
+        toLocal(x, grid.originX, grid.scaleX),
+        toLocal(y, grid.originY, grid.scaleY),
+      );
+      attributes.push(ex, ey, width, distance);
+      styleIndices.push(styleIndex);
+      return index;
+    },
+    pair(x, y, lx, ly, rx, ry, distance) {
+      const left = writer.vertex(x, y, lx, ly, distance);
+      const right = writer.vertex(x, y, rx, ry, distance);
+      if (writer.left >= 0 && writer.right >= 0) {
+        indices.push(
+          writer.left,
+          left,
+          writer.right,
+          left,
+          right,
+          writer.right,
+        );
+      }
+      writer.left = left;
+      writer.right = right;
+      return [left, right];
+    },
+    triangle(a, b, c) {
+      indices.push(a, b, c);
+    },
+  });
+  return writer;
+}
+
+/**
+ * @param {StrokeMeshWriter} writer Writer.
+ * @param {StrokePoint} point Point.
+ * @param {StrokeVector} normal Left normal.
+ * @param {CanvasLineCap} cap Cap.
+ * @param {-1|1} direction Start (-1) or end (1).
+ */
+function addCapPair(writer, point, normal, cap, direction) {
+  const extension = cap === 'square' ? direction : 0;
+  const tx = normal.y;
+  const ty = -normal.x;
+  writer.pair(
+    point.x,
+    point.y,
+    normal.x + tx * extension,
+    normal.y + ty * extension,
+    -normal.x + tx * extension,
+    -normal.y + ty * extension,
+    point.distance,
+  );
+}
+
+/**
+ * @param {StrokeMeshWriter} writer Writer.
+ * @param {StrokePoint} point Point.
+ * @param {StrokeVector} normal Left normal.
+ * @param {-1|1} direction Start (-1) or end (1).
+ */
+function addRoundCap(writer, point, normal, direction) {
+  const center = writer.vertex(point.x, point.y, 0, 0, point.distance);
+  const tx = normal.y;
+  const ty = -normal.x;
+  const steps = 9;
+  let previous;
+  for (let i = 0; i <= steps; ++i) {
+    const angle = (i / steps) * Math.PI;
+    const c = Math.cos(angle);
+    const s = Math.sin(angle);
+    const ex = direction < 0 ? -normal.x * c - tx * s : normal.x * c + tx * s;
+    const ey = direction < 0 ? -normal.y * c - ty * s : normal.y * c + ty * s;
+    const current = writer.vertex(point.x, point.y, ex, ey, point.distance);
+    if (previous !== undefined) {
+      writer.triangle(center, previous, current);
+    }
+    previous = current;
+  }
+}
+
+/**
+ * @param {StrokeMeshWriter} writer Writer.
+ * @param {StrokePoint} point Point.
+ * @param {StrokeVector} previous Previous left normal.
+ * @param {StrokeVector} next Next left normal.
+ * @param {CanvasLineJoin} join Join.
+ * @param {number} miterLimit Miter limit.
+ */
+function addJoin(writer, point, previous, next, join, miterLimit) {
+  const dot = Math.max(
+    -1,
+    Math.min(1, previous.x * next.x + previous.y * next.y),
+  );
+  const cross = previous.x * next.y - previous.y * next.x;
+  if (dot > 1 - 1e-12) {
+    writer.pair(
+      point.x,
+      point.y,
+      next.x,
+      next.y,
+      -next.x,
+      -next.y,
+      point.distance,
+    );
+    return;
+  }
+  const sumX = previous.x + next.x;
+  const sumY = previous.y + next.y;
+  const sumLength = Math.hypot(sumX, sumY);
+  const joinX = sumLength ? sumX / sumLength : 0;
+  const joinY = sumLength ? sumY / sumLength : 0;
+  const cosHalf = joinX * next.x + joinY * next.y;
+  const miterLength = cosHalf > 1e-12 ? 1 / cosHalf : Infinity;
+  if (join === 'miter' && miterLength <= Math.max(0, miterLimit)) {
+    writer.pair(
+      point.x,
+      point.y,
+      joinX * miterLength,
+      joinY * miterLength,
+      -joinX * miterLength,
+      -joinY * miterLength,
+      point.distance,
+    );
+    return;
+  }
+
+  const turnsLeft = cross >= 0;
+  const innerLength = Math.min(miterLength, 2);
+  const innerX = joinX * innerLength * (turnsLeft ? 1 : -1);
+  const innerY = joinY * innerLength * (turnsLeft ? 1 : -1);
+  const previousOuterX = turnsLeft ? -previous.x : previous.x;
+  const previousOuterY = turnsLeft ? -previous.y : previous.y;
+  if (turnsLeft) {
+    writer.pair(
+      point.x,
+      point.y,
+      innerX,
+      innerY,
+      previousOuterX,
+      previousOuterY,
+      point.distance,
+    );
+  } else {
+    writer.pair(
+      point.x,
+      point.y,
+      previousOuterX,
+      previousOuterY,
+      innerX,
+      innerY,
+      point.distance,
+    );
+  }
+
+  const angle = Math.atan2(cross, dot);
+  const steps =
+    join === 'round'
+      ? Math.max(1, Math.ceil(Math.abs(angle) / (Math.PI / 9)))
+      : 1;
+  let outerIndex = turnsLeft ? writer.right : writer.left;
+  for (let i = 1; i <= steps; ++i) {
+    const currentAngle = (angle * i) / steps;
+    const c = Math.cos(currentAngle);
+    const s = Math.sin(currentAngle);
+    const ex = previousOuterX * c - previousOuterY * s;
+    const ey = previousOuterX * s + previousOuterY * c;
+    const current = writer.vertex(point.x, point.y, ex, ey, point.distance);
+    if (turnsLeft) {
+      writer.triangle(writer.left, outerIndex, current);
+      writer.right = current;
+    } else {
+      writer.triangle(writer.right, current, outerIndex);
+      writer.left = current;
+    }
+    outerIndex = current;
   }
 }
 
