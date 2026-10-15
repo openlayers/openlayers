@@ -331,6 +331,53 @@ describe('ol/renderer/webgpu/VectorTileLayer', () => {
     assert.strictEqual(batches.length, 1);
   });
 
+  it('restyles tiles at the view resolution once the view settles', async () => {
+    layer.dispose();
+    const features = [new Feature(new Point([0, 0]))];
+    const sourceTiles = [
+      {
+        getState: () => TileState.LOADED,
+        getFeatures: () => features,
+      },
+    ];
+    source.getTile = function (z, x, y) {
+      const tile = loadedTile(z, x, y);
+      tile.getSourceTiles = () => sourceTiles;
+      return tile;
+    };
+    const resolutions = [];
+    const image = new CircleStyle({
+      radius: 3,
+      fill: new Fill({color: '#000'}),
+    });
+    layer = new WebGPUVectorTileLayer({
+      source,
+      style: (feature, resolution) => {
+        resolutions.push(resolution);
+        return new Style({image});
+      },
+    });
+    renderer = layer.createRenderer();
+    const frameState = frameAtZ(0);
+    const builtKey = (await collectBatches(frameState, 1))[0].key;
+
+    const settledResolution = frameState.viewState.resolution * 0.8;
+    frameState.viewState.resolution = settledResolution;
+    frameState.viewHints[ViewHint.INTERACTING] = 1;
+    assert.strictEqual(renderer.collectBatches_(frameState)[0].key, builtKey);
+    assert.notInclude(resolutions, settledResolution);
+
+    frameState.viewHints[ViewHint.INTERACTING] = 0;
+    assert.strictEqual(renderer.collectBatches_(frameState)[0].key, builtKey);
+    let key = builtKey;
+    for (let i = 0; i < 200 && key === builtKey; ++i) {
+      await new Promise((resolve) => setTimeout(resolve, 10));
+      key = renderer.collectBatches_(frameState)[0].key;
+    }
+    assert.notStrictEqual(key, builtKey);
+    assert.include(resolutions, settledResolution);
+  });
+
   it('prepares the tile nearest the view center first', () => {
     source.getTile = function (z, x, y) {
       return loadedTile(z, x, y);

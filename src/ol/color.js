@@ -67,6 +67,7 @@ function toColorComponent(s, divider) {
 
 /**
  * @param {string} color Color string.
+ * @return {never} Never returns.
  */
 function throwInvalidColor(color) {
   throw new Error('failed to parse "' + color + '" as color');
