@@ -159,6 +159,35 @@ describe('ol/renderer/webgpu/VectorTileLayer', () => {
     assert.isNotEmpty(requested);
   });
 
+  it('clips cached parents to holes between loaded current tiles', async () => {
+    source.getTile = function (z, x, y) {
+      return z === 1 && x === 0 && y === 0
+        ? loadedTile(z, x, y)
+        : idleTile(z, x, y);
+    };
+    const sourceKey = source.getKey();
+    renderer.renderTiles_.set(
+      getCacheKey(source, sourceKey, 0, 0, 0),
+      loadedTile(0, 0, 0),
+    );
+    const frameState = frameAtZ(1);
+    frameState.index = 1;
+
+    const batches = await collectBatches(frameState, 2);
+
+    const tileGrid = source.getTileGridForProjection(projection);
+    const current = batches.find((batch) => /^1\/0\/0\//.test(batch.key));
+    const fallback = batches.find((batch) => /^0\/0\/0\//.test(batch.key));
+    assert.deepEqual(current.geometryClipExtents, [
+      tileGrid.getTileCoordExtent([1, 0, 0]),
+    ]);
+    assert.deepEqual(fallback.geometryClipExtents, [
+      tileGrid.getTileCoordExtent([1, 0, 1]),
+      tileGrid.getTileCoordExtent([1, 1, 0]),
+      tileGrid.getTileCoordExtent([1, 1, 1]),
+    ]);
+  });
+
   it('draws cached child tiles when zooming out before parent tiles load', async () => {
     source.getTile = function (z, x, y) {
       return idleTile(z, x, y);
@@ -217,13 +246,21 @@ describe('ol/renderer/webgpu/VectorTileLayer', () => {
     });
     renderer = layer.createRenderer();
 
-    const batchesAtOne = await collectBatches(frameAtZ(1), 4);
-    const batchesAtTwo = await collectBatches(frameAtZ(2), 4);
+    const frameAtOne = frameAtZ(1);
+    frameAtOne.index = 1;
+    const frameAtTwo = frameAtZ(2);
+    frameAtTwo.index = 2;
+    const batchesAtOne = await collectBatches(frameAtOne, 4);
+    const batchesAtTwo = await collectBatches(frameAtTwo, 4);
 
     assert.strictEqual(batchesAtOne.length, 4);
     assert.strictEqual(batchesAtTwo.length, 4);
     assert.isTrue(batchesAtOne.every((batch) => /^source\//.test(batch.key)));
     assert.isTrue(batchesAtTwo.every((batch) => /^source\//.test(batch.key)));
+    assert.deepEqual(
+      batchesAtTwo.map((batch) => batch.geometryClipExtents.length),
+      [4, 4, 4, 4],
+    );
   });
 
   it('filters original geometries before evaluating function styles', async () => {
