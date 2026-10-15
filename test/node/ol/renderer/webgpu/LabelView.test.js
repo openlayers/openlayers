@@ -118,6 +118,27 @@ describe('ol/renderer/webgpu/LabelView', () => {
     assert.deepEqual(label._anchor, [10, 20]);
   });
 
+  it('suppresses fallback labels outside missing child regions', () => {
+    const buffers = {
+      glyphs: [],
+      labels: [
+        {minX: -5, minY: -5, maxX: 5, maxY: 5, _anchor: [25, 25]},
+        {minX: -5, minY: -5, maxX: 5, maxY: 5, _anchor: [75, 75]},
+      ],
+    };
+    const view = new LabelView();
+    view.update([
+      {
+        buffers: /** @type {any} */ (buffers),
+        worldOffset: 0,
+        labelClipExtents: [[0, 0, 50, 50]],
+      },
+    ]);
+    const boxes = view.toScreen(frameState());
+    assert.isFinite(boxes[0].minX);
+    assert.strictEqual(boxes[1].minX, Infinity);
+  });
+
   it('uses rotated icon corners for collision bounds', () => {
     const buffers = {
       glyphs: [],
@@ -171,5 +192,24 @@ describe('ol/renderer/webgpu/LabelView', () => {
     const first = view.toScreen(frameState())[0];
     const second = view.toScreen(frameState())[0];
     assert.strictEqual(first, second);
+  });
+
+  it('translates cached boxes on pan-only frames', () => {
+    const buffers = {
+      glyphs: [],
+      labels: [{minX: -5, minY: -4, maxX: 5, maxY: 4, _anchor: [10, 20]}],
+    };
+    const view = viewOf(buffers);
+    const frame = frameState();
+    const box = view.toScreen(frame)[0];
+    const first = [box.minX, box.minY, box.maxX, box.maxY];
+    frame.coordinateToPixelTransform[4] = 7;
+    frame.coordinateToPixelTransform[5] = -3;
+    const translated = view.toScreen(frame)[0];
+    assert.strictEqual(translated, box);
+    assert.deepEqual(
+      [box.minX, box.minY, box.maxX, box.maxY],
+      [first[0] + 7, first[1] - 3, first[2] + 7, first[3] - 3],
+    );
   });
 });

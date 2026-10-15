@@ -34,6 +34,23 @@ describe('ol/render/webgpu/SymbolIdentityIndex', () => {
     assert.deepEqual(second, [first[1], first[0]]);
   });
 
+  it('retains known batch identities while matching new labels', () => {
+    const index = new SymbolIdentityIndex();
+    const first = index.update(
+      [label('west', 0, 0), label('east', 100, 0)],
+      [0, 0],
+      1,
+    );
+    const updated = index.update(
+      [label('west', 0, 0), label('east', 102, 0)],
+      [0, 0],
+      1,
+      undefined,
+      [first[0], undefined],
+    );
+    assert.deepEqual(updated, first);
+  });
+
   it('deduplicates exact parent and child copies', () => {
     const index = new SymbolIdentityIndex();
     const ids = index.update(
