@@ -212,4 +212,72 @@ describe('ol/renderer/webgpu/LabelView', () => {
       [first[0] + 7, first[1] - 3, first[2] + 7, first[3] - 3],
     );
   });
+
+  it('keeps projected boxes with unchanged sources when tiles enter', () => {
+    const retained = {
+      glyphs: [],
+      labels: [
+        {
+          minX: -2,
+          minY: -2,
+          maxX: 2,
+          maxY: 2,
+          pairId: 1,
+          _anchor: [10, 20],
+        },
+      ],
+    };
+    const entering = {
+      glyphs: [],
+      labels: [
+        {
+          minX: -1,
+          minY: -1,
+          maxX: 1,
+          maxY: 1,
+          pairId: 5,
+          _anchor: [30, 40],
+        },
+      ],
+    };
+    const view = viewOf(retained);
+    const frame = frameState();
+    const retainedBox = view.toScreen(frame)[0];
+
+    view.update([
+      {buffers: /** @type {any} */ (entering), worldOffset: 0},
+      {buffers: /** @type {any} */ (retained), worldOffset: 0},
+    ]);
+    view.setIdentities([7, 8]);
+    const boxes = view.toScreen(frame);
+
+    assert.strictEqual(boxes[1], retainedBox);
+    assert.strictEqual(boxes[1].id, 8);
+    assert.strictEqual(boxes[1].pairId, 7);
+    assert.closeTo(boxes[0].minX, 30 - 1 - LABEL_COLLISION_MARGIN, 1e-10);
+  });
+
+  it('reprojects a source when its world offset or fallback clips change', () => {
+    const buffers = {
+      glyphs: [],
+      labels: [{minX: -2, minY: -2, maxX: 2, maxY: 2, _anchor: [25, 25]}],
+    };
+    const view = viewOf(buffers);
+    const frame = frameState();
+    const first = view.toScreen(frame)[0];
+
+    view.update([{buffers: /** @type {any} */ (buffers), worldOffset: 10}]);
+    const offset = view.toScreen(frame)[0];
+    assert.notStrictEqual(offset, first);
+    assert.strictEqual(offset.minX, first.minX + 10);
+
+    view.update([
+      {
+        buffers: /** @type {any} */ (buffers),
+        worldOffset: 10,
+        labelClipExtents: [[0, 0, 5, 5]],
+      },
+    ]);
+    assert.strictEqual(view.toScreen(frame)[0].minX, Infinity);
+  });
 });
