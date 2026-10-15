@@ -75,6 +75,20 @@ import {
  */
 
 /**
+ * Style cache buckets kept at once. Each settled view resolution starts a new
+ * bucket, so the oldest are dropped; tiles still on an older resolution keep
+ * their built batches.
+ * @type {number}
+ */
+const MAX_STYLE_CACHES = 8;
+
+/**
+ * @typedef {Object} StyleState
+ * @property {number} resolution Resolution passed to the style function.
+ * @property {number} zoom Zoom passed to the style function.
+ */
+
+/**
  * @classdesc
  * One tile's CPU geometry plus the GPU buffers built from it. Cached in an LRU
  * that disposes evicted entries, which is what releases the GPU buffers.
@@ -349,6 +363,39 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     this.styleCaches_ = new Map();
 
     /**
+     * Resolution and zoom each render tile's styles are evaluated at. Like the
+     * Canvas renderer, a tile follows the view resolution once the view has
+     * settled at its zoom level, and keeps its last value while the view moves.
+     * Without this, tiles built at different points of a zoom gesture would
+     * keep showing different zoom-dependent styles side by side.
+     * @private
+     * @type {WeakMap<import("../../VectorRenderTile.js").default, StyleState>}
+     */
+    this.styleStates_ = new WeakMap();
+
+    /**
+     * Last batch drawn for each render tile, drawn again while a batch for the
+     * tile's new style resolution is being built.
+     * @private
+     * @type {WeakMap<import("../../VectorRenderTile.js").default, TileBatch>}
+     */
+    this.drawnBatches_ = new WeakMap();
+
+    /**
+     * Whether render tiles at `restyleZ_` follow the view resolution this frame.
+     * @private
+     * @type {boolean}
+     */
+    this.restyle_ = false;
+
+    /**
+     * Render tile zoom level for the current frame.
+     * @private
+     * @type {number}
+     */
+    this.restyleZ_ = NaN;
+
+    /**
      * Worker completions are coalesced into one render request per animation
      * frame, avoiding repeated label placement for a burst of finished tiles.
      * @private
@@ -602,6 +649,11 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     if (!resolved) {
       resolved = new WeakMap();
       this.styleCaches_.set(bucket, resolved);
+      if (this.styleCaches_.size > MAX_STYLE_CACHES) {
+        this.styleCaches_.delete(
+          /** @type {string} */ (this.styleCaches_.keys().next().value),
+        );
+      }
     }
     let prepared = false;
     const sorted = features
@@ -637,15 +689,70 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
   }
 
   /**
-   * Build a GPU batch for a render tile that has at least one loaded source tile.
+   * @param {import("../../VectorRenderTile.js").default} tile Render tile.
+   * @param {number} z Render tile zoom level.
+   * @param {import("../../View.js").State} viewState View state.
+   * @return {StyleState} Resolution and zoom to evaluate the tile's styles at.
+   * @private
+   */
+  getStyleState_(tile, z, viewState) {
+    const stored = this.styleStates_.get(tile);
+    if (stored && !(this.restyle_ && z === this.restyleZ_)) {
+      return stored;
+    }
+    if (stored && stored.resolution === viewState.resolution) {
+      return stored;
+    }
+    const state = {resolution: viewState.resolution, zoom: viewState.zoom};
+    this.styleStates_.set(tile, state);
+    return state;
+  }
+
+  /**
+   * Get the GPU batch for a render tile that has at least one loaded source
+   * tile. While the batch for the tile's current style state is not ready, the
+   * batch last drawn for the tile is returned instead.
    * @param {import("../../VectorRenderTile.js").default} tile Render tile.
    * @param {import("../../tilecoord.js").TileCoord} tileCoord Tile coordinate.
-   * @param {import("../../View.js").State} viewState View state used to evaluate styles.
+   * @param {import("../../View.js").State} viewState View state.
    * @param {number} pixelRatio Device pixel ratio.
    * @return {TileBatch|null} Batch, or null if nothing is ready to draw.
    * @private
    */
   getBatch_(tile, tileCoord, viewState, pixelRatio) {
+    const styleState = this.getStyleState_(tile, tileCoord[0], viewState);
+    const batch = this.buildBatch_(
+      tile,
+      tileCoord,
+      viewState,
+      styleState,
+      pixelRatio,
+    );
+    if (batch) {
+      if (tile.getState() === TileState.LOADED) {
+        this.drawnBatches_.set(tile, batch);
+      }
+      return batch;
+    }
+    const drawn = this.drawnBatches_.get(tile);
+    if (drawn && this.tileCache_.containsKey(drawn.key)) {
+      countMetric('restyleFallbackBatches');
+      return this.tileCache_.get(drawn.key);
+    }
+    return null;
+  }
+
+  /**
+   * Build a GPU batch for a render tile that has at least one loaded source tile.
+   * @param {import("../../VectorRenderTile.js").default} tile Render tile.
+   * @param {import("../../tilecoord.js").TileCoord} tileCoord Tile coordinate.
+   * @param {import("../../View.js").State} viewState View state.
+   * @param {StyleState} styleState Resolution and zoom to evaluate styles at.
+   * @param {number} pixelRatio Device pixel ratio.
+   * @return {TileBatch|null} Batch, or null if nothing is ready to draw.
+   * @private
+   */
+  buildBatch_(tile, tileCoord, viewState, styleState, pixelRatio) {
     const sourceTiles =
       typeof tile.getSourceTiles === 'function' ? tile.getSourceTiles() : [];
     const loadedSourceTiles = [];
@@ -684,7 +791,15 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
       equivalent(sourceProjection, viewState.projection) &&
       !!sourceTileCoord &&
       tileCoord[0] > sourceTileCoord[0];
-    let cacheKey = getTileCoordKey(tileCoord) + '/' + tile.key + '/' + dpr;
+    const styleResolution = styleState.resolution;
+    let cacheKey =
+      getTileCoordKey(tileCoord) +
+      '/' +
+      tile.key +
+      '/' +
+      dpr +
+      '/' +
+      styleResolution;
     if (reuseSourceBatch) {
       // Keep an overzoom batch no more than one zoom level coarser than its
       // render tiles. At deep overzoom this bounds synchronous style/label
@@ -710,7 +825,9 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
         '/' +
         dpr +
         '/' +
-        worldOffset;
+        worldOffset +
+        '/' +
+        styleResolution;
     }
     const cacheable = tile.getState() === TileState.LOADED;
     if (cacheable && this.tileCache_.containsKey(cacheKey)) {
@@ -741,7 +858,7 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
       reuseSourceBatch && clipExtent
         ? bufferExtent(
             clipExtent,
-            viewState.resolution * VIEWPORT_PADDING,
+            styleResolution * VIEWPORT_PADDING,
             clipExtent.slice(),
           )
         : undefined;
@@ -757,9 +874,9 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     if (this.cacheResolvedStyles_) {
       const prepared = this.prepareStyleCache_(
         buildFeatures,
-        tileCoord[0] + '/' + dpr,
-        viewState.resolution,
-        viewState.zoom,
+        tileCoord[0] + '/' + dpr + '/' + styleResolution,
+        styleResolution,
+        styleState.zoom,
       );
       if (!prepared) {
         return null;
@@ -782,11 +899,11 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     const {request, labelData} = buildVectorRequest(
       buildFeatures,
       this.styleFunction_,
-      viewState.resolution,
+      styleResolution,
       this.atlas_,
       clipExtent ? {clipExtent, filterExtent} : undefined,
       dpr,
-      viewState.zoom,
+      styleState.zoom,
       undefined,
       this.imageAtlas_,
       styleCache,
@@ -968,6 +1085,8 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
       viewState.resolution,
       source.zDirection,
     );
+    this.restyle_ = !moving;
+    this.restyleZ_ = z;
     const extent = frameState.extent;
     if (!extent) {
       endMetric('collectBatches', metricStart);
