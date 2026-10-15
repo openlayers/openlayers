@@ -13,6 +13,7 @@ import {
   decodeHitColor,
   encodeHitColor,
   ICON_STRIDE,
+  resolveFeatureStyles,
   STYLE_STRIDE,
   SYMBOL_STRIDE,
 } from '../../../../../src/ol/render/webgpu/buffers.js';
@@ -659,6 +660,79 @@ describe('ol/render/webgpu/buffers', () => {
     assert.strictEqual(loads, 1);
     assert.deepEqual(labelData.pendingImageStyles, [image]);
     assert.strictEqual(labelData.iconInstances.length, 0);
+  });
+
+  it('filters resolved style geometries instead of feature geometries', () => {
+    const outsideFeature = new Feature(new Point([100, 100]));
+    outsideFeature.set('draw', new Point([5, 5]));
+    const insideFeature = new Feature(new Point([5, 5]));
+    insideFeature.set('draw', new Point([100, 100]));
+    const image = new CircleStyle({
+      radius: 3,
+      fill: new Fill({color: '#000'}),
+    });
+    const styleFunction = (feature) =>
+      new Style({
+        geometry: feature.get('draw'),
+        image,
+      });
+
+    const {labelData} = buildVectorRequest(
+      [outsideFeature, insideFeature],
+      styleFunction,
+      1,
+      /** @type {any} */ ({}),
+      {
+        clipExtent: [0, 0, 10, 10],
+        filterExtent: [-1, -1, 11, 11],
+      },
+    );
+
+    assert.lengthOf(labelData.labels, 1);
+    assert.deepEqual(labelData.labels[0]._anchor, [5, 5]);
+  });
+
+  it('reuses snapshots from a mutable function style cache', () => {
+    const first = new Feature(new Point([100, 100]));
+    first.set('draw', new Point([5, 5]));
+    const second = new Feature(new Point([5, 5]));
+    second.set('draw', new Point([100, 100]));
+    const shared = new Style({
+      image: new CircleStyle({
+        radius: 3,
+        fill: new Fill({color: '#000'}),
+      }),
+    });
+    let calls = 0;
+    const styleFunction = (feature) => {
+      ++calls;
+      shared.setGeometry(feature.get('draw'));
+      return shared;
+    };
+    const cache = new WeakMap();
+    for (const feature of [first, second]) {
+      cache.set(
+        feature,
+        resolveFeatureStyles(feature, styleFunction, 1, 1, true),
+      );
+    }
+
+    const {labelData} = buildVectorRequest(
+      [first, second],
+      styleFunction,
+      1,
+      /** @type {any} */ ({}),
+      {filterExtent: [0, 0, 10, 10]},
+      1,
+      1,
+      undefined,
+      undefined,
+      cache,
+    );
+
+    assert.strictEqual(calls, 2);
+    assert.lengthOf(labelData.labels, 1);
+    assert.deepEqual(labelData.labels[0]._anchor, [5, 5]);
   });
 
   it('stores the dash pattern of a stroke, repeating an odd one', () => {

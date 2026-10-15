@@ -137,3 +137,67 @@ export function createLabelTileFeatures(tileCoord, extent) {
   }
   return features;
 }
+
+/**
+ * Dense urban tile content with area geometry, roads, and paired icon/label
+ * points. Counts and coordinates are deterministic so Canvas and WebGPU runs
+ * receive identical work.
+ *
+ * @param {import("../../src/ol/tilecoord.js").TileCoord} tileCoord Tile coordinate.
+ * @param {import("../../src/ol/extent.js").Extent} extent Tile extent.
+ * @param {number} [density] Feature-count multiplier.
+ * @return {Array<Feature>} Features in the tile projection.
+ */
+export function createUrbanTileFeatures(tileCoord, extent, density = 8) {
+  const [z, x, y] = tileCoord;
+  const random = createRandom(
+    (z * 73856093) ^ (x * 19349663) ^ (y * 83492791) ^ 0x5bd1e995,
+  );
+  const width = extent[2] - extent[0];
+  const height = extent[3] - extent[1];
+  const features = [];
+
+  for (let i = 0; i < 10 * density; ++i) {
+    const cx = extent[0] + random() * width;
+    const cy = extent[1] + random() * height;
+    const rx = width * (0.005 + random() * 0.025);
+    const ry = height * (0.005 + random() * 0.025);
+    const ring = [];
+    for (let corner = 0; corner < 8; ++corner) {
+      const angle = (corner / 8) * Math.PI * 2;
+      ring.push([cx + Math.cos(angle) * rx, cy + Math.sin(angle) * ry]);
+    }
+    ring.push(ring[0].slice());
+    const feature = new Feature(new Polygon([ring]));
+    feature.setProperties({kind: 'building', rank: i % 6});
+    features.push(feature);
+  }
+
+  for (let i = 0; i < 20 * density; ++i) {
+    let px = extent[0] + random() * width;
+    let py = extent[1] + random() * height;
+    const coordinates = [];
+    for (let vertex = 0; vertex < 8; ++vertex) {
+      px += (random() - 0.5) * width * 0.08;
+      py += (random() - 0.5) * height * 0.08;
+      coordinates.push([px, py]);
+    }
+    const feature = new Feature(new LineString(coordinates));
+    feature.setProperties({kind: 'road', rank: i % 5});
+    features.push(feature);
+  }
+
+  for (let i = 0; i < 160 * density; ++i) {
+    const feature = new Feature(
+      new Point([extent[0] + random() * width, extent[1] + random() * height]),
+    );
+    feature.setId(`${z}/${x}/${y}/poi/${i}`);
+    feature.setProperties({
+      kind: 'poi',
+      rank: i % 8,
+      name: `Vienna place ${Math.floor(i / 3)}`,
+    });
+    features.push(feature);
+  }
+  return features;
+}
