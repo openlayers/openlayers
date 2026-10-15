@@ -247,4 +247,49 @@ describe('ol/renderer/webgpu/LabelRenderer', () => {
     assert.include(helper.writes, 3);
     renderer.dispose();
   });
+
+  it('does not rebind an unchanged pipeline in a shared paint plan', () => {
+    const helper = fakeHelper();
+    const pipeline = {name: 'vector-icon'};
+    helper.getRenderPipeline = () => pipeline;
+    const renderer = new LabelRenderer();
+    renderer.setLabels(
+      /** @type {any} */ (helper),
+      /** @type {any} */ ({
+        labels: [
+          {
+            minX: 0,
+            minY: 0,
+            maxX: 1,
+            maxY: 1,
+            glyphCount: 0,
+            iconIndex: 0,
+          },
+        ],
+        glyphs: [],
+        symbolInstances: new Float32Array(0),
+        iconInstances: new Float32Array(ICON_STRIDE),
+      }),
+    );
+    const state = {pipeline: null};
+    const args = [
+      /** @type {any} */ (helper),
+      'icon',
+      0,
+      1,
+      /** @type {any} */ ({getBindGroup: () => ({})}),
+      /** @type {any} */ ({}),
+      /** @type {any} */ ({}),
+      /** @type {any} */ ({upload: () => ({})}),
+      undefined,
+      state,
+    ];
+
+    renderer.drawInstances(...args);
+    renderer.drawInstances(...args);
+
+    assert.deepEqual(helper.pipelines, ['vector-icon']);
+    assert.lengthOf(helper.draws, 2);
+    renderer.dispose();
+  });
 });

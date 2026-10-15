@@ -257,6 +257,7 @@ export class VectorGpuBuffers extends Disposable {
     );
     const encoder = device.createCommandEncoder();
     const pass = encoder.beginComputePass();
+    pass.setPipeline(pipeline);
 
     /**
      * @param {number} vertexCount Vertices to warp.
@@ -292,7 +293,6 @@ export class VectorGpuBuffers extends Disposable {
         new Uint8Array(uniformData),
         GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
       );
-      pass.setPipeline(pipeline);
       pass.setBindGroup(
         0,
         device.createBindGroup({
@@ -990,6 +990,7 @@ export function createVectorPipelines(helper) {
  * @param {number} [start] First index.
  * @param {number} [count] Index count. The whole buffer when omitted.
  * @param {GPURenderPassEncoder|GPURenderBundleEncoder} [encoder] Encoder.
+ * @param {PaintEncoderState} [state] Encoder state shared by adjacent draws.
  */
 export function drawFills(
   helper,
@@ -998,6 +999,7 @@ export function drawFills(
   start = 0,
   count,
   encoder,
+  state,
 ) {
   const indexCount = count === undefined ? gpu.fillIndexCount : count;
   if (!indexCount || !gpu.fillPositionBuffer || !gpu.fillIndexBuffer) {
@@ -1007,7 +1009,15 @@ export function drawFills(
   const name = warped ? 'vector-fill-warped' : 'vector-fill';
   const pipeline = helper.getRenderPipeline(name, /** @type {any} */ ({}));
   const pass = encoder || helper.getRenderPass();
-  pass.setPipeline(pipeline);
+  if (!state || state.pipeline !== pipeline) {
+    pass.setPipeline(pipeline);
+    if (state) {
+      state.pipeline = pipeline;
+    }
+    countMetric('pipelineBindings');
+  } else {
+    countMetric('skippedPipelineBindings');
+  }
   pass.setBindGroup(
     0,
     gpu.getBindGroup(helper, name, pipeline, patternTexture),
@@ -1028,8 +1038,9 @@ export function drawFills(
  * @param {number} [start] First index.
  * @param {number} [count] Index count. The whole buffer when omitted.
  * @param {GPURenderPassEncoder|GPURenderBundleEncoder} [encoder] Encoder.
+ * @param {PaintEncoderState} [state] Encoder state shared by adjacent draws.
  */
-export function drawStrokes(helper, gpu, start = 0, count, encoder) {
+export function drawStrokes(helper, gpu, start = 0, count, encoder, state) {
   const indexCount = count === undefined ? gpu.strokeIndexCount : count;
   if (!indexCount || !gpu.strokePositionBuffer || !gpu.strokeIndexBuffer) {
     return;
@@ -1038,7 +1049,15 @@ export function drawStrokes(helper, gpu, start = 0, count, encoder) {
   const name = warped ? 'vector-stroke-warped' : 'vector-stroke';
   const pipeline = helper.getRenderPipeline(name, /** @type {any} */ ({}));
   const pass = encoder || helper.getRenderPass();
-  pass.setPipeline(pipeline);
+  if (!state || state.pipeline !== pipeline) {
+    pass.setPipeline(pipeline);
+    if (state) {
+      state.pipeline = pipeline;
+    }
+    countMetric('pipelineBindings');
+  } else {
+    countMetric('skippedPipelineBindings');
+  }
   pass.setBindGroup(0, gpu.getBindGroup(helper, name, pipeline));
   pass.setVertexBuffer(
     0,
@@ -1065,6 +1084,13 @@ export function drawStrokes(helper, gpu, start = 0, count, encoder) {
  * @property {FrameUniformSlot|null} slot Label uniforms.
  * @property {function(): void} prepare Writes this batch's geometry uniforms.
  * @property {boolean} [labelsOnly] Skip fills and strokes.
+ */
+
+/**
+ * Pipeline state while one paint plan is encoded.
+ *
+ * @typedef {Object} PaintEncoderState
+ * @property {GPURenderPipeline|null} pipeline Last bound pipeline.
  */
 
 /**
@@ -1176,6 +1202,8 @@ export function paintBatches(
         colorFormats: [helper.getFormat()],
       })
     : undefined;
+  /** @type {PaintEncoderState} */
+  const state = {pipeline: null};
   for (let i = 0; i < items.length;) {
     const first = items[i];
     let count = first.command.count;
@@ -1201,9 +1229,17 @@ export function paintBatches(
         first.command.start,
         count,
         encoder,
+        state,
       );
     } else if (pipeline === 'stroke' && first.batch.gpu) {
-      drawStrokes(helper, first.batch.gpu, first.command.start, count, encoder);
+      drawStrokes(
+        helper,
+        first.batch.gpu,
+        first.command.start,
+        count,
+        encoder,
+        state,
+      );
     } else if (
       (pipeline === 'symbol' || pipeline === 'icon' || pipeline === 'glyph') &&
       first.batch.labels &&
@@ -1220,6 +1256,7 @@ export function paintBatches(
         cornerBuffer,
         imageAtlas,
         encoder,
+        state,
       );
     }
     i = j;

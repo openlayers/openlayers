@@ -369,6 +369,7 @@ class LabelRenderer extends Disposable {
    * @param {GPUBuffer} cornerBuffer Corner quad.
    * @param {import("../../webgpu/ImageAtlas.js").default} [imageAtlas] Image atlas.
    * @param {GPURenderPassEncoder|GPURenderBundleEncoder} [encoder] Encoder.
+   * @param {import("./vectorUtil.js").PaintEncoderState} [state] Encoder state shared by adjacent draws.
    */
   drawInstances(
     helper,
@@ -380,6 +381,7 @@ class LabelRenderer extends Disposable {
     cornerBuffer,
     imageAtlas,
     encoder,
+    state,
   ) {
     if (!this.buffers_ || !instanceCount) {
       return;
@@ -394,7 +396,7 @@ class LabelRenderer extends Disposable {
         /** @type {any} */ ({}),
       );
       const pass = encoder || helper.getRenderPass();
-      pass.setPipeline(pipeline);
+      this.setPipeline_(pass, pipeline, state);
       pass.setBindGroup(
         0,
         slot.getBindGroup(
@@ -420,7 +422,7 @@ class LabelRenderer extends Disposable {
         /** @type {any} */ ({}),
       );
       const pass = encoder || helper.getRenderPass();
-      pass.setPipeline(pipeline);
+      this.setPipeline_(pass, pipeline, state);
       pass.setBindGroup(
         0,
         slot.getBindGroup(helper, 'vector-symbol', pipeline),
@@ -460,6 +462,7 @@ class LabelRenderer extends Disposable {
             atlasTexture,
             cornerBuffer,
             encoder,
+            state,
           );
         }
         this.drawGlyphPass_(
@@ -471,6 +474,7 @@ class LabelRenderer extends Disposable {
           atlasTexture,
           cornerBuffer,
           encoder,
+          state,
         );
       }
       start = stop;
@@ -496,6 +500,7 @@ class LabelRenderer extends Disposable {
    * @param {GPUTexture} atlasTexture Font atlas.
    * @param {GPUBuffer} cornerBuffer Corner quad.
    * @param {GPURenderPassEncoder|GPURenderBundleEncoder} [encoder] Encoder.
+   * @param {import("./vectorUtil.js").PaintEncoderState} [state] Encoder state shared by adjacent draws.
    * @private
    */
   drawGlyphPass_(
@@ -507,10 +512,11 @@ class LabelRenderer extends Disposable {
     atlasTexture,
     cornerBuffer,
     encoder,
+    state,
   ) {
     const pipeline = helper.getRenderPipeline(name, /** @type {any} */ ({}));
     const pass = encoder || helper.getRenderPass();
-    pass.setPipeline(pipeline);
+    this.setPipeline_(pass, pipeline, state);
     pass.setBindGroup(
       0,
       slot.getBindGroup(helper, name, pipeline, atlasTexture),
@@ -520,6 +526,25 @@ class LabelRenderer extends Disposable {
     pass.setVertexBuffer(2, this.glyphOpacityBuffer_);
     countMetric('drawCalls');
     pass.draw(4, instanceCount, 0, firstInstance);
+  }
+
+  /**
+   * Bind a pipeline only when the preceding draw used a different one.
+   * @param {GPURenderPassEncoder|GPURenderBundleEncoder} pass Encoder.
+   * @param {GPURenderPipeline} pipeline Pipeline.
+   * @param {import("./vectorUtil.js").PaintEncoderState} [state] Shared state.
+   * @private
+   */
+  setPipeline_(pass, pipeline, state) {
+    if (!state || state.pipeline !== pipeline) {
+      pass.setPipeline(pipeline);
+      if (state) {
+        state.pipeline = pipeline;
+      }
+      countMetric('pipelineBindings');
+      return;
+    }
+    countMetric('skippedPipelineBindings');
   }
 
   /**

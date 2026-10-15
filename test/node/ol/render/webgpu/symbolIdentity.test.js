@@ -62,6 +62,36 @@ describe('ol/render/webgpu/SymbolIdentityIndex', () => {
     assert.deepEqual(updated, first);
   });
 
+  it('shares a retained id with a new nearby copy of the same style', () => {
+    const index = new SymbolIdentityIndex();
+    const [id] = index.update([label('road', 0, 0)], [0], 1);
+    const updated = index.update(
+      [label('road', 0, 0), label('road', 0.5, 0)],
+      [0, 0],
+      1,
+      undefined,
+      [id, undefined],
+    );
+    assert.deepEqual(updated, [id, id]);
+  });
+
+  it('matches new labels only against entries with the same style key', () => {
+    const index = new SymbolIdentityIndex();
+    const first = index.update(
+      [label('style-a', 0, 0), label('style-b', 0, 0)],
+      [0, 0],
+      1,
+    );
+    const updated = index.update(
+      [label('style-a', 0, 0), label('style-b', 0.5, 0)],
+      [0, 0],
+      1,
+      undefined,
+      [first[0], undefined],
+    );
+    assert.deepEqual(updated, first);
+  });
+
   it('deduplicates exact parent and child copies', () => {
     const index = new SymbolIdentityIndex();
     const ids = index.update(
