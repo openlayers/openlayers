@@ -214,7 +214,10 @@ function symbolStyle(layer) {
   };
   const haloWidth = paint['text-halo-width'] ?? 0;
   if (haloWidth > 0) {
-    style['text-stroke-color'] = color(paint['text-halo-color'] || '#000');
+    style['text-stroke-color'] = color(
+      paint['text-halo-color'] || '#000',
+      paint['text-opacity'],
+    );
     // Canvas strokes are centered on the glyph outline.
     style['text-stroke-width'] = 2 * haloWidth;
   }
