@@ -18,7 +18,6 @@ const vectorLayer = new WebGPUVectorLayer({
     'text-stroke-color': 'rgba(255,255,255,0.8)',
     'text-stroke-width': 2,
     'text-overflow': true,
-    'text-declutter-mode': 'declutter',
   },
   declutter: true,
 });
