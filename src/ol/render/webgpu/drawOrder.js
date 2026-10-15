@@ -78,8 +78,9 @@ export function pipelineRank(pipeline) {
 }
 
 /**
- * Order inside one tile. Fill and stroke of one polygon share a sequence, so
- * the pipeline rank puts the stroke between that fill and the next polygon.
+ * Order inside one tile. Fills of one `z-index` and class are drawn before
+ * its strokes, so a polygon's stroke is not interleaved with the next
+ * polygon. Sequence only orders commands that share a pipeline.
  *
  * @param {DrawCommand} a A.
  * @param {DrawCommand} b B.
@@ -92,15 +93,17 @@ export function compareDraw(a, b) {
   if (a.classRank !== b.classRank) {
     return a.classRank - b.classRank;
   }
-  if (a.sequence !== b.sequence) {
-    return a.sequence - b.sequence;
+  const pipeline = pipelineRank(a.pipeline) - pipelineRank(b.pipeline);
+  if (pipeline !== 0) {
+    return pipeline;
   }
-  return pipelineRank(a.pipeline) - pipelineRank(b.pipeline);
+  return a.sequence - b.sequence;
 }
 
 /**
- * Order across tiles. Each tile's sequence restarts at zero, so the tile's
- * place in the current draw list is the tie-break before that sequence.
+ * Order across tiles. Within one `z-index` and class, every fill is drawn
+ * before any stroke. Each tile's sequence restarts at zero, so the tile is
+ * the tie-break inside one pipeline.
  *
  * @param {DrawCommand} a A.
  * @param {number} tileA Tile order of `a`.
@@ -115,11 +118,12 @@ export function comparePaint(a, tileA, b, tileB) {
   if (a.classRank !== b.classRank) {
     return a.classRank - b.classRank;
   }
+  const pipeline = pipelineRank(a.pipeline) - pipelineRank(b.pipeline);
+  if (pipeline !== 0) {
+    return pipeline;
+  }
   if (tileA !== tileB) {
     return tileA - tileB;
   }
-  if (a.sequence !== b.sequence) {
-    return a.sequence - b.sequence;
-  }
-  return pipelineRank(a.pipeline) - pipelineRank(b.pipeline);
+  return a.sequence - b.sequence;
 }
