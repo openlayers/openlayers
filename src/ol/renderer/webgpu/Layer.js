@@ -73,7 +73,7 @@ class WebGPULayerRenderer extends LayerRenderer {
         this.deviceRequested_ = true;
         requestDevice().then(
           () => {
-            this.getLayer().changed();
+            this.getLayer()?.changed();
           },
           () => {},
         );

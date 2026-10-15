@@ -507,8 +507,63 @@ describe('ol/render/webgpu/buffers', () => {
     );
     const calls = consoleWarn.mock.calls.length;
     consoleWarn.mockRestore();
-    assert.deepEqual(Array.from(buffers.styles.slice(0, 4)), [0, 0, 0, 0]);
+    assert.strictEqual(buffers.fillIndices.length, 0);
     assert.strictEqual(calls, 1);
+  });
+
+  it('skips a fill and stroke the framebuffer cannot store', () => {
+    const feature = new Feature(
+      new Polygon([
+        [
+          [0, 0],
+          [10, 0],
+          [10, 10],
+          [0, 0],
+        ],
+      ]),
+    );
+    const style = new Style({
+      fill: new Fill({color: 'rgba(246,243,238,4.966666659420582e-7)'}),
+      stroke: new Stroke({
+        color: 'rgba(0,0,0,1e-7)',
+        width: 2,
+      }),
+    });
+    const buffers = buildVectorBuffers(
+      [feature],
+      () => style,
+      1,
+      /** @type {any} */ ({}),
+    );
+    assert.strictEqual(buffers.fillIndices.length, 0);
+    assert.strictEqual(buffers.strokeIndices.length, 0);
+  });
+
+  it('keeps a fill at one 8-bit alpha step', () => {
+    const feature = new Feature(
+      new Polygon([
+        [
+          [0, 0],
+          [10, 0],
+          [10, 10],
+          [0, 0],
+        ],
+      ]),
+    );
+    const style = new Style({
+      fill: new Fill({color: [246, 243, 238, 1 / 255]}),
+    });
+    const buffers = buildVectorBuffers(
+      [feature],
+      () => style,
+      1,
+      /** @type {any} */ ({}),
+    );
+    assert.isAbove(buffers.fillIndices.length, 0);
+    assert.deepEqual(
+      Array.from(buffers.styles.slice(0, 4)),
+      [246 / 255, 243 / 255, 238 / 255, 1 / 255].map(Math.fround),
+    );
   });
 
   it('packs a loaded pattern fill into the image atlas, and reports it as pending while loading', () => {
@@ -881,7 +936,7 @@ describe('ol/render/webgpu/buffers', () => {
     assert.strictEqual(fills[1].start, fills[0].count);
   });
 
-  it('uses render order for features that share a z-index', () => {
+  it('draws every fill before any stroke when features share a z-index', () => {
     const early = new Feature(square(0, 0, 4));
     const late = new Feature(square(1, 1, 4));
     early.set('order', 1);
@@ -901,16 +956,16 @@ describe('ol/render/webgpu/buffers', () => {
       (a, b) => a.get('order') - b.get('order'),
     );
     assert.deepEqual(
-      buffers.commands.map((command) => command.pipeline),
-      ['fill', 'stroke', 'fill', 'stroke'],
-    );
-    assert.strictEqual(
-      buffers.featuresByRef[buffers.commands[0].featureRef],
-      late,
-    );
-    assert.strictEqual(
-      buffers.featuresByRef[buffers.commands[2].featureRef],
-      early,
+      buffers.commands.map((command) => [
+        buffers.featuresByRef[command.featureRef],
+        command.pipeline,
+      ]),
+      [
+        [late, 'fill'],
+        [early, 'fill'],
+        [late, 'stroke'],
+        [early, 'stroke'],
+      ],
     );
   });
 
