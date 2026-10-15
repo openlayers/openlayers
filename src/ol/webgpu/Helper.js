@@ -353,38 +353,23 @@ class WebGPUHelper extends Disposable {
   }
 
   /**
-   * Upload unpremultiplied RGBA8 pixels (e.g. canvas getImageData).
-   * @param {Uint8ClampedArray|Uint8Array} data Pixel data, width*height*4 bytes.
+   * Copy an unpremultiplied rectangle of an external image into an existing texture.
+   * @param {GPUTexture} texture Destination.
+   * @param {GPUCopyExternalImageSource} image Source.
+   * @param {number} x Left column.
+   * @param {number} y Top row.
    * @param {number} width Width.
    * @param {number} height Height.
-   * @return {GPUTexture} Texture.
    */
-  createTextureFromRgba(data, width, height) {
-    const texture = this.device_.createTexture({
-      size: [width, height],
-      format: 'rgba8unorm',
-      usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST,
-    });
-    const unpadded = width * 4;
-    const bytesPerRow = Math.ceil(unpadded / 256) * 256;
-    let source = data;
-    if (bytesPerRow !== unpadded) {
-      const padded = new Uint8Array(bytesPerRow * height);
-      for (let y = 0; y < height; ++y) {
-        padded.set(
-          data.subarray(y * unpadded, (y + 1) * unpadded),
-          y * bytesPerRow,
-        );
-      }
-      source = padded;
+  copyTextureRegion(texture, image, x, y, width, height) {
+    if (width <= 0 || height <= 0) {
+      return;
     }
-    this.device_.queue.writeTexture(
-      {texture},
-      source,
-      {bytesPerRow, rowsPerImage: height},
-      {width, height},
+    this.device_.queue.copyExternalImageToTexture(
+      {source: image, origin: {x, y}},
+      {texture, origin: {x, y}, premultipliedAlpha: false},
+      [width, height],
     );
-    return texture;
   }
 
   /**

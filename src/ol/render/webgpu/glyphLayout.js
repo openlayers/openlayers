@@ -219,6 +219,7 @@ function wrapText(text, font, maxWidth, scaleX) {
  * @property {number} texY0 Top atlas texel.
  * @property {number} texX1 Right atlas texel.
  * @property {number} texY1 Bottom atlas texel.
+ * @property {number} page Atlas page. Texel coordinates are local to that page.
  * @property {number} r Fill color.
  * @property {number} g Fill color.
  * @property {number} b Fill color.
@@ -359,6 +360,31 @@ function strokeColor(textStyle) {
 }
 
 /**
+ * Nearest whole px/pt size.
+ *
+ * Styles evaluate text size at the view zoom, so a zoom animation would
+ * otherwise rasterize a new atlas cell for every fractional size. Snapping
+ * here keeps measurement, wrapping, and the atlas cell on one font.
+ * @param {string} font CSS font.
+ * @return {string} Font with sizes snapped to whole pixels.
+ */
+function quantizeFont(font) {
+  return font.replace(/([\d.]+)(px|pt)/g, (_, value, unit) => {
+    const size = Math.round(Number(value));
+    return `${size > 0 ? size : 1}${unit}`;
+  });
+}
+
+/**
+ * @param {number} width Stroke width in CSS pixels.
+ * @return {number} Width snapped to a whole CSS pixel.
+ */
+function quantizeStrokeWidth(width) {
+  const snapped = Math.round(width);
+  return snapped > 0 ? snapped : 0;
+}
+
+/**
  * Layout a point (or polygon-interior) label.
  *
  * @param {Array<GlyphInstance>} out Instances.
@@ -381,7 +407,7 @@ export function layoutPointLabel(
   if (!text) {
     return null;
   }
-  const font = textStyle.getFont() || '10px sans-serif';
+  const font = quantizeFont(textStyle.getFont() || '10px sans-serif');
   const scale = textStyle.getScaleArray?.() || [1, 1];
   const scaleX = Array.isArray(scale) ? scale[0] : 1;
   const scaleY = Array.isArray(scale) ? scale[1] : 1;
@@ -405,7 +431,7 @@ export function layoutPointLabel(
   const rotation = textStyle.getRotation() || 0;
   const rotateWithView = !!textStyle.getRotateWithView();
   const stroke = textStyle.getStroke();
-  const strokeWidth = stroke ? stroke.getWidth() || 0 : 0;
+  const strokeWidth = quantizeStrokeWidth(stroke ? stroke.getWidth() || 0 : 0);
   const color = fillColor(textStyle);
   const halo = strokeColor(textStyle);
   const hasHalo = strokeWidth > 0 && halo[3] > 0;
@@ -451,6 +477,7 @@ export function layoutPointLabel(
         texY0: glyph.texY0,
         texX1: glyph.texX1,
         texY1: glyph.texY1,
+        page: glyph.page,
         r: color[0],
         g: color[1],
         b: color[2],
@@ -520,7 +547,7 @@ export function layoutLineLabel(
   if (!text) {
     return null;
   }
-  const font = textStyle.getFont() || '10px sans-serif';
+  const font = quantizeFont(textStyle.getFont() || '10px sans-serif');
   const pixelCoords = new Array(flatCoords.length);
   for (let i = 0; i < flatCoords.length; i += 2) {
     pixelCoords[i] = flatCoords[i] / resolution;
@@ -593,7 +620,7 @@ export function layoutLineLabel(
     }
   }
   const stroke = textStyle.getStroke();
-  const strokeWidth = stroke ? stroke.getWidth() || 0 : 0;
+  const strokeWidth = quantizeStrokeWidth(stroke ? stroke.getWidth() || 0 : 0);
   const color = fillColor(textStyle);
   const halo = strokeColor(textStyle);
   const hasHalo = strokeWidth > 0 && halo[3] > 0;
@@ -639,6 +666,7 @@ export function layoutLineLabel(
         texY0: glyph.texY0,
         texX1: glyph.texX1,
         texY1: glyph.texY1,
+        page: glyph.page,
         r: color[0],
         g: color[1],
         b: color[2],

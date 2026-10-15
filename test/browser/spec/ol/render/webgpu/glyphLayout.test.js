@@ -18,6 +18,107 @@ import Text from '../../../../../../src/ol/style/Text.js';
 import FontAtlas from '../../../../../../src/ol/webgpu/FontAtlas.js';
 
 describe('ol/render/webgpu/glyphLayout', () => {
+  it('reuses one atlas cell for font sizes that round to the same pixel', () => {
+    const atlas = new FontAtlas();
+    const low = [];
+    const high = [];
+    const other = [];
+    const hit = [0, 0, 0, 1];
+    layoutPointLabel(
+      low,
+      new Text({text: 'A', font: '11.6px sans-serif'}),
+      [0, 0],
+      atlas,
+      hit,
+    );
+    layoutPointLabel(
+      high,
+      new Text({text: 'A', font: '12.4px sans-serif'}),
+      [0, 0],
+      atlas,
+      hit,
+    );
+    layoutPointLabel(
+      other,
+      new Text({text: 'A', font: '12.6px sans-serif'}),
+      [0, 0],
+      atlas,
+      hit,
+    );
+    assert.deepEqual(
+      [low[0].texX0, low[0].texY0, low[0].texX1, low[0].texY1, low[0].page],
+      [
+        high[0].texX0,
+        high[0].texY0,
+        high[0].texX1,
+        high[0].texY1,
+        high[0].page,
+      ],
+    );
+    assert.notDeepEqual(
+      [low[0].texX0, low[0].texY0, low[0].texX1, low[0].texY1],
+      [other[0].texX0, other[0].texY0, other[0].texX1, other[0].texY1],
+    );
+
+    const thin = [];
+    const thick = [];
+    const heavier = [];
+    layoutPointLabel(
+      thin,
+      new Text({
+        text: 'A',
+        font: '16px sans-serif',
+        stroke: new Stroke({color: '#fff', width: 0.6}),
+      }),
+      [0, 0],
+      atlas,
+      hit,
+    );
+    layoutPointLabel(
+      thick,
+      new Text({
+        text: 'A',
+        font: '16px sans-serif',
+        stroke: new Stroke({color: '#fff', width: 1.4}),
+      }),
+      [0, 0],
+      atlas,
+      hit,
+    );
+    layoutPointLabel(
+      heavier,
+      new Text({
+        text: 'A',
+        font: '16px sans-serif',
+        stroke: new Stroke({color: '#fff', width: 2.2}),
+      }),
+      [0, 0],
+      atlas,
+      hit,
+    );
+    assert.deepEqual(
+      [thin[0].texX0, thin[0].texY0, thin[0].page],
+      [thick[0].texX0, thick[0].texY0, thick[0].page],
+    );
+    assert.notDeepEqual(
+      [thin[0].texX0, thin[0].texY0, thin[0].texX1, thin[0].texY1],
+      [heavier[0].texX0, heavier[0].texY0, heavier[0].texX1, heavier[0].texY1],
+    );
+
+    const line = [];
+    const box = layoutLineLabel(
+      line,
+      new Text({text: 'A', font: '12.4px sans-serif', placement: 'line'}),
+      [0, 0, 100, 0],
+      1,
+      atlas,
+      hit,
+    );
+    assert.isNotNull(box);
+    assert.strictEqual(line[0].texX0, low[0].texX0);
+    assert.strictEqual(line[0].page, low[0].page);
+  });
+
   it('layouts a point label around the anchor', () => {
     const atlas = new FontAtlas();
     const glyphs = [];
