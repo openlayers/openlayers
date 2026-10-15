@@ -180,6 +180,20 @@ function createTessellatedQuad(divisions) {
  */
 
 /**
+ * Tiles chosen for one source, queued already, waiting to be drawn.
+ * @typedef {Object} PreparedTiles
+ * @property {TileLookup} lookup Representations to draw.
+ * @property {Object<string, number>} alphaLookup Fading target-zoom tiles.
+ * @property {number} z Target zoom.
+ * @property {number} gutter Gutter.
+ * @property {import("../../extent.js").Extent} extent Extent the tiles cover.
+ * @property {import("../../tilegrid/TileGrid.js").default} tileGrid Grid.
+ * @property {boolean} needsReproj Draw through the reprojection mesh.
+ * @property {import("../../proj/Projection.js").default|null} sourceProj Source projection.
+ * @property {number} wanted Tiles this source contributed to the frame queue.
+ */
+
+/**
  * @param {TileLookup} lookup Lookup.
  * @param {import("../../Tile.js").default} tile Tile.
  * @return {boolean} The tile is already in the lookup.
@@ -323,6 +337,21 @@ class WebGPUTileLayerRenderer extends WebGPULayerRenderer {
      * @type {Array<import("../../source/Tile.js").default>|null}
      */
     this.frameSources_ = null;
+
+    /**
+     * Tiles chosen during `renderFrame`. Drawn there when nothing declutters,
+     * and from `renderDeferred` otherwise. Null when this frame has nothing to paint.
+     * @private
+     * @type {Array<PreparedTiles>|null}
+     */
+    this.pendingPaints_ = null;
+
+    /**
+     * Wanted-tile count for `pendingPaints_`, used to size the representation cache.
+     * @private
+     * @type {number}
+     */
+    this.pendingWanted_ = 0;
 
     /**
      * @private
@@ -865,16 +894,17 @@ class WebGPUTileLayerRenderer extends WebGPULayerRenderer {
     const helper = this.helper;
     const tileLayer = this.getLayer();
     if (!helper || !frameState.extent) {
+      this.pendingPaints_ = null;
       return helper ? helper.getCanvas() : /** @type {HTMLElement} */ (target);
     }
     const sources = this.frameSources_ || this.collectFrameSources_(frameState);
     this.frameSources_ = null;
     if (!sources.length) {
+      this.pendingPaints_ = null;
       return helper.getCanvas();
     }
-    this.recycleUniformBuffers_();
-    helper.prepareDraw(frameState, true);
-    const pass = helper.getRenderPass();
+    /** @type {Array<PreparedTiles>} */
+    const prepared = [];
     let wanted = 0;
     for (let i = 0; i < sources.length; ++i) {
       const source = sources[i];
@@ -883,20 +913,70 @@ class WebGPUTileLayerRenderer extends WebGPULayerRenderer {
         continue;
       }
       tileLayer.setRenderSource(source);
-      wanted += this.drawSource_(frameState, pass);
+      const tiles = this.prepareSource_(frameState);
+      tileLayer.setRenderSource(null);
+      if (tiles) {
+        prepared.push(tiles);
+        wanted += tiles.wanted;
+      }
     }
-    tileLayer.setRenderSource(null);
+    this.pendingPaints_ = prepared;
+    this.pendingWanted_ = wanted;
+    if (!frameState.declutter) {
+      this.paintFrame_(frameState);
+    }
+    return helper.getCanvas();
+  }
+
+  /**
+   * Draw the tiles chosen for this frame.
+   *
+   * Called from `renderFrame` when nothing declutters, and from `renderDeferred`
+   * otherwise. Tile layers share a canvas with vector layers, so this has to
+   * commit in map order with them: a decluttered vector layer below must not
+   * paint after these tiles.
+   *
+   * @param {import("../../Map.js").FrameState} frameState Frame.
+   * @private
+   */
+  paintFrame_(frameState) {
+    const prepared = this.pendingPaints_;
+    this.pendingPaints_ = null;
+    if (!prepared) {
+      return;
+    }
+    const helper = this.helper;
+    if (!helper) {
+      return;
+    }
+    this.recycleUniformBuffers_();
+    helper.prepareDraw(frameState, true);
+    const pass = helper.getRenderPass();
+    for (let i = 0; i < prepared.length; ++i) {
+      this.paintPrepared_(frameState, prepared[i], pass);
+    }
     helper.finalizeDraw(frameState);
     this.expireMeshes_();
     if (this.renderComplete) {
       this.tileRepresentationCache.highWaterMark = Math.max(
         this.tileRepresentationCache.highWaterMark,
-        wanted * 2,
+        this.pendingWanted_ * 2,
       );
       this.tileRepresentationCache.expireCache();
     }
     this.postRender(frameState);
-    return helper.getCanvas();
+  }
+
+  /**
+   * Paint in ascending layer order once decluttered layers have placed their labels.
+   * @param {import("../../Map.js").FrameState} frameState Frame.
+   * @override
+   */
+  renderDeferred(frameState) {
+    if (!frameState.declutter) {
+      return;
+    }
+    this.paintFrame_(frameState);
   }
 
   /**
@@ -942,22 +1022,21 @@ class WebGPUTileLayerRenderer extends WebGPULayerRenderer {
   }
 
   /**
-   * Draw the layer's current render source into an open pass.
+   * Choose tiles for the current render source and queue any that are missing.
    * @param {import("../../Map.js").FrameState} frameState Frame.
-   * @param {GPURenderPassEncoder} pass Pass.
-   * @return {number} Number of wanted tiles.
+   * @return {PreparedTiles|null} Tiles to draw.
    * @private
    */
-  drawSource_(frameState, pass) {
+  prepareSource_(frameState) {
     const tileLayer = this.getLayer();
     const tileSource = tileLayer.getRenderSource();
     if (!tileSource || !frameState.extent) {
-      return 0;
+      return null;
     }
     const viewExtent = getRenderExtent(frameState, frameState.extent);
     const query = this.getTileQuery_(frameState, viewExtent);
     if (!query) {
-      return 0;
+      return null;
     }
     const {tileGrid, gutter, projection, extent, z} = query;
 
@@ -1064,18 +1143,50 @@ class WebGPUTileLayerRenderer extends WebGPULayerRenderer {
       frameState.animate = true;
     }
 
-    const zs = Object.keys(representationsByZ).map(Number).sort(descending);
+    const sourceProj = tileSource.getProjection();
+    const wantedTiles = frameState.wantedTiles[getUid(tileSource)];
+    return {
+      lookup,
+      alphaLookup,
+      z,
+      gutter,
+      extent,
+      tileGrid,
+      needsReproj: query.reprojecting,
+      sourceProj,
+      wanted: wantedTiles ? Object.keys(wantedTiles).length : 0,
+    };
+  }
 
-    // Tiles only meet without a seam when they mesh their shared edge at the
-    // same spacing, so every tile in the frame is meshed at the spacing of the
-    // finest one on screen. Stand-ins can be finer as well as coarser than the
-    // zoom the view asked for.
+  /**
+   * Draw one prepared source into an open pass.
+   *
+   * Tiles only meet without a seam when they mesh their shared edge at the
+   * same spacing, so every tile in the frame is meshed at the spacing of the
+   * finest one on screen. Stand-ins can be finer as well as coarser than the
+   * zoom the view asked for.
+   *
+   * @param {import("../../Map.js").FrameState} frameState Frame.
+   * @param {PreparedTiles} prepared Tiles chosen for this source.
+   * @param {GPURenderPassEncoder} pass Pass.
+   * @private
+   */
+  paintPrepared_(frameState, prepared, pass) {
+    const {
+      lookup,
+      alphaLookup,
+      z,
+      gutter,
+      extent,
+      tileGrid,
+      needsReproj,
+      sourceProj,
+    } = prepared;
+    const representationsByZ = lookup.representationsByZ;
+    const zs = Object.keys(representationsByZ).map(Number).sort(descending);
     const finestZ = zs.length ? Math.max(zs[0], z) : z;
     this.meshRefineBudget_ = REPROJ_MESH_REFINES_PER_FRAME;
     this.meshesThisFrame_ = 0;
-
-    const sourceProj = tileSource.getProjection();
-    const needsReproj = query.reprojecting;
 
     for (let j = 0, jj = zs.length; j < jj; ++j) {
       const tileZ = zs[j];
@@ -1120,9 +1231,6 @@ class WebGPUTileLayerRenderer extends WebGPULayerRenderer {
         }
       }
     }
-
-    const wantedTiles = frameState.wantedTiles[getUid(tileSource)];
-    return wantedTiles ? Object.keys(wantedTiles).length : 0;
   }
 
   /**
