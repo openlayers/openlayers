@@ -1,7 +1,7 @@
 /**
  * @module ol/render/webgpu/symbolIdentity
  */
-import {countMetric} from '../../webgpu/metrics.js';
+import {countMetric, endMetric, startMetric} from '../../webgpu/metrics.js';
 
 /**
  * @typedef {Object} IdentityEntry
@@ -87,9 +87,11 @@ export class SymbolIdentityIndex {
    * @param {Array<number>} worldOffsets World x offsets aligned with labels.
    * @param {number} resolution View resolution.
    * @param {number} [worldWidth] Projection world width.
+   * @param {Array<number|undefined>} [existingIdentities] Identities retained by unchanged label batches.
    * @return {Array<number>} Identity aligned with labels.
    */
-  update(labels, worldOffsets, resolution, worldWidth) {
+  update(labels, worldOffsets, resolution, worldWidth, existingIdentities) {
+    const metricStart = startMetric();
     ++this.generation_;
     const generation = this.generation_;
     const maxDistance = Math.max(0, resolution * SYMBOL_IDENTITY_MATCH_PIXELS);
@@ -97,6 +99,27 @@ export class SymbolIdentityIndex {
     const mergeDistance = resolution * SYMBOL_IDENTITY_MERGE_PIXELS;
     const mergeDistanceSq = mergeDistance * mergeDistance;
     const used = new Set();
+    const bucketSize = Math.max(maxDistance, Number.EPSILON);
+    /** @type {Map<string, Map<string, Array<IdentityEntry>>>} */
+    const buckets = new Map();
+    if (!existingIdentities?.every((id) => id !== undefined)) {
+      for (const [key, entries] of this.entries_) {
+        const keyBuckets = new Map();
+        buckets.set(key, keyBuckets);
+        for (const entry of entries) {
+          const bucketKey =
+            Math.floor(entry.x / bucketSize) +
+            '/' +
+            Math.floor(entry.y / bucketSize);
+          const bucket = keyBuckets.get(bucketKey);
+          if (bucket) {
+            bucket.push(entry);
+          } else {
+            keyBuckets.set(bucketKey, [entry]);
+          }
+        }
+      }
+    }
     /** @type {Map<string, Array<{id: number, x: number, y: number}>>} */
     const currentUnits = new Map();
     const identities = new Array(labels.length);
@@ -127,16 +150,41 @@ export class SymbolIdentityIndex {
     const nearestEntry = (symbol, wrapWidth) => {
       let best;
       let bestDistance = Infinity;
-      for (const entry of this.entries_.get(symbol.key) || []) {
-        if (used.has(entry.id)) {
-          continue;
-        }
-        const dx = wrappedDistance(entry.x - symbol.x, wrapWidth);
-        const dy = entry.y - symbol.y;
-        const distance = dx * dx + dy * dy;
-        if (distance <= maxDistanceSq && distance < bestDistance) {
-          best = entry;
-          bestDistance = distance;
+      const keyBuckets = buckets.get(symbol.key);
+      if (!keyBuckets) {
+        return undefined;
+      }
+      const queryXs = wrapWidth
+        ? [symbol.x, symbol.x - wrapWidth, symbol.x + wrapWidth]
+        : [symbol.x];
+      const yCell = Math.floor(symbol.y / bucketSize);
+      for (const queryX of queryXs) {
+        const xCell = Math.floor(queryX / bucketSize);
+        for (let dxCell = -1; dxCell <= 1; ++dxCell) {
+          for (let dyCell = -1; dyCell <= 1; ++dyCell) {
+            const bucket = keyBuckets.get(
+              xCell + dxCell + '/' + (yCell + dyCell),
+            );
+            if (!bucket) {
+              continue;
+            }
+            for (const entry of bucket) {
+              const rawDx = entry.x - symbol.x;
+              const dx = wrappedDistance(rawDx, wrapWidth);
+              const dy = entry.y - symbol.y;
+              const distance = dx * dx + dy * dy;
+              if (
+                used.has(entry.id) &&
+                rawDx * rawDx + dy * dy > mergeDistanceSq
+              ) {
+                continue;
+              }
+              if (distance <= maxDistanceSq && distance < bestDistance) {
+                best = entry;
+                bestDistance = distance;
+              }
+            }
+          }
         }
       }
       return best;
@@ -160,6 +208,12 @@ export class SymbolIdentityIndex {
     /** @type {Array<PendingSymbol>} */
     const unmatched = [];
     for (let i = 0; i < labels.length; ++i) {
+      const existingId = existingIdentities?.[i];
+      if (existingId !== undefined) {
+        identities[i] = existingId;
+        used.add(existingId);
+        continue;
+      }
       const label = labels[i];
       const anchor = label._anchor;
       const symbol = {
@@ -194,6 +248,9 @@ export class SymbolIdentityIndex {
     for (const [key, entries] of this.entries_) {
       const newest = new Map();
       for (const entry of entries) {
+        if (used.has(entry.id)) {
+          entry.generation = generation;
+        }
         if (entry.generation < generation - 2) {
           continue;
         }
@@ -208,6 +265,7 @@ export class SymbolIdentityIndex {
         this.entries_.delete(key);
       }
     }
+    endMetric('symbolIdentity', metricStart);
     return identities;
   }
 

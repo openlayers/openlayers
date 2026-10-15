@@ -42,13 +42,22 @@ const SUMMARY_KEYS = [
   'frameMs.p50',
   'frameMs.p95',
   'frameMs.p99',
+  'frameMs.max',
   'cpuMs.p50',
   'cpuMs.p95',
   'cpuMs.p99',
+  'inputToFrameMs.p50',
+  'inputToFrameMs.p95',
+  'inputToFrameMs.p99',
+  'inputToFrameMs.max',
   'slowFrames20',
   'slowFrames33',
+  'blockedFrames',
+  'droppedFrames',
+  'settleMs',
   'longTasks.count',
   'longTasks.total',
+  'longTasks.max',
 ];
 
 /**
@@ -88,6 +97,32 @@ function summarizeRuns(runs) {
       ),
     );
     summary['metrics.' + name] = trimmedMean(perRun);
+  }
+  const phaseNames = new Set();
+  for (const run of runs) {
+    for (const phase of run.phases || []) {
+      phaseNames.add(phase.name);
+    }
+  }
+  for (const name of phaseNames) {
+    const phaseKeys = [
+      'frameMs.p95',
+      'frameMs.p99',
+      'frameMs.max',
+      'inputToFrameMs.p95',
+      'inputToFrameMs.p99',
+      'blockedFrames',
+      'droppedFrames',
+      'settleMs',
+      'longTasks.max',
+    ];
+    for (const key of phaseKeys) {
+      const values = runs.map((run) => {
+        const phase = (run.phases || []).find((item) => item.name === name);
+        return phase ? pick(phase, key) : undefined;
+      });
+      summary[`phase.${name}.${key}`] = trimmedMean(values);
+    }
   }
   return summary;
 }
@@ -141,6 +176,7 @@ async function openCase(page, url, options, caseName) {
     projection: options.projection,
     features: String(options.features),
     vertices: String(options.vertices),
+    density: String(options.density),
     frames: String(options.frames),
     warmup: String(options.warmup),
     autorun: 'false',
@@ -313,6 +349,11 @@ const options = yargs(hideBin(process.argv))
     describe: 'Vertices per polygon ring',
     type: 'number',
     default: 64,
+  })
+  .option('density', {
+    describe: 'Feature density for dense vector tile cases',
+    type: 'number',
+    default: 8,
   })
   .option('frames', {
     describe: 'Frames per flight phase',

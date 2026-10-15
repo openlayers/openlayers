@@ -12,6 +12,7 @@ import {equivalent} from '../../proj.js';
 import {
   buildVectorRequest,
   combineVectorBuffers,
+  resolveFeatureStyles,
 } from '../../render/webgpu/buffers.js';
 import {
   collectStickyIds,
@@ -145,6 +146,19 @@ class TileBatch extends Disposable {
      * @type {Array<number>|null}
      */
     this.labelIdentities = null;
+
+    /**
+     * Regions in this batch where fallback labels may be drawn. `null` means
+     * that the batch itself is a current render tile.
+     * @type {Array<import("../../extent.js").Extent>|null}
+     */
+    this.labelClipExtents = null;
+
+    /**
+     * Frame in which `labelClipExtents` was assigned.
+     * @type {number}
+     */
+    this.labelClipFrame = -1;
   }
 
   /**
@@ -272,6 +286,12 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     this.uniforms_ = null;
 
     /**
+     * @private
+     * @type {import("./vectorUtil.js").PaintCache}
+     */
+    this.paintCache_ = {};
+
+    /**
      * Scratch for per-batch uniform writes.
      * @private
      * @type {Float32Array}
@@ -314,13 +334,40 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     this.batchGeneration_ = 0;
 
     /**
-     * Main-thread feature preparation allowed in the current frame. Expensive
-     * cache misses wait until a gesture or view animation has finished, and
-     * are then admitted one at a time as worker completions request frames.
+     * Main-thread feature preparations allowed in the current frame. Moving
+     * frames admit one center-first miss within a short elapsed-time budget;
+     * settled frames admit another so missing detail converges faster.
      * @private
      * @type {number}
      */
     this.batchBuildBudget_ = 1;
+
+    /**
+     * End of the current frame's main-thread batch preparation allowance.
+     * @private
+     * @type {number}
+     */
+    this.batchBuildDeadline_ = 0;
+
+    /**
+     * Already associated render tiles and batches, used to include cached
+     * neighboring labels without reconstructing internal cache keys.
+     * @private
+     * @type {Map<string, TileBatch>}
+     */
+    this.renderBatchesByKey_ = new Map();
+
+    /**
+     * Resolved function styles are prepared in bounded slices and shared by
+     * every subdivision of the same source tiles at a render zoom.
+     * @private
+     * @type {Map<string, {
+     *   resolved: WeakMap<import("../../Feature.js").FeatureLike, Array<import("../../render/webgpu/buffers.js").ResolvedStyleGeometry>>,
+     *   complete: WeakSet<Object>,
+     *   progress: WeakMap<Object, {features: Array<import("../../Feature.js").FeatureLike>, index: number}>
+     * }>}
+     */
+    this.styleCaches_ = new Map();
 
     /**
      * Worker completions are coalesced into one render request per animation
@@ -357,6 +404,13 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
      * @type {Float32Array}
      */
     this.opacities_ = new Float32Array(0);
+
+    /**
+     * Labels with a non-zero transition in the previous opacity update.
+     * @private
+     * @type {Set<number>}
+     */
+    this.activeOpacityIndices_ = new Set();
 
     /**
      * @private
@@ -477,8 +531,11 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     // reused.
     this.uniforms_?.dispose();
     this.uniforms_ = new FrameUniformPool(helper);
+    this.paintCache_ = {};
     this.imageAtlas_.dispose();
     this.tileCache_.clear();
+    this.renderBatchesByKey_.clear();
+    this.styleCaches_.clear();
     this.labelKey_ = '';
     this.placement_.reset();
     this.cornerBuffer_ = helper.createBuffer(
@@ -501,6 +558,8 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
       this.renderedLayerRevision_ = revision;
       ++this.batchGeneration_;
       this.tileCache_.clear();
+      this.renderBatchesByKey_.clear();
+      this.styleCaches_.clear();
     }
     const source = this.getLayer().getRenderSource();
     return !!source && source.getState() === 'ready';
@@ -526,6 +585,92 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
         }
       });
     }
+  }
+
+  /**
+   * Coalesce asynchronous batch progress into one redraw per animation frame.
+   * @private
+   */
+  scheduleBatchChange_() {
+    if (this.batchChangeScheduled_) {
+      return;
+    }
+    this.batchChangeScheduled_ = true;
+    requestAnimationFrame(() => {
+      this.batchChangeScheduled_ = false;
+      if (!this.disposed) {
+        this.redraw_();
+      }
+    });
+  }
+
+  /**
+   * Resolve function styles in short slices before constructing a batch.
+   *
+   * Alternate style geometries prevent filtering unknown features up front.
+   * Resolving them once per source tile and render zoom keeps that correctness,
+   * while subdivisions reuse the result without repeating the long scan.
+   *
+   * @param {Array<import("../../VectorTile.js").default<import("../../Feature.js").FeatureLike>>} sourceTiles Loaded source tiles.
+   * @param {string} bucket Resolution/zoom bucket.
+   * @param {number} resolution Style resolution.
+   * @param {number} zoom Style zoom.
+   * @return {WeakMap<import("../../Feature.js").FeatureLike, Array<import("../../render/webgpu/buffers.js").ResolvedStyleGeometry>>|null} Cache, or null while preparation continues.
+   * @private
+   */
+  prepareStyleCache_(sourceTiles, bucket, resolution, zoom) {
+    let state = this.styleCaches_.get(bucket);
+    if (!state) {
+      state = {
+        resolved: new WeakMap(),
+        complete: new WeakSet(),
+        progress: new WeakMap(),
+      };
+      this.styleCaches_.set(bucket, state);
+    }
+    let prepared = false;
+    for (const sourceTile of sourceTiles) {
+      if (state.complete.has(sourceTile)) {
+        continue;
+      }
+      let progress = state.progress.get(sourceTile);
+      if (!progress) {
+        const features = (sourceTile.getFeatures?.() ?? [])
+          .slice()
+          .sort((a, b) => Number(getUid(a)) - Number(getUid(b)));
+        progress = {features, index: 0};
+        state.progress.set(sourceTile, progress);
+      }
+      while (progress.index < progress.features.length) {
+        const feature = progress.features[progress.index++];
+        if (!state.resolved.has(feature)) {
+          state.resolved.set(
+            feature,
+            resolveFeatureStyles(
+              feature,
+              this.styleFunction_,
+              resolution,
+              zoom,
+              true,
+            ),
+          );
+          prepared = true;
+          countMetric('preparedFeatureStyles');
+        }
+        if (performance.now() >= this.batchBuildDeadline_) {
+          countMetric('deferredStylePreparation');
+          this.scheduleBatchChange_();
+          return null;
+        }
+      }
+      state.complete.add(sourceTile);
+      state.progress.delete(sourceTile);
+    }
+    if (prepared) {
+      this.scheduleBatchChange_();
+      return null;
+    }
+    return state.resolved;
   }
 
   /**
@@ -578,9 +723,13 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
       tileCoord[0] > sourceTileCoord[0];
     let cacheKey = getTileCoordKey(tileCoord) + '/' + tile.key + '/' + dpr;
     if (reuseSourceBatch) {
-      // One subdivision above the source zoom avoids styling a full dense
-      // source tile while still reusing work across deeper overzoom children.
-      const batchZ = Math.min(tileCoord[0], sourceTileCoord[0] + 1);
+      // Keep an overzoom batch no more than one zoom level coarser than its
+      // render tiles. At deep overzoom this bounds synchronous style/label
+      // work while four children can still share one cached batch.
+      const batchZ = Math.min(
+        tileCoord[0],
+        Math.max(sourceTileCoord[0] + 1, tileCoord[0] - 1),
+      );
       const scale = Math.pow(2, tileCoord[0] - batchZ);
       const batchCoord = [
         batchZ,
@@ -609,11 +758,28 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
       countMetric('pendingBatchHits');
       return null;
     }
-    if (this.batchBuildBudget_ === 0) {
+    if (
+      this.batchBuildBudget_ === 0 ||
+      performance.now() >= this.batchBuildDeadline_
+    ) {
       countMetric('deferredBatchBuilds');
       return null;
     }
     --this.batchBuildBudget_;
+    /** @type {WeakMap<import("../../Feature.js").FeatureLike, Array<import("../../render/webgpu/buffers.js").ResolvedStyleGeometry>>|undefined} */
+    let styleCache;
+    if (!this.featureExtentFilter_) {
+      const prepared = this.prepareStyleCache_(
+        loadedSourceTiles,
+        tileCoord[0] + '/' + dpr,
+        viewState.resolution,
+        viewState.zoom,
+      );
+      if (!prepared) {
+        return null;
+      }
+      styleCache = prepared;
+    }
     const features = [];
     for (const loadedSourceTile of loadedSourceTiles) {
       const tileFeatures = loadedSourceTile.getFeatures() ?? [];
@@ -622,12 +788,15 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
       }
     }
     let buildFeatures = features;
-    if (reuseSourceBatch && this.featureExtentFilter_ && clipExtent) {
-      const filterExtent = bufferExtent(
-        clipExtent,
-        viewState.resolution * VIEWPORT_PADDING,
-        clipExtent.slice(),
-      );
+    const filterExtent =
+      reuseSourceBatch && clipExtent
+        ? bufferExtent(
+            clipExtent,
+            viewState.resolution * VIEWPORT_PADDING,
+            clipExtent.slice(),
+          )
+        : undefined;
+    if (this.featureExtentFilter_ && filterExtent) {
       buildFeatures = features.filter((feature) => {
         const geometry = feature.getGeometry();
         return geometry && intersects(geometry.getExtent(), filterExtent);
@@ -652,11 +821,12 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
       this.styleFunction_,
       viewState.resolution,
       this.atlas_,
-      clipExtent ? {clipExtent} : undefined,
+      clipExtent ? {clipExtent, filterExtent} : undefined,
       dpr,
       viewState.zoom,
       undefined,
       this.imageAtlas_,
+      styleCache,
     );
     this.watchImages_(labelData.pendingImageStyles);
 
@@ -688,15 +858,7 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
               ),
             );
           }
-          if (!this.batchChangeScheduled_) {
-            this.batchChangeScheduled_ = true;
-            requestAnimationFrame(() => {
-              this.batchChangeScheduled_ = false;
-              if (!this.disposed) {
-                this.redraw_();
-              }
-            });
-          }
+          this.scheduleBatchChange_();
         })
         .catch(() => {
           this.pendingKeys_.delete(cacheKey);
@@ -793,15 +955,30 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
    * @param {Array<{renderKey: string, batch: TileBatch}>} items Alt batches.
    * @param {Set<string>} added Render keys already queued.
    * @param {Array<TileBatch>} batches Batches to draw.
+   * @param {import("../../extent.js").Extent} labelExtent Missing region whose labels the fallback may supply.
+   * @param {number} frameIndex Frame index.
    * @private
    */
-  commitAltTiles_(items, added, batches) {
+  commitAltTiles_(items, added, batches, labelExtent, frameIndex) {
     for (const item of items) {
+      const batch = item.batch;
+      if (batch.labelClipFrame !== frameIndex) {
+        batch.labelClipFrame = frameIndex;
+        batch.labelClipExtents = [];
+      }
+      if (batch.labelClipExtents) {
+        batch.labelClipExtents.push([
+          labelExtent[0] - batch.worldOffset,
+          labelExtent[1],
+          labelExtent[2] - batch.worldOffset,
+          labelExtent[3],
+        ]);
+      }
       if (added.has(item.renderKey)) {
         continue;
       }
       added.add(item.renderKey);
-      batches.push(item.batch);
+      batches.push(batch);
       countMetric('fallbackBatches');
     }
   }
@@ -812,14 +989,17 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
    * @private
    */
   collectBatches_(frameState) {
+    const metricStart = startMetric();
     const layer = this.getLayer();
     const source = /** @type {import("../../source/VectorTile.js").default} */ (
       layer.getRenderSource()
     );
     const viewState = frameState.viewState;
     const viewHints = frameState.viewHints || [];
-    this.batchBuildBudget_ =
-      viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING] ? 0 : 1;
+    const moving =
+      viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING];
+    this.batchBuildBudget_ = moving ? 1 : 2;
+    this.batchBuildDeadline_ = performance.now() + (moving ? 4 : 8);
     const tileGrid = source.getTileGridForProjection(viewState.projection);
     const z = tileGrid.getZForResolution(
       viewState.resolution,
@@ -827,6 +1007,7 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     );
     const extent = frameState.extent;
     if (!extent) {
+      endMetric('collectBatches', metricStart);
       return [];
     }
     const tileRange = tileGrid.getTileRangeForExtentAndZ(
@@ -912,6 +1093,9 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
         frameState.pixelRatio,
       );
       prepared.set(entry.renderKey, batch);
+      if (batch) {
+        this.renderBatchesByKey_.set(entry.renderKey, batch);
+      }
       if (measuredSourceTiles) {
         ++measuredRenderTiles;
         for (const sourceTile of tile.sourceTiles || []) {
@@ -923,6 +1107,8 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     for (const entry of entries) {
       const batch = prepared.get(entry.renderKey);
       if (batch) {
+        batch.labelClipFrame = frameState.index;
+        batch.labelClipExtents = null;
         added.add(entry.renderKey);
         batches.push(batch);
         continue;
@@ -932,6 +1118,7 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
 
     const minZoom = tileGrid.getMinZoom();
     for (const hole of holes) {
+      const labelExtent = tileGrid.getTileCoordExtent(hole);
       const children = this.findAltTiles_(
         tileGrid,
         hole,
@@ -943,7 +1130,13 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
         added,
       );
       if (children.covered) {
-        this.commitAltTiles_(children.items, added, batches);
+        this.commitAltTiles_(
+          children.items,
+          added,
+          batches,
+          labelExtent,
+          frameState.index,
+        );
         continue;
       }
       let usedParent = false;
@@ -959,13 +1152,25 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
           added,
         );
         if (parents.covered) {
-          this.commitAltTiles_(parents.items, added, batches);
+          this.commitAltTiles_(
+            parents.items,
+            added,
+            batches,
+            labelExtent,
+            frameState.index,
+          );
           usedParent = true;
           break;
         }
       }
       if (!usedParent) {
-        this.commitAltTiles_(children.items, added, batches);
+        this.commitAltTiles_(
+          children.items,
+          added,
+          batches,
+          labelExtent,
+          frameState.index,
+        );
       }
     }
 
@@ -994,6 +1199,7 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
       unique.push(batch);
     }
     maxMetric('visibleBatches', unique.length);
+    endMetric('collectBatches', metricStart);
     return unique;
   }
 
@@ -1096,6 +1302,7 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
         ++i
       ) {
         const batch = this.declutterBatches_[i];
+        countMetric('neighborLabelBatches');
         const labels = batch.getLabelRenderer(helper);
         if (this.opacities_) {
           labels.setOpacities(this.opacities_, view.starts[i] ?? 0);
@@ -1124,6 +1331,7 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
         if (stillLabeling.has(batch)) {
           continue;
         }
+        countMetric('retiredLabelBatches');
         const identities = batch.labelIdentities;
         if (!identities) {
           continue;
@@ -1163,6 +1371,7 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
       this.atlas_,
       this.imageAtlas_,
       this.cornerBuffer_,
+      this.paintCache_,
     );
     helper.finalizeDraw(frameState);
   }
@@ -1197,6 +1406,11 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     let key = '';
     for (const batch of batches) {
       key += batch.key + '@' + batch.worldOffset + ';';
+      if (batch.labelClipExtents) {
+        for (const extent of batch.labelClipExtents) {
+          key += extent.join(',') + ';';
+        }
+      }
     }
     if (key !== this.labelKey_) {
       const start = startMetric();
@@ -1204,12 +1418,14 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
         batches.map((batch) => ({
           buffers: batch.buffers,
           worldOffset: batch.worldOffset,
+          labelClipExtents: batch.labelClipExtents,
         })),
       );
       endMetric('updateLabelView', start);
       this.labelKey_ = key;
       ++this.labelVersion_;
       this.opacities_ = new Float32Array(this.labelView_.getCount() * 3);
+      this.activeOpacityIndices_.clear();
       // Tiles that were already on screen keep their placement. New labels
       // stay hidden until a complete pass accepts them.
       const visibility = [];
@@ -1262,21 +1478,20 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     const batches = rendered.slice();
     const added = new Set(rendered);
     const sourceKey = source.getKey();
-    const dpr = frameState.pixelRatio > 0 ? frameState.pixelRatio : 1;
     for (let x = range.minX; x <= range.maxX; ++x) {
       for (let y = range.minY; y <= range.maxY; ++y) {
         const renderKey = getCacheKey(source, sourceKey, z, x, y);
         if (!this.renderTiles_.containsKey(renderKey)) {
           continue;
         }
-        const tile = this.renderTiles_.get(renderKey);
-        const cacheKey =
-          getTileCoordKey(tile.tileCoord) + '/' + tile.key + '/' + dpr;
-        if (!this.tileCache_.containsKey(cacheKey)) {
+        const batch = this.renderBatchesByKey_.get(renderKey);
+        if (!batch || !this.tileCache_.containsKey(batch.key)) {
+          this.renderBatchesByKey_.delete(renderKey);
           continue;
         }
-        const batch = this.tileCache_.get(cacheKey);
         if (!added.has(batch)) {
+          batch.labelClipExtents = null;
+          batch.labelClipFrame = frameState.index;
           added.add(batch);
           batches.push(batch);
         }
@@ -1315,9 +1530,11 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
    * @private
    */
   updateOpacities_(frameState, previousVisibility) {
+    const metricStart = startMetric();
     const labels = this.labelView_.labels;
     const visibility = this.visibility_;
     if (!visibility) {
+      endMetric('updateOpacities', metricStart);
       return false;
     }
     const now = frameState.time || 0;
@@ -1337,7 +1554,11 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
       previousVisibility,
       this.labelView_.identities,
     );
-    for (let i = 0; i < labels.length; ++i) {
+    const dirty = new Set(this.activeOpacityIndices_);
+    for (const index of active) {
+      dirty.add(index);
+    }
+    for (const i of dirty) {
       writeGpuTransition(
         opacities,
         i * 3,
@@ -1348,6 +1569,8 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
           : [0, 0, 0],
       );
     }
+    this.activeOpacityIndices_ = active;
+    endMetric('updateOpacities', metricStart);
     return fading;
   }
 
@@ -1427,6 +1650,7 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
       this.placement_.commit(key, now, duration, frameState);
     } else if (this.placement_.isDeferred(key, now, frameState)) {
       // Keep rendering so the deferred pass happens once the budget allows.
+      countMetric('deferredPlacementFrames');
       frameState.animate = true;
     }
     if (!runPlacement && this.visibility_) {
@@ -1464,12 +1688,27 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
       return;
     }
     const extent = frameState.viewState.projection.getExtent();
+    const existing = new Array(this.labelView_.getCount()).fill(undefined);
+    for (let i = 0; i < this.declutterBatches_.length; ++i) {
+      const identities = this.declutterBatches_[i].labelIdentities;
+      const start = this.labelView_.starts[i] || 0;
+      if (
+        !identities ||
+        identities.length !== this.declutterBatches_[i].buffers.labels.length
+      ) {
+        continue;
+      }
+      for (let j = 0; j < identities.length; ++j) {
+        existing[start + j] = identities[j];
+      }
+    }
     this.labelView_.setIdentities(
       this.symbolIdentities_.update(
         this.labelView_.labels,
         this.labelView_.worldOffsets,
         frameState.viewState.resolution,
         extent ? getWidth(extent) : undefined,
+        existing,
       ),
     );
     for (let i = 0; i < this.declutterBatches_.length; ++i) {
@@ -1580,6 +1819,8 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
   clearCache() {
     this.renderTiles_.clear();
     this.tileCache_.clear();
+    this.renderBatchesByKey_.clear();
+    this.styleCaches_.clear();
   }
 
   /**
@@ -1588,6 +1829,8 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
   disposeInternal() {
     this.disposeUncachedBatches_();
     this.tileCache_.clear();
+    this.renderBatchesByKey_.clear();
+    this.styleCaches_.clear();
     this.uniforms_?.dispose();
     this.uniforms_ = null;
     this.imageAtlas_.dispose();

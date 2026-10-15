@@ -15,6 +15,8 @@ import {summarize} from './stats.js';
  * @property {string} name Phase name.
  * @property {function(number): void} apply Apply progress in [0, 1].
  * @property {boolean} [moving] Set the animating hint during the phase.
+ * @property {boolean} [interacting] Set the interacting hint during the phase.
+ * @property {boolean} [settle] Measure time to the first rendercomplete event.
  */
 
 /**
@@ -157,6 +159,75 @@ export function createOverzoomPhases(view, minZoom, maxZoom, runOffset = 0) {
 }
 
 /**
+ * Dense high-zoom navigation matching a drag, kinetic movement, wheel zoom,
+ * and the final label/tile settlement users experience.
+ * @param {import("../../src/ol/View.js").default} view View.
+ * @param {import("../../src/ol/coordinate.js").Coordinate} center Start center.
+ * @param {number} zoom High zoom.
+ * @param {number} [runOffset] Horizontal offset separating repeated runs.
+ * @return {Array<FlightPhase>} Phases.
+ */
+export function createNavigationPhases(view, center, zoom, runOffset = 0) {
+  const resolution = view.getResolutionForZoom(zoom);
+  const startX = center[0] + runOffset * resolution * 8000;
+  const startY = center[1];
+  const dragDistance = resolution * 2400;
+  const dragEnd = startX + dragDistance;
+  const kineticDistance = resolution * 1200;
+  const endX = dragEnd + kineticDistance;
+  return [
+    {
+      name: 'hold-z17',
+      apply: () => {
+        view.setCenter([startX, startY]);
+        view.setRotation(0);
+        view.setZoom(zoom);
+      },
+    },
+    {
+      name: 'drag',
+      interacting: true,
+      apply: (t) => {
+        view.setZoom(zoom);
+        view.setRotation(0);
+        view.setCenter([
+          startX + dragDistance * t,
+          startY + Math.sin(t * Math.PI * 2) * resolution * 180,
+        ]);
+      },
+    },
+    {
+      name: 'kinetic-pan',
+      moving: true,
+      apply: (t) => {
+        const eased = 1 - Math.pow(1 - t, 3);
+        view.setCenter([dragEnd + kineticDistance * eased, startY]);
+        view.setRotation(0);
+        view.setZoom(zoom);
+      },
+    },
+    {
+      name: 'zoom',
+      interacting: true,
+      apply: (t) => {
+        view.setCenter([endX, startY]);
+        view.setRotation(0);
+        view.setZoom(zoom - Math.sin(t * Math.PI) * 0.8);
+      },
+    },
+    {
+      name: 'settle',
+      settle: true,
+      apply: () => {
+        view.setCenter([endX, startY]);
+        view.setRotation(0);
+        view.setZoom(zoom);
+      },
+    },
+  ];
+}
+
+/**
  * @return {Promise<number>} Frame timestamp.
  */
 function nextFrame() {
@@ -192,15 +263,20 @@ function perFrameMetrics(metrics, frames) {
 }
 
 /**
- * Wait until WebGPU is up and the layer has drawn at least once.
+ * Wait until the renderer is up and the layer has drawn at least once.
  * @param {import("../../src/ol/Map.js").default} map Map.
  * @param {import("../../src/ol/layer/Layer.js").default} layer Layer.
+ * @param {function(import("../../src/ol/layer/Layer.js").default): boolean} [ready] Readiness check.
  * @return {Promise<boolean>} Whether the renderer is usable.
  */
-async function waitForRenderer(map, layer) {
+async function waitForRenderer(map, layer, ready) {
   for (let i = 0; i < 600; ++i) {
     map.renderSync();
-    if (/** @type {any} */ (layer.getRenderer())?.helper) {
+    if (
+      ready
+        ? ready(layer)
+        : !!(/** @type {any} */ (layer.getRenderer())?.helper)
+    ) {
       return true;
     }
     await nextFrame();
@@ -216,6 +292,8 @@ async function waitForRenderer(map, layer) {
  * @property {number} framesPerPhase Frames in each phase.
  * @property {number} warmup Warmup frames.
  * @property {Object} config Config echoed in the result.
+ * @property {'sync'|'animate'} [mode='sync'] Rendering mode.
+ * @property {function(import("../../src/ol/layer/Layer.js").default): boolean} [ready] Readiness check.
  */
 
 /**
@@ -223,12 +301,30 @@ async function waitForRenderer(map, layer) {
  * @return {Promise<Object>} Benchmark result.
  */
 export async function runFlight(options) {
-  const {map, layer, phases, framesPerPhase, warmup, config} = options;
+  const {
+    map,
+    layer,
+    phases,
+    framesPerPhase,
+    warmup,
+    config,
+    mode = 'sync',
+    ready,
+  } = options;
   const view = map.getView();
-  const ready = await waitForRenderer(map, layer);
-  if (!ready) {
+  const rendererReady = await waitForRenderer(map, layer, ready);
+  if (!rendererReady) {
     return {error: 'WebGPU is not available'};
   }
+
+  const refreshSamples = [];
+  let refreshPrevious = await nextFrame();
+  for (let i = 0; i < 12; ++i) {
+    const timestamp = await nextFrame();
+    refreshSamples.push(timestamp - refreshPrevious);
+    refreshPrevious = timestamp;
+  }
+  const targetFrameMs = summarize(refreshSamples).p50 || 1000 / 60;
 
   for (let i = 0; i < warmup; ++i) {
     phases[0].apply(i / Math.max(1, warmup - 1));
@@ -243,6 +339,8 @@ export async function runFlight(options) {
   const allFrameMs = [];
   /** @type {Array<number>} */
   const allCpuMs = [];
+  /** @type {Array<number>} */
+  const allInputToFrameMs = [];
   /** @type {Array<number>} */
   const allLongTasks = [];
   /** @type {Array<number>} */
@@ -265,20 +363,57 @@ export async function runFlight(options) {
     if (phase.moving) {
       view.setHint(ViewHint.ANIMATING, 1);
     }
+    if (phase.interacting) {
+      view.setHint(ViewHint.INTERACTING, 1);
+    }
     /** @type {Array<number>} */
     const frameMs = [];
     /** @type {Array<number>} */
     const cpuMs = [];
+    /** @type {Array<number>} */
+    const inputToFrameMs = [];
+    let settleMs = 0;
+    const settleStart = performance.now();
+    const settleListener = phase.settle
+      ? () => {
+          if (!settleMs) {
+            settleMs = performance.now() - settleStart;
+          }
+        }
+      : null;
+    if (settleListener) {
+      map.once('rendercomplete', settleListener);
+    }
     longTasks.length = 0;
     resetMetrics();
     for (let i = 0; i < framesPerPhase; ++i) {
-      phase.apply(i / Math.max(1, framesPerPhase - 1));
       const start = performance.now();
-      map.renderSync();
-      cpuMs.push(performance.now() - start);
-      const now = await nextFrame();
-      frameMs.push(now - previous);
-      previous = now;
+      let rendered;
+      if (mode === 'animate') {
+        const renderedPromise = new Promise((resolve) =>
+          map.once('postrender', () => resolve(performance.now())),
+        );
+        phase.apply(i / Math.max(1, framesPerPhase - 1));
+        map.render();
+        rendered = await renderedPromise;
+        inputToFrameMs.push(/** @type {number} */ (rendered) - start);
+        const now = /** @type {number} */ (rendered);
+        frameMs.push(now - previous);
+        previous = now;
+      } else {
+        phase.apply(i / Math.max(1, framesPerPhase - 1));
+        map.renderSync();
+        cpuMs.push(performance.now() - start);
+        const now = await nextFrame();
+        frameMs.push(now - previous);
+        previous = now;
+      }
+    }
+    if (settleListener) {
+      map.un('rendercomplete', settleListener);
+      if (!settleMs) {
+        settleMs = performance.now() - settleStart;
+      }
     }
     const metrics = readMetrics();
     const phaseLongTasks = longTasks.slice();
@@ -287,6 +422,15 @@ export async function runFlight(options) {
       frames: frameMs.length,
       frameMs: summarize(frameMs),
       cpuMs: summarize(cpuMs),
+      inputToFrameMs: summarize(inputToFrameMs),
+      blockedFrames: frameMs.filter((value) => value > targetFrameMs * 1.5)
+        .length,
+      droppedFrames: frameMs.reduce(
+        (sum, value) =>
+          sum + Math.max(0, Math.round(value / targetFrameMs) - 1),
+        0,
+      ),
+      settleMs,
       longTasks: {
         count: phaseLongTasks.length,
         total: phaseLongTasks.reduce((sum, duration) => sum + duration, 0),
@@ -296,9 +440,13 @@ export async function runFlight(options) {
     });
     allFrameMs.push(...frameMs);
     allCpuMs.push(...cpuMs);
+    allInputToFrameMs.push(...inputToFrameMs);
     allLongTasks.push(...phaseLongTasks);
     if (phase.moving) {
       view.setHint(ViewHint.ANIMATING, -1);
+    }
+    if (phase.interacting) {
+      view.setHint(ViewHint.INTERACTING, -1);
     }
   }
   longTaskObserver?.disconnect();
@@ -309,8 +457,10 @@ export async function runFlight(options) {
     devicePixelRatio: window.devicePixelRatio,
     size: map.getSize(),
     frames: allFrameMs.length,
+    targetFrameMs,
     frameMs: summarize(allFrameMs),
     cpuMs: summarize(allCpuMs),
+    inputToFrameMs: summarize(allInputToFrameMs),
     longTasks: {
       count: allLongTasks.length,
       total: allLongTasks.reduce((sum, duration) => sum + duration, 0),
@@ -318,6 +468,16 @@ export async function runFlight(options) {
     },
     slowFrames20: allFrameMs.filter((value) => value > 20).length,
     slowFrames33: allFrameMs.filter((value) => value > 33).length,
+    blockedFrames: allFrameMs.filter((value) => value > targetFrameMs * 1.5)
+      .length,
+    droppedFrames: allFrameMs.reduce(
+      (sum, value) => sum + Math.max(0, Math.round(value / targetFrameMs) - 1),
+      0,
+    ),
+    settleMs: Math.max(
+      0,
+      ...phaseResults.map((phase) => /** @type {number} */ (phase.settleMs)),
+    ),
     phases: phaseResults,
   };
 }
