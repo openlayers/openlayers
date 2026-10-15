@@ -3,6 +3,7 @@
  */
 import {extendGlyphBounds} from '../../render/webgpu/glyphLayout.js';
 import {imageBounds} from '../../render/webgpu/imageBounds.js';
+import {countMetric} from '../../webgpu/metrics.js';
 import {LABEL_COLLISION_MARGIN} from './vectorUtil.js';
 
 /**
@@ -25,6 +26,34 @@ function inflateBox(box, padding, margin) {
   box.minY -= pad[0] + margin;
   box.maxX += pad[1] + margin;
   box.maxY += pad[2] + margin;
+}
+
+/**
+ * Test whether two fallback clip lists describe the same regions.
+ * @param {Array<import("../../extent.js").Extent>|null|undefined} a First list.
+ * @param {Array<import("../../extent.js").Extent>|null|undefined} b Second list.
+ * @return {boolean} The lists are equal.
+ */
+function equalClipExtents(a, b) {
+  if (a === b) {
+    return true;
+  }
+  if (!a || !b || a.length !== b.length) {
+    return false;
+  }
+  for (let i = 0; i < a.length; ++i) {
+    const left = a[i];
+    const right = b[i];
+    if (
+      left[0] !== right[0] ||
+      left[1] !== right[1] ||
+      left[2] !== right[2] ||
+      left[3] !== right[3]
+    ) {
+      return false;
+    }
+  }
+  return true;
 }
 
 /**
@@ -92,6 +121,13 @@ class LabelView {
     this.boxes_ = [];
 
     /**
+     * Whether each entry in `boxes_` was projected with `screenTransform_`.
+     * @private
+     * @type {Array<boolean>}
+     */
+    this.projected_ = [];
+
+    /**
      * Coordinate-to-pixel transform used to produce `boxes_`.
      * @private
      * @type {Array<number>|null}
@@ -110,6 +146,15 @@ class LabelView {
    * @param {Array<LabelSource>} sources Label sources, in draw order.
    */
   update(sources) {
+    const oldSources = this.sources;
+    const oldStarts = this.starts.slice();
+    const oldBoxes = this.boxes_;
+    const oldProjected = this.projected_;
+    const usedOldSources = new Set();
+    /** @type {Array<import("../../render/webgpu/declutter.js").Label>} */
+    const boxes = [];
+    /** @type {Array<boolean>} */
+    const projected = [];
     this.labels.length = 0;
     this.glyphs.length = 0;
     this.worldOffsets.length = 0;
@@ -118,14 +163,30 @@ class LabelView {
     this.starts.length = 0;
     this.sources = sources;
     this.identities.length = 0;
-    this.screenTransform_ = null;
 
     let pairOffset = 0;
     for (const source of sources) {
       const buffers = source.buffers;
+      let oldSourceIndex = -1;
+      for (let i = 0; i < oldSources.length; ++i) {
+        const old = oldSources[i];
+        if (
+          !usedOldSources.has(i) &&
+          old.buffers === buffers &&
+          old.worldOffset === source.worldOffset &&
+          equalClipExtents(old.labelClipExtents, source.labelClipExtents)
+        ) {
+          oldSourceIndex = i;
+          usedOldSources.add(i);
+          break;
+        }
+      }
+      const oldStart =
+        oldSourceIndex === -1 ? -1 : oldStarts[oldSourceIndex] || 0;
       this.starts.push(this.labels.length);
       let maxPair = 0;
-      for (const label of buffers.labels) {
+      for (let i = 0; i < buffers.labels.length; ++i) {
+        const label = buffers.labels[i];
         const pairId = /** @type {any} */ (label).pairId;
         if (pairId !== undefined) {
           maxPair = Math.max(maxPair, pairId);
@@ -135,9 +196,18 @@ class LabelView {
         this.worldOffsets.push(source.worldOffset);
         this.clipExtents.push(source.labelClipExtents || null);
         this.pairOffsets.push(pairOffset);
+        if (oldStart !== -1) {
+          boxes.push(oldBoxes[oldStart + i]);
+          projected.push(oldProjected[oldStart + i] === true);
+        } else {
+          boxes.push(/** @type {any} */ ({}));
+          projected.push(false);
+        }
       }
       pairOffset += maxPair + 1;
     }
+    this.boxes_ = boxes;
+    this.projected_ = projected;
   }
 
   /**
@@ -152,7 +222,12 @@ class LabelView {
    */
   setIdentities(identities) {
     this.identities = identities;
-    this.screenTransform_ = null;
+    for (let i = 0; i < this.boxes_.length; ++i) {
+      const box = this.boxes_[i];
+      if (box) {
+        box.id = identities[i] ?? this.labels[i].id;
+      }
+    }
   }
 
   /**
@@ -168,19 +243,20 @@ class LabelView {
     const viewRotation = frameState.viewState?.rotation || 0;
     const boxes = this.boxes_;
     const previous = this.screenTransform_;
-    if (
+    const sameLinearTransform =
       previous &&
       previous[0] === transform[0] &&
       previous[1] === transform[1] &&
       previous[2] === transform[2] &&
       previous[3] === transform[3] &&
-      this.screenRotation_ === viewRotation
-    ) {
+      this.screenRotation_ === viewRotation;
+    if (sameLinearTransform) {
       const dx = transform[4] - previous[4];
       const dy = transform[5] - previous[5];
       if (dx || dy) {
-        for (const box of boxes) {
-          if (!isFinite(box.minX)) {
+        for (let i = 0; i < boxes.length; ++i) {
+          const box = boxes[i];
+          if (!this.projected_[i] || !box || !isFinite(box.minX)) {
             continue;
           }
           box.minX += dx;
@@ -191,7 +267,8 @@ class LabelView {
       }
       previous[4] = transform[4];
       previous[5] = transform[5];
-      return boxes;
+    } else {
+      this.projected_.fill(false);
     }
     boxes.length = this.labels.length;
     for (let i = 0; i < this.labels.length; ++i) {
@@ -214,6 +291,11 @@ class LabelView {
       box.padding = label.padding;
       box.glyphStart = label.glyphStart;
       box.glyphCount = label.glyphCount;
+      if (sameLinearTransform && this.projected_[i]) {
+        countMetric('reusedLabelBoxes');
+        continue;
+      }
+      countMetric('projectedLabelBoxes');
 
       const anchor =
         /** @type {import("../../coordinate.js").Coordinate|undefined} */ (
@@ -269,6 +351,7 @@ class LabelView {
         box.maxY = label.maxY;
         inflateBox(box, label.padding, LABEL_COLLISION_MARGIN);
       }
+      this.projected_[i] = true;
     }
     this.screenTransform_ = transform.slice();
     this.screenRotation_ = viewRotation;
