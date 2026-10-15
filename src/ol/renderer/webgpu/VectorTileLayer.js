@@ -75,25 +75,6 @@ import {
  */
 
 /**
- * Flat styles always use the feature geometry. Classic styles can be filtered
- * early when none specifies an alternate geometry.
- * @param {*} style Layer style.
- * @return {boolean} Safe to filter by the feature geometry extent.
- */
-function usesFeatureGeometry(style) {
-  if (typeof style === 'function') {
-    return false;
-  }
-  if (!Array.isArray(style)) {
-    return !style?.getGeometry || style.getGeometry() === null;
-  }
-  if (!style.length || typeof style[0]?.getFill !== 'function') {
-    return true;
-  }
-  return style.every((item) => item.getGeometry() === null);
-}
-
-/**
  * @classdesc
  * One tile's CPU geometry plus the GPU buffers built from it. Cached in an LRU
  * that disposes evicted entries, which is what releases the GPU buffers.
@@ -226,10 +207,12 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     this.renderedLayerRevision_ = this.getLayer().getRevision();
 
     /**
+     * Function styles are resolved in bounded slices and reused by overlapping
+     * overzoom subdivisions.
      * @private
      * @type {boolean}
      */
-    this.featureExtentFilter_ = usesFeatureGeometry(options.style);
+    this.cacheResolvedStyles_ = typeof options.style === 'function';
 
     /**
      * @private
@@ -358,14 +341,10 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     this.renderBatchesByKey_ = new Map();
 
     /**
-     * Resolved function styles are prepared in bounded slices and shared by
-     * every subdivision of the same source tiles at a render zoom.
+     * Resolved function styles shared by overlapping subdivisions at a render
+     * zoom.
      * @private
-     * @type {Map<string, {
-     *   resolved: WeakMap<import("../../Feature.js").FeatureLike, Array<import("../../render/webgpu/buffers.js").ResolvedStyleGeometry>>,
-     *   complete: WeakSet<Object>,
-     *   progress: WeakMap<Object, {features: Array<import("../../Feature.js").FeatureLike>, index: number}>
-     * }>}
+     * @type {Map<string, WeakMap<import("../../Feature.js").FeatureLike, Array<import("../../render/webgpu/buffers.js").ResolvedStyleGeometry>>>}
      */
     this.styleCaches_ = new Map();
 
@@ -607,70 +586,54 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
   /**
    * Resolve function styles in short slices before constructing a batch.
    *
-   * Alternate style geometries prevent filtering unknown features up front.
-   * Resolving them once per source tile and render zoom keeps that correctness,
-   * while subdivisions reuse the result without repeating the long scan.
+   * Features have already passed the buffered original-geometry test. Resolve
+   * those candidates once per render zoom so overlapping subdivisions reuse
+   * the result without styling unrelated source-tile features.
    *
-   * @param {Array<import("../../VectorTile.js").default<import("../../Feature.js").FeatureLike>>} sourceTiles Loaded source tiles.
+   * @param {Array<import("../../Feature.js").FeatureLike>} features Candidate features.
    * @param {string} bucket Resolution/zoom bucket.
    * @param {number} resolution Style resolution.
    * @param {number} zoom Style zoom.
    * @return {WeakMap<import("../../Feature.js").FeatureLike, Array<import("../../render/webgpu/buffers.js").ResolvedStyleGeometry>>|null} Cache, or null while preparation continues.
    * @private
    */
-  prepareStyleCache_(sourceTiles, bucket, resolution, zoom) {
-    let state = this.styleCaches_.get(bucket);
-    if (!state) {
-      state = {
-        resolved: new WeakMap(),
-        complete: new WeakSet(),
-        progress: new WeakMap(),
-      };
-      this.styleCaches_.set(bucket, state);
+  prepareStyleCache_(features, bucket, resolution, zoom) {
+    let resolved = this.styleCaches_.get(bucket);
+    if (!resolved) {
+      resolved = new WeakMap();
+      this.styleCaches_.set(bucket, resolved);
     }
     let prepared = false;
-    for (const sourceTile of sourceTiles) {
-      if (state.complete.has(sourceTile)) {
+    const sorted = features
+      .slice()
+      .sort((a, b) => Number(getUid(a)) - Number(getUid(b)));
+    for (const feature of sorted) {
+      if (resolved.has(feature)) {
         continue;
       }
-      let progress = state.progress.get(sourceTile);
-      if (!progress) {
-        const features = (sourceTile.getFeatures?.() ?? [])
-          .slice()
-          .sort((a, b) => Number(getUid(a)) - Number(getUid(b)));
-        progress = {features, index: 0};
-        state.progress.set(sourceTile, progress);
+      resolved.set(
+        feature,
+        resolveFeatureStyles(
+          feature,
+          this.styleFunction_,
+          resolution,
+          zoom,
+          true,
+        ),
+      );
+      prepared = true;
+      countMetric('preparedFeatureStyles');
+      if (performance.now() >= this.batchBuildDeadline_) {
+        countMetric('deferredStylePreparation');
+        this.scheduleBatchChange_();
+        return null;
       }
-      while (progress.index < progress.features.length) {
-        const feature = progress.features[progress.index++];
-        if (!state.resolved.has(feature)) {
-          state.resolved.set(
-            feature,
-            resolveFeatureStyles(
-              feature,
-              this.styleFunction_,
-              resolution,
-              zoom,
-              true,
-            ),
-          );
-          prepared = true;
-          countMetric('preparedFeatureStyles');
-        }
-        if (performance.now() >= this.batchBuildDeadline_) {
-          countMetric('deferredStylePreparation');
-          this.scheduleBatchChange_();
-          return null;
-        }
-      }
-      state.complete.add(sourceTile);
-      state.progress.delete(sourceTile);
     }
     if (prepared) {
       this.scheduleBatchChange_();
       return null;
     }
-    return state.resolved;
+    return resolved;
   }
 
   /**
@@ -766,20 +729,6 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
       return null;
     }
     --this.batchBuildBudget_;
-    /** @type {WeakMap<import("../../Feature.js").FeatureLike, Array<import("../../render/webgpu/buffers.js").ResolvedStyleGeometry>>|undefined} */
-    let styleCache;
-    if (!this.featureExtentFilter_) {
-      const prepared = this.prepareStyleCache_(
-        loadedSourceTiles,
-        tileCoord[0] + '/' + dpr,
-        viewState.resolution,
-        viewState.zoom,
-      );
-      if (!prepared) {
-        return null;
-      }
-      styleCache = prepared;
-    }
     const features = [];
     for (const loadedSourceTile of loadedSourceTiles) {
       const tileFeatures = loadedSourceTile.getFeatures() ?? [];
@@ -796,12 +745,26 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
             clipExtent.slice(),
           )
         : undefined;
-    if (this.featureExtentFilter_ && filterExtent) {
+    if (filterExtent) {
       buildFeatures = features.filter((feature) => {
         const geometry = feature.getGeometry();
         return geometry && intersects(geometry.getExtent(), filterExtent);
       });
       countMetric('filteredFeatures', features.length - buildFeatures.length);
+    }
+    /** @type {WeakMap<import("../../Feature.js").FeatureLike, Array<import("../../render/webgpu/buffers.js").ResolvedStyleGeometry>>|undefined} */
+    let styleCache;
+    if (this.cacheResolvedStyles_) {
+      const prepared = this.prepareStyleCache_(
+        buildFeatures,
+        tileCoord[0] + '/' + dpr,
+        viewState.resolution,
+        viewState.zoom,
+      );
+      if (!prepared) {
+        return null;
+      }
+      styleCache = prepared;
     }
     countMetric('batchBuilds');
     countMetric('batchSourceTileRefs', sourceTiles.length);
