@@ -201,14 +201,31 @@ export class SymbolIdentityIndex {
     /** @type {SpatialHash<number>} */
     const currentUnits = new SpatialHash(mergeDistance);
     const identities = new Array(labels.length);
+    const pendingKeys = new Array(labels.length);
+    const requestedKeys = new Set();
+    for (let i = 0; i < labels.length; ++i) {
+      if (existingIdentities?.[i] !== undefined) {
+        continue;
+      }
+      const label = labels[i];
+      const key =
+        label._identityKey ||
+        `${label.text || ''}|${label.glyphCount ? 'text' : 'symbol'}`;
+      pendingKeys[i] = key;
+      requestedKeys.add(key);
+    }
 
     // Entries added during this update get ids that are already used, so the
     // previous entries are all that nearestEntry() can ever match. When every
-    // label keeps its identity, nearestEntry() is not called at all.
+    // label keeps its identity, nearestEntry() is not called at all. Only keys
+    // used by new labels need a spatial index.
     /** @type {SpatialHash<IdentityEntry>} */
     const previous = new SpatialHash(maxDistance);
-    if (!existingIdentities?.every((id) => id !== undefined)) {
+    if (requestedKeys.size) {
       for (const [key, entries] of this.entries_) {
+        if (!requestedKeys.has(key)) {
+          continue;
+        }
         for (const entry of entries) {
           previous.add(key, entry.x, entry.y, entry);
         }
@@ -315,9 +332,7 @@ export class SymbolIdentityIndex {
       const anchor = label._anchor;
       const symbol = {
         index: i,
-        key:
-          label._identityKey ||
-          `${label.text || ''}|${label.glyphCount ? 'text' : 'symbol'}`,
+        key: pendingKeys[i],
         x: (anchor?.[0] || 0) + (worldOffsets[i] || 0),
         y: anchor?.[1] || 0,
       };
