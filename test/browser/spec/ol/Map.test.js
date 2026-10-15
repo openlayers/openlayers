@@ -1313,6 +1313,25 @@ describe('ol/Map', function () {
       assert.deepEqual(requested.sort(), wanted);
     });
 
+    it('queues the destination of an animation of the center alone', function () {
+      const view = map.getView();
+      const destination = [5000000, 0];
+      const resolution = view.getResolution();
+      const tileGrid = map.getLayers().item(0).getSource().getTileGrid();
+      const z = tileGrid.getZForResolution(resolution);
+      const destinationTile = tileGrid
+        .getTileCoordForCoordAndZ(destination, z)
+        .toString();
+
+      view.animate({center: destination, duration: 1000});
+      map.renderSync();
+
+      assert.isDefined(map.frameState_.nextExtent);
+      const wanted = Object.keys(Object.values(map.frameState_.wantedTiles)[0]);
+      assert.isTrue(wanted.some((key) => key.endsWith('/' + destinationTile)));
+      view.cancelAnimations();
+    });
+
     it('dispatches loadend when the queued tiles are no longer needed', () =>
       new Promise((resolve) => {
         map.once('loadend', () => resolve());

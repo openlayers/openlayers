@@ -757,6 +757,79 @@ describe('ol/View', function () {
         assert.strictEqual(isNaN(view.nextResolution_), false);
       }));
 
+    it('reports the current resolution as the next one when only the center is animated', function () {
+      const view = new View({
+        center: [0, 0],
+        zoom: 5,
+      });
+      const resolution = view.getResolution();
+
+      view.animate({center: [1000, 0], duration: 1000});
+
+      const state = view.getState();
+      assert.deepEqual(state.nextCenter, [1000, 0]);
+      assert.strictEqual(state.nextResolution, resolution);
+      view.cancelAnimations();
+    });
+
+    it('reports no next resolution once an animation of the center is over', () =>
+      new Promise((resolve) => {
+        const view = new View({
+          center: [0, 0],
+          zoom: 5,
+        });
+
+        view.animate({center: [1000, 0], duration: 25}, function () {
+          const state = view.getState();
+          assert.isUndefined(state.nextCenter ?? undefined);
+          assert.isTrue(isNaN(state.nextResolution));
+          resolve();
+        });
+      }));
+
+    it('reports no next resolution after an animation of the center is cancelled', function () {
+      const view = new View({
+        center: [0, 0],
+        zoom: 5,
+      });
+
+      view.animate({center: [1000, 0], duration: 1000});
+      view.cancelAnimations();
+
+      const state = view.getState();
+      assert.isUndefined(state.nextCenter ?? undefined);
+      assert.isTrue(isNaN(state.nextResolution));
+    });
+
+    it('reports no next center for a zoom around an anchor', function () {
+      const view = new View({
+        center: [0, 0],
+        zoom: 5,
+      });
+
+      view.animate({zoom: 6, anchor: [1000, 1000], duration: 1000});
+
+      const state = view.getState();
+      assert.isUndefined(state.nextCenter ?? undefined);
+      assert.strictEqual(state.nextResolution, view.getResolutionForZoom(6));
+      view.cancelAnimations();
+    });
+
+    it('reports the target resolution as the next one when the resolution is animated', function () {
+      const view = new View({
+        center: [0, 0],
+        zoom: 5,
+      });
+
+      view.animate({center: [1000, 0], zoom: 4, duration: 1000});
+
+      assert.strictEqual(
+        view.getState().nextResolution,
+        view.getResolutionForZoom(4),
+      );
+      view.cancelAnimations();
+    });
+
     it('allows duration to be zero', () =>
       new Promise((resolve) => {
         const view = new View({
