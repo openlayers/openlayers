@@ -723,6 +723,35 @@ describe('ol/render/webgpu/glyphLayout', () => {
     assert.strictEqual(drawn[0].texY0, arabicMetrics.texY0);
   });
 
+  it('draws bent line labels that need shaping from slices of one cell', () => {
+    const font = '24px sans-serif';
+    // Also with digits, which read left to right within right-to-left text.
+    for (const text of ['شارع الخليفة المأمون', 'شارع 26 يوليو الجديد']) {
+      const atlas = new FontAtlas();
+      const glyphs = [];
+      layoutLineLabel(
+        glyphs,
+        new Text({text, font, placement: 'line', keepUpright: false}),
+        [0, 0, 90, 0, 180, -30, 270, -30, 360, 0],
+        1,
+        atlas,
+        [1, 0, 0, 1],
+      );
+      // No cells for chunks, only the one for the whole label.
+      assert.lengthOf(Object.keys(atlas.glyphs_), 1);
+      const whole = atlas.getGlyph(font, text);
+      assert.isAbove(glyphs.length, 1);
+      assert.strictEqual(glyphs[0].texX0, whole.texX0);
+      assert.strictEqual(glyphs[glyphs.length - 1].texX1, whole.texX1);
+      for (let i = 1; i < glyphs.length; ++i) {
+        assert.strictEqual(glyphs[i].texY0, whole.texY0);
+        // Slices follow the path in the order of the shaped text, so a
+        // number cannot read backwards.
+        assert.strictEqual(glyphs[i].texX0, glyphs[i - 1].texX1);
+      }
+    }
+  });
+
   it('keeps left-to-right scripts that need shaping in one cell', () => {
     const atlas = new FontAtlas();
     const font = '24px sans-serif';
