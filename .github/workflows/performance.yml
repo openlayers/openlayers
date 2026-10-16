@@ -1,0 +1,114 @@
+name: Performance
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  performance:
+    name: Rendering benchmarks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone Repository
+        uses: actions/checkout@v7.0.1
+
+      - name: Set Node.js Version
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Install Playwright Browser
+        run: npx playwright install --with-deps chromium
+
+      - name: Restore Benchmark Fixtures
+        id: fixture-cache
+        uses: actions/cache@v5
+        with:
+          path: test/performance/data
+          key: benchmark-fixtures-${{ hashFiles('test/performance/fixtures/manifest.json') }}
+
+      - name: Download Benchmark Fixtures
+        if: steps.fixture-cache.outputs.cache-hit != 'true'
+        run: npm run fetch-bench-fixtures
+
+      - name: Download Historical Baseline
+        continue-on-error: true
+        run: |
+          curl --fail --location --silent --show-error \
+            https://raw.githubusercontent.com/openlayers/benchmarks/gh-pages/latest.json \
+            --output baseline.json
+
+      - name: Run Benchmarks
+        run: |
+          npm run bench -- --out performance.json \
+            --browser-arg=--use-angle=swiftshader \
+            --browser-arg=--enable-features=Vulkan,UseSkiaRenderer \
+            --browser-arg=--use-vulkan=swiftshader
+
+      - name: Prepare Reports
+        run: |
+          node test/performance/scripts/ci-report.js \
+            performance.json baseline.json benchmark-action.json \
+            >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Store Benchmark Results
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: performance
+          path: performance.json
+          if-no-files-found: ignore
+          retention-days: 30
+
+      - name: Configure Benchmark Repository Key
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          DEPLOY_KEY: ${{ secrets.OPENLAYERS_BENCHMARKS_KEY }}
+        run: |
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$DEPLOY_KEY" > ~/.ssh/openlayers-benchmarks
+          chmod 600 ~/.ssh/openlayers-benchmarks
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          git config --global core.sshCommand \
+            "ssh -i ~/.ssh/openlayers-benchmarks -o IdentitiesOnly=yes"
+
+      - name: Update Historical Report
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: benchmark-action/github-action-benchmark@v1
+        with:
+          name: OpenLayers rendering
+          tool: customSmallerIsBetter
+          output-file-path: benchmark-action.json
+          gh-repository: github.com/openlayers/benchmarks
+          gh-pages-branch: gh-pages
+          benchmark-data-dir-path: rendering
+          auto-push: false
+
+      - name: Publish Historical Report
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          cp performance.json /tmp/performance.json
+          git checkout gh-pages
+          cp /tmp/performance.json latest.json
+          git add latest.json
+          if ! git diff --cached --quiet; then
+            git \
+              -c user.name=github-actions \
+              -c user.email=github-actions@github.com \
+              commit -m "Store latest OpenLayers benchmark report"
+          fi
+          git push \
+            git@github.com:openlayers/benchmarks.git \
+            gh-pages:gh-pages

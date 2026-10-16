@@ -2,9 +2,9 @@ import fs from 'fs';
 import path from 'path';
 import {fileURLToPath} from 'url';
 import {defineConfig} from 'vite';
-import olWorker from '../browser/vite-plugin-ol-worker.mjs';
+import olWorker from '../../browser/vite-plugin-ol-worker.mjs';
 
-const dir = path.dirname(fileURLToPath(import.meta.url));
+const dir = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const repoRoot = path.resolve(dir, '../..');
 const dataRoot = path.join(dir, 'data', 'versatiles');
 

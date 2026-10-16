@@ -2,14 +2,15 @@
  * A fixed flight: each phase is a function of the frame index, never of
  * wall-clock time, so runs stay comparable when rendering gets slower.
  */
-import ViewHint from '../../src/ol/ViewHint.js';
-import {getCurrentDevice} from '../../src/ol/webgpu/Device.js';
+import ViewHint from '../../../src/ol/ViewHint.js';
+import {easeOut, inAndOut} from '../../../src/ol/easing.js';
+import {getCurrentDevice} from '../../../src/ol/webgpu/Device.js';
 import {
   enableMetrics,
   readMetrics,
   resetMetrics,
-} from '../../src/ol/webgpu/metrics.js';
-import {frameExperience, summarize} from './stats.js';
+} from '../../../src/ol/webgpu/metrics.js';
+import {frameExperience, median} from './stats.js';
 
 /**
  * @typedef {Object} FlightPhase
@@ -47,7 +48,7 @@ export function readFlightConfig(params) {
 
 /**
  * Zoom, pan, and rotate. `minZoom` and `maxZoom` match the layer under test.
- * @param {import("../../src/ol/View.js").default} view View.
+ * @param {import("../../../src/ol/View.js").default} view View.
  * @param {number} minZoom Minimum zoom.
  * @param {number} maxZoom Maximum zoom.
  * @return {Array<FlightPhase>} Phases.
@@ -109,77 +110,29 @@ export function createFlightPhases(view, minZoom, maxZoom) {
 }
 
 /**
- * High-zoom tile churn followed by stationary frames while pending tile work
- * completes. The eased pan approximates kinetic movement after pointer release.
- * @param {import("../../src/ol/View.js").default} view View.
- * @param {number} minZoom Minimum zoom.
- * @param {number} maxZoom Maximum zoom.
- * @param {number} [runOffset] Horizontal offset separating repeated runs.
- * @return {Array<FlightPhase>} Phases.
- */
-export function createOverzoomPhases(view, minZoom, maxZoom, runOffset = 0) {
-  const startX = runOffset * view.getResolutionForZoom(maxZoom) * 16000;
-  const distance = view.getResolutionForZoom(maxZoom) * 12000;
-  const endX = startX + distance;
-  return [
-    {
-      name: 'zoom-in',
-      apply: (t) => {
-        view.setCenter([startX, 0]);
-        view.setRotation(0);
-        view.setZoom(minZoom + (maxZoom - minZoom) * t);
-      },
-    },
-    {
-      name: 'kinetic-pan',
-      moving: true,
-      apply: (t) => {
-        view.setZoom(maxZoom);
-        view.setRotation(0);
-        const eased = 1 - Math.pow(1 - t, 3);
-        view.setCenter([startX + distance * eased, 0]);
-      },
-    },
-    {
-      name: 'settle',
-      apply: () => {
-        view.setZoom(maxZoom);
-        view.setRotation(0);
-        view.setCenter([endX, 0]);
-      },
-    },
-    {
-      name: 'zoom-out',
-      moving: true,
-      apply: (t) => {
-        view.setCenter([endX, 0]);
-        view.setRotation(0);
-        view.setZoom(maxZoom + (minZoom - maxZoom) * t);
-      },
-    },
-  ];
-}
-
-/**
- * Dense high-zoom navigation matching a drag, kinetic movement, wheel zoom,
- * and the final label/tile settlement users experience.
- * @param {import("../../src/ol/View.js").default} view View.
- * @param {import("../../src/ol/coordinate.js").Coordinate} center Start center.
+ * Dense high-zoom navigation matching a drag, kinetic movement, a zoom out
+ * and back across two levels, and the final label/tile settlement.
+ *
+ * The easing functions match View animations while fixed frame counts ensure
+ * that fast and slow renderers process the same number of view states.
+ * @param {import("../../../src/ol/View.js").default} view View.
+ * @param {import("../../../src/ol/coordinate.js").Coordinate} center Start center.
  * @param {number} zoom High zoom.
  * @param {number} [runOffset] Horizontal offset separating repeated runs.
  * @return {Array<FlightPhase>} Phases.
  */
 export function createNavigationPhases(view, center, zoom, runOffset = 0) {
   const resolution = view.getResolutionForZoom(zoom);
-  const startX = center[0] + runOffset * resolution * 8000;
+  const startX = center[0] + runOffset * resolution * 5000;
   const startY = center[1];
-  const dragDistance = resolution * 2400;
+  const dragDistance = resolution * 1400;
   const dragEnd = startX + dragDistance;
-  const kineticDistance = resolution * 1200;
+  const kineticDistance = resolution * 1000;
   const endX = dragEnd + kineticDistance;
+  const overviewZoom = zoom - 2;
   return [
     {
-      name: 'hold-z17',
+      name: 'hold',
       apply: () => {
         view.setCenter([startX, startY]);
         view.setRotation(0);
@@ -190,11 +143,12 @@ export function createNavigationPhases(view, center, zoom, runOffset = 0) {
       name: 'drag',
       interacting: true,
       apply: (t) => {
+        const eased = inAndOut(t);
         view.setZoom(zoom);
         view.setRotation(0);
         view.setCenter([
-          startX + dragDistance * t,
-          startY + Math.sin(t * Math.PI * 2) * resolution * 180,
+          startX + dragDistance * eased,
+          startY + Math.sin(eased * Math.PI) * resolution * 120,
         ]);
       },
     },
@@ -202,7 +156,7 @@ export function createNavigationPhases(view, center, zoom, runOffset = 0) {
       name: 'kinetic-pan',
       moving: true,
       apply: (t) => {
-        const eased = 1 - Math.pow(1 - t, 3);
+        const eased = easeOut(t);
         view.setCenter([dragEnd + kineticDistance * eased, startY]);
         view.setRotation(0);
         view.setZoom(zoom);
@@ -214,7 +168,8 @@ export function createNavigationPhases(view, center, zoom, runOffset = 0) {
       apply: (t) => {
         view.setCenter([endX, startY]);
         view.setRotation(0);
-        view.setZoom(zoom - Math.sin(t * Math.PI) * 0.8);
+        const trip = t < 0.5 ? inAndOut(t * 2) : 1 - inAndOut((t - 0.5) * 2);
+        view.setZoom(zoom + (overviewZoom - zoom) * trip);
       },
     },
     {
@@ -237,7 +192,7 @@ function nextFrame() {
 }
 
 /**
- * @param {import("../../src/ol/webgpu/metrics.js").Metrics} metrics Metrics.
+ * @param {import("../../../src/ol/webgpu/metrics.js").Metrics} metrics Metrics.
  * @param {number} frames Frame count to average over.
  * @return {Object<string, number>} Per-frame averages.
  */
@@ -247,13 +202,8 @@ function perFrameMetrics(metrics, frames) {
   const out = {};
   for (const name in metrics.timers) {
     const timer = metrics.timers[name];
-    const summary = summarize(timer.samples);
     out[name + 'MsPerFrame'] = timer.total / divisor;
     out[name + 'CallsPerFrame'] = timer.calls / divisor;
-    out[name + 'MsP50'] = summary.p50;
-    out[name + 'MsP95'] = summary.p95;
-    out[name + 'MsP99'] = summary.p99;
-    out[name + 'MsMax'] = summary.max;
   }
   for (const name in metrics.counters) {
     out[name + 'PerFrame'] = metrics.counters[name] / divisor;
@@ -266,13 +216,17 @@ function perFrameMetrics(metrics, frames) {
 
 /**
  * Wait until the renderer is up and the layer has drawn at least once.
- * @param {import("../../src/ol/Map.js").default} map Map.
- * @param {import("../../src/ol/layer/Layer.js").default} layer Layer.
- * @param {function(import("../../src/ol/layer/Layer.js").default): boolean} [ready] Readiness check.
+ * @param {import("../../../src/ol/Map.js").default} map Map.
+ * @param {import("../../../src/ol/layer/Layer.js").default} layer Layer.
+ * @param {function(import("../../../src/ol/layer/Layer.js").default): boolean} [ready] Readiness check.
+ * @param {AbortSignal} [signal] Signal that cancels the wait.
  * @return {Promise<boolean>} Whether the renderer is usable.
  */
-async function waitForRenderer(map, layer, ready) {
+async function waitForRenderer(map, layer, ready, signal) {
   for (let i = 0; i < 600; ++i) {
+    if (signal?.aborted) {
+      return false;
+    }
     map.renderSync();
     if (
       ready
@@ -288,25 +242,21 @@ async function waitForRenderer(map, layer, ready) {
 
 /**
  * @typedef {Object} FlightOptions
- * @property {import("../../src/ol/Map.js").default} map Map.
- * @property {import("../../src/ol/layer/Layer.js").default} layer Layer.
+ * @property {import("../../../src/ol/Map.js").default} map Map.
+ * @property {import("../../../src/ol/layer/Layer.js").default} layer Layer.
  * @property {Array<FlightPhase>} phases Phases.
  * @property {number} framesPerPhase Frames in each phase.
  * @property {number} warmup Warmup frames.
  * @property {Object} config Config echoed in the result.
  * @property {'sync'|'animate'} [mode='sync'] Rendering mode.
- * @property {function(import("../../src/ol/layer/Layer.js").default): boolean} [ready] Readiness check.
+ * @property {function(import("../../../src/ol/layer/Layer.js").default): boolean} [ready] Readiness check.
+ * @property {AbortSignal} [signal] Signal that stops the flight before the next frame.
  */
 
 /**
  * Run a scripted flight.
  *
- * Presented-frame gaps are the time from one frame to the next. Render work
- * in sync mode is the `renderSync` duration. In animate mode it is the time
- * from the map `precompose` event to `postrender`. That brackets deferred
- * declutter painting; a layer's own `prerender` and `postrender` do not,
- * because decluttered vector layers paint later from `renderDeferred`.
- *
+ * Presented-frame gaps are the time from one frame to the next.
  * @param {FlightOptions} options Options.
  * @return {Promise<Object>} Benchmark result.
  */
@@ -320,9 +270,13 @@ export async function runFlight(options) {
     config,
     mode = 'sync',
     ready,
+    signal,
   } = options;
   const view = map.getView();
-  const rendererReady = await waitForRenderer(map, layer, ready);
+  const rendererReady = await waitForRenderer(map, layer, ready, signal);
+  if (signal?.aborted) {
+    return {cancelled: true};
+  }
   if (!rendererReady) {
     return {error: 'WebGPU is not available'};
   }
@@ -330,13 +284,19 @@ export async function runFlight(options) {
   const refreshSamples = [];
   let refreshPrevious = await nextFrame();
   for (let i = 0; i < 12; ++i) {
+    if (signal?.aborted) {
+      return {cancelled: true};
+    }
     const timestamp = await nextFrame();
     refreshSamples.push(timestamp - refreshPrevious);
     refreshPrevious = timestamp;
   }
-  const targetFrameMs = summarize(refreshSamples).p50 || 1000 / 60;
+  const targetFrameMs = median(refreshSamples) || 1000 / 60;
 
   for (let i = 0; i < warmup; ++i) {
+    if (signal?.aborted) {
+      return {cancelled: true};
+    }
     phases[0].apply(i / Math.max(1, warmup - 1));
     map.renderSync();
     await nextFrame();
@@ -347,63 +307,19 @@ export async function runFlight(options) {
   const phaseResults = [];
   /** @type {Array<number>} */
   const allFrameMs = [];
-  /** @type {Array<number>} */
-  const allCpuMs = [];
-  /** @type {Array<number>} */
-  const allInputToFrameMs = [];
-  /** @type {Array<number>} */
-  const allLongTasks = [];
-  /** @type {Array<number>} */
-  const longTasks = [];
-  let longTaskObserver;
-  if (
-    typeof PerformanceObserver !== 'undefined' &&
-    PerformanceObserver.supportedEntryTypes?.includes('longtask')
-  ) {
-    longTaskObserver = new PerformanceObserver((list) => {
-      for (const entry of list.getEntries()) {
-        longTasks.push(entry.duration);
-      }
-    });
-    longTaskObserver.observe({type: 'longtask'});
-  }
 
   let previous = await nextFrame();
-  let workStart = 0;
-  let workOpen = false;
-  /** @type {Array<number>} */
-  let phaseWorkMs = [];
-  const onPrecompose = () => {
-    workStart = performance.now();
-    workOpen = true;
-  };
-  const onWorkEnd = () => {
-    if (!workOpen) {
-      return;
-    }
-    phaseWorkMs.push(performance.now() - workStart);
-    workOpen = false;
-  };
-  if (mode === 'animate') {
-    map.on('precompose', onPrecompose);
-    map.on('postrender', onWorkEnd);
-  }
-  /** @type {Array<number>} */
-  const allWorkMs = [];
   try {
     for (const phase of phases) {
-      if (phase.moving || phase.interacting) {
+      if (signal?.aborted) {
+        return {cancelled: true};
+      }
+      const hinted = phase.moving || phase.interacting;
+      if (hinted) {
         view.setHint(ViewHint.INTERACTING, 1);
       }
       /** @type {Array<number>} */
       const frameMs = [];
-      /** @type {Array<number>} */
-      const cpuMs = [];
-      /** @type {Array<number>} */
-      const inputToFrameMs = [];
-      /** @type {Array<number>} */
-      const animateWorkMs = [];
-      phaseWorkMs = animateWorkMs;
       let settleMs = 0;
       const settleStart = performance.now();
       const settleListener = phase.settle
@@ -416,71 +332,76 @@ export async function runFlight(options) {
       if (settleListener) {
         map.once('rendercomplete', settleListener);
       }
-      longTasks.length = 0;
       resetMetrics();
-      for (let i = 0; i < framesPerPhase; ++i) {
-        const start = performance.now();
-        let rendered;
-        if (mode === 'animate') {
-          const renderedPromise = new Promise((resolve) =>
-            map.once('postrender', () => resolve(performance.now())),
-          );
-          phase.apply(i / Math.max(1, framesPerPhase - 1));
-          map.render();
-          rendered = await renderedPromise;
-          inputToFrameMs.push(/** @type {number} */ (rendered) - start);
-          const now = /** @type {number} */ (rendered);
-          frameMs.push(now - previous);
-          previous = now;
-        } else {
-          phase.apply(i / Math.max(1, framesPerPhase - 1));
-          map.renderSync();
-          cpuMs.push(performance.now() - start);
-          const now = await nextFrame();
-          frameMs.push(now - previous);
-          previous = now;
+      let cancelled = false;
+      try {
+        for (let i = 0; i < framesPerPhase; ++i) {
+          if (signal?.aborted) {
+            cancelled = true;
+            break;
+          }
+          let rendered;
+          if (mode === 'animate') {
+            const renderedPromise = new Promise((resolve) => {
+              function onAbort() {
+                map.un('postrender', onRender);
+                resolve(undefined);
+              }
+              function onRender() {
+                signal?.removeEventListener('abort', onAbort);
+                resolve(performance.now());
+              }
+              map.once('postrender', onRender);
+              if (signal?.aborted) {
+                onAbort();
+              } else {
+                signal?.addEventListener('abort', onAbort, {once: true});
+              }
+            });
+            phase.apply(i / Math.max(1, framesPerPhase - 1));
+            map.render();
+            rendered = await renderedPromise;
+            if (rendered === undefined) {
+              cancelled = true;
+              break;
+            }
+            const now = /** @type {number} */ (rendered);
+            frameMs.push(now - previous);
+            previous = now;
+          } else {
+            phase.apply(i / Math.max(1, framesPerPhase - 1));
+            map.renderSync();
+            const now = await nextFrame();
+            frameMs.push(now - previous);
+            previous = now;
+          }
+        }
+      } finally {
+        if (settleListener) {
+          map.un('rendercomplete', settleListener);
+        }
+        if (hinted) {
+          view.setHint(ViewHint.INTERACTING, -1);
         }
       }
-      if (settleListener) {
-        map.un('rendercomplete', settleListener);
-        if (!settleMs) {
-          settleMs = performance.now() - settleStart;
-        }
+      if (cancelled || signal?.aborted) {
+        return {cancelled: true};
+      }
+      if (settleListener && !settleMs) {
+        settleMs = performance.now() - settleStart;
       }
       await getCurrentDevice()?.device.queue.onSubmittedWorkDone();
       const metrics = readMetrics();
-      const phaseLongTasks = longTasks.slice();
-      const workMs = mode === 'animate' ? animateWorkMs : cpuMs;
       phaseResults.push({
         name: phase.name,
         frames: frameMs.length,
-        frameMs: summarize(frameMs),
-        cpuMs: summarize(cpuMs),
-        inputToFrameMs: summarize(inputToFrameMs),
-        experience: frameExperience(frameMs, workMs, targetFrameMs),
+        experience: frameExperience(frameMs, targetFrameMs),
         settleMs,
-        longTasks: {
-          count: phaseLongTasks.length,
-          total: phaseLongTasks.reduce((sum, duration) => sum + duration, 0),
-          ...summarize(phaseLongTasks),
-        },
         metrics: perFrameMetrics(metrics, frameMs.length),
       });
       allFrameMs.push(...frameMs);
-      allCpuMs.push(...cpuMs);
-      allInputToFrameMs.push(...inputToFrameMs);
-      allWorkMs.push(...workMs);
-      allLongTasks.push(...phaseLongTasks);
-      if (phase.moving || phase.interacting) {
-        view.setHint(ViewHint.INTERACTING, -1);
-      }
     }
   } finally {
-    if (mode === 'animate') {
-      map.un('precompose', onPrecompose);
-      map.un('postrender', onWorkEnd);
-    }
-    longTaskObserver?.disconnect();
     enableMetrics(false);
   }
 
@@ -490,15 +411,7 @@ export async function runFlight(options) {
     size: map.getSize(),
     frames: allFrameMs.length,
     targetFrameMs,
-    frameMs: summarize(allFrameMs),
-    cpuMs: summarize(allCpuMs),
-    inputToFrameMs: summarize(allInputToFrameMs),
-    experience: frameExperience(allFrameMs, allWorkMs, targetFrameMs),
-    longTasks: {
-      count: allLongTasks.length,
-      total: allLongTasks.reduce((sum, duration) => sum + duration, 0),
-      ...summarize(allLongTasks),
-    },
+    experience: frameExperience(allFrameMs, targetFrameMs),
     settleMs: Math.max(
       0,
       ...phaseResults.map((phase) => /** @type {number} */ (phase.settleMs)),
