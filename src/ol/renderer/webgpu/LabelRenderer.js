@@ -3,7 +3,6 @@
  */
 import Disposable from '../../Disposable.js';
 import {packGlyphInstances} from '../../render/webgpu/glyphLayout.js';
-import {countMetric, endMetric, startMetric} from '../../webgpu/metrics.js';
 import {ICON_STRIDE, SYMBOL_STRIDE} from './vectorUtil.js';
 
 /**
@@ -168,7 +167,6 @@ class LabelRenderer extends Disposable {
       this.iconOpacityBuffer_ = helper.createBuffer(this.iconOpacity_, usage);
     }
     if (this.glyphCount_) {
-      const start = startMetric();
       // Same origin as the symbol anchors and the geometry grid. The draw
       // matrix adds it back; packing the absolute coordinate here is what
       // makes labels shake at high zoom.
@@ -178,7 +176,6 @@ class LabelRenderer extends Disposable {
         packGlyphInstances(buffers.glyphs, undefined, originX, originY),
         usage,
       );
-      endMetric('packGlyphInstances', start);
       this.glyphOpacity_ = new Float32Array(this.glyphCount_ * 3);
       this.glyphOpacityBuffer_ = helper.createBuffer(this.glyphOpacity_, usage);
       this.glyphHaloPrefix_ = new Uint32Array(this.glyphCount_ + 1);
@@ -307,9 +304,6 @@ class LabelRenderer extends Disposable {
         iconMin * 3 * 4,
       );
     }
-    countMetric('dirtyOpacityLabels', this.dirtyLabels_.size);
-    countMetric('opacityUploads');
-    countMetric('transitionUploads');
     this.dirtyLabels_.clear();
     this.opacityDirty_ = false;
   }
@@ -409,7 +403,6 @@ class LabelRenderer extends Disposable {
       pass.setVertexBuffer(0, cornerBuffer);
       pass.setVertexBuffer(1, this.iconBuffer_);
       pass.setVertexBuffer(2, this.iconOpacityBuffer_);
-      countMetric('drawCalls');
       pass.draw(4, instanceCount, 0, firstInstance);
       return;
     }
@@ -430,7 +423,6 @@ class LabelRenderer extends Disposable {
       pass.setVertexBuffer(0, cornerBuffer);
       pass.setVertexBuffer(1, this.symbolBuffer_);
       pass.setVertexBuffer(2, this.symbolOpacityBuffer_);
-      countMetric('drawCalls');
       pass.draw(4, instanceCount, 0, firstInstance);
       return;
     }
@@ -524,7 +516,6 @@ class LabelRenderer extends Disposable {
     pass.setVertexBuffer(0, cornerBuffer);
     pass.setVertexBuffer(1, this.glyphBuffer_);
     pass.setVertexBuffer(2, this.glyphOpacityBuffer_);
-    countMetric('drawCalls');
     pass.draw(4, instanceCount, 0, firstInstance);
   }
 
@@ -541,10 +532,7 @@ class LabelRenderer extends Disposable {
       if (state) {
         state.pipeline = pipeline;
       }
-      countMetric('pipelineBindings');
-      return;
     }
-    countMetric('skippedPipelineBindings');
   }
 
   /**

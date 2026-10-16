@@ -41,7 +41,6 @@ import {getWorkerPool} from '../../render/webgpu/workerPool.js';
 import ViewHint from '../../ViewHint.js';
 import FontAtlas from '../../webgpu/FontAtlas.js';
 import ImageAtlas from '../../webgpu/ImageAtlas.js';
-import {countMetric, endMetric, startMetric} from '../../webgpu/metrics.js';
 import {
   clipExtentToProjection,
   estimateSourceExtent,
@@ -803,13 +802,11 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
       setup.targetProj,
     );
     if (key !== this.warpKey_ || !this.warpGrid_) {
-      const start = startMetric();
       this.warpGrid_ = buildWarpGrid(
         setup.extent,
         setup.projectToTarget,
         setup.maxEdge,
       );
-      endMetric('buildWarpGrid', start);
       this.warpKey_ = key;
     }
     return this.warpGrid_;
@@ -1119,8 +1116,6 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
         this.visibility_,
       );
       const duration = performance.now() - start;
-      endMetric('placement', start);
-      countMetric('placementCommits');
       this.placement_.commit(key, now, duration, frameState);
     } else if (this.placement_.isDeferred(key, now, frameState)) {
       // Keep rendering so the deferred pass happens once the budget allows.

@@ -45,13 +45,6 @@ import {getUid} from '../../util.js';
 import ViewHint from '../../ViewHint.js';
 import FontAtlas from '../../webgpu/FontAtlas.js';
 import ImageAtlas from '../../webgpu/ImageAtlas.js';
-import {
-  countMetric,
-  endMetric,
-  maxMetric,
-  metricsEnabled,
-  startMetric,
-} from '../../webgpu/metrics.js';
 import {hitFeatures} from './hitTest.js';
 import LabelRenderer from './LabelRenderer.js';
 import LabelView from './LabelView.js';
@@ -201,7 +194,6 @@ class TileBatch extends Disposable {
     if (!this.gpu_) {
       // A disposed batch is no longer cached, so nothing would release these.
       assert(!this.disposed, 'Cannot upload the geometry of a disposed batch');
-      const start = startMetric();
       const buffers = this.buffers;
       this.gpu_ = new VectorGpuBuffers(helper, buffers);
       // Only the GPU buffers are drawn from, so the CPU copy of the geometry
@@ -215,8 +207,6 @@ class TileBatch extends Disposable {
       buffers.strokeStyles = released;
       buffers.strokeIndices = released;
       buffers.styles = released;
-      endMetric('gpuGeometryUpload', start);
-      countMetric('gpuGeometryUploads');
     }
     return this.gpu_;
   }
@@ -228,11 +218,8 @@ class TileBatch extends Disposable {
   getLabelRenderer(helper) {
     if (!this.labels_) {
       assert(!this.disposed, 'Cannot upload the labels of a disposed batch');
-      const start = startMetric();
       this.labels_ = new LabelRenderer();
       this.labels_.setLabels(helper, this.buffers);
-      endMetric('gpuLabelUpload', start);
-      countMetric('gpuLabelUploads');
     }
     return this.labels_;
   }
@@ -749,9 +736,7 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
         ),
       );
       prepared = true;
-      countMetric('preparedFeatureStyles');
       if (performance.now() >= this.batchBuildDeadline_) {
-        countMetric('deferredStylePreparation');
         this.scheduleBatchChange_();
         return null;
       }
@@ -811,7 +796,6 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     }
     const drawn = this.drawnBatches_.get(getUid(tile));
     if (drawn && this.tileCache_.containsKey(drawn.key)) {
-      countMetric('restyleFallbackBatches');
       return this.tileCache_.get(drawn.key);
     }
     return null;
@@ -906,18 +890,15 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     }
     const cacheable = tile.getState() === TileState.LOADED;
     if (cacheable && this.tileCache_.containsKey(cacheKey)) {
-      countMetric(reuseSourceBatch ? 'sourceBatchCacheHits' : 'batchCacheHits');
       return this.tileCache_.get(cacheKey);
     }
     if (this.pendingKeys_.has(cacheKey)) {
-      countMetric('pendingBatchHits');
       return null;
     }
     if (
       this.batchBuildBudget_ === 0 ||
       performance.now() >= this.batchBuildDeadline_
     ) {
-      countMetric('deferredBatchBuilds');
       return null;
     }
     --this.batchBuildBudget_;
@@ -942,7 +923,6 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
         const geometry = feature.getGeometry();
         return geometry && intersects(geometry.getExtent(), filterExtent);
       });
-      countMetric('filteredFeatures', features.length - buildFeatures.length);
     }
     /** @type {WeakMap<import("../../Feature.js").FeatureLike, Array<import("../../render/webgpu/buffers.js").ResolvedStyleGeometry>>|undefined} */
     let styleCache;
@@ -957,19 +937,6 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
         return null;
       }
       styleCache = prepared;
-    }
-    countMetric('batchBuilds');
-    countMetric('batchSourceTileRefs', sourceTiles.length);
-    const sourceZ = sourceTiles.reduce(
-      (value, sourceTile) => Math.max(value, sourceTile.tileCoord?.[0] ?? -1),
-      -1,
-    );
-    if (sourceZ >= 0 && tileCoord[0] > sourceZ) {
-      countMetric('overzoomBatchBuilds');
-      countMetric('overzoomLevels', tileCoord[0] - sourceZ);
-    }
-    if (reuseSourceBatch) {
-      countMetric('sourceBatchBuilds');
     }
     const {request, labelData} = buildVectorRequest(
       buildFeatures,
@@ -992,11 +959,9 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     if (pending) {
       const generation = this.batchGeneration_;
       this.pendingKeys_.add(cacheKey);
-      maxMetric('pendingBatchDepth', this.pendingKeys_.size);
       pending
         .then((geometry) => {
           this.pendingKeys_.delete(cacheKey);
-          countMetric('completedBatchBuilds');
           if (this.disposed) {
             return;
           }
@@ -1022,9 +987,7 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
       return null;
     }
 
-    const metricStart = startMetric();
     const geometry = buildGeometryBuffers(request);
-    endMetric('mainThreadGeometry', metricStart);
     const batch = new TileBatch(
       cacheKey,
       worldOffset,
@@ -1138,7 +1101,6 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
       }
       added.add(item.renderKey);
       batches.push(batch);
-      countMetric('fallbackBatches');
     }
   }
 
@@ -1148,7 +1110,6 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
    * @private
    */
   collectBatches_(frameState) {
-    const metricStart = startMetric();
     const layer = this.getLayer();
     const source = /** @type {import("../../source/VectorTile.js").default} */ (
       layer.getRenderSource()
@@ -1168,7 +1129,6 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     this.restyleZ_ = z;
     const extent = frameState.extent;
     if (!extent) {
-      endMetric('collectBatches', metricStart);
       return [];
     }
     const tileRange = tileGrid.getTileRangeForExtentAndZ(
@@ -1187,8 +1147,6 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     const added = new Set();
     /** @type {Array<import("../../tilecoord.js").TileCoord>} */
     const holes = [];
-    const measuredSourceTiles = metricsEnabled() ? new Set() : null;
-    let measuredRenderTiles = 0;
 
     const sourceKey = source.getKey();
     /** @type {Array<{tile: import("../../VectorRenderTile.js").default, renderKey: string, x: number, y: number}>} */
@@ -1260,12 +1218,6 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
           entry.renderKey,
           batch,
         );
-      }
-      if (measuredSourceTiles) {
-        ++measuredRenderTiles;
-        for (const sourceTile of tile.sourceTiles || []) {
-          measuredSourceTiles.add(sourceTile.getKey());
-        }
       }
     }
 
@@ -1350,26 +1302,15 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     );
     this.renderTiles_.expireCache();
     this.tileCache_.expireCache();
-    if (measuredSourceTiles) {
-      countMetric('renderTilesConsidered', measuredRenderTiles);
-      countMetric('distinctSourceTiles', measuredSourceTiles.size);
-      maxMetric(
-        'renderTilesPerSourceTile',
-        measuredRenderTiles / Math.max(1, measuredSourceTiles.size),
-      );
-    }
     const unique = [];
     const batchKeys = new Set();
     for (const batch of batches) {
       if (batchKeys.has(batch.key)) {
-        countMetric('deduplicatedBatches');
         continue;
       }
       batchKeys.add(batch.key);
       unique.push(batch);
     }
-    maxMetric('visibleBatches', unique.length);
-    endMetric('collectBatches', metricStart);
     return unique;
   }
 
@@ -1473,7 +1414,6 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
         ++i
       ) {
         const batch = this.declutterBatches_[i];
-        countMetric('neighborLabelBatches');
         const labels = batch.getLabelRenderer(helper);
         if (this.opacities_) {
           labels.setOpacities(this.opacities_, view.starts[i] ?? 0);
@@ -1502,7 +1442,6 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
         if (stillLabeling.has(batch)) {
           continue;
         }
-        countMetric('retiredLabelBatches');
         const identities = batch.labelIdentities;
         if (!identities) {
           continue;
@@ -1584,7 +1523,6 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
       }
     }
     if (key !== this.labelKey_) {
-      const start = startMetric();
       this.labelView_.update(
         batches.map((batch) => ({
           buffers: batch.buffers,
@@ -1592,7 +1530,6 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
           labelClipExtents: batch.labelClipExtents,
         })),
       );
-      endMetric('updateLabelView', start);
       this.labelKey_ = key;
       ++this.labelVersion_;
       this.opacities_ = new Float32Array(this.labelView_.getCount() * 3);
@@ -1701,11 +1638,9 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
    * @private
    */
   updateOpacities_(frameState, previousVisibility) {
-    const metricStart = startMetric();
     const labels = this.labelView_.labels;
     const visibility = this.visibility_;
     if (!visibility) {
-      endMetric('updateOpacities', metricStart);
       return false;
     }
     const now = frameState.time || 0;
@@ -1741,7 +1676,6 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
       );
     }
     this.activeOpacityIndices_ = active;
-    endMetric('updateOpacities', metricStart);
     return fading;
   }
 
@@ -1853,12 +1787,9 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
       );
       this.storeVisibility_();
       const duration = performance.now() - start;
-      endMetric('placement', start);
-      countMetric('placementCommits');
       this.placement_.commit(key, now, duration, frameState);
     } else if (this.placement_.isDeferred(key, now, frameState)) {
       // Keep rendering so the deferred pass happens once the budget allows.
-      countMetric('deferredPlacementFrames');
       frameState.animate = true;
     }
     if (!runPlacement && this.visibility_) {
