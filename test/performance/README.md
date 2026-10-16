@@ -5,11 +5,16 @@ would notice. They are separate from `npm test`.
 
 ## Run locally
 
-Start the benchmark page:
+Install the project dependencies, then start the benchmark page:
 
 ```sh
+npm install
 npm run serve-bench
 ```
+
+The first run downloads the pinned benchmark fixtures from the public
+`openlayers/benchmarks` repository and verifies their size and SHA-256 digest.
+Later runs reuse the installed fixtures. No GitHub credentials are required.
 
 The page lists every available case. It can run one case or the whole suite,
 repeat measured flights, show frame timing while the map moves, download a
@@ -75,7 +80,8 @@ source in `shared/data.js` so repeated runs receive identical input.
 
 ## Benchmark fixtures
 
-Install all pinned fixtures with:
+Both `npm run serve-bench` and `npm run bench` install missing fixtures
+automatically. To install them without starting a benchmark, run:
 
 ```sh
 npm run fetch-bench-fixtures
