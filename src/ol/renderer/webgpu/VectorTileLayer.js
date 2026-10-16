@@ -21,6 +21,7 @@ import {
   VIEWPORT_PADDING,
 } from '../../render/webgpu/declutter.js';
 import {buildGeometryBuffers} from '../../render/webgpu/geometryBuffers.js';
+import {clearWidthCaches} from '../../render/webgpu/glyphLayout.js';
 import {
   activeLabelIndices,
   LABEL_FADE_DURATION,
@@ -1924,6 +1925,17 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     this.tileCache_.clear();
     this.renderBatchesByKey_.clear();
     this.styleCaches_.clear();
+  }
+
+  /**
+   * Rebuild labels after a font has loaded, so they no longer use glyphs and
+   * metrics of a fallback font.
+   * @override
+   */
+  handleFontsChanged() {
+    clearWidthCaches();
+    this.atlas_.clear();
+    this.getLayer().changed();
   }
 
   /**

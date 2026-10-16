@@ -11,6 +11,7 @@ import {
   measureTextBaseline,
   measureTextHeight,
   measureWrappedLineHeight,
+  registerFont,
 } from '../canvas.js';
 import {TEXT_ALIGN} from '../canvas/TextBuilder.js';
 
@@ -35,6 +36,16 @@ const widthCaches = {};
  */
 function getWidthCache(font) {
   return (widthCaches[font] ??= {});
+}
+
+/**
+ * Forget measured text widths, e.g. after a font has loaded and widths
+ * measured with a fallback font are stale.
+ */
+export function clearWidthCaches() {
+  for (const font in widthCaches) {
+    delete widthCaches[font];
+  }
 }
 
 const graphemeSegmenter = new Intl.Segmenter(undefined, {
@@ -408,6 +419,7 @@ export function layoutPointLabel(
     return null;
   }
   const font = quantizeFont(textStyle.getFont() || '10px sans-serif');
+  registerFont(font);
   const scale = textStyle.getScaleArray?.() || [1, 1];
   const scaleX = Array.isArray(scale) ? scale[0] : 1;
   const scaleY = Array.isArray(scale) ? scale[1] : 1;
@@ -548,6 +560,7 @@ export function layoutLineLabel(
     return null;
   }
   const font = quantizeFont(textStyle.getFont() || '10px sans-serif');
+  registerFont(font);
   const pixelCoords = new Array(flatCoords.length);
   for (let i = 0; i < flatCoords.length; i += 2) {
     pixelCoords[i] = flatCoords[i] / resolution;
