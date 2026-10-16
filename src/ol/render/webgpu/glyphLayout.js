@@ -5,7 +5,7 @@ import {asArray} from '../../color.js';
 import {interpolatePoint} from '../../geom/flat/interpolate.js';
 import {lineStringLength} from '../../geom/flat/length.js';
 import {coordinates as reverseCoordinates} from '../../geom/flat/reverse.js';
-import {drawTextOnPath, rtlRegEx} from '../../geom/flat/textpath.js';
+import {drawTextOnPath, needsShaping} from '../../geom/flat/textpath.js';
 import {
   measureAndCacheTextWidth,
   measureTextBaseline,
@@ -106,68 +106,6 @@ function getLineBreakCandidates(text) {
   }
 
   return Array.from(candidates).sort((a, b) => a - b);
-}
-
-/**
- * Left-to-right scripts whose letters change form, combine, stack or reorder
- * with their neighbors, e.g. Devanagari conjuncts, Khmer subscripts or
- * Javanese pasangan.
- * @type {Array<string>}
- */
-const complexScripts = [
-  // South Asia
-  'Devanagari',
-  'Bengali',
-  'Gurmukhi',
-  'Gujarati',
-  'Oriya',
-  'Tamil',
-  'Telugu',
-  'Kannada',
-  'Malayalam',
-  'Sinhala',
-  'Tibetan',
-  'Chakma',
-  'Limbu',
-  'Lepcha',
-  'Meetei_Mayek',
-  'Newa',
-  'Tirhuta',
-  'Syloti_Nagri',
-  // Mainland Southeast Asia
-  'Thai',
-  'Lao',
-  'Myanmar',
-  'Khmer',
-  'Tai_Tham',
-  'New_Tai_Lue',
-  'Cham',
-  // Maritime Southeast Asia
-  'Javanese',
-  'Balinese',
-  'Sundanese',
-  'Buginese',
-  'Batak',
-  'Tagalog',
-  // Central and East Asia
-  'Mongolian',
-];
-
-/**
- * @type {RegExp}
- */
-const complexScriptRegEx = new RegExp(
-  '[' + complexScripts.map((script) => `\\p{Script=${script}}`).join('') + ']',
-  'u',
-);
-
-/**
- * @param {string} text Text.
- * @return {boolean} The text must be shaped as a whole: its letters depend on
- * their neighbors for form, position or order.
- */
-function needsShaping(text) {
-  return rtlRegEx.test(text) || complexScriptRegEx.test(text);
 }
 
 /**
