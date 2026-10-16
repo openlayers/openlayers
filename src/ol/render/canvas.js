@@ -291,6 +291,7 @@ export const registerFont = (function () {
       if (currentRetries < retries) {
         if (await isAvailable(font)) {
           clear(textHeights);
+          clear(textBaselines);
           checkedFonts.set(font, retries);
         } else {
           currentRetries += 10;

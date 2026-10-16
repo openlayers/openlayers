@@ -466,4 +466,15 @@ describe('ol/renderer/webgpu/VectorTileLayer', () => {
       offsets.some((offset) => Math.abs(offset + worldWidth) < 1e-3),
     );
   });
+
+  it('rasterizes glyphs again and rebuilds when fonts change', () => {
+    const glyph = renderer.atlas_.getGlyph('12px sans-serif', 'A');
+    const revision = layer.getRevision();
+    renderer.handleFontsChanged();
+    assert.isAbove(layer.getRevision(), revision);
+    assert.notStrictEqual(
+      renderer.atlas_.getGlyph('12px sans-serif', 'A'),
+      glyph,
+    );
+  });
 });
