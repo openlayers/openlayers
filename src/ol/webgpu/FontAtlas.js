@@ -19,20 +19,45 @@ import {measureAndCacheTextWidth} from '../render/canvas.js';
  */
 
 /**
- * One shelf-packed canvas and the GPU texture it uploads into.
- * @typedef {Object} AtlasPage
- * @property {number} size Canvas width and height.
- * @property {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Canvas context.
+ * Size and rasterization settings of a cell, in texels.
+ * @typedef {Object} GlyphCell
+ * @property {string} font Font scaled to texels.
+ * @property {number} lineWidth Halo stroke width.
+ * @property {number} width Width.
+ * @property {number} height Height.
+ * @property {number} ascent Distance from the top to the alphabetic baseline.
+ * @property {number} pad Inset from the cell edge to the advance origin.
+ */
+
+/**
+ * Rows of texels that are shelf packed.
+ * @typedef {Object} Shelves
+ * @property {number} size Width and height.
  * @property {number} shelfX Next cell x.
  * @property {number} shelfY Next cell y.
  * @property {number} shelfHeight Tallest cell on the current shelf.
- * @property {GPUTexture|null} texture Uploaded texture, or null before the first upload.
- * @property {boolean} resized The canvas grew, so the texture must be recreated.
- * @property {boolean} dirty New cells need copying into the existing texture.
- * @property {number} dirtyX0 Dirty rectangle left.
- * @property {number} dirtyY0 Dirty rectangle top.
- * @property {number} dirtyX1 Dirty rectangle right.
- * @property {number} dirtyY1 Dirty rectangle bottom.
+ */
+
+/**
+ * One shelf-packed GPU texture.
+ * @typedef {Shelves & {texture: GPUTexture|null}} AtlasPage
+ */
+
+/**
+ * A cell on a staging canvas, waiting to be copied to its page.
+ * @typedef {Object} StagedCell
+ * @property {number} sourceX Left texel on the staging canvas.
+ * @property {number} sourceY Top texel on the staging canvas.
+ * @property {number} page Page index.
+ * @property {number} x Left texel on the page.
+ * @property {number} y Top texel on the page.
+ * @property {number} width Width.
+ * @property {number} height Height.
+ */
+
+/**
+ * Canvas that new cells are rasterized on until they are uploaded.
+ * @typedef {Shelves & {context: CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D, cells: Array<StagedCell>}} StagingCanvas
  */
 
 /**
@@ -47,6 +72,13 @@ const INITIAL_PAGE_SIZE = 512;
  * @type {number}
  */
 const MAX_PAGE_SIZE = 4096;
+
+/**
+ * Cells that do not fit on a staging canvas of this size before the next
+ * upload go to another one.
+ * @type {number}
+ */
+const STAGING_SIZE = 1024;
 
 /**
  * @param {string} font CSS font.
@@ -64,29 +96,111 @@ function scaleFont(font, pixelRatio) {
 }
 
 /**
+ * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
+ * @param {string} font Font (CSS pixels).
+ * @param {string} text Grapheme or text.
+ * @param {number} strokeWidth Halo stroke width in CSS pixels.
+ * @param {number} pixelRatio Device pixel ratio.
+ * @return {GlyphCell} Cell.
+ */
+export function measureCell(context, font, text, strokeWidth, pixelRatio) {
+  const scaledFont = scaleFont(font, pixelRatio);
+  context.font = scaledFont;
+  const metrics = context.measureText(text);
+  const width = Math.ceil(metrics.width || 0);
+  const ascent = Math.ceil(metrics.actualBoundingBoxAscent || 12 * pixelRatio);
+  const descent = Math.ceil(metrics.actualBoundingBoxDescent || 4 * pixelRatio);
+  const pad = Math.ceil(strokeWidth * pixelRatio) + 1;
+  return {
+    font: scaledFont,
+    lineWidth: strokeWidth * pixelRatio,
+    width: width + pad * 2,
+    height: ascent + descent + pad * 2,
+    ascent: pad + ascent,
+    pad,
+  };
+}
+
+/**
+ * Draw the halo in red and the fill in green. Additive compositing preserves
+ * the independently antialiased coverage masks where they overlap, so the
+ * premultiplied red and green channels are the halo and fill coverage.
+ * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
+ * @param {string} text Grapheme or text.
+ * @param {GlyphCell} cell Cell.
+ * @param {number} x Left.
+ * @param {number} y Top.
+ */
+export function drawCell(context, text, cell, x, y) {
+  context.save();
+  context.font = cell.font;
+  context.globalCompositeOperation = 'lighter';
+  context.fillStyle = '#0f0';
+  context.strokeStyle = '#f00';
+  context.textBaseline = 'alphabetic';
+  context.lineJoin = 'round';
+  if (cell.lineWidth > 0) {
+    context.lineWidth = cell.lineWidth;
+    context.strokeText(text, x + cell.pad, y + cell.ascent);
+  }
+  context.fillText(text, x + cell.pad, y + cell.ascent);
+  context.restore();
+}
+
+/**
+ * @param {number} size Width and height.
+ * @return {Shelves} Empty shelves.
+ */
+function createShelves(size) {
+  return {size, shelfX: 1, shelfY: 1, shelfHeight: 0};
+}
+
+/**
+ * Move to the next shelf when the current one has no room for `w`.
+ * @param {Shelves} shelves Shelves.
+ * @param {number} w Cell width.
+ * @param {number} h Cell height.
+ * @return {boolean} The cell fits.
+ */
+function fitShelf(shelves, w, h) {
+  if (shelves.shelfX + w + 1 > shelves.size) {
+    shelves.shelfY += shelves.shelfHeight + 1;
+    shelves.shelfX = 1;
+    shelves.shelfHeight = 0;
+  }
+  return shelves.shelfY + h + 1 <= shelves.size;
+}
+
+/**
+ * @param {Shelves} shelves Shelves.
+ * @param {number} w Cell width.
+ * @param {number} h Cell height.
+ * @return {Array<number>} Left and top of the cell.
+ */
+function placeOnShelf(shelves, w, h) {
+  const position = [shelves.shelfX, shelves.shelfY];
+  shelves.shelfX += w + 1;
+  shelves.shelfHeight = Math.max(shelves.shelfHeight, h);
+  return position;
+}
+
+/**
  * @param {number} size Page size in texels.
  * @return {AtlasPage} Empty page.
  */
 function createPage(size) {
-  const context = createCanvasContext2D(size, size, undefined, {
-    alpha: true,
-  });
-  context.clearRect(0, 0, size, size);
-  context.fillStyle = '#0f0';
-  context.strokeStyle = '#f00';
+  return {...createShelves(size), texture: null};
+}
+
+/**
+ * @param {number} size Width and height.
+ * @return {StagingCanvas} Empty staging canvas.
+ */
+function createStagingCanvas(size) {
   return {
-    size,
-    context,
-    shelfX: 1,
-    shelfY: 1,
-    shelfHeight: 0,
-    texture: null,
-    resized: true,
-    dirty: false,
-    dirtyX0: 0,
-    dirtyY0: 0,
-    dirtyX1: 0,
-    dirtyY1: 0,
+    ...createShelves(size),
+    context: createCanvasContext2D(size, size, undefined, {alpha: true}),
+    cells: [],
   };
 }
 
@@ -96,9 +210,10 @@ function createPage(size) {
  * halo coverage and the green channel stores fill coverage. Keeping the masks
  * independent lets the renderer draw every halo before any fill in a label.
  *
- * Pages grow from 512 to 4096 and then another page is opened. A page's GPU
- * texture is recreated only when that page grows; new cells are copied into
- * the existing texture.
+ * Pages exist only on the GPU. New cells are rasterized on a small staging
+ * canvas, which is uploaded once and copied cell by cell to the pages. Pages
+ * grow from 512 to 4096 and then another page is opened. A page's GPU texture
+ * is replaced only when that page grows, by a copy on the GPU.
  */
 class FontAtlas {
   constructor() {
@@ -107,6 +222,21 @@ class FontAtlas {
      * @type {Array<AtlasPage>}
      */
     this.pages_ = [createPage(INITIAL_PAGE_SIZE)];
+
+    /**
+     * Cells rasterized since the last upload. The first canvas is kept for
+     * later uploads.
+     * @private
+     * @type {Array<StagingCanvas>}
+     */
+    this.staging_ = [createStagingCanvas(STAGING_SIZE)];
+
+    /**
+     * Texture the first staging canvas is uploaded to.
+     * @private
+     * @type {GPUTexture|null}
+     */
+    this.stagingTexture_ = null;
 
     /**
      * @private
@@ -143,54 +273,43 @@ class FontAtlas {
     if (key in this.glyphs_) {
       return this.glyphs_[key];
     }
-    const scaledFont = scaleFont(font, dpr);
-    let page = this.pages_[this.pages_.length - 1];
-    page.context.font = scaledFont;
-    const metrics = page.context.measureText(glyph);
-    const width = Math.ceil(metrics.width || 0);
-    const ascent = Math.ceil(metrics.actualBoundingBoxAscent || 12 * dpr);
-    const descent = Math.ceil(metrics.actualBoundingBoxDescent || 4 * dpr);
-    const height = ascent + descent;
-    const pad = Math.ceil(strokeWidth * dpr) + 1;
-    const w = width + pad * 2;
-    const h = height + pad * 2;
+    let staging = this.staging_[this.staging_.length - 1];
+    const cell = measureCell(staging.context, font, glyph, strokeWidth, dpr);
+    const w = cell.width;
+    const h = cell.height;
+    const page = this.fit_(this.pages_[this.pages_.length - 1], w, h);
+    const [x, y] = placeOnShelf(page, w, h);
+    const pageIndex = this.pages_.indexOf(page);
 
-    page = this.fit_(page, w, h);
-
-    const x = page.shelfX;
-    const y = page.shelfY;
-    page.context.save();
-    page.context.font = scaledFont;
-    // Additive compositing preserves the independently antialiased coverage
-    // masks where the stroke and fill overlap. Canvas image data is
-    // unpremultiplied, so the shader multiplies each channel by alpha to
-    // recover its coverage.
-    page.context.globalCompositeOperation = 'lighter';
-    page.context.fillStyle = '#0f0';
-    page.context.strokeStyle = '#f00';
-    page.context.textBaseline = 'alphabetic';
-    page.context.lineJoin = 'round';
-    if (strokeWidth > 0) {
-      page.context.lineWidth = strokeWidth * dpr;
-      page.context.strokeText(glyph, x + pad, y + pad + ascent);
+    if (!fitShelf(staging, w, h)) {
+      staging = createStagingCanvas(
+        Math.min(Math.max(STAGING_SIZE, w + 2, h + 2), MAX_PAGE_SIZE),
+      );
+      this.staging_.push(staging);
+      fitShelf(staging, w, h);
     }
-    page.context.fillText(glyph, x + pad, y + pad + ascent);
-    page.context.restore();
-
-    page.shelfX += w + 1;
-    page.shelfHeight = Math.max(page.shelfHeight, h);
-    this.markDirty_(page, x, y, w, h);
+    const [sourceX, sourceY] = placeOnShelf(staging, w, h);
+    drawCell(staging.context, glyph, cell, sourceX, sourceY);
+    staging.cells.push({
+      sourceX,
+      sourceY,
+      page: pageIndex,
+      x,
+      y,
+      width: w,
+      height: h,
+    });
 
     const record = {
       texX0: x,
       texY0: y,
       texX1: x + w,
       texY1: y + h,
-      page: this.pages_.indexOf(page),
+      page: pageIndex,
       width: w / dpr,
       height: h / dpr,
-      ascent: (pad + ascent) / dpr,
-      pad: pad / dpr,
+      ascent: cell.ascent / dpr,
+      pad: cell.pad / dpr,
       advance: measureAndCacheTextWidth(
         font,
         glyph,
@@ -202,29 +321,29 @@ class FontAtlas {
   }
 
   /**
-   * Upload dirty texels. A page keeps its GPUTexture until that page's canvas
-   * grows; only the new cells are copied.
+   * Copy new cells to the page textures. A page keeps its GPUTexture until
+   * that page grows.
    * @param {import("./Helper.js").default} helper Helper.
    * @return {number} Revision. Changes only when a texture object is replaced.
    */
   upload(helper) {
+    const device = helper.getDevice();
     for (const page of this.pages_) {
-      if (!page.texture || page.resized) {
-        page.texture?.destroy();
-        page.texture = helper.createTextureFromImage(page.context.canvas);
-        page.resized = false;
-        page.dirty = false;
-        ++this.revision_;
-      } else if (page.dirty) {
-        const canvas = page.context.canvas;
-        const x = Math.max(0, page.dirtyX0);
-        const y = Math.max(0, page.dirtyY0);
-        const x1 = Math.min(canvas.width, page.dirtyX1);
-        const y1 = Math.min(canvas.height, page.dirtyY1);
-        helper.copyTextureRegion(page.texture, canvas, x, y, x1 - x, y1 - y);
-        page.dirty = false;
+      if (page.texture?.width !== page.size) {
+        this.replaceTexture_(device, page);
       }
     }
+    for (const staging of this.staging_) {
+      if (!staging.cells.length) {
+        continue;
+      }
+      this.copyStagedCells_(device, staging);
+    }
+    const first = this.staging_[0];
+    first.context.clearRect(0, 0, first.size, first.shelfY + first.shelfHeight);
+    Object.assign(first, createShelves(first.size));
+    first.cells = [];
+    this.staging_ = [first];
     return this.revision_;
   }
 
@@ -237,7 +356,10 @@ class FontAtlas {
     for (const page of this.pages_) {
       page.texture?.destroy();
     }
+    this.stagingTexture_?.destroy();
+    this.stagingTexture_ = null;
     this.pages_ = [createPage(INITIAL_PAGE_SIZE)];
+    this.staging_ = [createStagingCanvas(STAGING_SIZE)];
     this.glyphs_ = {};
     this.widthCaches_ = {};
     ++this.revision_;
@@ -259,12 +381,11 @@ class FontAtlas {
   }
 
   /**
-   * @param {number} [page] Page index. The page currently being packed when omitted.
-   * @return {HTMLCanvasElement|OffscreenCanvas} Canvas.
+   * @param {number} page Page index.
+   * @return {number} Page width and height in texels.
    */
-  getCanvas(page) {
-    const index = page === undefined ? this.pages_.length - 1 : page;
-    return this.pages_[index].context.canvas;
+  getPageSize(page) {
+    return this.pages_[page].size;
   }
 
   /**
@@ -282,19 +403,14 @@ class FontAtlas {
       (w + 2 > page.size || h + 2 > page.size) &&
       page.size * 2 <= MAX_PAGE_SIZE
     ) {
-      this.grow_(page);
+      page.size *= 2;
       return this.fit_(page, w, h);
     }
-    if (page.shelfX + w + 1 > page.size) {
-      page.shelfY += page.shelfHeight + 1;
-      page.shelfX = 1;
-      page.shelfHeight = 0;
-    }
-    if (page.shelfY + h + 1 <= page.size) {
+    if (fitShelf(page, w, h)) {
       return page;
     }
     if (page.size * 2 <= MAX_PAGE_SIZE) {
-      this.grow_(page);
+      page.size *= 2;
       return this.fit_(page, w, h);
     }
     if (w + 2 > MAX_PAGE_SIZE || h + 2 > MAX_PAGE_SIZE) {
@@ -306,46 +422,92 @@ class FontAtlas {
   }
 
   /**
+   * Create a texture of the page size, with the texels of the previous one.
+   * @param {GPUDevice} device Device.
    * @param {AtlasPage} page Page.
    * @private
    */
-  grow_(page) {
-    const next = page.size * 2;
-    const context = createCanvasContext2D(next, next, undefined, {
-      alpha: true,
+  replaceTexture_(device, page) {
+    const texture = device.createTexture({
+      size: [page.size, page.size],
+      format: 'rg8unorm',
+      usage:
+        GPUTextureUsage.TEXTURE_BINDING |
+        GPUTextureUsage.COPY_DST |
+        GPUTextureUsage.COPY_SRC,
     });
-    context.clearRect(0, 0, next, next);
-    context.drawImage(page.context.canvas, 0, 0);
-    context.fillStyle = '#0f0';
-    context.strokeStyle = '#f00';
-    page.context = context;
-    page.size = next;
-    page.resized = true;
+    const previous = page.texture;
+    if (previous) {
+      const encoder = device.createCommandEncoder();
+      encoder.copyTextureToTexture({texture: previous}, {texture}, [
+        previous.width,
+        previous.height,
+      ]);
+      device.queue.submit([encoder.finish()]);
+      previous.destroy();
+    }
+    page.texture = texture;
+    ++this.revision_;
   }
 
   /**
-   * @param {AtlasPage} page Page.
-   * @param {number} x Left.
-   * @param {number} y Top.
-   * @param {number} w Width.
-   * @param {number} h Height.
+   * Upload the used rows of a staging canvas and copy its cells to their pages.
+   * @param {GPUDevice} device Device.
+   * @param {StagingCanvas} staging Staging canvas.
    * @private
    */
-  markDirty_(page, x, y, w, h) {
-    const x1 = x + w;
-    const y1 = y + h;
-    if (!page.dirty) {
-      page.dirtyX0 = x;
-      page.dirtyY0 = y;
-      page.dirtyX1 = x1;
-      page.dirtyY1 = y1;
-      page.dirty = true;
-      return;
+  copyStagedCells_(device, staging) {
+    const shared = staging.size === STAGING_SIZE;
+    const texture =
+      (shared && this.stagingTexture_) ||
+      device.createTexture({
+        size: [staging.size, staging.size],
+        format: 'rg8unorm',
+        usage:
+          GPUTextureUsage.COPY_SRC |
+          GPUTextureUsage.COPY_DST |
+          GPUTextureUsage.RENDER_ATTACHMENT,
+      });
+    if (shared) {
+      this.stagingTexture_ = texture;
     }
-    page.dirtyX0 = Math.min(page.dirtyX0, x);
-    page.dirtyY0 = Math.min(page.dirtyY0, y);
-    page.dirtyX1 = Math.max(page.dirtyX1, x1);
-    page.dirtyY1 = Math.max(page.dirtyY1, y1);
+    const rows = Math.min(staging.shelfY + staging.shelfHeight, staging.size);
+    // The canvas holds premultiplied coverage, which is what the shader reads.
+    device.queue.copyExternalImageToTexture(
+      {source: staging.context.canvas},
+      {texture, premultipliedAlpha: true},
+      [staging.size, rows],
+    );
+    const encoder = device.createCommandEncoder();
+    for (const cell of staging.cells) {
+      const page = this.pages_[cell.page];
+      // A cell larger than the page is cut off.
+      const width = Math.min(
+        cell.width,
+        page.size - cell.x,
+        staging.size - cell.sourceX,
+      );
+      const height = Math.min(
+        cell.height,
+        page.size - cell.y,
+        rows - cell.sourceY,
+      );
+      if (width <= 0 || height <= 0) {
+        continue;
+      }
+      encoder.copyTextureToTexture(
+        {texture, origin: {x: cell.sourceX, y: cell.sourceY}},
+        {
+          texture: /** @type {GPUTexture} */ (page.texture),
+          origin: {x: cell.x, y: cell.y},
+        },
+        [width, height],
+      );
+    }
+    device.queue.submit([encoder.finish()]);
+    if (!shared) {
+      texture.destroy();
+    }
   }
 }
 
