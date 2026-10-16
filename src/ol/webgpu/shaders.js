@@ -1009,15 +1009,15 @@ fn vs_main(
 fn fs_halo(in: VertexOut) -> @location(0) vec4<f32> {
   let atlasSize = vec2<f32>(textureDimensions(atlasTexture));
   let atlas = textureSample(atlasTexture, atlasSampler, in.texCoord / atlasSize);
-  if (atlas.a < 0.01) {
+  if (max(atlas.r, atlas.g) < 0.01) {
     discard;
   }
   if (uniforms.hitDetection > 0.5) {
     discard;
   }
-  // Atlas red stores unpremultiplied halo coverage.
+  // Atlas red stores halo coverage.
   var color = in.strokeColor;
-  color.a = color.a * atlas.r * atlas.a * uniforms.globalAlpha;
+  color.a = color.a * atlas.r * uniforms.globalAlpha;
   if (color.a < 0.01) {
     discard;
   }
@@ -1028,15 +1028,15 @@ fn fs_halo(in: VertexOut) -> @location(0) vec4<f32> {
 fn fs_fill(in: VertexOut) -> @location(0) vec4<f32> {
   let atlasSize = vec2<f32>(textureDimensions(atlasTexture));
   let atlas = textureSample(atlasTexture, atlasSampler, in.texCoord / atlasSize);
-  if (atlas.a < 0.01) {
+  if (max(atlas.r, atlas.g) < 0.01) {
     discard;
   }
   if (uniforms.hitDetection > 0.5) {
     return in.hitColor;
   }
-  // Atlas green stores unpremultiplied fill coverage.
+  // Atlas green stores fill coverage.
   var color = in.fillColor;
-  color.a = color.a * atlas.g * atlas.a * uniforms.globalAlpha;
+  color.a = color.a * atlas.g * uniforms.globalAlpha;
   if (color.a < 0.01) {
     discard;
   }
