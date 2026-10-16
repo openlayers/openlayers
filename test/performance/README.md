@@ -1,128 +1,127 @@
 # Performance benchmarks
 
-Benchmarks are for measuring map rendering while developing. They are not
-published with the examples on the website.
-
-Each file in `cases/` is one benchmark. It exports a `name` and a `setup`
-function. `setup` receives the map element and the page query string, builds
-the map, and returns an object with a `run()` method. `run()` resolves to JSON
-with `experience`, `frameMs`, `cpuMs`, `phases`, and `config`.
-
-`experience` is the result to read. `displayMs` is the measured refresh
-interval. Presented-frame gaps (`gaps`) are only meaningful next to that
-interval: a p99 of 33 ms on a 30 Hz display means the map kept up with the
-screen. `lateFrames` counts gaps longer than 1.5× the display interval, and
-`droppedFrames` estimates how many refreshes those gaps skipped. `stalls`,
-`worstGapMs`, and `stallMs` describe gaps longer than 100 ms, which is long
-enough to feel like the map froze during a pan or zoom. `work` is renderer
-main-thread time. `overBudget` counts frames whose work exceeded 16.7 ms, so
-they cannot sustain 60 fps whatever refresh the display used for the run.
-
-`frameMs` and `cpuMs` stay in the JSON for diagnosis. Comparisons use the
-experience counts above, not raw gap percentiles, so a 30 Hz cadence is not
-reported as a regression.
-
-`flight.js` is the shared zoom, pan, and rotate script. A case can call
-`runFlight` with its own phases, or implement `run()` itself, as long as the
-result has that shape. Geometry that must stay identical across runs belongs
-in `data.js` and should come from a seeded random number generator, not the
-network.
+These benchmarks run repeatable map navigation and report the frames a user
+would notice. They are separate from `npm test`.
 
 ## Run locally
 
-Start the dev page and open the URL Vite prints. That page lists every case:
+Start the benchmark page:
 
-    npm run serve-bench
+```sh
+npm run serve-bench
+```
 
-Headless, every case:
+The page lists every available case. It can run one case or the whole suite,
+repeat measured flights, show frame timing while the map moves, download a
+JSON report, and compare that report with an earlier one. Each case gets one
+discarded warm-up flight before its measured runs.
 
-    npm run bench
+The report metrics are smaller-is-better:
 
-One case, fewer frames:
+| Metric | Meaning | Across runs |
+| --- | --- | --- |
+| Missed frames | Display refreshes skipped between animation callbacks | Mean |
+| Late frames | Frames later than 1.5× the measured display interval | Mean |
+| Stalls | Gaps longer than 100 milliseconds | Maximum |
+| Worst frame | Longest presented-frame gap | Maximum |
 
-    npm run bench -- --case webgpu-vector --frames 30 --runs 1
+The map is always 800×600 CSS pixels, so results do not depend on the window
+size. The report also records the display interval, map size, and device pixel
+ratio as comparison context.
 
-The `webgpu-vector-tiles-overzoom` case uses deterministic procedural vector
-tiles with a source maximum zoom of 14 and drives the view from zoom 13 through
-17. It reports separate zoom, kinetic-pan, settle, and zoom-out phases together
-with long tasks and WebGPU renderer metrics. To exercise HiDPI behavior:
+## Directory layout
 
-    npm run bench -- --case webgpu-vector-tiles-overzoom --device-scale-factor 2
+- `client/` contains code loaded by the benchmark page.
+- `cases/` contains benchmark case modules discovered by the page and CLI.
+- `shared/` contains measurement, reporting, and synthetic-data modules.
+- `scripts/` contains the benchmark runner, fixture installer, and CI tooling.
+- `config/` contains development-server configuration.
+- `fixtures/` contains the fixture manifest and maintainer-only tooling.
 
-Compare two checkouts. From the baseline checkout:
+## Command line
 
-    npm run bench -- --out base.json
+Agents and automated jobs use the same cases and report:
 
-From the branch:
+```sh
+npm run bench
+npm run bench -- --case <name> --runs 5
+npm run bench -- --out performance.json
+npm run bench -- --compare baseline.json performance.json
+```
 
-    npm run bench -- --out head.json
-    npm run bench -- --compare base.json head.json
+Useful controls include `--frames`, `--warmup`, `--viewport`,
+`--device-scale-factor`, `--projection`, `--features`, and `--vertices`. The
+default is five measured runs after one discarded flight.
 
-Results are a trimmed mean of several flights. They are comparable only across
-runs on the same machine. CI uses a software WebGPU adapter, so those numbers
-are not comparable to a local GPU.
+Comparisons are meaningful only on the same machine under similar load. Do not
+compare local hardware results with CI, which uses a software WebGPU adapter.
+The CI timeline compares CI runs with other CI runs.
 
-The overzoom case deliberately avoids network data. Its seeded source
-reproduces source/render tile amplification and preparation churn without an
-external PMTiles fixture, keeping local and CI runs self-contained.
+## Add a case
 
-## VersaTiles navigation
+Add one module to `cases/`. It exports a stable `name` and a `setup(target,
+params)` function. `setup` returns an object with:
 
-`versatiles.html` is a full-window WebGPU map of the VersaTiles Colorful style,
-for judging navigation by how it feels. The tiles are an offline excerpt and
-are not committed.
+- `run()`, which resolves to the result of a repeatable flight.
+- `dispose()`, which detaches the map when another case is prepared.
 
-Fetch the excerpt (zoom levels 12–14 around the focus view, plus the style,
-sprites, and Noto Sans), then start the bench server:
+It may also export a display `title` and a `fixture` id. If a required fixture
+is absent, return `{unavailable: 'reason'}` so **Run all** and the headless
+runner can skip it.
 
-    node test/performance/fetch-versatiles.js
-    npm run serve-bench
+Use `runFlight` for shared measurement. Define phases as functions of frame
+progress instead of wall-clock time. Generate synthetic geometry from a seeded
+source in `shared/data.js` so repeated runs receive identical input.
 
-Open `http://127.0.0.1:8123/versatiles.html`. The map starts at the focus view
-(`x=1813976.46267`, `y=6141328.17996`, zoom 14.16667). Zooming past 14 overzooms
-level 14 tiles, which is as far as the VersaTiles source goes. To use a zip
-that was already built:
+## Benchmark fixtures
 
-    node test/performance/fetch-versatiles.js --url https://example.com/versatiles-vienna.zip
+Install all pinned fixtures with:
 
-The page HUD (press `h` to hide it) shows what the page can see: `requestAnimationFrame`
-gaps against the measured refresh interval, and WebGPU queue time from submit
-until `onSubmittedWorkDone`. A blue bar is a frame that kept up, a yellow bar is
-a late frame, and a red bar is a refresh the animation callback missed. That is
-only part of what navigation feels like, because work that finishes late on the
-GPU can still miss the screen.
+```sh
+npm run fetch-bench-fixtures
+```
 
-Chrome's own frame classification is recorded separately. This opens the page
-in headed Chrome with the browser's frame overlay on (`--show-fps-counter`) and
-writes presented, partially presented, and dropped frames:
+`fixtures/manifest.json` pins each public release asset by URL, byte size, and
+SHA-256 digest. Installation verifies both before extracting into the
+gitignored `data/` directory. A missing fixture makes its cases unavailable;
+other cases still run.
 
-    node test/performance/record-frames.js
+### Publish a fixture
 
-Navigate by hand. Each line printed is about one second: `presented` frames had
-every update on screen, `partial` frames were shown with an older map image for
-part of the update, and `dropped` frames never appeared. `fps` is presented plus
-partial per second, which is the frame rate the overlay shows. Press Enter or
-close the window. The JSON (default `test/performance/data/frame-session.json`)
-adds the share of frames that were partial or dropped, the longest run of
-dropped frames in a row, and the display refresh interval. A long dropped run
-is a hitch you can see; a single dropped frame usually is not.
+Fixture builders and the publisher live in `fixtures/scripts/`. For the VersaTiles
+fixture:
 
-The trace flushes when it stops, so the recorder ends and restarts it about
-once a second. Frames during that short pause are not counted. If bundled
-Chromium is used instead of system Chrome, set
-`PLAYWRIGHT_BROWSERS_PATH` to the machine Playwright cache. `--seconds 20`
-ends the session on its own.
+```sh
+node test/performance/fixtures/scripts/build-versatiles.js
+node test/performance/fixtures/scripts/publish.js versatiles --tag fixtures-v1
+rm -rf test/performance/data/
+npm run fetch-bench-fixtures
+```
 
-## Profile a pan
+Publishing requires `gh` access to `openlayers/benchmarks`. The script rejects
+an existing release tag or asset, uploads the archive under a new tag, and
+updates the local manifest. Review the archive, provenance, redistribution
+licenses, generated URL, size, and digest before committing that manifest.
 
-`profile-pan.js` repeats a drag at one view and writes a V8 CPU profile
-summary. The default view is the zoom-15 area where panning drops frames:
+To add another fixture:
 
-    node test/performance/profile-pan.js
-    node test/performance/profile-pan.js --pans 4 --view 'x=1813830.60524&y=6141396.74283&z=15&r=0&l=1'
+1. Add `fixtures/scripts/build-<fixture>.js`.
+2. Add its provenance and redistribution license references.
+3. Build and inspect the archive.
+4. Publish it under a new release tag.
+5. Commit the generated manifest update.
+6. Delete `data/` and prove that `npm run fetch-bench-fixtures` restores it.
 
-The bench server must already be running, or the script starts one. Output
-goes to `test/performance/data/pan-profile.json` (gitignored). `topSelfTime`
-is main-thread time inside each function, not including functions it calls.
-The HUD lines in that file are the frame rate and missed frames for the same
-pans.
+Never replace an existing release asset. A fixture change always receives a new
+version and release tag.
+
+## Continuous integration
+
+Pull requests and `main` write the four metrics to the Actions job summary and
+upload the full report for short-term diagnosis. Pull requests compare with the
+public latest report. Trusted `main` runs append the four metrics to the
+`openlayers/benchmarks` history and GitHub Pages timeline.
+
+Performance changes do not fail CI solely because a metric moved. Software
+rendering on shared runners is noisy; reviewers use the summary and timeline
+to investigate significant changes. A case error still fails the job.

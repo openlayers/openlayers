@@ -1,55 +1,404 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Benchmarks</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>OpenLayers rendering benchmarks</title>
+    <link rel="icon" href="data:," />
     <style>
+      :root {
+        color-scheme: light dark;
+        font-family: system-ui;
+        background: #f3f3f3;
+        color: #1a1a1a;
+      }
+      * {
+        box-sizing: border-box;
+      }
       html,
       body {
         margin: 0;
-        font-family: sans-serif;
+        min-height: 100%;
       }
-      .map {
-        width: 100%;
-        height: 400px;
+      body {
+        background: #f3f3f3;
+      }
+      main {
+        display: grid;
+        grid-template-columns: 340px 802px;
+        grid-template-areas:
+          "cases map"
+          "cases report";
+        align-items: start;
+        justify-content: start;
+        gap: 12px;
+        padding: 12px;
+      }
+      .panel {
+        overflow: hidden;
+        border: 1px solid #aaa;
+        border-radius: 2px;
+        background: #fff;
+      }
+      .panel-heading {
+        padding: 11px 12px;
+        border-bottom: 1px solid #ccc;
+      }
+      .map-heading {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+      }
+      .map-heading-copy {
+        flex: 1 1 auto;
+        min-width: 0;
+      }
+      .map-heading-copy h2,
+      .map-heading-copy p {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .panel-heading h2 {
+        margin: 0 0 3px;
+        font-size: 15px;
+        letter-spacing: 0.02em;
+      }
+      .panel-heading p {
+        margin: 0;
+        color: #666;
+        font-size: 13px;
       }
       .controls {
         display: flex;
-        align-items: center;
-        gap: 0.75em;
-        margin: 0.75em;
+        flex-wrap: wrap;
+        align-items: end;
+        gap: 8px;
+        padding: 9px 12px;
+        border-bottom: 1px solid #ccc;
       }
-      #summary {
-        margin: 0 0.75em 0.75em;
-        font-family: monospace;
-        font-size: 0.85em;
-        white-space: pre-line;
+      label {
+        display: grid;
+        gap: 4px;
+        color: #555;
+        font-size: 12px;
       }
-      #output {
+      input[type="number"] {
+        width: 72px;
+        padding: 6px 7px;
+        border: 1px solid #888;
+        border-radius: 0;
+        background: transparent;
+      }
+      button,
+      .file-button {
+        padding: 6px 10px;
+        border: 1px solid currentColor;
+        border-radius: 1px;
+        background: transparent;
+        color: #222;
+        font: inherit;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        cursor: pointer;
+      }
+      button:hover,
+      .file-button:hover {
+        background: #eee;
+      }
+      button:focus-visible,
+      .file-button:focus-within,
+      input:focus-visible,
+      summary:focus-visible {
+        outline: 2px solid currentColor;
+        outline-offset: 2px;
+      }
+      button:disabled {
+        cursor: wait;
+        opacity: 0.55;
+      }
+      .file-button input {
+        display: none;
+      }
+      #cases {
+        display: grid;
+      }
+      .case {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 4px 8px;
+        padding: 9px 12px;
+        border-bottom: 1px solid #ddd;
+        cursor: pointer;
+      }
+      .case-selected {
+        background: #f3f3f3;
+        box-shadow: inset 3px 0 0 #222;
+      }
+      #cases.is-running .case,
+      #cases.is-running .case button:disabled {
+        cursor: default;
+      }
+      .case:last-child {
+        border-bottom: 0;
+      }
+      .case-name {
+        overflow: hidden;
+        font-weight: 600;
+        text-overflow: ellipsis;
+      }
+      .case-status {
+        grid-column: 1;
+        color: #666;
+        font-size: 12px;
+      }
+      .case-result {
+        grid-column: 1 / -1;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 4px;
+        margin-top: 3px;
+      }
+      .metric {
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 0;
+        font-size: 11px;
+      }
+      .metric strong {
         display: block;
-        width: calc(100% - 1.5em);
-        margin: 0 0.75em 0.75em;
-        font-family: monospace;
-        font-size: 0.85em;
+        margin-top: 2px;
+        color: #1a1a1a;
+        font-size: 14px;
+      }
+      .cases-panel {
+        grid-area: cases;
+      }
+      .map-panel {
+        grid-area: map;
+      }
+      #map {
+        width: 800px;
+        height: 600px;
+        background: #ececec;
+      }
+      #map-message {
+        position: absolute;
+        inset: 70px 16px auto;
+        z-index: 2;
+        padding: 12px;
+        border: 1px solid #aaa;
+        border-radius: 0;
+        background: rgba(255, 255, 255, 0.9);
+        text-align: center;
+      }
+      .report {
+        grid-area: report;
+      }
+      .report-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        padding: 9px 12px;
+      }
+      .table-wrap {
+        overflow-x: auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-variant-numeric: tabular-nums;
+      }
+      th,
+      td {
+        padding: 9px 12px;
+        border-top: 1px solid #e6e6e6;
+        text-align: right;
+        white-space: nowrap;
+      }
+      th:first-child,
+      td:first-child {
+        text-align: left;
+      }
+      th {
+        color: #555;
+        font-size: 12px;
+      }
+      details {
+        border-top: 1px solid #ccc;
+        padding: 8px 12px;
+      }
+      summary {
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 600;
+      }
+      pre {
+        overflow: auto;
+        max-height: 320px;
+        padding: 10px;
+        border-radius: 0;
+        background: #1c1c1c;
+        color: #ececec;
+        font-size: 11px;
+      }
+      .ol-frame-rate-display {
+        display: flex;
+        flex: 0 0 auto;
+        align-items: center;
+        gap: 14px;
+        color: #444;
+        font-size: 12px;
+        line-height: 1.35;
+        font-variant-numeric: tabular-nums;
+      }
+      .ol-frame-rate-display-graph {
+        width: 320px;
+      }
+      .ol-frame-rate-display-meta {
+        min-width: 140px;
+        white-space: nowrap;
+      }
+      .ol-frame-rate-display-strip {
+        display: flex;
+        align-items: flex-end;
+        height: 28px;
+        margin-bottom: 4px;
+        gap: 1px;
+      }
+      .ol-frame-rate-display-strip i {
+        display: block;
+        width: 3px;
+        flex: 0 0 3px;
+      }
+      .ol-frame-rate-display-legend {
+        display: flex;
+        gap: 12px;
+        color: #666;
+      }
+      .ol-frame-rate-display-legend span {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+      }
+      .ol-frame-rate-display-legend i {
+        width: 9px;
+        height: 9px;
+        border-radius: 0;
+      }
+      @media (max-width: 1196px) {
+        main {
+          grid-template-columns: 802px;
+          grid-template-areas:
+            "cases"
+            "map"
+            "report";
+        }
+      }
+      @media (prefers-color-scheme: dark) {
+        :root,
+        body {
+          background: #141414;
+          color: #ececec;
+        }
+        .panel {
+          border-color: #666;
+          background: #1c1c1c;
+        }
+        .panel-heading,
+        .controls,
+        details {
+          border-color: #333;
+        }
+        .panel-heading p,
+        .case-status,
+        label,
+        .ol-frame-rate-display,
+        .ol-frame-rate-display-legend {
+          color: #b5b5b5;
+        }
+        button {
+          border-color: #ececec;
+          color: #ececec;
+        }
+        .file-button {
+          color: #ececec;
+        }
+        button:hover,
+        .file-button:hover {
+          background: #333;
+        }
+        .metric {
+          border-color: #555;
+        }
+        .metric strong {
+          color: #f5f5f5;
+        }
+        th,
+        td,
+        .case {
+          border-color: #333;
+        }
+        .case-selected {
+          background: #242424;
+          box-shadow: inset 3px 0 0 #ddd;
+        }
       }
     </style>
   </head>
   <body>
-    <div class="controls">
-      <label>
-        Case
-        <select id="case"></select>
-      </label>
-      <button id="start" type="button">Run benchmark</button>
-    </div>
-    <div id="summary">idle</div>
-    <div id="map" class="map"></div>
-    <textarea
-      id="output"
-      readonly
-      rows="12"
-      placeholder="results appear here as JSON"
-    ></textarea>
-    <script type="module" src="./page.js"></script>
+    <main>
+      <section class="panel cases-panel">
+        <div class="panel-heading">
+          <h2>Benchmark cases</h2>
+          <p>Run one case or the complete available suite.</p>
+        </div>
+        <div class="controls">
+          <label>
+            Measured runs
+            <input id="runs" type="number" min="1" max="20" value="5" />
+          </label>
+          <button id="run-all" type="button">Run all</button>
+        </div>
+        <div id="cases"></div>
+      </section>
+      <section class="panel map-panel">
+        <div class="panel-heading map-heading" id="map-heading">
+          <div class="map-heading-copy">
+            <h2 id="map-title">Map preview</h2>
+            <p id="map-status">Choose a case to prepare its map.</p>
+          </div>
+        </div>
+        <div id="map-message" hidden></div>
+        <div id="map"></div>
+        <details>
+          <summary>Latest run details</summary>
+          <pre id="details">No case has run yet.</pre>
+        </details>
+      </section>
+      <section class="panel report">
+        <div class="panel-heading">
+          <h2>Performance report</h2>
+          <p>All four metrics are smaller-is-better.</p>
+        </div>
+        <div class="report-actions">
+          <button id="download" class="secondary" type="button" disabled>
+            Download report
+          </button>
+          <label class="file-button">
+            Compare previous report
+            <input id="baseline" type="file" accept="application/json,.json" />
+          </label>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead id="report-head"></thead>
+            <tbody id="report-body"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="./client/page.js"></script>
   </body>
 </html>

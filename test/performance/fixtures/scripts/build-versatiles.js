@@ -1,21 +1,16 @@
 #! /usr/bin/env node
 /**
- * Download a VersaTiles excerpt for the offline navigation page.
+ * Build the versioned VersaTiles benchmark fixture from upstream sources.
  *
- *   node test/performance/fetch-versatiles.js
- *   node test/performance/fetch-versatiles.js --url https://example.com/versatiles-vienna.zip
- *
- * The default run fetches tiles, the colorful style, sprites, and Noto Sans
- * into test/performance/data/versatiles/ and zips that directory. `--url`
- * downloads a zip already produced that way and unzips it into the same place.
- * The output is gitignored.
+ * The output is gitignored. Contributors install the published archive with
+ * `npm run fetch-bench-fixtures`; this script is only for maintainers.
  */
 import {spawn} from 'child_process';
 import fs from 'fs/promises';
 import path, {dirname} from 'path';
 import {fileURLToPath} from 'url';
 
-const baseDir = dirname(fileURLToPath(import.meta.url));
+const baseDir = dirname(dirname(dirname(fileURLToPath(import.meta.url))));
 const dataDir = path.join(baseDir, 'data');
 const outDir = path.join(dataDir, 'versatiles');
 const zipPath = path.join(dataDir, 'versatiles-vienna.zip');
@@ -34,6 +29,8 @@ const STYLE_URL =
 const SPRITE_URL = 'https://tiles.versatiles.org/assets/sprites/base';
 const FONT_CSS =
   'https://cdn.jsdelivr.net/npm/@fontsource/noto-sans/{weight}.css';
+const FONT_LICENSE =
+  'https://cdn.jsdelivr.net/npm/@fontsource/noto-sans/LICENSE';
 
 const CONCURRENCY = 8;
 
@@ -216,6 +213,22 @@ async function downloadStyleSpritesAndFonts() {
       );
     }
   }
+  const fontLicense = await (await fetchOk(FONT_LICENSE)).text();
+  bytes += await writeOut('LICENSES/Noto-Sans-OFL.txt', fontLicense);
+  const notice = `# Benchmark fixture sources
+
+- Vector tiles: OpenStreetMap (ODbL 1.0) and ESA WorldCover (CC BY 4.0)
+  - https://docs.versatiles.org/basics/tilesets.html
+  - https://www.openstreetmap.org/copyright
+  - https://esa-worldcover.org/en/data-access
+- Style: VersaTiles Style (Unlicense)
+  - https://github.com/versatiles-org/versatiles-style
+- Sprites: VersaTiles Style (CC0 1.0)
+  - https://github.com/versatiles-org/versatiles-style/blob/main/icons/LICENSE.md
+- Noto Sans: SIL Open Font License 1.1
+  - LICENSES/Noto-Sans-OFL.txt
+`;
+  bytes += await writeOut('NOTICE.md', notice);
   return bytes;
 }
 
@@ -247,24 +260,22 @@ async function buildFromUpstream() {
     `${tiles.length} tiles, ${formatBytes(tileBytes)}; style, sprites, and fonts ${formatBytes(extraBytes)}`,
   );
   await fs.rm(zipPath, {force: true});
-  await run('zip', ['-r', '-q', zipPath, '.'], outDir);
+  const files = (await fs.readdir(outDir, {recursive: true}))
+    .map((file) => String(file))
+    .sort();
+  const timestamp = new Date('2000-01-01T00:00:00Z');
+  const archiveFiles = [];
+  for (const file of files) {
+    const absolute = path.join(outDir, file);
+    const stat = await fs.stat(absolute);
+    if (stat.isFile()) {
+      await fs.utimes(absolute, timestamp, timestamp);
+      archiveFiles.push(file);
+    }
+  }
+  await run('zip', ['-X', '-q', zipPath, ...archiveFiles], outDir);
   const zipStat = await fs.stat(zipPath);
   log(`wrote ${zipPath} (${formatBytes(zipStat.size)})`);
-}
-
-/**
- * @param {string} url Zip URL.
- * @return {Promise<void>} Completes when the zip is extracted.
- */
-async function downloadArchive(url) {
-  log(`downloading ${url}`);
-  const response = await fetchOk(url);
-  await fs.mkdir(dataDir, {recursive: true});
-  await fs.writeFile(zipPath, Buffer.from(await response.arrayBuffer()));
-  await fs.rm(outDir, {recursive: true, force: true});
-  await fs.mkdir(outDir, {recursive: true});
-  await run('unzip', ['-q', zipPath, '-d', outDir]);
-  log(`extracted ${zipPath} to ${outDir}`);
 }
 
 /**
@@ -278,13 +289,4 @@ function formatBytes(bytes) {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
-const urlFlag = process.argv.indexOf('--url');
-if (urlFlag !== -1 && !process.argv[urlFlag + 1]) {
-  throw new Error('--url needs the address of a versatiles zip');
-}
-
-if (urlFlag === -1) {
-  await buildFromUpstream();
-} else {
-  await downloadArchive(process.argv[urlFlag + 1]);
-}
+await buildFromUpstream();
