@@ -37,6 +37,7 @@ export default [
         gifler: 'readonly',
         GyroNorm: 'readonly',
         mapboxgl: 'readonly',
+        maplibregl: 'readonly',
         NumpyLoader: 'readonly',
         toastr: 'readonly',
         topolis: 'readonly',
