@@ -12,8 +12,6 @@ import {
   getCurrentDevice,
   removeDeviceLostListener,
 } from './Device.js';
-import {countMetric, metricsEnabled, recordMetric} from './metrics.js';
-
 /**
  * @typedef {Object} Options
  * @property {string} [canvasCacheKey] Cache key for sharing a canvas among consecutive WebGPU layers.
@@ -293,8 +291,6 @@ class WebGPUHelper extends Disposable {
   createBuffer(data, usage) {
     const bytes =
       data instanceof ArrayBuffer ? data.byteLength : data.byteLength;
-    countMetric('gpuBufferCreates');
-    countMetric('gpuBufferBytes', bytes);
     const buffer = this.device_.createBuffer({
       size: Math.max(4, (bytes + 3) & ~3),
       usage,
@@ -316,7 +312,6 @@ class WebGPUHelper extends Disposable {
    * @param {number} [bufferOffset] Destination offset in bytes.
    */
   writeBuffer(buffer, data, bufferOffset = 0) {
-    countMetric('gpuBufferWrites');
     this.device_.queue.writeBuffer(
       buffer,
       bufferOffset,
@@ -560,14 +555,7 @@ class WebGPUHelper extends Disposable {
     if (!item.encoder) {
       return;
     }
-    const start = metricsEnabled() ? performance.now() : 0;
     this.device_.queue.submit([item.encoder.finish()]);
-    if (start) {
-      this.device_.queue.onSubmittedWorkDone().then(
-        () => recordMetric('gpuCompletion', performance.now() - start),
-        () => undefined,
-      );
-    }
     item.encoder = null;
   }
 
