@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "repository": "openlayers/benchmarks",
+  "fixtures": {
+    "versatiles": {
+      "version": 1,
+      "tag": "fixtures-v1",
+      "archive": "versatiles-vienna.zip",
+      "archivePath": "test/performance/data/versatiles-vienna.zip",
+      "destination": "versatiles",
+      "url": "https://github.com/openlayers/benchmarks/releases/download/fixtures-v1/versatiles-vienna.zip",
+      "bytes": 18663616,
+      "sha256": "9f9706a98d0973d7ec00553000e42ec389b36574de800cbfad3a4c91614727d5",
+      "provenance": [
+        {
+          "name": "OpenStreetMap",
+          "license": "ODbL-1.0",
+          "url": "https://www.openstreetmap.org/copyright"
+        },
+        {
+          "name": "ESA WorldCover",
+          "license": "CC-BY-4.0",
+          "url": "https://docs.versatiles.org/basics/tilesets.html"
+        },
+        {
+          "name": "VersaTiles Style",
+          "license": "Unlicense",
+          "url": "https://github.com/versatiles-org/versatiles-style"
+        },
+        {
+          "name": "VersaTiles sprites",
+          "license": "CC0-1.0",
+          "url": "https://github.com/versatiles-org/versatiles-style/blob/main/icons/LICENSE.md"
+        },
+        {
+          "name": "Noto Sans",
+          "license": "OFL-1.1",
+          "url": "https://cdn.jsdelivr.net/npm/@fontsource/noto-sans/LICENSE"
+        }
+      ]
+    }
+  }
+}

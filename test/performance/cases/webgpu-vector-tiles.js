@@ -1,67 +1,58 @@
-import Map from '../../../src/ol/Map.js';
-import View from '../../../src/ol/View.js';
 import WebGPUVectorTileLayer from '../../../src/ol/layer/WebGPUVectorTile.js';
-import {get as getProjection} from '../../../src/ol/proj.js';
-import VectorTileSource from '../../../src/ol/source/VectorTile.js';
-import {createXYZ} from '../../../src/ol/tilegrid.js';
-import {createTileFeatures} from '../data.js';
-import {createFlightPhases, readFlightConfig, runFlight} from '../flight.js';
+import {
+  createNavigationPhases,
+  readFlightConfig,
+  runFlight,
+} from '../shared/flight.js';
+import {
+  createVersatilesMap,
+  versatilesCenter,
+  versatilesSourceMaxZoom,
+  versatilesZoom,
+} from '../shared/versatiles-map.js';
 
 export const name = 'webgpu-vector-tiles';
-
-const style = {
-  'stroke-color': '#88888899',
-  'stroke-width': 1,
-  'fill-color': '#eeeeee',
-  'circle-radius': 2,
-  'circle-fill-color': '#000000',
-  'text-value': ['case', ['has', 'name'], ['get', 'name'], ''],
-  'text-font': '12px sans-serif',
-  'text-fill-color': '#334',
-};
+export const title = 'WebGPU vector tiles';
+export const order = 3;
+export const fixture = 'versatiles';
 
 /**
- * Procedural vector tiles with decluttering.
+ * Offline VersaTiles navigation on a WebGPU vector tile layer.
  * @param {HTMLElement} target Map target.
  * @param {URLSearchParams} params Page query.
- * @return {{run: function(): Promise<Object>}} Benchmark.
+ * @return {Promise<Object>} Benchmark.
  */
-export function setup(target, params) {
-  const config = {...readFlightConfig(params), case: name};
-  const tileGrid = createXYZ({maxZoom: 14});
-  const layer = new WebGPUVectorTileLayer({
-    declutter: true,
-    style,
-    source: new VectorTileSource({
-      tileGrid,
-      projection: 'EPSG:3857',
-      transition: 0,
-      tileUrlFunction: (tileCoord) => JSON.stringify(tileCoord),
-      tileLoadFunction: (tile, url) => {
-        const tileCoord = JSON.parse(url);
-        tile.setFeatures(
-          createTileFeatures(tileCoord, tileGrid.getTileCoordExtent(tileCoord)),
-        );
-      },
-    }),
-  });
-  const projection = getProjection(config.projection);
-  const view = new View({
-    projection: projection || 'EPSG:3857',
-    center: [0, 0],
-    zoom: 2,
-  });
-  const map = new Map({layers: [layer], target, view});
-  const phases = createFlightPhases(view, 2, 9);
+export async function setup(target, params) {
+  const prepared = await createVersatilesMap(target, WebGPUVectorTileLayer);
+  if (prepared.unavailable) {
+    return prepared;
+  }
+  const {map} = prepared;
+  const config = {
+    ...readFlightConfig(params),
+    case: name,
+    fixture,
+    mode: 'animate',
+    sourceMaxZoom: versatilesSourceMaxZoom,
+    zoom: versatilesZoom,
+  };
+  const layer = map.getLayers().item(0);
   return {
-    run: () =>
+    run: (signal) =>
       runFlight({
         map,
         layer,
-        phases,
+        phases: createNavigationPhases(
+          map.getView(),
+          versatilesCenter,
+          versatilesZoom,
+        ),
         framesPerPhase: config.framesPerPhase,
         warmup: config.warmup,
         config,
+        mode: 'animate',
+        signal,
       }),
+    dispose: () => map.setTarget(null),
   };
 }

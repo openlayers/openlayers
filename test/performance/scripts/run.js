@@ -1,13 +1,13 @@
 #! /usr/bin/env node
 /**
- * Headless runner for the performance cases in this directory.
+ * Headless runner for the performance cases.
  *
- *   node test/performance/run.js --out base.json
- *   node test/performance/run.js --out head.json
- *   node test/performance/run.js --compare base.json head.json
+ *   node test/performance/scripts/run.js --out base.json
+ *   node test/performance/scripts/run.js --out head.json
+ *   node test/performance/scripts/run.js --compare base.json head.json
  *
- * Each case is driven several times and aggregated with a trimmed mean, so a
- * single slow run caused by other load on the machine does not dominate.
+ * Each case gets one discarded warm-up flight followed by several measured
+ * flights.
  */
 import fs from 'fs/promises';
 import path, {dirname} from 'path';
@@ -16,10 +16,16 @@ import {fileURLToPath} from 'url';
 import {createServer} from 'vite';
 import yargs from 'yargs';
 import {hideBin} from 'yargs/helpers';
-import {formatExperience, trimmedMean} from './stats.js';
-import viteConfig from './vite.config.js';
+import viteConfig from '../config/vite.config.js';
+import {
+  createReport,
+  percentChange,
+  REPORT_METRICS,
+  summarizeRuns,
+  validateReport,
+} from '../shared/report.js';
 
-const baseDir = dirname(fileURLToPath(import.meta.url));
+const baseDir = dirname(dirname(fileURLToPath(import.meta.url)));
 
 /**
  * @param {...*} args Values to print.
@@ -33,92 +39,6 @@ function log(...args) {
  */
 function logError(...args) {
   console.error(...args); // eslint-disable-line no-console
-}
-
-/**
- * Metrics lifted into the top-level summary and used for comparisons.
- */
-const SUMMARY_KEYS = [
-  'experience.lateFrames',
-  'experience.droppedFrames',
-  'experience.stalls',
-  'experience.worstGapMs',
-  'experience.stallMs',
-  'experience.work.p95',
-  'experience.work.max',
-  'experience.overBudget',
-  'settleMs',
-  'longTasks.count',
-  'longTasks.total',
-  'longTasks.max',
-];
-
-/**
- * @param {Object} object Object.
- * @param {string} keyPath Dot-separated path.
- * @return {number|undefined} Value.
- */
-function pick(object, keyPath) {
-  return keyPath
-    .split('.')
-    .reduce((value, key) => (value === undefined ? value : value[key]), object);
-}
-
-/**
- * @param {Array<Object>} runs Individual run results.
- * @return {Object<string, number>} Trimmed mean per summary key.
- */
-function summarizeRuns(runs) {
-  /** @type {Object<string, number>} */
-  const summary = {};
-  for (const key of SUMMARY_KEYS) {
-    summary[key] = trimmedMean(runs.map((run) => pick(run, key)));
-  }
-  const metricNames = new Set();
-  for (const run of runs) {
-    for (const phase of run.phases || []) {
-      for (const name in phase.metrics) {
-        metricNames.add(name);
-      }
-    }
-  }
-  for (const name of metricNames) {
-    const perRun = runs.map((run) =>
-      (run.phases || []).reduce(
-        (sum, phase) => sum + (phase.metrics[name] || 0),
-        0,
-      ),
-    );
-    summary['metrics.' + name] = trimmedMean(perRun);
-  }
-  const phaseNames = new Set();
-  for (const run of runs) {
-    for (const phase of run.phases || []) {
-      phaseNames.add(phase.name);
-    }
-  }
-  for (const name of phaseNames) {
-    const phaseKeys = [
-      'experience.lateFrames',
-      'experience.droppedFrames',
-      'experience.stalls',
-      'experience.worstGapMs',
-      'experience.stallMs',
-      'experience.work.p95',
-      'experience.work.max',
-      'experience.overBudget',
-      'settleMs',
-      'longTasks.max',
-    ];
-    for (const key of phaseKeys) {
-      const values = runs.map((run) => {
-        const phase = (run.phases || []).find((item) => item.name === name);
-        return phase ? pick(phase, key) : undefined;
-      });
-      summary[`phase.${name}.${key}`] = trimmedMean(values);
-    }
-  }
-  return summary;
 }
 
 /**
@@ -163,6 +83,7 @@ async function serve(options) {
  * @param {string} url Page URL.
  * @param {Object} options Options.
  * @param {string} caseName Case name.
+ * @return {Promise<string|undefined>} Unavailable reason.
  */
 async function openCase(page, url, options, caseName) {
   const query = new URLSearchParams({
@@ -170,7 +91,6 @@ async function openCase(page, url, options, caseName) {
     projection: options.projection,
     features: String(options.features),
     vertices: String(options.vertices),
-    density: String(options.density),
     frames: String(options.frames),
     warmup: String(options.warmup),
     autorun: 'false',
@@ -180,7 +100,10 @@ async function openCase(page, url, options, caseName) {
     timeout: options.timeout,
   });
   await page.waitForFunction(
-    () => typeof (/** @type {any} */ (window).olBenchmark?.run) === 'function',
+    () => typeof (/** @type {any} */ (window).olBenchmark) === 'object',
+  );
+  return page.evaluate(
+    () => /** @type {any} */ (window).olBenchmark.unavailable,
   );
 }
 
@@ -232,9 +155,21 @@ async function measure(options) {
     }
 
     /** @type {Object<string, Object>} */
-    const cases = {};
+    const caseReports = {};
     for (const caseName of caseNames) {
-      await openCase(page, server.url, options, caseName);
+      const unavailable = await openCase(page, server.url, options, caseName);
+      if (unavailable) {
+        log(`${caseName}: skipped (${unavailable})`);
+        continue;
+      }
+      log(`${caseName} warm-up`);
+      const warmupResult = await page.evaluate(
+        () => /** @type {any} */ (window).olBenchmark.run(),
+        undefined,
+      );
+      if (warmupResult.error) {
+        throw new Error(`${caseName}: ${warmupResult.error}`);
+      }
       /** @type {Array<Object>} */
       const runs = [];
       for (let i = 0; i < options.runs; ++i) {
@@ -246,18 +181,11 @@ async function measure(options) {
           throw new Error(`${caseName}: ${result.error}`);
         }
         runs.push(result);
-        log(`${caseName} run ${i + 1}/${options.runs}:`);
-        log(formatExperience(result.experience).join('\n'));
+        log(`${caseName} run ${i + 1}/${options.runs}`);
       }
-      cases[caseName] = {
-        config: runs[0].config,
-        size: runs[0].size,
-        devicePixelRatio: runs[0].devicePixelRatio,
-        runs,
-        summary: summarizeRuns(runs),
-      };
+      caseReports[caseName] = summarizeRuns(runs);
     }
-    return {cases};
+    return createReport(caseReports);
   } finally {
     await browser.close();
     await server.close();
@@ -270,10 +198,9 @@ async function measure(options) {
  * @param {Object<string, number>} head Candidate summary.
  */
 function compareSummaries(title, base, head) {
-  const names = new Set([...Object.keys(base), ...Object.keys(head)]);
   const width = Math.max(
     title.length,
-    ...[...names].map((name) => name.length),
+    ...REPORT_METRICS.map((metric) => metric.label.length),
   );
   log('');
   log(
@@ -281,15 +208,20 @@ function compareSummaries(title, base, head) {
       12,
     )}  change`,
   );
-  for (const name of names) {
-    const a = base[name] ?? 0;
-    const b = head[name] ?? 0;
-    const change = a === 0 ? (b === 0 ? 0 : Infinity) : ((b - a) / a) * 100;
+  for (const metric of REPORT_METRICS) {
+    const a = base[metric.key] ?? 0;
+    const b = head[metric.key] ?? 0;
+    const change = percentChange(a, b);
     const sign = change > 0 ? '+' : '';
     log(
-      `${name.padEnd(width)}  ${a.toFixed(3).padStart(12)}  ${b
+      `${metric.label.padEnd(width)}  ${a.toFixed(3).padStart(12)}  ${b
         .toFixed(3)
         .padStart(12)}  ${sign}${change.toFixed(1)}%`,
+    );
+  }
+  if (Math.abs(base.displayMs - head.displayMs) > 0.5) {
+    log(
+      `warning: display interval changed from ${base.displayMs.toFixed(1)}ms to ${head.displayMs.toFixed(1)}ms`,
     );
   }
 }
@@ -301,6 +233,8 @@ function compareSummaries(title, base, head) {
 async function compare(basePath, headPath) {
   const base = JSON.parse(await fs.readFile(basePath, 'utf8'));
   const head = JSON.parse(await fs.readFile(headPath, 'utf8'));
+  validateReport(base);
+  validateReport(head);
   if (base.skipped || head.skipped) {
     throw new Error('cannot compare skipped runs');
   }
@@ -315,7 +249,7 @@ async function compare(basePath, headPath) {
       log(`${name}: missing from ${baseCase ? headPath : basePath}`);
       continue;
     }
-    compareSummaries(name, baseCase.summary, headCase.summary);
+    compareSummaries(name, baseCase, headCase);
   }
 }
 
@@ -339,11 +273,6 @@ const options = yargs(hideBin(process.argv))
     type: 'number',
     default: 64,
   })
-  .option('density', {
-    describe: 'Feature density for dense vector tile cases',
-    type: 'number',
-    default: 8,
-  })
   .option('frames', {
     describe: 'Frames per flight phase',
     type: 'number',
@@ -357,7 +286,7 @@ const options = yargs(hideBin(process.argv))
   .option('runs', {
     describe: 'Number of flights to average',
     type: 'number',
-    default: 3,
+    default: 5,
   })
   .option('out', {
     describe: 'Write the result JSON to this path',
@@ -375,7 +304,7 @@ const options = yargs(hideBin(process.argv))
   .option('viewport', {
     describe: 'Browser viewport, as WIDTHxHEIGHT',
     type: 'string',
-    default: '1024x768',
+    default: '1280x900',
   })
   .option('device-scale-factor', {
     describe: 'Browser device pixel ratio',
@@ -417,10 +346,14 @@ if (options.compare) {
     for (const caseName of Object.keys(result.cases)) {
       log('');
       log(caseName);
-      const width = Math.max(...SUMMARY_KEYS.map((name) => name.length));
-      for (const name of SUMMARY_KEYS) {
+      const width = Math.max(
+        ...REPORT_METRICS.map((metric) => metric.label.length),
+      );
+      for (const metric of REPORT_METRICS) {
         log(
-          `${name.padEnd(width)} ${result.cases[caseName].summary[name].toFixed(3)}`,
+          `${metric.label.padEnd(width)} ${result.cases[caseName][
+            metric.key
+          ].toFixed(3)}`,
         );
       }
     }
