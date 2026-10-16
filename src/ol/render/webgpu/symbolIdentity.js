@@ -1,8 +1,6 @@
 /**
  * @module ol/render/webgpu/symbolIdentity
  */
-import {countMetric, endMetric, startMetric} from '../../webgpu/metrics.js';
-
 /**
  * @typedef {Object} IdentityEntry
  * @property {number} id Persistent identity.
@@ -190,7 +188,6 @@ export class SymbolIdentityIndex {
    * @return {Array<number>} Identity aligned with labels.
    */
   update(labels, worldOffsets, resolution, worldWidth, existingIdentities) {
-    const metricStart = startMetric();
     ++this.generation_;
     const generation = this.generation_;
     const maxDistance = Math.max(0, resolution * SYMBOL_IDENTITY_MATCH_PIXELS);
@@ -344,7 +341,6 @@ export class SymbolIdentityIndex {
         unmatched.push(symbol);
         continue;
       }
-      countMetric('identityMatches');
       assign(symbol, entry.id);
     }
 
@@ -353,7 +349,6 @@ export class SymbolIdentityIndex {
         continue;
       }
       const entry = nearestEntry(symbol, worldWidth);
-      countMetric(entry ? 'identityMatches' : 'identityNew');
       assign(symbol, entry ? entry.id : this.nextId_++);
     }
 
@@ -377,7 +372,6 @@ export class SymbolIdentityIndex {
         this.entries_.delete(key);
       }
     }
-    endMetric('symbolIdentity', metricStart);
     return identities;
   }
 

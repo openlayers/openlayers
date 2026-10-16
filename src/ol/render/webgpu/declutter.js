@@ -2,7 +2,6 @@
  * @module ol/render/webgpu/declutter
  */
 import RBush from 'rbush';
-import {countMetric, endMetric, startMetric} from '../../webgpu/metrics.js';
 import {DECLUTTER_SHADER} from '../../webgpu/shaders.js';
 
 /**
@@ -249,7 +248,6 @@ export function resolveDeclutter(
   frameIndex,
   stickyIds,
 ) {
-  const metricStart = startMetric();
   const compare = createCompare(stickyIds);
   let cachedOrder = orderCache.get(labels);
   if (!cachedOrder || !sameOrder(cachedOrder, labels)) {
@@ -428,8 +426,6 @@ export function resolveDeclutter(
     }
     tree.insert(box);
   }
-  endMetric('resolveDeclutter', metricStart);
-  countMetric('declutterLabels', labels.length);
   return visible;
 }
 
