@@ -26,7 +26,6 @@ import {
   resolveDeclutter,
 } from '../../render/webgpu/declutter.js';
 import {buildGeometryBuffers} from '../../render/webgpu/geometryBuffers.js';
-import {clearWidthCaches} from '../../render/webgpu/glyphLayout.js';
 import {
   activeLabelIndices,
   LABEL_FADE_MATCH_PIXELS,
@@ -56,11 +55,14 @@ import LabelRenderer from './LabelRenderer.js';
 import LabelView from './LabelView.js';
 import WebGPULayerRenderer from './Layer.js';
 import {
+  atlasPages,
   createVectorPipelines,
   FrameUniformPool,
+  hasUnusedAtlasPages,
   labelUniforms,
   paintBatches,
   placementKey,
+  startFontAtlasOver,
   VECTOR_FRAME_UNIFORM_SIZE,
   VectorGpuBuffers,
 } from './vectorUtil.js';
@@ -713,6 +715,13 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
    * @override
    */
   prepareFrameInternal(frameState) {
+    if (
+      hasUnusedAtlasPages(this.atlas_, frameState, () =>
+        this.buffers_ ? [atlasPages(this.buffers_.glyphs)] : [],
+      )
+    ) {
+      startFontAtlasOver(this.atlas_, this.getLayer());
+    }
     const source =
       /** @type {import("../../source/Vector.js").default|null} */ (
         this.getLayer().getSource()
@@ -1308,9 +1317,7 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
    * @override
    */
   handleFontsChanged() {
-    clearWidthCaches();
-    this.atlas_.clear();
-    this.getLayer().changed();
+    startFontAtlasOver(this.atlas_, this.getLayer());
   }
 
   /**
