@@ -26,6 +26,68 @@ export const rtlRegEx = new RegExp(
 );
 
 /**
+ * Left-to-right scripts whose letters change form, combine, stack or reorder
+ * with their neighbors, e.g. Devanagari conjuncts, Khmer subscripts or
+ * Javanese pasangan.
+ * @type {Array<string>}
+ */
+const complexScripts = [
+  // South Asia
+  'Devanagari',
+  'Bengali',
+  'Gurmukhi',
+  'Gujarati',
+  'Oriya',
+  'Tamil',
+  'Telugu',
+  'Kannada',
+  'Malayalam',
+  'Sinhala',
+  'Tibetan',
+  'Chakma',
+  'Limbu',
+  'Lepcha',
+  'Meetei_Mayek',
+  'Newa',
+  'Tirhuta',
+  'Syloti_Nagri',
+  // Mainland Southeast Asia
+  'Thai',
+  'Lao',
+  'Myanmar',
+  'Khmer',
+  'Tai_Tham',
+  'New_Tai_Lue',
+  'Cham',
+  // Maritime Southeast Asia
+  'Javanese',
+  'Balinese',
+  'Sundanese',
+  'Buginese',
+  'Batak',
+  'Tagalog',
+  // Central and East Asia
+  'Mongolian',
+];
+
+/**
+ * @type {RegExp}
+ */
+const complexScriptRegEx = new RegExp(
+  '[' + complexScripts.map((script) => `\\p{Script=${script}}`).join('') + ']',
+  'u',
+);
+
+/**
+ * @param {string} text Text.
+ * @return {boolean} The text must be shaped as a whole: its letters depend on
+ * their neighbors for form, position or order.
+ */
+export function needsShaping(text) {
+  return rtlRegEx.test(text) || complexScriptRegEx.test(text);
+}
+
+/**
  * @return {Intl.Segmenter} A grapheme segmenter.
  */
 function getSegmenter() {
@@ -146,6 +208,13 @@ export function drawTextOnPath(
   // Right-to-left text starts at the visual end of the path, so its chunks are
   // placed in reverse order unless the path itself is reversed.
   const reverseChunks = reverse !== rtlRegEx.test(text);
+  // Letters of shaped text, e.g. Arabic, are narrower joined to their
+  // neighbors than on their own. Their advances are measured in context, from
+  // the text placed so far, so the chunks add up to the width of the shaped
+  // text. The measured strings are not cached, there would be one per letter.
+  const contextual = needsShaping(text);
+  let placed = '';
+  let placedWidth = 0;
   for (let i = 0, ii = segments.length; i < ii;) {
     advance();
     let angle = Math.atan2(y2 - y1, x2 - x1);
@@ -165,8 +234,16 @@ export function drawTextOnPath(
     let charLength = 0;
     for (; i < ii; ++i) {
       const index = reverseChunks ? ii - i - 1 : i;
-      const len =
-        scale * measureAndCacheTextWidth(font, segments[index], cache);
+      const segment = segments[index];
+      let candidate = '';
+      let len;
+      if (contextual) {
+        candidate = reverseChunks ? segment + placed : placed + segment;
+        len =
+          scale * measureAndCacheTextWidth(font, candidate, {}) - placedWidth;
+      } else {
+        len = scale * measureAndCacheTextWidth(font, segment, cache);
+      }
       if (
         offset + stride < end &&
         segmentM + segmentLength < startM + charLength + len / 2
@@ -174,6 +251,8 @@ export function drawTextOnPath(
         break;
       }
       charLength += len;
+      placed = candidate;
+      placedWidth += len;
     }
     if (i === iStart) {
       continue;
