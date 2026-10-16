@@ -4,9 +4,13 @@
 import Disposable from '../../Disposable.js';
 import {ICON_STRIDE, SYMBOL_STRIDE} from '../../render/webgpu/buffers.js';
 import {comparePaint} from '../../render/webgpu/drawOrder.js';
-import {GLYPH_INSTANCE_STRIDE} from '../../render/webgpu/glyphLayout.js';
+import {
+  clearWidthCaches,
+  GLYPH_INSTANCE_STRIDE,
+} from '../../render/webgpu/glyphLayout.js';
 import {fadeClock, LABEL_FADE_DURATION} from '../../render/webgpu/labelFade.js';
 import {apply as applyTransform} from '../../transform.js';
+import ViewHint from '../../ViewHint.js';
 import {countMetric, endMetric, startMetric} from '../../webgpu/metrics.js';
 import {
   localCoordinateToPixel,
@@ -1335,3 +1339,62 @@ export function placementKey(labelVersion, frameState) {
  * @type {number}
  */
 export const LABEL_COLLISION_MARGIN = 2;
+
+/**
+ * The font atlas starts over when more pages than this hold no label that is
+ * currently in use.
+ * @type {number}
+ */
+const MAX_UNUSED_ATLAS_PAGES = 1;
+
+/**
+ * @param {Array<import("../../render/webgpu/glyphLayout.js").GlyphInstance>} glyphs Glyphs.
+ * @return {Array<number>} Font atlas pages the glyphs are drawn from.
+ */
+export function atlasPages(glyphs) {
+  return Array.from(new Set(glyphs.map((glyph) => glyph.page)));
+}
+
+/**
+ * Whether the font atlas should start over: it holds pages that no current
+ * label uses, and the view is idle, so rebuilding all labels goes unnoticed.
+ * Afterwards the atlas holds only what the current labels use, so this cannot
+ * repeat until more labels have come and gone.
+ * @param {import("../../webgpu/FontAtlas.js").default} atlas Font atlas.
+ * @param {import("../../Map.js").FrameState} frameState Frame state.
+ * @param {function(): Array<Array<number>>} getUsedPages Atlas pages of the
+ * current labels, only called when needed.
+ * @return {boolean} The atlas should start over.
+ */
+export function hasUnusedAtlasPages(atlas, frameState, getUsedPages) {
+  const pageCount = atlas.getPageCount();
+  const hints = frameState.viewHints;
+  // With this many pages, at most MAX_UNUSED_ATLAS_PAGES can be unused.
+  if (
+    pageCount <= 1 + MAX_UNUSED_ATLAS_PAGES ||
+    hints[ViewHint.ANIMATING] ||
+    hints[ViewHint.INTERACTING]
+  ) {
+    return false;
+  }
+  const used = new Set();
+  for (const pages of getUsedPages()) {
+    for (const page of pages) {
+      used.add(page);
+    }
+  }
+  return pageCount > used.size + MAX_UNUSED_ATLAS_PAGES;
+}
+
+/**
+ * Start the font atlas over and rebuild all labels of the layer, e.g. after a
+ * font has loaded, so labels no longer use glyphs and metrics of a fallback
+ * font.
+ * @param {import("../../webgpu/FontAtlas.js").default} atlas Font atlas.
+ * @param {import("../../layer/Layer.js").default} layer Layer.
+ */
+export function startFontAtlasOver(atlas, layer) {
+  clearWidthCaches();
+  atlas.clear();
+  layer.changed();
+}

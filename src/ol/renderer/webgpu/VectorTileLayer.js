@@ -22,7 +22,6 @@ import {
   VIEWPORT_PADDING,
 } from '../../render/webgpu/declutter.js';
 import {buildGeometryBuffers} from '../../render/webgpu/geometryBuffers.js';
-import {clearWidthCaches} from '../../render/webgpu/glyphLayout.js';
 import {
   activeLabelIndices,
   LABEL_FADE_DURATION,
@@ -58,11 +57,14 @@ import LabelRenderer from './LabelRenderer.js';
 import LabelView from './LabelView.js';
 import WebGPULayerRenderer from './Layer.js';
 import {
+  atlasPages,
   createVectorPipelines,
   FrameUniformPool,
+  hasUnusedAtlasPages,
   labelUniforms,
   paintBatches,
   placementKey,
+  startFontAtlasOver,
   VECTOR_FRAME_UNIFORM_SIZE,
   VectorGpuBuffers,
 } from './vectorUtil.js';
@@ -117,6 +119,12 @@ class TileBatch extends Disposable {
      * @type {Array<[Map<string, TileBatch>, string]>}
      */
     this.references = [];
+
+    /**
+     * Font atlas pages that this batch's labels are drawn from.
+     * @type {Array<number>}
+     */
+    this.atlasPages = atlasPages(buffers.glyphs);
 
     /**
      * @type {string}
@@ -637,6 +645,13 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
    * @override
    */
   prepareFrameInternal(frameState) {
+    if (
+      hasUnusedAtlasPages(this.atlas_, frameState, () =>
+        this.declutterBatches_.map((batch) => batch.atlasPages),
+      )
+    ) {
+      startFontAtlasOver(this.atlas_, this.getLayer());
+    }
     // `layer.changed()` rebuilds the tile batches, e.g. for a style function
     // that depends on external state.
     const revision = this.getLayer().getRevision();
@@ -2023,9 +2038,7 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
    * @override
    */
   handleFontsChanged() {
-    clearWidthCaches();
-    this.atlas_.clear();
-    this.getLayer().changed();
+    startFontAtlasOver(this.atlas_, this.getLayer());
   }
 
   /**
