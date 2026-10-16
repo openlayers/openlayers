@@ -1,7 +1,7 @@
 import {applyBackground, applyStyle} from 'ol-mapbox-style';
+import Map from '../../../src/ol/Map.js';
 import View from '../../../src/ol/View.js';
 import VectorTileSource from '../../../src/ol/source/VectorTile.js';
-import {createBenchmarkMap} from './flight.js';
 
 /** Center shared by the WebGPU and Canvas VersaTiles cases. */
 export const versatilesCenter = [1813976.46267, 6141328.17996];
@@ -39,7 +39,7 @@ export async function createVersatilesMap(target, LayerClass) {
     zoom: versatilesZoom,
     maxResolution: 78271.51696402048,
   });
-  const map = createBenchmarkMap(target, layer, view);
+  const map = new Map({layers: [layer], target, view});
   const options = {
     styleUrl: new URL(stylePath, location.href).href,
     webfonts: 'data/versatiles/fonts/{font-family}/{fontweight}.css',
