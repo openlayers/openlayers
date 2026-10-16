@@ -59,7 +59,7 @@ Add one module to `cases/`. It exports a stable `name` and a `setup(target, para
 
 It may also export a display `title` and a `fixture` id. If a required fixture is absent, return `{unavailable: 'reason'}` so **Run all** and the headless runner can skip it.
 
-Create the map with `createBenchmarkMap`, which adds no controls or interactions, so only the flight moves the view. Use `runFlight` for shared measurement. Define phases as functions of frame progress instead of wall-clock time. Generate synthetic geometry from a seeded source in `shared/data.js` so repeated runs receive identical input.
+Use `runFlight` for shared measurement. It deactivates the map's interactions and detaches its controls while the flight runs, so only the flight moves the view, and restores them afterwards. Define phases as functions of frame progress instead of wall-clock time. Generate synthetic geometry from a seeded source in `shared/data.js` so repeated runs receive identical input.
 
 ## Benchmark fixtures
 

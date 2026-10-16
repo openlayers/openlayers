@@ -1,15 +1,11 @@
+import Map from '../../../src/ol/Map.js';
 import View from '../../../src/ol/View.js';
 import {get as getProjection} from '../../../src/ol/proj.js';
 import VectorSource from '../../../src/ol/source/Vector.js';
 import VectorTileSource from '../../../src/ol/source/VectorTile.js';
 import {createXYZ} from '../../../src/ol/tilegrid.js';
 import {createLabelTileFeatures, createVectorFeatures} from './data.js';
-import {
-  createBenchmarkMap,
-  createFlightPhases,
-  readFlightConfig,
-  runFlight,
-} from './flight.js';
+import {createFlightPhases, readFlightConfig, runFlight} from './flight.js';
 
 const vectorStyle = {
   'fill-color': 'rgba(32, 32, 32, 0.45)',
@@ -51,7 +47,7 @@ export function createVectorBenchmark(target, params, name, LayerClass, ready) {
     center: [0, 0],
     zoom: 2,
   });
-  const map = createBenchmarkMap(target, layer, view);
+  const map = new Map({layers: [layer], target, view});
   const phases = createFlightPhases(view, 1, 7);
   return {
     run: (signal) =>
@@ -112,7 +108,7 @@ export function createLabelDeclutterBenchmark(
     center: [0, 0],
     zoom: 2,
   });
-  const map = createBenchmarkMap(target, layer, view);
+  const map = new Map({layers: [layer], target, view});
   return {
     run: (signal) =>
       runFlight({

@@ -2,7 +2,6 @@
  * A fixed flight: each phase is a function of the frame index, never of
  * wall-clock time, so runs stay comparable when rendering gets slower.
  */
-import Map from '../../../src/ol/Map.js';
 import ViewHint from '../../../src/ol/ViewHint.js';
 import {easeOut, inAndOut} from '../../../src/ol/easing.js';
 import {getCurrentDevice} from '../../../src/ol/webgpu/Device.js';
@@ -26,25 +25,6 @@ import {frameExperience, median} from './stats.js';
  * @property {number} framesPerPhase Frames in each phase.
  * @property {number} warmup Warmup frames before measuring.
  */
-
-/**
- * Creates a map for a benchmark case. It has no controls and no interactions,
- * so only the flight moves the view: nothing a user does while a run is in
- * progress can change the center, zoom, or rotation.
- * @param {HTMLElement} target Map target.
- * @param {import("../../../src/ol/layer/Layer.js").default} layer Layer under test.
- * @param {import("../../../src/ol/View.js").default} view View.
- * @return {Map} Map.
- */
-export function createBenchmarkMap(target, layer, view) {
-  return new Map({
-    target,
-    layers: [layer],
-    view,
-    controls: [],
-    interactions: [],
-  });
-}
 
 /**
  * Query parameters shared by the flight cases.
@@ -246,13 +226,57 @@ async function waitForRenderer(map, layer, ready, signal) {
  */
 
 /**
- * Run a scripted flight.
+ * Deactivates the map's interactions and detaches its controls, so nothing a
+ * user does while a flight is running can change the center, zoom, or
+ * rotation. Animations already in progress are cancelled for the same reason.
+ * @param {import("../../../src/ol/Map.js").default} map Map.
+ * @return {function(): void} Restores the interactions and controls.
+ */
+function lockView(map) {
+  const interactions = map
+    .getInteractions()
+    .getArray()
+    .filter((interaction) => interaction.getActive());
+  for (const interaction of interactions) {
+    interaction.setActive(false);
+  }
+  const controls = map.getControls().getArray().slice();
+  for (const control of controls) {
+    map.removeControl(control);
+  }
+  map.getView().cancelAnimations();
+  return () => {
+    for (const interaction of interactions) {
+      interaction.setActive(true);
+    }
+    for (const control of controls) {
+      map.addControl(control);
+    }
+  };
+}
+
+/**
+ * Run a scripted flight. The map's interactions and controls are unavailable
+ * for the duration of the flight and restored afterwards.
  *
  * Presented-frame gaps are the time from one frame to the next.
  * @param {FlightOptions} options Options.
  * @return {Promise<Object>} Benchmark result.
  */
 export async function runFlight(options) {
+  const unlockView = lockView(options.map);
+  try {
+    return await fly(options);
+  } finally {
+    unlockView();
+  }
+}
+
+/**
+ * @param {FlightOptions} options Options.
+ * @return {Promise<Object>} Benchmark result.
+ */
+async function fly(options) {
   const {
     map,
     layer,
