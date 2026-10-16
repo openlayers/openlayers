@@ -652,12 +652,23 @@ export function layoutLineLabel(
   const anchorPixelY = middle[1];
   // Chunks depend on the path, so atlas cells for them would pile up with
   // every street name and bend. Unless the text needs shaping, it is drawn
-  // from grapheme cells, as point labels are.
+  // from grapheme cells, as point labels are. Shaped text is rasterized once,
+  // and the cell is cut where the chunks meet on the path, so joining forms
+  // continue across chunks. Cuts fall between characters, except in text that
+  // mixes reading directions.
   const shaped = needsShaping(text);
+  const dpr = pixelRatio > 0 ? pixelRatio : 1;
+  const whole = shaped
+    ? atlas.getGlyph(font, text, strokeWidth, pixelRatio)
+    : null;
   const startIndex = out.length;
   const bounds = [Infinity, Infinity, -Infinity, -Infinity];
   for (const {parts, uprightX, uprightY} of variants) {
-    for (const entry of parts) {
+    // Chunks come in path order, so their lengths add up to positions in
+    // `whole`, from its left edge.
+    let beforeWidth = 0;
+    for (let p = 0; p < parts.length; ++p) {
+      const entry = parts[p];
       const gx = /** @type {number} */ (entry[0]);
       const gy = /** @type {number} */ (entry[1]);
       // The path point is the center of this chunk's advance, not its left edge.
@@ -670,20 +681,55 @@ export function layoutLineLabel(
       const dy = gy - anchorPixelY;
       const c = Math.cos(angle);
       const s = Math.sin(angle);
-      // Advance origin of the next cell, relative to the chunk's path point.
-      let left = -anchorX;
-      for (const segment of shaped ? [chunk] : atlasSegments(chunk)) {
-        const glyph = atlas.getGlyph(font, segment, strokeWidth, pixelRatio);
+      /** @type {Array<{glyph: import("../../webgpu/FontAtlas.js").GlyphMetrics, left: number, width: number, texX0: number, texX1: number}>} */
+      const cells = [];
+      if (whole) {
+        const beforeEnd = beforeWidth + 2 * anchorX;
+        // Slices meet at the chunk boundary. Ink that crosses it is part of the
+        // neighboring slice, so only the label's ends include the cell padding
+        // for the halo.
+        const first = p === 0;
+        const last = p === parts.length - 1;
+        const texX0 = first
+          ? whole.texX0
+          : whole.texX0 + (beforeWidth + whole.pad) * dpr;
+        const texX1 = last
+          ? whole.texX1
+          : whole.texX0 + (beforeEnd + whole.pad) * dpr;
+        cells.push({
+          glyph: whole,
+          left: -(beforeEnd - beforeWidth) / 2 - (first ? whole.pad : 0),
+          width: (texX1 - texX0) / dpr,
+          texX0,
+          texX1,
+        });
+        beforeWidth = beforeEnd;
+      } else {
+        // Advance origin of the next cell, relative to the chunk's path point.
+        let left = -anchorX;
+        for (const segment of atlasSegments(chunk)) {
+          const glyph = atlas.getGlyph(font, segment, strokeWidth, pixelRatio);
+          cells.push({
+            glyph,
+            left: left - glyph.pad,
+            width: glyph.width,
+            texX0: glyph.texX0,
+            texX1: glyph.texX1,
+          });
+          left += glyph.advance;
+        }
+      }
+      for (const {glyph, left, width, texX0, texX1} of cells) {
         const instance = {
           x: anchorPixelX * resolution,
           y: -anchorPixelY * resolution,
-          offsetX: c * dx + s * dy + left - glyph.pad,
+          offsetX: c * dx + s * dy + left,
           offsetY: -s * dx + c * dy + baselineOffset - glyph.ascent,
-          width: glyph.width,
+          width,
           height: glyph.height,
-          texX0: glyph.texX0,
+          texX0,
           texY0: glyph.texY0,
-          texX1: glyph.texX1,
+          texX1,
           texY1: glyph.texY1,
           page: glyph.page,
           r: color[0],
@@ -706,7 +752,6 @@ export function layoutLineLabel(
         };
         out.push(instance);
         extendGlyphBounds(bounds, instance, 0, 0);
-        left += glyph.advance;
       }
     }
   }
