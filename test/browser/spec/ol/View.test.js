@@ -830,6 +830,79 @@ describe('ol/View', function () {
       view.cancelAnimations();
     });
 
+    it('reports the center and resolution an animation series started from', function () {
+      const view = new View({
+        center: [0, 0],
+        zoom: 5,
+      });
+      const resolution = view.getResolution();
+
+      view.animate({center: [1000, 0], zoom: 4, duration: 1000});
+
+      const state = view.getState();
+      assert.deepEqual(state.startCenter, [0, 0]);
+      assert.strictEqual(state.startResolution, resolution);
+      view.cancelAnimations();
+    });
+
+    it('keeps the start of a series when another animation is added', function () {
+      const view = new View({
+        center: [0, 0],
+        zoom: 5,
+      });
+      const resolution = view.getResolution();
+
+      // Half way at once, so the second animation starts elsewhere.
+      view.animate({center: [1000, 0], duration: 1000, easing: () => 0.5});
+      assert.deepEqual(view.getCenter(), [500, 0]);
+      view.animate({center: [2000, 0], zoom: 4, duration: 1000});
+
+      const state = view.getState();
+      assert.deepEqual(state.startCenter, [0, 0]);
+      assert.strictEqual(state.startResolution, resolution);
+      view.cancelAnimations();
+    });
+
+    it('reports no start once an animation series is over', () =>
+      new Promise((resolve) => {
+        const view = new View({
+          center: [0, 0],
+          zoom: 5,
+        });
+
+        view.animate({center: [1000, 0], zoom: 4, duration: 25}, function () {
+          const state = view.getState();
+          assert.isUndefined(state.startCenter ?? undefined);
+          assert.isTrue(isNaN(state.startResolution));
+          resolve();
+        });
+      }));
+
+    it('reports no start after an animation series is cancelled', function () {
+      const view = new View({
+        center: [0, 0],
+        zoom: 5,
+      });
+
+      view.animate({center: [1000, 0], duration: 1000});
+      view.cancelAnimations();
+
+      const state = view.getState();
+      assert.isUndefined(state.startCenter ?? undefined);
+      assert.isTrue(isNaN(state.startResolution));
+    });
+
+    it('reports no start when the view is not animating', function () {
+      const view = new View({
+        center: [0, 0],
+        zoom: 5,
+      });
+
+      const state = view.getState();
+      assert.isUndefined(state.startCenter ?? undefined);
+      assert.isTrue(isNaN(state.startResolution));
+    });
+
     it('allows duration to be zero', () =>
       new Promise((resolve) => {
         const view = new View({

@@ -131,39 +131,35 @@ class TileQueue extends PriorityQueue {
 export default TileQueue;
 
 /**
- * Offset that puts a tile behind every tile at the destination of an
- * animation. It exceeds the whole range of the zoom level term (65536 times
- * the logarithm of resolutions from about 1e-3 to 1e6) plus the distance term
- * of a tile within a viewport of the destination's center.
+ * Offset that puts a tile behind every tile of the views an animation starts
+ * from and ends in. It exceeds the whole range of the zoom level term (65536
+ * times the logarithm of resolutions from about 1e-3 to 1e6) plus the distance
+ * term of a tile within a viewport of either view's center.
  * @type {number}
  */
-const BEHIND_DESTINATION = 1e7;
+const BEHIND_VIEWS = 1e7;
 
 /**
- * Whether a tile is part of the view an animation ends in: inside the next
- * extent (or straddling its edge, for tiles up to 512 pixels), and not finer
- * than the zoom level drawn there. The level is not known here, so a tile
- * counts when its resolution is more than half the next resolution, which
- * admits the level nearest to it and every coarser one.
- * @param {import('./Map.js').FrameState} frameState Frame state.
+ * Whether a tile is part of a view: inside its extent (or straddling its edge,
+ * for tiles up to 512 pixels), and not finer than the zoom level drawn there.
+ * The level is not known here, so a tile counts when its resolution is more
+ * than half the view's resolution, which admits the level nearest to it and
+ * every coarser one.
+ * @param {import("./extent.js").Extent} extent Extent of the view.
+ * @param {number} resolution Resolution of the view.
  * @param {import("./coordinate.js").Coordinate} tileCenter Tile center.
  * @param {number} tileResolution Tile resolution.
- * @return {boolean} The tile is at the destination.
+ * @return {boolean} The tile is part of the view.
  */
-function isAtDestination(frameState, tileCenter, tileResolution) {
-  const nextExtent = frameState.nextExtent;
-  const nextResolution = frameState.viewState.nextResolution;
-  if (!nextExtent || !nextResolution || !frameState.viewState.nextCenter) {
-    return false;
-  }
-  // Half a 512 pixel tile, for tiles straddling the edge of the next extent.
+function isInView(extent, resolution, tileCenter, tileResolution) {
+  // Half a 512 pixel tile, for tiles straddling the edge of the extent.
   const margin = 256 * tileResolution;
   return (
-    tileResolution > nextResolution / 2 &&
-    tileCenter[0] >= nextExtent[0] - margin &&
-    tileCenter[0] <= nextExtent[2] + margin &&
-    tileCenter[1] >= nextExtent[1] - margin &&
-    tileCenter[1] <= nextExtent[3] + margin
+    tileResolution > resolution / 2 &&
+    tileCenter[0] >= extent[0] - margin &&
+    tileCenter[0] <= extent[2] + margin &&
+    tileCenter[1] >= extent[1] - margin &&
+    tileCenter[1] <= extent[3] + margin
   );
 }
 
@@ -197,18 +193,41 @@ export function getTilePriority(
   // means that the prioritization should behave as desired for tiles up to
   // 65536 * Math.log(2) = 45426 pixels from the focus.
   const viewState = frameState.viewState;
-  const atDestination = isAtDestination(frameState, tileCenter, tileResolution);
-  const center = atDestination
-    ? /** @type {import("./coordinate.js").Coordinate} */ (viewState.nextCenter)
-    : viewState.center;
+  const nextExtent = frameState.nextExtent;
+  const startExtent = frameState.startExtent;
+  let center = viewState.center;
+  let inViews = false;
+  if (nextExtent && viewState.nextCenter && viewState.nextResolution) {
+    // A tile of the view the animation started from ranks with the
+    // destination, by its distance from the start center. A tile of both
+    // views counts as a destination tile.
+    if (
+      isInView(nextExtent, viewState.nextResolution, tileCenter, tileResolution)
+    ) {
+      center = viewState.nextCenter;
+      inViews = true;
+    } else if (
+      startExtent &&
+      viewState.startCenter &&
+      viewState.startResolution &&
+      isInView(
+        startExtent,
+        viewState.startResolution,
+        tileCenter,
+        tileResolution,
+      )
+    ) {
+      center = viewState.startCenter;
+      inViews = true;
+    }
+  }
   const deltaX = tileCenter[0] - center[0];
   const deltaY = tileCenter[1] - center[1];
   const priority =
     65536 * Math.log(tileResolution) +
     Math.sqrt(deltaX * deltaX + deltaY * deltaY) / tileResolution;
-  // During an animation, the tiles where it ends come before the tiles of the
-  // area it passes over, which are only on screen for a moment.
-  return frameState.nextExtent && !atDestination
-    ? priority + BEHIND_DESTINATION
-    : priority;
+  // During an animation, the tiles of the views where it starts and ends come
+  // before the tiles of the area it passes over, which are only on screen for
+  // a moment.
+  return nextExtent && !inViews ? priority + BEHIND_VIEWS : priority;
 }

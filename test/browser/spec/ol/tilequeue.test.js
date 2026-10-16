@@ -43,10 +43,11 @@ describe('ol.TileQueue', function () {
     const tile = new Tile([5, 0, 0], TileState.IDLE);
     const sourceKey = 'source';
 
-    function frameState(viewState, nextExtent) {
+    function frameState(viewState, nextExtent, startExtent) {
       return {
         viewState: Object.assign({center: [0, 0], resolution: 10}, viewState),
         nextExtent: nextExtent,
+        startExtent: startExtent,
         wantedTiles: {[sourceKey]: {[tile.getKey()]: true}},
       };
     }
@@ -161,6 +162,99 @@ describe('ol.TileQueue', function () {
           getTilePriority(flyingAt20, tile, sourceKey, [0, 0], 20),
         );
         assert.isBelow(nearlyAtLevel, 1e7);
+      });
+    });
+
+    describe('with the view the animation started from', function () {
+      // The same animation, started from a view of [0, 0] at 10 m per pixel.
+      const fromStart = frameState(
+        {
+          nextCenter: [100000, 0],
+          nextResolution: 10,
+          startCenter: [0, 0],
+          startResolution: 10,
+        },
+        [95000, -5000, 105000, 5000],
+        [-5000, -5000, 5000, 5000],
+      );
+
+      it('ranks the start view with the destination, before the area passed over', function () {
+        const start = getTilePriority(fromStart, tile, sourceKey, [0, 0], 10);
+        const startEdge = getTilePriority(
+          fromStart,
+          tile,
+          sourceKey,
+          [4000, 4000],
+          10,
+        );
+        const halfWay = getTilePriority(
+          fromStart,
+          tile,
+          sourceKey,
+          [50000, 0],
+          10,
+        );
+        const destination = getTilePriority(
+          fromStart,
+          tile,
+          sourceKey,
+          [100000, 0],
+          10,
+        );
+        // The centers of both views tie, each by its own distance.
+        assert.strictEqual(destination, start);
+        assert.isBelow(destination, startEdge);
+        assert.isBelow(start, startEdge);
+        assert.isBelow(startEdge, halfWay);
+      });
+
+      it('does not count finer tiles than the start zoom level as start', function () {
+        const fine = getTilePriority(fromStart, tile, sourceKey, [0, 0], 4);
+        assert.isBelow(
+          getTilePriority(fromStart, tile, sourceKey, [4000, 4000], 10),
+          fine,
+        );
+        assert.strictEqual(
+          fine,
+          getTilePriority(flying, tile, sourceKey, [0, 0], 4),
+        );
+      });
+
+      it('ranks as without a start view when there is no start extent', function () {
+        const noStartExtent = frameState(
+          {
+            nextCenter: [100000, 0],
+            nextResolution: 10,
+            startCenter: [0, 0],
+            startResolution: 10,
+          },
+          [95000, -5000, 105000, 5000],
+        );
+        for (const [center, resolution] of [
+          [[0, 0], 10],
+          [[50000, 0], 10],
+          [[100000, 0], 10],
+          [[104000, 4000], 10],
+          [[100000, 0], 20],
+        ]) {
+          assert.strictEqual(
+            getTilePriority(noStartExtent, tile, sourceKey, center, resolution),
+            getTilePriority(flying, tile, sourceKey, center, resolution),
+          );
+        }
+      });
+
+      it('ranks as at rest when the animation has no next extent', function () {
+        const zooming = frameState(
+          {startCenter: [0, 0], startResolution: 10},
+          undefined,
+          [-5000, -5000, 5000, 5000],
+        );
+        const atRest = frameState({});
+        assert.strictEqual(
+          getTilePriority(zooming, tile, sourceKey, [50000, 0], 10),
+          getTilePriority(atRest, tile, sourceKey, [50000, 0], 10),
+        );
       });
     });
 
