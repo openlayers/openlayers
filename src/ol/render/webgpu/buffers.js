@@ -56,7 +56,9 @@ import {layoutLineLabel, layoutPointLabel} from './glyphLayout.js';
  * @param {import("./style.js").StyleFunction} styleFunction Style function.
  * @param {number} resolution Resolution.
  * @param {number} zoom View zoom.
- * @param {boolean} [snapshot] Clone mutable style instances for reuse.
+ * @param {boolean} [snapshot] Clone mutable style instances, and the geometries
+ * they carry, for reuse. Style functions may rewrite a shared style geometry
+ * in place for every feature they style.
  * @return {Array<ResolvedStyleGeometry>} Resolved style geometries.
  */
 export function resolveFeatureStyles(
@@ -80,12 +82,11 @@ export function resolveFeatureStyles(
   /** @type {Array<ResolvedStyleGeometry>} */
   const resolved = [];
   for (let s = 0; s < styleArray.length; ++s) {
-    const original = styleArray[s];
-    const styledGeometry = original.getGeometryFunction()(feature) || geometry;
+    const style = snapshot ? styleArray[s].clone() : styleArray[s];
+    const styledGeometry = style.getGeometryFunction()(feature) || geometry;
     if (!styledGeometry) {
       continue;
     }
-    const style = snapshot ? original.clone() : original;
     if (styledGeometry.getType() !== 'GeometryCollection') {
       resolved.push({style, geometry: styledGeometry, key: String(s)});
       continue;
