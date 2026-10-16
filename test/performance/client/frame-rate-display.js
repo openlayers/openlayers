@@ -1,7 +1,7 @@
 import {getCurrentDevice} from '../../../src/ol/webgpu/Device.js';
 
 const BAR_LIMIT = 80;
-const ON_TIME = '#3b82f6';
+const ON_TIME = '#00aaff';
 const LATE = '#eab308';
 const MISSED = '#ef4444';
 

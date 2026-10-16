@@ -225,6 +225,27 @@
         color: #555;
         font-size: 12px;
       }
+      td small {
+        display: block;
+        color: #666;
+        font-size: 11px;
+      }
+      .change-better .change {
+        color: #1a7f37;
+        font-weight: 600;
+      }
+      .change-worse .change {
+        color: #cf222e;
+        font-weight: 600;
+      }
+      .comparison {
+        padding: 0 12px 9px;
+        color: #555;
+        font-size: 12px;
+      }
+      .comparison p {
+        margin: 0;
+      }
       details {
         border-top: 1px solid #ccc;
         padding: 8px 12px;
@@ -335,6 +356,16 @@
         .metric strong {
           color: #f5f5f5;
         }
+        td small,
+        .comparison {
+          color: #b5b5b5;
+        }
+        .change-better .change {
+          color: #3fb950;
+        }
+        .change-worse .change {
+          color: #f85149;
+        }
         th,
         td,
         .case {
@@ -391,6 +422,7 @@
             <input id="baseline" type="file" accept="application/json,.json" />
           </label>
         </div>
+        <div id="comparison" class="comparison" hidden></div>
         <div class="table-wrap">
           <table>
             <thead id="report-head"></thead>
