@@ -721,9 +721,39 @@ function addJoin(writer, point, previous, next, join, miterLimit) {
   }
 
   const turnsLeft = cross >= 0;
-  const innerLength = Math.min(miterLength, 2);
-  const innerX = joinX * innerLength * (turnsLeft ? 1 : -1);
-  const innerY = joinY * innerLength * (turnsLeft ? 1 : -1);
+  const angle = Math.atan2(cross, dot);
+  // Beyond two half-widths the inner miter lies outside the stroke, and the
+  // triangles back to it cover the exterior as well as the line.
+  if (miterLength > 2) {
+    writer.pair(
+      point.x,
+      point.y,
+      previous.x,
+      previous.y,
+      -previous.x,
+      -previous.y,
+      point.distance,
+    );
+    addOuterJoin(writer, point, previous, angle, turnsLeft, join);
+    writer.left = writer.vertex(
+      point.x,
+      point.y,
+      next.x,
+      next.y,
+      point.distance,
+    );
+    writer.right = writer.vertex(
+      point.x,
+      point.y,
+      -next.x,
+      -next.y,
+      point.distance,
+    );
+    return;
+  }
+
+  const innerX = joinX * miterLength * (turnsLeft ? 1 : -1);
+  const innerY = joinY * miterLength * (turnsLeft ? 1 : -1);
   const previousOuterX = turnsLeft ? -previous.x : previous.x;
   const previousOuterY = turnsLeft ? -previous.y : previous.y;
   if (turnsLeft) {
@@ -748,11 +778,25 @@ function addJoin(writer, point, previous, next, join, miterLimit) {
     );
   }
 
-  const angle = Math.atan2(cross, dot);
+  addOuterJoin(writer, point, previous, angle, turnsLeft, join);
+}
+
+/**
+ * @param {StrokeMeshWriter} writer Writer.
+ * @param {StrokePoint} point Point.
+ * @param {StrokeVector} previous Previous left normal.
+ * @param {number} angle Signed turn from the previous normal to the next.
+ * @param {boolean} turnsLeft The line turns left.
+ * @param {CanvasLineJoin} join Join.
+ */
+function addOuterJoin(writer, point, previous, angle, turnsLeft, join) {
+  const previousOuterX = turnsLeft ? -previous.x : previous.x;
+  const previousOuterY = turnsLeft ? -previous.y : previous.y;
   const steps =
     join === 'round'
       ? Math.max(1, Math.ceil(Math.abs(angle) / (Math.PI / 9)))
       : 1;
+  const hub = turnsLeft ? writer.left : writer.right;
   let outerIndex = turnsLeft ? writer.right : writer.left;
   for (let i = 1; i <= steps; ++i) {
     const currentAngle = (angle * i) / steps;
@@ -762,10 +806,10 @@ function addJoin(writer, point, previous, next, join, miterLimit) {
     const ey = previousOuterX * s + previousOuterY * c;
     const current = writer.vertex(point.x, point.y, ex, ey, point.distance);
     if (turnsLeft) {
-      writer.triangle(writer.left, outerIndex, current);
+      writer.triangle(hub, outerIndex, current);
       writer.right = current;
     } else {
-      writer.triangle(writer.right, current, outerIndex);
+      writer.triangle(hub, current, outerIndex);
       writer.left = current;
     }
     outerIndex = current;
