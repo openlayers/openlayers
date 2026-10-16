@@ -276,6 +276,7 @@ function pushRange(ranges, job, start, count) {
     start,
     count,
     featureRef: job.featureRef || 0,
+    styleIndex: job.styleIndex,
   });
 }
 

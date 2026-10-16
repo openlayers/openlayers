@@ -3,6 +3,7 @@
  * wall-clock time, so runs stay comparable when rendering gets slower.
  */
 import ViewHint from '../../src/ol/ViewHint.js';
+import {getCurrentDevice} from '../../src/ol/webgpu/Device.js';
 import {
   enableMetrics,
   readMetrics,
@@ -446,6 +447,7 @@ export async function runFlight(options) {
           settleMs = performance.now() - settleStart;
         }
       }
+      await getCurrentDevice()?.device.queue.onSubmittedWorkDone();
       const metrics = readMetrics();
       const phaseLongTasks = longTasks.slice();
       const workMs = mode === 'animate' ? animateWorkMs : cpuMs;

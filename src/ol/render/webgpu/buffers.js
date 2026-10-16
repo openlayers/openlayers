@@ -207,8 +207,9 @@ function toRgba(color) {
  * lengths (8), and dash offset, dash pattern length, dash count, and padding
  * (4), matching the `Style` struct of the vector shaders. A fill has no dashes,
  * so its first four dash lengths hold the atlas rectangle of its pattern
- * instead, with a zero width when there is none, and the fifth holds the
- * pattern's scale.
+ * instead, with a zero width when there is none, the fifth holds the pattern's
+ * scale, and the final four values hold displacement x, displacement y,
+ * displacement anchor, and padding.
  * @type {number}
  */
 export const STYLE_STRIDE = 20;
@@ -271,9 +272,22 @@ class StyleTable {
    * @param {Array<number>} [lineDash] Dash lengths in CSS pixels, as returned
    * by `normalizeLineDash`. Empty or omitted for a solid line.
    * @param {number} [lineDashOffset] Dash offset in CSS pixels.
+   * @param {import("../../coordinate.js").Coordinate} [fillDisplacement] Fill
+   * displacement in CSS pixels. Omitted for strokes.
+   * @param {'map'|'viewport'} [fillDisplacementAnchor] Fill displacement anchor.
    * @return {number} Style index.
    */
-  add(color, hit, lineDash = [], lineDashOffset = 0) {
+  add(
+    color,
+    hit,
+    lineDash = [],
+    lineDashOffset = 0,
+    fillDisplacement,
+    fillDisplacementAnchor = 'map',
+  ) {
+    const displacementKey = fillDisplacement
+      ? `|${fillDisplacement.join(',')}|${fillDisplacementAnchor}`
+      : '';
     const key =
       color.join(',') +
       '|' +
@@ -281,7 +295,8 @@ class StyleTable {
       '|' +
       lineDash.join(',') +
       '|' +
-      (lineDash.length ? lineDashOffset : 0);
+      (lineDash.length ? lineDashOffset : 0) +
+      displacementKey;
     const existing = this.indices_.get(key);
     if (existing !== undefined) {
       return existing;
@@ -294,12 +309,21 @@ class StyleTable {
       total += length;
       this.values.push(length);
     }
-    this.values.push(
-      lineDash.length ? lineDashOffset : 0,
-      total,
-      lineDash.length,
-      0,
-    );
+    if (fillDisplacement) {
+      this.values.push(
+        fillDisplacement[0],
+        fillDisplacement[1],
+        fillDisplacementAnchor === 'map' ? 1 : 0,
+        0,
+      );
+    } else {
+      this.values.push(
+        lineDash.length ? lineDashOffset : 0,
+        total,
+        lineDash.length,
+        0,
+      );
+    }
     this.indices_.set(key, index);
     return index;
   }
@@ -309,19 +333,44 @@ class StyleTable {
    * width, and height in texels.
    * @param {number} scale Pattern scale.
    * @param {Array<number>} hit Hit color RGBA 0-1.
+   * @param {import("../../coordinate.js").Coordinate} fillDisplacement Fill
+   * displacement in CSS pixels.
+   * @param {'map'|'viewport'} fillDisplacementAnchor Fill displacement anchor.
    * @return {number} Style index.
    */
-  addPattern(rect, scale, hit) {
-    const key = 'pattern|' + rect.join(',') + '|' + scale + '|' + hit.join(',');
+  addPattern(rect, scale, hit, fillDisplacement, fillDisplacementAnchor) {
+    const key =
+      'pattern|' +
+      rect.join(',') +
+      '|' +
+      scale +
+      '|' +
+      hit.join(',') +
+      '|' +
+      fillDisplacement.join(',') +
+      '|' +
+      fillDisplacementAnchor;
     const existing = this.indices_.get(key);
     if (existing !== undefined) {
       return existing;
     }
     const index = this.values.length / STYLE_STRIDE;
-    this.values.push(1, 1, 1, 1, ...hit, ...rect, scale);
-    for (let i = rect.length + 1; i < STYLE_STRIDE - 8; ++i) {
-      this.values.push(0);
-    }
+    this.values.push(
+      1,
+      1,
+      1,
+      1,
+      ...hit,
+      ...rect,
+      scale,
+      0,
+      0,
+      0,
+      fillDisplacement[0],
+      fillDisplacement[1],
+      fillDisplacementAnchor === 'map' ? 1 : 0,
+      0,
+    );
     this.indices_.set(key, index);
     return index;
   }
@@ -1144,6 +1193,8 @@ function appendFills(
   stamp,
 ) {
   const fillColor = fill.getColor();
+  const displacement = fill.getDisplacement?.() || [0, 0];
+  const displacementAnchor = fill.getDisplacementAnchor?.() || 'map';
   let styleIndex;
   if (
     state.imageAtlas &&
@@ -1178,13 +1229,22 @@ function appendFills(
       ],
       fillColor.scale ?? 1,
       hit,
+      displacement,
+      displacementAnchor,
     );
   } else {
     const color = toRgba(fillColor);
     if (color[3] === 0) {
       return;
     }
-    styleIndex = styleTable.add(color, hit);
+    styleIndex = styleTable.add(
+      color,
+      hit,
+      undefined,
+      undefined,
+      displacement,
+      displacementAnchor,
+    );
   }
   const type = geometry.getType();
   if (type === 'Polygon') {

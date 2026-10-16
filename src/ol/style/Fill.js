@@ -14,6 +14,11 @@ import {get as getIconImage} from './IconImage.js';
  * See {@link module:ol/color~Color} and {@link module:ol/colorlike~ColorLike} for possible formats. For polygon fills (not for {@link import("./RegularShape.js").default} fills),
  * a pattern can also be provided as {@link module:ol/colorlike~PatternDescriptor}.
  * Default null; if null, the Canvas/renderer default black will be used.
+ * @property {import("../coordinate.js").Coordinate} [displacement=[0, 0]] Fill
+ * displacement in pixels. A positive x value shifts the fill right, and a
+ * positive y value shifts it down. WebGPU only.
+ * @property {'map'|'viewport'} [displacementAnchor='map'] Frame of reference
+ * for the displacement. WebGPU only.
  */
 
 /**
@@ -42,6 +47,20 @@ class Fill {
     if (options.color !== undefined) {
       this.setColor(options.color);
     }
+
+    /**
+     * @private
+     * @type {import("../coordinate.js").Coordinate}
+     */
+    this.displacement_ = options.displacement
+      ? options.displacement.slice()
+      : [0, 0];
+
+    /**
+     * @private
+     * @type {'map'|'viewport'}
+     */
+    this.displacementAnchor_ = options.displacementAnchor || 'map';
   }
 
   /**
@@ -53,7 +72,46 @@ class Fill {
     const color = this.getColor();
     return new Fill({
       color: Array.isArray(color) ? color.slice() : color || undefined,
+      displacement: this.getDisplacement().slice(),
+      displacementAnchor: this.getDisplacementAnchor(),
     });
+  }
+
+  /**
+   * Get the fill displacement.
+   * @return {import("../coordinate.js").Coordinate} Displacement in pixels.
+   * @api
+   */
+  getDisplacement() {
+    return this.displacement_;
+  }
+
+  /**
+   * Set the fill displacement.
+   * @param {import("../coordinate.js").Coordinate} displacement Displacement
+   * in pixels.
+   * @api
+   */
+  setDisplacement(displacement) {
+    this.displacement_ = displacement;
+  }
+
+  /**
+   * Get the frame of reference for the fill displacement.
+   * @return {'map'|'viewport'} Displacement anchor.
+   * @api
+   */
+  getDisplacementAnchor() {
+    return this.displacementAnchor_;
+  }
+
+  /**
+   * Set the frame of reference for the fill displacement.
+   * @param {'map'|'viewport'} displacementAnchor Displacement anchor.
+   * @api
+   */
+  setDisplacementAnchor(displacementAnchor) {
+    this.displacementAnchor_ = displacementAnchor;
   }
 
   /**

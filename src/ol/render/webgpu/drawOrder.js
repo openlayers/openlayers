@@ -44,6 +44,7 @@ export const CLASS_TEXT = 4;
  * @property {number} start First index or instance.
  * @property {number} count Index or instance count.
  * @property {number} featureRef Feature ref.
+ * @property {number} [styleIndex] Style table index for geometry commands.
  * @property {number} [labelIndex] Index into the label array.
  */
 

@@ -100,6 +100,40 @@ describe('ol/layer/WebGPUVector', function () {
     assert.strictEqual(hit, feature);
   });
 
+  it('hits a displaced fill at its rendered position', async () => {
+    await requestDevice();
+    const feature = new Feature(
+      new Polygon([
+        [
+          [-10, -10],
+          [10, -10],
+          [10, 10],
+          [-10, 10],
+          [-10, -10],
+        ],
+      ]),
+    );
+    layer.setSource(new VectorSource({features: [feature]}));
+    layer.setStyle({
+      'fill-color': 'red',
+      'fill-displacement': [30, 0],
+      'fill-displacement-anchor': 'viewport',
+    });
+    map.setView(
+      new View({
+        center: [0, 0],
+        resolution: 1,
+      }),
+    );
+    map.renderSync();
+
+    assert.isUndefined(map.forEachFeatureAtPixel([50, 50], (f) => f));
+    assert.strictEqual(
+      map.forEachFeatureAtPixel([80, 50], (f) => f),
+      feature,
+    );
+  });
+
   it('styles with a style function and rebuilds on changed()', async () => {
     await requestDevice();
     const feature = new Feature(

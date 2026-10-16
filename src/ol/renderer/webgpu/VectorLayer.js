@@ -1279,6 +1279,12 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
       hitTolerance,
       this.visibility_,
       featureCoord,
+      (viewCoordinate) =>
+        viewCoordinateToSource(
+          viewCoordinate,
+          source?.getProjection() || null,
+          frameState.viewState.projection,
+        ),
     );
     for (let i = 0; i < features.length; ++i) {
       const feature = features[i];
