@@ -1,8 +1,44 @@
 import {assert} from 'chai';
-import FontAtlas from '../../../../../src/ol/webgpu/FontAtlas.js';
+import {createCanvasContext2D} from '../../../../../src/ol/dom.js';
+import {requestDevice} from '../../../../../src/ol/webgpu/Device.js';
+import FontAtlas, {
+  drawCell,
+  measureCell,
+} from '../../../../../src/ol/webgpu/FontAtlas.js';
+
+/**
+ * @param {GPUDevice} device Device.
+ * @param {GPUTexture} texture Atlas page.
+ * @param {import("../../../../../src/ol/webgpu/FontAtlas.js").GlyphMetrics} glyph Glyph.
+ * @return {Promise<Array<number>>} Two bytes per texel of the glyph cell.
+ */
+async function readTexels(device, texture, glyph) {
+  const width = glyph.texX1 - glyph.texX0;
+  const height = glyph.texY1 - glyph.texY0;
+  const bytesPerRow = Math.ceil((width * 2) / 256) * 256;
+  const buffer = device.createBuffer({
+    size: bytesPerRow * height,
+    usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
+  });
+  const encoder = device.createCommandEncoder();
+  encoder.copyTextureToBuffer(
+    {texture, origin: {x: glyph.texX0, y: glyph.texY0}},
+    {buffer, bytesPerRow},
+    [width, height],
+  );
+  device.queue.submit([encoder.finish()]);
+  await buffer.mapAsync(GPUMapMode.READ);
+  const rows = new Uint8Array(buffer.getMappedRange());
+  const texels = [];
+  for (let y = 0; y < height; ++y) {
+    texels.push(...rows.subarray(y * bytesPerRow, y * bytesPerRow + width * 2));
+  }
+  buffer.destroy();
+  return texels;
+}
 
 describe('ol/webgpu/FontAtlas', () => {
-  it('keeps existing glyph texels stable when the atlas grows', () => {
+  it('keeps existing glyph coordinates stable when the atlas grows', () => {
     const atlas = new FontAtlas();
     const a = atlas.getGlyph('48px sans-serif', 'A');
     const b = atlas.getGlyph('48px sans-serif', 'B');
@@ -15,45 +51,46 @@ describe('ol/webgpu/FontAtlas', () => {
     assert.deepEqual(again, a);
 
     const before = [a.texX0, a.texY0, a.texX1, a.texY1];
-    const beforePixels = atlas
-      .getCanvas()
-      .getContext('2d')
-      .getImageData(
-        a.texX0,
-        a.texY0,
-        a.texX1 - a.texX0,
-        a.texY1 - a.texY0,
-      ).data;
-    const initialSize = atlas.getCanvas().width;
-    for (let i = 0; atlas.getCanvas().width === initialSize; ++i) {
+    const initialSize = atlas.getPageSize(0);
+    for (let i = 0; atlas.getPageSize(0) === initialSize; ++i) {
       assert.isBelow(i, 100);
       atlas.getGlyph(`${48 + i}px sans-serif`, String(i));
     }
-
-    assert.strictEqual(atlas.getCanvas().width, initialSize * 2);
+    assert.strictEqual(atlas.getPageSize(0), initialSize * 2);
     assert.deepEqual([a.texX0, a.texY0, a.texX1, a.texY1], before);
-    const afterPixels = atlas
-      .getCanvas()
-      .getContext('2d')
-      .getImageData(
-        a.texX0,
-        a.texY0,
-        a.texX1 - a.texX0,
-        a.texY1 - a.texY0,
-      ).data;
-    assert.deepEqual(afterPixels, beforePixels);
-    assert.instanceOf(atlas.getCanvas(), HTMLCanvasElement);
+  });
+
+  it('keeps existing glyph texels when a page texture grows', async ({
+    skip,
+  }) => {
+    const device = await requestDevice().then(
+      (handle) => handle.device,
+      () => null,
+    );
+    if (!device) {
+      skip();
+    }
+    const helper = /** @type {*} */ ({getDevice: () => device});
+    const atlas = new FontAtlas();
+    const a = atlas.getGlyph('48px sans-serif', 'A', 2);
+    atlas.upload(helper);
+    const before = await readTexels(device, atlas.getTexture(0), a);
+    assert.isAbove(Math.max(...before), 200);
+
+    for (let i = 0; atlas.getPageSize(0) === 512; ++i) {
+      assert.isBelow(i, 100);
+      atlas.getGlyph(`${48 + i}px sans-serif`, String(i));
+    }
+    atlas.upload(helper);
+    assert.strictEqual(atlas.getTexture(0).width, 1024);
+    const after = await readTexels(device, atlas.getTexture(0), a);
+    assert.deepEqual(after, before);
   });
 
   it('opens another page instead of growing past 4096', () => {
     const atlas = new FontAtlas();
     const first = atlas.getGlyph('48px sans-serif', 'A');
-    const width = first.texX1 - first.texX0;
-    const height = first.texY1 - first.texY0;
-    const before = atlas
-      .getCanvas(0)
-      .getContext('2d')
-      .getImageData(first.texX0, first.texY0, width, height).data;
+    const before = [first.texX0, first.texY0, first.texX1, first.texY1];
     let moved;
     for (let i = 0; atlas.getPageCount() < 2; ++i) {
       assert.isBelow(i, 30);
@@ -62,15 +99,12 @@ describe('ol/webgpu/FontAtlas', () => {
     assert.strictEqual(atlas.getPageCount(), 2);
     assert.strictEqual(first.page, 0);
     assert.strictEqual(moved.page, 1);
-    assert.strictEqual(atlas.getCanvas(0).width, 4096);
-    assert.strictEqual(atlas.getCanvas(1).width, 4096);
-    assert.isAtMost(atlas.getCanvas(0).width, 4096);
-    assert.isAtMost(atlas.getCanvas(1).width, 4096);
-    const after = atlas
-      .getCanvas(0)
-      .getContext('2d')
-      .getImageData(first.texX0, first.texY0, width, height).data;
-    assert.deepEqual(after, before);
+    assert.strictEqual(atlas.getPageSize(0), 4096);
+    assert.strictEqual(atlas.getPageSize(1), 4096);
+    assert.deepEqual(
+      [first.texX0, first.texY0, first.texX1, first.texY1],
+      before,
+    );
   });
 
   it('starts over with an empty first page when cleared', () => {
@@ -82,7 +116,7 @@ describe('ol/webgpu/FontAtlas', () => {
     const glyph = atlas.getGlyph('48px sans-serif', 'A');
     atlas.clear();
     assert.strictEqual(atlas.getPageCount(), 1);
-    assert.strictEqual(atlas.getCanvas(0).width, 512);
+    assert.strictEqual(atlas.getPageSize(0), 512);
     const again = atlas.getGlyph('48px sans-serif', 'A');
     assert.notStrictEqual(again, glyph);
     assert.strictEqual(again.page, 0);
@@ -96,15 +130,26 @@ describe('ol/webgpu/FontAtlas', () => {
   });
 
   it('encodes fill and halo coverage in independent channels', () => {
-    const atlas = new FontAtlas();
-    const glyph = atlas.getGlyph('24px sans-serif', 'O', 3);
-    const canvas = atlas.getCanvas();
-    const context = canvas.getContext('2d');
-    const x = glyph.texX0;
-    const y = glyph.texY0;
-    const tw = glyph.texX1 - glyph.texX0;
-    const th = glyph.texY1 - glyph.texY0;
-    const data = context.getImageData(x, y, tw, th).data;
+    /**
+     * @param {string} text Text.
+     * @param {number} strokeWidth Stroke width.
+     * @return {Uint8ClampedArray} Unpremultiplied cell pixels.
+     */
+    const rasterize = (text, strokeWidth) => {
+      const context = createCanvasContext2D(1, 1);
+      const cell = measureCell(
+        context,
+        '24px sans-serif',
+        text,
+        strokeWidth,
+        1,
+      );
+      context.canvas.width = cell.width;
+      context.canvas.height = cell.height;
+      drawCell(context, text, cell, 0, 0);
+      return context.getImageData(0, 0, cell.width, cell.height).data;
+    };
+    const data = rasterize('O', 3);
     let haloOnly = 0;
     let fill = 0;
     for (let i = 0; i < data.length; i += 4) {
@@ -118,13 +163,7 @@ describe('ol/webgpu/FontAtlas', () => {
     assert.isAbove(haloOnly, 0);
     assert.isAbove(fill, 0);
 
-    const withoutHalo = atlas.getGlyph('24px sans-serif', 'A');
-    const fillData = context.getImageData(
-      withoutHalo.texX0,
-      withoutHalo.texY0,
-      withoutHalo.texX1 - withoutHalo.texX0,
-      withoutHalo.texY1 - withoutHalo.texY0,
-    ).data;
+    const fillData = rasterize('A', 0);
     let maxHalo = 0;
     let maxFill = 0;
     for (let i = 0; i < fillData.length; i += 4) {

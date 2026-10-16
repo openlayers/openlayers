@@ -488,7 +488,7 @@ describe('ol/renderer/webgpu/VectorTileLayer', () => {
 
   it('starts the font atlas over when the view is idle', () => {
     const atlas = renderer.atlas_;
-    for (let i = 0; atlas.getPageCount() < 3; ++i) {
+    for (let i = 0; atlas.getPageCount() < 4; ++i) {
       atlas.getGlyph('1800px sans-serif', String(i));
     }
     renderer.declutterBatches_ = [{atlasPages: [2]}];
@@ -496,7 +496,7 @@ describe('ol/renderer/webgpu/VectorTileLayer', () => {
     const frameState = frameAtZ(0);
     frameState.viewHints = [0, 1];
     renderer.prepareFrameInternal(frameState);
-    assert.strictEqual(atlas.getPageCount(), 3);
+    assert.strictEqual(atlas.getPageCount(), 4);
     frameState.viewHints = [0, 0];
     renderer.prepareFrameInternal(frameState);
     assert.strictEqual(atlas.getPageCount(), 1);

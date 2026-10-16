@@ -1345,7 +1345,7 @@ export const LABEL_COLLISION_MARGIN = 2;
  * currently in use.
  * @type {number}
  */
-const MAX_UNUSED_ATLAS_PAGES = 1;
+const MAX_UNUSED_ATLAS_PAGES = 2;
 
 /**
  * @param {Array<import("../../render/webgpu/glyphLayout.js").GlyphInstance>} glyphs Glyphs.
