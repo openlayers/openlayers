@@ -84,6 +84,13 @@ jobs:
           git config --global core.sshCommand \
             "ssh -i ~/.ssh/openlayers-benchmarks -o IdentitiesOnly=yes"
 
+      - name: Fetch Benchmark Pages
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          git fetch --depth 1 \
+            git@github.com:openlayers/benchmarks.git \
+            gh-pages:gh-pages
+
       - name: Update Historical Report
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: benchmark-action/github-action-benchmark@v1
@@ -91,10 +98,10 @@ jobs:
           name: OpenLayers rendering
           tool: customSmallerIsBetter
           output-file-path: benchmark-action.json
-          gh-repository: github.com/openlayers/benchmarks
           gh-pages-branch: gh-pages
           benchmark-data-dir-path: rendering
           auto-push: false
+          skip-fetch-gh-pages: true
 
       - name: Publish Historical Report
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
