@@ -250,10 +250,12 @@ class Executor {
    * @param {string} textKey Text style key.
    * @param {string} fillKey Fill style key.
    * @param {string} strokeKey Stroke style key.
+   * @param {boolean} [rtl] Draw right to left, for a chunk of a right-to-left
+   * line label, so spaces at the ends of the chunk land on the correct side.
    * @return {import("../canvas.js").Label} Label.
    */
-  createLabel(text, textKey, fillKey, strokeKey) {
-    const key = text + textKey + fillKey + strokeKey;
+  createLabel(text, textKey, fillKey, strokeKey, rtl = false) {
+    const key = text + textKey + fillKey + strokeKey + (rtl ? 'rtl' : '');
     if (this.labels_[key]) {
       return this.labels_[key];
     }
@@ -315,6 +317,9 @@ class Executor {
     }
     contextInstructions.push('textBaseline', 'middle');
     contextInstructions.push('textAlign', 'center');
+    if (rtl) {
+      contextInstructions.push('direction', 'rtl');
+    }
     const leftRight = 0.5 - align;
     let x = align * renderWidth + leftRight * strokeWidth;
     const strokeInstructions = [];
@@ -1104,6 +1109,7 @@ class Executor {
               textKeepUpright,
             );
             drawChars: if (parts) {
+              const rtl = rtlRegEx.test(text);
               /** @type {Array<ReplayImageOrLabelArgs>} */
               const replayImageOrLabelArgs = [];
               let c, cc, chars, label, part;
@@ -1111,7 +1117,7 @@ class Executor {
                 for (c = 0, cc = parts.length; c < cc; ++c) {
                   part = parts[c]; // x, y, anchorX, rotation, chunk
                   chars = /** @type {string} */ (part[4]);
-                  label = this.createLabel(chars, textKey, '', strokeKey);
+                  label = this.createLabel(chars, textKey, '', strokeKey, rtl);
                   anchorX =
                     /** @type {number} */ (part[2]) +
                     (textScale[0] < 0 ? -strokeWidth : strokeWidth) -
@@ -1163,7 +1169,7 @@ class Executor {
                 for (c = 0, cc = parts.length; c < cc; ++c) {
                   part = parts[c]; // x, y, anchorX, rotation, chunk
                   chars = /** @type {string} */ (part[4]);
-                  label = this.createLabel(chars, textKey, fillKey, '');
+                  label = this.createLabel(chars, textKey, fillKey, '', rtl);
                   anchorX = /** @type {number} */ (part[2]) - offsetX;
                   anchorY = baseline * label.height - offsetY;
                   const dimensions = this.calculateImageOrLabelDimensions_(
