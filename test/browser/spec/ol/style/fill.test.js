@@ -14,9 +14,20 @@ describe('ol.style.Fill', function () {
     it('copies all values', function () {
       const original = new Fill({
         color: '#319FD3',
+        displacement: [2, -3],
+        displacementAnchor: 'viewport',
       });
       const clone = original.clone();
       assert.deepEqual(original.getColor(), clone.getColor());
+      assert.deepEqual(original.getDisplacement(), clone.getDisplacement());
+      assert.strictEqual(
+        original.getDisplacementAnchor(),
+        clone.getDisplacementAnchor(),
+      );
+      assert.notStrictEqual(
+        original.getDisplacement(),
+        clone.getDisplacement(),
+      );
     });
 
     it('the clone does not reference the same objects as the original', function () {

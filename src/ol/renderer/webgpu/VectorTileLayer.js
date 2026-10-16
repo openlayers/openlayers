@@ -1975,6 +1975,7 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
       hitTolerance,
       this.visibility_,
       coordinate,
+      (viewCoordinate) => viewCoordinate,
     );
     for (let i = 0; i < features.length; ++i) {
       const feature = features[i];
