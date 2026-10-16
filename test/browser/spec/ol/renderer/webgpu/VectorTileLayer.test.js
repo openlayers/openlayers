@@ -477,4 +477,25 @@ describe('ol/renderer/webgpu/VectorTileLayer', () => {
       glyph,
     );
   });
+
+  it('does not keep labels of disposed batches for fading', () => {
+    renderer.renderedBatches_ = [
+      {isDisposed: () => true, labelIdentities: [1]},
+    ];
+    renderer.updateRetiredBatches_([], 0);
+    assert.lengthOf(renderer.retiredBatches_, 0);
+  });
+
+  it('drops references to a batch when it is disposed', () => {
+    const batch = {references: []};
+    const newer = {references: []};
+    renderer.setBatchReference_(renderer.renderBatchesByKey_, 'a', batch);
+    renderer.setBatchReference_(renderer.renderBatchesByKey_, 'b', batch);
+    renderer.setBatchReference_(renderer.renderBatchesByKey_, 'b', newer);
+    renderer.retiredBatches_ = [{batch, until: Infinity}];
+    renderer.handleBatchDispose_(batch);
+    assert.isFalse(renderer.renderBatchesByKey_.has('a'));
+    assert.strictEqual(renderer.renderBatchesByKey_.get('b'), newer);
+    assert.lengthOf(renderer.retiredBatches_, 0);
+  });
 });

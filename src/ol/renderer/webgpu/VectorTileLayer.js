@@ -1,6 +1,7 @@
 /**
  * @module ol/renderer/webgpu/VectorTileLayer
  */
+import {assert} from '../../asserts.js';
 import Disposable from '../../Disposable.js';
 import {
   buffer as bufferExtent,
@@ -99,9 +100,23 @@ class TileBatch extends Disposable {
    * @param {string} key Cache key.
    * @param {number} worldOffset X offset from the wrapped tile extent to the requested one.
    * @param {import("../../render/webgpu/buffers.js").VectorBuffers} buffers Buffers.
+   * @param {function(TileBatch): void} onDispose Called when the batch is
+   * disposed, so the renderer can drop all references to it.
    */
-  constructor(key, worldOffset, buffers) {
+  constructor(key, worldOffset, buffers, onDispose) {
     super();
+
+    /**
+     * @private
+     * @type {function(TileBatch): void}
+     */
+    this.onDispose_ = onDispose;
+
+    /**
+     * Renderer map entries that refer to this batch.
+     * @type {Array<[Map<string, TileBatch>, string]>}
+     */
+    this.references = [];
 
     /**
      * @type {string}
@@ -176,8 +191,22 @@ class TileBatch extends Disposable {
    */
   getGpuBuffers(helper) {
     if (!this.gpu_) {
+      // A disposed batch is no longer cached, so nothing would release these.
+      assert(!this.disposed, 'Cannot upload the geometry of a disposed batch');
       const start = startMetric();
-      this.gpu_ = new VectorGpuBuffers(helper, this.buffers);
+      const buffers = this.buffers;
+      this.gpu_ = new VectorGpuBuffers(helper, buffers);
+      // Only the GPU buffers are drawn from, so the CPU copy of the geometry
+      // arrays is nullified (throws in case of unintentional subsequent access).
+      const released = /** @type {*} */ (null);
+      buffers.fillPositions = released;
+      buffers.fillStyles = released;
+      buffers.fillIndices = released;
+      buffers.strokePositions = released;
+      buffers.strokeAttributes = released;
+      buffers.strokeStyles = released;
+      buffers.strokeIndices = released;
+      buffers.styles = released;
       endMetric('gpuGeometryUpload', start);
       countMetric('gpuGeometryUploads');
     }
@@ -190,6 +219,7 @@ class TileBatch extends Disposable {
    */
   getLabelRenderer(helper) {
     if (!this.labels_) {
+      assert(!this.disposed, 'Cannot upload the labels of a disposed batch');
       const start = startMetric();
       this.labels_ = new LabelRenderer();
       this.labels_.setLabels(helper, this.buffers);
@@ -207,6 +237,14 @@ class TileBatch extends Disposable {
     this.gpu_ = null;
     this.labels_?.dispose();
     this.labels_ = null;
+    this.onDispose_(this);
+  }
+
+  /**
+   * @return {boolean} The batch was disposed.
+   */
+  isDisposed() {
+    return this.disposed;
   }
 }
 
@@ -388,12 +426,19 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     this.styleStates_ = new WeakMap();
 
     /**
-     * Last batch drawn for each render tile, drawn again while a batch for the
-     * tile's new style resolution is being built.
+     * Last batch drawn for each render tile, by tile uid, drawn again while a
+     * batch for the tile's new style resolution is being built.
      * @private
-     * @type {WeakMap<import("../../VectorRenderTile.js").default, TileBatch>}
+     * @type {Map<string, TileBatch>}
      */
-    this.drawnBatches_ = new WeakMap();
+    this.drawnBatches_ = new Map();
+
+    /**
+     * Removes a disposed batch from everything that refers to it.
+     * @private
+     * @type {function(TileBatch): void}
+     */
+    this.handleBatchDispose_ = this.handleBatchDispose_.bind(this);
 
     /**
      * Whether render tiles at `restyleZ_` follow the view resolution this frame.
@@ -573,6 +618,7 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     this.uniforms_ = new FrameUniformPool(helper);
     this.paintCache_ = {};
     this.imageAtlas_.dispose();
+    this.atlas_.clear();
     this.tileCache_.clear();
     this.renderBatchesByKey_.clear();
     this.styleCaches_.clear();
@@ -744,11 +790,11 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     );
     if (batch) {
       if (tile.getState() === TileState.LOADED) {
-        this.drawnBatches_.set(tile, batch);
+        this.setBatchReference_(this.drawnBatches_, getUid(tile), batch);
       }
       return batch;
     }
-    const drawn = this.drawnBatches_.get(tile);
+    const drawn = this.drawnBatches_.get(getUid(tile));
     if (drawn && this.tileCache_.containsKey(drawn.key)) {
       countMetric('restyleFallbackBatches');
       return this.tileCache_.get(drawn.key);
@@ -949,6 +995,7 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
                 cacheKey,
                 worldOffset,
                 combineVectorBuffers(geometry, labelData),
+                this.handleBatchDispose_,
               ),
             );
           }
@@ -967,6 +1014,7 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
       cacheKey,
       worldOffset,
       combineVectorBuffers(geometry, labelData),
+      this.handleBatchDispose_,
     );
     if (cacheable) {
       this.tileCache_.set(cacheKey, batch);
@@ -1192,7 +1240,11 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
       );
       prepared.set(entry.renderKey, batch);
       if (batch) {
-        this.renderBatchesByKey_.set(entry.renderKey, batch);
+        this.setBatchReference_(
+          this.renderBatchesByKey_,
+          entry.renderKey,
+          batch,
+        );
       }
       if (measuredSourceTiles) {
         ++measuredRenderTiles;
@@ -1589,8 +1641,8 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
           continue;
         }
         const batch = this.renderBatchesByKey_.get(renderKey);
+        // Batches of loading tiles are rebuilt every frame and not cached.
         if (!batch || !this.tileCache_.containsKey(batch.key)) {
-          this.renderBatchesByKey_.delete(renderKey);
           continue;
         }
         if (!added.has(batch)) {
@@ -1688,19 +1740,56 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
   updateRetiredBatches_(batches, now) {
     const current = new Set(batches);
     for (const batch of this.renderedBatches_) {
+      // The last frame's batches stay in order for hit detection, so batches
+      // disposed since then are skipped here instead of being removed.
       if (
-        !current.has(batch) &&
-        batch.labelIdentities &&
-        !this.retiredBatches_.some((entry) => entry.batch === batch)
+        batch.isDisposed() ||
+        current.has(batch) ||
+        !batch.labelIdentities ||
+        this.retiredBatches_.some((entry) => entry.batch === batch)
       ) {
-        this.retiredBatches_.push({
-          batch,
-          until: now + LABEL_FADE_DURATION,
-        });
+        continue;
       }
+      this.retiredBatches_.push({
+        batch,
+        until: now + LABEL_FADE_DURATION,
+      });
     }
     this.retiredBatches_ = this.retiredBatches_.filter(
       (entry) => !current.has(entry.batch) && entry.until > now,
+    );
+  }
+
+  /**
+   * @param {Map<string, TileBatch>} map Map that refers to batches.
+   * @param {string} key Key.
+   * @param {TileBatch} batch Batch.
+   * @private
+   */
+  setBatchReference_(map, key, batch) {
+    if (map.get(key) === batch) {
+      return;
+    }
+    map.set(key, batch);
+    batch.references.push([map, key]);
+  }
+
+  /**
+   * A disposed batch must not stay reachable, or it would keep its features,
+   * and fading its labels would upload them again without releasing them.
+   * @param {TileBatch} batch Disposed batch.
+   * @private
+   */
+  handleBatchDispose_(batch) {
+    for (const [map, key] of batch.references) {
+      // The key may refer to a newer batch by now.
+      if (map.get(key) === batch) {
+        map.delete(key);
+      }
+    }
+    batch.references.length = 0;
+    this.retiredBatches_ = this.retiredBatches_.filter(
+      (entry) => entry.batch !== batch,
     );
   }
 
@@ -1949,6 +2038,7 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     this.uniforms_?.dispose();
     this.uniforms_ = null;
     this.imageAtlas_.dispose();
+    this.atlas_.clear();
     super.disposeInternal();
   }
 }

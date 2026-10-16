@@ -682,6 +682,7 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
     this.uniforms_ = new FrameUniformPool(helper);
     this.paintCache_ = {};
     this.imageAtlas_.dispose();
+    this.atlas_.clear();
     this.gpu_?.dispose();
     this.gpu_ = null;
     this.labels_.clear();
@@ -1315,6 +1316,7 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
     }
     this.releaseBuffers_();
     this.imageAtlas_.dispose();
+    this.atlas_.clear();
     this.uniforms_?.dispose();
     this.uniforms_ = null;
     this.labels_.dispose();
