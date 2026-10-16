@@ -9,15 +9,16 @@ import {
 } from './report.js';
 
 describe('test/performance/shared/report', () => {
-  it('averages frame counts and preserves the worst hitch', () => {
+  it('averages frame percentages and preserves the worst hitch', () => {
     const report = summarizeRuns([
       {
         devicePixelRatio: 2,
         size: [1024, 768],
         experience: {
+          frames: 98,
           displayMs: 16,
           droppedFrames: 2,
-          lateFrames: 4,
+          lateFrames: 49,
           stalls: 0,
           worstGapMs: 40,
         },
@@ -26,9 +27,10 @@ describe('test/performance/shared/report', () => {
         devicePixelRatio: 2,
         size: [1024, 768],
         experience: {
+          frames: 60,
           displayMs: 18,
-          droppedFrames: 4,
-          lateFrames: 8,
+          droppedFrames: 15,
+          lateFrames: 6,
           stalls: 1,
           worstGapMs: 1000,
         },
@@ -37,8 +39,8 @@ describe('test/performance/shared/report', () => {
 
     assert.deepEqual(report, {
       runs: 2,
-      missedFrames: 3,
-      lateFrames: 6,
+      missedFramePercent: 11,
+      lateFramePercent: 30,
       stalls: 1,
       worstFrameMs: 1000,
       displayMs: 17,
@@ -50,7 +52,7 @@ describe('test/performance/shared/report', () => {
   it('creates and validates a versioned report', () => {
     const report = createReport({example: {runs: 1}});
     assert.doesNotThrow(() => validateReport(report));
-    assert.throws(() => validateReport({...report, version: 2}));
+    assert.throws(() => validateReport({...report, version: 1}));
   });
 
   it('calculates percent changes including a zero baseline', () => {
@@ -63,8 +65,8 @@ describe('test/performance/shared/report', () => {
     const current = createReport({
       example: {
         runs: 5,
-        missedFrames: 2,
-        lateFrames: 3,
+        missedFramePercent: 2,
+        lateFramePercent: 3,
         stalls: 0,
         worstFrameMs: 40,
         displayMs: 16.7,
@@ -72,8 +74,8 @@ describe('test/performance/shared/report', () => {
     });
     const baseline = createReport({
       example: {
-        missedFrames: 1,
-        lateFrames: 3,
+        missedFramePercent: 1,
+        lateFramePercent: 3,
         stalls: 0,
         worstFrameMs: 50,
         displayMs: 16.7,
@@ -82,7 +84,8 @@ describe('test/performance/shared/report', () => {
 
     const action = toBenchmarkAction(current);
     assert.lengthOf(action, 4);
-    assert.strictEqual(action[0].name, 'example · Missed frames');
+    assert.strictEqual(action[0].name, 'example · Missed frames (%)');
+    assert.strictEqual(action[0].unit, '%');
     assert.include(formatMarkdown(current, baseline), '| +100.0% |');
   });
 });
