@@ -1,0 +1,86 @@
+---
+layout: example-verbatim.html
+title: WebGPU vs MapLibre
+shortdesc: Side-by-side VersaTiles Colorful with the WebGPU renderer and MapLibre.
+docs: >
+  The [VersaTiles Colorful](https://tiles.versatiles.org/assets/styles/colorful/style.json)
+  style fills the window, with OpenLayers' WebGPU renderer on the left and
+  MapLibre GL JS on the right. `ol-mapbox-style` applies the style to one
+  `WebGPUVectorTile` layer. The OpenLayers view uses the same zoom scale as
+  MapLibre (512 pixel tiles), and panning, zooming, or rotating either map
+  updates the other. WebGPU is required.
+tags: "webgpu, vector, tiles, versatiles, maplibre, comparison"
+experimental: true
+---
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta
+      name="viewport"
+      content="initial-scale=1.0, user-scalable=no, width=device-width"
+    >
+    <title>WebGPU vs MapLibre</title>
+    <link rel="stylesheet" type="text/css" href="/theme/ol.css">
+    <link rel="stylesheet" type="text/css" href="webgpu-versatiles.css">
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/maplibre-gl@6.14.0/dist/maplibre-gl.css"
+      crossorigin="anonymous"
+    >
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+      body {
+        display: flex;
+      }
+      .pane {
+        position: relative;
+        flex: 1 1 0;
+        min-width: 0;
+        height: 100%;
+      }
+      .pane + .pane {
+        box-shadow: inset 1px 0 0 rgba(0, 0, 0, 0.2);
+      }
+      .map {
+        width: 100%;
+        height: 100%;
+      }
+      .label {
+        position: absolute;
+        z-index: 2;
+        top: 0.5em;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 2px 8px;
+        background: rgba(255, 255, 255, 0.85);
+        border-radius: 4px;
+        font: bold 14px/1.4 sans-serif;
+        pointer-events: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="pane">
+      <div id="ol-map" class="map"></div>
+      <div class="label">OpenLayers</div>
+    </div>
+    <div class="pane">
+      <div id="maplibre-map" class="map"></div>
+      <div class="label">MapLibre</div>
+    </div>
+    <script type="module">
+      import * as maplibregl from 'https://cdn.jsdelivr.net/npm/maplibre-gl@6.14.0/dist/maplibre-gl.mjs';
+      globalThis.maplibregl = maplibregl;
+    </script>
+    <script type="module" src="webgpu-vs-maplibre.js"></script>
+  </body>
+</html>
