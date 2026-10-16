@@ -109,6 +109,11 @@
  * sub-rectangle to use from the original fill pattern image.
  * @property {import("./Icon.js").IconOrigin} [fill-pattern-offset-origin='top-left'] Origin of the offset: `bottom-left`, `bottom-right`,
  * `top-left` or `top-right`. (WebGL only)
+ * @property {NumberArrayExpression} [fill-displacement=[0, 0]] Fill displacement in
+ * pixels. A positive x value shifts the fill right, and a positive y value
+ * shifts it down. (WebGPU only)
+ * @property {StringExpression} [fill-displacement-anchor='map'] Frame of
+ * reference for the displacement: `map` or `viewport`. (WebGPU only)
  */
 
 /**

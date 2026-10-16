@@ -36,7 +36,7 @@ map.addInteraction(new Link());
 const initialCenter = view.getCenter() || fromLonLat([13.388, 52.517]);
 const [initialLongitude, initialLatitude] = toLonLat(initialCenter);
 const maplibreMap = new maplibregl.Map({
-  bearing: (view.getRotation() * 180) / Math.PI,
+  bearing: oppositeBearing((view.getRotation() * 180) / Math.PI),
   center: [initialLongitude, initialLatitude],
   container: 'maplibre-map',
   maxPitch: 0,
@@ -87,7 +87,7 @@ function syncOpenLayersToMapLibre() {
     return;
   }
   maplibreMap.jumpTo({
-    bearing: camera.bearing,
+    bearing: oppositeBearing(camera.bearing),
     center: camera.center,
     zoom: camera.zoom,
   });
@@ -136,7 +136,7 @@ function openLayersCamera() {
 function mapLibreCamera() {
   const center = maplibreMap.getCenter();
   return {
-    bearing: maplibreMap.getBearing(),
+    bearing: oppositeBearing(maplibreMap.getBearing()),
     center: [center.lng, center.lat],
     zoom: maplibreMap.getZoom(),
   };
@@ -165,6 +165,16 @@ function sameCamera(a, b) {
  */
 function sameNumber(a, b) {
   return Math.abs(a - b) < 1e-8;
+}
+
+/**
+ * OpenLayers rotation is clockwise from north and MapLibre bearing is
+ * counter-clockwise, so each is the negative of the other.
+ * @param {number} degrees Bearing in degrees in one library's convention.
+ * @return {number} The same bearing in the other library's convention.
+ */
+function oppositeBearing(degrees) {
+  return -degrees;
 }
 
 /**
