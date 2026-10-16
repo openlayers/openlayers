@@ -73,6 +73,21 @@ describe('ol/webgpu/FontAtlas', () => {
     assert.deepEqual(after, before);
   });
 
+  it('starts over with an empty first page when cleared', () => {
+    const atlas = new FontAtlas();
+    for (let i = 0; atlas.getPageCount() < 2; ++i) {
+      assert.isBelow(i, 30);
+      atlas.getGlyph('1800px sans-serif', String(i));
+    }
+    const glyph = atlas.getGlyph('48px sans-serif', 'A');
+    atlas.clear();
+    assert.strictEqual(atlas.getPageCount(), 1);
+    assert.strictEqual(atlas.getCanvas(0).width, 512);
+    const again = atlas.getGlyph('48px sans-serif', 'A');
+    assert.notStrictEqual(again, glyph);
+    assert.strictEqual(again.page, 0);
+  });
+
   it('measures glyph advances per font', () => {
     const atlas = new FontAtlas();
     const small = atlas.getGlyph('10px sans-serif', 'B');
