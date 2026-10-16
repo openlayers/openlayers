@@ -1,7 +1,6 @@
 import '../../../src/ol/ol.css';
 import {
   createReport,
-  percentChange,
   REPORT_METRICS,
   summarizeRuns,
   validateReport,
@@ -65,6 +64,9 @@ const downloadButton = /** @type {HTMLButtonElement} */ (
 const baselineInput = /** @type {HTMLInputElement} */ (
   document.getElementById('baseline')
 );
+const comparison = /** @type {HTMLElement} */ (
+  document.getElementById('comparison')
+);
 
 /** @type {Object<string, Object>} */
 const caseReports = {};
@@ -72,6 +74,8 @@ const caseReports = {};
 const caseRows = {};
 /** @type {Object|null} */
 let baseline = null;
+/** File name of the loaded baseline report. */
+let baselineName = '';
 /** @type {Object|null} */
 let currentBenchmark = null;
 /** @type {AbortController|null} */
@@ -349,6 +353,111 @@ function formatValue(key, value) {
   return key === 'worstFrameMs' ? value.toFixed(1) : value.toFixed(2);
 }
 
+/**
+ * Classifies a change in a smaller-is-better metric. Values that format to the
+ * same text are unchanged, so rounding noise is not reported as a change.
+ * @param {string} key Metric key.
+ * @param {number} previous Baseline value.
+ * @param {number} value Current value.
+ * @return {'better'|'worse'|'unchanged'} Direction of the change.
+ */
+function changeDirection(key, previous, value) {
+  if (formatValue(key, previous) === formatValue(key, value)) {
+    return 'unchanged';
+  }
+  return value < previous ? 'better' : 'worse';
+}
+
+/**
+ * Builds a report cell. With a baseline, the cell also says whether the value
+ * got better or worse, by how much in the column's unit, and what it was.
+ * @param {string} key Metric key.
+ * @param {number} value Current value.
+ * @param {number|undefined} previous Baseline value, if the baseline has one.
+ * @return {HTMLTableCellElement} Cell.
+ */
+function metricCell(key, value, previous) {
+  const cell = document.createElement('td');
+  const current = document.createElement('strong');
+  current.textContent = formatValue(key, value);
+  cell.append(current);
+  if (!baseline) {
+    return cell;
+  }
+  const change = document.createElement('small');
+  change.className = 'change';
+  cell.append(change);
+  if (typeof previous !== 'number') {
+    change.textContent = 'not in baseline';
+    return cell;
+  }
+  const direction = changeDirection(key, previous, value);
+  cell.classList.add(`change-${direction}`);
+  const difference = formatValue(key, Math.abs(value - previous));
+  change.textContent =
+    direction === 'unchanged'
+      ? 'unchanged'
+      : `${direction === 'better' ? '▼' : '▲'} ${direction} by ${difference}`;
+  const was = document.createElement('small');
+  was.textContent = `was ${formatValue(key, previous)}`;
+  cell.append(was);
+  return cell;
+}
+
+/**
+ * Summarizes the comparison above the table, so the overall outcome and any
+ * reason to distrust it are visible without reading every cell.
+ */
+function renderComparison() {
+  comparison.hidden = !baseline;
+  if (!baseline) {
+    return;
+  }
+  const counts = {better: 0, worse: 0, unchanged: 0};
+  const intervalChanged = [];
+  for (const [name, report] of Object.entries(caseReports)) {
+    const previous = baseline.cases?.[name];
+    if (!previous) {
+      continue;
+    }
+    for (const metric of REPORT_METRICS) {
+      if (typeof previous[metric.key] !== 'number') {
+        continue;
+      }
+      ++counts[
+        changeDirection(metric.key, previous[metric.key], report[metric.key])
+      ];
+    }
+    if (Math.abs(report.displayMs - previous.displayMs) > 0.5) {
+      intervalChanged.push(
+        cases.find((entry) => entry.name === name)?.title || name,
+      );
+    }
+  }
+  const lines = [
+    `Compared with ${baselineName}. Smaller is better: ▼ better, ▲ worse.`,
+  ];
+  if (Object.keys(caseReports).length) {
+    lines.push(
+      `${counts.better} better, ${counts.worse} worse, ${counts.unchanged} unchanged.`,
+    );
+  } else {
+    lines.push('Run cases to compare them.');
+  }
+  if (intervalChanged.length) {
+    lines.push(
+      `The display interval differs for ${intervalChanged.join(', ')}; compare those with caution.`,
+    );
+  }
+  comparison.replaceChildren(
+    ...lines.map((line) => {
+      const paragraph = document.createElement('p');
+      paragraph.textContent = line;
+      return paragraph;
+    }),
+  );
+}
+
 function renderReport() {
   reportHead.replaceChildren();
   reportBody.replaceChildren();
@@ -369,20 +478,17 @@ function renderReport() {
       cases.find((entry) => entry.name === name)?.title || name;
     row.append(nameCell);
     for (const metric of REPORT_METRICS) {
-      const cell = document.createElement('td');
-      cell.textContent = formatValue(metric.key, report[metric.key]);
-      const previous = baseline?.cases?.[name]?.[metric.key];
-      if (typeof previous === 'number') {
-        const change = percentChange(previous, report[metric.key]);
-        const delta = document.createElement('small');
-        const sign = change > 0 ? '+' : '';
-        delta.textContent = ` (${sign}${change.toFixed(1)}%)`;
-        cell.append(delta);
-      }
-      row.append(cell);
+      row.append(
+        metricCell(
+          metric.key,
+          report[metric.key],
+          baseline?.cases?.[name]?.[metric.key],
+        ),
+      );
     }
     reportBody.append(row);
   }
+  renderComparison();
   downloadButton.disabled = !Object.keys(caseReports).length;
 }
 
@@ -433,10 +539,20 @@ baselineInput.addEventListener('change', async () => {
   if (!file) {
     return;
   }
-  const candidate = JSON.parse(await file.text());
-  validateReport(candidate);
-  baseline = candidate;
-  renderReport();
+  try {
+    const candidate = JSON.parse(await file.text());
+    validateReport(candidate);
+    baseline = candidate;
+    baselineName = file.name;
+    renderReport();
+  } catch (error) {
+    comparison.hidden = false;
+    comparison.textContent = `Could not compare with ${file.name}: ${
+      /** @type {Error} */ (error).message
+    }.`;
+  } finally {
+    baselineInput.value = '';
+  }
 });
 
 renderReport();

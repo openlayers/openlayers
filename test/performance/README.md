@@ -25,8 +25,8 @@ The report metrics are smaller-is-better:
 
 | Metric | Meaning | Across runs |
 | --- | --- | --- |
-| Missed frames | Display refreshes skipped between animation callbacks | Mean |
-| Late frames | Frames later than 1.5× the measured display interval | Mean |
+| Missed frames (%) | Share of display refreshes skipped between animation callbacks | Mean |
+| Late frames (%) | Share of presented frames later than 1.5× the measured display interval | Mean |
 | Stalls | Gaps longer than 100 milliseconds | Maximum |
 | Worst frame | Longest presented-frame gap | Maximum |
 
