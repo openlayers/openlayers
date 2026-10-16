@@ -162,8 +162,8 @@ describe('ol/render/webgpu/glyphLayout', () => {
       [1, 0, 0, 1],
     );
     const packed = packGlyphInstances(glyphs);
-    const initialSize = atlas.getCanvas().width;
-    for (let i = 0; atlas.getCanvas().width === initialSize; ++i) {
+    const initialSize = atlas.getPageSize(0);
+    for (let i = 0; atlas.getPageSize(0) === initialSize; ++i) {
       assert.isBelow(i, 100);
       atlas.getGlyph(`${48 + i}px sans-serif`, String(i));
     }
