@@ -44,6 +44,10 @@ import BaseVectorLayer from './BaseVector.js';
  * @property {import("../style/Style.js").StyleLike|import("../style/flat.js").FlatStyleLike|null} [style] Layer style. When set to `null`, only
  * features that have their own style will be rendered. See {@link module:ol/style/Style~Style} for the default style
  * which will be used if this is not set.
+ * @property {import("../style/flat.js").StyleVariables} [variables] Style variables. Each variable must
+ * hold a literal value (not an expression). They can be referenced from a
+ * [flat style]{@link module:ol/style/flat~FlatStyle} with the `['var', 'varName']` operator.
+ * To update them, use the {@link module:ol/layer/BaseVector~BaseVectorLayer#updateStyleVariables} method.
  * @property {import("./Base.js").BackgroundColor} [background] Background color for the layer. If not specified, no background
  * will be rendered.
  * @property {number} [imageRatio=1] Ratio by which the rendered extent should be larger than the

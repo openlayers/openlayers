@@ -1,9 +1,15 @@
 import {assert} from 'chai';
 import {newEvaluationContext} from '../../../../../../src/ol/expr/cpu.js';
-import {newParsingContext} from '../../../../../../src/ol/expr/expression.js';
+import {
+  ColorType,
+  newParsingContext,
+} from '../../../../../../src/ol/expr/expression.js';
+import Feature from '../../../../../../src/ol/Feature.js';
+import Point from '../../../../../../src/ol/geom/Point.js';
 import {
   buildRuleSet,
   buildStyle,
+  flatStyleLikeToStyleFunction,
 } from '../../../../../../src/ol/render/canvas/style.js';
 import Fill from '../../../../../../src/ol/style/Fill.js';
 import Icon from '../../../../../../src/ol/style/Icon.js';
@@ -804,6 +810,109 @@ describe('ol/render/canvas/style.js', () => {
       assert.throws(() => {
         evaluator(newEvaluationContext());
       }, 'Expected point or line for icon-placement');
+    });
+  });
+
+  describe('style variables', () => {
+    /**
+     * @return {Feature} A feature to evaluate styles against.
+     */
+    function newFeature() {
+      const feature = new Feature(new Point([0, 0]));
+      feature.setId('one');
+      feature.set('population', 100);
+      return feature;
+    }
+
+    it('resolves the var operator against the given variables', () => {
+      const styleFunction = flatStyleLikeToStyleFunction(
+        {
+          'circle-radius': ['var', 'radius'],
+          'circle-fill-color': ['var', 'color'],
+        },
+        newParsingContext({radius: 7, color: 'red'}),
+      );
+
+      const image = styleFunction(newFeature(), 1)[0].getImage();
+      assert.strictEqual(image.getRadius(), 7);
+      assert.deepEqual(image.getFill().getColor(), [255, 0, 0, 1]);
+    });
+
+    it('reflects mutations of the variables object made after compiling', () => {
+      const variables = {radius: 7};
+      const styleFunction = flatStyleLikeToStyleFunction(
+        {'circle-radius': ['var', 'radius'], 'circle-fill-color': 'red'},
+        newParsingContext(variables),
+      );
+      const feature = newFeature();
+
+      assert.strictEqual(
+        styleFunction(feature, 1)[0].getImage().getRadius(),
+        7,
+      );
+
+      variables.radius = 12;
+      assert.strictEqual(
+        styleFunction(feature, 1)[0].getImage().getRadius(),
+        12,
+      );
+    });
+
+    it('resolves the var operator in rule filters', () => {
+      const variables = {highlighted: 'two'};
+      const styleFunction = flatStyleLikeToStyleFunction(
+        [
+          {
+            filter: ['==', ['var', 'highlighted'], ['id']],
+            style: {'fill-color': 'red'},
+          },
+          {
+            else: true,
+            style: {'fill-color': 'blue'},
+          },
+        ],
+        newParsingContext(variables),
+      );
+      const feature = newFeature();
+
+      assert.deepEqual(
+        styleFunction(feature, 1)[0].getFill().getColor(),
+        [0, 0, 255, 1],
+      );
+
+      variables.highlighted = 'one';
+      assert.deepEqual(
+        styleFunction(feature, 1)[0].getFill().getColor(),
+        [255, 0, 0, 1],
+      );
+    });
+
+    it('narrows a string variable to a color', () => {
+      const parsingContext = newParsingContext({color: 'red'});
+      flatStyleLikeToStyleFunction(
+        {'fill-color': ['var', 'color']},
+        parsingContext,
+      );
+      assert.strictEqual(parsingContext.variables.get('color'), ColorType);
+    });
+
+    it('compiles a style using a variable that is not defined', () => {
+      const styleFunction = flatStyleLikeToStyleFunction(
+        {'stroke-color': 'red', 'stroke-width': ['var', 'width']},
+        newParsingContext({}),
+      );
+      assert.isFunction(styleFunction);
+    });
+
+    it('throws when a defined variable has an incompatible type', () => {
+      assert.throws(
+        () =>
+          flatStyleLikeToStyleFunction(
+            {'stroke-color': 'red', 'stroke-width': ['var', 'width']},
+            newParsingContext({width: 'wide'}),
+          ),
+        /did not have any overlap/,
+      );
     });
   });
 });
