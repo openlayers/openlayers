@@ -47,8 +47,9 @@ experimental: true
         min-width: 0;
         height: 100%;
       }
-      .pane + .pane {
-        box-shadow: inset 1px 0 0 rgba(0, 0, 0, 0.2);
+      .divider {
+        flex: 0 0 2px;
+        background: #222;
       }
       .map {
         width: 100%;
@@ -73,6 +74,7 @@ experimental: true
       <div id="ol-map" class="map"></div>
       <div class="label">OpenLayers</div>
     </div>
+    <div class="divider"></div>
     <div class="pane">
       <div id="maplibre-map" class="map"></div>
       <div class="label">MapLibre</div>

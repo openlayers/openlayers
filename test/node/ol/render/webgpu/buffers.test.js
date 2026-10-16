@@ -791,6 +791,56 @@ describe('ol/render/webgpu/buffers', () => {
     assert.deepEqual(labelData.labels[0]._anchor, [5, 5]);
   });
 
+  it('snapshots a style geometry that the style function rewrites in place', () => {
+    const first = new Feature(new Point([0, 0]));
+    first.set('anchor', [2, 2]);
+    const second = new Feature(new Point([0, 0]));
+    second.set('anchor', [8, 8]);
+    const coordinates = [NaN, NaN];
+    const geometry = new RenderFeature('Point', coordinates, [], 2, {});
+    const shared = new Style({
+      geometry,
+      image: new CircleStyle({
+        radius: 3,
+        fill: new Fill({color: '#000'}),
+      }),
+    });
+    const styleFunction = (feature) => {
+      const anchor = feature.get('anchor');
+      coordinates[0] = anchor[0];
+      coordinates[1] = anchor[1];
+      return shared;
+    };
+    const cache = new WeakMap();
+    for (const feature of [first, second]) {
+      cache.set(
+        feature,
+        resolveFeatureStyles(feature, styleFunction, 1, 1, true),
+      );
+    }
+
+    const {labelData} = buildVectorRequest(
+      [first, second],
+      styleFunction,
+      1,
+      /** @type {any} */ ({}),
+      undefined,
+      1,
+      1,
+      undefined,
+      undefined,
+      cache,
+    );
+
+    assert.deepEqual(
+      labelData.labels.map((label) => label._anchor),
+      [
+        [2, 2],
+        [8, 8],
+      ],
+    );
+  });
+
   it('stores the dash pattern of a stroke, repeating an odd one', () => {
     const feature = new Feature(
       new LineString([
