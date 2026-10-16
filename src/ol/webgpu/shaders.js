@@ -24,6 +24,40 @@ fn insideRenderExtents(position: vec2<f32>) -> bool {
 }
 `;
 
+const FILL_DISPLACEMENT_FUNCTION = `
+fn fillDisplacement(
+  displacement: vec2<f32>,
+  mapAnchor: f32,
+) -> vec2<f32> {
+  if (displacement.x == 0.0 && displacement.y == 0.0) {
+    return displacement;
+  }
+  var px = displacement;
+  if (mapAnchor > 0.5 && uniforms.viewRotation != 0.0) {
+    let angle = -uniforms.viewRotation;
+    let sine = sin(angle);
+    let cosine = cos(angle);
+    px = vec2(
+      displacement.x * cosine - displacement.y * sine,
+      displacement.x * sine + displacement.y * cosine
+    );
+  }
+  return px;
+}
+
+fn displaceFill(
+  clip: vec4<f32>,
+  displacement: vec2<f32>,
+) -> vec4<f32> {
+  return vec4(
+    clip.x + displacement.x / (uniforms.viewportSizePx.x * 0.5) * clip.w,
+    clip.y - displacement.y / (uniforms.viewportSizePx.y * 0.5) * clip.w,
+    clip.z,
+    clip.w
+  );
+}
+`;
+
 export const TILE_SHADER = `
 struct TileUniforms {
   tileTransform: mat4x4<f32>,
@@ -163,6 +197,7 @@ struct Style {
 @group(0) @binding(2) var patternTexture: texture_2d<f32>;
 
 ${VECTOR_CLIP_FUNCTION}
+${FILL_DISPLACEMENT_FUNCTION}
 
 struct VertexOut {
   @builtin(position) position: vec4<f32>,
@@ -171,6 +206,7 @@ struct VertexOut {
   @location(2) @interpolate(flat) pattern: vec4<f32>,
   @location(3) @interpolate(flat) patternScale: f32,
   @location(4) localPosition: vec2<f32>,
+  @location(5) @interpolate(flat) displacement: vec2<f32>,
 }
 
 @vertex
@@ -179,8 +215,14 @@ fn vs_main(
   @location(1) styleIndex: u32,
 ) -> VertexOut {
   var out: VertexOut;
-  out.position = uniforms.projectionMatrix * vec4(vec2<f32>(position), 0.0, 1.0);
   let style = styles[styleIndex];
+  let clip =
+    uniforms.projectionMatrix * vec4(vec2<f32>(position), 0.0, 1.0);
+  out.displacement = fillDisplacement(
+    style.dashParams.xy,
+    style.dashParams.z
+  );
+  out.position = displaceFill(clip, out.displacement);
   out.color = style.color;
   out.hitColor = style.hitColor;
   out.pattern = style.dashA;
@@ -200,7 +242,9 @@ fn fs_main(in: VertexOut) -> @location(0) vec4<f32> {
   var color = in.color;
   if (in.pattern.z > 0.0) {
     // Repeat the pattern at CSS pixel size times its scale, as Canvas does.
-    let px = (in.position.xy - uniforms.patternOrigin) / uniforms.pixelRatio;
+    let px =
+      (in.position.xy - in.displacement - uniforms.patternOrigin) /
+      uniforms.pixelRatio;
     let texel = in.pattern.xy +
       floor(fract(px / (in.pattern.zw * in.patternScale)) * in.pattern.zw);
     color = textureLoad(patternTexture, vec2<i32>(texel), 0);
@@ -335,6 +379,7 @@ struct Style {
 @group(0) @binding(2) var patternTexture: texture_2d<f32>;
 
 ${VECTOR_CLIP_FUNCTION}
+${FILL_DISPLACEMENT_FUNCTION}
 
 struct VertexOut {
   @builtin(position) position: vec4<f32>,
@@ -343,6 +388,7 @@ struct VertexOut {
   @location(2) @interpolate(flat) pattern: vec4<f32>,
   @location(3) @interpolate(flat) patternScale: f32,
   @location(4) localPosition: vec2<f32>,
+  @location(5) @interpolate(flat) displacement: vec2<f32>,
 }
 
 @vertex
@@ -357,10 +403,16 @@ fn vs_main(
     out.color = vec4(0.0);
     out.hitColor = vec4(0.0);
     out.localPosition = vec2(0.0);
+    out.displacement = vec2(0.0);
     return out;
   }
-  out.position = uniforms.projectionMatrix * vec4(warped.xy, 0.0, 1.0);
   let style = styles[styleIndex];
+  let clip = uniforms.projectionMatrix * vec4(warped.xy, 0.0, 1.0);
+  out.displacement = fillDisplacement(
+    style.dashParams.xy,
+    style.dashParams.z
+  );
+  out.position = displaceFill(clip, out.displacement);
   out.color = style.color;
   out.hitColor = style.hitColor;
   out.pattern = style.dashA;
@@ -380,7 +432,9 @@ fn fs_main(in: VertexOut) -> @location(0) vec4<f32> {
   var color = in.color;
   if (in.pattern.z > 0.0) {
     // Repeat the pattern at CSS pixel size times its scale, as Canvas does.
-    let px = (in.position.xy - uniforms.patternOrigin) / uniforms.pixelRatio;
+    let px =
+      (in.position.xy - in.displacement - uniforms.patternOrigin) /
+      uniforms.pixelRatio;
     let texel = in.pattern.xy +
       floor(fract(px / (in.pattern.zw * in.patternScale)) * in.pattern.zw);
     color = textureLoad(patternTexture, vec2<i32>(texel), 0);

@@ -379,6 +379,16 @@ function buildFill(flatStyle, prefix, context) {
     return null;
   }
 
+  const evaluateDisplacement = coordinateEvaluator(
+    flatStyle,
+    prefix + 'fill-displacement',
+    context,
+  );
+  const evaluateDisplacementAnchor = stringEvaluator(
+    flatStyle,
+    prefix + 'fill-displacement-anchor',
+    context,
+  );
   const fill = new Fill();
   return function (context) {
     const color = evaluateColor(context);
@@ -388,6 +398,18 @@ function buildFill(flatStyle, prefix, context) {
     fill.setColor(
       /** @type {import('../../colorlike.js').ColorLike} */ (color),
     );
+    if (evaluateDisplacement) {
+      fill.setDisplacement(evaluateDisplacement(context));
+    }
+    if (evaluateDisplacementAnchor) {
+      const anchor = evaluateDisplacementAnchor(context);
+      if (anchor !== 'map' && anchor !== 'viewport') {
+        throw new Error(
+          `Expected map or viewport for ${prefix}fill-displacement-anchor`,
+        );
+      }
+      fill.setDisplacementAnchor(anchor);
+    }
     return fill;
   };
 }

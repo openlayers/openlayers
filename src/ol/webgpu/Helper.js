@@ -12,7 +12,7 @@ import {
   getCurrentDevice,
   removeDeviceLostListener,
 } from './Device.js';
-import {countMetric} from './metrics.js';
+import {countMetric, metricsEnabled, recordMetric} from './metrics.js';
 
 /**
  * @typedef {Object} Options
@@ -560,7 +560,14 @@ class WebGPUHelper extends Disposable {
     if (!item.encoder) {
       return;
     }
+    const start = metricsEnabled() ? performance.now() : 0;
     this.device_.queue.submit([item.encoder.finish()]);
+    if (start) {
+      this.device_.queue.onSubmittedWorkDone().then(
+        () => recordMetric('gpuCompletion', performance.now() - start),
+        () => undefined,
+      );
+    }
     item.encoder = null;
   }
 

@@ -112,6 +112,121 @@ describe('ol/render/webgpu/buffers', () => {
     assert.closeTo(maxX, 2, 1e-3);
   });
 
+  it('packs fill displacement without changing the geometry', () => {
+    const feature = new Feature(
+      new Polygon([
+        [
+          [0, 0],
+          [10, 0],
+          [10, 10],
+          [0, 0],
+        ],
+      ]),
+    );
+    const fill = new Fill({
+      color: '#f00',
+      displacement: [3, -4],
+      displacementAnchor: 'map',
+    });
+    const buffers = buildVectorBuffers(
+      [feature],
+      () => new Style({fill}),
+      1,
+      /** @type {any} */ ({}),
+    );
+    const baseline = buildVectorBuffers(
+      [feature],
+      () => new Style({fill: new Fill({color: '#f00'})}),
+      1,
+      /** @type {any} */ ({}),
+    );
+
+    assert.deepEqual(Array.from(buffers.styles.slice(16, 20)), [3, -4, 1, 0]);
+    assert.strictEqual(buffers.styles.length, STYLE_STRIDE);
+    assert.deepEqual(buffers.fillPositions, baseline.fillPositions);
+    assert.deepEqual(buffers.fillIndices, baseline.fillIndices);
+    let maxX = -Infinity;
+    for (let i = 0; i < buffers.fillPositions.length / 2; ++i) {
+      maxX = Math.max(
+        maxX,
+        toMapCoordinate(buffers.fillPositions, buffers.grid, i)[0],
+      );
+    }
+    assert.closeTo(maxX, 10, 1e-3);
+  });
+
+  it('distinguishes map and viewport fill displacement styles', () => {
+    const features = [
+      new Feature(
+        new Polygon([
+          [
+            [0, 0],
+            [10, 0],
+            [10, 10],
+            [0, 0],
+          ],
+        ]),
+      ),
+      new Feature(
+        new Polygon([
+          [
+            [20, 0],
+            [30, 0],
+            [30, 10],
+            [20, 0],
+          ],
+        ]),
+      ),
+    ];
+    const styles = [
+      new Style({
+        fill: new Fill({
+          color: '#f00',
+          displacement: [2, 2],
+          displacementAnchor: 'map',
+        }),
+      }),
+      new Style({
+        fill: new Fill({
+          color: '#f00',
+          displacement: [2, 2],
+          displacementAnchor: 'viewport',
+        }),
+      }),
+    ];
+    const buffers = buildVectorBuffers(
+      features,
+      (feature) => styles[features.indexOf(feature)],
+      1,
+      /** @type {any} */ ({}),
+    );
+
+    assert.strictEqual(buffers.styles.length, STYLE_STRIDE * 2);
+    assert.deepEqual(Array.from(buffers.styles.slice(16, 20)), [2, 2, 1, 0]);
+    assert.deepEqual(Array.from(buffers.styles.slice(36, 40)), [2, 2, 0, 0]);
+  });
+
+  it('packs an untranslated fill as zero displacement', () => {
+    const feature = new Feature(
+      new Polygon([
+        [
+          [0, 0],
+          [10, 0],
+          [10, 10],
+          [0, 0],
+        ],
+      ]),
+    );
+    const buffers = buildVectorBuffers(
+      [feature],
+      () => new Style({fill: new Fill({color: '#f00'})}),
+      1,
+      /** @type {any} */ ({}),
+    );
+
+    assert.deepEqual(Array.from(buffers.styles.slice(16, 20)), [0, 0, 1, 0]);
+  });
+
   it('builds symbol buffers from RenderFeature points used by MVT tiles', () => {
     const point = new RenderFeature('Point', [100, 200], [], 2, {}, undefined);
     const style = new Style({
