@@ -1,10 +1,25 @@
-export const REPORT_VERSION = 1;
+export const REPORT_VERSION = 2;
 
 export const REPORT_METRICS = [
-  {key: 'missedFrames', label: 'Missed frames', aggregate: 'mean'},
-  {key: 'lateFrames', label: 'Late frames', aggregate: 'mean'},
-  {key: 'stalls', label: 'Stalls', aggregate: 'max'},
-  {key: 'worstFrameMs', label: 'Worst frame (ms)', aggregate: 'max'},
+  {
+    key: 'missedFramePercent',
+    label: 'Missed frames (%)',
+    unit: '%',
+    aggregate: 'mean',
+  },
+  {
+    key: 'lateFramePercent',
+    label: 'Late frames (%)',
+    unit: '%',
+    aggregate: 'mean',
+  },
+  {key: 'stalls', label: 'Stalls', unit: 'frames', aggregate: 'max'},
+  {
+    key: 'worstFrameMs',
+    label: 'Worst frame (ms)',
+    unit: 'ms',
+    aggregate: 'max',
+  },
 ];
 
 /**
@@ -18,6 +33,18 @@ function mean(values) {
 }
 
 /**
+ * @param {number} part Counted frames.
+ * @param {number} whole Frames they are counted out of.
+ * @return {number} Percentage, or 0 when nothing was counted.
+ */
+function percent(part, whole) {
+  return whole > 0 ? (part / whole) * 100 : 0;
+}
+
+/**
+ * Missed frames are a share of the display refreshes during the flight, which
+ * are the presented frames plus the refreshes that were skipped between them.
+ * Late frames are a share of the presented frames.
  * @param {Array<Object>} runs Measured flights, excluding the warm-up flight.
  * @return {Object} Comparable case report.
  */
@@ -28,10 +55,19 @@ export function summarizeRuns(runs) {
   const experiences = runs.map((run) => run.experience);
   return {
     runs: runs.length,
-    missedFrames: mean(
-      experiences.map((experience) => experience.droppedFrames),
+    missedFramePercent: mean(
+      experiences.map((experience) =>
+        percent(
+          experience.droppedFrames,
+          experience.frames + experience.droppedFrames,
+        ),
+      ),
     ),
-    lateFrames: mean(experiences.map((experience) => experience.lateFrames)),
+    lateFramePercent: mean(
+      experiences.map((experience) =>
+        percent(experience.lateFrames, experience.frames),
+      ),
+    ),
     stalls: Math.max(...experiences.map((experience) => experience.stalls)),
     worstFrameMs: Math.max(
       ...experiences.map((experience) => experience.worstGapMs),
@@ -82,7 +118,7 @@ export function toBenchmarkAction(report) {
     for (const metric of REPORT_METRICS) {
       data.push({
         name: `${caseName} · ${metric.label}`,
-        unit: metric.key === 'worstFrameMs' ? 'ms' : 'frames',
+        unit: metric.unit,
         value: result[metric.key],
         extra: `${result.runs} runs · ${result.displayMs.toFixed(1)} ms display interval`,
       });
