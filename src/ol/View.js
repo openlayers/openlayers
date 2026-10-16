@@ -207,7 +207,8 @@ import {DEFAULT_TILE_SIZE} from './tilegrid/common.js';
  * @property {import("./proj/Projection.js").default} projection Projection.
  * @property {number} resolution Resolution.
  * @property {import("./coordinate.js").Coordinate} [nextCenter] The next center during an animation series.
- * @property {number} [nextResolution] The next resolution during an animation series.
+ * @property {number} [nextResolution] The next resolution during an animation series. When
+ * only the center is animated, the current resolution.
  * @property {number} [nextRotation] The next rotation during an animation series.
  * @property {number} rotation Rotation.
  * @property {number} zoom Zoom.
@@ -1276,7 +1277,11 @@ class View extends BaseObject {
         /** @type {import("./coordinate.js").Coordinate|undefined} */ (
           /** @type {unknown} */ (this.nextCenter_)
         ),
-      nextResolution: this.nextResolution_,
+      // An animation of the center alone ends at the current resolution.
+      nextResolution:
+        this.nextCenter_ && isNaN(this.nextResolution_)
+          ? /** @type {number} */ (resolution)
+          : this.nextResolution_,
       nextRotation: this.nextRotation_,
       rotation: rotation,
       zoom: /** @type {number} */ (this.getZoom()),
