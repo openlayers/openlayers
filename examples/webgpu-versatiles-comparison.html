@@ -1,14 +1,18 @@
 ---
 layout: example.html
-title: VersaTiles Colorful (with WebGPU)
-shortdesc: The VersaTiles Colorful style rendered with WebGPU vector tile layers and flat styles.
-docs: >
+title: VersaTiles Colorful with Canvas2D and WebGPU
+shortdesc: Compares the Canvas2D and WebGPU vector tile renderers using the same flat style.
+docs: |
   The [VersaTiles Colorful](https://tiles.versatiles.org/assets/styles/colorful/style.json)
-  style is fetched and translated into flat style rules on one `WebGPUVectorTile`
-  layer. The rules share a vector tile source and a declutter group. The view's
-  `maxResolution` matches Mapbox GL zoom level 0 (512 pixel tiles), so `['zoom']`
-  expressions from the style can be used as-is. WebGPU is required.
-tags: "webgpu, vector, tiles, declutter, versatiles, flat style"
+  style is translated into flat style rules, as in the
+  [VersaTiles Colorful (with WebGPU)](webgpu-versatiles.html) example. The rules
+  are used on a `VectorTile` layer (Canvas2D, left) and on a `WebGPUVectorTile`
+  layer (WebGPU, right). Both maps share one view, so they always show the same
+  extent. WebGPU is required.
+
+  Canvas2D style functions do not provide `['zoom']`, so the Canvas2D layer
+  evaluates the rules with the view's zoom level.
+tags: "webgpu, vector, tiles, declutter, compare, versatiles, flat style"
 experimental: true
 ---
 <div id="map" class="map"></div>
