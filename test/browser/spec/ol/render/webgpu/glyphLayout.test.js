@@ -426,7 +426,7 @@ describe('ol/render/webgpu/glyphLayout', () => {
     assert.isBelow(scaled[0].offsetY, scaled[2].offsetY);
   });
 
-  it('centers line-label chunks on the path so adjacent chunks meet', () => {
+  it('centers line-label graphemes on the path so adjacent cells meet', () => {
     const atlas = new FontAtlas();
     const font = '16px sans-serif';
     const text = new Text({
@@ -438,12 +438,13 @@ describe('ol/render/webgpu/glyphLayout', () => {
     const straightAll = [];
     layoutLineLabel(straightAll, text, [0, 0, 1000, 0], 1, atlas, [1, 0, 0, 1]);
     const straight = straightAll.filter((glyph) => isGlyphDrawn(glyph, 0));
-    assert.strictEqual(straight.length, 1);
-    const whole = straight[0];
-    assert.closeTo(whole.x, 500, 1);
-    assert.closeTo(whole.offsetX + whole.width / 2, 0, 2);
+    assert.strictEqual(straight.length, text.getText().length);
+    const first = straight[0];
+    const last = straight[straight.length - 1];
+    assert.closeTo(first.x, 500, 1);
+    assert.closeTo(first.offsetX + last.offsetX + last.width, 0, 2);
     assert.closeTo(
-      whole.offsetY + atlas.getGlyph(font, text.getText()).ascent,
+      first.offsetY + atlas.getGlyph(font, 'H').ascent,
       measureTextBaseline(font),
       0.01,
     );
@@ -532,11 +533,12 @@ describe('ol/render/webgpu/glyphLayout', () => {
     });
     const glyphs = [];
     layoutLineLabel(glyphs, text, [0, 0, 1000, 0], 1, atlas, [1, 0, 0, 1]);
-    assert.strictEqual(glyphs.length, 2);
+    assert.strictEqual(glyphs.length, 2 * text.getText().length);
     for (const glyph of glyphs) {
       assert.isTrue(glyph.rotateWithView);
     }
-    const [forward, reversed] = glyphs;
+    const forward = glyphs[0];
+    const reversed = glyphs[glyphs.length / 2];
     assert.isTrue(isGlyphDrawn(forward, 0));
     assert.isFalse(isGlyphDrawn(reversed, 0));
     assert.isTrue(isGlyphDrawn(forward, 1.5));
@@ -576,7 +578,7 @@ describe('ol/render/webgpu/glyphLayout', () => {
       atlas,
       [1, 0, 0, 1],
     );
-    assert.strictEqual(glyphs.length, 1);
+    assert.strictEqual(glyphs.length, 'Hallesches Ufer'.length);
     assert.isTrue(isGlyphDrawn(glyphs[0], 0));
     assert.isTrue(isGlyphDrawn(glyphs[0], Math.PI));
     assert.closeTo(Math.abs(glyphs[0].angle), Math.PI, 1e-9);
@@ -705,5 +707,62 @@ describe('ol/render/webgpu/glyphLayout', () => {
     assert.strictEqual(mixedGlyphs[0].texY0, shaped.texY0);
     assert.strictEqual(mixedGlyphs[0].texX1, shaped.texX1);
     assert.strictEqual(mixedGlyphs[0].texY1, shaped.texY1);
+
+    const lineGlyphs = [];
+    layoutLineLabel(
+      lineGlyphs,
+      new Text({text: arabic, font, placement: 'line'}),
+      [0, 0, 1000, 0],
+      1,
+      atlas,
+      [1, 0, 0, 1],
+    );
+    const drawn = lineGlyphs.filter((glyph) => isGlyphDrawn(glyph, 0));
+    assert.strictEqual(drawn.length, 1);
+    assert.strictEqual(drawn[0].texX0, arabicMetrics.texX0);
+    assert.strictEqual(drawn[0].texY0, arabicMetrics.texY0);
+  });
+
+  it('keeps left-to-right scripts that need shaping in one cell', () => {
+    const atlas = new FontAtlas();
+    const font = '24px sans-serif';
+    // A conjunct (क्ष) and a vowel sign drawn before its consonant (ि).
+    const devanagari = 'क्षितिज';
+    const pointGlyphs = [];
+    layoutPointLabel(
+      pointGlyphs,
+      new Text({text: devanagari, font}),
+      [0, 0],
+      atlas,
+      [1, 0, 0, 1],
+    );
+    assert.strictEqual(pointGlyphs.length, 1);
+
+    const lineGlyphs = [];
+    layoutLineLabel(
+      lineGlyphs,
+      new Text({text: devanagari, font, placement: 'line'}),
+      [0, 0, 1000, 0],
+      1,
+      atlas,
+      [1, 0, 0, 1],
+    );
+    const drawn = lineGlyphs.filter((glyph) => isGlyphDrawn(glyph, 0));
+    assert.strictEqual(drawn.length, 1);
+    const shaped = atlas.getGlyph(font, devanagari);
+    assert.strictEqual(drawn[0].texX0, shaped.texX0);
+    assert.strictEqual(drawn[0].texY0, shaped.texY0);
+
+    // Yogyakarta, with stacked consonants (pasangan).
+    const javanese = 'ꦪꦺꦴꦒꦾꦏꦂꦠ';
+    const javaneseGlyphs = [];
+    layoutPointLabel(
+      javaneseGlyphs,
+      new Text({text: javanese, font}),
+      [0, 0],
+      atlas,
+      [1, 0, 0, 1],
+    );
+    assert.strictEqual(javaneseGlyphs.length, 1);
   });
 });
