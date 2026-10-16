@@ -1,8 +1,6 @@
 /**
  * @module ol/render/webgpu/labelFade
  */
-import {countMetric, endMetric, startMetric} from '../../webgpu/metrics.js';
-
 /**
  * Fade-in duration for newly visible labels (ms).
  * @type {number}
@@ -230,7 +228,6 @@ export class LabelFade {
    * @return {boolean} True if any current label is still fading.
    */
   update(labels, visibility, time, maxWorldDistance, identities) {
-    const metricStart = startMetric();
     const used = new Set();
     /** @type {Map<number, {label: FadeLabel, target: number}>} */
     const current = new Map();
@@ -309,13 +306,9 @@ export class LabelFade {
       }
       const opacity = entryOpacity(entry, time, this.duration_);
       if (entry.target !== value.target) {
-        if (opacity !== entry.target && entry.target !== value.target) {
-          countMetric('targetReversals');
-        }
         entry.start = opacity;
         entry.target = value.target;
         entry.startTime = time;
-        countMetric('targetChanges');
       }
       const anchor = value.label._anchor;
       entry.text = value.label.text;
@@ -352,7 +345,6 @@ export class LabelFade {
         this.retired_.delete(id);
       }
     }
-    endMetric('labelFade', metricStart);
     return fading;
   }
 

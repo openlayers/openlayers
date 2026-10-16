@@ -3,7 +3,6 @@
  */
 import {extendGlyphBounds} from '../../render/webgpu/glyphLayout.js';
 import {imageBounds} from '../../render/webgpu/imageBounds.js';
-import {countMetric} from '../../webgpu/metrics.js';
 import {LABEL_COLLISION_MARGIN} from './vectorUtil.js';
 
 /**
@@ -292,10 +291,8 @@ class LabelView {
       box.glyphStart = label.glyphStart;
       box.glyphCount = label.glyphCount;
       if (sameLinearTransform && this.projected_[i]) {
-        countMetric('reusedLabelBoxes');
         continue;
       }
-      countMetric('projectedLabelBoxes');
 
       const anchor =
         /** @type {import("../../coordinate.js").Coordinate|undefined} */ (

@@ -11,7 +11,6 @@ import {
 import {fadeClock, LABEL_FADE_DURATION} from '../../render/webgpu/labelFade.js';
 import {apply as applyTransform} from '../../transform.js';
 import ViewHint from '../../ViewHint.js';
-import {countMetric, endMetric, startMetric} from '../../webgpu/metrics.js';
 import {
   localCoordinateToPixel,
   projectionMatrixFromFrame,
@@ -340,7 +339,6 @@ export class VectorGpuBuffers extends Disposable {
 
     pass.end();
     device.queue.submit([encoder.finish()]);
-    countMetric('warpPasses');
 
     // Warped positions are absolute target offsets from the grid origin, so
     // drawing them only needs a translation.
@@ -481,7 +479,6 @@ export class VectorGpuBuffers extends Disposable {
     if (texture) {
       entries.push({binding: 2, resource: texture.createView()});
     }
-    countMetric('bindGroups');
     const bindGroup = helper.getDevice().createBindGroup({
       layout: pipeline.getBindGroupLayout(0),
       entries,
@@ -614,7 +611,6 @@ export class FrameUniformSlot extends Disposable {
         {binding: 2, resource: texture.createView()},
       );
     }
-    countMetric('bindGroups');
     const bindGroup = helper.getDevice().createBindGroup({
       layout: pipeline.getBindGroupLayout(0),
       entries,
@@ -1050,9 +1046,6 @@ export function drawFills(
     if (state) {
       state.pipeline = pipeline;
     }
-    countMetric('pipelineBindings');
-  } else {
-    countMetric('skippedPipelineBindings');
   }
   pass.setBindGroup(
     0,
@@ -1064,7 +1057,6 @@ export function drawFills(
   );
   pass.setVertexBuffer(1, gpu.fillStyleBuffer);
   pass.setIndexBuffer(gpu.fillIndexBuffer, 'uint32');
-  countMetric('drawCalls');
   pass.drawIndexed(indexCount, 1, start);
 }
 
@@ -1090,9 +1082,6 @@ export function drawStrokes(helper, gpu, start = 0, count, encoder, state) {
     if (state) {
       state.pipeline = pipeline;
     }
-    countMetric('pipelineBindings');
-  } else {
-    countMetric('skippedPipelineBindings');
   }
   pass.setBindGroup(0, gpu.getBindGroup(helper, name, pipeline));
   pass.setVertexBuffer(
@@ -1105,7 +1094,6 @@ export function drawStrokes(helper, gpu, start = 0, count, encoder, state) {
   );
   pass.setVertexBuffer(2, gpu.strokeStyleBuffer);
   pass.setIndexBuffer(gpu.strokeIndexBuffer, 'uint32');
-  countMetric('drawCalls');
   pass.drawIndexed(indexCount, 1, start);
 }
 
@@ -1203,13 +1191,11 @@ export function paintBatches(
     cache &&
     paintCacheMatches(cache, batches, patternTexture, fontRevision)
   ) {
-    countMetric('paintBundleExecutions');
     helper
       .getRenderPass()
       .executeBundles([/** @type {GPURenderBundle} */ (cache.bundle)]);
     return;
   }
-  const planStart = startMetric();
   /** @type {Array<{batch: PaintBatch, command: import("../../render/webgpu/drawOrder.js").DrawCommand}>} */
   const items = [];
   for (let i = 0; i < batches.length; ++i) {
@@ -1224,15 +1210,11 @@ export function paintBatches(
         continue;
       }
       items.push({batch, command});
-      countMetric('paintCommands');
-      countMetric(command.pipeline + 'Commands');
     }
   }
   items.sort((a, b) =>
     comparePaint(a.command, a.batch.tileOrder, b.command, b.batch.tileOrder),
   );
-  endMetric('paintPlan', planStart);
-  const encodeStart = startMetric();
   const encoder = cache
     ? helper.getDevice().createRenderBundleEncoder({
         colorFormats: [helper.getFormat()],
@@ -1302,10 +1284,8 @@ export function paintBatches(
     cache.patternTexture = patternTexture;
     cache.fontRevision = fontRevision;
     cache.bundle = encoder.finish();
-    countMetric('paintBundleBuilds');
     helper.getRenderPass().executeBundles([cache.bundle]);
   }
-  endMetric('paintEncode', encodeStart);
 }
 
 /**

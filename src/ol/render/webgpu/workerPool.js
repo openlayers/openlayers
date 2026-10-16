@@ -1,13 +1,6 @@
 /**
  * @module ol/render/webgpu/workerPool
  */
-import {
-  countMetric,
-  endMetric,
-  maxMetric,
-  recordMetric,
-  startMetric,
-} from '../../webgpu/metrics.js';
 import {create as createWorker} from '../../worker/webgpuvector.js';
 
 /**
@@ -21,7 +14,6 @@ const POOL_SIZE = 2;
  * @typedef {Object} PendingRequest
  * @property {function(import("./geometryBuffers.js").GeometryBuffers): void} resolve Resolve.
  * @property {function(Error): void} reject Reject.
- * @property {number} metricStart Metric start time.
  */
 
 /**
@@ -81,16 +73,6 @@ class WorkerPool {
             return;
           }
           this.pending_.delete(data.id);
-          if (request.metricStart) {
-            const elapsed = performance.now() - request.metricStart;
-            endMetric('workerBuild', request.metricStart);
-            recordMetric('workerTessellation', data.buildDuration);
-            recordMetric(
-              'workerWait',
-              Math.max(0, elapsed - data.buildDuration),
-            );
-          }
-          countMetric('workerBuildCompletions');
           const buffers = data.buffers;
           request.resolve({
             fillPositions: new Int16Array(buffers.fillPositions),
@@ -143,12 +125,9 @@ class WorkerPool {
     }
     const id = this.nextId_++;
     ++target.load;
-    countMetric('workerBuilds');
-    const metricStart = startMetric();
     const promise = new Promise((resolve, reject) => {
-      this.pending_.set(id, {resolve, reject, metricStart});
+      this.pending_.set(id, {resolve, reject});
     });
-    maxMetric('workerQueueDepth', this.pending_.size);
     const coordinates = request.coordinates;
     const styles = request.styles;
     target.worker.postMessage(

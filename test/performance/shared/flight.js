@@ -2,14 +2,10 @@
  * A fixed flight: each phase is a function of the frame index, never of
  * wall-clock time, so runs stay comparable when rendering gets slower.
  */
+import Map from '../../../src/ol/Map.js';
 import ViewHint from '../../../src/ol/ViewHint.js';
 import {easeOut, inAndOut} from '../../../src/ol/easing.js';
 import {getCurrentDevice} from '../../../src/ol/webgpu/Device.js';
-import {
-  enableMetrics,
-  readMetrics,
-  resetMetrics,
-} from '../../../src/ol/webgpu/metrics.js';
 import {frameExperience, median} from './stats.js';
 
 /**
@@ -30,6 +26,25 @@ import {frameExperience, median} from './stats.js';
  * @property {number} framesPerPhase Frames in each phase.
  * @property {number} warmup Warmup frames before measuring.
  */
+
+/**
+ * Creates a map for a benchmark case. It has no controls and no interactions,
+ * so only the flight moves the view: nothing a user does while a run is in
+ * progress can change the center, zoom, or rotation.
+ * @param {HTMLElement} target Map target.
+ * @param {import("../../../src/ol/layer/Layer.js").default} layer Layer under test.
+ * @param {import("../../../src/ol/View.js").default} view View.
+ * @return {Map} Map.
+ */
+export function createBenchmarkMap(target, layer, view) {
+  return new Map({
+    target,
+    layers: [layer],
+    view,
+    controls: [],
+    interactions: [],
+  });
+}
 
 /**
  * Query parameters shared by the flight cases.
@@ -192,29 +207,6 @@ function nextFrame() {
 }
 
 /**
- * @param {import("../../../src/ol/webgpu/metrics.js").Metrics} metrics Metrics.
- * @param {number} frames Frame count to average over.
- * @return {Object<string, number>} Per-frame averages.
- */
-function perFrameMetrics(metrics, frames) {
-  const divisor = frames || 1;
-  /** @type {Object<string, number>} */
-  const out = {};
-  for (const name in metrics.timers) {
-    const timer = metrics.timers[name];
-    out[name + 'MsPerFrame'] = timer.total / divisor;
-    out[name + 'CallsPerFrame'] = timer.calls / divisor;
-  }
-  for (const name in metrics.counters) {
-    out[name + 'PerFrame'] = metrics.counters[name] / divisor;
-  }
-  for (const name in metrics.gauges) {
-    out[name + 'Max'] = metrics.gauges[name];
-  }
-  return out;
-}
-
-/**
  * Wait until the renderer is up and the layer has drawn at least once.
  * @param {import("../../../src/ol/Map.js").default} map Map.
  * @param {import("../../../src/ol/layer/Layer.js").default} layer Layer.
@@ -302,107 +294,99 @@ export async function runFlight(options) {
     await nextFrame();
   }
 
-  enableMetrics(true);
   /** @type {Array<Object>} */
   const phaseResults = [];
   /** @type {Array<number>} */
   const allFrameMs = [];
 
   let previous = await nextFrame();
-  try {
-    for (const phase of phases) {
-      if (signal?.aborted) {
-        return {cancelled: true};
-      }
-      const hinted = phase.moving || phase.interacting;
-      if (hinted) {
-        view.setHint(ViewHint.INTERACTING, 1);
-      }
-      /** @type {Array<number>} */
-      const frameMs = [];
-      let settleMs = 0;
-      const settleStart = performance.now();
-      const settleListener = phase.settle
-        ? () => {
-            if (!settleMs) {
-              settleMs = performance.now() - settleStart;
-            }
+  for (const phase of phases) {
+    if (signal?.aborted) {
+      return {cancelled: true};
+    }
+    const hinted = phase.moving || phase.interacting;
+    if (hinted) {
+      view.setHint(ViewHint.INTERACTING, 1);
+    }
+    /** @type {Array<number>} */
+    const frameMs = [];
+    let settleMs = 0;
+    const settleStart = performance.now();
+    const settleListener = phase.settle
+      ? () => {
+          if (!settleMs) {
+            settleMs = performance.now() - settleStart;
           }
-        : null;
-      if (settleListener) {
-        map.once('rendercomplete', settleListener);
-      }
-      resetMetrics();
-      let cancelled = false;
-      try {
-        for (let i = 0; i < framesPerPhase; ++i) {
-          if (signal?.aborted) {
+        }
+      : null;
+    if (settleListener) {
+      map.once('rendercomplete', settleListener);
+    }
+    let cancelled = false;
+    try {
+      for (let i = 0; i < framesPerPhase; ++i) {
+        if (signal?.aborted) {
+          cancelled = true;
+          break;
+        }
+        let rendered;
+        if (mode === 'animate') {
+          const renderedPromise = new Promise((resolve) => {
+            function onAbort() {
+              map.un('postrender', onRender);
+              resolve(undefined);
+            }
+            function onRender() {
+              signal?.removeEventListener('abort', onAbort);
+              resolve(performance.now());
+            }
+            map.once('postrender', onRender);
+            if (signal?.aborted) {
+              onAbort();
+            } else {
+              signal?.addEventListener('abort', onAbort, {once: true});
+            }
+          });
+          phase.apply(i / Math.max(1, framesPerPhase - 1));
+          map.render();
+          rendered = await renderedPromise;
+          if (rendered === undefined) {
             cancelled = true;
             break;
           }
-          let rendered;
-          if (mode === 'animate') {
-            const renderedPromise = new Promise((resolve) => {
-              function onAbort() {
-                map.un('postrender', onRender);
-                resolve(undefined);
-              }
-              function onRender() {
-                signal?.removeEventListener('abort', onAbort);
-                resolve(performance.now());
-              }
-              map.once('postrender', onRender);
-              if (signal?.aborted) {
-                onAbort();
-              } else {
-                signal?.addEventListener('abort', onAbort, {once: true});
-              }
-            });
-            phase.apply(i / Math.max(1, framesPerPhase - 1));
-            map.render();
-            rendered = await renderedPromise;
-            if (rendered === undefined) {
-              cancelled = true;
-              break;
-            }
-            const now = /** @type {number} */ (rendered);
-            frameMs.push(now - previous);
-            previous = now;
-          } else {
-            phase.apply(i / Math.max(1, framesPerPhase - 1));
-            map.renderSync();
-            const now = await nextFrame();
-            frameMs.push(now - previous);
-            previous = now;
-          }
-        }
-      } finally {
-        if (settleListener) {
-          map.un('rendercomplete', settleListener);
-        }
-        if (hinted) {
-          view.setHint(ViewHint.INTERACTING, -1);
+          const now = /** @type {number} */ (rendered);
+          frameMs.push(now - previous);
+          previous = now;
+        } else {
+          phase.apply(i / Math.max(1, framesPerPhase - 1));
+          map.renderSync();
+          const now = await nextFrame();
+          frameMs.push(now - previous);
+          previous = now;
         }
       }
-      if (cancelled || signal?.aborted) {
-        return {cancelled: true};
+    } finally {
+      if (settleListener) {
+        map.un('rendercomplete', settleListener);
       }
-      if (settleListener && !settleMs) {
-        settleMs = performance.now() - settleStart;
+      if (hinted) {
+        view.setHint(ViewHint.INTERACTING, -1);
       }
-      await getCurrentDevice()?.device.queue.onSubmittedWorkDone();
-      const metrics = readMetrics();
-      phaseResults.push({
-        name: phase.name,
-        frames: frameMs.length,
-        experience: frameExperience(frameMs, targetFrameMs),
-        settleMs,
-        metrics: perFrameMetrics(metrics, frameMs.length),
-      });
-      allFrameMs.push(...frameMs);
     }
-  } finally {
-    enableMetrics(false);
+    if (cancelled || signal?.aborted) {
+      return {cancelled: true};
+    }
+    if (settleListener && !settleMs) {
+      settleMs = performance.now() - settleStart;
+    }
+    await getCurrentDevice()?.device.queue.onSubmittedWorkDone();
+    phaseResults.push({
+      name: phase.name,
+      frames: frameMs.length,
+      experience: frameExperience(frameMs, targetFrameMs),
+      settleMs,
+    });
+    allFrameMs.push(...frameMs);
   }
 
   return {

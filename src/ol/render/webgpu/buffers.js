@@ -24,7 +24,6 @@ import RenderFeature from '../../render/Feature.js';
 import {getImageStyleData} from '../../render/ImageStyle.js';
 import CircleStyle from '../../style/Circle.js';
 import {getUid} from '../../util.js';
-import {countMetric, endMetric, startMetric} from '../../webgpu/metrics.js';
 import {
   CLASS_CIRCLE,
   CLASS_IMAGE,
@@ -72,9 +71,7 @@ export function resolveFeatureStyles(
   if (!geometry) {
     return [];
   }
-  const styleStart = startMetric();
   const styles = styleFunction(feature, resolution, zoom);
-  endMetric('styleEvaluation', styleStart);
   if (!styles) {
     return [];
   }
@@ -434,7 +431,6 @@ export function buildVectorRequest(
   imageAtlas,
   styleCache,
 ) {
-  const metricStart = startMetric();
   const styleTable = new StyleTable();
   /** @type {Array<import("./geometryBuffers.js").GeometryJob>} */
   const jobs = [];
@@ -505,7 +501,6 @@ export function buildVectorRequest(
         reproj?.filterExtent &&
         !intersects(item.geometry.getExtent(), reproj.filterExtent)
       ) {
-        countMetric('filteredStyledGeometries');
         continue;
       }
       appendStyledGeometry(
@@ -519,9 +514,6 @@ export function buildVectorRequest(
       );
     }
   }
-
-  endMetric('buildVectorRequest', metricStart);
-  countMetric('builtFeatures', sorted.length);
 
   // The GPU stores anchors as float32. An absolute web mercator coordinate is
   // only good to about a metre there, which is several pixels once the view is
@@ -1007,8 +999,6 @@ function appendIconLabel(state, image, anchor, hit, stamp) {
  * @return {VectorBuffers} Buffers.
  */
 export function combineVectorBuffers(geometry, labelData) {
-  countMetric('fillTriangles', geometry.fillIndices.length / 3);
-  countMetric('strokeTriangles', geometry.strokeIndices.length / 3);
   const commands = (geometry.ranges || []).concat(
     labelCommands(labelData.labels),
   );
@@ -1068,9 +1058,7 @@ export function buildVectorBuffers(
     renderOrder,
     imageAtlas,
   );
-  const metricStart = startMetric();
   const geometry = buildGeometryBuffers(request);
-  endMetric('mainThreadGeometry', metricStart);
   return combineVectorBuffers(geometry, labelData);
 }
 
