@@ -26,6 +26,7 @@ import {
   resolveDeclutter,
 } from '../../render/webgpu/declutter.js';
 import {buildGeometryBuffers} from '../../render/webgpu/geometryBuffers.js';
+import {clearWidthCaches} from '../../render/webgpu/glyphLayout.js';
 import {
   activeLabelIndices,
   LABEL_FADE_MATCH_PIXELS,
@@ -1292,6 +1293,17 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
       }
     }
     return undefined;
+  }
+
+  /**
+   * Rebuild labels after a font has loaded, so they no longer use glyphs and
+   * metrics of a fallback font.
+   * @override
+   */
+  handleFontsChanged() {
+    clearWidthCaches();
+    this.atlas_.clear();
+    this.getLayer().changed();
   }
 
   /**
