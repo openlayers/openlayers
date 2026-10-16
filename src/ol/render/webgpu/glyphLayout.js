@@ -109,19 +109,80 @@ function getLineBreakCandidates(text) {
 }
 
 /**
+ * Left-to-right scripts whose letters change form, combine, stack or reorder
+ * with their neighbors, e.g. Devanagari conjuncts, Khmer subscripts or
+ * Javanese pasangan.
+ * @type {Array<string>}
+ */
+const complexScripts = [
+  // South Asia
+  'Devanagari',
+  'Bengali',
+  'Gurmukhi',
+  'Gujarati',
+  'Oriya',
+  'Tamil',
+  'Telugu',
+  'Kannada',
+  'Malayalam',
+  'Sinhala',
+  'Tibetan',
+  'Chakma',
+  'Limbu',
+  'Lepcha',
+  'Meetei_Mayek',
+  'Newa',
+  'Tirhuta',
+  'Syloti_Nagri',
+  // Mainland Southeast Asia
+  'Thai',
+  'Lao',
+  'Myanmar',
+  'Khmer',
+  'Tai_Tham',
+  'New_Tai_Lue',
+  'Cham',
+  // Maritime Southeast Asia
+  'Javanese',
+  'Balinese',
+  'Sundanese',
+  'Buginese',
+  'Batak',
+  'Tagalog',
+  // Central and East Asia
+  'Mongolian',
+];
+
+/**
+ * @type {RegExp}
+ */
+const complexScriptRegEx = new RegExp(
+  '[' + complexScripts.map((script) => `\\p{Script=${script}}`).join('') + ']',
+  'u',
+);
+
+/**
+ * @param {string} text Text.
+ * @return {boolean} The text must be shaped as a whole: its letters depend on
+ * their neighbors for form, position or order.
+ */
+function needsShaping(text) {
+  return rtlRegEx.test(text) || complexScriptRegEx.test(text);
+}
+
+/**
  * Strings stored as separate font-atlas cells.
  *
  * Simple text is split into graphemes so repeated letters share a cell and
- * combining marks stay with their base character. A line that contains a
- * right-to-left script is kept intact. Those letters are separate graphemes,
- * but their joining forms and visual order come from shaping the whole line,
- * as canvas `fillText` does.
+ * combining marks stay with their base character. A line that needs shaping,
+ * e.g. Arabic or Devanagari, is kept intact. Its joining forms, conjuncts and
+ * visual order come from shaping the whole line, as canvas `fillText` does.
  *
  * @param {string} line Line of text.
  * @return {Array<string>} Atlas strings in logical order.
  */
 function atlasSegments(line) {
-  if (rtlRegEx.test(line)) {
+  if (needsShaping(line)) {
     return [line];
   }
   return Array.from(graphemeSegmenter.segment(line), (part) => part.segment);
@@ -651,6 +712,10 @@ export function layoutLineLabel(
   const middle = interpolatePoint(pixelCoords, 0, pixelCoords.length, 2, 0.5);
   const anchorPixelX = middle[0];
   const anchorPixelY = middle[1];
+  // Chunks depend on the path, so atlas cells for them would pile up with
+  // every street name and bend. Unless the text needs shaping, it is drawn
+  // from grapheme cells, as point labels are.
+  const shaped = needsShaping(text);
   const startIndex = out.length;
   const bounds = [Infinity, Infinity, -Infinity, -Infinity];
   for (const {parts, uprightX, uprightY} of variants) {
@@ -661,45 +726,50 @@ export function layoutLineLabel(
       const anchorX = /** @type {number} */ (entry[2]);
       const angle = /** @type {number} */ (entry[3]);
       const chunk = /** @type {string} */ (entry[4]);
-      const glyph = atlas.getGlyph(font, chunk, strokeWidth, pixelRatio);
       // The shader rotates the offset by `angle`, so unrotate the shift from
       // the shared anchor to this chunk's path point.
       const dx = gx - anchorPixelX;
       const dy = gy - anchorPixelY;
       const c = Math.cos(angle);
       const s = Math.sin(angle);
-      const instance = {
-        x: anchorPixelX * resolution,
-        y: -anchorPixelY * resolution,
-        offsetX: c * dx + s * dy - anchorX - glyph.pad,
-        offsetY: -s * dx + c * dy + baselineOffset - glyph.ascent,
-        width: glyph.width,
-        height: glyph.height,
-        texX0: glyph.texX0,
-        texY0: glyph.texY0,
-        texX1: glyph.texX1,
-        texY1: glyph.texY1,
-        page: glyph.page,
-        r: color[0],
-        g: color[1],
-        b: color[2],
-        a: color[3],
-        strokeR: halo[0],
-        strokeG: halo[1],
-        strokeB: halo[2],
-        strokeA: halo[3],
-        hasHalo,
-        hitR: hitColor[0],
-        hitG: hitColor[1],
-        hitB: hitColor[2],
-        hitA: hitColor[3],
-        angle,
-        rotateWithView: true,
-        uprightX,
-        uprightY,
-      };
-      out.push(instance);
-      extendGlyphBounds(bounds, instance, 0, 0);
+      // Advance origin of the next cell, relative to the chunk's path point.
+      let left = -anchorX;
+      for (const segment of shaped ? [chunk] : atlasSegments(chunk)) {
+        const glyph = atlas.getGlyph(font, segment, strokeWidth, pixelRatio);
+        const instance = {
+          x: anchorPixelX * resolution,
+          y: -anchorPixelY * resolution,
+          offsetX: c * dx + s * dy + left - glyph.pad,
+          offsetY: -s * dx + c * dy + baselineOffset - glyph.ascent,
+          width: glyph.width,
+          height: glyph.height,
+          texX0: glyph.texX0,
+          texY0: glyph.texY0,
+          texX1: glyph.texX1,
+          texY1: glyph.texY1,
+          page: glyph.page,
+          r: color[0],
+          g: color[1],
+          b: color[2],
+          a: color[3],
+          strokeR: halo[0],
+          strokeG: halo[1],
+          strokeB: halo[2],
+          strokeA: halo[3],
+          hasHalo,
+          hitR: hitColor[0],
+          hitG: hitColor[1],
+          hitB: hitColor[2],
+          hitA: hitColor[3],
+          angle,
+          rotateWithView: true,
+          uprightX,
+          uprightY,
+        };
+        out.push(instance);
+        extendGlyphBounds(bounds, instance, 0, 0);
+        left += glyph.advance;
+      }
     }
   }
   if (out.length === startIndex) {
