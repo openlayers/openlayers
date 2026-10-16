@@ -2,12 +2,23 @@
 layout: example-verbatim.html
 title: VersaTiles Colorful (with WebGPU)
 shortdesc: The VersaTiles Colorful style rendered with WebGPU vector tile layers and flat styles.
-docs: >
+docs: |
   The [VersaTiles Colorful](https://tiles.versatiles.org/assets/styles/colorful/style.json)
   style is fetched and translated into flat style rules on one `WebGPUVectorTile`
   layer. The rules share a vector tile source and a declutter group. The view's
   `maxResolution` matches Mapbox GL zoom level 0 (512 pixel tiles), so `['zoom']`
   expressions from the style can be used as-is. WebGPU is required.
+
+  Icons and fill patterns come from the style's sprite. Its SDF icons are
+  converted to white images, which `icon-color` tints. Because `icon-src`
+  cannot be an expression, an `icon-image` that depends on feature properties
+  becomes one rule per image.
+
+  These style features are not translated:
+
+  - Icons along lines, e.g. one-way arrows
+  - `text-transform`, `text-max-width`, and `text-halo-blur`
+  - Fading fill patterns: a pattern has the opacity of the highest zoom stop
 tags: "webgpu, vector, tiles, declutter, versatiles, flat style"
 experimental: true
 ---
