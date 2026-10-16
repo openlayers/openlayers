@@ -221,6 +221,30 @@ describe('ol/geom/flat/drawTextOnPath.js', function () {
     assert.strictEqual(instructions[1][4], 'جد');
   });
 
+  it('measures letters of shaped text in context', function () {
+    // Joined letters are narrower than letters on their own.
+    const measureJoined = (font, text) =>
+      10 * text.length - 4 * (text.length - 1);
+    const length = lineStringLength(angled, 0, angled.length, 2);
+    const instructions = drawTextOnPath(
+      angled,
+      0,
+      angled.length,
+      2,
+      'ابجد',
+      length / 2 - 14,
+      Infinity,
+      1,
+      measureJoined,
+      '',
+      {},
+    );
+    assert.strictEqual(instructions[0][4], 'جد');
+    assert.strictEqual(instructions[1][4], 'اب');
+    // The chunks add up to the width of the joined text, not of single letters.
+    assert.strictEqual(instructions[0][2] * 2 + instructions[1][2] * 2, 28);
+  });
+
   it('keeps a combined emoji as a single grapheme across segments', function () {
     // '👍🏽' is a single grapheme cluster made of several UTF-16 code units; it
     // must be measured and placed as a whole, never split across segments.
