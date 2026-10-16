@@ -229,6 +229,21 @@ class FontAtlas {
   }
 
   /**
+   * Forget all glyphs and release the page textures, e.g. after a font has
+   * loaded and glyphs rasterized with a fallback font are stale. The revision
+   * still increases, so bind groups for the old textures are not reused.
+   */
+  clear() {
+    for (const page of this.pages_) {
+      page.texture?.destroy();
+    }
+    this.pages_ = [createPage(INITIAL_PAGE_SIZE)];
+    this.glyphs_ = {};
+    this.widthCaches_ = {};
+    ++this.revision_;
+  }
+
+  /**
    * @param {number} page Page index.
    * @return {GPUTexture|null} Texture, or null before that page is uploaded.
    */
