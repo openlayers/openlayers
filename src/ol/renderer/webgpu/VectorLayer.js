@@ -898,8 +898,8 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
       // Keep drawing what is on hand until the worker answers.
       const generation = ++this.buildGeneration_;
       this.buildPending_ = true;
-      pending
-        .then((geometry) => {
+      pending.then(
+        (geometry) => {
           if (generation !== this.buildGeneration_) {
             return;
           }
@@ -917,10 +917,20 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
           if (upToDate) {
             this.renderedLayerRevision_ = layer.getRevision();
           }
-        })
-        .catch(() => {
+        },
+        () => {
+          if (generation !== this.buildGeneration_) {
+            return;
+          }
           this.buildPending_ = false;
-        });
+          if (this.disposed) {
+            return;
+          }
+          // The request's arrays went to the failed worker. Changing the
+          // layer revision makes the next frame build everything again.
+          this.getLayer().changed();
+        },
+      );
     } else {
       ++this.buildGeneration_;
       this.releaseBuffers_();

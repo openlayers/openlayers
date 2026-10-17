@@ -11,9 +11,9 @@ describe('ol/webgpu/Device', () => {
     assert.strictEqual(isWebGPUAvailable(), WEBGPU);
   });
 
-  it('rejects when WebGPU is missing', async function () {
+  it('rejects when WebGPU is missing', async (context) => {
     if (WEBGPU) {
-      this.skip();
+      context.skip();
     }
     let error;
     try {
@@ -24,9 +24,10 @@ describe('ol/webgpu/Device', () => {
     assert.instanceOf(error, Error);
   });
 
-  it('requests a shared device', async function () {
-    if (!WEBGPU) {
-      this.skip();
+  it('requests a shared device', async (context) => {
+    // Headless browsers can expose navigator.gpu without providing an adapter.
+    if (!WEBGPU || !(await navigator.gpu.requestAdapter())) {
+      context.skip();
     }
     const handle = await requestDevice();
     assert.isOk(handle.device);

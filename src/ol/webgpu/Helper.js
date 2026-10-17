@@ -21,6 +21,7 @@ import {
  * @typedef {Object} CanvasCacheItem
  * @property {HTMLCanvasElement} canvas Canvas.
  * @property {GPUCanvasContext} context Canvas context.
+ * @property {GPUDevice} device Device the context is configured for.
  * @property {number} users User count.
  * @property {number} frameIndex Last frame index.
  * @property {GPUCommandEncoder|null} encoder Pending encoder.
@@ -54,6 +55,10 @@ function getUniqueCanvasCacheKey() {
 }
 
 /**
+ * Shares a canvas among the helpers that use the same key. Helpers replacing
+ * ones whose device was lost can find the canvas still held by layers that have
+ * not been recreated yet, so a canvas configured for another device is
+ * reconfigured for the new one, and its per-frame state is dropped.
  * @param {string} key Cache key.
  * @param {GPUDevice} device Device.
  * @param {GPUTextureFormat} format Format.
@@ -61,6 +66,16 @@ function getUniqueCanvasCacheKey() {
  */
 function acquireCanvas(key, device, format) {
   let item = canvasCache[key];
+  if (item && item.device !== device) {
+    item.context.configure({device, format, alphaMode: 'premultiplied'});
+    item.device = device;
+    item.format = format;
+    item.depthTexture?.destroy();
+    item.depthTexture = null;
+    item.encoder = null;
+    item.colorView = null;
+    item.frameIndex = -1;
+  }
   if (!item) {
     const canvas = document.createElement('canvas');
     canvas.width = 1;
@@ -79,6 +94,7 @@ function acquireCanvas(key, device, format) {
     item = {
       canvas,
       context,
+      device,
       users: 0,
       frameIndex: -1,
       encoder: null,
