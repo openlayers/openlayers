@@ -1,9 +1,5 @@
 /**
  * @module ol/render/webgpu/geometryBuffers
- *
- * Turns tessellation jobs into the typed arrays the WebGPU vector pipelines
- * consume. Nothing here touches features, styles, or the DOM, so the same code
- * runs on the main thread and inside {@link module:ol/worker/webgpuvector}.
  */
 import {clipFlatLineStrings} from '../../geom/flat/clip.js';
 import {compareDraw} from './drawOrder.js';
@@ -139,6 +135,10 @@ function segmentOnClipEdge(x1, y1, x2, y2, extent, eps) {
  */
 
 /**
+ * Turn tessellation jobs into the typed arrays the WebGPU vector pipelines
+ * consume. Nothing here touches features, styles, or the DOM, so the same code
+ * runs on the main thread and inside {@link module:ol/worker/webgpuvector}.
+ *
  * @param {GeometryRequest} request Request.
  * @return {GeometryBuffers} Buffers.
  */
@@ -632,7 +632,7 @@ function createStrokeMeshWriter(
  * @param {StrokePoint} point Point.
  * @param {StrokeVector} normal Left normal.
  * @param {CanvasLineCap} cap Cap.
- * @param {-1|1} direction Start (-1) or end (1).
+ * @param {number} direction Start (-1) or end (1).
  */
 function addCapPair(writer, point, normal, cap, direction) {
   const extension = cap === 'square' ? direction : 0;
@@ -653,7 +653,7 @@ function addCapPair(writer, point, normal, cap, direction) {
  * @param {StrokeMeshWriter} writer Writer.
  * @param {StrokePoint} point Point.
  * @param {StrokeVector} normal Left normal.
- * @param {-1|1} direction Start (-1) or end (1).
+ * @param {number} direction Start (-1) or end (1).
  */
 function addRoundCap(writer, point, normal, direction) {
   const center = writer.vertex(point.x, point.y, 0, 0, point.distance);

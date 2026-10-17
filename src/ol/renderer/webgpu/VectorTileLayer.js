@@ -109,7 +109,7 @@ class TileBatch extends Disposable {
 
     /**
      * Renderer map entries that refer to this batch.
-     * @type {Array<[Map<string, TileBatch>, string]>}
+     * @type {Array<{map: Map<string, TileBatch>, key: string}>}
      */
     this.references = [];
 
@@ -1727,7 +1727,7 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
       return;
     }
     map.set(key, batch);
-    batch.references.push([map, key]);
+    batch.references.push({map, key});
   }
 
   /**
@@ -1737,7 +1737,7 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
    * @private
    */
   handleBatchDispose_(batch) {
-    for (const [map, key] of batch.references) {
+    for (const {map, key} of batch.references) {
       // The key may refer to a newer batch by now.
       if (map.get(key) === batch) {
         map.delete(key);
