@@ -147,6 +147,7 @@ jobs:
       - name: Run Browser Tests
         run: npm run test-browser
 
+      # WebGPU rendering test cases must be named webgpu-* (see test/rendering/readme.md).
       - name: Run WebGPU Rendering Tests
         run: npm run test-rendering -- --match webgpu
 
