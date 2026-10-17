@@ -5,6 +5,9 @@ import {defaults as defaultInteractions} from '../../src/ol/interaction/defaults
 
 setLogLevel('error');
 
+// Headless browsers can expose navigator.gpu without providing an adapter.
+const webgpu = 'gpu' in navigator && !!(await navigator.gpu.requestAdapter());
+
 (function (global) {
   function afterLoad(type, path, next) {
     const client = new XMLHttpRequest();
@@ -82,6 +85,7 @@ setLogLevel('error');
     FileReader: 'FileReader' in global,
     Uint8ClampedArray: 'Uint8ClampedArray' in global,
     WebGL: false,
+    WebGPU: webgpu,
   };
 
   /**

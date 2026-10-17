@@ -75,14 +75,17 @@ class WebGPULayerRenderer extends LayerRenderer {
       return;
     }
     this.deviceRequestPending_ = true;
+    this.updateReady();
     requestDevice().then(
       () => {
         this.deviceRequestPending_ = false;
         this.deviceRequestFailed_ = false;
+        this.updateReady();
         this.getLayer()?.changed();
       },
       (error) => {
         this.deviceRequestPending_ = false;
+        this.updateReady();
         if (!this.deviceRequestFailed_) {
           warn(
             'WebGPU device request failed, retrying on the next frame:',
@@ -92,6 +95,26 @@ class WebGPULayerRenderer extends LayerRenderer {
         this.deviceRequestFailed_ = true;
       },
     );
+  }
+
+  /**
+   * Whether geometry is still being built off the main thread, or images it
+   * needs are still loading.
+   * @return {boolean} Work is pending.
+   * @protected
+   */
+  hasPendingWork() {
+    return false;
+  }
+
+  /**
+   * Keeps the map from reporting `rendercomplete` while the device, the
+   * geometry or the images for this layer are still on their way. Call it
+   * whenever any of them changes.
+   * @protected
+   */
+  updateReady() {
+    this.ready = !this.deviceRequestPending_ && !this.hasPendingWork();
   }
 
   /**
