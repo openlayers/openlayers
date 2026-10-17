@@ -46,8 +46,9 @@ export class DragAndDropEvent extends Event {
    * @param {File} file File.
    * @param {Array<import("../Feature.js").default>} [features] Features.
    * @param {import("../proj/Projection.js").default} [projection] Projection.
+   * @param {import("../format/Feature.js").default} [format] The format used to read the features.
    */
-  constructor(type, file, features, projection) {
+  constructor(type, file, features, projection, format) {
     super(type);
 
     /**
@@ -70,6 +71,13 @@ export class DragAndDropEvent extends Event {
      * @api
      */
     this.projection = projection;
+
+    /**
+     * The format used to read the features.
+     * @type {import("../format/Feature.js").default|undefined}
+     * @api
+     */
+    this.format = format;
   }
 }
 
@@ -221,6 +229,7 @@ class DragAndDrop extends Interaction {
             file,
             features,
             projection,
+            format,
           ),
         );
         break;
