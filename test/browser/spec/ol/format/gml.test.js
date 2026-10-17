@@ -3135,4 +3135,34 @@ describe('ol.format.GML32', function () {
       );
     });
   });
+
+  describe('when parsing a feature collection from OGR', function () {
+    let features;
+    beforeAll(
+      () =>
+        new Promise((resolve, reject) => {
+          afterLoadText('spec/ol/format/gml/gml32-ogr.xml', function (xml) {
+            try {
+              features = new GML32().readFeatures(xml);
+            } catch (e) {
+              reject(e);
+              return;
+            }
+            resolve();
+          });
+        }),
+    );
+
+    it('reads the features of ogr:featureMember elements', function () {
+      assert.lengthOf(features, 2);
+      assert.strictEqual(features[0].getId(), 'poi.0');
+      assert.strictEqual(features[0].get('name'), 'a');
+      assert.deepEqual(
+        features[0].getGeometry().getCoordinates(),
+        [10.5, 52.25, 0],
+      );
+      assert.strictEqual(features[1].getId(), 'poi.1');
+      assert.strictEqual(features[1].get('name'), 'b');
+    });
+  });
 });

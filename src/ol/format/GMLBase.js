@@ -141,13 +141,16 @@ class GMLBase extends XMLFeature {
     const localName = node.localName;
     let features = null;
     if (localName == 'FeatureCollection') {
-      features = pushParseAndPop(
-        [],
-        this.FEATURE_COLLECTION_PARSERS,
-        node,
-        objectStack,
-        this,
-      );
+      let parsersNS = this.FEATURE_COLLECTION_PARSERS;
+      const namespaceURI = node.namespaceURI;
+      if (namespaceURI && !(namespaceURI in parsersNS)) {
+        // Feature collections defined in an application schema (e.g.
+        // `ogr:FeatureCollection`) have their member properties in the same
+        // namespace (e.g. `ogr:featureMember`).
+        parsersNS = Object.assign({}, parsersNS);
+        parsersNS[namespaceURI] = parsersNS[this.namespace];
+      }
+      features = pushParseAndPop([], parsersNS, node, objectStack, this);
     } else if (
       localName == 'featureMembers' ||
       localName == 'featureMember' ||
