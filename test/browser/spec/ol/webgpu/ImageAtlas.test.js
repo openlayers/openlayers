@@ -84,12 +84,41 @@ describe('ol/webgpu/ImageAtlas', () => {
     assert.deepEqual(first, before);
   });
 
-  it('forgets entries when disposed', () => {
+  it('forgets entries when cleared', () => {
     const source = createSprite();
     const atlas = new ImageAtlas();
     const red = atlas.add(imageData(source, 0, 0, 4, 4));
-    atlas.dispose();
+    atlas.clear();
     assert.notStrictEqual(atlas.add(imageData(source, 0, 0, 4, 4)), red);
+  });
+
+  it('is full instead of growing past 4096', () => {
+    const source = document.createElement('canvas');
+    source.width = 1100;
+    source.height = 1000;
+    const atlas = new ImageAtlas();
+    let entry;
+    for (let i = 0; !atlas.isFull(); ++i) {
+      assert.isBelow(i, 17);
+      entry = atlas.add(imageData(source, i, 0, 1000, 1000));
+    }
+    assert.strictEqual(atlas.getSize(), 4096);
+    assert.strictEqual(entry.texX1 - entry.texX0, 0);
+    atlas.clear();
+    assert.isFalse(atlas.isFull());
+    assert.strictEqual(atlas.getSize(), 512);
+  });
+
+  it('scales images down that are larger than the atlas', () => {
+    const source = document.createElement('canvas');
+    source.width = 5000;
+    source.height = 1000;
+    const atlas = new ImageAtlas();
+    const entry = atlas.add(imageData(source, 0, 0, 5000, 1000));
+    assert.isFalse(atlas.isFull());
+    assert.strictEqual(atlas.getSize(), 4096);
+    assert.strictEqual(entry.texX1 - entry.texX0, 4094);
+    assert.strictEqual(entry.texY1 - entry.texY0, 818);
   });
 
   it('copies sprite rectangles and keeps them when the texture grows', async ({

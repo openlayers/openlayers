@@ -58,6 +58,7 @@ import {
   paintBatches,
   placementKey,
   startFontAtlasOver,
+  startImageAtlasOver,
   VECTOR_FRAME_UNIFORM_SIZE,
   VectorGpuBuffers,
 } from './vectorUtil.js';
@@ -612,7 +613,7 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     this.uniforms_?.dispose();
     this.uniforms_ = new FrameUniformPool(helper);
     this.paintCache_ = {};
-    this.imageAtlas_.dispose();
+    this.imageAtlas_.clear();
     this.atlas_.clear();
     this.tileCache_.clear();
     this.renderBatchesByKey_.clear();
@@ -638,6 +639,9 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
       )
     ) {
       startFontAtlasOver(this.atlas_, this.getLayer());
+    }
+    if (this.imageAtlas_.isFull()) {
+      startImageAtlasOver(this.imageAtlas_, this.getLayer());
     }
     // `layer.changed()` rebuilds the tile batches, e.g. for a style function
     // that depends on external state.
@@ -1989,7 +1993,7 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     this.styleCaches_.clear();
     this.uniforms_?.dispose();
     this.uniforms_ = null;
-    this.imageAtlas_.dispose();
+    this.imageAtlas_.clear();
     this.atlas_.clear();
     super.disposeInternal();
   }
