@@ -25,6 +25,30 @@ import {getUid} from '../util.js';
  */
 
 /**
+ * The atlas starts at this size and doubles as images arrive.
+ * @type {number}
+ */
+const INITIAL_SIZE = 512;
+
+/**
+ * The atlas starts over instead of growing past this size.
+ * @type {number}
+ */
+const MAX_SIZE = 4096;
+
+/**
+ * Larger images are scaled down to this size, so every image fits.
+ * @type {number}
+ */
+const MAX_CELL_SIZE = MAX_SIZE - 2;
+
+/**
+ * Returned for an image that does not fit, so nothing is drawn for it.
+ * @type {ImageAtlasEntry}
+ */
+const EMPTY_ENTRY = {texX0: 0, texY0: 0, texX1: 0, texY1: 0};
+
+/**
  * @param {import("../DataTile.js").ImageLike} image Image.
  * @return {Array<number>} Width and height in pixels.
  */
@@ -42,6 +66,8 @@ function getImageSize(image) {
  * Shelf-packed full-color atlas for image styles. The atlas exists only on
  * the GPU: new sprite rectangles are copied from their images to the texture.
  * The texture is replaced only when the atlas grows, by a copy on the GPU.
+ * The atlas grows up to 4096 and is then full, so its user has to start it
+ * over. Images larger than that are scaled down.
  */
 class ImageAtlas {
   constructor() {
@@ -49,7 +75,14 @@ class ImageAtlas {
      * @private
      * @type {number}
      */
-    this.size_ = 512;
+    this.size_ = INITIAL_SIZE;
+
+    /**
+     * An image did not fit.
+     * @private
+     * @type {boolean}
+     */
+    this.full_ = false;
 
     /**
      * @private
@@ -93,7 +126,8 @@ class ImageAtlas {
    * Add an image-style sprite rectangle.
    *
    * @param {import("../render/ImageStyle.js").ImageStyleData} data Image data.
-   * @return {ImageAtlasEntry} Atlas entry.
+   * @return {ImageAtlasEntry} Atlas entry, empty when the atlas is full. Its
+   * size is smaller than the source rectangle when the image was scaled down.
    */
   add(data) {
     const key = `${getUid(data.image)}/${data.sourceX}/${data.sourceY}/${data.sourceWidth}/${data.sourceHeight}`;
@@ -101,9 +135,17 @@ class ImageAtlas {
     if (existing) {
       return existing;
     }
-    const width = Math.max(1, Math.ceil(data.sourceWidth));
-    const height = Math.max(1, Math.ceil(data.sourceHeight));
-    this.fit_(width, height);
+    let width = Math.max(1, Math.ceil(data.sourceWidth));
+    let height = Math.max(1, Math.ceil(data.sourceHeight));
+    const scale = MAX_CELL_SIZE / Math.max(width, height);
+    if (scale < 1) {
+      width = Math.max(1, Math.floor(width * scale));
+      height = Math.max(1, Math.floor(height * scale));
+    }
+    if (!this.fit_(width, height)) {
+      this.full_ = true;
+      return EMPTY_ENTRY;
+    }
     const x = this.shelfX_;
     const y = this.shelfY_;
     this.pending_.push({...this.getSource_(data, width, height), x, y});
@@ -121,8 +163,7 @@ class ImageAtlas {
 
   /**
    * Whole-pixel rectangles inside the image are copied from the image itself.
-   * Others are drawn to a canvas of the cell size, which scales and clips them
-   * like before.
+   * Others are drawn to a canvas of the cell size, which scales and clips them.
    * @param {import("../render/ImageStyle.js").ImageStyleData} data Image data.
    * @param {number} width Cell width.
    * @param {number} height Cell height.
@@ -163,6 +204,7 @@ class ImageAtlas {
   /**
    * @param {number} width Cell width.
    * @param {number} height Cell height.
+   * @return {boolean} There is room for the cell, after growing if needed.
    * @private
    */
   fit_(width, height) {
@@ -174,10 +216,14 @@ class ImageAtlas {
       this.shelfX_ = 1;
       this.shelfHeight_ = 0;
     }
-    if (this.shelfY_ + height + 1 > this.size_) {
-      this.grow_(this.size_ + 1);
-      this.fit_(width, height);
+    if (this.shelfY_ + height + 1 <= this.size_) {
+      return true;
     }
+    if (this.size_ * 2 > MAX_SIZE) {
+      return false;
+    }
+    this.grow_(this.size_ + 1);
+    return this.fit_(width, height);
   }
 
   /**
@@ -258,13 +304,21 @@ class ImageAtlas {
   }
 
   /**
+   * @return {boolean} An image did not fit, so the atlas has to start over.
+   */
+  isFull() {
+    return this.full_;
+  }
+
+  /**
    * Release the texture and forget all entries. Their texels exist only in
    * the texture, so they are copied again when added again.
    */
-  dispose() {
+  clear() {
     this.texture_?.destroy();
     this.texture_ = null;
-    this.size_ = 512;
+    this.size_ = INITIAL_SIZE;
+    this.full_ = false;
     this.shelfX_ = 1;
     this.shelfY_ = 1;
     this.shelfHeight_ = 0;

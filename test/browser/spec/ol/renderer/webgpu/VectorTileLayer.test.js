@@ -503,6 +503,31 @@ describe('ol/renderer/webgpu/VectorTileLayer', () => {
     assert.isAbove(layer.getRevision(), revision);
   });
 
+  it('starts the image atlas over when it is full', () => {
+    const imageAtlas = renderer.imageAtlas_;
+    const source = document.createElement('canvas');
+    source.width = 1100;
+    source.height = 1000;
+    for (let i = 0; !imageAtlas.isFull(); ++i) {
+      imageAtlas.add(
+        /** @type {*} */ ({
+          image: source,
+          sourceX: i,
+          sourceY: 0,
+          sourceWidth: 1000,
+          sourceHeight: 1000,
+        }),
+      );
+    }
+    const revision = layer.getRevision();
+    const frameState = frameAtZ(0);
+    frameState.viewHints = [0, 1];
+    renderer.prepareFrameInternal(frameState);
+    assert.isFalse(imageAtlas.isFull());
+    assert.strictEqual(imageAtlas.getSize(), 512);
+    assert.isAbove(layer.getRevision(), revision);
+  });
+
   it('drops references to a batch when it is disposed', () => {
     const batch = {references: []};
     const newer = {references: []};

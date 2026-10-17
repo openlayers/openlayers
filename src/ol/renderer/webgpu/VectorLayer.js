@@ -62,6 +62,7 @@ import {
   paintBatches,
   placementKey,
   startFontAtlasOver,
+  startImageAtlasOver,
   VECTOR_FRAME_UNIFORM_SIZE,
   VectorGpuBuffers,
 } from './vectorUtil.js';
@@ -682,7 +683,7 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
     this.uniforms_?.dispose();
     this.uniforms_ = new FrameUniformPool(helper);
     this.paintCache_ = {};
-    this.imageAtlas_.dispose();
+    this.imageAtlas_.clear();
     this.atlas_.clear();
     this.gpu_?.dispose();
     this.gpu_ = null;
@@ -720,6 +721,9 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
       )
     ) {
       startFontAtlasOver(this.atlas_, this.getLayer());
+    }
+    if (this.imageAtlas_.isFull()) {
+      startImageAtlasOver(this.imageAtlas_, this.getLayer());
     }
     const source =
       /** @type {import("../../source/Vector.js").default|null} */ (
@@ -1333,7 +1337,7 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
       unlistenByKey(this.sourceListenKey_);
     }
     this.releaseBuffers_();
-    this.imageAtlas_.dispose();
+    this.imageAtlas_.clear();
     this.atlas_.clear();
     this.uniforms_?.dispose();
     this.uniforms_ = null;
