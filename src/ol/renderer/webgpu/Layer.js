@@ -2,12 +2,15 @@
  * @module ol/renderer/webgpu/Layer
  */
 import {asArray} from '../../color.js';
+import {warn} from '../../console.js';
 import LayerProperty from '../../layer/Property.js';
 import RenderEvent from '../../render/Event.js';
 import RenderEventType from '../../render/EventType.js';
 import {
+  addDeviceLostListener,
   getCurrentDevice,
   isWebGPUAvailable,
+  removeDeviceLostListener,
   requestDevice,
 } from '../../webgpu/Device.js';
 import WebGPUHelper from '../../webgpu/Helper.js';
@@ -31,17 +34,64 @@ class WebGPULayerRenderer extends LayerRenderer {
     this.helper;
 
     /**
+     * A device request made by this renderer has not settled yet.
      * @private
      * @type {boolean}
      */
-    this.deviceRequested_ = false;
+    this.deviceRequestPending_ = false;
+
+    /**
+     * The last device request failed. The next frame tries again, and only
+     * the first failure in a row is reported.
+     * @private
+     * @type {boolean}
+     */
+    this.deviceRequestFailed_ = false;
 
     this.onMapChanged_ = () => {
       this.clearCache();
       this.removeHelper();
     };
 
+    /**
+     * Renders the layer again after the device is lost, so a replacement is
+     * requested without waiting for something else to trigger a frame.
+     * @private
+     */
+    this.onDeviceLost_ = () => {
+      this.getLayer()?.changed();
+    };
+
     layer.addChangeListener(LayerProperty.MAP, this.onMapChanged_);
+    addDeviceLostListener(this.onDeviceLost_);
+  }
+
+  /**
+   * Requests the shared device and renders the layer again once it is ready.
+   * @private
+   */
+  requestDevice_() {
+    if (this.deviceRequestPending_) {
+      return;
+    }
+    this.deviceRequestPending_ = true;
+    requestDevice().then(
+      () => {
+        this.deviceRequestPending_ = false;
+        this.deviceRequestFailed_ = false;
+        this.getLayer()?.changed();
+      },
+      (error) => {
+        this.deviceRequestPending_ = false;
+        if (!this.deviceRequestFailed_) {
+          warn(
+            'WebGPU device request failed, retrying on the next frame:',
+            error,
+          );
+        }
+        this.deviceRequestFailed_ = true;
+      },
+    );
   }
 
   /**
@@ -69,15 +119,7 @@ class WebGPULayerRenderer extends LayerRenderer {
       return false;
     }
     if (!getCurrentDevice()) {
-      if (!this.deviceRequested_) {
-        this.deviceRequested_ = true;
-        requestDevice().then(
-          () => {
-            this.getLayer()?.changed();
-          },
-          () => {},
-        );
-      }
+      this.requestDevice_();
       return false;
     }
 
@@ -212,6 +254,7 @@ class WebGPULayerRenderer extends LayerRenderer {
   disposeInternal() {
     this.clearCache();
     this.removeHelper();
+    removeDeviceLostListener(this.onDeviceLost_);
     this.getLayer()?.removeChangeListener(
       LayerProperty.MAP,
       this.onMapChanged_,
