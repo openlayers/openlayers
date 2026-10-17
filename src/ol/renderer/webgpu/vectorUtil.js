@@ -1378,3 +1378,14 @@ export function startFontAtlasOver(atlas, layer) {
   atlas.clear();
   layer.changed();
 }
+
+/**
+ * Start the image atlas over when it is full, and rebuild all icons and
+ * pattern fills of the layer. Only images that are still needed come back.
+ * @param {import("../../webgpu/ImageAtlas.js").default} imageAtlas Image atlas.
+ * @param {import("../../layer/Layer.js").default} layer Layer.
+ */
+export function startImageAtlasOver(imageAtlas, layer) {
+  imageAtlas.clear();
+  layer.changed();
+}
