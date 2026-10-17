@@ -28,6 +28,8 @@ import TileLayer from '../../../../src/ol/layer/Tile.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorTileLayer from '../../../../src/ol/layer/VectorTile.js';
 import WebGLVectorLayer from '../../../../src/ol/layer/WebGLVector.js';
+import WebGPUVectorLayer from '../../../../src/ol/layer/WebGPUVector.js';
+import WebGPUVectorTileLayer from '../../../../src/ol/layer/WebGPUVectorTile.js';
 import {tile as tileStrategy} from '../../../../src/ol/loadingstrategy.js';
 import {
   clearUserProjection,
@@ -426,7 +428,7 @@ describe('ol/Map', function () {
     });
 
     afterEach(function () {
-      disposeMap(map);
+      disposeMap(map, target);
       map.getLayers().forEach((layer) => layer.dispose());
     });
 
@@ -652,6 +654,84 @@ describe('ol/Map', function () {
           map.once('rendercomplete', function () {
             try {
               assert.strictEqual(iconLoaded, true);
+              resolve();
+            } catch (e) {
+              reject(e);
+            }
+          });
+        }));
+    });
+
+    where('WebGPU').describe('with WebGPU layers and late images', function () {
+      let img, imgLoaded;
+      beforeEach(function () {
+        imgLoaded = false;
+        img = new Image();
+        img.onload = () => (imgLoaded = true);
+        // The image only starts loading after the first frames.
+        setTimeout(() => (img.src = 'spec/ol/data/dot.png'), 300);
+      });
+
+      it('waits for icons to be loaded with ol/renderer/webgpu/VectorLayer', () =>
+        new Promise((resolve, reject) => {
+          map = new Map({
+            target: target,
+            view: new View({
+              center: [0, 0],
+              resolution: 1,
+            }),
+            layers: [
+              new WebGPUVectorLayer({
+                source: new VectorSource({
+                  features: [new Feature(new Point([0, 0]))],
+                }),
+                style: new Style({
+                  image: new Icon({img, size: [8, 8]}),
+                }),
+              }),
+            ],
+          });
+          map.once('rendercomplete', function () {
+            try {
+              assert.strictEqual(imgLoaded, true);
+              resolve();
+            } catch (e) {
+              reject(e);
+            }
+          });
+        }));
+
+      it('waits for icons to be loaded with ol/renderer/webgpu/VectorTileLayer', () =>
+        new Promise((resolve, reject) => {
+          const tileSize = 64;
+          const tileGrid = createXYZ({tileSize: tileSize});
+          map = new Map({
+            target: target,
+            view: new View({
+              center: [0, 0],
+              resolution: 1,
+            }),
+            layers: [
+              new WebGPUVectorTileLayer({
+                source: new VectorTileSource({
+                  tileSize: tileSize,
+                  tileUrlFunction: (tileCoord) => tileCoord.join('/'),
+                  tileLoadFunction: function (tile) {
+                    const coordinate = tileGrid.getTileCoordCenter(
+                      tile.getTileCoord(),
+                    );
+                    tile.setFeatures([new Feature(new Point(coordinate))]);
+                  },
+                }),
+                style: new Style({
+                  image: new Icon({img, size: [8, 8]}),
+                }),
+              }),
+            ],
+          });
+          map.once('rendercomplete', function () {
+            try {
+              assert.strictEqual(imgLoaded, true);
               resolve();
             } catch (e) {
               reject(e);
