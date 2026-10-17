@@ -38,6 +38,7 @@ import {compileStyle} from '../../render/webgpu/style.js';
 import {SymbolIdentityIndex} from '../../render/webgpu/symbolIdentity.js';
 import {buildWarpGrid, warpGridKey} from '../../render/webgpu/warpGrid.js';
 import {getWorkerPool} from '../../render/webgpu/workerPool.js';
+import {getUid} from '../../util.js';
 import ViewHint from '../../ViewHint.js';
 import FontAtlas from '../../webgpu/FontAtlas.js';
 import ImageAtlas from '../../webgpu/ImageAtlas.js';
@@ -457,10 +458,11 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
     this.imageAtlas_ = new ImageAtlas();
 
     /**
+     * Images and pattern fills that are still loading, by uid.
      * @private
-     * @type {WeakSet<import("../../style/Image.js").default|import("../../style/Fill.js").default>}
+     * @type {Object<string, true>}
      */
-    this.loadingImages_ = new WeakSet();
+    this.loadingImages_ = {};
 
     /**
      * @private
@@ -710,6 +712,18 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
   }
 
   /**
+   * @return {boolean} Work is pending.
+   * @override
+   */
+  hasPendingWork() {
+    return (
+      this.buildPending_ ||
+      this.imageChangeScheduled_ ||
+      Object.keys(this.loadingImages_).length > 0
+    );
+  }
+
+  /**
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @return {boolean} Ready.
    * @override
@@ -824,18 +838,22 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
    */
   watchImages_(images) {
     for (const image of images) {
-      if (this.loadingImages_.has(image)) {
+      const uid = getUid(image);
+      if (this.loadingImages_[uid]) {
         continue;
       }
-      this.loadingImages_.add(image);
+      this.loadingImages_[uid] = true;
+      this.updateReady();
       image.ready().then(() => {
-        this.loadingImages_.delete(image);
+        delete this.loadingImages_[uid];
         if (this.disposed || this.imageChangeScheduled_) {
           return;
         }
+        // Still pending until the frame that rebuilds with the image.
         this.imageChangeScheduled_ = true;
         requestAnimationFrame(() => {
           this.imageChangeScheduled_ = false;
+          this.updateReady();
           if (!this.disposed) {
             this.getLayer().changed();
           }
@@ -902,12 +920,14 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
       // Keep drawing what is on hand until the worker answers.
       const generation = ++this.buildGeneration_;
       this.buildPending_ = true;
+      this.updateReady();
       pending.then(
         (geometry) => {
           if (generation !== this.buildGeneration_) {
             return;
           }
           this.buildPending_ = false;
+          this.updateReady();
           if (this.disposed) {
             return;
           }
@@ -927,6 +947,7 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
             return;
           }
           this.buildPending_ = false;
+          this.updateReady();
           if (this.disposed) {
             return;
           }

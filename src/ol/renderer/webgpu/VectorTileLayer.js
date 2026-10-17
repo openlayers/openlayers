@@ -343,10 +343,11 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     this.imageAtlas_ = new ImageAtlas();
 
     /**
+     * Images and pattern fills that are still loading, by uid.
      * @private
-     * @type {WeakSet<import("../../style/Image.js").default|import("../../style/Fill.js").default>}
+     * @type {Object<string, true>}
      */
-    this.loadingImages_ = new WeakSet();
+    this.loadingImages_ = {};
 
     const cacheSize = options.cacheSize !== undefined ? options.cacheSize : 512;
 
@@ -666,6 +667,16 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
   }
 
   /**
+   * @return {boolean} Work is pending.
+   * @override
+   */
+  hasPendingWork() {
+    return (
+      this.pendingKeys_.size > 0 || Object.keys(this.loadingImages_).length > 0
+    );
+  }
+
+  /**
    * @param {import("../../Map.js").FrameState} frameState Frame.
    * @return {boolean} Ready.
    * @override
@@ -704,12 +715,15 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
    */
   watchImages_(images) {
     for (const image of images) {
-      if (this.loadingImages_.has(image)) {
+      const uid = getUid(image);
+      if (this.loadingImages_[uid]) {
         continue;
       }
-      this.loadingImages_.add(image);
+      this.loadingImages_[uid] = true;
+      this.updateReady();
       image.ready().then(() => {
-        this.loadingImages_.delete(image);
+        delete this.loadingImages_[uid];
+        this.updateReady();
         if (!this.disposed) {
           this.getLayer().changed();
         }
@@ -1001,9 +1015,11 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     if (pending) {
       const generation = this.batchGeneration_;
       this.pendingKeys_.add(cacheKey);
+      this.updateReady();
       pending.then(
         (geometry) => {
           this.pendingKeys_.delete(cacheKey);
+          this.updateReady();
           if (this.disposed) {
             return;
           }
@@ -1025,6 +1041,7 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
         },
         () => {
           this.pendingKeys_.delete(cacheKey);
+          this.updateReady();
           if (this.disposed) {
             return;
           }
