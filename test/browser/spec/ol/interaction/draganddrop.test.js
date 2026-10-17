@@ -4,9 +4,12 @@ import Event from '../../../../../src/ol/events/Event.js';
 import EventTarget from '../../../../../src/ol/events/Target.js';
 import GeoJSON from '../../../../../src/ol/format/GeoJSON.js';
 import MVT from '../../../../../src/ol/format/MVT.js';
-import DragAndDrop from '../../../../../src/ol/interaction/DragAndDrop.js';
+import DragAndDrop, {
+  DragAndDropEvent,
+} from '../../../../../src/ol/interaction/DragAndDrop.js';
 import {
   clearUserProjection,
+  get as getProjection,
   transform,
   useGeographic,
 } from '../../../../../src/ol/proj.js';
@@ -47,6 +50,118 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function () {
         source: source,
       });
       assert.equal(drop.source_, source);
+    });
+  });
+
+  describe('DragAndDropEvent', function () {
+    it('keeps four-argument construction compatible', function () {
+      const file = new File([], 'features.geojson');
+      const features = [];
+      const projection = getProjection('EPSG:3857');
+      const event = new DragAndDropEvent(
+        'addfeatures',
+        file,
+        features,
+        projection,
+      );
+      assert.strictEqual(event.file, file);
+      assert.strictEqual(event.features, features);
+      assert.strictEqual(event.projection, projection);
+      assert.isUndefined(event.format);
+    });
+
+    it('accepts the format instance as the fifth argument', function () {
+      const file = new File([], 'features.geojson');
+      const format = new GeoJSON();
+      const event = new DragAndDropEvent(
+        'addfeatures',
+        file,
+        [],
+        getProjection('EPSG:3857'),
+        format,
+      );
+      assert.strictEqual(event.format, format);
+    });
+  });
+
+  describe('#handleResult_()', function () {
+    ['throws', 'returns no features'].forEach(function (failure) {
+      it(
+        'reports the successful reader when the first ' + failure,
+        function () {
+          const first = new GeoJSON();
+          const firstRead = vi
+            .spyOn(first, 'readFeatures')
+            .mockImplementation(() => {
+              if (failure === 'throws') {
+                throw new Error('Unsupported format');
+              }
+              return [];
+            });
+          const format = new GeoJSON();
+          const unused = new GeoJSON();
+          const unusedRead = vi.spyOn(unused, 'readFeatures');
+          const source = new VectorSource({
+            features: format.readFeatures({type: 'Feature', id: 'old'}),
+          });
+          const projection = getProjection('EPSG:4326');
+          const drop = new DragAndDrop({
+            formatConstructors: [first, format, unused],
+            source: source,
+            projection: projection,
+          });
+          drop.setMap(map);
+          const events = [];
+          drop.on('addfeatures', (event) => events.push(event));
+          const file = new File([], 'features.geojson');
+          drop.handleResult_(file, {
+            target: {
+              result: JSON.stringify({
+                type: 'Feature',
+                id: 'new',
+                geometry: {type: 'Point', coordinates: [102, 0.5]},
+              }),
+            },
+          });
+          assert.strictEqual(events.length, 1);
+          const event = events[0];
+          assert.strictEqual(event.format, format);
+          assert.strictEqual(event.file, file);
+          assert.strictEqual(event.projection, projection);
+          assert.strictEqual(event.features.length, 1);
+          assert.deepEqual(
+            event.features[0].getGeometry().getCoordinates(),
+            [102, 0.5],
+          );
+          assert.deepEqual(source.getFeatures(), event.features);
+          assert.isNull(source.getFeatureById('old'));
+          assert.strictEqual(firstRead.mock.calls.length, 1);
+          assert.strictEqual(unusedRead.mock.calls.length, 0);
+        },
+      );
+    });
+
+    it('dispatches no event and preserves the source when all readers fail', function () {
+      const empty = new GeoJSON();
+      vi.spyOn(empty, 'readFeatures').mockReturnValue([]);
+      const invalid = new GeoJSON();
+      vi.spyOn(invalid, 'readFeatures').mockImplementation(() => {
+        throw new Error('Unsupported format');
+      });
+      const features = empty.readFeature({type: 'Feature', id: 'old'});
+      const source = new VectorSource({features: [features]});
+      const drop = new DragAndDrop({
+        formatConstructors: [empty, invalid],
+        source: source,
+      });
+      drop.setMap(map);
+      const listener = vi.fn();
+      drop.on('addfeatures', listener);
+      drop.handleResult_(new File([], 'unsupported'), {
+        target: {result: 'unsupported'},
+      });
+      assert.strictEqual(listener.mock.calls.length, 0);
+      assert.deepEqual(source.getFeatures(), [features]);
     });
   });
 
@@ -128,6 +243,8 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function () {
     it('reads dropped files as text', () =>
       new Promise((resolve) => {
         interaction.on('addfeatures', function (evt) {
+          assert.instanceOf(evt.format, GeoJSON);
+          assert.strictEqual(evt.format, interaction.formats_[0]);
           assert.strictEqual(evt.features.length, 1);
           assert.deepEqual(
             evt.features[0].getGeometry().getCoordinates(),
@@ -221,6 +338,7 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function () {
         drop.setMap(map);
 
         drop.on('addfeatures', function (evt) {
+          assert.strictEqual(evt.format, drop.formats_[0]);
           assert.strictEqual(evt.features.length, 1);
           assert.strictEqual(mockReadAsText, false);
           assert.strictEqual(mockReadAsArrayBuffer, true);
@@ -250,12 +368,14 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function () {
 
     it('reads using constructed formats', () =>
       new Promise((resolve) => {
+        const format = new GeoJSON();
         const drop = new DragAndDrop({
-          formatConstructors: [new GeoJSON()],
+          formatConstructors: [format],
         });
         drop.setMap(map);
 
         drop.on('addfeatures', function (evt) {
+          assert.strictEqual(evt.format, format);
           assert.strictEqual(evt.features.length, 1);
           assert.strictEqual(mockReadAsText, true);
           assert.strictEqual(mockReadAsArrayBuffer, false);
@@ -304,6 +424,8 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function () {
         drop.setMap(map);
 
         drop.on('addfeatures', function (evt) {
+          assert.instanceOf(evt.format, binaryGeoJSON);
+          assert.strictEqual(evt.format, drop.formats_[0]);
           assert.strictEqual(evt.features.length, 1);
           assert.strictEqual(mockReadAsText, false);
           assert.strictEqual(mockReadAsArrayBuffer, true);
