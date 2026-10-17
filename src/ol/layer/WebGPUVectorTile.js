@@ -28,9 +28,8 @@ import BaseTileLayer from './BaseTile.js';
  * @property {import('../style/flat.js').StyleVariables} [variables] Style variables.
  * @property {boolean} [disableHitDetection=false] Disable hit detection.
  * @property {boolean|string|number} [declutter=false] Declutter group shared among WebGPU layers.
- * @property {number} [cacheSize=512] Maximum number of cached tiles. The memory
- * used by cached tiles is also limited, but always leaves room for twice what
- * the visible tiles need.
+ * @property {number} [cacheSize=512] Maximum number of cached tiles. The GPU memory used by cached
+ * tiles is also limited, but always leaves room for twice what the visible tiles need.
  * @property {Object<string, *>} [properties] Observable properties.
  */
 
