@@ -289,7 +289,8 @@ export function featuresForExtent(source, extent, projection) {
   if (!source.getFeaturesInExtent) {
     return source.getFeatures();
   }
-  const features = source.getFeaturesInExtent(extent, projection);
+  // slice(), because a source with wrapX shifts the extent in place.
+  const features = source.getFeaturesInExtent(extent.slice(), projection);
   return features.length > 1 ? Array.from(new Set(features)) : features;
 }
 
