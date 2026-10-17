@@ -38,3 +38,5 @@ node test/rendering/test.js --match your-test-case-name --fix
 Note that your `main.js` needs to call the magic `render()` function after setting up the map.  This triggers a snapshot.  The `render()` function can be called with an options object that includes a `tolerance` property.  The tolerance is related to the ratio of mismatched pixels to the total number of pixels in the actual screenshot.
 
 After creating a new test case, commit your `main.js` and `expected.png` files.
+
+Test cases for the WebGPU renderer must be named with a `webgpu-` prefix (e.g. `webgpu-vector-z-index`). The WebGPU CI job runs only the cases matching `webgpu`, and stores screenshots only for `webgpu-*` directories.
