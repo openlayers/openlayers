@@ -28,6 +28,10 @@ export function isWebGPUAvailable() {
 
 /**
  * Request a shared GPU device. Rejects if WebGPU is missing.
+ *
+ * Concurrent calls share one request. A request that fails is forgotten, and so
+ * is a device once it is lost, so the next call starts over: a transient
+ * adapter failure or a lost device does not stop rendering for good.
  * @return {Promise<DeviceHandle>} Device handle.
  */
 export function requestDevice() {
@@ -37,25 +41,41 @@ export function requestDevice() {
   if (devicePromise) {
     return devicePromise;
   }
-  devicePromise = (async () => {
-    const adapter = await navigator.gpu.requestAdapter();
-    if (!adapter) {
-      throw new Error('No WebGPU adapter');
-    }
-    const device = await adapter.requestDevice();
-    const preferredFormat = navigator.gpu.getPreferredCanvasFormat();
-    const handle = {device, adapter, preferredFormat};
-    currentHandle = handle;
-    device.lost.then(() => {
-      currentHandle = null;
+  const promise = acquireDevice().catch((error) => {
+    if (devicePromise === promise) {
       devicePromise = null;
-      for (const listener of lostListeners) {
-        listener();
-      }
-    });
-    return handle;
-  })();
-  return devicePromise;
+    }
+    throw error;
+  });
+  devicePromise = promise;
+  return promise;
+}
+
+/**
+ * Obtains an adapter and a device, and makes the device current until it is
+ * lost. Losing a device that has already been replaced changes nothing.
+ * @return {Promise<DeviceHandle>} Device handle.
+ */
+async function acquireDevice() {
+  const adapter = await navigator.gpu.requestAdapter();
+  if (!adapter) {
+    throw new Error('No WebGPU adapter');
+  }
+  const device = await adapter.requestDevice();
+  const preferredFormat = navigator.gpu.getPreferredCanvasFormat();
+  const handle = {device, adapter, preferredFormat};
+  currentHandle = handle;
+  device.lost.then(() => {
+    if (currentHandle !== handle) {
+      return;
+    }
+    currentHandle = null;
+    devicePromise = null;
+    for (const listener of lostListeners.slice()) {
+      listener();
+    }
+  });
+  return handle;
 }
 
 /**

@@ -959,8 +959,8 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     if (pending) {
       const generation = this.batchGeneration_;
       this.pendingKeys_.add(cacheKey);
-      pending
-        .then((geometry) => {
+      pending.then(
+        (geometry) => {
           this.pendingKeys_.delete(cacheKey);
           if (this.disposed) {
             return;
@@ -980,10 +980,17 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
             );
           }
           this.scheduleBatchChange_();
-        })
-        .catch(() => {
+        },
+        () => {
           this.pendingKeys_.delete(cacheKey);
-        });
+          if (this.disposed) {
+            return;
+          }
+          // Render again so the tile is requested anew, from a remaining
+          // worker or on the main thread.
+          this.scheduleBatchChange_();
+        },
+      );
       return null;
     }
 
