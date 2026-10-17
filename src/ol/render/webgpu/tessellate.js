@@ -1,9 +1,5 @@
 /**
  * @module ol/render/webgpu/tessellate
- *
- * Polygon fill triangulation for WebGPU. When reprojecting, rings are clipped
- * to the extent being built, densified in source space, triangulated, and
- * edges that fold across a projection cut are dropped.
  */
 import earcut from 'earcut';
 import {
@@ -345,9 +341,10 @@ export function refineTriangles(sourceXY, indices, sample, maxError, maxEdge) {
  */
 
 /**
- * Triangulate a polygon. Without `projectToTarget` this is a straight earcut
- * (same as the previous WebGPU fill path). With reprojection, densify, earcut
- * in target space, drop folding triangles, and clip to `clipExtent`.
+ * Triangulate a polygon fill. Without `projectToTarget` this is a straight
+ * earcut. When reprojecting, rings are clipped to the extent being built,
+ * densified in source space, triangulated, and edges that fold across a
+ * projection cut are dropped.
  *
  * @param {Array<number>} xy Flat XY in source space.
  * @param {Array<number>} holes Earcut hole indices.

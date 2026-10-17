@@ -106,7 +106,11 @@ export function modeToInt(mode) {
 }
 
 /**
- * @typedef {{label: Label, index: number, members?: Array<number>, sticky?: boolean}} DeclutterItem
+ * @typedef {Object} DeclutterItem
+ * @property {Label} label Label to place, or the union of a pair's labels.
+ * @property {number} index Index of the (first) label in the input.
+ * @property {Array<number>} [members] Indices of every label placed with this one.
+ * @property {boolean} [sticky] Was visible in the previous placement.
  */
 
 /**
