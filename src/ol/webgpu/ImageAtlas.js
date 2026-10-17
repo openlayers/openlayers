@@ -13,7 +13,35 @@ import {getUid} from '../util.js';
  */
 
 /**
- * Shelf-packed full-color atlas for image styles.
+ * A sprite rectangle waiting to be copied to the texture.
+ * @typedef {Object} PendingImage
+ * @property {GPUCopyExternalImageSource} source Source.
+ * @property {number} sourceX Left source pixel.
+ * @property {number} sourceY Top source pixel.
+ * @property {number} x Left atlas texel.
+ * @property {number} y Top atlas texel.
+ * @property {number} width Width.
+ * @property {number} height Height.
+ */
+
+/**
+ * @param {import("../DataTile.js").ImageLike} image Image.
+ * @return {Array<number>} Width and height in pixels.
+ */
+function getImageSize(image) {
+  if (image instanceof HTMLImageElement) {
+    return [image.naturalWidth, image.naturalHeight];
+  }
+  if (image instanceof HTMLVideoElement) {
+    return [image.videoWidth, image.videoHeight];
+  }
+  return [image.width, image.height];
+}
+
+/**
+ * Shelf-packed full-color atlas for image styles. The atlas exists only on
+ * the GPU: new sprite rectangles are copied from their images to the texture.
+ * The texture is replaced only when the atlas grows, by a copy on the GPU.
  */
 class ImageAtlas {
   constructor() {
@@ -22,14 +50,6 @@ class ImageAtlas {
      * @type {number}
      */
     this.size_ = 512;
-
-    /**
-     * @private
-     * @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D}
-     */
-    this.context_ = createCanvasContext2D(this.size_, this.size_, undefined, {
-      alpha: true,
-    });
 
     /**
      * @private
@@ -56,10 +76,11 @@ class ImageAtlas {
     this.entries_ = new Map();
 
     /**
+     * Rectangles added since the last upload.
      * @private
-     * @type {boolean}
+     * @type {Array<PendingImage>}
      */
-    this.dirty_ = true;
+    this.pending_ = [];
 
     /**
      * @private
@@ -85,17 +106,7 @@ class ImageAtlas {
     this.fit_(width, height);
     const x = this.shelfX_;
     const y = this.shelfY_;
-    this.context_.drawImage(
-      /** @type {CanvasImageSource} */ (data.image),
-      data.sourceX,
-      data.sourceY,
-      data.sourceWidth,
-      data.sourceHeight,
-      x,
-      y,
-      width,
-      height,
-    );
+    this.pending_.push({...this.getSource_(data, width, height), x, y});
     const entry = {
       texX0: x,
       texY0: y,
@@ -105,8 +116,48 @@ class ImageAtlas {
     this.entries_.set(key, entry);
     this.shelfX_ += width + 1;
     this.shelfHeight_ = Math.max(this.shelfHeight_, height);
-    this.dirty_ = true;
     return entry;
+  }
+
+  /**
+   * Whole-pixel rectangles inside the image are copied from the image itself.
+   * Others are drawn to a canvas of the cell size, which scales and clips them
+   * like before.
+   * @param {import("../render/ImageStyle.js").ImageStyleData} data Image data.
+   * @param {number} width Cell width.
+   * @param {number} height Cell height.
+   * @return {Omit<PendingImage, 'x'|'y'>} Copy source.
+   * @private
+   */
+  getSource_(data, width, height) {
+    const image = data.image;
+    const [imageWidth, imageHeight] = getImageSize(image);
+    const {sourceX, sourceY} = data;
+    if (
+      Number.isInteger(sourceX) &&
+      Number.isInteger(sourceY) &&
+      data.sourceWidth === width &&
+      data.sourceHeight === height &&
+      sourceX >= 0 &&
+      sourceY >= 0 &&
+      sourceX + width <= imageWidth &&
+      sourceY + height <= imageHeight
+    ) {
+      return {source: image, sourceX, sourceY, width, height};
+    }
+    const context = createCanvasContext2D(width, height);
+    context.drawImage(
+      /** @type {CanvasImageSource} */ (image),
+      sourceX,
+      sourceY,
+      data.sourceWidth,
+      data.sourceHeight,
+      0,
+      0,
+      width,
+      height,
+    );
+    return {source: context.canvas, sourceX: 0, sourceY: 0, width, height};
   }
 
   /**
@@ -138,38 +189,87 @@ class ImageAtlas {
     while (next < minimum) {
       next *= 2;
     }
-    const context = createCanvasContext2D(next, next, undefined, {
-      alpha: true,
-    });
-    context.drawImage(this.context_.canvas, 0, 0);
-    this.context_ = context;
     this.size_ = next;
-    this.dirty_ = true;
   }
 
   /**
+   * Copy new rectangles to the texture. The texture is replaced only when the
+   * atlas grew.
    * @param {import("./Helper.js").default} helper Helper.
    * @return {GPUTexture} Texture.
    */
   upload(helper) {
-    if (!this.texture_ || this.dirty_) {
-      this.texture_?.destroy();
-      this.texture_ = helper.createTextureFromImage(this.context_.canvas);
-      this.dirty_ = false;
+    const device = helper.getDevice();
+    if (this.texture_?.width !== this.size_) {
+      this.replaceTexture_(device);
     }
-    return this.texture_;
+    const texture = /** @type {GPUTexture} */ (this.texture_);
+    for (const pending of this.pending_) {
+      device.queue.copyExternalImageToTexture(
+        {
+          source: pending.source,
+          origin: {x: pending.sourceX, y: pending.sourceY},
+        },
+        {
+          texture,
+          origin: {x: pending.x, y: pending.y},
+          premultipliedAlpha: false,
+        },
+        [pending.width, pending.height],
+      );
+    }
+    this.pending_ = [];
+    return texture;
   }
 
   /**
-   * @return {HTMLCanvasElement|OffscreenCanvas} Atlas canvas.
+   * Create a texture of the atlas size, with the texels of the previous one.
+   * @param {GPUDevice} device Device.
+   * @private
    */
-  getCanvas() {
-    return this.context_.canvas;
+  replaceTexture_(device) {
+    const texture = device.createTexture({
+      size: [this.size_, this.size_],
+      format: 'rgba8unorm',
+      usage:
+        GPUTextureUsage.TEXTURE_BINDING |
+        GPUTextureUsage.COPY_DST |
+        GPUTextureUsage.COPY_SRC |
+        GPUTextureUsage.RENDER_ATTACHMENT,
+    });
+    const previous = this.texture_;
+    if (previous) {
+      const encoder = device.createCommandEncoder();
+      encoder.copyTextureToTexture({texture: previous}, {texture}, [
+        previous.width,
+        previous.height,
+      ]);
+      device.queue.submit([encoder.finish()]);
+      previous.destroy();
+    }
+    this.texture_ = texture;
   }
 
+  /**
+   * @return {number} Atlas width and height in texels.
+   */
+  getSize() {
+    return this.size_;
+  }
+
+  /**
+   * Release the texture and forget all entries. Their texels exist only in
+   * the texture, so they are copied again when added again.
+   */
   dispose() {
     this.texture_?.destroy();
     this.texture_ = null;
+    this.size_ = 512;
+    this.shelfX_ = 1;
+    this.shelfY_ = 1;
+    this.shelfHeight_ = 0;
+    this.entries_.clear();
+    this.pending_ = [];
   }
 }
 
