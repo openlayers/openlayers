@@ -305,8 +305,11 @@ describe('ol/render/webgpu/glyphLayout', () => {
   it('spaces a normal line-height by the font ink, not its CSS line box', () => {
     const atlas = new FontAtlas();
     const font = 'bold 12px sans-serif';
-    const lineHeight = measureWrappedLineHeight(font);
-    assert.isAtMost(lineHeight, measureTextHeight(font));
+    const context = document.createElement('canvas').getContext('2d');
+    context.font = font;
+    const inkMetrics = context.measureText('Žg');
+    const ink =
+      inkMetrics.actualBoundingBoxAscent + inkMetrics.actualBoundingBoxDescent;
     const glyphs = [];
     layoutPointLabel(
       glyphs,
@@ -327,7 +330,7 @@ describe('ol/render/webgpu/glyphLayout', () => {
       alphabetic.push(glyphs[index].offsetY + metrics.ascent);
       index += line.length;
     }
-    assert.approximately(alphabetic[1] - alphabetic[0], lineHeight, 0.01);
+    assert.approximately(alphabetic[1] - alphabetic[0], ink, 0.01);
   });
 
   it('wraps point labels at word boundaries and preserves newlines', () => {

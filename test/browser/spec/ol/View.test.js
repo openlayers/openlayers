@@ -1146,15 +1146,15 @@ describe('ol/View', function () {
         );
       }));
 
-    it('can run multiple animations in series', () =>
-      new Promise((resolve) => {
+    it('can run multiple animations in series', function () {
+      vi.useFakeTimers({toFake: ['Date', 'setTimeout', 'clearTimeout']});
+      try {
         const view = new View({
           center: [0, 0],
           zoom: 0,
         });
 
-        let checked = false;
-
+        let complete;
         view.animate(
           {
             zoom: 2,
@@ -1164,20 +1164,22 @@ describe('ol/View', function () {
             center: [10, 10],
             duration: 25,
           },
-          function (complete) {
-            assert.strictEqual(checked, true);
-            assert.approximately(view.getZoom(), 2, 1e-5);
-            assert.deepEqual(view.getCenter(), [10, 10]);
-            assert.strictEqual(complete, true);
-            resolve();
+          function (result) {
+            complete = result;
           },
         );
 
-        setTimeout(function () {
-          assert.deepEqual(view.getCenter(), [0, 0]);
-          checked = true;
-        }, 10);
-      }));
+        vi.advanceTimersByTime(10);
+        assert.deepEqual(view.getCenter(), [0, 0]);
+
+        vi.advanceTimersByTime(50);
+        assert.approximately(view.getZoom(), 2, 1e-5);
+        assert.deepEqual(view.getCenter(), [10, 10]);
+        assert.strictEqual(complete, true);
+      } finally {
+        vi.useRealTimers();
+      }
+    });
 
     it('properly sets the ANIMATING hint', () =>
       new Promise((resolve) => {
@@ -1253,15 +1255,15 @@ describe('ol/View', function () {
       assert.strictEqual(view.getHints()[ViewHint.ANIMATING], 0);
     });
 
-    it('completes multiple staggered animations run in parallel', () =>
-      new Promise((resolve) => {
+    it('completes multiple staggered animations run in parallel', function () {
+      vi.useFakeTimers({toFake: ['Date', 'setTimeout', 'clearTimeout']});
+      try {
         const view = new View({
           center: [0, 0],
           zoom: 0,
         });
 
         let calls = 0;
-
         view.animate(
           {
             zoom: 1,
@@ -1272,27 +1274,34 @@ describe('ol/View', function () {
           },
         );
 
-        setTimeout(function () {
-          assert.strictEqual(view.getZoom() > 0, true);
-          assert.strictEqual(view.getZoom() < 1, true);
-          assert.strictEqual(view.getAnimating(), true);
-          view.animate(
-            {
-              zoom: 2,
-              duration: 50,
-            },
-            function () {
-              assert.strictEqual(calls, 1);
-              assert.strictEqual(view.getZoom(), 2);
-              assert.strictEqual(view.getAnimating(), false);
-              resolve();
-            },
-          );
-        }, 10);
-      }));
+        vi.advanceTimersByTime(10);
+        assert.strictEqual(view.getZoom() > 0, true);
+        assert.strictEqual(view.getZoom() < 1, true);
+        assert.strictEqual(view.getAnimating(), true);
+
+        let complete = false;
+        view.animate(
+          {
+            zoom: 2,
+            duration: 50,
+          },
+          function () {
+            assert.strictEqual(calls, 1);
+            complete = true;
+          },
+        );
+
+        vi.advanceTimersByTime(60);
+        assert.strictEqual(complete, true);
+        assert.strictEqual(view.getZoom(), 2);
+        assert.strictEqual(view.getAnimating(), false);
+      } finally {
+        vi.useRealTimers();
+      }
+    });
 
     it('completes complex animation using resolution', () =>
-      new Promise((resolve) => {
+      new Promise((resolve, reject) => {
         const view = new View({
           center: [0, 0],
           resolution: 2,
@@ -1300,10 +1309,22 @@ describe('ol/View', function () {
 
         let calls = 0;
 
+        const animatedResolutions = [];
+        view.on('change:resolution', () => {
+          if (view.getAnimating()) {
+            animatedResolutions.push(view.getResolution());
+          }
+        });
+
         function onAnimateEnd() {
           if (calls == 2) {
-            assert.strictEqual(view.getAnimating(), false);
-            resolve();
+            try {
+              assert.strictEqual(view.getAnimating(), false);
+              assert.isTrue(animatedResolutions.some((r) => r > 2 && r < 2000));
+              resolve();
+            } catch (error) {
+              reject(error);
+            }
           }
         }
 
@@ -1334,18 +1355,6 @@ describe('ol/View', function () {
             onAnimateEnd();
           },
         );
-
-        setTimeout(function () {
-          assert.strictEqual(view.getResolution() > 2, true);
-          assert.strictEqual(view.getResolution() < 2000, true);
-          assert.strictEqual(view.getAnimating(), true);
-        }, 10);
-
-        setTimeout(function () {
-          assert.strictEqual(view.getResolution() > 2, true);
-          assert.strictEqual(view.getResolution() < 2000, true);
-          assert.strictEqual(view.getAnimating(), true);
-        }, 40);
       }));
 
     it('completes even though Map#setSize is called', () =>
