@@ -6,7 +6,7 @@ import Polygon from '../../../../src/ol/geom/Polygon.js';
 import WebGPUVectorLayer from '../../../../src/ol/layer/WebGPUVector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 
-if (!navigator.gpu) {
+if (!navigator.gpu || !(await navigator.gpu.requestAdapter())) {
   render({
     skip: true,
     message: 'WebGPU is not available',

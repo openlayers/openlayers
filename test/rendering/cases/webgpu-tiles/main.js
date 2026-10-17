@@ -3,7 +3,7 @@ import View from '../../../../src/ol/View.js';
 import WebGPUTileLayer from '../../../../src/ol/layer/WebGPUTile.js';
 import XYZ from '../../../../src/ol/source/XYZ.js';
 
-if (!navigator.gpu) {
+if (!navigator.gpu || !(await navigator.gpu.requestAdapter())) {
   render({
     skip: true,
     message: 'WebGPU is not available',
