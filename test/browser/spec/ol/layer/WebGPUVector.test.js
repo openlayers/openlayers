@@ -10,18 +10,22 @@ import WebGPUVectorLayerRenderer from '../../../../../src/ol/renderer/webgpu/Vec
 import VectorSource from '../../../../../src/ol/source/Vector.js';
 import Fill from '../../../../../src/ol/style/Fill.js';
 import Style from '../../../../../src/ol/style/Style.js';
-import {requestDevice} from '../../../../../src/ol/webgpu/Device.js';
 
-describe('ol/layer/WebGPUVector', function () {
+/**
+ * @param {Map} map Map.
+ * @return {Promise<void>} Resolves on the next `rendercomplete`.
+ */
+function renderComplete(map) {
+  return new Promise((resolve) => map.once('rendercomplete', () => resolve()));
+}
+
+where('WebGPU').describe('ol/layer/WebGPUVector', function () {
   /** @type {WebGPUVectorLayer} */
   let layer;
   /** @type {Map} */
   let map, target;
 
   beforeEach(function () {
-    if (!WEBGPU) {
-      this.skip();
-    }
     layer = new WebGPUVectorLayer({
       className: 'testlayer',
       source: new VectorSource(),
@@ -60,16 +64,14 @@ describe('ol/layer/WebGPUVector', function () {
   });
 
   it('loads features from the vector source', async () => {
-    await requestDevice();
     const source = layer.getSource();
     const spy = vi.spyOn(source, 'loadFeatures');
     layer.changed();
-    map.renderSync();
+    await renderComplete(map);
     assert.isAtLeast(spy.mock.calls.length, 1);
   });
 
   it('hits a fill whose geometry stays in a different CRS than the view', async () => {
-    await requestDevice();
     const feature = new Feature(
       new Polygon([
         [
@@ -94,14 +96,13 @@ describe('ol/layer/WebGPUVector', function () {
         zoom: 5,
       }),
     );
-    map.renderSync();
+    await renderComplete(map);
     const pixel = map.getPixelFromCoordinate(fromLonLat([1, 1]));
     const hit = map.forEachFeatureAtPixel(pixel, (f) => f);
     assert.strictEqual(hit, feature);
   });
 
   it('hits a displaced fill at its rendered position', async () => {
-    await requestDevice();
     const feature = new Feature(
       new Polygon([
         [
@@ -125,7 +126,7 @@ describe('ol/layer/WebGPUVector', function () {
         resolution: 1,
       }),
     );
-    map.renderSync();
+    await renderComplete(map);
 
     assert.isUndefined(map.forEachFeatureAtPixel([50, 50], (f) => f));
     assert.strictEqual(
@@ -135,7 +136,6 @@ describe('ol/layer/WebGPUVector', function () {
   });
 
   it('styles with a style function and rebuilds on changed()', async () => {
-    await requestDevice();
     const feature = new Feature(
       new Polygon([
         [
@@ -152,12 +152,12 @@ describe('ol/layer/WebGPUVector', function () {
     );
     layer.setSource(new VectorSource({features: [feature]}));
     layer.setStyle(styleFunction);
-    map.renderSync();
+    await renderComplete(map);
     const calls = styleFunction.mock.calls.length;
     assert.isAtLeast(calls, 1);
     assert.strictEqual(styleFunction.mock.calls[0][0], feature);
     layer.changed();
-    map.renderSync();
+    await renderComplete(map);
     assert.isAbove(styleFunction.mock.calls.length, calls);
   });
 });
