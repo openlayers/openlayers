@@ -61,7 +61,7 @@ if (!navigator.gpu) {
     if (
       !renderer?.helper ||
       !renderer.buffers_?.commands?.length ||
-      renderer.atlas_.getCanvas().width === 512
+      renderer.atlas_.getPageSize(0) === 512
     ) {
       return;
     }
