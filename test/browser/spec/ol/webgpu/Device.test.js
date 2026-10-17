@@ -1,4 +1,5 @@
 import {assert} from 'chai';
+import {inject} from 'vitest';
 import {WEBGPU} from '../../../../../src/ol/has.js';
 import {
   getCurrentDevice,
@@ -34,5 +35,17 @@ describe('ol/webgpu/Device', () => {
     assert.strictEqual(getCurrentDevice(), handle);
     const again = await requestDevice();
     assert.strictEqual(again.device, handle.device);
+  });
+
+  it('has a hardware adapter where one is required', async (context) => {
+    if (!inject('requireWebGPU')) {
+      context.skip();
+    }
+    const adapter = await navigator.gpu?.requestAdapter();
+    assert.isOk(adapter, 'No WebGPU adapter');
+    assert.isFalse(
+      adapter.info.isFallbackAdapter,
+      `Software WebGPU adapter: ${adapter.info.architecture}`,
+    );
   });
 });
