@@ -49,7 +49,7 @@ class WebGPUTileLayer extends BaseTileLayer {
     delete options.style;
 
     /**
-     * @type {(Array<SourceType>|function(import("../extent.js").Extent, number): Array<SourceType>)|undefined}
+     * @type {undefined|Array<SourceType>|function(import("../extent.js").Extent, number): Array<SourceType>}
      */
     const sources = options.sources;
     delete options.sources;
@@ -64,7 +64,7 @@ class WebGPUTileLayer extends BaseTileLayer {
 
     /**
      * @private
-     * @type {(Array<SourceType>|function(import("../extent.js").Extent, number): Array<SourceType>)|undefined}
+     * @type {undefined|Array<SourceType>|function(import("../extent.js").Extent, number): Array<SourceType>}
      */
     this.sources_ = sources;
 
