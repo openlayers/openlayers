@@ -9,7 +9,7 @@ import {fromLonLat} from '../../../../src/ol/proj.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 import XYZ from '../../../../src/ol/source/XYZ.js';
 
-if (!navigator.gpu) {
+if (!navigator.gpu || !(await navigator.gpu.requestAdapter())) {
   render({
     skip: true,
     message: 'WebGPU is not available',
