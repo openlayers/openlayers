@@ -1206,14 +1206,12 @@ function appendFills(
         sourceHeight: image.height,
       }),
     );
+    const width = entry.texX1 - entry.texX0;
     styleIndex = styleTable.addPattern(
-      [
-        entry.texX0,
-        entry.texY0,
-        entry.texX1 - entry.texX0,
-        entry.texY1 - entry.texY0,
-      ],
-      fillColor.scale ?? 1,
+      [entry.texX0, entry.texY0, width, entry.texY1 - entry.texY0],
+      // The pattern repeats at its atlas size times this scale, so an image
+      // that was scaled down to fit the atlas needs a larger scale.
+      (fillColor.scale ?? 1) * (width > 0 ? image.width / width : 1),
       hit,
       displacement,
       displacementAnchor,
