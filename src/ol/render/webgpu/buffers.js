@@ -36,7 +36,12 @@ import {buildGeometryBuffers} from './geometryBuffers.js';
 import {layoutLineLabel, layoutPointLabel} from './glyphLayout.js';
 
 /**
- * @typedef {import("./tessellate.js").TessellateOptions & {filterExtent?: import("../../extent.js").Extent}} VectorReprojOptions
+ * @typedef {Object} FilterExtentOptions
+ * @property {import("../../extent.js").Extent} [filterExtent] Only build geometries that intersect this extent.
+ */
+
+/**
+ * @typedef {import("./tessellate.js").TessellateOptions & FilterExtentOptions} VectorReprojOptions
  */
 
 /**
