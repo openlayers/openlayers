@@ -36,9 +36,7 @@ import {buildGeometryBuffers} from './geometryBuffers.js';
 import {layoutLineLabel, layoutPointLabel} from './glyphLayout.js';
 
 /**
- * @typedef {import("./tessellate.js").TessellateOptions & {
- *   filterExtent?: import("../../extent.js").Extent
- * }} VectorReprojOptions
+ * @typedef {import("./tessellate.js").TessellateOptions & {filterExtent?: import("../../extent.js").Extent}} VectorReprojOptions
  */
 
 /**
@@ -917,7 +915,7 @@ function appendSymbolInstance(symbolInstances, image, anchor, hit) {
  * @param {import("../../style/Image.js").default} image Image style.
  * @param {import("../../coordinate.js").Coordinate} anchor Anchor.
  * @param {Array<number>} hit Hit color.
- * @param {{priority:number,zIndex:number,classRank:number,sequence:number,featureRef:number,id:number,pairId:number|undefined,identityKey:string}} stamp Label values.
+ * @param {{priority:number,zIndex:number,classRank:number,sequence:number,featureRef:number,id:number,pairId:(number|undefined),identityKey:string}} stamp Label values.
  */
 function appendIconLabel(state, image, anchor, hit, stamp) {
   let imageState = image.getImageState();

@@ -1,17 +1,5 @@
 /**
  * @module ol/render/webgpu/warpGrid
- *
- * A coarse sampling of a projection, used to warp vector geometry on the GPU.
- *
- * Running proj4 per vertex is what made reprojected vector layers stall while
- * zooming. Instead the transform is sampled on a small grid over the batch
- * extent, and the GPU interpolates between those samples. Bilinear
- * interpolation of a smooth projection converges quadratically, so error falls
- * by about four per grid refinement: at sixteen cells across a tile-sized
- * extent it is well under a tenth of a pixel.
- *
- * The grid is a function of the two projections and the extent only, never of
- * the camera, so panning and zooming reuse it.
  */
 import {LOCAL_EXTENT} from './localGrid.js';
 
@@ -23,6 +11,18 @@ import {LOCAL_EXTENT} from './localGrid.js';
 export const WARP_NODE_STRIDE = 4;
 
 /**
+ * A coarse sampling of a projection, used to warp vector geometry on the GPU.
+ *
+ * Running proj4 per vertex is what made reprojected vector layers stall while
+ * zooming. Instead the transform is sampled on a small grid over the batch
+ * extent, and the GPU interpolates between those samples. Bilinear
+ * interpolation of a smooth projection converges quadratically, so error falls
+ * by about four per grid refinement: at sixteen cells across a tile-sized
+ * extent it is well under a tenth of a pixel.
+ *
+ * The grid is a function of the two projections and the extent only, never of
+ * the camera, so panning and zooming reuse it.
+ *
  * @typedef {Object} WarpGrid
  * @property {Float32Array} nodes Target offsets from `origin`, valid flag, padding.
  * @property {number} cells Cells along each edge.
