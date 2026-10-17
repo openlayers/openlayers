@@ -186,7 +186,22 @@ async function renderPage(page, entry, options) {
   await page.goto(`http://${options.host}:${options.port}${href}`, {
     waitUntil: 'networkidle0',
   });
-  const config = await renderCalled;
+  // A case that never calls render() fails on its own instead of stalling the
+  // whole run.
+  let timer;
+  const timedOut = new Promise((_, reject) => {
+    timer = setTimeout(
+      () =>
+        reject(new Error(`render() not called within ${options.timeout} ms`)),
+      options.timeout,
+    );
+  });
+  let config;
+  try {
+    config = await Promise.race([renderCalled, timedOut]);
+  } finally {
+    clearTimeout(timer);
+  }
   options.log.debug('screenshot', entry);
   await screenshotPage(page, getActualScreenshotPath(entry));
   return config;
@@ -220,9 +235,13 @@ async function screenshotPage(page, filePath) {
         resolve(params);
       });
     });
+    // On a high-DPI display a headed browser casts at device pixels.
+    const viewport = page.viewport();
     await client.send('Page.startScreencast', {
       format: 'png',
       everyNthFrame: 1,
+      maxWidth: viewport.width,
+      maxHeight: viewport.height,
     });
     const params = await frame;
     await client.send('Page.screencastFrameAck', {sessionId: params.sessionId});
@@ -248,11 +267,15 @@ async function copyActualToExpected(entry) {
 async function renderEach(page, entries, options) {
   let fail = false;
   for (const entry of entries) {
-    const {
-      tolerance = 0.005,
-      message = '',
-      skip = false,
-    } = await renderPage(page, entry, options);
+    let config;
+    try {
+      config = await renderPage(page, entry, options);
+    } catch (error) {
+      options.log.error(`case ${entry}: ${error.message}`);
+      fail = true;
+      continue;
+    }
+    const {tolerance = 0.005, message = '', skip = false} = config;
 
     if (skip) {
       options.log.info('skipping', entry, message || '');
@@ -296,6 +319,32 @@ async function renderEach(page, entries, options) {
   return fail;
 }
 
+/**
+ * WebGPU cases skip without an adapter. Where they are expected to run, a
+ * missing or software adapter has to fail instead.
+ * @param {import('puppeteer').Page} page Page.
+ * @param {Object} options Options.
+ */
+async function checkWebGPU(page, options) {
+  await page.goto(`http://${options.host}:${options.port}/`);
+  const adapter = await page.evaluate(async () => {
+    const adapter = await navigator.gpu?.requestAdapter();
+    return adapter
+      ? {
+          architecture: adapter.info.architecture,
+          fallback: adapter.info.isFallbackAdapter,
+        }
+      : null;
+  });
+  if (!adapter) {
+    throw new Error('No WebGPU adapter');
+  }
+  if (adapter.fallback) {
+    throw new Error(`Software WebGPU adapter: ${adapter.architecture}`);
+  }
+  options.log.info('WebGPU adapter', adapter.architecture);
+}
+
 async function render(entries, options) {
   const browser = await launch({
     args: options.puppeteerArgs,
@@ -322,6 +371,9 @@ async function render(entries, options) {
     page.setDefaultNavigationTimeout(options.timeout);
     await exposeRender(page);
     await page.setViewport({width: 256, height: 256});
+    if (options.requireWebgpu) {
+      await checkWebGPU(page, options);
+    }
     fail = await renderEach(page, entries, options);
   } finally {
     if (options.interactive) {
@@ -441,6 +493,12 @@ if (esMain(import.meta)) {
       describe: 'The timeout for loading pages (in milliseconds)',
       type: 'number',
       default: 60000,
+    })
+    .option('require-webgpu', {
+      describe:
+        'Fail instead of skipping WebGPU cases without a hardware WebGPU adapter',
+      type: 'boolean',
+      default: !!process.env.REQUIRE_WEBGPU,
     })
     .option('headless', {
       describe: 'Launch Puppeteer in headless mode',

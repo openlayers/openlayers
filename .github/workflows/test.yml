@@ -119,3 +119,40 @@ jobs:
         with:
           name: rendering-tests
           path: test/rendering/cases/**/actual.png
+
+  # The Linux runners have no GPU, so the WebGPU tests skip in the jobs above.
+  # The macOS runners expose Metal, and the WebGPU reference images are taken
+  # on a Mac.
+  webgpu:
+    name: WebGPU
+    runs-on: macos-15
+    env:
+      REQUIRE_WEBGPU: true
+
+    steps:
+      - name: Clone Repository
+        uses: actions/checkout@v7.0.1
+
+      - name: Set Node.js Version
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Install Playwright Browser
+        run: npx playwright install chromium
+
+      - name: Run Browser Tests
+        run: npm run test-browser
+
+      - name: Run WebGPU Rendering Tests
+        run: npm run test-rendering -- --match webgpu
+
+      - name: Store Rendering Test Artifacts
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: webgpu-rendering-tests
+          path: test/rendering/cases/webgpu-*/actual.png

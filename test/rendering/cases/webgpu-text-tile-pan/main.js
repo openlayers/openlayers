@@ -6,7 +6,7 @@ import WebGPUVectorTileLayer from '../../../../src/ol/layer/WebGPUVectorTile.js'
 import VectorTileSource from '../../../../src/ol/source/VectorTile.js';
 import TileGrid from '../../../../src/ol/tilegrid/TileGrid.js';
 
-if (!navigator.gpu) {
+if (!navigator.gpu || !(await navigator.gpu.requestAdapter())) {
   render({
     skip: true,
     message: 'WebGPU is not available',

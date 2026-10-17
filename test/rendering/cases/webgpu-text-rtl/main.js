@@ -9,7 +9,7 @@ import Stroke from '../../../../src/ol/style/Stroke.js';
 import Style from '../../../../src/ol/style/Style.js';
 import Text from '../../../../src/ol/style/Text.js';
 
-if (!navigator.gpu) {
+if (!navigator.gpu || !(await navigator.gpu.requestAdapter())) {
   render({
     skip: true,
     message: 'WebGPU is not available',
