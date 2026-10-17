@@ -22,6 +22,7 @@ import {
   VIEWPORT_PADDING,
 } from '../../render/webgpu/declutter.js';
 import {buildGeometryBuffers} from '../../render/webgpu/geometryBuffers.js';
+import {GLYPH_INSTANCE_STRIDE} from '../../render/webgpu/glyphLayout.js';
 import {
   activeLabelIndices,
   LABEL_FADE_DURATION,
@@ -81,6 +82,37 @@ import {
 const MAX_STYLE_CACHES = 8;
 
 /**
+ * Cached batches beyond this many bytes, or twice the bytes of the current
+ * frame's batches if that is more, are evicted, in addition to those beyond
+ * the cache size. Tiles differ a lot in how much geometry they carry, so a
+ * tile count alone does not bound memory.
+ * @type {number}
+ */
+const MAX_CACHE_BYTES = 256 * 1024 * 1024;
+
+/**
+ * @param {import("../../render/webgpu/buffers.js").VectorBuffers} buffers Buffers.
+ * @return {number} Bytes of the GPU buffers built from these buffers.
+ */
+function getByteLength(buffers) {
+  return (
+    buffers.fillPositions.byteLength +
+    buffers.fillStyles.byteLength +
+    buffers.fillIndices.byteLength +
+    buffers.strokePositions.byteLength +
+    buffers.strokeAttributes.byteLength +
+    buffers.strokeStyles.byteLength +
+    buffers.strokeIndices.byteLength +
+    buffers.styles.byteLength +
+    buffers.symbolInstances.byteLength +
+    buffers.iconInstances.byteLength +
+    buffers.glyphs.length *
+      GLYPH_INSTANCE_STRIDE *
+      Float32Array.BYTES_PER_ELEMENT
+  );
+}
+
+/**
  * @typedef {Object} StyleState
  * @property {number} resolution Resolution passed to the style function.
  * @property {number} zoom Zoom passed to the style function.
@@ -119,6 +151,12 @@ class TileBatch extends Disposable {
      * @type {Array<number>}
      */
     this.atlasPages = atlasPages(buffers.glyphs);
+
+    /**
+     * Bytes of this batch's GPU buffers, counted against the cache budget.
+     * @type {number}
+     */
+    this.byteLength = getByteLength(buffers);
 
     /**
      * @type {string}
@@ -1312,7 +1350,7 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
       Object.keys(wantedTiles).length * 2,
     );
     this.renderTiles_.expireCache();
-    this.tileCache_.expireCache();
+    this.expireTileCache_(batches);
     const unique = [];
     const batchKeys = new Set();
     for (const batch of batches) {
@@ -1323,6 +1361,40 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
       unique.push(batch);
     }
     return unique;
+  }
+
+  /**
+   * Evict the least recently used batches beyond the cache size and beyond
+   * the byte budget. Like the cache size of the Canvas 2D renderer, the byte
+   * budget leaves room for at least twice the batches of this frame, and it
+   * never evicts those.
+   * @param {Array<TileBatch>} batches Batches of this frame.
+   * @private
+   */
+  expireTileCache_(batches) {
+    const cache = this.tileCache_;
+    const current = new Set();
+    let currentBytes = 0;
+    for (const batch of batches) {
+      if (cache.peek(batch.key) !== batch || current.has(batch)) {
+        continue;
+      }
+      // Not every lookup marks a batch as used, so this frame's batches are
+      // moved to the newest end here.
+      cache.get(batch.key);
+      current.add(batch);
+      currentBytes += batch.byteLength;
+    }
+    cache.expireCache();
+    let bytes = 0;
+    cache.forEach((batch) => {
+      bytes += batch.byteLength;
+    });
+    const budget = Math.max(MAX_CACHE_BYTES, 2 * currentBytes);
+    while (bytes > budget && !current.has(cache.peekLast())) {
+      bytes -= cache.peekLast().byteLength;
+      cache.deleteOldest();
+    }
   }
 
   /**
