@@ -528,6 +528,24 @@ describe('ol/renderer/webgpu/VectorTileLayer', () => {
     assert.isAbove(layer.getRevision(), revision);
   });
 
+  it('evicts batches beyond the byte budget, except those of the frame', () => {
+    const cache = renderer.tileCache_;
+    const batches = ['a', 'b', 'c', 'd', 'e', 'f'].map((key) => {
+      const batch = /** @type {*} */ ({key, byteLength: 100 * 1024 * 1024});
+      cache.set(key, batch);
+      return batch;
+    });
+    renderer.expireTileCache_(batches);
+    assert.strictEqual(cache.getCount(), 6);
+    // Twice the frame's bytes are more than the budget.
+    renderer.expireTileCache_(batches.slice(0, 3));
+    assert.deepEqual(cache.getKeys(), ['c', 'b', 'a', 'f', 'e', 'd']);
+    renderer.expireTileCache_(batches.slice(0, 2));
+    assert.deepEqual(cache.getKeys(), ['b', 'a', 'c', 'f']);
+    renderer.expireTileCache_([batches[0]]);
+    assert.deepEqual(cache.getKeys(), ['a', 'b']);
+  });
+
   it('drops references to a batch when it is disposed', () => {
     const batch = {references: []};
     const newer = {references: []};
