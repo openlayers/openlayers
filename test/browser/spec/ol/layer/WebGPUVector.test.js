@@ -2,6 +2,7 @@ import {assert} from 'chai';
 import Feature from '../../../../../src/ol/Feature.js';
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
+import Point from '../../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../../src/ol/geom/Polygon.js';
 import {WEBGPU} from '../../../../../src/ol/has.js';
 import WebGPUVectorLayer from '../../../../../src/ol/layer/WebGPUVector.js';
@@ -9,6 +10,7 @@ import {fromLonLat} from '../../../../../src/ol/proj.js';
 import WebGPUVectorLayerRenderer from '../../../../../src/ol/renderer/webgpu/VectorLayer.js';
 import VectorSource from '../../../../../src/ol/source/Vector.js';
 import Fill from '../../../../../src/ol/style/Fill.js';
+import Icon from '../../../../../src/ol/style/Icon.js';
 import Style from '../../../../../src/ol/style/Style.js';
 
 /**
@@ -249,6 +251,45 @@ where('WebGPU').describe('ol/layer/WebGPUVector', function () {
     map.getView().setResolution(1.2);
     await renderComplete(map);
     assert.strictEqual(styleFunction.mock.lastCall[1], 1.2);
+  });
+
+  it('rebuilds icons in the frame that starts a full image atlas over', async () => {
+    const icon = document.createElement('canvas');
+    icon.width = 8;
+    icon.height = 8;
+    icon.getContext('2d').fillRect(0, 0, 8, 8);
+    layer.setSource(
+      new VectorSource({features: [new Feature(new Point([0, 0]))]}),
+    );
+    layer.setStyle(new Style({image: new Icon({img: icon})}));
+    map.setView(new View({center: [0, 0], resolution: 1}));
+    await renderComplete(map);
+    const renderer = layer.getRenderer();
+    const buffers = renderer.buffers_;
+    assert.lengthOf(buffers.imageEntries, 1);
+
+    const imageAtlas = renderer.imageAtlas_;
+    const filler = document.createElement('canvas');
+    filler.width = 1100;
+    filler.height = 1000;
+    filler.getContext('2d');
+    for (let i = 0; !imageAtlas.isFull(); ++i) {
+      imageAtlas.add(
+        /** @type {*} */ ({
+          image: filler,
+          sourceX: i,
+          sourceY: 0,
+          sourceWidth: 1000,
+          sourceHeight: 1000,
+        }),
+      );
+    }
+    const generation = imageAtlas.getGeneration();
+    map.renderSync();
+    assert.isAbove(imageAtlas.getGeneration(), generation);
+    assert.notStrictEqual(renderer.buffers_, buffers);
+    assert.lengthOf(renderer.buffers_.imageEntries, 1);
+    assert.isFalse(renderer.hasPendingWork());
   });
 
   it('follows the new source after setSource()', async () => {
