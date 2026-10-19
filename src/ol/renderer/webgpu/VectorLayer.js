@@ -23,6 +23,7 @@ import {
 } from '../../render/webgpu/buffers.js';
 import {
   collectStickyIds,
+  getDeclutterOccupancy,
   resolveDeclutter,
 } from '../../render/webgpu/declutter.js';
 import {buildGeometryBuffers} from '../../render/webgpu/geometryBuffers.js';
@@ -1141,11 +1142,9 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
       const screenLabels = view.toScreen(frameState);
       this.visibility_ = resolveDeclutter(
         screenLabels,
-        8,
         frameState.size[0],
         frameState.size[1],
-        this.declutterGroup_,
-        frameState.index,
+        getDeclutterOccupancy(frameState, this.declutterGroup_),
         this.declutterStickyIds_,
       );
       this.declutterStickyIds_ = collectStickyIds(
