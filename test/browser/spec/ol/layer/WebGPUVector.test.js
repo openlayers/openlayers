@@ -225,6 +225,32 @@ where('WebGPU').describe('ol/layer/WebGPUVector', function () {
     );
   });
 
+  it('evaluates styles at the resolution the view settles at', async () => {
+    const feature = new Feature(
+      new Polygon([
+        [
+          [-10, -10],
+          [10, -10],
+          [10, 10],
+          [-10, 10],
+          [-10, -10],
+        ],
+      ]),
+    );
+    const styleFunction = vi.fn(
+      () => new Style({fill: new Fill({color: 'red'})}),
+    );
+    layer.setSource(new VectorSource({features: [feature]}));
+    layer.setStyle(styleFunction);
+    map.setView(new View({center: [0, 0], resolution: 1}));
+    await renderComplete(map);
+    assert.strictEqual(styleFunction.mock.lastCall[1], 1);
+
+    map.getView().setResolution(1.2);
+    await renderComplete(map);
+    assert.strictEqual(styleFunction.mock.lastCall[1], 1.2);
+  });
+
   it('follows the new source after setSource()', async () => {
     const oldSource = layer.getSource();
     layer.setStyle({'fill-color': 'red'});
