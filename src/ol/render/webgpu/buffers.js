@@ -199,6 +199,7 @@ function toRgba(color) {
  * @property {Array<import("./glyphLayout.js").GlyphInstance>} glyphs Glyphs.
  * @property {Array<import("./declutter.js").Label>} labels Declutter labels.
  * @property {Object<number, import("../../Feature.js").FeatureLike>} featuresByRef Hit refs.
+ * @property {Array<import("../../webgpu/ImageAtlas.js").ImageAtlasEntry>} imageEntries Image atlas entries the icons and pattern fills are drawn from.
  * @property {Array<import("./drawOrder.js").DrawCommand>} commands Paint order.
  */
 
@@ -404,6 +405,7 @@ function boundsOf(features) {
  * @property {Array<import("./declutter.js").Label>} labels Declutter labels.
  * @property {Object<number, import("../../Feature.js").FeatureLike>} featuresByRef Hit refs.
  * @property {Array<import("../../style/Image.js").default|import("../../style/Fill.js").default>} pendingImageStyles Images and pattern fills being loaded.
+ * @property {Array<import("../../webgpu/ImageAtlas.js").ImageAtlasEntry>} imageEntries Image atlas entries the icons and pattern fills are drawn from.
  */
 
 /**
@@ -451,6 +453,8 @@ export function buildVectorRequest(
   const featuresByRef = {};
   /** @type {Set<import("../../style/Image.js").default>} */
   const pendingImageStyles = new Set();
+  /** @type {Set<import("../../webgpu/ImageAtlas.js").ImageAtlasEntry>} */
+  const imageEntries = new Set();
 
   /** @type {BuildState} */
   const state = {
@@ -464,6 +468,7 @@ export function buildVectorRequest(
     atlas,
     imageAtlas,
     pendingImageStyles,
+    imageEntries,
     reproj,
     resolution,
     pixelRatio,
@@ -562,6 +567,7 @@ export function buildVectorRequest(
       labels,
       featuresByRef,
       pendingImageStyles: Array.from(pendingImageStyles),
+      imageEntries: Array.from(imageEntries),
     },
   };
 }
@@ -581,6 +587,7 @@ export function buildVectorRequest(
  * @property {import("../../webgpu/FontAtlas.js").default} atlas Atlas.
  * @property {import("../../webgpu/ImageAtlas.js").default|undefined} imageAtlas Image atlas.
  * @property {Set<import("../../style/Image.js").default|import("../../style/Fill.js").default>} pendingImageStyles Images and pattern fills being loaded.
+ * @property {Set<import("../../webgpu/ImageAtlas.js").ImageAtlasEntry>} imageEntries Image atlas entries drawn from.
  * @property {VectorReprojOptions|undefined} reproj Reprojection options.
  * @property {number} resolution Resolution.
  * @property {number} pixelRatio Device pixel ratio for glyph rasterization.
@@ -946,6 +953,7 @@ function appendIconLabel(state, image, anchor, hit, stamp) {
     return;
   }
   const atlas = state.imageAtlas.add(data);
+  state.imageEntries.add(atlas);
   const scaleX = data.scale[0];
   const scaleY = data.scale[1];
   const anchorX = data.anchorX / data.imagePixelRatio;
@@ -1025,6 +1033,7 @@ export function combineVectorBuffers(geometry, labelData) {
     glyphs: labelData.glyphs,
     labels: labelData.labels,
     featuresByRef: labelData.featuresByRef,
+    imageEntries: labelData.imageEntries,
     commands,
   };
 }
@@ -1290,6 +1299,7 @@ function appendFills(
         sourceHeight: image.height,
       }),
     );
+    state.imageEntries.add(entry);
     const width = entry.texX1 - entry.texX0;
     styleIndex = styleTable.addPattern(
       [entry.texX0, entry.texY0, width, entry.texY1 - entry.texY0],

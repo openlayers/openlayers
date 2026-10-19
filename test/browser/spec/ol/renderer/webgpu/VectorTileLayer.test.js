@@ -503,25 +503,39 @@ describe('ol/renderer/webgpu/VectorTileLayer', () => {
     assert.isAbove(layer.getRevision(), revision);
   });
 
-  it('starts the image atlas over when it is full', () => {
+  it('starts a full image atlas over once the view is idle and few images are in use', () => {
     const imageAtlas = renderer.imageAtlas_;
     const source = document.createElement('canvas');
     source.width = 1100;
     source.height = 1000;
+    const entries = [];
     for (let i = 0; !imageAtlas.isFull(); ++i) {
-      imageAtlas.add(
-        /** @type {*} */ ({
-          image: source,
-          sourceX: i,
-          sourceY: 0,
-          sourceWidth: 1000,
-          sourceHeight: 1000,
-        }),
+      entries.push(
+        imageAtlas.add(
+          /** @type {*} */ ({
+            image: source,
+            sourceX: i,
+            sourceY: 0,
+            sourceWidth: 1000,
+            sourceHeight: 1000,
+          }),
+        ),
       );
     }
     const revision = layer.getRevision();
     const frameState = frameAtZ(0);
+    renderer.renderedBatches_ = [{buffers: {imageEntries: entries}}];
+    renderer.prepareFrameInternal(frameState);
+    assert.isTrue(imageAtlas.isFull());
+
+    renderer.renderedBatches_ = [
+      {buffers: {imageEntries: entries.slice(0, 2)}},
+    ];
     frameState.viewHints = [0, 1];
+    renderer.prepareFrameInternal(frameState);
+    assert.isTrue(imageAtlas.isFull());
+
+    frameState.viewHints = [0, 0];
     renderer.prepareFrameInternal(frameState);
     assert.isFalse(imageAtlas.isFull());
     assert.strictEqual(imageAtlas.getSize(), 512);
