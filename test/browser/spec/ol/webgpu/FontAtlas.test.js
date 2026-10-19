@@ -107,6 +107,22 @@ describe('ol/webgpu/FontAtlas', () => {
     );
   });
 
+  it('is full instead of opening a fifth page', () => {
+    const atlas = new FontAtlas();
+    let glyph;
+    for (let i = 0; !atlas.isFull(); ++i) {
+      assert.isBelow(i, 100);
+      glyph = atlas.getGlyph('1800px sans-serif', String(i));
+    }
+    assert.strictEqual(atlas.getPageCount(), 4);
+    assert.strictEqual(glyph.texX1 - glyph.texX0, 0);
+    assert.isAbove(glyph.advance, 0);
+    const generation = atlas.getGeneration();
+    atlas.clear();
+    assert.isFalse(atlas.isFull());
+    assert.isAbove(atlas.getGeneration(), generation);
+  });
+
   it('starts over with an empty first page when cleared', () => {
     const atlas = new FontAtlas();
     for (let i = 0; atlas.getPageCount() < 2; ++i) {
