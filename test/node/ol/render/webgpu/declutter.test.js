@@ -1,6 +1,7 @@
 import {assert} from 'chai';
 import {
   collectStickyIds,
+  getDeclutterOccupancy,
   resolveDeclutter,
   retainVisibleIdentities,
 } from '../../../../../src/ol/render/webgpu/declutter.js';
@@ -12,7 +13,6 @@ describe('ol/render/webgpu/declutter', () => {
         {minX: 0, minY: 0, maxX: 10, maxY: 10, priority: 0},
         {minX: 20, minY: 0, maxX: 30, maxY: 10, priority: 1},
       ],
-      8,
       64,
       64,
     );
@@ -25,7 +25,6 @@ describe('ol/render/webgpu/declutter', () => {
         {minX: 150, minY: 0, maxX: 160, maxY: 10, priority: 0},
         {minX: 170, minY: 0, maxX: 180, maxY: 10, priority: 1},
       ],
-      8,
       64,
       64,
     );
@@ -39,7 +38,6 @@ describe('ol/render/webgpu/declutter', () => {
         {minX: 4, minY: 4, maxX: 20, maxY: 20, priority: 1},
         {minX: 40, minY: 0, maxX: 48, maxY: 10, priority: 2},
       ],
-      8,
       64,
       64,
     );
@@ -55,7 +53,6 @@ describe('ol/render/webgpu/declutter', () => {
         {minX: 0, minY: 0, maxX: 24, maxY: 8, priority: 1},
         {minX: 16, minY: 0, maxX: 24, maxY: 8, priority: 2},
       ],
-      8,
       64,
       64,
     );
@@ -68,7 +65,6 @@ describe('ol/render/webgpu/declutter', () => {
         {minX: 0, minY: 0, maxX: 16, maxY: 16, priority: 0, mode: 'none'},
         {minX: 0, minY: 0, maxX: 16, maxY: 16, priority: 1},
       ],
-      8,
       64,
       64,
     );
@@ -81,7 +77,6 @@ describe('ol/render/webgpu/declutter', () => {
         {minX: 0, minY: 0, maxX: 16, maxY: 16, priority: 0, mode: 'obstacle'},
         {minX: 0, minY: 0, maxX: 16, maxY: 16, priority: 1},
       ],
-      8,
       64,
       64,
     );
@@ -115,7 +110,6 @@ describe('ol/render/webgpu/declutter', () => {
           priority: 1,
         },
       ],
-      8,
       64,
       64,
     );
@@ -143,7 +137,6 @@ describe('ol/render/webgpu/declutter', () => {
           pairId: 7,
         },
       ],
-      8,
       64,
       64,
     );
@@ -151,24 +144,47 @@ describe('ol/render/webgpu/declutter', () => {
   });
 
   it('shares occupancy across calls in the same group and frame', () => {
+    const frameState = /** @type {any} */ ({index: 3});
     const first = resolveDeclutter(
       [{minX: 0, minY: 0, maxX: 16, maxY: 16, priority: 0}],
-      8,
       64,
       64,
-      'group-a',
-      3,
+      getDeclutterOccupancy(frameState, 'group-a'),
     );
     const second = resolveDeclutter(
       [{minX: 0, minY: 0, maxX: 16, maxY: 16, priority: 1}],
-      8,
       64,
       64,
-      'group-a',
-      3,
+      getDeclutterOccupancy(frameState, 'group-a'),
+    );
+    const otherGroup = resolveDeclutter(
+      [{minX: 0, minY: 0, maxX: 16, maxY: 16, priority: 1}],
+      64,
+      64,
+      getDeclutterOccupancy(frameState, 'group-b'),
     );
     assert.deepEqual(first, [true]);
     assert.deepEqual(second, [false]);
+    assert.deepEqual(otherGroup, [true]);
+  });
+
+  it('keeps occupancy of maps rendering the same frame index apart', () => {
+    const map1Frame = /** @type {any} */ ({mapId: 'map1', index: 3});
+    const map2Frame = /** @type {any} */ ({mapId: 'map2', index: 3});
+    const first = resolveDeclutter(
+      [{minX: 0, minY: 0, maxX: 16, maxY: 16, priority: 0}],
+      64,
+      64,
+      getDeclutterOccupancy(map1Frame, 'true'),
+    );
+    const second = resolveDeclutter(
+      [{minX: 0, minY: 0, maxX: 16, maxY: 16, priority: 0}],
+      64,
+      64,
+      getDeclutterOccupancy(map2Frame, 'true'),
+    );
+    assert.deepEqual(first, [true]);
+    assert.deepEqual(second, [true]);
   });
 
   it('keeps the same winner when labels pan by a sub-cell offset', () => {
@@ -176,14 +192,13 @@ describe('ol/render/webgpu/declutter', () => {
       {minX: 7, minY: 0, maxX: 15, maxY: 8, priority: 0, id: 1},
       {minX: 16, minY: 0, maxX: 24, maxY: 8, priority: 0, id: 2},
     ];
-    const atRest = resolveDeclutter(labels, 8, 64, 64);
+    const atRest = resolveDeclutter(labels, 64, 64);
     const panned = resolveDeclutter(
       labels.map((label) => ({
         ...label,
         minX: label.minX + 3.5,
         maxX: label.maxX + 3.5,
       })),
-      8,
       64,
       64,
     );
@@ -230,10 +245,8 @@ describe('ol/render/webgpu/declutter', () => {
     assert.deepEqual(
       resolveDeclutter(
         zoomedIn,
-        8,
         64,
         64,
-        undefined,
         undefined,
         collectStickyIds(zoomedOut, previous),
       ),
@@ -290,7 +303,6 @@ describe('ol/render/webgpu/declutter', () => {
           sequence: 1,
         },
       ],
-      8,
       64,
       64,
     );
