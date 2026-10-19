@@ -40,10 +40,32 @@ export const MODE_NONE = 2;
  */
 
 /**
- * Shared RBush per declutter group and frame (WebGPU layers only).
- * @type {Map<string, {frame: number, tree: import('rbush').default<DeclutterBox>}>}
+ * Collision trees of the declutter groups, per frame. Keyed by the frame
+ * state, so separate maps never share occupancy and a frame's trees go away
+ * with it.
+ * @type {WeakMap<import("../../Map.js").FrameState, Map<string, import('rbush').default<DeclutterBox>>>}
  */
-const groupTrees = new Map();
+const frameOccupancy = new WeakMap();
+
+/**
+ * @param {import("../../Map.js").FrameState} frameState Frame state.
+ * @param {string} group Declutter group.
+ * @return {import('rbush').default<DeclutterBox>} Collision tree shared by the
+ * layers of this group in this frame.
+ */
+export function getDeclutterOccupancy(frameState, group) {
+  let trees = frameOccupancy.get(frameState);
+  if (!trees) {
+    trees = new Map();
+    frameOccupancy.set(frameState, trees);
+  }
+  let tree = trees.get(group);
+  if (!tree) {
+    tree = new RBush(9);
+    trees.set(group, tree);
+  }
+  return tree;
+}
 
 /**
  * Collision work extends beyond the viewport so accepted labels finish their
@@ -235,21 +257,18 @@ export function retainVisibleIdentities(
  * label that was already shown takes its space.
  *
  * @param {Array<Label>} labels Labels (not necessarily sorted).
- * @param {number} [cellSize] Ignored; kept for call-site compatibility.
- * @param {number} [width] Ignored; kept for call-site compatibility.
- * @param {number} [height] Ignored; kept for call-site compatibility.
- * @param {string} [groupKey] Shared occupancy group (WebGPU layers only).
- * @param {number} [frameIndex] Frame index; occupancy resets when this changes.
+ * @param {number} [width] Viewport width; farther labels than the padding are skipped.
+ * @param {number} [height] Viewport height; farther labels than the padding are skipped.
+ * @param {import('rbush').default<DeclutterBox>} [occupancy] Collision tree
+ * shared with other layers of the declutter group, from `getDeclutterOccupancy()`.
  * @param {Set<number>} [stickyIds] Previously visible ids; prefer these first.
  * @return {Array<boolean>} Visibility, aligned with the input array.
  */
 export function resolveDeclutter(
   labels,
-  cellSize = 8,
   width = 2048,
   height = 2048,
-  groupKey,
-  frameIndex,
+  occupancy,
   stickyIds,
 ) {
   const compare = createCompare(stickyIds);
@@ -374,20 +393,7 @@ export function resolveDeclutter(
 
   units.sort(compare);
 
-  /** @type {import('rbush').default<DeclutterBox>} */
-  let tree;
-  if (groupKey !== undefined && frameIndex !== undefined) {
-    const key = groupKey;
-    const state = groupTrees.get(key);
-    if (!state || state.frame !== frameIndex) {
-      tree = new RBush(9);
-      groupTrees.set(key, {frame: frameIndex, tree});
-    } else {
-      tree = state.tree;
-    }
-  } else {
-    tree = new RBush(9);
-  }
+  const tree = occupancy ?? new RBush(9);
   const visible = new Array(labels.length).fill(false);
   const seenIdentities = new Set();
 
