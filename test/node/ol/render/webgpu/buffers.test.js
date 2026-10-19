@@ -863,6 +863,37 @@ describe('ol/render/webgpu/buffers', () => {
     assert.deepEqual(labelData.labels[0]._anchor, [5, 5]);
   });
 
+  it('moves symbols into the world copy nearest the grid', () => {
+    const image = new CircleStyle({
+      radius: 3,
+      fill: new Fill({color: '#000'}),
+    });
+
+    const {labelData} = buildVectorRequest(
+      [new Feature(new Point([-95, 0])), new Feature(new Point([0, 0]))],
+      () => new Style({image}),
+      1,
+      /** @type {any} */ ({}),
+      {clipExtent: [-100, -10, 100, 10], worldWidth: 200},
+    );
+    const wrapped = buildVectorRequest(
+      [new Feature(new Point([-95, 0]))],
+      () => new Style({image}),
+      1,
+      /** @type {any} */ ({}),
+      {clipExtent: [80, -10, 120, 10], worldWidth: 200},
+    ).labelData;
+
+    assert.deepEqual(
+      labelData.labels.map((label) => label._anchor),
+      [
+        [-95, 0],
+        [0, 0],
+      ],
+    );
+    assert.deepEqual(wrapped.labels[0]._anchor, [105, 0]);
+  });
+
   it('reuses snapshots from a mutable function style cache', () => {
     const first = new Feature(new Point([100, 100]));
     first.set('draw', new Point([5, 5]));

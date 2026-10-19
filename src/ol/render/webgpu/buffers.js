@@ -32,7 +32,7 @@ import {
   CLASS_TEXT,
   compareDraw,
 } from './drawOrder.js';
-import {buildGeometryBuffers} from './geometryBuffers.js';
+import {buildGeometryBuffers, worldShift} from './geometryBuffers.js';
 import {layoutLineLabel, layoutPointLabel} from './glyphLayout.js';
 
 /**
@@ -801,6 +801,7 @@ function appendStyledGeometry(
   const stride = /** @type {any} */ (geom).getStride();
   const repeat = text.getRepeat?.();
   const maxAngle = text.getMaxAngle?.() ?? Math.PI / 4;
+  const gridCenterX = wrapGridCenterX(reproj);
   let offset = 0;
   let pathIndex = 0;
   for (const end of ends) {
@@ -809,6 +810,9 @@ function appendStyledGeometry(
       line.push(flat[i], flat[i + 1]);
     }
     offset = end;
+    if (gridCenterX !== undefined) {
+      wrapLine(line, gridCenterX, /** @type {number} */ (reproj?.worldWidth));
+    }
     const chunks = repeat
       ? lineChunk(repeat * state.resolution, line, 0, line.length, 2)
       : [line];
@@ -1127,6 +1131,80 @@ function polygonAnchor(geometry) {
 }
 
 /**
+ * Move a line label path into the world copy its stroke is drawn in, by the
+ * center of its extent like the stroke (see `worldShift()`).
+ *
+ * @param {Array<number>} line Flat x/y pairs, shifted in place.
+ * @param {number} gridCenterX Grid center x, in source units.
+ * @param {number} worldWidth Source world width.
+ */
+function wrapLine(line, gridCenterX, worldWidth) {
+  let minX = Infinity;
+  let maxX = -Infinity;
+  for (let i = 0; i < line.length; i += 2) {
+    minX = Math.min(minX, line[i]);
+    maxX = Math.max(maxX, line[i]);
+  }
+  const shift = worldShift((minX + maxX) / 2, gridCenterX, worldWidth);
+  if (shift === 0) {
+    return;
+  }
+  for (let i = 0; i < line.length; i += 2) {
+    line[i] += shift;
+  }
+}
+
+/**
+ * The center of the grid that geometry wraps into, when the source wraps.
+ *
+ * @param {VectorReprojOptions} [reproj] Reprojection.
+ * @return {number|undefined} Grid center x, in source units.
+ */
+function wrapGridCenterX(reproj) {
+  const clipExtent = reproj?.clipExtent;
+  if (!reproj?.worldWidth || !clipExtent) {
+    return undefined;
+  }
+  return (clipExtent[0] + clipExtent[2]) / 2;
+}
+
+/**
+ * Move symbol and label anchors into the world copy their geometry is drawn
+ * in (see `worldShift()`). The anchor of a single line or polygon moves with
+ * the extent of the geometry, as its fill and stroke do; the anchors of points
+ * and of the parts of a multi-geometry, each drawn on its own, move on their
+ * own.
+ *
+ * @param {import("../../geom/Geometry.js").default} geometry Geometry.
+ * @param {Array<import("../../coordinate.js").Coordinate>} anchors Anchors, not modified.
+ * @param {VectorReprojOptions} [reproj] Reprojection.
+ * @return {Array<import("../../coordinate.js").Coordinate>} Anchors in the drawn world.
+ */
+function wrapAnchors(geometry, anchors, reproj) {
+  const gridCenterX = wrapGridCenterX(reproj);
+  if (gridCenterX === undefined) {
+    return anchors;
+  }
+  const worldWidth = /** @type {number} */ (reproj?.worldWidth);
+  const type = geometry.getType();
+  /** @type {number|undefined} */
+  let geometryShift;
+  if (type === 'LineString' || type === 'Polygon' || type === 'Circle') {
+    const extent = geometry.getExtent();
+    geometryShift = worldShift(
+      (extent[0] + extent[2]) / 2,
+      gridCenterX,
+      worldWidth,
+    );
+  }
+  return anchors.map((anchor) => {
+    const shift =
+      geometryShift ?? worldShift(anchor[0], gridCenterX, worldWidth);
+    return shift ? [anchor[0] + shift, anchor[1]] : anchor;
+  });
+}
+
+/**
  * @param {import("../../geom/Geometry.js").default} geometry Geometry.
  * @param {VectorReprojOptions} [reproj] Reprojection.
  * @return {Array<import("../../coordinate.js").Coordinate>} Anchors.
@@ -1145,6 +1223,7 @@ function getAnchors(geometry, reproj) {
     const extent = geometry.getExtent();
     anchors = [[(extent[0] + extent[2]) / 2, (extent[1] + extent[3]) / 2]];
   }
+  anchors = wrapAnchors(geometry, anchors, reproj);
   // Labels are drawn in view coordinates, so their anchors are projected here
   // even when the geometry is left in the source projection for a GPU warp.
   const projectToTarget =
