@@ -490,6 +490,13 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
     this.imageAtlasGeneration_ = -1;
 
     /**
+     * Font atlas generation the glyphs of `buffers_` refer to.
+     * @private
+     * @type {number}
+     */
+    this.fontAtlasGeneration_ = -1;
+
+    /**
      * Incremented per rebuild so a worker result that arrives after a newer
      * rebuild started can be dropped.
      * @private
@@ -811,17 +818,22 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
   }
 
   /**
-   * Whether the buffers draw icons or pattern fills from an image atlas that
-   * has since started over. Its texture no longer holds those images, so the
+   * Whether the buffers draw glyphs, icons, or pattern fills from an atlas
+   * that has since started over. Its textures no longer hold those, so the
    * buffers must not be drawn again, not even while a rebuild is on a worker.
-   * @return {boolean} The buffers refer to images no longer in the atlas.
+   * @return {boolean} The buffers refer to texels no longer in the atlases.
    * @private
    */
-  imagesStale_() {
+  atlasesStale_() {
+    const buffers = this.buffers_;
+    if (!buffers) {
+      return false;
+    }
     return (
-      !!this.buffers_ &&
-      this.buffers_.imageEntries.length > 0 &&
-      this.imageAtlasGeneration_ !== this.imageAtlas_.getGeneration()
+      (buffers.imageEntries.length > 0 &&
+        this.imageAtlasGeneration_ !== this.imageAtlas_.getGeneration()) ||
+      (buffers.glyphs.length > 0 &&
+        this.fontAtlasGeneration_ !== this.atlas_.getGeneration())
     );
   }
 
@@ -916,6 +928,7 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
       return;
     }
     const imageAtlasGeneration = this.imageAtlas_.getGeneration();
+    const fontAtlasGeneration = this.atlas_.getGeneration();
     const {request, labelData} = buildVectorRequest(
       features,
       this.styleFunction_,
@@ -959,6 +972,7 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
           this.releaseBuffers_();
           this.buffers_ = combineVectorBuffers(geometry, labelData);
           this.imageAtlasGeneration_ = imageAtlasGeneration;
+          this.fontAtlasGeneration_ = fontAtlasGeneration;
           // Request a frame without counting it as a style change, which
           // would rebuild the buffers again.
           const layer = this.getLayer();
@@ -994,6 +1008,7 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
         labelData,
       );
       this.imageAtlasGeneration_ = imageAtlasGeneration;
+      this.fontAtlasGeneration_ = fontAtlasGeneration;
     }
     this.renderedSource_ = source;
     this.sourceRevision_ = source.getRevision();
@@ -1023,9 +1038,9 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
     // Rebuilding is O(features): tessellation, and a proj4 call per vertex when
     // reprojecting. Only do it once the view settles, and reuse what is on hand
     // in the meantime.
-    if (this.imagesStale_()) {
+    if (this.atlasesStale_()) {
       this.rebuildBuffers_(frameState, true);
-      if (this.imagesStale_()) {
+      if (this.atlasesStale_()) {
         this.releaseBuffers_();
       }
     } else if (
