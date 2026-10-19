@@ -659,6 +659,7 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     this.styleCaches_.clear();
     this.labelKey_ = '';
     this.placement_.reset();
+    this.cornerBuffer_?.destroy();
     this.cornerBuffer_ = helper.createBuffer(
       new Float32Array([0, 0, 1, 0, 0, 1, 1, 1]),
       GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
@@ -2082,6 +2083,8 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     this.styleCaches_.clear();
     this.uniforms_?.dispose();
     this.uniforms_ = null;
+    this.cornerBuffer_?.destroy();
+    this.cornerBuffer_ = null;
     this.imageAtlas_.clear();
     this.atlas_.clear();
     super.disposeInternal();
