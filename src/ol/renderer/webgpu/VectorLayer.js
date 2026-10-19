@@ -693,6 +693,7 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
     this.labels_.clear();
     this.labelBuffers_ = null;
     this.placement_.reset();
+    this.cornerBuffer_?.destroy();
     this.cornerBuffer_ = helper.createBuffer(
       new Float32Array([0, 0, 1, 0, 0, 1, 1, 1]),
       GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
@@ -1363,6 +1364,8 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
     this.atlas_.clear();
     this.uniforms_?.dispose();
     this.uniforms_ = null;
+    this.cornerBuffer_?.destroy();
+    this.cornerBuffer_ = null;
     this.labels_.dispose();
     super.disposeInternal();
   }

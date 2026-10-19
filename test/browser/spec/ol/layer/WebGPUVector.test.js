@@ -160,6 +160,22 @@ where('WebGPU').describe('ol/layer/WebGPUVector', function () {
     await renderComplete(map);
     assert.isAbove(styleFunction.mock.calls.length, calls);
   });
+
+  it('destroys the label corner buffer when replaced and on disposal', async () => {
+    await renderComplete(map);
+    const renderer = layer.getRenderer();
+    const first = renderer.cornerBuffer_;
+    const destroyFirst = vi.spyOn(first, 'destroy');
+    renderer.afterHelperCreated();
+    assert.strictEqual(destroyFirst.mock.calls.length, 1);
+
+    const second = renderer.cornerBuffer_;
+    assert.notStrictEqual(second, first);
+    const destroySecond = vi.spyOn(second, 'destroy');
+    map.removeLayer(layer);
+    layer.dispose();
+    assert.strictEqual(destroySecond.mock.calls.length, 1);
+  });
 });
 
 describe('ol/layer/WebGPUVector', function () {
