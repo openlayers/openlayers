@@ -24,6 +24,22 @@ fn insideRenderExtents(position: vec2<f32>) -> bool {
 }
 `;
 
+/**
+ * Anti-aliasing for the long edges of a stroke. The ribbon is widened by
+ * `EDGE_FADE` device pixels on each side, and coverage ramps from zero at the
+ * widened edge to one a pixel further in, so the stroke keeps its width. A
+ * hard edge would land on pixel centres only now and then where the stroke
+ * runs at a slight angle, and a thin casing showing from under a wider line
+ * would look dashed.
+ */
+const STROKE_EDGE_FUNCTIONS = `
+const EDGE_FADE = 0.5;
+
+fn edgeCoverage(across: f32, halfWidth: f32) -> f32 {
+  return clamp((1.0 - abs(across)) * halfWidth, 0.0, 1.0);
+}
+`;
+
 const FILL_DISPLACEMENT_FUNCTION = `
 fn fillDisplacement(
   displacement: vec2<f32>,
@@ -482,7 +498,13 @@ struct VertexOut {
   @location(2) distance: f32,
   @location(3) @interpolate(flat) styleIndex: u32,
   @location(4) localPosition: vec2<f32>,
+  // Position across the line, from -1 on the right to 1 on the left edge.
+  @location(5) across: f32,
+  // Half the width in device pixels, including the edge fade.
+  @location(6) @interpolate(flat) halfWidth: f32,
 }
+
+${STROKE_EDGE_FUNCTIONS}
 
 // Coverage of the dash pattern at a distance along the line, in CSS pixels:
 // zero in a gap, one inside a dash, and a ramp over the last pixel of a dash.
@@ -538,7 +560,7 @@ fn vs_main(
     return out;
   }
   var clip = uniforms.projectionMatrix * vec4(warped.xy, 0.0, 1.0);
-  let width = max(normalWidth.z, 1.0);
+  let width = max(abs(normalWidth.z), 1.0);
   // The centerline is rotated by projectionMatrix, so its extrusion must be
   // rotated as well. Its direction is normalized in pixel space while its
   // magnitude, which carries miter and cap extension, is preserved.
@@ -547,7 +569,8 @@ fn vs_main(
   let screenExtrusion =
     extrusionPx / max(length(extrusionPx), 1e-12) *
     length(normalWidth.xy);
-  var offset = screenExtrusion * (width * 0.5);
+  let halfWidth = width * 0.5 + EDGE_FADE;
+  var offset = screenExtrusion * halfWidth;
   clip = vec4(
     clip.xy + offset / (uniforms.viewportSizePx * 0.5) * clip.w,
     clip.z,
@@ -555,7 +578,12 @@ fn vs_main(
   );
   out.position = clip;
   let style = styles[styleIndex];
-  out.color = vec4(style.color.rgb, style.color.a * hairlineFade(normalWidth.z));
+  out.color = vec4(
+    style.color.rgb,
+    style.color.a * hairlineFade(abs(normalWidth.z))
+  );
+  out.across = sign(normalWidth.z) * min(length(normalWidth.xy), 1.0);
+  out.halfWidth = halfWidth;
   out.hitColor = style.hitColor;
   out.distance = normalWidth.w;
   out.styleIndex = styleIndex;
@@ -575,11 +603,15 @@ fn fs_main(in: VertexOut) -> @location(0) vec4<f32> {
   if (dash <= 0.0) {
     discard;
   }
+  let edge = edgeCoverage(in.across, in.halfWidth);
   if (uniforms.hitDetection > 0.5) {
+    if (edge < 0.5) {
+      discard;
+    }
     return in.hitColor;
   }
   var color = in.color;
-  color.a = color.a * uniforms.globalAlpha * dash;
+  color.a = color.a * uniforms.globalAlpha * dash * edge;
   return vec4(color.rgb * color.a, color.a);
 }
 `;
@@ -622,7 +654,13 @@ struct VertexOut {
   @location(2) distance: f32,
   @location(3) @interpolate(flat) styleIndex: u32,
   @location(4) localPosition: vec2<f32>,
+  // Position across the line, from -1 on the right to 1 on the left edge.
+  @location(5) across: f32,
+  // Half the width in device pixels, including the edge fade.
+  @location(6) @interpolate(flat) halfWidth: f32,
 }
+
+${STROKE_EDGE_FUNCTIONS}
 
 // Coverage of the dash pattern at a distance along the line, in CSS pixels:
 // zero in a gap, one inside a dash, and a ramp over the last pixel of a dash.
@@ -669,7 +707,7 @@ fn vs_main(
 ) -> VertexOut {
   var out: VertexOut;
   var clip = uniforms.projectionMatrix * vec4(vec2<f32>(position), 0.0, 1.0);
-  let width = max(normalWidth.z, 1.0);
+  let width = max(abs(normalWidth.z), 1.0);
   // The centerline is rotated by projectionMatrix, so its extrusion must be
   // rotated as well. Its direction is normalized in pixel space while its
   // magnitude, which carries miter and cap extension, is preserved.
@@ -678,7 +716,8 @@ fn vs_main(
   let screenExtrusion =
     extrusionPx / max(length(extrusionPx), 1e-12) *
     length(normalWidth.xy);
-  var offset = screenExtrusion * (width * 0.5);
+  let halfWidth = width * 0.5 + EDGE_FADE;
+  var offset = screenExtrusion * halfWidth;
   clip = vec4(
     clip.xy + offset / (uniforms.viewportSizePx * 0.5) * clip.w,
     clip.z,
@@ -686,7 +725,12 @@ fn vs_main(
   );
   out.position = clip;
   let style = styles[styleIndex];
-  out.color = vec4(style.color.rgb, style.color.a * hairlineFade(normalWidth.z));
+  out.color = vec4(
+    style.color.rgb,
+    style.color.a * hairlineFade(abs(normalWidth.z))
+  );
+  out.across = sign(normalWidth.z) * min(length(normalWidth.xy), 1.0);
+  out.halfWidth = halfWidth;
   out.hitColor = style.hitColor;
   out.distance = normalWidth.w;
   out.styleIndex = styleIndex;
@@ -706,11 +750,15 @@ fn fs_main(in: VertexOut) -> @location(0) vec4<f32> {
   if (dash <= 0.0) {
     discard;
   }
+  let edge = edgeCoverage(in.across, in.halfWidth);
   if (uniforms.hitDetection > 0.5) {
+    if (edge < 0.5) {
+      discard;
+    }
     return in.hitColor;
   }
   var color = in.color;
-  color.a = color.a * uniforms.globalAlpha * dash;
+  color.a = color.a * uniforms.globalAlpha * dash * edge;
   return vec4(color.rgb * color.a, color.a);
 }
 `;
