@@ -36,6 +36,23 @@ import {
 const canvasCache = {};
 
 /**
+ * One triangle covering the canvas, every fragment all ones; the blend state
+ * of the pipeline decides what that does to the target.
+ */
+const BACKGROUND_SHADER = `
+@vertex
+fn vs(@builtin(vertex_index) i: u32) -> @builtin(position) vec4f {
+  let xy = vec2f(f32((i << 1u) & 2u), f32(i & 2u));
+  return vec4f(xy * 2.0 - 1.0, 0.0, 1.0);
+}
+
+@fragment
+fn fs() -> @location(0) vec4f {
+  return vec4f(1.0);
+}
+`;
+
+/**
  * @param {string} key Key.
  * @return {string} Shared key.
  */
@@ -430,9 +447,10 @@ class WebGPUHelper extends Disposable {
    * @param {import("../Map.js").FrameState} frameState Frame state.
    * @param {boolean} [enableDepth] Depth testing.
    * @param {Array<number>} [clearColor] Premultiplied RGBA 0-1 for the frame
-   * clear. Transparent black when omitted. Ignored after the frame's color
-   * target has been cleared. Depth clears on the first depth pass of the
-   * frame, including when an earlier pass already loaded the color target.
+   * clear. Transparent black when omitted. Once the frame's color target has
+   * been cleared, it is composited over what earlier layers drew instead.
+   * Depth clears on the first depth pass of the frame, including when an
+   * earlier pass already loaded the color target.
    */
   prepareDraw(frameState, enableDepth, clearColor) {
     const canvas = this.cacheItem_.canvas;
@@ -498,6 +516,9 @@ class WebGPUHelper extends Disposable {
 
     const loadOp = /** @type {GPULoadOp} */ (item.cleared ? 'load' : 'clear');
     item.cleared = true;
+    if (loadOp === 'load' && clearColor) {
+      this.drawBackground_(clearColor);
+    }
     const depthLoadOp = /** @type {GPULoadOp} */ (
       item.depthCleared ? 'load' : 'clear'
     );
@@ -536,6 +557,75 @@ class WebGPUHelper extends Disposable {
     this.renderPass_ = /** @type {GPUCommandEncoder} */ (
       item.encoder
     ).beginRenderPass(passDescriptor);
+  }
+
+  /**
+   * Composite a premultiplied color over the whole canvas, in a pass of its
+   * own before the layer's. The color travels as the blend constant, so the
+   * pipelines need no buffers: one draw scales what is below by the color's
+   * transparency, the next adds the color.
+   *
+   * @param {Array<number>} color Premultiplied RGBA 0-1.
+   * @private
+   */
+  drawBackground_(color) {
+    const alpha = color[3] === undefined ? 1 : color[3];
+    if (!(alpha > 0)) {
+      return;
+    }
+    const item = this.cacheItem_;
+    const pass = /** @type {GPUCommandEncoder} */ (
+      item.encoder
+    ).beginRenderPass({
+      colorAttachments: [
+        {
+          view: /** @type {GPUTextureView} */ (item.colorView),
+          loadOp: 'load',
+          storeOp: 'store',
+        },
+      ],
+    });
+    pass.setPipeline(this.getBackgroundPipeline_('zero', 'one-minus-constant'));
+    pass.setBlendConstant({r: alpha, g: alpha, b: alpha, a: alpha});
+    pass.draw(3);
+    pass.setPipeline(this.getBackgroundPipeline_('constant', 'one'));
+    pass.setBlendConstant({r: color[0], g: color[1], b: color[2], a: alpha});
+    pass.draw(3);
+    pass.end();
+  }
+
+  /**
+   * @param {GPUBlendFactor} srcFactor Factor for the fragment, which is all ones.
+   * @param {GPUBlendFactor} dstFactor Factor for what is already drawn.
+   * @return {GPURenderPipeline} Pipeline drawing one triangle over the canvas.
+   * @private
+   */
+  getBackgroundPipeline_(srcFactor, dstFactor) {
+    const key = 'background/' + srcFactor + '/' + dstFactor;
+    const cached = this.pipelines_.get(key);
+    if (cached) {
+      return cached;
+    }
+    const module = this.createShaderModule(BACKGROUND_SHADER);
+    const component = {srcFactor, dstFactor, operation: 'add'};
+    return this.getRenderPipeline(key, {
+      layout: 'auto',
+      vertex: {module, entryPoint: 'vs'},
+      fragment: {
+        module,
+        entryPoint: 'fs',
+        targets: [
+          {
+            format: this.format_,
+            blend: {
+              color: /** @type {GPUBlendComponent} */ (component),
+              alpha: /** @type {GPUBlendComponent} */ (component),
+            },
+          },
+        ],
+      },
+      primitive: {topology: 'triangle-list'},
+    });
   }
 
   /**
