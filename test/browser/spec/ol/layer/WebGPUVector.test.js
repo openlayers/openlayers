@@ -161,6 +161,105 @@ where('WebGPU').describe('ol/layer/WebGPUVector', function () {
     assert.isAbove(styleFunction.mock.calls.length, calls);
   });
 
+  it('keeps drawing while features change, and shows features added during a build', async () => {
+    const left = new Feature(
+      new Polygon([
+        [
+          [-40, -10],
+          [-20, -10],
+          [-20, 10],
+          [-40, 10],
+          [-40, -10],
+        ],
+      ]),
+    );
+    const source = new VectorSource({features: [left]});
+    layer.setSource(source);
+    layer.setStyle({'fill-color': 'red'});
+    map.setView(new View({center: [0, 0], resolution: 1}));
+    await renderComplete(map);
+    const renderer = layer.getRenderer();
+    const buffers = renderer.buffers_;
+    assert.isOk(buffers);
+
+    const middle = new Feature(
+      new Polygon([
+        [
+          [-10, -10],
+          [10, -10],
+          [10, 10],
+          [-10, 10],
+          [-10, -10],
+        ],
+      ]),
+    );
+    source.addFeature(middle);
+    assert.strictEqual(renderer.buffers_, buffers);
+    map.renderSync();
+    assert.isTrue(renderer.buildPending_);
+
+    const right = new Feature(
+      new Polygon([
+        [
+          [20, -10],
+          [40, -10],
+          [40, 10],
+          [20, 10],
+          [20, -10],
+        ],
+      ]),
+    );
+    source.addFeature(right);
+    await renderComplete(map);
+    assert.strictEqual(
+      map.forEachFeatureAtPixel([20, 50], (f) => f),
+      left,
+    );
+    assert.strictEqual(
+      map.forEachFeatureAtPixel([50, 50], (f) => f),
+      middle,
+    );
+    assert.strictEqual(
+      map.forEachFeatureAtPixel([80, 50], (f) => f),
+      right,
+    );
+  });
+
+  it('follows the new source after setSource()', async () => {
+    const oldSource = layer.getSource();
+    layer.setStyle({'fill-color': 'red'});
+    map.setView(new View({center: [0, 0], resolution: 1}));
+    await renderComplete(map);
+    const renderer = layer.getRenderer();
+    const feature = new Feature(
+      new Polygon([
+        [
+          [-10, -10],
+          [10, -10],
+          [10, 10],
+          [-10, 10],
+          [-10, -10],
+        ],
+      ]),
+    );
+    const newSource = new VectorSource();
+    layer.setSource(newSource);
+    await renderComplete(map);
+    assert.strictEqual(layer.getRenderer(), renderer);
+    const buffers = renderer.buffers_;
+    assert.isOk(buffers);
+
+    oldSource.addFeature(feature.clone());
+    assert.strictEqual(renderer.buffers_, buffers);
+
+    newSource.addFeature(feature);
+    await renderComplete(map);
+    assert.strictEqual(
+      map.forEachFeatureAtPixel([50, 50], (f) => f),
+      feature,
+    );
+  });
+
   it('destroys the label corner buffer when replaced and on disposal', async () => {
     await renderComplete(map);
     const renderer = layer.getRenderer();

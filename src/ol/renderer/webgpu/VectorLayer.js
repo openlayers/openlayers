@@ -1,8 +1,6 @@
 /**
  * @module ol/renderer/webgpu/VectorLayer
  */
-import {listen, unlistenByKey} from '../../events.js';
-import EventType from '../../events/EventType.js';
 import {
   buffer,
   containsExtent,
@@ -552,6 +550,13 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
     this.renderedPoles_ = '';
 
     /**
+     * Source the buffers were built from, so `layer.setSource()` rebuilds them.
+     * @private
+     * @type {import("../../source/Vector.js").default|null}
+     */
+    this.renderedSource_ = null;
+
+    /**
      * @private
      * @type {number}
      */
@@ -611,12 +616,6 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
      * @type {GPUBuffer|null}
      */
     this.cornerBuffer_ = null;
-
-    /**
-     * @private
-     * @type {import("../../events.js").EventsKey|undefined}
-     */
-    this.sourceListenKey_;
 
     /**
      * @private
@@ -700,18 +699,6 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
       GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
     );
     createVectorPipelines(helper);
-    const source = this.getLayer().getSource();
-    if (source && !this.sourceListenKey_) {
-      this.sourceListenKey_ = listen(
-        source,
-        EventType.CHANGE,
-        () => {
-          this.releaseBuffers_();
-          this.getLayer().changed();
-        },
-        this,
-      );
-    }
   }
 
   /**
@@ -781,11 +768,7 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
    * @private
    */
   needsRebuild_(frameState) {
-    if (!this.buffers_) {
-      return true;
-    }
-    const source = this.getLayer().getSource();
-    if (source && source.getRevision() !== this.sourceRevision_) {
+    if (!this.buffers_ || this.sourceChanged_()) {
       return true;
     }
     const viewState = frameState.viewState;
@@ -804,6 +787,21 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
       return true;
     }
     return this.renderedPoles_ !== polesInView(extent, viewState.projection);
+  }
+
+  /**
+   * Whether the source, or its features, differ from those the buffers were
+   * built from. Unlike other changes, this rebuilds while the view moves, so
+   * edits show up without waiting for the interaction to end.
+   * @return {boolean} The source changed.
+   * @private
+   */
+  sourceChanged_() {
+    const source = this.getLayer().getSource();
+    return (
+      source !== this.renderedSource_ ||
+      (!!source && source.getRevision() !== this.sourceRevision_)
+    );
   }
 
   /**
@@ -967,6 +965,7 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
         labelData,
       );
     }
+    this.renderedSource_ = source;
     this.sourceRevision_ = source.getRevision();
     this.renderedExtent_ = buildExtent;
     this.renderedPoles_ = polesInView(extent, frameState.viewState.projection);
@@ -997,7 +996,7 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
     if (
       !this.buildPending_ &&
       this.needsRebuild_(frameState) &&
-      (!this.buffers_ || viewNotMoving(frameState))
+      (!this.buffers_ || viewNotMoving(frameState) || this.sourceChanged_())
     ) {
       this.rebuildBuffers_(frameState);
     }
@@ -1355,9 +1354,6 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
    * @override
    */
   disposeInternal() {
-    if (this.sourceListenKey_) {
-      unlistenByKey(this.sourceListenKey_);
-    }
     this.releaseBuffers_();
     this.imageAtlas_.clear();
     this.atlas_.clear();
