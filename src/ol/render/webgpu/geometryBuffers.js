@@ -135,6 +135,26 @@ function segmentOnClipEdge(x1, y1, x2, y2, extent, eps) {
  */
 
 /**
+ * Whole worlds to add to an x coordinate so it lands in the world copy
+ * nearest the grid. A view straddling the antimeridian gets a grid that runs
+ * past the edge of the world, and geometry on the far side has to move in, as
+ * do the symbols and labels drawn for it. Geometry half a world away is as
+ * near in either direction, and stays where it is.
+ *
+ * @param {number} centerX Center of what is shifted, in source units.
+ * @param {number} gridCenterX Center of the grid, in source units.
+ * @param {number} worldWidth Source world width, 0 when the source does not wrap.
+ * @return {number} Shift in source units.
+ */
+export function worldShift(centerX, gridCenterX, worldWidth) {
+  if (!(worldWidth > 0)) {
+    return 0;
+  }
+  const worlds = (gridCenterX - centerX) / worldWidth;
+  return worldWidth * Math.sign(worlds) * Math.ceil(Math.abs(worlds) - 0.5);
+}
+
+/**
  * Turn tessellation jobs into the typed arrays the WebGPU vector pipelines
  * consume. Nothing here touches features, styles, or the DOM, so the same code
  * runs on the main thread and inside {@link module:ol/worker/webgpuvector}.
@@ -205,10 +225,8 @@ export function buildGeometryBuffers(request) {
       const offset = (job.start + i) * 2;
       xy.push(coordinates[offset], coordinates[offset + 1]);
     }
-    // A view straddling the antimeridian gets a grid that runs past the edge
-    // of the world, so geometry on the far side arrives a whole world away
-    // from it and would be clipped off. Shift it in, per geometry rather than
-    // per point, so shapes that cross the edge themselves stay in one piece.
+    // Per geometry rather than per point, so shapes that cross the edge
+    // themselves stay in one piece.
     if (worldWidth > 0) {
       let minX = Infinity;
       let maxX = -Infinity;
@@ -216,8 +234,7 @@ export function buildGeometryBuffers(request) {
         minX = Math.min(minX, xy[i]);
         maxX = Math.max(maxX, xy[i]);
       }
-      const shift =
-        worldWidth * Math.round((gridCenterX - (minX + maxX) / 2) / worldWidth);
+      const shift = worldShift((minX + maxX) / 2, gridCenterX, worldWidth);
       if (shift !== 0) {
         for (let i = 0; i < xy.length; i += 2) {
           xy[i] += shift;
