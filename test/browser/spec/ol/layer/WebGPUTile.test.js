@@ -60,4 +60,53 @@ describe('ol/layer/WebGPUTile', () => {
 
     layer.dispose();
   });
+
+  it('stops watching loading sources that a frame no longer uses', () => {
+    const first = new XYZ({url: 'https://example.com/a/{z}/{x}/{y}.png'});
+    const second = new XYZ({url: 'https://example.com/b/{z}/{x}/{y}.png'});
+    first.setState('loading');
+    second.setState('loading');
+    let current = [first];
+    const layer = new WebGPUTileLayer({sources: () => current});
+    const renderer = /** @type {WebGPUTileLayerRenderer} */ (
+      layer.getRenderer()
+    );
+    const frameState = /** @type {any} */ ({
+      extent: [0, 0, 1, 1],
+      viewState: {resolution: 1},
+    });
+
+    renderer.collectFrameSources_(frameState);
+    assert.lengthOf(first.getListeners('change'), 1);
+
+    current = [second];
+    renderer.collectFrameSources_(frameState);
+    assert.isUndefined(first.getListeners('change'));
+    assert.lengthOf(second.getListeners('change'), 1);
+
+    second.setState('error');
+    assert.lengthOf(second.getListeners('change'), 1);
+
+    layer.dispose();
+    assert.isUndefined(second.getListeners('change'));
+  });
+
+  it('renders again and stops watching once a loading source is ready', () => {
+    const source = new XYZ({url: 'https://example.com/{z}/{x}/{y}.png'});
+    source.setState('loading');
+    const layer = new WebGPUTileLayer({sources: [source]});
+    const renderer = /** @type {WebGPUTileLayerRenderer} */ (
+      layer.createRenderer()
+    );
+    renderer.collectFrameSources_(
+      /** @type {any} */ ({extent: [0, 0, 1, 1], viewState: {resolution: 1}}),
+    );
+    const revision = layer.getRevision();
+
+    source.setState('ready');
+    assert.isAbove(layer.getRevision(), revision);
+    assert.isUndefined(source.getListeners('change'));
+
+    layer.dispose();
+  });
 });
