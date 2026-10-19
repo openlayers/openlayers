@@ -4,6 +4,7 @@ import {
   MAX_RENDER_CLIP_EXTENTS,
   VECTOR_FRAME_UNIFORM_SIZE,
   VectorGpuBuffers,
+  hasUnusedAtlasPages,
   placementKey,
   shouldStartImageAtlasOver,
 } from '../../../../../src/ol/renderer/webgpu/vectorUtil.js';
@@ -215,6 +216,42 @@ describe('ol/renderer/webgpu/vectorUtil', () => {
       Array.from({length: MAX_RENDER_CLIP_EXTENTS + 1}, () => [0, 0, 1, 1]),
     );
     assert.strictEqual(new Uint32Array(written.buffer)[32], 0);
+  });
+
+  describe('hasUnusedAtlasPages()', () => {
+    /**
+     * @param {boolean} full A glyph did not fit.
+     * @return {import("../../../../../src/ol/webgpu/FontAtlas.js").default} Atlas with four pages.
+     */
+    function fontAtlas(full) {
+      return /** @type {any} */ ({getPageCount: () => 4, isFull: () => full});
+    }
+
+    const idle = /** @type {any} */ ({viewHints: [0, 0]});
+    const interacting = /** @type {any} */ ({viewHints: [0, 1]});
+
+    it('starts a full atlas over while the view moves, once until it is idle', () => {
+      const atlas = fontAtlas(true);
+      assert.isTrue(hasUnusedAtlasPages(atlas, interacting, () => [[3]]));
+      assert.isFalse(hasUnusedAtlasPages(atlas, interacting, () => [[3]]));
+      assert.isTrue(hasUnusedAtlasPages(atlas, idle, () => [[3]]));
+      assert.isTrue(hasUnusedAtlasPages(atlas, interacting, () => [[3]]));
+      assert.isFalse(
+        hasUnusedAtlasPages(fontAtlas(false), interacting, () => [[3]]),
+      );
+    });
+
+    it('keeps a full atlas whose pages are all in use, and warns once', () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+      const used = () => [
+        [0, 1],
+        [2, 3],
+      ];
+      assert.isFalse(hasUnusedAtlasPages(fontAtlas(true), idle, used));
+      assert.isFalse(hasUnusedAtlasPages(fontAtlas(true), idle, used));
+      assert.strictEqual(warn.mock.calls.length, 1);
+      warn.mockRestore();
+    });
   });
 
   describe('shouldStartImageAtlasOver()', () => {

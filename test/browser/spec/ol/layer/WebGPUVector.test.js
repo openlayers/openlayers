@@ -292,6 +292,23 @@ where('WebGPU').describe('ol/layer/WebGPUVector', function () {
     assert.isFalse(renderer.hasPendingWork());
   });
 
+  it('rebuilds labels in the frame after the font atlas starts over', async () => {
+    layer.setSource(
+      new VectorSource({features: [new Feature(new Point([0, 0]))]}),
+    );
+    layer.setStyle({'text-value': 'hi'});
+    map.setView(new View({center: [0, 0], resolution: 1}));
+    await renderComplete(map);
+    const renderer = layer.getRenderer();
+    const buffers = renderer.buffers_;
+    assert.isAbove(buffers.glyphs.length, 0);
+
+    renderer.atlas_.clear();
+    map.renderSync();
+    assert.notStrictEqual(renderer.buffers_, buffers);
+    assert.isFalse(renderer.hasPendingWork());
+  });
+
   it('follows the new source after setSource()', async () => {
     const oldSource = layer.getSource();
     layer.setStyle({'fill-color': 'red'});

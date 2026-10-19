@@ -1337,10 +1337,29 @@ export function atlasPages(glyphs) {
 }
 
 /**
+ * Font atlases that started over because they were full while the view was
+ * moving, until the view is idle again.
+ * @type {WeakSet<import("../../webgpu/FontAtlas.js").default>}
+ */
+const fullWhileMoving = new WeakSet();
+
+/**
+ * Whether `hasUnusedAtlasPages()` has warned about a full font atlas, so it
+ * does so only once.
+ * @type {boolean}
+ */
+let fontAtlasFullWarned = false;
+
+/**
  * Whether the font atlas should start over: it holds pages that no current
  * label uses, and the view is idle, so rebuilding all labels goes unnoticed.
  * Afterwards the atlas holds only what the current labels use, so this cannot
  * repeat until more labels have come and gone.
+ *
+ * A full atlas leaves new glyphs undrawn, so it starts over as soon as a page
+ * is unused, even while the view moves. To keep labels that are still being
+ * rebuilt from filling it again on every frame, that happens once until the
+ * view is idle. A full atlas whose pages are all in use stays full.
  * @param {import("../../webgpu/FontAtlas.js").default} atlas Font atlas.
  * @param {import("../../Map.js").FrameState} frameState Frame state.
  * @param {function(): Array<Array<number>>} getUsedPages Atlas pages of the
@@ -1350,12 +1369,16 @@ export function atlasPages(glyphs) {
 export function hasUnusedAtlasPages(atlas, frameState, getUsedPages) {
   const pageCount = atlas.getPageCount();
   const hints = frameState.viewHints;
+  const moving = !!(hints[ViewHint.ANIMATING] || hints[ViewHint.INTERACTING]);
+  if (!moving) {
+    fullWhileMoving.delete(atlas);
+  }
+  const full = atlas.isFull();
+  if (moving && (!full || fullWhileMoving.has(atlas))) {
+    return false;
+  }
   // With this many pages, at most MAX_UNUSED_ATLAS_PAGES can be unused.
-  if (
-    pageCount <= 1 + MAX_UNUSED_ATLAS_PAGES ||
-    hints[ViewHint.ANIMATING] ||
-    hints[ViewHint.INTERACTING]
-  ) {
+  if (!full && pageCount <= 1 + MAX_UNUSED_ATLAS_PAGES) {
     return false;
   }
   const used = new Set();
@@ -1364,7 +1387,22 @@ export function hasUnusedAtlasPages(atlas, frameState, getUsedPages) {
       used.add(page);
     }
   }
-  return pageCount > used.size + MAX_UNUSED_ATLAS_PAGES;
+  if (!full) {
+    return pageCount > used.size + MAX_UNUSED_ATLAS_PAGES;
+  }
+  if (used.size < pageCount) {
+    if (moving) {
+      fullWhileMoving.add(atlas);
+    }
+    return true;
+  }
+  if (!fontAtlasFullWarned) {
+    fontAtlasFullWarned = true;
+    warn(
+      'The WebGPU font atlas is full. Some glyphs are not drawn while this many are in view.',
+    );
+  }
+  return false;
 }
 
 /**

@@ -74,6 +74,13 @@ const INITIAL_PAGE_SIZE = 512;
 const MAX_PAGE_SIZE = 4096;
 
 /**
+ * Glyphs that need another page beyond this many are not drawn, until the
+ * atlas starts over. Four `rg8unorm` pages of 4096 are 128 MiB per layer.
+ * @type {number}
+ */
+const MAX_PAGE_COUNT = 4;
+
+/**
  * Cells that do not fit on a staging canvas of this size before the next
  * upload go to another one.
  * @type {number}
@@ -212,8 +219,9 @@ function createStagingCanvas(size) {
  *
  * Pages exist only on the GPU. New cells are rasterized on a small staging
  * canvas, which is uploaded once and copied cell by cell to the pages. Pages
- * grow from 512 to 4096 and then another page is opened. A page's GPU texture
- * is replaced only when that page grows, by a copy on the GPU.
+ * grow from 512 to 4096 and then another page is opened, up to four; then the
+ * atlas is full, so its user has to start it over. A page's GPU texture is
+ * replaced only when that page grows, by a copy on the GPU.
  */
 class FontAtlas {
   constructor() {
@@ -258,6 +266,20 @@ class FontAtlas {
      * @type {number}
      */
     this.revision_ = 0;
+
+    /**
+     * Incremented by `clear()`, after which no earlier glyph is valid.
+     * @private
+     * @type {number}
+     */
+    this.generation_ = 0;
+
+    /**
+     * A glyph did not fit on the pages the atlas may have.
+     * @private
+     * @type {boolean}
+     */
+    this.full_ = false;
   }
 
   /**
@@ -265,7 +287,8 @@ class FontAtlas {
    * @param {string} glyph Grapheme.
    * @param {number} [strokeWidth] Stroke width in CSS pixels.
    * @param {number} [pixelRatio] Device pixel ratio for rasterization.
-   * @return {GlyphMetrics} Metrics in CSS pixels and stable atlas texels.
+   * @return {GlyphMetrics} Metrics in CSS pixels and stable atlas texels. A
+   * glyph that does not fit in a full atlas has its advance but no size.
    */
   getGlyph(font, glyph, strokeWidth = 0, pixelRatio = 1) {
     const dpr = pixelRatio > 0 ? pixelRatio : 1;
@@ -273,11 +296,33 @@ class FontAtlas {
     if (key in this.glyphs_) {
       return this.glyphs_[key];
     }
+    const advance = measureAndCacheTextWidth(
+      font,
+      glyph,
+      (this.widthCaches_[font] ??= {}),
+    );
     let staging = this.staging_[this.staging_.length - 1];
     const cell = measureCell(staging.context, font, glyph, strokeWidth, dpr);
     const w = cell.width;
     const h = cell.height;
     const page = this.fit_(this.pages_[this.pages_.length - 1], w, h);
+    if (!page) {
+      this.full_ = true;
+      const empty = {
+        texX0: 0,
+        texY0: 0,
+        texX1: 0,
+        texY1: 0,
+        page: 0,
+        width: 0,
+        height: 0,
+        ascent: 0,
+        pad: 0,
+        advance,
+      };
+      this.glyphs_[key] = empty;
+      return empty;
+    }
     const [x, y] = placeOnShelf(page, w, h);
     const pageIndex = this.pages_.indexOf(page);
 
@@ -310,11 +355,7 @@ class FontAtlas {
       height: h / dpr,
       ascent: cell.ascent / dpr,
       pad: cell.pad / dpr,
-      advance: measureAndCacheTextWidth(
-        font,
-        glyph,
-        (this.widthCaches_[font] ??= {}),
-      ),
+      advance,
     };
     this.glyphs_[key] = record;
     return record;
@@ -362,7 +403,25 @@ class FontAtlas {
     this.staging_ = [createStagingCanvas(STAGING_SIZE)];
     this.glyphs_ = {};
     this.widthCaches_ = {};
+    this.full_ = false;
     ++this.revision_;
+    ++this.generation_;
+  }
+
+  /**
+   * @return {boolean} A glyph did not fit, and is not drawn until the atlas
+   * starts over.
+   */
+  isFull() {
+    return this.full_;
+  }
+
+  /**
+   * @return {number} Changes whenever the atlas starts over, so a user can
+   * tell whether glyphs it holds still refer to these pages.
+   */
+  getGeneration() {
+    return this.generation_;
   }
 
   /**
@@ -390,12 +449,13 @@ class FontAtlas {
 
   /**
    * Pack `w` by `h` on `page`, growing it up to 4096 or opening another page
-   * of that size.
+   * of that size, up to `MAX_PAGE_COUNT` pages.
    * @param {AtlasPage} page Current page.
    * @param {number} w Cell width.
    * @param {number} h Cell height.
-   * @return {AtlasPage} Page that has room, or the current page when the cell
-   *     itself is larger than the maximum.
+   * @return {AtlasPage|null} Page that has room, the current page when the
+   *     cell itself is larger than the maximum, or null when the atlas has no
+   *     more pages to open.
    * @private
    */
   fit_(page, w, h) {
@@ -415,6 +475,9 @@ class FontAtlas {
     }
     if (w + 2 > MAX_PAGE_SIZE || h + 2 > MAX_PAGE_SIZE) {
       return page;
+    }
+    if (this.pages_.length >= MAX_PAGE_COUNT) {
+      return null;
     }
     const next = createPage(MAX_PAGE_SIZE);
     this.pages_.push(next);
