@@ -126,7 +126,9 @@ function segmentOnClipEdge(x1, y1, x2, y2, extent, eps) {
  * @property {Uint32Array} fillIndices Fill indices.
  * @property {Int16Array} strokePositions Stroke positions in grid units.
  * @property {Float32Array} strokeAttributes Extrusion x, extrusion y, width,
- *     and distance along the line in drawn map units, per stroke vertex.
+ *     and distance along the line in drawn map units, per stroke vertex. The
+ *     sign of the width tells the side of the line the vertex is on, so the
+ *     shader can fade out the edges.
  * @property {Uint32Array} strokeStyles Style index per stroke vertex.
  * @property {Uint32Array} strokeIndices Stroke indices.
  * @property {Float32Array} styles Styles, `STYLE_STRIDE` floats each (see `buffers.js`).
@@ -489,7 +491,9 @@ function emitStroke(
 
 /**
  * @typedef {Object} StrokeMeshWriter
- * @property {function(number, number, number, number, number): number} vertex Add a vertex.
+ * @property {function(number, number, number, number, number, number): number} vertex Add a
+ * vertex on the left (1) or right (-1) edge of the line. Vertices on the
+ * centerline, without extrusion, may give either side.
  * @property {function(number, number, number, number, number, number, number): Array<number>} pair Add a left/right pair.
  * @property {function(number, number, number): void} triangle Add a triangle.
  * @property {number} left Last left-side vertex.
@@ -610,19 +614,19 @@ function createStrokeMeshWriter(
   const writer = /** @type {StrokeMeshWriter} */ ({
     left: -1,
     right: -1,
-    vertex(x, y, ex, ey, distance) {
+    vertex(x, y, ex, ey, distance, side) {
       const index = positions.length / 2;
       positions.push(
         toLocal(x, grid.originX, grid.scaleX),
         toLocal(y, grid.originY, grid.scaleY),
       );
-      attributes.push(ex, ey, width, distance);
+      attributes.push(ex, ey, width * side, distance);
       styleIndices.push(styleIndex);
       return index;
     },
     pair(x, y, lx, ly, rx, ry, distance) {
-      const left = writer.vertex(x, y, lx, ly, distance);
-      const right = writer.vertex(x, y, rx, ry, distance);
+      const left = writer.vertex(x, y, lx, ly, distance, 1);
+      const right = writer.vertex(x, y, rx, ry, distance, -1);
       if (writer.left >= 0 && writer.right >= 0) {
         indices.push(
           writer.left,
@@ -673,7 +677,7 @@ function addCapPair(writer, point, normal, cap, direction) {
  * @param {number} direction Start (-1) or end (1).
  */
 function addRoundCap(writer, point, normal, direction) {
-  const center = writer.vertex(point.x, point.y, 0, 0, point.distance);
+  const center = writer.vertex(point.x, point.y, 0, 0, point.distance, 1);
   const tx = normal.y;
   const ty = -normal.x;
   const steps = 9;
@@ -684,7 +688,7 @@ function addRoundCap(writer, point, normal, direction) {
     const s = Math.sin(angle);
     const ex = direction < 0 ? -normal.x * c - tx * s : normal.x * c + tx * s;
     const ey = direction < 0 ? -normal.y * c - ty * s : normal.y * c + ty * s;
-    const current = writer.vertex(point.x, point.y, ex, ey, point.distance);
+    const current = writer.vertex(point.x, point.y, ex, ey, point.distance, 1);
     if (previous !== undefined) {
       writer.triangle(center, previous, current);
     }
@@ -759,6 +763,7 @@ function addJoin(writer, point, previous, next, join, miterLimit) {
       next.x,
       next.y,
       point.distance,
+      1,
     );
     writer.right = writer.vertex(
       point.x,
@@ -766,6 +771,7 @@ function addJoin(writer, point, previous, next, join, miterLimit) {
       -next.x,
       -next.y,
       point.distance,
+      -1,
     );
     return;
   }
@@ -822,7 +828,14 @@ function addOuterJoin(writer, point, previous, angle, turnsLeft, join) {
     const s = Math.sin(currentAngle);
     const ex = previousOuterX * c - previousOuterY * s;
     const ey = previousOuterX * s + previousOuterY * c;
-    const current = writer.vertex(point.x, point.y, ex, ey, point.distance);
+    const current = writer.vertex(
+      point.x,
+      point.y,
+      ex,
+      ey,
+      point.distance,
+      turnsLeft ? -1 : 1,
+    );
     if (turnsLeft) {
       writer.triangle(hub, outerIndex, current);
       writer.right = current;

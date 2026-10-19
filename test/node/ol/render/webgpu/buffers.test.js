@@ -1152,6 +1152,46 @@ describe('ol/render/webgpu/buffers', () => {
     assert.closeTo(maxMiter, Math.SQRT2, 1e-6);
   });
 
+  it('signs the width of each stroke vertex by its side of the line', () => {
+    const feature = new Feature(
+      new LineString([
+        [-10, 0],
+        [0, 0],
+        [0, 10],
+      ]),
+    );
+    const style = new Style({
+      stroke: new Stroke({
+        color: '#000',
+        lineCap: 'butt',
+        lineJoin: 'round',
+        width: 4,
+      }),
+    });
+    const buffers = buildVectorBuffers(
+      [feature],
+      () => style,
+      1,
+      /** @type {any} */ ({}),
+    );
+    const widths = {left: new Set(), right: new Set(), outerJoin: new Set()};
+    for (let i = 0; i < buffers.strokeAttributes.length; i += 4) {
+      const ex = buffers.strokeAttributes[i];
+      const ey = buffers.strokeAttributes[i + 1];
+      const width = buffers.strokeAttributes[i + 2];
+      if (ex === 0 && ey === 1) {
+        widths.left.add(width);
+      } else if (ex === 0 && ey === -1) {
+        widths.right.add(width);
+      } else if (ex > 0 && ey < 0) {
+        widths.outerJoin.add(width);
+      }
+    }
+    assert.deepEqual([...widths.left], [4]);
+    assert.deepEqual([...widths.right], [-4]);
+    assert.deepEqual([...widths.outerJoin], [-4]);
+  });
+
   it('uses butt ends where clipping cuts a square-capped line', () => {
     const feature = new Feature(
       new LineString([
