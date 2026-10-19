@@ -211,6 +211,29 @@ describe('ol/renderer/webgpu/VectorTileLayer', () => {
     assert.deepEqual(coords, ['1/0/0', '1/0/1', '1/1/0', '1/1/1']);
   });
 
+  it('keeps drawing tiles without their labels while fonts change', async () => {
+    source.getTile = function (z, x, y) {
+      return loadedTile(z, x, y);
+    };
+    const frameState = frameAtZ(0);
+    const [before] = await collectBatches(frameState, 1);
+    assert.isNotEmpty(before.buffers.labels);
+
+    renderer.handleFontsChanged();
+    renderer.prepareFrameInternal(frameState);
+    const during = renderer.collectBatches_(frameState);
+
+    assert.deepEqual(during, [before]);
+    assert.isEmpty(before.buffers.labels);
+    let after = during;
+    for (let i = 0; i < 200 && after[0] === before; ++i) {
+      await new Promise((resolve) => setTimeout(resolve, 10));
+      after = renderer.collectBatches_(frameState);
+    }
+    assert.notStrictEqual(after[0], before);
+    assert.isNotEmpty(after[0].buffers.labels);
+  });
+
   it('reuses bounded source subdivisions across deeper overzoom tiles', async () => {
     layer.dispose();
     const sourceGrid = createXYZ({maxZoom: 0});
