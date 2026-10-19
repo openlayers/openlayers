@@ -4,6 +4,8 @@
 import TileRange from '../../TileRange.js';
 import TileState from '../../TileState.js';
 import {descending} from '../../array.js';
+import {listen, unlistenByKey} from '../../events.js';
+import EventType from '../../events/EventType.js';
 import {
   compileTileColorPipeline,
   getStringNumberEquivalent,
@@ -354,10 +356,12 @@ class WebGPUTileLayerRenderer extends WebGPULayerRenderer {
     this.pendingWanted_ = 0;
 
     /**
+     * Change listeners on frame sources that are not ready yet, until they
+     * become ready or a frame no longer uses them.
      * @private
-     * @type {Set<import("../../source/Tile.js").default>}
+     * @type {Map<import("../../source/Tile.js").default, import("../../events.js").EventsKey>}
      */
-    this.loadingSources_ = new Set();
+    this.loadingSources_ = new Map();
 
     /**
      * Uniform buffers for the current frame. Destroyed the frame after they
@@ -1001,24 +1005,50 @@ class WebGPUTileLayerRenderer extends WebGPULayerRenderer {
         sources = [single];
       }
     }
-    for (let i = 0; i < sources.length; ++i) {
-      const source = sources[i];
-      if (
-        source.getState() === 'loading' &&
-        !this.loadingSources_.has(source)
-      ) {
-        this.loadingSources_.add(source);
-        const onChange = () => {
-          if (source.getState() === 'ready') {
-            source.removeEventListener('change', onChange);
-            this.loadingSources_.delete(source);
-            layer.changed();
-          }
-        };
-        source.addEventListener('change', onChange);
+    this.watchLoadingSources_(sources);
+    return sources;
+  }
+
+  /**
+   * Render again when a frame source that is still loading becomes ready or
+   * fails. Sources the frame no longer uses are not watched any more.
+   * @param {Array<import("../../source/Tile.js").default>} sources Frame sources.
+   * @private
+   */
+  watchLoadingSources_(sources) {
+    const watched = this.loadingSources_;
+    for (const [source, key] of watched) {
+      if (!sources.includes(source)) {
+        unlistenByKey(key);
+        watched.delete(source);
       }
     }
-    return sources;
+    for (const source of sources) {
+      if (source.getState() !== 'loading' || watched.has(source)) {
+        continue;
+      }
+      const key = listen(source, EventType.CHANGE, () => {
+        const state = source.getState();
+        if (state === 'ready') {
+          unlistenByKey(key);
+          watched.delete(source);
+        }
+        if (state === 'ready' || state === 'error') {
+          this.getLayer().changed();
+        }
+      });
+      watched.set(source, key);
+    }
+  }
+
+  /**
+   * @private
+   */
+  unwatchLoadingSources_() {
+    for (const key of this.loadingSources_.values()) {
+      unlistenByKey(key);
+    }
+    this.loadingSources_.clear();
   }
 
   /**
@@ -1844,6 +1874,7 @@ class WebGPUTileLayerRenderer extends WebGPULayerRenderer {
    * @override
    */
   clearCache() {
+    this.unwatchLoadingSources_();
     this.destroyUniformBuffers_(this.pendingUniforms_);
     this.destroyUniformBuffers_(this.retiredUniforms_);
     this.tileRepresentationCache.forEach((tileTexture) =>
