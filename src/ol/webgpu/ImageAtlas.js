@@ -67,7 +67,8 @@ function getImageSize(image) {
  * the GPU: new sprite rectangles are copied from their images to the texture.
  * The texture is replaced only when the atlas grows, by a copy on the GPU.
  * The atlas grows up to 4096 and is then full, so its user has to start it
- * over. Images larger than that are scaled down.
+ * over. That ceiling keeps it to 64 MiB of texture per layer, which is what
+ * mobile devices can afford. Images larger than that are scaled down.
  */
 class ImageAtlas {
   constructor() {
@@ -120,6 +121,20 @@ class ImageAtlas {
      * @type {GPUTexture|null}
      */
     this.texture_ = null;
+
+    /**
+     * Texels taken by the entries.
+     * @private
+     * @type {number}
+     */
+    this.allocatedArea_ = 0;
+
+    /**
+     * Incremented by `clear()`, after which no earlier entry is valid.
+     * @private
+     * @type {number}
+     */
+    this.generation_ = 0;
   }
 
   /**
@@ -156,6 +171,7 @@ class ImageAtlas {
       texY1: y + height,
     };
     this.entries_.set(key, entry);
+    this.allocatedArea_ += width * height;
     this.shelfX_ += width + 1;
     this.shelfHeight_ = Math.max(this.shelfHeight_, height);
     return entry;
@@ -304,10 +320,26 @@ class ImageAtlas {
   }
 
   /**
-   * @return {boolean} An image did not fit, so the atlas has to start over.
+   * @return {boolean} An image did not fit, and is not drawn until the atlas
+   * starts over.
    */
   isFull() {
     return this.full_;
+  }
+
+  /**
+   * @return {number} Texels taken by all entries, used or not.
+   */
+  getAllocatedArea() {
+    return this.allocatedArea_;
+  }
+
+  /**
+   * @return {number} Changes whenever the atlas starts over, so a user can
+   * tell whether entries it holds still refer to this texture.
+   */
+  getGeneration() {
+    return this.generation_;
   }
 
   /**
@@ -319,6 +351,8 @@ class ImageAtlas {
     this.texture_ = null;
     this.size_ = INITIAL_SIZE;
     this.full_ = false;
+    this.allocatedArea_ = 0;
+    ++this.generation_;
     this.shelfX_ = 1;
     this.shelfY_ = 1;
     this.shelfHeight_ = 0;
