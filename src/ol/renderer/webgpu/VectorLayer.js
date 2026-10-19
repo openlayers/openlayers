@@ -304,7 +304,12 @@ function getBuildPlan(source, frameState, viewExtent, onScreen) {
 
   if (!transformFn || !sourceProj) {
     // Source and view agree, so the clip extent doubles as the local grid.
-    return {tessellate: {clipExtent: viewExtent}, warp: null};
+    const viewWorld = viewProj.getExtent();
+    const worldWidth =
+      source.getWrapX() && viewProj.canWrapX() && viewWorld
+        ? getWidth(viewWorld)
+        : 0;
+    return {tessellate: {clipExtent: viewExtent, worldWidth}, warp: null};
   }
 
   // Geometry is clipped to this extent and quantized against it, so it has to
