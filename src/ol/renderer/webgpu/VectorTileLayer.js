@@ -130,10 +130,21 @@ class TileBatch extends Disposable {
    * @param {string} key Cache key.
    * @param {number} worldOffset X offset from the wrapped tile extent to the requested one.
    * @param {import("../../render/webgpu/buffers.js").VectorBuffers} buffers Buffers.
+   * @param {number} fontAtlasGeneration Generation of the font atlas the
+   * labels were laid out with.
+   * @param {number} imageAtlasGeneration Generation of the image atlas the
+   * icons and pattern fills were placed in.
    * @param {function(TileBatch): void} onDispose Called when the batch is
    * disposed, so the renderer can drop all references to it.
    */
-  constructor(key, worldOffset, buffers, onDispose) {
+  constructor(
+    key,
+    worldOffset,
+    buffers,
+    fontAtlasGeneration,
+    imageAtlasGeneration,
+    onDispose,
+  ) {
     super();
 
     /**
@@ -141,6 +152,18 @@ class TileBatch extends Disposable {
      * @type {function(TileBatch): void}
      */
     this.onDispose_ = onDispose;
+
+    /**
+     * Font atlas generation the glyphs of this batch refer to.
+     * @type {number}
+     */
+    this.fontAtlasGeneration = fontAtlasGeneration;
+
+    /**
+     * Image atlas generation the image entries of this batch refer to.
+     * @type {number}
+     */
+    this.imageAtlasGeneration = imageAtlasGeneration;
 
     /**
      * Renderer map entries that refer to this batch.
@@ -263,6 +286,27 @@ class TileBatch extends Disposable {
       this.labels_.setLabels(helper, this.buffers);
     }
     return this.labels_;
+  }
+
+  /**
+   * Forget the symbols, icons, and labels, e.g. because the atlas they are
+   * drawn from started over. The fills and strokes can still be drawn until a
+   * rebuilt batch replaces this one.
+   */
+  dropLabels() {
+    const buffers = this.buffers;
+    buffers.commands = buffers.commands.filter(
+      (command) => command.pipeline === 'fill' || command.pipeline === 'stroke',
+    );
+    buffers.labels = [];
+    buffers.glyphs = [];
+    buffers.symbolInstances = new Float32Array(0);
+    buffers.iconInstances = new Float32Array(0);
+    this.atlasPages = [];
+    this.labelVisibility = null;
+    this.labelIdentities = null;
+    this.labels_?.dispose();
+    this.labels_ = null;
   }
 
   /**
@@ -412,8 +456,10 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     this.pendingKeys_ = new Set();
 
     /**
-     * Incremented when the batches are discarded, so worker results that were
-     * built before are not cached.
+     * Incremented when the layer revision changes. Part of every cache key, so
+     * all tiles are rebuilt while the batches of the previous generation stay
+     * cached and are drawn until their replacements are ready. Worker results
+     * that were built before are not cached.
      * @private
      * @type {number}
      */
@@ -707,8 +753,6 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     if (this.renderedLayerRevision_ !== revision) {
       this.renderedLayerRevision_ = revision;
       ++this.batchGeneration_;
-      this.tileCache_.clear();
-      this.renderBatchesByKey_.clear();
       this.styleCaches_.clear();
     }
     const source = this.getLayer().getRenderSource();
@@ -861,9 +905,36 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     }
     const drawn = this.drawnBatches_.get(getUid(tile));
     if (drawn && this.tileCache_.containsKey(drawn.key)) {
-      return this.tileCache_.get(drawn.key);
+      return this.reuseBatch_(this.tileCache_.get(drawn.key));
     }
     return null;
+  }
+
+  /**
+   * Prepare a batch built for an earlier layer revision to stand in until its
+   * replacement is built, so a rebuild does not blank the tile. Once an atlas
+   * has started over, the batch's labels refer to glyphs or images that are
+   * gone, so they are dropped. Pattern fills cannot be told apart from icons,
+   * so a batch with images from a cleared image atlas is not drawn at all.
+   * @param {TileBatch} batch Batch.
+   * @return {TileBatch|null} The batch, or null if nothing of it can be drawn.
+   * @private
+   */
+  reuseBatch_(batch) {
+    const imagesCurrent =
+      batch.imageAtlasGeneration === this.imageAtlas_.getGeneration();
+    if (!imagesCurrent && batch.buffers.imageEntries.length > 0) {
+      return null;
+    }
+    if (
+      !imagesCurrent ||
+      batch.fontAtlasGeneration !== this.atlas_.getGeneration()
+    ) {
+      batch.dropLabels();
+      batch.fontAtlasGeneration = this.atlas_.getGeneration();
+      batch.imageAtlasGeneration = this.imageAtlas_.getGeneration();
+    }
+    return batch;
   }
 
   /**
@@ -953,6 +1024,7 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
         '/' +
         styleResolution;
     }
+    cacheKey += '@' + this.batchGeneration_;
     const cacheable = tile.getState() === TileState.LOADED;
     if (cacheable && this.tileCache_.containsKey(cacheKey)) {
       return this.tileCache_.get(cacheKey);
@@ -1016,6 +1088,8 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
       styleCache,
     );
     this.watchImages_(labelData.pendingImageStyles);
+    const fontAtlasGeneration = this.atlas_.getGeneration();
+    const imageAtlasGeneration = this.imageAtlas_.getGeneration();
 
     // Tessellation is the expensive part, so hand it to a worker when the tile
     // will still be around to receive it. Until it comes back the renderer
@@ -1042,6 +1116,8 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
                 cacheKey,
                 worldOffset,
                 combineVectorBuffers(geometry, labelData),
+                fontAtlasGeneration,
+                imageAtlasGeneration,
                 this.handleBatchDispose_,
               ),
             );
@@ -1067,6 +1143,8 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
       cacheKey,
       worldOffset,
       combineVectorBuffers(geometry, labelData),
+      fontAtlasGeneration,
+      imageAtlasGeneration,
       this.handleBatchDispose_,
     );
     if (cacheable) {
@@ -1701,12 +1779,13 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
         if (!this.renderTiles_.containsKey(renderKey)) {
           continue;
         }
-        const batch = this.renderBatchesByKey_.get(renderKey);
+        const cached = this.renderBatchesByKey_.get(renderKey);
         // Batches of loading tiles are rebuilt every frame and not cached.
-        if (!batch || !this.tileCache_.containsKey(batch.key)) {
+        if (!cached || !this.tileCache_.containsKey(cached.key)) {
           continue;
         }
-        if (!added.has(batch)) {
+        const batch = this.reuseBatch_(cached);
+        if (batch && !added.has(batch)) {
           batch.labelClipExtents = null;
           batch.labelClipFrame = frameState.index;
           added.add(batch);
@@ -1813,8 +1892,14 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
         until: now + LABEL_FADE_DURATION,
       });
     }
+    const fontAtlasGeneration = this.atlas_.getGeneration();
+    const imageAtlasGeneration = this.imageAtlas_.getGeneration();
     this.retiredBatches_ = this.retiredBatches_.filter(
-      (entry) => !current.has(entry.batch) && entry.until > now,
+      (entry) =>
+        !current.has(entry.batch) &&
+        entry.until > now &&
+        entry.batch.fontAtlasGeneration === fontAtlasGeneration &&
+        entry.batch.imageAtlasGeneration === imageAtlasGeneration,
     );
   }
 
