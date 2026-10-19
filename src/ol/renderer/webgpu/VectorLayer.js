@@ -114,18 +114,6 @@ function getBuildExtent(viewExtent, resolution) {
 }
 
 /**
- * Resolution bucket, one step per zoom level. Reprojection densification and
- * resolution-dependent styles are rebuilt when this changes, rather than on
- * every resolution change.
- *
- * @param {number} resolution Resolution.
- * @return {number} Bucket.
- */
-function resolutionBucket(resolution) {
-  return resolution > 0 ? Math.round(Math.log2(resolution)) : 0;
-}
-
-/**
  * @param {import("../../Map.js").FrameState} frameState Frame state.
  * @return {boolean} The view is neither animating nor being interacted with.
  */
@@ -483,10 +471,11 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
     this.gpu_ = null;
 
     /**
+     * Resolution the styles were evaluated at.
      * @private
      * @type {number}
      */
-    this.renderedResolutionBucket_ = NaN;
+    this.renderedResolution_ = NaN;
 
     /**
      * Incremented per rebuild so a worker result that arrives after a newer
@@ -760,8 +749,9 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
   /**
    * Whether the geometry on hand no longer matches what should be drawn. The
    * view extent only counts when it leaves the extent buffers were built for,
-   * and resolution only counts once it crosses a zoom level, so panning and
-   * zooming reuse the same buffers.
+   * so panning reuses the same buffers. Any resolution change counts, because
+   * styles are evaluated at a resolution; the caller only rebuilds for it once
+   * the view has settled.
    *
    * @param {import("../../Map.js").FrameState} frameState Frame.
    * @return {boolean} Buffers should be rebuilt.
@@ -778,7 +768,7 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
       this.renderedRenderOrder_ !== this.renderOrder_() ||
       this.renderedVariablesKey_ !== variablesKey(this.variables_) ||
       this.renderedLayerRevision_ !== this.getLayer().getRevision() ||
-      this.renderedResolutionBucket_ !== resolutionBucket(viewState.resolution)
+      this.renderedResolution_ !== viewState.resolution
     ) {
       return true;
     }
@@ -969,7 +959,7 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
     this.sourceRevision_ = source.getRevision();
     this.renderedExtent_ = buildExtent;
     this.renderedPoles_ = polesInView(extent, frameState.viewState.projection);
-    this.renderedResolutionBucket_ = resolutionBucket(resolution);
+    this.renderedResolution_ = resolution;
     this.renderedProjection_ = frameState.viewState.projection;
     this.renderedPixelRatio_ = frameState.pixelRatio;
     this.renderedRenderOrder_ = this.renderOrder_();
