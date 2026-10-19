@@ -5,6 +5,7 @@ import {
   VECTOR_FRAME_UNIFORM_SIZE,
   VectorGpuBuffers,
   placementKey,
+  shouldStartImageAtlasOver,
 } from '../../../../../src/ol/renderer/webgpu/vectorUtil.js';
 import {
   apply as applyTransform,
@@ -214,5 +215,55 @@ describe('ol/renderer/webgpu/vectorUtil', () => {
       Array.from({length: MAX_RENDER_CLIP_EXTENTS + 1}, () => [0, 0, 1, 1]),
     );
     assert.strictEqual(new Uint32Array(written.buffer)[32], 0);
+  });
+
+  describe('shouldStartImageAtlasOver()', () => {
+    /**
+     * @param {number} allocatedArea Texels taken by all entries.
+     * @return {import("../../../../../src/ol/webgpu/ImageAtlas.js").default} Full 100 x 100 atlas.
+     */
+    function fullAtlas(allocatedArea) {
+      return /** @type {any} */ ({
+        isFull: () => true,
+        getSize: () => 100,
+        getAllocatedArea: () => allocatedArea,
+      });
+    }
+
+    /**
+     * @param {number} width Width.
+     * @return {import("../../../../../src/ol/webgpu/ImageAtlas.js").ImageAtlasEntry} Entry 100 texels high.
+     */
+    function entry(width) {
+      return {texX0: 0, texY0: 0, texX1: width, texY1: 100};
+    }
+
+    const idle = /** @type {any} */ ({viewHints: [0, 0]});
+
+    it('starts over when unused entries free at least half the atlas', () => {
+      const used = entry(50);
+      assert.isTrue(
+        shouldStartImageAtlasOver(fullAtlas(9000), idle, () => [[used, used]]),
+      );
+      assert.isFalse(
+        shouldStartImageAtlasOver(
+          fullAtlas(9000),
+          /** @type {any} */ ({viewHints: [0, 1]}),
+          () => [[used]],
+        ),
+      );
+    });
+
+    it('stays full, and warns once, while starting over cannot help', () => {
+      const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+      assert.isFalse(
+        shouldStartImageAtlasOver(fullAtlas(9000), idle, () => [[entry(60)]]),
+      );
+      assert.isFalse(
+        shouldStartImageAtlasOver(fullAtlas(3000), idle, () => [[entry(30)]]),
+      );
+      assert.strictEqual(warn.mock.calls.length, 1);
+      warn.mockRestore();
+    });
   });
 });

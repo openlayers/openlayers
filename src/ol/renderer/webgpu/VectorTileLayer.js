@@ -59,6 +59,7 @@ import {
   labelUniforms,
   paintBatches,
   placementKey,
+  shouldStartImageAtlasOver,
   startFontAtlasOver,
   startImageAtlasOver,
   VECTOR_FRAME_UNIFORM_SIZE,
@@ -691,7 +692,13 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     ) {
       startFontAtlasOver(this.atlas_, this.getLayer());
     }
-    if (this.imageAtlas_.isFull()) {
+    if (
+      shouldStartImageAtlasOver(this.imageAtlas_, frameState, () =>
+        this.renderedBatches_
+          .concat(this.declutterBatches_)
+          .map((batch) => batch.buffers.imageEntries),
+      )
+    ) {
       startImageAtlasOver(this.imageAtlas_, this.getLayer());
     }
     // `layer.changed()` rebuilds the tile batches, e.g. for a style function
