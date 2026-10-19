@@ -204,6 +204,8 @@ class WebGPULayerRenderer extends LayerRenderer {
    * Premultiplied RGBA in 0..1 for the frame clear. Translucent geometry is
    * blended in the render pass, so the clear has to be the layer background
    * rather than transparent black, which would composite those fills over white.
+   * Layers share a canvas, so the layer opacity is in the color rather than on
+   * the canvas.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @return {Array<number>|undefined} Clear color, or undefined for transparent.
    * @protected
@@ -214,7 +216,8 @@ class WebGPULayerRenderer extends LayerRenderer {
       return undefined;
     }
     const color = asArray(background);
-    const alpha = color[3] === undefined ? 1 : color[3];
+    const opacity = frameState.layerStatesArray[frameState.layerIndex].opacity;
+    const alpha = (color[3] === undefined ? 1 : color[3]) * opacity;
     return [
       (color[0] / 255) * alpha,
       (color[1] / 255) * alpha,
