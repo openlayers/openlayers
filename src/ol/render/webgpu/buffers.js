@@ -188,8 +188,9 @@ function toRgba(color) {
  * @property {Uint32Array} fillStyles Style index per fill vertex.
  * @property {Uint32Array} fillIndices Fill indices.
  * @property {Int16Array} strokePositions Stroke positions in grid units.
- * @property {Float32Array} strokeAttributes Normal x, normal y, width, and
- *     distance along the line in drawn map units, per stroke vertex.
+ * @property {Float32Array} strokeAttributes Normal x, normal y, width signed
+ *     by the side of the line, and distance along the line in drawn map units,
+ *     per stroke vertex.
  * @property {Uint32Array} strokeStyles Style index per stroke vertex.
  * @property {Uint32Array} strokeIndices Stroke indices.
  * @property {Float32Array} styles Styles, `STYLE_STRIDE` floats each.
