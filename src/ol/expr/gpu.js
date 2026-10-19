@@ -10,6 +10,7 @@ import {
   CallExpression,
   ColorType,
   isType,
+  newParsingContext,
   NumberArrayType,
   NumberType,
   Ops,
@@ -116,6 +117,16 @@ export function uniformNameForVariable(variableName) {
 }
 
 /**
+ * Get the uniform name given a variable name.
+ * @param {Array<string>} propertyPathElements Strings comprising the nested path of the property accessed
+ * @return {string} The uniform name.
+ */
+export function attributeNameForProperty(...propertyPathElements) {
+  const propertyName = propertyPathElements.join('_x_'); // trying to make sure we don't get any name collision here
+  return `a_prop_${propertyName}`.replace(/[^0-9a-zA-Z_]/g, '_');
+}
+
+/**
  * @typedef {import('./expression.js').ParsingContext} ParsingContext
  */
 /**
@@ -129,29 +140,31 @@ export function uniformNameForVariable(variableName) {
 
 /**
  * @typedef {Object} CompilationContext
- * @property {Map<string, ValueType>} variables Variables and their types (transferred from the parsing context)
- * @property {Map<string, ValueType>} properties Properties and their types (transferred from the parsing context)
+ * Inherits most of its properties from the ParsingContext type.
+ *
+ * @property {Map<string, ValueType>} variables Variables referenced with the 'var' operator; key is name, value is type.
+ * @property {Map<string, ValueType>} properties Properties referenced with the 'get' operator; key is name, value is type.
+ * @property {boolean} featureId The style uses the feature id.
+ * @property {boolean} geometryType The style uses the feature geometry type.
+ * @property {boolean} mCoordinate The style uses the M coordinate of geometries
+ * @property {boolean} mapState The style uses the map state (view state or time elapsed).
+ * @property {import('../style/flat.js').StyleVariables} [inputVariables] Variable values (i.e. style variables) given as input during parsing to help with type narrowing
+ *
  * @property {Object<string, string>} functions Lookup of functions used by the style.
  * @property {number} [bandCount] Number of bands per pixel.
- * @property {Array<PaletteTexture>} [paletteTextures] List of palettes used by the style.
- * @property {boolean} featureId Whether the feature ID is used in the expression
- * @property {boolean} geometryType Whether the geometry type is used in the expression
- * @property {import('../style/flat.js').StyleVariables} [inputVariables] Variable values (i.e. style variables) given as input during parsing to help with type narrowing
+ * @property {Array<PaletteTexture>} paletteTextures List of palettes used by the style.
  */
 
 /**
- * @param {import('../style/flat.js').StyleVariables} [inputVariables] Variable values (i.e. style variables) given as input during parsing to help with type narrowing
- * @return {CompilationContext} A new compilation context.
+ * @param {import('../style/flat.js').StyleVariables} [variables] Style variables
+ * @return {CompilationContext} New compilation context
  */
-export function newCompilationContext(inputVariables) {
+export function newCompilationContext(variables) {
   return {
-    variables: new Map(),
-    properties: new Map(),
-    functions: {},
+    ...newParsingContext(variables),
     bandCount: 0,
-    featureId: false,
-    geometryType: false,
-    inputVariables,
+    functions: {},
+    paletteTextures: [],
   };
 }
 
@@ -159,8 +172,8 @@ const GET_BAND_VALUE_FUNC = 'getBandValue';
 
 export const PALETTE_TEXTURE_ARRAY = 'u_paletteTextures';
 
-export const FEATURE_ID_PROPERTY_NAME = 'featureId';
-export const GEOMETRY_TYPE_PROPERTY_NAME = 'geometryType';
+export const FEATURE_ID_PROPERTY_NAME = 'a_featureId';
+export const GEOMETRY_TYPE_PROPERTY_NAME = 'a_geometryType';
 
 /**
  * The value `-9999999` will be used to indicate that a property on a feature is not defined, similar to a "no data" value.
@@ -179,26 +192,11 @@ export const UNDEFINED_PROP_VALUE = -9999999;
 /**
  * @param {import('./expression.js').EncodedExpression} encoded The encoded expression.
  * @param {number} type The expected type.
- * @param {import('./expression.js').ParsingContext} parsingContext The parsing context.
  * @param {CompilationContext} compilationContext An existing compilation context
  * @return {CompiledExpression} The compiled expression.
  */
-export function buildExpression(
-  encoded,
-  type,
-  parsingContext,
-  compilationContext,
-) {
-  const expression = parse(encoded, type, parsingContext);
-  // add collected variables and properties to the compilation context
-  compilationContext.properties = new Map([
-    ...compilationContext.properties,
-    ...parsingContext.properties,
-  ]);
-  compilationContext.variables = new Map([
-    ...compilationContext.variables,
-    ...parsingContext.variables,
-  ]);
+export function buildExpression(encoded, type, compilationContext) {
+  const expression = parse(encoded, type, compilationContext);
   return compile(expression, type, compilationContext);
 }
 
@@ -222,9 +220,10 @@ function createCompiler(output) {
  */
 const compilers = {
   [Ops.Get]: (context, expression) => {
-    const firstArg = /** @type {LiteralExpression} */ (expression.args[0]);
-    const propName = /** @type {string} */ (firstArg.value);
-    let result = 'a_prop_' + propName;
+    const propPath = /** @type {Array<string>} */ (
+      expression.args.map((arg) => /** @type {LiteralExpression} */ (arg).value)
+    );
+    let result = attributeNameForProperty(...propPath);
     if (isType(expression.type, BooleanType)) {
       result = `(${result} > 0.0)`;
     }
@@ -232,11 +231,11 @@ const compilers = {
   },
   [Ops.Id]: (context) => {
     context.featureId = true;
-    return 'a_' + FEATURE_ID_PROPERTY_NAME;
+    return FEATURE_ID_PROPERTY_NAME;
   },
   [Ops.GeometryType]: (context) => {
     context.geometryType = true;
-    return 'a_' + GEOMETRY_TYPE_PROPERTY_NAME;
+    return GEOMETRY_TYPE_PROPERTY_NAME;
   },
   [Ops.LineMetric]: () => 'currentLineMetric', // this variable is assumed to always be present in shaders, default is 0.
   [Ops.Var]: (context, expression) => {
@@ -249,9 +248,11 @@ const compilers = {
     return result;
   },
   [Ops.Has]: (context, expression) => {
-    const firstArg = /** @type {LiteralExpression} */ (expression.args[0]);
-    const propName = /** @type {string} */ (firstArg.value);
-    return `(a_prop_${propName} != ${numberToGlsl(UNDEFINED_PROP_VALUE)})`;
+    const propPath = /** @type {Array<string>} */ (
+      expression.args.map((arg) => /** @type {LiteralExpression} */ (arg).value)
+    );
+    const attrName = attributeNameForProperty(...propPath);
+    return `(${attrName} != ${numberToGlsl(UNDEFINED_PROP_VALUE)})`;
   },
   [Ops.Resolution]: () => 'u_resolution',
   [Ops.Zoom]: () => 'u_zoom',

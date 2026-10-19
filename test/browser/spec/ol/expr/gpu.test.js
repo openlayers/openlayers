@@ -3,7 +3,6 @@ import {
   AnyType,
   BooleanType,
   ColorType,
-  newParsingContext,
 } from '../../../../../src/ol/expr/expression.js';
 import {
   buildExpression,
@@ -153,14 +152,10 @@ describe('ol/expr/gpu', () => {
           ],
         ],
         type: ColorType,
-        context: {
-          style: {
-            variables: {
-              selected: true,
-              oldColor: 'grey',
-              newColor: 'white',
-            },
-          },
+        styleVariables: {
+          selected: true,
+          oldColor: 'grey',
+          newColor: 'white',
         },
         expected:
           '((u_var_selected > 0.0) == false ? vec4(1.0, 0.0, 0.0, 1.0) : ((u_var_selected > 0.0) == (a_prop_validValue > 0.0) ? vec4(0.0, 0.5019607843137255, 0.0, 1.0) : ((u_time < 10000.0) ? u_var_oldColor : u_var_newColor)))',
@@ -179,20 +174,11 @@ describe('ol/expr/gpu', () => {
 
     for (const c of cases) {
       it(`works for ${c.name}`, () => {
-        const parsingContext = newParsingContext();
-        const compilationContext = c.context
-          ? {...newCompilationContext(), ...c.context}
-          : newCompilationContext();
-        parsingContext.style = compilationContext.style;
-        const result = buildExpression(
-          c.expression,
-          c.type,
-          parsingContext,
-          compilationContext,
-        );
+        const context = newCompilationContext(c.styleVariables);
+        const result = buildExpression(c.expression, c.type, context);
         assert.deepEqual(result, c.expected);
         if (c.contextAssertion) {
-          c.contextAssertion(compilationContext);
+          c.contextAssertion(context);
         }
       });
     }
