@@ -954,7 +954,7 @@ class WebGPUTileLayerRenderer extends WebGPULayerRenderer {
       return;
     }
     this.recycleUniformBuffers_();
-    helper.prepareDraw(frameState, true);
+    helper.prepareDraw(frameState, true, this.getClearColor(frameState));
     const pass = helper.getRenderPass();
     for (let i = 0; i < prepared.length; ++i) {
       this.paintPrepared_(frameState, prepared[i], pass);
