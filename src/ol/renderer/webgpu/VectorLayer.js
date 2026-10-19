@@ -61,8 +61,8 @@ import {
   labelUniforms,
   paintBatches,
   placementKey,
+  shouldStartImageAtlasOver,
   startFontAtlasOver,
-  startImageAtlasOver,
   VECTOR_FRAME_UNIFORM_SIZE,
   VectorGpuBuffers,
 } from './vectorUtil.js';
@@ -483,6 +483,13 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
     this.renderedResolution_ = NaN;
 
     /**
+     * Image atlas generation the icons and pattern fills of `buffers_` refer to.
+     * @private
+     * @type {number}
+     */
+    this.imageAtlasGeneration_ = -1;
+
+    /**
      * Incremented per rebuild so a worker result that arrives after a newer
      * rebuild started can be dropped.
      * @private
@@ -720,8 +727,12 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
     ) {
       startFontAtlasOver(this.atlas_, this.getLayer());
     }
-    if (this.imageAtlas_.isFull()) {
-      startImageAtlasOver(this.imageAtlas_, this.getLayer());
+    if (
+      shouldStartImageAtlasOver(this.imageAtlas_, frameState, () =>
+        this.buffers_ ? [this.buffers_.imageEntries] : [],
+      )
+    ) {
+      this.imageAtlas_.clear();
     }
     const source =
       /** @type {import("../../source/Vector.js").default|null} */ (
@@ -800,6 +811,21 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
   }
 
   /**
+   * Whether the buffers draw icons or pattern fills from an image atlas that
+   * has since started over. Its texture no longer holds those images, so the
+   * buffers must not be drawn again, not even while a rebuild is on a worker.
+   * @return {boolean} The buffers refer to images no longer in the atlas.
+   * @private
+   */
+  imagesStale_() {
+    return (
+      !!this.buffers_ &&
+      this.buffers_.imageEntries.length > 0 &&
+      this.imageAtlasGeneration_ !== this.imageAtlas_.getGeneration()
+    );
+  }
+
+  /**
    * The sampled projection for a warp setup, built once and reused. Sampling
    * is the only proj4 work left in the vector path, and it happens per grid
    * rather than per vertex.
@@ -860,9 +886,11 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
 
   /**
    * @param {import("../../Map.js").FrameState} frameState Frame.
+   * @param {boolean} [sync] Build on this thread, so the result is drawn in
+   * this frame, and drop a build that is still on a worker.
    * @private
    */
-  rebuildBuffers_(frameState) {
+  rebuildBuffers_(frameState, sync = false) {
     const layer = this.getLayer();
     const source = /** @type {import("../../source/Vector.js").default} */ (
       layer.getSource()
@@ -887,6 +915,7 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
     if (!plan) {
       return;
     }
+    const imageAtlasGeneration = this.imageAtlas_.getGeneration();
     const {request, labelData} = buildVectorRequest(
       features,
       this.styleFunction_,
@@ -911,7 +940,7 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
     this.watchImages_(labelData.pendingImageStyles);
     this.pendingWarp_ = plan.warp;
 
-    const pending = getWorkerPool().build(request);
+    const pending = sync ? null : getWorkerPool().build(request);
     if (pending) {
       // Keep drawing what is on hand until the worker answers.
       const generation = ++this.buildGeneration_;
@@ -929,6 +958,7 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
           }
           this.releaseBuffers_();
           this.buffers_ = combineVectorBuffers(geometry, labelData);
+          this.imageAtlasGeneration_ = imageAtlasGeneration;
           // Request a frame without counting it as a style change, which
           // would rebuild the buffers again.
           const layer = this.getLayer();
@@ -954,11 +984,16 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
       );
     } else {
       ++this.buildGeneration_;
+      if (this.buildPending_) {
+        this.buildPending_ = false;
+        this.updateReady();
+      }
       this.releaseBuffers_();
       this.buffers_ = combineVectorBuffers(
         buildGeometryBuffers(request),
         labelData,
       );
+      this.imageAtlasGeneration_ = imageAtlasGeneration;
     }
     this.renderedSource_ = source;
     this.sourceRevision_ = source.getRevision();
@@ -988,7 +1023,12 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
     // Rebuilding is O(features): tessellation, and a proj4 call per vertex when
     // reprojecting. Only do it once the view settles, and reuse what is on hand
     // in the meantime.
-    if (
+    if (this.imagesStale_()) {
+      this.rebuildBuffers_(frameState, true);
+      if (this.imagesStale_()) {
+        this.releaseBuffers_();
+      }
+    } else if (
       !this.buildPending_ &&
       this.needsRebuild_(frameState) &&
       (!this.buffers_ || viewNotMoving(frameState) || this.sourceChanged_())

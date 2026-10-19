@@ -1,6 +1,7 @@
 /**
  * @module ol/renderer/webgpu/vectorUtil
  */
+import {warn} from '../../console.js';
 import Disposable from '../../Disposable.js';
 import {ICON_STRIDE, SYMBOL_STRIDE} from '../../render/webgpu/buffers.js';
 import {comparePaint} from '../../render/webgpu/drawOrder.js';
@@ -1380,8 +1381,59 @@ export function startFontAtlasOver(atlas, layer) {
 }
 
 /**
- * Start the image atlas over when it is full, and rebuild all icons and
- * pattern fills of the layer. Only images that are still needed come back.
+ * Whether `shouldStartImageAtlasOver()` has warned, so it does so only once.
+ * @type {boolean}
+ */
+let imageAtlasFullWarned = false;
+
+/**
+ * Whether a full image atlas should start over. Starting over helps only when
+ * the icons and pattern fills on screen would leave room once the others are
+ * gone, and only goes unnoticed while the view is idle. When the images in use
+ * take more than half the atlas, the atlas stays full instead, and the images
+ * that did not fit stay undrawn until fewer are in view; starting over then
+ * would only fill it again on every frame. An atlas that holds only images in
+ * use stays full for the same reason.
+ * @param {import("../../webgpu/ImageAtlas.js").default} imageAtlas Image atlas.
+ * @param {import("../../Map.js").FrameState} frameState Frame state.
+ * @param {function(): Array<Array<import("../../webgpu/ImageAtlas.js").ImageAtlasEntry>>} getUsedEntries
+ * Atlas entries of the current batches, only called when needed.
+ * @return {boolean} The atlas should start over.
+ */
+export function shouldStartImageAtlasOver(
+  imageAtlas,
+  frameState,
+  getUsedEntries,
+) {
+  const hints = frameState.viewHints;
+  if (
+    !imageAtlas.isFull() ||
+    hints[ViewHint.ANIMATING] ||
+    hints[ViewHint.INTERACTING]
+  ) {
+    return false;
+  }
+  const used = new Set(getUsedEntries().flat());
+  let usedArea = 0;
+  for (const entry of used) {
+    usedArea += (entry.texX1 - entry.texX0) * (entry.texY1 - entry.texY0);
+  }
+  const size = imageAtlas.getSize();
+  if (usedArea < imageAtlas.getAllocatedArea() && usedArea * 2 <= size * size) {
+    return true;
+  }
+  if (!imageAtlasFullWarned) {
+    imageAtlasFullWarned = true;
+    warn(
+      'The WebGPU image atlas is full. Some icons and pattern fills are not drawn while this many are in view.',
+    );
+  }
+  return false;
+}
+
+/**
+ * Start the image atlas over and rebuild all icons and pattern fills of the
+ * layer. Only images that are still needed come back.
  * @param {import("../../webgpu/ImageAtlas.js").default} imageAtlas Image atlas.
  * @param {import("../../layer/Layer.js").default} layer Layer.
  */
