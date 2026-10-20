@@ -229,15 +229,15 @@ class FontAtlas {
      * @private
      * @type {Array<AtlasPage>}
      */
-    this.pages_ = [createPage(INITIAL_PAGE_SIZE)];
+    this.pages_ = [];
 
     /**
      * Cells rasterized since the last upload. The first canvas is kept for
-     * later uploads.
+     * later uploads, and neither exists until a glyph is requested.
      * @private
      * @type {Array<StagingCanvas>}
      */
-    this.staging_ = [createStagingCanvas(STAGING_SIZE)];
+    this.staging_ = [];
 
     /**
      * Texture the first staging canvas is uploaded to.
@@ -309,6 +309,7 @@ class FontAtlas {
       glyph,
       (this.widthCaches_[font] ??= {}),
     );
+    this.ensurePages_();
     let staging = this.staging_[this.staging_.length - 1];
     const cell = measureCell(staging.context, font, glyph, strokeWidth, dpr);
     const w = cell.width;
@@ -377,6 +378,10 @@ class FontAtlas {
    */
   upload(helper) {
     const device = helper.getDevice();
+    const pending = this.staging_.some((staging) => staging.cells.length > 0);
+    if (!pending && this.pages_.every((page) => !page.texture)) {
+      return this.revision_;
+    }
     for (const page of this.pages_) {
       if (page.texture?.width !== page.size) {
         this.replaceTexture_(device, page);
@@ -447,8 +452,8 @@ class FontAtlas {
     }
     this.stagingTexture_?.destroy();
     this.stagingTexture_ = null;
-    this.pages_ = [createPage(INITIAL_PAGE_SIZE)];
-    this.staging_ = [createStagingCanvas(STAGING_SIZE)];
+    this.pages_ = [];
+    this.staging_ = [];
     this.glyphs_ = {};
     this.widthCaches_ = {};
     this.full_ = false;
@@ -490,6 +495,20 @@ class FontAtlas {
    */
   getPageCount() {
     return this.pages_.length;
+  }
+
+  /**
+   * Open the first page and staging canvas. Geometry that never draws a glyph
+   * never allocates either.
+   * @private
+   */
+  ensurePages_() {
+    if (!this.pages_.length) {
+      this.pages_.push(createPage(INITIAL_PAGE_SIZE));
+    }
+    if (!this.staging_.length) {
+      this.staging_.push(createStagingCanvas(STAGING_SIZE));
+    }
   }
 
   /**
