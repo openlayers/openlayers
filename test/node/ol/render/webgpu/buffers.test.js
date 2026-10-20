@@ -155,6 +155,57 @@ describe('ol/render/webgpu/buffers', () => {
     assert.closeTo(maxX, 10, 1e-3);
   });
 
+  it('fades the outline of a fill that has no stroke', () => {
+    const feature = new Feature(
+      new Polygon([
+        [
+          [0, 0],
+          [10, 0],
+          [10, 10],
+          [0, 10],
+          [0, 0],
+        ],
+      ]),
+    );
+    const build = (stroke) =>
+      buildVectorBuffers(
+        [feature],
+        () =>
+          new Style({
+            fill: new Fill({color: '#f00'}),
+            stroke,
+          }),
+        1,
+        /** @type {any} */ ({}),
+      );
+    const bare = build(undefined);
+    const stroked = build(new Stroke({color: '#000', width: 2}));
+    const coverages = (buffers) => {
+      const values = [];
+      for (let i = 2; i < buffers.fillExtrusions.length; i += 4) {
+        values.push(buffers.fillExtrusions[i]);
+      }
+      return values;
+    };
+    assert.include(coverages(bare), 0);
+    assert.isTrue(coverages(stroked).every((value) => value === 1));
+    let outward = 0;
+    for (let i = 0; i < bare.fillExtrusions.length; i += 4) {
+      const ex = bare.fillExtrusions[i];
+      const ey = bare.fillExtrusions[i + 1];
+      const length = Math.hypot(ex, ey);
+      if (length === 0) {
+        continue;
+      }
+      assert.closeTo(length, 1, 1e-6);
+      const [x, y] = toMapCoordinate(bare.fillPositions, bare.grid, i / 4);
+      // The vertex sits on the ring, so this points out of the square.
+      assert.isAbove(ex * (x - 5) + ey * (y - 5), 0);
+      ++outward;
+    }
+    assert.isAbove(outward, 0);
+  });
+
   it('distinguishes map and viewport fill displacement styles', () => {
     const features = [
       new Feature(

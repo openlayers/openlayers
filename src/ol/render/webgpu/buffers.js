@@ -187,6 +187,8 @@ function toRgba(color) {
  * @property {Int16Array} fillPositions Fill positions in grid units.
  * @property {Uint32Array} fillStyles Style index per fill vertex.
  * @property {Uint32Array} fillIndices Fill indices.
+ * @property {Float32Array} fillExtrusions Outward offset and coverage per
+ *     fill vertex. See `geometryBuffers.js`.
  * @property {Int16Array} strokePositions Stroke positions in grid units.
  * @property {Float32Array} strokeAttributes Normal x, normal y, width signed
  *     by the side of the line, distance along the line in drawn map units, and
@@ -671,6 +673,7 @@ function appendStyledGeometry(
         styleTable,
         state,
         stamp,
+        !stroke,
       );
     }
     if (stroke) {
@@ -686,6 +689,7 @@ function appendStyledGeometry(
       styleTable,
       state,
       stamp,
+      !stroke,
     );
   }
   if (
@@ -1046,6 +1050,7 @@ export function combineVectorBuffers(geometry, labelData) {
     fillPositions: geometry.fillPositions,
     fillStyles: geometry.fillStyles,
     fillIndices: geometry.fillIndices,
+    fillExtrusions: geometry.fillExtrusions,
     strokePositions: geometry.strokePositions,
     strokeAttributes: geometry.strokeAttributes,
     strokeStyles: geometry.strokeStyles,
@@ -1273,6 +1278,7 @@ function getAnchors(geometry, reproj) {
  * @param {StyleTable} styleTable Style table.
  * @param {BuildState} state Build state, for the image atlas.
  * @param {import("./drawOrder.js").DrawStamp} stamp Draw stamp.
+ * @param {boolean} fringe Fade the outline. False when a stroke covers it.
  */
 function appendFills(
   geometry,
@@ -1283,6 +1289,7 @@ function appendFills(
   styleTable,
   state,
   stamp,
+  fringe,
 ) {
   const fillColor = fill.getColor();
   const displacement = fill.getDisplacement?.() || [0, 0];
@@ -1345,6 +1352,7 @@ function appendFills(
       jobs,
       coordinates,
       stamp,
+      fringe,
     );
   } else if (type === 'MultiPolygon') {
     const polygons =
@@ -1352,7 +1360,7 @@ function appendFills(
         geometry
       ).getPolygons();
     for (const polygon of polygons) {
-      appendPolygon(polygon, styleIndex, jobs, coordinates, stamp);
+      appendPolygon(polygon, styleIndex, jobs, coordinates, stamp, fringe);
     }
   }
 }
@@ -1365,8 +1373,9 @@ function appendFills(
  * @param {Array<import("./geometryBuffers.js").GeometryJob>} jobs Jobs.
  * @param {Array<number>} coordinates Shared coordinates.
  * @param {import("./drawOrder.js").DrawStamp} stamp Draw stamp.
+ * @param {boolean} fringe Fade the outline.
  */
-function appendPolygon(polygon, styleIndex, jobs, coordinates, stamp) {
+function appendPolygon(polygon, styleIndex, jobs, coordinates, stamp, fringe) {
   const stride = polygon.getStride();
   const flat = polygon.getOrientedFlatCoordinates();
   const ends = polygon.getEnds();
@@ -1402,7 +1411,7 @@ function appendPolygon(polygon, styleIndex, jobs, coordinates, stamp) {
       continue;
     }
     jobs.push(
-      withStamp({kind: 'fill', start, count, holes, styleIndex}, stamp),
+      withStamp({kind: 'fill', start, count, holes, styleIndex, fringe}, stamp),
     );
   }
 }

@@ -89,6 +89,23 @@ fn displaceFill(
     clip.w
   );
 }
+
+// Moves a fill vertex out by its fringe extrusion. One unit is one pixel, and
+// a zero extrusion leaves the vertex where the polygon put it.
+fn offsetFill(clip: vec4<f32>, extrusion: vec2<f32>) -> vec4<f32> {
+  let len = length(extrusion);
+  if (len < 1e-6) {
+    return clip;
+  }
+  let clipExtrusion = uniforms.projectionMatrix * vec4(extrusion, 0.0, 0.0);
+  let extrusionPx = clipExtrusion.xy * uniforms.viewportSizePx;
+  let offset = extrusionPx / max(length(extrusionPx), 1e-12) * len;
+  return vec4(
+    clip.xy + offset / (uniforms.viewportSizePx * 0.5) * clip.w,
+    clip.z,
+    clip.w
+  );
+}
 `;
 
 export const TILE_SHADER = `
@@ -240,12 +257,14 @@ struct VertexOut {
   @location(3) @interpolate(flat) patternScale: f32,
   @location(4) localPosition: vec2<f32>,
   @location(5) @interpolate(flat) displacement: vec2<f32>,
+  @location(6) coverage: f32,
 }
 
 @vertex
 fn vs_main(
   @location(0) position: vec2<i32>,
   @location(1) styleIndex: u32,
+  @location(2) fringe: vec4<f32>,
 ) -> VertexOut {
   var out: VertexOut;
   let style = styles[styleIndex];
@@ -255,7 +274,8 @@ fn vs_main(
     style.dashParams.xy,
     style.dashParams.z
   );
-  out.position = displaceFill(clip, out.displacement);
+  out.position = displaceFill(offsetFill(clip, fringe.xy), out.displacement);
+  out.coverage = fringe.z;
   out.color = style.color;
   out.hitColor = style.hitColor;
   out.pattern = style.dashA;
@@ -270,6 +290,9 @@ fn fs_main(in: VertexOut) -> @location(0) vec4<f32> {
     discard;
   }
   if (uniforms.hitDetection > 0.5) {
+    if (in.coverage < 0.5) {
+      discard;
+    }
     return in.hitColor;
   }
   var color = in.color;
@@ -282,7 +305,7 @@ fn fs_main(in: VertexOut) -> @location(0) vec4<f32> {
       floor(fract(px / (in.pattern.zw * in.patternScale)) * in.pattern.zw);
     color = textureLoad(patternTexture, vec2<i32>(texel), 0);
   }
-  color.a = color.a * uniforms.globalAlpha;
+  color.a = color.a * uniforms.globalAlpha * in.coverage;
   return vec4(color.rgb * color.a, color.a);
 }
 `;
@@ -426,12 +449,14 @@ struct VertexOut {
   @location(3) @interpolate(flat) patternScale: f32,
   @location(4) localPosition: vec2<f32>,
   @location(5) @interpolate(flat) displacement: vec2<f32>,
+  @location(6) coverage: f32,
 }
 
 @vertex
 fn vs_main(
   @location(0) warped: vec3<f32>,
   @location(1) styleIndex: u32,
+  @location(2) fringe: vec4<f32>,
 ) -> VertexOut {
   var out: VertexOut;
   if (warped.z < 0.5) {
@@ -441,6 +466,7 @@ fn vs_main(
     out.hitColor = vec4(0.0);
     out.localPosition = vec2(0.0);
     out.displacement = vec2(0.0);
+    out.coverage = 0.0;
     return out;
   }
   let style = styles[styleIndex];
@@ -449,7 +475,8 @@ fn vs_main(
     style.dashParams.xy,
     style.dashParams.z
   );
-  out.position = displaceFill(clip, out.displacement);
+  out.position = displaceFill(offsetFill(clip, fringe.xy), out.displacement);
+  out.coverage = fringe.z;
   out.color = style.color;
   out.hitColor = style.hitColor;
   out.pattern = style.dashA;
@@ -464,6 +491,9 @@ fn fs_main(in: VertexOut) -> @location(0) vec4<f32> {
     discard;
   }
   if (uniforms.hitDetection > 0.5) {
+    if (in.coverage < 0.5) {
+      discard;
+    }
     return in.hitColor;
   }
   var color = in.color;
@@ -476,7 +506,7 @@ fn fs_main(in: VertexOut) -> @location(0) vec4<f32> {
       floor(fract(px / (in.pattern.zw * in.patternScale)) * in.pattern.zw);
     color = textureLoad(patternTexture, vec2<i32>(texel), 0);
   }
-  color.a = color.a * uniforms.globalAlpha;
+  color.a = color.a * uniforms.globalAlpha * in.coverage;
   return vec4(color.rgb * color.a, color.a);
 }
 `;
