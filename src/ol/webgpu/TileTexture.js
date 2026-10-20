@@ -154,6 +154,13 @@ class TileTexture extends EventTarget {
      */
     this.gutter = options.gutter || 0;
 
+    /**
+     * Uniform buffer, texture view, and bind groups reused across frames.
+     * Dropped with the texture, and when a new device takes over.
+     * @type {TileDrawResources|null}
+     */
+    this.drawResources_ = null;
+
     this.handleTileChange_ = this.handleTileChange_.bind(this);
     this.setTile(options.tile);
   }
@@ -171,10 +178,20 @@ class TileTexture extends EventTarget {
    * @param {import("./Helper.js").default} helper Helper.
    */
   setHelper(helper) {
+    this.releaseDrawResources_();
     this.helper = helper;
     if (this.loaded) {
       this.uploadTile();
     }
+  }
+
+  /**
+   * Drop the uniform buffer and bind groups cached for this tile.
+   * @private
+   */
+  releaseDrawResources_() {
+    this.drawResources_?.dispose();
+    this.drawResources_ = null;
   }
 
   /**
@@ -374,11 +391,68 @@ class TileTexture extends EventTarget {
     if (this.tile) {
       this.tile.removeEventListener(EventType.CHANGE, this.handleTileChange_);
     }
+    this.releaseDrawResources_();
     if (this.texture) {
       this.texture.destroy();
       this.texture = null;
     }
     super.disposeInternal();
+  }
+}
+
+/**
+ * GPU state one tile draw reuses while its texture and pipeline stay valid.
+ */
+export class TileDrawResources {
+  /**
+   * @param {import("./Helper.js").default} helper Helper that owns the device.
+   */
+  constructor(helper) {
+    /**
+     * @type {import("./Helper.js").default}
+     */
+    this.helper = helper;
+
+    /**
+     * @type {GPUBuffer|null}
+     */
+    this.buffer = null;
+
+    /**
+     * @type {number}
+     */
+    this.size = 0;
+
+    /**
+     * @type {GPUTextureView|null}
+     */
+    this.view = null;
+
+    /**
+     * @type {GPUTexture|null}
+     */
+    this.viewTexture = null;
+
+    /**
+     * @type {Map<GPURenderPipeline, GPUBindGroup>}
+     */
+    this.groups = new Map();
+
+    /**
+     * @type {number}
+     */
+    this.styleGeneration = -1;
+  }
+
+  /**
+   * Destroy the uniform buffer. Bind groups and views die with their texture.
+   */
+  dispose() {
+    this.buffer?.destroy();
+    this.buffer = null;
+    this.view = null;
+    this.viewTexture = null;
+    this.groups.clear();
   }
 }
 
