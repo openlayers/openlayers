@@ -103,6 +103,20 @@ describe('ol/renderer/webgpu/LabelRenderer', () => {
     renderer.dispose();
   });
 
+  it('compares only the label indices it is given', () => {
+    const renderer = new LabelRenderer();
+    renderer.setLabels(
+      /** @type {any} */ (fakeHelper()),
+      /** @type {any} */ (labelBuffers(2)),
+    );
+    const opacities = new Float32Array([1, 1, 0, 1, 1, 0]);
+    renderer.setOpacities(opacities, 0);
+    opacities[0] = 0;
+    assert.isFalse(renderer.setOpacities(opacities, 0, [1]));
+    assert.isTrue(renderer.setOpacities(opacities, 0, [0]));
+    renderer.dispose();
+  });
+
   it('draws halos before fills only for ranges that contain halos', () => {
     const helper = fakeHelper();
     const renderer = new LabelRenderer();

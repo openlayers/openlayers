@@ -29,6 +29,7 @@ import {
   LABEL_FADE_DURATION,
   LABEL_FADE_MATCH_PIXELS,
   LabelFade,
+  opacityIndicesToWrite,
   writeGpuTransition,
 } from '../../render/webgpu/labelFade.js';
 import {PlacementScheduler} from '../../render/webgpu/placement.js';
@@ -583,6 +584,30 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     this.activeOpacityIndices_ = new Set();
 
     /**
+     * Labels whose transition was rewritten by the last opacity update.
+     * Null means that update rewrote every label.
+     * @private
+     * @type {Array<number>|null}
+     */
+    this.dirtyOpacityIndices_ = null;
+
+    /**
+     * `dirtyOpacityIndices_` split into one list of local indices per label-view
+     * source. Rebuilt on the first tile that asks.
+     * @private
+     * @type {Array<Array<number>>|null}
+     */
+    this.opacityBuckets_ = null;
+
+    /**
+     * The label view has not been uploaded yet, so the next opacity update
+     * rewrites every label instead of the ones that changed.
+     * @private
+     * @type {boolean}
+     */
+    this.reuploadOpacities_ = true;
+
+    /**
      * @private
      * @type {number}
      */
@@ -616,7 +641,7 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     /**
      * Label-only batches retained long enough for unmatched symbols to fade.
      * @private
-     * @type {Array<{batch: TileBatch, until: number}>}
+     * @type {Array<{batch: TileBatch, until: number, transitions?: Float32Array}>}
      */
     this.retiredBatches_ = [];
 
@@ -1591,7 +1616,7 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
       const gpu = batch.getGpuBuffers(helper);
       const labels = this.cornerBuffer_ ? batch.getLabelRenderer(helper) : null;
       if (labels && this.opacities_) {
-        labels.setOpacities(this.opacities_, view.starts[i] ?? 0);
+        this.applyOpacities_(labels, i);
       }
       const worldOffset = batch.worldOffset;
       entries.push({
@@ -1631,7 +1656,7 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
         const batch = this.declutterBatches_[i];
         const labels = batch.getLabelRenderer(helper);
         if (this.opacities_) {
-          labels.setOpacities(this.opacities_, view.starts[i] ?? 0);
+          this.applyOpacities_(labels, i);
         }
         entries.push({
           commands: batch.buffers.commands || [],
@@ -1663,18 +1688,38 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
         if (!identities) {
           continue;
         }
-        const transitions = new Float32Array(identities.length * 3);
+        const entry = this.retiredBatches_[r];
+        let transitions = entry.transitions;
+        if (!transitions || transitions.length !== identities.length * 3) {
+          transitions = new Float32Array(identities.length * 3);
+          entry.transitions = transitions;
+        }
+        /** @type {Array<number>} */
+        const changed = [];
         for (let i = 0; i < identities.length; ++i) {
+          const offset = i * 3;
+          const before0 = transitions[offset];
+          const before1 = transitions[offset + 1];
+          const before2 = transitions[offset + 2];
           writeGpuTransition(
             transitions,
-            i * 3,
+            offset,
             currentIds.has(identities[i]) || batch.labelVisibility?.[i] !== true
-              ? [0, 0, frameState.time || 0]
+              ? [0, 0, 0]
               : this.labelFade_.transition(identities[i]),
           );
+          if (
+            transitions[offset] !== before0 ||
+            transitions[offset + 1] !== before1 ||
+            transitions[offset + 2] !== before2
+          ) {
+            changed.push(i);
+          }
         }
         const labels = batch.getLabelRenderer(helper);
-        labels.setOpacities(transitions, 0);
+        if (changed.length) {
+          labels.setOpacities(transitions, 0, changed);
+        }
         const order = tileOrder++;
         entries.push({
           commands: batch.buffers.commands || [],
@@ -1753,6 +1798,7 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
       ++this.labelVersion_;
       this.opacities_ = new Float32Array(this.labelView_.getCount() * 3);
       this.activeOpacityIndices_.clear();
+      this.reuploadOpacities_ = true;
       // Tiles that were already on screen keep their placement. New labels
       // stay hidden until a complete pass accepts them.
       const visibility = [];
@@ -1871,8 +1917,8 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
       frameState.viewState.resolution * LABEL_FADE_MATCH_PIXELS,
       this.labelView_.identities,
     );
-    // Each tile compares this against what it last uploaded, so during a pan
-    // only the handful with a fade running write anything to the GPU.
+    // Tiles compare only these indices against what they last uploaded, so a
+    // pan that fades a few labels does not scan the rest.
     const opacities = this.opacities_;
     const active = activeLabelIndices(
       labels,
@@ -1880,11 +1926,16 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
       previousVisibility,
       this.labelView_.identities,
     );
-    const dirty = new Set(this.activeOpacityIndices_);
-    for (const index of active) {
-      dirty.add(index);
-    }
-    for (const i of dirty) {
+    const dirty = this.reuploadOpacities_
+      ? null
+      : opacityIndicesToWrite(this.activeOpacityIndices_, active);
+    this.reuploadOpacities_ = false;
+    const count = dirty ? dirty.length : labels.length;
+    for (let n = 0; n < count; ++n) {
+      const i = dirty ? dirty[n] : n;
+      if (i >= labels.length) {
+        continue;
+      }
       writeGpuTransition(
         opacities,
         i * 3,
@@ -1896,7 +1947,73 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
       );
     }
     this.activeOpacityIndices_ = active;
+    this.dirtyOpacityIndices_ = dirty;
+    this.opacityBuckets_ = null;
     return fading;
+  }
+
+  /**
+   * Give one tile the opacity indices that belong to it.
+   * @param {LabelRenderer} labels Label renderer.
+   * @param {number} batchIndex Index in the label view.
+   * @private
+   */
+  applyOpacities_(labels, batchIndex) {
+    const offset = this.labelView_.starts[batchIndex] ?? 0;
+    const dirty = this.dirtyOpacityIndices_;
+    // A batch past the end of the view is not in the shared opacity array.
+    // Reading the whole set preserves the previous upload for that batch.
+    if (!dirty || batchIndex >= this.labelView_.starts.length) {
+      labels.setOpacities(this.opacities_, offset);
+      return;
+    }
+    const local = this.opacityBucket_(batchIndex);
+    if (local.length) {
+      labels.setOpacities(this.opacities_, offset, local);
+    }
+  }
+
+  /**
+   * Local indices of `dirtyOpacityIndices_` that fall in one tile.
+   * @param {number} batchIndex Index in the label view.
+   * @return {Array<number>} Indices.
+   * @private
+   */
+  opacityBucket_(batchIndex) {
+    if (!this.opacityBuckets_) {
+      const sources = this.labelView_.sources;
+      const starts = this.labelView_.starts;
+      /** @type {Array<Array<number>>} */
+      const buckets = new Array(sources.length);
+      for (let i = 0; i < sources.length; ++i) {
+        buckets[i] = [];
+      }
+      const dirty = this.dirtyOpacityIndices_ || [];
+      for (let n = 0; n < dirty.length; ++n) {
+        const index = dirty[n];
+        let lo = 0;
+        let hi = starts.length - 1;
+        let batch = -1;
+        while (lo <= hi) {
+          const mid = (lo + hi) >> 1;
+          if ((starts[mid] ?? 0) <= index) {
+            batch = mid;
+            lo = mid + 1;
+          } else {
+            hi = mid - 1;
+          }
+        }
+        if (batch < 0 || batch >= sources.length) {
+          continue;
+        }
+        const start = starts[batch] ?? 0;
+        if (index < start + sources[batch].buffers.labels.length) {
+          buckets[batch].push(index - start);
+        }
+      }
+      this.opacityBuckets_ = buckets;
+    }
+    return this.opacityBuckets_[batchIndex] || [];
   }
 
   /**
