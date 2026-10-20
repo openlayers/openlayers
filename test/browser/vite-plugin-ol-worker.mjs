@@ -21,6 +21,12 @@ export default function olWorker() {
         return null;
       }
       const chunk = await build(file, {minify: false});
+      // The bundle inlines the worker's imports, so editing one of them would
+      // not invalidate this module. Watch them or the dev server keeps serving
+      // a worker built from the old code.
+      for (const moduleId of chunk.moduleIds) {
+        this.addWatchFile(moduleId);
+      }
       return {code: chunk.code, map: null};
     },
   };
