@@ -87,6 +87,28 @@ export function activeLabelIndices(
 }
 
 /**
+ * Indices whose transition must be rewritten: every label active now, and
+ * every label that was active last time and is not anymore.
+ *
+ * @param {Set<number>} previous Indices active on the previous update.
+ * @param {Set<number>} active Indices active now.
+ * @return {Array<number>} Indices to write.
+ */
+export function opacityIndicesToWrite(previous, active) {
+  /** @type {Array<number>} */
+  const dirty = [];
+  for (const index of previous) {
+    if (!active.has(index)) {
+      dirty.push(index);
+    }
+  }
+  for (const index of active) {
+    dirty.push(index);
+  }
+  return dirty;
+}
+
+/**
  * Match previous-frame labels within this many CSS pixels (converted to
  * world units with view resolution) so the same text at a new tile zoom
  * does not restart the fade.
