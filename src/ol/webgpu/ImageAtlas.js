@@ -135,6 +135,14 @@ class ImageAtlas {
      * @type {number}
      */
     this.generation_ = 0;
+
+    /**
+     * Textures of generations that started over, kept until the batches that
+     * sample them have been rebuilt.
+     * @private
+     * @type {Map<number, GPUTexture>}
+     */
+    this.retained_ = new Map();
   }
 
   /**
@@ -343,12 +351,57 @@ class ImageAtlas {
   }
 
   /**
-   * Release the texture and forget all entries. Their texels exist only in
-   * the texture, so they are copied again when added again.
+   * @param {number} [generation] Generation. The current one when omitted.
+   * @return {GPUTexture|null} Texture, or null when that generation was not
+   * uploaded or has been released.
    */
-  clear() {
-    this.texture_?.destroy();
-    this.texture_ = null;
+  getTexture(generation) {
+    if (generation === undefined || generation === this.generation_) {
+      return this.texture_;
+    }
+    return this.retained_.get(generation) || null;
+  }
+
+  /**
+   * @param {number} generation Generation.
+   * @return {boolean} The current generation, or a retained earlier one.
+   */
+  hasGeneration(generation) {
+    return generation === this.generation_ || this.retained_.has(generation);
+  }
+
+  /**
+   * Destroy retained textures no batch still samples.
+   * @param {Set<number>} used Generations to keep, besides the current one.
+   */
+  releaseUnused(used) {
+    for (const [generation, texture] of this.retained_) {
+      if (!used.has(generation)) {
+        texture.destroy();
+        this.retained_.delete(generation);
+      }
+    }
+  }
+
+  /**
+   * Release the texture and forget all entries. Their texels exist only in
+   * the texture, so they are copied again when added again. A restart keeps
+   * the texture for batches that still sample it; a new device cannot.
+   * @param {boolean} [retainTextures] Keep the current texture addressable by
+   * its generation until `releaseUnused()` drops it.
+   */
+  clear(retainTextures) {
+    if (retainTextures && this.texture_) {
+      this.retained_.set(this.generation_, this.texture_);
+      this.texture_ = null;
+    } else {
+      this.texture_?.destroy();
+      this.texture_ = null;
+      for (const texture of this.retained_.values()) {
+        texture.destroy();
+      }
+      this.retained_.clear();
+    }
     this.size_ = INITIAL_SIZE;
     this.full_ = false;
     this.allocatedArea_ = 0;

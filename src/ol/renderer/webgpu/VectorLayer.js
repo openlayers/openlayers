@@ -63,6 +63,7 @@ import {
   placementKey,
   shouldStartImageAtlasOver,
   startFontAtlasOver,
+  startImageAtlasOver,
   VECTOR_FRAME_UNIFORM_SIZE,
   VectorGpuBuffers,
 } from './vectorUtil.js';
@@ -739,8 +740,9 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
         this.buffers_ ? [this.buffers_.imageEntries] : [],
       )
     ) {
-      this.imageAtlas_.clear();
+      startImageAtlasOver(this.imageAtlas_, this.getLayer());
     }
+    this.releaseAtlases_();
     const source =
       /** @type {import("../../source/Vector.js").default|null} */ (
         this.getLayer().getSource()
@@ -818,10 +820,11 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
   }
 
   /**
-   * Whether the buffers draw glyphs, icons, or pattern fills from an atlas
-   * that has since started over. Its textures no longer hold those, so the
-   * buffers must not be drawn again, not even while a rebuild is on a worker.
-   * @return {boolean} The buffers refer to texels no longer in the atlases.
+   * Whether the buffers sample an atlas whose texture is gone. A restart keeps
+   * the previous texture, and those buffers stay on screen while a worker
+   * builds the replacement. A new device destroys the texture, so the buffers
+   * have to be built again before anything is drawn.
+   * @return {boolean} The buffers refer to texels that no longer exist.
    * @private
    */
   atlasesStale_() {
@@ -831,9 +834,24 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
     }
     return (
       (buffers.imageEntries.length > 0 &&
-        this.imageAtlasGeneration_ !== this.imageAtlas_.getGeneration()) ||
+        this.imageAtlasGeneration_ !== this.imageAtlas_.getGeneration() &&
+        !this.imageAtlas_.hasGeneration(this.imageAtlasGeneration_)) ||
       (buffers.glyphs.length > 0 &&
-        this.fontAtlasGeneration_ !== this.atlas_.getGeneration())
+        this.fontAtlasGeneration_ !== this.atlas_.getGeneration() &&
+        !this.atlas_.hasGeneration(this.fontAtlasGeneration_))
+    );
+  }
+
+  /**
+   * Drop atlas textures no current buffers sample.
+   * @private
+   */
+  releaseAtlases_() {
+    this.atlas_.releaseUnused(
+      new Set([this.atlas_.getGeneration(), this.fontAtlasGeneration_]),
+    );
+    this.imageAtlas_.releaseUnused(
+      new Set([this.imageAtlas_.getGeneration(), this.imageAtlasGeneration_]),
     );
   }
 
@@ -1124,6 +1142,8 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
             tileOrder: 0,
             gpu,
             labels: this.cornerBuffer_ ? this.labels_ : null,
+            fontGeneration: this.fontAtlasGeneration_,
+            imageGeneration: this.imageAtlasGeneration_,
             slot: labelUniforms(uniforms, frameState, buffers),
             prepare: () => {
               gpu.writeUniforms(

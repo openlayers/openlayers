@@ -749,6 +749,7 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     ) {
       startImageAtlasOver(this.imageAtlas_, this.getLayer());
     }
+    this.releaseAtlases_();
     // `layer.changed()` rebuilds the tile batches, e.g. for a style function
     // that depends on external state.
     const revision = this.getLayer().getRevision();
@@ -759,6 +760,34 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     }
     const source = this.getLayer().getRenderSource();
     return !!source && source.getState() === 'ready';
+  }
+
+  /**
+   * Drop atlas textures no cached batch still samples.
+   * @private
+   */
+  releaseAtlases_() {
+    const fonts = new Set([this.atlas_.getGeneration()]);
+    const images = new Set([this.imageAtlas_.getGeneration()]);
+    const keep = (batch) => {
+      fonts.add(batch.fontAtlasGeneration);
+      images.add(batch.imageAtlasGeneration);
+    };
+    this.tileCache_.forEach(keep);
+    for (const batch of this.uncachedBatches_) {
+      keep(batch);
+    }
+    for (const batch of this.renderedBatches_) {
+      keep(batch);
+    }
+    for (const batch of this.declutterBatches_) {
+      keep(batch);
+    }
+    for (const entry of this.retiredBatches_) {
+      keep(entry.batch);
+    }
+    this.atlas_.releaseUnused(fonts);
+    this.imageAtlas_.releaseUnused(images);
   }
 
   /**
@@ -914,27 +943,22 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
 
   /**
    * Prepare a batch built for an earlier layer revision to stand in until its
-   * replacement is built, so a rebuild does not blank the tile. Once an atlas
-   * has started over, the batch's labels refer to glyphs or images that are
-   * gone, so they are dropped. Pattern fills cannot be told apart from icons,
-   * so a batch with images from a cleared image atlas is not drawn at all.
+   * replacement is built, so a rebuild does not blank the tile. An atlas that
+   * started over keeps its previous texture, and this batch samples that
+   * until it is rebuilt.
    * @param {TileBatch} batch Batch.
    * @return {TileBatch|null} The batch, or null if nothing of it can be drawn.
    * @private
    */
   reuseBatch_(batch) {
-    const imagesCurrent =
-      batch.imageAtlasGeneration === this.imageAtlas_.getGeneration();
-    if (!imagesCurrent && batch.buffers.imageEntries.length > 0) {
+    const imagesGone =
+      batch.buffers.imageEntries.length > 0 &&
+      !this.imageAtlas_.hasGeneration(batch.imageAtlasGeneration);
+    const fontsGone =
+      batch.buffers.glyphs.length > 0 &&
+      !this.atlas_.hasGeneration(batch.fontAtlasGeneration);
+    if (imagesGone || fontsGone) {
       return null;
-    }
-    if (
-      !imagesCurrent ||
-      batch.fontAtlasGeneration !== this.atlas_.getGeneration()
-    ) {
-      batch.dropLabels();
-      batch.fontAtlasGeneration = this.atlas_.getGeneration();
-      batch.imageAtlasGeneration = this.imageAtlas_.getGeneration();
     }
     return batch;
   }
@@ -1575,6 +1599,8 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
         tileOrder: i,
         gpu,
         labels,
+        fontGeneration: batch.fontAtlasGeneration,
+        imageGeneration: batch.imageAtlasGeneration,
         slot: this.cornerBuffer_
           ? labelUniforms(uniforms, frameState, batch.buffers, worldOffset)
           : null,
@@ -1613,6 +1639,8 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
           gpu: null,
           labels,
           labelsOnly: true,
+          fontGeneration: batch.fontAtlasGeneration,
+          imageGeneration: batch.imageAtlasGeneration,
           slot: labelUniforms(
             uniforms,
             frameState,
@@ -1654,6 +1682,8 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
           gpu: null,
           labels,
           labelsOnly: true,
+          fontGeneration: batch.fontAtlasGeneration,
+          imageGeneration: batch.imageAtlasGeneration,
           slot: labelUniforms(
             uniforms,
             frameState,
@@ -1894,14 +1924,8 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
         until: now + LABEL_FADE_DURATION,
       });
     }
-    const fontAtlasGeneration = this.atlas_.getGeneration();
-    const imageAtlasGeneration = this.imageAtlas_.getGeneration();
     this.retiredBatches_ = this.retiredBatches_.filter(
-      (entry) =>
-        !current.has(entry.batch) &&
-        entry.until > now &&
-        entry.batch.fontAtlasGeneration === fontAtlasGeneration &&
-        entry.batch.imageAtlasGeneration === imageAtlasGeneration,
+      (entry) => !current.has(entry.batch) && entry.until > now,
     );
   }
 
