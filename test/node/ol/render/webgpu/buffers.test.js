@@ -1145,7 +1145,7 @@ describe('ol/render/webgpu/buffers', () => {
     const round = build('round');
     const extrusions = (buffers) => {
       const values = [];
-      for (let i = 0; i < buffers.strokeAttributes.length; i += 4) {
+      for (let i = 0; i < buffers.strokeAttributes.length; i += 5) {
         values.push([
           buffers.strokeAttributes[i],
           buffers.strokeAttributes[i + 1],
@@ -1160,6 +1160,18 @@ describe('ol/render/webgpu/buffers', () => {
       [1, 1],
       [1, -1],
     ]);
+    const ends = (buffers) => {
+      const values = [];
+      for (let i = 4; i < buffers.strokeAttributes.length; i += 5) {
+        values.push(buffers.strokeAttributes[i]);
+      }
+      return values;
+    };
+    // The outer pair of a butt cap is ±2 and a square cap ±1, so the shader
+    // can fade that quad without fading the last segment of the line.
+    assert.deepEqual([...new Set(ends(butt))], [-2, 0, 2]);
+    assert.deepEqual([...new Set(ends(square))], [-1, 0, 1]);
+    assert.deepEqual([...new Set(ends(round))], [0]);
     assert.isAbove(round.strokeIndices.length, butt.strokeIndices.length);
   });
 
@@ -1191,15 +1203,16 @@ describe('ol/render/webgpu/buffers', () => {
     const bevel = build('bevel');
     const round = build('round');
     const limited = build('miter', 1);
-    assert.strictEqual(miter.strokeIndices.length, 12);
-    assert.strictEqual(bevel.strokeIndices.length, 15);
+    // Each open cap is its own quad, two pairs beyond the old end vertices.
+    assert.strictEqual(miter.strokeIndices.length, 24);
+    assert.strictEqual(bevel.strokeIndices.length, 27);
     assert.isAbove(round.strokeIndices.length, bevel.strokeIndices.length);
     assert.strictEqual(
       limited.strokeIndices.length,
       bevel.strokeIndices.length,
     );
     let maxMiter = 0;
-    for (let i = 0; i < miter.strokeAttributes.length; i += 4) {
+    for (let i = 0; i < miter.strokeAttributes.length; i += 5) {
       maxMiter = Math.max(
         maxMiter,
         Math.hypot(miter.strokeAttributes[i], miter.strokeAttributes[i + 1]),
@@ -1231,7 +1244,7 @@ describe('ol/render/webgpu/buffers', () => {
       /** @type {any} */ ({}),
     );
     const widths = {left: new Set(), right: new Set(), outerJoin: new Set()};
-    for (let i = 0; i < buffers.strokeAttributes.length; i += 4) {
+    for (let i = 0; i < buffers.strokeAttributes.length; i += 5) {
       const ex = buffers.strokeAttributes[i];
       const ey = buffers.strokeAttributes[i + 1];
       const width = buffers.strokeAttributes[i + 2];
@@ -1269,7 +1282,7 @@ describe('ol/render/webgpu/buffers', () => {
       /** @type {any} */ ({}),
       {clipExtent: [0, 0, 10, 10]},
     );
-    for (let i = 0; i < buffers.strokeAttributes.length; i += 4) {
+    for (let i = 0; i < buffers.strokeAttributes.length; i += 5) {
       assert.strictEqual(buffers.strokeAttributes[i], 0);
     }
   });
@@ -1316,7 +1329,7 @@ describe('ol/render/webgpu/buffers', () => {
       /** @type {any} */ ({}),
     );
     const distances = [];
-    for (let i = 3; i < buffers.strokeAttributes.length; i += 4) {
+    for (let i = 3; i < buffers.strokeAttributes.length; i += 5) {
       distances.push(buffers.strokeAttributes[i]);
     }
     assert.deepEqual([...new Set(distances)], [0, 5, 11]);
