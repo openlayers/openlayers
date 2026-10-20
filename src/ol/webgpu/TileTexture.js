@@ -21,8 +21,9 @@ function getPixelContext() {
 }
 
 /**
- * Pack 1–4 source bands into RGBA. Missing color channels stay 0 and a missing
- * alpha channel is opaque, so a 2-band COG still draws.
+ * Pack 3 or more source bands into RGBA. One- and two-band tiles are uploaded
+ * in `r*` and `rg*` formats instead. Missing color channels stay 0 and a
+ * missing alpha channel is opaque.
  * @param {Uint8Array|Uint8ClampedArray|Float32Array} array Interleaved samples.
  * @param {number} width Width.
  * @param {number} height Height.
@@ -91,6 +92,45 @@ function allocateLike(data, length) {
     return new Uint8ClampedArray(length);
   }
   return new Uint8Array(length);
+}
+
+/**
+ * @typedef {Object} PackedTile
+ * @property {Uint8Array|Uint8ClampedArray|Float32Array} data Samples to upload.
+ * @property {'r8unorm'|'rg8unorm'|'rgba8unorm'|'r32float'|'rg32float'|'rgba32float'} format Texture format.
+ * @property {number} bytesPerPixel Bytes per stored pixel.
+ * @property {boolean} unfilterable True when the format cannot be sampled with a sampler.
+ */
+
+/**
+ * One- and two-band tiles stay in `r*` and `rg*` formats. Sampled as vec4
+ * they match an RGBA expansion (missing channels 0, alpha 1). Three or more
+ * bands still use RGBA; WebGPU has no three-channel format.
+ * @param {Uint8Array|Uint8ClampedArray|Float32Array} array Interleaved samples.
+ * @param {number} width Width.
+ * @param {number} height Height.
+ * @param {number} bands Source band count.
+ * @return {PackedTile} Upload description.
+ */
+export function packTileSamples(array, width, height, bands) {
+  const floatData = array instanceof Float32Array;
+  const narrow = bands === 1 || bands === 2;
+  const storedBands = narrow ? bands : 4;
+  /** @type {PackedTile['format']} */
+  let format;
+  if (bands === 1) {
+    format = floatData ? 'r32float' : 'r8unorm';
+  } else if (bands === 2) {
+    format = floatData ? 'rg32float' : 'rg8unorm';
+  } else {
+    format = floatData ? 'rgba32float' : 'rgba8unorm';
+  }
+  return {
+    data: narrow ? array : expandToRgba(array, width, height, bands),
+    format,
+    bytesPerPixel: (floatData ? 4 : 1) * storedBands,
+    unfilterable: floatData,
+  };
 }
 
 /**
@@ -279,12 +319,16 @@ class TileTexture extends EventTarget {
     const bands =
       pixels > 0 && array.length % pixels === 0 ? array.length / pixels : 4;
     this.bandCount = bands;
-    const rgba = expandToRgba(array, size[0], size[1], bands);
-    const bytesPerPixel = floatData ? 16 : 4;
-    const uploaded = padRows(rgba, size[0], size[1], bytesPerPixel);
+    const packed = packTileSamples(array, size[0], size[1], bands);
+    const uploaded = padRows(
+      packed.data,
+      size[0],
+      size[1],
+      packed.bytesPerPixel,
+    );
     const texture = helper.getDevice().createTexture({
       size: [size[0], size[1]],
-      format: floatData ? 'rgba32float' : 'rgba8unorm',
+      format: packed.format,
       usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST,
     });
     helper
@@ -296,7 +340,7 @@ class TileTexture extends EventTarget {
         {width: size[0], height: size[1]},
       );
     this.texture = texture;
-    this.unfilterable = floatData;
+    this.unfilterable = packed.unfilterable;
     this.ready = true;
     this.dispatchEvent(EventType.CHANGE);
   }
