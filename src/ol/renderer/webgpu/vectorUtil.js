@@ -1481,6 +1481,36 @@ export const LABEL_COLLISION_MARGIN = 2;
 const MAX_UNUSED_ATLAS_PAGES = 2;
 
 /**
+ * Cache identities are the key without the trailing `@generation`. A tile
+ * draws the batch built for `generation` when that batch is cached, and
+ * otherwise the newest cached generation. Superseded entries can stay in the
+ * LRU without keeping their atlas textures alive.
+ * @template {{key: string}} T
+ * @param {Array<T>} batches Cached batches.
+ * @param {number} generation Current batch generation.
+ * @return {Array<T>} The batch each cache identity would draw.
+ */
+export function atlasPinningBatches(batches, generation) {
+  /** @type {Map<string, {batch: T, generation: number}>} */
+  const chosen = new Map();
+  for (const batch of batches) {
+    const at = batch.key.lastIndexOf('@');
+    const identity = at === -1 ? batch.key : batch.key.slice(0, at);
+    const batchGeneration = at === -1 ? 0 : Number(batch.key.slice(at + 1));
+    const existing = chosen.get(identity);
+    if (
+      !existing ||
+      batchGeneration === generation ||
+      (existing.generation !== generation &&
+        batchGeneration > existing.generation)
+    ) {
+      chosen.set(identity, {batch, generation: batchGeneration});
+    }
+  }
+  return Array.from(chosen.values(), (entry) => entry.batch);
+}
+
+/**
  * @param {Array<import("../../render/webgpu/glyphLayout.js").GlyphInstance>} glyphs Glyphs.
  * @return {Array<number>} Font atlas pages the glyphs are drawn from.
  */
