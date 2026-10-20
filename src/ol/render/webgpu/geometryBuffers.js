@@ -126,9 +126,10 @@ function segmentOnClipEdge(x1, y1, x2, y2, extent, eps) {
  * @property {Uint32Array} fillIndices Fill indices.
  * @property {Int16Array} strokePositions Stroke positions in grid units.
  * @property {Float32Array} strokeAttributes Extrusion x, extrusion y, width,
- *     and distance along the line in drawn map units, per stroke vertex. The
- *     sign of the width tells the side of the line the vertex is on, so the
- *     shader can fade out the edges.
+ *     distance along the line in drawn map units, and cap end, per stroke
+ *     vertex. The sign of the width tells the side of the line the vertex is
+ *     on, so the shader can fade out the edges. Cap end is 0 on the body, ±1
+ *     on a square cap's outer edge, and ±2 on a butt cap's.
  * @property {Uint32Array} strokeStyles Style index per stroke vertex.
  * @property {Uint32Array} strokeIndices Stroke indices.
  * @property {Float32Array} styles Styles, `STYLE_STRIDE` floats each (see `buffers.js`).
@@ -550,10 +551,11 @@ function emitStroke(
 
 /**
  * @typedef {Object} StrokeMeshWriter
- * @property {function(number, number, number, number, number, number): number} vertex Add a
+ * @property {function(number, number, number, number, number, number, number): number} vertex Add a
  * vertex on the left (1) or right (-1) edge of the line. Vertices on the
- * centerline, without extrusion, may give either side.
- * @property {function(number, number, number, number, number, number, number): Array<number>} pair Add a left/right pair.
+ * centerline, without extrusion, may give either side. The last argument is
+ * the cap end: 0 on the body, ±1 on a square cap's outer edge, ±2 on a butt.
+ * @property {function(number, number, number, number, number, number, number, number=): Array<number>} pair Add a left/right pair.
  * @property {function(number, number, number): void} triangle Add a triangle.
  * @property {number} left Last left-side vertex.
  * @property {number} right Last right-side vertex.
@@ -618,7 +620,12 @@ function emitStrokeRun(
   };
   const firstNormal = normal(points[0], points[1]);
   const first = points[0];
-  addCapPair(writer, first, firstNormal, closed ? 'butt' : startCap, -1);
+  // The cap is its own quad. Putting the fade on the last segment would fade
+  // the whole segment whenever that segment is long.
+  if (!closed && startCap !== 'round') {
+    addCapOuter(writer, first, firstNormal, startCap, -1);
+  }
+  addEndpointPair(writer, first, firstNormal);
   if (!closed && startCap === 'round') {
     addRoundCap(writer, first, firstNormal, -1);
   }
@@ -644,9 +651,11 @@ function emitStrokeRun(
       job.miterLimit ?? 10,
     );
   } else {
-    addCapPair(writer, last, lastNormal, endCap, 1);
+    addEndpointPair(writer, last, lastNormal);
     if (endCap === 'round') {
       addRoundCap(writer, last, lastNormal, 1);
+    } else {
+      addCapOuter(writer, last, lastNormal, endCap, 1);
     }
   }
 }
@@ -673,19 +682,19 @@ function createStrokeMeshWriter(
   const writer = /** @type {StrokeMeshWriter} */ ({
     left: -1,
     right: -1,
-    vertex(x, y, ex, ey, distance, side) {
+    vertex(x, y, ex, ey, distance, side, end) {
       const index = positions.length / 2;
       positions.push(
         toLocal(x, grid.originX, grid.scaleX),
         toLocal(y, grid.originY, grid.scaleY),
       );
-      attributes.push(ex, ey, width * side, distance);
+      attributes.push(ex, ey, width * side, distance, end || 0);
       styleIndices.push(styleIndex);
       return index;
     },
-    pair(x, y, lx, ly, rx, ry, distance) {
-      const left = writer.vertex(x, y, lx, ly, distance, 1);
-      const right = writer.vertex(x, y, rx, ry, distance, -1);
+    pair(x, y, lx, ly, rx, ry, distance, end) {
+      const left = writer.vertex(x, y, lx, ly, distance, 1, end || 0);
+      const right = writer.vertex(x, y, rx, ry, distance, -1, end || 0);
       if (writer.left >= 0 && writer.right >= 0) {
         indices.push(
           writer.left,
@@ -708,16 +717,39 @@ function createStrokeMeshWriter(
 }
 
 /**
+ * Endpoint of a stroke, with no cap extension. The body meets the cap here.
+ * @param {StrokeMeshWriter} writer Writer.
+ * @param {StrokePoint} point Point.
+ * @param {StrokeVector} normal Left normal.
+ */
+function addEndpointPair(writer, point, normal) {
+  writer.pair(
+    point.x,
+    point.y,
+    normal.x,
+    normal.y,
+    -normal.x,
+    -normal.y,
+    point.distance,
+    0,
+  );
+}
+
+/**
+ * Outer edge of a butt or square cap. Square caps already extend by the stroke
+ * width; the shader fades the last pixel of that extension. Butt caps extend
+ * by half a pixel in the shader, which is what `end` of ±2 asks for.
  * @param {StrokeMeshWriter} writer Writer.
  * @param {StrokePoint} point Point.
  * @param {StrokeVector} normal Left normal.
  * @param {CanvasLineCap} cap Cap.
  * @param {number} direction Start (-1) or end (1).
  */
-function addCapPair(writer, point, normal, cap, direction) {
-  const extension = cap === 'square' ? direction : 0;
-  const tx = normal.y;
-  const ty = -normal.x;
+function addCapOuter(writer, point, normal, cap, direction) {
+  const tx = normal.y * direction;
+  const ty = -normal.x * direction;
+  const extension = cap === 'square' ? 1 : 0;
+  const end = (cap === 'square' ? 1 : 2) * direction;
   writer.pair(
     point.x,
     point.y,
@@ -726,6 +758,7 @@ function addCapPair(writer, point, normal, cap, direction) {
     -normal.x + tx * extension,
     -normal.y + ty * extension,
     point.distance,
+    end,
   );
 }
 
