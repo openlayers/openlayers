@@ -394,7 +394,7 @@ function pushRange(ranges, job, start, count) {
  * @param {NumberSink} positions Positions out.
  * @param {NumberSink} styleIndices Style indices out.
  * @param {NumberSink} indices Indices out.
- * @param {NumberSink} extrusions Extrusion x, y, coverage, and padding out.
+ * @param {NumberSink} extrusions Extrusion x, y, and coverage out.
  */
 function emitFill(
   xy,
@@ -417,7 +417,7 @@ function emitFill(
       toLocal(mesh.vertices[i + 1], grid.originY, grid.scaleY),
     );
     styleIndices.push(job.styleIndex);
-    extrusions.push(0, 0, 1, 0);
+    extrusions.push(0, 0, 1);
   }
   // Positions are rounded onto the grid, and a triangle thinner than one of
   // its steps either collapses or turns inside out. Drawing an inside-out one
@@ -617,38 +617,54 @@ function emitFringeRing(
       toLocal(y, grid.originY, grid.scaleY),
     );
     styleIndices.push(job.styleIndex);
-    extrusions.push(ex, ey, coverage, 0);
+    extrusions.push(ex, ey, coverage);
     return index;
   };
+
+  /** @type {Array<number|undefined>} */
+  const inner = new Array(count);
+  /** @type {Array<number|undefined>} */
+  const outerStart = new Array(count);
+  /** @type {Array<number|undefined>} */
+  const outerEnd = new Array(count);
+  /**
+   * @param {number} i Ring vertex index.
+   * @return {number} Fill vertex index.
+   */
+  const innerAt = (i) => (inner[i] ??= add(points[i].x, points[i].y, 0, 0, 1));
 
   for (let i = 0; i < count; ++i) {
     const normal = normals[i];
     if (!normal || clipped[i]) {
       continue;
     }
+    const next = (i + 1) % count;
     const a = points[i];
-    const b = points[(i + 1) % count];
-    const innerA = add(a.x, a.y, 0, 0, 1);
+    const b = points[next];
+    const innerA = innerAt(i);
     const outerA = add(a.x, a.y, normal.x, normal.y, 0);
-    const innerB = add(b.x, b.y, 0, 0, 1);
+    outerStart[i] = outerA;
+    const innerB = innerAt(next);
     const outerB = add(b.x, b.y, normal.x, normal.y, 0);
+    outerEnd[i] = outerB;
     indices.push(innerA, outerA, innerB, outerA, outerB, innerB);
   }
   for (let i = 0; i < count; ++i) {
+    const previousIndex = (i + count - 1) % count;
     const previous = normals[(i + count - 1) % count];
     const next = normals[i];
-    if (!previous || !next || clipped[(i + count - 1) % count] || clipped[i]) {
+    if (!previous || !next || clipped[previousIndex] || clipped[i]) {
       continue;
     }
     const dot = previous.x * next.x + previous.y * next.y;
     if (dot > 1 - 1e-6) {
       continue;
     }
-    const point = points[i];
-    const inner = add(point.x, point.y, 0, 0, 1);
-    const outerA = add(point.x, point.y, previous.x, previous.y, 0);
-    const outerB = add(point.x, point.y, next.x, next.y, 0);
-    indices.push(inner, outerA, outerB);
+    indices.push(
+      innerAt(i),
+      /** @type {number} */ (outerEnd[previousIndex]),
+      /** @type {number} */ (outerStart[i]),
+    );
   }
 }
 
