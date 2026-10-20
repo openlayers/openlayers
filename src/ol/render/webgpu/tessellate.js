@@ -54,7 +54,7 @@ function targetEdgeCrossesCut(sa, sb, ta, tb, projectToTarget, edgeLenSq) {
  * Drop fill triangles that fold across a projection cut after warping.
  * Long smooth earcut diagonals (holes, concave rings) are kept.
  *
- * @param {Array<number>|Float32Array} sourceXY Source-space XY vertices.
+ * @param {ArrayLike<number>} sourceXY Source-space XY vertices.
  * @param {Array<number>|Uint32Array} indexArray Triangle indices.
  * @param {function(import("../../coordinate.js").Coordinate): (import("../../coordinate.js").Coordinate|null)} projectToTarget Source→target.
  * @param {number} maxEdge Max edge length in target units before cut-testing.
@@ -108,7 +108,7 @@ export function filterTrianglesByTargetEdge(
 /**
  * Densify polygon rings independently and rebuild earcut hole indices.
  *
- * @param {Array<number>} xy Flat XY.
+ * @param {ArrayLike<number>} xy Flat XY.
  * @param {Array<number>} holes Earcut hole vertex indices.
  * @param {number} maxSegmentLength Max segment length.
  * @param {number} [maxSpanX] Max |Δx| to densify.
@@ -150,7 +150,7 @@ export function densifyPolygonRings(xy, holes, maxSegmentLength, maxSpanX) {
  * A ring that leaves nothing inside is dropped; if that ring is the outer one
  * the whole polygon goes, holes and all.
  *
- * @param {Array<number>} xy Flat XY in source space.
+ * @param {ArrayLike<number>} xy Flat XY in source space.
  * @param {Array<number>} holes Earcut hole vertex indices.
  * @param {import("../../extent.js").Extent} extent Clip extent.
  * @return {{flatCoordinates: Array<number>, holes: Array<number>}} Clipped rings.
@@ -208,7 +208,7 @@ const MAX_REFINE_DEPTH = 6;
  * strays from it brings the triangle back onto the curve. An edge across a cut
  * never converges, however far it is split, so it goes instead.
  *
- * @param {Array<number>} sourceXY Flat XY in source space.
+ * @param {ArrayLike<number>} sourceXY Flat XY in source space.
  * @param {Array<number>|Uint32Array} indices Triangle indices.
  * @param {function(number, number, Array<number>): boolean} sample Source to target.
  * @param {number} maxError Target distance a straight edge may stray by.
@@ -336,7 +336,7 @@ export function refineTriangles(sourceXY, indices, sample, maxError, maxEdge) {
 
 /**
  * @typedef {Object} TessellatedPolygon
- * @property {Array<number>} vertices Target-space XY (pairs).
+ * @property {ArrayLike<number>} vertices Target-space XY (pairs).
  * @property {Array<number>} indices Triangle indices into `vertices`.
  */
 
@@ -346,7 +346,7 @@ export function refineTriangles(sourceXY, indices, sample, maxError, maxEdge) {
  * densified in source space, triangulated, and edges that fold across a
  * projection cut are dropped.
  *
- * @param {Array<number>} xy Flat XY in source space.
+ * @param {ArrayLike<number>} xy Flat XY in source space.
  * @param {Array<number>} holes Earcut hole indices.
  * @param {TessellateOptions} [options] Reprojection options.
  * @return {TessellatedPolygon} Target-space mesh.
@@ -384,17 +384,19 @@ export function tessellatePolygon(xy, holes, options) {
     sourceHoles = dense.holes;
   }
 
-  /** @type {Array<number>} */
+  /** @type {ArrayLike<number>} */
   let targetXY = sourceXY;
   if (projectToTarget) {
-    targetXY = [];
+    /** @type {Array<number>} */
+    const projectedXY = [];
     for (let i = 0; i < sourceXY.length; i += 2) {
       const projected = projectToTarget([sourceXY[i], sourceXY[i + 1]]);
       if (!projected || !isFinite(projected[0]) || !isFinite(projected[1])) {
         return {vertices: [], indices: []};
       }
-      targetXY.push(projected[0], projected[1]);
+      projectedXY.push(projected[0], projected[1]);
     }
+    targetXY = projectedXY;
   }
 
   const tris = earcut(targetXY, sourceHoles, 2);
@@ -491,11 +493,11 @@ export function tessellatePolygon(xy, holes, options) {
 /**
  * Project a flat XY array. Returns null if any vertex fails.
  *
- * @param {Array<number>} xy Flat XY.
+ * @param {ArrayLike<number>} xy Flat XY.
  * @param {function(import("../../coordinate.js").Coordinate): (import("../../coordinate.js").Coordinate|null)} [projectToTarget] Transform.
  * @param {number} [maxSegmentLength] Densify before projecting.
  * @param {number} [maxSpanX] Densify span limit.
- * @return {Array<number>|null} Target XY, or the input if no transform.
+ * @return {ArrayLike<number>|null} Target XY, or the input if no transform.
  */
 export function projectFlatCoordinates(
   xy,
@@ -504,7 +506,11 @@ export function projectFlatCoordinates(
   maxSpanX,
 ) {
   const source = maxSegmentLength
-    ? densifyFlatCoordinates(xy, maxSegmentLength, maxSpanX)
+    ? densifyFlatCoordinates(
+        /** @type {Array<number>} */ (xy),
+        maxSegmentLength,
+        maxSpanX,
+      )
     : xy;
   if (!projectToTarget) {
     return source;
