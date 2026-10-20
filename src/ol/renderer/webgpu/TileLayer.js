@@ -1659,7 +1659,8 @@ class WebGPUTileLayerRenderer extends WebGPULayerRenderer {
     data[22] = tileWidthWithGutter;
     data[23] = tileHeightWithGutter;
     data[24] = tileResolution;
-    data[25] = frameState.layerStatesArray[frameState.layerIndex].opacity;
+    // Layer opacity is applied by the canvas element, once, after every draw.
+    data[25] = 1;
     this.writeStyleUniforms_(data, TILE_STYLE_RESOLUTION_INDEX, frameState);
 
     const uniformBuffer = this.createTileUniformBuffer_(data);
@@ -1803,7 +1804,8 @@ class WebGPUTileLayerRenderer extends WebGPULayerRenderer {
     data[19] = Infinity;
     data[20] = Math.max(depth, 0);
     data[21] = alpha;
-    data[22] = frameState.layerStatesArray[frameState.layerIndex].opacity;
+    // Layer opacity is applied by the canvas element, once, after every draw.
+    data[22] = 1;
     data[23] = tileTexture.texture.width;
     data[24] = tileTexture.texture.height;
     this.writeStyleUniforms_(data, REPROJ_STYLE_RESOLUTION_INDEX, frameState);
