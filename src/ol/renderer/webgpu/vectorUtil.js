@@ -220,6 +220,15 @@ export class VectorGpuBuffers extends Disposable {
     this.warped = false;
 
     /**
+     * Destroys buffers the warp pass needed only while it ran. Null once they
+     * are gone. The pass submits and returns before the GPU is finished, so
+     * this waits for that submission without blocking the frame.
+     * @private
+     * @type {((function(): void)|null)}
+     */
+    this.warpRelease_ = null;
+
+    /**
      * @type {GPUBuffer|null}
      */
     this.fillWarpedBuffer = null;
@@ -254,25 +263,28 @@ export class VectorGpuBuffers extends Disposable {
       return;
     }
     const device = helper.getDevice();
-    const storage =
-      GPUBufferUsage.STORAGE | GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST;
+    const storage = GPUBufferUsage.STORAGE | GPUBufferUsage.VERTEX;
+    /** @type {Array<GPUBuffer>} */
+    const retire = [];
     const nodeBuffer = this.create_(
       helper,
       grid.nodes,
       GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
     );
     // Two buffers, because WebGPU forbids binding one buffer as both readable
-    // and writable storage in the same bind group.
-    const dummyRead = this.create_(
-      helper,
-      new Float32Array(4),
+    // and writable storage in the same bind group. Nothing reads or writes
+    // them: a dispatch that has no attributes still has to bind something.
+    const dummyRead = this.createSized_(
+      device,
+      16,
       GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
     );
-    const dummyWrite = this.create_(
-      helper,
-      new Float32Array(4),
+    const dummyWrite = this.createSized_(
+      device,
+      16,
       GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
     );
+    retire.push(nodeBuffer, dummyRead, dummyWrite);
     const pipeline = helper.getComputePipeline(
       'vector-warp',
       /** @type {any} */ ({}),
@@ -296,17 +308,15 @@ export class VectorGpuBuffers extends Disposable {
       strokeMode,
       attributeStride,
     ) => {
-      const outPositions = this.create_(
-        helper,
-        new Float32Array(vertexCount * 4),
+      // The compute pass overwrites every element, so the buffer does not
+      // need to be cleared from the CPU first.
+      const outPositions = this.createSized_(
+        device,
+        vertexCount * 4 * 4,
         storage,
       );
       const outAttributes = strokeMode
-        ? this.create_(
-            helper,
-            new Float32Array(vertexCount * attributeStride),
-            storage,
-          )
+        ? this.createSized_(device, vertexCount * attributeStride * 4, storage)
         : dummyWrite;
       const uniformData = new ArrayBuffer(32);
       new Uint32Array(uniformData, 0, 4).set([
@@ -326,6 +336,7 @@ export class VectorGpuBuffers extends Disposable {
         new Uint8Array(uniformData),
         GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
       );
+      retire.push(uniforms);
       pass.setBindGroup(
         0,
         device.createBindGroup({
@@ -354,6 +365,12 @@ export class VectorGpuBuffers extends Disposable {
       );
       this.fillWarpedBuffer = result.outPositions;
       this.fillWarpedExtrusionBuffer = result.outAttributes;
+      if (this.fillPositionBuffer) {
+        retire.push(this.fillPositionBuffer);
+      }
+      if (this.fillExtrusionBuffer) {
+        retire.push(this.fillExtrusionBuffer);
+      }
     }
     if (this.strokeIndexCount && this.strokePositionBuffer) {
       const result = dispatch(
@@ -365,10 +382,17 @@ export class VectorGpuBuffers extends Disposable {
       );
       this.strokeWarpedBuffer = result.outPositions;
       this.strokeWarpedAttributeBuffer = result.outAttributes;
+      if (this.strokePositionBuffer) {
+        retire.push(this.strokePositionBuffer);
+      }
+      if (this.strokeAttributeBuffer) {
+        retire.push(this.strokeAttributeBuffer);
+      }
     }
 
     pass.end();
     device.queue.submit([encoder.finish()]);
+    this.retireAfterWarp_(device, retire);
 
     // Warped positions are absolute target offsets from the grid origin, so
     // drawing them only needs a translation.
@@ -393,6 +417,47 @@ export class VectorGpuBuffers extends Disposable {
     const buffer = helper.createBuffer(data, usage);
     this.owned_.push(buffer);
     return buffer;
+  }
+
+  /**
+   * A buffer the CPU never fills. The warp shader writes output buffers, and
+   * the dummy bindings are there only to satisfy the layout.
+   * @param {GPUDevice} device Device.
+   * @param {number} size Size in bytes.
+   * @param {number} usage Usage flags.
+   * @return {GPUBuffer} Buffer.
+   * @private
+   */
+  createSized_(device, size, usage) {
+    const buffer = device.createBuffer({
+      size: Math.max(4, size),
+      usage,
+    });
+    this.owned_.push(buffer);
+    return buffer;
+  }
+
+  /**
+   * Drop one-shot warp buffers once the submission that used them has
+   * finished. Drawing keeps the warped results, which stay in `owned_`.
+   * @param {GPUDevice} device Device.
+   * @param {Array<GPUBuffer>} buffers Buffers.
+   * @private
+   */
+  retireAfterWarp_(device, buffers) {
+    for (const buffer of buffers) {
+      const index = this.owned_.indexOf(buffer);
+      if (index >= 0) {
+        this.owned_.splice(index, 1);
+      }
+    }
+    this.warpRelease_ = () => {
+      this.warpRelease_ = null;
+      for (const buffer of buffers) {
+        buffer.destroy();
+      }
+    };
+    device.queue.onSubmittedWorkDone().finally(() => this.warpRelease_?.());
   }
 
   /**
@@ -522,6 +587,7 @@ export class VectorGpuBuffers extends Disposable {
    * @override
    */
   disposeInternal() {
+    this.warpRelease_?.();
     for (const buffer of this.owned_) {
       buffer.destroy();
     }
