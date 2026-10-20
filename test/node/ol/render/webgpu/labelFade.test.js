@@ -4,6 +4,7 @@ import {
   fadeClock,
   LABEL_FADE_DURATION,
   LabelFade,
+  opacityIndicesToWrite,
   writeGpuTransition,
 } from '../../../../../src/ol/render/webgpu/labelFade.js';
 
@@ -28,6 +29,12 @@ describe('ol/render/webgpu/labelFade', () => {
       [10, 10, 10],
     );
     assert.deepEqual(Array.from(active), [1]);
+  });
+
+  it('rewrites labels that became active or stopped being active', () => {
+    const previous = new Set([1, 2]);
+    const active = new Set([2, 4]);
+    assert.deepEqual(opacityIndicesToWrite(previous, active), [1, 2, 4]);
   });
 
   it('fades a new label from 0 to 1 over the duration', () => {
