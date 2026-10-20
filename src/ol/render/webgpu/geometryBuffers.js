@@ -157,6 +157,50 @@ export function worldShift(centerX, gridCenterX, worldWidth) {
 }
 
 /**
+ * Shifts that place a geometry in every world copy the grid covers.
+ *
+ * The nearest copy is always included. A grid wider than one world also gets
+ * the copies on either side, so a view that shows the world more than once
+ * draws the feature in each of them. A copy that misses the grid is left out.
+ *
+ * @param {number} minX Minimum x of the geometry, before shifting.
+ * @param {number} maxX Maximum x of the geometry, before shifting.
+ * @param {number} gridCenterX Center of the grid.
+ * @param {number} gridMinX Minimum x of the grid.
+ * @param {number} gridMaxX Maximum x of the grid.
+ * @param {number} worldWidth Source world width, 0 when the source does not wrap.
+ * @return {Array<number>} Shifts in source units.
+ */
+export function worldCopyShifts(
+  minX,
+  maxX,
+  gridCenterX,
+  gridMinX,
+  gridMaxX,
+  worldWidth,
+) {
+  const nearest = worldShift((minX + maxX) / 2, gridCenterX, worldWidth);
+  if (!(worldWidth > 0)) {
+    return [nearest];
+  }
+  const shiftedMin = minX + nearest;
+  const shiftedMax = maxX + nearest;
+  /** @type {Array<number>} */
+  const shifts = [];
+  const kMin = Math.floor((gridMinX - shiftedMax) / worldWidth) - 1;
+  const kMax = Math.ceil((gridMaxX - shiftedMin) / worldWidth) + 1;
+  for (let k = kMin; k <= kMax; ++k) {
+    const shift = nearest + k * worldWidth;
+    const copyMin = minX + shift;
+    const copyMax = maxX + shift;
+    if (copyMax >= gridMinX && copyMin <= gridMaxX) {
+      shifts.push(shift);
+    }
+  }
+  return shifts.length > 0 ? shifts : [nearest];
+}
+
+/**
  * Turn tessellation jobs into the typed arrays the WebGPU vector pipelines
  * consume. Nothing here touches features, styles, or the DOM, so the same code
  * runs on the main thread and inside {@link module:ol/worker/webgpuvector}.
@@ -228,38 +272,53 @@ export function buildGeometryBuffers(request) {
       xy.push(coordinates[offset], coordinates[offset + 1]);
     }
     // Per geometry rather than per point, so shapes that cross the edge
-    // themselves stay in one piece.
-    if (worldWidth > 0) {
-      let minX = Infinity;
-      let maxX = -Infinity;
-      for (let i = 0; i < xy.length; i += 2) {
-        minX = Math.min(minX, xy[i]);
-        maxX = Math.max(maxX, xy[i]);
-      }
-      const shift = worldShift((minX + maxX) / 2, gridCenterX, worldWidth);
-      if (shift !== 0) {
-        for (let i = 0; i < xy.length; i += 2) {
-          xy[i] += shift;
-        }
-      }
+    // themselves stay in one piece. A grid wider than one world is drawn
+    // once per copy it covers.
+    let minX = Infinity;
+    let maxX = -Infinity;
+    for (let i = 0; i < xy.length; i += 2) {
+      minX = Math.min(minX, xy[i]);
+      maxX = Math.max(maxX, xy[i]);
     }
-    if (job.kind === 'fill') {
-      const indexStart = fillIndices.length;
-      emitFill(xy, job, grid, reproj, fillPositions, fillStyles, fillIndices);
-      pushRange(ranges, job, indexStart, fillIndices.length - indexStart);
-    } else {
-      const indexStart = strokeIndices.length;
-      emitStroke(
-        xy,
-        job,
-        grid,
-        reproj,
-        strokePositions,
-        strokeAttributes,
-        strokeStyles,
-        strokeIndices,
-      );
-      pushRange(ranges, job, indexStart, strokeIndices.length - indexStart);
+    const shifts = worldCopyShifts(
+      minX,
+      maxX,
+      gridCenterX,
+      request.gridExtent[0],
+      request.gridExtent[2],
+      worldWidth,
+    );
+    for (const shift of shifts) {
+      const placed =
+        shift === 0
+          ? xy
+          : xy.map((value, index) => (index % 2 === 0 ? value + shift : value));
+      if (job.kind === 'fill') {
+        const indexStart = fillIndices.length;
+        emitFill(
+          placed,
+          job,
+          grid,
+          reproj,
+          fillPositions,
+          fillStyles,
+          fillIndices,
+        );
+        pushRange(ranges, job, indexStart, fillIndices.length - indexStart);
+      } else {
+        const indexStart = strokeIndices.length;
+        emitStroke(
+          placed,
+          job,
+          grid,
+          reproj,
+          strokePositions,
+          strokeAttributes,
+          strokeStyles,
+          strokeIndices,
+        );
+        pushRange(ranges, job, indexStart, strokeIndices.length - indexStart);
+      }
     }
   }
 
