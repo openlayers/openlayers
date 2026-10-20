@@ -1286,7 +1286,9 @@ export function withTileColorPipeline(
 
 /**
  * Sample unfilterable float tiles with textureLoad. `textureSample` is only
- * valid for filterable formats, and raw COG values are stored as rgba32float.
+ * valid for filterable formats. One- and two-band values are stored as
+ * `r32float` and `rg32float`; wider tiles use `rgba32float`. `textureLoad`
+ * still returns a vec4, with unused channels 0 and alpha 1.
  *
  * @param {string} shader Shader that samples `tileTexture`.
  * @return {string} Shader.
