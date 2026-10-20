@@ -364,6 +364,8 @@ class LabelRenderer extends Disposable {
    * @param {import("../../webgpu/ImageAtlas.js").default} [imageAtlas] Image atlas.
    * @param {GPURenderPassEncoder|GPURenderBundleEncoder} [encoder] Encoder.
    * @param {import("./vectorUtil.js").PaintEncoderState} [state] Encoder state shared by adjacent draws.
+   * @param {number} [fontGeneration] Font atlas generation these glyphs sample.
+   * @param {number} [imageGeneration] Image atlas generation these icons sample.
    */
   drawInstances(
     helper,
@@ -376,6 +378,8 @@ class LabelRenderer extends Disposable {
     imageAtlas,
     encoder,
     state,
+    fontGeneration,
+    imageGeneration,
   ) {
     if (!this.buffers_ || !instanceCount) {
       return;
@@ -397,7 +401,7 @@ class LabelRenderer extends Disposable {
           helper,
           'vector-icon',
           pipeline,
-          imageAtlas.upload(helper),
+          imageAtlas.getTexture(imageGeneration) || imageAtlas.upload(helper),
         ),
       );
       pass.setVertexBuffer(0, cornerBuffer);
@@ -439,7 +443,7 @@ class LabelRenderer extends Disposable {
       while (stop < end && (glyphs[stop].page || 0) === page) {
         ++stop;
       }
-      const atlasTexture = atlas.getTexture(page);
+      const atlasTexture = atlas.getTexture(page, fontGeneration);
       const count = stop - start;
       if (atlasTexture) {
         const hasHalo =

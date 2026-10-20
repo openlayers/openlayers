@@ -1159,6 +1159,8 @@ export function drawStrokes(helper, gpu, start = 0, count, encoder, state) {
  * @property {FrameUniformSlot|null} slot Label uniforms.
  * @property {function(): void} prepare Writes this batch's geometry uniforms.
  * @property {boolean} [labelsOnly] Skip fills and strokes.
+ * @property {number} [fontGeneration] Font atlas generation the labels sample.
+ * @property {number} [imageGeneration] Image atlas generation the batch samples.
  */
 
 /**
@@ -1214,6 +1216,21 @@ function paintCacheMatches(cache, batches, patternTexture, fontRevision) {
 }
 
 /**
+ * The image texture a batch samples. The current one, unless the batch was
+ * built before the atlas started over.
+ * @param {import("../../webgpu/ImageAtlas.js").default} imageAtlas Image atlas.
+ * @param {number|undefined} generation Batch generation.
+ * @param {GPUTexture} current Texture of the current generation.
+ * @return {GPUTexture} Texture.
+ */
+function imageTextureFor(imageAtlas, generation, current) {
+  if (generation === undefined || generation === imageAtlas.getGeneration()) {
+    return current;
+  }
+  return imageAtlas.getTexture(generation) || current;
+}
+
+/**
  * Draw every batch in one painter's order. Adjacent ranges that share a
  * pipeline and sit next to each other in the same batch become one draw.
  *
@@ -1234,12 +1251,24 @@ export function paintBatches(
 ) {
   const patternTexture = imageAtlas.upload(helper);
   const fontRevision = atlas.upload(helper);
+  const currentImage = imageAtlas.getGeneration();
+  const currentFont = atlas.getGeneration();
+  // A batch built before the atlas started over samples the retained texture.
+  // Recording that mixes with the current one, so the bundle is not reused.
+  const retainedAtlas = batches.some(
+    (batch) =>
+      (batch.imageGeneration !== undefined &&
+        batch.imageGeneration !== currentImage) ||
+      (batch.fontGeneration !== undefined &&
+        batch.fontGeneration !== currentFont),
+  );
   for (const batch of batches) {
     batch.prepare();
     batch.labels?.prepareDraw(helper);
   }
   if (
     cache &&
+    !retainedAtlas &&
     paintCacheMatches(cache, batches, patternTexture, fontRevision)
   ) {
     helper
@@ -1266,11 +1295,12 @@ export function paintBatches(
   items.sort((a, b) =>
     comparePaint(a.command, a.batch.tileOrder, b.command, b.batch.tileOrder),
   );
-  const encoder = cache
-    ? helper.getDevice().createRenderBundleEncoder({
-        colorFormats: [helper.getFormat()],
-      })
-    : undefined;
+  const encoder =
+    cache && !retainedAtlas
+      ? helper.getDevice().createRenderBundleEncoder({
+          colorFormats: [helper.getFormat()],
+        })
+      : undefined;
   /** @type {PaintEncoderState} */
   const state = {pipeline: null};
   for (let i = 0; i < items.length;) {
@@ -1294,7 +1324,11 @@ export function paintBatches(
       drawFills(
         helper,
         first.batch.gpu,
-        patternTexture,
+        imageTextureFor(
+          imageAtlas,
+          first.batch.imageGeneration,
+          patternTexture,
+        ),
         first.command.start,
         count,
         encoder,
@@ -1326,6 +1360,8 @@ export function paintBatches(
         imageAtlas,
         encoder,
         state,
+        first.batch.fontGeneration,
+        first.batch.imageGeneration,
       );
     }
     i = j;
@@ -1464,7 +1500,7 @@ export function hasUnusedAtlasPages(atlas, frameState, getUsedPages) {
  */
 export function startFontAtlasOver(atlas, layer) {
   clearWidthCaches();
-  atlas.clear();
+  atlas.clear(true);
   layer.changed();
 }
 
@@ -1526,6 +1562,6 @@ export function shouldStartImageAtlasOver(
  * @param {import("../../layer/Layer.js").default} layer Layer.
  */
 export function startImageAtlasOver(imageAtlas, layer) {
-  imageAtlas.clear();
+  imageAtlas.clear(true);
   layer.changed();
 }
