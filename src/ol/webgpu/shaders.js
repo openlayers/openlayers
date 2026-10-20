@@ -38,6 +38,23 @@ const EDGE_FADE = 0.5;
 fn edgeCoverage(across: f32, halfWidth: f32) -> f32 {
   return clamp((1.0 - abs(across)) * halfWidth, 0.0, 1.0);
 }
+
+// Coverage across a butt or square cap. end is 0 on the body. A square cap
+// interpolates it to ±1 across the cap extension, so the 50% point is half a
+// width past the endpoint. A butt cap interpolates it to ±2 across the half
+// pixel added past the endpoint; that vertex is shared with the opaque body,
+// so the fade sits outside the endpoint.
+fn capCoverage(end: f32, halfWidth: f32) -> f32 {
+  let cap = abs(end);
+  if (cap < 0.01) {
+    return 1.0;
+  }
+  let square = cap < 1.5;
+  let t = select(cap * 0.5, cap, square);
+  let span = select(EDGE_FADE, halfWidth, square);
+  let fade = select(EDGE_FADE, 1.0, square);
+  return clamp((1.0 - t) * span / fade, 0.0, 1.0);
+}
 `;
 
 const FILL_DISPLACEMENT_FUNCTION = `
@@ -502,6 +519,8 @@ struct VertexOut {
   @location(5) across: f32,
   // Half the width in device pixels, including the edge fade.
   @location(6) @interpolate(flat) halfWidth: f32,
+  // 0 on the body, ±1 at a square cap's outer edge, ±2 at a butt's.
+  @location(7) end: f32,
 }
 
 ${STROKE_EDGE_FUNCTIONS}
@@ -548,6 +567,7 @@ fn vs_main(
   @location(0) warped: vec3<f32>,
   @location(1) normalWidth: vec4<f32>,
   @location(2) styleIndex: u32,
+  @location(3) endAttr: f32,
 ) -> VertexOut {
   var out: VertexOut;
   if (warped.z < 0.5) {
@@ -557,6 +577,9 @@ fn vs_main(
     out.distance = 0.0;
     out.styleIndex = styleIndex;
     out.localPosition = vec2(0.0);
+    out.across = 0.0;
+    out.halfWidth = 0.0;
+    out.end = 0.0;
     return out;
   }
   var clip = uniforms.projectionMatrix * vec4(warped.xy, 0.0, 1.0);
@@ -571,6 +594,17 @@ fn vs_main(
     length(normalWidth.xy);
   let halfWidth = width * 0.5 + EDGE_FADE;
   var offset = screenExtrusion * halfWidth;
+  // A butt cap's outer vertices carry the side normal and an end of ±2. Push
+  // both sides the same way along the line, half a pixel past the endpoint.
+  // Square caps are already extended by the extrusion.
+  if (abs(endAttr) > 1.5) {
+    let tangent =
+      vec2(screenExtrusion.y, -screenExtrusion.x) * sign(normalWidth.z);
+    let tangentLen = length(tangent);
+    if (tangentLen > 1e-6) {
+      offset += tangent / tangentLen * EDGE_FADE * sign(endAttr);
+    }
+  }
   clip = vec4(
     clip.xy + offset / (uniforms.viewportSizePx * 0.5) * clip.w,
     clip.z,
@@ -584,6 +618,7 @@ fn vs_main(
   );
   out.across = sign(normalWidth.z) * min(length(normalWidth.xy), 1.0);
   out.halfWidth = halfWidth;
+  out.end = endAttr;
   out.hitColor = style.hitColor;
   out.distance = normalWidth.w;
   out.styleIndex = styleIndex;
@@ -604,14 +639,15 @@ fn fs_main(in: VertexOut) -> @location(0) vec4<f32> {
     discard;
   }
   let edge = edgeCoverage(in.across, in.halfWidth);
+  let cap = capCoverage(in.end, in.halfWidth);
   if (uniforms.hitDetection > 0.5) {
-    if (edge < 0.5) {
+    if (edge < 0.5 || cap < 0.5) {
       discard;
     }
     return in.hitColor;
   }
   var color = in.color;
-  color.a = color.a * uniforms.globalAlpha * dash * edge;
+  color.a = color.a * uniforms.globalAlpha * dash * edge * cap;
   return vec4(color.rgb * color.a, color.a);
 }
 `;
@@ -658,6 +694,8 @@ struct VertexOut {
   @location(5) across: f32,
   // Half the width in device pixels, including the edge fade.
   @location(6) @interpolate(flat) halfWidth: f32,
+  // 0 on the body, ±1 at a square cap's outer edge, ±2 at a butt's.
+  @location(7) end: f32,
 }
 
 ${STROKE_EDGE_FUNCTIONS}
@@ -704,6 +742,7 @@ fn vs_main(
   @location(0) position: vec2<i32>,
   @location(1) normalWidth: vec4<f32>,
   @location(2) styleIndex: u32,
+  @location(3) endAttr: f32,
 ) -> VertexOut {
   var out: VertexOut;
   var clip = uniforms.projectionMatrix * vec4(vec2<f32>(position), 0.0, 1.0);
@@ -718,6 +757,17 @@ fn vs_main(
     length(normalWidth.xy);
   let halfWidth = width * 0.5 + EDGE_FADE;
   var offset = screenExtrusion * halfWidth;
+  // A butt cap's outer vertices carry the side normal and an end of ±2. Push
+  // both sides the same way along the line, half a pixel past the endpoint.
+  // Square caps are already extended by the extrusion.
+  if (abs(endAttr) > 1.5) {
+    let tangent =
+      vec2(screenExtrusion.y, -screenExtrusion.x) * sign(normalWidth.z);
+    let tangentLen = length(tangent);
+    if (tangentLen > 1e-6) {
+      offset += tangent / tangentLen * EDGE_FADE * sign(endAttr);
+    }
+  }
   clip = vec4(
     clip.xy + offset / (uniforms.viewportSizePx * 0.5) * clip.w,
     clip.z,
@@ -731,6 +781,7 @@ fn vs_main(
   );
   out.across = sign(normalWidth.z) * min(length(normalWidth.xy), 1.0);
   out.halfWidth = halfWidth;
+  out.end = endAttr;
   out.hitColor = style.hitColor;
   out.distance = normalWidth.w;
   out.styleIndex = styleIndex;
@@ -751,14 +802,15 @@ fn fs_main(in: VertexOut) -> @location(0) vec4<f32> {
     discard;
   }
   let edge = edgeCoverage(in.across, in.halfWidth);
+  let cap = capCoverage(in.end, in.halfWidth);
   if (uniforms.hitDetection > 0.5) {
-    if (edge < 0.5) {
+    if (edge < 0.5 || cap < 0.5) {
       discard;
     }
     return in.hitColor;
   }
   var color = in.color;
-  color.a = color.a * uniforms.globalAlpha * dash * edge;
+  color.a = color.a * uniforms.globalAlpha * dash * edge * cap;
   return vec4(color.rgb * color.a, color.a);
 }
 `;
