@@ -46,7 +46,13 @@ npm run bench -- --out performance.json
 npm run bench -- --compare baseline.json performance.json
 ```
 
-Useful controls include `--frames`, `--warmup`, `--viewport`, `--device-scale-factor`, `--projection`, `--features`, and `--vertices`. The default is five measured runs after one discarded flight.
+Useful controls include `--frames`, `--warmup`, `--display-hz`, `--viewport`, `--device-scale-factor`, `--projection`, `--features`, and `--vertices`. The default is five measured runs after one discarded flight. Use `--display-hz` when comparing commits on a variable-refresh display; otherwise each flight measures the current interval.
+
+The vector-tile navigation cases include both fixed-state zoom steps and a real
+time-based `View` animation. JSON reports and command-line comparisons include
+the aggregate flight and each phase. The real animated-zoom phase is also
+published to the CI summary and timeline, so that regression is not hidden by
+the pan and rotate phases.
 
 Comparisons are meaningful only on the same machine under similar load. Do not compare local hardware results with CI, which uses a software WebGPU adapter. The CI timeline compares CI runs with other CI runs.
 

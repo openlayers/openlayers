@@ -180,9 +180,15 @@ describe('ol/render/webgpu/buffers', () => {
       );
     const bare = build(undefined);
     const stroked = build(new Stroke({color: '#000', width: 2}));
+    // One shared inner and two outer vertices per corner. Edges and joins
+    // must reuse those fringe vertices.
+    assert.strictEqual(
+      bare.fillPositions.length / 2,
+      stroked.fillPositions.length / 2 + 12,
+    );
     const coverages = (buffers) => {
       const values = [];
-      for (let i = 2; i < buffers.fillExtrusions.length; i += 4) {
+      for (let i = 2; i < buffers.fillExtrusions.length; i += 3) {
         values.push(buffers.fillExtrusions[i]);
       }
       return values;
@@ -190,7 +196,7 @@ describe('ol/render/webgpu/buffers', () => {
     assert.include(coverages(bare), 0);
     assert.isTrue(coverages(stroked).every((value) => value === 1));
     let outward = 0;
-    for (let i = 0; i < bare.fillExtrusions.length; i += 4) {
+    for (let i = 0; i < bare.fillExtrusions.length; i += 3) {
       const ex = bare.fillExtrusions[i];
       const ey = bare.fillExtrusions[i + 1];
       const length = Math.hypot(ex, ey);
@@ -198,7 +204,7 @@ describe('ol/render/webgpu/buffers', () => {
         continue;
       }
       assert.closeTo(length, 1, 1e-6);
-      const [x, y] = toMapCoordinate(bare.fillPositions, bare.grid, i / 4);
+      const [x, y] = toMapCoordinate(bare.fillPositions, bare.grid, i / 3);
       // The vertex sits on the ring, so this points out of the square.
       assert.isAbove(ex * (x - 5) + ey * (y - 5), 0);
       ++outward;

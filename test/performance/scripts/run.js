@@ -93,6 +93,7 @@ async function openCase(page, url, options, caseName) {
     vertices: String(options.vertices),
     frames: String(options.frames),
     warmup: String(options.warmup),
+    displayHz: String(options.displayHz),
     autorun: 'false',
   });
   await page.goto(`${url}/?${query}`, {
@@ -250,6 +251,17 @@ async function compare(basePath, headPath) {
       continue;
     }
     compareSummaries(name, baseCase, headCase);
+    const phases = new Set([
+      ...Object.keys(baseCase.phases || {}),
+      ...Object.keys(headCase.phases || {}),
+    ]);
+    for (const phase of phases) {
+      const basePhase = baseCase.phases?.[phase];
+      const headPhase = headCase.phases?.[phase];
+      if (basePhase && headPhase) {
+        compareSummaries(`${name} · ${phase}`, basePhase, headPhase);
+      }
+    }
   }
 }
 
@@ -282,6 +294,11 @@ const options = yargs(hideBin(process.argv))
     describe: 'Warmup frames before measuring',
     type: 'number',
     default: 20,
+  })
+  .option('display-hz', {
+    describe: 'Fixed refresh rate for frame classification (0 measures it)',
+    type: 'number',
+    default: 0,
   })
   .option('runs', {
     describe: 'Number of flights to average',
@@ -355,6 +372,16 @@ if (options.compare) {
             metric.key
           ].toFixed(3)}`,
         );
+      }
+      for (const [phase, summary] of Object.entries(
+        result.cases[caseName].phases || {},
+      )) {
+        log(`  ${phase}`);
+        for (const metric of REPORT_METRICS) {
+          log(
+            `  ${metric.label.padEnd(width)} ${summary[metric.key].toFixed(3)}`,
+          );
+        }
       }
     }
   }
