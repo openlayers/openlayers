@@ -36,7 +36,7 @@ import {
   create as createMat4,
   fromTransform as mat4FromTransform,
 } from '../../vec/mat4.js';
-import TileTexture from '../../webgpu/TileTexture.js';
+import TileTexture, {TileDrawResources} from '../../webgpu/TileTexture.js';
 import {
   buildReprojMesh,
   clipExtentToProjection,
@@ -362,20 +362,6 @@ class WebGPUTileLayerRenderer extends WebGPULayerRenderer {
      * @type {Map<import("../../source/Tile.js").default, import("../../events.js").EventsKey>}
      */
     this.loadingSources_ = new Map();
-
-    /**
-     * Uniform buffers for the current frame. Destroyed the frame after they
-     * are submitted so the GPU is done with them.
-     * @private
-     * @type {Array<GPUBuffer>}
-     */
-    this.pendingUniforms_ = [];
-
-    /**
-     * @private
-     * @type {Array<GPUBuffer>}
-     */
-    this.retiredUniforms_ = [];
 
     /**
      * @private
@@ -953,7 +939,6 @@ class WebGPUTileLayerRenderer extends WebGPULayerRenderer {
     if (!helper) {
       return;
     }
-    this.recycleUniformBuffers_();
     helper.prepareDraw(frameState, true, this.getClearColor(frameState));
     const pass = helper.getRenderPass();
     for (let i = 0; i < prepared.length; ++i) {
@@ -1663,21 +1648,10 @@ class WebGPUTileLayerRenderer extends WebGPULayerRenderer {
     data[25] = 1;
     this.writeStyleUniforms_(data, TILE_STYLE_RESOLUTION_INDEX, frameState);
 
-    const uniformBuffer = this.createTileUniformBuffer_(data);
-    if (!uniformBuffer) {
+    const bindGroup = this.bindTile_(helper, tileTexture, pipeline, data);
+    if (!bindGroup) {
       return;
     }
-
-    /** @type {Array<GPUBindGroupEntry>} */
-    const entries = [{binding: 0, resource: {buffer: uniformBuffer}}];
-    if (!tileTexture.unfilterable) {
-      entries.push({binding: 1, resource: helper.getLinearSampler()});
-    }
-    entries.push({binding: 2, resource: tileTexture.texture.createView()});
-    const bindGroup = helper.getDevice().createBindGroup({
-      layout: pipeline.getBindGroupLayout(0),
-      entries,
-    });
 
     pass.setPipeline(pipeline);
     pass.setBindGroup(0, bindGroup);
@@ -1809,24 +1783,10 @@ class WebGPUTileLayerRenderer extends WebGPULayerRenderer {
     data[23] = tileTexture.texture.width;
     data[24] = tileTexture.texture.height;
     this.writeStyleUniforms_(data, REPROJ_STYLE_RESOLUTION_INDEX, frameState);
-    const uniformBuffer = this.createTileUniformBuffer_(data);
-    if (!uniformBuffer) {
+    const bindGroup = this.bindTile_(helper, tileTexture, pipeline, data);
+    if (!bindGroup) {
       return;
     }
-
-    /** @type {Array<GPUBindGroupEntry>} */
-    const reprojEntries = [{binding: 0, resource: {buffer: uniformBuffer}}];
-    if (!tileTexture.unfilterable) {
-      reprojEntries.push({binding: 1, resource: helper.getLinearSampler()});
-    }
-    reprojEntries.push({
-      binding: 2,
-      resource: tileTexture.texture.createView(),
-    });
-    const bindGroup = helper.getDevice().createBindGroup({
-      layout: pipeline.getBindGroupLayout(0),
-      entries: reprojEntries,
-    });
     pass.setPipeline(pipeline);
     pass.setBindGroup(0, bindGroup);
     pass.setVertexBuffer(0, mesh.vertexBuffer);
@@ -1835,41 +1795,71 @@ class WebGPUTileLayerRenderer extends WebGPULayerRenderer {
   }
 
   /**
+   * Bind a tile for drawing, rewriting the uniforms it keeps from the last
+   * frame. The texture view and bind group stay until the texture or the
+   * pipeline layout changes. A tile is drawn at most once per pass, so one
+   * buffer per tile is enough: every write lands before that pass runs.
+   * @param {import("../../webgpu/Helper.js").default} helper Helper.
+   * @param {TileTexture} tileTexture Tile.
+   * @param {GPURenderPipeline} pipeline Pipeline.
    * @param {Float32Array} data Uniform data.
-   * @return {GPUBuffer|null} Buffer.
+   * @return {GPUBindGroup|null} Bind group.
    * @private
    */
-  createTileUniformBuffer_(data) {
-    const helper = this.helper;
-    if (!helper) {
+  bindTile_(helper, tileTexture, pipeline, data) {
+    const texture = tileTexture.texture;
+    if (!texture) {
       return null;
     }
-    const buffer = helper.createBuffer(
-      data,
-      GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
-    );
-    this.pendingUniforms_.push(buffer);
-    return buffer;
-  }
-
-  /**
-   * @param {Array<GPUBuffer>} buffers Buffers.
-   * @private
-   */
-  destroyUniformBuffers_(buffers) {
-    for (const buffer of buffers) {
-      buffer.destroy();
+    let resources = tileTexture.drawResources_;
+    if (!resources || resources.helper !== helper) {
+      resources?.dispose();
+      resources = new TileDrawResources(helper);
+      tileTexture.drawResources_ = resources;
     }
-    buffers.length = 0;
-  }
-
-  /**
-   * @private
-   */
-  recycleUniformBuffers_() {
-    this.destroyUniformBuffers_(this.retiredUniforms_);
-    this.retiredUniforms_ = this.pendingUniforms_;
-    this.pendingUniforms_ = [];
+    const bytes = data.byteLength;
+    if (!resources.buffer || resources.size < bytes) {
+      resources.buffer?.destroy();
+      resources.buffer = helper.getDevice().createBuffer({
+        size: bytes,
+        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+      });
+      resources.size = bytes;
+      resources.groups.clear();
+    }
+    helper.writeBuffer(/** @type {GPUBuffer} */ (resources.buffer), data);
+    if (
+      resources.viewTexture !== texture ||
+      resources.styleGeneration !== this.styleGeneration_
+    ) {
+      resources.view = texture.createView();
+      resources.viewTexture = texture;
+      resources.styleGeneration = this.styleGeneration_;
+      resources.groups.clear();
+    }
+    let bindGroup = resources.groups.get(pipeline);
+    if (!bindGroup) {
+      /** @type {Array<GPUBindGroupEntry>} */
+      const entries = [
+        {
+          binding: 0,
+          resource: {buffer: /** @type {GPUBuffer} */ (resources.buffer)},
+        },
+      ];
+      if (!tileTexture.unfilterable) {
+        entries.push({binding: 1, resource: helper.getLinearSampler()});
+      }
+      entries.push({
+        binding: 2,
+        resource: /** @type {GPUTextureView} */ (resources.view),
+      });
+      bindGroup = helper.getDevice().createBindGroup({
+        layout: pipeline.getBindGroupLayout(0),
+        entries,
+      });
+      resources.groups.set(pipeline, bindGroup);
+    }
+    return bindGroup;
   }
 
   /**
@@ -1877,8 +1867,6 @@ class WebGPUTileLayerRenderer extends WebGPULayerRenderer {
    */
   clearCache() {
     this.unwatchLoadingSources_();
-    this.destroyUniformBuffers_(this.pendingUniforms_);
-    this.destroyUniformBuffers_(this.retiredUniforms_);
     this.tileRepresentationCache.forEach((tileTexture) =>
       tileTexture.dispose(),
     );
