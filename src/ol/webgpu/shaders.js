@@ -297,7 +297,9 @@ struct WarpUniforms {
   cells: u32,
   vertexCount: u32,
   strokeMode: u32,
-  pad0: u32,
+  // Floats per attribute vertex. Stroke vertices carry the cap end as a fifth
+  // float; a fill fringe uses four.
+  attributeStride: u32,
   cellSize: f32,
   maxEdge: f32,
   // Source map units spanned by one cell on each axis. The local grid is
@@ -364,15 +366,17 @@ fn main(@builtin(global_invocation_id) id: vec3<u32>) {
     // the derivatives have to be per source unit as well, not per grid step.
     let dx = (mix(n10.xy, n11.xy, fy) - mix(n00.xy, n01.xy, fy)) / warp.unitsPerCell.x;
     let dy = (top - bottom) / warp.unitsPerCell.y;
-    let base = index * 4u;
+    let stride = warp.attributeStride;
+    let base = index * stride;
     let extrusion = vec2(inAttributes[base], inAttributes[base + 1u]);
     let warped = dx * extrusion.x + dy * extrusion.y;
     let scale = max(length(warped), 1e-12);
     let extrusionLength = length(extrusion);
     outAttributes[base] = warped.x / scale * extrusionLength;
     outAttributes[base + 1u] = warped.y / scale * extrusionLength;
-    outAttributes[base + 2u] = inAttributes[base + 2u];
-    outAttributes[base + 3u] = inAttributes[base + 3u];
+    for (var component = 2u; component < stride; component = component + 1u) {
+      outAttributes[base + component] = inAttributes[base + component];
+    }
   }
 }
 `;
