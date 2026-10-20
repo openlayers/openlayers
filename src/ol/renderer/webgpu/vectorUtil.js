@@ -271,23 +271,34 @@ export class VectorGpuBuffers extends Disposable {
      * @param {GPUBuffer} positions Packed int16 grid positions.
      * @param {GPUBuffer|null} inAttributes Stroke normals and widths.
      * @param {boolean} strokeMode Also warp normals.
+     * @param {number} attributeStride Floats per attribute vertex.
      * @return {{outPositions: GPUBuffer, outAttributes: GPUBuffer}} Outputs.
      */
-    const dispatch = (vertexCount, positions, inAttributes, strokeMode) => {
+    const dispatch = (
+      vertexCount,
+      positions,
+      inAttributes,
+      strokeMode,
+      attributeStride,
+    ) => {
       const outPositions = this.create_(
         helper,
         new Float32Array(vertexCount * 4),
         storage,
       );
       const outAttributes = strokeMode
-        ? this.create_(helper, new Float32Array(vertexCount * 4), storage)
+        ? this.create_(
+            helper,
+            new Float32Array(vertexCount * attributeStride),
+            storage,
+          )
         : dummyWrite;
       const uniformData = new ArrayBuffer(32);
       new Uint32Array(uniformData, 0, 4).set([
         grid.cells,
         vertexCount,
         strokeMode ? 1 : 0,
-        0,
+        attributeStride,
       ]);
       new Float32Array(uniformData, 16, 4).set([
         grid.cellSize,
@@ -324,6 +335,7 @@ export class VectorGpuBuffers extends Disposable {
         this.fillPositionBuffer,
         null,
         false,
+        0,
       );
       this.fillWarpedBuffer = result.outPositions;
     }
@@ -333,6 +345,7 @@ export class VectorGpuBuffers extends Disposable {
         this.strokePositionBuffer,
         this.strokeAttributeBuffer,
         true,
+        5,
       );
       this.strokeWarpedBuffer = result.outPositions;
       this.strokeWarpedAttributeBuffer = result.outAttributes;
