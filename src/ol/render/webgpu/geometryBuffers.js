@@ -4,7 +4,12 @@
 import {clipFlatLineStrings} from '../../geom/flat/clip.js';
 import {compareDraw} from './drawOrder.js';
 import {LOCAL_EXTENT} from './localGrid.js';
-import {projectFlatCoordinates, tessellatePolygon} from './tessellate.js';
+import {
+  clipPolygonRings,
+  densifyPolygonRings,
+  projectFlatCoordinates,
+  tessellatePolygon,
+} from './tessellate.js';
 import {warpGridSampler} from './warpGrid.js';
 
 const INT16_MIN = -32768;
@@ -94,6 +99,8 @@ function segmentOnClipEdge(x1, y1, x2, y2, extent, eps) {
  * @property {CanvasLineJoin} [lineJoin] Stroke join.
  * @property {number} [miterLimit] Stroke miter limit.
  * @property {boolean} [closed] Whether the stroke is a closed ring.
+ * @property {boolean} [fringe] Fade the fill's outline. Set when the style has
+ *     no stroke, which would otherwise cover the aliased edge.
  * @property {boolean} [skipClipEdges] Drop segments lying on the clip extent.
  * @property {number} [zIndex] Style z-index.
  * @property {number} [classRank] Canvas class order.
@@ -124,6 +131,10 @@ function segmentOnClipEdge(x1, y1, x2, y2, extent, eps) {
  * @property {Int16Array} fillPositions Fill positions in grid units.
  * @property {Uint32Array} fillStyles Style index per fill vertex.
  * @property {Uint32Array} fillIndices Fill indices.
+ * @property {Float32Array} fillExtrusions Outward offset, in map units, and
+ *     coverage, per fill vertex. The offset is one pixel long on a fill's
+ *     outer fringe and zero everywhere else; coverage is 1 on the fill and 0
+ *     at the fringe's outer edge.
  * @property {Int16Array} strokePositions Stroke positions in grid units.
  * @property {Float32Array} strokeAttributes Extrusion x, extrusion y, width,
  *     distance along the line in drawn map units, and cap end, per stroke
@@ -230,6 +241,8 @@ export function buildGeometryBuffers(request) {
   /** @type {Array<number>} */
   const fillIndices = [];
   /** @type {Array<number>} */
+  const fillExtrusions = [];
+  /** @type {Array<number>} */
   const strokePositions = [];
   /** @type {Array<number>} */
   const strokeAttributes = [];
@@ -304,6 +317,7 @@ export function buildGeometryBuffers(request) {
           fillPositions,
           fillStyles,
           fillIndices,
+          fillExtrusions,
         );
         pushRange(ranges, job, indexStart, fillIndices.length - indexStart);
       } else {
@@ -327,6 +341,7 @@ export function buildGeometryBuffers(request) {
     fillPositions: new Int16Array(fillPositions),
     fillStyles: new Uint32Array(fillStyles),
     fillIndices: new Uint32Array(fillIndices),
+    fillExtrusions: new Float32Array(fillExtrusions),
     strokePositions: new Int16Array(strokePositions),
     strokeAttributes: new Float32Array(strokeAttributes),
     strokeStyles: new Uint32Array(strokeStyles),
@@ -367,8 +382,18 @@ function pushRange(ranges, job, start, count) {
  * @param {Array<number>} positions Positions out.
  * @param {Array<number>} styleIndices Style indices out.
  * @param {Array<number>} indices Indices out.
+ * @param {Array<number>} extrusions Extrusion x, y, coverage, and padding out.
  */
-function emitFill(xy, job, grid, reproj, positions, styleIndices, indices) {
+function emitFill(
+  xy,
+  job,
+  grid,
+  reproj,
+  positions,
+  styleIndices,
+  indices,
+  extrusions,
+) {
   if (xy.length < 6) {
     return;
   }
@@ -380,12 +405,14 @@ function emitFill(xy, job, grid, reproj, positions, styleIndices, indices) {
       toLocal(mesh.vertices[i + 1], grid.originY, grid.scaleY),
     );
     styleIndices.push(job.styleIndex);
+    extrusions.push(0, 0, 1, 0);
   }
   // Positions are rounded onto the grid, and a triangle thinner than one of
   // its steps either collapses or turns inside out. Drawing an inside-out one
   // paints a sliver that is not part of the polygon, which a translucent fill
   // shows as a darker streak, so those are left out. What they covered was
   // narrower than the grid can hold in the first place.
+  const indexBefore = indices.length;
   for (let i = 0; i < mesh.indices.length; i += 3) {
     const a = mesh.indices[i];
     const b = mesh.indices[i + 1];
@@ -396,6 +423,220 @@ function emitFill(xy, job, grid, reproj, positions, styleIndices, indices) {
       continue;
     }
     indices.push(a + base, b + base, c + base);
+  }
+  if (job.fringe && indices.length > indexBefore) {
+    emitFillFringe(
+      xy,
+      job,
+      grid,
+      reproj,
+      positions,
+      styleIndices,
+      indices,
+      extrusions,
+    );
+  }
+}
+
+/**
+ * A one-pixel fringe outside a fill, so the edge fades out instead of stepping.
+ * The fringe is part of the fill, drawn after it, and only on edges that are
+ * really the polygon's. An edge the clip extent introduced is where a tile or
+ * a view cut the polygon, and fading it would open a seam.
+ *
+ * @param {Array<number>} xy Flat x/y pairs in source space.
+ * @param {GeometryJob} job Job.
+ * @param {LocalGrid} grid Grid.
+ * @param {import("./tessellate.js").TessellateOptions} reproj Tessellation options.
+ * @param {Array<number>} positions Positions out.
+ * @param {Array<number>} styleIndices Style indices out.
+ * @param {Array<number>} indices Indices out.
+ * @param {Array<number>} extrusions Extrusions out.
+ */
+function emitFillFringe(
+  xy,
+  job,
+  grid,
+  reproj,
+  positions,
+  styleIndices,
+  indices,
+  extrusions,
+) {
+  let rings = xy;
+  let holes = job.holes || [];
+  if (reproj.clipExtent) {
+    const clipped = clipPolygonRings(rings, holes, reproj.clipExtent);
+    rings = clipped.flatCoordinates;
+    holes = clipped.holes;
+  }
+  if ((reproj.maxSegmentLength || 0) > 0) {
+    const dense = densifyPolygonRings(
+      rings,
+      holes,
+      reproj.maxSegmentLength || 0,
+      reproj.maxSpanX,
+    );
+    rings = dense.flatCoordinates;
+    holes = dense.holes;
+  }
+  const ends = holes.slice();
+  ends.push(rings.length / 2);
+  let start = 0;
+  for (const end of ends) {
+    emitFringeRing(
+      rings,
+      start,
+      end,
+      job,
+      grid,
+      reproj,
+      positions,
+      styleIndices,
+      indices,
+      extrusions,
+    );
+    start = end;
+  }
+}
+
+/**
+ * @param {Array<number>} xy Flat x/y pairs.
+ * @param {number} start First vertex of the ring.
+ * @param {number} end Vertex after the ring.
+ * @param {GeometryJob} job Job.
+ * @param {LocalGrid} grid Grid.
+ * @param {import("./tessellate.js").TessellateOptions} reproj Tessellation options.
+ * @param {Array<number>} positions Positions out.
+ * @param {Array<number>} styleIndices Style indices out.
+ * @param {Array<number>} indices Indices out.
+ * @param {Array<number>} extrusions Extrusions out.
+ */
+function emitFringeRing(
+  xy,
+  start,
+  end,
+  job,
+  grid,
+  reproj,
+  positions,
+  styleIndices,
+  indices,
+  extrusions,
+) {
+  if (end - start < 3) {
+    return;
+  }
+  /** @type {Array<{x: number, y: number}>} */
+  const source = [];
+  for (let i = start; i < end; ++i) {
+    source.push({x: xy[i * 2], y: xy[i * 2 + 1]});
+  }
+  const closed =
+    source.length > 1 &&
+    source[0].x === source[source.length - 1].x &&
+    source[0].y === source[source.length - 1].y;
+  if (closed) {
+    source.pop();
+  }
+  if (source.length < 3) {
+    return;
+  }
+  const project = reproj.projectToTarget;
+  /** @type {Array<{x: number, y: number}>} */
+  const points = [];
+  for (const point of source) {
+    if (!project) {
+      points.push(point);
+      continue;
+    }
+    const projected = project([point.x, point.y]);
+    if (!projected || !isFinite(projected[0]) || !isFinite(projected[1])) {
+      return;
+    }
+    points.push({x: projected[0], y: projected[1]});
+  }
+  const count = points.length;
+  const clipExtent = reproj.clipExtent;
+  const eps = clipExtent ? clipEdgeEpsilon(clipExtent) : 0;
+  /** @type {Array<StrokeVector|null>} */
+  const normals = [];
+  /** @type {Array<boolean>} */
+  const clipped = [];
+  for (let i = 0; i < count; ++i) {
+    const a = source[i];
+    const b = source[(i + 1) % count];
+    const dx = b.x - a.x;
+    const dy = b.y - a.y;
+    const length = Math.hypot(dx, dy);
+    normals.push(length ? {x: -dy / length, y: dx / length} : null);
+    clipped.push(
+      !!clipExtent && segmentOnClipEdge(a.x, a.y, b.x, b.y, clipExtent, eps),
+    );
+  }
+  // Normals of a reprojected ring follow the projected edge, so the fringe
+  // stays outside the fill the shader actually draws.
+  if (project) {
+    for (let i = 0; i < count; ++i) {
+      if (!normals[i]) {
+        continue;
+      }
+      const a = points[i];
+      const b = points[(i + 1) % count];
+      const dx = b.x - a.x;
+      const dy = b.y - a.y;
+      const length = Math.hypot(dx, dy);
+      normals[i] = length ? {x: -dy / length, y: dx / length} : null;
+    }
+  }
+
+  /**
+   * @param {number} x X.
+   * @param {number} y Y.
+   * @param {number} ex Extrusion x.
+   * @param {number} ey Extrusion y.
+   * @param {number} coverage Coverage.
+   * @return {number} Vertex index.
+   */
+  const add = (x, y, ex, ey, coverage) => {
+    const index = positions.length / 2;
+    positions.push(
+      toLocal(x, grid.originX, grid.scaleX),
+      toLocal(y, grid.originY, grid.scaleY),
+    );
+    styleIndices.push(job.styleIndex);
+    extrusions.push(ex, ey, coverage, 0);
+    return index;
+  };
+
+  for (let i = 0; i < count; ++i) {
+    const normal = normals[i];
+    if (!normal || clipped[i]) {
+      continue;
+    }
+    const a = points[i];
+    const b = points[(i + 1) % count];
+    const innerA = add(a.x, a.y, 0, 0, 1);
+    const outerA = add(a.x, a.y, normal.x, normal.y, 0);
+    const innerB = add(b.x, b.y, 0, 0, 1);
+    const outerB = add(b.x, b.y, normal.x, normal.y, 0);
+    indices.push(innerA, outerA, innerB, outerA, outerB, innerB);
+  }
+  for (let i = 0; i < count; ++i) {
+    const previous = normals[(i + count - 1) % count];
+    const next = normals[i];
+    if (!previous || !next || clipped[(i + count - 1) % count] || clipped[i]) {
+      continue;
+    }
+    const dot = previous.x * next.x + previous.y * next.y;
+    if (dot > 1 - 1e-6) {
+      continue;
+    }
+    const point = points[i];
+    const inner = add(point.x, point.y, 0, 0, 1);
+    const outerA = add(point.x, point.y, previous.x, previous.y, 0);
+    const outerB = add(point.x, point.y, next.x, next.y, 0);
+    indices.push(inner, outerA, outerB);
   }
 }
 
