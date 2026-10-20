@@ -4,6 +4,7 @@
 import {clipFlatLineStrings} from '../../geom/flat/clip.js';
 import {compareDraw} from './drawOrder.js';
 import {LOCAL_EXTENT} from './localGrid.js';
+import {NumberSink} from './numberSink.js';
 import {
   clipPolygonRings,
   densifyPolygonRings,
@@ -234,22 +235,14 @@ export function buildGeometryBuffers(request) {
     maxTargetError: request.maxTargetError,
   };
 
-  /** @type {Array<number>} */
-  const fillPositions = [];
-  /** @type {Array<number>} */
-  const fillStyles = [];
-  /** @type {Array<number>} */
-  const fillIndices = [];
-  /** @type {Array<number>} */
-  const fillExtrusions = [];
-  /** @type {Array<number>} */
-  const strokePositions = [];
-  /** @type {Array<number>} */
-  const strokeAttributes = [];
-  /** @type {Array<number>} */
-  const strokeStyles = [];
-  /** @type {Array<number>} */
-  const strokeIndices = [];
+  const fillPositions = new NumberSink(Int16Array);
+  const fillStyles = new NumberSink(Uint32Array);
+  const fillIndices = new NumberSink(Uint32Array);
+  const fillExtrusions = new NumberSink(Float32Array);
+  const strokePositions = new NumberSink(Int16Array);
+  const strokeAttributes = new NumberSink(Float32Array);
+  const strokeStyles = new NumberSink(Uint32Array);
+  const strokeIndices = new NumberSink(Uint32Array);
 
   const worldWidth = request.worldWidth || 0;
   const gridCenterX = (request.gridExtent[0] + request.gridExtent[2]) / 2;
@@ -279,20 +272,22 @@ export function buildGeometryBuffers(request) {
   );
 
   for (const job of jobs) {
-    /** @type {Array<number>} */
-    const xy = [];
-    for (let i = 0; i < job.count; ++i) {
-      const offset = (job.start + i) * 2;
-      xy.push(coordinates[offset], coordinates[offset + 1]);
-    }
+    const base = job.start * 2;
+    const count = job.count * 2;
     // Per geometry rather than per point, so shapes that cross the edge
     // themselves stay in one piece. A grid wider than one world is drawn
-    // once per copy it covers.
+    // once per copy it covers. The unshifted range is a view of the request
+    // coordinates; only a world copy needs its own array.
     let minX = Infinity;
     let maxX = -Infinity;
-    for (let i = 0; i < xy.length; i += 2) {
-      minX = Math.min(minX, xy[i]);
-      maxX = Math.max(maxX, xy[i]);
+    for (let i = 0; i < count; i += 2) {
+      const x = coordinates[base + i];
+      if (x < minX) {
+        minX = x;
+      }
+      if (x > maxX) {
+        maxX = x;
+      }
     }
     const shifts = worldCopyShifts(
       minX,
@@ -303,10 +298,7 @@ export function buildGeometryBuffers(request) {
       worldWidth,
     );
     for (const shift of shifts) {
-      const placed =
-        shift === 0
-          ? xy
-          : xy.map((value, index) => (index % 2 === 0 ? value + shift : value));
+      const placed = placeJob(coordinates, base, count, shift);
       if (job.kind === 'fill') {
         const indexStart = fillIndices.length;
         emitFill(
@@ -338,18 +330,38 @@ export function buildGeometryBuffers(request) {
   }
 
   return {
-    fillPositions: new Int16Array(fillPositions),
-    fillStyles: new Uint32Array(fillStyles),
-    fillIndices: new Uint32Array(fillIndices),
-    fillExtrusions: new Float32Array(fillExtrusions),
-    strokePositions: new Int16Array(strokePositions),
-    strokeAttributes: new Float32Array(strokeAttributes),
-    strokeStyles: new Uint32Array(strokeStyles),
-    strokeIndices: new Uint32Array(strokeIndices),
+    fillPositions: /** @type {Int16Array} */ (fillPositions.finish()),
+    fillStyles: /** @type {Uint32Array} */ (fillStyles.finish()),
+    fillIndices: /** @type {Uint32Array} */ (fillIndices.finish()),
+    fillExtrusions: /** @type {Float32Array} */ (fillExtrusions.finish()),
+    strokePositions: /** @type {Int16Array} */ (strokePositions.finish()),
+    strokeAttributes: /** @type {Float32Array} */ (strokeAttributes.finish()),
+    strokeStyles: /** @type {Uint32Array} */ (strokeStyles.finish()),
+    strokeIndices: /** @type {Uint32Array} */ (strokeIndices.finish()),
     styles: request.styles,
     grid,
     ranges,
   };
+}
+
+/**
+ * Coordinates of one job, shifted into a world copy when `shift` is not zero.
+ * @param {Float64Array} coordinates Request coordinates.
+ * @param {number} base First element of the job.
+ * @param {number} count Element count.
+ * @param {number} shift X shift in source units.
+ * @return {ArrayLike<number>} Job coordinates.
+ */
+function placeJob(coordinates, base, count, shift) {
+  if (shift === 0) {
+    return coordinates.subarray(base, base + count);
+  }
+  const placed = new Float64Array(count);
+  for (let i = 0; i < count; i += 2) {
+    placed[i] = coordinates[base + i] + shift;
+    placed[i + 1] = coordinates[base + i + 1];
+  }
+  return placed;
 }
 
 /**
@@ -375,14 +387,14 @@ function pushRange(ranges, job, start, count) {
 }
 
 /**
- * @param {Array<number>} xy Flat x/y pairs.
+ * @param {ArrayLike<number>} xy Flat x/y pairs.
  * @param {GeometryJob} job Job.
  * @param {LocalGrid} grid Grid.
  * @param {import("./tessellate.js").TessellateOptions} reproj Tessellation options.
- * @param {Array<number>} positions Positions out.
- * @param {Array<number>} styleIndices Style indices out.
- * @param {Array<number>} indices Indices out.
- * @param {Array<number>} extrusions Extrusion x, y, coverage, and padding out.
+ * @param {NumberSink} positions Positions out.
+ * @param {NumberSink} styleIndices Style indices out.
+ * @param {NumberSink} indices Indices out.
+ * @param {NumberSink} extrusions Extrusion x, y, coverage, and padding out.
  */
 function emitFill(
   xy,
@@ -418,7 +430,7 @@ function emitFill(
     const b = mesh.indices[i + 1];
     const c = mesh.indices[i + 2];
     const before = crossOf(mesh.vertices, a, b, c);
-    const after = crossOf(positions, base + a, base + b, base + c);
+    const after = crossOf(positions.values, base + a, base + b, base + c);
     if (after === 0 || (before !== 0 && after > 0 !== before > 0)) {
       continue;
     }
@@ -444,14 +456,14 @@ function emitFill(
  * really the polygon's. An edge the clip extent introduced is where a tile or
  * a view cut the polygon, and fading it would open a seam.
  *
- * @param {Array<number>} xy Flat x/y pairs in source space.
+ * @param {ArrayLike<number>} xy Flat x/y pairs in source space.
  * @param {GeometryJob} job Job.
  * @param {LocalGrid} grid Grid.
  * @param {import("./tessellate.js").TessellateOptions} reproj Tessellation options.
- * @param {Array<number>} positions Positions out.
- * @param {Array<number>} styleIndices Style indices out.
- * @param {Array<number>} indices Indices out.
- * @param {Array<number>} extrusions Extrusions out.
+ * @param {NumberSink} positions Positions out.
+ * @param {NumberSink} styleIndices Style indices out.
+ * @param {NumberSink} indices Indices out.
+ * @param {NumberSink} extrusions Extrusions out.
  */
 function emitFillFringe(
   xy,
@@ -501,16 +513,16 @@ function emitFillFringe(
 }
 
 /**
- * @param {Array<number>} xy Flat x/y pairs.
+ * @param {ArrayLike<number>} xy Flat x/y pairs.
  * @param {number} start First vertex of the ring.
  * @param {number} end Vertex after the ring.
  * @param {GeometryJob} job Job.
  * @param {LocalGrid} grid Grid.
  * @param {import("./tessellate.js").TessellateOptions} reproj Tessellation options.
- * @param {Array<number>} positions Positions out.
- * @param {Array<number>} styleIndices Style indices out.
- * @param {Array<number>} indices Indices out.
- * @param {Array<number>} extrusions Extrusions out.
+ * @param {NumberSink} positions Positions out.
+ * @param {NumberSink} styleIndices Style indices out.
+ * @param {NumberSink} indices Indices out.
+ * @param {NumberSink} extrusions Extrusions out.
  */
 function emitFringeRing(
   xy,
@@ -643,7 +655,7 @@ function emitFringeRing(
 /**
  * Twice the signed area of a triangle, from a flat array of x/y pairs.
  *
- * @param {Array<number>} xy Flat x/y pairs.
+ * @param {ArrayLike<number>} xy Flat x/y pairs.
  * @param {number} a First vertex.
  * @param {number} b Second vertex.
  * @param {number} c Third vertex.
@@ -664,14 +676,14 @@ function crossOf(xy, a, b, c) {
  * zero for each part a clip cuts the line into, and keep counting across
  * segments that are left out.
  *
- * @param {Array<number>} xy Flat x/y pairs.
+ * @param {ArrayLike<number>} xy Flat x/y pairs.
  * @param {GeometryJob} job Job.
  * @param {LocalGrid} grid Grid.
  * @param {import("./tessellate.js").TessellateOptions} reproj Tessellation options.
- * @param {Array<number>} positions Positions out.
- * @param {Array<number>} attributes Extrusion x, extrusion y, width, and distance out.
- * @param {Array<number>} styleIndices Style indices out.
- * @param {Array<number>} indices Indices out.
+ * @param {NumberSink} positions Positions out.
+ * @param {NumberSink} attributes Extrusion x, extrusion y, width, and distance out.
+ * @param {NumberSink} styleIndices Style indices out.
+ * @param {NumberSink} indices Indices out.
  */
 function emitStroke(
   xy,
@@ -692,7 +704,7 @@ function emitStroke(
   let ends = [projected.length];
   if (clipExtent) {
     const clipped = clipFlatLineStrings(
-      projected,
+      /** @type {Array<number>} */ (projected),
       [projected.length],
       2,
       clipExtent,
@@ -792,7 +804,7 @@ function emitStroke(
 
 /**
  * @typedef {Object} StrokeMeshWriter
- * @property {function(number, number, number, number, number, number, number): number} vertex Add a
+ * @property {function(number, number, number, number, number, number, number=): number} vertex Add a
  * vertex on the left (1) or right (-1) edge of the line. Vertices on the
  * centerline, without extrusion, may give either side. The last argument is
  * the cap end: 0 on the body, ±1 on a square cap's outer edge, ±2 on a butt.
@@ -809,10 +821,10 @@ function emitStroke(
  * @param {CanvasLineCap} endCap End cap.
  * @param {GeometryJob} job Job.
  * @param {LocalGrid} grid Grid.
- * @param {Array<number>} positions Positions out.
- * @param {Array<number>} attributes Attributes out.
- * @param {Array<number>} styleIndices Style indices out.
- * @param {Array<number>} indices Indices out.
+ * @param {NumberSink} positions Positions out.
+ * @param {NumberSink} attributes Attributes out.
+ * @param {NumberSink} styleIndices Style indices out.
+ * @param {NumberSink} indices Indices out.
  */
 function emitStrokeRun(
   input,
@@ -905,10 +917,10 @@ function emitStrokeRun(
  * @param {number} styleIndex Style index.
  * @param {number} width Width.
  * @param {LocalGrid} grid Grid.
- * @param {Array<number>} positions Positions out.
- * @param {Array<number>} attributes Attributes out.
- * @param {Array<number>} styleIndices Style indices out.
- * @param {Array<number>} indices Indices out.
+ * @param {NumberSink} positions Positions out.
+ * @param {NumberSink} attributes Attributes out.
+ * @param {NumberSink} styleIndices Style indices out.
+ * @param {NumberSink} indices Indices out.
  * @return {StrokeMeshWriter} Writer.
  */
 function createStrokeMeshWriter(
@@ -1203,9 +1215,9 @@ function drawnSegmentLength(reproj) {
 }
 
 /**
- * @param {Array<number>} xy Flat x/y pairs.
+ * @param {ArrayLike<number>} xy Flat x/y pairs.
  * @param {import("./tessellate.js").TessellateOptions} reproj Options.
- * @return {Array<number>|null} Target coordinates.
+ * @return {ArrayLike<number>|null} Target coordinates.
  */
 function projectCoordinates(xy, reproj) {
   return projectFlatCoordinates(

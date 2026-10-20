@@ -34,6 +34,7 @@ import {
 } from './drawOrder.js';
 import {buildGeometryBuffers, worldCopyShifts} from './geometryBuffers.js';
 import {layoutLineLabel, layoutPointLabel} from './glyphLayout.js';
+import {NumberSink} from './numberSink.js';
 
 /**
  * @typedef {Object} FilterExtentOptions
@@ -442,8 +443,7 @@ export function buildVectorRequest(
   const styleTable = new StyleTable();
   /** @type {Array<import("./geometryBuffers.js").GeometryJob>} */
   const jobs = [];
-  /** @type {Array<number>} */
-  const coordinates = [];
+  const coordinates = new NumberSink(Float64Array);
   /** @type {Array<number>} */
   const symbolInstances = [];
   /** @type {Array<number>} */
@@ -550,7 +550,7 @@ export function buildVectorRequest(
   return {
     request: {
       jobs,
-      coordinates: new Float64Array(coordinates),
+      coordinates: /** @type {Float64Array} */ (coordinates.finish()),
       styles: new Float32Array(styleTable.values),
       gridExtent,
       clipExtent: reproj?.clipExtent,
@@ -581,7 +581,7 @@ export function buildVectorRequest(
  *
  * @typedef {Object} BuildState
  * @property {Array<import("./geometryBuffers.js").GeometryJob>} jobs Fill and stroke jobs.
- * @property {Array<number>} coordinates Shared x/y pairs the jobs refer to.
+ * @property {NumberSink} coordinates Shared x/y pairs the jobs refer to.
  * @property {Array<number>} symbolInstances Point symbol instances, `SYMBOL_STRIDE` floats each.
  * @property {Array<number>} iconInstances Icon instances, `ICON_STRIDE` floats each.
  * @property {Array<import("./glyphLayout.js").GlyphInstance>} glyphs Glyphs.
@@ -1274,7 +1274,7 @@ function getAnchors(geometry, reproj) {
  * @param {import("../../style/Fill.js").default} fill Fill.
  * @param {Array<number>} hit Hit color.
  * @param {Array<import("./geometryBuffers.js").GeometryJob>} jobs Jobs.
- * @param {Array<number>} coordinates Shared coordinates.
+ * @param {NumberSink} coordinates Shared coordinates.
  * @param {StyleTable} styleTable Style table.
  * @param {BuildState} state Build state, for the image atlas.
  * @param {import("./drawOrder.js").DrawStamp} stamp Draw stamp.
@@ -1371,7 +1371,7 @@ function appendFills(
  * @param {import("../../geom/Polygon.js").default|import("../../render/Feature.js").default} polygon Polygon.
  * @param {number} styleIndex Style index.
  * @param {Array<import("./geometryBuffers.js").GeometryJob>} jobs Jobs.
- * @param {Array<number>} coordinates Shared coordinates.
+ * @param {NumberSink} coordinates Shared coordinates.
  * @param {import("./drawOrder.js").DrawStamp} stamp Draw stamp.
  * @param {boolean} fringe Fade the outline.
  */
@@ -1421,7 +1421,7 @@ function appendPolygon(polygon, styleIndex, jobs, coordinates, stamp, fringe) {
  * @param {import("../../style/Stroke.js").default} stroke Stroke.
  * @param {Array<number>} hit Hit.
  * @param {Array<import("./geometryBuffers.js").GeometryJob>} jobs Jobs.
- * @param {Array<number>} coordinates Shared coordinates.
+ * @param {NumberSink} coordinates Shared coordinates.
  * @param {StyleTable} styleTable Style table.
  * @param {import("./drawOrder.js").DrawStamp} stamp Draw stamp.
  */
@@ -1543,7 +1543,7 @@ function appendStrokes(
  * @param {boolean} closed Whether the line is a closed ring.
  * @param {boolean} skipClipEdges Drop segments lying on the clip extent.
  * @param {Array<import("./geometryBuffers.js").GeometryJob>} jobs Jobs.
- * @param {Array<number>} coordinates Shared coordinates.
+ * @param {NumberSink} coordinates Shared coordinates.
  * @param {import("./drawOrder.js").DrawStamp} stamp Draw stamp.
  */
 function addLineJob(
