@@ -115,6 +115,11 @@ export class VectorGpuBuffers extends Disposable {
     /**
      * @type {GPUBuffer|null}
      */
+    this.fillExtrusionBuffer = null;
+
+    /**
+     * @type {GPUBuffer|null}
+     */
     this.fillIndexBuffer = null;
 
     /**
@@ -153,6 +158,11 @@ export class VectorGpuBuffers extends Disposable {
         vertex,
       );
       this.fillStyleBuffer = this.create_(helper, buffers.fillStyles, vertex);
+      this.fillExtrusionBuffer = this.create_(
+        helper,
+        buffers.fillExtrusions,
+        vertex,
+      );
       this.fillIndexBuffer = this.create_(helper, buffers.fillIndices, index);
     }
     if (this.strokeIndexCount) {
@@ -213,6 +223,11 @@ export class VectorGpuBuffers extends Disposable {
      * @type {GPUBuffer|null}
      */
     this.fillWarpedBuffer = null;
+
+    /**
+     * @type {GPUBuffer|null}
+     */
+    this.fillWarpedExtrusionBuffer = null;
 
     /**
      * @type {GPUBuffer|null}
@@ -333,11 +348,12 @@ export class VectorGpuBuffers extends Disposable {
       const result = dispatch(
         this.fillVertexCount,
         this.fillPositionBuffer,
-        null,
-        false,
-        0,
+        this.fillExtrusionBuffer,
+        true,
+        4,
       );
       this.fillWarpedBuffer = result.outPositions;
+      this.fillWarpedExtrusionBuffer = result.outAttributes;
     }
     if (this.strokeIndexCount && this.strokePositionBuffer) {
       const result = dispatch(
@@ -515,6 +531,7 @@ export class VectorGpuBuffers extends Disposable {
     this.bindGroups_.clear();
     this.fillPositionBuffer = null;
     this.fillStyleBuffer = null;
+    this.fillExtrusionBuffer = null;
     this.fillIndexBuffer = null;
     this.strokePositionBuffer = null;
     this.strokeAttributeBuffer = null;
@@ -799,6 +816,10 @@ export function createVectorPipelines(helper) {
           arrayStride: 4,
           attributes: [{shaderLocation: 1, offset: 0, format: 'uint32'}],
         },
+        {
+          arrayStride: 16,
+          attributes: [{shaderLocation: 2, offset: 0, format: 'float32x4'}],
+        },
       ],
     },
     fragment: {
@@ -829,6 +850,10 @@ export function createVectorPipelines(helper) {
         {
           arrayStride: 4,
           attributes: [{shaderLocation: 1, offset: 0, format: 'uint32'}],
+        },
+        {
+          arrayStride: 16,
+          attributes: [{shaderLocation: 2, offset: 0, format: 'float32x4'}],
         },
       ],
     },
@@ -1078,6 +1103,10 @@ export function drawFills(
     warped ? gpu.fillWarpedBuffer : gpu.fillPositionBuffer,
   );
   pass.setVertexBuffer(1, gpu.fillStyleBuffer);
+  pass.setVertexBuffer(
+    2,
+    warped ? gpu.fillWarpedExtrusionBuffer : gpu.fillExtrusionBuffer,
+  );
   pass.setIndexBuffer(gpu.fillIndexBuffer, 'uint32');
   pass.drawIndexed(indexCount, 1, start);
 }
