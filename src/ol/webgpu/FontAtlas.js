@@ -275,6 +275,14 @@ class FontAtlas {
     this.generation_ = 0;
 
     /**
+     * Pages of generations that started over, kept until the batches that
+     * sample them have been rebuilt.
+     * @private
+     * @type {Map<number, Array<AtlasPage>>}
+     */
+    this.retained_ = new Map();
+
+    /**
      * A glyph did not fit on the pages the atlas may have.
      * @private
      * @type {boolean}
@@ -389,13 +397,53 @@ class FontAtlas {
   }
 
   /**
+   * @param {number} generation Generation.
+   * @return {boolean} The current generation, or a retained earlier one.
+   */
+  hasGeneration(generation) {
+    return generation === this.generation_ || this.retained_.has(generation);
+  }
+
+  /**
+   * Destroy retained pages no batch still samples.
+   * @param {Set<number>} used Generations to keep, besides the current one.
+   */
+  releaseUnused(used) {
+    for (const [generation, pages] of this.retained_) {
+      if (!used.has(generation)) {
+        for (const page of pages) {
+          page.texture?.destroy();
+        }
+        this.retained_.delete(generation);
+      }
+    }
+  }
+
+  /**
    * Forget all glyphs and release the page textures, e.g. after a font has
    * loaded and glyphs rasterized with a fallback font are stale. The revision
-   * still increases, so bind groups for the old textures are not reused.
+   * still increases, so bind groups for the old textures are not reused. A
+   * restart keeps the pages for batches that still sample them; a new device
+   * cannot.
+   * @param {boolean} [retainTextures] Keep the current pages addressable by
+   * their generation until `releaseUnused()` drops them.
    */
-  clear() {
-    for (const page of this.pages_) {
-      page.texture?.destroy();
+  clear(retainTextures) {
+    if (retainTextures) {
+      const pages = this.pages_.filter((page) => page.texture);
+      if (pages.length > 0) {
+        this.retained_.set(this.generation_, pages);
+      }
+    } else {
+      for (const page of this.pages_) {
+        page.texture?.destroy();
+      }
+      for (const pages of this.retained_.values()) {
+        for (const page of pages) {
+          page.texture?.destroy();
+        }
+      }
+      this.retained_.clear();
     }
     this.stagingTexture_?.destroy();
     this.stagingTexture_ = null;
@@ -426,10 +474,15 @@ class FontAtlas {
 
   /**
    * @param {number} page Page index.
+   * @param {number} [generation] Generation. The current one when omitted.
    * @return {GPUTexture|null} Texture, or null before that page is uploaded.
    */
-  getTexture(page) {
-    return this.pages_[page]?.texture ?? null;
+  getTexture(page, generation) {
+    const pages =
+      generation === undefined || generation === this.generation_
+        ? this.pages_
+        : this.retained_.get(generation);
+    return pages?.[page]?.texture ?? null;
   }
 
   /**
