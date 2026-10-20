@@ -23,6 +23,12 @@ export const REPORT_METRICS = [
 ];
 
 /**
+ * Phases important enough to publish as CI timeline metrics. All phases remain
+ * in the JSON report and command-line comparison.
+ */
+const PUBLISHED_PHASES = new Set(['animated-zoom']);
+
+/**
  * @param {Array<number>} values Values.
  * @return {number} Mean.
  */
@@ -42,19 +48,11 @@ function percent(part, whole) {
 }
 
 /**
- * Missed frames are a share of the display refreshes during the flight, which
- * are the presented frames plus the refreshes that were skipped between them.
- * Late frames are a share of the presented frames.
- * @param {Array<Object>} runs Measured flights, excluding the warm-up flight.
- * @return {Object} Comparable case report.
+ * @param {Array<Object>} experiences Frame experiences.
+ * @return {Object} Comparable metrics.
  */
-export function summarizeRuns(runs) {
-  if (!runs.length) {
-    throw new Error('cannot summarize a benchmark without measured runs');
-  }
-  const experiences = runs.map((run) => run.experience);
+function summarizeExperiences(experiences) {
   return {
-    runs: runs.length,
     missedFramePercent: mean(
       experiences.map((experience) =>
         percent(
@@ -73,6 +71,37 @@ export function summarizeRuns(runs) {
       ...experiences.map((experience) => experience.worstGapMs),
     ),
     displayMs: mean(experiences.map((experience) => experience.displayMs)),
+  };
+}
+
+/**
+ * Missed frames are a share of the display refreshes during the flight, which
+ * are the presented frames plus the refreshes that were skipped between them.
+ * Late frames are a share of the presented frames.
+ * @param {Array<Object>} runs Measured flights, excluding the warm-up flight.
+ * @return {Object} Comparable case report.
+ */
+export function summarizeRuns(runs) {
+  if (!runs.length) {
+    throw new Error('cannot summarize a benchmark without measured runs');
+  }
+  const experiences = runs.map((run) => run.experience);
+  /** @type {Object<string, Object>} */
+  const phases = {};
+  for (const first of runs[0].phases ?? []) {
+    const matching = runs
+      .map((run) => run.phases?.find((phase) => phase.name === first.name))
+      .filter(Boolean);
+    if (matching.length === runs.length) {
+      phases[first.name] = summarizeExperiences(
+        matching.map((phase) => phase.experience),
+      );
+    }
+  }
+  return {
+    runs: runs.length,
+    ...summarizeExperiences(experiences),
+    phases,
     viewport: runs[0].size,
     devicePixelRatio: runs[0].devicePixelRatio,
   };
@@ -115,13 +144,21 @@ export function toBenchmarkAction(report) {
   validateReport(report);
   const data = [];
   for (const [caseName, result] of Object.entries(report.cases)) {
-    for (const metric of REPORT_METRICS) {
-      data.push({
-        name: `${caseName} · ${metric.label}`,
-        unit: metric.unit,
-        value: result[metric.key],
-        extra: `${result.runs} runs · ${result.displayMs.toFixed(1)} ms display interval`,
-      });
+    const summaries = [
+      [caseName, result],
+      ...Object.entries(result.phases || {})
+        .filter(([phase]) => PUBLISHED_PHASES.has(phase))
+        .map(([phase, summary]) => [`${caseName} · ${phase}`, summary]),
+    ];
+    for (const [name, summary] of summaries) {
+      for (const metric of REPORT_METRICS) {
+        data.push({
+          name: `${name} · ${metric.label}`,
+          unit: metric.unit,
+          value: summary[metric.key],
+          extra: `${result.runs} runs · ${summary.displayMs.toFixed(1)} ms display interval`,
+        });
+      }
     }
   }
   return data;
@@ -144,18 +181,32 @@ export function formatMarkdown(report, baseline = null) {
     '| --- | --- | ---: | ---: | ---: |',
   ];
   for (const [caseName, result] of Object.entries(report.cases)) {
-    for (const metric of REPORT_METRICS) {
-      const value = result[metric.key];
-      const previous = baseline?.cases?.[caseName]?.[metric.key];
-      const baselineText =
-        typeof previous === 'number' ? previous.toFixed(2) : '—';
-      const change =
-        typeof previous === 'number' ? percentChange(previous, value) : null;
-      const changeText =
-        change === null ? '—' : `${change > 0 ? '+' : ''}${change.toFixed(1)}%`;
-      lines.push(
-        `| ${caseName} | ${metric.label} | ${value.toFixed(2)} | ${baselineText} | ${changeText} |`,
-      );
+    const summaries = [
+      [caseName, result, baseline?.cases?.[caseName]],
+      ...Object.entries(result.phases || {})
+        .filter(([phase]) => PUBLISHED_PHASES.has(phase))
+        .map(([phase, summary]) => [
+          `${caseName} · ${phase}`,
+          summary,
+          baseline?.cases?.[caseName]?.phases?.[phase],
+        ]),
+    ];
+    for (const [name, summary, previousSummary] of summaries) {
+      for (const metric of REPORT_METRICS) {
+        const value = summary[metric.key];
+        const previous = previousSummary?.[metric.key];
+        const baselineText =
+          typeof previous === 'number' ? previous.toFixed(2) : '—';
+        const change =
+          typeof previous === 'number' ? percentChange(previous, value) : null;
+        const changeText =
+          change === null
+            ? '—'
+            : `${change > 0 ? '+' : ''}${change.toFixed(1)}%`;
+        lines.push(
+          `| ${name} | ${metric.label} | ${value.toFixed(2)} | ${baselineText} | ${changeText} |`,
+        );
+      }
     }
     const baselineDisplay = baseline?.cases?.[caseName]?.displayMs;
     if (

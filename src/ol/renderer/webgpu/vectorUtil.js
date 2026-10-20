@@ -361,7 +361,7 @@ export class VectorGpuBuffers extends Disposable {
         this.fillPositionBuffer,
         this.fillExtrusionBuffer,
         true,
-        4,
+        3,
       );
       this.fillWarpedBuffer = result.outPositions;
       this.fillWarpedExtrusionBuffer = result.outAttributes;
@@ -883,8 +883,8 @@ export function createVectorPipelines(helper) {
           attributes: [{shaderLocation: 1, offset: 0, format: 'uint32'}],
         },
         {
-          arrayStride: 16,
-          attributes: [{shaderLocation: 2, offset: 0, format: 'float32x4'}],
+          arrayStride: 12,
+          attributes: [{shaderLocation: 2, offset: 0, format: 'float32x3'}],
         },
       ],
     },
@@ -918,8 +918,8 @@ export function createVectorPipelines(helper) {
           attributes: [{shaderLocation: 1, offset: 0, format: 'uint32'}],
         },
         {
-          arrayStride: 16,
-          attributes: [{shaderLocation: 2, offset: 0, format: 'float32x4'}],
+          arrayStride: 12,
+          attributes: [{shaderLocation: 2, offset: 0, format: 'float32x3'}],
         },
       ],
     },
