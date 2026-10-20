@@ -101,6 +101,7 @@ function getByteLength(buffers) {
     buffers.fillPositions.byteLength +
     buffers.fillStyles.byteLength +
     buffers.fillIndices.byteLength +
+    buffers.fillExtrusions.byteLength +
     buffers.strokePositions.byteLength +
     buffers.strokeAttributes.byteLength +
     buffers.strokeStyles.byteLength +
@@ -266,6 +267,7 @@ class TileBatch extends Disposable {
       buffers.fillPositions = released;
       buffers.fillStyles = released;
       buffers.fillIndices = released;
+      buffers.fillExtrusions = released;
       buffers.strokePositions = released;
       buffers.strokeAttributes = released;
       buffers.strokeStyles = released;

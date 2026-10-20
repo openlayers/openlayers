@@ -114,6 +114,7 @@ function createReply() {
     fillPositions: new ArrayBuffer(0),
     fillStyles: new ArrayBuffer(0),
     fillIndices: new ArrayBuffer(0),
+    fillExtrusions: new ArrayBuffer(0),
     strokePositions: new ArrayBuffer(0),
     strokeAttributes: new ArrayBuffer(0),
     strokeStyles: new ArrayBuffer(0),

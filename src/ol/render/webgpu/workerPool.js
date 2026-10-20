@@ -109,6 +109,7 @@ class WorkerPool {
       fillPositions: new Int16Array(buffers.fillPositions),
       fillStyles: new Uint32Array(buffers.fillStyles),
       fillIndices: new Uint32Array(buffers.fillIndices),
+      fillExtrusions: new Float32Array(buffers.fillExtrusions),
       strokePositions: new Int16Array(buffers.strokePositions),
       strokeAttributes: new Float32Array(buffers.strokeAttributes),
       strokeStyles: new Uint32Array(buffers.strokeStyles),
