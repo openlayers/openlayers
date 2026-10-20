@@ -22,6 +22,19 @@ describe('test/performance/shared/report', () => {
           stalls: 0,
           worstGapMs: 40,
         },
+        phases: [
+          {
+            name: 'zoom',
+            experience: {
+              frames: 49,
+              displayMs: 16,
+              droppedFrames: 1,
+              lateFrames: 20,
+              stalls: 0,
+              worstGapMs: 32,
+            },
+          },
+        ],
       },
       {
         devicePixelRatio: 2,
@@ -34,6 +47,19 @@ describe('test/performance/shared/report', () => {
           stalls: 1,
           worstGapMs: 1000,
         },
+        phases: [
+          {
+            name: 'zoom',
+            experience: {
+              frames: 30,
+              displayMs: 18,
+              droppedFrames: 5,
+              lateFrames: 3,
+              stalls: 1,
+              worstGapMs: 200,
+            },
+          },
+        ],
       },
     ]);
 
@@ -44,6 +70,15 @@ describe('test/performance/shared/report', () => {
       stalls: 1,
       worstFrameMs: 1000,
       displayMs: 17,
+      phases: {
+        zoom: {
+          missedFramePercent: 8.142857142857142,
+          lateFramePercent: 25.408163265306122,
+          stalls: 1,
+          worstFrameMs: 200,
+          displayMs: 17,
+        },
+      },
       viewport: [1024, 768],
       devicePixelRatio: 2,
     });
@@ -70,6 +105,15 @@ describe('test/performance/shared/report', () => {
         stalls: 0,
         worstFrameMs: 40,
         displayMs: 16.7,
+        phases: {
+          'animated-zoom': {
+            missedFramePercent: 4,
+            lateFramePercent: 5,
+            stalls: 0,
+            worstFrameMs: 30,
+            displayMs: 16.7,
+          },
+        },
       },
     });
     const baseline = createReport({
@@ -83,9 +127,13 @@ describe('test/performance/shared/report', () => {
     });
 
     const action = toBenchmarkAction(current);
-    assert.lengthOf(action, 4);
+    assert.lengthOf(action, 8);
     assert.strictEqual(action[0].name, 'example · Missed frames (%)');
     assert.strictEqual(action[0].unit, '%');
+    assert.strictEqual(
+      action[4].name,
+      'example · animated-zoom · Missed frames (%)',
+    );
     assert.include(formatMarkdown(current, baseline), '| +100.0% |');
   });
 });

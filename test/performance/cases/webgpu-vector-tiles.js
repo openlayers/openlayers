@@ -37,9 +37,16 @@ export async function setup(target, params) {
     zoom: versatilesZoom,
   };
   const layer = map.getLayers().item(0);
+  let firstRun = true;
   return {
-    run: (signal) =>
-      runFlight({
+    run: (signal) => {
+      if (firstRun) {
+        firstRun = false;
+      } else {
+        layer.getSource().clear();
+        layer.getRenderer()?.clearCache();
+      }
+      return runFlight({
         map,
         layer,
         phases: createNavigationPhases(
@@ -52,7 +59,8 @@ export async function setup(target, params) {
         config,
         mode: 'animate',
         signal,
-      }),
+      });
+    },
     dispose: () => map.setTarget(null),
   };
 }

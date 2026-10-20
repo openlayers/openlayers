@@ -264,7 +264,7 @@ struct VertexOut {
 fn vs_main(
   @location(0) position: vec2<i32>,
   @location(1) styleIndex: u32,
-  @location(2) fringe: vec4<f32>,
+  @location(2) fringe: vec3<f32>,
 ) -> VertexOut {
   var out: VertexOut;
   let style = styles[styleIndex];
@@ -321,7 +321,7 @@ struct WarpUniforms {
   vertexCount: u32,
   strokeMode: u32,
   // Floats per attribute vertex. Stroke vertices carry the cap end as a fifth
-  // float; a fill fringe uses four.
+  // float; a fill fringe uses three.
   attributeStride: u32,
   cellSize: f32,
   maxEdge: f32,
@@ -456,7 +456,7 @@ struct VertexOut {
 fn vs_main(
   @location(0) warped: vec3<f32>,
   @location(1) styleIndex: u32,
-  @location(2) fringe: vec4<f32>,
+  @location(2) fringe: vec3<f32>,
 ) -> VertexOut {
   var out: VertexOut;
   if (warped.z < 0.5) {

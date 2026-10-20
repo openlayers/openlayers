@@ -15,6 +15,8 @@ import {frameExperience, median} from './stats.js';
  * animating hint: setting the center or zoom cancels animations, which resets it.
  * @property {boolean} [interacting] Set the interacting hint during the phase.
  * @property {boolean} [settle] Measure time to the first rendercomplete event.
+ * @property {function(function(boolean): void): void} [animate] Start a real
+ * view animation and call the callback when it finishes.
  */
 
 /**
@@ -24,6 +26,7 @@ import {frameExperience, median} from './stats.js';
  * @property {number} vertices Vertices per polygon ring.
  * @property {number} framesPerPhase Frames in each phase.
  * @property {number} warmup Warmup frames before measuring.
+ * @property {number} displayHz Fixed display refresh rate, or 0 to measure it.
  */
 
 /**
@@ -38,6 +41,7 @@ export function readFlightConfig(params) {
     vertices: Number(params.get('vertices') || 64),
     framesPerPhase: Number(params.get('frames') || 90),
     warmup: Number(params.get('warmup') || 20),
+    displayHz: Number(params.get('displayHz') || 0),
   };
 }
 
@@ -165,6 +169,17 @@ export function createNavigationPhases(view, center, zoom, runOffset = 0) {
         view.setRotation(0);
         const trip = t < 0.5 ? inAndOut(t * 2) : 1 - inAndOut((t - 0.5) * 2);
         view.setZoom(zoom + (overviewZoom - zoom) * trip);
+      },
+    },
+    {
+      name: 'animated-zoom',
+      apply: () => {},
+      animate: (done) => {
+        view.animate(
+          {zoom: overviewZoom, duration: 600, easing: inAndOut},
+          {zoom, duration: 600, easing: inAndOut},
+          done,
+        );
       },
     },
     {
@@ -307,7 +322,9 @@ async function fly(options) {
     refreshSamples.push(timestamp - refreshPrevious);
     refreshPrevious = timestamp;
   }
-  const targetFrameMs = median(refreshSamples) || 1000 / 60;
+  const targetFrameMs =
+    (config.displayHz > 0 ? 1000 / config.displayHz : median(refreshSamples)) ||
+    1000 / 60;
 
   for (let i = 0; i < warmup; ++i) {
     if (signal?.aborted) {
@@ -348,45 +365,73 @@ async function fly(options) {
     }
     let cancelled = false;
     try {
-      for (let i = 0; i < framesPerPhase; ++i) {
-        if (signal?.aborted) {
-          cancelled = true;
-          break;
-        }
-        let rendered;
-        if (mode === 'animate') {
-          const renderedPromise = new Promise((resolve) => {
-            function onAbort() {
-              map.un('postrender', onRender);
-              resolve(undefined);
+      if (phase.animate) {
+        const completed = await new Promise((resolve) => {
+          let settled = false;
+          function onRender() {
+            const now = performance.now();
+            frameMs.push(now - previous);
+            previous = now;
+          }
+          function finish(finished) {
+            if (settled) {
+              return;
             }
-            function onRender() {
-              signal?.removeEventListener('abort', onAbort);
-              resolve(performance.now());
-            }
-            map.once('postrender', onRender);
-            if (signal?.aborted) {
-              onAbort();
-            } else {
-              signal?.addEventListener('abort', onAbort, {once: true});
-            }
-          });
-          phase.apply(i / Math.max(1, framesPerPhase - 1));
-          map.render();
-          rendered = await renderedPromise;
-          if (rendered === undefined) {
+            settled = true;
+            map.un('postrender', onRender);
+            signal?.removeEventListener('abort', onAbort);
+            resolve(finished);
+          }
+          function onAbort() {
+            view.cancelAnimations();
+            finish(false);
+          }
+          map.on('postrender', onRender);
+          signal?.addEventListener('abort', onAbort, {once: true});
+          phase.animate(finish);
+        });
+        cancelled = !completed;
+      } else {
+        for (let i = 0; i < framesPerPhase; ++i) {
+          if (signal?.aborted) {
             cancelled = true;
             break;
           }
-          const now = /** @type {number} */ (rendered);
-          frameMs.push(now - previous);
-          previous = now;
-        } else {
-          phase.apply(i / Math.max(1, framesPerPhase - 1));
-          map.renderSync();
-          const now = await nextFrame();
-          frameMs.push(now - previous);
-          previous = now;
+          let rendered;
+          if (mode === 'animate') {
+            const renderedPromise = new Promise((resolve) => {
+              function onAbort() {
+                map.un('postrender', onRender);
+                resolve(undefined);
+              }
+              function onRender() {
+                signal?.removeEventListener('abort', onAbort);
+                resolve(performance.now());
+              }
+              map.once('postrender', onRender);
+              if (signal?.aborted) {
+                onAbort();
+              } else {
+                signal?.addEventListener('abort', onAbort, {once: true});
+              }
+            });
+            phase.apply(i / Math.max(1, framesPerPhase - 1));
+            map.render();
+            rendered = await renderedPromise;
+            if (rendered === undefined) {
+              cancelled = true;
+              break;
+            }
+            const now = /** @type {number} */ (rendered);
+            frameMs.push(now - previous);
+            previous = now;
+          } else {
+            phase.apply(i / Math.max(1, framesPerPhase - 1));
+            map.renderSync();
+            const now = await nextFrame();
+            frameMs.push(now - previous);
+            previous = now;
+          }
         }
       }
     } finally {
