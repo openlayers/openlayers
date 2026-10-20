@@ -146,30 +146,9 @@ class WebGPULayerRenderer extends LayerRenderer {
       return false;
     }
 
-    let incrementGroup = true;
-    let groupNumber = -1;
-    let className;
-    for (let i = 0, ii = frameState.layerStatesArray.length; i < ii; i++) {
-      const layer = /** @type {import("../../layer/Layer.js").default} */ (
-        frameState.layerStatesArray[i].layer
-      );
-      const renderer = layer.getRenderer();
-      if (!(renderer instanceof WebGPULayerRenderer)) {
-        incrementGroup = true;
-        continue;
-      }
-      const layerClassName = layer.getClassName();
-      if (incrementGroup || layerClassName !== className) {
-        groupNumber += 1;
-        incrementGroup = false;
-      }
-      className = layerClassName;
-      if (renderer === this) {
-        break;
-      }
-    }
-
-    const canvasCacheKey = 'map/' + frameState.mapId + '/group/' + groupNumber;
+    const group = canvasGroupFor(frameState, this);
+    const canvasCacheKey =
+      'map/' + frameState.mapId + '/group/' + group.groupNumber;
 
     if (
       !this.helper ||
@@ -178,11 +157,17 @@ class WebGPULayerRenderer extends LayerRenderer {
     ) {
       this.removeHelper();
       this.helper = new WebGPUHelper({canvasCacheKey});
-      if (className) {
-        this.helper.getCanvas().className = className;
+      if (group.className) {
+        this.helper.getCanvas().className = group.className;
       }
       this.afterHelperCreated();
     }
+
+    // The element composites the finished layer. Baking the opacity into each
+    // draw would blend a background with the features on top of it, and
+    // overlapping translucent features with each other.
+    this.helper.getCanvas().style.opacity =
+      group.opacity === 1 ? '' : String(group.opacity);
 
     return this.prepareFrameInternal(frameState);
   }
@@ -204,8 +189,8 @@ class WebGPULayerRenderer extends LayerRenderer {
    * Premultiplied RGBA in 0..1 for the frame clear. Translucent geometry is
    * blended in the render pass, so the clear has to be the layer background
    * rather than transparent black, which would composite those fills over white.
-   * Layers share a canvas, so the layer opacity is in the color rather than on
-   * the canvas.
+   * The layer opacity is on the canvas element, so the clear is the background
+   * at its own alpha. A shared canvas fades nothing here.
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @return {Array<number>|undefined} Clear color, or undefined for transparent.
    * @protected
@@ -216,8 +201,7 @@ class WebGPULayerRenderer extends LayerRenderer {
       return undefined;
     }
     const color = asArray(background);
-    const opacity = frameState.layerStatesArray[frameState.layerIndex].opacity;
-    const alpha = (color[3] === undefined ? 1 : color[3]) * opacity;
+    const alpha = color[3] === undefined ? 1 : color[3];
     return [
       (color[0] / 255) * alpha,
       (color[1] / 255) * alpha,
@@ -287,6 +271,54 @@ class WebGPULayerRenderer extends LayerRenderer {
     );
     super.disposeInternal();
   }
+}
+
+/**
+ * Which shared canvas a WebGPU layer draws on.
+ *
+ * Adjacent WebGPU layers share one, unless one of them has an opacity other
+ * than 1. That layer's canvas element composites the finished layer, and
+ * sharing it would fade the neighbours as well.
+ *
+ * @param {import("../../Map.js").FrameState} frameState Frame state.
+ * @param {WebGPULayerRenderer} renderer Renderer to place.
+ * @return {{groupNumber: number, className: string|undefined, opacity: number}} Group.
+ */
+export function canvasGroupFor(frameState, renderer) {
+  let incrementGroup = true;
+  let groupNumber = -1;
+  /** @type {string|undefined} */
+  let className;
+  let previousPartial = false;
+  for (let i = 0, ii = frameState.layerStatesArray.length; i < ii; ++i) {
+    const layerState = frameState.layerStatesArray[i];
+    const layer = /** @type {import("../../layer/Layer.js").default} */ (
+      layerState.layer
+    );
+    const layerRenderer = layer.getRenderer();
+    if (!(layerRenderer instanceof WebGPULayerRenderer)) {
+      incrementGroup = true;
+      previousPartial = false;
+      continue;
+    }
+    const layerClassName = layer.getClassName();
+    const partial = layerState.opacity !== 1;
+    if (
+      incrementGroup ||
+      layerClassName !== className ||
+      partial ||
+      previousPartial
+    ) {
+      ++groupNumber;
+      incrementGroup = false;
+    }
+    className = layerClassName;
+    previousPartial = partial;
+    if (layerRenderer === renderer) {
+      return {groupNumber, className, opacity: layerState.opacity};
+    }
+  }
+  return {groupNumber, className, opacity: 1};
 }
 
 export default WebGPULayerRenderer;

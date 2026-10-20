@@ -415,7 +415,8 @@ export class VectorGpuBuffers extends Disposable {
     data[19] = Infinity;
     data[20] = frameState.size[0];
     data[21] = frameState.size[1];
-    data[22] = frameState.layerStatesArray[frameState.layerIndex].opacity;
+    // Layer opacity is applied by the canvas element, once, after every draw.
+    data[22] = 1;
     data[23] = hitDetection;
     data[24] = fadeClock(frameState.time || 0);
     data[25] = LABEL_FADE_DURATION;
@@ -583,7 +584,8 @@ export class FrameUniformSlot extends Disposable {
     data[19] = Infinity;
     data[20] = frameState.size[0];
     data[21] = frameState.size[1];
-    data[22] = frameState.layerStatesArray[frameState.layerIndex].opacity;
+    // Layer opacity is applied by the canvas element, once, after every draw.
+    data[22] = 1;
     data[23] = hitDetection;
     data[24] = fadeClock(frameState.time || 0);
     data[25] = LABEL_FADE_DURATION;
