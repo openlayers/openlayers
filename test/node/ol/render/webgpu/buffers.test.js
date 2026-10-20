@@ -894,6 +894,62 @@ describe('ol/render/webgpu/buffers', () => {
     assert.deepEqual(wrapped.labels[0]._anchor, [105, 0]);
   });
 
+  it('repeats a symbol in each world the grid covers', () => {
+    const image = new CircleStyle({
+      radius: 3,
+      fill: new Fill({color: '#000'}),
+    });
+    const {labelData} = buildVectorRequest(
+      [new Feature(new Point([10, 0]))],
+      () => new Style({image}),
+      1,
+      /** @type {any} */ ({}),
+      {clipExtent: [-500, -10, 500, 10], worldWidth: 400},
+    );
+
+    assert.deepEqual(
+      labelData.labels.map((label) => label._anchor),
+      [
+        [-390, 0],
+        [10, 0],
+        [410, 0],
+      ],
+    );
+  });
+
+  it('repeats a stroke in each world the grid covers', () => {
+    const buffers = buildVectorBuffers(
+      [
+        new Feature(
+          new LineString([
+            [0, 0],
+            [20, 0],
+          ]),
+        ),
+      ],
+      () =>
+        new Style({
+          stroke: new Stroke({color: '#000', width: 2}),
+        }),
+      1,
+      /** @type {any} */ ({}),
+      {clipExtent: [-500, -10, 500, 10], worldWidth: 400},
+    );
+    const xs = new Set();
+    for (let i = 0; i < buffers.strokePositions.length / 2; ++i) {
+      xs.add(
+        Math.round(
+          toMapCoordinate(buffers.strokePositions, buffers.grid, i)[0] / 100,
+        ) * 100,
+      );
+    }
+
+    assert.deepEqual(
+      Array.from(xs).sort((a, b) => a - b),
+      [-400, 0, 400],
+    );
+  });
+
   it('reuses snapshots from a mutable function style cache', () => {
     const first = new Feature(new Point([100, 100]));
     first.set('draw', new Point([5, 5]));

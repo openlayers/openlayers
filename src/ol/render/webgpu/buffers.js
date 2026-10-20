@@ -32,7 +32,7 @@ import {
   CLASS_TEXT,
   compareDraw,
 } from './drawOrder.js';
-import {buildGeometryBuffers, worldShift} from './geometryBuffers.js';
+import {buildGeometryBuffers, worldCopyShifts} from './geometryBuffers.js';
 import {layoutLineLabel, layoutPointLabel} from './glyphLayout.js';
 
 /**
@@ -818,53 +818,76 @@ function appendStyledGeometry(
       line.push(flat[i], flat[i + 1]);
     }
     offset = end;
-    if (gridCenterX !== undefined) {
-      wrapLine(line, gridCenterX, /** @type {number} */ (reproj?.worldWidth));
+    let minX = Infinity;
+    let maxX = -Infinity;
+    for (let i = 0; i < line.length; i += 2) {
+      minX = Math.min(minX, line[i]);
+      maxX = Math.max(maxX, line[i]);
     }
-    const chunks = repeat
-      ? lineChunk(repeat * state.resolution, line, 0, line.length, 2)
-      : [line];
-    for (let chunk of chunks) {
-      if (text.getTextAlign() === undefined) {
-        const range = matchingChunk(maxAngle, chunk, 0, chunk.length, 2);
-        chunk = chunk.slice(range[0], range[1]);
-      }
-      const start = glyphs.length;
-      const box = layoutLineLabel(
-        glyphs,
-        text,
-        chunk,
-        state.resolution,
-        atlas,
-        hit,
-        state.pixelRatio,
-      );
-      if (!box) {
+    const clipExtent = reproj?.clipExtent;
+    const shifts =
+      gridCenterX !== undefined && clipExtent
+        ? worldCopyShifts(
+            minX,
+            maxX,
+            gridCenterX,
+            clipExtent[0],
+            clipExtent[2],
+            /** @type {number} */ (reproj?.worldWidth),
+          )
+        : [0];
+    for (const shift of shifts) {
+      const placed =
+        shift === 0
+          ? line
+          : line.map((value, index) =>
+              index % 2 === 0 ? value + shift : value,
+            );
+      const chunks = repeat
+        ? lineChunk(repeat * state.resolution, placed, 0, placed.length, 2)
+        : [placed];
+      for (let chunk of chunks) {
+        if (text.getTextAlign() === undefined) {
+          const range = matchingChunk(maxAngle, chunk, 0, chunk.length, 2);
+          chunk = chunk.slice(range[0], range[1]);
+        }
+        const start = glyphs.length;
+        const box = layoutLineLabel(
+          glyphs,
+          text,
+          chunk,
+          state.resolution,
+          atlas,
+          hit,
+          state.pixelRatio,
+        );
+        if (!box) {
+          ++pathIndex;
+          continue;
+        }
+        const count = glyphs.length - start;
+        const middle = glyphs[start + Math.floor(count / 2)];
+        labels.push({
+          minX: box.minX,
+          minY: box.minY,
+          maxX: box.maxX,
+          maxY: box.maxY,
+          priority: -zIndex,
+          zIndex,
+          classRank: CLASS_TEXT,
+          sequence,
+          featureRef,
+          id: labelId,
+          mode: text.getDeclutterMode?.() || 'declutter',
+          padding: text.getPadding() || [0, 0, 0, 0],
+          glyphStart: start,
+          glyphCount: count,
+          text: textKey,
+          _anchor: middle ? [middle.x, middle.y] : undefined,
+          _identityKey: `${featureKey}|${styleKey}|line|${pathIndex}`,
+        });
         ++pathIndex;
-        continue;
       }
-      const count = glyphs.length - start;
-      const middle = glyphs[start + Math.floor(count / 2)];
-      labels.push({
-        minX: box.minX,
-        minY: box.minY,
-        maxX: box.maxX,
-        maxY: box.maxY,
-        priority: -zIndex,
-        zIndex,
-        classRank: CLASS_TEXT,
-        sequence,
-        featureRef,
-        id: labelId,
-        mode: text.getDeclutterMode?.() || 'declutter',
-        padding: text.getPadding() || [0, 0, 0, 0],
-        glyphStart: start,
-        glyphCount: count,
-        text: textKey,
-        _anchor: middle ? [middle.x, middle.y] : undefined,
-        _identityKey: `${featureKey}|${styleKey}|line|${pathIndex}`,
-      });
-      ++pathIndex;
     }
   }
 }
@@ -1141,30 +1164,6 @@ function polygonAnchor(geometry) {
 }
 
 /**
- * Move a line label path into the world copy its stroke is drawn in, by the
- * center of its extent like the stroke (see `worldShift()`).
- *
- * @param {Array<number>} line Flat x/y pairs, shifted in place.
- * @param {number} gridCenterX Grid center x, in source units.
- * @param {number} worldWidth Source world width.
- */
-function wrapLine(line, gridCenterX, worldWidth) {
-  let minX = Infinity;
-  let maxX = -Infinity;
-  for (let i = 0; i < line.length; i += 2) {
-    minX = Math.min(minX, line[i]);
-    maxX = Math.max(maxX, line[i]);
-  }
-  const shift = worldShift((minX + maxX) / 2, gridCenterX, worldWidth);
-  if (shift === 0) {
-    return;
-  }
-  for (let i = 0; i < line.length; i += 2) {
-    line[i] += shift;
-  }
-}
-
-/**
  * The center of the grid that geometry wraps into, when the source wraps.
  *
  * @param {VectorReprojOptions} [reproj] Reprojection.
@@ -1179,11 +1178,11 @@ function wrapGridCenterX(reproj) {
 }
 
 /**
- * Move symbol and label anchors into the world copy their geometry is drawn
- * in (see `worldShift()`). The anchor of a single line or polygon moves with
- * the extent of the geometry, as its fill and stroke do; the anchors of points
- * and of the parts of a multi-geometry, each drawn on its own, move on their
- * own.
+ * Move symbol and label anchors into every world copy their geometry is drawn
+ * in (see `worldCopyShifts()`). The anchor of a single line or polygon moves
+ * with the extent of the geometry, as its fill and stroke do; the anchors of
+ * points and of the parts of a multi-geometry, each drawn on its own, move on
+ * their own.
  *
  * @param {import("../../geom/Geometry.js").default} geometry Geometry.
  * @param {Array<import("../../coordinate.js").Coordinate>} anchors Anchors, not modified.
@@ -1196,22 +1195,35 @@ function wrapAnchors(geometry, anchors, reproj) {
     return anchors;
   }
   const worldWidth = /** @type {number} */ (reproj?.worldWidth);
+  const clipExtent = /** @type {import("../../extent.js").Extent} */ (
+    reproj?.clipExtent
+  );
   const type = geometry.getType();
   /** @type {number|undefined} */
-  let geometryShift;
+  let minX;
+  /** @type {number|undefined} */
+  let maxX;
   if (type === 'LineString' || type === 'Polygon' || type === 'Circle') {
     const extent = geometry.getExtent();
-    geometryShift = worldShift(
-      (extent[0] + extent[2]) / 2,
+    minX = extent[0];
+    maxX = extent[2];
+  }
+  /** @type {Array<import("../../coordinate.js").Coordinate>} */
+  const wrapped = [];
+  for (const anchor of anchors) {
+    const shifts = worldCopyShifts(
+      minX ?? anchor[0],
+      maxX ?? anchor[0],
       gridCenterX,
+      clipExtent[0],
+      clipExtent[2],
       worldWidth,
     );
+    for (const shift of shifts) {
+      wrapped.push(shift ? [anchor[0] + shift, anchor[1]] : anchor);
+    }
   }
-  return anchors.map((anchor) => {
-    const shift =
-      geometryShift ?? worldShift(anchor[0], gridCenterX, worldWidth);
-    return shift ? [anchor[0] + shift, anchor[1]] : anchor;
-  });
+  return wrapped;
 }
 
 /**
