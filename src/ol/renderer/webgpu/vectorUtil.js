@@ -841,8 +841,11 @@ export function createVectorPipelines(helper) {
           attributes: [{shaderLocation: 0, offset: 0, format: 'float32x3'}],
         },
         {
-          arrayStride: 16,
-          attributes: [{shaderLocation: 1, offset: 0, format: 'float32x4'}],
+          arrayStride: 20,
+          attributes: [
+            {shaderLocation: 1, offset: 0, format: 'float32x4'},
+            {shaderLocation: 3, offset: 16, format: 'float32'},
+          ],
         },
         {
           arrayStride: 4,
@@ -870,8 +873,11 @@ export function createVectorPipelines(helper) {
           attributes: [{shaderLocation: 0, offset: 0, format: 'sint16x2'}],
         },
         {
-          arrayStride: 16,
-          attributes: [{shaderLocation: 1, offset: 0, format: 'float32x4'}],
+          arrayStride: 20,
+          attributes: [
+            {shaderLocation: 1, offset: 0, format: 'float32x4'},
+            {shaderLocation: 3, offset: 16, format: 'float32'},
+          ],
         },
         {
           arrayStride: 4,
