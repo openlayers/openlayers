@@ -29,6 +29,7 @@ import {
   activeLabelIndices,
   LABEL_FADE_MATCH_PIXELS,
   LabelFade,
+  opacityIndicesToWrite,
   writeGpuTransition,
 } from '../../render/webgpu/labelFade.js';
 import {LOCAL_EXTENT} from '../../render/webgpu/localGrid.js';
@@ -669,6 +670,29 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
     this.opacities_ = new Float32Array(0);
 
     /**
+     * Labels with a non-zero transition in the previous opacity update.
+     * @private
+     * @type {Set<number>}
+     */
+    this.activeOpacityIndices_ = new Set();
+
+    /**
+     * Labels whose transition was rewritten by the last opacity update.
+     * Null means that update rewrote every label.
+     * @private
+     * @type {Array<number>|null}
+     */
+    this.dirtyOpacityIndices_ = null;
+
+    /**
+     * The installed label set has not been uploaded yet, so the next opacity
+     * update rewrites every label instead of the ones that changed.
+     * @private
+     * @type {boolean}
+     */
+    this.reuploadOpacities_ = true;
+
+    /**
      * @private
      * @type {PlacementScheduler}
      */
@@ -1131,7 +1155,10 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
       if (this.cornerBuffer_) {
         this.labels_.setLabels(helper, buffers);
         if (this.opacities_) {
-          this.labels_.setOpacities(this.opacities_, 0);
+          const dirty = this.dirtyOpacityIndices_;
+          if (!dirty || dirty.length) {
+            this.labels_.setOpacities(this.opacities_, 0, dirty || undefined);
+          }
         }
       }
       paintBatches(
@@ -1249,6 +1276,8 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
       this.labelBuffers_ = buffers;
       this.opacities_ = new Float32Array(buffers.labels.length * 3);
       this.visibility_ = new Array(buffers.labels.length).fill(false);
+      this.activeOpacityIndices_.clear();
+      this.reuploadOpacities_ = true;
       this.labels_.setOpacityDirty();
       ++this.labelVersion_;
       // The pass that already ran was for the previous labels. A zoom that
@@ -1322,7 +1351,16 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
       previousVisibility,
       this.labelView_.identities,
     );
-    for (let i = 0; i < labels.length; ++i) {
+    const dirty = this.reuploadOpacities_
+      ? null
+      : opacityIndicesToWrite(this.activeOpacityIndices_, active);
+    this.reuploadOpacities_ = false;
+    const count = dirty ? dirty.length : labels.length;
+    for (let n = 0; n < count; ++n) {
+      const i = dirty ? dirty[n] : n;
+      if (i >= labels.length) {
+        continue;
+      }
       writeGpuTransition(
         opacities,
         i * 3,
@@ -1333,6 +1371,8 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
           : [0, 0, 0],
       );
     }
+    this.activeOpacityIndices_ = active;
+    this.dirtyOpacityIndices_ = dirty;
     return fading;
   }
 

@@ -202,13 +202,20 @@ class LabelRenderer extends Disposable {
    *
    * @param {Float32Array} opacities Three floats per label for the whole label view.
    * @param {number} offset Index of this set's first label.
+   * @param {Array<number>} [indices] Local label indices to read. Every label
+   * of this set when omitted.
    * @return {boolean} Something changed since the last upload.
    */
-  setOpacities(opacities, offset) {
+  setOpacities(opacities, offset, indices) {
     let changed = false;
     const sourceOffset = offset * 3;
     const count = this.labelOpacity_.length / 3;
-    for (let labelIndex = 0; labelIndex < count; ++labelIndex) {
+    const limit = indices ? indices.length : count;
+    for (let n = 0; n < limit; ++n) {
+      const labelIndex = indices ? indices[n] : n;
+      if (labelIndex < 0 || labelIndex >= count) {
+        continue;
+      }
       const targetOffset = labelIndex * 3;
       let labelChanged = false;
       for (let component = 0; component < 3; ++component) {
