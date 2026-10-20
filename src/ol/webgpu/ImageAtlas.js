@@ -43,6 +43,38 @@ const MAX_SIZE = 4096;
 const MAX_CELL_SIZE = MAX_SIZE - 2;
 
 /**
+ * One texel bound in place of an atlas that has no images yet. A fill shader
+ * always declares a pattern texture, and a geometry-only layer should not
+ * allocate the 512² atlas to satisfy that.
+ * @type {WeakMap<GPUDevice, GPUTexture>}
+ */
+const placeholderTextures = new WeakMap();
+
+/**
+ * @param {GPUDevice} device Device.
+ * @return {GPUTexture} Shared 1×1 texture.
+ */
+function placeholderTexture(device) {
+  const existing = placeholderTextures.get(device);
+  if (existing) {
+    return existing;
+  }
+  const texture = device.createTexture({
+    size: [1, 1],
+    format: 'rgba8unorm',
+    usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST,
+  });
+  const row = new Uint8Array(256);
+  row[0] = 255;
+  row[1] = 255;
+  row[2] = 255;
+  row[3] = 255;
+  device.queue.writeTexture({texture}, row, {bytesPerRow: 256}, [1, 1]);
+  placeholderTextures.set(device, texture);
+  return texture;
+}
+
+/**
  * Returned for an image that does not fit, so nothing is drawn for it.
  * @type {ImageAtlasEntry}
  */
@@ -270,6 +302,9 @@ class ImageAtlas {
    */
   upload(helper) {
     const device = helper.getDevice();
+    if (!this.texture_ && this.pending_.length === 0) {
+      return placeholderTexture(device);
+    }
     if (this.texture_?.width !== this.size_) {
       this.replaceTexture_(device);
     }
