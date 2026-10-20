@@ -54,6 +54,7 @@ import LabelView from './LabelView.js';
 import WebGPULayerRenderer from './Layer.js';
 import {
   atlasPages,
+  atlasPinningBatches,
   createVectorPipelines,
   FrameUniformPool,
   hasUnusedAtlasPages,
@@ -794,11 +795,21 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
   releaseAtlases_() {
     const fonts = new Set([this.atlas_.getGeneration()]);
     const images = new Set([this.imageAtlas_.getGeneration()]);
+    /**
+     * @param {TileBatch} batch Batch.
+     */
     const keep = (batch) => {
       fonts.add(batch.fontAtlasGeneration);
       images.add(batch.imageAtlasGeneration);
     };
-    this.tileCache_.forEach(keep);
+    /** @type {Array<TileBatch>} */
+    const cached = [];
+    this.tileCache_.forEach((batch) => {
+      cached.push(batch);
+    });
+    for (const batch of atlasPinningBatches(cached, this.batchGeneration_)) {
+      keep(batch);
+    }
     for (const batch of this.uncachedBatches_) {
       keep(batch);
     }
