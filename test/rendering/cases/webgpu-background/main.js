@@ -19,7 +19,6 @@ if (!navigator.gpu || !(await navigator.gpu.requestAdapter())) {
   const tiles = new WebGPUTileLayer({
     extent: [-20037508.34, -20037508.34, 0, 20037508.34],
     background: 'rgba(255, 200, 0, 0.8)',
-    opacity: 0.75,
     source: new XYZ({
       url: '/data/tiles/satellite/{z}/{x}/{y}.jpg',
       transition: 0,
@@ -29,7 +28,6 @@ if (!navigator.gpu || !(await navigator.gpu.requestAdapter())) {
   const half = 5e6;
   const vector = new WebGPUVectorLayer({
     background: 'rgba(0, 0, 255, 0.5)',
-    opacity: 0.5,
     source: new VectorSource({
       features: [
         new Feature(
