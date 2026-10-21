@@ -15,7 +15,14 @@ export const STALL_MS = 100;
  * @property {number} droppedFrames Estimated missed display refreshes.
  * @property {number} stalls Gaps longer than {@link STALL_MS}.
  * @property {number} worstGapMs Longest presented-frame interval.
+ * @property {number} longTasks Main-thread tasks longer than {@link LONG_TASK_MS}.
+ * @property {number} blockingMs Time those tasks ran beyond {@link LONG_TASK_MS}.
  */
+
+/**
+ * The Long Tasks API reports main-thread tasks longer than this.
+ */
+export const LONG_TASK_MS = 50;
 
 /**
  * @param {Array<number>} samples Samples.
@@ -33,9 +40,10 @@ export function median(samples) {
  * Classifies presented-frame gaps relative to the measured display interval.
  * @param {Array<number>} gaps Milliseconds between presented frames.
  * @param {number} displayMs Measured display interval.
+ * @param {Array<number>} [longTaskMs] Durations of the long main-thread tasks.
  * @return {FrameExperience} Experience summary.
  */
-export function frameExperience(gaps, displayMs) {
+export function frameExperience(gaps, displayMs, longTaskMs = []) {
   const interval = displayMs > 0 ? displayMs : DEFAULT_DISPLAY_MS;
   const stallGaps = gaps.filter((gap) => gap > STALL_MS);
   return {
@@ -48,5 +56,7 @@ export function frameExperience(gaps, displayMs) {
     ),
     stalls: stallGaps.length,
     worstGapMs: gaps.length ? Math.max(...gaps) : 0,
+    longTasks: longTaskMs.length,
+    blockingMs: longTaskMs.reduce((sum, ms) => sum + (ms - LONG_TASK_MS), 0),
   };
 }
