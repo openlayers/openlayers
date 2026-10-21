@@ -70,6 +70,9 @@ describe('test/performance/shared/report', () => {
       stalls: 1,
       worstFrameMs: 1000,
       displayMs: 17,
+      longTasks: 0,
+      blockingMs: 0,
+      settleMs: 0,
       phases: {
         zoom: {
           missedFramePercent: 8.142857142857142,
@@ -77,6 +80,9 @@ describe('test/performance/shared/report', () => {
           stalls: 1,
           worstFrameMs: 200,
           displayMs: 17,
+          longTasks: 0,
+          blockingMs: 0,
+          settleMs: 0,
         },
       },
       viewport: [1024, 768],
@@ -105,6 +111,9 @@ describe('test/performance/shared/report', () => {
         stalls: 0,
         worstFrameMs: 40,
         displayMs: 16.7,
+        longTasks: 0,
+        blockingMs: 0,
+        settleMs: 0,
         phases: {
           'animated-zoom': {
             missedFramePercent: 4,
@@ -112,6 +121,9 @@ describe('test/performance/shared/report', () => {
             stalls: 0,
             worstFrameMs: 30,
             displayMs: 16.7,
+            longTasks: 0,
+            blockingMs: 0,
+            settleMs: 0,
           },
         },
       },
@@ -127,11 +139,11 @@ describe('test/performance/shared/report', () => {
     });
 
     const action = toBenchmarkAction(current);
-    assert.lengthOf(action, 8);
+    assert.lengthOf(action, 14);
     assert.strictEqual(action[0].name, 'example · Missed frames (%)');
     assert.strictEqual(action[0].unit, '%');
     assert.strictEqual(
-      action[4].name,
+      action[7].name,
       'example · animated-zoom · Missed frames (%)',
     );
     assert.include(formatMarkdown(current, baseline), '| +100.0% |');

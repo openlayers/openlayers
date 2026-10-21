@@ -11,9 +11,9 @@ import {
 } from '../../extent.js';
 import {equivalent} from '../../proj.js';
 import {
-  buildVectorRequest,
   combineVectorBuffers,
   resolveFeatureStyles,
+  VectorRequestBuilder,
 } from '../../render/webgpu/buffers.js';
 import {
   collectStickyIds,
@@ -86,6 +86,13 @@ import {
 const MAX_STYLE_CACHES = 8;
 
 /**
+ * Most batches that are built in slices at the same time. Each holds the work
+ * done so far, so the oldest is dropped, and started again if it is needed.
+ * @type {number}
+ */
+const MAX_PENDING_BUILDS = 8;
+
+/**
  * Cached batches beyond this many bytes, or twice the bytes of the current
  * frame's batches if that is more, are evicted, in addition to those beyond
  * the cache size. Tiles differ a lot in how much geometry they carry, so a
@@ -116,6 +123,13 @@ function getByteLength(buffers) {
       Float32Array.BYTES_PER_ELEMENT
   );
 }
+
+/**
+ * @typedef {Object} PendingBuild
+ * @property {import("../../render/webgpu/buffers.js").VectorRequestBuilder} builder Builder.
+ * @property {number} fontAtlasGeneration Font atlas generation when it started.
+ * @property {number} imageAtlasGeneration Image atlas generation when it started.
+ */
 
 /**
  * @typedef {Object} StyleState
@@ -357,14 +371,6 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     this.renderedLayerRevision_ = this.getLayer().getRevision();
 
     /**
-     * Function styles are resolved in bounded slices and reused by overlapping
-     * overzoom subdivisions.
-     * @private
-     * @type {boolean}
-     */
-    this.cacheResolvedStyles_ = typeof options.style === 'function';
-
-    /**
      * @private
      */
     this.hitDetectionEnabled_ = !options.disableHitDetection;
@@ -477,6 +483,13 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
      * @type {number}
      */
     this.batchBuildBudget_ = 1;
+
+    /**
+     * Batches of cacheable tiles that are being built in slices, by cache key.
+     * @private
+     * @type {Map<string, PendingBuild>}
+     */
+    this.pendingBuilds_ = new Map();
 
     /**
      * End of the current frame's main-thread batch preparation allowance.
@@ -733,6 +746,7 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     this.tileCache_.clear();
     this.renderBatchesByKey_.clear();
     this.styleCaches_.clear();
+    this.pendingBuilds_.clear();
     this.labelKey_ = '';
     this.placement_.reset();
     this.cornerBuffer_?.destroy();
@@ -783,6 +797,7 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
       this.renderedLayerRevision_ = revision;
       ++this.batchGeneration_;
       this.styleCaches_.clear();
+      this.pendingBuilds_.clear();
     }
     const source = this.getLayer().getRenderSource();
     return !!source && source.getState() === 'ready';
@@ -869,6 +884,20 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
   }
 
   /**
+   * @param {string} cacheKey Cache key of the batch.
+   * @param {PendingBuild} pendingBuild Build in progress.
+   * @private
+   */
+  setPendingBuild_(cacheKey, pendingBuild) {
+    this.pendingBuilds_.set(cacheKey, pendingBuild);
+    if (this.pendingBuilds_.size > MAX_PENDING_BUILDS) {
+      this.pendingBuilds_.delete(
+        /** @type {string} */ (this.pendingBuilds_.keys().next().value),
+      );
+    }
+  }
+
+  /**
    * Resolve function styles in short slices before constructing a batch.
    *
    * Features have already passed the buffered original-geometry test. Resolve
@@ -893,7 +922,6 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
         );
       }
     }
-    let prepared = false;
     const sorted = features
       .slice()
       .sort((a, b) => Number(getUid(a)) - Number(getUid(b)));
@@ -911,15 +939,10 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
           true,
         ),
       );
-      prepared = true;
       if (performance.now() >= this.batchBuildDeadline_) {
         this.scheduleBatchChange_();
         return null;
       }
-    }
-    if (prepared) {
-      this.scheduleBatchChange_();
-      return null;
     }
     return resolved;
   }
@@ -1123,35 +1146,67 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
         return geometry && intersects(geometry.getExtent(), filterExtent);
       });
     }
-    /** @type {WeakMap<import("../../Feature.js").FeatureLike, Array<import("../../render/webgpu/buffers.js").ResolvedStyleGeometry>>|undefined} */
-    let styleCache;
-    if (this.cacheResolvedStyles_) {
-      const prepared = this.prepareStyleCache_(
-        buildFeatures,
-        tileCoord[0] + '/' + dpr + '/' + styleResolution,
-        styleResolution,
-        styleState.zoom,
-      );
-      if (!prepared) {
-        return null;
-      }
-      styleCache = prepared;
-    }
-    const {request, labelData} = buildVectorRequest(
+    // Styles are resolved in slices that respect the frame's time budget, and
+    // reused by overlapping overzoom subdivisions. Flat styles and style
+    // functions alike return style instances they change for the next feature,
+    // so the cache keeps snapshots.
+    const styleCache = this.prepareStyleCache_(
       buildFeatures,
-      this.styleFunction_,
+      tileCoord[0] + '/' + dpr + '/' + styleResolution,
       styleResolution,
-      this.atlas_,
-      clipExtent ? {clipExtent, filterExtent} : undefined,
-      dpr,
       styleState.zoom,
-      undefined,
-      this.imageAtlas_,
-      styleCache,
     );
+    if (!styleCache) {
+      return null;
+    }
+    // The tile of a cacheable batch is built in slices, so the builder is kept
+    // between frames. Glyphs and images it already added to the atlases belong
+    // to the generations they had when it started.
+    let pendingBuild = cacheable
+      ? this.pendingBuilds_.get(cacheKey)
+      : undefined;
+    if (!pendingBuild) {
+      pendingBuild = {
+        builder: new VectorRequestBuilder(
+          buildFeatures,
+          this.styleFunction_,
+          styleResolution,
+          this.atlas_,
+          clipExtent ? {clipExtent, filterExtent} : undefined,
+          dpr,
+          styleState.zoom,
+          undefined,
+          this.imageAtlas_,
+          styleCache,
+        ),
+        fontAtlasGeneration: this.atlas_.getGeneration(),
+        imageAtlasGeneration: this.imageAtlas_.getGeneration(),
+      };
+      if (cacheable) {
+        this.setPendingBuild_(cacheKey, pendingBuild);
+      }
+    }
+    const complete = pendingBuild.builder.run(
+      cacheable ? this.batchBuildDeadline_ : Infinity,
+    );
+    if (!complete) {
+      this.scheduleBatchChange_();
+      return null;
+    }
+    this.pendingBuilds_.delete(cacheKey);
+    if (
+      pendingBuild.fontAtlasGeneration !== this.atlas_.getGeneration() ||
+      pendingBuild.imageAtlasGeneration !== this.imageAtlas_.getGeneration()
+    ) {
+      // An atlas started over while the tile was being built. Start again, so
+      // the batch does not mix glyphs and images of two generations.
+      this.scheduleBatchChange_();
+      return null;
+    }
+    const {request, labelData} = pendingBuild.builder.finish();
     this.watchImages_(labelData.pendingImageStyles);
-    const fontAtlasGeneration = this.atlas_.getGeneration();
-    const imageAtlasGeneration = this.imageAtlas_.getGeneration();
+    const fontAtlasGeneration = pendingBuild.fontAtlasGeneration;
+    const imageAtlasGeneration = pendingBuild.imageAtlasGeneration;
 
     // Tessellation is the expensive part, so hand it to a worker when the tile
     // will still be around to receive it. Until it comes back the renderer
@@ -1334,7 +1389,7 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     const moving =
       viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING];
     this.batchBuildBudget_ = moving ? 1 : 2;
-    this.batchBuildDeadline_ = performance.now() + (moving ? 4 : 8);
+    this.batchBuildDeadline_ = performance.now() + (moving ? 4 : 12);
     const tileGrid = source.getTileGridForProjection(viewState.projection);
     const z = tileGrid.getZForResolution(
       viewState.resolution,
@@ -2307,6 +2362,7 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     this.tileCache_.clear();
     this.renderBatchesByKey_.clear();
     this.styleCaches_.clear();
+    this.pendingBuilds_.clear();
   }
 
   /**
@@ -2326,6 +2382,7 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     this.tileCache_.clear();
     this.renderBatchesByKey_.clear();
     this.styleCaches_.clear();
+    this.pendingBuilds_.clear();
     this.uniforms_?.dispose();
     this.uniforms_ = null;
     this.cornerBuffer_?.destroy();
