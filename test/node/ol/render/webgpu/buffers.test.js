@@ -16,6 +16,7 @@ import {
   resolveFeatureStyles,
   STYLE_STRIDE,
   SYMBOL_STRIDE,
+  VectorRequestBuilder,
 } from '../../../../../src/ol/render/webgpu/buffers.js';
 import CircleStyle from '../../../../../src/ol/style/Circle.js';
 import Fill from '../../../../../src/ol/style/Fill.js';
@@ -1595,3 +1596,117 @@ function refOf(buffers, feature) {
   }
   return 0;
 }
+
+describe('ol/render/webgpu/buffers VectorRequestBuilder', () => {
+  /**
+   * @return {Array<Feature>} Features of different geometry types.
+   */
+  function createFeatures() {
+    const features = [
+      new Feature(
+        new Polygon([
+          [
+            [0, 0],
+            [10, 0],
+            [10, 10],
+            [0, 10],
+            [0, 0],
+          ],
+        ]),
+      ),
+      new Feature(
+        new LineString([
+          [0, 0],
+          [5, 5],
+          [10, 0],
+        ]),
+      ),
+      new Feature(new Point([3, 3])),
+      new Feature(new Point([6, 2])),
+    ];
+    features.forEach((feature, i) => feature.set('i', i));
+    return features;
+  }
+
+  const style = () =>
+    new Style({
+      fill: new Fill({color: '#ff0000'}),
+      stroke: new Stroke({color: '#00ff00', width: 2}),
+      image: new CircleStyle({radius: 3, fill: new Fill({color: '#000'})}),
+    });
+
+  it('builds the same request in slices as in one run', () => {
+    const features = createFeatures();
+    const args = [
+      features,
+      style,
+      1,
+      /** @type {any} */ ({}),
+      {clipExtent: [-1, -1, 11, 11]},
+    ];
+    const whole = buildVectorRequest(...args);
+
+    const builder = new VectorRequestBuilder(...args);
+    let runs = 0;
+    // A deadline in the past processes one feature per call.
+    while (!builder.run(-Infinity)) {
+      ++runs;
+      assert.isBelow(runs, 100);
+    }
+    const sliced = builder.finish();
+
+    assert.strictEqual(runs, features.length - 1);
+    assert.deepEqual(sliced.request.jobs, whole.request.jobs);
+    assert.deepEqual(sliced.request.coordinates, whole.request.coordinates);
+    assert.deepEqual(sliced.request.styles, whole.request.styles);
+    assert.deepEqual(sliced.request.gridExtent, whole.request.gridExtent);
+    assert.deepEqual(
+      sliced.labelData.symbolInstances,
+      whole.labelData.symbolInstances,
+    );
+    assert.deepEqual(
+      Object.keys(sliced.labelData.featuresByRef),
+      Object.keys(whole.labelData.featuresByRef),
+    );
+  });
+
+  it('resolves every feature style once when a cache is given', () => {
+    const features = createFeatures();
+    const cache = new WeakMap();
+    let calls = 0;
+    const counted = (feature, resolution) => {
+      ++calls;
+      return style();
+    };
+    const builder = new VectorRequestBuilder(
+      features,
+      counted,
+      1,
+      /** @type {any} */ ({}),
+      undefined,
+      1,
+      NaN,
+      undefined,
+      undefined,
+      cache,
+    );
+    while (!builder.run(-Infinity)) {
+      // Keep going.
+    }
+    assert.strictEqual(calls, features.length);
+    const again = new VectorRequestBuilder(
+      features,
+      counted,
+      1,
+      /** @type {any} */ ({}),
+      undefined,
+      1,
+      NaN,
+      undefined,
+      undefined,
+      cache,
+    );
+    again.run();
+    assert.strictEqual(calls, features.length);
+  });
+});

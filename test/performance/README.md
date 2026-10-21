@@ -23,6 +23,13 @@ The report metrics are smaller-is-better:
 | Late frames (%) | Share of presented frames later than 1.5× the measured display interval | Mean |
 | Stalls | Gaps longer than 100 milliseconds | Maximum |
 | Worst frame | Longest presented-frame gap | Maximum |
+| Long tasks | Main-thread tasks longer than 50 milliseconds, as the Long Tasks API reports them | Mean |
+| Blocking time (ms) | Time those tasks ran beyond 50 milliseconds | Mean |
+| Settle time (ms) | Time until the first `rendercomplete` after the last navigation, which includes tile detail catching up | Mean |
+
+Frame classification uses the display interval measured at the start of a flight. Pass `--display-hz` when the page is busy loading while it measures, or the interval is too long and missed frames are undercounted.
+
+The `webgpu-vector-tiles-flat` case uses the same VersaTiles tiles and style as `webgpu-vector-tiles`, but gives the layer an array of flat style rules (as the `webgpu-versatiles` example does) instead of the style function that `ol-mapbox-style` creates. The two take different style paths in the renderer.
 
 The map is always 800×600 CSS pixels, so results do not depend on the window size. The report also records the display interval, map size, and device pixel ratio as comparison context.
 

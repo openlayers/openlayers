@@ -57,4 +57,17 @@ describe('test/performance/shared/stats', () => {
       assert.strictEqual(experience.lateFrames, 0);
     });
   });
+
+  describe('long tasks', () => {
+    it('counts long tasks and the time beyond the threshold', () => {
+      const experience = frameExperience([16.7], 16.7, [60, 150]);
+      assert.strictEqual(experience.longTasks, 2);
+      assert.strictEqual(experience.blockingMs, 110);
+    });
+    it('reports none by default', () => {
+      const experience = frameExperience([16.7], 16.7);
+      assert.strictEqual(experience.longTasks, 0);
+      assert.strictEqual(experience.blockingMs, 0);
+    });
+  });
 });

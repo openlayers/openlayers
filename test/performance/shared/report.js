@@ -20,6 +20,24 @@ export const REPORT_METRICS = [
     unit: 'ms',
     aggregate: 'max',
   },
+  {
+    key: 'longTasks',
+    label: 'Long tasks',
+    unit: 'tasks',
+    aggregate: 'mean',
+  },
+  {
+    key: 'blockingMs',
+    label: 'Blocking time (ms)',
+    unit: 'ms',
+    aggregate: 'mean',
+  },
+  {
+    key: 'settleMs',
+    label: 'Settle time (ms)',
+    unit: 'ms',
+    aggregate: 'mean',
+  },
 ];
 
 /**
@@ -48,10 +66,12 @@ function percent(part, whole) {
 }
 
 /**
- * @param {Array<Object>} experiences Frame experiences.
+ * @param {Array<Object>} results Flights or phases, each with an `experience`
+ * and an optional `settleMs`.
  * @return {Object} Comparable metrics.
  */
-function summarizeExperiences(experiences) {
+function summarizeExperiences(results) {
+  const experiences = results.map((result) => result.experience);
   return {
     missedFramePercent: mean(
       experiences.map((experience) =>
@@ -71,6 +91,11 @@ function summarizeExperiences(experiences) {
       ...experiences.map((experience) => experience.worstGapMs),
     ),
     displayMs: mean(experiences.map((experience) => experience.displayMs)),
+    longTasks: mean(experiences.map((experience) => experience.longTasks ?? 0)),
+    blockingMs: mean(
+      experiences.map((experience) => experience.blockingMs ?? 0),
+    ),
+    settleMs: mean(results.map((result) => result.settleMs ?? 0)),
   };
 }
 
@@ -85,7 +110,6 @@ export function summarizeRuns(runs) {
   if (!runs.length) {
     throw new Error('cannot summarize a benchmark without measured runs');
   }
-  const experiences = runs.map((run) => run.experience);
   /** @type {Object<string, Object>} */
   const phases = {};
   for (const first of runs[0].phases ?? []) {
@@ -93,14 +117,12 @@ export function summarizeRuns(runs) {
       .map((run) => run.phases?.find((phase) => phase.name === first.name))
       .filter(Boolean);
     if (matching.length === runs.length) {
-      phases[first.name] = summarizeExperiences(
-        matching.map((phase) => phase.experience),
-      );
+      phases[first.name] = summarizeExperiences(matching);
     }
   }
   return {
     runs: runs.length,
-    ...summarizeExperiences(experiences),
+    ...summarizeExperiences(runs),
     phases,
     viewport: runs[0].size,
     devicePixelRatio: runs[0].devicePixelRatio,
