@@ -350,7 +350,9 @@ function showCaseResult(entry, report) {
  * @return {string} Formatted value.
  */
 function formatValue(key, value) {
-  return key === 'worstFrameMs' ? value.toFixed(1) : value.toFixed(2);
+  return key === 'worstFrameMs' || key === 'blockingMs' || key === 'settleMs'
+    ? value.toFixed(1)
+    : value.toFixed(2);
 }
 
 /**

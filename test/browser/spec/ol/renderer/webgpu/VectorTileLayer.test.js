@@ -391,6 +391,52 @@ describe('ol/renderer/webgpu/VectorTileLayer', () => {
     assert.strictEqual(batches.length, 1);
   });
 
+  it('builds a large flat-styled tile in slices that fit the frame budget', async () => {
+    const features = [];
+    for (let i = 0; i < 200; ++i) {
+      features.push(new Feature(new Point([i, i])));
+    }
+    const sourceTiles = [
+      {
+        getState: () => TileState.LOADED,
+        getFeatures: () => features,
+      },
+    ];
+    source.getTile = function (z, x, y) {
+      const tile = loadedTile(z, x, y);
+      tile.getSourceTiles = () => sourceTiles;
+      return tile;
+    };
+    const styleFunction = renderer.styleFunction_;
+    let calls = 0;
+    renderer.styleFunction_ = (feature, resolution, zoom) => {
+      ++calls;
+      // Make every feature cost about a tenth of a millisecond.
+      const end = performance.now() + 0.1;
+      while (performance.now() < end) {
+        // Wait.
+      }
+      return styleFunction(feature, resolution, zoom);
+    };
+    const frameState = frameAtZ(0);
+    frameState.viewHints[ViewHint.ANIMATING] = 1;
+
+    renderer.collectBatches_(frameState);
+    const firstFrameCalls = calls;
+    assert.isAbove(firstFrameCalls, 0);
+    assert.isBelow(firstFrameCalls, features.length);
+    assert.strictEqual(renderer.pendingKeys_.size, 0);
+
+    for (let i = 0; i < 200 && renderer.pendingKeys_.size === 0; ++i) {
+      await new Promise((resolve) => setTimeout(resolve, 5));
+      renderer.collectBatches_(frameState);
+    }
+    assert.strictEqual(renderer.pendingKeys_.size, 1);
+    // Every feature was styled once, and the slices continued where they
+    // stopped.
+    assert.strictEqual(calls, features.length);
+  });
+
   it('restyles tiles at the view resolution once the view settles', async () => {
     layer.dispose();
     const features = [new Feature(new Point([0, 0]))];
