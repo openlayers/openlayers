@@ -416,6 +416,249 @@ function boundsOf(features) {
  * Style evaluation and geometry extraction, with the resulting tessellation
  * work described as plain data so it can run here or on a worker.
  *
+ * The features are processed by `run()`, which stops when a deadline passes
+ * and can be called again to continue, so a large tile does not have to block
+ * a frame. `finish()` then returns the work and the labels.
+ */
+export class VectorRequestBuilder {
+  /**
+   * @param {Array<import("../../Feature.js").FeatureLike>} features Features.
+   * @param {import("./style.js").StyleFunction} styleFunction Style function.
+   * @param {number} resolution Resolution.
+   * @param {import("../../webgpu/FontAtlas.js").default} atlas Atlas.
+   * @param {VectorReprojOptions} [reproj] Reprojection options.
+   * @param {number} [pixelRatio] Device pixel ratio for glyph rasterization.
+   * @param {number} [zoom] View zoom level, for `['zoom']` expressions.
+   * @param {import("../../render.js").OrderFunction|null} [renderOrder] Feature order. The default is uid order.
+   * @param {import("../../webgpu/ImageAtlas.js").default} [imageAtlas] Image atlas.
+   * @param {WeakMap<import("../../Feature.js").FeatureLike, Array<ResolvedStyleGeometry>>} [styleCache] Resolved style cache.
+   */
+  constructor(
+    features,
+    styleFunction,
+    resolution,
+    atlas,
+    reproj,
+    pixelRatio = 1,
+    zoom = NaN,
+    renderOrder,
+    imageAtlas,
+    styleCache,
+  ) {
+    /**
+     * @private
+     */
+    this.features_ = features;
+
+    /**
+     * @private
+     */
+    this.styleFunction_ = styleFunction;
+
+    /**
+     * @private
+     */
+    this.resolution_ = resolution;
+
+    /**
+     * @private
+     */
+    this.reproj_ = reproj;
+
+    /**
+     * @private
+     */
+    this.zoom_ = zoom;
+
+    /**
+     * @private
+     */
+    this.styleCache_ = styleCache;
+
+    /**
+     * @private
+     * @type {StyleTable}
+     */
+    this.styleTable_ = new StyleTable();
+
+    /**
+     * @private
+     * @type {BuildState}
+     */
+    this.state_ = {
+      jobs: [],
+      coordinates: new NumberSink(Float64Array),
+      symbolInstances: [],
+      iconInstances: [],
+      glyphs: [],
+      labels: [],
+      styleTable: this.styleTable_,
+      atlas,
+      imageAtlas,
+      pendingImageStyles: new Set(),
+      imageEntries: new Set(),
+      reproj,
+      resolution,
+      pixelRatio,
+      nextPairId: 1,
+      nextSequence: 0,
+    };
+
+    /**
+     * @private
+     * @type {Object<number, import("../../Feature.js").FeatureLike>}
+     */
+    this.featuresByRef_ = {};
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.featureIndex_ = 0;
+
+    /**
+     * Position in the sorted features.
+     * @private
+     * @type {number}
+     */
+    this.position_ = 0;
+
+    /**
+     * @private
+     * @type {Array<import("../../Feature.js").FeatureLike>}
+     */
+    this.sorted_ = features.slice();
+    if (renderOrder) {
+      this.sorted_.sort(renderOrder);
+    } else {
+      this.sorted_.sort((a, b) => Number(getUid(a)) - Number(getUid(b)));
+    }
+  }
+
+  /**
+   * Process features until all are done or the deadline has passed.
+   * @param {number} [deadline] `performance.now()` time to stop at.
+   * @return {boolean} All features are processed.
+   */
+  run(deadline = Infinity) {
+    const sorted = this.sorted_;
+    const state = this.state_;
+    const reproj = this.reproj_;
+    const styleCache = this.styleCache_;
+    while (this.position_ < sorted.length) {
+      const feature = sorted[this.position_++];
+      let resolved = styleCache?.get(feature);
+      if (!resolved) {
+        resolved = resolveFeatureStyles(
+          feature,
+          this.styleFunction_,
+          this.resolution_,
+          this.zoom_,
+          !!styleCache,
+        );
+        styleCache?.set(feature, resolved);
+      }
+      if (resolved.length) {
+        const ref = ++this.featureIndex_;
+        this.featuresByRef_[ref] = feature;
+        const hit = encodeHitColor(ref);
+        const labelId = Number(getUid(feature));
+
+        for (const item of resolved) {
+          if (
+            reproj?.filterExtent &&
+            !intersects(item.geometry.getExtent(), reproj.filterExtent)
+          ) {
+            continue;
+          }
+          appendStyledGeometry(
+            state,
+            item.geometry,
+            item.style,
+            item.key,
+            hit,
+            labelId,
+            ref,
+          );
+        }
+      }
+      if (deadline !== Infinity && performance.now() >= deadline) {
+        break;
+      }
+    }
+    return this.position_ >= sorted.length;
+  }
+
+  /**
+   * @return {{request: import("./geometryBuffers.js").GeometryRequest, labelData: LabelData}} Work and labels.
+   */
+  finish() {
+    const {
+      jobs,
+      coordinates,
+      symbolInstances,
+      iconInstances,
+      glyphs,
+      labels,
+      pendingImageStyles,
+      imageEntries,
+    } = this.state_;
+    const reproj = this.reproj_;
+
+    // The GPU stores anchors as float32. An absolute web mercator coordinate is
+    // only good to about a metre there, which is several pixels once the view is
+    // past zoom 16, and the error changes with the view matrix — labels shake
+    // while the local-grid geometry stays still. Keep the anchor relative to the
+    // same origin the grid uses; the label matrix adds it back in float64.
+    // Glyph instances stay absolute until they are packed, because declutter
+    // still projects them on the CPU.
+    packLabelsInDrawOrder(labels, glyphs, symbolInstances, iconInstances);
+
+    const gridExtent = reproj?.clipExtent || boundsOf(this.features_);
+    const originX = gridExtent[0];
+    const originY = gridExtent[1];
+    for (let i = 0; i < symbolInstances.length; i += SYMBOL_STRIDE) {
+      symbolInstances[i] -= originX;
+      symbolInstances[i + 1] -= originY;
+    }
+    for (let i = 0; i < iconInstances.length; i += ICON_STRIDE) {
+      iconInstances[i] -= originX;
+      iconInstances[i + 1] -= originY;
+    }
+
+    return {
+      request: {
+        jobs,
+        coordinates: /** @type {Float64Array} */ (coordinates.finish()),
+        styles: new Float32Array(this.styleTable_.values),
+        gridExtent,
+        clipExtent: reproj?.clipExtent,
+        maxSegmentLength: reproj?.maxSegmentLength,
+        maxSpanX: reproj?.maxSpanX,
+        worldWidth: reproj?.worldWidth,
+        warpGrid: reproj?.warpGrid,
+        warpExtent: reproj?.warpExtent,
+        maxTargetError: reproj?.maxTargetError,
+        maxTargetEdge: reproj?.maxTargetEdge,
+        projectToTarget: reproj?.projectToTarget,
+      },
+      labelData: {
+        symbolInstances: new Float32Array(symbolInstances),
+        iconInstances: new Float32Array(iconInstances),
+        glyphs,
+        labels,
+        featuresByRef: this.featuresByRef_,
+        pendingImageStyles: Array.from(pendingImageStyles),
+        imageEntries: Array.from(imageEntries),
+      },
+    };
+  }
+}
+
+/**
+ * Style evaluation and geometry extraction, with the resulting tessellation
+ * work described as plain data so it can run here or on a worker.
+ *
  * @param {Array<import("../../Feature.js").FeatureLike>} features Features.
  * @param {import("./style.js").StyleFunction} styleFunction Style function.
  * @param {number} resolution Resolution.
@@ -440,139 +683,20 @@ export function buildVectorRequest(
   imageAtlas,
   styleCache,
 ) {
-  const styleTable = new StyleTable();
-  /** @type {Array<import("./geometryBuffers.js").GeometryJob>} */
-  const jobs = [];
-  const coordinates = new NumberSink(Float64Array);
-  /** @type {Array<number>} */
-  const symbolInstances = [];
-  /** @type {Array<number>} */
-  const iconInstances = [];
-  /** @type {Array<import("./glyphLayout.js").GlyphInstance>} */
-  const glyphs = [];
-  /** @type {Array<import("./declutter.js").Label>} */
-  const labels = [];
-  /** @type {Object<number, import("../../Feature.js").FeatureLike>} */
-  const featuresByRef = {};
-  /** @type {Set<import("../../style/Image.js").default>} */
-  const pendingImageStyles = new Set();
-  /** @type {Set<import("../../webgpu/ImageAtlas.js").ImageAtlasEntry>} */
-  const imageEntries = new Set();
-
-  /** @type {BuildState} */
-  const state = {
-    jobs,
-    coordinates,
-    symbolInstances,
-    iconInstances,
-    glyphs,
-    labels,
-    styleTable,
-    atlas,
-    imageAtlas,
-    pendingImageStyles,
-    imageEntries,
-    reproj,
+  const builder = new VectorRequestBuilder(
+    features,
+    styleFunction,
     resolution,
+    atlas,
+    reproj,
     pixelRatio,
-    nextPairId: 1,
-    nextSequence: 0,
-  };
-
-  let featureIndex = 0;
-  const sorted = features.slice();
-  if (renderOrder) {
-    sorted.sort(renderOrder);
-  } else {
-    sorted.sort((a, b) => Number(getUid(a)) - Number(getUid(b)));
-  }
-
-  for (const feature of sorted) {
-    let resolved = styleCache?.get(feature);
-    if (!resolved) {
-      resolved = resolveFeatureStyles(
-        feature,
-        styleFunction,
-        resolution,
-        zoom,
-        !!styleCache,
-      );
-      styleCache?.set(feature, resolved);
-    }
-    if (!resolved.length) {
-      continue;
-    }
-    const ref = ++featureIndex;
-    featuresByRef[ref] = feature;
-    const hit = encodeHitColor(ref);
-    const labelId = Number(getUid(feature));
-
-    for (const item of resolved) {
-      if (
-        reproj?.filterExtent &&
-        !intersects(item.geometry.getExtent(), reproj.filterExtent)
-      ) {
-        continue;
-      }
-      appendStyledGeometry(
-        state,
-        item.geometry,
-        item.style,
-        item.key,
-        hit,
-        labelId,
-        ref,
-      );
-    }
-  }
-
-  // The GPU stores anchors as float32. An absolute web mercator coordinate is
-  // only good to about a metre there, which is several pixels once the view is
-  // past zoom 16, and the error changes with the view matrix — labels shake
-  // while the local-grid geometry stays still. Keep the anchor relative to the
-  // same origin the grid uses; the label matrix adds it back in float64.
-  // Glyph instances stay absolute until they are packed, because declutter
-  // still projects them on the CPU.
-  packLabelsInDrawOrder(labels, glyphs, symbolInstances, iconInstances);
-
-  const gridExtent = reproj?.clipExtent || boundsOf(features);
-  const originX = gridExtent[0];
-  const originY = gridExtent[1];
-  for (let i = 0; i < symbolInstances.length; i += SYMBOL_STRIDE) {
-    symbolInstances[i] -= originX;
-    symbolInstances[i + 1] -= originY;
-  }
-  for (let i = 0; i < iconInstances.length; i += ICON_STRIDE) {
-    iconInstances[i] -= originX;
-    iconInstances[i + 1] -= originY;
-  }
-
-  return {
-    request: {
-      jobs,
-      coordinates: /** @type {Float64Array} */ (coordinates.finish()),
-      styles: new Float32Array(styleTable.values),
-      gridExtent,
-      clipExtent: reproj?.clipExtent,
-      maxSegmentLength: reproj?.maxSegmentLength,
-      maxSpanX: reproj?.maxSpanX,
-      worldWidth: reproj?.worldWidth,
-      warpGrid: reproj?.warpGrid,
-      warpExtent: reproj?.warpExtent,
-      maxTargetError: reproj?.maxTargetError,
-      maxTargetEdge: reproj?.maxTargetEdge,
-      projectToTarget: reproj?.projectToTarget,
-    },
-    labelData: {
-      symbolInstances: new Float32Array(symbolInstances),
-      iconInstances: new Float32Array(iconInstances),
-      glyphs,
-      labels,
-      featuresByRef,
-      pendingImageStyles: Array.from(pendingImageStyles),
-      imageEntries: Array.from(imageEntries),
-    },
-  };
+    zoom,
+    renderOrder,
+    imageAtlas,
+    styleCache,
+  );
+  builder.run();
+  return builder.finish();
 }
 
 /**

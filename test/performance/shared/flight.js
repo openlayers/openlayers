@@ -288,10 +288,40 @@ export async function runFlight(options) {
 }
 
 /**
+ * Collects the durations of main-thread tasks longer than 50 ms, which the
+ * Long Tasks API reports, while a flight runs.
  * @param {FlightOptions} options Options.
  * @return {Promise<Object>} Benchmark result.
  */
 async function fly(options) {
+  /** @type {Array<number>} */
+  const longTaskMs = [];
+  /** @type {PerformanceObserver|undefined} */
+  let observer;
+  try {
+    observer = new PerformanceObserver((list) => {
+      for (const entry of list.getEntries()) {
+        longTaskMs.push(entry.duration);
+      }
+    });
+    observer.observe({type: 'longtask'});
+  } catch {
+    observer = undefined; // Long tasks are not reported by this browser.
+  }
+  try {
+    return await flyPhases(options, longTaskMs, observer);
+  } finally {
+    observer?.disconnect();
+  }
+}
+
+/**
+ * @param {FlightOptions} options Options.
+ * @param {Array<number>} longTaskMs Receives the long task durations.
+ * @param {PerformanceObserver|undefined} observer Long task observer.
+ * @return {Promise<Object>} Benchmark result.
+ */
+async function flyPhases(options, longTaskMs, observer) {
   const {
     map,
     layer,
@@ -339,12 +369,18 @@ async function fly(options) {
   const phaseResults = [];
   /** @type {Array<number>} */
   const allFrameMs = [];
+  /** @type {Array<number>} */
+  const allLongTaskMs = [];
 
   let previous = await nextFrame();
   for (const phase of phases) {
     if (signal?.aborted) {
       return {cancelled: true};
     }
+    for (const entry of observer?.takeRecords() ?? []) {
+      longTaskMs.push(entry.duration);
+    }
+    longTaskMs.length = 0;
     const hinted = phase.moving || phase.interacting;
     if (hinted) {
       view.setHint(ViewHint.INTERACTING, 1);
@@ -449,13 +485,17 @@ async function fly(options) {
       settleMs = performance.now() - settleStart;
     }
     await getCurrentDevice()?.device.queue.onSubmittedWorkDone();
+    for (const entry of observer?.takeRecords() ?? []) {
+      longTaskMs.push(entry.duration);
+    }
     phaseResults.push({
       name: phase.name,
       frames: frameMs.length,
-      experience: frameExperience(frameMs, targetFrameMs),
+      experience: frameExperience(frameMs, targetFrameMs, longTaskMs),
       settleMs,
     });
     allFrameMs.push(...frameMs);
+    allLongTaskMs.push(...longTaskMs);
   }
 
   return {
@@ -464,7 +504,7 @@ async function fly(options) {
     size: map.getSize(),
     frames: allFrameMs.length,
     targetFrameMs,
-    experience: frameExperience(allFrameMs, targetFrameMs),
+    experience: frameExperience(allFrameMs, targetFrameMs, allLongTaskMs),
     settleMs: Math.max(
       0,
       ...phaseResults.map((phase) => /** @type {number} */ (phase.settleMs)),
