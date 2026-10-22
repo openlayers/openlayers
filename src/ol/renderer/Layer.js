@@ -94,6 +94,47 @@ class LayerRenderer extends Observable {
   }
 
   /**
+   * Features of this layer at a pixel, topmost first. This is what the layer's
+   * feature events report.
+   *
+   * The default implementation answers synchronously with the map's
+   * `forEachFeatureAtPixel`. A renderer that has to ask the GPU overrides
+   * this and returns a promise instead; the layer then dispatches its feature
+   * events when the promise resolves.
+   * @param {import("../pixel.js").Pixel} pixel Pixel relative to the map viewport.
+   * @param {number} hitTolerance Hit tolerance in pixels.
+   * @param {boolean} [includeOccluded] Whether features that other
+   * features cover at the pixel are wanted too. A renderer that has to ask the
+   * GPU can answer faster without them. The default implementation always
+   * includes them.
+   * @return {Array<import("../Feature.js").FeatureLike>|Promise<Array<import("../Feature.js").FeatureLike>>} Features.
+   */
+  queryFeatures(pixel, hitTolerance, includeOccluded) {
+    const layer = this.getLayer();
+    const map = layer.getMapInternal();
+    /** @type {Array<import("../Feature.js").FeatureLike>} */
+    const features = [];
+    if (!map) {
+      return features;
+    }
+    map.forEachFeatureAtPixel(
+      pixel,
+      (feature) => {
+        features.push(feature);
+      },
+      {layerFilter: (candidate) => candidate === layer, hitTolerance},
+    );
+    return features;
+  }
+
+  /**
+   * Free what {@link module:ol/renderer/Layer~LayerRenderer#queryFeatures} holds
+   * on to between queries. It is called when the layer has no feature event
+   * listener left, and anything freed is made again by the next query.
+   */
+  releaseQueryResources() {}
+
+  /**
    * @param {import("../pixel.js").Pixel} pixel Pixel.
    * @return {Uint8ClampedArray|Uint8Array|Float32Array|DataView|null} Pixel data.
    */

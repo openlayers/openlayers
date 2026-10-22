@@ -2,6 +2,10 @@
 
 ### Next release
 
+#### New `featurehover`, `featureclick` and `featuresingleclick` layer events
+
+Layers dispatch these events with the features under the pointer, and WebGPU vector layers answer them with an on-demand GPU query that does not hit text, so use them in place of `map.forEachFeatureAtPixel()` with these layers.
+
 ### 10.11.0
 
 #### Fixed GeoJSON parsing of geometries with empty coordinate arrays

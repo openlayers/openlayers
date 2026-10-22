@@ -6,7 +6,9 @@ import Feature from '../Feature.js';
 import Event from '../events/Event.js';
 import {always} from '../events/condition.js';
 import {TRUE} from '../functions.js';
+import {FeatureEventType} from '../layer/FeatureEvent.js';
 import {fromUserCoordinate, getUserProjection} from '../proj.js';
+import AsyncFeatureListener from './AsyncFeatureListener.js';
 import PointerInteraction from './Pointer.js';
 import InteractionProperty from './Property.js';
 
@@ -197,6 +199,37 @@ class Translate extends PointerInteraction {
     this.layerFilter_ = layerFilter;
 
     /**
+     * Layers that report features asynchronously are followed through their
+     * `featurehover` events instead of the map's synchronous methods.
+     * @private
+     * @type {function(import("../layer/Layer.js").default<import("../source/Source.js").default>): boolean}
+     */
+    this.syncLayerFilter_ = (layer) =>
+      !(layer && layer.hasAsyncFeatureQuery()) && layerFilter(layer);
+
+    /**
+     * @private
+     */
+    this.asyncFeatures_ = new AsyncFeatureListener(
+      this.handleFeatureEvent_.bind(this),
+    );
+
+    /**
+     * The translatable feature under the pointer, as last reported by each
+     * layer that reports features asynchronously.
+     * @private
+     * @type {Map<import("../layer/Layer.js").default, Feature>}
+     */
+    this.hoveredFeatures_ = new Map();
+
+    /**
+     * The feature being dragged was found through an asynchronous layer.
+     * @private
+     * @type {boolean}
+     */
+    this.lastFeatureAsync_ = false;
+
+    /**
      * @private
      * @type {FilterFunction}
      */
@@ -236,9 +269,11 @@ class Translate extends PointerInteraction {
     if (!event.originalEvent || !this.condition_(event)) {
       return false;
     }
+    const syncFeature = this.syncFeatureAtPixel_(event.pixel, event.map);
     this.lastFeature_ = /** @type {Feature} */ (
-      this.featuresAtPixel_(event.pixel, event.map)
+      syncFeature || this.hoveredFeature_()
     );
+    this.lastFeatureAsync_ = !syncFeature && !!this.lastFeature_;
     if (!this.lastCoordinate_ && this.lastFeature_) {
       this.startCoordinate_ = event.coordinate;
       this.lastCoordinate_ = event.coordinate;
@@ -288,6 +323,7 @@ class Translate extends PointerInteraction {
       );
       // cleanup
       this.startCoordinate_ = null;
+      this.lastFeatureAsync_ = false;
       return true;
     }
     return false;
@@ -351,11 +387,23 @@ class Translate extends PointerInteraction {
    * @override
    */
   handleMoveEvent(event) {
-    const elem = /** @type {HTMLElement} */ (event.map.getViewport());
+    this.updateCursor_(
+      event.map,
+      (!!this.lastCoordinate_ && this.lastFeatureAsync_) ||
+        !!this.featuresAtPixel_(event.pixel, event.map),
+    );
+  }
 
-    // Change the cursor to grab/grabbing if hovering any of the features managed
-    // by the interaction
-    if (this.featuresAtPixel_(event.pixel, event.map)) {
+  /**
+   * Change the cursor to grab/grabbing if hovering any of the features managed
+   * by the interaction.
+   * @param {import("../Map.js").default} map Map.
+   * @param {boolean} over The pointer is over a feature managed by the interaction.
+   * @private
+   */
+  updateCursor_(map, over) {
+    const elem = /** @type {HTMLElement} */ (map.getViewport());
+    if (over) {
       elem.classList.remove(this.lastCoordinate_ ? 'ol-grab' : 'ol-grabbing');
       elem.classList.add(this.lastCoordinate_ ? 'ol-grabbing' : 'ol-grab');
     } else {
@@ -365,7 +413,9 @@ class Translate extends PointerInteraction {
 
   /**
    * Tests to see if the given coordinates intersects any of our selected
-   * features.
+   * features. Features of layers that report asynchronously are the ones last
+   * reported under the pointer, which is where the pointer was when it last
+   * moved over a feature or off it.
    * @param {import("../pixel.js").Pixel} pixel Pixel coordinate to test for intersection.
    * @param {import("../Map.js").default} map Map to test the intersection on.
    * @return {Feature|undefined} Returns the feature found at the specified pixel
@@ -373,6 +423,17 @@ class Translate extends PointerInteraction {
    * @private
    */
   featuresAtPixel_(pixel, map) {
+    return this.syncFeatureAtPixel_(pixel, map) || this.hoveredFeature_();
+  }
+
+  /**
+   * @param {import("../pixel.js").Pixel} pixel Pixel coordinate to test for intersection.
+   * @param {import("../Map.js").default} map Map to test the intersection on.
+   * @return {Feature|undefined} Returns the feature found at the specified pixel
+   * coordinates, on layers that report synchronously.
+   * @private
+   */
+  syncFeatureAtPixel_(pixel, map) {
     return map.forEachFeatureAtPixel(
       pixel,
       (feature, layer) => {
@@ -385,10 +446,48 @@ class Translate extends PointerInteraction {
         return feature;
       },
       {
-        layerFilter: this.layerFilter_,
+        layerFilter: this.syncLayerFilter_,
         hitTolerance: this.hitTolerance_,
       },
     );
+  }
+
+  /**
+   * @return {Feature|undefined} The feature under the pointer on the topmost
+   *     layer that reports one, among the layers that report asynchronously.
+   * @private
+   */
+  hoveredFeature_() {
+    for (const layer of this.asyncFeatures_.getLayers()) {
+      const feature = this.hoveredFeatures_.get(layer);
+      if (feature) {
+        return feature;
+      }
+    }
+    return undefined;
+  }
+
+  /**
+   * @param {import("../layer/FeatureEvent.js").default} event Feature event.
+   * @private
+   */
+  handleFeatureEvent_(event) {
+    const layer = event.layer;
+    const feature = event.features.find(
+      (candidate) =>
+        candidate instanceof Feature &&
+        this.filter_(candidate, layer) &&
+        (!this.features_ || this.features_.getArray().includes(candidate)),
+    );
+    if (feature) {
+      this.hoveredFeatures_.set(layer, /** @type {Feature} */ (feature));
+    } else {
+      this.hoveredFeatures_.delete(layer);
+    }
+    const map = this.getMap();
+    if (map && !this.lastCoordinate_) {
+      this.updateCursor_(map, !!this.hoveredFeature_());
+    }
   }
 
   /**
@@ -437,6 +536,12 @@ class Translate extends PointerInteraction {
   updateState_(oldMap) {
     let map = this.getMap();
     const active = this.getActive();
+    this.hoveredFeatures_.clear();
+    this.asyncFeatures_.configure(
+      map && active ? map : null,
+      this.layerFilter_,
+      [FeatureEventType.HOVER],
+    );
     if (!map || !active) {
       map = map || oldMap;
       if (map) {
