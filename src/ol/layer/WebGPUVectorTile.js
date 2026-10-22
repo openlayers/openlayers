@@ -27,6 +27,8 @@ import BaseTileLayer from './BaseTile.js';
  * or `ol/style/Style` is supported for fills, strokes, circles and text; other image styles are drawn as plain discs.
  * @property {import('../style/flat.js').StyleVariables} [variables] Style variables.
  * @property {boolean} [disableHitDetection=false] Disable hit detection.
+ * @property {number} [hitTolerance=0] Hit-detection tolerance in pixels for the layer's feature events
+ * (`featurehover`, `featureclick` and `featuresingleclick`).
  * @property {boolean|string|number} [declutter=false] Declutter group shared among WebGPU layers.
  * @property {number} [cacheSize=512] Maximum number of cached tiles. The GPU memory used by cached
  * tiles is also limited, but always leaves room for twice what the visible tiles need.
@@ -77,6 +79,16 @@ class WebGPUVectorTileLayer extends BaseTileLayer {
      * @type {string|undefined}
      */
     this.declutter_ = options.declutter ? String(options.declutter) : undefined;
+  }
+
+  /**
+   * Features are read back from the GPU, so feature events arrive
+   * asynchronously.
+   * @return {boolean} `true`.
+   * @override
+   */
+  hasAsyncFeatureQuery() {
+    return true;
   }
 
   /**

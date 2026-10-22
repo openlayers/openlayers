@@ -18,6 +18,16 @@ import {
  */
 
 /**
+ * A region of the canvas, in device pixels from its top left corner.
+ *
+ * @typedef {Object} HitRect
+ * @property {number} x Left.
+ * @property {number} y Top.
+ * @property {number} width Width.
+ * @property {number} height Height.
+ */
+
+/**
  * @typedef {Object} CanvasCacheItem
  * @property {HTMLCanvasElement} canvas Canvas.
  * @property {GPUCanvasContext} context Canvas context.
@@ -34,6 +44,12 @@ import {
 
 /** @type {Object<string, CanvasCacheItem>} */
 const canvasCache = {};
+
+/**
+ * `GPUMapMode.READ`.
+ * @type {number}
+ */
+const MAP_MODE_READ = 1;
 
 /**
  * One triangle covering the canvas, every fragment all ones; the blend state
@@ -258,6 +274,19 @@ class WebGPUHelper extends Disposable {
      * @type {GPURenderPassEncoder|null}
      */
     this.renderPass_ = null;
+
+    /**
+     * The target of hit passes. It is shared by every layer using this helper.
+     * @private
+     * @type {GPUTexture|null}
+     */
+    this.hitTexture_ = null;
+
+    /**
+     * @private
+     * @type {GPUCommandEncoder|null}
+     */
+    this.hitEncoder_ = null;
 
     /**
      * @private
@@ -666,6 +695,105 @@ class WebGPUHelper extends Disposable {
   }
 
   /**
+   * Start a pass that draws to an offscreen texture instead of the canvas, so
+   * that what is drawn can be read back with {@link WebGPUHelper#finishHitPass}.
+   * Anything drawn is limited to `rect`, and the rest of the texture is left
+   * transparent black. The texture has the size and format of the canvas, so
+   * the render bundles recorded for a frame can be executed in it. It is
+   * allocated here, the first time it is needed.
+   *
+   * @param {HitRect} rect Region to draw, in canvas pixels.
+   */
+  beginHitPass(rect) {
+    const canvas = this.cacheItem_.canvas;
+    let texture = this.hitTexture_;
+    if (
+      !texture ||
+      texture.width !== canvas.width ||
+      texture.height !== canvas.height
+    ) {
+      texture?.destroy();
+      texture = this.device_.createTexture({
+        size: [canvas.width, canvas.height],
+        format: this.format_,
+        usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.COPY_SRC,
+      });
+      this.hitTexture_ = texture;
+    }
+    this.hitEncoder_ = this.device_.createCommandEncoder();
+    const pass = this.hitEncoder_.beginRenderPass({
+      colorAttachments: [
+        {
+          view: texture.createView(),
+          loadOp: 'clear',
+          storeOp: 'store',
+          clearValue: {r: 0, g: 0, b: 0, a: 0},
+        },
+      ],
+    });
+    pass.setScissorRect(rect.x, rect.y, rect.width, rect.height);
+    this.renderPass_ = pass;
+  }
+
+  /**
+   * Finish the pass started by {@link WebGPUHelper#beginHitPass}, and read back
+   * the pixels of its region. Rejects when the device is lost while waiting.
+   *
+   * @param {HitRect} rect Region passed to `beginHitPass`.
+   * @return {Promise<Uint8Array>} The region's pixels, row after row, as
+   * red, green, blue and alpha bytes whatever the canvas format is.
+   */
+  async finishHitPass(rect) {
+    const pass = /** @type {GPURenderPassEncoder} */ (this.renderPass_);
+    const encoder = /** @type {GPUCommandEncoder} */ (this.hitEncoder_);
+    const texture = /** @type {GPUTexture} */ (this.hitTexture_);
+    assert(pass && encoder && texture, 'beginHitPass must be called first');
+    pass.end();
+    this.renderPass_ = null;
+    this.hitEncoder_ = null;
+    const bytesPerRow = Math.ceil((rect.width * 4) / 256) * 256;
+    const buffer = this.device_.createBuffer({
+      size: bytesPerRow * rect.height,
+      usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST,
+    });
+    try {
+      encoder.copyTextureToBuffer(
+        {texture, origin: {x: rect.x, y: rect.y}},
+        {buffer, bytesPerRow},
+        {width: rect.width, height: rect.height},
+      );
+      this.device_.queue.submit([encoder.finish()]);
+      await buffer.mapAsync(MAP_MODE_READ);
+      const mapped = new Uint8Array(buffer.getMappedRange());
+      const pixels = new Uint8Array(rect.width * rect.height * 4);
+      const swap = this.format_.startsWith('bgra');
+      for (let row = 0; row < rect.height; ++row) {
+        const from = row * bytesPerRow;
+        const to = row * rect.width * 4;
+        pixels.set(mapped.subarray(from, from + rect.width * 4), to);
+      }
+      if (swap) {
+        for (let i = 0; i < pixels.length; i += 4) {
+          const blue = pixels[i];
+          pixels[i] = pixels[i + 2];
+          pixels[i + 2] = blue;
+        }
+      }
+      return pixels;
+    } finally {
+      buffer.destroy();
+    }
+  }
+
+  /**
+   * Free what hit passes allocated. A later pass allocates it again.
+   */
+  releaseHitResources() {
+    this.hitTexture_?.destroy();
+    this.hitTexture_ = null;
+  }
+
+  /**
    * World-to-clip matrix from the frame (Y up, origin center).
    * @param {import("../Map.js").FrameState} frameState Frame state.
    * @param {import("../transform.js").Transform} worldToView World to view pixels.
@@ -691,6 +819,7 @@ class WebGPUHelper extends Disposable {
    */
   disposeInternal() {
     removeDeviceLostListener(this.boundHandleLost_);
+    this.releaseHitResources();
     this.quadBuffer_.destroy();
     releaseCanvas(this.canvasCacheKey_);
   }

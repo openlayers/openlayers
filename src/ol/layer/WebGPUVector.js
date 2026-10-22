@@ -27,6 +27,8 @@ import Layer from './Layer.js';
  * or `ol/style/Style` is supported for fills, strokes, circles and text; other image styles are drawn as plain discs.
  * @property {import('../style/flat.js').StyleVariables} [variables] Style variables.
  * @property {boolean} [disableHitDetection=false] Disable hit detection.
+ * @property {number} [hitTolerance=0] Hit-detection tolerance in pixels for the layer's feature events
+ * (`featurehover`, `featureclick` and `featuresingleclick`).
  * @property {boolean|string|number} [declutter=false] Declutter group. Same-string groups are
  * shared among WebGPU layers only (not Canvas).
  * @property {import("../render.js").OrderFunction|null} [renderOrder] Feature render order.
@@ -86,6 +88,16 @@ class WebGPUVectorLayer extends Layer {
      * @type {import("../render.js").OrderFunction|null|undefined}
      */
     this.renderOrder_ = options.renderOrder;
+  }
+
+  /**
+   * Features are read back from the GPU, so feature events arrive
+   * asynchronously.
+   * @return {boolean} `true`.
+   * @override
+   */
+  hasAsyncFeatureQuery() {
+    return true;
   }
 
   /**

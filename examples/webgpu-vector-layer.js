@@ -44,11 +44,7 @@ const map = new Map({
 });
 
 let highlight;
-const displayFeatureInfo = function (pixel) {
-  const feature = map.forEachFeatureAtPixel(pixel, function (feature) {
-    return feature;
-  });
-
+const displayFeatureInfo = function (feature) {
   const info = document.getElementById('info');
   if (feature) {
     info.innerHTML = feature.get('ECO_NAME') || '&nbsp;';
@@ -68,13 +64,10 @@ const displayFeatureInfo = function (pixel) {
   }
 };
 
-map.on('pointermove', function (evt) {
-  if (evt.dragging) {
-    return;
-  }
-  displayFeatureInfo(evt.pixel);
+vectorLayer.on('featurehover', function (evt) {
+  displayFeatureInfo(evt.feature);
 });
 
-map.on('click', function (evt) {
-  displayFeatureInfo(evt.pixel);
+vectorLayer.on('featureclick', function (evt) {
+  displayFeatureInfo(evt.feature);
 });
