@@ -648,6 +648,9 @@ class WebGLBaseTileLayerRenderer extends WebGLLayerRenderer {
     this.enqueueTiles(frameState, extent, z, tileRepresentationLookup, 0);
     if (preload > 0) {
       setTimeout(() => {
+        if (!this.getLayer()) {
+          return;
+        }
         this.enqueueTiles(
           frameState,
           extent,

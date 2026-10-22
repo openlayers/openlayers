@@ -106,6 +106,16 @@ describe('ol/renderer/webgl/TileLayer', function () {
     assert.strictEqual(renderer.tileRepresentationCache.count_, 1);
   });
 
+  it('#renderFrame() skips the deferred preload after the layer is disposed', async function () {
+    tileLayer.setPreload(1);
+    renderer.prepareFrame(frameState);
+    renderer.renderFrame(frameState);
+    const enqueueTiles = vi.spyOn(renderer, 'enqueueTiles');
+    tileLayer.dispose();
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    assert.strictEqual(enqueueTiles.mock.calls.length, 0);
+  });
+
   it('#findStaleTile_() ends the transition so the stale tile does not loop', () => {
     const source = tileLayer.getSource();
     const tile = source.getTile(0, 0, 0);
