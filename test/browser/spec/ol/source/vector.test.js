@@ -927,6 +927,73 @@ describe('ol/source/Vector', function () {
           );
         }));
 
+      it('passes the extent being loaded with the FEATURESLOAD* events', () => {
+        const source = new VectorSource({strategy: bboxStrategy});
+        const extent1 = [-10000, -10000, 10000, 10000];
+        const extent2 = [20000, 20000, 30000, 30000];
+        const events = [];
+        const listener = (event) => events.push(event);
+        source.on('featuresloadstart', listener);
+        source.on('featuresloadend', listener);
+        source.on('featuresloaderror', listener);
+
+        let calls = 0;
+        source.setLoader(
+          function (bbox, resolution, projection, success, failure) {
+            if (++calls === 1) {
+              success([]);
+            } else {
+              failure();
+            }
+          },
+        );
+        source.loadFeatures(extent1, 1, getProjection('EPSG:3857'));
+        source.loadFeatures(extent2, 1, getProjection('EPSG:3857'));
+
+        assert.deepEqual(
+          events.map((event) => [event.type, event.extent]),
+          [
+            ['featuresloadstart', extent1],
+            ['featuresloadend', extent1],
+            ['featuresloadstart', extent2],
+            ['featuresloaderror', extent2],
+          ],
+        );
+      });
+
+      it('allows retrying a failed extent from FEATURESLOADERROR', () =>
+        new Promise((resolve, reject) => {
+          const source = new VectorSource();
+          const extent = [-10000, -10000, 10000, 10000];
+          const projection = getProjection('EPSG:3857');
+          let calls = 0;
+          source.setLoader(
+            function (bbox, resolution, projection, success, failure) {
+              ++calls;
+              setTimeout(calls === 1 ? failure : () => success([]), 0);
+            },
+          );
+          source.once('featuresloaderror', (event) => {
+            try {
+              assert.deepEqual(event.extent, [
+                -Infinity,
+                -Infinity,
+                Infinity,
+                Infinity,
+              ]);
+              source.removeLoadedExtent(event.extent);
+              source.once('featuresloadend', () => {
+                assert.strictEqual(calls, 2);
+                resolve();
+              });
+              source.loadFeatures(extent, 1, projection);
+            } catch (e) {
+              reject(e);
+            }
+          });
+          source.loadFeatures(extent, 1, projection);
+        }));
+
       it('clears loading state and map fires loadend after failure [Promise]', () =>
         new Promise((resolve) => {
           const source = new VectorSource();
