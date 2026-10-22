@@ -56,6 +56,8 @@ import Layer from './Layer.js';
  * which will be used if this is not set.
  * @property {import("./Base.js").BackgroundColor} [background] Background color for the layer. If not specified, no background
  * will be rendered.
+ * @property {number} [hitTolerance=0] Hit-detection tolerance in pixels for the layer's feature events
+ * (`featurehover`, `featureclick` and `featuresingleclick`).
  * @property {boolean} [updateWhileAnimating=false] When set to `true`, feature batches will
  * be recreated during animations. This means that no vectors will be shown clipped, but the
  * setting will have a performance impact for large amounts of vector data. When set to `false`,

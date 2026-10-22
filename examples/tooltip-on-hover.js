@@ -27,39 +27,41 @@ const map = new Map({
 const info = document.getElementById('info');
 
 let currentFeature;
-const displayFeatureInfo = function (pixel, target) {
-  const feature = target.closest('.ol-control')
-    ? undefined
-    : map.forEachFeatureAtPixel(pixel, function (feature) {
-        return feature;
-      });
-  if (feature) {
-    info.style.left = pixel[0] + 'px';
-    info.style.top = pixel[1] + 'px';
-    if (feature !== currentFeature) {
-      info.style.visibility = 'visible';
-      info.innerText = feature.get('ECO_NAME');
-    }
+const updateTooltip = function (mapBrowserEvent) {
+  const target = /** @type {HTMLElement} */ (
+    mapBrowserEvent.originalEvent.target
+  );
+  if (!currentFeature || target.closest('.ol-control')) {
+    info.style.visibility = 'hidden';
+    return;
+  }
+  info.style.left = mapBrowserEvent.pixel[0] + 'px';
+  info.style.top = mapBrowserEvent.pixel[1] + 'px';
+  info.style.visibility = 'visible';
+};
+
+vector.on('featurehover', function (evt) {
+  currentFeature = evt.feature;
+  if (currentFeature) {
+    info.innerText = currentFeature.get('ECO_NAME');
+  }
+  if (evt.mapBrowserEvent) {
+    updateTooltip(evt.mapBrowserEvent);
   } else {
     info.style.visibility = 'hidden';
   }
-  currentFeature = feature;
-};
+});
+
+vector.on('featureclick', function (evt) {
+  currentFeature = evt.feature;
+  if (currentFeature) {
+    info.innerText = currentFeature.get('ECO_NAME');
+  }
+  updateTooltip(evt.mapBrowserEvent);
+});
 
 map.on('pointermove', function (evt) {
-  if (evt.dragging) {
-    info.style.visibility = 'hidden';
-    currentFeature = undefined;
-    return;
+  if (!evt.dragging) {
+    updateTooltip(evt);
   }
-  displayFeatureInfo(evt.pixel, evt.originalEvent.target);
-});
-
-map.on('click', function (evt) {
-  displayFeatureInfo(evt.pixel, evt.originalEvent.target);
-});
-
-map.getTargetElement().addEventListener('pointerleave', function () {
-  currentFeature = undefined;
-  info.style.visibility = 'hidden';
 });

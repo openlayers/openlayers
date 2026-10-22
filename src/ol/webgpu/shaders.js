@@ -25,6 +25,24 @@ fn insideRenderExtents(position: vec2<f32>) -> bool {
 `;
 
 /**
+ * Turns a feature's hit color into the value a hit pass writes.
+ *
+ * `mode` is the frame uniform `hitDetection`. A mode of 1 writes the color
+ * unchanged, which carries a 24 bit feature reference. A mode of 2 or more
+ * stands for a batch of features, such as one tile, whose references only need
+ * 16 bits: the blue channel then holds the batch index, `mode - 2`, so a
+ * reference does not have to be unique across batches.
+ */
+const HIT_OUTPUT_FUNCTION = `
+fn hitOutput(hitColor: vec4<f32>, mode: f32) -> vec4<f32> {
+  if (mode > 1.5) {
+    return vec4(hitColor.r, hitColor.g, (mode - 2.0) / 255.0, 1.0);
+  }
+  return hitColor;
+}
+`;
+
+/**
  * Anti-aliasing for the long edges of a stroke. The ribbon is widened by
  * `EDGE_FADE` device pixels on each side, and coverage ramps from zero at the
  * widened edge to one a pixel further in, so the stroke keeps its width. A
@@ -284,6 +302,7 @@ fn vs_main(
   return out;
 }
 
+${HIT_OUTPUT_FUNCTION}
 @fragment
 fn fs_main(in: VertexOut) -> @location(0) vec4<f32> {
   if (!insideRenderExtents(in.localPosition)) {
@@ -293,7 +312,7 @@ fn fs_main(in: VertexOut) -> @location(0) vec4<f32> {
     if (in.coverage < 0.5) {
       discard;
     }
-    return in.hitColor;
+    return hitOutput(in.hitColor, uniforms.hitDetection);
   }
   var color = in.color;
   if (in.pattern.z > 0.0) {
@@ -485,6 +504,7 @@ fn vs_main(
   return out;
 }
 
+${HIT_OUTPUT_FUNCTION}
 @fragment
 fn fs_main(in: VertexOut) -> @location(0) vec4<f32> {
   if (!insideRenderExtents(in.localPosition)) {
@@ -494,7 +514,7 @@ fn fs_main(in: VertexOut) -> @location(0) vec4<f32> {
     if (in.coverage < 0.5) {
       discard;
     }
-    return in.hitColor;
+    return hitOutput(in.hitColor, uniforms.hitDetection);
   }
   var color = in.color;
   if (in.pattern.z > 0.0) {
@@ -660,6 +680,7 @@ fn vs_main(
   return out;
 }
 
+${HIT_OUTPUT_FUNCTION}
 @fragment
 fn fs_main(in: VertexOut) -> @location(0) vec4<f32> {
   if (!insideRenderExtents(in.localPosition)) {
@@ -678,7 +699,7 @@ fn fs_main(in: VertexOut) -> @location(0) vec4<f32> {
     if (edge < 0.5 || cap < 0.5) {
       discard;
     }
-    return in.hitColor;
+    return hitOutput(in.hitColor, uniforms.hitDetection);
   }
   var color = in.color;
   color.a = color.a * uniforms.globalAlpha * dash * edge * cap;
@@ -823,6 +844,7 @@ fn vs_main(
   return out;
 }
 
+${HIT_OUTPUT_FUNCTION}
 @fragment
 fn fs_main(in: VertexOut) -> @location(0) vec4<f32> {
   if (!insideRenderExtents(in.localPosition)) {
@@ -841,7 +863,7 @@ fn fs_main(in: VertexOut) -> @location(0) vec4<f32> {
     if (edge < 0.5 || cap < 0.5) {
       discard;
     }
-    return in.hitColor;
+    return hitOutput(in.hitColor, uniforms.hitDetection);
   }
   var color = in.color;
   color.a = color.a * uniforms.globalAlpha * dash * edge * cap;
@@ -929,6 +951,7 @@ fn vs_main(
   return out;
 }
 
+${HIT_OUTPUT_FUNCTION}
 @fragment
 fn fs_main(in: VertexOut) -> @location(0) vec4<f32> {
   let dist = length(in.localPx);
@@ -940,7 +963,7 @@ fn fs_main(in: VertexOut) -> @location(0) vec4<f32> {
     discard;
   }
   if (uniforms.hitDetection > 0.5) {
-    return in.hitColor;
+    return hitOutput(in.hitColor, uniforms.hitDetection);
   }
   let fill = vec4(in.fillColor.rgb * in.fillColor.a, in.fillColor.a);
   var color = fill;
@@ -1028,6 +1051,7 @@ fn vs_main(
   return out;
 }
 
+${HIT_OUTPUT_FUNCTION}
 @fragment
 fn fs_main(in: VertexOut) -> @location(0) vec4<f32> {
   let atlasSize = vec2<f32>(textureDimensions(atlasTexture));
@@ -1040,7 +1064,7 @@ fn fs_main(in: VertexOut) -> @location(0) vec4<f32> {
     discard;
   }
   if (uniforms.hitDetection > 0.5) {
-    return in.hitColor;
+    return hitOutput(in.hitColor, uniforms.hitDetection);
   }
   let alpha = sample.a * in.opacity * uniforms.globalAlpha;
   if (alpha < 0.01) {
@@ -1166,7 +1190,7 @@ fn fs_fill(in: VertexOut) -> @location(0) vec4<f32> {
     discard;
   }
   if (uniforms.hitDetection > 0.5) {
-    return in.hitColor;
+    discard;
   }
   // Atlas green stores fill coverage.
   var color = in.fillColor;

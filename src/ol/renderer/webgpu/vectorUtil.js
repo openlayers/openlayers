@@ -790,8 +790,8 @@ export class FrameUniformPool extends Disposable {
   }
 
   /**
-   * A slot holding uniforms for one world offset and label origin, written at
-   * most once per frame.
+   * A slot holding uniforms for one world offset, label origin and hit flag,
+   * written at most once per frame.
    *
    * @param {import("../../Map.js").FrameState} frameState Frame.
    * @param {number} [worldOffset] X offset in view coordinates.
@@ -801,7 +801,7 @@ export class FrameUniformPool extends Disposable {
    * @return {FrameUniformSlot} Slot.
    */
   get(frameState, worldOffset = 0, hitDetection = 0, originX = 0, originY = 0) {
-    const key = uniformKey(worldOffset, originX, originY);
+    const key = uniformKey(worldOffset, originX, originY) + '/' + hitDetection;
     const existing = this.byOffset_.get(key);
     if (existing) {
       return existing;
@@ -849,14 +849,21 @@ export class FrameUniformPool extends Disposable {
  * @param {import("../../Map.js").FrameState} frameState Frame.
  * @param {import("../../render/webgpu/buffers.js").VectorBuffers} buffers Buffers.
  * @param {number} [worldOffset] X offset in view coordinates.
+ * @param {number} [hitDetection] Hit flag.
  * @return {FrameUniformSlot} Slot.
  */
-export function labelUniforms(pool, frameState, buffers, worldOffset = 0) {
+export function labelUniforms(
+  pool,
+  frameState,
+  buffers,
+  worldOffset = 0,
+  hitDetection = 0,
+) {
   const grid = buffers.grid;
   return pool.get(
     frameState,
     worldOffset,
-    0,
+    hitDetection,
     grid ? grid.originX : 0,
     grid ? grid.originY : 0,
   );

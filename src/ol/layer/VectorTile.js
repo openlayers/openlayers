@@ -12,8 +12,9 @@ import TileProperty from './TileProperty.js';
  *   import("../Observable.js").OnSignature<import("./Base.js").BaseLayerObjectEventTypes|
  *     import("./Layer.js").LayerEventType|'change:preload'|'change:useInterimTilesOnError', import("../Object.js").ObjectEvent, Return> &
  *   import("../Observable.js").OnSignature<import("../render/EventType.js").LayerRenderEventTypes, import("../render/Event.js").default, Return> &
+ *   import("../Observable.js").OnSignature<import("./FeatureEvent.js").FeatureEventTypes, import("./FeatureEvent.js").default, Return> &
  *   import("../Observable.js").CombinedOnSignature<import("../Observable.js").EventTypes|import("./Base.js").BaseLayerObjectEventTypes|
- *     import("./Layer.js").LayerEventType|'change:preload'|'change:useInterimTilesOnError'|import("../render/EventType.js").LayerRenderEventTypes, Return>} VectorTileLayerOnSignature
+ *     import("./Layer.js").LayerEventType|'change:preload'|'change:useInterimTilesOnError'|import("../render/EventType.js").LayerRenderEventTypes|import("./FeatureEvent.js").FeatureEventTypes, Return>} VectorTileLayerOnSignature
  */
 
 /**
@@ -78,6 +79,8 @@ import TileProperty from './TileProperty.js';
  * which will be used if this is not set.
  * @property {import("./Base.js").BackgroundColor} [background] Background color for the layer. If not specified, no
  * background will be rendered.
+ * @property {number} [hitTolerance=0] Hit-detection tolerance in pixels for the layer's feature events
+ * (`featurehover`, `featureclick` and `featuresingleclick`).
  * @property {boolean} [updateWhileAnimating=false] When set to `true`, feature batches will be
  * recreated during animations. This means that no vectors will be shown clipped, but the setting
  * will have a performance impact for large amounts of vector data. When set to `false`, batches

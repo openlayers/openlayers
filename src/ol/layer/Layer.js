@@ -8,6 +8,8 @@ import EventType from '../events/EventType.js';
 import {intersects} from '../extent.js';
 import RenderEventType from '../render/EventType.js';
 import BaseLayer from './Base.js';
+import {isFeatureEventType} from './FeatureEvent.js';
+import FeatureEventController from './FeatureEventController.js';
 import LayerProperty from './Property.js';
 
 /**
@@ -24,8 +26,9 @@ import LayerProperty from './Property.js';
  *   import("../Observable.js").OnSignature<import("./Base.js").BaseLayerObjectEventTypes|
  *     LayerEventType, import("../Object.js").ObjectEvent, Return> &
  *   import("../Observable.js").OnSignature<import("../render/EventType.js").LayerRenderEventTypes, import("../render/Event.js").default, Return> &
+ *   import("../Observable.js").OnSignature<import("./FeatureEvent.js").FeatureEventTypes, import("./FeatureEvent.js").default, Return> &
  *   import("../Observable.js").CombinedOnSignature<import("../Observable.js").EventTypes|import("./Base.js").BaseLayerObjectEventTypes|LayerEventType|
- *     import("../render/EventType.js").LayerRenderEventTypes, Return>} LayerOnSignature
+ *     import("../render/EventType.js").LayerRenderEventTypes|import("./FeatureEvent.js").FeatureEventTypes, Return>} LayerOnSignature
  */
 
 /**
@@ -57,6 +60,9 @@ import LayerProperty from './Property.js';
  * HTML element. Will overwrite the default rendering for the layer.
  * @property {import("./Base.js").BackgroundColor} [background] Background color for the layer. If not specified, no background
  * will be rendered.
+ * @property {number} [hitTolerance=0] Hit-detection tolerance in pixels for the
+ * feature events (`featurehover`, `featureclick` and `featuresingleclick`).
+ * Pixels inside the radius around the pointer are checked for features.
  * @property {Properties} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
  */
 
@@ -92,9 +98,17 @@ import LayerProperty from './Property.js';
  * A generic `change` event is fired when the state of the source changes.
  * A `sourceready` event is fired when the layer's source is ready.
  *
+ * The `featurehover`, `featureclick` and `featuresingleclick` events report the
+ * features of this layer under the pointer. The layer listens to the map, and
+ * queries its features, only while at least one of these events has a listener.
+ * The events can be asynchronous, see {@link module:ol/layer/FeatureEvent~FeatureEvent}.
+ *
  * @fires import("../render/Event.js").RenderEvent#prerender
  * @fires import("../render/Event.js").RenderEvent#postrender
  * @fires import("../events/Event.js").BaseEvent#sourceready
+ * @fires import("./FeatureEvent.js").default#featurehover
+ * @fires import("./FeatureEvent.js").default#featureclick
+ * @fires import("./FeatureEvent.js").default#featuresingleclick
  *
  * @template {import("../source/Source.js").default} [SourceType=import("../source/Source.js").default]
  * @template {import("../renderer/Layer.js").default<*>} [RendererType=import("../renderer/Layer.js").default<*>]
@@ -162,6 +176,19 @@ class Layer extends BaseLayer {
      * @type {boolean}
      */
     this.rendered = false;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.hitTolerance_ = options.hitTolerance || 0;
+
+    /**
+     * Created when the first feature event listener is registered.
+     * @private
+     * @type {FeatureEventController|null}
+     */
+    this.featureEvents_ = null;
 
     // Overwrite default render method with a custom one
     if (options.render) {
@@ -281,6 +308,74 @@ class Layer extends BaseLayer {
       return Promise.resolve([]);
     }
     return this.renderer_.getFeatures(pixel);
+  }
+
+  /**
+   * @param {string} type Type.
+   * @param {import("../events.js").Listener} listener Listener.
+   * @override
+   */
+  addEventListener(type, listener) {
+    super.addEventListener(type, listener);
+    if (isFeatureEventType(type)) {
+      this.updateFeatureEvents_();
+    }
+  }
+
+  /**
+   * @param {string} type Type.
+   * @param {import("../events.js").Listener} listener Listener.
+   * @override
+   */
+  removeEventListener(type, listener) {
+    super.removeEventListener(type, listener);
+    if (isFeatureEventType(type)) {
+      this.updateFeatureEvents_();
+    }
+  }
+
+  /**
+   * Starts or stops listening to the map, depending on the feature event
+   * listeners that are registered.
+   * @private
+   */
+  updateFeatureEvents_() {
+    if (!this.featureEvents_) {
+      if (this.disposed) {
+        return;
+      }
+      this.featureEvents_ = new FeatureEventController(this);
+    }
+    this.featureEvents_.update();
+  }
+
+  /**
+   * Get the hit-detection tolerance used for feature events.
+   * @return {number} Hit tolerance in pixels.
+   * @api
+   */
+  getHitTolerance() {
+    return this.hitTolerance_;
+  }
+
+  /**
+   * Set the hit-detection tolerance used for feature events. Pixels inside the
+   * radius around the pointer are checked for features.
+   * @param {number} hitTolerance Hit tolerance in pixels.
+   * @api
+   */
+  setHitTolerance(hitTolerance) {
+    this.hitTolerance_ = hitTolerance;
+  }
+
+  /**
+   * Whether this layer reports features asynchronously, so that feature events
+   * arrive after the pointer event that triggered them. Interactions use the
+   * synchronous map methods for the other layers.
+   * @return {boolean} The layer's feature events are asynchronous.
+   */
+  hasAsyncFeatureQuery() {
+    return false;
   }
 
   /**
@@ -556,6 +651,10 @@ class Layer extends BaseLayer {
    * @override
    */
   disposeInternal() {
+    if (this.featureEvents_) {
+      this.featureEvents_.dispose();
+      this.featureEvents_ = null;
+    }
     this.clearRenderer();
     this.setSource(null);
     super.disposeInternal();

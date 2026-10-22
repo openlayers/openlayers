@@ -50,6 +50,7 @@ import {
   sourceResolutionForView,
   viewCoordinateToSource,
 } from '../../webgpu/reproj.js';
+import {commandsToHit, HIT_MODE_FEATURE, queryHits} from './hitQuery.js';
 import {hitFeatures} from './hitTest.js';
 import LabelRenderer from './LabelRenderer.js';
 import LabelView from './LabelView.js';
@@ -609,6 +610,21 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
     this.paintCache_ = {};
 
     /**
+     * The frame last painted, which is what a feature query looks at.
+     * @private
+     * @type {import("../../Map.js").FrameState|null}
+     */
+    this.paintedFrameState_ = null;
+
+    /**
+     * Queries made after the buffers were replaced and before the frame that
+     * uploads them. Each one runs once that frame has painted.
+     * @private
+     * @type {Array<{run: function(): void, cancel: function(): void}>}
+     */
+    this.queriesAwaitingPaint_ = [];
+
+    /**
      * Scratch for the batch uniform write.
      * @private
      * @type {Float32Array}
@@ -1138,10 +1154,22 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
   }
 
   /**
+   * Draw the layer, to the canvas or, for a feature query, to the hit pass the
+   * helper has begun.
+   *
+   * A hit pass draws what the last frame did, with the frame uniforms telling
+   * the shaders to write feature references in place of colors. It leaves the
+   * label buffers alone, so the labels that were hidden then stay hidden.
+   * The first pass can run the render bundle that frame recorded. A later one
+   * skips the features already found, and text, which a query ignores, so it
+   * records its commands afresh.
+   *
    * @param {import("../../Map.js").FrameState} frameState Frame.
+   * @param {{excluded: Set<number>|null}} [hit] Set for a hit pass: the keys,
+   * see `hitKey`, of the features to leave out.
    * @private
    */
-  paintSorted_(frameState) {
+  paintSorted_(frameState, hit) {
     const helper = this.helper;
     const uniforms = this.uniforms_;
     if (!helper || !uniforms) {
@@ -1149,10 +1177,14 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
     }
     const buffers = this.buffers_;
     const gpu = this.gpu_;
-    helper.prepareDraw(frameState, false, this.getClearColor(frameState));
+    const hitDetection = hit ? HIT_MODE_FEATURE : 0;
+    if (!hit) {
+      this.paintedFrameState_ = frameState;
+      helper.prepareDraw(frameState, false, this.getClearColor(frameState));
+    }
     uniforms.begin();
     if (gpu && buffers) {
-      if (this.cornerBuffer_) {
+      if (this.cornerBuffer_ && !hit) {
         this.labels_.setLabels(helper, buffers);
         if (this.opacities_) {
           const dirty = this.dirtyOpacityIndices_;
@@ -1161,24 +1193,26 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
           }
         }
       }
+      const excluded = hit?.excluded;
+      const commands = buffers.commands || [];
       paintBatches(
         helper,
         [
           {
-            commands: buffers.commands || [],
+            commands: commandsToHit(commands, 0, excluded),
             tileOrder: 0,
             gpu,
             labels: this.cornerBuffer_ ? this.labels_ : null,
             fontGeneration: this.fontAtlasGeneration_,
             imageGeneration: this.imageAtlasGeneration_,
-            slot: labelUniforms(uniforms, frameState, buffers),
+            slot: labelUniforms(uniforms, frameState, buffers, 0, hitDetection),
             prepare: () => {
               gpu.writeUniforms(
                 helper,
                 this.uniformData_,
                 this.projMat_,
                 frameState,
-                0,
+                hitDetection,
               );
             },
           },
@@ -1186,10 +1220,75 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
         this.atlas_,
         this.imageAtlas_,
         this.cornerBuffer_,
-        this.paintCache_,
+        excluded ? undefined : this.paintCache_,
       );
     }
-    helper.finalizeDraw(frameState);
+    if (!hit) {
+      helper.finalizeDraw(frameState);
+      this.queriesAwaitingPaint_.splice(0).forEach((query) => query.run());
+    }
+  }
+
+  /**
+   * Features of this layer at a pixel, found with a hit pass on the GPU. The
+   * pass draws the layer as the last frame did, so the answer is what the user
+   * is looking at. Text is not hit. The result is empty before the layer has
+   * painted, while it is not visible, and when `disableHitDetection` is set.
+   * Right after the layer's features changed, the query waits for the frame that
+   * shows them.
+   *
+   * @param {import("../../pixel.js").Pixel} pixel Pixel relative to the map viewport.
+   * @param {number} hitTolerance Hit tolerance in pixels.
+   * @param {boolean} [includeOccluded] Whether to also look for features
+   * that other features cover at the pixel, which takes another pass for
+   * every layer of them.
+   * @return {Promise<Array<import("../../Feature.js").FeatureLike>>} Features.
+   * @override
+   */
+  queryFeatures(pixel, hitTolerance, includeOccluded = true) {
+    const helper = this.helper;
+    const uniforms = this.uniforms_;
+    const buffers = this.buffers_;
+    const gpu = this.gpu_;
+    const frameState = this.paintedFrameState_;
+    if (
+      !helper ||
+      !uniforms ||
+      !buffers ||
+      !frameState ||
+      !this.hitDetectionEnabled_ ||
+      !this.getLayer().isVisible()
+    ) {
+      return Promise.resolve([]);
+    }
+    if (!gpu) {
+      return new Promise((resolve, reject) => {
+        this.queriesAwaitingPaint_.push({
+          run: () =>
+            this.queryFeatures(pixel, hitTolerance, includeOccluded).then(
+              resolve,
+              reject,
+            ),
+          cancel: () => resolve([]),
+        });
+        this.getLayer().getMapInternal()?.render();
+      });
+    }
+    return queryHits(helper, frameState, pixel, {
+      hitTolerance,
+      includeOccluded,
+      batched: false,
+      draw: (excluded) => this.paintSorted_(frameState, {excluded}),
+      resolve: (batch, ref) => buffers.featuresByRef[ref],
+      isStale: () => this.buffers_ !== buffers || this.gpu_ !== gpu,
+    });
+  }
+
+  /**
+   * @override
+   */
+  releaseQueryResources() {
+    this.helper?.releaseHitResources();
   }
 
   /**
@@ -1464,6 +1563,7 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
    * @override
    */
   disposeInternal() {
+    this.queriesAwaitingPaint_.splice(0).forEach((query) => query.cancel());
     this.releaseBuffers_();
     this.imageAtlas_.clear();
     this.atlas_.clear();

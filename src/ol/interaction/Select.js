@@ -11,7 +11,11 @@ import {TRUE} from '../functions.js';
 import VectorLayer from '../layer/Vector.js';
 import {createEditingStyle} from '../style/Style.js';
 import {getUid} from '../util.js';
+import AsyncFeatureListener, {
+  featureEventTypesForCondition,
+} from './AsyncFeatureListener.js';
 import Interaction from './Interaction.js';
+import InteractionProperty from './Property.js';
 
 /**
  * @enum {string}
@@ -270,6 +274,40 @@ class Select extends Interaction {
     this.layerFilter_ = layerFilter;
 
     /**
+     * Layers that report features asynchronously are handled through their
+     * feature events instead of the map's synchronous methods.
+     * @private
+     * @type {function(import("../layer/Layer.js").default<import("../source/Source.js").default>): boolean}
+     */
+    this.syncLayerFilter_ = (layer) =>
+      !(layer && layer.hasAsyncFeatureQuery()) && layerFilter(layer);
+
+    /**
+     * @private
+     * @type {Array<import("../layer/FeatureEvent.js").FeatureEventTypes>}
+     */
+    this.featureEventTypes_ = featureEventTypesForCondition(this.condition_);
+
+    /**
+     * @private
+     */
+    this.asyncFeatures_ = new AsyncFeatureListener(
+      this.handleFeatureEvent_.bind(this),
+    );
+
+    /**
+     * The map event that selected each feature (value), by feature uid (key).
+     * @private
+     * @type {Object<string, import("../MapBrowserEvent.js").default>}
+     */
+    this.selectedBy_ = {};
+
+    this.addChangeListener(
+      InteractionProperty.ACTIVE,
+      this.updateAsyncFeatures_,
+    );
+
+    /**
      * An association between selected feature (key)
      * and layer (value)
      * @private
@@ -341,6 +379,7 @@ class Select extends Interaction {
       this.features_.forEach(this.restorePreviousStyle_.bind(this));
     }
     super.setMap(map);
+    this.updateAsyncFeatures_();
     if (map) {
       this.features_.addEventListener(
         CollectionEventType.ADD,
@@ -475,6 +514,159 @@ class Select extends Interaction {
    */
   removeFeatureLayerAssociation_(feature) {
     delete this.featureLayerAssociation_[getUid(feature)];
+    delete this.selectedBy_[getUid(feature)];
+  }
+
+  /**
+   * Listens to the feature events of the layers that report features
+   * asynchronously, but only while the interaction is active on a map.
+   * @private
+   */
+  updateAsyncFeatures_() {
+    const map = this.getMap();
+    this.asyncFeatures_.configure(
+      map && this.getActive() ? map : null,
+      this.layerFilter_,
+      this.featureEventTypes_,
+    );
+  }
+
+  /**
+   * @param {Feature} feature Feature.
+   * @return {boolean} The feature was selected on a layer that reports
+   *     features asynchronously.
+   * @private
+   */
+  isAsyncFeature_(feature) {
+    const layer = this.getLayer(feature);
+    return !!layer && layer.hasAsyncFeatureQuery();
+  }
+
+  /**
+   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
+   * @param {import("../layer/Layer.js").default} layer Layer.
+   * @return {number} Position of the layer in the paint order, bottom first.
+   * @private
+   */
+  getLayerIndex_(mapBrowserEvent, layer) {
+    const layerStates = mapBrowserEvent.frameState?.layerStatesArray;
+    if (layerStates) {
+      return layerStates.findIndex((state) => state.layer === layer);
+    }
+    return mapBrowserEvent.map.getAllLayers().indexOf(layer);
+  }
+
+  /**
+   * Whether the event already selected a feature on a layer above this one.
+   * With `multi: false` that feature is the topmost hit, so features reported
+   * for this layer later do not replace it.
+   * @param {import("../MapBrowserEvent.js").default} mapBrowserEvent Map browser event.
+   * @param {import("../layer/Layer.js").default} layer Layer.
+   * @return {boolean} A layer above has a feature selected by the event.
+   * @private
+   */
+  hasSelectionAbove_(mapBrowserEvent, layer) {
+    const index = this.getLayerIndex_(mapBrowserEvent, layer);
+    return this.getFeatures()
+      .getArray()
+      .some((feature) => {
+        const selectedLayer = this.getLayer(feature);
+        return (
+          this.selectedBy_[getUid(feature)] === mapBrowserEvent &&
+          selectedLayer &&
+          selectedLayer !== layer &&
+          this.getLayerIndex_(mapBrowserEvent, selectedLayer) > index
+        );
+      });
+  }
+
+  /**
+   * Updates the selection from the features a layer reports asynchronously, as
+   * `handleEvent` does for the layers that answer synchronously. Each layer
+   * reports on its own, so the features it reported before are replaced
+   * without touching what other layers selected, unless `multi` is `false`
+   * and this layer has the topmost feature.
+   * @param {import("../layer/FeatureEvent.js").default} event Feature event.
+   * @private
+   */
+  handleFeatureEvent_(event) {
+    const mapBrowserEvent = event.mapBrowserEvent;
+    if (!mapBrowserEvent || !this.condition_(mapBrowserEvent)) {
+      return;
+    }
+    const layer = event.layer;
+    const add = this.addCondition_(mapBrowserEvent);
+    const remove = this.removeCondition_(mapBrowserEvent);
+    const toggle = this.toggleCondition_(mapBrowserEvent);
+    const set = !add && !remove && !toggle;
+    const features = this.getFeatures();
+
+    /** @type {Array<Feature>} */
+    const hits = [];
+    for (const feature of event.features) {
+      if (!(feature instanceof Feature) || !this.filter_(feature, layer)) {
+        continue;
+      }
+      hits.push(feature);
+      if (!this.multi_) {
+        break;
+      }
+    }
+
+    /** @type {Array<Feature>} */
+    const deselected = [];
+    /** @type {Array<Feature>} */
+    const selected = [];
+
+    if (set) {
+      const replaceOthers = hits.length > 0 && !this.multi_;
+      if (replaceOthers && this.hasSelectionAbove_(mapBrowserEvent, layer)) {
+        return;
+      }
+      for (let i = features.getLength() - 1; i >= 0; --i) {
+        const feature = features.item(i);
+        const index = hits.indexOf(feature);
+        if (index !== -1) {
+          hits.splice(index, 1);
+        } else if (this.getLayer(feature) === layer || replaceOthers) {
+          features.removeAt(i);
+          deselected.push(feature);
+        }
+      }
+      for (const feature of hits) {
+        this.addFeatureLayerAssociation_(feature, layer);
+        this.selectedBy_[getUid(feature)] = mapBrowserEvent;
+        selected.push(feature);
+      }
+      if (selected.length !== 0) {
+        features.extend(selected);
+      }
+    } else {
+      for (const feature of hits) {
+        const hasFeature = features.getArray().includes(feature);
+        if (hasFeature && (remove || toggle)) {
+          deselected.push(feature);
+        } else if (!hasFeature && (add || toggle)) {
+          this.addFeatureLayerAssociation_(feature, layer);
+          this.selectedBy_[getUid(feature)] = mapBrowserEvent;
+          selected.push(feature);
+        }
+      }
+      for (let j = deselected.length - 1; j >= 0; --j) {
+        features.remove(deselected[j]);
+      }
+      features.extend(selected);
+    }
+    if (selected.length > 0 || deselected.length > 0) {
+      this.dispatchEvent(
+        new SelectEvent(
+          SelectEventType.SELECT,
+          selected,
+          deselected,
+          mapBrowserEvent,
+        ),
+      );
+    }
   }
 
   /**
@@ -592,11 +784,12 @@ class Select extends Interaction {
             return;
           }
           this.addFeatureLayerAssociation_(feature, layer);
+          this.selectedBy_[getUid(feature)] = mapBrowserEvent;
           selected.push(feature);
           return !this.multi_;
         },
         {
-          layerFilter: this.layerFilter_,
+          layerFilter: this.syncLayerFilter_,
           hitTolerance: this.hitTolerance_,
         },
       );
@@ -605,6 +798,9 @@ class Select extends Interaction {
         const feature = features.item(i);
         const index = selected.indexOf(feature);
         if (index === -1) {
+          if (this.isAsyncFeature_(feature)) {
+            continue;
+          }
           features.removeAt(i);
           deselected.push(feature);
         } else {
@@ -628,12 +824,13 @@ class Select extends Interaction {
             deselected.push(feature);
           } else if (!hasFeature && (add || toggle)) {
             this.addFeatureLayerAssociation_(feature, layer);
+            this.selectedBy_[getUid(feature)] = mapBrowserEvent;
             selected.push(feature);
           }
           return !this.multi_; // stop if not multi
         },
         {
-          layerFilter: this.layerFilter_,
+          layerFilter: this.syncLayerFilter_,
           hitTolerance: this.hitTolerance_,
         },
       );
