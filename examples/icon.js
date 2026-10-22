@@ -69,27 +69,23 @@ function disposePopover() {
   }
 }
 // display popup on click
-map.on('click', function (evt) {
-  const feature = map.forEachFeatureAtPixel(evt.pixel, function (feature) {
-    return feature;
-  });
+vectorLayer.on('featureclick', function (evt) {
   disposePopover();
-  if (!feature) {
+  if (!evt.feature) {
     return;
   }
   popup.setPosition(evt.coordinate);
   popover = new bootstrap.Popover(element, {
     placement: 'top',
     html: true,
-    content: feature.get('name'),
+    content: evt.feature.get('name'),
   });
   popover.show();
 });
 
 // change mouse cursor when over marker
-map.on('pointermove', function (e) {
-  const hit = map.hasFeatureAtPixel(e.pixel);
-  map.getTargetElement().style.cursor = hit ? 'pointer' : '';
+vectorLayer.on('featurehover', function (evt) {
+  map.getTargetElement().style.cursor = evt.feature ? 'pointer' : '';
 });
 // Close the popup when the map is moved
 map.on('movestart', disposePopover);

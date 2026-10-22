@@ -29,8 +29,9 @@ import BaseVector from './BaseVector.js';
  *   import("../Observable.js").OnSignature<import("./Base.js").BaseLayerObjectEventTypes|
  *     import("./Layer.js").LayerEventType|HeatmapEventTypes, import("../Object.js").ObjectEvent, Return> &
  *   import("../Observable.js").OnSignature<import("../render/EventType.js").LayerRenderEventTypes, import("../render/Event.js").default, Return> &
+ *   import("../Observable.js").OnSignature<import("./FeatureEvent.js").FeatureEventTypes, import("./FeatureEvent.js").default, Return> &
  *   import("../Observable.js").CombinedOnSignature<import("../Observable.js").EventTypes|import("./Base.js").BaseLayerObjectEventTypes|
- *     import("./Layer.js").LayerEventType|HeatmapEventTypes|import("../render/EventType.js").LayerRenderEventTypes, Return>} HeatmapOnSignature
+ *     import("./Layer.js").LayerEventType|HeatmapEventTypes|import("../render/EventType.js").LayerRenderEventTypes|import("./FeatureEvent.js").FeatureEventTypes, Return>} HeatmapOnSignature
  */
 
 /**

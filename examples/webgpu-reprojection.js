@@ -251,8 +251,7 @@ vector.on('change:visible', () => {
 map.addInteraction(link);
 
 let highlightedId = -1;
-function displayFeatureInfo(pixel) {
-  const feature = map.forEachFeatureAtPixel(pixel, (f) => f);
+function displayFeatureInfo(feature) {
   const info = document.getElementById('info');
   if (info) {
     info.innerHTML = feature ? feature.get('ECO_NAME') || '&nbsp;' : '&nbsp;';
@@ -266,12 +265,10 @@ function displayFeatureInfo(pixel) {
   }
 }
 
-map.on('pointermove', (evt) => {
-  if (!evt.dragging) {
-    displayFeatureInfo(evt.pixel);
-  }
+vector.on('featurehover', (evt) => {
+  displayFeatureInfo(evt.feature);
 });
 
-map.on('click', (evt) => {
-  displayFeatureInfo(evt.pixel);
+vector.on('featureclick', (evt) => {
+  displayFeatureInfo(evt.feature);
 });

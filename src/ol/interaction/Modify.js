@@ -30,6 +30,7 @@ import {
 } from '../extent.js';
 import Point from '../geom/Point.js';
 import {fromCircle} from '../geom/Polygon.js';
+import {FeatureEventType} from '../layer/FeatureEvent.js';
 import VectorLayer from '../layer/Vector.js';
 import {
   fromUserCoordinate,
@@ -43,7 +44,9 @@ import VectorEventType from '../source/VectorEventType.js';
 import RBush from '../structs/RBush.js';
 import {createEditingStyle} from '../style/Style.js';
 import {getUid} from '../util.js';
+import AsyncFeatureListener from './AsyncFeatureListener.js';
 import PointerInteraction from './Pointer.js';
+import InteractionProperty from './Property.js';
 import {
   getCoordinate,
   getTraceTargetUpdate,
@@ -569,6 +572,29 @@ class Modify extends PointerInteraction {
     }
 
     /**
+     * Follows the topmost feature under the pointer on the layers that report
+     * features asynchronously, which `hitDetection` reads in place of the
+     * map's synchronous methods.
+     * @private
+     */
+    this.asyncFeatures_ = new AsyncFeatureListener(
+      this.handleFeatureEvent_.bind(this),
+    );
+
+    /**
+     * The topmost feature under the pointer, as last reported by each layer
+     * that reports features asynchronously.
+     * @private
+     * @type {Map<import("../layer/Layer.js").default, import("../Feature.js").FeatureLike>}
+     */
+    this.hoveredFeatures_ = new Map();
+
+    this.addChangeListener(
+      InteractionProperty.ACTIVE,
+      this.updateAsyncFeatures_,
+    );
+
+    /**
      * Internal features array.  When adding or removing features, be sure to use
      * addFeature_()/removeFeature_() so that the segment index is adjusted.
      * @type {Array<Feature>}
@@ -743,6 +769,46 @@ class Modify extends PointerInteraction {
   setMap(map) {
     this.overlay_.setMap(map);
     super.setMap(map);
+    this.updateAsyncFeatures_();
+  }
+
+  /**
+   * With `hitDetection`, listens to `featurehover` on the layers that report
+   * features asynchronously, while the interaction is active on a map.
+   * @private
+   */
+  updateAsyncFeatures_() {
+    const map = this.getMap();
+    const hitDetection = this.hitDetection_;
+    this.hoveredFeatures_.clear();
+    this.asyncFeatures_.configure(
+      map && hitDetection && this.getActive() ? map : null,
+      typeof hitDetection === 'object' && hitDetection
+        ? (layer) => layer === hitDetection
+        : () => true,
+      [FeatureEventType.HOVER],
+    );
+  }
+
+  /**
+   * @param {import("../layer/FeatureEvent.js").default} event Feature event.
+   * @private
+   */
+  handleFeatureEvent_(event) {
+    if (event.feature) {
+      this.hoveredFeatures_.set(event.layer, event.feature);
+    } else {
+      this.hoveredFeatures_.delete(event.layer);
+    }
+    const map = this.getMap();
+    if (
+      map &&
+      map.isRendered() &&
+      this.getActive() &&
+      !this.handlingDownUpSequence
+    ) {
+      this.handlePointerAtPixel_(this.lastCoordinate_);
+    }
   }
 
   /**
@@ -2025,48 +2091,64 @@ class Modify extends PointerInteraction {
     /** @type {Point|undefined} */
     let hitPointGeometry;
     if (this.hitDetection_) {
-      const layerFilter =
-        typeof this.hitDetection_ === 'object'
-          ? (/** @type {import("../layer/Layer.js").default} */ layer) =>
-              layer === this.hitDetection_
-          : undefined;
+      const hitLayer =
+        typeof this.hitDetection_ === 'object' ? this.hitDetection_ : null;
+      /**
+       * @param {import("../Feature.js").FeatureLike} feature Feature.
+       * @param {import("../geom/SimpleGeometry.js").default|undefined} geometry Hit geometry.
+       */
+      const checkHit = (feature, geometry) => {
+        if (geometry && geometry.getType() === 'Point') {
+          geometry = new Point(
+            toUserCoordinate(
+              /** @type {import("../coordinate.js").Coordinate} */ (
+                geometry.getCoordinates()
+              ),
+              projection,
+            ),
+          );
+        }
+        const geom = geometry || feature.getGeometry();
+
+        if (
+          geom &&
+          geom.getType() === 'Point' &&
+          feature instanceof Feature &&
+          this.features_.includes(feature)
+        ) {
+          hitPointGeometry = /** @type {Point} */ (geom);
+          const coordinate = /** @type {Point} */ (feature.getGeometry())
+            .getFlatCoordinates()
+            .slice(0, 2);
+          nodes = [
+            {
+              feature,
+              geometry: hitPointGeometry,
+              segment: [coordinate, coordinate],
+            },
+          ];
+        }
+      };
       map.forEachFeatureAtPixel(
         pixel,
         (feature, layer, geometry) => {
-          if (geometry && geometry.getType() === 'Point') {
-            geometry = new Point(
-              toUserCoordinate(
-                /** @type {import("../coordinate.js").Coordinate} */ (
-                  geometry.getCoordinates()
-                ),
-                projection,
-              ),
-            );
-          }
-          const geom = geometry || feature.getGeometry();
-
-          if (
-            geom &&
-            geom.getType() === 'Point' &&
-            feature instanceof Feature &&
-            this.features_.includes(feature)
-          ) {
-            hitPointGeometry = /** @type {Point} */ (geom);
-            const coordinate = /** @type {Point} */ (feature.getGeometry())
-              .getFlatCoordinates()
-              .slice(0, 2);
-            nodes = [
-              {
-                feature,
-                geometry: hitPointGeometry,
-                segment: [coordinate, coordinate],
-              },
-            ];
-          }
+          checkHit(feature, geometry);
           return true;
         },
-        {layerFilter},
+        {
+          layerFilter: (layer) =>
+            !layer.hasAsyncFeatureQuery() && (!hitLayer || layer === hitLayer),
+        },
       );
+      if (!nodes) {
+        for (const layer of this.asyncFeatures_.getLayers()) {
+          const feature = this.hoveredFeatures_.get(layer);
+          if (feature) {
+            checkHit(feature, undefined);
+            break;
+          }
+        }
+      }
     }
     if (!nodes) {
       const viewExtent = fromUserExtent(
