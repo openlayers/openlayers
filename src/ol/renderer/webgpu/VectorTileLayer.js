@@ -48,6 +48,7 @@ import {getUid} from '../../util.js';
 import ViewHint from '../../ViewHint.js';
 import FontAtlas from '../../webgpu/FontAtlas.js';
 import ImageAtlas from '../../webgpu/ImageAtlas.js';
+import {commandsToHit, hitModeForTile, queryHits} from './hitQuery.js';
 import {hitFeatures} from './hitTest.js';
 import LabelRenderer from './LabelRenderer.js';
 import LabelView from './LabelView.js';
@@ -430,6 +431,13 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
      * @type {import("./vectorUtil.js").PaintCache}
      */
     this.paintCache_ = {};
+
+    /**
+     * The frame last painted, which is what a feature query looks at.
+     * @private
+     * @type {import("../../Map.js").FrameState|null}
+     */
+    this.paintedFrameState_ = null;
 
     /**
      * Scratch for per-batch uniform writes.
@@ -1663,37 +1671,62 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
    * Draw the visible tiles, and fading labels from tiles that just left, in
    * one z-index order. Switching tiles rebinds that tile's grid and world offset.
    *
+   * For a feature query, draw to the hit pass the helper has begun instead.
+   * A hit pass draws what the last frame did, and tells the shaders to write
+   * feature references. Each tile is a batch of its own, and its index travels
+   * in the hit color, as feature references are only unique within a tile.
+   * The pass leaves label opacities alone and skips fading labels. The first
+   * pass can run the render bundle that frame recorded. A later one leaves out
+   * the features already found, and text, which a query ignores, so it records
+   * its commands afresh.
+   *
    * @param {import("../../Map.js").FrameState} frameState Frame.
+   * @param {{excluded: Set<number>|null}} [hit] Set for a hit pass: the keys,
+   * see `hitKey`, of the features to leave out.
    * @private
    */
-  paintSorted_(frameState) {
+  paintSorted_(frameState, hit) {
     const helper = this.helper;
     const uniforms = this.uniforms_;
     if (!helper || !uniforms) {
       return;
     }
-    helper.prepareDraw(frameState, false, this.getClearColor(frameState));
+    const excluded = hit?.excluded;
+    if (!hit) {
+      this.paintedFrameState_ = frameState;
+      helper.prepareDraw(frameState, false, this.getClearColor(frameState));
+    }
     uniforms.begin();
     /** @type {Array<import("./vectorUtil.js").PaintBatch>} */
     const entries = [];
     const view = this.labelView_;
     for (let i = 0; i < this.renderedBatches_.length; ++i) {
       const batch = this.renderedBatches_[i];
+      const hitDetection = hit ? hitModeForTile(batch.buffers, i) : 0;
+      if (hit && !hitDetection) {
+        continue;
+      }
       const gpu = batch.getGpuBuffers(helper);
       const labels = this.cornerBuffer_ ? batch.getLabelRenderer(helper) : null;
-      if (labels && this.opacities_) {
+      if (labels && this.opacities_ && !hit) {
         this.applyOpacities_(labels, i);
       }
       const worldOffset = batch.worldOffset;
       entries.push({
-        commands: batch.buffers.commands || [],
+        commands: commandsToHit(batch.buffers.commands || [], i, excluded),
         tileOrder: i,
         gpu,
         labels,
         fontGeneration: batch.fontAtlasGeneration,
         imageGeneration: batch.imageAtlasGeneration,
         slot: this.cornerBuffer_
-          ? labelUniforms(uniforms, frameState, batch.buffers, worldOffset)
+          ? labelUniforms(
+              uniforms,
+              frameState,
+              batch.buffers,
+              worldOffset,
+              hitDetection,
+            )
           : null,
         prepare: () => {
           gpu.writeUniforms(
@@ -1701,7 +1734,7 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
             this.uniformData_,
             this.projMat_,
             frameState,
-            0,
+            hitDetection,
             worldOffset,
             batch.geometryClipExtents,
           );
@@ -1720,12 +1753,16 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
         ++i
       ) {
         const batch = this.declutterBatches_[i];
+        const hitDetection = hit ? hitModeForTile(batch.buffers, i) : 0;
+        if (hit && !hitDetection) {
+          continue;
+        }
         const labels = batch.getLabelRenderer(helper);
-        if (this.opacities_) {
+        if (this.opacities_ && !hit) {
           this.applyOpacities_(labels, i);
         }
         entries.push({
-          commands: batch.buffers.commands || [],
+          commands: commandsToHit(batch.buffers.commands || [], i, excluded),
           tileOrder: i,
           gpu: null,
           labels,
@@ -1737,13 +1774,15 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
             frameState,
             batch.buffers,
             batch.worldOffset,
+            hitDetection,
           ),
           prepare: () => {},
         });
       }
       const currentIds = new Set(view.identities);
       let tileOrder = this.declutterBatches_.length;
-      for (let r = 0; r < this.retiredBatches_.length; ++r) {
+      const retiredCount = hit ? 0 : this.retiredBatches_.length;
+      for (let r = 0; r < retiredCount; ++r) {
         const batch = this.retiredBatches_[r].batch;
         // This tile is still a label source. Fading it out would clear the
         // opacities just written above, and its replacement is itself.
@@ -1811,9 +1850,63 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
       this.atlas_,
       this.imageAtlas_,
       this.cornerBuffer_,
-      this.paintCache_,
+      excluded ? undefined : this.paintCache_,
     );
-    helper.finalizeDraw(frameState);
+    if (!hit) {
+      helper.finalizeDraw(frameState);
+    }
+  }
+
+  /**
+   * Features of this layer at a pixel, found with a hit pass on the GPU. The
+   * pass draws the tiles as the last frame did, so the answer is what the user
+   * is looking at, in every world it repeats in. Labels and symbols of tiles
+   * kept only for decluttering count, as they are drawn. Text is not hit. The
+   * result is empty before the layer has painted, while it is not visible, and
+   * when `disableHitDetection` is set. A tile with more than 65535 features
+   * cannot be told apart from others by a query, and is skipped.
+   *
+   * @param {import("../../pixel.js").Pixel} pixel Pixel relative to the map viewport.
+   * @param {number} hitTolerance Hit tolerance in pixels.
+   * @param {boolean} [includeOccluded] Whether to also look for features
+   * that other features cover at the pixel, which takes another pass for
+   * every layer of them.
+   * @return {Promise<Array<import("../../Feature.js").FeatureLike>>} Features.
+   * @override
+   */
+  queryFeatures(pixel, hitTolerance, includeOccluded = true) {
+    const helper = this.helper;
+    const frameState = this.paintedFrameState_;
+    if (
+      !helper ||
+      !this.uniforms_ ||
+      !frameState ||
+      !this.hitDetectionEnabled_ ||
+      !this.getLayer().isVisible()
+    ) {
+      return Promise.resolve([]);
+    }
+    const rendered = this.renderedBatches_;
+    const declutter = this.declutterBatches_;
+    return queryHits(helper, frameState, pixel, {
+      hitTolerance,
+      includeOccluded,
+      batched: true,
+      draw: (excluded) => this.paintSorted_(frameState, {excluded}),
+      resolve: (batch, ref) =>
+        (batch < rendered.length ? rendered[batch] : declutter[batch])?.buffers
+          .featuresByRef[ref],
+      isStale: () =>
+        this.renderedBatches_ !== rendered ||
+        this.declutterBatches_ !== declutter,
+    });
+  }
+
+  /**
+   * @override
+   */
+  releaseQueryResources() {
+    this.helper?.releaseHitResources();
   }
 
   /**
