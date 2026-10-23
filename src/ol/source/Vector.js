@@ -41,8 +41,9 @@ export class VectorSourceEvent extends Event {
    * @param {string} type Type.
    * @param {FeatureType} [feature] Feature.
    * @param {Array<FeatureType>} [features] Features.
+   * @param {import("../extent.js").Extent} [extent] Extent.
    */
-  constructor(type, feature, features) {
+  constructor(type, feature, features, extent) {
     super(type);
 
     /**
@@ -58,6 +59,16 @@ export class VectorSourceEvent extends Event {
      * @api
      */
     this.features = features;
+
+    /**
+     * The extent being loaded for the `FEATURESLOADSTART`, `FEATURESLOADEND` and
+     * `FEATURESLOADERROR` events, `undefined` otherwise. To retry a failed load, pass
+     * it to {@link module:ol/source/Vector~VectorSource#removeLoadedExtent} and call
+     * `changed()` on the source.
+     * @type {import("../extent.js").Extent|undefined}
+     * @api
+     */
+    this.extent = extent;
   }
 }
 
@@ -1037,7 +1048,12 @@ class VectorSource extends Source {
       if (!alreadyLoaded) {
         this.loading = Number(this.loading) + 1;
         this.dispatchEvent(
-          new VectorSourceEvent(VectorEventType.FEATURESLOADSTART),
+          new VectorSourceEvent(
+            VectorEventType.FEATURESLOADSTART,
+            undefined,
+            undefined,
+            extentToLoad,
+          ),
         );
 
         /**
@@ -1050,6 +1066,7 @@ class VectorSource extends Source {
               VectorEventType.FEATURESLOADEND,
               undefined,
               features,
+              extentToLoad,
             ),
           );
         };
@@ -1058,7 +1075,12 @@ class VectorSource extends Source {
           this.changed();
           this.loading = Number(this.loading) - 1;
           this.dispatchEvent(
-            new VectorSourceEvent(VectorEventType.FEATURESLOADERROR),
+            new VectorSourceEvent(
+              VectorEventType.FEATURESLOADERROR,
+              undefined,
+              undefined,
+              extentToLoad,
+            ),
           );
         };
 
