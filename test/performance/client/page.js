@@ -333,6 +333,9 @@ function showCaseResult(entry, report) {
   const result = document.createElement('div');
   result.className = 'case-result';
   for (const metric of REPORT_METRICS) {
+    if (typeof report[metric.key] !== 'number') {
+      continue;
+    }
     const item = document.createElement('div');
     item.className = 'metric';
     item.textContent = metric.label;
@@ -350,7 +353,11 @@ function showCaseResult(entry, report) {
  * @return {string} Formatted value.
  */
 function formatValue(key, value) {
-  return key === 'worstFrameMs' || key === 'blockingMs' || key === 'settleMs'
+  return key === 'worstFrameMs' ||
+    key === 'blockingMs' ||
+    key === 'settleMs' ||
+    key === 'gpuAllocations' ||
+    key === 'writeBufferCalls'
     ? value.toFixed(1)
     : value.toFixed(2);
 }
@@ -374,12 +381,16 @@ function changeDirection(key, previous, value) {
  * Builds a report cell. With a baseline, the cell also says whether the value
  * got better or worse, by how much in the column's unit, and what it was.
  * @param {string} key Metric key.
- * @param {number} value Current value.
+ * @param {number|undefined} value Current value, if the case has one.
  * @param {number|undefined} previous Baseline value, if the baseline has one.
  * @return {HTMLTableCellElement} Cell.
  */
 function metricCell(key, value, previous) {
   const cell = document.createElement('td');
+  if (typeof value !== 'number') {
+    cell.textContent = '—';
+    return cell;
+  }
   const current = document.createElement('strong');
   current.textContent = formatValue(key, value);
   cell.append(current);
@@ -423,7 +434,10 @@ function renderComparison() {
       continue;
     }
     for (const metric of REPORT_METRICS) {
-      if (typeof previous[metric.key] !== 'number') {
+      if (
+        typeof previous[metric.key] !== 'number' ||
+        typeof report[metric.key] !== 'number'
+      ) {
         continue;
       }
       ++counts[

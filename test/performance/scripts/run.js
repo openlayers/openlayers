@@ -210,6 +210,12 @@ function compareSummaries(title, base, head) {
     )}  change`,
   );
   for (const metric of REPORT_METRICS) {
+    if (
+      typeof base[metric.key] !== 'number' &&
+      typeof head[metric.key] !== 'number'
+    ) {
+      continue;
+    }
     const a = base[metric.key] ?? 0;
     const b = head[metric.key] ?? 0;
     const change = percentChange(a, b);
@@ -360,28 +366,31 @@ if (options.compare) {
   if (result.skipped) {
     log(`skipped: ${result.reason}`);
   } else {
+    const width = Math.max(
+      ...REPORT_METRICS.map((metric) => metric.label.length),
+    );
+    /**
+     * @param {Object<string, number>} summary Summary.
+     * @param {string} indent Line prefix.
+     */
+    const logSummary = (summary, indent) => {
+      for (const metric of REPORT_METRICS) {
+        if (typeof summary[metric.key] === 'number') {
+          log(
+            `${indent}${metric.label.padEnd(width)} ${summary[metric.key].toFixed(3)}`,
+          );
+        }
+      }
+    };
     for (const caseName of Object.keys(result.cases)) {
       log('');
       log(caseName);
-      const width = Math.max(
-        ...REPORT_METRICS.map((metric) => metric.label.length),
-      );
-      for (const metric of REPORT_METRICS) {
-        log(
-          `${metric.label.padEnd(width)} ${result.cases[caseName][
-            metric.key
-          ].toFixed(3)}`,
-        );
-      }
+      logSummary(result.cases[caseName], '');
       for (const [phase, summary] of Object.entries(
         result.cases[caseName].phases || {},
       )) {
         log(`  ${phase}`);
-        for (const metric of REPORT_METRICS) {
-          log(
-            `  ${metric.label.padEnd(width)} ${summary[metric.key].toFixed(3)}`,
-          );
-        }
+        logSummary(summary, '  ');
       }
     }
   }

@@ -38,6 +38,43 @@ export const REPORT_METRICS = [
     unit: 'ms',
     aggregate: 'mean',
   },
+  // WebGPU cases only. Other cases leave these out of their summaries.
+  {
+    key: 'gpuPeakMB',
+    label: 'Peak GPU memory (MB)',
+    unit: 'MB',
+    aggregate: 'max',
+  },
+  {
+    key: 'gpuRetainedMB',
+    label: 'Retained GPU memory (MB)',
+    unit: 'MB',
+    aggregate: 'max',
+  },
+  {
+    key: 'gpuAllocations',
+    label: 'GPU allocations',
+    unit: 'allocations',
+    aggregate: 'mean',
+  },
+  {
+    key: 'writeBufferCalls',
+    label: 'writeBuffer calls',
+    unit: 'calls',
+    aggregate: 'mean',
+  },
+  {
+    key: 'writeBufferMB',
+    label: 'writeBuffer (MB)',
+    unit: 'MB',
+    aggregate: 'mean',
+  },
+  {
+    key: 'textureUploadMB',
+    label: 'Texture uploads (MB)',
+    unit: 'MB',
+    aggregate: 'mean',
+  },
 ];
 
 /**
@@ -96,6 +133,26 @@ function summarizeExperiences(results) {
       experiences.map((experience) => experience.blockingMs ?? 0),
     ),
     settleMs: mean(results.map((result) => result.settleMs ?? 0)),
+    ...summarizeGpuUsage(results),
+  };
+}
+
+/**
+ * @param {Array<Object>} results Flights or phases, each with an optional `gpu`.
+ * @return {Object} GPU metrics, or none unless every result has GPU usage.
+ */
+function summarizeGpuUsage(results) {
+  if (!results.every((result) => result.gpu)) {
+    return {};
+  }
+  const usages = results.map((result) => result.gpu);
+  return {
+    gpuPeakMB: Math.max(...usages.map((usage) => usage.peakMB)),
+    gpuRetainedMB: Math.max(...usages.map((usage) => usage.retainedMB)),
+    gpuAllocations: mean(usages.map((usage) => usage.allocations)),
+    writeBufferCalls: mean(usages.map((usage) => usage.writeBufferCalls)),
+    writeBufferMB: mean(usages.map((usage) => usage.writeBufferMB)),
+    textureUploadMB: mean(usages.map((usage) => usage.textureUploadMB)),
   };
 }
 
@@ -174,6 +231,9 @@ export function toBenchmarkAction(report) {
     ];
     for (const [name, summary] of summaries) {
       for (const metric of REPORT_METRICS) {
+        if (typeof summary[metric.key] !== 'number') {
+          continue;
+        }
         data.push({
           name: `${name} · ${metric.label}`,
           unit: metric.unit,
@@ -216,6 +276,9 @@ export function formatMarkdown(report, baseline = null) {
     for (const [name, summary, previousSummary] of summaries) {
       for (const metric of REPORT_METRICS) {
         const value = summary[metric.key];
+        if (typeof value !== 'number') {
+          continue;
+        }
         const previous = previousSummary?.[metric.key];
         const baselineText =
           typeof previous === 'number' ? previous.toFixed(2) : '—';
