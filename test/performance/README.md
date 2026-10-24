@@ -26,6 +26,14 @@ The report metrics are smaller-is-better:
 | Long tasks | Main-thread tasks longer than 50 milliseconds, as the Long Tasks API reports them | Mean |
 | Blocking time (ms) | Time those tasks ran beyond 50 milliseconds | Mean |
 | Settle time (ms) | Time until the first `rendercomplete` after the last navigation, which includes tile detail catching up | Mean |
+| Peak GPU memory (MB) | Largest size of the live WebGPU buffers and textures during the flight | Maximum |
+| Retained GPU memory (MB) | Size of the live WebGPU buffers and textures when the flight ends | Maximum |
+| GPU allocations | Buffers and textures created during the flight | Mean |
+| writeBuffer calls | `GPUQueue#writeBuffer` calls during the flight | Mean |
+| writeBuffer (MB) | Bytes those calls wrote | Mean |
+| Texture uploads (MB) | Bytes written with `writeTexture` and `copyExternalImageToTexture` | Mean |
+
+The GPU metrics are reported only for cases that submit WebGPU work. `shared/gpu-counters.js` wraps the WebGPU methods to count them. Live memory is the size of buffers and textures that were created and not yet destroyed, so a resource dropped without `destroy()` stays counted. Texture sizes include every mip level and sample. The canvas context's own textures are not counted. Retained memory that grows from one run to the next points to a leak. These counts are much less noisy than the frame metrics, but style evaluation that is split up to fit the frame budget still depends on machine speed, so they can still vary a little between runs and machines.
 
 Frame classification uses the display interval measured at the start of a flight. Pass `--display-hz` when the page is busy loading while it measures, or the interval is too long and missed frames are undercounted.
 
@@ -110,6 +118,6 @@ Never replace an existing release asset. A fixture change always receives a new 
 
 ## Continuous integration
 
-Pull requests and `main` write the four metrics to the Actions job summary and upload the full report for short-term diagnosis. Pull requests compare with the public latest report. Trusted `main` runs append the four metrics to the `openlayers/benchmarks` history and GitHub Pages timeline.
+Pull requests and `main` write the report metrics to the Actions job summary and upload the full report for short-term diagnosis. Pull requests compare with the public latest report. Trusted `main` runs append them to the `openlayers/benchmarks` history and GitHub Pages timeline.
 
 Performance changes do not fail CI solely because a metric moved. Software rendering on shared runners is noisy; reviewers use the summary and timeline to investigate significant changes. A case error still fails the job.
