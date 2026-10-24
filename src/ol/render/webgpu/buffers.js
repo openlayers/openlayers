@@ -35,6 +35,7 @@ import {
 import {buildGeometryBuffers, worldCopyShifts} from './geometryBuffers.js';
 import {layoutLineLabel, layoutPointLabel} from './glyphLayout.js';
 import {NumberSink} from './numberSink.js';
+import {snapshotStyle} from './styleSnapshot.js';
 
 /**
  * @typedef {Object} FilterExtentOptions
@@ -59,9 +60,9 @@ import {NumberSink} from './numberSink.js';
  * @param {import("./style.js").StyleFunction} styleFunction Style function.
  * @param {number} resolution Resolution.
  * @param {number} zoom View zoom.
- * @param {boolean} [snapshot] Clone mutable style instances, and the geometries
- * they carry, for reuse. Style functions may rewrite a shared style geometry
- * in place for every feature they style.
+ * @param {import("./styleSnapshot.js").StyleSnapshots} [snapshots] Snapshot
+ * the styles, and the geometries they carry, for reuse. Style functions may
+ * change a shared style, or rewrite its geometry, for every feature they style.
  * @return {Array<ResolvedStyleGeometry>} Resolved style geometries.
  */
 export function resolveFeatureStyles(
@@ -69,7 +70,7 @@ export function resolveFeatureStyles(
   styleFunction,
   resolution,
   zoom,
-  snapshot = false,
+  snapshots,
 ) {
   const geometry = feature.getGeometry();
   if (!geometry) {
@@ -83,7 +84,9 @@ export function resolveFeatureStyles(
   /** @type {Array<ResolvedStyleGeometry>} */
   const resolved = [];
   for (let s = 0; s < styleArray.length; ++s) {
-    const style = snapshot ? styleArray[s].clone() : styleArray[s];
+    const style = snapshots
+      ? snapshotStyle(styleArray[s], snapshots, s)
+      : styleArray[s];
     const styledGeometry = style.getGeometryFunction()(feature) || geometry;
     if (!styledGeometry) {
       continue;
@@ -477,6 +480,12 @@ export class VectorRequestBuilder {
 
     /**
      * @private
+     * @type {import("./styleSnapshot.js").StyleSnapshots|undefined}
+     */
+    this.snapshots_ = styleCache ? [] : undefined;
+
+    /**
+     * @private
      * @type {StyleTable}
      */
     this.styleTable_ = new StyleTable();
@@ -554,7 +563,7 @@ export class VectorRequestBuilder {
           this.styleFunction_,
           this.resolution_,
           this.zoom_,
-          !!styleCache,
+          this.snapshots_,
         );
         styleCache?.set(feature, resolved);
       }
