@@ -139,6 +139,12 @@ function getByteLength(buffers) {
  */
 
 /**
+ * @typedef {Object} StyleCache
+ * @property {WeakMap<import("../../Feature.js").FeatureLike, Array<import("../../render/webgpu/buffers.js").ResolvedStyleGeometry>>} resolved Resolved styles by feature.
+ * @property {import("../../render/webgpu/styleSnapshot.js").StyleSnapshots} snapshots Last style snapshots.
+ */
+
+/**
  * @classdesc
  * One tile's CPU geometry plus the GPU buffers built from it. Cached in an LRU
  * that disposes evicted entries, which is what releases the GPU buffers.
@@ -518,7 +524,7 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
      * Resolved function styles shared by overlapping subdivisions at a render
      * zoom.
      * @private
-     * @type {Map<string, WeakMap<import("../../Feature.js").FeatureLike, Array<import("../../render/webgpu/buffers.js").ResolvedStyleGeometry>>>}
+     * @type {Map<string, StyleCache>}
      */
     this.styleCaches_ = new Map();
 
@@ -920,16 +926,17 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
    * @private
    */
   prepareStyleCache_(features, bucket, resolution, zoom) {
-    let resolved = this.styleCaches_.get(bucket);
-    if (!resolved) {
-      resolved = new WeakMap();
-      this.styleCaches_.set(bucket, resolved);
+    let styleCache = this.styleCaches_.get(bucket);
+    if (!styleCache) {
+      styleCache = {resolved: new WeakMap(), snapshots: []};
+      this.styleCaches_.set(bucket, styleCache);
       if (this.styleCaches_.size > MAX_STYLE_CACHES) {
         this.styleCaches_.delete(
           /** @type {string} */ (this.styleCaches_.keys().next().value),
         );
       }
     }
+    const {resolved, snapshots} = styleCache;
     const sorted = features
       .slice()
       .sort((a, b) => Number(getUid(a)) - Number(getUid(b)));
@@ -944,7 +951,7 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
           this.styleFunction_,
           resolution,
           zoom,
-          true,
+          snapshots,
         ),
       );
       if (performance.now() >= this.batchBuildDeadline_) {
