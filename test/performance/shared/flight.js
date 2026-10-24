@@ -5,6 +5,7 @@
 import ViewHint from '../../../src/ol/ViewHint.js';
 import {easeOut, inAndOut} from '../../../src/ol/easing.js';
 import {getCurrentDevice} from '../../../src/ol/webgpu/Device.js';
+import {gpuUsage, readGpuCounters, resetGpuPeak} from './gpu-counters.js';
 import {frameExperience, median} from './stats.js';
 
 /**
@@ -381,6 +382,8 @@ async function flyPhases(options, longTaskMs, observer) {
       longTaskMs.push(entry.duration);
     }
     longTaskMs.length = 0;
+    resetGpuPeak();
+    const gpuStart = readGpuCounters();
     const hinted = phase.moving || phase.interacting;
     if (hinted) {
       view.setHint(ViewHint.INTERACTING, 1);
@@ -493,9 +496,18 @@ async function flyPhases(options, longTaskMs, observer) {
       frames: frameMs.length,
       experience: frameExperience(frameMs, targetFrameMs, longTaskMs),
       settleMs,
+      gpu: gpuUsage(gpuStart, readGpuCounters()),
     });
     allFrameMs.push(...frameMs);
     allLongTaskMs.push(...longTaskMs);
+  }
+
+  const gpu = combineGpuUsage(phaseResults.map((phase) => phase.gpu));
+  if (!gpu.submits) {
+    // Not a WebGPU case.
+    for (const phase of phaseResults) {
+      delete phase.gpu;
+    }
   }
 
   return {
@@ -509,6 +521,24 @@ async function flyPhases(options, longTaskMs, observer) {
       0,
       ...phaseResults.map((phase) => /** @type {number} */ (phase.settleMs)),
     ),
+    gpu: gpu.submits ? gpu : undefined,
     phases: phaseResults,
+  };
+}
+
+/**
+ * @param {Array<import("./gpu-counters.js").GpuUsage>} phases Usage of each phase, in order.
+ * @return {import("./gpu-counters.js").GpuUsage} Usage of the whole flight.
+ */
+function combineGpuUsage(phases) {
+  const sum = (key) => phases.reduce((total, phase) => total + phase[key], 0);
+  return {
+    peakMB: Math.max(...phases.map((phase) => phase.peakMB)),
+    retainedMB: phases[phases.length - 1].retainedMB,
+    allocations: sum('allocations'),
+    writeBufferCalls: sum('writeBufferCalls'),
+    writeBufferMB: sum('writeBufferMB'),
+    textureUploadMB: sum('textureUploadMB'),
+    submits: sum('submits'),
   };
 }

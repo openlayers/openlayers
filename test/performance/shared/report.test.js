@@ -90,6 +90,43 @@ describe('test/performance/shared/report', () => {
     });
   });
 
+  it('keeps the worst GPU memory and averages GPU work', () => {
+    const experience = {
+      frames: 10,
+      displayMs: 16,
+      droppedFrames: 0,
+      lateFrames: 0,
+      stalls: 0,
+      worstGapMs: 16,
+    };
+    const gpu = (peakMB, retainedMB, writeBufferCalls) => ({
+      peakMB,
+      retainedMB,
+      allocations: 4,
+      writeBufferCalls,
+      writeBufferMB: 1,
+      textureUploadMB: 0,
+      submits: 10,
+    });
+    const report = summarizeRuns([
+      {experience, gpu: gpu(30, 20, 100), phases: []},
+      {experience, gpu: gpu(40, 10, 200), phases: []},
+    ]);
+
+    assert.include(report, {
+      gpuPeakMB: 40,
+      gpuRetainedMB: 20,
+      gpuAllocations: 4,
+      writeBufferCalls: 150,
+      writeBufferMB: 1,
+      textureUploadMB: 0,
+    });
+    assert.notProperty(
+      summarizeRuns([{experience, phases: []}]),
+      'writeBufferCalls',
+    );
+  });
+
   it('creates and validates a versioned report', () => {
     const report = createReport({example: {runs: 1}});
     assert.doesNotThrow(() => validateReport(report));
