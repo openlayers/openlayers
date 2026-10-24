@@ -44,8 +44,8 @@ export async function setup(target, params) {
       if (firstRun) {
         firstRun = false;
       } else {
-        layer.getSource().clear();
-        layer.getRenderer()?.clearCache();
+        // A new source revision clears the renderer's tile caches.
+        layer.getSource().refresh();
       }
       return runFlight({
         map,
