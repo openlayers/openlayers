@@ -1026,10 +1026,11 @@ describe('ol/render/webgpu/buffers', () => {
       return shared;
     };
     const cache = new WeakMap();
+    const snapshots = [];
     for (const feature of [first, second]) {
       cache.set(
         feature,
-        resolveFeatureStyles(feature, styleFunction, 1, 1, true),
+        resolveFeatureStyles(feature, styleFunction, 1, 1, snapshots),
       );
     }
 
@@ -1072,10 +1073,11 @@ describe('ol/render/webgpu/buffers', () => {
       return shared;
     };
     const cache = new WeakMap();
+    const snapshots = [];
     for (const feature of [first, second]) {
       cache.set(
         feature,
-        resolveFeatureStyles(feature, styleFunction, 1, 1, true),
+        resolveFeatureStyles(feature, styleFunction, 1, 1, snapshots),
       );
     }
 
@@ -1099,6 +1101,45 @@ describe('ol/render/webgpu/buffers', () => {
         [8, 8],
       ],
     );
+  });
+
+  it('snapshots a style that the style function changes in place', () => {
+    const first = new Feature(new Point([0, 0]));
+    first.set('color', '#f00');
+    const second = new Feature(new Point([0, 0]));
+    second.set('color', '#00f');
+    const fill = new Fill();
+    const shared = new Style({fill});
+    const styleFunction = (feature) => {
+      fill.setColor(feature.get('color'));
+      return shared;
+    };
+    const snapshots = [];
+    const colors = [first, second].map((feature) =>
+      resolveFeatureStyles(feature, styleFunction, 1, 1, snapshots)[0]
+        .style.getFill()
+        .getColor(),
+    );
+
+    assert.deepEqual(colors, ['#f00', '#00f']);
+  });
+
+  it('reuses the snapshot of an equal style', () => {
+    const styleFunction = () =>
+      new Style({
+        fill: new Fill({color: '#f00'}),
+        image: new CircleStyle({radius: 3, fill: new Fill({color: '#000'})}),
+      });
+    const snapshots = [];
+    const [first, second] = [
+      new Feature(new Point([0, 0])),
+      new Feature(new Point([1, 1])),
+    ].map(
+      (feature) =>
+        resolveFeatureStyles(feature, styleFunction, 1, 1, snapshots)[0].style,
+    );
+
+    assert.strictEqual(first, second);
   });
 
   it('stores the dash pattern of a stroke, repeating an odd one', () => {
