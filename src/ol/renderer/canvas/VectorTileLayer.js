@@ -15,7 +15,7 @@ import {
   intersects,
   subtractExtents,
 } from '../../extent.js';
-import {equivalent, getTransform, transformExtent} from '../../proj.js';
+import {equivalent, transformExtent} from '../../proj.js';
 import CanvasBuilderGroup from '../../render/canvas/BuilderGroup.js';
 import CanvasExecutorGroup, {
   DECLUTTER,
@@ -310,22 +310,18 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         }
       };
 
-      const features = sourceTile.getFeatures() ?? [];
+      // Transformed once per source tile and projection, not once per render
+      // tile and resolution: a source tile can feed many render tiles when the
+      // view projection differs from the source projection.
+      const features =
+        (projection
+          ? sourceTile.getFeaturesInProjection(projection)
+          : sourceTile.getFeatures()) ?? [];
       if (renderOrder && renderOrder !== builderState.renderedRenderOrder) {
         features.sort(renderOrder);
       }
       for (let i = 0, ii = features.length; i < ii; ++i) {
-        let feature = features[i];
-        if (
-          projection &&
-          sourceTile.projection &&
-          !equivalent(projection, sourceTile.projection)
-        ) {
-          feature = feature.clone();
-          feature
-            .getGeometry()
-            .applyTransform(getTransform(sourceTile.projection, projection));
-        }
+        const feature = features[i];
         if (
           !bufferedExtent ||
           intersects(bufferedExtent, feature.getGeometry()?.getExtent())
