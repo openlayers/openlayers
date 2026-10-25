@@ -56,6 +56,8 @@ import WebGPULayerRenderer from './Layer.js';
 import {
   atlasPages,
   atlasPinningBatches,
+  BUILD_BUDGET_MOVING,
+  BUILD_BUDGET_STILL,
   createVectorPipelines,
   FrameUniformPool,
   hasUnusedAtlasPages,
@@ -124,13 +126,6 @@ function getByteLength(buffers) {
       Float32Array.BYTES_PER_ELEMENT
   );
 }
-
-/**
- * @typedef {Object} PendingBuild
- * @property {import("../../render/webgpu/buffers.js").VectorRequestBuilder} builder Builder.
- * @property {number} fontAtlasGeneration Font atlas generation when it started.
- * @property {number} imageAtlasGeneration Image atlas generation when it started.
- */
 
 /**
  * @typedef {Object} StyleState
@@ -501,7 +496,7 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     /**
      * Batches of cacheable tiles that are being built in slices, by cache key.
      * @private
-     * @type {Map<string, PendingBuild>}
+     * @type {Map<string, import("./vectorUtil.js").PendingBuild>}
      */
     this.pendingBuilds_ = new Map();
 
@@ -899,7 +894,7 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
 
   /**
    * @param {string} cacheKey Cache key of the batch.
-   * @param {PendingBuild} pendingBuild Build in progress.
+   * @param {import("./vectorUtil.js").PendingBuild} pendingBuild Build in progress.
    * @private
    */
   setPendingBuild_(cacheKey, pendingBuild) {
@@ -1404,7 +1399,8 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     const moving =
       viewHints[ViewHint.ANIMATING] || viewHints[ViewHint.INTERACTING];
     this.batchBuildBudget_ = moving ? 1 : 2;
-    this.batchBuildDeadline_ = performance.now() + (moving ? 4 : 12);
+    this.batchBuildDeadline_ =
+      performance.now() + (moving ? BUILD_BUDGET_MOVING : BUILD_BUDGET_STILL);
     const tileGrid = source.getTileGridForProjection(viewState.projection);
     const z = tileGrid.getZForResolution(
       viewState.resolution,
