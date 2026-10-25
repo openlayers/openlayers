@@ -353,4 +353,26 @@ describe('ol.layer.VectorTile', function () {
           });
       }));
   });
+
+  describe('style variables', function () {
+    it('resolves and updates the var operator', function () {
+      const layer = new VectorTileLayer({
+        source: new VectorTileSource({}),
+        style: {'circle-radius': ['var', 'radius'], 'circle-fill-color': 'red'},
+        variables: {radius: 6},
+      });
+      const feature = new Feature(new Point([0, 0]));
+
+      assert.strictEqual(
+        layer.getStyleFunction()(feature, 1)[0].getImage().getRadius(),
+        6,
+      );
+
+      layer.updateStyleVariables({radius: 12});
+      assert.strictEqual(
+        layer.getStyleFunction()(feature, 1)[0].getImage().getRadius(),
+        12,
+      );
+    });
+  });
 });

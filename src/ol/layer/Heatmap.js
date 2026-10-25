@@ -68,7 +68,8 @@ import BaseVector from './BaseVector.js';
  * attribute to use for the weight. This also supports expressions returning a number or a function that returns a weight from a feature. Weight values
  * should range from 0 to 1 (and values outside will be clamped to that range).
  * @property {import("../style/flat.js").BooleanExpression} [filter] Optional filter expression.
- * @property {Object<string, number|Array<number>|string|boolean>} [variables] Variables used in expressions (optional)
+ * @property {import("../style/flat.js").StyleVariables} [variables] Variables used in expressions (optional).
+ * To update them, use the {@link module:ol/layer/BaseVector~BaseVectorLayer#updateStyleVariables} method.
  * @property {VectorSourceType} [source] Point source.
  * @property {import("./Base.js").BackgroundColor} [background] Background color for the layer. If not specified, no background
  * will be rendered.
@@ -136,12 +137,6 @@ class Heatmap extends BaseVector {
     this.un;
 
     this.filter_ = options.filter ?? true;
-
-    /**
-     * @type {import('../style/flat.js').StyleVariables}
-     * @private
-     */
-    this.styleVariables_ = options.variables || {};
 
     /**
      * @private
@@ -282,8 +277,8 @@ class Heatmap extends BaseVector {
   createRenderer() {
     const builder = new ShaderBuilder();
 
-    const context = newCompilationContext(this.styleVariables_);
-    const filterParsingContext = newParsingContext(this.styleVariables_);
+    const context = newCompilationContext(this.styleVariables);
+    const filterParsingContext = newParsingContext(this.styleVariables);
     const filterCompiled = expressionToGlsl(
       context,
       this.filter_,
@@ -362,11 +357,11 @@ class Heatmap extends BaseVector {
 
     applyContextToBuilder(builder, context);
     const attributes = generateAttributesFromContext(context);
-    const uniforms = generateUniformsFromContext(context, this.styleVariables_);
+    const uniforms = generateUniformsFromContext(context, this.styleVariables);
 
     return new WebGLVectorLayerRenderer(this, {
       className: this.getClassName(),
-      variables: this.styleVariables_,
+      variables: this.styleVariables,
       style: {
         builder,
         attributes: {
@@ -403,15 +398,6 @@ class Heatmap extends BaseVector {
         },
       ],
     });
-  }
-
-  /**
-   * Update any variables used by the layer style and trigger a re-render.
-   * @param {import('../style/flat.js').StyleVariables} variables Variables to update.
-   */
-  updateStyleVariables(variables) {
-    Object.assign(this.styleVariables_, variables);
-    this.changed();
   }
 
   /**

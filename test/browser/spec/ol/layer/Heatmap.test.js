@@ -395,7 +395,7 @@ describe('ol/layer/Heatmap', function () {
       });
 
       layer.updateStyleVariables({foo: 'bam'});
-      assert.strictEqual(layer.styleVariables_.foo, 'bam');
+      assert.strictEqual(layer.styleVariables.foo, 'bam');
     });
     it('can be called even if no initial variables are provided', function () {
       const layer = new HeatmapLayer({
@@ -403,7 +403,7 @@ describe('ol/layer/Heatmap', function () {
       });
 
       layer.updateStyleVariables({foo: 'bam'});
-      assert.strictEqual(layer.styleVariables_.foo, 'bam');
+      assert.strictEqual(layer.styleVariables.foo, 'bam');
     });
   });
 });
