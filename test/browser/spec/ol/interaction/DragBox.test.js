@@ -3,6 +3,7 @@ import Map from '../../../../../src/ol/Map.js';
 import MapBrowserEvent from '../../../../../src/ol/MapBrowserEvent.js';
 import View from '../../../../../src/ol/View.js';
 import {always} from '../../../../../src/ol/events/condition.js';
+import {boundingExtent} from '../../../../../src/ol/extent.js';
 import DragBox from '../../../../../src/ol/interaction/DragBox.js';
 
 describe('ol/interaction/DragBox', () => {
@@ -78,4 +79,26 @@ describe('ol/interaction/DragBox', () => {
         reject(error);
       }
     }));
+
+  it('ends with the box geometry for the current view', () => {
+    map.addInteraction(dragBox);
+    let boxExtent;
+    dragBox.on('boxend', () => {
+      boxExtent = dragBox.getGeometry().getExtent();
+    });
+    simulateEvent('pointermove', -10, -10);
+    const start = simulateEvent('pointerdown', -10, -10);
+    simulateEvent('pointerdrag', 10, 10);
+    map.getView().setZoom(1);
+    map.renderSync();
+    const end = simulateEvent('pointerup', 10, 10);
+
+    assert.deepEqual(
+      boxExtent,
+      boundingExtent([
+        map.getCoordinateFromPixel(start.pixel),
+        map.getCoordinateFromPixel(end.pixel),
+      ]),
+    );
+  });
 });
