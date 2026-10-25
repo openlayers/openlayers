@@ -68,9 +68,10 @@ class SpatialHash {
     this.cellSize_ = cellSize > 0 ? cellSize : 1;
 
     /**
-     * Cells by content key, then by cell coordinates.
+     * Cells by content key, then by cell column and row. Numbers as keys keep
+     * a lookup from building a string for every cell it visits.
      * @private
-     * @type {Map<string, Map<string, Array<number>>>}
+     * @type {Map<string, Map<number, Map<number, Array<number>>>>}
      */
     this.cells_ = new Map();
 
@@ -94,21 +95,26 @@ class SpatialHash {
    * @param {T} item Item.
    */
   add(key, x, y, item) {
-    const cellKey =
-      Math.floor(x / this.cellSize_) + ' ' + Math.floor(y / this.cellSize_);
+    const cx = Math.floor(x / this.cellSize_);
+    const cy = Math.floor(y / this.cellSize_);
     const order = this.items_.length;
     this.items_.push(item);
     this.coordinates_.push(x, y);
-    let cells = this.cells_.get(key);
-    if (!cells) {
-      cells = new Map();
-      this.cells_.set(key, cells);
+    let columns = this.cells_.get(key);
+    if (!columns) {
+      columns = new Map();
+      this.cells_.set(key, columns);
     }
-    const cell = cells.get(cellKey);
+    let column = columns.get(cx);
+    if (!column) {
+      column = new Map();
+      columns.set(cx, column);
+    }
+    const cell = column.get(cy);
     if (cell) {
       cell.push(order);
     } else {
-      cells.set(cellKey, [order]);
+      column.set(cy, [order]);
     }
   }
 
@@ -121,16 +127,20 @@ class SpatialHash {
    * the item, its x and y, and its insertion order.
    */
   forEachNear(key, x, y, callback) {
-    const cells = this.cells_.get(key);
-    if (!cells) {
+    const columns = this.cells_.get(key);
+    if (!columns) {
       return;
     }
     const cx = Math.floor(x / this.cellSize_);
     const cy = Math.floor(y / this.cellSize_);
     const coordinates = this.coordinates_;
     for (let i = cx - 1; i <= cx + 1; ++i) {
+      const column = columns.get(i);
+      if (!column) {
+        continue;
+      }
       for (let j = cy - 1; j <= cy + 1; ++j) {
-        const cell = cells.get(i + ' ' + j);
+        const cell = column.get(j);
         if (!cell) {
           continue;
         }
@@ -381,4 +391,77 @@ export class SymbolIdentityIndex {
   clear() {
     this.entries_.clear();
   }
+}
+
+/**
+ * Identities that a rebuilt label set can keep without a spatial search, for
+ * {@link SymbolIdentityIndex#update}'s `existingIdentities`. A label keeps the
+ * identity of the label of the previous set that has the same feature, the
+ * same symbol key and the same position among that feature's labels with this
+ * key, if their anchors are within the match distance. Other labels are left
+ * to the spatial search.
+ *
+ * @param {Array<import("./declutter.js").Label>} previousLabels Previous labels.
+ * @param {Array<number>} previousIdentities Identities aligned with `previousLabels`.
+ * @param {Array<import("./declutter.js").Label>} labels Current labels.
+ * @param {number} resolution View resolution.
+ * @return {Array<number|undefined>} Identities aligned with `labels`.
+ */
+export function retainedIdentities(
+  previousLabels,
+  previousIdentities,
+  labels,
+  resolution,
+) {
+  const maxDistance = resolution * SYMBOL_IDENTITY_MATCH_PIXELS;
+  const maxDistanceSq = maxDistance * maxDistance;
+  /**
+   * Indices of the previous labels by feature and symbol key, in order.
+   * @type {Map<number|undefined, Map<string|undefined, Array<number>>>}
+   */
+  const previousByFeature = new Map();
+  for (let i = 0; i < previousLabels.length; ++i) {
+    const label = previousLabels[i];
+    let byKey = previousByFeature.get(label.id);
+    if (!byKey) {
+      byKey = new Map();
+      previousByFeature.set(label.id, byKey);
+    }
+    const indices = byKey.get(label._identityKey);
+    if (indices) {
+      indices.push(i);
+    } else {
+      byKey.set(label._identityKey, [i]);
+    }
+  }
+  const identities = new Array(labels.length).fill(undefined);
+  /**
+   * How many labels of each feature and symbol key were seen so far.
+   * @type {Map<Array<number>, number>}
+   */
+  const seen = new Map();
+  for (let i = 0; i < labels.length; ++i) {
+    const label = labels[i];
+    const indices = previousByFeature.get(label.id)?.get(label._identityKey);
+    if (!indices) {
+      continue;
+    }
+    const occurrence = seen.get(indices) ?? 0;
+    seen.set(indices, occurrence + 1);
+    const previousIndex = indices[occurrence];
+    if (previousIndex === undefined) {
+      continue;
+    }
+    const anchor = label._anchor;
+    const previousAnchor = previousLabels[previousIndex]._anchor;
+    if (!anchor || !previousAnchor) {
+      continue;
+    }
+    const dx = anchor[0] - previousAnchor[0];
+    const dy = anchor[1] - previousAnchor[1];
+    if (dx * dx + dy * dy <= maxDistanceSq) {
+      identities[i] = previousIdentities[previousIndex];
+    }
+  }
+  return identities;
 }
