@@ -1475,6 +1475,23 @@ export function placementKey(labelVersion, frameState) {
 }
 
 /**
+ * Main-thread time per frame for processing the features of a build, in
+ * milliseconds, while the view is still and while it moves.
+ */
+export const BUILD_BUDGET_STILL = 12;
+export const BUILD_BUDGET_MOVING = 4;
+
+/**
+ * A build whose features are processed over several frames. Glyphs and images
+ * its builder already added to the atlases belong to the generations they had
+ * when it started.
+ * @typedef {Object} PendingBuild
+ * @property {import("../../render/webgpu/buffers.js").VectorRequestBuilder} builder Builder.
+ * @property {number} fontAtlasGeneration Font atlas generation when it started.
+ * @property {number} imageAtlasGeneration Image atlas generation when it started.
+ */
+
+/**
  * Extra CSS pixels around every declutter box so near-miss labels do not touch.
  * @type {number}
  */
