@@ -1,5 +1,6 @@
 import {assert} from 'chai';
 import Feature from '../../../../../../src/ol/Feature.js';
+import {asArray} from '../../../../../../src/ol/color.js';
 import {
   BooleanType,
   ColorType,
@@ -135,15 +136,15 @@ describe('ol/render/webgl/compileUtil', () => {
           ['arrayVar', NumberArrayType],
           ['booleanVar', BooleanType],
         ]),
+        inputVariables: {
+          colorVar: '#FFF',
+          anotherColorVar: [51, 102, 0, 0.4],
+          stringVar: 'hello world',
+          arrayVar: [1, 2, 3],
+          booleanVar: true,
+        },
       };
-      const styleVariables = {
-        colorVar: '#FFF',
-        anotherColorVar: [51, 102, 0, 0.4],
-        stringVar: 'hello world',
-        arrayVar: [1, 2, 3],
-        booleanVar: true,
-      };
-      const uniforms = generateUniformsFromContext(context, styleVariables);
+      const uniforms = generateUniformsFromContext(context);
 
       assert.property(uniforms, 'u_var_colorVar');
       assert.property(uniforms, 'u_var_anotherColorVar');
@@ -166,6 +167,7 @@ describe('ol/render/webgl/compileUtil', () => {
           ['stringProp', StringType],
           ['arrayProp', NumberArrayType],
           ['booleanProp', BooleanType],
+          ['nested##123##property', NumberType],
         ]),
       };
       const attributes = generateAttributesFromContext(context);
@@ -175,26 +177,92 @@ describe('ol/render/webgl/compileUtil', () => {
         stringProp: 'hello world',
         arrayProp: [1, 2, 3],
         booleanProp: true,
+        nested: {123: {property: 42}},
       });
 
-      assert.property(attributes, 'prop_colorProp');
-      assert.deepEqual(attributes.prop_colorProp.size, 2);
-      assert.deepEqual(attributes.prop_colorProp.callback(feature), [255, 255]);
+      assert.property(attributes, 'a_prop_colorProp');
+      assert.deepEqual(attributes.a_prop_colorProp.size, 2);
+      assert.deepEqual(
+        attributes.a_prop_colorProp.callback(feature),
+        [255, 255],
+      );
 
-      assert.property(attributes, 'prop_stringProp');
-      assert.strictEqual(attributes.prop_stringProp.size, 3);
+      assert.property(attributes, 'a_prop_stringProp');
+      assert.strictEqual(attributes.a_prop_stringProp.size, 3);
       assert.strictEqual(
-        attributes.prop_stringProp.callback(feature),
+        attributes.a_prop_stringProp.callback(feature),
         'hello world',
       );
 
-      assert.property(attributes, 'prop_arrayProp');
-      assert.deepEqual(attributes.prop_arrayProp.size, 4);
-      assert.deepEqual(attributes.prop_arrayProp.callback(feature), [1, 2, 3]);
+      assert.property(attributes, 'a_prop_arrayProp');
+      assert.deepEqual(attributes.a_prop_arrayProp.size, 4);
+      assert.deepEqual(
+        attributes.a_prop_arrayProp.callback(feature),
+        [1, 2, 3],
+      );
 
-      assert.property(attributes, 'prop_booleanProp');
-      assert.deepEqual(attributes.prop_booleanProp.size, 1);
-      assert.deepEqual(attributes.prop_booleanProp.callback(feature), 1);
+      assert.property(attributes, 'a_prop_booleanProp');
+      assert.deepEqual(attributes.a_prop_booleanProp.size, 1);
+      assert.deepEqual(attributes.a_prop_booleanProp.callback(feature), 1);
+
+      assert.property(attributes, 'a_prop_nested_x_123_x_property');
+      assert.deepEqual(attributes.a_prop_nested_x_123_x_property.size, 1);
+      assert.deepEqual(
+        attributes.a_prop_nested_x_123_x_property.callback(feature),
+        42,
+      );
+    });
+
+    it('correctly handle special attribute values', () => {
+      const context = {
+        properties: new Map([
+          ['colorProp', ColorType],
+          ['stringProp', StringType],
+          ['arrayProp', NumberArrayType],
+          ['booleanProp', BooleanType],
+          ['nested##123##property', NumberType],
+        ]),
+      };
+      const attributes = generateAttributesFromContext(context);
+
+      const feature = new Feature({
+        colorProp: null,
+        stringProp: undefined,
+        booleanProp: null,
+        nested: {},
+      });
+
+      assert.property(attributes, 'a_prop_colorProp');
+      assert.deepEqual(attributes.a_prop_colorProp.size, 2);
+      assert.deepEqual(
+        attributes.a_prop_colorProp.callback(feature),
+        packColor([...asArray('#eee')]),
+      );
+
+      assert.property(attributes, 'a_prop_stringProp');
+      assert.strictEqual(attributes.a_prop_stringProp.size, 3);
+      assert.strictEqual(
+        attributes.a_prop_stringProp.callback(feature),
+        undefined,
+      );
+
+      assert.property(attributes, 'a_prop_arrayProp');
+      assert.deepEqual(attributes.a_prop_arrayProp.size, 4);
+      assert.deepEqual(
+        attributes.a_prop_arrayProp.callback(feature),
+        undefined,
+      );
+
+      assert.property(attributes, 'a_prop_booleanProp');
+      assert.deepEqual(attributes.a_prop_booleanProp.size, 1);
+      assert.deepEqual(attributes.a_prop_booleanProp.callback(feature), 0);
+
+      assert.property(attributes, 'a_prop_nested_x_123_x_property');
+      assert.deepEqual(attributes.a_prop_nested_x_123_x_property.size, 1);
+      assert.deepEqual(
+        attributes.a_prop_nested_x_123_x_property.callback(feature),
+        undefined,
+      );
     });
   });
 });

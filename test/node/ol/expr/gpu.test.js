@@ -702,23 +702,41 @@ describe('ol/expr/gpu.js', () => {
           assert.deepEqual(context.properties.get('y'), NumberType);
         },
       },
+      {
+        name: 'nested property access (get)',
+        type: BooleanType,
+        expression: ['==', ['get', 'foo', 3, 'bar'], 1234],
+        expected: '(a_prop_foo_x_3_x_bar == 1234.0)',
+      },
+      {
+        name: 'nested property access (has)',
+        type: BooleanType,
+        expression: ['has', 'foo', 3, 'bar'],
+        expected: '(a_prop_foo_x_3_x_bar != -9999999.0)',
+      },
+      {
+        name: 'property name with special chars (get)',
+        type: BooleanType,
+        expression: ['==', ['get', 'ref:colour', 'highway=milestone'], 1234],
+        expected: '(a_prop_ref_colour_x_highway_milestone == 1234.0)',
+      },
+      {
+        name: 'nested property access (has)',
+        type: BooleanType,
+        expression: ['has', 'ref:colour', 'highway=milestone'],
+        expected: '(a_prop_ref_colour_x_highway_milestone != -9999999.0)',
+      },
     ];
 
     for (const c of cases) {
       it(`works for ${c.name}`, () => {
-        const parsingContext = newParsingContext(c.context?.inputVariables);
-        const compilationContext = c.context
+        const context = c.context
           ? {...newCompilationContext(), ...c.context}
           : newCompilationContext();
-        const result = buildExpression(
-          c.expression,
-          c.type,
-          parsingContext,
-          compilationContext,
-        );
+        const result = buildExpression(c.expression, c.type, context);
         assert.deepEqual(result, c.expected);
         if (c.contextAssertion) {
-          c.contextAssertion(compilationContext);
+          c.contextAssertion(context);
         }
       });
     }
