@@ -22,14 +22,16 @@ class TileGeometry extends BaseTileRepresentation {
   /**
    * @param {import("./BaseTileRepresentation.js").TileRepresentationOptions<TileType>} options The tile texture options.
    * @param {import("../render/webgl/VectorStyleRenderer.js").default} styleRenderer Vector style renderer
+   * @param {import("../render/webgl/MixedGeometryBatch.js").HitDetectionRefs} [hitDetectionRefs] Pool of hit detection refs
+   * shared across tiles, so that refs remain unique for the whole layer
    */
-  constructor(options, styleRenderer) {
+  constructor(options, styleRenderer, hitDetectionRefs) {
     super(options);
 
     /**
      * @private
      */
-    this.batch_ = new MixedGeometryBatch();
+    this.batch_ = new MixedGeometryBatch(hitDetectionRefs);
 
     /**
      * @private
@@ -152,6 +154,8 @@ class TileGeometry extends BaseTileRepresentation {
         this.buffers.textInstructionsKey ?? '',
       );
     }
+    // release the hit detection refs held by this tile
+    this.batch_.clear();
     super.disposeInternal();
   }
 }
