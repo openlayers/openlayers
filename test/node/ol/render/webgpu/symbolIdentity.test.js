@@ -1,5 +1,8 @@
 import {assert} from 'chai';
-import {SymbolIdentityIndex} from '../../../../../src/ol/render/webgpu/symbolIdentity.js';
+import {
+  retainedIdentities,
+  SymbolIdentityIndex,
+} from '../../../../../src/ol/render/webgpu/symbolIdentity.js';
 
 /**
  * @param {string} key Content key.
@@ -141,5 +144,25 @@ describe('ol/render/webgpu/SymbolIdentityIndex', () => {
       1,
     );
     assert.notStrictEqual(ids[0], ids[1]);
+  });
+});
+
+describe('ol/render/webgpu/symbolIdentity retainedIdentities', () => {
+  it('keeps the identity of the same feature label nearby', () => {
+    const previous = [
+      {...label('road', 0, 0), id: 1},
+      {...label('road', 50, 0), id: 1},
+      {...label('road', 0, 0), id: 2},
+    ];
+    const current = [
+      {...label('road', 2, 0), id: 1},
+      {...label('road', 90, 0), id: 1},
+      {...label('road', 0, 0), id: 3},
+    ];
+    assert.deepEqual(retainedIdentities(previous, [7, 8, 9], current, 1), [
+      7,
+      undefined,
+      undefined,
+    ]);
   });
 });

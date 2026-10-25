@@ -27,6 +27,7 @@ import {
 import {buildGeometryBuffers} from '../../render/webgpu/geometryBuffers.js';
 import {
   activeLabelIndices,
+  LABEL_FADE_DURATION,
   LABEL_FADE_MATCH_PIXELS,
   LabelFade,
   opacityIndicesToWrite,
@@ -35,7 +36,10 @@ import {
 import {LOCAL_EXTENT} from '../../render/webgpu/localGrid.js';
 import {PlacementScheduler} from '../../render/webgpu/placement.js';
 import {compileStyle} from '../../render/webgpu/style.js';
-import {SymbolIdentityIndex} from '../../render/webgpu/symbolIdentity.js';
+import {
+  retainedIdentities,
+  SymbolIdentityIndex,
+} from '../../render/webgpu/symbolIdentity.js';
 import {buildWarpGrid, warpGridKey} from '../../render/webgpu/warpGrid.js';
 import {getWorkerPool} from '../../render/webgpu/workerPool.js';
 import {getUid} from '../../util.js';
@@ -546,6 +550,33 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
      * @type {number}
      */
     this.identityVersion_ = -1;
+
+    /**
+     * The label set identities were last assigned to, and those identities.
+     * @private
+     * @type {Array<import("../../render/webgpu/declutter.js").Label>}
+     */
+    this.identityLabels_ = [];
+
+    /**
+     * @private
+     * @type {Array<number>}
+     */
+    this.identities_ = [];
+
+    /**
+     * Without a declutter group, the label version whose transitions are
+     * written, and the time their fades end.
+     * @private
+     * @type {number}
+     */
+    this.transitionsLabelVersion_ = -1;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.fadeEnd_ = 0;
 
     /**
      * @private
@@ -1309,8 +1340,19 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
       this.updateLabelView_(buffers);
       this.updateIdentities_(frameState);
       this.labels_.setLabels(helper, buffers);
-      this.visibility_ = new Array(buffers.labels.length).fill(true);
-      if (this.updateOpacities_(frameState)) {
+      const time = frameState.time || 0;
+      if (this.transitionsLabelVersion_ === this.labelVersion_) {
+        // Every label stays visible, so the transitions written for this label
+        // set do not change. The shaders run the fades from the frame time.
+        this.dirtyOpacityIndices_ = [];
+      } else {
+        this.visibility_ = new Array(buffers.labels.length).fill(true);
+        if (this.updateOpacities_(frameState)) {
+          this.fadeEnd_ = time + LABEL_FADE_DURATION;
+        }
+        this.transitionsLabelVersion_ = this.labelVersion_;
+      }
+      if (time < this.fadeEnd_) {
         frameState.animate = true;
       }
     }
@@ -1596,14 +1638,26 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
       return;
     }
     const extent = frameState.viewState.projection.getExtent();
-    this.labelView_.setIdentities(
-      this.symbolIdentities_.update(
-        this.labelView_.labels,
-        this.labelView_.worldOffsets,
-        frameState.viewState.resolution,
-        extent ? getWidth(extent) : undefined,
+    const labels = this.labelView_.labels;
+    const resolution = frameState.viewState.resolution;
+    // A rebuild makes the same labels for most features, so they keep their
+    // identities without a spatial search.
+    const identities = this.symbolIdentities_.update(
+      labels,
+      this.labelView_.worldOffsets,
+      resolution,
+      extent ? getWidth(extent) : undefined,
+      retainedIdentities(
+        this.identityLabels_,
+        this.identities_,
+        labels,
+        resolution,
       ),
     );
+    this.labelView_.setIdentities(identities);
+    // The label view clears its arrays in place when the next set arrives.
+    this.identityLabels_ = labels.slice();
+    this.identities_ = identities.slice();
     this.identityVersion_ = this.labelVersion_;
   }
 

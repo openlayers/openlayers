@@ -8,6 +8,13 @@
 export const LABEL_FADE_DURATION = 200;
 
 /**
+ * `performance.timeOrigin` is a getter that costs about as much as a call,
+ * and {@link fadeClock} runs for every label in an opacity update.
+ * @type {number}
+ */
+const TIME_ORIGIN = performance.timeOrigin;
+
+/**
  * Milliseconds since the page time origin.
  *
  * `frameState.time` is `Date.now()`. A float32 cannot separate two of those
@@ -20,7 +27,7 @@ export const LABEL_FADE_DURATION = 200;
  * @return {number} Clock value for a float32 uniform or vertex attribute.
  */
 export function fadeClock(time) {
-  return time - performance.timeOrigin;
+  return time - TIME_ORIGIN;
 }
 
 /**
@@ -267,11 +274,20 @@ export class LabelFade {
       });
     }
 
-    const previous = new Map(this.entries_);
+    let unmatched = false;
+    for (const id of current.keys()) {
+      if (this.entries_.has(id)) {
+        used.add(id);
+      } else {
+        unmatched = true;
+      }
+    }
+    // Only labels without an entry are matched against the previous entries,
+    // so the index is not needed while a fade runs on an unchanged label set.
     /** @type {FadeSpatialIndex} */
     const previousByText = new Map();
-    if (maxWorldDistance && maxWorldDistance > 0) {
-      for (const entry of previous.values()) {
+    if (unmatched && maxWorldDistance && maxWorldDistance > 0) {
+      for (const entry of this.entries_.values()) {
         if (!entry.text || entry.x === undefined || entry.y === undefined) {
           continue;
         }
@@ -292,12 +308,6 @@ export class LabelFade {
         }
       }
     }
-    for (const id of current.keys()) {
-      if (previous.has(id)) {
-        used.add(id);
-      }
-    }
-
     let fading = false;
     for (const [id, value] of current) {
       let entry = this.entries_.get(id);
