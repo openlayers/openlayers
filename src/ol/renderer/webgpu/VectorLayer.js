@@ -16,8 +16,8 @@ import {
   toUserResolution,
 } from '../../proj.js';
 import {
-  buildVectorRequest,
   combineVectorBuffers,
+  VectorRequestBuilder,
 } from '../../render/webgpu/buffers.js';
 import {
   collectStickyIds,
@@ -57,6 +57,8 @@ import LabelView from './LabelView.js';
 import WebGPULayerRenderer from './Layer.js';
 import {
   atlasPages,
+  BUILD_BUDGET_MOVING,
+  BUILD_BUDGET_STILL,
   createVectorPipelines,
   FrameUniformPool,
   hasUnusedAtlasPages,
@@ -76,6 +78,28 @@ import {
  * @property {import("../../style/flat.js").StyleVariables} [variables] Variables.
  * @property {boolean} [disableHitDetection=false] Disable hit detection.
  * @property {boolean|string|number} [declutter=false] Declutter group.
+ */
+
+/**
+ * What a rebuild is for.
+ * @typedef {Object} RebuildTarget
+ * @property {import("../../source/Vector.js").default} source Source.
+ * @property {number} sourceRevision Source revision.
+ * @property {number} layerRevision Layer revision.
+ * @property {import("../../proj/Projection.js").default} projection View projection.
+ * @property {number} pixelRatio Pixel ratio.
+ * @property {import("../../render.js").OrderFunction|null|undefined} renderOrder Render order.
+ * @property {string} variablesKey Style variables key.
+ * @property {import("../../extent.js").Extent} buildExtent Build extent.
+ * @property {string} poles Poles in view, as `polesInView()` reports them.
+ * @property {number} resolution Resolution.
+ * @property {WarpSetup|null} warp Warp setup.
+ */
+
+/**
+ * A rebuild whose features are processed over several frames, and what it is
+ * built for.
+ * @typedef {import("./vectorUtil.js").PendingBuild & RebuildTarget} PendingRebuild
  */
 
 /**
@@ -536,6 +560,22 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
     this.buildPending_ = false;
 
     /**
+     * A rebuild that has not processed all its features yet. The buffers on
+     * hand stay on screen until it is done.
+     * @private
+     * @type {PendingRebuild|null}
+     */
+    this.pendingBuild_ = null;
+
+    /**
+     * Resolution the buffers on screen were built for. While a worker
+     * tessellates a rebuild, `renderedResolution_` is already that rebuild's.
+     * @private
+     * @type {number}
+     */
+    this.buffersResolution_ = NaN;
+
+    /**
      * How the next batch should be warped, if at all.
      * @private
      * @type {WarpSetup|null}
@@ -757,6 +797,7 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
   hasPendingWork() {
     return (
       this.buildPending_ ||
+      !!this.pendingBuild_ ||
       this.imageChangeScheduled_ ||
       Object.keys(this.loadingImages_).length > 0
     );
@@ -955,22 +996,124 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
   }
 
   /**
+   * Start a rebuild for the current frame, or continue the one in progress,
+   * and install its buffers once all features are processed.
+   *
+   * A rebuild that replaces buffers on screen processes its features within a
+   * per-frame allowance and continues in the following frames, while the
+   * previous buffers are drawn. It keeps going while only the view changes, so
+   * a view that changes every frame still gets new buffers; the next rebuild
+   * then catches up with the view.
+   *
    * @param {import("../../Map.js").FrameState} frameState Frame.
    * @param {boolean} [sync] Build on this thread, so the result is drawn in
    * this frame, and drop a build that is still on a worker.
    * @private
    */
   rebuildBuffers_(frameState, sync = false) {
+    if (
+      this.pendingBuild_ &&
+      (sync || !this.pendingBuildCurrent_(frameState))
+    ) {
+      this.setPendingBuild_(null);
+    }
+    const pendingBuild = this.pendingBuild_ || this.startBuild_(frameState);
+    if (!pendingBuild) {
+      return;
+    }
+    const deadline =
+      sync || !this.buffers_
+        ? Infinity
+        : performance.now() +
+          (viewNotMoving(frameState)
+            ? BUILD_BUDGET_STILL
+            : BUILD_BUDGET_MOVING);
+    if (!pendingBuild.builder.run(deadline)) {
+      this.setPendingBuild_(pendingBuild);
+      frameState.animate = true;
+      return;
+    }
+    this.setPendingBuild_(null);
+    if (
+      pendingBuild.fontAtlasGeneration !== this.atlas_.getGeneration() ||
+      pendingBuild.imageAtlasGeneration !== this.imageAtlas_.getGeneration()
+    ) {
+      // An atlas started over while the features were processed. Start again,
+      // so the buffers do not mix glyphs and images of two generations.
+      frameState.animate = true;
+      return;
+    }
+    this.finishBuild_(pendingBuild, sync);
+  }
+
+  /**
+   * @param {PendingRebuild|null} pendingBuild Rebuild in progress, or null.
+   * @private
+   */
+  setPendingBuild_(pendingBuild) {
+    if (this.pendingBuild_ === pendingBuild) {
+      return;
+    }
+    this.pendingBuild_ = pendingBuild;
+    this.updateReady();
+  }
+
+  /**
+   * Whether the view jumped back closer to the resolution of the buffers on
+   * screen than to the one a rebuild is for. Such a rebuild is not worth
+   * finishing: installing its labels would cost a frame for a result that is
+   * replaced right away.
+   * @param {import("../../Map.js").FrameState} frameState Frame.
+   * @param {number} resolution Resolution of the rebuild.
+   * @return {boolean} The view left the rebuild behind.
+   * @private
+   */
+  viewLeftBuild_(frameState, resolution) {
+    const current = frameState.viewState.resolution;
+    return (
+      Math.abs(Math.log(current / resolution)) >
+      Math.abs(Math.log(current / this.buffersResolution_))
+    );
+  }
+
+  /**
+   * Whether the rebuild in progress is still worth finishing. It is not when
+   * anything but the view changed, or when the view left it behind.
+   * @param {import("../../Map.js").FrameState} frameState Frame.
+   * @return {boolean} The rebuild can continue.
+   * @private
+   */
+  pendingBuildCurrent_(frameState) {
+    const pendingBuild = /** @type {PendingRebuild} */ (this.pendingBuild_);
+    const source = pendingBuild.source;
+    return (
+      !this.viewLeftBuild_(frameState, pendingBuild.resolution) &&
+      source === this.getLayer().getSource() &&
+      pendingBuild.sourceRevision === source.getRevision() &&
+      pendingBuild.layerRevision === this.getLayer().getRevision() &&
+      pendingBuild.projection === frameState.viewState.projection &&
+      pendingBuild.pixelRatio === frameState.pixelRatio &&
+      pendingBuild.renderOrder === this.renderOrder_() &&
+      pendingBuild.variablesKey === variablesKey(this.variables_)
+    );
+  }
+
+  /**
+   * @param {import("../../Map.js").FrameState} frameState Frame.
+   * @return {PendingRebuild|null} New rebuild, or null if there is nothing to build.
+   * @private
+   */
+  startBuild_(frameState) {
     const layer = this.getLayer();
     const source = /** @type {import("../../source/Vector.js").default} */ (
       layer.getSource()
     );
     if (!source) {
-      return;
+      return null;
     }
     const extent = frameState.extent;
     if (!extent) {
-      return;
+      return null;
     }
     const resolution = frameState.viewState.resolution;
     const buildExtent = chooseBuildExtent(source, frameState, extent);
@@ -983,33 +1126,59 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
     );
     const plan = getBuildPlan(source, frameState, buildExtent, extent);
     if (!plan) {
-      return;
+      return null;
     }
-    const imageAtlasGeneration = this.imageAtlas_.getGeneration();
-    const fontAtlasGeneration = this.atlas_.getGeneration();
-    const {request, labelData} = buildVectorRequest(
-      features,
-      this.styleFunction_,
+    return {
+      builder: new VectorRequestBuilder(
+        features,
+        this.styleFunction_,
+        resolution,
+        this.atlas_,
+        // Anchors still need real coordinates, so labels are projected here; it
+        // is a handful of points, not a vertex-by-vertex cost.
+        plan.warp
+          ? {
+              ...plan.tessellate,
+              projectAnchorsToTarget: plan.warp.projectToTarget,
+              warpGrid: this.warpGridFor_(plan.warp),
+              warpExtent: plan.warp.extent,
+              maxTargetError: frameState.viewState.resolution,
+            }
+          : plan.tessellate,
+        frameState.pixelRatio,
+        frameState.viewState.zoom,
+        this.renderOrder_(),
+        this.imageAtlas_,
+      ),
+      fontAtlasGeneration: this.atlas_.getGeneration(),
+      imageAtlasGeneration: this.imageAtlas_.getGeneration(),
+      source,
+      // Loading features can change the revision, so read it afterwards.
+      sourceRevision: source.getRevision(),
+      layerRevision: layer.getRevision(),
+      projection: frameState.viewState.projection,
+      pixelRatio: frameState.pixelRatio,
+      renderOrder: this.renderOrder_(),
+      variablesKey: variablesKey(this.variables_),
+      buildExtent,
+      poles: polesInView(extent, frameState.viewState.projection),
       resolution,
-      this.atlas_,
-      // Anchors still need real coordinates, so labels are projected here; it
-      // is a handful of points, not a vertex-by-vertex cost.
-      plan.warp
-        ? {
-            ...plan.tessellate,
-            projectAnchorsToTarget: plan.warp.projectToTarget,
-            warpGrid: this.warpGridFor_(plan.warp),
-            warpExtent: plan.warp.extent,
-            maxTargetError: frameState.viewState.resolution,
-          }
-        : plan.tessellate,
-      frameState.pixelRatio,
-      frameState.viewState.zoom,
-      this.renderOrder_(),
-      this.imageAtlas_,
-    );
+      warp: plan.warp,
+    };
+  }
+
+  /**
+   * Tessellate a rebuild whose features are processed, on a worker unless
+   * `sync`, and install its buffers.
+   * @param {PendingRebuild} pendingBuild Rebuild.
+   * @param {boolean} sync Build on this thread.
+   * @private
+   */
+  finishBuild_(pendingBuild, sync) {
+    const {request, labelData} = pendingBuild.builder.finish();
+    const {fontAtlasGeneration, imageAtlasGeneration} = pendingBuild;
     this.watchImages_(labelData.pendingImageStyles);
-    this.pendingWarp_ = plan.warp;
+    this.pendingWarp_ = pendingBuild.warp;
 
     const pending = sync ? null : getWorkerPool().build(request);
     if (pending) {
@@ -1029,6 +1198,7 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
           }
           this.releaseBuffers_();
           this.buffers_ = combineVectorBuffers(geometry, labelData);
+          this.buffersResolution_ = pendingBuild.resolution;
           this.imageAtlasGeneration_ = imageAtlasGeneration;
           this.fontAtlasGeneration_ = fontAtlasGeneration;
           // Request a frame without counting it as a style change, which
@@ -1065,19 +1235,20 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
         buildGeometryBuffers(request),
         labelData,
       );
+      this.buffersResolution_ = pendingBuild.resolution;
       this.imageAtlasGeneration_ = imageAtlasGeneration;
       this.fontAtlasGeneration_ = fontAtlasGeneration;
     }
-    this.renderedSource_ = source;
-    this.sourceRevision_ = source.getRevision();
-    this.renderedExtent_ = buildExtent;
-    this.renderedPoles_ = polesInView(extent, frameState.viewState.projection);
-    this.renderedResolution_ = resolution;
-    this.renderedProjection_ = frameState.viewState.projection;
-    this.renderedPixelRatio_ = frameState.pixelRatio;
-    this.renderedRenderOrder_ = this.renderOrder_();
-    this.renderedVariablesKey_ = variablesKey(this.variables_);
-    this.renderedLayerRevision_ = this.getLayer().getRevision();
+    this.renderedSource_ = pendingBuild.source;
+    this.sourceRevision_ = pendingBuild.sourceRevision;
+    this.renderedExtent_ = pendingBuild.buildExtent;
+    this.renderedPoles_ = pendingBuild.poles;
+    this.renderedResolution_ = pendingBuild.resolution;
+    this.renderedProjection_ = pendingBuild.projection;
+    this.renderedPixelRatio_ = pendingBuild.pixelRatio;
+    this.renderedRenderOrder_ = pendingBuild.renderOrder;
+    this.renderedVariablesKey_ = pendingBuild.variablesKey;
+    this.renderedLayerRevision_ = pendingBuild.layerRevision;
   }
 
   /**
@@ -1096,6 +1267,16 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
     // Rebuilding is O(features): tessellation, and a proj4 call per vertex when
     // reprojecting. Only do it once the view settles, and reuse what is on hand
     // in the meantime.
+    if (
+      this.buildPending_ &&
+      this.viewLeftBuild_(frameState, this.renderedResolution_)
+    ) {
+      // Drop the result a worker is tessellating, so the build for this view
+      // starts now instead of after it.
+      ++this.buildGeneration_;
+      this.buildPending_ = false;
+      this.updateReady();
+    }
     if (this.atlasesStale_()) {
       this.rebuildBuffers_(frameState, true);
       if (this.atlasesStale_()) {
@@ -1104,9 +1285,15 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
     } else if (
       !this.buildPending_ &&
       this.needsRebuild_(frameState) &&
-      (!this.buffers_ || viewNotMoving(frameState) || this.sourceChanged_())
+      (!this.buffers_ ||
+        this.pendingBuild_ ||
+        viewNotMoving(frameState) ||
+        this.sourceChanged_())
     ) {
       this.rebuildBuffers_(frameState);
+    } else if (this.pendingBuild_) {
+      // The view is back to what the buffers on hand were built for.
+      this.setPendingBuild_(null);
     }
     const buffers = this.buffers_;
     if (buffers && !this.gpu_) {
@@ -1564,6 +1751,7 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
    */
   disposeInternal() {
     this.queriesAwaitingPaint_.splice(0).forEach((query) => query.cancel());
+    this.pendingBuild_ = null;
     this.releaseBuffers_();
     this.imageAtlas_.clear();
     this.atlas_.clear();
