@@ -178,7 +178,8 @@ function compileExpression(expression, context) {
     case Ops.InterpolateHcl: {
       return compileInterpolateExpression(expression, context);
     }
-    case Ops.ToString: {
+    case Ops.ToString:
+    case Ops.ToNumber: {
       return compileConvertExpression(expression, context);
     }
     case Ops.Array: {
@@ -662,6 +663,24 @@ function compileConvertExpression(expression, context) {
           return toString(value);
         }
         return value.toString();
+      };
+    }
+    case Ops.ToNumber: {
+      return (context) => {
+        for (let i = 0; i < length; ++i) {
+          const value = args[i](context);
+          if (value === null || value === undefined || value === false) {
+            return 0;
+          }
+          if (value === true) {
+            return 1;
+          }
+          const number = Number(value);
+          if (!isNaN(number)) {
+            return number;
+          }
+        }
+        throw new Error('Conversion to number failed');
       };
     }
     default: {
