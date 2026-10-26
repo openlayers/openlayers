@@ -619,6 +619,32 @@ class Draw extends PointerInteraction {
   }
 
   /**
+   * Set the geometry type to draw. Any drawing in progress is aborted.
+   *
+   * @param {import("../geom/Geometry.js").Type} type Geometry type.
+   * @api
+   */
+  setType(type) {
+    this.abortDrawing();
+    this.type_ = type;
+    this.mode_ = getMode(type);
+    this.minPoints_ = getMinPoints(this.mode_, this.options_.minPoints);
+    this.maxPoints_ = getMaxPoints(this.mode_, this.options_.maxPoints);
+    if (!this.options_.geometryFunction) {
+      this.geometryFunction_ = this.createGeometryFunction_();
+    }
+  }
+
+  /**
+   * Get the geometry type to draw.
+   * @return {import("../geom/Geometry.js").Type} Geometry type.
+   * @api
+   */
+  getType() {
+    return this.type_;
+  }
+
+  /**
    * Set whether the drawing is done in freehand mode.
    *
    * @param {boolean} freehand Freehand drawing.
