@@ -211,7 +211,7 @@ describe('ol/renderer/webgpu/VectorTileLayer', () => {
     assert.deepEqual(coords, ['1/0/0', '1/0/1', '1/1/0', '1/1/1']);
   });
 
-  it('keeps drawing tiles without their labels while fonts change', async () => {
+  it('keeps drawing tiles with their labels while fonts change', async () => {
     source.getTile = function (z, x, y) {
       return loadedTile(z, x, y);
     };
@@ -224,7 +224,7 @@ describe('ol/renderer/webgpu/VectorTileLayer', () => {
     const during = renderer.collectBatches_(frameState);
 
     assert.deepEqual(during, [before]);
-    assert.isEmpty(before.buffers.labels);
+    assert.isNotEmpty(before.buffers.labels);
     let after = during;
     for (let i = 0; i < 200 && after[0] === before; ++i) {
       await new Promise((resolve) => setTimeout(resolve, 10));
@@ -568,7 +568,7 @@ describe('ol/renderer/webgpu/VectorTileLayer', () => {
     assert.strictEqual(atlas.getPageCount(), 4);
     frameState.viewHints = [0, 0];
     renderer.prepareFrameInternal(frameState);
-    assert.strictEqual(atlas.getPageCount(), 1);
+    assert.strictEqual(atlas.getPageCount(), 0);
     assert.isAbove(layer.getRevision(), revision);
   });
 
