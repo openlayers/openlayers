@@ -126,6 +126,11 @@ import {toSize} from '../size.js';
  *   * `['to-string', value]` converts the input value to a string. If the input is a boolean, the result is "true" or "false".
  *     If the input is a number, it is converted to a string as specified by the "NumberToString" algorithm of the ECMAScript
  *     Language Specification. If the input is a color, it is converted to a string of the form "rgba(r,g,b,a)". (Canvas only)
+ *   * `['to-number', value1, value2, ...]` converts the input value to a number. If the input is `null` or `false`,
+ *     the result is 0. If the input is `true`, the result is 1. If the input is a string, it is converted to a number
+ *     as specified by the "ToNumber Applied to the String Type" algorithm of the ECMAScript Language Specification.
+ *     If multiple values are provided, each one is evaluated in order until the first successful conversion is obtained.
+ *     If none of the inputs can be converted, an error is thrown. (Canvas only)
  *
  * Values can either be literals or another operator, as they will be evaluated recursively.
  * Literal values can be of the following types:
@@ -446,6 +451,7 @@ export const Ops = {
   Band: 'band',
   Palette: 'palette',
   ToString: 'to-string',
+  ToNumber: 'to-number',
   Has: 'has',
 };
 
@@ -625,6 +631,10 @@ const parsers = {
   [Ops.ToString]: createCallExpressionParser(
     hasArgsCount(1, 1),
     withArgsOfType(BooleanType | NumberType | StringType | ColorType),
+  ),
+  [Ops.ToNumber]: createCallExpressionParser(
+    hasArgsCount(1, Infinity),
+    withArgsOfType(BooleanType | NumberType | StringType),
   ),
 };
 
