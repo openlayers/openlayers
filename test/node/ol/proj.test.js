@@ -217,6 +217,13 @@ describe('ol/proj.js', function () {
         assert.approximately(lonLat[1], c.to[1], 1e-9);
       });
     });
+
+    it('throws a meaningful error for an unknown projection', function () {
+      assert.throws(
+        () => toLonLat([0, 0], 'EPSG:27700'),
+        'Unknown projection EPSG:27700',
+      );
+    });
   });
 
   describe('projection equivalence', function () {

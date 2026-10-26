@@ -620,6 +620,13 @@ export function getTransform(source, destination) {
 export function transform(coordinate, source, destination) {
   const transformFunc = getTransform(source, destination);
   if (!transformFunc) {
+    for (const projection of [source, destination]) {
+      if (typeof projection === 'string' && !get(projection)) {
+        throw new Error(
+          `Unknown projection ${projection}. Register it before use, e.g. with proj4 and ol/proj/proj4's register().`,
+        );
+      }
+    }
     const sourceCode = get(source)?.getCode() ?? String(source);
     const destinationCode = get(destination)?.getCode() ?? String(destination);
     throw new Error(
