@@ -252,7 +252,7 @@ describe('ol/renderer/webgpu/LabelRenderer', () => {
       /** @type {any} */ ({getBindGroup: () => ({})}),
       /** @type {any} */ ({}),
       /** @type {any} */ ({}),
-      /** @type {any} */ ({upload: () => texture}),
+      /** @type {any} */ ({getTexture: () => null, upload: () => texture}),
     );
     assert.deepEqual(helper.pipelines, ['vector-icon']);
     assert.deepEqual(helper.draws, [
@@ -294,7 +294,7 @@ describe('ol/renderer/webgpu/LabelRenderer', () => {
       /** @type {any} */ ({getBindGroup: () => ({})}),
       /** @type {any} */ ({}),
       /** @type {any} */ ({}),
-      /** @type {any} */ ({upload: () => ({})}),
+      /** @type {any} */ ({getTexture: () => null, upload: () => ({})}),
       undefined,
       state,
     ];

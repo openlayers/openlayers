@@ -1,6 +1,6 @@
+import {assert} from 'chai';
 import path from 'path';
 import {fileURLToPath} from 'url';
-import {assert} from 'chai';
 import olWorker from '../../../browser/vite-plugin-ol-worker.mjs';
 
 const workerDir = path.resolve(
