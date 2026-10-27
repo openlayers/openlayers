@@ -1092,6 +1092,35 @@ describe('ol/interaction/Draw', function () {
       ]);
     });
 
+    it('does not snap a freehand polygon back to its start', function () {
+      draw.setFreehand(true);
+      // a slow stroke right, then down, in 1 pixel steps, so the pointer is
+      // always within the freehand snap tolerance of the previous vertex
+      simulateEvent('pointermove', 0, 0);
+      simulateEvent('pointerdown', 0, 0);
+      for (let x = 1; x <= 6; ++x) {
+        simulateEvent('pointermove', x, 0);
+        simulateEvent('pointerdrag', x, 0);
+      }
+      for (let y = 1; y <= 6; ++y) {
+        simulateEvent('pointermove', 6, y);
+        simulateEvent('pointerdrag', 6, y);
+      }
+      simulateEvent('pointerup', 6, 6);
+
+      const features = source.getFeatures();
+      assert.lengthOf(features, 1);
+      const geometry = features[0].getGeometry();
+      assert.instanceOf(geometry, Polygon);
+      const ring = geometry.getCoordinates()[0];
+      // apart from the closing vertex, the ring follows the stroke and never
+      // jumps back towards the start
+      for (let i = 1; i < ring.length - 1; ++i) {
+        assert.isAtLeast(ring[i][0], ring[i - 1][0]);
+        assert.isAtMost(ring[i][1], ring[i - 1][1]);
+      }
+    });
+
     it('triggers draw events', function () {
       const ds = vi.fn();
       const de = vi.fn();
