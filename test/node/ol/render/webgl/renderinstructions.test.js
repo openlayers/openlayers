@@ -284,6 +284,45 @@ describe('ol/render/webgl/renderinstructions.js', function () {
     });
   });
 
+  describe('string value in an attribute of size 1', () => {
+    beforeEach(function () {
+      renderInstructions = generatePointRenderInstructions(
+        mixedBatch.pointBatch,
+        new Float32Array(0),
+        labelsArray,
+        [
+          {
+            name: 'test',
+            size: 1,
+            callback: function (feature) {
+              return feature.get('test4');
+            },
+          },
+          {
+            name: 'test2',
+            size: 1,
+            callback: function (feature) {
+              return feature.get('test');
+            },
+          },
+        ],
+        SAMPLE_TRANSFORM,
+      );
+    });
+    it('writes only the number equivalent of the string', function () {
+      assert.deepEqual(Array.from(renderInstructions), [
+        2,
+        2,
+        getStringNumberEquivalent('hello world'),
+        1000,
+        6,
+        6,
+        getStringNumberEquivalent('hello world'),
+        2000,
+      ]);
+    });
+  });
+
   describe('undefined property', () => {
     it('uses the value UNDEFINED_PROP_VALUE if the feature does not have this property set', () => {
       renderInstructions = generatePointRenderInstructions(
