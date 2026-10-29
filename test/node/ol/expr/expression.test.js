@@ -490,6 +490,16 @@ describe('ol/expr/expression.js', () => {
         error: 'expression must be an array or a primitive value',
       },
       {
+        name: 'literal null equality',
+        expression: ['==', ['get', 'value'], null],
+        error: 'expression must be an array or a primitive value',
+      },
+      {
+        name: 'mismatched types in a numeric coalesce',
+        expression: ['+', ['coalesce', ['get', 'value'], 'unknown'], 1],
+        error: 'got a string, but expected number',
+      },
+      {
         name: 'invalid argument count (case)',
         expression: ['case', true, 0, false, 1],
         error: 'expected an odd number of arguments for case, got 4 instead',

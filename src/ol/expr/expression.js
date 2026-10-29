@@ -27,8 +27,12 @@ import {toSize} from '../size.js';
  *     {@link import("../source/GeoTIFF.js").Options configuration}. `xOffset` and `yOffset` are optional
  *     and allow specifying pixel offsets for x and y. This is used for sampling data from neighboring pixels (WebGL only).
  *   * `['get', attributeName]` fetches a feature property value, similar to `feature.get('attributeName')`.
+ *     On Canvas, explicit `null` values are preserved and absent properties return `undefined`.
+ *     Use `coalesce`, `number`, or `string` to provide a fallback. WebGL numeric attributes encode `null` as `0`,
+ *     so on WebGL a comparison with zero cannot distinguish `null` from `0`.
  *   * `['get', attributeName, keyOrArrayIndex, ...]` (Canvas only) Access nested properties and array items of a
- *     feature property. The result is `undefined` when there is nothing at the specified key or index.
+ *     feature property. The result is `undefined` when a key or index is absent, or an intermediate value is
+ *     `null` or `undefined`. An explicit `null` at the final key or index is preserved.
  *   * `['geometry-type']` returns a feature's geometry type as string, either: 'LineString', 'Point' or 'Polygon'
  *     `Multi*` values are returned as their singular equivalent
  *     `Circle` geometries are returned as 'Polygon'
@@ -79,14 +83,16 @@ import {toSize} from '../size.js';
  *     the `outputX` values must be colors, and they are interpolated in the Hue-Chroma-Luminance color space.
  *     This keeps gradients bright where sRGB interpolation would take them through a muddy midpoint (Canvas only).
  *   * `['string', value1, value2, ...]` returns the first value in the list that evaluates to a string.
- *     An example would be to provide a default value for get: `['string', ['get', 'propertyname'], 'default value']]`
+ *     An example would be to provide a default value for get: `['string', ['get', 'propertyname'], 'default value']`
  *     (Canvas only).
  *   * `['number', value1, value2, ...]` returns the first value in the list that evaluates to a number.
- *     An example would be to provide a default value for get: `['string', ['get', 'propertyname'], 42]]`
+ *     An example would be to provide a default value for get: `['number', ['get', 'propertyname'], 42]`
  *     (Canvas only).
  *   * `['coalesce', value1, value2, ...]` returns the first value in the list which is not null or undefined.
- *     An example would be to provide a default value for get: `['coalesce', ['get','propertyname'], 'default value']]`
- *     (Canvas only).
+ *     An example would be to provide a default value for get: `['coalesce', ['get', 'propertyname'], 'default value']`
+ *     (Canvas only). Values such as `0`, `false`, and `''` are preserved. All arguments must match the expected
+ *     output type; unlike `number` and `string`, this operator does not check the type of property values at
+ *     evaluation time. If every argument evaluates to `null` or `undefined`, evaluation throws an error.
  *
  * * Logical operators:
  *   * `['<', value1, value2]` returns `true` if `value1` is strictly lower than `value2`, or `false` otherwise.
@@ -95,11 +101,14 @@ import {toSize} from '../size.js';
  *   * `['>=', value1, value2]` returns `true` if `value1` is greater than or equals `value2`, or `false` otherwise.
  *   * `['==', value1, value2]` returns `true` if `value1` equals `value2`, or `false` otherwise.
  *   * `['!=', value1, value2]` returns `true` if `value1` does not equal `value2`, or `false` otherwise.
+ *     Equality comparisons are strict on Canvas: a `null` or absent property does not equal `0`.
+ *     A literal `null` is not supported in expressions; use a fallback with `coalesce` instead.
  *   * `['!', value1]` returns `false` if `value1` is `true` or greater than `0`, or `true` otherwise.
  *   * `['all', value1, value2, ...]` returns `true` if all the inputs are `true`, `false` otherwise.
  *   * `['any', value1, value2, ...]` returns `true` if any of the inputs are `true`, `false` otherwise.
  *   * `['has', attributeName, keyOrArrayIndex, ...]` returns `true` if feature properties include the (nested) key `attributeName`,
- *     `false` otherwise.
+ *     `false` otherwise. On Canvas this checks for the presence of a key, including keys with a `null` or
+ *     `undefined` value; it does not test whether the value is non-null.
  *     Note that for WebGL layers, the hardcoded value `-9999999` is used to distinguish when a property is not defined.
  *   * `['between', value1, value2, value3]` returns `true` if `value1` is contained between `value2` and `value3`
  *     (inclusively), or `false` otherwise.

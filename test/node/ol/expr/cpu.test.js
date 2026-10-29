@@ -824,6 +824,121 @@ describe('ol/expr/cpu.js', () => {
     }
   });
 
+  describe('missing property values', () => {
+    const cases = [
+      {name: 'absent', properties: {}, value: undefined, present: false},
+      {
+        name: 'undefined',
+        properties: {value: undefined},
+        value: undefined,
+        present: true,
+      },
+      {name: 'null', properties: {value: null}, value: null, present: true},
+      {name: 'zero', properties: {value: 0}, value: 0, present: true},
+      {name: 'number', properties: {value: 42}, value: 42, present: true},
+      {
+        name: 'string',
+        properties: {value: 'FUBAR'},
+        value: 'FUBAR',
+        present: true,
+      },
+      {name: 'empty string', properties: {value: ''}, value: '', present: true},
+      {name: 'false', properties: {value: false}, value: false, present: true},
+    ];
+
+    for (const {name, properties, value, present} of cases) {
+      it(`preserves ${name} when reading and applying fallbacks`, () => {
+        const context = {...newEvaluationContext(), properties};
+        const get = buildExpression(
+          ['get', 'value'],
+          NumberType,
+          newParsingContext(),
+        );
+        assert.strictEqual(get(context), value);
+        const has = buildExpression(
+          ['has', 'value'],
+          BooleanType,
+          newParsingContext(),
+        );
+        assert.strictEqual(has(context), present);
+        const coalesce = buildExpression(
+          ['coalesce', ['get', 'value'], 7],
+          NumberType,
+          newParsingContext(),
+        );
+        assert.strictEqual(coalesce(context), value ?? 7);
+        const number = buildExpression(
+          ['number', ['get', 'value'], 7],
+          NumberType,
+          newParsingContext(),
+        );
+        assert.strictEqual(
+          number(context),
+          typeof value === 'number' ? value : 7,
+        );
+        const string = buildExpression(
+          ['string', ['get', 'value'], 'unknown'],
+          StringType,
+          newParsingContext(),
+        );
+        assert.strictEqual(
+          string(context),
+          typeof value === 'string' ? value : 'unknown',
+        );
+        const equal = buildExpression(
+          ['==', ['get', 'value'], 0],
+          BooleanType,
+          newParsingContext(),
+        );
+        assert.strictEqual(equal(context), value === 0);
+      });
+    }
+
+    const nestedCases = [
+      {properties: {}, expected: undefined},
+      {properties: {data: null}, expected: undefined},
+      {properties: {data: {}}, expected: undefined},
+      {properties: {data: {items: null}}, expected: undefined},
+      {properties: {data: {items: []}}, expected: undefined},
+      {properties: {data: {items: [null]}}, expected: undefined},
+      {properties: {data: {items: [{}]}}, expected: undefined},
+      {properties: {data: {items: [{value: null}]}}, expected: null},
+      {properties: {data: {items: [{value: 0}]}}, expected: 0},
+      {properties: {data: {items: [{value: 42}]}}, expected: 42},
+    ];
+
+    for (const {properties, expected} of nestedCases) {
+      it(`handles a nested path in ${JSON.stringify(properties)}`, () => {
+        const context = {...newEvaluationContext(), properties};
+        const encoded = ['get', 'data', 'items', 0, 'value'];
+        const get = buildExpression(encoded, NumberType, newParsingContext());
+        assert.strictEqual(get(context), expected);
+        const coalesce = buildExpression(
+          ['coalesce', encoded, 7],
+          NumberType,
+          newParsingContext(),
+        );
+        assert.strictEqual(coalesce(context), expected ?? 7);
+      });
+    }
+
+    it('throws when every coalesce argument evaluates to null or undefined', () => {
+      const coalesce = buildExpression(
+        ['coalesce', ['get', 'null'], ['get', 'absent']],
+        NumberType,
+        newParsingContext(),
+      );
+      const context = {
+        ...newEvaluationContext(),
+        properties: {null: null},
+      };
+      assert.throws(
+        () => coalesce(context),
+        'Expected one of the values to be non-null',
+      );
+    });
+  });
+
   describe('interpolate expressions', () => {
     /**
      * @typedef {Object} InterpolateTest

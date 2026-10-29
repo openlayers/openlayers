@@ -1,9 +1,11 @@
 import {assert} from 'chai';
+import Feature from '../../../../../../src/ol/Feature.js';
 import {newEvaluationContext} from '../../../../../../src/ol/expr/cpu.js';
 import {newParsingContext} from '../../../../../../src/ol/expr/expression.js';
 import {
   buildRuleSet,
   buildStyle,
+  rulesToStyleFunction,
 } from '../../../../../../src/ol/render/canvas/style.js';
 import Fill from '../../../../../../src/ol/style/Fill.js';
 import Icon from '../../../../../../src/ol/style/Icon.js';
@@ -284,6 +286,96 @@ describe('ol/render/canvas/style.js', () => {
         }
       });
     }
+  });
+
+  describe('missing values in flat style rules', () => {
+    for (const nested of [false, true]) {
+      const getStatus = nested ? ['get', 'data', 'status'] : ['get', 'status'];
+      const getWidth = nested ? ['get', 'data', 'width'] : ['get', 'width'];
+      const cases = [
+        {name: 'absent', properties: {}, color: [255, 0, 0, 1], width: 2},
+        {
+          name: 'null',
+          properties: {status: null, width: null},
+          color: [255, 0, 0, 1],
+          width: 2,
+        },
+        {
+          name: 'zero',
+          properties: {status: 'FUBAR', width: 0},
+          color: [0, 0, 255, 1],
+          width: 0,
+        },
+        {
+          name: 'ordinary values',
+          properties: {status: 'other', width: 4},
+          color: [128, 128, 128, 1],
+          width: 4,
+        },
+      ];
+      for (const {name, properties, color, width} of cases) {
+        it(`styles ${nested ? 'nested' : 'top-level'} ${name}`, () => {
+          const style = rulesToStyleFunction([
+            {
+              filter: ['==', ['coalesce', getStatus, 'unknown'], 'unknown'],
+              style: {
+                'stroke-color': 'red',
+                'stroke-width': ['coalesce', getWidth, 2],
+              },
+            },
+            {
+              filter: ['==', getStatus, 'FUBAR'],
+              style: {
+                'stroke-color': 'blue',
+                'stroke-width': ['coalesce', getWidth, 2],
+              },
+            },
+            {
+              else: true,
+              style: {
+                'stroke-color': 'gray',
+                'stroke-width': ['number', getWidth, 2],
+              },
+            },
+          ]);
+          const feature = new Feature(nested ? {data: properties} : properties);
+          const styles = style(feature, 1);
+          assert.lengthOf(styles, 1);
+          assert.deepEqual(styles[0].getStroke().getColor(), color);
+          assert.strictEqual(styles[0].getStroke().getWidth(), width);
+          if (nested) {
+            // A missing or null parent should also reach the unknown-value rule.
+            for (const data of [undefined, null]) {
+              feature.set('data', data);
+              const missingStyles = style(feature, 1);
+              assert.lengthOf(missingStyles, 1);
+              assert.deepEqual(
+                missingStyles[0].getStroke().getColor(),
+                [255, 0, 0, 1],
+              );
+            }
+          }
+        });
+      }
+    }
+
+    it('still validates the type returned by coalesce', () => {
+      const evaluator = buildStyle(
+        {
+          'stroke-color': 'red',
+          'stroke-width': ['coalesce', ['get', 'width'], 2],
+        },
+        newParsingContext(),
+      );
+      const context = {
+        ...newEvaluationContext(),
+        properties: {width: 'invalid'},
+      };
+      assert.throws(
+        () => evaluator(context),
+        'Expected a number for stroke-width',
+      );
+    });
   });
 
   describe('buildStyle()', () => {
