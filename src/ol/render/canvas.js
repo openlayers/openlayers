@@ -86,7 +86,7 @@ import {clear} from '../obj.js';
  */
 
 /**
- * @typedef {Object<number, import("./canvas/Executor.js").ReplayImageOrLabelArgs>} DeclutterImageWithText
+ * @typedef {Object<number, import("./canvas/Executor.js").DeclutterImageWithTextEntry> & {imageOptional?: boolean, textOptional?: boolean}} DeclutterImageWithText
  */
 
 /**
