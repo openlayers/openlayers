@@ -42,6 +42,25 @@
  *         },
  *       },
  *     ];
+ *
+ * On Canvas, a `get` expression preserves explicit `null` values and returns `undefined` for absent
+ * properties. These values do not equal numeric zero in an equality filter. Use `coalesce` to provide
+ * a fallback for both, for example `'stroke-width': ['coalesce', ['get', 'width'], 2]`. A width of `0`
+ * is preserved. Use `['number', ['get', 'width'], 2]` if non-numeric values should also use the fallback.
+ *
+ * A filter can use a fallback to group null and absent values. For a `status` property whose valid values
+ * exclude `'unknown'`, this Canvas rule styles both as red:
+ *
+ *     const unknownStatusRule = {
+ *       filter: ['==', ['coalesce', ['get', 'status'], 'unknown'], 'unknown'],
+ *       style: {'fill-color': 'red'},
+ *     };
+ *
+ * Choose a fallback outside the property's valid values when the filter needs to distinguish missing data.
+ * The `has` operator tests whether a key exists, including keys with null values. Literal `null` is not
+ * supported in expressions, so `['==', ['get', 'status'], null]` is not a valid filter.
+ * These fallback operators are Canvas only. WebGL numeric attributes encode null as zero; normalize missing
+ * values explicitly before rendering if the same distinction is needed on both renderers.
  */
 
 /**
