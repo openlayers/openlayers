@@ -4,6 +4,7 @@ import View from '../src/ol/View.js';
 import WKT from '../src/ol/format/WKT.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
+import {toCanvas} from '../src/ol/render.js';
 import OSM from '../src/ol/source/OSM.js';
 import VectorSource from '../src/ol/source/Vector.js';
 
@@ -61,33 +62,7 @@ exportButton.addEventListener(
     const viewResolution = map.getView().getResolution();
 
     map.once('rendercomplete', function () {
-      const mapCanvas = document.createElement('canvas');
-      mapCanvas.width = width;
-      mapCanvas.height = height;
-      const mapContext = mapCanvas.getContext('2d');
-      Array.prototype.forEach.call(
-        document.querySelectorAll('.ol-layer canvas'),
-        function (canvas) {
-          if (canvas.width > 0) {
-            const opacity = canvas.parentNode.style.opacity;
-            mapContext.globalAlpha = opacity === '' ? 1 : Number(opacity);
-            const transform = canvas.style.transform;
-            // Get the transform parameters from the style's transform matrix
-            const matrix = transform
-              .match(/^matrix\(([^\(]*)\)$/)[1]
-              .split(',')
-              .map(Number);
-            // Apply the transform to the export map context
-            CanvasRenderingContext2D.prototype.setTransform.apply(
-              mapContext,
-              matrix,
-            );
-            mapContext.drawImage(canvas, 0, 0);
-          }
-        },
-      );
-      mapContext.globalAlpha = 1;
-      mapContext.setTransform(1, 0, 0, 1, 0, 0);
+      const mapCanvas = toCanvas(map, {backgroundColor: 'white'});
       const pdf = new jsPDF('landscape', undefined, format);
       pdf.addImage(
         mapCanvas.toDataURL('image/jpeg'),

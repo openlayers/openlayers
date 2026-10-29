@@ -4,6 +4,9 @@ title: Export PDF example
 shortdesc: Example of exporting a map as a PDF.
 docs: >
   Example of exporting a map as a PDF using the <a href="https://github.com/MrRio/jsPDF" target="_blank">jsPDF</a> library.
+  The <code>toCanvas()</code> helper copies the rendered Canvas 2D layers after
+  <code>rendercomplete</code>. It excludes controls and overlays and requires
+  CORS-enabled images for encoding. WebGL and custom DOM layers are not supported.
 tags: "export, pdf, openstreetmap"
 ---
 <div id="map" class="map"></div>
