@@ -33,6 +33,143 @@ describe('ol/source/Vector', function () {
     });
   });
 
+  describe('#dispose()', function () {
+    for (const useSpatialIndex of [true, false]) {
+      describe(`with useSpatialIndex: ${useSpatialIndex}`, function () {
+        it('unregisters collection listeners without changing its contents', function () {
+          const collection = new Collection([pointFeature]);
+          const listener = vi.fn();
+          collection.on(['add', 'remove', 'change:length'], listener);
+          const source = new VectorSource({
+            features: collection,
+            useSpatialIndex,
+          });
+
+          source.dispose();
+
+          assert.deepEqual(collection.getListeners('add'), [listener]);
+          assert.deepEqual(collection.getListeners('remove'), [listener]);
+          assert.deepEqual(collection.getArray(), [pointFeature]);
+          assert.strictEqual(listener.mock.calls.length, 0);
+          assert.isFalse(pointFeature.disposed);
+        });
+
+        it('does not receive later collection additions or removals', function () {
+          const collection = new Collection([pointFeature]);
+          const source = new VectorSource({
+            features: collection,
+            useSpatialIndex,
+          });
+          const addFeature = vi.spyOn(source, 'addFeature');
+          const removeFeature = vi.spyOn(source, 'removeFeature');
+          source.dispose();
+
+          const feature = new Feature();
+          collection.push(feature);
+          collection.remove(pointFeature);
+
+          assert.strictEqual(addFeature.mock.calls.length, 0);
+          assert.strictEqual(removeFeature.mock.calls.length, 0);
+          assert.isFalse(feature.hasListener('change'));
+          assert.isFalse(feature.hasListener('propertychange'));
+          assert.deepEqual(collection.getArray(), [feature]);
+        });
+
+        it('does not accumulate listeners when a collection outlives sources', function () {
+          const collection = new Collection([pointFeature]);
+          for (let i = 0; i < 5; ++i) {
+            const source = new VectorSource({
+              features: collection,
+              useSpatialIndex,
+            });
+            assert.isTrue(collection.hasListener('add'));
+            assert.isTrue(collection.hasListener('remove'));
+
+            source.dispose();
+            source.dispose();
+
+            assert.isFalse(collection.hasListener());
+            assert.isFalse(pointFeature.hasListener('change'));
+            assert.isFalse(pointFeature.hasListener('propertychange'));
+            assert.deepEqual(collection.getArray(), [pointFeature]);
+          }
+        });
+
+        it('preserves listeners belonging to another source', function () {
+          const collection = new Collection([pointFeature]);
+          const otherSource = new VectorSource({
+            features: collection,
+            useSpatialIndex,
+          });
+          const collectionListeners = collection.getListeners('add').slice();
+          const featureListeners = pointFeature.getListeners('change').slice();
+          const propertyListeners = pointFeature
+            .getListeners('propertychange')
+            .slice();
+          const source = new VectorSource({
+            features: collection,
+            useSpatialIndex,
+          });
+          source.dispose();
+          const revision = source.getRevision();
+          const otherRevision = otherSource.getRevision();
+
+          assert.deepEqual(collection.getListeners('add'), collectionListeners);
+          assert.deepEqual(
+            pointFeature.getListeners('change'),
+            featureListeners,
+          );
+          assert.deepEqual(
+            pointFeature.getListeners('propertychange'),
+            propertyListeners,
+          );
+          pointFeature.getGeometry().setCoordinates([1, 2]);
+          pointFeature.set('name', 'updated');
+          assert.strictEqual(source.getRevision(), revision);
+          assert.isAbove(otherSource.getRevision(), otherRevision);
+          const feature = new Feature();
+          collection.push(feature);
+          assert.isTrue(otherSource.hasFeature(feature));
+          collection.remove(pointFeature);
+          assert.isFalse(otherSource.hasFeature(pointFeature));
+          otherSource.dispose();
+        });
+
+        it('releases feature listeners for array-backed sources', function () {
+          const feature = new Feature();
+          const features = [
+            pointFeature,
+            feature,
+            new RenderFeature('Point', [1, 1], [], 2, {}, 1),
+          ];
+          const source = new VectorSource({features, useSpatialIndex});
+          const collection = source.getFeaturesCollection();
+          source.on('change', vi.fn());
+
+          source.dispose();
+          source.dispose();
+
+          assert.isFalse(pointFeature.hasListener('change'));
+          assert.isFalse(pointFeature.hasListener('propertychange'));
+          assert.isFalse(feature.hasListener('change'));
+          assert.isFalse(feature.hasListener('propertychange'));
+          assert.isFalse(source.hasListener());
+          assert.lengthOf(features, 3);
+          if (collection) {
+            assert.isFalse(collection.hasListener());
+            assert.deepEqual(collection.getArray(), features);
+          }
+        });
+
+        it('can dispose an empty source more than once', function () {
+          const source = new VectorSource({useSpatialIndex});
+          source.dispose();
+          assert.doesNotThrow(() => source.dispose());
+        });
+      });
+    }
+  });
+
   describe('when empty', function () {
     let vectorSource;
     beforeEach(function () {
