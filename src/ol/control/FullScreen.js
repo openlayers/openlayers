@@ -21,7 +21,7 @@ const events = ['fullscreenchange', 'webkitfullscreenchange'];
 /**
  * @enum {string}
  */
-const FullScreenEventType = {
+export const FullScreenEventType = {
   /**
    * Triggered after the map entered fullscreen.
    * @event FullScreenEventType#enterfullscreen
