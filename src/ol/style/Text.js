@@ -64,6 +64,9 @@ const DEFAULT_FILL_COLOR = '#333';
  * @property {Array<number>} [padding=[0, 0, 0, 0]] Padding in pixels around the text for decluttering and background. The order of
  * values in the array is `[top, right, bottom, left]`.
  * @property {import('../style/Style.js').DeclutterMode} [declutterMode] Declutter mode: `declutter`, `obstacle`, `none`
+ * @property {boolean} [optional] Allow the image in the same style to be rendered when this
+ * text is hidden by decluttering. If omitted, image and text are independent unless
+ * both use the `declutter` mode. Only applies to Canvas rendering of Point and MultiPoint geometries.
  */
 
 /**
@@ -218,6 +221,12 @@ class Text {
      * @type {import('../style/Style.js').DeclutterMode|undefined}
      */
     this.declutterMode_ = options.declutterMode;
+
+    /**
+     * @private
+     * @type {boolean|undefined}
+     */
+    this.optional_ = options.optional;
   }
 
   /**
@@ -252,6 +261,7 @@ class Text {
       backgroundStroke: this.getBackgroundStroke()?.clone(),
       padding: this.getPadding() || undefined,
       declutterMode: this.getDeclutterMode(),
+      optional: this.getOptional(),
     });
   }
 
@@ -450,6 +460,25 @@ class Text {
    */
   getDeclutterMode() {
     return this.declutterMode_;
+  }
+
+  /**
+   * Get whether the image may be rendered without this text after decluttering.
+   * @return {boolean|undefined} Optional setting.
+   * @api
+   */
+  getOptional() {
+    return this.optional_;
+  }
+
+  /**
+   * Allow the image to be rendered when this text is hidden by decluttering.
+   * Pass `undefined` to restore the default dependency on declutter modes.
+   * @param {boolean|undefined} optional Optional setting.
+   * @api
+   */
+  setOptional(optional) {
+    this.optional_ = optional;
   }
 
   /**
