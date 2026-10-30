@@ -56,6 +56,9 @@ import ImageStyle from './Image.js';
  * @property {number} [repeat] Repeat interval. When set, the icon will be repeated at this interval, which specifies
  * the distance between two icon anchors in pixels. Only available when `placement` is set to `'line'`.
  * @property {import("./Style.js").DeclutterMode} [declutterMode] Declutter mode.
+ * @property {boolean} [optional] Allow text in the same style to be rendered when this
+ * image is hidden by decluttering. If omitted, image and text are independent unless
+ * both use the `declutter` mode. Only applies to Canvas rendering of Point and MultiPoint geometries.
  */
 
 /**
@@ -121,6 +124,7 @@ class Icon extends ImageStyle {
       placement: options.placement,
       repeat: options.repeat,
       declutterMode: options.declutterMode,
+      optional: options.optional,
     });
 
     /**
@@ -352,6 +356,7 @@ class Icon extends ImageStyle {
       placement: this.getPlacement(),
       repeat: this.getRepeat(),
       declutterMode: this.getDeclutterMode(),
+      optional: this.getOptional(),
     });
   }
 

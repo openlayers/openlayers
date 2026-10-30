@@ -22,15 +22,15 @@ for (const [y, required] of [
           radius: 18,
           fill: new Fill({color: '#0063a7'}),
           declutterMode: 'declutter',
+          optional: required ? false : undefined,
         }),
         text: new Text({
           text: x < 0 ? '39' : '391',
           font: '16px Ubuntu',
           fill: new Fill({color: 'white'}),
           declutterMode: 'obstacle',
+          optional: required ? false : undefined,
         }),
-        imageOptional: required ? false : undefined,
-        textOptional: required ? false : undefined,
       }),
     );
     features.push(feature);

@@ -397,8 +397,8 @@ function renderPointGeometry(
   const declutterImageWithText =
     declutter && imageStyle && hasText
       ? {
-          imageOptional: style.getImageOptional(),
-          textOptional: style.getTextOptional(),
+          imageOptional: imageStyle.getOptional(),
+          textOptional: textStyle.getOptional(),
         }
       : undefined;
   if (imageStyle) {
@@ -440,8 +440,8 @@ function renderMultiPointGeometry(
   const declutterImageWithText =
     declutter && hasImage && hasText
       ? {
-          imageOptional: style.getImageOptional(),
-          textOptional: style.getTextOptional(),
+          imageOptional: imageStyle.getOptional(),
+          textOptional: textStyle.getOptional(),
         }
       : undefined;
   if (hasImage) {

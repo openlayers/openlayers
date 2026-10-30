@@ -32,23 +32,6 @@ describe('ol.style.Style', function () {
     radius: 5,
   });
 
-  it('preserves optional image/text settings in clones and setters', function () {
-    const style = new Style();
-    assert.isUndefined(style.getImageOptional());
-    assert.isUndefined(style.getTextOptional());
-    style.setImageOptional(false);
-    style.setTextOptional(true);
-    const clone = style.clone();
-    assert.isFalse(clone.getImageOptional());
-    assert.isTrue(clone.getTextOptional());
-    clone.setImageOptional(undefined);
-    clone.setTextOptional(undefined);
-    assert.isUndefined(clone.getImageOptional());
-    assert.isUndefined(clone.getTextOptional());
-    assert.isFalse(style.getImageOptional());
-    assert.isTrue(style.getTextOptional());
-  });
-
   describe('#clone', function () {
     it('creates a new ol.style.Style', function () {
       const original = new Style();

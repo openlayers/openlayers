@@ -61,12 +61,6 @@ import Stroke from './Stroke.js';
  * in hit detection rendering.
  * @property {import("./Stroke.js").default} [stroke] Stroke style.
  * @property {import("./Text.js").default} [text] Text style.
- * @property {boolean} [imageOptional] Allow text to be rendered when the image is
- * hidden by decluttering. If omitted, image and text are independent unless both
- * use the `declutter` mode. Only applies to image and text on point geometries.
- * @property {boolean} [textOptional] Allow the image to be rendered when text is
- * hidden by decluttering. If omitted, image and text are independent unless both
- * use the `declutter` mode. Only applies to image and text on point geometries.
  * @property {number} [zIndex] Z index.
  */
 
@@ -232,18 +226,6 @@ class Style {
      * @type {number|undefined}
      */
     this.zIndex_ = options.zIndex;
-
-    /**
-     * @private
-     * @type {boolean|undefined}
-     */
-    this.imageOptional_ = options.imageOptional;
-
-    /**
-     * @private
-     * @type {boolean|undefined}
-     */
-    this.textOptional_ = options.textOptional;
   }
 
   /**
@@ -266,8 +248,6 @@ class Style {
       stroke: this.getStroke()?.clone(),
       text: this.getText()?.clone(),
       zIndex: this.getZIndex(),
-      imageOptional: this.getImageOptional(),
-      textOptional: this.getTextOptional(),
     });
   }
 
@@ -366,44 +346,6 @@ class Style {
    */
   setImage(image) {
     this.image_ = image;
-  }
-
-  /**
-   * Whether text may be rendered without a decluttered image.
-   * @return {boolean|undefined} Image optional setting.
-   * @api
-   */
-  getImageOptional() {
-    return this.imageOptional_;
-  }
-
-  /**
-   * Allow text to be rendered when the image is hidden by decluttering.
-   * Pass `undefined` to restore the default dependency on declutter modes.
-   * @param {boolean|undefined} optional Image optional setting.
-   * @api
-   */
-  setImageOptional(optional) {
-    this.imageOptional_ = optional;
-  }
-
-  /**
-   * Whether the image may be rendered without decluttered text.
-   * @return {boolean|undefined} Text optional setting.
-   * @api
-   */
-  getTextOptional() {
-    return this.textOptional_;
-  }
-
-  /**
-   * Allow the image to be rendered when text is hidden by decluttering.
-   * Pass `undefined` to restore the default dependency on declutter modes.
-   * @param {boolean|undefined} optional Text optional setting.
-   * @api
-   */
-  setTextOptional(optional) {
-    this.textOptional_ = optional;
   }
 
   /**

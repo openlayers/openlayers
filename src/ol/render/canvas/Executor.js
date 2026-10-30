@@ -48,7 +48,8 @@ import {TEXT_ALIGN} from './TextBuilder.js';
 /**
  * @typedef {{args: ReplayImageOrLabelArgs, declutterMode: import('../../style/Style.js').DeclutterMode}} DeclutterImageWithTextEntry
  * @typedef {import("../canvas.js").DeclutterImageWithText} DeclutterImageWithTextMap
- 
+ */
+
 /**
  * @typedef {{0: CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D, 1: import('../../size.js').Size, 2: import("../canvas.js").Label|HTMLImageElement|HTMLCanvasElement|HTMLVideoElement, 3: ImageOrLabelDimensions, 4: number, 5: Array<*>|null, 6: Array<*>|null}} ReplayImageOrLabelArgs
  */

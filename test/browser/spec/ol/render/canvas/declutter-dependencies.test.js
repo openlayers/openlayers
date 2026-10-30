@@ -12,9 +12,15 @@ import Fill from '../../../../../../src/ol/style/Fill.js';
 import Style from '../../../../../../src/ol/style/Style.js';
 import Text from '../../../../../../src/ol/style/Text.js';
 
-function render(options, imageCollision, textCollision, multiPoint, parts) {
+function render(
+  options,
+  imageCollision,
+  textCollision,
+  multiPoint,
+  parts,
+  declutter = true,
+) {
   const style = new Style({
-    ...options,
     image:
       parts === 'text'
         ? undefined
@@ -22,6 +28,7 @@ function render(options, imageCollision, textCollision, multiPoint, parts) {
             radius: 5,
             fill: new Fill({color: 'blue'}),
             declutterMode: options.imageMode,
+            optional: options.imageOptional,
           }),
     text:
       parts === 'image'
@@ -31,10 +38,14 @@ function render(options, imageCollision, textCollision, multiPoint, parts) {
             font: '10px monospace',
             offsetX: 30,
             declutterMode: options.textMode,
+            optional: options.textOptional,
           }),
   });
   const geometry = multiPoint
-    ? new MultiPoint([[50, 50]])
+    ? new MultiPoint([
+        [50, 50],
+        [50, 80],
+      ])
     : new Point([50, 50]);
   const builder = new BuilderGroup(0, [0, 0, 100, 100], 1, 1);
   renderFeature(
@@ -44,7 +55,7 @@ function render(options, imageCollision, textCollision, multiPoint, parts) {
     0,
     () => {},
     undefined,
-    true,
+    declutter,
   );
   const executor = new ExecutorGroup(null, 1, 1, true, builder.finish());
   const tree = new RBush();
@@ -66,11 +77,30 @@ function render(options, imageCollision, textCollision, multiPoint, parts) {
       0,
       true,
       ['Image', 'Text'],
-      tree,
+      declutter ? tree : undefined,
     );
     const rendered = replay.mock.calls.map(([args]) =>
       'contextInstructions' in args[2] ? 'text' : 'image',
     );
+    const context = canvas.getContext('2d');
+    const hasPixels = (x, y) =>
+      context
+        .getImageData(x, y - 10, 20, 20)
+        .data.some((value, i) => i % 4 === 3 && value > 0);
+    for (const y of multiPoint ? [50, 80] : [50]) {
+      const renderedAtY = replay.mock.calls
+        .filter(([args]) => Math.abs(args[3].declutterBox.minY - y) < 10)
+        .map(([args]) => ('contextInstructions' in args[2] ? 'text' : 'image'));
+      assert.equal(hasPixels(40, y), renderedAtY.includes('image'));
+      assert.equal(hasPixels(70, y), renderedAtY.includes('text'));
+    }
+    const obstacles = Number(imageCollision) + Number(textCollision);
+    if (declutter) {
+      const inserted = rendered.filter(
+        (part) => options[part + 'Mode'] !== 'none',
+      ).length;
+      assert.lengthOf(tree.all(), obstacles + inserted);
+    }
     return rendered;
   } finally {
     replay.mockRestore();
@@ -84,18 +114,36 @@ describe('image/text declutter dependencies', function () {
     assert.deepEqual(render(options, false, false, false, 'text'), ['text']);
   });
 
+  it('does not apply dependencies when decluttering is disabled', function () {
+    assert.deepEqual(
+      render(
+        {imageOptional: false, textOptional: false},
+        true,
+        true,
+        false,
+        undefined,
+        false,
+      ),
+      ['image', 'text'],
+    );
+  });
+
   for (const multiPoint of [false, true]) {
-    for (const imageMode of ['declutter', 'obstacle', 'none']) {
-      for (const textMode of ['declutter', 'obstacle', 'none']) {
+    for (const imageMode of [undefined, 'declutter', 'obstacle', 'none']) {
+      for (const textMode of [undefined, 'declutter', 'obstacle', 'none']) {
         for (const imageOptional of [undefined, false, true]) {
           for (const textOptional of [undefined, false, true]) {
             it(`handles ${multiPoint ? 'MultiPoint' : 'Point'} ${imageMode}/${textMode}, optional ${imageOptional}/${textOptional}`, function () {
               for (const imageCollision of [false, true]) {
                 for (const textCollision of [false, true]) {
-                  const image = imageMode !== 'declutter' || !imageCollision;
-                  const text = textMode !== 'declutter' || !textCollision;
+                  const image =
+                    (imageMode && imageMode !== 'declutter') || !imageCollision;
+                  const text =
+                    (textMode && textMode !== 'declutter') || !textCollision;
                   const independent =
-                    imageMode !== 'declutter' || textMode !== 'declutter';
+                    (imageMode && imageMode !== 'declutter') ||
+                    (textMode && textMode !== 'declutter') ||
+                    false;
                   const expected = [];
                   // Dependencies apply to the independently computed collision results.
                   if (image && (text || (textOptional ?? independent))) {
@@ -103,6 +151,10 @@ describe('image/text declutter dependencies', function () {
                   }
                   if (text && (image || (imageOptional ?? independent))) {
                     expected.push('text');
+                  }
+                  if (multiPoint) {
+                    // A collision at the first anchor must not suppress the second pair.
+                    expected.push('image', 'text');
                   }
                   assert.deepEqual(
                     render(
