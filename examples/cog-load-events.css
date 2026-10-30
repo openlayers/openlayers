@@ -1,0 +1,30 @@
+.map {
+  background: #85ccf9;
+  position: relative;
+}
+#map {
+  height: 400px;
+  position: relative;
+}
+
+@keyframes spinner {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner:after {
+  content: "";
+  box-sizing: border-box;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 40px;
+  height: 40px;
+  margin-top: -20px;
+  margin-left: -20px;
+  border-radius: 50%;
+  border: 5px solid rgba(180, 180, 180, 0.6);
+  border-top-color: rgba(0, 0, 0, 0.6);
+  animation: spinner 0.6s linear infinite;
+}
