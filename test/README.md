@@ -17,6 +17,18 @@ Run the tests once:
 
 This will run all tests - browser, node and rendering.
 
+## Writing tests
+
+New functionality needs tests, and bug fixes need a test that fails without the fix.
+
+Keep tests focused:
+
+- Add tests to the existing spec file for the module you changed, and follow the conventions already used in that file.
+- Write as few tests as needed to cover the change. Use the smallest input or fixture that exercises the code path, and don't assert the same behavior twice.
+- Make sure each new test fails without your change, so it is known to cover it.
+
+Leave existing tests alone unless the expected behavior or the API they use has changed. Don't reformat, rename, restructure or extend tests that are unrelated to your change. If an existing test has to change, the pull request description should explain why.
+
 ## Browser tests
 
 The browser tests run under Vitest. To run them once:
