@@ -30,7 +30,7 @@ Your contribution will be under our [license](https://raw.githubusercontent.com/
 
 ## Pull request guidelines
 
-Before working on a pull request, create an issue explaining what you want to contribute. This ensures that your pull request won't go unnoticed, and that you are not contributing something that is not suitable for the project. Once a core developer has set the `pull request accepted` label on the issue, you can submit a pull request. The pull request description should reference the original issue.
+Before working on a pull request, create an issue explaining what you want to contribute. This ensures that your pull request won't go unnoticed, and that you are not contributing something that is not suitable for the project. Once a core developer has set the `pull request accepted` label on the issue, you can submit a pull request. The pull request description should reference the original issue. To help potential reviewers, keep the pull request description short and make sure it describes what's really important. Ask yourself what information you'd need as a reviewer, and provide exactly that. As a rule of thumb, a reviewer should be able to read and understand the pull request description in less than a minute.
 
 Your pull request must:
 
@@ -94,6 +94,8 @@ Git commit message should look like:
     Further paragraphs come after blank lines.
 
 Please keep the header line short, no more than 50 characters.
+
+Do not reference pull requests or issues commit messages — GitHub links those for us.
 
 ### Be possible to merge automatically
 
