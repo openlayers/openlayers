@@ -214,15 +214,21 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     );
     const revision = layer.getRevision();
     const renderOrder = layer.getRenderOrder() || null;
+    const layerExtent = this.layerExtent;
 
     const resolution = tile.wantedResolution;
     const builderState = tile.getReplayState(layer);
+    const layerExtentChanged =
+      layerExtent && builderState.renderedLayerExtent
+        ? !equals(layerExtent, builderState.renderedLayerExtent)
+        : layerExtent !== builderState.renderedLayerExtent;
     if (
       !builderState.dirty &&
       builderState.renderedResolution === resolution &&
       builderState.renderedRevision == revision &&
       builderState.renderedPixelRatio === pixelRatio &&
-      builderState.renderedRenderOrder == renderOrder
+      builderState.renderedRenderOrder == renderOrder &&
+      !layerExtentChanged
     ) {
       return;
     }
@@ -238,6 +244,19 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     }
     const tileGrid = source.getTileGridForProjection(projection);
     const tileExtent = tileGrid.getTileCoordExtent(tile.wrappedTileCoord);
+    // Source tile features are in the world of the wrapped tile coordinate
+    /** @type {import("../../extent.js").Extent|null} */
+    let wrappedLayerExtent = null;
+    if (layerExtent) {
+      const worldOffset =
+        tileGrid.getTileCoordExtent(tile.tileCoord)[0] - tileExtent[0];
+      wrappedLayerExtent = [
+        layerExtent[0] - worldOffset,
+        layerExtent[1],
+        layerExtent[2] - worldOffset,
+        layerExtent[3],
+      ];
+    }
 
     const sourceTiles = source.getSourceTiles(pixelRatio, projection, tile);
     const layerUid = getUid(layer);
@@ -276,7 +295,9 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
         : builderExtent;
       const builderGroup = new CanvasBuilderGroup(
         0,
-        sharedExtent,
+        wrappedLayerExtent
+          ? getIntersection(sharedExtent, wrappedLayerExtent)
+          : sharedExtent,
         resolution,
         pixelRatio,
       );
@@ -356,6 +377,11 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     builderState.renderedPixelRatio = pixelRatio;
     builderState.renderedRenderOrder = renderOrder;
     builderState.renderedResolution = resolution;
+    builderState.renderedLayerExtent = layerExtent;
+    if (layerExtentChanged) {
+      // The tile image was rendered with the old layer extent
+      builderState.renderedTileRevision = -1;
+    }
   }
 
   /**

@@ -70,6 +70,32 @@ describe('ol/renderer/canvas/VectorImageLayer', function () {
       assert.deepEqual(Array.from(centerPixel), [0, 0, 0, 0]);
     });
 
+    it('skips features outside the layer extent when decluttering', function () {
+      layer.setDeclutter(true);
+      layer.setExtent([0, -50, 50, 50]);
+      layer.setStyle({
+        'circle-radius': 10,
+        'circle-fill-color': 'red',
+      });
+      layer.getSource().clear();
+      layer
+        .getSource()
+        .addFeatures([
+          new Feature(new Point([-5, 0])),
+          new Feature(new Point([5, 25])),
+        ]);
+      renderer.prepareFrame(createFrameState(0, [100, 100]));
+      const context = renderer.image.getImage().getContext('2d');
+      assert.deepEqual(
+        Array.from(context.getImageData(102, 100, 1, 1).data),
+        [0, 0, 0, 0],
+      );
+      assert.deepEqual(
+        Array.from(context.getImageData(105, 75, 1, 1).data),
+        [255, 0, 0, 255],
+      );
+    });
+
     it('sets correct extent and size with imageRatio = 2', function () {
       renderer.prepareFrame(createFrameState(0, [100, 100]));
       const image = renderer.image;
