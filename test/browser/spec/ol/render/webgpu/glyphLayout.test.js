@@ -146,6 +146,27 @@ describe('ol/render/webgpu/glyphLayout', () => {
     assert.strictEqual(relative[1], 20 - 2000);
   });
 
+  it('starts point label text at the anchor, not its halo padding', () => {
+    const atlas = new FontAtlas();
+    const font = '12px sans-serif';
+    const stroke = new Stroke({color: '#fff', width: 4});
+    const glyph = atlas.getGlyph(font, 'H', 4);
+    const textLeft = (textAlign) => {
+      const glyphs = [];
+      layoutPointLabel(
+        glyphs,
+        new Text({text: 'H', font, stroke, textAlign}),
+        [0, 0],
+        atlas,
+        [1, 0, 0, 1],
+      );
+      return glyphs[0].offsetX + glyph.pad;
+    };
+    assert.approximately(textLeft('left'), 0, 1e-6);
+    assert.approximately(textLeft('center'), -glyph.advance / 2, 1e-6);
+    assert.approximately(textLeft('right'), -glyph.advance, 1e-6);
+  });
+
   it('keeps packed atlas texels valid after the atlas grows', () => {
     const atlas = new FontAtlas();
     const glyphs = [];
