@@ -281,7 +281,7 @@ class WebGPULayerRenderer extends LayerRenderer {
  * sharing it would fade the neighbours as well.
  *
  * @param {import("../../Map.js").FrameState} frameState Frame state.
- * @param {WebGPULayerRenderer} renderer Renderer to place.
+ * @param {WebGPULayerRenderer<import("../../layer/Layer.js").default>} renderer Renderer to place.
  * @return {{groupNumber: number, className: string|undefined, opacity: number}} Group.
  */
 export function canvasGroupFor(frameState, renderer) {

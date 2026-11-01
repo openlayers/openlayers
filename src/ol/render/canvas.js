@@ -408,10 +408,14 @@ function measureText(font, text) {
 export function measureTextBaseline(font) {
   let baseline = textBaselines[font];
   if (baseline == undefined) {
-    const metrics = measureText(font, 'H');
-    const ascent = metrics.fontBoundingBoxAscent || 0;
-    const descent = metrics.fontBoundingBoxDescent || 0;
-    baseline = (ascent - descent) / 2;
+    // Measure 'middle' instead of deriving it from the font bounding box,
+    // which is a different reference and rounded to whole pixels
+    const alphabetic = measureText(font, 'H').actualBoundingBoxAscent;
+    const context = /** @type {CanvasRenderingContext2D} */ (measureContext);
+    context.textBaseline = 'middle';
+    const middle = measureText(font, 'H').actualBoundingBoxAscent;
+    context.textBaseline = 'alphabetic';
+    baseline = alphabetic - middle || 0;
     textBaselines[font] = baseline;
   }
   return baseline;
