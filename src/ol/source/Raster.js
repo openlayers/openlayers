@@ -962,11 +962,14 @@ class RasterSource extends ImageSource {
    * Get the input source values at a coordinate, as the operation receives them:
    * one array of values per input source, in source order.  Data tile inputs yield
    * their native band values (in the tiles' array type); other inputs yield the
-   * `[r, g, b, a]` values read back from their layer renderer.  Returns `null` if
-   * the source has not been rendered at least once, or if an input is not yet available.
+   * `[r, g, b, a]` values read back from their layer renderer.  The entry for an
+   * input is `null` if its values are not available, e.g. because the input is
+   * not loaded yet, or because its layer renderer does not support reading data
+   * (like the renderer of `ol/layer/Vector`; use `ol/layer/VectorImage` instead).
+   * Returns `null` if the source has not been rendered at least once.
    * @param {import("../coordinate.js").Coordinate} coordinate The coordinate, in
    *     the view projection.
-   * @return {Array<Array<number>|Uint8ClampedArray|Uint8Array|Float32Array>|null}
+   * @return {Array<Array<number>|Uint8ClampedArray|Uint8Array|Float32Array|null>|null}
    *     The values per input source.
    * @api
    */
@@ -999,7 +1002,8 @@ class RasterSource extends ImageSource {
         );
         const input = renderer.readData(lookupFrameState);
         if (!input) {
-          return null;
+          pixels[i] = null;
+          continue;
         }
         const pixel = new Array(input.bandCount);
         for (let b = 0; b < input.bandCount; ++b) {
@@ -1016,12 +1020,10 @@ class RasterSource extends ImageSource {
           /** @type {import("../pixel.js").Pixel} */ (coordinate.slice()),
         ),
       );
-      if (!data) {
-        return null;
-      }
-      pixels[i] = /** @type {Uint8ClampedArray|Uint8Array|Float32Array} */ (
-        data
-      );
+      pixels[i] =
+        /** @type {Uint8ClampedArray|Uint8Array|Float32Array|null} */ (
+          data ?? null
+        );
     }
     return pixels;
   }
