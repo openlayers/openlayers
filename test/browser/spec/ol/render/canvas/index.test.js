@@ -97,6 +97,22 @@ describe('ol.render.canvas', function () {
     });
   });
 
+  describe('measureTextBaseline', function () {
+    it('matches the middle text baseline of Canvas 2D', function () {
+      const font = '20px sans-serif';
+      const context = document.createElement('canvas').getContext('2d');
+      context.font = font;
+      context.textBaseline = 'middle';
+      const ascent = context.measureText('H').actualBoundingBoxAscent;
+      context.textBaseline = 'alphabetic';
+      assert.approximately(
+        render.measureTextBaseline(font),
+        context.measureText('H').actualBoundingBoxAscent - ascent,
+        1e-6,
+      );
+    });
+  });
+
   describe('rotateAtOffset', function () {
     it('rotates a canvas at an offset point', function () {
       const context = {
