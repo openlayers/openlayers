@@ -95,6 +95,11 @@ describe('ol.style.Icon', function () {
       assert.deepEqual(original.getDeclutterMode(), clone.getDeclutterMode());
       assert.deepEqual(original.getOptional(), clone.getOptional());
     });
+    it('clones an image element that has no src yet', function () {
+      const original = new Icon({img: new Image(), size: [8, 8]});
+      const clone = original.clone();
+      assert.strictEqual(original.iconImage_, clone.iconImage_);
+    });
     it('copies all values with src', function () {
       const original = new Icon({
         src: src,

@@ -131,11 +131,12 @@ describe('ol/webgpu/FontAtlas', () => {
     }
     const glyph = atlas.getGlyph('48px sans-serif', 'A');
     atlas.clear();
-    assert.strictEqual(atlas.getPageCount(), 1);
-    assert.strictEqual(atlas.getPageSize(0), 512);
+    assert.strictEqual(atlas.getPageCount(), 0);
     const again = atlas.getGlyph('48px sans-serif', 'A');
     assert.notStrictEqual(again, glyph);
     assert.strictEqual(again.page, 0);
+    assert.strictEqual(atlas.getPageCount(), 1);
+    assert.strictEqual(atlas.getPageSize(0), 512);
   });
 
   it('measures glyph advances per font', () => {
