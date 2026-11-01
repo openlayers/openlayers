@@ -480,7 +480,8 @@ export function layoutPointLabel(
       out.push({
         x: anchor[0],
         y: anchor[1],
-        offsetX: x,
+        // the cell starts `pad` before the advance origin
+        offsetX: x - glyph.pad * scaleX,
         offsetY: alphabetic - glyph.ascent * scaleY,
         width: w,
         height: h,
