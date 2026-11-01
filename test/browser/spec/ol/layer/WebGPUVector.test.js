@@ -253,7 +253,7 @@ where('WebGPU').describe('ol/layer/WebGPUVector', function () {
     assert.strictEqual(styleFunction.mock.lastCall[1], 1.2);
   });
 
-  it('rebuilds icons in the frame that starts a full image atlas over', async () => {
+  it('rebuilds icons after a full image atlas starts over', async () => {
     const icon = document.createElement('canvas');
     icon.width = 8;
     icon.height = 8;
@@ -287,6 +287,8 @@ where('WebGPU').describe('ol/layer/WebGPUVector', function () {
     const generation = imageAtlas.getGeneration();
     map.renderSync();
     assert.isAbove(imageAtlas.getGeneration(), generation);
+    map.render();
+    await renderComplete(map);
     assert.notStrictEqual(renderer.buffers_, buffers);
     assert.lengthOf(renderer.buffers_.imageEntries, 1);
     assert.isFalse(renderer.hasPendingWork());
