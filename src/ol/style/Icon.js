@@ -327,6 +327,7 @@ class Icon extends ImageStyle {
       scale = this.getScale();
       scale = Array.isArray(scale) ? scale.slice() : scale;
     }
+    const src = this.getSrc();
     return new Icon({
       anchor: this.anchor_.slice(),
       anchorOrigin: this.anchorOrigin_,
@@ -347,7 +348,8 @@ class Icon extends ImageStyle {
       width,
       height,
       size: this.size_ !== null ? this.size_.slice() : undefined,
-      src: this.getSrc(),
+      src,
+      img: src === undefined ? this.getHitDetectionImage() : undefined,
       displacement: this.getDisplacement().slice(),
       placement: this.getPlacement(),
       repeat: this.getRepeat(),
