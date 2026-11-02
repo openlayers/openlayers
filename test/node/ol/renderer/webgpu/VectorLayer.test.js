@@ -188,7 +188,7 @@ describe('ol/renderer/webgpu/VectorLayer hit detection', () => {
           maxY: 10,
           glyphStart: 0,
           glyphCount: 1,
-          _anchor: [0, 0],
+          anchor: [0, 0],
         },
         {
           minX: -8,
@@ -197,7 +197,7 @@ describe('ol/renderer/webgpu/VectorLayer hit detection', () => {
           maxY: 8,
           glyphCount: 0,
           symbolIndex: 0,
-          _anchor: [50, 50],
+          anchor: [50, 50],
         },
       ],
       glyphs: [

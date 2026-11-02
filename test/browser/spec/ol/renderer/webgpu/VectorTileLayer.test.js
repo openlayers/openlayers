@@ -371,7 +371,7 @@ describe('ol/renderer/webgpu/VectorTileLayer', () => {
     assert.sameMembers(calls, ['inside', 'buffered', 'alternate-outside']);
     assert.lengthOf(batch.buffers.labels, 2);
     assert.deepEqual(
-      batch.buffers.labels.map((label) => label._anchor),
+      batch.buffers.labels.map((label) => label.anchor),
       [center, [batchExtent[2] + 50 * resolution, center[1]]],
     );
   });

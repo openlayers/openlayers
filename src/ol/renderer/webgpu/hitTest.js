@@ -213,7 +213,7 @@ function labelContainsPixel(
   }
   const anchor =
     /** @type {import("../../coordinate.js").Coordinate|undefined} */ (
-      /** @type {any} */ (label)._anchor
+      /** @type {any} */ (label).anchor
     );
   if (!anchor) {
     return false;

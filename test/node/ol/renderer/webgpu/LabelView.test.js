@@ -91,7 +91,7 @@ describe('ol/renderer/webgpu/LabelView', () => {
           maxX: 5,
           maxY: 4,
           glyphCount: 0,
-          _anchor: [10, 20],
+          anchor: [10, 20],
         },
       ],
     };
@@ -110,20 +110,20 @@ describe('ol/renderer/webgpu/LabelView', () => {
       maxX: 5,
       maxY: 4,
       glyphCount: 0,
-      _anchor: [10, 20],
+      anchor: [10, 20],
     };
     const buffers = {glyphs: [], labels: [label]};
     const box = viewOf(buffers, -50).toScreen(frameState())[0];
     assert.strictEqual(box.minX, 10 - 50 - 5 - LABEL_COLLISION_MARGIN);
-    assert.deepEqual(label._anchor, [10, 20]);
+    assert.deepEqual(label.anchor, [10, 20]);
   });
 
   it('suppresses fallback labels outside missing child regions', () => {
     const buffers = {
       glyphs: [],
       labels: [
-        {minX: -5, minY: -5, maxX: 5, maxY: 5, _anchor: [25, 25]},
-        {minX: -5, minY: -5, maxX: 5, maxY: 5, _anchor: [75, 75]},
+        {minX: -5, minY: -5, maxX: 5, maxY: 5, anchor: [25, 25]},
+        {minX: -5, minY: -5, maxX: 5, maxY: 5, anchor: [75, 75]},
       ],
     };
     const view = new LabelView();
@@ -149,9 +149,9 @@ describe('ol/renderer/webgpu/LabelView', () => {
           maxX: 10,
           maxY: 5,
           glyphCount: 0,
-          _anchor: [20, 30],
-          _corners: [-10, -5, 10, -5, 10, 5, -10, 5],
-          _rotation: Math.PI / 2,
+          anchor: [20, 30],
+          corners: [-10, -5, 10, -5, 10, 5, -10, 5],
+          rotation: Math.PI / 2,
         },
       ],
     };
@@ -176,8 +176,8 @@ describe('ol/renderer/webgpu/LabelView', () => {
           padding: [1, 2, 3, 4],
           glyphStart: 0,
           glyphCount: 1,
-          _anchor: [20, 30],
-          _corners: [-10, -5, 10, -5, 10, 5, -10, 5],
+          anchor: [20, 30],
+          corners: [-10, -5, 10, -5, 10, 5, -10, 5],
         },
       ],
     };
@@ -194,8 +194,8 @@ describe('ol/renderer/webgpu/LabelView', () => {
     const make = () => ({
       glyphs: [],
       labels: [
-        {minX: 0, minY: 0, maxX: 1, maxY: 1, pairId: 1, _anchor: [0, 0]},
-        {minX: 0, minY: 0, maxX: 1, maxY: 1, pairId: 2, _anchor: [0, 0]},
+        {minX: 0, minY: 0, maxX: 1, maxY: 1, pairId: 1, anchor: [0, 0]},
+        {minX: 0, minY: 0, maxX: 1, maxY: 1, pairId: 2, anchor: [0, 0]},
       ],
     });
     const view = new LabelView();
@@ -212,7 +212,7 @@ describe('ol/renderer/webgpu/LabelView', () => {
   it('reuses its boxes between passes', () => {
     const buffers = {
       glyphs: [],
-      labels: [{minX: 0, minY: 0, maxX: 1, maxY: 1, _anchor: [0, 0]}],
+      labels: [{minX: 0, minY: 0, maxX: 1, maxY: 1, anchor: [0, 0]}],
     };
     const view = viewOf(buffers);
     const first = view.toScreen(frameState())[0];
@@ -223,7 +223,7 @@ describe('ol/renderer/webgpu/LabelView', () => {
   it('translates cached boxes on pan-only frames', () => {
     const buffers = {
       glyphs: [],
-      labels: [{minX: -5, minY: -4, maxX: 5, maxY: 4, _anchor: [10, 20]}],
+      labels: [{minX: -5, minY: -4, maxX: 5, maxY: 4, anchor: [10, 20]}],
     };
     const view = viewOf(buffers);
     const frame = frameState();
@@ -249,7 +249,7 @@ describe('ol/renderer/webgpu/LabelView', () => {
           maxX: 2,
           maxY: 2,
           pairId: 1,
-          _anchor: [10, 20],
+          anchor: [10, 20],
         },
       ],
     };
@@ -262,7 +262,7 @@ describe('ol/renderer/webgpu/LabelView', () => {
           maxX: 1,
           maxY: 1,
           pairId: 5,
-          _anchor: [30, 40],
+          anchor: [30, 40],
         },
       ],
     };
@@ -286,7 +286,7 @@ describe('ol/renderer/webgpu/LabelView', () => {
   it('reprojects a source when its world offset or fallback clips change', () => {
     const buffers = {
       glyphs: [],
-      labels: [{minX: -2, minY: -2, maxX: 2, maxY: 2, _anchor: [25, 25]}],
+      labels: [{minX: -2, minY: -2, maxX: 2, maxY: 2, anchor: [25, 25]}],
     };
     const view = viewOf(buffers);
     const frame = frameState();
