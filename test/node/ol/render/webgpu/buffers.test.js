@@ -195,7 +195,7 @@ describe('ol/render/webgpu/buffers', () => {
       return values;
     };
     assert.include(coverages(bare), 0);
-    assert.isTrue(coverages(stroked).every((value) => value === 1));
+    assert.lengthOf(stroked.fillExtrusions, 0);
     let outward = 0;
     for (let i = 0; i < bare.fillExtrusions.length; i += 3) {
       const ex = bare.fillExtrusions[i];
@@ -211,6 +211,47 @@ describe('ol/render/webgpu/buffers', () => {
       ++outward;
     }
     assert.isAbove(outward, 0);
+  });
+
+  it('gives every fill vertex a fringe extrusion once one fill has a fringe', () => {
+    const square = (x) =>
+      new Feature(
+        new Polygon([
+          [
+            [x, 0],
+            [x + 10, 0],
+            [x + 10, 10],
+            [x, 10],
+            [x, 0],
+          ],
+        ]),
+      );
+    const stroked = square(0);
+    const buffers = buildVectorBuffers(
+      [stroked, square(20)],
+      (feature) =>
+        new Style({
+          fill: new Fill({color: '#f00'}),
+          stroke:
+            feature === stroked
+              ? new Stroke({color: '#000', width: 2})
+              : undefined,
+        }),
+      1,
+      /** @type {any} */ ({}),
+    );
+    assert.lengthOf(
+      buffers.fillExtrusions,
+      (buffers.fillPositions.length / 2) * 3,
+    );
+    for (let i = 0; i < buffers.fillPositions.length / 2; ++i) {
+      if (toMapCoordinate(buffers.fillPositions, buffers.grid, i)[0] < 15) {
+        assert.deepEqual(
+          Array.from(buffers.fillExtrusions.subarray(i * 3, i * 3 + 3)),
+          [0, 0, 1],
+        );
+      }
+    }
   });
 
   it('distinguishes map and viewport fill displacement styles', () => {
@@ -533,9 +574,17 @@ describe('ol/render/webgpu/buffers', () => {
       /** @type {any} */ ({}),
       {clipExtent: [0, 0, 10, 10]},
     );
-    assert.isAbove(full.strokeIndices.length, 0);
+    // The distance along the line ends where the drawn line ends
+    const length = (buffers) => {
+      let max = 0;
+      for (let i = 3; i < buffers.strokeAttributes.length; i += 5) {
+        max = Math.max(max, buffers.strokeAttributes[i]);
+      }
+      return max;
+    };
     assert.isAbove(clipped.strokeIndices.length, 0);
-    assert.isBelow(clipped.strokeIndices.length, full.strokeIndices.length);
+    assert.closeTo(length(full), 16 + 2 * Math.hypot(2, 5), 1e-6);
+    assert.closeTo(length(clipped), 6 + 2 * Math.hypot(2, 5), 1e-6);
   });
 
   it('still strokes line strings that follow a tile edge', () => {
@@ -1128,7 +1177,10 @@ describe('ol/render/webgpu/buffers', () => {
     const styleFunction = () =>
       new Style({
         fill: new Fill({color: '#f00'}),
-        image: new CircleStyle({radius: 3, fill: new Fill({color: '#000'})}),
+        image: new CircleStyle({
+          radius: 3,
+          fill: new Fill({color: '#000'}),
+        }),
       });
     const snapshots = [];
     const [first, second] = [
@@ -1320,6 +1372,57 @@ describe('ol/render/webgpu/buffers', () => {
     assert.closeTo(maxMiter, Math.SQRT2, 1e-6);
   });
 
+  it('builds round joins and caps of thin lines with fewer segments', () => {
+    const build = (coordinates, width, lineCap = 'butt', lineJoin = 'round') =>
+      buildVectorBuffers(
+        [new Feature(new LineString(coordinates))],
+        () =>
+          new Style({
+            stroke: new Stroke({color: '#000', lineCap, lineJoin, width}),
+          }),
+        1,
+        /** @type {any} */ ({}),
+      );
+    const corner = [
+      [-10, 0],
+      [0, 0],
+      [0, 10],
+    ];
+    const miter = build(corner, 1, 'butt', 'miter');
+    // A right-angled round join of a line no wider than a pixel is a miter
+    assert.strictEqual(
+      build(corner, 1).strokeIndices.length,
+      miter.strokeIndices.length,
+    );
+    assert.isAbove(
+      build(corner, 4).strokeIndices.length,
+      miter.strokeIndices.length,
+    );
+    // A sharp turn keeps its arc, so the miter tip cannot spike out
+    const sharp = [
+      [-10, 0],
+      [0, 0],
+      [-10, 1],
+    ];
+    assert.isAbove(
+      build(sharp, 1).strokeIndices.length,
+      build(corner, 1).strokeIndices.length,
+    );
+    // Round caps: fewer segments when thin, as many as before when wide
+    const line = [
+      [0, 0],
+      [10, 0],
+    ];
+    assert.isBelow(
+      build(line, 1, 'round').strokeIndices.length,
+      build(line, 4, 'round').strokeIndices.length,
+    );
+    assert.strictEqual(
+      build(line, 20, 'round').strokeIndices.length,
+      build(line, 40, 'round').strokeIndices.length,
+    );
+  });
+
   it('signs the width of each stroke vertex by its side of the line', () => {
     const feature = new Feature(
       new LineString([
@@ -1420,7 +1523,9 @@ describe('ol/render/webgpu/buffers', () => {
         [3, 10],
       ]),
     );
-    const style = new Style({stroke: new Stroke({color: '#000', width: 1})});
+    const style = new Style({
+      stroke: new Stroke({color: '#000', width: 1}),
+    });
     const buffers = buildVectorBuffers(
       [feature],
       () => style,
