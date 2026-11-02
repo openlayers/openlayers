@@ -918,7 +918,7 @@ describe('ol/render/webgpu/buffers', () => {
     );
 
     assert.lengthOf(labelData.labels, 1);
-    assert.deepEqual(labelData.labels[0]._anchor, [5, 5]);
+    assert.deepEqual(labelData.labels[0].anchor, [5, 5]);
   });
 
   it('moves symbols into the world copy nearest the grid', () => {
@@ -943,13 +943,13 @@ describe('ol/render/webgpu/buffers', () => {
     ).labelData;
 
     assert.deepEqual(
-      labelData.labels.map((label) => label._anchor),
+      labelData.labels.map((label) => label.anchor),
       [
         [-95, 0],
         [0, 0],
       ],
     );
-    assert.deepEqual(wrapped.labels[0]._anchor, [105, 0]);
+    assert.deepEqual(wrapped.labels[0].anchor, [105, 0]);
   });
 
   it('repeats a symbol in each world the grid covers', () => {
@@ -966,7 +966,7 @@ describe('ol/render/webgpu/buffers', () => {
     );
 
     assert.deepEqual(
-      labelData.labels.map((label) => label._anchor),
+      labelData.labels.map((label) => label.anchor),
       [
         [-390, 0],
         [10, 0],
@@ -1049,7 +1049,7 @@ describe('ol/render/webgpu/buffers', () => {
 
     assert.strictEqual(calls, 2);
     assert.lengthOf(labelData.labels, 1);
-    assert.deepEqual(labelData.labels[0]._anchor, [5, 5]);
+    assert.deepEqual(labelData.labels[0].anchor, [5, 5]);
   });
 
   it('snapshots a style geometry that the style function rewrites in place', () => {
@@ -1095,7 +1095,7 @@ describe('ol/render/webgpu/buffers', () => {
     );
 
     assert.deepEqual(
-      labelData.labels.map((label) => label._anchor),
+      labelData.labels.map((label) => label.anchor),
       [
         [2, 2],
         [8, 8],

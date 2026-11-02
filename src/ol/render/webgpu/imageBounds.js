@@ -12,7 +12,7 @@
  * @param {number} viewRotation View rotation.
  */
 export function imageBounds(bounds, label, anchorX, anchorY, viewRotation) {
-  const corners = label._corners;
+  const corners = label.corners;
   if (!corners) {
     bounds.minX = anchorX + label.minX;
     bounds.minY = anchorY + label.minY;
@@ -21,7 +21,7 @@ export function imageBounds(bounds, label, anchorX, anchorY, viewRotation) {
     return;
   }
   const angle =
-    (label._rotation || 0) + (label._rotateWithView ? viewRotation : 0);
+    (label.rotation || 0) + (label.rotateWithView ? viewRotation : 0);
   const cos = Math.cos(angle);
   const sin = Math.sin(angle);
   bounds.minX = Infinity;

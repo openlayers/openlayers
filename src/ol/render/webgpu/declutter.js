@@ -6,7 +6,7 @@ import {DECLUTTER_SHADER} from '../../webgpu/shaders.js';
 
 /**
  * @typedef {Object} Label
- * @property {number} minX Min x (screen pixels, or pixel offsets relative to `_anchor`).
+ * @property {number} minX Min x (screen pixels, or pixel offsets relative to `anchor`).
  * @property {number} minY Min y.
  * @property {number} maxX Max x.
  * @property {number} maxY Max y.
@@ -24,11 +24,11 @@ import {DECLUTTER_SHADER} from '../../webgpu/shaders.js';
  * @property {number} [symbolIndex] Index into symbolInstances (stride `SYMBOL_STRIDE`).
  * @property {number} [iconIndex] Index into iconInstances (stride `ICON_STRIDE`).
  * @property {string} [text] Displayed text; used for fade continuity across tile zooms.
- * @property {import("../../coordinate.js").Coordinate} [_anchor] World-space anchor for point labels.
- * @property {Array<number>} [_corners] Icon or point text box corners relative to the anchor.
- * @property {number} [_rotation] Icon or point text rotation.
- * @property {boolean} [_rotateWithView] Whether the icon or point text rotates with the view.
- * @property {string} [_identityKey] Symbol content/style key used for cross-tile matching.
+ * @property {import("../../coordinate.js").Coordinate} [anchor] World-space anchor for point labels.
+ * @property {Array<number>} [corners] Icon or point text box corners relative to the anchor.
+ * @property {number} [rotation] Icon or point text rotation.
+ * @property {boolean} [rotateWithView] Whether the icon or point text rotates with the view.
+ * @property {string} [identityKey] Symbol content/style key used for cross-tile matching.
  */
 
 export const MODE_DECLUTTER = 0;

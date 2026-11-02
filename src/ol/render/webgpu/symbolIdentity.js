@@ -216,7 +216,7 @@ export class SymbolIdentityIndex {
       }
       const label = labels[i];
       const key =
-        label._identityKey ||
+        label.identityKey ||
         `${label.text || ''}|${label.glyphCount ? 'text' : 'symbol'}`;
       pendingKeys[i] = key;
       requestedKeys.add(key);
@@ -336,7 +336,7 @@ export class SymbolIdentityIndex {
         continue;
       }
       const label = labels[i];
-      const anchor = label._anchor;
+      const anchor = label.anchor;
       const symbol = {
         index: i,
         key: pendingKeys[i],
@@ -427,11 +427,11 @@ export function retainedIdentities(
       byKey = new Map();
       previousByFeature.set(label.id, byKey);
     }
-    const indices = byKey.get(label._identityKey);
+    const indices = byKey.get(label.identityKey);
     if (indices) {
       indices.push(i);
     } else {
-      byKey.set(label._identityKey, [i]);
+      byKey.set(label.identityKey, [i]);
     }
   }
   const identities = new Array(labels.length).fill(undefined);
@@ -442,7 +442,7 @@ export function retainedIdentities(
   const seen = new Map();
   for (let i = 0; i < labels.length; ++i) {
     const label = labels[i];
-    const indices = previousByFeature.get(label.id)?.get(label._identityKey);
+    const indices = previousByFeature.get(label.id)?.get(label.identityKey);
     if (!indices) {
       continue;
     }
@@ -452,8 +452,8 @@ export function retainedIdentities(
     if (previousIndex === undefined) {
       continue;
     }
-    const anchor = label._anchor;
-    const previousAnchor = previousLabels[previousIndex]._anchor;
+    const anchor = label.anchor;
+    const previousAnchor = previousLabels[previousIndex].anchor;
     if (!anchor || !previousAnchor) {
       continue;
     }
