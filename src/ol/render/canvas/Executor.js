@@ -47,8 +47,9 @@ import {TEXT_ALIGN} from './TextBuilder.js';
 
 /**
  * @typedef {{args: ReplayImageOrLabelArgs, declutterMode: import('../../style/Style.js').DeclutterMode}} DeclutterImageWithTextEntry
- * @typedef {Object<number, DeclutterImageWithTextEntry>} DeclutterImageWithTextMap
- 
+ * @typedef {import("../canvas.js").DeclutterImageWithText} DeclutterImageWithTextMap
+ */
+
 /**
  * @typedef {{0: CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D, 1: import('../../size.js').Size, 2: import("../canvas.js").Label|HTMLImageElement|HTMLCanvasElement|HTMLVideoElement, 3: ImageOrLabelDimensions, 4: number, 5: Array<*>|null, 6: Array<*>|null}} ReplayImageOrLabelArgs
  */
@@ -1006,13 +1007,22 @@ class Executor {
               ) {
                 renderText = true;
               }
-              if (
-                imageDeclutterMode === 'declutter' &&
-                declutterMode === 'declutter'
-              ) {
-                const render = renderImage && renderText;
-                renderImage = render;
-                renderText = render;
+              if (imageArgs && declutterImageWithText) {
+                // Without an optional setting, image and text are only hidden
+                // together when both use the declutter mode.
+                const independent =
+                  imageDeclutterMode !== 'declutter' ||
+                  declutterMode !== 'declutter';
+                const imageOptional =
+                  declutterImageWithText.imageOptional ?? independent;
+                const textOptional =
+                  declutterImageWithText.textOptional ?? independent;
+                if (!imageOptional) {
+                  renderText = renderImage && renderText;
+                }
+                if (!textOptional) {
+                  renderImage = renderImage && renderText;
+                }
               }
               if (renderImage) {
                 if (imageDeclutterMode !== 'none') {

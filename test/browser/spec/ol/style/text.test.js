@@ -57,9 +57,11 @@ describe('ol.style.Text', function () {
           color: 'black',
         }),
         padding: [10, 11, 12, 13],
+        optional: false,
       });
       const clone = original.clone();
       assert.deepEqual(original.getFont(), clone.getFont());
+      assert.deepEqual(original.getOptional(), clone.getOptional());
       assert.deepEqual(original.getOffsetX(), clone.getOffsetX());
       assert.deepEqual(original.getOffsetY(), clone.getOffsetY());
       assert.deepEqual(original.getScale(), clone.getScale());

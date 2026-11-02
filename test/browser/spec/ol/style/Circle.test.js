@@ -75,9 +75,11 @@ describe('ol/style/Circle', function () {
         rotation: 2,
         rotateWithView: true,
         displacement: [10, 20],
+        optional: false,
       });
       original.setOpacity(0.5);
       const clone = original.clone();
+      assert.deepEqual(original.getOptional(), clone.getOptional());
       assert.deepEqual(
         original.getFill().getColor(),
         clone.getFill().getColor(),
