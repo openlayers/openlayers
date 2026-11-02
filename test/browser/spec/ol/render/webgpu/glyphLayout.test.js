@@ -167,6 +167,31 @@ describe('ol/render/webgpu/glyphLayout', () => {
     assert.approximately(textLeft('right'), -glyph.advance, 1e-6);
   });
 
+  it('returns the text box without the halo, not the glyph quads', () => {
+    const atlas = new FontAtlas();
+    const font = '12px sans-serif';
+    const glyph = atlas.getGlyph(font, 'H', 4);
+    const box = layoutPointLabel(
+      [],
+      new Text({
+        text: 'H',
+        font,
+        stroke: new Stroke({color: '#fff', width: 4}),
+        textAlign: 'left',
+        textBaseline: 'top',
+      }),
+      [0, 0],
+      atlas,
+      [1, 0, 0, 1],
+    );
+    const lineHeight = measureWrappedLineHeight(font);
+    assert.approximately(box.textBox[0], 0, 1e-6);
+    assert.approximately(box.textBox[1], 0, 1e-6);
+    assert.approximately(box.textBox[2], glyph.advance, 1e-6);
+    assert.approximately(box.textBox[3], lineHeight, 1e-6);
+    assert.isBelow(box.minX, box.textBox[0]);
+  });
+
   it('keeps packed atlas texels valid after the atlas grows', () => {
     const atlas = new FontAtlas();
     const glyphs = [];

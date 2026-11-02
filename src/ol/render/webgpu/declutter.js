@@ -25,9 +25,9 @@ import {DECLUTTER_SHADER} from '../../webgpu/shaders.js';
  * @property {number} [iconIndex] Index into iconInstances (stride `ICON_STRIDE`).
  * @property {string} [text] Displayed text; used for fade continuity across tile zooms.
  * @property {import("../../coordinate.js").Coordinate} [_anchor] World-space anchor for point labels.
- * @property {Array<number>} [_corners] Icon corners relative to the anchor.
- * @property {number} [_rotation] Icon rotation.
- * @property {boolean} [_rotateWithView] Whether the icon rotates with the view.
+ * @property {Array<number>} [_corners] Icon or point text box corners relative to the anchor.
+ * @property {number} [_rotation] Icon or point text rotation.
+ * @property {boolean} [_rotateWithView] Whether the icon or point text rotates with the view.
  * @property {string} [_identityKey] Symbol content/style key used for cross-tile matching.
  */
 
