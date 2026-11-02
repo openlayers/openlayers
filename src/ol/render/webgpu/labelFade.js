@@ -127,7 +127,7 @@ export const LABEL_FADE_MATCH_PIXELS = 64;
  * @typedef {Object} FadeLabel
  * @property {number} [id] Feature uid.
  * @property {string} [text] Displayed text.
- * @property {import("../../coordinate.js").Coordinate} [_anchor] World-space anchor.
+ * @property {import("../../coordinate.js").Coordinate} [anchor] World-space anchor.
  */
 
 /**
@@ -155,7 +155,7 @@ export const LABEL_FADE_MATCH_PIXELS = 64;
  */
 function matchPrev(index, used, label, maxWorldDistance) {
   const text = label.text;
-  const anchor = label._anchor;
+  const anchor = label.anchor;
   if (
     !text ||
     !anchor ||
@@ -342,7 +342,7 @@ export class LabelFade {
         entry.target = value.target;
         entry.startTime = time;
       }
-      const anchor = value.label._anchor;
+      const anchor = value.label.anchor;
       entry.text = value.label.text;
       entry.x = anchor?.[0];
       entry.y = anchor?.[1];

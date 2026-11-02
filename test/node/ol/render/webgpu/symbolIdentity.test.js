@@ -11,7 +11,7 @@ import {
  * @return {Object} Label.
  */
 function label(key, x, y) {
-  return {_identityKey: key, _anchor: [x, y]};
+  return {identityKey: key, anchor: [x, y]};
 }
 
 describe('ol/render/webgpu/SymbolIdentityIndex', () => {

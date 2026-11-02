@@ -46,7 +46,7 @@ describe('ol/render/webgpu/buffers', () => {
 
     assert.lengthOf(labelData.labels, 6);
     for (const label of labelData.labels) {
-      const x = label._anchor[0];
+      const x = label.anchor[0];
       assert.isTrue(
         (x >= -1000 && x <= -500) || (x >= 500 && x <= 1500),
         `expected ${x} to be on a MultiLineString part`,
@@ -79,9 +79,9 @@ describe('ol/render/webgpu/buffers', () => {
 
     assert.lengthOf(labelData.labels, 1);
     const label = labelData.labels[0];
-    assert.deepEqual(label._corners, [x1, y1, x2, y1, x2, y2, x1, y2]);
-    assert.strictEqual(label._rotation, 0.5);
-    assert.isTrue(label._rotateWithView);
+    assert.deepEqual(label.corners, [x1, y1, x2, y1, x2, y2, x1, y2]);
+    assert.strictEqual(label.rotation, 0.5);
+    assert.isTrue(label.rotateWithView);
   });
 
   it('repeats a pattern scaled down to fit the atlas at its own size', async () => {
