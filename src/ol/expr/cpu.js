@@ -33,11 +33,13 @@ import {ColorType, LiteralExpression, Ops, parse} from './expression.js';
  */
 
 /**
+ * @param {Object<string, *>} [variables] Values for the variables used in 'var' expressions; kept by
+ * reference, so later mutations are picked up.
  * @return {EvaluationContext} A new evaluation context.
  */
-export function newEvaluationContext() {
+export function newEvaluationContext(variables) {
   return {
-    variables: {},
+    variables: variables ?? {},
     properties: {},
     resolution: NaN,
     featureId: null,
@@ -324,6 +326,12 @@ function compileAccessorExpression(expression, context) {
       };
     }
     case Ops.Var: {
+      if (expression.type === ColorType) {
+        return (context) => {
+          const value = context.variables[name];
+          return typeof value === 'string' ? fromString(value) : value;
+        };
+      }
       return (context) => context.variables[name];
     }
     case Ops.Has: {
