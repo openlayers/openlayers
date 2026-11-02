@@ -883,8 +883,8 @@ function appendStyledGeometry(
           glyphStart: 0,
           glyphCount: 0,
           symbolIndex,
-          _anchor: anchor,
-          _identityKey: `${featureKey}|${styleKey}|${a}|${pid ? 'pair' : 'image'}`,
+          anchor,
+          identityKey: `${featureKey}|${styleKey}|${a}|${pid ? 'pair' : 'image'}`,
         });
       } else {
         appendIconLabel(state, image, anchor, hit, {
@@ -932,12 +932,12 @@ function appendStyledGeometry(
       glyphStart: start,
       glyphCount: glyphs.length - start,
       text: textKey,
-      _anchor: textAnchors[a],
+      anchor: textAnchors[a],
       // collides with its text box, not with the glyph quads
-      _corners: [x1, y1, x2, y1, x2, y2, x1, y2],
-      _rotation: text.getRotation() || 0,
-      _rotateWithView: !!text.getRotateWithView(),
-      _identityKey: `${featureKey}|${styleKey}|${a}|${pid ? 'pair' : 'text'}`,
+      corners: [x1, y1, x2, y1, x2, y2, x1, y2],
+      rotation: text.getRotation() || 0,
+      rotateWithView: !!text.getRotateWithView(),
+      identityKey: `${featureKey}|${styleKey}|${a}|${pid ? 'pair' : 'text'}`,
     });
   }
   if (!linePlacement) {
@@ -1025,8 +1025,8 @@ function appendStyledGeometry(
           glyphStart: start,
           glyphCount: count,
           text: textKey,
-          _anchor: middle ? [middle.x, middle.y] : undefined,
-          _identityKey: `${featureKey}|${styleKey}|line|${pathIndex}`,
+          anchor: middle ? [middle.x, middle.y] : undefined,
+          identityKey: `${featureKey}|${styleKey}|line|${pathIndex}`,
         });
         ++pathIndex;
       }
@@ -1166,11 +1166,11 @@ function appendIconLabel(state, image, anchor, hit, stamp) {
     glyphStart: 0,
     glyphCount: 0,
     iconIndex,
-    _anchor: anchor,
-    _corners: [offsetX, offsetY, x2, offsetY, x2, y2, offsetX, y2],
-    _rotation: data.rotation,
-    _rotateWithView: data.rotateWithView,
-    _identityKey: stamp.identityKey,
+    anchor,
+    corners: [offsetX, offsetY, x2, offsetY, x2, y2, offsetX, y2],
+    rotation: data.rotation,
+    rotateWithView: data.rotateWithView,
+    identityKey: stamp.identityKey,
   });
 }
 

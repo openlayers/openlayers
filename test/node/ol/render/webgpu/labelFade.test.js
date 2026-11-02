@@ -98,10 +98,10 @@ describe('ol/render/webgpu/labelFade', () => {
 
   it('reuses fade when the same text appears nearby with a new id', () => {
     const fade = new LabelFade(200);
-    fade.update([{id: 1, text: 'Montana', _anchor: [0, 0]}], [true], 0, 100);
-    fade.update([{id: 1, text: 'Montana', _anchor: [0, 0]}], [true], 200, 100);
+    fade.update([{id: 1, text: 'Montana', anchor: [0, 0]}], [true], 0, 100);
+    fade.update([{id: 1, text: 'Montana', anchor: [0, 0]}], [true], 200, 100);
     const fading = fade.update(
-      [{id: 2, text: 'Montana', _anchor: [10, 0]}],
+      [{id: 2, text: 'Montana', anchor: [10, 0]}],
       [true],
       1000,
       100,
@@ -112,12 +112,12 @@ describe('ol/render/webgpu/labelFade', () => {
 
   it('does not retire an identity that remains in the current labels', () => {
     const fade = new LabelFade(200);
-    const existing = {id: 1, text: 'Atlantic', _anchor: [0, 0]};
+    const existing = {id: 1, text: 'Atlantic', anchor: [0, 0]};
     fade.update([existing], [true], 0, 100);
     fade.update([existing], [true], 200, 100);
 
     fade.update(
-      [{id: 2, text: 'Atlantic', _anchor: [1, 0]}, existing],
+      [{id: 2, text: 'Atlantic', anchor: [1, 0]}, existing],
       [false, true],
       1000,
       100,
@@ -129,14 +129,14 @@ describe('ol/render/webgpu/labelFade', () => {
 
   it('does not match identities created during the same update', () => {
     const fade = new LabelFade(200);
-    fade.update([{id: 1, text: 'Atlantic', _anchor: [0, 0]}], [true], 0, 100);
-    fade.update([{id: 1, text: 'Atlantic', _anchor: [0, 0]}], [true], 200, 100);
+    fade.update([{id: 1, text: 'Atlantic', anchor: [0, 0]}], [true], 0, 100);
+    fade.update([{id: 1, text: 'Atlantic', anchor: [0, 0]}], [true], 200, 100);
 
     fade.update(
       [
-        {id: 2, text: 'Atlantic', _anchor: [1, 0]},
-        {id: 3, text: 'Atlantic', _anchor: [2, 0]},
-        {id: 4, text: 'Atlantic', _anchor: [3, 0]},
+        {id: 2, text: 'Atlantic', anchor: [1, 0]},
+        {id: 3, text: 'Atlantic', anchor: [2, 0]},
+        {id: 4, text: 'Atlantic', anchor: [3, 0]},
       ],
       [false, true, false],
       1000,
@@ -148,9 +148,9 @@ describe('ol/render/webgpu/labelFade', () => {
 
   it('fades in when the same text is farther than maxWorldDistance', () => {
     const fade = new LabelFade(200);
-    fade.update([{id: 1, text: 'Montana', _anchor: [0, 0]}], [true], 0, 100);
+    fade.update([{id: 1, text: 'Montana', anchor: [0, 0]}], [true], 0, 100);
     fade.update(
-      [{id: 2, text: 'Montana', _anchor: [1000, 0]}],
+      [{id: 2, text: 'Montana', anchor: [1000, 0]}],
       [true],
       1000,
       100,
@@ -161,27 +161,27 @@ describe('ol/render/webgpu/labelFade', () => {
 
   it('does not match by text when maxWorldDistance is omitted', () => {
     const fade = new LabelFade(200);
-    fade.update([{id: 1, text: 'Montana', _anchor: [0, 0]}], [true], 0);
-    fade.update([{id: 2, text: 'Montana', _anchor: [0, 0]}], [true], 1000);
+    fade.update([{id: 1, text: 'Montana', anchor: [0, 0]}], [true], 0);
+    fade.update([{id: 2, text: 'Montana', anchor: [0, 0]}], [true], 1000);
     assert.strictEqual(fade.opacity(2, 1000), 0);
   });
 
   it('propagates a matched text fade to a paired symbol with the same id', () => {
     const fade = new LabelFade(200);
     fade.update(
-      [{id: 1, text: 'Montana', _anchor: [0, 0]}, {id: 1}],
+      [{id: 1, text: 'Montana', anchor: [0, 0]}, {id: 1}],
       [true, true],
       0,
       100,
     );
     fade.update(
-      [{id: 1, text: 'Montana', _anchor: [0, 0]}, {id: 1}],
+      [{id: 1, text: 'Montana', anchor: [0, 0]}, {id: 1}],
       [true, true],
       200,
       100,
     );
     fade.update(
-      [{id: 2, text: 'Montana', _anchor: [0, 0]}, {id: 2}],
+      [{id: 2, text: 'Montana', anchor: [0, 0]}, {id: 2}],
       [true, true],
       1000,
       100,

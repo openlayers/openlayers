@@ -296,7 +296,7 @@ class LabelView {
 
       const anchor =
         /** @type {import("../../coordinate.js").Coordinate|undefined} */ (
-          extra._anchor
+          extra.anchor
         );
       const clipExtents = this.clipExtents[i];
       if (
@@ -316,7 +316,7 @@ class LabelView {
         box.maxY = Infinity;
         continue;
       }
-      if (label.glyphCount && !extra._corners) {
+      if (label.glyphCount && !extra.corners) {
         const glyphs = this.glyphs[i];
         const bounds = [Infinity, Infinity, -Infinity, -Infinity];
         for (let g = 0; g < label.glyphCount; ++g) {
