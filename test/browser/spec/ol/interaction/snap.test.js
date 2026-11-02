@@ -381,6 +381,94 @@ describe('ol.interaction.Snap', function () {
       snapInteraction.handleEvent(event);
     });
 
+    for (const vertex of [true, false]) {
+      it(`snaps to circle in a GeometryCollection (vertex: ${vertex})`, function () {
+        const feature = new Feature(
+          new GeometryCollection([new Circle([0, 0], 10)]),
+        );
+        const snapInteraction = new Snap({
+          features: new Collection([feature]),
+          pixelTolerance: 5,
+          vertex,
+        });
+        snapInteraction.setMap(map);
+        const listener = vi.fn();
+        snapInteraction.on('snap', listener);
+
+        // Close to a vertex of the polygon that approximates the circle
+        const event = eventFromCoordinate([11, 1]);
+        snapInteraction.handleEvent(event);
+
+        assert.strictEqual(listener.mock.calls.length, 1);
+        const snapEvent = listener.mock.calls[0][0];
+        assert.strictEqual(snapEvent.feature, feature);
+        assert.strictEqual(snapEvent.segment, null);
+
+        const angle = Math.atan2(1, 11);
+        assert.approximately(event.coordinate[0], Math.cos(angle) * 10, 1e-10);
+        assert.approximately(event.coordinate[1], Math.sin(angle) * 10, 1e-10);
+      });
+    }
+
+    it('snaps to point in a GeometryCollection with a circle', function () {
+      const feature = new Feature(
+        new GeometryCollection([new Point([11.5, 0]), new Circle([0, 0], 10)]),
+      );
+      const snapInteraction = new Snap({
+        features: new Collection([feature]),
+        pixelTolerance: 5,
+      });
+      snapInteraction.setMap(map);
+
+      const event = eventFromCoordinate([11, 1]);
+      snapInteraction.handleEvent(event);
+
+      assert.deepEqual(event.coordinate, [11.5, 0]);
+    });
+
+    it('snaps to circle in a nested GeometryCollection', function () {
+      const feature = new Feature(
+        new GeometryCollection([
+          new GeometryCollection([new Circle([0, 0], 10)]),
+        ]),
+      );
+      const snapInteraction = new Snap({
+        features: new Collection([feature]),
+        pixelTolerance: 5,
+      });
+      snapInteraction.setMap(map);
+
+      const event = eventFromCoordinate([11, 1]);
+      snapInteraction.handleEvent(event);
+
+      const angle = Math.atan2(1, 11);
+      assert.approximately(event.coordinate[0], Math.cos(angle) * 10, 1e-10);
+      assert.approximately(event.coordinate[1], Math.sin(angle) * 10, 1e-10);
+    });
+
+    for (const inCollection of [false, true]) {
+      it(`snaps to circle with intersection: true (in GeometryCollection: ${inCollection})`, function () {
+        const circle = new Circle([0, 0], 10);
+        const feature = new Feature(
+          inCollection ? new GeometryCollection([circle]) : circle,
+        );
+        const snapInteraction = new Snap({
+          features: new Collection([feature]),
+          pixelTolerance: 5,
+          intersection: true,
+        });
+        snapInteraction.setMap(map);
+
+        // Close to the first vertex of the polygon that approximates the circle
+        const event = eventFromCoordinate([10.5, 1.5]);
+        snapInteraction.handleEvent(event);
+
+        const angle = Math.atan2(1.5, 10.5);
+        assert.approximately(event.coordinate[0], Math.cos(angle) * 10, 1e-10);
+        assert.approximately(event.coordinate[1], Math.sin(angle) * 10, 1e-10);
+      });
+    }
+
     it('uses custom segmenters for geometries of GeometryCollection', function () {
       const geometryCollection = new Feature(
         new GeometryCollection([new Point([0, 0])]),
@@ -757,6 +845,28 @@ describe('ol.interaction.Snap', function () {
         .getAll()
         .filter((item) => item.intersectionFeature);
       assert.lengthOf(segments, 0);
+    });
+
+    it('only adds the real intersection of a circle and a line', function () {
+      const feature = new Feature(
+        new GeometryCollection([
+          new Circle([0, 0], 10),
+          new LineString([
+            [0, 0.5],
+            [20, 0.5],
+          ]),
+        ]),
+      );
+      const snapInteraction = new Snap({
+        features: new Collection([feature]),
+        intersection: true,
+      });
+      snapInteraction.setMap(new Map());
+
+      const intersections = snapInteraction.rBush_
+        .getAll()
+        .filter((item) => item.intersectionFeature);
+      assert.lengthOf(intersections, 1);
     });
 
     it('only adds single self intersection point', function () {
