@@ -1,11 +1,13 @@
 import {assert} from 'chai';
 import Feature from '../../../../../../src/ol/Feature.js';
 import MultiLineString from '../../../../../../src/ol/geom/MultiLineString.js';
+import Point from '../../../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../../../src/ol/geom/Polygon.js';
 import {
   buildVectorRequest,
   STYLE_STRIDE,
 } from '../../../../../../src/ol/render/webgpu/buffers.js';
+import {layoutPointLabel} from '../../../../../../src/ol/render/webgpu/glyphLayout.js';
 import Fill from '../../../../../../src/ol/style/Fill.js';
 import Style from '../../../../../../src/ol/style/Style.js';
 import Text from '../../../../../../src/ol/style/Text.js';
@@ -50,6 +52,36 @@ describe('ol/render/webgpu/buffers', () => {
         `expected ${x} to be on a MultiLineString part`,
       );
     }
+  });
+
+  it('gives point text the corners of its text box for collisions', () => {
+    const text = new Text({
+      text: 'Label',
+      font: '16px sans-serif',
+      rotation: 0.5,
+      rotateWithView: true,
+      fill: new Fill({color: '#000'}),
+    });
+    const atlas = new FontAtlas();
+    const {labelData} = buildVectorRequest(
+      [new Feature(new Point([0, 0]))],
+      () => new Style({text}),
+      1,
+      atlas,
+    );
+    const [x1, y1, x2, y2] = layoutPointLabel(
+      [],
+      text,
+      [0, 0],
+      atlas,
+      [0, 0, 0, 1],
+    ).textBox;
+
+    assert.lengthOf(labelData.labels, 1);
+    const label = labelData.labels[0];
+    assert.deepEqual(label._corners, [x1, y1, x2, y1, x2, y2, x1, y2]);
+    assert.strictEqual(label._rotation, 0.5);
+    assert.isTrue(label._rotateWithView);
   });
 
   it('repeats a pattern scaled down to fit the atlas at its own size', async () => {
