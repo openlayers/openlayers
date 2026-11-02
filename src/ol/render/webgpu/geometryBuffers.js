@@ -135,7 +135,8 @@ function segmentOnClipEdge(x1, y1, x2, y2, extent, eps) {
  * @property {Float32Array} fillExtrusions Outward offset, in map units, and
  *     coverage, per fill vertex. The offset is one pixel long on a fill's
  *     outer fringe and zero everywhere else; coverage is 1 on the fill and 0
- *     at the fringe's outer edge.
+ *     at the fringe's outer edge. Empty when no fill has a fringe, as a fill
+ *     without one would only repeat a zero offset and full coverage.
  * @property {Int16Array} strokePositions Stroke positions in grid units.
  * @property {Float32Array} strokeAttributes Extrusion x, extrusion y, width,
  *     distance along the line in drawn map units, and cap end, per stroke
@@ -238,7 +239,11 @@ export function buildGeometryBuffers(request) {
   const fillPositions = new NumberSink(Int16Array);
   const fillStyles = new NumberSink(Uint32Array);
   const fillIndices = new NumberSink(Uint32Array);
-  const fillExtrusions = new NumberSink(Float32Array);
+  const fillExtrusions = request.jobs.some(
+    (job) => job.kind === 'fill' && job.fringe,
+  )
+    ? new NumberSink(Float32Array)
+    : null;
   const strokePositions = new NumberSink(Int16Array);
   const strokeAttributes = new NumberSink(Float32Array);
   const strokeStyles = new NumberSink(Uint32Array);
@@ -333,7 +338,9 @@ export function buildGeometryBuffers(request) {
     fillPositions: /** @type {Int16Array} */ (fillPositions.finish()),
     fillStyles: /** @type {Uint32Array} */ (fillStyles.finish()),
     fillIndices: /** @type {Uint32Array} */ (fillIndices.finish()),
-    fillExtrusions: /** @type {Float32Array} */ (fillExtrusions.finish()),
+    fillExtrusions: fillExtrusions
+      ? /** @type {Float32Array} */ (fillExtrusions.finish())
+      : new Float32Array(0),
     strokePositions: /** @type {Int16Array} */ (strokePositions.finish()),
     strokeAttributes: /** @type {Float32Array} */ (strokeAttributes.finish()),
     strokeStyles: /** @type {Uint32Array} */ (strokeStyles.finish()),
@@ -394,7 +401,8 @@ function pushRange(ranges, job, start, count) {
  * @param {NumberSink} positions Positions out.
  * @param {NumberSink} styleIndices Style indices out.
  * @param {NumberSink} indices Indices out.
- * @param {NumberSink} extrusions Extrusion x, y, and coverage out.
+ * @param {NumberSink|null} extrusions Extrusion x, y, and coverage out, or
+ *     null when no fill has a fringe.
  */
 function emitFill(
   xy,
@@ -417,7 +425,7 @@ function emitFill(
       toLocal(mesh.vertices[i + 1], grid.originY, grid.scaleY),
     );
     styleIndices.push(job.styleIndex);
-    extrusions.push(0, 0, 1);
+    extrusions?.push(0, 0, 1);
   }
   // Positions are rounded onto the grid, and a triangle thinner than one of
   // its steps either collapses or turns inside out. Drawing an inside-out one
@@ -436,7 +444,7 @@ function emitFill(
     }
     indices.push(a + base, b + base, c + base);
   }
-  if (job.fringe && indices.length > indexBefore) {
+  if (extrusions && job.fringe && indices.length > indexBefore) {
     emitFillFringe(
       xy,
       job,
@@ -828,7 +836,62 @@ function emitStroke(
  * @property {function(number, number, number): void} triangle Add a triangle.
  * @property {number} left Last left-side vertex.
  * @property {number} right Last right-side vertex.
+ * @property {number} arcStep Largest angle of one segment of a round join or cap.
+ * @property {number} radius Half width the stroke shader draws, in pixels.
  */
+
+/**
+ * Pixels a chord of a round join or cap may stray from the arc.
+ * @type {number}
+ */
+const ARC_TOLERANCE = 0.1;
+
+/**
+ * Round joins and caps of thin lines need fewer segments than wide ones.
+ * @param {number} width Stroke width in pixels.
+ * @return {number} Largest angle of one arc segment, at least 20°.
+ */
+function arcStep(width) {
+  return Math.max(
+    Math.PI / 9,
+    2 * Math.acos(1 - ARC_TOLERANCE / strokeRadius(width)),
+  );
+}
+
+/**
+ * Whether a round join would look the same as a miter: when the turn is so
+ * flat that the miter tip stays within `ARC_TOLERANCE` of the arc, or when the
+ * line is no wider than a pixel, so the join's shape is smaller than the
+ * edge fade. A sharp turn of a thin line still gets its arc, so the miter
+ * tip cannot spike out.
+ * @param {number} radius Half width the stroke shader draws.
+ * @param {number} miterLength Miter length, in half widths.
+ * @return {boolean} The miter can stand in for the round join.
+ */
+function roundJoinAsMiter(radius, miterLength) {
+  return (
+    radius * (miterLength - 1) <= ARC_TOLERANCE ||
+    (radius <= strokeRadius(1) && miterLength <= 2)
+  );
+}
+
+/**
+ * @param {number} width Stroke width in pixels.
+ * @return {number} The half width the stroke shader draws, with its edge fade.
+ */
+function strokeRadius(width) {
+  return Math.max(width, 1) / 2 + 0.5;
+}
+
+/**
+ * @param {number} angle Angle of the arc.
+ * @param {number} step Largest angle of one segment.
+ * @return {number} Number of segments.
+ */
+function arcSteps(angle, step) {
+  // The epsilon keeps 180° at 9 steps of 20°, despite rounding
+  return Math.max(1, Math.ceil(Math.abs(angle) / step - 1e-9));
+}
 
 /**
  * @param {Array<StrokePoint>} input Points.
@@ -951,6 +1014,8 @@ function createStrokeMeshWriter(
   const writer = /** @type {StrokeMeshWriter} */ ({
     left: -1,
     right: -1,
+    arcStep: arcStep(width),
+    radius: strokeRadius(width),
     vertex(x, y, ex, ey, distance, side, end) {
       const index = positions.length / 2;
       positions.push(
@@ -1041,7 +1106,7 @@ function addRoundCap(writer, point, normal, direction) {
   const center = writer.vertex(point.x, point.y, 0, 0, point.distance, 1);
   const tx = normal.y;
   const ty = -normal.x;
-  const steps = 9;
+  const steps = arcSteps(Math.PI, writer.arcStep);
   let previous;
   for (let i = 0; i <= steps; ++i) {
     const angle = (i / steps) * Math.PI;
@@ -1090,7 +1155,10 @@ function addJoin(writer, point, previous, next, join, miterLimit) {
   const joinY = sumLength ? sumY / sumLength : 0;
   const cosHalf = joinX * next.x + joinY * next.y;
   const miterLength = cosHalf > 1e-12 ? 1 / cosHalf : Infinity;
-  if (join === 'miter' && miterLength <= Math.max(0, miterLimit)) {
+  if (
+    (join === 'miter' && miterLength <= Math.max(0, miterLimit)) ||
+    (join === 'round' && roundJoinAsMiter(writer.radius, miterLength))
+  ) {
     writer.pair(
       point.x,
       point.y,
@@ -1177,10 +1245,7 @@ function addJoin(writer, point, previous, next, join, miterLimit) {
 function addOuterJoin(writer, point, previous, angle, turnsLeft, join) {
   const previousOuterX = turnsLeft ? -previous.x : previous.x;
   const previousOuterY = turnsLeft ? -previous.y : previous.y;
-  const steps =
-    join === 'round'
-      ? Math.max(1, Math.ceil(Math.abs(angle) / (Math.PI / 9)))
-      : 1;
+  const steps = join === 'round' ? arcSteps(angle, writer.arcStep) : 1;
   const hub = turnsLeft ? writer.left : writer.right;
   let outerIndex = turnsLeft ? writer.right : writer.left;
   for (let i = 1; i <= steps; ++i) {

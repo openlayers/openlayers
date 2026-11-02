@@ -158,11 +158,13 @@ export class VectorGpuBuffers extends Disposable {
         vertex,
       );
       this.fillStyleBuffer = this.create_(helper, buffers.fillStyles, vertex);
-      this.fillExtrusionBuffer = this.create_(
-        helper,
-        buffers.fillExtrusions,
-        vertex,
-      );
+      if (buffers.fillExtrusions.length) {
+        this.fillExtrusionBuffer = this.create_(
+          helper,
+          buffers.fillExtrusions,
+          vertex,
+        );
+      }
       this.fillIndexBuffer = this.create_(helper, buffers.fillIndices, index);
     }
     if (this.strokeIndexCount) {
@@ -356,15 +358,16 @@ export class VectorGpuBuffers extends Disposable {
     };
 
     if (this.fillIndexCount && this.fillPositionBuffer) {
+      const fringed = !!this.fillExtrusionBuffer;
       const result = dispatch(
         this.fillVertexCount,
         this.fillPositionBuffer,
         this.fillExtrusionBuffer,
-        true,
+        fringed,
         3,
       );
       this.fillWarpedBuffer = result.outPositions;
-      this.fillWarpedExtrusionBuffer = result.outAttributes;
+      this.fillWarpedExtrusionBuffer = fringed ? result.outAttributes : null;
       if (this.fillPositionBuffer) {
         retire.push(this.fillPositionBuffer);
       }
@@ -870,38 +873,59 @@ export function labelUniforms(
 }
 
 /**
+ * Creates a fill pipeline, and one suffixed `-unfringed` for batches without
+ * fringes, which have no fringe buffer.
+ * @param {import("../../webgpu/Helper.js").default} helper Helper.
+ * @param {string} name Pipeline name.
+ * @param {GPUShaderModule} module Fill shader.
+ * @param {GPUVertexBufferLayout} positions Position buffer layout.
+ */
+function createFillPipelines(helper, name, module, positions) {
+  /** @type {Array<GPUVertexBufferLayout>} */
+  const buffers = [
+    positions,
+    {
+      arrayStride: 4,
+      attributes: [{shaderLocation: 1, offset: 0, format: 'uint32'}],
+    },
+  ];
+  /** @type {GPUVertexBufferLayout} */
+  const fringe = {
+    arrayStride: 12,
+    attributes: [{shaderLocation: 2, offset: 0, format: 'float32x3'}],
+  };
+  for (const fringed of [true, false]) {
+    helper.getRenderPipeline(fringed ? name : name + '-unfringed', {
+      layout: 'auto',
+      vertex: {
+        module,
+        entryPoint: fringed ? 'vs_main' : 'vs_unfringed',
+        buffers: fringed ? [...buffers, fringe] : buffers,
+      },
+      fragment: {
+        module,
+        entryPoint: 'fs_main',
+        targets: [{format: helper.getFormat(), blend: BLEND}],
+      },
+      primitive: {topology: 'triangle-list'},
+    });
+  }
+}
+
+/**
  * @param {import("../../webgpu/Helper.js").default} helper Helper.
  */
 export function createVectorPipelines(helper) {
   const format = helper.getFormat();
-  const fillModule = helper.createShaderModule(VECTOR_FILL_SHADER);
-  helper.getRenderPipeline('vector-fill', {
-    layout: 'auto',
-    vertex: {
-      module: fillModule,
-      entryPoint: 'vs_main',
-      buffers: [
-        {
-          arrayStride: 4,
-          attributes: [{shaderLocation: 0, offset: 0, format: 'sint16x2'}],
-        },
-        {
-          arrayStride: 4,
-          attributes: [{shaderLocation: 1, offset: 0, format: 'uint32'}],
-        },
-        {
-          arrayStride: 12,
-          attributes: [{shaderLocation: 2, offset: 0, format: 'float32x3'}],
-        },
-      ],
+  createFillPipelines(
+    helper,
+    'vector-fill',
+    helper.createShaderModule(VECTOR_FILL_SHADER),
+    {
+      arrayStride: 4,
+      attributes: [{shaderLocation: 0, offset: 0, format: 'sint16x2'}],
     },
-    fragment: {
-      module: fillModule,
-      entryPoint: 'fs_main',
-      targets: [{format, blend: BLEND}],
-    },
-    primitive: {topology: 'triangle-list'},
-  });
+  );
 
   const warpModule = helper.createShaderModule(VECTOR_WARP_SHADER);
   helper.getComputePipeline('vector-warp', {
@@ -909,34 +933,15 @@ export function createVectorPipelines(helper) {
     compute: {module: warpModule, entryPoint: 'main'},
   });
 
-  const fillWarpedModule = helper.createShaderModule(VECTOR_FILL_WARPED_SHADER);
-  helper.getRenderPipeline('vector-fill-warped', {
-    layout: 'auto',
-    vertex: {
-      module: fillWarpedModule,
-      entryPoint: 'vs_main',
-      buffers: [
-        {
-          arrayStride: 16,
-          attributes: [{shaderLocation: 0, offset: 0, format: 'float32x3'}],
-        },
-        {
-          arrayStride: 4,
-          attributes: [{shaderLocation: 1, offset: 0, format: 'uint32'}],
-        },
-        {
-          arrayStride: 12,
-          attributes: [{shaderLocation: 2, offset: 0, format: 'float32x3'}],
-        },
-      ],
+  createFillPipelines(
+    helper,
+    'vector-fill-warped',
+    helper.createShaderModule(VECTOR_FILL_WARPED_SHADER),
+    {
+      arrayStride: 16,
+      attributes: [{shaderLocation: 0, offset: 0, format: 'float32x3'}],
     },
-    fragment: {
-      module: fillWarpedModule,
-      entryPoint: 'fs_main',
-      targets: [{format, blend: BLEND}],
-    },
-    primitive: {topology: 'triangle-list'},
-  });
+  );
 
   const strokeWarpedModule = helper.createShaderModule(
     VECTOR_STROKE_WARPED_SHADER,
@@ -1158,7 +1163,12 @@ export function drawFills(
     return;
   }
   const warped = gpu.warped && gpu.fillWarpedBuffer;
-  const name = warped ? 'vector-fill-warped' : 'vector-fill';
+  const extrusions = warped
+    ? gpu.fillWarpedExtrusionBuffer
+    : gpu.fillExtrusionBuffer;
+  const name =
+    (warped ? 'vector-fill-warped' : 'vector-fill') +
+    (extrusions ? '' : '-unfringed');
   const pipeline = helper.getRenderPipeline(name, /** @type {any} */ ({}));
   const pass = encoder || helper.getRenderPass();
   if (!state || state.pipeline !== pipeline) {
@@ -1176,10 +1186,9 @@ export function drawFills(
     warped ? gpu.fillWarpedBuffer : gpu.fillPositionBuffer,
   );
   pass.setVertexBuffer(1, gpu.fillStyleBuffer);
-  pass.setVertexBuffer(
-    2,
-    warped ? gpu.fillWarpedExtrusionBuffer : gpu.fillExtrusionBuffer,
-  );
+  if (extrusions) {
+    pass.setVertexBuffer(2, extrusions);
+  }
   pass.setIndexBuffer(gpu.fillIndexBuffer, 'uint32');
   pass.drawIndexed(indexCount, 1, start);
 }
