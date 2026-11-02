@@ -1385,6 +1385,131 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
   }
 
   /**
+   * Get a render tile, and queue it for loading.
+   * @param {import("../../Map.js").FrameState} frameState Frame.
+   * @param {string} renderKey Render tile key.
+   * @param {number} z Z.
+   * @param {number} x X.
+   * @param {number} y Y.
+   * @return {import("../../VectorRenderTile.js").default|null} Render tile, or
+   *     null if there is none or it is empty.
+   * @private
+   */
+  getRenderTile_(frameState, renderKey, z, x, y) {
+    const source = /** @type {import("../../source/VectorTile.js").default} */ (
+      this.getLayer().getRenderSource()
+    );
+    const projection = frameState.viewState.projection;
+    let tile;
+    if (this.renderTiles_.containsKey(renderKey)) {
+      tile = this.renderTiles_.get(renderKey);
+    } else {
+      tile = source.getTile(z, x, y, frameState.pixelRatio, projection);
+      if (tile) {
+        this.renderTiles_.set(renderKey, tile);
+      }
+    }
+    if (!tile || tile.getState() === TileState.EMPTY) {
+      return null;
+    }
+    const tileSourceKey = getUid(source);
+    if (!(tileSourceKey in frameState.wantedTiles)) {
+      frameState.wantedTiles[tileSourceKey] = {};
+    }
+    const tileQueueKey = tile.getKey();
+    frameState.wantedTiles[tileSourceKey][tileQueueKey] = true;
+    if (
+      tile.getState() === TileState.IDLE &&
+      !frameState.tileQueue.isKeyQueued(tileQueueKey)
+    ) {
+      const tileGrid = source.getTileGridForProjection(projection);
+      const tileCoord = createTileCoord(z, x, y, this.tempTileCoord_);
+      frameState.tileQueue.enqueue([
+        tile,
+        tileSourceKey,
+        tileGrid.getTileCoordCenter(tileCoord),
+        tileGrid.getResolution(z),
+      ]);
+    }
+    return tile;
+  }
+
+  /**
+   * Prepare the tiles of the view an animation is heading for, so they are
+   * ready when they come into view. Their source tiles are queued for loading,
+   * and their batches are built with what is left of the frame's build budget,
+   * styled at the resolution the animation ends at.
+   * @param {import("../../Map.js").FrameState} frameState Frame.
+   * @return {Array<TileBatch>} Batches of those tiles that are built.
+   * @private
+   */
+  prefetchBatches_(frameState) {
+    const viewState = frameState.viewState;
+    const nextExtent = frameState.nextExtent;
+    const nextResolution = viewState.nextResolution;
+    if (!nextExtent || !nextResolution) {
+      return [];
+    }
+    const source = /** @type {import("../../source/VectorTile.js").default} */ (
+      this.getLayer().getRenderSource()
+    );
+    const tileGrid = source.getTileGridForProjection(viewState.projection);
+    const z = tileGrid.getZForResolution(nextResolution, source.zDirection);
+    const tileRange = tileGrid.getTileRangeForExtentAndZ(
+      nextExtent,
+      z,
+      this.tempTileRange_,
+    );
+    /** @type {StyleState} */
+    const styleState = {
+      resolution: nextResolution,
+      zoom: viewState.zoom + Math.log2(viewState.resolution / nextResolution),
+    };
+    const sourceKey = source.getKey();
+    const center = viewState.center;
+    /** @type {Array<{tile: import("../../VectorRenderTile.js").default, distance: number}>} */
+    const entries = [];
+    for (let x = tileRange.minX; x <= tileRange.maxX; ++x) {
+      for (let y = tileRange.minY; y <= tileRange.maxY; ++y) {
+        const renderKey = getCacheKey(source, sourceKey, z, x, y);
+        const tile = this.getRenderTile_(frameState, renderKey, z, x, y);
+        // A tile that is still loading would not be cached.
+        if (!tile || tile.getState() !== TileState.LOADED) {
+          continue;
+        }
+        const tileCenter = tileGrid.getTileCoordCenter([z, x, y]);
+        const dx = tileCenter[0] - center[0];
+        const dy = tileCenter[1] - center[1];
+        entries.push({tile, distance: dx * dx + dy * dy});
+      }
+    }
+    // Those nearest the current view come into view first.
+    entries.sort((a, b) => a.distance - b.distance);
+    /** @type {Array<TileBatch>} */
+    const batches = [];
+    for (const {tile} of entries) {
+      // Like the tiles of the view, a tile keeps the style state it was first
+      // built with while the view moves.
+      let state = this.styleStates_.get(tile);
+      if (!state) {
+        state = styleState;
+        this.styleStates_.set(tile, state);
+      }
+      const batch = this.buildBatch_(
+        tile,
+        tile.tileCoord,
+        viewState,
+        state,
+        frameState.pixelRatio,
+      );
+      if (batch) {
+        batches.push(batch);
+      }
+    }
+    return batches;
+  }
+
+  /**
    * @param {import("../../Map.js").FrameState} frameState Frame.
    * @return {Array<TileBatch>} Batches.
    * @private
@@ -1417,11 +1542,6 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
       z,
       this.tempTileRange_,
     );
-    const tileSourceKey = getUid(source);
-    if (!(tileSourceKey in frameState.wantedTiles)) {
-      frameState.wantedTiles[tileSourceKey] = {};
-    }
-    const wantedTiles = frameState.wantedTiles[tileSourceKey];
     /** @type {Array<TileBatch>} */
     const batches = [];
     /** @type {Set<string>} */
@@ -1434,39 +1554,11 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     const entries = [];
     for (let x = tileRange.minX; x <= tileRange.maxX; ++x) {
       for (let y = tileRange.minY; y <= tileRange.maxY; ++y) {
-        const tileCoord = createTileCoord(z, x, y, this.tempTileCoord_);
         const renderKey = getCacheKey(source, sourceKey, z, x, y);
-        let tile;
-        if (this.renderTiles_.containsKey(renderKey)) {
-          tile = this.renderTiles_.get(renderKey);
-        } else {
-          tile = source.getTile(
-            z,
-            x,
-            y,
-            frameState.pixelRatio,
-            viewState.projection,
-          );
-          if (tile) {
-            this.renderTiles_.set(renderKey, tile);
-          }
+        const tile = this.getRenderTile_(frameState, renderKey, z, x, y);
+        if (tile) {
+          entries.push({tile, renderKey, x, y});
         }
-        if (!tile || tile.getState() === TileState.EMPTY) {
-          continue;
-        }
-        const tileQueueKey = tile.getKey();
-        wantedTiles[tileQueueKey] = true;
-        if (tile.getState() === TileState.IDLE) {
-          if (!frameState.tileQueue.isKeyQueued(tileQueueKey)) {
-            frameState.tileQueue.enqueue([
-              tile,
-              tileSourceKey,
-              tileGrid.getTileCoordCenter(tileCoord),
-              tileGrid.getResolution(z),
-            ]);
-          }
-        }
-        entries.push({tile, renderKey, x, y});
       }
     }
 
@@ -1577,12 +1669,18 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
       }
     }
 
+    if (holes.length) {
+      // Tiles of the current view come first.
+      this.batchBuildBudget_ = 0;
+    }
+    const prefetched = this.prefetchBatches_(frameState);
+
     this.renderTiles_.highWaterMark = Math.max(
       this.renderTiles_.highWaterMark,
-      Object.keys(wantedTiles).length * 2,
+      Object.keys(frameState.wantedTiles[getUid(source)] || {}).length * 2,
     );
     this.renderTiles_.expireCache();
-    this.expireTileCache_(batches);
+    this.expireTileCache_(batches, prefetched);
     const unique = [];
     const batchKeys = new Set();
     for (const batch of batches) {
@@ -1599,12 +1697,20 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
    * Evict the least recently used batches beyond the cache size and beyond
    * the byte budget. Like the cache size of the Canvas 2D renderer, the byte
    * budget leaves room for at least twice the batches of this frame, and it
-   * never evicts those.
+   * never evicts those. Prefetched batches are evicted after all others, but
+   * not protected.
    * @param {Array<TileBatch>} batches Batches of this frame.
+   * @param {Array<TileBatch>} [prefetched] Batches of the view an animation is
+   *     heading for.
    * @private
    */
-  expireTileCache_(batches) {
+  expireTileCache_(batches, prefetched = []) {
     const cache = this.tileCache_;
+    for (const batch of prefetched) {
+      if (cache.peek(batch.key) === batch) {
+        cache.get(batch.key);
+      }
+    }
     const current = new Set();
     let currentBytes = 0;
     for (const batch of batches) {
