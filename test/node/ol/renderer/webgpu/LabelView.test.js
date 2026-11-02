@@ -162,6 +162,32 @@ describe('ol/renderer/webgpu/LabelView', () => {
     assert.closeTo(box.maxY, 40 + LABEL_COLLISION_MARGIN, 1e-10);
   });
 
+  it('collides point text with its text box plus padding, not with its glyph quads', () => {
+    const buffers = {
+      glyphs: [
+        {x: 20, y: 30, offsetX: -20, offsetY: -20, width: 40, height: 40},
+      ],
+      labels: [
+        {
+          minX: -20,
+          minY: -20,
+          maxX: 20,
+          maxY: 20,
+          padding: [1, 2, 3, 4],
+          glyphStart: 0,
+          glyphCount: 1,
+          _anchor: [20, 30],
+          _corners: [-10, -5, 10, -5, 10, 5, -10, 5],
+        },
+      ],
+    };
+    const box = viewOf(buffers).toScreen(frameState())[0];
+    assert.strictEqual(box.minX, 10 - 4);
+    assert.strictEqual(box.minY, 25 - 1);
+    assert.strictEqual(box.maxX, 30 + 2);
+    assert.strictEqual(box.maxY, 35 + 3);
+  });
+
   it('keeps pairs of different tiles independent', () => {
     // pairId is only unique within a tile. Two tiles numbering their pairs
     // from one must not have their labels merged into a single collision box.
