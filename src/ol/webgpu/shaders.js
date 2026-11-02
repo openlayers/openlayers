@@ -284,6 +284,23 @@ fn vs_main(
   @location(1) styleIndex: u32,
   @location(2) fringe: vec3<f32>,
 ) -> VertexOut {
+  return fillVertex(position, styleIndex, fringe);
+}
+
+// For batches without fringes, which leave out the fringe buffer.
+@vertex
+fn vs_unfringed(
+  @location(0) position: vec2<i32>,
+  @location(1) styleIndex: u32,
+) -> VertexOut {
+  return fillVertex(position, styleIndex, vec3(0.0, 0.0, 1.0));
+}
+
+fn fillVertex(
+  position: vec2<i32>,
+  styleIndex: u32,
+  fringe: vec3<f32>,
+) -> VertexOut {
   var out: VertexOut;
   let style = styles[styleIndex];
   let clip =
@@ -476,6 +493,23 @@ fn vs_main(
   @location(0) warped: vec3<f32>,
   @location(1) styleIndex: u32,
   @location(2) fringe: vec3<f32>,
+) -> VertexOut {
+  return fillVertex(warped, styleIndex, fringe);
+}
+
+// For batches without fringes, which leave out the fringe buffer.
+@vertex
+fn vs_unfringed(
+  @location(0) warped: vec3<f32>,
+  @location(1) styleIndex: u32,
+) -> VertexOut {
+  return fillVertex(warped, styleIndex, vec3(0.0, 0.0, 1.0));
+}
+
+fn fillVertex(
+  warped: vec3<f32>,
+  styleIndex: u32,
+  fringe: vec3<f32>,
 ) -> VertexOut {
   var out: VertexOut;
   if (warped.z < 0.5) {
