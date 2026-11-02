@@ -38,6 +38,7 @@ In addition to having your editor warn you when the style guidelines are not bei
 }
 ```
 
+In addition to the above, we ask you to keep code comments as concise as possible, and not related to the reasoning that was used to make the change. They should only help understand the code when it's not self-explanatory enough.
 
 ## Running examples
 
