@@ -403,7 +403,9 @@ function quantizeStrokeWidth(width) {
  * @param {import("../../webgpu/FontAtlas.js").default} atlas Atlas.
  * @param {Array<number>} hitColor Hit color 0-1.
  * @param {number} [pixelRatio] Device pixel ratio for glyph rasterization.
- * @return {{minX: number, minY: number, maxX: number, maxY: number}|null} Pixel AABB around the anchor, or null.
+ * @return {{minX: number, minY: number, maxX: number, maxY: number, textBox: Array<number>}|null}
+ *     Pixel AABB of the glyph quads around the anchor, and the unrotated text
+ *     box `[minX, minY, maxX, maxY]` without halo and padding, or null.
  */
 export function layoutPointLabel(
   out,
@@ -525,11 +527,15 @@ export function layoutPointLabel(
     maxY = Math.max(maxY, glyph.offsetY + glyph.height);
   }
   const padding = textStyle.getPadding() || [0, 0, 0, 0];
+  // The line boxes, without the halo: it may overlap other labels, as in the
+  // Mapbox style spec. Canvas 2D declutters the whole label image instead.
+  const top = -totalHeight * baseline + offsetY;
   return {
     minX: minX - padding[3],
     minY: minY - padding[0],
     maxX: maxX + padding[1],
     maxY: maxY + padding[2],
+    textBox: [blockLeft, top, blockLeft + blockWidth, top + totalHeight],
   };
 }
 

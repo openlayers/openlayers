@@ -914,6 +914,7 @@ function appendStyledGeometry(
     if (!box) {
       continue;
     }
+    const [x1, y1, x2, y2] = box.textBox;
     labels.push({
       minX: box.minX,
       minY: box.minY,
@@ -932,6 +933,10 @@ function appendStyledGeometry(
       glyphCount: glyphs.length - start,
       text: textKey,
       _anchor: textAnchors[a],
+      // collides with its text box, not with the glyph quads
+      _corners: [x1, y1, x2, y1, x2, y2, x1, y2],
+      _rotation: text.getRotation() || 0,
+      _rotateWithView: !!text.getRotateWithView(),
       _identityKey: `${featureKey}|${styleKey}|${a}|${pid ? 'pair' : 'text'}`,
     });
   }

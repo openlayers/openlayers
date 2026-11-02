@@ -316,7 +316,7 @@ class LabelView {
         box.maxY = Infinity;
         continue;
       }
-      if (label.glyphCount) {
+      if (label.glyphCount && !extra._corners) {
         const glyphs = this.glyphs[i];
         const bounds = [Infinity, Infinity, -Infinity, -Infinity];
         for (let g = 0; g < label.glyphCount; ++g) {
@@ -340,7 +340,12 @@ class LabelView {
         const pixelY =
           transform[1] * x + transform[3] * anchor[1] + transform[5];
         imageBounds(box, label, pixelX, pixelY, viewRotation);
-        inflateBox(box, undefined, LABEL_COLLISION_MARGIN);
+        if (label.glyphCount) {
+          // Point text: the text box, without halo and margin
+          inflateBox(box, label.padding, 0);
+        } else {
+          inflateBox(box, undefined, LABEL_COLLISION_MARGIN);
+        }
       } else {
         box.minX = label.minX;
         box.minY = label.minY;
