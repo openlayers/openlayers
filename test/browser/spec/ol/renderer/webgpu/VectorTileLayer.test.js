@@ -10,6 +10,7 @@ import Style from '../../../../../../src/ol/style/Style.js';
 import {getCacheKey} from '../../../../../../src/ol/tilecoord.js';
 import {createXYZ, wrapX} from '../../../../../../src/ol/tilegrid.js';
 import TileState from '../../../../../../src/ol/TileState.js';
+import {getUid} from '../../../../../../src/ol/util.js';
 import ViewHint from '../../../../../../src/ol/ViewHint.js';
 
 /**
@@ -627,6 +628,74 @@ describe('ol/renderer/webgpu/VectorTileLayer', () => {
     assert.deepEqual(cache.getKeys(), ['b', 'a', 'c', 'f']);
     renderer.expireTileCache_([batches[0]]);
     assert.deepEqual(cache.getKeys(), ['a', 'b']);
+  });
+
+  it('evicts prefetched batches after all others, but does not protect them', () => {
+    const cache = renderer.tileCache_;
+    const batches = ['a', 'b', 'c', 'd'].map((key) => {
+      const batch = /** @type {*} */ ({key, byteLength: 100 * 1024 * 1024});
+      cache.set(key, batch);
+      return batch;
+    });
+    // The oldest, a, is prefetched, so it outlives b and c.
+    renderer.expireTileCache_([batches[3]], [batches[0]]);
+    assert.deepEqual(cache.getKeys(), ['d', 'a']);
+    // Beyond the budget, prefetched batches are evicted too.
+    cache.set('b', batches[1]);
+    cache.set('c', batches[2]);
+    renderer.expireTileCache_([batches[3]], batches.slice(0, 3));
+    assert.deepEqual(cache.getKeys(), ['d', 'c']);
+  });
+
+  /**
+   * A frame of an animation from zoom 0 to the tile 1/0/0.
+   * @return {import('../../../../../../src/ol/Map.js').FrameState} Frame.
+   */
+  function animationFrame() {
+    const tileGrid = source.getTileGridForProjection(projection);
+    const frameState = frameAtZ(0);
+    frameState.viewHints[ViewHint.ANIMATING] = 1;
+    frameState.viewState.zoom = 0;
+    frameState.viewState.nextResolution = tileGrid.getResolution(1);
+    frameState.nextExtent = tileGrid.getTileCoordExtent([1, 0, 0]);
+    return frameState;
+  }
+
+  it('prefetches the tiles an animation is heading for, at its resolution', async () => {
+    const tiles = {};
+    source.getTile = function (z, x, y) {
+      return (tiles[`${z}/${x}/${y}`] ??= loadedTile(z, x, y));
+    };
+    await collectBatches(frameAtZ(0), 1);
+
+    const frameState = animationFrame();
+    const batches = renderer.collectBatches_(frameState);
+    assert.lengthOf(batches, 1);
+    assert.match(Array.from(renderer.pendingKeys_)[0], /^1\/0\/0\//);
+    assert.strictEqual(
+      renderer.styleStates_.get(tiles['1/0/0']).resolution,
+      frameState.viewState.nextResolution,
+    );
+    assert.strictEqual(renderer.styleStates_.get(tiles['1/0/0']).zoom, 1);
+    for (let i = 0; i < 200 && renderer.tileCache_.getCount() < 2; ++i) {
+      await new Promise((resolve) => setTimeout(resolve, 10));
+    }
+    assert.strictEqual(renderer.tileCache_.getCount(), 2);
+    // Only the tiles of the view are drawn.
+    assert.lengthOf(renderer.collectBatches_(frameState), 1);
+  });
+
+  it('queues the tiles an animation is heading for, but builds them only once the view is complete', () => {
+    source.getTile = function (z, x, y) {
+      return z === 0 ? idleTile(z, x, y) : loadedTile(z, x, y);
+    };
+    const frameState = animationFrame();
+    renderer.collectBatches_(frameState);
+    assert.strictEqual(renderer.pendingKeys_.size, 0);
+    assert.hasAllKeys(frameState.wantedTiles[getUid(source)], [
+      '0/0/0',
+      '1/0/0',
+    ]);
   });
 
   it('drops references to a batch when it is disposed', () => {
