@@ -1,0 +1,17 @@
+---
+layout: example.html
+title: OGC API – Tiles with a Mapbox Style
+shortdesc: Styling vector tiles from an OGC API – Tiles service with ol-mapbox-style.
+docs: >
+  This example renders vector tiles from an <a href="https://ogcapi.ogc.org/tiles/">OGC API – Tiles</a>
+  service, the <a href="https://api.pdok.nl/kadaster/brt-achtergrondkaart/ogc/v1">BRT Achtergrondkaart</a>
+  (topographic background map) of the Dutch Kadaster.<br>The layer is styled with
+  <a href="https://www.npmjs.com/package/ol-mapbox-style">ol-mapbox-style</a>, using the Mapbox style
+  document from the <a href="https://ogcapi.ogc.org/styles/">OGC API – Styles</a> endpoint of the
+  <a href="https://api.pdok.nl/kadaster/brt-achtergrondkaart/ogc/v1/styles/standaard__webmercatorquad?f=mapbox">same service</a>.<br>The layer and
+  its <code>ol/source/OGCVectorTile</code> source are created first, then <code>applyStyle()</code> adds the
+  style. The <code>updateSource: false</code> option makes sure the style is only used for styling, and the
+  OGC API – Tiles source of the layer is kept.<br>Finally the map is created with the styled layer.
+tags: "ogc, vector tiles, mapbox, ol-mapbox-style"
+---
+<div id="map" class="map"></div>
