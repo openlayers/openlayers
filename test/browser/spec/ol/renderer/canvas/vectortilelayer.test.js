@@ -457,6 +457,73 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
       }));
   });
 
+  describe('reprojection', function () {
+    let map, target;
+
+    afterEach(function () {
+      disposeMap(map);
+    });
+
+    it('transforms each source tile feature once, not per render tile', async function () {
+      target = document.createElement('div');
+      target.style.width = '256px';
+      target.style.height = '256px';
+      document.body.appendChild(target);
+
+      let clones = 0;
+      const features = [];
+      for (let i = 0; i < 10; ++i) {
+        const feature = new RenderFeature(
+          'Point',
+          [-15e6 + i * 3e6, -10e6 + i * 2e6],
+          [],
+          2,
+        );
+        const clone = feature.clone.bind(feature);
+        feature.clone = function () {
+          ++clones;
+          return clone();
+        };
+        features.push(feature);
+      }
+
+      // One Mercator source tile, drawn into a geographic view: every render
+      // tile in view is cut from that one source tile.
+      const source = new VectorTileSource({
+        tileGrid: createXYZ({maxZoom: 0}),
+        url: '{z}/{x}/{y}',
+        tileLoadFunction: (tile) => tile.setFeatures(features.slice()),
+      });
+      const layer = new VectorTileLayer({
+        source: source,
+        style: new Style({
+          image: new Circle({radius: 2, fill: new Fill({color: 'red'})}),
+        }),
+      });
+      map = new Map({
+        pixelRatio: 1,
+        target: target,
+        layers: [layer],
+        view: new View({
+          projection: 'EPSG:4326',
+          center: [0, 0],
+          zoom: 2,
+        }),
+      });
+      const rendered = () =>
+        new Promise((resolve) => map.once('rendercomplete', resolve));
+
+      await rendered();
+      assert.isAbove(layer.getRenderer().renderedTiles.length, 1);
+      assert.strictEqual(clones, features.length);
+
+      // A new resolution rebuilds every render tile, but not the transform.
+      map.getView().setZoom(2.5);
+      await rendered();
+      assert.strictEqual(clones, features.length);
+    });
+  });
+
   describe('#prepareFrame', function () {
     it('re-renders when layer changed', function () {
       const layer = new VectorTileLayer({
