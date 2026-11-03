@@ -137,8 +137,26 @@ describe('ol.webgl.RenderTarget', function () {
       data = rt.readPixel(2, 7);
       assertArrayLikeEqual(data, [0, 0, 0, 0]);
 
+      data = rt.readPixel(4, 2);
+      assertArrayLikeEqual(data, [0, 0, 0, 0]);
+
+      data = rt.readPixel(2, 4);
+      assertArrayLikeEqual(data, [0, 0, 0, 0]);
+
       data = rt.readPixel(2, 3);
       assert.notDeepEqual(data, [0, 0, 0, 0]);
+    });
+
+    it('reads the correct pixel for fractional coordinates', function () {
+      const rt = new WebGLRenderTarget(helper, [4, 4]);
+      helper.createTexture([4, 4], testImage_4x4, rt.getTexture());
+
+      // readPixel returns a shared array, so copy before reading again
+      const expected = Array.from(rt.readPixel(3, 1));
+      const data = Array.from(rt.readPixel(3.5, 1.5));
+      assert.deepEqual(data, expected);
+
+      assert.notDeepEqual(Array.from(rt.readPixel(3.5, 3.5)), [0, 0, 0, 0]);
     });
   });
 });
