@@ -5,6 +5,7 @@ import {
   SizeType,
   StringType,
 } from '../../../../../src/ol/expr/expression.js';
+import {getStringNumberEquivalent} from '../../../../../src/ol/expr/gpu.js';
 import Feature from '../../../../../src/ol/Feature.js';
 import LineString from '../../../../../src/ol/geom/LineString.js';
 import Point from '../../../../../src/ol/geom/Point.js';
@@ -795,6 +796,54 @@ describe('ol/render/webgl/textUtil', function () {
       assert.deepEqual(labels, ['12 m']);
       // x, y, then the depth attribute: value, label position, label length
       assert.strictEqual(renderInstructions[2], 12);
+    });
+
+    it('keeps the boolean for the shader when a property is also used as a condition', () => {
+      const {labels, renderInstructions} = render(
+        {
+          'circle-radius': 5,
+          'circle-fill-color': [
+            'case',
+            ['get', 'visible'],
+            [0, 255, 0, 1],
+            [255, 0, 0, 1],
+          ],
+          'text-value': ['concat', 'visible: ', ['get', 'visible']],
+        },
+        [
+          new Feature({visible: true, geometry: new Point([0, 0])}),
+          new Feature({visible: false, geometry: new Point([1, 1])}),
+        ],
+      );
+      assert.deepEqual(labels, ['visible: true', 'visible: false']);
+      // each point is x, y, then the visible attribute: value, label position, label length
+      assert.strictEqual(renderInstructions[2], 1);
+      assert.strictEqual(renderInstructions[7], 0);
+    });
+
+    // Known limitation: the shader compares a string literal by its string id, but a
+    // number keeps its raw value, so `['==', ['get', 'depth'], '12']` doesn't match
+    // `depth: 12` on WebGL. Canvas doesn't match it either, as it compares with `===`.
+    it('does not give a number the id of its string equivalent', () => {
+      const {labels, renderInstructions} = render(
+        {
+          'circle-radius': 5,
+          'circle-fill-color': [
+            'case',
+            ['==', ['get', 'depth'], '12'],
+            [0, 255, 0, 1],
+            [255, 0, 0, 1],
+          ],
+          'text-value': ['concat', ['get', 'depth'], ' m'],
+        },
+        [new Feature({depth: 12, geometry: new Point([0, 0])})],
+      );
+      assert.deepEqual(labels, ['12 m']);
+      assert.strictEqual(renderInstructions[2], 12);
+      assert.notStrictEqual(
+        renderInstructions[2],
+        getStringNumberEquivalent('12'),
+      );
     });
   });
 });
