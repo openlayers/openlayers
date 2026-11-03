@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ogr:FeatureCollection
+     gml:id="aFeatureCollection"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://ogr.maptools.org/ ogr.xsd"
+     xmlns:ogr="http://ogr.maptools.org/"
+     xmlns:gml="http://www.opengis.net/gml/3.2">
+  <gml:boundedBy><gml:Envelope srsName="urn:ogc:def:crs:EPSG::4326"><gml:lowerCorner>52.25 10.5</gml:lowerCorner><gml:upperCorner>53 11</gml:upperCorner></gml:Envelope></gml:boundedBy>
+  <ogr:featureMember>
+    <ogr:poi gml:id="poi.0">
+      <gml:boundedBy><gml:Envelope srsName="urn:ogc:def:crs:EPSG::4326"><gml:lowerCorner>52.25 10.5</gml:lowerCorner><gml:upperCorner>52.25 10.5</gml:upperCorner></gml:Envelope></gml:boundedBy>
+      <ogr:geometryProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::4326" gml:id="poi.geom.0"><gml:pos>52.25 10.5</gml:pos></gml:Point></ogr:geometryProperty>
+      <ogr:name>a</ogr:name>
+    </ogr:poi>
+  </ogr:featureMember>
+  <ogr:featureMember>
+    <ogr:poi gml:id="poi.1">
+      <gml:boundedBy><gml:Envelope srsName="urn:ogc:def:crs:EPSG::4326"><gml:lowerCorner>53 11</gml:lowerCorner><gml:upperCorner>53 11</gml:upperCorner></gml:Envelope></gml:boundedBy>
+      <ogr:geometryProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::4326" gml:id="poi.geom.1"><gml:pos>53 11</gml:pos></gml:Point></ogr:geometryProperty>
+      <ogr:name>b</ogr:name>
+    </ogr:poi>
+  </ogr:featureMember>
+</ogr:FeatureCollection>
