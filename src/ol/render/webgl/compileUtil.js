@@ -226,15 +226,6 @@ export function generateAttributesFromContext(context) {
       if (propType === BooleanType) {
         return value ? 1 : 0;
       }
-      // `propType` is the type the style expects (e.g. `concat` reads its arguments
-      // as strings), not the type of the feature's value, so a number or boolean
-      // can end up here. Only string values are encoded as label text, so convert them.
-      if (
-        propType === StringType &&
-        (typeof value === 'number' || typeof value === 'boolean')
-      ) {
-        return String(value);
-      }
       return value;
     };
 

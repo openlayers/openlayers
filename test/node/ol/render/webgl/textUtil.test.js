@@ -690,9 +690,9 @@ describe('ol/render/webgl/textUtil', function () {
      * its text overlay worker, and returns the label text drawn for each one.
      * @param {import('../../../../../src/ol/style/flat.js').FlatStyle} style Style
      * @param {Array<Feature>} features Point features
-     * @return {Array<string>} Label text for each feature
+     * @return {{labels: Array<string>, renderInstructions: Float32Array}} Label text for each feature, and the render instructions
      */
-    function getLabels(style, features) {
+    function render(style, features) {
       const {attributes} = parseLiteralStyle(style);
       const labelsArray = new LabelsArray();
       const geometryBatch = new MixedGeometryBatch();
@@ -727,7 +727,16 @@ describe('ol/render/webgl/textUtil', function () {
         textBuilder,
         styleFunction,
       );
-      return labels;
+      return {labels, renderInstructions};
+    }
+
+    /**
+     * @param {import('../../../../../src/ol/style/flat.js').FlatStyle} style Style
+     * @param {Array<Feature>} features Point features
+     * @return {Array<string>} Label text for each feature
+     */
+    function getLabels(style, features) {
+      return render(style, features).labels;
     }
 
     it('includes numeric properties used in a string expression', () => {
@@ -764,6 +773,28 @@ describe('ol/render/webgl/textUtil', function () {
         [new Feature({depth: '12', geometry: new Point([0, 0])})],
       );
       assert.deepEqual(labels, ['12 m']);
+    });
+
+    it('keeps the number for the shader when a property is also used as a number', () => {
+      const {labels, renderInstructions} = render(
+        {
+          'circle-radius': 5,
+          'circle-fill-color': [
+            'interpolate',
+            ['linear'],
+            ['get', 'depth'],
+            0,
+            [255, 0, 0, 1],
+            50,
+            [0, 0, 255, 1],
+          ],
+          'text-value': ['concat', ['get', 'depth'], ' m'],
+        },
+        [new Feature({depth: 12, geometry: new Point([0, 0])})],
+      );
+      assert.deepEqual(labels, ['12 m']);
+      // x, y, then the depth attribute: value, label position, label length
+      assert.strictEqual(renderInstructions[2], 12);
     });
   });
 });

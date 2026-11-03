@@ -197,18 +197,16 @@ describe('ol/render/webgl/compileUtil', () => {
       assert.deepEqual(attributes.prop_booleanProp.callback(feature), 1);
     });
 
-    it('converts number and boolean values to strings for string properties', () => {
+    it('keeps number and boolean values for string properties', () => {
       const context = {
         properties: new Map([['stringProp', StringType]]),
       };
       const attributes = generateAttributesFromContext(context);
       const callback = attributes.prop_stringProp.callback;
 
-      assert.strictEqual(callback(new Feature({stringProp: 12})), '12');
-      assert.strictEqual(callback(new Feature({stringProp: 0})), '0');
-      assert.strictEqual(callback(new Feature({stringProp: 1.5})), '1.5');
-      assert.strictEqual(callback(new Feature({stringProp: true})), 'true');
-      assert.strictEqual(callback(new Feature({stringProp: false})), 'false');
+      // the raw value is needed in the shader; it is converted to a label later
+      assert.strictEqual(callback(new Feature({stringProp: 12})), 12);
+      assert.strictEqual(callback(new Feature({stringProp: true})), true);
     });
 
     it('keeps undefined and null values for string properties', () => {

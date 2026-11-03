@@ -35,6 +35,19 @@ function pushCustomAttributesInRenderInstructions(
       renderInstructions[currentIndex + shift++] = labelLength;
       continue;
     }
+    // String properties (size 3) can hold a number or boolean, e.g. when a style reads
+    // the property as a number for a fill colour and as a string in a `concat` label.
+    // Keep the raw value for the shader, and also store its text as a label.
+    if (
+      attr.size === 3 &&
+      (typeof value === 'number' || typeof value === 'boolean')
+    ) {
+      const [labelPosition, labelLength] = labels.push(String(value));
+      renderInstructions[currentIndex + shift++] = Number(value);
+      renderInstructions[currentIndex + shift++] = labelPosition;
+      renderInstructions[currentIndex + shift++] = labelLength;
+      continue;
+    }
     const arrayValue = Array.isArray(value) ? value : undefined;
     let first = arrayValue ? arrayValue[0] : value;
     if (first === UNDEFINED_PROP_VALUE) {
