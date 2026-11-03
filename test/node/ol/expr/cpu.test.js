@@ -807,6 +807,57 @@ describe('ol/expr/cpu.js', () => {
         expression: ['has', 'property', 0, 'foo'],
         expected: false,
       },
+      {
+        name: 'to-number (string)',
+        type: NumberType,
+        expression: ['to-number', '42.5'],
+        expected: 42.5,
+      },
+      {
+        name: 'to-number (string property)',
+        type: NumberType,
+        context: {
+          properties: {
+            value: '3',
+          },
+        },
+        expression: ['to-number', ['get', 'value']],
+        expected: 3,
+      },
+      {
+        name: 'to-number (boolean)',
+        type: NumberType,
+        expression: ['to-number', true],
+        expected: 1,
+      },
+      {
+        name: 'to-number (null)',
+        type: NumberType,
+        context: {
+          properties: {
+            value: null,
+          },
+        },
+        expression: ['to-number', ['get', 'value']],
+        expected: 0,
+      },
+      {
+        name: 'to-number (fallback)',
+        type: NumberType,
+        expression: ['to-number', 'abc', '7'],
+        expected: 7,
+      },
+      {
+        name: 'to-number used with between',
+        type: BooleanType,
+        context: {
+          properties: {
+            value: '0.7',
+          },
+        },
+        expression: ['between', ['to-number', ['get', 'value']], 0.5, 1],
+        expected: true,
+      },
     ];
 
     for (const c of cases) {
@@ -822,6 +873,19 @@ describe('ol/expr/cpu.js', () => {
         }
       });
     }
+
+    it('throws for to-number when no value can be converted', () => {
+      const parsingContext = newParsingContext();
+      const evaluator = buildExpression(
+        ['to-number', 'abc', 'def'],
+        NumberType,
+        parsingContext,
+      );
+      assert.throws(
+        () => evaluator(newEvaluationContext()),
+        'Conversion to number failed',
+      );
+    });
   });
 
   describe('interpolate expressions', () => {
