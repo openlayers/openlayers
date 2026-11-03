@@ -62,6 +62,17 @@ describe('ol/expr/cpu.js', () => {
         expected: undefined,
       },
       {
+        name: 'get (nested, null parent)',
+        context: {
+          properties: {
+            deeply: null,
+          },
+        },
+        expression: ['get', 'deeply', 'nested', 'property'],
+        type: NumberType,
+        expected: undefined,
+      },
+      {
         name: 'get array item',
         context: {
           properties: {

@@ -318,7 +318,7 @@ function compileAccessorExpression(expression, context) {
         for (let i = 1, ii = args.length; i < ii; ++i) {
           const keyExpression = /** @type {LiteralExpression} */ (args[i]);
           const key = /** @type {string|number} */ (keyExpression.value);
-          value = value[key];
+          value = value?.[key];
         }
         return value;
       };
