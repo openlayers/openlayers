@@ -1,13 +1,16 @@
 import {assert} from 'chai';
 import {
   ColorType,
+  newParsingContext,
   SizeType,
   StringType,
 } from '../../../../../src/ol/expr/expression.js';
+import {getStringNumberEquivalent} from '../../../../../src/ol/expr/gpu.js';
 import Feature from '../../../../../src/ol/Feature.js';
 import LineString from '../../../../../src/ol/geom/LineString.js';
 import Point from '../../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../../src/ol/geom/Polygon.js';
+import {flatStyleLikeToStyleFunction} from '../../../../../src/ol/render/canvas/style.js';
 import {
   getGlslSizeFromType,
   packColor,
@@ -18,6 +21,7 @@ import {
   generatePointRenderInstructions,
   generatePolygonRenderInstructions,
 } from '../../../../../src/ol/render/webgl/renderinstructions.js';
+import {parseLiteralStyle} from '../../../../../src/ol/render/webgl/style.js';
 import {
   convertLineStringRenderInstructionsToCanvasTextBuilder,
   convertPointRenderInstructionsToCanvasTextBuilder,
@@ -678,6 +682,168 @@ describe('ol/render/webgl/textUtil', function () {
         assert.deepEqual(textBuilder.calls[2], ['setTextStyle', '# cd']);
         assert.deepEqual(textBuilder.calls[3], ['drawText', 'Point', [3, 4]]);
       });
+    });
+  });
+
+  describe('labels from a WebGL style', () => {
+    /**
+     * Runs features through the same steps as the WebGL vector renderer and
+     * its text overlay worker, and returns the label text drawn for each one.
+     * @param {import('../../../../../src/ol/style/flat.js').FlatStyle} style Style
+     * @param {Array<Feature>} features Point features
+     * @return {{labels: Array<string>, renderInstructions: Float32Array}} Label text for each feature, and the render instructions
+     */
+    function render(style, features) {
+      const {attributes} = parseLiteralStyle(style);
+      const labelsArray = new LabelsArray();
+      const geometryBatch = new MixedGeometryBatch();
+      geometryBatch.addFeatures(features);
+      const renderInstructions = generatePointRenderInstructions(
+        geometryBatch.pointBatch,
+        new Float32Array(0),
+        labelsArray,
+        attributes,
+        createTransform(),
+      );
+
+      const parsingContext = newParsingContext();
+      const textStyle = {...style};
+      stripNonTextStyleProperties(textStyle);
+      const styleFunction = flatStyleLikeToStyleFunction(
+        textStyle,
+        parsingContext,
+      );
+      const labels = [];
+      const textBuilder = {
+        setTextStyle(textStyle) {
+          labels.push(textStyle.getText());
+        },
+        drawText() {},
+      };
+      convertPointRenderInstructionsToCanvasTextBuilder(
+        renderInstructions,
+        labelsArray.getArray(),
+        parsingContext.properties,
+        attributes,
+        textBuilder,
+        styleFunction,
+      );
+      return {labels, renderInstructions};
+    }
+
+    /**
+     * @param {import('../../../../../src/ol/style/flat.js').FlatStyle} style Style
+     * @param {Array<Feature>} features Point features
+     * @return {Array<string>} Label text for each feature
+     */
+    function getLabels(style, features) {
+      return render(style, features).labels;
+    }
+
+    it('includes numeric properties used in a string expression', () => {
+      const labels = getLabels(
+        {
+          'text-value': ['concat', ['get', 'depth'], ' m'],
+        },
+        [
+          new Feature({depth: 12, geometry: new Point([0, 0])}),
+          new Feature({depth: 0, geometry: new Point([1, 1])}),
+        ],
+      );
+      assert.deepEqual(labels, ['12 m', '0 m']);
+    });
+
+    it('includes boolean properties used in a string expression', () => {
+      const labels = getLabels(
+        {
+          'text-value': ['concat', 'visible: ', ['get', 'visible']],
+        },
+        [
+          new Feature({visible: true, geometry: new Point([0, 0])}),
+          new Feature({visible: false, geometry: new Point([1, 1])}),
+        ],
+      );
+      assert.deepEqual(labels, ['visible: true', 'visible: false']);
+    });
+
+    it('still includes string properties used in a string expression', () => {
+      const labels = getLabels(
+        {
+          'text-value': ['concat', ['get', 'depth'], ' m'],
+        },
+        [new Feature({depth: '12', geometry: new Point([0, 0])})],
+      );
+      assert.deepEqual(labels, ['12 m']);
+    });
+
+    it('keeps the number for the shader when a property is also used as a number', () => {
+      const {labels, renderInstructions} = render(
+        {
+          'circle-radius': 5,
+          'circle-fill-color': [
+            'interpolate',
+            ['linear'],
+            ['get', 'depth'],
+            0,
+            [255, 0, 0, 1],
+            50,
+            [0, 0, 255, 1],
+          ],
+          'text-value': ['concat', ['get', 'depth'], ' m'],
+        },
+        [new Feature({depth: 12, geometry: new Point([0, 0])})],
+      );
+      assert.deepEqual(labels, ['12 m']);
+      // x, y, then the depth attribute: value, label position, label length
+      assert.strictEqual(renderInstructions[2], 12);
+    });
+
+    it('keeps the boolean for the shader when a property is also used as a condition', () => {
+      const {labels, renderInstructions} = render(
+        {
+          'circle-radius': 5,
+          'circle-fill-color': [
+            'case',
+            ['get', 'visible'],
+            [0, 255, 0, 1],
+            [255, 0, 0, 1],
+          ],
+          'text-value': ['concat', 'visible: ', ['get', 'visible']],
+        },
+        [
+          new Feature({visible: true, geometry: new Point([0, 0])}),
+          new Feature({visible: false, geometry: new Point([1, 1])}),
+        ],
+      );
+      assert.deepEqual(labels, ['visible: true', 'visible: false']);
+      // each point is x, y, then the visible attribute: value, label position, label length
+      assert.strictEqual(renderInstructions[2], 1);
+      assert.strictEqual(renderInstructions[7], 0);
+    });
+
+    // Known limitation: the shader compares a string literal by its string id, but a
+    // number keeps its raw value, so `['==', ['get', 'depth'], '12']` doesn't match
+    // `depth: 12` on WebGL. Canvas doesn't match it either, as it compares with `===`.
+    it('does not give a number the id of its string equivalent', () => {
+      const {labels, renderInstructions} = render(
+        {
+          'circle-radius': 5,
+          'circle-fill-color': [
+            'case',
+            ['==', ['get', 'depth'], '12'],
+            [0, 255, 0, 1],
+            [255, 0, 0, 1],
+          ],
+          'text-value': ['concat', ['get', 'depth'], ' m'],
+        },
+        [new Feature({depth: 12, geometry: new Point([0, 0])})],
+      );
+      assert.deepEqual(labels, ['12 m']);
+      assert.strictEqual(renderInstructions[2], 12);
+      assert.notStrictEqual(
+        renderInstructions[2],
+        getStringNumberEquivalent('12'),
+      );
     });
   });
 });
