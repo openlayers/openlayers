@@ -73,6 +73,28 @@ describe('ol/expr/cpu.js', () => {
         expected: 42,
       },
       {
+        name: 'get number (null)',
+        context: {
+          properties: {
+            property: null,
+          },
+        },
+        expression: ['get', 'property'],
+        type: NumberType,
+        expected: 0,
+      },
+      {
+        name: 'get string (null)',
+        context: {
+          properties: {
+            property: null,
+          },
+        },
+        expression: ['get', 'property'],
+        type: StringType,
+        expected: null,
+      },
+      {
         name: 'get array',
         context: {
           properties: {
@@ -287,6 +309,15 @@ describe('ol/expr/cpu.js', () => {
         expression: ['==', ['get', 'number'], 42],
         context: {
           properties: {number: 42},
+        },
+        expected: true,
+      },
+      {
+        name: 'equal comparison (null number)',
+        type: BooleanType,
+        expression: ['==', ['get', 'number'], 0],
+        context: {
+          properties: {number: null},
         },
         expected: true,
       },
