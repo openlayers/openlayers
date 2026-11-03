@@ -226,6 +226,12 @@ export function generateAttributesFromContext(context) {
       if (propType === BooleanType) {
         return value ? 1 : 0;
       }
+      if (
+        propType === StringType &&
+        (typeof value === 'number' || typeof value === 'boolean')
+      ) {
+        return String(value);
+      }
       return value;
     };
 
