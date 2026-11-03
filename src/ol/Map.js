@@ -164,6 +164,17 @@ import {getUid} from './util.js';
  * layer.
  * @property {number} [maxTilesLoading=16] Maximum number tiles to load
  * simultaneously.
+ * @property {number} [maxTilesLoadingWhileMoving=8] Maximum number of tiles to
+ * load simultaneously while the view is animating or the user is interacting
+ * with the map. At most a quarter of this number (and at least one) of new tile
+ * loads is started per frame.
+ * @property {number} [movingFrameBudget=8] Time in milliseconds a frame may take
+ * while the view is animating or the user is interacting with the map. After a
+ * frame that took longer, no new tiles are loaded until the next frame. This
+ * keeps expensive tile loads (e.g. vector tiles) from making interaction less
+ * fluid on slow devices, but it also means that on such devices no tiles may be
+ * loaded at all until the movement ends. Set to `Infinity` to keep loading tiles
+ * however long frames take.
  * @property {number} [moveTolerance=1] The minimum distance in pixels the
  * cursor must move to be detected as a map move event instead of a click.
  * Increasing this value can make it easier to click on the map.
@@ -324,6 +335,22 @@ class Map extends BaseObject {
      */
     this.maxTilesLoading_ =
       options.maxTilesLoading !== undefined ? options.maxTilesLoading : 16;
+
+    /**
+     * @type {number}
+     * @private
+     */
+    this.maxTilesLoadingWhileMoving_ =
+      options.maxTilesLoadingWhileMoving !== undefined
+        ? options.maxTilesLoadingWhileMoving
+        : 8;
+
+    /**
+     * @type {number}
+     * @private
+     */
+    this.movingFrameBudget_ =
+      options.movingFrameBudget !== undefined ? options.movingFrameBudget : 8;
 
     /**
      * @private
@@ -1352,9 +1379,14 @@ class Map extends BaseObject {
         : false;
       if (animatingOrInteracting) {
         const lowOnFrameBudget =
-          Date.now() - /** @type {FrameState} */ (frameState).time > 8;
-        maxTotalLoading = lowOnFrameBudget ? 0 : 8;
-        maxNewLoads = lowOnFrameBudget ? 0 : 2;
+          Date.now() - /** @type {FrameState} */ (frameState).time >
+          this.movingFrameBudget_;
+        maxTotalLoading = lowOnFrameBudget
+          ? 0
+          : this.maxTilesLoadingWhileMoving_;
+        maxNewLoads = lowOnFrameBudget
+          ? 0
+          : Math.max(1, Math.ceil(maxTotalLoading / 4));
       }
       if (tileQueue.getTilesLoading() < maxTotalLoading) {
         const count = tileQueue.getCount();
