@@ -1,6 +1,7 @@
 import {assert} from 'chai';
 import {
   ColorType,
+  newParsingContext,
   SizeType,
   StringType,
 } from '../../../../../src/ol/expr/expression.js';
@@ -8,6 +9,7 @@ import Feature from '../../../../../src/ol/Feature.js';
 import LineString from '../../../../../src/ol/geom/LineString.js';
 import Point from '../../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../../src/ol/geom/Polygon.js';
+import {flatStyleLikeToStyleFunction} from '../../../../../src/ol/render/canvas/style.js';
 import {
   getGlslSizeFromType,
   packColor,
@@ -18,6 +20,7 @@ import {
   generatePointRenderInstructions,
   generatePolygonRenderInstructions,
 } from '../../../../../src/ol/render/webgl/renderinstructions.js';
+import {parseLiteralStyle} from '../../../../../src/ol/render/webgl/style.js';
 import {
   convertLineStringRenderInstructionsToCanvasTextBuilder,
   convertPointRenderInstructionsToCanvasTextBuilder,
@@ -678,6 +681,89 @@ describe('ol/render/webgl/textUtil', function () {
         assert.deepEqual(textBuilder.calls[2], ['setTextStyle', '# cd']);
         assert.deepEqual(textBuilder.calls[3], ['drawText', 'Point', [3, 4]]);
       });
+    });
+  });
+
+  describe('labels from a WebGL style', () => {
+    /**
+     * Runs features through the same steps as the WebGL vector renderer and
+     * its text overlay worker, and returns the label text drawn for each one.
+     * @param {import('../../../../../src/ol/style/flat.js').FlatStyle} style Style
+     * @param {Array<Feature>} features Point features
+     * @return {Array<string>} Label text for each feature
+     */
+    function getLabels(style, features) {
+      const {attributes} = parseLiteralStyle(style);
+      const labelsArray = new LabelsArray();
+      const geometryBatch = new MixedGeometryBatch();
+      geometryBatch.addFeatures(features);
+      const renderInstructions = generatePointRenderInstructions(
+        geometryBatch.pointBatch,
+        new Float32Array(0),
+        labelsArray,
+        attributes,
+        createTransform(),
+      );
+
+      const parsingContext = newParsingContext();
+      const textStyle = {...style};
+      stripNonTextStyleProperties(textStyle);
+      const styleFunction = flatStyleLikeToStyleFunction(
+        textStyle,
+        parsingContext,
+      );
+      const labels = [];
+      const textBuilder = {
+        setTextStyle(textStyle) {
+          labels.push(textStyle.getText());
+        },
+        drawText() {},
+      };
+      convertPointRenderInstructionsToCanvasTextBuilder(
+        renderInstructions,
+        labelsArray.getArray(),
+        parsingContext.properties,
+        attributes,
+        textBuilder,
+        styleFunction,
+      );
+      return labels;
+    }
+
+    it('includes numeric properties used in a string expression', () => {
+      const labels = getLabels(
+        {
+          'text-value': ['concat', ['get', 'depth'], ' m'],
+        },
+        [
+          new Feature({depth: 12, geometry: new Point([0, 0])}),
+          new Feature({depth: 0, geometry: new Point([1, 1])}),
+        ],
+      );
+      assert.deepEqual(labels, ['12 m', '0 m']);
+    });
+
+    it('includes boolean properties used in a string expression', () => {
+      const labels = getLabels(
+        {
+          'text-value': ['concat', 'visible: ', ['get', 'visible']],
+        },
+        [
+          new Feature({visible: true, geometry: new Point([0, 0])}),
+          new Feature({visible: false, geometry: new Point([1, 1])}),
+        ],
+      );
+      assert.deepEqual(labels, ['visible: true', 'visible: false']);
+    });
+
+    it('still includes string properties used in a string expression', () => {
+      const labels = getLabels(
+        {
+          'text-value': ['concat', ['get', 'depth'], ' m'],
+        },
+        [new Feature({depth: '12', geometry: new Point([0, 0])})],
+      );
+      assert.deepEqual(labels, ['12 m']);
     });
   });
 });
