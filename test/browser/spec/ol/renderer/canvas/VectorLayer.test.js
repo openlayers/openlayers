@@ -321,6 +321,8 @@ describe('ol/renderer/canvas/VectorLayer', function () {
       buffer = layer.getRenderBuffer();
       loadExtents = [];
       frameState = {
+        layerStatesArray: [layer.getLayerState()],
+        layerIndex: 0,
         pixelRatio: 1,
         viewHints: [],
         viewState: {
@@ -474,6 +476,12 @@ describe('ol/renderer/canvas/VectorLayer', function () {
       frameState.pixelRatio = 2;
       renderer.prepareFrame(frameState);
       assert.strictEqual(renderer.replayGroupChanged, true);
+      frameState.layerStatesArray[0].extent = [-5000, -5000, 5000, 5000];
+      renderer.prepareFrame(frameState);
+      assert.strictEqual(renderer.replayGroupChanged, true);
+      frameState.layerStatesArray[0].extent = [-5000, -5000, 5000, 5000];
+      renderer.prepareFrame(frameState);
+      assert.strictEqual(renderer.replayGroupChanged, false);
     });
 
     it('dispatches a postrender event when rendering', function () {
