@@ -1,7 +1,7 @@
 import {assert} from 'chai';
 import ImageTile from '../../../../src/ol/ImageTile.js';
 import Tile from '../../../../src/ol/Tile.js';
-import TileQueue from '../../../../src/ol/TileQueue.js';
+import TileQueue, {getTilePriority} from '../../../../src/ol/TileQueue.js';
 import TileState from '../../../../src/ol/TileState.js';
 import {defaultImageLoadFunction} from '../../../../src/ol/source/Image.js';
 import LRUCache from '../../../../src/ol/structs/LRUCache.js';
@@ -38,6 +38,234 @@ describe('ol.TileQueue', function () {
       : defaultImageLoadFunction;
     return new ImageTile(tileCoord, state, src, null, tileLoadFunction);
   }
+
+  describe('getTilePriority()', function () {
+    const tile = new Tile([5, 0, 0], TileState.IDLE);
+    const sourceKey = 'source';
+
+    function frameState(viewState, nextExtent, startExtent) {
+      return {
+        viewState: Object.assign({center: [0, 0], resolution: 10}, viewState),
+        nextExtent: nextExtent,
+        startExtent: startExtent,
+        wantedTiles: {[sourceKey]: {[tile.getKey()]: true}},
+      };
+    }
+
+    // An animation from [0, 0] to [100000, 0], at 10 m per pixel, in a
+    // 1000 x 1000 pixel viewport.
+    const flying = frameState(
+      {nextCenter: [100000, 0], nextResolution: 10},
+      [95000, -5000, 105000, 5000],
+    );
+
+    it('ranks by zoom level and distance from the center at rest', function () {
+      const atRest = frameState({});
+      assert.isBelow(
+        getTilePriority(atRest, tile, sourceKey, [0, 0], 10),
+        getTilePriority(atRest, tile, sourceKey, [5000, 0], 10),
+      );
+      assert.isBelow(
+        getTilePriority(atRest, tile, sourceKey, [5000, 0], 10),
+        getTilePriority(atRest, tile, sourceKey, [0, 0], 20),
+      );
+    });
+
+    it('ranks the destination of an animation before the area it passes over', function () {
+      const here = getTilePriority(flying, tile, sourceKey, [0, 0], 10);
+      const halfWay = getTilePriority(flying, tile, sourceKey, [50000, 0], 10);
+      const destination = getTilePriority(
+        flying,
+        tile,
+        sourceKey,
+        [100000, 0],
+        10,
+      );
+      const destinationEdge = getTilePriority(
+        flying,
+        tile,
+        sourceKey,
+        [104000, 4000],
+        10,
+      );
+      assert.isBelow(destination, destinationEdge);
+      assert.isBelow(destinationEdge, here);
+      assert.isBelow(destinationEdge, halfWay);
+      // Away from the destination, the order is unchanged.
+      assert.isBelow(here, halfWay);
+    });
+
+    it('ranks coarser tiles at the destination behind its own zoom level', function () {
+      const coarser = getTilePriority(flying, tile, sourceKey, [100000, 0], 20);
+      assert.isBelow(
+        getTilePriority(flying, tile, sourceKey, [104000, 4000], 10),
+        coarser,
+      );
+      assert.isBelow(
+        coarser,
+        getTilePriority(flying, tile, sourceKey, [0, 0], 10),
+      );
+    });
+
+    it('does not count finer tiles than the destination zoom level as destination', function () {
+      const climbing = frameState(
+        {nextCenter: [100000, 0], nextResolution: 40},
+        [80000, -20000, 120000, 20000],
+      );
+      // The coarse destination tile first, the fine tile under it after.
+      assert.isBelow(
+        getTilePriority(climbing, tile, sourceKey, [100000, 0], 40),
+        getTilePriority(climbing, tile, sourceKey, [100000, 0], 10),
+      );
+    });
+
+    describe('at the zoom level boundary', function () {
+      // The same animation at 20 m per pixel, in a 1000 x 1000 pixel viewport.
+      const flyingAt20 = frameState(
+        {nextCenter: [100000, 0], nextResolution: 20},
+        [90000, -10000, 110000, 10000],
+      );
+      const destinationEdge = getTilePriority(
+        flyingAt20,
+        tile,
+        sourceKey,
+        [104000, 4000],
+        20,
+      );
+
+      it('does not count a tile one level finer than the destination', function () {
+        const oneLevelFiner = getTilePriority(
+          flyingAt20,
+          tile,
+          sourceKey,
+          [100000, 0],
+          10,
+        );
+        assert.isBelow(destinationEdge, oneLevelFiner);
+        assert.strictEqual(
+          oneLevelFiner,
+          getTilePriority(frameState({}), tile, sourceKey, [100000, 0], 10) +
+            1e7,
+        );
+      });
+
+      it('counts a tile coarser than half the destination resolution', function () {
+        const nearlyAtLevel = getTilePriority(
+          flyingAt20,
+          tile,
+          sourceKey,
+          [100000, 0],
+          12,
+        );
+        assert.isBelow(
+          nearlyAtLevel,
+          getTilePriority(flyingAt20, tile, sourceKey, [0, 0], 20),
+        );
+        assert.isBelow(nearlyAtLevel, 1e7);
+      });
+    });
+
+    describe('with the view the animation started from', function () {
+      // The same animation, started from a view of [0, 0] at 10 m per pixel.
+      const fromStart = frameState(
+        {
+          nextCenter: [100000, 0],
+          nextResolution: 10,
+          startCenter: [0, 0],
+          startResolution: 10,
+        },
+        [95000, -5000, 105000, 5000],
+        [-5000, -5000, 5000, 5000],
+      );
+
+      it('ranks the start view with the destination, before the area passed over', function () {
+        const start = getTilePriority(fromStart, tile, sourceKey, [0, 0], 10);
+        const startEdge = getTilePriority(
+          fromStart,
+          tile,
+          sourceKey,
+          [4000, 4000],
+          10,
+        );
+        const halfWay = getTilePriority(
+          fromStart,
+          tile,
+          sourceKey,
+          [50000, 0],
+          10,
+        );
+        const destination = getTilePriority(
+          fromStart,
+          tile,
+          sourceKey,
+          [100000, 0],
+          10,
+        );
+        // The centers of both views tie, each by its own distance.
+        assert.strictEqual(destination, start);
+        assert.isBelow(destination, startEdge);
+        assert.isBelow(start, startEdge);
+        assert.isBelow(startEdge, halfWay);
+      });
+
+      it('does not count finer tiles than the start zoom level as start', function () {
+        const fine = getTilePriority(fromStart, tile, sourceKey, [0, 0], 4);
+        assert.isBelow(
+          getTilePriority(fromStart, tile, sourceKey, [4000, 4000], 10),
+          fine,
+        );
+        assert.strictEqual(
+          fine,
+          getTilePriority(flying, tile, sourceKey, [0, 0], 4),
+        );
+      });
+
+      it('ranks as without a start view when there is no start extent', function () {
+        const noStartExtent = frameState(
+          {
+            nextCenter: [100000, 0],
+            nextResolution: 10,
+            startCenter: [0, 0],
+            startResolution: 10,
+          },
+          [95000, -5000, 105000, 5000],
+        );
+        for (const [center, resolution] of [
+          [[0, 0], 10],
+          [[50000, 0], 10],
+          [[100000, 0], 10],
+          [[104000, 4000], 10],
+          [[100000, 0], 20],
+        ]) {
+          assert.strictEqual(
+            getTilePriority(noStartExtent, tile, sourceKey, center, resolution),
+            getTilePriority(flying, tile, sourceKey, center, resolution),
+          );
+        }
+      });
+
+      it('ranks as at rest when the animation has no next extent', function () {
+        const zooming = frameState(
+          {startCenter: [0, 0], startResolution: 10},
+          undefined,
+          [-5000, -5000, 5000, 5000],
+        );
+        const atRest = frameState({});
+        assert.strictEqual(
+          getTilePriority(zooming, tile, sourceKey, [50000, 0], 10),
+          getTilePriority(atRest, tile, sourceKey, [50000, 0], 10),
+        );
+      });
+    });
+
+    it('still drops tiles that are not wanted', function () {
+      const unwanted = new Tile([5, 1, 1], TileState.IDLE);
+      assert.strictEqual(
+        getTilePriority(flying, unwanted, sourceKey, [100000, 0], 10),
+        DROP,
+      );
+    });
+  });
 
   describe('#loadMoreTiles()', function () {
     const noop = function () {};
