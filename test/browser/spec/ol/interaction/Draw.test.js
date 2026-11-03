@@ -1724,6 +1724,92 @@ describe('ol/interaction/Draw', function () {
     });
   });
 
+  describe('#setType()', function () {
+    let draw;
+
+    beforeEach(function () {
+      draw = new Draw({
+        source: source,
+        type: 'Point',
+      });
+      map.addInteraction(draw);
+    });
+
+    it('draws the new geometry type', function () {
+      draw.setType('Circle');
+      assert.strictEqual(draw.getType(), 'Circle');
+
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
+      simulateEvent('pointermove', 30, 20);
+      simulateEvent('pointerdown', 30, 20);
+      simulateEvent('pointerup', 30, 20);
+
+      const features = source.getFeatures();
+      assert.lengthOf(features, 1);
+      const geometry = features[0].getGeometry();
+      assert.instanceOf(geometry, Circle);
+      assert.deepEqual(geometry.getCenter(), [10, -20]);
+      assert.deepEqual(geometry.getRadius(), 20);
+    });
+
+    it('aborts the drawing in progress', function () {
+      draw.setType('LineString');
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
+      assert.notEqual(draw.sketchFeature_, null);
+
+      let aborted = false;
+      draw.on('drawabort', () => (aborted = true));
+      draw.setType('Polygon');
+
+      assert.isTrue(aborted);
+      assert.strictEqual(draw.sketchFeature_, null);
+      assert.lengthOf(source.getFeatures(), 0);
+    });
+
+    it('keeps a custom geometryFunction', function () {
+      const geometryFunction = createBox();
+      const box = new Draw({
+        type: 'Circle',
+        geometryFunction: geometryFunction,
+      });
+      box.setType('LineString');
+      assert.strictEqual(box.geometryFunction_, geometryFunction);
+    });
+
+    it('updates the mode and the default number of points', function () {
+      draw.setType('Polygon');
+      assert.strictEqual(draw.mode_, 'Polygon');
+      assert.strictEqual(draw.minPoints_, 3);
+      assert.strictEqual(draw.maxPoints_, Infinity);
+
+      draw.setType('Circle');
+      assert.strictEqual(draw.mode_, 'Circle');
+      assert.strictEqual(draw.minPoints_, 2);
+      assert.strictEqual(draw.maxPoints_, 2);
+
+      draw.setType('MultiLineString');
+      assert.strictEqual(draw.mode_, 'LineString');
+      assert.strictEqual(draw.minPoints_, 2);
+      assert.strictEqual(draw.maxPoints_, Infinity);
+    });
+
+    it('keeps configured minPoints and maxPoints', function () {
+      const line = new Draw({
+        type: 'LineString',
+        minPoints: 4,
+        maxPoints: 6,
+      });
+      line.setType('Polygon');
+      assert.strictEqual(line.mode_, 'Polygon');
+      assert.strictEqual(line.minPoints_, 4);
+      assert.strictEqual(line.maxPoints_, 6);
+    });
+  });
+
   describe('#getOverlay', function () {
     it('returns the feature overlay layer', function () {
       const draw = new Draw({type: 'Point'});
