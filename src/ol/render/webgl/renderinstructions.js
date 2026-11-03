@@ -27,7 +27,9 @@ function pushCustomAttributesInRenderInstructions(
   for (const key in customAttributes) {
     const attr = customAttributes[key];
     const value = attr.callback.call(batchEntry, batchEntry.feature);
-    if (typeof value === 'string') {
+    // a string takes 3 floats only in an attribute sized for it; an attribute of a
+    // wider type (e.g. a property read by `to-string`) holds its number equivalent alone
+    if (typeof value === 'string' && attr.size === 3) {
       const [labelPosition, labelLength] = labels.push(value);
       renderInstructions[currentIndex + shift++] =
         getStringNumberEquivalent(value);
@@ -44,6 +46,8 @@ function pushCustomAttributesInRenderInstructions(
       first = UNDEFINED_PROP_VALUE;
     } else if (first === null) {
       first = 0;
+    } else if (typeof first === 'string') {
+      first = getStringNumberEquivalent(first);
     }
     renderInstructions[currentIndex + shift++] = /** @type {number} */ (first);
     if (!attr.size || attr.size === 1) {
