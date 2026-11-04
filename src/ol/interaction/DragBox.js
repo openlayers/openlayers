@@ -32,7 +32,7 @@ import PointerInteraction from './Pointer.js';
 /**
  * @enum {string}
  */
-const DragBoxEventType = {
+export const DragBoxEventType = {
   /**
    * Triggered upon drag box start.
    * @event DragBoxEvent#boxstart

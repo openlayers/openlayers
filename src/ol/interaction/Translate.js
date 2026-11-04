@@ -13,7 +13,7 @@ import InteractionProperty from './Property.js';
 /**
  * @enum {string}
  */
-const TranslateEventType = {
+export const TranslateEventType = {
   /**
    * Triggered upon feature translation start.
    * @event TranslateEvent#translatestart

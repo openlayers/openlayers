@@ -5,7 +5,7 @@
 /**
  * @enum {number}
  */
-const Instruction = {
+export const Instruction = {
   BEGIN_GEOMETRY: 0,
   BEGIN_PATH: 1,
   CIRCLE: 2,
