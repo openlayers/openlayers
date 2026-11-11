@@ -482,7 +482,7 @@ export default class GeoZarr extends DataTileSource {
           'spatial:bbox' in attributes ||
           'bounds' in attributes))
     ) {
-      hasTileSizes = await this.configureLevels_(attributes, store);
+      hasTileSizes = await this.configureLevels_(attributes, cachedStore);
     }
     if (!hasTileSizes && multiscales && 'tile_matrix_set' in multiscales) {
       // If available, use tile_matrix_set (legacy attributes) to get a tile grid, because it
@@ -851,7 +851,7 @@ export default class GeoZarr extends DataTileSource {
    */
   getBandArrayMeta_(band, groupIndex) {
     if (!this.consolidatedMetadata_) {
-      return this.arrayMetaByBand_[arrayMetaKey(groupIndex, band)];
+      return this.arrayMetaByBand_[`${groupIndex}/${band}`];
     }
     const meta = this.groupMetadata_(groupIndex);
     if (this.bandsByLevel_) {
@@ -1134,8 +1134,8 @@ export default class GeoZarr extends DataTileSource {
    * stack of levels holding n-dimensional arrays: in `variable` mode all bands
    * are slices of one array, otherwise each band has an array of its own.
    * @param {Object<string, *>} attributes The dataset attributes.
-   * @param {FetchStore} store The store, for metadata requests not covered
-   * by consolidated metadata.
+   * @param {import('zarrita').Readable} store The store, for metadata requests
+   * not covered by consolidated metadata.
    * @return {Promise<boolean>} Whether the tile grid has explicit tile sizes.
    * @private
    */
@@ -1245,7 +1245,6 @@ export default class GeoZarr extends DataTileSource {
       levels[0].meta = meta;
     }
     // Per-band array metadata, read from the first level (shared layout).
-    this.arrayMetaByBand_ = {};
     if (!this.consolidatedMetadata_) {
       await Promise.all(
         levels[0].bands.map(async (name, i) => {
@@ -1259,8 +1258,7 @@ export default class GeoZarr extends DataTileSource {
                   this.openFn_ === open.v2,
                 );
           if (arrayMeta) {
-            this.arrayMetaByBand_[arrayMetaKey(groupIndexOf(i), name)] =
-              arrayMeta;
+            this.arrayMetaByBand_[`${groupIndexOf(i)}/${name}`] = arrayMeta;
           }
         }),
       );
@@ -1779,16 +1777,6 @@ const MIN_TILE_SIZE = 64;
  */
 
 /**
- * The key of a band's array metadata read from the store.
- * @param {number} groupIndex The index of the band's group.
- * @param {string} name The band name.
- * @return {string} The key.
- */
-function arrayMetaKey(groupIndex, name) {
-  return `${groupIndex}/${name}`;
-}
-
-/**
  * The path of a band array within its group.
  * @param {string} levelPath The level group path (empty for the group root).
  * @param {string} name The array name.
@@ -2217,11 +2205,11 @@ function normalizeV2Metadata(v2Metadata) {
  * Probe the store for an optional metadata document. Absence yields
  * `undefined`; any other failure is thrown, so that a server error is not
  * mistaken for a missing document.
- * @param {FetchStore} store The store.
+ * @param {import('zarrita').Readable} store The store.
  * @param {string} key The key to probe.
  * @return {Promise<Uint8Array|undefined>} The document, if present.
  */
-function probe(store, key) {
+async function probe(store, key) {
   return store.get(/** @type {`/${string}`} */ (key));
 }
 
@@ -2241,7 +2229,7 @@ function storeFetch(request) {
 /**
  * Read a single array's metadata directly from the store, for stores
  * without consolidated metadata (Zarr v3 zarr.json or v2 .zarray/.zattrs).
- * @param {FetchStore} store The store.
+ * @param {import('zarrita').Readable} store The store.
  * @param {string} path The array path.
  * @param {boolean} v2 Whether the store is Zarr v2.
  * @return {Promise<Object|undefined>} The array metadata (v3 shape).

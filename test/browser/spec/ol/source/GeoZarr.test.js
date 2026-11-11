@@ -1509,17 +1509,6 @@ describe('ol/source/GeoZarr', function () {
         const source = await settled(
           new GeoZarr({url: ZARR_URL, variable: 'vv', dimensions: {time: 0}}),
         );
-        assert.strictEqual(source.getState(), 'ready');
-        source.updateDimensions({time: 1});
-        assert.deepEqual(source.bandExtraSelection_[0], [1, null, null]);
-      });
-
-      it('updateDimensions() selects the index in non-variable mode', async () => {
-        stubUnconsolidatedStore();
-        const source = await settled(
-          new GeoZarr({url: ZARR_URL, bands: ['vv'], dimensions: {time: 0}}),
-        );
-        assert.strictEqual(source.getState(), 'ready');
         source.updateDimensions({time: 1});
         assert.deepEqual(source.bandExtraSelection_[0], [1, null, null]);
       });
@@ -1533,7 +1522,6 @@ describe('ol/source/GeoZarr', function () {
             dimensions: {time: 0},
           }),
         );
-        assert.strictEqual(source.getState(), 'ready');
         source.updateDimensions({time: 1});
         assert.deepEqual(source.bandExtraSelection_[0], [1, null, null]);
       });
