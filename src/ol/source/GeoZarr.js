@@ -289,6 +289,14 @@ export default class GeoZarr extends DataTileSource {
     this.bandSpatialAxes_ = new Array(bands.length);
 
     /**
+     * Array metadata per band group and name, read from the store when
+     * there is no consolidated metadata.
+     * @type {Object<string, Object<string, *>>}
+     * @private
+     */
+    this.arrayMetaByBand_ = {};
+
+    /**
      * The two spatial axis names from the group's `spatial:dimensions` (`[y, x]`).
      * @type {Array<string>|undefined}
      * @private
@@ -834,7 +842,8 @@ export default class GeoZarr extends DataTileSource {
   /**
    * Look up a band's Zarr v3 array metadata from consolidated metadata, trying
    * the multi-scale key (`<matrixId>/<band>`) first and falling back to a
-   * single-scale key (`<band>`).
+   * single-scale key (`<band>`). Without consolidated metadata, return the
+   * metadata read from the store while configuring.
    * @param {string} band The band name.
    * @param {number} groupIndex The index of the band's group.
    * @return {Object<string, *>|undefined} The array metadata, or undefined when unavailable.
@@ -842,7 +851,7 @@ export default class GeoZarr extends DataTileSource {
    */
   getBandArrayMeta_(band, groupIndex) {
     if (!this.consolidatedMetadata_) {
-      return undefined;
+      return this.arrayMetaByBand_[arrayMetaKey(groupIndex, band)];
     }
     const meta = this.groupMetadata_(groupIndex);
     if (this.bandsByLevel_) {
@@ -1216,16 +1225,45 @@ export default class GeoZarr extends DataTileSource {
       throw new Error(`No level found holding ${what}`);
     }
 
+    // The store path of a band's array on the first level, in the band's group.
+    const groupIndexOf = (/** @type {number} */ i) =>
+      variable ? 0 : this.bandGroupIndex_[i];
+    const storePathOf = (/** @type {number} */ i) => {
+      const groupPath = this.groupPaths_?.[groupIndexOf(i)];
+      const path = arrayPathOf(levels[0].path, levels[0].bands[i]);
+      return groupPath ? `${groupPath}/${path}` : path;
+    };
     // The dimension layout is the same for all levels. It is only needed when
     // the levels do not declare their shape, or to slice a `variable`.
     let meta = levels.find((level) => level.meta)?.meta;
     if (!meta && (variable || !levels.every((l) => Array.isArray(l.shape)))) {
       meta = await getArrayMeta(
         store,
-        arrayPathOf(levels[0].path, levels[0].bands[0]),
+        storePathOf(0),
         this.openFn_ === open.v2,
       );
       levels[0].meta = meta;
+    }
+    // Per-band array metadata, read from the first level (shared layout).
+    this.arrayMetaByBand_ = {};
+    if (!this.consolidatedMetadata_) {
+      await Promise.all(
+        levels[0].bands.map(async (name, i) => {
+          // `meta` is the metadata of the first band's array, read above.
+          const arrayMeta =
+            i === 0 && meta
+              ? meta
+              : await getArrayMeta(
+                  store,
+                  storePathOf(i),
+                  this.openFn_ === open.v2,
+                );
+          if (arrayMeta) {
+            this.arrayMetaByBand_[arrayMetaKey(groupIndexOf(i), name)] =
+              arrayMeta;
+          }
+        }),
+      );
     }
     const hasMeta = !!meta && Array.isArray(meta.shape);
     if (variable && !hasMeta) {
@@ -1739,6 +1777,16 @@ const MIN_TILE_SIZE = 64;
  * @property {Array<number>} shardShape The shard (outer chunk) shape [rows, cols].
  * @property {Array<number>} innerChunkShape The inner chunk shape [rows, cols].
  */
+
+/**
+ * The key of a band's array metadata read from the store.
+ * @param {number} groupIndex The index of the band's group.
+ * @param {string} name The band name.
+ * @return {string} The key.
+ */
+function arrayMetaKey(groupIndex, name) {
+  return `${groupIndex}/${name}`;
+}
 
 /**
  * The path of a band array within its group.
