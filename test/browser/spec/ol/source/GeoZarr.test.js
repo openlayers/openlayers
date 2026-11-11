@@ -1472,6 +1472,73 @@ describe('ol/source/GeoZarr', function () {
         });
       }));
 
+    describe('without consolidated metadata', function () {
+      /**
+       * Stub a single-scale store whose group has no consolidated metadata and
+       * whose `vv` array is [time, y, x].
+       */
+      function stubUnconsolidatedStore() {
+        const arrayMeta = createArrayMeta({
+          shape: [3, 256, 256],
+          dimensionNames: ['time', 'y', 'x'],
+        });
+        const group = stubFetchWithAttrs(null, {
+          zarr_conventions: undefined,
+          multiscales: undefined,
+          'spatial:shape': [256, 256],
+        });
+        const groupFetch = group.getMockImplementation();
+        fetchStub = group.mockImplementation(function (input) {
+          const url = input instanceof Request ? input.url : input;
+          if (url === `${ZARR_URL}/vv/zarr.json`) {
+            return Promise.resolve(new Response(JSON.stringify(arrayMeta)));
+          }
+          if (url === `${ZARR_ROOT_URL}/zarr.json`) {
+            return Promise.resolve(
+              new Response(
+                JSON.stringify({zarr_format: 3, node_type: 'group'}),
+              ),
+            );
+          }
+          return groupFetch(input);
+        });
+      }
+
+      it('updateDimensions() selects the index in variable mode', async () => {
+        stubUnconsolidatedStore();
+        const source = await settled(
+          new GeoZarr({url: ZARR_URL, variable: 'vv', dimensions: {time: 0}}),
+        );
+        assert.strictEqual(source.getState(), 'ready');
+        source.updateDimensions({time: 1});
+        assert.deepEqual(source.bandExtraSelection_[0], [1, null, null]);
+      });
+
+      it('updateDimensions() selects the index in non-variable mode', async () => {
+        stubUnconsolidatedStore();
+        const source = await settled(
+          new GeoZarr({url: ZARR_URL, bands: ['vv'], dimensions: {time: 0}}),
+        );
+        assert.strictEqual(source.getState(), 'ready');
+        source.updateDimensions({time: 1});
+        assert.deepEqual(source.bandExtraSelection_[0], [1, null, null]);
+      });
+
+      it('updateDimensions() selects the index for a band in a group', async () => {
+        stubUnconsolidatedStore();
+        const source = await settled(
+          new GeoZarr({
+            url: ZARR_ROOT_URL,
+            bands: [{name: 'vv', group: 'data'}],
+            dimensions: {time: 0},
+          }),
+        );
+        assert.strictEqual(source.getState(), 'ready');
+        source.updateDimensions({time: 1});
+        assert.deepEqual(source.bandExtraSelection_[0], [1, null, null]);
+      });
+    });
+
     it('getValue() throws on an out-of-range index', () =>
       new Promise((resolve) => {
         fetchStub = stubFetch({
