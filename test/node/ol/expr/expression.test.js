@@ -154,6 +154,10 @@ describe('ol/expr/expression.js', () => {
       context = newParsingContext();
       parse(['time'], NumberType, context);
       assert.strictEqual(context.mapState, true);
+
+      context = newParsingContext();
+      parse(['rotation'], NumberType, context);
+      assert.strictEqual(context.mapState, true);
     });
 
     it('parses a concat expression', () => {

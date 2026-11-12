@@ -1,6 +1,8 @@
 import {assert} from 'chai';
+import Feature from '../../../../../src/ol/Feature.js';
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
+import Polygon from '../../../../../src/ol/geom/Polygon.js';
 import WebGLVectorLayer from '../../../../../src/ol/layer/WebGLVector.js';
 import {getRenderPixel} from '../../../../../src/ol/render.js';
 import WebGLVectorLayerRenderer from '../../../../../src/ol/renderer/webgl/VectorLayer.js';
@@ -216,4 +218,97 @@ describe('ol/layer/WebGLVector', function () {
         resolve();
       });
     }));
+
+  describe('rotation expression', () => {
+    /** @type {Map} */
+    let rotationMap;
+    /** @type {HTMLElement} */
+    let rotationTarget;
+
+    beforeEach(() => {
+      const rotationLayer = new WebGLVectorLayer({
+        source: new VectorSource({
+          features: [
+            new Feature(
+              new Polygon([
+                [
+                  [-1000, -1000],
+                  [1000, -1000],
+                  [1000, 1000],
+                  [-1000, 1000],
+                  [-1000, -1000],
+                ],
+              ]),
+            ),
+          ],
+        }),
+        style: {
+          'fill-color': ['color', ['*', ['rotation'], 50], 0, 0, 1],
+        },
+        disableHitDetection: true,
+      });
+      rotationTarget = document.createElement('div');
+      rotationTarget.style.width = '100px';
+      rotationTarget.style.height = '100px';
+      document.body.appendChild(rotationTarget);
+      rotationMap = new Map({
+        target: rotationTarget,
+        layers: [rotationLayer],
+        view: new View({
+          center: [0, 0],
+          resolution: 100,
+        }),
+      });
+    });
+
+    afterEach(() => {
+      disposeMap(rotationMap);
+      rotationMap.getLayers().forEach((layer) => layer.dispose());
+    });
+
+    /**
+     * Renders the map and reads the red channel of the center pixel.
+     * @return {Promise<number>} Red channel value.
+     */
+    function renderAndReadRed() {
+      return new Promise((resolve) => {
+        const layer = rotationMap.getLayers().item(0);
+        let red;
+        layer.once('postrender', (event) => {
+          const gl = event.context;
+          const pixel = new Uint8Array(4);
+          const size = event.frameState.size;
+          const pixelRatio = event.frameState.pixelRatio;
+          gl.readPixels(
+            Math.round((size[0] * pixelRatio) / 2),
+            Math.round((size[1] * pixelRatio) / 2),
+            1,
+            1,
+            gl.RGBA,
+            gl.UNSIGNED_BYTE,
+            pixel,
+          );
+          red = pixel[0];
+        });
+        rotationMap.once('rendercomplete', () => resolve(red));
+        rotationMap.render();
+      });
+    }
+
+    it('exposes the view rotation in radians to the shader', async () => {
+      const view = rotationMap.getView();
+      for (const rotation of [0, 1, 2, 3]) {
+        view.setRotation(rotation);
+        const red = await renderAndReadRed();
+        assert.approximately(red, rotation * 50, 2);
+      }
+    });
+
+    it('picks up rotation changes after the first render', async () => {
+      const view = rotationMap.getView();
+      assert.approximately(await renderAndReadRed(), 0, 2);
+      view.setRotation(2);
+      assert.approximately(await renderAndReadRed(), 100, 2);
+    });
+  });
 });

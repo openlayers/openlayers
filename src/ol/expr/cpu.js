@@ -191,6 +191,7 @@ function compileExpression(expression, context) {
       throw new Error(`Unsupported operator ${operator}`);
     }
     // TODO: unimplemented
+    // Ops.Rotation
     // Ops.Zoom
     // Ops.Time
     // Ops.Band
