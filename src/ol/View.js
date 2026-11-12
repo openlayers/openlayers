@@ -1634,14 +1634,21 @@ class View extends BaseObject {
   adjustResolutionInternal(ratio, anchor) {
     const isMoving = this.getAnimating() || this.getInteracting();
     const size = this.getViewportSize_(this.getRotation());
-    const newResolution = /** @type {Constraints} */ (
-      this.constraints_
-    ).resolution(
-      /** @type {number} */ (this.targetResolution_) * ratio,
-      0,
-      size,
-      isMoving,
-    );
+    const constraint = /** @type {Constraints} */ (this.constraints_)
+      .resolution;
+    let targetResolution =
+      /** @type {number} */ (this.targetResolution_) * ratio;
+    if (isMoving) {
+      const constrained = /** @type {number} */ (
+        constraint(targetResolution, 0, size, true)
+      );
+      targetResolution = clamp(
+        targetResolution,
+        constrained / 2,
+        constrained * 2,
+      );
+    }
+    const newResolution = constraint(targetResolution, 0, size, isMoving);
 
     if (anchor) {
       this.targetCenter_ = this.calculateCenterZoom(
@@ -1650,9 +1657,7 @@ class View extends BaseObject {
       );
     }
 
-    this.targetResolution_ = isMoving
-      ? newResolution
-      : /** @type {number} */ (this.targetResolution_) * ratio;
+    this.targetResolution_ = targetResolution;
     this.applyTargetState_();
   }
 

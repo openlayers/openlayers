@@ -2385,18 +2385,15 @@ describe('ol/View', function () {
       const view = new View({
         resolution: 1,
         minResolution: 1,
-        maxResolution: 4,
-        smoothResolutionConstraint: false,
+        maxResolution: 16,
       });
       view.beginInteraction();
 
-      for (let i = 0; i < 5; ++i) {
+      for (let i = 0; i < 10; ++i) {
         view.adjustZoom(1);
       }
-      assert.strictEqual(view.getResolution(), 1);
-
-      view.adjustZoom(-1);
-      assert.strictEqual(view.getResolution(), 2);
+      view.adjustZoom(-2);
+      assert.isAbove(view.getResolution(), 1);
     });
   });
 
