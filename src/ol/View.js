@@ -1650,8 +1650,9 @@ class View extends BaseObject {
       );
     }
 
-    this.targetResolution_ =
-      /** @type {number} */ (this.targetResolution_) * ratio;
+    this.targetResolution_ = isMoving
+      ? newResolution
+      : /** @type {number} */ (this.targetResolution_) * ratio;
     this.applyTargetState_();
   }
 
