@@ -753,6 +753,107 @@ describe('ol/source/GeoZarr', function () {
           }
         });
       }));
+
+    it('derives extent, origin, and south-up flip from spatial:transform without spatial:bbox', async () => {
+      fetchStub = stubFetchWithAttrs(
+        {b04: createArrayMeta({shape: [4, 8]})},
+        {
+          zarr_conventions: undefined,
+          multiscales: undefined,
+          'spatial:bbox': undefined,
+          'spatial:shape': [4, 8],
+          'spatial:transform': [0.5, 0, 10, 0, 0.25, 20],
+        },
+      );
+      const source = await settled(
+        new GeoZarr({url: ZARR_URL, bands: ['b04']}),
+      );
+      assert.strictEqual(source.getState(), 'ready');
+      assert.deepEqual(source.tileGrid.getExtent(), [10, 20, 14, 21]);
+      assert.deepEqual(source.tileGrid.getOrigin(0), [10, 21]);
+      assert.deepEqual(source.tileGrid.getResolutions(), [0.5]);
+      assert.deepEqual(source.levelRowInfo_['0'], {
+        rowResolution: 0.25,
+        shapeY: 4,
+        flip: true,
+      });
+    });
+
+    it('flips south-up rows declared via spatial:transform in multiscales.layout', async () => {
+      const level1Meta = Object.assign(
+        createArrayMeta({shape: [2, 2], fillValue: null}),
+        {
+          chunk_grid: {name: 'regular', configuration: {chunk_shape: [2, 2]}},
+          codecs: [{name: 'bytes', configuration: {endian: 'little'}}],
+        },
+      );
+      const chunkBytes = new Uint8Array(
+        new Float32Array([10, 20, 30, 40]).buffer,
+      );
+      const groupStub = stubFetchWithAttrs(
+        {
+          ['0/b04']: createArrayMeta({shape: [4, 4], fillValue: null}),
+          ['1/b04']: level1Meta,
+        },
+        {
+          multiscales: {
+            layout: [
+              {
+                asset: '0',
+                'spatial:shape': [4, 4],
+                'spatial:transform': [1, 0, 0, 0, 1, 0, 0, 0, 1],
+              },
+              {
+                asset: '1',
+                derived_from: '0',
+                transform: {scale: [2, 2], translation: [0, 0]},
+                'spatial:shape': [2, 2],
+                'spatial:transform': [1, 0, 0, 0, 1, 0, 0, 0, 1],
+              },
+            ],
+          },
+          'spatial:bbox': [0, 0, 4, 4],
+        },
+      );
+      const baseFetch = groupStub.getMockImplementation();
+      fetchStub = groupStub.mockImplementation(function (input) {
+        const url = input instanceof Request ? input.url : input;
+        if (url === `${ZARR_URL}/1/b04/c/0/0`) {
+          return Promise.resolve(new Response(chunkBytes, {status: 200}));
+        }
+        return baseFetch(input);
+      });
+
+      const source = await settled(
+        new GeoZarr({url: ZARR_URL, bands: ['b04']}),
+      );
+      assert.strictEqual(source.getState(), 'ready');
+      assert.deepEqual(source.tileGrid.getResolutions(), [2, 1]);
+      assert.strictEqual(source.levelRowInfo_['0'].flip, true);
+      assert.strictEqual(source.levelRowInfo_['1'].flip, true);
+
+      const tileData = await source.loadTile_(0, 0, 0, {});
+      assert.strictEqual(tileData[0], 30);
+      assert.strictEqual(tileData[1], 40);
+      assert.strictEqual(tileData[256], 10);
+      assert.strictEqual(tileData[257], 20);
+    });
+
+    it('respects flipY option when spatial:transform is absent', async () => {
+      fetchStub = stubFetchWithAttrs(
+        {['level0/b04']: createArrayMeta()},
+        {
+          multiscales: {
+            layout: [{asset: 'level0', 'spatial:shape': [256, 256]}],
+          },
+        },
+      );
+      const source = await settled(
+        new GeoZarr({url: ZARR_URL, bands: ['b04'], flipY: true}),
+      );
+      assert.strictEqual(source.getState(), 'ready');
+      assert.strictEqual(source.levelRowInfo_['level0'].flip, true);
+    });
   });
 
   describe('Zarr v2 store', function () {
