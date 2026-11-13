@@ -254,6 +254,7 @@ const compilers = {
     return `(a_prop_${propName} != ${numberToGlsl(UNDEFINED_PROP_VALUE)})`;
   },
   [Ops.Resolution]: () => 'u_resolution',
+  [Ops.Rotation]: () => 'u_rotation',
   [Ops.Zoom]: () => 'u_zoom',
   [Ops.Time]: () => 'u_time',
   [Ops.Any]: createCompiler((compiledArgs) => `(${compiledArgs.join(` || `)})`),

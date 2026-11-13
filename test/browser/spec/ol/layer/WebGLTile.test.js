@@ -312,6 +312,7 @@ describe('ol/layer/WebGLTile', function () {
     uniform float u_texturePixelHeight;
     uniform float u_resolution;
     uniform float u_zoom;
+    uniform float u_rotation;
     uniform float u_var_r;
     uniform float u_var_g;
     uniform float u_var_b;
@@ -408,6 +409,7 @@ describe('ol/layer/WebGLTile', function () {
     uniform float u_texturePixelHeight;
     uniform float u_resolution;
     uniform float u_zoom;
+    uniform float u_rotation;
     uniform sampler2D u_tileTextures[1];
 
     float getBandValue(float band, float xOffset, float yOffset) {

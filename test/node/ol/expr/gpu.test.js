@@ -196,6 +196,12 @@ describe('ol/expr/gpu.js', () => {
         expected: 'u_resolution',
       },
       {
+        name: 'rotation',
+        type: AnyType,
+        expression: ['rotation'],
+        expected: 'u_rotation',
+      },
+      {
         name: 'addition',
         type: AnyType,
         expression: ['+', 1, 2, 3, 4],
