@@ -1,0 +1,27 @@
+---
+layout: example.html
+title: Tile Loading During Animation
+shortdesc: Shows the order in which tiles are requested while the view animates.
+docs: >
+  Every tile is stamped with the order in which it was requested, and each request is delayed to
+  stand in for a slow connection. With "Clear the tiles first" ticked, every move starts from a
+  blank map, so the tiles of the view you are leaving compete with the destination's. "Pan half a
+  screen" is the short move a drag fling makes. Untick "This pull request's order" for the order
+  before this change.
+tags: "animation, tile, loading"
+---
+<div id="map" class="map"></div>
+<div class="controls">
+  <button id="fly" type="button">Fly to Zürich</button>
+  <button id="pan" type="button">Pan half a screen</button>
+  <label><input id="clear-first" type="checkbox" checked> Clear the tiles first</label>
+  <label for="delay">Tile delay</label>
+  <select id="delay">
+    <option value="0">0 ms</option>
+    <option value="250" selected>250 ms</option>
+    <option value="500">500 ms</option>
+    <option value="1000">1000 ms</option>
+  </select>
+  <label><input id="pull-request-order" type="checkbox" checked> This pull request's order</label>
+</div>
+<p id="status">Fly or pan.</p>
