@@ -29,33 +29,36 @@ const typeSelect = document.getElementById('type');
 
 const freehandCheckbox = document.getElementById('freehand');
 
-let draw; // global so we can remove it later
-function addInteraction() {
-  if (typeSelect.value !== 'None') {
-    draw = new Draw({
-      source: source,
-      type: typeSelect.value,
-      freehand: freehandCheckbox.checked,
-    });
-    map.addInteraction(draw);
+const draw = new Draw({
+  source: source,
+  type: 'LineString',
+  freehand: freehandCheckbox.checked,
+});
+map.addInteraction(draw);
+
+/**
+ * Use the selected geometry type, or stop drawing for "None".
+ */
+function updateType() {
+  const value = typeSelect.value;
+  if (value === 'None') {
+    draw.setActive(false);
+  } else {
+    draw.setType(value);
+    draw.setActive(true);
   }
 }
 
 /**
  * Handle change event.
  */
-typeSelect.onchange = function () {
-  map.removeInteraction(draw);
-  addInteraction();
-};
+typeSelect.onchange = updateType;
 
 /**
  * Handle change event.
  */
 freehandCheckbox.onchange = function () {
-  if (draw) {
-    draw.setFreehand(freehandCheckbox.checked);
-  }
+  draw.setFreehand(freehandCheckbox.checked);
 };
 
-addInteraction();
+updateType();
