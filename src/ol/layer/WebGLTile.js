@@ -538,12 +538,12 @@ class WebGLTileLayer extends BaseTileLayer {
   /**
    * @param {import("../Map.js").FrameState} frameState Frame state.
    * @param {Array<SourceType>} sources Sources.
-   * @return {HTMLElement|null} Canvas.
+   * @return {HTMLElement} Canvas.
    */
   renderSources(frameState, sources) {
     const layerRenderer = this.getRenderer();
     if (!layerRenderer) {
-      return null;
+      return /** @type {HTMLElement} */ (document.createElement('div'));
     }
     let canvas;
     for (let i = 0, ii = sources.length; i < ii; ++i) {
@@ -552,7 +552,7 @@ class WebGLTileLayer extends BaseTileLayer {
         canvas = layerRenderer.renderFrame(frameState);
       }
     }
-    return canvas || null;
+    return canvas || /** @type {HTMLElement} */ (document.createElement('div'));
   }
 
   /**
