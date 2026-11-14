@@ -275,6 +275,11 @@ class VectorTile extends UrlTile {
           ) => {
             this.handleTileChange(event);
             const state = sourceTile.getState();
+            if (state === TileState.LOADED && projection) {
+              // Transform to the view projection as the tile arrives, rather
+              // than in the first frame that draws it.
+              sourceTile.prepareFeaturesInProjection(projection);
+            }
             if (state === TileState.LOADED || state === TileState.ERROR) {
               const sourceTileKey = sourceTile.getKey();
               if (sourceTileKey in tile.errorTileKeys) {
