@@ -538,12 +538,12 @@ class WebGLTileLayer extends BaseTileLayer {
   /**
    * @param {import("../Map.js").FrameState} frameState Frame state.
    * @param {Array<SourceType>} sources Sources.
-   * @return {HTMLElement} Canvas.
+   * @return {HTMLElement|null} Canvas.
    */
   renderSources(frameState, sources) {
     const layerRenderer = this.getRenderer();
     if (!layerRenderer) {
-      return /** @type {HTMLElement} */ (document.createElement('div'));
+      return null;
     }
     let canvas;
     for (let i = 0, ii = sources.length; i < ii; ++i) {
@@ -552,25 +552,25 @@ class WebGLTileLayer extends BaseTileLayer {
         canvas = layerRenderer.renderFrame(frameState);
       }
     }
-    return canvas || /** @type {HTMLElement} */ (document.createElement('div'));
+    return canvas || null;
   }
 
   /**
    * @param {?import("../Map.js").FrameState} frameState Frame state.
    * @param {HTMLElement} target Target which the renderer may (but need not) use
    * for rendering its content.
-   * @return {HTMLElement} The rendered element.
+   * @return {HTMLElement|null} The rendered element.
    * @override
    */
   render(frameState, target) {
     this.rendered = true;
     if (!frameState) {
-      return /** @type {HTMLElement} */ (document.createElement('div'));
+      return null;
     }
     const viewState = frameState.viewState;
     const extent = frameState.extent;
     if (!extent) {
-      return /** @type {HTMLElement} */ (document.createElement('div'));
+      return null;
     }
 
     // Reprojecting an alpha-less source appends a coverage band, changing the
