@@ -1038,6 +1038,7 @@ const GETFEATURE_SERIALIZERS = {
     'Not': makeChildAppender(writeNotFilter),
     'BBOX': makeChildAppender(writeBboxFilter),
     'Contains': makeChildAppender(writeSpatialFilter),
+    'Disjoint': makeChildAppender(writeSpatialFilter),
     'Intersects': makeChildAppender(writeSpatialFilter),
     'Within': makeChildAppender(writeSpatialFilter),
     'DWithin': makeChildAppender(writeDWithinFilter),
