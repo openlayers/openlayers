@@ -228,7 +228,7 @@ class ExecutorGroup {
    * @param {number} rotation Rotation.
    * @param {number} hitTolerance Hit tolerance in pixels.
    * @param {function(import("../../Feature.js").FeatureLike, import("../../geom/SimpleGeometry.js").default, number): T} callback Feature callback.
-   * @param {Array<import("../../Feature.js").FeatureLike>} declutteredFeatures Decluttered features.
+   * @param {Array<import("../../Feature.js").FeatureLike>|null} declutteredFeatures Decluttered features.
    * @return {T|undefined} Callback result.
    * @template T
    */

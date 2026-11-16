@@ -440,8 +440,8 @@ class CanvasVectorTileLayerRenderer extends CanvasTileLayerRenderer {
     const declutter = layer.getDeclutter();
     const declutteredFeatures = declutter
       ? (frameState.declutter?.[declutter]?.all().map((item) => item.value) ??
-        [])
-      : [];
+        null)
+      : null;
     let found;
     foundFeature: for (let i = renderedTiles.length - 1; i >= 0; --i) {
       const tile = renderedTiles[i];
