@@ -1063,6 +1063,51 @@ describe('ol/renderer/canvas/VectorTileLayer', function () {
           }, 0);
         });
       }));
+
+    it('detects symbols when the layer is not decluttered', () =>
+      new Promise((resolve) => {
+        const target = document.createElement('div');
+        target.style.width = '100px';
+        target.style.height = '100px';
+        document.body.appendChild(target);
+        const extent = [
+          1824704.739223726, 6141868.096770482, 1827150.7241288517,
+          6144314.081675608,
+        ];
+        const source = new VectorTileSource({
+          format: new MVT(),
+          url: 'spec/ol/data/14-8938-5680.vector.pbf',
+          minZoom: 14,
+          maxZoom: 14,
+        });
+        const layer = new VectorTileLayer({
+          declutter: false,
+          extent: extent,
+          source: source,
+          style: new Style({
+            image: new Circle({
+              radius: 5,
+              fill: new Fill({color: 'red'}),
+            }),
+          }),
+        });
+        const map = new Map({
+          target: target,
+          layers: [layer],
+          view: new View({
+            center: getCenter(extent),
+            zoom: 14,
+          }),
+        });
+        map.once('rendercomplete', () => {
+          const features = map.getFeaturesAtPixel([11, 75]);
+          assert.lengthOf(features, 1);
+          setTimeout(() => {
+            disposeMap(map);
+            resolve();
+          }, 0);
+        });
+      }));
   });
 
   describe('mixed declutter settings', () => {

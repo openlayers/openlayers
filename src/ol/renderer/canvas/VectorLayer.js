@@ -644,11 +644,10 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       rotation,
       hitTolerance,
       featureCallback,
-      /** @type {Array<import("../../Feature.js").FeatureLike>} */ (
-        declutter
-          ? frameState.declutter?.[declutter]?.all().map((item) => item.value)
-          : /** @type {unknown} */ (null)
-      ),
+      declutter
+        ? (frameState.declutter?.[declutter]?.all().map((item) => item.value) ??
+            null)
+        : null,
     );
   }
 
