@@ -27,28 +27,32 @@ const map = new Map({
 
 const typeSelect = document.getElementById('type');
 
-let draw; // global so we can remove it later
-function addInteraction() {
+const draw = new Draw({
+  source: source,
+  type: 'Point',
+});
+map.addInteraction(draw);
+
+/**
+ * Use the selected geometry type, or stop drawing for "None".
+ */
+function updateType() {
   const value = typeSelect.value;
-  if (value !== 'None') {
-    draw = new Draw({
-      source: source,
-      type: typeSelect.value,
-    });
-    map.addInteraction(draw);
+  if (value === 'None') {
+    draw.setActive(false);
+  } else {
+    draw.setType(value);
+    draw.setActive(true);
   }
 }
 
 /**
  * Handle change event.
  */
-typeSelect.onchange = function () {
-  map.removeInteraction(draw);
-  addInteraction();
-};
+typeSelect.onchange = updateType;
 
 document.getElementById('undo').addEventListener('click', function () {
   draw.removeLastPoint();
 });
 
-addInteraction();
+updateType();
