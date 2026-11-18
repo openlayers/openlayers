@@ -129,7 +129,14 @@ raster.on('beforeoperations', function (event) {
   const data = event.data;
   data.delta = thresholdControl.value;
   if (coordinate) {
-    data.pixel = map.getPixelFromCoordinate(coordinate);
+    // the operation image has its own extent and resolution, which differ from
+    // the viewport's when the view is at a fractional zoom level
+    const extent = event.extent;
+    const resolution = event.resolution;
+    data.pixel = [
+      Math.floor((coordinate[0] - extent[0]) / resolution),
+      Math.floor((extent[3] - coordinate[1]) / resolution),
+    ];
   }
 });
 
