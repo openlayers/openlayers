@@ -67,6 +67,7 @@ import {getUid} from './util.js';
  * When null, no decluttering is needed because no layers have decluttering enabled.
  * @property {null|import("./extent.js").Extent} extent Extent (in view projection coordinates).
  * @property {import("./extent.js").Extent} [nextExtent] Next extent during an animation series.
+ * @property {import("./extent.js").Extent} [startExtent] Extent the current animation series started from.
  * @property {number} index Index.
  * @property {Array<import("./layer/Layer.js").State>} layerStatesArray LayerStatesArray.
  * @property {number} layerIndex LayerIndex.
@@ -1808,6 +1809,14 @@ class Map extends BaseObject {
           viewState.nextCenter,
           /** @type {number} */ (viewState.nextResolution),
           rotation,
+          size,
+        );
+      }
+      if (viewState.startCenter && viewState.startResolution) {
+        frameState.startExtent = getForViewAndSize(
+          viewState.startCenter,
+          viewState.startResolution,
+          viewState.rotation,
           size,
         );
       }
