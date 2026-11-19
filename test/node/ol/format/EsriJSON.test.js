@@ -1806,6 +1806,15 @@ describe('ol/format/EsriJSON.js', function () {
       assert.deepEqual(esrijson.attributes, {});
     });
 
+    it('does not write a null geometry as an attribute', function () {
+      const feature = format.readFeature({
+        geometry: null,
+        attributes: {foo: 'bar'},
+      });
+      const esrijson = format.writeFeatureObject(feature);
+      assert.deepEqual(esrijson, {attributes: {foo: 'bar'}});
+    });
+
     it('adds the projection inside the geometry correctly when featureProjection is set', function () {
       const str = JSON.stringify(data);
       const array = format.readFeatures(str);
