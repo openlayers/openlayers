@@ -42,6 +42,7 @@ import PointerInteraction from './Pointer.js';
  * @property {import("../Feature.js").default} feature Feature.
  * @property {import("../Feature.js").default} [intersectionFeature] Feature which intersects.
  * @property {Segment} segment Segment.
+ * @property {import("../geom/Circle.js").default} [circle] Circle that the segment was created for.
  */
 
 /**
@@ -95,6 +96,36 @@ import PointerInteraction from './Pointer.js';
  * @property {Segment|null} segment - Segment, or `null` if snapped to a vertex.
  */
 
+/**
+ * Circles by the segments that were created for them, so segments of a circle
+ * can be recognized, also when the circle is part of a GeometryCollection.
+ * Snapping to such a segment uses the circle instead of the segment.
+ * @type {WeakMap<Segment, import("../geom/Circle.js").default>}
+ */
+const circleBySegment = new WeakMap();
+
+/**
+ * Creates the segments for a geometry, and remembers the circle for segments
+ * of a Circle geometry, also when it is part of a GeometryCollection.
+ * @param {Segmenter} segmenter Segmenter.
+ * @param {Object<string, Segmenter>} segmenters Segmenters.
+ * @param {import("../geom/Geometry.js").default} geometry Geometry.
+ * @param {import("../proj/Projection.js").default} projection Projection.
+ * @return {Array<Segment>} Segments.
+ */
+function getSegments(segmenter, segmenters, geometry, projection) {
+  const segments = segmenter.call(segmenters, geometry, projection);
+  if (geometry.getType() === 'Circle') {
+    const circle = /** @type {import("../geom/Circle.js").default} */ (
+      geometry
+    );
+    for (let i = 0, ii = segments.length; i < ii; ++i) {
+      circleBySegment.set(segments[i], circle);
+    }
+  }
+  return segments;
+}
+
 /***
  * @type {Object<string, Segmenter>}
  */
@@ -133,7 +164,9 @@ const GEOMETRY_SEGMENTERS = /** @type {Object<string, Segmenter>} */ (
       for (let i = 0; i < geometries.length; ++i) {
         const segmenter = segmenters[geometries[i].getType()];
         if (segmenter) {
-          segments.push(segmenter(geometries[i], projection));
+          segments.push(
+            getSegments(segmenter, segmenters, geometries[i], projection),
+          );
         }
       }
       return segments.flat();
@@ -457,7 +490,8 @@ class Snap extends PointerInteraction {
       if (segmenter && map) {
         this.indexedFeaturesExtents_[feature_uid] =
           geometry.getExtent(createEmpty());
-        const segments = segmenter.call(
+        const segments = getSegments(
+          segmenter,
           this.segmenters_,
           geometry,
           map.getView().getProjection(),
@@ -469,6 +503,7 @@ class Snap extends PointerInteraction {
           tempSegmentData[i] = {
             feature: feature,
             segment: segment,
+            circle: circleBySegment.get(segment),
           };
         }
 
@@ -479,12 +514,14 @@ class Snap extends PointerInteraction {
               continue;
             }
             const extent = tempExtents[j];
+            const circle = circleBySegment.get(segment);
             // Calculate intersections with own segments excluding self and
             // neighbors
             for (let k = 0, kk = j - 1; k < kk; ++k) {
               const otherSegment = segments[k];
               if (
                 otherSegment.length === 1 ||
+                (circle && circleBySegment.get(otherSegment) === circle) ||
                 !intersectsExtent(extent, tempExtents[k])
               ) {
                 continue;
@@ -839,8 +876,7 @@ class Snap extends PointerInteraction {
     if (this.vertex_ || this.intersection_) {
       for (let i = 0; i < segmentsLength; ++i) {
         const segmentData = segments[i];
-        const segmentGeometry = segmentData.feature.getGeometry();
-        if (segmentGeometry && segmentGeometry.getType() !== 'Circle') {
+        if (!segmentData.circle) {
           for (const vertex of segmentData.segment) {
             const tempVertexCoord = fromUserCoordinate(vertex, projection);
             const delta = squaredDistance(projectedCoordinate, tempVertexCoord);
@@ -866,19 +902,16 @@ class Snap extends PointerInteraction {
       for (let i = 0; i < segmentsLength; ++i) {
         let vertex = null;
         const segmentData = segments[i];
-        const segmentGeometry = segmentData.feature.getGeometry();
-        if (segmentGeometry && segmentGeometry.getType() === 'Circle') {
-          let circleGeometry = segmentGeometry;
+        const circle = segmentData.circle;
+        if (circle) {
+          let circleGeometry = circle;
           const userProjection = getUserProjection();
           if (userProjection) {
             circleGeometry = circleGeometry
               .clone()
               .transform(userProjection, projection);
           }
-          vertex = closestOnCircle(
-            projectedCoordinate,
-            /** @type {import("../geom/Circle.js").default} */ (circleGeometry),
-          );
+          vertex = closestOnCircle(projectedCoordinate, circleGeometry);
         } else {
           const [segmentStart, segmentEnd] = segmentData.segment;
           // points have only one coordinate
@@ -892,10 +925,7 @@ class Snap extends PointerInteraction {
           const delta = squaredDistance(projectedCoordinate, vertex);
           if (delta < minSquaredDistance) {
             closestVertex = toUserCoordinate(vertex, projection);
-            closestSegment =
-              segmentGeometry && segmentGeometry.getType() === 'Circle'
-                ? null
-                : segmentData.segment;
+            closestSegment = circle ? null : segmentData.segment;
             minSquaredDistance = delta;
             closestFeature = segmentData.feature;
           }
