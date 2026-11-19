@@ -66,6 +66,13 @@ describe('ol/color', () => {
         ['rgb(255, 122, 127)', [255, 122, 127, 1]],
         ['rgb(255 122 127 / .2)', [255, 122, 127, 0.2]],
         ['rgb(255 122 127 / 80%)', [255, 122, 127, 0.8]],
+        // decimal values are valid CSS
+        ['rgb(127.5, 0, 0)', [128, 0, 0, 1]],
+        ['rgba(0, 153.4, 255, 0.5)', [0, 153, 255, 0.5]],
+        ['rgb(.5, 1, 2)', [1, 1, 2, 1]],
+        ['rgb(12.5% 50% 100%)', [32, 128, 255, 1]],
+        ['rgba(10%, 20.5%, 30%, 50.5%)', [26, 52, 77, 0.505]],
+        ['rgb(255 122.6 127 / 12.5%)', [255, 123, 127, 0.125]],
         // other color spaces and formats require the DOM, see test/browser/spec/ol/color.test.js
       ];
       for (const c of cases) {
@@ -170,6 +177,8 @@ describe('ol/color', () => {
       'rgb(0%,0,0)',
       'rgb(0 0,0)',
       'rgba(0,0,0/0)',
+      'rgb(1.,2,3)',
+      'rgb(1..2,2,3)',
     ];
 
     for (const c of cases) {
