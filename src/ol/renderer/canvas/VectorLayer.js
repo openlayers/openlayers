@@ -9,6 +9,7 @@ import {
   buffer,
   containsExtent,
   createEmpty,
+  getIntersection,
   getWidth,
   intersects as intersectsExtent,
   isEmpty,
@@ -155,6 +156,12 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
      * @type {boolean}
      */
     this.renderedFrameDeclutter_;
+
+    /**
+     * @private
+     * @type {import("../../extent.js").Extent|undefined}
+     */
+    this.renderedLayerExtent_;
 
     /**
      * @private
@@ -703,6 +710,9 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     const projection = viewState.projection;
     const resolution = viewState.resolution;
     const pixelRatio = frameState.pixelRatio;
+    const layerState = frameState.layerStatesArray[frameState.layerIndex];
+    const layerExtent =
+      layerState.extent && fromUserExtent(layerState.extent, projection);
     const vectorLayerRevision = vectorLayer.getRevision();
     const vectorLayerRenderBuffer = vectorLayer.getRenderBuffer();
     let vectorLayerRenderOrder = vectorLayer.getRenderOrder();
@@ -787,6 +797,9 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
       this.renderedRevision_ == vectorLayerRevision &&
       this.renderedRenderOrder_ == vectorLayerRenderOrder &&
       this.renderedFrameDeclutter_ === !!frameState.declutter &&
+      (layerExtent && this.renderedLayerExtent_
+        ? equals(layerExtent, this.renderedLayerExtent_)
+        : layerExtent === this.renderedLayerExtent_) &&
       containsExtent(this.wrappedRenderedExtent_, extent)
     ) {
       if (!equals(this.renderedExtent_, renderedExtent)) {
@@ -800,9 +813,20 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
 
     this.replayGroup_ = null;
 
+    let builderExtent = extent;
+    if (layerExtent) {
+      // Symbols and labels outside the layer extent would still take part in
+      // decluttering, so do not build them.
+      const wrappedCopiesCanLandInLayerExtent =
+        canWrapX &&
+        (this.extendX_ || !containsExtent(projectionExtent, layerExtent));
+      if (!wrappedCopiesCanLandInLayerExtent) {
+        builderExtent = getIntersection(extent, layerExtent);
+      }
+    }
     const replayGroup = new CanvasBuilderGroup(
       getRenderTolerance(resolution, pixelRatio),
-      extent,
+      builderExtent,
       resolution,
       pixelRatio,
     );
@@ -887,6 +911,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
     this.renderedRevision_ = vectorLayerRevision;
     this.renderedRenderOrder_ = vectorLayerRenderOrder;
     this.renderedFrameDeclutter_ = !!frameState.declutter;
+    this.renderedLayerExtent_ = layerExtent;
     this.renderedExtent_ = renderedExtent;
     this.wrappedRenderedExtent_ = extent;
     this.renderedCenter_ = center;
