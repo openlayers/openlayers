@@ -1219,11 +1219,25 @@ class Map extends BaseObject {
   }
 
   /**
+   * Get the priority of a tile in the map's tile queue. Tiles with lower
+   * values load first, and a value of `Infinity` drops the tile from the queue.
+   * By default, tiles the current frame does not ask for get `Infinity`. The
+   * others get a value that combines their resolution and their distance from
+   * the view center: finer tiles usually load first, and tiles of the same
+   * resolution load nearest first.
+   * Override this method in a subclass to change the order, e.g. to load the
+   * tiles of one source before those of another, but return `Infinity`
+   * wherever `super.getTilePriority()` does. It is called when a tile is
+   * queued and, after a rendered frame, again for every queued tile before
+   * more tiles start loading, so it should be fast.
+   *
    * @param {import("./Tile.js").default} tile Tile.
-   * @param {string} tileSourceKey Tile source key.
+   * @param {string} tileSourceKey Tile source key, the uid of the tile's source
+   * (see {@link module:ol/util.getUid}).
    * @param {import("./coordinate.js").Coordinate} tileCenter Tile center.
    * @param {number} tileResolution Tile resolution.
    * @return {number} Tile priority.
+   * @api
    */
   getTilePriority(tile, tileSourceKey, tileCenter, tileResolution) {
     return getTilePriority(
