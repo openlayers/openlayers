@@ -560,18 +560,18 @@ class WebGLTileLayer extends BaseTileLayer {
    * @param {?import("../Map.js").FrameState} frameState Frame state.
    * @param {HTMLElement} target Target which the renderer may (but need not) use
    * for rendering its content.
-   * @return {HTMLElement} The rendered element.
+   * @return {HTMLElement|null} The rendered element.
    * @override
    */
   render(frameState, target) {
     this.rendered = true;
     if (!frameState) {
-      return /** @type {HTMLElement} */ (document.createElement('div'));
+      return null;
     }
     const viewState = frameState.viewState;
     const extent = frameState.extent;
     if (!extent) {
-      return /** @type {HTMLElement} */ (document.createElement('div'));
+      return null;
     }
 
     // Reprojecting an alpha-less source appends a coverage band, changing the
