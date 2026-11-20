@@ -840,6 +840,12 @@ describe('ol/format/GeoJSON.js', function () {
       assert.deepEqual(geojson.geometry, null);
     });
 
+    it('does not write a null geometry as a property', function () {
+      const feature = format.readFeature(nullGeometryGeoJSON);
+      const geojson = format.writeFeatureObject(feature);
+      assert.deepEqual(geojson, nullGeometryGeoJSON);
+    });
+
     it('writes out a feature with id equal to 0 correctly', function () {
       const feature = new Feature();
       feature.setId(0);

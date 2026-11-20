@@ -235,10 +235,10 @@ class EsriJSON extends JSONFeature {
             });
         }
       }
-      delete (
-        /** @type {Object<string, *>} */ (properties)[feature.getGeometryName()]
-      );
     }
+    delete (
+      /** @type {Object<string, *>} */ (properties)[feature.getGeometryName()]
+    );
     if (!isEmpty(properties)) {
       object['attributes'] = properties;
     } else {
