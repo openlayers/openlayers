@@ -480,6 +480,7 @@ export default class GeoZarr extends DataTileSource {
       (!legacyOnly &&
         (hasMultiscaleLevels ||
           'spatial:bbox' in attributes ||
+          'spatial:transform' in attributes ||
           'bounds' in attributes))
     ) {
       hasTileSizes = await this.configureLevels_(attributes, cachedStore);
@@ -1155,6 +1156,7 @@ export default class GeoZarr extends DataTileSource {
     // Collect the multiscale level paths; without multiscale metadata the
     // group itself is the only level.
     const multiscales = attributes['multiscales'];
+    const isLayout = Boolean(multiscales && Array.isArray(multiscales.layout));
     /** @type {Array<{path: string, transform: Array<number>|undefined, shape: Array<number>|undefined}>} */
     const rawLevels = [];
     /** @type {string|null} */
@@ -1171,24 +1173,25 @@ export default class GeoZarr extends DataTileSource {
             : String(dataset.path).replace(/\/+$/, '');
         rawLevels.push({
           path,
-          transform: dataset['spatial:transform'],
+          transform:
+            dataset['spatial:transform'] || attributes['spatial:transform'],
           shape: dataset['spatial:shape'],
         });
         if (!crsHint && typeof dataset['crs'] === 'string') {
           crsHint = dataset['crs'];
         }
       }
-    } else if (multiscales && Array.isArray(multiscales.layout)) {
+    } else if (isLayout) {
       for (const entry of multiscales.layout) {
-        // The declared `spatial:transform` is deliberately ignored here: its
-        // resolution is rounded in real stores (e.g. 720 where the extent and
-        // shape give 722.37), which leaves a sliver of a tile beyond the last
-        // full one. All layout levels share the group origin, so deriving the
-        // resolution from the extent and shape is both exact and sufficient.
+        const path = String(entry.asset);
+        const groupAttrs = consolidatedMetadata?.[path]?.attributes;
         rawLevels.push({
-          path: String(entry.asset),
-          transform: undefined,
-          shape: entry['spatial:shape'],
+          path,
+          transform:
+            entry['spatial:transform'] ||
+            groupAttrs?.['spatial:transform'] ||
+            attributes['spatial:transform'],
+          shape: entry['spatial:shape'] || groupAttrs?.['spatial:shape'],
         });
       }
     } else {
@@ -1286,20 +1289,35 @@ export default class GeoZarr extends DataTileSource {
     let extent = attributes['spatial:bbox'] || attributes['bounds'];
     let flipY = false;
     let orientationKnown = false;
-    const transform0 = levels[0].transform;
+    const transform0 =
+      levels.find((l) => Array.isArray(l.transform))?.transform ||
+      meta?.attributes?.['spatial:transform'];
     if (
-      extent &&
       Array.isArray(transform0) &&
       transform0.length >= 6 &&
       transform0[4] !== 0
     ) {
       flipY = transform0[4] > 0;
       orientationKnown = true;
+      if (!extent && transform0[0] !== 0) {
+        const shapeY = levels[0].meta?.shape?.[row] ?? levels[0].shape?.[0];
+        const shapeX = levels[0].meta?.shape?.[col] ?? levels[0].shape?.[1];
+        if (shapeX !== undefined && shapeY !== undefined) {
+          const x0 = transform0[2];
+          const x1 = x0 + transform0[0] * shapeX;
+          const y0 = transform0[5];
+          const y1 = y0 + transform0[4] * shapeY;
+          extent = [
+            Math.min(x0, x1),
+            Math.min(y0, y1),
+            Math.max(x0, x1),
+            Math.max(y0, y1),
+          ];
+        }
+      }
     } else if (extent && levels.every((l) => Array.isArray(l.shape))) {
-      // Levels that declare their `spatial:shape` alongside a declared extent
-      // follow the spatial: convention, which stores rasters north-up. Reading
-      // coordinate arrays would only confirm that, at the cost of two requests.
-      orientationKnown = true;
+      // Skip probing coordinate arrays when `spatial:bbox` and `spatial:shape`
+      // already define the grid.
     } else {
       // All levels share the extent; the smallest level is cheapest to read
       let coordLevel = levels[0];
@@ -1367,14 +1385,26 @@ export default class GeoZarr extends DataTileSource {
       // full EPSG:4326 world), so the row resolution is tracked separately.
       let rowResolution;
       let origin;
-      if (
+      const hasTransform =
         Array.isArray(level.transform) &&
         level.transform.length >= 6 &&
-        level.transform[4] < 0
-      ) {
-        resolution = level.transform[0];
-        rowResolution = -level.transform[4];
-        origin = [level.transform[2], level.transform[5]];
+        level.transform[0] > 0 &&
+        level.transform[4] !== 0;
+      // Layout levels share the group origin and can have rounded or unscaled
+      // `spatial:transform` steps, so prefer `extent` and `shape` there.
+      if (!isLayout && hasTransform) {
+        const transform = /** @type {Array<number>} */ (level.transform);
+        resolution = transform[0];
+        rowResolution = Math.abs(transform[4]);
+        const levelShapeY = level.meta?.shape?.[row] ?? level.shape?.[0];
+        origin = [
+          transform[2],
+          transform[4] < 0
+            ? transform[5]
+            : levelShapeY !== undefined
+              ? transform[5] + transform[4] * levelShapeY
+              : extent[3],
+        ];
       } else if (Array.isArray(level.shape)) {
         resolution = extentWidth / level.shape[1];
         rowResolution = extentHeight / level.shape[0];
@@ -1383,6 +1413,11 @@ export default class GeoZarr extends DataTileSource {
         resolution = extentWidth / level.meta.shape[col];
         rowResolution = extentHeight / level.meta.shape[row];
         origin = [extent[0], extent[3]];
+      } else if (hasTransform) {
+        const transform = /** @type {Array<number>} */ (level.transform);
+        resolution = transform[0];
+        rowResolution = Math.abs(transform[4]);
+        origin = [transform[2], transform[4] < 0 ? transform[5] : extent[3]];
       } else {
         warn(`No resolution information for level "${level.path || '.'}"`);
         continue;
@@ -1542,6 +1577,8 @@ export default class GeoZarr extends DataTileSource {
         shapeY = level.meta.shape[row];
       } else if (Array.isArray(level.shape)) {
         shapeY = level.shape[0];
+      } else if (level.rowResolution > 0) {
+        shapeY = Math.round(extentHeight / level.rowResolution);
       }
       this.levelRowInfo_[matrixIds[i]] = {
         rowResolution: level.rowResolution,
@@ -1729,6 +1766,7 @@ function createCachedStore(store, groupBytes, consolidatedMetadata) {
  *   zarr_conventions: Array<{uuid: string}>,
  *   'spatial:bbox': import("../extent.js").Extent,
  *   'spatial:shape': Array<number>,
+ *   'spatial:transform'?: Array<number>,
  *   'spatial:dimensions'?: Array<string>,
  *   'proj:wkt2'?: string,
  *   'proj:projjson'?: Object,
