@@ -422,6 +422,11 @@ class Executor {
    * @param {Array<number>} padding Padding.
    * @param {boolean} fillStroke Background fill or stroke.
    * @param {import("../../Feature.js").FeatureLike} feature Feature.
+   * @param {number} [declutterRotation] Rotation for the declutter bounding box.
+   *     When provided, this rotation is used for the declutter AABB instead of
+   *     `rotation`. This avoids bloated bounding boxes for labels that do not
+   *     rotate with the view: their rendering rotation includes the negated view
+   *     rotation, but on screen they appear with just their own rotation.
    * @return {ImageOrLabelDimensions} Dimensions for positioning and decluttering the image or label.
    */
   calculateImageOrLabelDimensions_(
@@ -441,6 +446,7 @@ class Executor {
     padding,
     fillStroke,
     feature,
+    declutterRotation,
   ) {
     anchorX *= scale[0];
     anchorY *= scale[1];
@@ -482,13 +488,49 @@ class Executor {
       applyTransform(transform, p2);
       applyTransform(transform, p3);
       applyTransform(transform, p4);
-      createOrUpdate(
-        Math.min(p1[0], p2[0], p3[0], p4[0]),
-        Math.min(p1[1], p2[1], p3[1], p4[1]),
-        Math.max(p1[0], p2[0], p3[0], p4[0]),
-        Math.max(p1[1], p2[1], p3[1], p4[1]),
-        tmpExtent,
-      );
+    }
+
+    // Compute the declutter bounding box. When declutterRotation is provided
+    // and differs from the rendering rotation, use it for the AABB so that
+    // the box reflects the label's screen-space footprint rather than its
+    // footprint in the (possibly rotated) pixel coordinate system.
+    const effectiveDeclutterRotation =
+      declutterRotation !== undefined ? declutterRotation : rotation;
+    if (effectiveDeclutterRotation !== 0) {
+      if (effectiveDeclutterRotation === rotation && rotation !== 0) {
+        // Reuse already-transformed p1–p4.
+        createOrUpdate(
+          Math.min(p1[0], p2[0], p3[0], p4[0]),
+          Math.min(p1[1], p2[1], p3[1], p4[1]),
+          Math.max(p1[0], p2[0], p3[0], p4[0]),
+          Math.max(p1[1], p2[1], p3[1], p4[1]),
+          tmpExtent,
+        );
+      } else {
+        // Rotate corners by the declutter rotation without touching p1–p4
+        // (which carry the rendering rotation for background drawing).
+        const cos = Math.cos(effectiveDeclutterRotation);
+        const sin = Math.sin(effectiveDeclutterRotation);
+        const dx1 = boxX - centerX;
+        const dy1 = boxY - centerY;
+        const dx2 = boxX + boxW - centerX;
+        const dy2 = boxY + boxH - centerY;
+        const rx1 = centerX + dx1 * cos - dy1 * sin;
+        const ry1 = centerY + dx1 * sin + dy1 * cos;
+        const rx2 = centerX + dx2 * cos - dy1 * sin;
+        const ry2 = centerY + dx2 * sin + dy1 * cos;
+        const rx3 = centerX + dx2 * cos - dy2 * sin;
+        const ry3 = centerY + dx2 * sin + dy2 * cos;
+        const rx4 = centerX + dx1 * cos - dy2 * sin;
+        const ry4 = centerY + dx1 * sin + dy2 * cos;
+        createOrUpdate(
+          Math.min(rx1, rx2, rx3, rx4),
+          Math.min(ry1, ry2, ry3, ry4),
+          Math.max(rx1, rx2, rx3, rx4),
+          Math.max(ry1, ry2, ry3, ry4),
+          tmpExtent,
+        );
+      }
     } else {
       createOrUpdate(
         Math.min(boxX, boxX + boxW),
@@ -923,6 +965,14 @@ class Executor {
             backgroundStrokeInstruction = null;
           }
 
+          // Save the label's own rotation before adjusting for the view.
+          // For labels that do not rotate with the view, the rendering
+          // rotation includes the negated view rotation so the label stays
+          // north-up on the canvas, but on screen the label appears with
+          // just its own rotation. Using the own rotation for the declutter
+          // bounding box avoids unnecessarily large AABBs (#16853).
+          const ownRotation = rotation;
+
           if (rotateWithView && viewRotationFromTransform) {
             // Canvas is expected to be rotated to reverse view rotation.
             rotation += viewRotation;
@@ -930,6 +980,12 @@ class Executor {
             // Canvas is not rotated, images need to be rotated back to be north-up.
             rotation -= viewRotation;
           }
+
+          const declutterRotation =
+            !rotateWithView && !viewRotationFromTransform
+              ? ownRotation
+              : undefined;
+
           let widthIndex = 0;
           for (; d < dd; d += 2) {
             if (
@@ -955,6 +1011,7 @@ class Executor {
               padding,
               !!backgroundFillInstruction || !!backgroundStrokeInstruction,
               /** @type {import("../../Feature.js").FeatureLike} */ (feature),
+              declutterRotation,
             );
             /** @type {ReplayImageOrLabelArgs} */
             const args = [
