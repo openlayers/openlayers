@@ -73,6 +73,12 @@ const p3 = [];
 const p4 = [];
 
 /**
+ * Corners of the declutter box in screen space.
+ * @type {Array<import("../../coordinate.js").Coordinate>}
+ */
+const declutterCorners = [[], [], [], []];
+
+/**
  * @param {ReplayImageOrLabelArgs} replayImageOrLabelArgs Arguments to replayImageOrLabel
  * @return {DeclutterEntry} Declutter rbush entry.
  */
@@ -203,6 +209,14 @@ class Executor {
      * @type {number}
      */
     this.viewRotation_ = 0;
+
+    /**
+     * Transform from canvas pixels to screen pixels for declutter boxes, set while
+     * decluttering on a canvas that is not rotated with the view.
+     * @private
+     * @type {import("../../transform.js").Transform|null}
+     */
+    this.declutterTransform_ = null;
 
     /**
      * @type {!Object<string, import("../canvas.js").FillState>}
@@ -498,6 +512,42 @@ class Executor {
         tmpExtent,
       );
     }
+    const declutterTransform = this.declutterTransform_;
+    if (declutterTransform) {
+      // The declutter tree is in screen space, but this canvas is not rotated with
+      // the view. Map the box corners to screen space before taking the extent, so
+      // that items which stay upright on screen get a tight box.
+      const corners = declutterCorners;
+      if (rotation !== 0) {
+        corners[0][0] = p1[0];
+        corners[0][1] = p1[1];
+        corners[1][0] = p2[0];
+        corners[1][1] = p2[1];
+        corners[2][0] = p3[0];
+        corners[2][1] = p3[1];
+        corners[3][0] = p4[0];
+        corners[3][1] = p4[1];
+      } else {
+        corners[0][0] = boxX;
+        corners[0][1] = boxY;
+        corners[1][0] = boxX + boxW;
+        corners[1][1] = boxY;
+        corners[2][0] = boxX + boxW;
+        corners[2][1] = boxY + boxH;
+        corners[3][0] = boxX;
+        corners[3][1] = boxY + boxH;
+      }
+      for (let i = 0; i < 4; ++i) {
+        applyTransform(declutterTransform, corners[i]);
+      }
+      createOrUpdate(
+        Math.min(corners[0][0], corners[1][0], corners[2][0], corners[3][0]),
+        Math.min(corners[0][1], corners[1][1], corners[2][1], corners[3][1]),
+        Math.max(corners[0][0], corners[1][0], corners[2][0], corners[3][0]),
+        Math.max(corners[0][1], corners[1][1], corners[2][1], corners[3][1]),
+        tmpExtent,
+      );
+    }
     if (snapToPixel) {
       x = Math.round(x);
       y = Math.round(y);
@@ -746,6 +796,19 @@ class Executor {
     const viewRotation = this.viewRotation_;
     const viewRotationFromTransform =
       Math.round(Math.atan2(-transform[1], transform[0]) * 1e12) / 1e12;
+    this.declutterTransform_ =
+      declutterTree && viewRotation && !viewRotationFromTransform
+        ? composeTransform(
+            createTransform(),
+            scaledCanvasSize[0] / 2,
+            scaledCanvasSize[1] / 2,
+            1,
+            1,
+            viewRotation,
+            -scaledCanvasSize[0] / 2,
+            -scaledCanvasSize[1] / 2,
+          )
+        : null;
 
     const state = /** @type {import("../../render.js").State} */ ({
       context: context,
