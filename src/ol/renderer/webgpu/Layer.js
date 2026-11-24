@@ -3,7 +3,6 @@
  */
 import {asArray} from '../../color.js';
 import {warn} from '../../console.js';
-import LayerProperty from '../../layer/Property.js';
 import RenderEvent from '../../render/Event.js';
 import RenderEventType from '../../render/EventType.js';
 import {
@@ -48,11 +47,6 @@ class WebGPULayerRenderer extends LayerRenderer {
      */
     this.deviceRequestFailed_ = false;
 
-    this.onMapChanged_ = () => {
-      this.clearCache();
-      this.removeHelper();
-    };
-
     /**
      * Renders the layer again after the device is lost, so a replacement is
      * requested without waiting for something else to trigger a frame.
@@ -62,7 +56,23 @@ class WebGPULayerRenderer extends LayerRenderer {
       this.getLayer()?.changed();
     };
 
-    layer.addChangeListener(LayerProperty.MAP, this.onMapChanged_);
+    /**
+     * `onDeviceLost_` is registered. Only renderers that use the device are,
+     * so a released renderer is not referenced from the device module.
+     * @private
+     * @type {boolean}
+     */
+    this.watchingDevice_ = false;
+  }
+
+  /**
+   * @private
+   */
+  watchDevice_() {
+    if (this.watchingDevice_) {
+      return;
+    }
+    this.watchingDevice_ = true;
     addDeviceLostListener(this.onDeviceLost_);
   }
 
@@ -74,6 +84,7 @@ class WebGPULayerRenderer extends LayerRenderer {
     if (this.deviceRequestPending_) {
       return;
     }
+    this.watchDevice_();
     this.deviceRequestPending_ = true;
     this.updateReady();
     requestDevice().then(
@@ -121,10 +132,25 @@ class WebGPULayerRenderer extends LayerRenderer {
    * @protected
    */
   removeHelper() {
-    if (this.helper) {
-      this.helper.dispose();
-      this.helper = undefined;
+    if (!this.helper) {
+      return;
     }
+    this.helper.dispose();
+    this.helper = undefined;
+  }
+
+  /**
+   * Releases the GPU resources and the shared canvas, and stops listening for
+   * device loss. The renderer is then not referenced from anywhere but its
+   * layer, so a layer that was removed from the map can be garbage collected
+   * without being disposed.
+   * @override
+   */
+  releaseResources() {
+    this.clearCache();
+    this.removeHelper();
+    this.watchingDevice_ = false;
+    removeDeviceLostListener(this.onDeviceLost_);
   }
 
   /**
@@ -157,6 +183,7 @@ class WebGPULayerRenderer extends LayerRenderer {
     ) {
       this.removeHelper();
       this.helper = new WebGPUHelper({canvasCacheKey});
+      this.watchDevice_();
       if (group.className) {
         this.helper.getCanvas().className = group.className;
       }
@@ -262,13 +289,7 @@ class WebGPULayerRenderer extends LayerRenderer {
    * @override
    */
   disposeInternal() {
-    this.clearCache();
-    this.removeHelper();
-    removeDeviceLostListener(this.onDeviceLost_);
-    this.getLayer()?.removeChangeListener(
-      LayerProperty.MAP,
-      this.onMapChanged_,
-    );
+    this.releaseResources();
     super.disposeInternal();
   }
 }

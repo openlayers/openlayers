@@ -1822,20 +1822,37 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
   }
 
   /**
+   * Releases the buffers, atlases and labels. A build still running on a
+   * worker is dropped when it finishes, and the next frame builds everything
+   * again.
    * @override
    */
-  disposeInternal() {
+  clearCache() {
     this.queriesAwaitingPaint_.splice(0).forEach((query) => query.cancel());
+    ++this.buildGeneration_;
+    this.buildPending_ = false;
     this.pendingBuild_ = null;
     this.releaseBuffers_();
+    this.renderedSource_ = null;
+    this.paintCache_ = {};
     this.imageAtlas_.clear();
     this.atlas_.clear();
     this.uniforms_?.dispose();
     this.uniforms_ = null;
     this.cornerBuffer_?.destroy();
     this.cornerBuffer_ = null;
-    this.labels_.dispose();
+    this.labels_.clear();
+    this.labelBuffers_ = null;
+    this.placement_.reset();
+    this.updateReady();
+  }
+
+  /**
+   * @override
+   */
+  disposeInternal() {
     super.disposeInternal();
+    this.labels_.dispose();
   }
 }
 

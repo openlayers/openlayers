@@ -203,6 +203,13 @@ class LayerRenderer extends Observable {
   handleStyleChange() {}
 
   /**
+   * Called when the layer is removed from its map. Renderers that hold
+   * resources the garbage collector cannot free, like GPU memory, release
+   * them here and recreate them when the layer is rendered again.
+   */
+  releaseResources() {}
+
+  /**
    * Handle changes in image state.
    * @param {import("../events/Event.js").default} event Image change event.
    * @private

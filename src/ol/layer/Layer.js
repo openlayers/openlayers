@@ -538,6 +538,7 @@ class Layer extends BaseLayer {
   setMapInternal(map) {
     if (!map) {
       this.unrender();
+      this.renderer_?.releaseResources();
     }
     this.set(LayerProperty.MAP, map);
   }
@@ -567,6 +568,7 @@ class Layer extends BaseLayer {
       this.mapPrecomposeKey_ = null;
     }
     if (!map) {
+      this.renderer_?.releaseResources();
       this.changed();
     }
     if (this.mapRenderKey_) {

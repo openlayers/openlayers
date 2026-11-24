@@ -360,6 +360,51 @@ where('WebGPU').describe('ol/layer/WebGPUVector', function () {
     );
   });
 
+  it('releases GPU resources when removed from the map, and renders again when added back', async () => {
+    layer.setStyle({'fill-color': 'red'});
+    map.setView(new View({center: [0, 0], resolution: 1}));
+    const feature = new Feature(
+      new Polygon([
+        [
+          [-10, -10],
+          [10, -10],
+          [10, 10],
+          [-10, 10],
+          [-10, -10],
+        ],
+      ]),
+    );
+    layer.getSource().addFeature(feature);
+    await renderComplete(map);
+    const renderer = layer.getRenderer();
+    assert.isOk(renderer.helper);
+    assert.isOk(renderer.buffers_);
+
+    map.removeLayer(layer);
+    assert.isUndefined(renderer.helper);
+    assert.isNull(renderer.buffers_);
+    assert.isNull(renderer.cornerBuffer_);
+
+    map.addLayer(layer);
+    await renderComplete(map);
+    assert.strictEqual(layer.getRenderer(), renderer);
+    assert.strictEqual(
+      map.forEachFeatureAtPixel([50, 50], (f) => f),
+      feature,
+    );
+  });
+
+  it('releases GPU resources when an unmanaged layer leaves the map', async () => {
+    map.removeLayer(layer);
+    layer.setMap(map);
+    await renderComplete(map);
+    const renderer = layer.getRenderer();
+    assert.isOk(renderer.helper);
+
+    layer.setMap(null);
+    assert.isUndefined(renderer.helper);
+  });
+
   it('destroys the label corner buffer when replaced and on disposal', async () => {
     await renderComplete(map);
     const renderer = layer.getRenderer();

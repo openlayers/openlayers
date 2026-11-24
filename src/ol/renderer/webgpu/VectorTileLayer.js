@@ -2566,11 +2566,25 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
    * @override
    */
   clearCache() {
+    // Builds still running on a worker are dropped when they finish.
+    ++this.batchGeneration_;
+    this.disposeUncachedBatches_();
+    this.declutterBatches_ = [];
     this.renderTiles_.clear();
     this.tileCache_.clear();
     this.renderBatchesByKey_.clear();
     this.styleCaches_.clear();
     this.pendingBuilds_.clear();
+    this.paintCache_ = {};
+    this.uniforms_?.dispose();
+    this.uniforms_ = null;
+    this.cornerBuffer_?.destroy();
+    this.cornerBuffer_ = null;
+    this.imageAtlas_.clear();
+    this.atlas_.clear();
+    this.labelKey_ = '';
+    this.placement_.reset();
+    this.updateReady();
   }
 
   /**
@@ -2607,20 +2621,6 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
   /**
    * @override
    */
-  disposeInternal() {
-    this.disposeUncachedBatches_();
-    this.tileCache_.clear();
-    this.renderBatchesByKey_.clear();
-    this.styleCaches_.clear();
-    this.pendingBuilds_.clear();
-    this.uniforms_?.dispose();
-    this.uniforms_ = null;
-    this.cornerBuffer_?.destroy();
-    this.cornerBuffer_ = null;
-    this.imageAtlas_.clear();
-    this.atlas_.clear();
-    super.disposeInternal();
-  }
 }
 
 export default WebGPUVectorTileLayerRenderer;
