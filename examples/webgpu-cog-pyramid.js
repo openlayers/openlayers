@@ -1,9 +1,12 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import WebGPUTileLayer from '../src/ol/layer/WebGPUTile.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import {setDefaultRenderer} from '../src/ol/renderer.js';
 import {sourcesFromTileGrid} from '../src/ol/source.js';
 import GeoTIFF from '../src/ol/source/GeoTIFF.js';
 import TileGrid from '../src/ol/tilegrid/TileGrid.js';
+
+setDefaultRenderer('webgpu');
 
 // Metadata from https://s2downloads.eox.at/demo/EOxCloudless/2019/rgb/2019_EOxCloudless_rgb.json
 
@@ -20,7 +23,7 @@ const tileGrid = new TileGrid({
   ],
 });
 
-const pyramid = new WebGPUTileLayer({
+const pyramid = new TileLayer({
   sources: sourcesFromTileGrid(
     tileGrid,
     ([z, x, y]) =>

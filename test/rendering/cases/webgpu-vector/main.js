@@ -2,7 +2,7 @@ import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
 import GeoJSON from '../../../../src/ol/format/GeoJSON.js';
 import TileLayer from '../../../../src/ol/layer/Tile.js';
-import WebGPUVectorLayer from '../../../../src/ol/layer/WebGPUVector.js';
+import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 import XYZ from '../../../../src/ol/source/XYZ.js';
 
@@ -12,7 +12,8 @@ if (!navigator.gpu || !(await navigator.gpu.requestAdapter())) {
     message: 'WebGPU is not available',
   });
 } else {
-  const vector = new WebGPUVectorLayer({
+  const vector = new VectorLayer({
+    renderer: 'webgpu',
     source: new VectorSource({
       url: '/data/countries.json',
       format: new GeoJSON(),

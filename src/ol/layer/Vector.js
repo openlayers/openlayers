@@ -1,8 +1,19 @@
 /**
  * @module ol/layer/Vector
  */
-import CanvasVectorLayerRenderer from '../renderer/canvas/VectorLayer.js';
+import {
+  createLazyRenderer,
+  getDefaultRenderer,
+  lazyRenderer,
+} from '../renderer.js';
 import BaseVectorLayer from './BaseVector.js';
+
+const canvasRenderer = lazyRenderer(
+  () => import('../renderer/canvas/VectorLayer.js'),
+);
+const webgpuRenderer = lazyRenderer(
+  () => import('../renderer/webgpu/VectorLayer.js'),
+);
 
 /**
  * @template {import("../source/Vector.js").default<FeatureType>} [VectorSourceType=import("../source/Vector.js").default<*>]
@@ -44,6 +55,10 @@ import BaseVectorLayer from './BaseVector.js';
  * @property {import("../style/Style.js").StyleLike|import("../style/flat.js").FlatStyleLike|null} [style] Layer style. When set to `null`, only
  * features that have their own style will be rendered. See {@link module:ol/style/Style~Style} for the default style
  * which will be used if this is not set.
+ * @property {import("../renderer.js").RendererName} [renderer] Renderer for this layer. Defaults to the one
+ * set with {@link module:ol/renderer.setDefaultRenderer} when the layer is created.
+ * @property {import('../style/flat.js').StyleVariables} [variables] Variables for flat styles. WebGPU only.
+ * @property {boolean} [disableHitDetection=false] Disable hit detection. WebGPU only.
  * @property {import("./Base.js").BackgroundColor} [background] Background color for the layer. If not specified, no background
  * will be rendered.
  * @property {number} [hitTolerance=0] Hit-detection tolerance in pixels for the layer's feature events
@@ -70,7 +85,7 @@ import BaseVectorLayer from './BaseVector.js';
  *
  * @template {import("../source/Vector.js").default<FeatureType>} [VectorSourceType=import("../source/Vector.js").default<*>]
  * @template {import('../Feature.js').FeatureLike} [FeatureType=import("./BaseVector.js").ExtractedFeatureType<VectorSourceType>]
- * @extends {BaseVectorLayer<FeatureType, VectorSourceType, CanvasVectorLayerRenderer>}
+ * @extends {BaseVectorLayer<FeatureType, VectorSourceType, import("../renderer/canvas/VectorLayer.js").default|import("../renderer/webgpu/VectorLayer.js").default>}
  * @api
  */
 class VectorLayer extends BaseVectorLayer {
@@ -78,14 +93,84 @@ class VectorLayer extends BaseVectorLayer {
    * @param {Options<VectorSourceType, FeatureType>} [options] Options.
    */
   constructor(options) {
-    super(options);
+    options = options ? options : {};
+    const baseOptions = Object.assign({}, options);
+    delete baseOptions.variables;
+    delete baseOptions.disableHitDetection;
+    const renderer = options.renderer;
+    delete baseOptions.renderer;
+    super(baseOptions);
+
+    /**
+     * The renderer, from the `renderer` option or `getDefaultRenderer()` at
+     * construction.
+     * @protected
+     * @type {import("../renderer.js").RendererName}
+     */
+    this.rendererName = renderer ?? getDefaultRenderer();
+
+    /**
+     * @type {import('../style/flat.js').StyleVariables}
+     * @private
+     */
+    this.styleVariables_ = options.variables || {};
+
+    /**
+     * @private
+     */
+    this.hitDetectionDisabled_ = !!options.disableHitDetection;
+  }
+
+  /**
+   * Features are read back from the GPU with WebGPU, so feature events arrive
+   * asynchronously.
+   * @return {boolean} Feature events are asynchronous.
+   * @override
+   */
+  hasAsyncFeatureQuery() {
+    return this.rendererName === 'webgpu';
+  }
+
+  /**
+   * @param {import("../Map.js").FrameState} frameState Frame state.
+   * @param {import("./Layer.js").State} layerState Layer state.
+   * @override
+   */
+  renderDeclutter(frameState, layerState) {
+    if (this.rendererName !== 'webgpu') {
+      super.renderDeclutter(frameState, layerState);
+      return;
+    }
+    // WebGPU layers declutter on the GPU, among WebGPU layers only
+    this.getRenderer()?.renderDeclutter(frameState, layerState);
+  }
+
+  /**
+   * Update any variables used by the layer style and trigger a re-render. WebGPU only.
+   * @param {import('../style/flat.js').StyleVariables} variables Variables to update.
+   */
+  updateStyleVariables(variables) {
+    Object.assign(this.styleVariables_, variables);
+    this.changed();
   }
 
   /**
    * @override
    */
   createRenderer() {
-    return new CanvasVectorLayerRenderer(this);
+    if (this.rendererName === 'webgpu') {
+      return createLazyRenderer(
+        webgpuRenderer,
+        (Renderer) =>
+          new Renderer(this, {
+            style: this.getStyle() ?? undefined,
+            variables: this.styleVariables_,
+            disableHitDetection: this.hitDetectionDisabled_,
+            declutter: this.getDeclutter(),
+          }),
+      );
+    }
+    return createLazyRenderer(canvasRenderer, (Renderer) => new Renderer(this));
   }
 }
 

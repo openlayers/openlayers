@@ -1,10 +1,13 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
-import WebGPUVectorLayer from '../src/ol/layer/WebGPUVector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
+import {setDefaultRenderer} from '../src/ol/renderer.js';
 import VectorSource from '../src/ol/source/Vector.js';
 
-const vectorLayer = new WebGPUVectorLayer({
+setDefaultRenderer('webgpu');
+
+const vectorLayer = new VectorLayer({
   source: new VectorSource({
     url: 'https://openlayers.org/data/vector/ecoregions.json',
     format: new GeoJSON(),
@@ -26,7 +29,7 @@ const highlightSource = new VectorSource();
 // ideally this could be provided to the constructor above
 highlightSource.setProjection('EPSG:4326');
 
-const highlightLayer = new WebGPUVectorLayer({
+const highlightLayer = new VectorLayer({
   source: highlightSource,
   style: {
     'stroke-color': 'rgba(255,255,255,0.8)',

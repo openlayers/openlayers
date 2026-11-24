@@ -1,10 +1,11 @@
-import {applyBackground, applyStyle} from 'ol-mapbox-style';
+import {apply} from 'ol-mapbox-style';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import Link from '../src/ol/interaction/Link.js';
-import WebGPUVectorTileLayer from '../src/ol/layer/WebGPUVectorTile.js';
 import {fromLonLat, toLonLat} from '../src/ol/proj.js';
-import VectorTileSource from '../src/ol/source/VectorTile.js';
+import {setDefaultRenderer} from '../src/ol/renderer.js';
+
+setDefaultRenderer('webgpu');
 
 const styleUrl =
   'https://tiles.versatiles.org/assets/styles/colorful/style.json';
@@ -13,13 +14,6 @@ const styleUrl =
 // at zoom level 0, view zoom levels match the zoom levels of the style.
 const maxResolution = 78271.51696402048;
 
-const layer = new WebGPUVectorTileLayer({
-  declutter: true,
-  source: new VectorTileSource({}),
-});
-applyStyle(layer, styleUrl);
-applyBackground(layer, styleUrl);
-
 const view = new View({
   center: fromLonLat([13.388, 52.517]),
   zoom: 13,
@@ -27,11 +21,11 @@ const view = new View({
 });
 
 const map = new Map({
-  layers: [layer],
   target: 'ol-map',
   view,
 });
 map.addInteraction(new Link());
+apply(map, styleUrl);
 
 const initialCenter = view.getCenter() || fromLonLat([13.388, 52.517]);
 const [initialLongitude, initialLatitude] = toLonLat(initialCenter);

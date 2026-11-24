@@ -4,8 +4,8 @@ title: VersaTiles Colorful (with WebGPU)
 shortdesc: The VersaTiles Colorful style rendered with WebGPU vector tile layers and flat styles.
 docs: |
   The [VersaTiles Colorful](https://tiles.versatiles.org/assets/styles/colorful/style.json)
-  style is fetched and translated into flat style rules on one `WebGPUVectorTile`
-  layer. The rules share a vector tile source and a declutter group. The view's
+  style is fetched and translated into flat style rules on one `VectorTile`
+  layer, rendered with WebGPU after `setDefaultRenderer('webgpu')`. The rules share a vector tile source and a declutter group. The view's
   `maxResolution` matches Mapbox GL zoom level 0 (512 pixel tiles), so `['zoom']`
   expressions from the style can be used as-is. WebGPU is required.
 

@@ -2,15 +2,18 @@ import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import MVT from '../src/ol/format/MVT.js';
 import Link from '../src/ol/interaction/Link.js';
-import WebGPUVectorTileLayer from '../src/ol/layer/WebGPUVectorTile.js';
+import VectorTileLayer from '../src/ol/layer/VectorTile.js';
+import {setDefaultRenderer} from '../src/ol/renderer.js';
 import VectorTileSource from '../src/ol/source/VectorTile.js';
+
+setDefaultRenderer('webgpu');
 
 const key =
   'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiY2t0cGdwMHVnMGdlbzMxbDhwazBic2xrNSJ9.WbcTL9uj8JPAsnT9mgb7oQ';
 
 const map = new Map({
   layers: [
-    new WebGPUVectorTileLayer({
+    new VectorTileLayer({
       source: new VectorTileSource({
         attributions:
           '© <a href="https://www.mapbox.com/map-feedback/">Mapbox</a> ' +

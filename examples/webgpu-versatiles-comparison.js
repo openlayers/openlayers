@@ -6,7 +6,6 @@ import {newParsingContext} from '../src/ol/expr/expression.js';
 import MVT from '../src/ol/format/MVT.js';
 import Link from '../src/ol/interaction/Link.js';
 import VectorTileLayer from '../src/ol/layer/VectorTile.js';
-import WebGPUVectorTileLayer from '../src/ol/layer/WebGPUVectorTile.js';
 import {fromLonLat} from '../src/ol/proj.js';
 import {buildRuleSet} from '../src/ol/render/canvas/style.js';
 import VectorTileSource from '../src/ol/source/VectorTile.js';
@@ -578,7 +577,8 @@ Promise.all([
     }),
   );
   webgpuMap.addLayer(
-    new WebGPUVectorTileLayer({
+    new VectorTileLayer({
+      renderer: 'webgpu',
       source: createSource(),
       style: rules,
       declutter: true,

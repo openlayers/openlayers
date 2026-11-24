@@ -5,8 +5,10 @@ shortdesc: Side-by-side VersaTiles Colorful with the WebGPU renderer and MapLibr
 docs: >
   The [VersaTiles Colorful](https://tiles.versatiles.org/assets/styles/colorful/style.json)
   style fills the window, with OpenLayers' WebGPU renderer on the left and
-  MapLibre GL JS on the right. `ol-mapbox-style` applies the style to one
-  `WebGPUVectorTile` layer. The OpenLayers view uses the same zoom scale as
+  MapLibre GL JS on the right. `ol-mapbox-style`'s `apply()` function creates
+  the OpenLayers layers, which are rendered with WebGPU after
+  `setDefaultRenderer('webgpu')`.
+  The OpenLayers view uses the same zoom scale as
   MapLibre (512 pixel tiles), and panning, zooming, or rotating either map
   updates the other. WebGPU is required.
 tags: "webgpu, vector, tiles, versatiles, maplibre, comparison"

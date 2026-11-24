@@ -2,8 +2,11 @@ import Feature from '../../../../src/ol/Feature.js';
 import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
-import WebGPUVectorLayer from '../../../../src/ol/layer/WebGPUVector.js';
+import VectorLayer from '../../../../src/ol/layer/Vector.js';
+import {setDefaultRenderer} from '../../../../src/ol/renderer.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
+
+setDefaultRenderer('webgpu');
 
 if (!navigator.gpu || !(await navigator.gpu.requestAdapter())) {
   render({
@@ -35,7 +38,7 @@ if (!navigator.gpu || !(await navigator.gpu.requestAdapter())) {
    * @param {Feature} feature Feature.
    * @param {string|Object} color Top fill color or pattern.
    * @param {'map'|'viewport'} anchor Displacement anchor.
-   * @return {WebGPUVectorLayer} Layer with an offset fill over a dark base.
+   * @return {VectorLayer} Layer with an offset fill over a dark base.
    */
   function displacedLayer(feature, color, anchor) {
     const topStyle =
@@ -47,7 +50,7 @@ if (!navigator.gpu || !(await navigator.gpu.requestAdapter())) {
             'fill-pattern-offset': [0, 0],
             'fill-pattern-offset-origin': 'top-left',
           };
-    return new WebGPUVectorLayer({
+    return new VectorLayer({
       source: new VectorSource({features: [feature]}),
       style: [
         {'fill-color': '#263238'},
@@ -72,7 +75,7 @@ if (!navigator.gpu || !(await navigator.gpu.requestAdapter())) {
     ),
   ];
   const hitFeature = square(65, -65, 8);
-  const hitLayer = new WebGPUVectorLayer({
+  const hitLayer = new VectorLayer({
     source: new VectorSource({features: [hitFeature]}),
     style: {
       'fill-color': '#1565c0',

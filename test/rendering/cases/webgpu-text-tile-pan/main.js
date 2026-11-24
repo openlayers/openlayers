@@ -2,9 +2,12 @@ import Feature from '../../../../src/ol/Feature.js';
 import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
-import WebGPUVectorTileLayer from '../../../../src/ol/layer/WebGPUVectorTile.js';
+import VectorTileLayer from '../../../../src/ol/layer/VectorTile.js';
+import {setDefaultRenderer} from '../../../../src/ol/renderer.js';
 import VectorTileSource from '../../../../src/ol/source/VectorTile.js';
 import TileGrid from '../../../../src/ol/tilegrid/TileGrid.js';
+
+setDefaultRenderer('webgpu');
 
 if (!navigator.gpu || !(await navigator.gpu.requestAdapter())) {
   render({
@@ -33,7 +36,7 @@ if (!navigator.gpu || !(await navigator.gpu.requestAdapter())) {
       ],
     ]),
   });
-  const layer = new WebGPUVectorTileLayer({
+  const layer = new VectorTileLayer({
     declutter: true,
     source: new VectorTileSource({
       tileGrid: grid,

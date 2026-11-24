@@ -213,6 +213,11 @@ class Graticule extends VectorLayer {
     delete baseOptions.intervals;
     super(baseOptions);
 
+    //TODO Currently requires the canvas renderer, because labels are drawn with vector context.
+    this.rendererName = /** @type {import("../renderer.js").RendererName} */ (
+      'canvas'
+    );
+
     /**
      * @type {import("../proj/Projection.js").default|null}
      * @private

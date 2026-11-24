@@ -2,8 +2,11 @@ import Feature from '../../../../src/ol/Feature.js';
 import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
 import Point from '../../../../src/ol/geom/Point.js';
-import WebGPUVectorLayer from '../../../../src/ol/layer/WebGPUVector.js';
+import VectorLayer from '../../../../src/ol/layer/Vector.js';
+import {setDefaultRenderer} from '../../../../src/ol/renderer.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
+
+setDefaultRenderer('webgpu');
 
 if (!navigator.gpu || !(await navigator.gpu.requestAdapter())) {
   render({
@@ -14,7 +17,7 @@ if (!navigator.gpu || !(await navigator.gpu.requestAdapter())) {
   // Outside the 100px declutter padding, inside the geometry kept for a short
   // pan, and on screen after moving north by more than that padding. The
   // buffers stay put, so only a new placement can draw the label.
-  const layer = new WebGPUVectorLayer({
+  const layer = new VectorLayer({
     source: new VectorSource({
       features: [
         new Feature({

@@ -1074,7 +1074,7 @@ class Map extends BaseObject {
         continue;
       }
       const renderer = state.layer.getRenderer();
-      if (renderer && !renderer.ready) {
+      if (renderer ? !renderer.ready : state.layer.isRendererLoading()) {
         return true;
       }
       const source = state.layer.getSource();

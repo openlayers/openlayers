@@ -28,8 +28,6 @@ import TileLayer from '../../../../src/ol/layer/Tile.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorTileLayer from '../../../../src/ol/layer/VectorTile.js';
 import WebGLVectorLayer from '../../../../src/ol/layer/WebGLVector.js';
-import WebGPUVectorLayer from '../../../../src/ol/layer/WebGPUVector.js';
-import WebGPUVectorTileLayer from '../../../../src/ol/layer/WebGPUVectorTile.js';
 import {tile as tileStrategy} from '../../../../src/ol/loadingstrategy.js';
 import {
   clearUserProjection,
@@ -681,7 +679,8 @@ describe('ol/Map', function () {
               resolution: 1,
             }),
             layers: [
-              new WebGPUVectorLayer({
+              new VectorLayer({
+                renderer: 'webgpu',
                 source: new VectorSource({
                   features: [new Feature(new Point([0, 0]))],
                 }),
@@ -712,7 +711,8 @@ describe('ol/Map', function () {
               resolution: 1,
             }),
             layers: [
-              new WebGPUVectorTileLayer({
+              new VectorTileLayer({
+                renderer: 'webgpu',
                 source: new VectorTileSource({
                   tileSize: tileSize,
                   tileUrlFunction: (tileCoord) => tileCoord.join('/'),

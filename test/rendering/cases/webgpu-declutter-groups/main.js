@@ -2,8 +2,11 @@ import Feature from '../../../../src/ol/Feature.js';
 import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
 import Point from '../../../../src/ol/geom/Point.js';
-import WebGPUVectorLayer from '../../../../src/ol/layer/WebGPUVector.js';
+import VectorLayer from '../../../../src/ol/layer/Vector.js';
+import {setDefaultRenderer} from '../../../../src/ol/renderer.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
+
+setDefaultRenderer('webgpu');
 
 if (!navigator.gpu || !(await navigator.gpu.requestAdapter())) {
   render({
@@ -18,10 +21,10 @@ if (!navigator.gpu || !(await navigator.gpu.requestAdapter())) {
    * @param {string} fill Circle fill.
    * @param {number} radius Circle radius.
    * @param {number} offsetY Label offset.
-   * @return {WebGPUVectorLayer} Layer.
+   * @return {VectorLayer} Layer.
    */
   function layer(declutter, x, text, fill, radius, offsetY) {
-    return new WebGPUVectorLayer({
+    return new VectorLayer({
       declutter,
       source: new VectorSource({
         features: [new Feature(new Point([x, 0]))],

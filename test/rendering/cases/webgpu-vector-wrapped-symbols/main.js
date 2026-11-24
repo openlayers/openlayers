@@ -4,8 +4,9 @@ import View from '../../../../src/ol/View.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
-import WebGPUVectorLayer from '../../../../src/ol/layer/WebGPUVector.js';
+import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import {fromLonLat} from '../../../../src/ol/proj.js';
+import {setDefaultRenderer} from '../../../../src/ol/renderer.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 import CircleStyle from '../../../../src/ol/style/Circle.js';
 import Fill from '../../../../src/ol/style/Fill.js';
@@ -13,6 +14,8 @@ import Icon from '../../../../src/ol/style/Icon.js';
 import Stroke from '../../../../src/ol/style/Stroke.js';
 import Style from '../../../../src/ol/style/Style.js';
 import Text from '../../../../src/ol/style/Text.js';
+
+setDefaultRenderer('webgpu');
 
 if (!navigator.gpu || !(await navigator.gpu.requestAdapter())) {
   render({
@@ -91,7 +94,7 @@ if (!navigator.gpu || !(await navigator.gpu.requestAdapter())) {
     }),
   ];
 
-  const vector = new WebGPUVectorLayer({
+  const vector = new VectorLayer({
     source: new VectorSource({features}),
     style: (feature) => feature.get('style'),
   });

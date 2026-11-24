@@ -1,7 +1,10 @@
 import {scale as chromaScale} from 'chroma-js';
 import Map from '../src/ol/Map.js';
-import TileLayer from '../src/ol/layer/WebGPUTile.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import {setDefaultRenderer} from '../src/ol/renderer.js';
 import GeoTIFF from '../src/ol/source/GeoTIFF.js';
+
+setDefaultRenderer('webgpu');
 
 const segments = 10;
 

@@ -1,11 +1,9 @@
-import {applyBackground, applyStyle} from 'ol-mapbox-style';
+import {apply} from 'ol-mapbox-style';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import Link from '../src/ol/interaction/Link.js';
-import VectorTileLayer from '../src/ol/layer/VectorTile.js';
-import WebGPUVectorTileLayer from '../src/ol/layer/WebGPUVectorTile.js';
 import {fromLonLat} from '../src/ol/proj.js';
-import VectorTileSource from '../src/ol/source/VectorTile.js';
+import {setDefaultRenderer} from '../src/ol/renderer.js';
 
 const styleUrl =
   'https://tiles.versatiles.org/assets/styles/colorful/style.json';
@@ -18,28 +16,19 @@ const view = new View({
   maxResolution: 78271.51696402048,
 });
 
-const canvasLayer = new VectorTileLayer({
-  declutter: true,
-  source: new VectorTileSource({}),
-});
-const webgpuLayer = new WebGPUVectorTileLayer({
-  declutter: true,
-  source: new VectorTileSource({}),
-});
-
-applyStyle(canvasLayer, styleUrl);
-applyBackground(canvasLayer, styleUrl);
-applyStyle(webgpuLayer, styleUrl);
-applyBackground(webgpuLayer, styleUrl);
-
-const map = new Map({
+const canvasMap = new Map({
   target: 'canvas-map',
-  layers: [canvasLayer],
   view,
 });
-new Map({
+const webgpuMap = new Map({
   target: 'webgpu-map',
-  layers: [webgpuLayer],
   view,
 });
-map.addInteraction(new Link());
+canvasMap.addInteraction(new Link());
+
+// apply() creates the layers once the style is loaded, with the renderer that
+// is the default at that time.
+apply(canvasMap, styleUrl).then(() => {
+  setDefaultRenderer('webgpu');
+  apply(webgpuMap, styleUrl);
+});

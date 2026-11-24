@@ -1376,7 +1376,7 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
    * @private
    */
   renderOrder_() {
-    const layer = /** @type {import("../../layer/WebGPUVector.js").default} */ (
+    const layer = /** @type {import("../../layer/Vector.js").default} */ (
       this.getLayer()
     );
     return layer.getRenderOrder();
@@ -1789,6 +1789,27 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
       }
     }
     return undefined;
+  }
+
+  /**
+   * Compiles the layer's new style. The layer revision changes with it, so the
+   * next frame rebuilds the buffers.
+   * @override
+   */
+  handleStyleChange() {
+    const layer =
+      /** @type {import("../../layer/BaseVector.js").default<*, *, *>} */ (
+        this.getLayer()
+      );
+    this.styleFunction_ = compileStyle(
+      layer.getStyle() ?? undefined,
+      this.variables_,
+    );
+    const declutterGroup = layer.getDeclutter();
+    if (declutterGroup !== this.declutterGroup_) {
+      this.declutterGroup_ = declutterGroup;
+      this.placement_.reset();
+    }
   }
 
   /**

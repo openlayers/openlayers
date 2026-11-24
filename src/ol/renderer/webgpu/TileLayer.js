@@ -261,11 +261,11 @@ function ensureDrawable(tileRepresentation) {
 /**
  * @classdesc
  * WebGPU renderer for raster tile layers.
- * @extends {WebGPULayerRenderer<import("../../layer/WebGPUTile.js").default>}
+ * @extends {WebGPULayerRenderer<import("../../layer/Tile.js").default>}
  */
 class WebGPUTileLayerRenderer extends WebGPULayerRenderer {
   /**
-   * @param {import("../../layer/WebGPUTile.js").default} layer Layer.
+   * @param {import("../../layer/Tile.js").default} layer Layer.
    * @param {Options} [options] Options.
    */
   constructor(layer, options) {
@@ -491,6 +491,13 @@ class WebGPUTileLayerRenderer extends WebGPULayerRenderer {
     if (this.helper) {
       this.createPipelines_();
     }
+  }
+
+  /**
+   * @override
+   */
+  handleStyleChange() {
+    this.setStyle(this.getLayer().getStyle());
   }
 
   /**

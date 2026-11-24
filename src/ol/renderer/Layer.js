@@ -197,6 +197,12 @@ class LayerRenderer extends Observable {
   handleFontsChanged() {}
 
   /**
+   * Called when the layer's style or declutter setting changes. Renderers that
+   * read them from the layer on every frame have nothing to do.
+   */
+  handleStyleChange() {}
+
+  /**
    * Handle changes in image state.
    * @param {import("../events/Event.js").default} event Image change event.
    * @private

@@ -60,6 +60,7 @@ export default [
         describe: 'readonly',
         disposeMap: 'readonly',
         it: 'readonly',
+        loadRenderers: 'readonly',
         render: 'readonly',
         vi: 'readonly',
         where: 'readonly',

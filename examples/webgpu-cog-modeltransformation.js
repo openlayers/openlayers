@@ -1,12 +1,15 @@
 import proj4 from 'proj4';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import TileLayer from '../src/ol/layer/WebGPUTile.js';
+import TileLayer from '../src/ol/layer/Tile.js';
 import {transformExtent} from '../src/ol/proj.js';
 import {fromProjectionCode, register} from '../src/ol/proj/proj4.js';
+import {setDefaultRenderer} from '../src/ol/renderer.js';
 import GeoTIFF from '../src/ol/source/GeoTIFF.js';
 import OSM from '../src/ol/source/OSM.js';
 import TileDebug from '../src/ol/source/TileDebug.js';
+
+setDefaultRenderer('webgpu');
 
 register(proj4);
 

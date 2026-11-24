@@ -6,8 +6,8 @@ docs: |
   The [VersaTiles Colorful](https://tiles.versatiles.org/assets/styles/colorful/style.json)
   style is translated into flat style rules, as in the
   [VersaTiles Colorful (with WebGPU)](webgpu-versatiles.html) example. The rules
-  are used on a `VectorTile` layer (Canvas2D, left) and on a `WebGPUVectorTile`
-  layer (WebGPU, right). Both maps share one view, so they always show the same
+  are used on a `VectorTile` layer (Canvas2D, left) and on a `VectorTile`
+  layer with `renderer: 'webgpu'` (WebGPU, right). Both maps share one view, so they always show the same
   extent. WebGPU is required.
 
   Canvas2D style functions do not provide `['zoom']`, so the Canvas2D layer

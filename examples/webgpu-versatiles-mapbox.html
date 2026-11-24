@@ -4,8 +4,9 @@ title: VersaTiles Colorful with ol-mapbox-style (WebGPU)
 shortdesc: The VersaTiles Colorful style applied with ol-mapbox-style to a WebGPU vector tile layer.
 docs: >
   The [VersaTiles Colorful](https://tiles.versatiles.org/assets/styles/colorful/style.json)
-  style is applied with `ol-mapbox-style`'s `applyStyle()` function to one
-  `WebGPUVectorTile` layer. Unlike the [flat style version](webgpu-versatiles.html),
+  style is applied with `ol-mapbox-style`'s `apply()` function, which creates
+  the layers. After `setDefaultRenderer('webgpu')`, they are rendered with WebGPU.
+  Unlike the [flat style version](webgpu-versatiles.html),
   this uses the Mapbox style function, so icons, dashed lines and repeated line
   labels are rendered too. WebGPU is required.
 tags: "webgpu, vector, tiles, declutter, versatiles, mapbox"

@@ -4,9 +4,12 @@ import {asArray} from '../src/ol/color.js';
 import FullScreen from '../src/ol/control/FullScreen.js';
 import MVT from '../src/ol/format/MVT.js';
 import Link from '../src/ol/interaction/Link.js';
-import WebGPUVectorTileLayer from '../src/ol/layer/WebGPUVectorTile.js';
+import VectorTileLayer from '../src/ol/layer/VectorTile.js';
 import {fromLonLat} from '../src/ol/proj.js';
+import {setDefaultRenderer} from '../src/ol/renderer.js';
 import VectorTileSource from '../src/ol/source/VectorTile.js';
+
+setDefaultRenderer('webgpu');
 
 const styleUrl =
   'https://tiles.versatiles.org/assets/styles/colorful/style.json';
@@ -517,7 +520,7 @@ Promise.all([
   });
 
   map.addLayer(
-    new WebGPUVectorTileLayer({
+    new VectorTileLayer({
       source: createSource(),
       style: rules,
       declutter: true,

@@ -2,9 +2,20 @@
  * @module ol/layer/VectorTile
  */
 import {assert} from '../asserts.js';
-import CanvasVectorTileLayerRenderer from '../renderer/canvas/VectorTileLayer.js';
+import {
+  createLazyRenderer,
+  getDefaultRenderer,
+  lazyRenderer,
+} from '../renderer.js';
 import BaseVectorLayer from './BaseVector.js';
 import TileProperty from './TileProperty.js';
+
+const canvasRenderer = lazyRenderer(
+  () => import('../renderer/canvas/VectorTileLayer.js'),
+);
+const webgpuRenderer = lazyRenderer(
+  () => import('../renderer/webgpu/VectorTileLayer.js'),
+);
 
 /***
  * @template Return
@@ -77,6 +88,10 @@ import TileProperty from './TileProperty.js';
  * style. When set to `null`, only
  * features that have their own style will be rendered. See {@link module:ol/style/Style~Style} for the default style
  * which will be used if this is not set.
+ * @property {import("../renderer.js").RendererName} [renderer] Renderer for this layer. Defaults to the one
+ * set with {@link module:ol/renderer.setDefaultRenderer} when the layer is created.
+ * @property {import('../style/flat.js').StyleVariables} [variables] Variables for flat styles. WebGPU only.
+ * @property {boolean} [disableHitDetection=false] Disable hit detection. WebGPU only.
  * @property {import("./Base.js").BackgroundColor} [background] Background color for the layer. If not specified, no
  * background will be rendered.
  * @property {number} [hitTolerance=0] Hit-detection tolerance in pixels for the layer's feature events
@@ -92,7 +107,8 @@ import TileProperty from './TileProperty.js';
  * @property {boolean} [useInterimTilesOnError=true] Deprecated.  Use interim tiles on error.
  * @property {Object<string, *>} [properties] Arbitrary observable properties. Can be accessed with `#get()` and `#set()`.
  * @property {number} [cacheSize=0] The internal tile cache size.  If too small, this will auto-grow to hold
- * two zoom levels worth of tiles.
+ * two zoom levels worth of tiles. With WebGPU, the default is 512, and the GPU memory used by cached tiles is
+ * also limited, but always leaves room for twice what the visible tiles need.
  */
 
 /**
@@ -104,7 +120,7 @@ import TileProperty from './TileProperty.js';
  *
  * @template {import("../source/VectorTile.js").default<FeatureType>} [VectorTileSourceType=import("../source/VectorTile.js").default<*>]
  * @template {import("../Feature.js").FeatureLike} [FeatureType=ExtractedFeatureType<VectorTileSourceType>]
- * @extends {BaseVectorLayer<FeatureType, VectorTileSourceType, CanvasVectorTileLayerRenderer>}
+ * @extends {BaseVectorLayer<FeatureType, VectorTileSourceType, import("../renderer/canvas/VectorTileLayer.js").default|import("../renderer/webgpu/VectorTileLayer.js").default>}
  * @api
  */
 class VectorTileLayer extends BaseVectorLayer {
@@ -119,8 +135,31 @@ class VectorTileLayer extends BaseVectorLayer {
     const cacheSize = options.cacheSize === undefined ? 0 : options.cacheSize;
     delete options.cacheSize;
     delete baseOptions.useInterimTilesOnError;
+    delete baseOptions.variables;
+    delete baseOptions.disableHitDetection;
+    const renderer = options.renderer;
+    delete baseOptions.renderer;
 
     super(baseOptions);
+
+    /**
+     * The renderer, from the `renderer` option or `getDefaultRenderer()` at
+     * construction.
+     * @protected
+     * @type {import("../renderer.js").RendererName}
+     */
+    this.rendererName = renderer ?? getDefaultRenderer();
+
+    /**
+     * @type {import('../style/flat.js').StyleVariables}
+     * @private
+     */
+    this.styleVariables_ = options.variables || {};
+
+    /**
+     * @private
+     */
+    this.hitDetectionDisabled_ = !!options.disableHitDetection;
 
     /***
      * @type {VectorTileLayerOnSignature<import("../events.js").EventsKey>}
@@ -181,9 +220,56 @@ class VectorTileLayer extends BaseVectorLayer {
    * @override
    */
   createRenderer() {
-    return new CanvasVectorTileLayerRenderer(this, {
-      cacheSize: this.cacheSize_,
-    });
+    if (this.rendererName === 'webgpu') {
+      return createLazyRenderer(
+        webgpuRenderer,
+        (Renderer) =>
+          new Renderer(this, {
+            style: this.getStyle() ?? undefined,
+            variables: this.styleVariables_,
+            disableHitDetection: this.hitDetectionDisabled_,
+            declutter: this.getDeclutter(),
+            cacheSize: this.cacheSize_ || undefined,
+          }),
+      );
+    }
+    return createLazyRenderer(
+      canvasRenderer,
+      (Renderer) => new Renderer(this, {cacheSize: this.cacheSize_}),
+    );
+  }
+
+  /**
+   * Features are read back from the GPU with WebGPU, so feature events arrive
+   * asynchronously.
+   * @return {boolean} Feature events are asynchronous.
+   * @override
+   */
+  hasAsyncFeatureQuery() {
+    return this.rendererName === 'webgpu';
+  }
+
+  /**
+   * @param {import("../Map.js").FrameState} frameState Frame state.
+   * @param {import("./Layer.js").State} layerState Layer state.
+   * @override
+   */
+  renderDeclutter(frameState, layerState) {
+    if (this.rendererName !== 'webgpu') {
+      super.renderDeclutter(frameState, layerState);
+      return;
+    }
+    // WebGPU layers declutter on the GPU, among WebGPU layers only
+    this.getRenderer()?.renderDeclutter(frameState, layerState);
+  }
+
+  /**
+   * Update any variables used by the layer style and trigger a re-render. WebGPU only.
+   * @param {import('../style/flat.js').StyleVariables} variables Variables to update.
+   */
+  updateStyleVariables(variables) {
+    Object.assign(this.styleVariables_, variables);
+    this.changed();
   }
 
   /**
@@ -219,7 +305,8 @@ class VectorTileLayer extends BaseVectorLayer {
    */
   getFeaturesInExtent(extent) {
     const renderer = this.getRenderer();
-    if (!renderer) {
+    if (!renderer || !('getFeaturesInExtent' in renderer)) {
+      // not available with WebGPU
       return [];
     }
     return /** @type {Array<FeatureType>} */ (

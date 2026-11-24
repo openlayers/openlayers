@@ -2,13 +2,16 @@ import Feature from '../../../../src/ol/Feature.js';
 import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
 import Point from '../../../../src/ol/geom/Point.js';
-import WebGPUVectorLayer from '../../../../src/ol/layer/WebGPUVector.js';
+import VectorLayer from '../../../../src/ol/layer/Vector.js';
+import {setDefaultRenderer} from '../../../../src/ol/renderer.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 import Fill from '../../../../src/ol/style/Fill.js';
 import Icon from '../../../../src/ol/style/Icon.js';
 import Stroke from '../../../../src/ol/style/Stroke.js';
 import Style from '../../../../src/ol/style/Style.js';
 import Text from '../../../../src/ol/style/Text.js';
+
+setDefaultRenderer('webgpu');
 
 if (!navigator.gpu || !(await navigator.gpu.requestAdapter())) {
   render({skip: true, message: 'WebGPU is not available'});
@@ -82,7 +85,7 @@ if (!navigator.gpu || !(await navigator.gpu.requestAdapter())) {
       }),
     }),
   };
-  const layer = new WebGPUVectorLayer({
+  const layer = new VectorLayer({
     source: new VectorSource({features}),
     declutter: true,
     style: (feature) => styles[feature.get('kind')],

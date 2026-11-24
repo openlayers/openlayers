@@ -1,12 +1,15 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import WebGPUTileLayer from '../src/ol/layer/WebGPUTile.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import {setDefaultRenderer} from '../src/ol/renderer.js';
 import OSM from '../src/ol/source/OSM.js';
+
+setDefaultRenderer('webgpu');
 
 const map = new Map({
   target: 'map',
   layers: [
-    new WebGPUTileLayer({
+    new TileLayer({
       source: new OSM(),
     }),
   ],

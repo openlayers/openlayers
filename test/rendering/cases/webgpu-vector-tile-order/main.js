@@ -3,11 +3,14 @@ import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
-import WebGPUTileLayer from '../../../../src/ol/layer/WebGPUTile.js';
-import WebGPUVectorLayer from '../../../../src/ol/layer/WebGPUVector.js';
+import TileLayer from '../../../../src/ol/layer/Tile.js';
+import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import {fromLonLat} from '../../../../src/ol/proj.js';
+import {setDefaultRenderer} from '../../../../src/ol/renderer.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 import XYZ from '../../../../src/ol/source/XYZ.js';
+
+setDefaultRenderer('webgpu');
 
 if (!navigator.gpu || !(await navigator.gpu.requestAdapter())) {
   render({
@@ -34,7 +37,7 @@ if (!navigator.gpu || !(await navigator.gpu.requestAdapter())) {
     ];
   }
 
-  const below = new WebGPUVectorLayer({
+  const below = new VectorLayer({
     source: new VectorSource({
       features: [
         new Feature(new Polygon(box(-80, -40, -15, 40))),
@@ -62,14 +65,14 @@ if (!navigator.gpu || !(await navigator.gpu.requestAdapter())) {
     ],
   });
 
-  const tiles = new WebGPUTileLayer({
+  const tiles = new TileLayer({
     source: new XYZ({
       url: '/data/tiles/satellite/{z}/{x}/{y}.jpg',
       transition: 0,
     }),
   });
 
-  const above = new WebGPUVectorLayer({
+  const above = new VectorLayer({
     source: new VectorSource({
       features: [
         new Feature(new Polygon(box(15, -40, 80, 40))),

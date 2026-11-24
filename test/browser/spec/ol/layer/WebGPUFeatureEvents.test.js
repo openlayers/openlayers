@@ -5,11 +5,18 @@ import MapBrowserEvent from '../../../../../src/ol/MapBrowserEvent.js';
 import View from '../../../../../src/ol/View.js';
 import Point from '../../../../../src/ol/geom/Point.js';
 import Polygon, {fromExtent} from '../../../../../src/ol/geom/Polygon.js';
-import WebGPUVectorLayer from '../../../../../src/ol/layer/WebGPUVector.js';
-import WebGPUVectorTileLayer from '../../../../../src/ol/layer/WebGPUVectorTile.js';
+import VectorLayer from '../../../../../src/ol/layer/Vector.js';
+import VectorTileLayer from '../../../../../src/ol/layer/VectorTile.js';
+import {setDefaultRenderer} from '../../../../../src/ol/renderer.js';
 import VectorSource from '../../../../../src/ol/source/Vector.js';
 import VectorTileSource from '../../../../../src/ol/source/VectorTile.js';
 import {createXYZ} from '../../../../../src/ol/tilegrid.js';
+
+beforeAll(() => {
+  setDefaultRenderer('webgpu');
+  return loadRenderers('webgpu');
+});
+afterAll(() => setDefaultRenderer('canvas'));
 
 /**
  * @param {Map} map Map.
@@ -41,7 +48,7 @@ function rectangle(minX, minY, maxX, maxY) {
 where('WebGPU').describe('WebGPU layer feature queries', function () {
   /** @type {Map} */
   let map;
-  /** @type {WebGPUVectorLayer} */
+  /** @type {VectorLayer} */
   let layer;
   /** @type {Feature} */
   let below;
@@ -54,7 +61,7 @@ where('WebGPU').describe('WebGPU layer feature queries', function () {
     below = new Feature({geometry: rectangle(-30, -30, 10, 10), name: 'below'});
     above = new Feature({geometry: rectangle(-10, -10, 30, 30), name: 'above'});
     alone = new Feature({geometry: rectangle(-45, 35, -35, 45), name: 'alone'});
-    layer = new WebGPUVectorLayer({
+    layer = new VectorLayer({
       source: new VectorSource({features: [below, above, alone]}),
       style: {'fill-color': 'red'},
     });
@@ -205,12 +212,12 @@ where('WebGPU').describe(
   function () {
     /** @type {Map} */
     let map;
-    /** @type {WebGPUVectorTileLayer} */
+    /** @type {VectorTileLayer} */
     let layer;
 
     beforeEach(async function () {
       const tileGrid = createXYZ({tileSize: 64});
-      layer = new WebGPUVectorTileLayer({
+      layer = new VectorTileLayer({
         source: new VectorTileSource({
           tileSize: 64,
           tileUrlFunction: (tileCoord) => tileCoord.join('/'),

@@ -4,8 +4,9 @@ import {assert} from 'chai';
 // worker global, and this test never starts a worker.
 globalThis.self = globalThis;
 
-const {default: WebGPUVectorLayer} =
-  await import('../../../../../src/ol/layer/WebGPUVector.js');
+const {default: VectorLayer} =
+  await import('../../../../../src/ol/layer/Vector.js');
+const {setDefaultRenderer} = await import('../../../../../src/ol/renderer.js');
 const {default: Feature} = await import('../../../../../src/ol/Feature.js');
 const {default: Polygon} =
   await import('../../../../../src/ol/geom/Polygon.js');
@@ -61,6 +62,21 @@ function labelBuffers(count) {
 }
 
 /**
+ * @param {import('../../../../../src/ol/layer/Vector.js').default} layer Layer.
+ * @return {Promise<*>} The layer's renderer, once it is loaded.
+ */
+async function loadRenderer(layer) {
+  layer.getRenderer();
+  if (layer.isRendererLoading()) {
+    await new Promise((resolve) => layer.once('change', resolve));
+  }
+  return layer.getRenderer();
+}
+
+beforeAll(() => setDefaultRenderer('webgpu'));
+afterAll(() => setDefaultRenderer('canvas'));
+
+/**
  * A settled view: not animating, and not translated since the last pass.
  * @return {import('../../../../../src/ol/Map.js').FrameState} Frame.
  */
@@ -87,12 +103,12 @@ describe('ol/renderer/webgpu/VectorLayer placement', () => {
     }
   });
 
-  it('places again when a zoom rebuild installs new labels on a settled view', () => {
-    const layer = new WebGPUVectorLayer({
+  it('places again when a zoom rebuild installs new labels on a settled view', async () => {
+    const layer = new VectorLayer({
       style: {'text-value': 'name'},
       declutter: true,
     });
-    const renderer = layer.getRenderer();
+    const renderer = await loadRenderer(layer);
     const frame = settledFrame();
 
     // The labels built at the previous zoom are already placed, and the view
@@ -133,12 +149,12 @@ describe('ol/renderer/webgpu/VectorLayer placement', () => {
     layer.dispose();
   });
 
-  it('keeps replacement labels hidden until placement accepts them', () => {
-    const layer = new WebGPUVectorLayer({
+  it('keeps replacement labels hidden until placement accepts them', async () => {
+    const layer = new VectorLayer({
       style: {'text-value': 'name'},
       declutter: true,
     });
-    const renderer = layer.getRenderer();
+    const renderer = await loadRenderer(layer);
     renderer.updateLabelView_(labelBuffers(3));
     assert.deepEqual(renderer.visibility_, [false, false, false]);
     layer.dispose();
@@ -160,11 +176,11 @@ describe('ol/renderer/webgpu/VectorLayer hit detection', () => {
     }
   });
 
-  it('hits text, geometry, and symbols from the top of the paint order', () => {
-    const layer = new WebGPUVectorLayer({
+  it('hits text, geometry, and symbols from the top of the paint order', async () => {
+    const layer = new VectorLayer({
       style: {'fill-color': '#eee'},
     });
-    const renderer = layer.getRenderer();
+    const renderer = await loadRenderer(layer);
     const labeled = new Feature(
       new Polygon([
         [
@@ -289,11 +305,11 @@ describe('ol/renderer/webgpu/VectorLayer hit detection', () => {
     layer.dispose();
   });
 
-  it('returns the higher z-index feature when it covers text', () => {
-    const layer = new WebGPUVectorLayer({
+  it('returns the higher z-index feature when it covers text', async () => {
+    const layer = new VectorLayer({
       style: {'fill-color': '#eee'},
     });
-    const renderer = layer.getRenderer();
+    const renderer = await loadRenderer(layer);
     const under = new Feature(
       new Polygon([
         [

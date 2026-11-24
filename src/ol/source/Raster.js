@@ -11,6 +11,7 @@ import EventType from '../events/EventType.js';
 import {equals, getCenter} from '../extent.js';
 import ImageLayer from '../layer/Image.js';
 import TileLayer from '../layer/Tile.js';
+import CanvasTileLayerRenderer from '../renderer/canvas/TileLayer.js';
 import {
   apply as applyTransform,
   create as createTransform,
@@ -948,7 +949,7 @@ class RasterSource extends ImageSource {
         /** @type {import("../renderer/canvas/TileLayer.js").default} */ (
           /** @type {*} */ (layer.getRenderer())
         );
-      if (!renderer.prepareFrame(frameState)) {
+      if (!renderer || !renderer.prepareFrame(frameState)) {
         return null;
       }
       return renderer.readData(frameState);
@@ -997,7 +998,7 @@ class RasterSource extends ImageSource {
             size: [1, 1],
           })
         );
-        const input = renderer.readData(lookupFrameState);
+        const input = renderer?.readData(lookupFrameState);
         if (!input) {
           return null;
         }
@@ -1200,6 +1201,9 @@ function readsArrayData(source) {
 function getImageData(layer, frameState) {
   const renderer = layer.getRenderer();
   if (!renderer) {
+    if (layer.isRendererLoading()) {
+      return null;
+    }
     throw new Error('Unsupported layer type: ' + layer);
   }
 
@@ -1276,6 +1280,20 @@ function createLayers(sources) {
 }
 
 /**
+ * Layer for a data tile source input. Raster uses its Canvas tile renderer to
+ * load tiles and sample their data at its native type with `readData()`. It
+ * never calls `renderFrame()`, so nothing is drawn.
+ */
+class DataTileInputLayer extends TileLayer {
+  /**
+   * @override
+   */
+  createRenderer() {
+    return new CanvasTileLayerRenderer(this, {cacheSize: this.getCacheSize()});
+  }
+}
+
+/**
  * Create a layer for the provided source.
  * @param {import("./Source.js").default|import("../layer/Layer.js").default} layerOrSource The layer or source.
  * @return {import("../layer/Layer.js").default} The layer.
@@ -1285,7 +1303,9 @@ function createLayer(layerOrSource) {
   let layer;
   if (layerOrSource instanceof Source) {
     if (layerOrSource instanceof TileSource) {
-      layer = new TileLayer({source: layerOrSource});
+      layer = readsArrayData(layerOrSource)
+        ? new DataTileInputLayer({source: layerOrSource})
+        : new TileLayer({source: layerOrSource});
     } else if (layerOrSource instanceof ImageSource) {
       layer = new ImageLayer({source: layerOrSource});
     } else {

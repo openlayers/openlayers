@@ -1,4 +1,5 @@
-import WebGPUVectorTileLayer from '../../../src/ol/layer/WebGPUVectorTile.js';
+import VectorTileLayer from '../../../src/ol/layer/VectorTile.js';
+import {setDefaultRenderer} from '../../../src/ol/renderer.js';
 import {
   createNavigationPhases,
   readFlightConfig,
@@ -10,6 +11,8 @@ import {
   versatilesSourceMaxZoom,
   versatilesZoom,
 } from '../shared/versatiles-map.js';
+
+setDefaultRenderer('webgpu');
 
 export const name = 'webgpu-vector-tiles';
 export const title = 'WebGPU vector tiles';
@@ -23,7 +26,7 @@ export const fixture = 'versatiles';
  * @return {Promise<Object>} Benchmark.
  */
 export async function setup(target, params) {
-  const prepared = await createVersatilesMap(target, WebGPUVectorTileLayer);
+  const prepared = await createVersatilesMap(target, VectorTileLayer);
   if (prepared.unavailable) {
     return prepared;
   }

@@ -5,8 +5,8 @@ shortdesc: Compares the Canvas2D and WebGPU vector tile renderers using the same
 docs: |
   The [VersaTiles Colorful](https://tiles.versatiles.org/assets/styles/colorful/style.json)
   style fills the window, with the WebGPU renderer on the left and the Canvas2D
-  renderer on the right. `ol-mapbox-style`'s `applyStyle()` function applies the
-  style to a `WebGPUVectorTile` layer and a `VectorTile` layer. Both maps share
+  renderer on the right. `ol-mapbox-style`'s `apply()` function creates the
+  layers of both maps, those of the WebGPU map after `setDefaultRenderer('webgpu')`. Both maps share
   one view, so they always show the same extent. WebGPU is required.
 
   These style features are not rendered by the WebGPU renderer yet:

@@ -1,18 +1,25 @@
 import {assert} from 'chai';
 import {WEBGPU} from '../../../../../src/ol/has.js';
-import WebGPUTileLayer from '../../../../../src/ol/layer/WebGPUTile.js';
+import TileLayer from '../../../../../src/ol/layer/Tile.js';
+import {setDefaultRenderer} from '../../../../../src/ol/renderer.js';
 import WebGPUTileLayerRenderer from '../../../../../src/ol/renderer/webgpu/TileLayer.js';
 import OSM from '../../../../../src/ol/source/OSM.js';
 import XYZ from '../../../../../src/ol/source/XYZ.js';
 import {getKey as getTileCoordKey} from '../../../../../src/ol/tilecoord.js';
 import {getUid} from '../../../../../src/ol/util.js';
 
+beforeAll(() => {
+  setDefaultRenderer('webgpu');
+  return loadRenderers('webgpu');
+});
+afterAll(() => setDefaultRenderer('canvas'));
+
 describe('ol/layer/WebGPUTile', () => {
   it('creates a WebGPU tile renderer', function () {
     if (!WEBGPU) {
       this.skip();
     }
-    const layer = new WebGPUTileLayer({
+    const layer = new TileLayer({
       source: new OSM(),
     });
     const renderer = layer.createRenderer();
@@ -24,7 +31,7 @@ describe('ol/layer/WebGPUTile', () => {
     const source = new XYZ({
       url: 'https://example.com/{z}/{x}/{y}.png',
     });
-    const layer = new WebGPUTileLayer({source});
+    const layer = new TileLayer({source});
     const renderer = /** @type {WebGPUTileLayerRenderer} */ (
       layer.createRenderer()
     );
@@ -67,7 +74,7 @@ describe('ol/layer/WebGPUTile', () => {
     first.setState('loading');
     second.setState('loading');
     let current = [first];
-    const layer = new WebGPUTileLayer({sources: () => current});
+    const layer = new TileLayer({sources: () => current});
     const renderer = /** @type {WebGPUTileLayerRenderer} */ (
       layer.getRenderer()
     );
@@ -94,7 +101,7 @@ describe('ol/layer/WebGPUTile', () => {
   it('renders again and stops watching once a loading source is ready', () => {
     const source = new XYZ({url: 'https://example.com/{z}/{x}/{y}.png'});
     source.setState('loading');
-    const layer = new WebGPUTileLayer({sources: [source]});
+    const layer = new TileLayer({sources: [source]});
     const renderer = /** @type {WebGPUTileLayerRenderer} */ (
       layer.createRenderer()
     );

@@ -1,7 +1,10 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import TileLayer from '../src/ol/layer/WebGPUTile.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import {setDefaultRenderer} from '../src/ol/renderer.js';
 import GeoTIFF from '../src/ol/source/GeoTIFF.js';
+
+setDefaultRenderer('webgpu');
 
 const channels = ['red', 'green', 'blue'];
 for (const channel of channels) {

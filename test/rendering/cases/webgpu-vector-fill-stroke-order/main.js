@@ -2,8 +2,11 @@ import Feature from '../../../../src/ol/Feature.js';
 import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
-import WebGPUVectorLayer from '../../../../src/ol/layer/WebGPUVector.js';
+import VectorLayer from '../../../../src/ol/layer/Vector.js';
+import {setDefaultRenderer} from '../../../../src/ol/renderer.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
+
+setDefaultRenderer('webgpu');
 
 if (!navigator.gpu || !(await navigator.gpu.requestAdapter())) {
   render({
@@ -34,7 +37,7 @@ if (!navigator.gpu || !(await navigator.gpu.requestAdapter())) {
     });
   }
 
-  const layer = new WebGPUVectorLayer({
+  const layer = new VectorLayer({
     source: new VectorSource({
       features: [
         box(-120, -100, -40, 20, 'plain-under'),

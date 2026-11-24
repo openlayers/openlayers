@@ -2,6 +2,9 @@ import Map from '../../src/ol/Map.js';
 import View from '../../src/ol/View.js';
 import {setLevel as setLogLevel} from '../../src/ol/console.js';
 import {defaults as defaultInteractions} from '../../src/ol/interaction/defaults.js';
+import TileLayer from '../../src/ol/layer/Tile.js';
+import VectorLayer from '../../src/ol/layer/Vector.js';
+import VectorTileLayer from '../../src/ol/layer/VectorTile.js';
 
 setLogLevel('error');
 
@@ -52,6 +55,29 @@ const webgpu = 'gpu' in navigator && !!(await navigator.gpu.requestAdapter());
    */
   global.afterLoadXml = function (path, next) {
     afterLoad('xml', path, next);
+  };
+
+  /**
+   * Layers load their renderers on first use. Loading them up front lets specs
+   * get renderers synchronously.
+   * @param {import('../../src/ol/renderer.js').RendererName} renderer Renderer.
+   * @return {Promise<void>} Resolves when the renderers are loaded.
+   */
+  global.loadRenderers = async function (renderer) {
+    const layers = [
+      new TileLayer({renderer}),
+      new VectorLayer({renderer}),
+      new VectorTileLayer({renderer}),
+    ];
+    await Promise.all(
+      layers.map(async (layer) => {
+        layer.getRenderer();
+        if (layer.isRendererLoading()) {
+          await new Promise((resolve) => layer.once('change', resolve));
+        }
+        layer.dispose();
+      }),
+    );
   };
 
   global.createMapDiv = function (width, height) {

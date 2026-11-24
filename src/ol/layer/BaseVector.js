@@ -85,7 +85,7 @@ const Property = {
  * @template {import('../Feature.js').FeatureLike} FeatureType
  * @template {import("../source/Vector.js").default<FeatureType>|import("../source/VectorTile.js").default<FeatureType>} VectorSourceType<FeatureType>
  * @extends {Layer<VectorSourceType, RendererType>}
- * @template {import("../renderer/canvas/VectorLayer.js").default|import("../renderer/canvas/VectorTileLayer.js").default|import("../renderer/canvas/VectorImageLayer.js").default|import("../renderer/webgl/VectorLayer.js").default|import("../renderer/webgl/PointsLayer.js").default} RendererType
+ * @template {import("../renderer/canvas/VectorLayer.js").default|import("../renderer/canvas/VectorTileLayer.js").default|import("../renderer/canvas/VectorImageLayer.js").default|import("../renderer/webgl/VectorLayer.js").default|import("../renderer/webgl/PointsLayer.js").default|import("../renderer/webgpu/VectorLayer.js").default|import("../renderer/webgpu/VectorTileLayer.js").default} RendererType
  * @api
  */
 class BaseVectorLayer extends Layer {
@@ -288,7 +288,7 @@ class BaseVectorLayer extends Layer {
       style === null || styleLike === null
         ? undefined
         : toStyleFunction(styleLike);
-    this.changed();
+    this.styleChanged();
   }
 
   /**
@@ -297,7 +297,7 @@ class BaseVectorLayer extends Layer {
    */
   setDeclutter(declutter) {
     this.declutter_ = declutter ? String(declutter) : undefined;
-    this.changed();
+    this.styleChanged();
   }
 }
 

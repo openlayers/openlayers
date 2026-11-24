@@ -2,10 +2,13 @@ import Feature from '../../../../src/ol/Feature.js';
 import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
-import WebGPUTileLayer from '../../../../src/ol/layer/WebGPUTile.js';
-import WebGPUVectorLayer from '../../../../src/ol/layer/WebGPUVector.js';
+import TileLayer from '../../../../src/ol/layer/Tile.js';
+import VectorLayer from '../../../../src/ol/layer/Vector.js';
+import {setDefaultRenderer} from '../../../../src/ol/renderer.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 import XYZ from '../../../../src/ol/source/XYZ.js';
+
+setDefaultRenderer('webgpu');
 
 if (!navigator.gpu || !(await navigator.gpu.requestAdapter())) {
   render({
@@ -16,7 +19,7 @@ if (!navigator.gpu || !(await navigator.gpu.requestAdapter())) {
   // Tiles on the left half only, so the tile layer's background shows on the
   // right. The vector layer shares the canvas and paints second, so its
   // background has to be composited over the tiles rather than cleared.
-  const tiles = new WebGPUTileLayer({
+  const tiles = new TileLayer({
     extent: [-20037508.34, -20037508.34, 0, 20037508.34],
     background: 'rgba(255, 200, 0, 0.8)',
     source: new XYZ({
@@ -26,7 +29,7 @@ if (!navigator.gpu || !(await navigator.gpu.requestAdapter())) {
   });
 
   const half = 5e6;
-  const vector = new WebGPUVectorLayer({
+  const vector = new VectorLayer({
     background: 'rgba(0, 0, 255, 0.5)',
     source: new VectorSource({
       features: [

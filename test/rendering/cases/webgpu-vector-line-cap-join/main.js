@@ -3,8 +3,11 @@ import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
-import WebGPUVectorLayer from '../../../../src/ol/layer/WebGPUVector.js';
+import VectorLayer from '../../../../src/ol/layer/Vector.js';
+import {setDefaultRenderer} from '../../../../src/ol/renderer.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
+
+setDefaultRenderer('webgpu');
 
 if (!navigator.gpu || !(await navigator.gpu.requestAdapter())) {
   render({
@@ -98,7 +101,7 @@ if (!navigator.gpu || !(await navigator.gpu.requestAdapter())) {
       'stroke-miter-limit': miterLimit,
     },
   });
-  const layer = new WebGPUVectorLayer({
+  const layer = new VectorLayer({
     source: new VectorSource({features}),
     style: [
       style('butt', 'rgba(225,29,72,0.75)', 'butt', 'round', 10),

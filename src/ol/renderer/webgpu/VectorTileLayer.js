@@ -368,6 +368,12 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
 
     /**
      * @private
+     * @type {import("../../style/flat.js").StyleVariables|undefined}
+     */
+    this.variables_ = options.variables;
+
+    /**
+     * @private
      * @type {number}
      */
     this.renderedLayerRevision_ = this.getLayer().getRevision();
@@ -2565,6 +2571,28 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     this.renderBatchesByKey_.clear();
     this.styleCaches_.clear();
     this.pendingBuilds_.clear();
+  }
+
+  /**
+   * Compiles the layer's new style. The layer revision changes with it, so the
+   * next frame rebuilds the buffers.
+   * @override
+   */
+  handleStyleChange() {
+    const layer =
+      /** @type {import("../../layer/BaseVector.js").default<*, *, *>} */ (
+        this.getLayer()
+      );
+    this.styleFunction_ = compileStyle(
+      layer.getStyle() ?? undefined,
+      this.variables_,
+    );
+    const declutterGroup = layer.getDeclutter();
+    if (declutterGroup !== this.declutterGroup_) {
+      this.declutterGroup_ = declutterGroup;
+      this.placement_.reset();
+      this.labelKey_ = '';
+    }
   }
 
   /**

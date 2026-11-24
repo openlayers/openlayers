@@ -2,8 +2,11 @@ import Feature from '../../../../src/ol/Feature.js';
 import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
-import WebGPUVectorLayer from '../../../../src/ol/layer/WebGPUVector.js';
+import VectorLayer from '../../../../src/ol/layer/Vector.js';
+import {setDefaultRenderer} from '../../../../src/ol/renderer.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
+
+setDefaultRenderer('webgpu');
 
 /**
  * @param {number} min Minimum x and y.
@@ -30,7 +33,7 @@ if (!navigator.gpu || !(await navigator.gpu.requestAdapter())) {
 } else {
   // The white square covers the blue background. Layer opacity has to fade
   // that result, or the square blends with the blue as well as the red.
-  const under = new WebGPUVectorLayer({
+  const under = new VectorLayer({
     source: new VectorSource({
       features: [new Feature(square(-200, 200))],
     }),
@@ -38,7 +41,7 @@ if (!navigator.gpu || !(await navigator.gpu.requestAdapter())) {
       'fill-color': '#c00',
     },
   });
-  const over = new WebGPUVectorLayer({
+  const over = new VectorLayer({
     opacity: 0.5,
     background: '#00f',
     source: new VectorSource({

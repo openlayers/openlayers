@@ -1,8 +1,11 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import TileLayer from '../src/ol/layer/WebGPUTile.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import {setDefaultRenderer} from '../src/ol/renderer.js';
 import ImageTile from '../src/ol/source/ImageTile.js';
 import OSM from '../src/ol/source/OSM.js';
+
+setDefaultRenderer('webgpu');
 
 const variables = {};
 

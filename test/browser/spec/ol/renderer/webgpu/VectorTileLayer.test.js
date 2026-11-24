@@ -1,8 +1,9 @@
 import {assert} from 'chai';
 import Feature from '../../../../../../src/ol/Feature.js';
 import Point from '../../../../../../src/ol/geom/Point.js';
-import WebGPUVectorTileLayer from '../../../../../../src/ol/layer/WebGPUVectorTile.js';
+import VectorTileLayer from '../../../../../../src/ol/layer/VectorTile.js';
 import {get as getProjection} from '../../../../../../src/ol/proj.js';
+import {setDefaultRenderer} from '../../../../../../src/ol/renderer.js';
 import VectorTileSource from '../../../../../../src/ol/source/VectorTile.js';
 import CircleStyle from '../../../../../../src/ol/style/Circle.js';
 import Fill from '../../../../../../src/ol/style/Fill.js';
@@ -12,6 +13,12 @@ import {createXYZ, wrapX} from '../../../../../../src/ol/tilegrid.js';
 import TileState from '../../../../../../src/ol/TileState.js';
 import {getUid} from '../../../../../../src/ol/util.js';
 import ViewHint from '../../../../../../src/ol/ViewHint.js';
+
+beforeAll(() => {
+  setDefaultRenderer('webgpu');
+  return loadRenderers('webgpu');
+});
+afterAll(() => setDefaultRenderer('canvas'));
 
 /**
  * @param {number} z Z.
@@ -72,7 +79,7 @@ describe('ol/renderer/webgpu/VectorTileLayer', () => {
   let projection;
   /** @type {VectorTileSource} */
   let source;
-  /** @type {WebGPUVectorTileLayer} */
+  /** @type {VectorTileLayer} */
   let layer;
   /** @type {import('../../../../../../src/ol/renderer/webgpu/VectorTileLayer.js').default} */
   let renderer;
@@ -86,7 +93,7 @@ describe('ol/renderer/webgpu/VectorTileLayer', () => {
       url: '{z}/{x}/{y}.pbf',
       projection,
     });
-    layer = new WebGPUVectorTileLayer({
+    layer = new VectorTileLayer({
       source,
       style: {
         'circle-radius': 2,
@@ -261,7 +268,7 @@ describe('ol/renderer/webgpu/VectorTileLayer', () => {
       tile.getSourceTiles = () => [sourceTile];
       return tile;
     };
-    layer = new WebGPUVectorTileLayer({
+    layer = new VectorTileLayer({
       source,
       style: {
         'circle-radius': 2,
@@ -337,7 +344,7 @@ describe('ol/renderer/webgpu/VectorTileLayer', () => {
       radius: 3,
       fill: new Fill({color: '#000'}),
     });
-    layer = new WebGPUVectorTileLayer({
+    layer = new VectorTileLayer({
       source,
       style: (feature) => {
         calls.push(feature.getId());
@@ -457,7 +464,7 @@ describe('ol/renderer/webgpu/VectorTileLayer', () => {
       radius: 3,
       fill: new Fill({color: '#000'}),
     });
-    layer = new WebGPUVectorTileLayer({
+    layer = new VectorTileLayer({
       source,
       style: (feature, resolution) => {
         resolutions.push(resolution);

@@ -4,14 +4,17 @@ import View from '../src/ol/View.js';
 import {getCenter} from '../src/ol/extent.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import Link from '../src/ol/interaction/Link.js';
-import WebGPUTileLayer from '../src/ol/layer/WebGPUTile.js';
-import WebGPUVectorLayer from '../src/ol/layer/WebGPUVector.js';
+import TileLayer from '../src/ol/layer/Tile.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import {get as getProjection} from '../src/ol/proj.js';
 import {register} from '../src/ol/proj/proj4.js';
+import {setDefaultRenderer} from '../src/ol/renderer.js';
 import DataTile from '../src/ol/source/DataTile.js';
 import ImageTile from '../src/ol/source/ImageTile.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import {createXYZ} from '../src/ol/tilegrid.js';
+
+setDefaultRenderer('webgpu');
 
 const key = 'get_your_own_D6rA4zTHduk6KOKTXzGB';
 const attributions =
@@ -72,7 +75,7 @@ for (const {code, extent} of projections) {
   getProjection(code).setExtent(extent);
 }
 
-const base = new WebGPUTileLayer({
+const base = new TileLayer({
   source: new ImageTile({
     attributions: attributions,
     url:
@@ -89,7 +92,7 @@ canvas.width = size;
 canvas.height = size;
 const context = canvas.getContext('2d', {willReadFrequently: true});
 
-const raster = new WebGPUTileLayer({
+const raster = new TileLayer({
   source: new DataTile({
     projection: 'EPSG:4326',
     wrapX: true,
@@ -146,7 +149,7 @@ const vectorSource = new VectorSource({
 });
 vectorSource.setProjection('EPSG:4326');
 
-const vector = new WebGPUVectorLayer({
+const vector = new VectorLayer({
   source: vectorSource,
   style: [
     {

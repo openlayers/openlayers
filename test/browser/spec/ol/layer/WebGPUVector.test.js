@@ -5,13 +5,21 @@ import View from '../../../../../src/ol/View.js';
 import Point from '../../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../../src/ol/geom/Polygon.js';
 import {WEBGPU} from '../../../../../src/ol/has.js';
-import WebGPUVectorLayer from '../../../../../src/ol/layer/WebGPUVector.js';
+import VectorLayer from '../../../../../src/ol/layer/Vector.js';
 import {fromLonLat} from '../../../../../src/ol/proj.js';
+import {setDefaultRenderer} from '../../../../../src/ol/renderer.js';
+import CanvasVectorLayerRenderer from '../../../../../src/ol/renderer/canvas/VectorLayer.js';
 import WebGPUVectorLayerRenderer from '../../../../../src/ol/renderer/webgpu/VectorLayer.js';
 import VectorSource from '../../../../../src/ol/source/Vector.js';
 import Fill from '../../../../../src/ol/style/Fill.js';
 import Icon from '../../../../../src/ol/style/Icon.js';
 import Style from '../../../../../src/ol/style/Style.js';
+
+beforeAll(() => {
+  setDefaultRenderer('webgpu');
+  return loadRenderers('webgpu');
+});
+afterAll(() => setDefaultRenderer('canvas'));
 
 /**
  * @param {Map} map Map.
@@ -22,13 +30,13 @@ function renderComplete(map) {
 }
 
 where('WebGPU').describe('ol/layer/WebGPUVector', function () {
-  /** @type {WebGPUVectorLayer} */
+  /** @type {VectorLayer} */
   let layer;
   /** @type {Map} */
   let map, target;
 
   beforeEach(function () {
-    layer = new WebGPUVectorLayer({
+    layer = new VectorLayer({
       className: 'testlayer',
       source: new VectorSource(),
       style: {
@@ -63,6 +71,12 @@ where('WebGPU').describe('ol/layer/WebGPUVector', function () {
     const renderer = layer.getRenderer();
     assert.instanceOf(renderer, WebGPUVectorLayerRenderer);
     assert.strictEqual(layer.getDeclutter(), 'true');
+  });
+
+  it('uses the renderer option over the default renderer', () => {
+    const canvasLayer = new VectorLayer({renderer: 'canvas'});
+    assert.instanceOf(canvasLayer.getRenderer(), CanvasVectorLayerRenderer);
+    canvasLayer.dispose();
   });
 
   it('loads features from the vector source', async () => {
@@ -364,7 +378,7 @@ where('WebGPU').describe('ol/layer/WebGPUVector', function () {
 });
 
 describe('ol/layer/WebGPUVector', function () {
-  /** @type {WebGPUVectorLayer} */
+  /** @type {VectorLayer} */
   let layer;
   /** @type {Map} */
   let map, target;
@@ -373,7 +387,7 @@ describe('ol/layer/WebGPUVector', function () {
     if (!WEBGPU) {
       this.skip();
     }
-    layer = new WebGPUVectorLayer({
+    layer = new VectorLayer({
       className: 'testlayer',
       source: new VectorSource(),
       style: {

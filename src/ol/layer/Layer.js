@@ -161,9 +161,16 @@ class Layer extends BaseLayer {
 
     /**
      * @private
-     * @type {RendererType|null|undefined}
+     * @type {RendererType|null}
      */
     this.renderer_ = null;
+
+    /**
+     * Set while a renderer returned as a promise by `createRenderer()` loads.
+     * @private
+     * @type {Promise<RendererType>|null}
+     */
+    this.rendererLoading_ = null;
 
     /**
      * @private
@@ -476,8 +483,10 @@ class Layer extends BaseLayer {
    * @return {HTMLElement|null} The rendered element.
    */
   render(frameState, target) {
-    const layerRenderer = /** @type {RendererType} */ (this.getRenderer());
-
+    const layerRenderer = this.getRenderer();
+    if (!layerRenderer) {
+      return null;
+    }
     if (
       layerRenderer.prepareFrame(
         /** @type {import("../Map.js").FrameState} */ (frameState),
@@ -614,10 +623,26 @@ class Layer extends BaseLayer {
    * @return {RendererType|null} The layer renderer.
    */
   getRenderer() {
-    if (!this.renderer_) {
-      this.renderer_ = this.createRenderer();
+    if (this.renderer_ || this.rendererLoading_) {
+      return this.renderer_;
     }
-    return this.renderer_;
+    const renderer = this.createRenderer();
+    if (!(renderer instanceof Promise)) {
+      this.renderer_ = renderer;
+      return renderer;
+    }
+    this.rendererLoading_ = renderer;
+    renderer.then((loaded) => {
+      if (this.rendererLoading_ !== renderer) {
+        // cleared or disposed while loading
+        loaded.dispose();
+        return;
+      }
+      this.rendererLoading_ = null;
+      this.renderer_ = loaded;
+      this.changed();
+    });
+    return null;
   }
 
   /**
@@ -628,8 +653,16 @@ class Layer extends BaseLayer {
   }
 
   /**
-   * Create a renderer for this layer.
-   * @return {RendererType} A layer renderer.
+   * @return {boolean} The layer's renderer is still loading.
+   */
+  isRendererLoading() {
+    return !!this.rendererLoading_;
+  }
+
+  /**
+   * Create a renderer for this layer. Layers whose renderer is loaded on demand
+   * return a promise for it, and `getRenderer()` returns `null` until it is loaded.
+   * @return {RendererType|Promise<RendererType>} A layer renderer.
    * @protected
    */
   createRenderer() {
@@ -637,12 +670,23 @@ class Layer extends BaseLayer {
   }
 
   /**
+   * Lets an existing renderer know that the layer's style or declutter setting
+   * changed, and triggers a re-render.
+   * @protected
+   */
+  styleChanged() {
+    this.renderer_?.handleStyleChange();
+    this.changed();
+  }
+
+  /**
    * This will clear the renderer so that a new one can be created next time it is needed
    */
   clearRenderer() {
+    this.rendererLoading_ = null;
     if (this.renderer_) {
       this.renderer_.dispose();
-      delete this.renderer_;
+      this.renderer_ = null;
     }
   }
 

@@ -4,17 +4,24 @@ import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
 import Point from '../../../../../src/ol/geom/Point.js';
 import {WEBGPU} from '../../../../../src/ol/has.js';
-import WebGPUVectorTileLayer from '../../../../../src/ol/layer/WebGPUVectorTile.js';
+import VectorTileLayer from '../../../../../src/ol/layer/VectorTile.js';
+import {setDefaultRenderer} from '../../../../../src/ol/renderer.js';
 import WebGPUVectorTileLayerRenderer from '../../../../../src/ol/renderer/webgpu/VectorTileLayer.js';
 import VectorTileSource from '../../../../../src/ol/source/VectorTile.js';
 import {createXYZ} from '../../../../../src/ol/tilegrid.js';
+
+beforeAll(() => {
+  setDefaultRenderer('webgpu');
+  return loadRenderers('webgpu');
+});
+afterAll(() => setDefaultRenderer('canvas'));
 
 describe('ol/layer/WebGPUVectorTile', () => {
   it('creates a renderer and exposes the declutter group', function () {
     if (!WEBGPU) {
       this.skip();
     }
-    const layer = new WebGPUVectorTileLayer({
+    const layer = new VectorTileLayer({
       source: new VectorTileSource({
         url: 'data/{z}/{x}/{y}.pbf',
       }),
@@ -32,14 +39,14 @@ describe('ol/layer/WebGPUVectorTile', () => {
 });
 
 where('WebGPU').describe('ol/layer/WebGPUVectorTile with a map', () => {
-  /** @type {WebGPUVectorTileLayer} */
+  /** @type {VectorTileLayer} */
   let layer;
   /** @type {Map} */
   let map;
 
   beforeEach(() => {
     const tileGrid = createXYZ({tileSize: 64});
-    layer = new WebGPUVectorTileLayer({
+    layer = new VectorTileLayer({
       source: new VectorTileSource({
         tileSize: 64,
         tileUrlFunction: (tileCoord) => tileCoord.join('/'),

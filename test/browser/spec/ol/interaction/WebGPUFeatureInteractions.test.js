@@ -9,7 +9,6 @@ import Modify from '../../../../../src/ol/interaction/Modify.js';
 import Select from '../../../../../src/ol/interaction/Select.js';
 import Translate from '../../../../../src/ol/interaction/Translate.js';
 import VectorLayer from '../../../../../src/ol/layer/Vector.js';
-import WebGPUVectorLayer from '../../../../../src/ol/layer/WebGPUVector.js';
 import VectorSource from '../../../../../src/ol/source/Vector.js';
 
 where('WebGPU').describe('interactions with a WebGPU layer', function () {
@@ -18,7 +17,7 @@ where('WebGPU').describe('interactions with a WebGPU layer', function () {
 
   /** @type {Map} */
   let map;
-  /** @type {WebGPUVectorLayer} */
+  /** @type {VectorLayer} */
   let layer;
   /** @type {Feature} */
   let below;
@@ -35,7 +34,8 @@ where('WebGPU').describe('interactions with a WebGPU layer', function () {
     document.body.appendChild(target);
     below = new Feature({geometry: rectangle(-40, -40, 20, 20), name: 'below'});
     above = new Feature({geometry: rectangle(-20, -20, 40, 40), name: 'above'});
-    layer = new WebGPUVectorLayer({
+    layer = new VectorLayer({
+      renderer: 'webgpu',
       source: new VectorSource({features: [below, above]}),
       style: {'fill-color': 'red'},
     });
@@ -175,7 +175,8 @@ where('WebGPU').describe('interactions with a WebGPU layer', function () {
   describe('Modify', function () {
     it('grabs a point by the circle drawn for it when hitDetection is the WebGPU layer', async function () {
       const point = new Feature({geometry: new Point([100, 50])});
-      const pointLayer = new WebGPUVectorLayer({
+      const pointLayer = new VectorLayer({
+        renderer: 'webgpu',
         source: new VectorSource({features: [point]}),
         style: {'circle-radius': 12, 'circle-fill-color': 'blue'},
       });
