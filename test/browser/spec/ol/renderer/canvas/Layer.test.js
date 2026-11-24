@@ -52,4 +52,13 @@ describe('ol/renderer/canvas/Layer', function () {
       1,
     );
   });
+
+  it('does not reuse a container with the same background', function () {
+    map.getLayers().forEach((layer) => layer.setBackground('red'));
+    map.renderSync();
+    assert.strictEqual(
+      map.getTargetElement().querySelectorAll('canvas').length,
+      2,
+    );
+  });
 });

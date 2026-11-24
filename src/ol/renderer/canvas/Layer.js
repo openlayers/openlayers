@@ -1,8 +1,6 @@
 /**
  * @module ol/renderer/canvas/Layer
  */
-import {equals} from '../../array.js';
-import {asArray} from '../../color.js';
 import {createCanvasContext2D, createMockDiv, isCanvas} from '../../dom.js';
 import {
   getBottomLeft,
@@ -197,17 +195,7 @@ class CanvasLayerRenderer extends LayerRenderer {
     }
     const layerClassName = this.getLayer().getClassName();
     let container, context;
-    if (
-      target &&
-      target.className === layerClassName &&
-      (!backgroundColor ||
-        (target &&
-          target.style.backgroundColor &&
-          equals(
-            asArray(target.style.backgroundColor),
-            asArray(backgroundColor),
-          )))
-    ) {
+    if (target && target.className === layerClassName && !backgroundColor) {
       const canvas = target.firstElementChild;
       if (isCanvas(canvas)) {
         context = canvas.getContext('2d');
