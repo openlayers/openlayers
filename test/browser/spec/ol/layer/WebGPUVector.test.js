@@ -2,6 +2,7 @@ import {assert} from 'chai';
 import Feature from '../../../../../src/ol/Feature.js';
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
+import ViewHint from '../../../../../src/ol/ViewHint.js';
 import Point from '../../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../../src/ol/geom/Polygon.js';
 import {WEBGPU} from '../../../../../src/ol/has.js';
@@ -265,6 +266,38 @@ where('WebGPU').describe('ol/layer/WebGPUVector', function () {
     map.getView().setResolution(1.2);
     await renderComplete(map);
     assert.strictEqual(styleFunction.mock.lastCall[1], 1.2);
+  });
+
+  it('restyles while interacting only with updateWhileInteracting', async () => {
+    const polygon = new Polygon([
+      [
+        [-10, -10],
+        [10, -10],
+        [10, 10],
+        [-10, 10],
+        [-10, -10],
+      ],
+    ]);
+    const lazyStyle = vi.fn(() => new Style({fill: new Fill({color: 'red'})}));
+    layer.setSource(new VectorSource({features: [new Feature(polygon)]}));
+    layer.setStyle(lazyStyle);
+    const eagerStyle = vi.fn(() => new Style({fill: new Fill({color: 'red'})}));
+    const eager = new VectorLayer({
+      source: new VectorSource({features: [new Feature(polygon.clone())]}),
+      style: eagerStyle,
+      updateWhileInteracting: true,
+    });
+    map.addLayer(eager);
+    map.setView(new View({center: [0, 0], resolution: 1}));
+    await renderComplete(map);
+
+    const view = map.getView();
+    view.setHint(ViewHint.INTERACTING, 1);
+    view.setResolution(1.2);
+    map.renderSync();
+    view.setHint(ViewHint.INTERACTING, -1);
+    assert.strictEqual(lazyStyle.mock.lastCall[1], 1);
+    assert.strictEqual(eagerStyle.mock.lastCall[1], 1.2);
   });
 
   it('rebuilds icons after a full image atlas starts over', async () => {

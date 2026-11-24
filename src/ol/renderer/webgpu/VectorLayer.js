@@ -156,6 +156,21 @@ function viewNotMoving(frameState) {
 }
 
 /**
+ * Whether a rebuild may start in this frame. While the view moves, only when
+ * the layer asks for it with `updateWhileAnimating` or `updateWhileInteracting`.
+ * @param {import("../../Map.js").FrameState} frameState Frame state.
+ * @param {import("../../layer/BaseVector.js").default<*, *, *>} layer Layer.
+ * @return {boolean} A rebuild may start.
+ */
+function mayStartBuild(frameState, layer) {
+  const hints = frameState.viewHints;
+  return (
+    (!hints[ViewHint.ANIMATING] || layer.getUpdateWhileAnimating()) &&
+    (!hints[ViewHint.INTERACTING] || layer.getUpdateWhileInteracting())
+  );
+}
+
+/**
  * Keep geometries in a fixed feature CRS so a view CRS change does not mutate
  * coordinates. Matches the webgl-reproj VectorLayer approach.
  *
@@ -1296,8 +1311,9 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
     }
     this.preRender(frameState);
     // Rebuilding is O(features): tessellation, and a proj4 call per vertex when
-    // reprojecting. Only do it once the view settles, and reuse what is on hand
-    // in the meantime.
+    // reprojecting. Unless the layer updates while animating or interacting,
+    // only start it once the view settles, and reuse what is on hand in the
+    // meantime.
     if (
       this.buildPending_ &&
       this.viewLeftBuild_(frameState, this.renderedResolution_)
@@ -1318,7 +1334,12 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
       this.needsRebuild_(frameState) &&
       (!this.buffers_ ||
         this.pendingBuild_ ||
-        viewNotMoving(frameState) ||
+        mayStartBuild(
+          frameState,
+          /** @type {import("../../layer/BaseVector.js").default<any, any, any>} */ (
+            this.getLayer()
+          ),
+        ) ||
         this.sourceChanged_())
     ) {
       this.rebuildBuffers_(frameState);
