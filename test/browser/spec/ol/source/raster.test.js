@@ -5,10 +5,12 @@ import TileState from '../../../../../src/ol/TileState.js';
 import View from '../../../../../src/ol/View.js';
 import Point from '../../../../../src/ol/geom/Point.js';
 import ImageLayer from '../../../../../src/ol/layer/Image.js';
+import TileLayer from '../../../../../src/ol/layer/Tile.js';
 import VectorImageLayer from '../../../../../src/ol/layer/VectorImage.js';
 import Projection from '../../../../../src/ol/proj/Projection.js';
 import DataTileSource from '../../../../../src/ol/source/DataTile.js';
 import Static from '../../../../../src/ol/source/ImageStatic.js';
+import ImageTileSource from '../../../../../src/ol/source/ImageTile.js';
 import RasterSource, {Processor} from '../../../../../src/ol/source/Raster.js';
 import Source from '../../../../../src/ol/source/Source.js';
 import TileSource from '../../../../../src/ol/source/Tile.js';
@@ -296,6 +298,54 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function () {
         'red raster source',
         'green raster source',
       ]);
+    });
+  });
+
+  where('WebGPU').it('reads adjacent WebGPU inputs back separately', () => {
+    const transparent =
+      'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+    const tileGrid = new TileGrid({
+      extent: [-1, -1, 1, 1],
+      resolutions: [1],
+      tileSize: 2,
+    });
+    const projection = map.getView().getProjection();
+    const inputs = [red, transparent].map(
+      (url) =>
+        new TileLayer({
+          renderer: 'webgpu',
+          source: new ImageTileSource({
+            url,
+            tileGrid,
+            projection,
+            transition: 0,
+          }),
+        }),
+    );
+    const webgpuRaster = new RasterSource({
+      threads: 0,
+      sources: inputs,
+      operation: (pixels, data) => {
+        data.pixels = pixels;
+        return pixels[0];
+      },
+    });
+    layer.setSource(webgpuRaster);
+    const view = map.getView();
+    view.setCenter([0, 0]);
+    view.setZoom(0);
+    return new Promise((resolve) => {
+      webgpuRaster.on('afteroperations', (event) => {
+        // the first pass can come before the tiles are loaded
+        if (event.data.pixels[0][3] !== 0) {
+          resolve(event.data.pixels);
+        }
+      });
+    }).then(([first, second]) => {
+      webgpuRaster.dispose();
+      inputs.forEach((input) => input.dispose());
+      assert.deepEqual(Array.from(first), [255, 0, 0, 255]);
+      assert.deepEqual(Array.from(second), [0, 0, 0, 0]);
     });
   });
 

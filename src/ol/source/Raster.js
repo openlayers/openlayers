@@ -956,6 +956,8 @@ class RasterSource extends ImageSource {
     }
     frameState.layerIndex = layerIndex;
     frameState.renderTargets = {};
+    // A new frame for every input, so GPU renderers draw into a fresh canvas.
+    frameState.index = ++this.frameState_.index;
     return getImageData(layer, frameState);
   }
 
