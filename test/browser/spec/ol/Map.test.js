@@ -1247,6 +1247,119 @@ describe('ol/Map', function () {
       assert.strictEqual(loadSpy.mock.calls.length, 1);
       assert.strictEqual(reprioritizeSpy.mock.calls.length, 1);
     });
+
+    it('limits tile loads while animating to 8, 2 new per frame', function () {
+      const loadSpy = vi.spyOn(map.tileQueue_, 'loadMoreTiles');
+      vi.spyOn(map.tileQueue_, 'isEmpty').mockReturnValue(false);
+      vi.spyOn(map.tileQueue_, 'getTilesLoading').mockReturnValue(0);
+
+      map.frameState_.viewHints = [1, 0];
+      map.frameState_.time = Infinity; // guarantee lowOnFrameBudget is false
+      map.handlePostRender();
+
+      assert.deepEqual(loadSpy.mock.calls[0], [8, 2]);
+    });
+
+    it('does not load tiles while interacting after a slow frame', function () {
+      const loadSpy = vi.spyOn(map.tileQueue_, 'loadMoreTiles');
+      vi.spyOn(map.tileQueue_, 'isEmpty').mockReturnValue(false);
+      vi.spyOn(map.tileQueue_, 'getTilesLoading').mockReturnValue(0);
+
+      map.frameState_.viewHints = [0, 1];
+      map.frameState_.time = 0; // low on frame budget
+      map.handlePostRender();
+
+      assert.strictEqual(loadSpy.mock.calls.length, 0);
+    });
+  });
+
+  describe('#handlePostRender() with moving tile loading options', function () {
+    let target;
+
+    beforeEach(function () {
+      target = document.createElement('div');
+      target.style.width = '100px';
+      target.style.height = '100px';
+      document.body.appendChild(target);
+    });
+
+    /**
+     * @param {import('../../../../src/ol/Map.js').MapOptions} options Options.
+     * @return {Map} Rendered map.
+     */
+    function createMap(options) {
+      const map = new Map({
+        target: target,
+        view: new View({center: [0, 0], zoom: 1}),
+        ...options,
+      });
+      map.renderSync();
+      vi.spyOn(map.tileQueue_, 'isEmpty').mockReturnValue(false);
+      vi.spyOn(map.tileQueue_, 'getTilesLoading').mockReturnValue(0);
+      return map;
+    }
+
+    it('uses maxTilesLoadingWhileMoving while interacting', function () {
+      const map = createMap({maxTilesLoadingWhileMoving: 32});
+      const loadSpy = vi.spyOn(map.tileQueue_, 'loadMoreTiles');
+
+      map.frameState_.viewHints = [0, 1];
+      map.frameState_.time = Infinity; // guarantee lowOnFrameBudget is false
+      map.handlePostRender();
+
+      assert.deepEqual(loadSpy.mock.calls[0], [32, 8]);
+      disposeMap(map, target);
+    });
+
+    it('starts at least one new load per frame', function () {
+      const map = createMap({maxTilesLoadingWhileMoving: 1});
+      const loadSpy = vi.spyOn(map.tileQueue_, 'loadMoreTiles');
+
+      map.frameState_.viewHints = [1, 0];
+      map.frameState_.time = Infinity; // guarantee lowOnFrameBudget is false
+      map.handlePostRender();
+
+      assert.deepEqual(loadSpy.mock.calls[0], [1, 1]);
+      disposeMap(map, target);
+    });
+
+    it('keeps loading after slow frames with movingFrameBudget Infinity', function () {
+      const map = createMap({movingFrameBudget: Infinity});
+      const loadSpy = vi.spyOn(map.tileQueue_, 'loadMoreTiles');
+
+      map.frameState_.viewHints = [0, 1];
+      map.frameState_.time = 0; // a frame that took very long
+      map.handlePostRender();
+
+      assert.deepEqual(loadSpy.mock.calls[0], [8, 2]);
+      disposeMap(map, target);
+    });
+
+    it('does not load tiles while moving when maxTilesLoadingWhileMoving is 0', function () {
+      const map = createMap({maxTilesLoadingWhileMoving: 0});
+      const loadSpy = vi.spyOn(map.tileQueue_, 'loadMoreTiles');
+
+      map.frameState_.viewHints = [1, 0];
+      map.frameState_.time = Infinity; // guarantee lowOnFrameBudget is false
+      map.handlePostRender();
+
+      assert.strictEqual(loadSpy.mock.calls.length, 0);
+      disposeMap(map, target);
+    });
+
+    it('keeps maxTilesLoading for a map at rest', function () {
+      const map = createMap({
+        maxTilesLoading: 64,
+        maxTilesLoadingWhileMoving: 32,
+      });
+      const loadSpy = vi.spyOn(map.tileQueue_, 'loadMoreTiles');
+
+      map.frameState_.viewHints = [0, 0];
+      map.handlePostRender();
+
+      assert.deepEqual(loadSpy.mock.calls[0], [64, 64]);
+      disposeMap(map, target);
+    });
   });
 
   describe('tile loading after a view change', function () {
