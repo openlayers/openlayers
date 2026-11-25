@@ -74,6 +74,14 @@ describe('ol/expr/wgsl', () => {
       assert.include(fragmentBody, 'uniforms.u_var_level');
     });
 
+    it('compiles a repeated subexpression once', () => {
+      const elevation = ['*', 2, ['band', 1, 1, 0]];
+      const {fragmentBody} = compileTileColorPipeline({
+        color: ['color', elevation, elevation, elevation],
+      });
+      assert.lengthOf(fragmentBody.match(/getBandValue\(/g), 1);
+    });
+
     it('compiles palette to a nearest-color function', () => {
       const {fragmentBody, functions} = compileTileColorPipeline({
         color: ['palette', 1, ['#000000', '#ffffff']],

@@ -107,7 +107,33 @@ export function uniformNameForVariable(variableName) {
  * @property {boolean} featureId Feature id used.
  * @property {boolean} geometryType Geometry type used.
  * @property {import('../style/flat.js').StyleVariables} [inputVariables] Style variables.
+ * @property {Map<string, string>} [lets] When set, every distinct subexpression
+ * is compiled once into a `let`. Keys are the WGSL, values the `let` names.
  */
+
+/**
+ * Plain identifiers, like uniforms, are not compiled into a `let`.
+ * @type {RegExp}
+ */
+const IDENTIFIER = /^[\w.]+$/;
+
+/**
+ * @param {string} code WGSL of a subexpression.
+ * @param {CompilationContext} context Context.
+ * @return {string} WGSL to use for it.
+ */
+function hoist(code, context) {
+  const lets = context.lets;
+  if (!lets || IDENTIFIER.test(code)) {
+    return code;
+  }
+  let name = lets.get(code);
+  if (name === undefined) {
+    name = 'ol_let_' + lets.size;
+    lets.set(code, name);
+  }
+  return name;
+}
 
 /**
  * @param {import('../style/flat.js').StyleVariables} [inputVariables] Style variables.
@@ -272,7 +298,11 @@ ${body}  return 0.0;
   }),
   [Ops.Palette]: (context, expression) => {
     const colors = expression.args.slice(1);
+    // The palette function cannot see the fragment function's lets.
+    const lets = context.lets;
+    context.lets = undefined;
     const compiled = colors.map((color) => compile(color, ColorType, context));
+    context.lets = lets;
     const index = compile(expression.args[0], NumberType, context);
     const name = `ol_palette_${Object.keys(context.functions).length}`;
     const last = Math.max(compiled.length - 1, 0);
@@ -301,7 +331,7 @@ function compile(expression, returnType, context) {
         `No WGSL compiler for operator: ${JSON.stringify(expression.operator)}`,
       );
     }
-    return compiler(context, expression, returnType);
+    return hoist(compiler(context, expression, returnType), context);
   }
 
   if ((expression.type & NumberType) > 0) {
@@ -396,6 +426,7 @@ export function expressionToWgsl(
 export function compileTileColorPipeline(style, bandCount = 4) {
   const context = newCompilationContext(style?.variables);
   context.bandCount = bandCount;
+  context.lets = new Map();
   const pipeline = [];
   if (style?.color !== undefined) {
     const color = buildExpression(
@@ -470,6 +501,12 @@ export function compileTileColorPipeline(style, bandCount = 4) {
       `color = vec4<f32>(clamp(color.rgb + vec3<f32>(${brightness}), vec3<f32>(0.0), vec3<f32>(1.0)), color.a);`,
     );
   }
+  // Subexpressions compile first, so each let follows those it uses.
+  const lets = Array.from(
+    context.lets,
+    ([code, name]) => `let ${name} = ${code};`,
+  );
+  pipeline.unshift(...lets);
   return {
     fragmentBody: pipeline.join('\n  '),
     functions: Object.values(context.functions).join('\n'),
