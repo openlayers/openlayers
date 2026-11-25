@@ -48,7 +48,7 @@ class CompositeMapRenderer extends MapRenderer {
     style.position = 'absolute';
     style.width = '100%';
     style.height = '100%';
-    style.zIndex = '0';
+    style.isolation = 'isolate';
 
     this.element_.className = CLASS_UNSELECTABLE + ' ol-layers';
 
