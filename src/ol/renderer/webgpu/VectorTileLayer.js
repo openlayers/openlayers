@@ -12,6 +12,7 @@ import {
 import {equivalent} from '../../proj.js';
 import {
   combineVectorBuffers,
+  inUidOrder,
   resolveFeatureStyles,
   VectorRequestBuilder,
 } from '../../render/webgpu/buffers.js';
@@ -94,6 +95,12 @@ const MAX_STYLE_CACHES = 8;
  * @type {number}
  */
 const MAX_PENDING_BUILDS = 8;
+
+/**
+ * Features styled between two checks of the frame's batch build deadline.
+ * @type {number}
+ */
+const STYLE_DEADLINE_INTERVAL = 32;
 
 /**
  * Cached batches beyond this many bytes, or twice the bytes of the current
@@ -938,10 +945,8 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
       }
     }
     const {resolved, snapshots} = styleCache;
-    const sorted = features
-      .slice()
-      .sort((a, b) => Number(getUid(a)) - Number(getUid(b)));
-    for (const feature of sorted) {
+    let count = 0;
+    for (const feature of inUidOrder(features)) {
       if (resolved.has(feature)) {
         continue;
       }
@@ -955,7 +960,10 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
           snapshots,
         ),
       );
-      if (performance.now() >= this.batchBuildDeadline_) {
+      if (
+        ++count % STYLE_DEADLINE_INTERVAL === 0 &&
+        performance.now() >= this.batchBuildDeadline_
+      ) {
         this.scheduleBatchChange_();
         return null;
       }

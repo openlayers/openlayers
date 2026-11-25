@@ -13,6 +13,7 @@ import {
   decodeHitColor,
   encodeHitColor,
   ICON_STRIDE,
+  inUidOrder,
   resolveFeatureStyles,
   STYLE_STRIDE,
   SYMBOL_STRIDE,
@@ -1742,6 +1743,16 @@ function refOf(buffers, feature) {
   }
   return 0;
 }
+
+describe('ol/render/webgpu/buffers inUidOrder', () => {
+  it('returns features in creation order', () => {
+    const first = new Feature();
+    const second = new Feature();
+    const ordered = [first, second];
+    assert.strictEqual(inUidOrder(ordered), ordered);
+    assert.deepEqual(inUidOrder([second, first]), ordered);
+  });
+});
 
 describe('ol/render/webgpu/buffers VectorRequestBuilder', () => {
   /**

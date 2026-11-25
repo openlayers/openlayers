@@ -416,6 +416,33 @@ function boundsOf(features) {
  */
 
 /**
+ * Features in uid order, which is the order they are rendered in without a
+ * render order function. Features already in that order are returned as is.
+ * @param {Array<import("../../Feature.js").FeatureLike>} features Features.
+ * @return {Array<import("../../Feature.js").FeatureLike>} Features in uid order.
+ */
+export function inUidOrder(features) {
+  const count = features.length;
+  const uids = new Array(count);
+  let ordered = true;
+  for (let i = 0; i < count; ++i) {
+    uids[i] = Number(getUid(features[i]));
+    if (i > 0 && uids[i] < uids[i - 1]) {
+      ordered = false;
+    }
+  }
+  if (ordered) {
+    return features;
+  }
+  const order = new Array(count);
+  for (let i = 0; i < count; ++i) {
+    order[i] = i;
+  }
+  order.sort((a, b) => uids[a] - uids[b]);
+  return order.map((i) => features[i]);
+}
+
+/**
  * Style evaluation and geometry extraction, with the resulting tessellation
  * work described as plain data so it can run here or on a worker.
  *
@@ -536,12 +563,9 @@ export class VectorRequestBuilder {
      * @private
      * @type {Array<import("../../Feature.js").FeatureLike>}
      */
-    this.sorted_ = features.slice();
-    if (renderOrder) {
-      this.sorted_.sort(renderOrder);
-    } else {
-      this.sorted_.sort((a, b) => Number(getUid(a)) - Number(getUid(b)));
-    }
+    this.sorted_ = renderOrder
+      ? features.slice().sort(renderOrder)
+      : inUidOrder(features);
   }
 
   /**
