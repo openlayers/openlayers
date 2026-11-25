@@ -408,13 +408,23 @@ export function expressionToWgsl(
 
 /**
  * @typedef {Object} TileStyle
- * @property {Object<string, string|number>} [variables] Style variables.
- * @property {import('./expression.js').EncodedExpression} [color] Color expression.
- * @property {import('./expression.js').EncodedExpression} [brightness] Brightness.
- * @property {import('./expression.js').EncodedExpression} [contrast] Contrast.
- * @property {import('./expression.js').EncodedExpression} [exposure] Exposure.
- * @property {import('./expression.js').EncodedExpression} [saturation] Saturation.
- * @property {import('./expression.js').EncodedExpression} [gamma] Gamma.
+ * Translates tile data to rendered pixels.
+ *
+ * @property {Object<string, (string|number)>} [variables] Style variables.  Each variable must hold a number or string.  These
+ * variables can be used in the `color`, `brightness`, `contrast`, `exposure`, `saturation` and `gamma`
+ * {@link import("./expression.js").ExpressionValue expressions}, using the `['var', 'varName']` operator.
+ * To update style variables, use the {@link import("../layer/Tile.js").default#updateStyleVariables} method.
+ * @property {import("./expression.js").ExpressionValue} [color] An expression applied to color values.
+ * @property {import("./expression.js").ExpressionValue} [brightness=0] Value used to decrease or increase
+ * the layer brightness.  Values range from -1 to 1.
+ * @property {import("./expression.js").ExpressionValue} [contrast=0] Value used to decrease or increase
+ * the layer contrast.  Values range from -1 to 1.
+ * @property {import("./expression.js").ExpressionValue} [exposure=0] Value used to decrease or increase
+ * the layer exposure.  Values range from -1 to 1.
+ * @property {import("./expression.js").ExpressionValue} [saturation=0] Value used to decrease or increase
+ * the layer saturation.  Values range from -1 to 1.
+ * @property {import("./expression.js").ExpressionValue} [gamma=1] Apply a gamma correction to the layer.
+ * Values range from 0 to infinity.
  */
 
 /**
