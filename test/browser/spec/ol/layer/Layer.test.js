@@ -38,6 +38,10 @@ describe('ol/layer/Layer', function () {
       assert.strictEqual(layer.getVisible(), true);
     });
 
+    it('has no renderer name when it cannot choose a renderer', function () {
+      assert.isUndefined(layer.getRendererName());
+    });
+
     it('provides default max resolution', function () {
       assert.strictEqual(layer.getMaxResolution(), Infinity);
     });

@@ -77,6 +77,8 @@ where('WebGPU').describe('ol/layer/WebGPUVector', function () {
   it('uses the renderer option over the default renderer', () => {
     const canvasLayer = new VectorLayer({renderer: 'canvas'});
     assert.instanceOf(canvasLayer.getRenderer(), CanvasVectorLayerRenderer);
+    assert.strictEqual(canvasLayer.getRendererName(), 'canvas');
+    assert.strictEqual(layer.getRendererName(), 'webgpu');
     canvasLayer.dispose();
   });
 

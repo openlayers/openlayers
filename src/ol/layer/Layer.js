@@ -166,6 +166,13 @@ class Layer extends BaseLayer {
     this.renderer_ = null;
 
     /**
+     * Renderer of a layer that can choose one. Set by the layers that can.
+     * @protected
+     * @type {import("../renderer.js").RendererName|undefined}
+     */
+    this.rendererName = undefined;
+
+    /**
      * Set while a renderer returned as a promise by `createRenderer()` loads.
      * @private
      * @type {Promise<RendererType>|null}
@@ -652,6 +659,18 @@ class Layer extends BaseLayer {
    */
   hasRenderer() {
     return !!this.renderer_;
+  }
+
+  /**
+   * Get the renderer this layer renders with: the one from its `renderer`
+   * option, or else the one set with
+   * {@link module:ol/renderer.setDefaultRenderer} when the layer was created.
+   * @return {import("../renderer.js").RendererName|undefined} Renderer, or
+   * `undefined` for layers that cannot choose their renderer.
+   * @api
+   */
+  getRendererName() {
+    return this.rendererName;
   }
 
   /**
