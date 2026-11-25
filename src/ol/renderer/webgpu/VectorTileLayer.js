@@ -19,6 +19,8 @@ import {
 import {
   collectStickyIds,
   getDeclutterOccupancy,
+  groupPlaces,
+  joinDeclutterGroup,
   resolveDeclutter,
   retainVisibleIdentities,
   VIEWPORT_PADDING,
@@ -1774,6 +1776,9 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     this.updateRetiredBatches_(batches, frameState.time || 0);
     this.renderedBatches_ = batches;
     this.declutterBatches_ = this.collectLabelBatches_(frameState, batches);
+    if (this.declutterGroup_ && frameState.declutter) {
+      joinDeclutterGroup(frameState, this.declutterGroup_, this);
+    }
     if (!this.declutterGroup_) {
       // Without a declutter group nothing hides labels, so every one is drawn
       // at full opacity and only fades apply.
@@ -2380,6 +2385,19 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
 
   /**
    * @param {import("../../Map.js").FrameState} frameState Frame.
+   * @return {boolean} The labels have to be placed again this frame.
+   */
+  wantsPlacement(frameState) {
+    if (!this.helper || !this.uniforms_ || !this.cornerBuffer_) {
+      return false;
+    }
+    this.updateLabelView_(this.declutterBatches_);
+    const key = placementKey(this.labelVersion_, frameState);
+    return this.placement_.shouldRun(key, frameState.time || 0, frameState);
+  }
+
+  /**
+   * @param {import("../../Map.js").FrameState} frameState Frame.
    * @param {import("../../layer/Layer.js").State} layerState Layer state.
    */
   renderDeclutter(frameState, layerState) {
@@ -2394,7 +2412,7 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
     const count = view.getCount();
     const now = frameState.time || 0;
     const key = placementKey(this.labelVersion_, frameState);
-    const runPlacement = this.placement_.shouldRun(key, now, frameState);
+    const runPlacement = groupPlaces(frameState, this.declutterGroup_);
     if (runPlacement) {
       const start = performance.now();
       const screenLabels = view.toScreen(frameState);

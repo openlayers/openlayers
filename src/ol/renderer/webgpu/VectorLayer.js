@@ -22,6 +22,8 @@ import {
 import {
   collectStickyIds,
   getDeclutterOccupancy,
+  groupPlaces,
+  joinDeclutterGroup,
   resolveDeclutter,
 } from '../../render/webgpu/declutter.js';
 import {buildGeometryBuffers} from '../../render/webgpu/geometryBuffers.js';
@@ -1384,6 +1386,9 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
     // stays together in that pass: its fills and strokes, then its symbols
     // and labels. The hover outline in the vector layer example is a higher
     // layer, so it covers the labels underneath.
+    if (this.declutterGroup_ && frameState.declutter) {
+      joinDeclutterGroup(frameState, this.declutterGroup_, this);
+    }
     if (frameState.declutter) {
       this.postRender(frameState);
       return helper.getCanvas();
@@ -1562,6 +1567,20 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
 
   /**
    * @param {import("../../Map.js").FrameState} frameState Frame.
+   * @return {boolean} The labels have to be placed again this frame.
+   */
+  wantsPlacement(frameState) {
+    const buffers = this.buffers_;
+    if (!this.helper || !buffers || !this.uniforms_ || !this.cornerBuffer_) {
+      return false;
+    }
+    this.updateLabelView_(buffers);
+    const key = this.labelPlacementKey_(frameState);
+    return this.placement_.shouldRun(key, frameState.time || 0, frameState);
+  }
+
+  /**
+   * @param {import("../../Map.js").FrameState} frameState Frame.
    * @param {import("../../layer/Layer.js").State} layerState Layer state.
    */
   renderDeclutter(frameState, layerState) {
@@ -1583,7 +1602,7 @@ class WebGPUVectorLayerRenderer extends WebGPULayerRenderer {
     const previousVisibility = this.visibility_;
     const now = frameState.time || 0;
     const key = this.labelPlacementKey_(frameState);
-    if (this.placement_.shouldRun(key, now, frameState)) {
+    if (groupPlaces(frameState, this.declutterGroup_)) {
       const start = performance.now();
       const screenLabels = view.toScreen(frameState);
       this.visibility_ = resolveDeclutter(

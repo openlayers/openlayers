@@ -40,12 +40,44 @@ export const MODE_NONE = 2;
  */
 
 /**
- * Collision trees of the declutter groups, per frame. Keyed by the frame
- * state, so separate maps never share occupancy and a frame's trees go away
- * with it.
- * @type {WeakMap<import("../../Map.js").FrameState, Map<string, import('rbush').default<DeclutterBox>>>}
+ * A layer that declutters with others in a group.
+ * @typedef {Object} DeclutterMember
+ * @property {function(import("../../Map.js").FrameState): boolean} wantsPlacement
+ * Whether the layer's labels have to be placed again this frame.
  */
-const frameOccupancy = new WeakMap();
+
+/**
+ * @typedef {Object} GroupFrame
+ * @property {import('rbush').default<DeclutterBox>} occupancy Collision tree.
+ * @property {Array<DeclutterMember>} members Layers rendered this frame.
+ * @property {boolean|undefined} place Whether the group places this frame.
+ */
+
+/**
+ * State of the declutter groups, per frame. Keyed by the frame state, so
+ * separate maps never share occupancy and a frame's state goes away with it.
+ * @type {WeakMap<import("../../Map.js").FrameState, Map<string, GroupFrame>>}
+ */
+const groupFrames = new WeakMap();
+
+/**
+ * @param {import("../../Map.js").FrameState} frameState Frame state.
+ * @param {string} group Declutter group.
+ * @return {GroupFrame} State of the group in this frame.
+ */
+function getGroupFrame(frameState, group) {
+  let groups = groupFrames.get(frameState);
+  if (!groups) {
+    groups = new Map();
+    groupFrames.set(frameState, groups);
+  }
+  let groupFrame = groups.get(group);
+  if (!groupFrame) {
+    groupFrame = {occupancy: new RBush(9), members: [], place: undefined};
+    groups.set(group, groupFrame);
+  }
+  return groupFrame;
+}
 
 /**
  * @param {import("../../Map.js").FrameState} frameState Frame state.
@@ -54,17 +86,35 @@ const frameOccupancy = new WeakMap();
  * layers of this group in this frame.
  */
 export function getDeclutterOccupancy(frameState, group) {
-  let trees = frameOccupancy.get(frameState);
-  if (!trees) {
-    trees = new Map();
-    frameOccupancy.set(frameState, trees);
+  return getGroupFrame(frameState, group).occupancy;
+}
+
+/**
+ * Add a layer to its declutter group for this frame. Layers join while they
+ * render, before the first of them declutters.
+ * @param {import("../../Map.js").FrameState} frameState Frame state.
+ * @param {string} group Declutter group.
+ * @param {DeclutterMember} member Layer.
+ */
+export function joinDeclutterGroup(frameState, group, member) {
+  getGroupFrame(frameState, group).members.push(member);
+}
+
+/**
+ * Whether the layers of a group place their labels this frame. They all do if
+ * any one of them has to.
+ * @param {import("../../Map.js").FrameState} frameState Frame state.
+ * @param {string} group Declutter group.
+ * @return {boolean} The group places this frame.
+ */
+export function groupPlaces(frameState, group) {
+  const groupFrame = getGroupFrame(frameState, group);
+  if (groupFrame.place === undefined) {
+    groupFrame.place = groupFrame.members.some((member) =>
+      member.wantsPlacement(frameState),
+    );
   }
-  let tree = trees.get(group);
-  if (!tree) {
-    tree = new RBush(9);
-    trees.set(group, tree);
-  }
-  return tree;
+  return groupFrame.place;
 }
 
 /**

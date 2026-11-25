@@ -2,6 +2,8 @@ import {assert} from 'chai';
 import {
   collectStickyIds,
   getDeclutterOccupancy,
+  groupPlaces,
+  joinDeclutterGroup,
   resolveDeclutter,
   retainVisibleIdentities,
 } from '../../../../../src/ol/render/webgpu/declutter.js';
@@ -166,6 +168,15 @@ describe('ol/render/webgpu/declutter', () => {
     assert.deepEqual(first, [true]);
     assert.deepEqual(second, [false]);
     assert.deepEqual(otherGroup, [true]);
+  });
+
+  it('places all layers of a group when one of them has to', () => {
+    const frameState = /** @type {any} */ ({index: 4});
+    joinDeclutterGroup(frameState, 'group-a', {wantsPlacement: () => false});
+    joinDeclutterGroup(frameState, 'group-a', {wantsPlacement: () => true});
+    joinDeclutterGroup(frameState, 'group-b', {wantsPlacement: () => false});
+    assert.isTrue(groupPlaces(frameState, 'group-a'));
+    assert.isFalse(groupPlaces(frameState, 'group-b'));
   });
 
   it('keeps occupancy of maps rendering the same frame index apart', () => {
