@@ -16,7 +16,7 @@ import Control from './Control.js';
  *
  * @enum {number}
  */
-const Direction = {
+export const Direction = {
   VERTICAL: 0,
   HORIZONTAL: 1,
 };

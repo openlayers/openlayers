@@ -9,7 +9,7 @@ import Event from './events/Event.js';
  * @enum {string}
  * @private
  */
-const Property = {
+export const Property = {
   LENGTH: 'length',
 };
 
