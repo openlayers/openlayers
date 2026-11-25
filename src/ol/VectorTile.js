@@ -3,6 +3,8 @@
  */
 import Tile from './Tile.js';
 import TileState from './TileState.js';
+import {equivalent, getTransform} from './proj.js';
+import RenderFeature from './render/Feature.js';
 
 /**
  * @template {import('./Feature.js').FeatureLike} FeatureType
@@ -50,6 +52,21 @@ class VectorTile extends Tile {
     this.projection = null;
 
     /**
+     * Features transformed to another projection, and that projection.
+     * @private
+     * @type {{projection: import("./proj/Projection.js").default, features: Array<FeatureType>}|null}
+     */
+    this.reprojectedFeatures_ = null;
+
+    /**
+     * Whether all features are read-only render features, whose transformed
+     * copies can be kept.
+     * @private
+     * @type {boolean}
+     */
+    this.readOnlyFeatures_ = false;
+
+    /**
      * Resolution of this tile; set by the source.
      * @type {number}
      */
@@ -87,12 +104,62 @@ class VectorTile extends Tile {
   }
 
   /**
-   * Get the features for this tile. Geometries will be in the view projection.
+   * Get the features for this tile. Geometries will be in the tile's
+   * `projection`, which is the source's projection.
    * @return {Array<FeatureType>|null} Features.
    * @api
    */
   getFeatures() {
     return this.features_;
+  }
+
+  /**
+   * Get the features for this tile, with geometries transformed to the given
+   * projection. The transformed features are copies. When all features are
+   * read-only render features, the copies are created once and kept until the
+   * tile's features change or another projection is asked for; otherwise
+   * (`ol/Feature`, which can be modified after loading) they are created anew
+   * on every call.
+   * @param {import("./proj/Projection.js").default} projection Projection.
+   * @return {Array<FeatureType>|null} Features.
+   */
+  getFeaturesInProjection(projection) {
+    const features = this.features_;
+    if (
+      !features ||
+      !this.projection ||
+      equivalent(projection, this.projection)
+    ) {
+      return features;
+    }
+    const cached = this.reprojectedFeatures_;
+    if (cached && equivalent(cached.projection, projection)) {
+      return cached.features;
+    }
+    const transform = getTransform(this.projection, projection);
+    if (!transform) {
+      return features;
+    }
+    const reprojected = features.map((feature) => {
+      const clone = /** @type {FeatureType} */ (feature.clone());
+      clone.getGeometry()?.applyTransform(transform);
+      return clone;
+    });
+    if (this.readOnlyFeatures_) {
+      this.reprojectedFeatures_ = {projection, features: reprojected};
+    }
+    return reprojected;
+  }
+
+  /**
+   * Transform and keep the features for the given projection ahead of
+   * rendering, when they can be kept (see `getFeaturesInProjection`).
+   * @param {import("./proj/Projection.js").default} projection Projection.
+   */
+  prepareFeaturesInProjection(projection) {
+    if (this.readOnlyFeatures_) {
+      this.getFeaturesInProjection(projection);
+    }
   }
 
   /**
@@ -133,6 +200,10 @@ class VectorTile extends Tile {
    */
   setFeatures(features) {
     this.features_ = features;
+    this.reprojectedFeatures_ = null;
+    this.readOnlyFeatures_ =
+      !!features &&
+      features.every((feature) => feature instanceof RenderFeature);
     this.setState(TileState.LOADED);
   }
 
