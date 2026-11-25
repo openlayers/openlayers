@@ -9,6 +9,7 @@ import {getUid} from './util.js';
  * @typedef {Object} ReplayState
  * @property {boolean} dirty Dirty.
  * @property {null|import("./render.js").OrderFunction} renderedRenderOrder RenderedRenderOrder.
+ * @property {import("./extent.js").Extent|null} renderedLayerExtent RenderedLayerExtent.
  * @property {number} renderedTileRevision RenderedTileRevision.
  * @property {number} renderedResolution RenderedResolution.
  * @property {number} renderedPixelRatio RenderedPixelRatio.
@@ -135,6 +136,7 @@ class VectorRenderTile extends Tile {
       this.replayState_[key] = {
         dirty: false,
         renderedRenderOrder: null,
+        renderedLayerExtent: null,
         renderedResolution: NaN,
         renderedPixelRatio: NaN,
         renderedRevision: -1,
