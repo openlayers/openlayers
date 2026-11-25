@@ -8,6 +8,7 @@ import MapEvent from '../../../../src/ol/MapEvent.js';
 import Overlay from '../../../../src/ol/Overlay.js';
 import View from '../../../../src/ol/View.js';
 import Control from '../../../../src/ol/control/Control.js';
+import {getForViewAndSize} from '../../../../src/ol/extent.js';
 import GeoJSON from '../../../../src/ol/format/GeoJSON.js';
 import {TRUE} from '../../../../src/ol/functions.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
@@ -1330,6 +1331,23 @@ describe('ol/Map', function () {
       const wanted = Object.keys(Object.values(map.frameState_.wantedTiles)[0]);
       assert.isTrue(wanted.some((key) => key.endsWith('/' + destinationTile)));
       view.cancelAnimations();
+    });
+
+    it('reports the extent an animation started from', function () {
+      const view = map.getView();
+      const start = view.getCenter().slice();
+      const resolution = view.getResolution();
+
+      view.animate({center: [5000000, 0], duration: 1000});
+      map.renderSync();
+
+      assert.deepEqual(
+        map.frameState_.startExtent,
+        getForViewAndSize(start, resolution, 0, map.getSize()),
+      );
+      view.cancelAnimations();
+      map.renderSync();
+      assert.isUndefined(map.frameState_.startExtent);
     });
 
     it('dispatches loadend when the queued tiles are no longer needed', () =>

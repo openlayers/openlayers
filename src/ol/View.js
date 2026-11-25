@@ -210,6 +210,8 @@ import {DEFAULT_TILE_SIZE} from './tilegrid/common.js';
  * @property {number} [nextResolution] The next resolution during an animation series. When
  * only the center is animated, the current resolution.
  * @property {number} [nextRotation] The next rotation during an animation series.
+ * @property {import("./coordinate.js").Coordinate} [startCenter] The center the current animation series started from.
+ * @property {number} [startResolution] The resolution the current animation series started from.
  * @property {number} rotation Rotation.
  * @property {number} zoom Zoom.
  */
@@ -402,6 +404,18 @@ class View extends BaseObject {
      * @type {number}
      */
     this.nextRotation_;
+
+    /**
+     * @private
+     * @type {import("./coordinate.js").Coordinate|null}
+     */
+    this.startCenter_ = null;
+
+    /**
+     * @private
+     * @type {number}
+     */
+    this.startResolution_ = NaN;
 
     /**
      * @private
@@ -712,6 +726,13 @@ class View extends BaseObject {
       series.push(animation);
     }
     this.animations_.push(series);
+    // A series added while another one runs keeps the original start.
+    if (!this.getAnimating()) {
+      this.startCenter_ = /** @type {import("./coordinate.js").Coordinate} */ (
+        this.targetCenter_
+      ).slice();
+      this.startResolution_ = /** @type {number} */ (this.targetResolution_);
+    }
     this.setHint(ViewHint.ANIMATING, 1);
     this.updateAnimations_();
   }
@@ -761,6 +782,8 @@ class View extends BaseObject {
     this.nextCenter_ = null;
     this.nextResolution_ = NaN;
     this.nextRotation_ = NaN;
+    this.startCenter_ = null;
+    this.startResolution_ = NaN;
   }
 
   /**
@@ -871,6 +894,10 @@ class View extends BaseObject {
         this.nextCenter_ = null;
         this.nextResolution_ = NaN;
         this.nextRotation_ = NaN;
+        if (!this.getAnimating()) {
+          this.startCenter_ = null;
+          this.startResolution_ = NaN;
+        }
         const callback = series[0].callback;
         if (callback) {
           animationCallback(callback, true);
@@ -1283,6 +1310,11 @@ class View extends BaseObject {
           ? /** @type {number} */ (resolution)
           : this.nextResolution_,
       nextRotation: this.nextRotation_,
+      startCenter:
+        /** @type {import("./coordinate.js").Coordinate|undefined} */ (
+          /** @type {unknown} */ (this.startCenter_)
+        ),
+      startResolution: this.startResolution_,
       rotation: rotation,
       zoom: /** @type {number} */ (this.getZoom()),
     };
