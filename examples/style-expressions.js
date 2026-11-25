@@ -6,7 +6,46 @@ import Source from '../src/ol/source/Vector.js';
 
 const format = new GeoJSON();
 
-const map = new Map({
+const labelLayer = new Layer({
+  source: new Source({
+    url: 'https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_50m_populated_places_simple.geojson',
+    format,
+  }),
+  declutter: true,
+  variables: {
+    minPopulation: 5_000_000,
+  },
+  style: [
+    {
+      filter: ['>', ['get', 'pop_max'], 10_000_000],
+      style: {
+        'text-value': [
+          'concat',
+          ['get', 'adm1name'],
+          ', ',
+          ['get', 'adm0name'],
+        ],
+        'text-font': '16px sans-serif',
+        'text-fill-color': 'white',
+        'text-stroke-color': 'gray',
+        'text-stroke-width': 2,
+      },
+    },
+    {
+      else: true,
+      filter: ['>', ['get', 'pop_max'], ['var', 'minPopulation']],
+      style: {
+        'text-value': ['get', 'nameascii'],
+        'text-font': '12px sans-serif',
+        'text-fill-color': 'white',
+        'text-stroke-color': 'gray',
+        'text-stroke-width': 2,
+      },
+    },
+  ],
+});
+
+new Map({
   layers: [
     new Layer({
       background: '#1a2b39',
@@ -30,45 +69,19 @@ const map = new Map({
         'circle-stroke-width': 0.5,
       },
     }),
-    new Layer({
-      source: new Source({
-        url: 'https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_50m_populated_places_simple.geojson',
-        format,
-      }),
-      declutter: true,
-      style: [
-        {
-          filter: ['>', ['get', 'pop_max'], 10_000_000],
-          style: {
-            'text-value': [
-              'concat',
-              ['get', 'adm1name'],
-              ', ',
-              ['get', 'adm0name'],
-            ],
-            'text-font': '16px sans-serif',
-            'text-fill-color': 'white',
-            'text-stroke-color': 'gray',
-            'text-stroke-width': 2,
-          },
-        },
-        {
-          else: true,
-          filter: ['>', ['get', 'pop_max'], 5_000_000],
-          style: {
-            'text-value': ['get', 'nameascii'],
-            'text-font': '12px sans-serif',
-            'text-fill-color': 'white',
-            'text-stroke-color': 'gray',
-            'text-stroke-width': 2,
-          },
-        },
-      ],
-    }),
+    labelLayer,
   ],
   target: 'map',
   view: new View({
     center: [0, 0],
     zoom: 1,
   }),
+});
+
+const minPopulationInput = document.getElementById('min-population');
+const minPopulationOutput = document.getElementById('min-population-value');
+minPopulationInput.addEventListener('input', function () {
+  const millions = parseFloat(minPopulationInput.value);
+  minPopulationOutput.innerText = millions.toFixed(1);
+  labelLayer.updateStyleVariables({minPopulation: millions * 1_000_000});
 });

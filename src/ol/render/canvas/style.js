@@ -66,7 +66,7 @@ function always(context) {
 /**
  * This function adapts a rule evaluator to the existing style function interface.
  * After we have deprecated the style function, we can use the compiled rules directly
- * and pass a more complete evaluation context (variables, zoom, time, etc.).
+ * and pass a more complete evaluation context (zoom, time, etc.).
  *
  * @param {Array<import('../../style/flat.js').Rule>} rules The rules.
  * @param {ParsingContext} [parsingContext] Optional parsing context; will create a new one if not provided
@@ -75,7 +75,7 @@ function always(context) {
 export function rulesToStyleFunction(rules, parsingContext) {
   parsingContext = parsingContext ?? newParsingContext();
   const evaluator = buildRuleSet(rules, parsingContext);
-  const evaluationContext = newEvaluationContext();
+  const evaluationContext = newEvaluationContext(parsingContext.inputVariables);
   return function (feature, resolution) {
     evaluationContext.properties = feature.getPropertiesInternal() ?? {};
     evaluationContext.resolution = resolution;
@@ -100,7 +100,7 @@ export function rulesToStyleFunction(rules, parsingContext) {
 /**
  * This function adapts a style evaluator to the existing style function interface.
  * After we have deprecated the style function, we can use the compiled rules directly
- * and pass a more complete evaluation context (variables, zoom, time, etc.).
+ * and pass a more complete evaluation context (zoom, time, etc.).
  *
  * @param {Array<import('../../style/flat.js').FlatStyle>} flatStyles The flat styles.
  * @param {ParsingContext} [parsingContext] Optional parsing context; will create a new one if not provided
@@ -117,7 +117,7 @@ export function flatStylesToStyleFunction(flatStyles, parsingContext) {
   for (let i = 0; i < length; ++i) {
     evaluators[i] = buildStyle(flatStyles[i], parsingContext);
   }
-  const evaluationContext = newEvaluationContext();
+  const evaluationContext = newEvaluationContext(parsingContext.inputVariables);
 
   /**
    * @type {Array<Style>}

@@ -537,4 +537,55 @@ describe('ol.layer.Vector', function () {
       ]);
     });
   });
+
+  describe('style variables', () => {
+    let layer;
+    beforeEach(() => {
+      layer = new VectorLayer({
+        style: {
+          'circle-radius': ['var', 'radius'],
+          'circle-fill-color': ['var', 'color'],
+        },
+        variables: {radius: 6, color: 'red'},
+      });
+    });
+
+    /**
+     * @return {import('../../../../../src/ol/style/Circle.js').default} The evaluated circle style.
+     */
+    function evaluateImage() {
+      const feature = new Feature(new Point([0, 0]));
+      return layer.getStyleFunction()(feature, 1)[0].getImage();
+    }
+
+    it('passes the variables option to the style function', () => {
+      assert.strictEqual(evaluateImage().getRadius(), 6);
+    });
+
+    it('does not turn variables into an observable property', () => {
+      assert.isUndefined(layer.get('variables'));
+    });
+
+    it('#updateStyleVariables() only changes the given variables', () => {
+      layer.updateStyleVariables({radius: 10});
+      const image = evaluateImage();
+      assert.strictEqual(image.getRadius(), 10);
+      assert.deepEqual(image.getFill().getColor(), [255, 0, 0, 1]);
+    });
+
+    it('#updateStyleVariables() bumps the layer revision', () => {
+      const revision = layer.getRevision();
+      layer.updateStyleVariables({radius: 10});
+      assert.isAbove(layer.getRevision(), revision);
+    });
+
+    it('keeps working across #setStyle()', () => {
+      layer.setStyle({
+        'circle-radius': ['*', ['var', 'radius'], 2],
+        'circle-fill-color': 'red',
+      });
+      layer.updateStyleVariables({radius: 5});
+      assert.strictEqual(evaluateImage().getRadius(), 10);
+    });
+  });
 });
