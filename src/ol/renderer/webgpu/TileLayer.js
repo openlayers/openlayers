@@ -1854,7 +1854,12 @@ class WebGPUTileLayerRenderer extends WebGPULayerRenderer {
         },
       ];
       if (!tileTexture.unfilterable) {
-        entries.push({binding: 1, resource: helper.getLinearSampler()});
+        entries.push({
+          binding: 1,
+          resource: tileTexture.interpolate
+            ? helper.getLinearSampler()
+            : helper.getNearestSampler(),
+        });
       }
       entries.push({
         binding: 2,

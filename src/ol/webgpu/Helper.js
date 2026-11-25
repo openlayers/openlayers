@@ -383,10 +383,9 @@ class WebGPUHelper extends Disposable {
 
   /**
    * @param {GPUCopyExternalImageSource} image Image.
-   * @param {boolean} [interpolate] Linear filter.
    * @return {GPUTexture} Texture.
    */
-  createTextureFromImage(image, interpolate = true) {
+  createTextureFromImage(image) {
     const width =
       /** @type {HTMLImageElement} */ (image).naturalWidth ||
       /** @type {HTMLCanvasElement} */ (image).width;

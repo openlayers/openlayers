@@ -183,6 +183,12 @@ class TileTexture extends EventTarget {
     this.unfilterable = false;
 
     /**
+     * Whether the texture is sampled with linear filtering, from the tile.
+     * @type {boolean}
+     */
+    this.interpolate = true;
+
+    /**
      * @protected
      * @type {import("./Helper.js").default}
      */
@@ -296,10 +302,11 @@ class TileTexture extends EventTarget {
       this.texture.destroy();
       this.texture = null;
     }
+    this.interpolate = tile.interpolate;
 
     const image = asImageLike(data);
     if (image) {
-      this.texture = helper.createTextureFromImage(image, tile.interpolate);
+      this.texture = helper.createTextureFromImage(image);
       this.bandCount = 4;
       this.unfilterable = false;
       this.ready = true;
