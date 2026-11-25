@@ -694,6 +694,45 @@ describe('ol.format.WFS', function () {
       assertXmlEqual(serialized.firstElementChild, parse(text));
     });
 
+    it('creates a disjoint filter', function () {
+      const text =
+        '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
+        '    typeName="area" srsName="EPSG:4326" ' +
+        '    xmlns:topp="http://www.openplans.org/topp">' +
+        '  <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">' +
+        '    <ogc:Disjoint>' +
+        '      <ogc:PropertyName>the_geom</ogc:PropertyName>' +
+        '      <gml:Polygon xmlns:gml="http://www.opengis.net/gml">' +
+        '        <gml:exterior>' +
+        '          <gml:LinearRing>' +
+        '            <gml:posList srsDimension="2">' +
+        '              10 20 10 25 15 25 15 20 10 20' +
+        '            </gml:posList>' +
+        '          </gml:LinearRing>' +
+        '        </gml:exterior>' +
+        '      </gml:Polygon>' +
+        '    </ogc:Disjoint>' +
+        '  </ogc:Filter>' +
+        '</wfs:Query>';
+      const serialized = new WFS().writeGetFeature({
+        srsName: 'EPSG:4326',
+        featureTypes: ['area'],
+        filter: disjointFilter(
+          'the_geom',
+          new Polygon([
+            [
+              [10, 20],
+              [10, 25],
+              [15, 25],
+              [15, 20],
+              [10, 20],
+            ],
+          ]),
+        ),
+      });
+      assertXmlEqual(serialized.firstElementChild, parse(text));
+    });
+
     it('creates a intersects filter', function () {
       const text =
         '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
