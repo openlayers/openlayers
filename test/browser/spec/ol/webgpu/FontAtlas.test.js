@@ -146,6 +146,16 @@ describe('ol/webgpu/FontAtlas', () => {
     assert.closeTo(large.advance, small.advance * 3, 1);
   });
 
+  it('knows the fonts of its glyphs until it is cleared', () => {
+    const atlas = new FontAtlas();
+    atlas.getGlyph('bold 12px "Noto Sans", Roboto', 'A');
+    assert.isTrue(atlas.usesFont('normal 700 16px "Noto Sans"'));
+    assert.isTrue(atlas.usesFont('normal 700 16px "Roboto"'));
+    assert.isFalse(atlas.usesFont('italic 700 16px "Noto Sans"'));
+    atlas.clear();
+    assert.isFalse(atlas.usesFont('normal 700 16px "Noto Sans"'));
+  });
+
   it('encodes fill and halo coverage in independent channels', () => {
     /**
      * @param {string} text Text.

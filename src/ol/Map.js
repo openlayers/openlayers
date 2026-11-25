@@ -1693,8 +1693,11 @@ class Map extends BaseObject {
 
   /**
    * Redraws all text after new fonts have loaded
+   * @param {string} [fontKey] Key of the font that has loaded, as in
+   * {@link module:ol/render/canvas.checkedFonts}. Without it, all text is
+   * redrawn.
    */
-  redrawText() {
+  redrawText(fontKey) {
     if (!this.frameState_) {
       return;
     }
@@ -1702,9 +1705,9 @@ class Map extends BaseObject {
     for (let i = 0, ii = layerStates.length; i < ii; ++i) {
       const layer = layerStates[i].layer;
       if (layer.hasRenderer()) {
-        /** @type {{handleFontsChanged: function(): void}} */ (
+        /** @type {{handleFontsChanged: function(string=): void}} */ (
           layer.getRenderer()
-        ).handleFontsChanged();
+        ).handleFontsChanged(fontKey);
       }
     }
   }

@@ -24,7 +24,10 @@ import {
   VIEWPORT_PADDING,
 } from '../../render/webgpu/declutter.js';
 import {buildGeometryBuffers} from '../../render/webgpu/geometryBuffers.js';
-import {GLYPH_INSTANCE_STRIDE} from '../../render/webgpu/glyphLayout.js';
+import {
+  clearWidthCaches,
+  GLYPH_INSTANCE_STRIDE,
+} from '../../render/webgpu/glyphLayout.js';
 import {
   activeLabelIndices,
   LABEL_FADE_DURATION,
@@ -2619,10 +2622,17 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
 
   /**
    * Rebuild labels after a font has loaded, so they no longer use glyphs and
-   * metrics of a fallback font.
+   * metrics of a fallback font. A layer that has not drawn the font keeps its
+   * batches.
+   * @param {string} [fontKey] Key of the font that has loaded.
    * @override
    */
-  handleFontsChanged() {
+  handleFontsChanged(fontKey) {
+    if (fontKey && !this.atlas_.usesFont(fontKey)) {
+      // Other layers may have measured text with a fallback font.
+      clearWidthCaches();
+      return;
+    }
     startFontAtlasOver(this.atlas_, this.getLayer());
   }
 

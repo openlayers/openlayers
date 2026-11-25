@@ -192,9 +192,11 @@ class LayerRenderer extends Observable {
 
   /**
    * Perform action necessary to get the layer rendered after new fonts have loaded
+   * @param {string} [fontKey] Key of the font that has loaded, as in
+   * {@link module:ol/render/canvas.checkedFonts}.
    * @abstract
    */
-  handleFontsChanged() {}
+  handleFontsChanged(fontKey) {}
 
   /**
    * Called when the layer's style or declutter setting changes. Renderers that

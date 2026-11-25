@@ -555,6 +555,15 @@ describe('ol/renderer/webgpu/VectorTileLayer', () => {
     );
   });
 
+  it('keeps its batches when a font it has not drawn loads', () => {
+    renderer.atlas_.getGlyph('12px "Noto Sans"', 'A');
+    const revision = layer.getRevision();
+    renderer.handleFontsChanged('italic 400 16px "Noto Sans"');
+    assert.strictEqual(layer.getRevision(), revision);
+    renderer.handleFontsChanged('normal 400 16px "Noto Sans"');
+    assert.isAbove(layer.getRevision(), revision);
+  });
+
   it('does not keep labels of disposed batches for fading', () => {
     renderer.renderedBatches_ = [
       {isDisposed: () => true, labelIdentities: [1]},

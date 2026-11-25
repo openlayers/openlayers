@@ -1,8 +1,9 @@
 /**
  * @module ol/webgpu/FontAtlas
  */
+import {getFontParameters} from '../css.js';
 import {createCanvasContext2D} from '../dom.js';
-import {measureAndCacheTextWidth} from '../render/canvas.js';
+import {getFontKey, measureAndCacheTextWidth} from '../render/canvas.js';
 
 /**
  * @typedef {Object} GlyphMetrics
@@ -399,6 +400,25 @@ class FontAtlas {
     first.cells = [];
     this.staging_ = [first];
     return this.revision_;
+  }
+
+  /**
+   * @param {string} fontKey Font key, as in {@link module:ol/render/canvas.checkedFonts}.
+   * @return {boolean} The atlas has glyphs of the font.
+   */
+  usesFont(fontKey) {
+    for (const font in this.widthCaches_) {
+      const params = getFontParameters(font);
+      if (!params) {
+        return true;
+      }
+      for (const family of params.families) {
+        if (getFontKey(params.style, params.weight, family) === fontKey) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   /**

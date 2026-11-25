@@ -32,8 +32,10 @@ class CompositeMapRenderer extends MapRenderer {
     this.fontChangeListenerKey_ = listen(
       checkedFonts,
       ObjectEventType.PROPERTYCHANGE,
-      map.redrawText,
-      map,
+      (event) =>
+        map.redrawText(
+          /** @type {import("../Object.js").ObjectEvent} */ (event).key,
+        ),
     );
 
     /**

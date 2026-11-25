@@ -216,12 +216,13 @@ const genericFontFamilies = new Set([
 ]);
 
 /**
+ * Key of a font in {@link module:ol/render/canvas.checkedFonts}.
  * @param {string} style Css font-style
  * @param {string} weight Css font-weight
  * @param {string} family Css font-family
  * @return {string} Font key.
  */
-function getFontKey(style, weight, family) {
+export function getFontKey(style, weight, family) {
   return `${style} ${weight} 16px "${family}"`;
 }
 
