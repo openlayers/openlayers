@@ -231,6 +231,9 @@ class DragBox extends PointerInteraction {
       return false;
     }
 
+    // The view may have changed since the last drag event
+    this.box_.setPixels(this.startPixel_, mapBrowserEvent.pixel);
+
     const completeBox = this.boxEndCondition_(
       mapBrowserEvent,
       this.startPixel_,
