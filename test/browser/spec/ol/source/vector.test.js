@@ -33,6 +33,17 @@ describe('ol/source/Vector', function () {
     });
   });
 
+  describe('#dispose()', function () {
+    it('removes its listeners from the collection and features', function () {
+      const collection = new Collection([pointFeature]);
+      const source = new VectorSource({features: collection});
+      source.dispose();
+      assert.isFalse(collection.hasListener());
+      assert.isFalse(pointFeature.hasListener('change'));
+      assert.isFalse(pointFeature.hasListener('propertychange'));
+    });
+  });
+
   describe('when empty', function () {
     let vectorSource;
     beforeEach(function () {

@@ -311,6 +311,12 @@ class VectorSource extends Source {
      */
     this.featuresCollection_ = null;
 
+    /**
+     * @private
+     * @type {Array<import("../events.js").EventsKey>}
+     */
+    this.featuresCollectionKeys_ = [];
+
     /** @type {Collection<FeatureType>|undefined} */
     let collection;
     /** @type {Array<FeatureType>|undefined} */
@@ -539,37 +545,52 @@ class VectorSource extends Source {
         }
       ),
     );
-    collection.addEventListener(
-      CollectionEventType.ADD,
-      /** @type {import("../events.js").ListenerFunction} */ (
-        /**
-         * @param {import("../Collection.js").CollectionEvent<FeatureType>} evt The collection event
-         */
-        (evt) => {
-          if (!modifyingCollection) {
-            modifyingCollection = true;
-            this.addFeature(evt.element);
-            modifyingCollection = false;
+    this.featuresCollectionKeys_ = [
+      listen(
+        collection,
+        CollectionEventType.ADD,
+        /** @type {import("../events.js").ListenerFunction} */ (
+          /**
+           * @param {import("../Collection.js").CollectionEvent<FeatureType>} evt The collection event
+           */
+          (evt) => {
+            if (!modifyingCollection) {
+              modifyingCollection = true;
+              this.addFeature(evt.element);
+              modifyingCollection = false;
+            }
           }
-        }
+        ),
       ),
-    );
-    collection.addEventListener(
-      CollectionEventType.REMOVE,
-      /** @type {import("../events.js").ListenerFunction} */ (
-        /**
-         * @param {import("../Collection.js").CollectionEvent<FeatureType>} evt The collection event
-         */
-        (evt) => {
-          if (!modifyingCollection) {
-            modifyingCollection = true;
-            this.removeFeature(evt.element);
-            modifyingCollection = false;
+      listen(
+        collection,
+        CollectionEventType.REMOVE,
+        /** @type {import("../events.js").ListenerFunction} */ (
+          /**
+           * @param {import("../Collection.js").CollectionEvent<FeatureType>} evt The collection event
+           */
+          (evt) => {
+            if (!modifyingCollection) {
+              modifyingCollection = true;
+              this.removeFeature(evt.element);
+              modifyingCollection = false;
+            }
           }
-        }
+        ),
       ),
-    );
+    ];
     this.featuresCollection_ = collection;
+  }
+
+  /**
+   * @override
+   */
+  disposeInternal() {
+    this.featuresCollectionKeys_.forEach(unlistenByKey);
+    for (const featureId in this.featureChangeKeys_) {
+      this.featureChangeKeys_[featureId].forEach(unlistenByKey);
+    }
+    super.disposeInternal();
   }
 
   /**
