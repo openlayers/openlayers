@@ -194,6 +194,7 @@ const compilers = {
     return `(a_prop_${propName} != ${numberToWgsl(-9999999)})`;
   },
   [Ops.Resolution]: () => 'uniforms.resolution',
+  [Ops.TileResolution]: () => 'uniforms.textureResolution',
   [Ops.Zoom]: () => 'uniforms.zoom',
   [Ops.Time]: () => 'uniforms.time',
   [Ops.Any]: createCompiler((args) => `(${args.join(' || ')})`),

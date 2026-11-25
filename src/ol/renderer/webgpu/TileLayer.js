@@ -132,7 +132,7 @@ const TILE_STYLE_RESOLUTION_INDEX = 26;
  * Float index of `resolution` in the reprojection uniform buffer.
  * @type {number}
  */
-const REPROJ_STYLE_RESOLUTION_INDEX = 25;
+const REPROJ_STYLE_RESOLUTION_INDEX = 26;
 
 /**
  * Subdivisions along each edge of a raster tile quad. A single oversized
@@ -1789,6 +1789,8 @@ class WebGPUTileLayerRenderer extends WebGPULayerRenderer {
     data[22] = 1;
     data[23] = tileTexture.texture.width;
     data[24] = tileTexture.texture.height;
+    // In units of the source projection, like the tile grid.
+    data[25] = tileGrid.getResolution(tileCoord[0]);
     this.writeStyleUniforms_(data, REPROJ_STYLE_RESOLUTION_INDEX, frameState);
     const bindGroup = this.bindTile_(helper, tileTexture, pipeline, data);
     if (!bindGroup) {

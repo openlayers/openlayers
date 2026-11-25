@@ -74,6 +74,13 @@ describe('ol/expr/wgsl', () => {
       assert.include(fragmentBody, 'uniforms.u_var_level');
     });
 
+    it('reads the tile resolution from the tile uniforms', () => {
+      const {fragmentBody} = compileTileColorPipeline({
+        color: ['color', ['*', 1000, ['tileResolution']]],
+      });
+      assert.include(fragmentBody, 'uniforms.textureResolution');
+    });
+
     it('compiles a repeated subexpression once', () => {
       const elevation = ['*', 2, ['band', 1, 1, 0]];
       const {fragmentBody} = compileTileColorPipeline({

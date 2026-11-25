@@ -188,6 +188,7 @@ struct ReprojUniforms {
   globalAlpha: f32,
   texturePixelWidth: f32,
   texturePixelHeight: f32,
+  textureResolution: f32,
   resolution: f32,
   zoom: f32,
   time: f32,

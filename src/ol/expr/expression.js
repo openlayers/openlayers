@@ -34,6 +34,8 @@ import {toSize} from '../size.js';
  *     `Circle` geometries are returned as 'Polygon'
  *     `GeometryCollection` geometries are returned as the type of the first geometry found in the collection (WebGL only).
  *   * `['resolution']` returns the current resolution
+ *   * `['tileResolution']` returns the resolution of the tile being drawn, which can differ from `['resolution']`,
+ *     in map units per tile pixel (source projection units when reprojected). WebGPU tile layers only.
  *   * `['rotation']` returns the current view rotation in radians (WebGL only).
  *   * `['time']` The time in seconds since the creation of the layer (WebGL only).
  *   * `['var', 'varName']` fetches a value from the style variables; will throw an error if that variable is undefined
@@ -409,6 +411,7 @@ export const Ops = {
   All: 'all',
   Not: '!',
   Resolution: 'resolution',
+  TileResolution: 'tileResolution',
   Rotation: 'rotation',
   Zoom: 'zoom',
   Time: 'time',
@@ -472,6 +475,7 @@ const parsers = {
   [Ops.GeometryType]: createCallExpressionParser(usesGeometryType, withNoArgs),
   [Ops.LineMetric]: createCallExpressionParser(usesMCoordinate, withNoArgs),
   [Ops.Resolution]: createCallExpressionParser(usesMapState, withNoArgs),
+  [Ops.TileResolution]: createCallExpressionParser(withNoArgs),
   [Ops.Rotation]: createCallExpressionParser(usesMapState, withNoArgs),
   [Ops.Zoom]: createCallExpressionParser(usesMapState, withNoArgs),
   [Ops.Time]: createCallExpressionParser(usesMapState, withNoArgs),
