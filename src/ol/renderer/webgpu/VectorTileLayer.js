@@ -1060,6 +1060,10 @@ class WebGPUVectorTileLayerRenderer extends WebGPULayerRenderer {
    * @private
    */
   buildBatch_(tile, tileCoord, viewState, styleState, pixelRatio) {
+    if (tile.getState() === TileState.IDLE) {
+      // getSourceTiles() would load an idle tile past the tile queue.
+      return null;
+    }
     const sourceTiles =
       typeof tile.getSourceTiles === 'function' ? tile.getSourceTiles() : [];
     const loadedSourceTiles = [];

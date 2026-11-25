@@ -167,6 +167,26 @@ describe('ol/renderer/webgpu/VectorTileLayer', () => {
     assert.isNotEmpty(requested);
   });
 
+  it('leaves loading idle tiles to the tile queue', () => {
+    const enqueued = [];
+    let loaded = 0;
+    source.getTile = function (z, x, y) {
+      const tile = idleTile(z, x, y);
+      tile.getSourceTiles = () => {
+        ++loaded;
+        return [];
+      };
+      return tile;
+    };
+    const frameState = frameAtZ(1);
+    frameState.tileQueue.enqueue = (element) => enqueued.push(element);
+
+    renderer.collectBatches_(frameState);
+
+    assert.strictEqual(loaded, 0);
+    assert.isNotEmpty(enqueued);
+  });
+
   it('clips cached parents to holes between loaded current tiles', async () => {
     source.getTile = function (z, x, y) {
       return z === 1 && x === 0 && y === 0
