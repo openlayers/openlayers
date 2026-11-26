@@ -1785,6 +1785,62 @@ describe('ol/View', function () {
     });
   });
 
+  describe('#setMaxResolution', function () {
+    describe('with resolutions property in view', function () {
+      it('keeps the resolution constraint from the resolutions array', function () {
+        const view = new View({
+          resolutions: [100000, 50000, 25000, 12500, 6250, 3125],
+          resolution: 50000,
+        });
+
+        view.setMaxResolution(25000);
+        assert.strictEqual(view.getMaxResolution(), 100000);
+        assert.strictEqual(view.getResolution(), 50000);
+      });
+    });
+
+    describe('with no resolutions property in view', function () {
+      it('changes the resolution when it is over the maximum', function () {
+        const view = new View({
+          maxResolution: 100000,
+          resolution: 50000,
+        });
+
+        view.setMaxResolution(25000);
+        assert.strictEqual(view.getMaxResolution(), 25000);
+        assert.strictEqual(view.getResolution(), 25000);
+      });
+    });
+  });
+
+  describe('#setMinResolution', function () {
+    describe('with resolutions property in view', function () {
+      it('keeps the resolution constraint from the resolutions array', function () {
+        const view = new View({
+          resolutions: [100000, 50000, 25000, 12500, 6250, 3125],
+          zoom: 4,
+        });
+
+        view.setMinResolution(25000);
+        assert.strictEqual(view.getMinResolution(), 3125);
+        assert.strictEqual(view.getZoom(), 4);
+      });
+    });
+
+    describe('with no resolutions property in view', function () {
+      it('changes the zoom level when the resolution is under the minimum', function () {
+        const view = new View({
+          maxResolution: 100000,
+          zoom: 4,
+        });
+
+        view.setMinResolution(25000);
+        assert.strictEqual(view.getMinResolution(), 25000);
+        assert.strictEqual(view.getZoom(), 2);
+      });
+    });
+  });
+
   describe('#setMinZoom', function () {
     describe('with resolutions property in view', function () {
       it('changes the zoom level when the level is under min zoom', function () {
@@ -1806,6 +1862,142 @@ describe('ol/View', function () {
 
         view.setMinZoom(5);
         assert.strictEqual(view.getZoom(), 5);
+      });
+    });
+  });
+
+  describe('#setResolutions', function () {
+    it('updates the resolutions and constrains the current zoom', function () {
+      const view = new View({
+        resolutions: [8, 4, 2, 1],
+        zoom: 2,
+      });
+
+      view.setResolutions([8, 4]);
+      assert.deepEqual(view.getResolutions(), [8, 4]);
+      assert.strictEqual(view.getZoom(), 1);
+    });
+
+    it('clamps minZoom when its resolution is absent', function () {
+      const view = new View({
+        resolutions: [8, 4, 2, 1],
+        minZoom: 2,
+        zoom: 2,
+      });
+
+      assert.strictEqual(view.getMaxResolution(), 2);
+      view.setResolutions([8, 4]);
+      assert.strictEqual(view.getMinZoom(), 1);
+      assert.strictEqual(view.getMaxResolution(), 4);
+      assert.strictEqual(view.getZoom(), 1);
+    });
+
+    it('clamps maxZoom when its resolution is absent', function () {
+      const view = new View({
+        resolutions: [8, 4, 2, 1],
+        minZoom: 1,
+        maxZoom: 3,
+        zoom: 2,
+      });
+
+      assert.strictEqual(view.getMinResolution(), 1);
+      view.setResolutions([8, 4, 2]);
+      assert.strictEqual(view.getMinZoom(), 1);
+      assert.strictEqual(view.getMaxZoom(), 2);
+      assert.strictEqual(view.getMinResolution(), 2);
+      assert.strictEqual(view.get('maxZoom'), 2);
+    });
+
+    it('keeps zoom limit resolutions when their indices change', function () {
+      const view = new View({
+        resolutions: [8, 4, 2, 1],
+        minZoom: 2,
+        maxZoom: 3,
+        zoom: 2,
+      });
+
+      view.setResolutions([2, 1]);
+      assert.strictEqual(view.getMinZoom(), 0);
+      assert.strictEqual(view.getMaxZoom(), 1);
+      assert.strictEqual(view.getMaxResolution(), 2);
+      assert.strictEqual(view.getMinResolution(), 1);
+    });
+
+    it('keeps a matched minZoom when maxZoom would cross it', function () {
+      const view = new View({
+        resolutions: [8, 4, 2, 1],
+        minZoom: 1,
+        maxZoom: 2,
+        zoom: 2,
+      });
+
+      view.setResolutions([32, 16, 8, 4, 1]);
+      assert.strictEqual(view.getMinZoom(), 3);
+      assert.strictEqual(view.getMaxZoom(), 3);
+      assert.strictEqual(view.getMaxResolution(), 4);
+      assert.strictEqual(view.getMinResolution(), 4);
+    });
+
+    it('keeps a matched maxZoom when minZoom would cross it', function () {
+      const view = new View({
+        resolutions: [8, 4, 2, 1],
+        minZoom: 1,
+        maxZoom: 2,
+        zoom: 2,
+      });
+
+      view.setResolutions([2, 1]);
+      assert.strictEqual(view.getMinZoom(), 0);
+      assert.strictEqual(view.getMaxZoom(), 0);
+      assert.strictEqual(view.getMaxResolution(), 2);
+      assert.strictEqual(view.getMinResolution(), 2);
+    });
+  });
+
+  describe('#setExtent', function () {
+    describe('with resolutions property in view', function () {
+      it('changes the resolution to fit the new extent', function () {
+        const view = new View({
+          center: [25, 25],
+          resolutions: [4, 2, 1, 0.5],
+          zoom: 2,
+        });
+
+        view.setExtent([0, 0, 50, 50]);
+        assert.strictEqual(view.getResolution(), 0.5);
+        assert.deepEqual(view.getCenter(), [25, 25]);
+      });
+    });
+
+    describe('with no resolutions property in view', function () {
+      it('moves the center inside the new extent', function () {
+        const view = new View({
+          center: [200, 200],
+          maxResolution: 4,
+          zoom: 2,
+        });
+
+        view.setExtent([0, 0, 100, 100]);
+        assert.deepEqual(view.getCenter(), [50, 50]);
+        assert.strictEqual(view.getResolution(), 1);
+      });
+    });
+
+    describe('with a geographic user projection', function () {
+      beforeEach(useGeographic);
+      afterEach(clearUserProjection);
+
+      it('constrains the center to the extent in user coordinates', function () {
+        const view = new View({
+          center: [0, 0],
+          constrainOnlyCenter: true,
+          zoom: 2,
+        });
+
+        view.setExtent([10, 10, 20, 20]);
+        const center = view.getCenter();
+        assert.approximately(center[0], 10, 1e-10);
+        assert.approximately(center[1], 10, 1e-10);
       });
     });
   });
