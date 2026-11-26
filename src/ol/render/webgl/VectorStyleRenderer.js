@@ -864,6 +864,7 @@ class VectorStyleRenderer extends Disposable {
    * @param {WebGLBuffers|null} [buffers] WebGL Buffers to reload if any
    */
   setHelper(helper, buffers = null) {
+    this.deletePrograms_();
     this.helper_ = helper;
 
     for (const renderPass of this.renderPasses_) {
@@ -929,10 +930,33 @@ class VectorStyleRenderer extends Disposable {
   }
 
   /**
+   * Release the programs obtained from the current helper.
+   * @private
+   */
+  deletePrograms_() {
+    if (!this.helper_) {
+      return;
+    }
+    for (const renderPass of this.renderPasses_) {
+      for (const subRenderPass of [
+        renderPass.fillRenderPass,
+        renderPass.strokeRenderPass,
+        renderPass.symbolRenderPass,
+      ]) {
+        if (subRenderPass?.program) {
+          this.helper_.deleteProgram(subRenderPass.program);
+          delete subRenderPass.program;
+        }
+      }
+    }
+  }
+
+  /**
    * Clean up.
    * @override
    */
   disposeInternal() {
+    this.deletePrograms_();
     this.textOverlayWorker_?.then((worker) => worker.terminate());
     super.disposeInternal();
   }

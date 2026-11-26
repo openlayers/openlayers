@@ -251,6 +251,19 @@ class FlowLayerRenderer extends WebGLTileLayerRenderer {
   /**
    * @override
    */
+  removeHelper() {
+    const helper = this.helper;
+    if (helper) {
+      helper.deleteProgram(this.particlePositionProgram_);
+      helper.deleteProgram(this.particleColorProgram_);
+      helper.deleteProgram(this.textureProgram_);
+    }
+    super.removeHelper();
+  }
+
+  /**
+   * @override
+   */
   afterHelperCreated() {
     super.afterHelperCreated();
     const helper = this.helper;

@@ -397,6 +397,16 @@ class WebGLPointsLayerRenderer extends WebGLLayerRenderer {
   /**
    * @override
    */
+  removeHelper() {
+    if (this.helper) {
+      this.helper.deleteProgram(this.program_);
+    }
+    super.removeHelper();
+  }
+
+  /**
+   * @override
+   */
   afterHelperCreated() {
     this.program_ = this.helper.getProgram(
       this.fragmentShader_,

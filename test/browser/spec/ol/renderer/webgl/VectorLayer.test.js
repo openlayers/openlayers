@@ -179,6 +179,16 @@ describe('ol/renderer/webgl/VectorLayer', () => {
     );
   });
 
+  describe('#reset', () => {
+    it('disposes the previous renderer', () => {
+      renderer.helper = new WebGLHelper();
+      renderer.afterHelperCreated(frameState);
+      const dispose = vi.spyOn(renderer.styleRenderer_, 'dispose');
+      renderer.reset({style: SAMPLE_RULES});
+      assert.strictEqual(dispose.mock.calls.length, 1);
+    });
+  });
+
   describe('#afterHelperCreated', () => {
     let spy;
     beforeEach(() => {
