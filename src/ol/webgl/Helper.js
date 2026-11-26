@@ -440,6 +440,28 @@ class WebGLHelper extends Disposable {
       : [new WebGLPostProcessingPass({webGlContext: this.gl_})];
 
     /**
+     * Custom post processes may sample outside of the drawn area, so a scissor is only used with the
+     * default one.
+     * @type {boolean}
+     * @private
+     */
+    this.canScissor_ = !options.postProcesses?.length;
+
+    /**
+     * Box of the drawing buffer the next draw is limited to, see `setScissor()`.
+     * @type {Array<number>|null}
+     * @private
+     */
+    this.scissor_ = null;
+
+    /**
+     * Scissor box applied by the last call to `prepareDraw()`.
+     * @type {Array<number>|null}
+     * @private
+     */
+    this.drawScissor_ = null;
+
+    /**
      * @type {string|null}
      * @private
      */
@@ -605,6 +627,17 @@ class WebGLHelper extends Disposable {
     }
 
     gl.bindTexture(gl.TEXTURE_2D, null);
+
+    // a scissor enabled by a prerender listener takes precedence
+    this.drawScissor_ =
+      this.scissor_ && this.canScissor_ && !gl.isEnabled(gl.SCISSOR_TEST)
+        ? this.scissor_
+        : null;
+    if (this.drawScissor_) {
+      const scissor = this.drawScissor_;
+      gl.enable(gl.SCISSOR_TEST);
+      gl.scissor(scissor[0], scissor[1], scissor[2], scissor[3]);
+    }
 
     gl.clearColor(0.0, 0.0, 0.0, 0.0);
     gl.depthRange(0.0, 1.0);
@@ -774,6 +807,12 @@ class WebGLHelper extends Disposable {
    * @param {function(WebGLRenderingContext, import("../Map.js").FrameState):void} [postCompose] Called before composing.
    */
   finalizeDraw(frameState, preCompose, postCompose) {
+    const scissor = this.drawScissor_;
+    this.drawScissor_ = null;
+    this.scissor_ = null;
+    if (scissor) {
+      this.gl_.disable(this.gl_.SCISSOR_TEST);
+    }
     // apply post processes using the next one as target
     for (let i = 0, ii = this.postProcessPasses_.length; i < ii; i++) {
       if (i === ii - 1) {
@@ -782,6 +821,7 @@ class WebGLHelper extends Disposable {
           undefined,
           preCompose,
           postCompose,
+          scissor ?? undefined,
         );
       } else {
         this.postProcessPasses_[i].apply(
@@ -790,6 +830,17 @@ class WebGLHelper extends Disposable {
         );
       }
     }
+  }
+
+  /**
+   * Limit the next draw, from `prepareDraw()` to `finalizeDraw()`, to a box of the drawing buffer:
+   * only that box of the render target is cleared and composed onto the canvas. This is ignored
+   * when custom post processes are used or when a scissor test is already enabled.
+   * @param {Array<number>|null} scissor Box as `[x, y, width, height]` in drawing buffer pixels,
+   * with the origin at the bottom left, or `null` for the whole canvas.
+   */
+  setScissor(scissor) {
+    this.scissor_ = scissor;
   }
 
   /**

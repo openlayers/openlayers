@@ -22,7 +22,52 @@ import TileTexture from '../../webgl/TileTexture.js';
 import WebGLBaseTileLayerRenderer, {
   Uniforms as BaseUniforms,
   getCacheKey,
+  getRenderExtent,
 } from './TileLayerBase.js';
+
+/**
+ * Get the box of the drawing buffer covered by an extent, one pixel wider on each side.
+ * @param {import("../../Map.js").FrameState} frameState Frame state.
+ * @param {import("../../extent.js").Extent} extent Extent in view coordinates.
+ * @return {Array<number>|null} Box as `[x, y, width, height]` in drawing buffer pixels, with the
+ * origin at the bottom left, or `null` if the extent covers the whole drawing buffer.
+ */
+export function getExtentScissor(frameState, extent) {
+  const transform = frameState.coordinateToPixelTransform;
+  const pixelRatio = frameState.pixelRatio;
+  const width = Math.round(frameState.size[0] * pixelRatio);
+  const height = Math.round(frameState.size[1] * pixelRatio);
+  let minX = Infinity;
+  let minY = Infinity;
+  let maxX = -Infinity;
+  let maxY = -Infinity;
+  const corners = [
+    [extent[0], extent[1]],
+    [extent[0], extent[3]],
+    [extent[2], extent[1]],
+    [extent[2], extent[3]],
+  ];
+  for (const corner of corners) {
+    applyTransform(transform, corner);
+    minX = Math.min(minX, corner[0]);
+    minY = Math.min(minY, corner[1]);
+    maxX = Math.max(maxX, corner[0]);
+    maxY = Math.max(maxY, corner[1]);
+  }
+  const left = Math.max(0, Math.floor(minX * pixelRatio) - 1);
+  const top = Math.max(0, Math.floor(minY * pixelRatio) - 1);
+  const right = Math.min(width, Math.ceil(maxX * pixelRatio) + 1);
+  const bottom = Math.min(height, Math.ceil(maxY * pixelRatio) + 1);
+  if (left === 0 && top === 0 && right === width && bottom === height) {
+    return null;
+  }
+  return [
+    left,
+    height - Math.max(top, bottom),
+    Math.max(0, right - left),
+    Math.max(0, bottom - top),
+  ];
+}
 
 export const Uniforms = {
   ...BaseUniforms,
@@ -199,11 +244,30 @@ class WebGLTileLayerRenderer extends WebGLBaseTileLayerRenderer {
    * @override
    */
   beforeTilesRender(frameState, tilesWithAlpha) {
+    this.helper.setScissor(this.getRenderScissor(frameState));
     super.beforeTilesRender(frameState, tilesWithAlpha);
     const program = this.program_;
     if (program) {
       this.helper.useProgram(program, frameState);
     }
+  }
+
+  /**
+   * Get the box of the drawing buffer the layer is limited to, so that a layer covering a small
+   * part of the view does not clear and compose the whole canvas.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @return {Array<number>|null} Box as `[x, y, width, height]` in drawing buffer pixels, or `null`
+   * for the whole canvas.
+   * @protected
+   */
+  getRenderScissor(frameState) {
+    if (!frameState.extent) {
+      return null;
+    }
+    return getExtentScissor(
+      frameState,
+      getRenderExtent(frameState, frameState.extent),
+    );
   }
 
   /**

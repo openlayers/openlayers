@@ -112,7 +112,7 @@ function removeTileRepresentationFromLookup(
  * @param {import("../../extent.js").Extent} extent The frame extent.
  * @return {import("../../extent.js").Extent} Frame extent intersected with layer extents.
  */
-function getRenderExtent(frameState, extent) {
+export function getRenderExtent(frameState, extent) {
   const layerState = frameState.layerStatesArray[frameState.layerIndex];
   if (layerState.extent) {
     extent = getIntersection(
