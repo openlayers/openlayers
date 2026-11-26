@@ -1167,44 +1167,43 @@ class View extends BaseObject {
    * @api
    */
   setResolutions(resolutions) {
-    if (!resolutions) {
-      return;
-    }
     const options = this.getUpdatedOptions_({resolutions});
-    const lastZoom = resolutions.length - 1;
+    if (resolutions) {
+      const lastZoom = resolutions.length - 1;
 
-    /**
-     * @param {number|undefined} zoom Zoom level in the previous resolutions array.
-     * @return {{zoom: number, matched: boolean}|undefined} Updated zoom limit.
-     */
-    const updateZoom = (zoom) => {
-      if (zoom === undefined) {
-        return undefined;
-      }
-      const resolution = this.resolutions_?.[zoom];
-      const matchIndex =
-        resolution === undefined ? -1 : resolutions.indexOf(resolution);
-      const matched = matchIndex !== -1;
-      return {
-        zoom: !matched ? Math.min(zoom, lastZoom) : matchIndex,
-        matched,
+      /**
+       * @param {number|undefined} zoom Zoom level in the previous resolutions array.
+       * @return {{zoom: number, matched: boolean}|undefined} Updated zoom limit.
+       */
+      const updateZoom = (zoom) => {
+        if (zoom === undefined) {
+          return undefined;
+        }
+        const resolution = this.resolutions_?.[zoom];
+        const matchIndex =
+          resolution === undefined ? -1 : resolutions.indexOf(resolution);
+        const matched = matchIndex !== -1;
+        return {
+          zoom: !matched ? Math.min(zoom, lastZoom) : matchIndex,
+          matched,
+        };
       };
-    };
 
-    const minZoom = updateZoom(options.minZoom);
-    const maxZoom = updateZoom(options.maxZoom);
-    if (minZoom && maxZoom && minZoom.zoom > maxZoom.zoom) {
-      if (minZoom.matched) {
-        maxZoom.zoom = minZoom.zoom;
-      } else {
-        minZoom.zoom = maxZoom.zoom;
+      const minZoom = updateZoom(options.minZoom);
+      const maxZoom = updateZoom(options.maxZoom);
+      if (minZoom && maxZoom && minZoom.zoom > maxZoom.zoom) {
+        if (minZoom.matched) {
+          maxZoom.zoom = minZoom.zoom;
+        } else {
+          minZoom.zoom = maxZoom.zoom;
+        }
       }
-    }
-    if (minZoom) {
-      options.minZoom = minZoom.zoom;
-    }
-    if (maxZoom) {
-      options.maxZoom = maxZoom.zoom;
+      if (minZoom) {
+        options.minZoom = minZoom.zoom;
+      }
+      if (maxZoom) {
+        options.maxZoom = maxZoom.zoom;
+      }
     }
     this.applyOptions_(options);
   }
