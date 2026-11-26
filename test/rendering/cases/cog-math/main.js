@@ -18,7 +18,7 @@ const source = new GeoTIFF({
   transition: 0,
 });
 
-new Map({
+const map = new Map({
   layers: [
     new TileLayer({
       source: source,
@@ -82,5 +82,6 @@ new Map({
 });
 
 render({
+  map,
   message: 'normalized difference vegetation index',
 });

@@ -15,12 +15,13 @@ layer.setStyle({
   color: ['array', ['band', 1], ['band', 1], ['band', 1], ['band', 2]],
 });
 
-new Map({
+const map = new Map({
   layers: [layer],
   target: 'map',
   view: source.getView(),
 });
 
 render({
+  map,
   message: 'normalize data based on GDAL stats',
 });

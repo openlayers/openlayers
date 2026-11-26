@@ -44,6 +44,7 @@ source.getView().then((viewConfig) => {
 });
 
 render({
+  map,
   message:
     'reprojects a geotiff without nodata without rendering opaque overflow',
 });

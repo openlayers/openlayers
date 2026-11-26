@@ -8,7 +8,7 @@ const source = new GeoTIFF({
   sources: [{url: '/data/raster/masked.tif'}],
 });
 
-new Map({
+const map = new Map({
   layers: [
     new TileLayer({
       source: source,
@@ -22,5 +22,6 @@ new Map({
 });
 
 render({
+  map,
   message: 'can be overridden to read raw YCbCr',
 });

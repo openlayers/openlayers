@@ -166,11 +166,20 @@ async function getScreenshotsMismatch(entry) {
 
 let handleRender;
 async function exposeRender(page) {
-  await page.exposeFunction('render', (message) => {
+  await page.exposeFunction('renderScreenshot', (config) => {
     if (!handleRender) {
       throw new Error('No render handler set for current page');
     }
-    handleRender(message);
+    handleRender(config);
+  });
+  await page.evaluateOnNewDocument(() => {
+    window.render = (options = {}) => {
+      const {map, ...config} = options;
+      if (!map) {
+        return window.renderScreenshot(config);
+      }
+      map.once('rendercomplete', () => window.renderScreenshot(config));
+    };
   });
 }
 

@@ -25,7 +25,7 @@ const source = new GeoTIFF({
   transition: 0,
 });
 
-new Map({
+const map = new Map({
   layers: [
     new VectorLayer({
       source: new VectorSource({
@@ -54,5 +54,6 @@ new Map({
 });
 
 render({
+  map,
   message: 'works with geotiffs that include a ModelTransformation',
 });
