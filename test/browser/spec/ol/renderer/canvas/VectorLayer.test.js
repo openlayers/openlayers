@@ -620,6 +620,17 @@ describe('ol/renderer/canvas/VectorLayer', function () {
       assert.strictEqual(renderer.renderWorlds.mock.calls.length, 1);
       assert.strictEqual(renderer.clipUnrotated.mock.calls.length, 1);
     });
+    it('restores the draw context in deferred mode without replay group', function () {
+      const frameState = createLayerFrameState([-200, -200, 200, 200]);
+      frameState.layerStatesArray[0].opacity = 0.5;
+      frameState.declutter = {};
+      renderer.getLayer().on('postrender', () => {});
+      renderer.renderFrame(frameState, null);
+      const context = renderer.targetContext_;
+      renderer.renderDeferred(frameState);
+      assert.strictEqual(renderer.context, context);
+      assert.isNull(renderer.targetContext_);
+    });
     it('renders withoutt clipping when layer extent covers view', function () {
       const frameState = createLayerFrameState([-200, -200, 200, 200]);
       if (renderer.prepareFrame(frameState)) {

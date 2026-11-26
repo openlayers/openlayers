@@ -342,6 +342,7 @@ class CanvasVectorLayerRenderer extends CanvasLayerRenderer {
    */
   renderDeferredInternal(frameState) {
     if (!this.replayGroup_) {
+      this.resetDrawContext_();
       return;
     }
     if (this.clipExtent_) {
