@@ -127,6 +127,52 @@ describe('ol/webgl/WebGLHelper', function () {
         assert.strictEqual(h.postProcessPasses_.length, 1);
       });
     });
+
+    describe('default rendering pass', function () {
+      let other;
+      afterEach(function () {
+        other.dispose();
+      });
+
+      it('is shared by helpers drawing to the same canvas', function () {
+        h = new WebGLHelper({canvasCacheKey: 'shared-pass'});
+        other = new WebGLHelper({canvasCacheKey: 'shared-pass'});
+        assert.strictEqual(h.getGL(), other.getGL());
+        assert.strictEqual(
+          h.postProcessPasses_[0],
+          other.postProcessPasses_[0],
+        );
+      });
+
+      it('is not shared by helpers drawing to different canvases', function () {
+        h = new WebGLHelper();
+        other = new WebGLHelper();
+        assert.notStrictEqual(
+          h.postProcessPasses_[0],
+          other.postProcessPasses_[0],
+        );
+      });
+
+      it('is not used by helpers with post processes', function () {
+        h = new WebGLHelper({canvasCacheKey: 'shared-pass'});
+        other = new WebGLHelper({
+          canvasCacheKey: 'shared-pass',
+          postProcesses: [{}],
+        });
+        assert.notStrictEqual(
+          h.postProcessPasses_[0],
+          other.postProcessPasses_[0],
+        );
+      });
+
+      it('is recreated after the context is lost', function () {
+        h = new WebGLHelper({canvasCacheKey: 'shared-pass'});
+        const pass = h.postProcessPasses_[0];
+        h.getCanvas().dispatchEvent(new Event('webglcontextlost'));
+        other = new WebGLHelper({canvasCacheKey: 'shared-pass'});
+        assert.notStrictEqual(other.postProcessPasses_[0], pass);
+      });
+    });
   });
 
   describe('operations', function () {

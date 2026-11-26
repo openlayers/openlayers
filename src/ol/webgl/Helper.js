@@ -137,6 +137,26 @@ const sharedPrograms = new WeakMap();
 const programKeys = new WeakMap();
 
 /**
+ * Default post processing pass of each context. Helpers drawing to the same context render one
+ * after the other, so they can share its render target.
+ * @type {WeakMap<WebGLRenderingContext, WebGLPostProcessingPass>}
+ */
+const defaultPostProcessingPasses = new WeakMap();
+
+/**
+ * @param {WebGLRenderingContext} gl The context.
+ * @return {WebGLPostProcessingPass} The default post processing pass of the context.
+ */
+function getDefaultPostProcessingPass(gl) {
+  let pass = defaultPostProcessingPasses.get(gl);
+  if (!pass) {
+    pass = new WebGLPostProcessingPass({webGlContext: gl});
+    defaultPostProcessingPasses.set(gl, pass);
+  }
+  return pass;
+}
+
+/**
  * @param {string} key The cache key for the canvas.
  * @return {string} The shared cache key.
  */
@@ -421,8 +441,8 @@ class WebGLHelper extends Disposable {
 
     /**
      * An array of PostProcessingPass objects is kept in this variable, built from the steps provided in the
-     * options. If no post process was given, a default one is used (so as not to have to make an exception to
-     * the frame buffer logic).
+     * options. If no post process was given, the default one of the context is used (so as not to have to
+     * make an exception to the frame buffer logic).
      * @type {Array<WebGLPostProcessingPass>}
      * @private
      */
@@ -437,7 +457,7 @@ class WebGLHelper extends Disposable {
               uniforms: options.uniforms,
             }),
         )
-      : [new WebGLPostProcessingPass({webGlContext: this.gl_})];
+      : [getDefaultPostProcessingPass(this.gl_)];
 
     /**
      * @type {string|null}
@@ -1265,6 +1285,7 @@ class WebGLHelper extends Disposable {
     clear(this.bufferCache_);
     this.currentProgram_ = null;
     sharedPrograms.delete(this.gl_);
+    defaultPostProcessingPasses.delete(this.gl_);
 
     event.preventDefault();
   }
