@@ -465,7 +465,7 @@ describe('ol/renderer/webgl/PointsLayer', function () {
   });
 
   describe('#disposeInternal', function () {
-    it('terminates the worker and calls dispose on the helper', function () {
+    it('terminates the worker, deletes the program and disposes the helper', function () {
       const layer = new VectorLayer({
         source: new VectorSource(),
       });
@@ -481,11 +481,14 @@ describe('ol/renderer/webgl/PointsLayer', function () {
       });
       renderer.prepareFrame(frameState);
 
+      const program = renderer.program_;
       const spyHelper = vi.spyOn(renderer.helper, 'disposeInternal');
       const spyWorker = vi.spyOn(renderer.worker_, 'terminate');
+      const deleteProgram = vi.spyOn(renderer.helper, 'deleteProgram');
       renderer.dispose();
       assert.isAbove(spyHelper.mock.calls.length, 0);
       assert.isAbove(spyWorker.mock.calls.length, 0);
+      assert.deepEqual(deleteProgram.mock.calls, [[program]]);
     });
   });
 

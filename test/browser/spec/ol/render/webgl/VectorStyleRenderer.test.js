@@ -298,6 +298,33 @@ describe('VectorStyleRenderer', () => {
         helper,
       );
     });
+    it('deletes its programs when disposed', () => {
+      const {fillRenderPass, strokeRenderPass, symbolRenderPass} =
+        vectorStyleRenderer.renderPasses_[0];
+      const programs = [
+        fillRenderPass.program,
+        strokeRenderPass.program,
+        symbolRenderPass.program,
+      ];
+      const deleteProgram = vi.spyOn(helper, 'deleteProgram');
+      vectorStyleRenderer.dispose();
+      assert.deepEqual(
+        deleteProgram.mock.calls.map((call) => call[0]),
+        programs,
+      );
+    });
+    it('deletes its programs from the previous helper when the helper changes', () => {
+      const program =
+        vectorStyleRenderer.renderPasses_[0].fillRenderPass.program;
+      const deleteProgram = vi.spyOn(helper, 'deleteProgram');
+      const otherHelper = new WebGLHelper();
+      vectorStyleRenderer.setHelper(otherHelper);
+      assert.include(
+        deleteProgram.mock.calls.map((call) => call[0]),
+        program,
+      );
+      otherHelper.dispose();
+    });
     it('creates a VectorStyleRenderer with a single render pass', () => {
       assertCustomAttributes(vectorStyleRenderer.customAttributes_, {
         prop_attr1: {},

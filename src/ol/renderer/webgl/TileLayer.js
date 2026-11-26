@@ -129,10 +129,14 @@ class WebGLTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     this.paletteTextures_ = options.paletteTextures || [];
 
     if (this.helper) {
+      const previousProgram = this.program_;
       this.program_ = this.helper.getProgram(
         this.fragmentShader_,
         this.vertexShader_,
       );
+      if (previousProgram) {
+        this.helper.deleteProgram(previousProgram);
+      }
       const gl = this.helper.getGL();
       for (const paletteTexture of this.paletteTextures_) {
         // upload the texture data
@@ -171,6 +175,10 @@ class WebGLTileLayerRenderer extends WebGLBaseTileLayerRenderer {
       const gl = this.helper.getGL();
       for (const paletteTexture of this.paletteTextures_) {
         paletteTexture.delete(gl);
+      }
+      if (this.program_) {
+        this.helper.deleteProgram(this.program_);
+        this.program_ = undefined;
       }
     }
 
@@ -425,7 +433,7 @@ class WebGLTileLayerRenderer extends WebGLBaseTileLayerRenderer {
 
       const program = this.program_;
       if (program) {
-        gl.deleteProgram(program);
+        helper.deleteProgram(program);
       }
       this.program_ = undefined;
       const indicesBuffer = this.indices_;

@@ -176,6 +176,9 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
     this.applyOptions_(options);
     if (this.helper) {
       this.createRenderers_();
+      if (this.tileMaskProgram_) {
+        this.helper.deleteProgram(this.tileMaskProgram_);
+      }
       this.initTileMask_();
     }
   }
@@ -243,6 +246,7 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
       addBuilderParams(styleShader.builder);
     }
 
+    this.styleRenderer_?.dispose();
     this.styleRenderer_ = new VectorStyleRenderer(
       styleShaders,
       this.styleVariables_ ?? {},
@@ -266,6 +270,17 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
       /** @type {string} */ (builder.getFillVertexShader()),
     );
     this.helper.flushBufferData(this.tileMaskIndices_);
+  }
+
+  /**
+   * @override
+   */
+  removeHelper() {
+    if (this.helper && this.tileMaskProgram_) {
+      this.helper.deleteProgram(this.tileMaskProgram_);
+      this.tileMaskProgram_ = undefined;
+    }
+    super.removeHelper();
   }
 
   /**

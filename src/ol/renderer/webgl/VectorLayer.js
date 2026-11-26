@@ -290,6 +290,7 @@ class WebGLVectorLayerRenderer extends WebGLLayerRenderer {
    */
   createRenderers_() {
     this.buffers_ = null;
+    this.styleRenderer_?.dispose();
     this.styleRenderer_ = new VectorStyleRenderer(
       this.style_,
       this.styleVariables_,

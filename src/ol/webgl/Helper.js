@@ -119,6 +119,24 @@ export const AttributeType = {
 const canvasCache = {};
 
 /**
+ * @typedef {Object} SharedProgram
+ * @property {WebGLProgram} program Program.
+ * @property {number} refCount Number of users of the program.
+ */
+
+/**
+ * Programs of each context, by program key (the concatenation of the shader sources).
+ * @type {WeakMap<WebGLRenderingContext, Map<string, SharedProgram>>}
+ */
+const sharedPrograms = new WeakMap();
+
+/**
+ * Program key of each shared program.
+ * @type {WeakMap<WebGLProgram, string>}
+ */
+const programKeys = new WeakMap();
+
+/**
  * @param {string} key The cache key for the canvas.
  * @return {string} The shared cache key.
  */
@@ -960,12 +978,61 @@ class WebGLHelper extends Disposable {
   }
 
   /**
-   * Create a program for a vertex and fragment shader.  Throws if shader compilation fails.
+   * Get a program for a vertex and fragment shader. Throws if shader compilation fails.
+   * Helpers drawing to the same context share the program of the same shaders, so a program
+   * must be released with `deleteProgram()` rather than deleted directly.
    * @param {string} fragmentShaderSource Fragment shader source.
    * @param {string} vertexShaderSource Vertex shader source.
    * @return {WebGLProgram} Program
    */
   getProgram(fragmentShaderSource, vertexShaderSource) {
+    let programs = sharedPrograms.get(this.gl_);
+    if (!programs) {
+      programs = new Map();
+      sharedPrograms.set(this.gl_, programs);
+    }
+    const key = vertexShaderSource + '\0' + fragmentShaderSource;
+    let sharedProgram = programs.get(key);
+    if (!sharedProgram) {
+      const program = this.linkProgram_(
+        fragmentShaderSource,
+        vertexShaderSource,
+      );
+      sharedProgram = {program, refCount: 0};
+      programs.set(key, sharedProgram);
+      programKeys.set(program, key);
+    }
+    sharedProgram.refCount++;
+    return sharedProgram.program;
+  }
+
+  /**
+   * Release a program obtained with `getProgram()`. It is deleted once no other user holds it.
+   * @param {WebGLProgram} program Program.
+   */
+  deleteProgram(program) {
+    const key = programKeys.get(program);
+    const programs = sharedPrograms.get(this.gl_);
+    const sharedProgram = key ? programs?.get(key) : undefined;
+    if (key && programs && sharedProgram?.program === program) {
+      sharedProgram.refCount--;
+      if (sharedProgram.refCount > 0) {
+        return;
+      }
+      programs.delete(key);
+    }
+    programKeys.delete(program);
+    this.gl_.deleteProgram(program);
+  }
+
+  /**
+   * Compile and link a program for a vertex and fragment shader.  Throws if shader compilation fails.
+   * @param {string} fragmentShaderSource Fragment shader source.
+   * @param {string} vertexShaderSource Vertex shader source.
+   * @return {WebGLProgram} Program
+   * @private
+   */
+  linkProgram_(fragmentShaderSource, vertexShaderSource) {
     const gl = this.gl_;
 
     const fragmentShader = this.compileShader(
@@ -1197,6 +1264,7 @@ class WebGLHelper extends Disposable {
   handleWebGLContextLost(event) {
     clear(this.bufferCache_);
     this.currentProgram_ = null;
+    sharedPrograms.delete(this.gl_);
 
     event.preventDefault();
   }

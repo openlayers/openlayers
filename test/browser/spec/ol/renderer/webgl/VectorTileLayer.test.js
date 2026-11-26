@@ -229,7 +229,34 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
     });
   });
 
+  describe('#disposeInternal', () => {
+    it('deletes its tile mask program', () => {
+      renderer.helper = new WebGLHelper();
+      renderer.afterHelperCreated(frameState);
+      const program = renderer.tileMaskProgram_;
+      const deleteProgram = vi.spyOn(renderer.helper, 'deleteProgram');
+      renderer.dispose();
+      assert.include(
+        deleteProgram.mock.calls.map((call) => call[0]),
+        program,
+      );
+    });
+  });
+
   describe('#reset', () => {
+    it('disposes the previous renderer and deletes the tile mask program', () => {
+      renderer.prepareFrame(frameState);
+      const dispose = vi.spyOn(renderer.styleRenderer_, 'dispose');
+      const program = renderer.tileMaskProgram_;
+      const deleteProgram = vi.spyOn(renderer.helper, 'deleteProgram');
+      renderer.reset({style: SAMPLE_STYLE});
+      assert.strictEqual(dispose.mock.calls.length, 1);
+      assert.include(
+        deleteProgram.mock.calls.map((call) => call[0]),
+        program,
+      );
+    });
+
     describe('use a single style', () => {
       beforeEach(() => {
         renderer.reset({
