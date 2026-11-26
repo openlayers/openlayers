@@ -180,6 +180,21 @@ where('WebGPU').describe('ol/layer/WebGPUVector', function () {
     assert.isAbove(styleFunction.mock.calls.length, calls);
   });
 
+  it('styles features with their own style, and restyles on setStyle()', async () => {
+    const feature = new Feature(new Point([0, 0]));
+    const featureStyle = vi.fn(() => new Style());
+    feature.setStyle(featureStyle);
+    const layerStyle = vi.fn(() => new Style());
+    layer.setSource(new VectorSource({features: [feature]}));
+    layer.setStyle(layerStyle);
+    await renderComplete(map);
+    assert.isAtLeast(featureStyle.mock.calls.length, 1);
+    assert.strictEqual(layerStyle.mock.calls.length, 0);
+    feature.setStyle(null);
+    await renderComplete(map);
+    assert.isAtLeast(layerStyle.mock.calls.length, 1);
+  });
+
   it('keeps drawing while features change, and shows features added during a build', async () => {
     const left = new Feature(
       new Polygon([

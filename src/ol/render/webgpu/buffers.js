@@ -76,7 +76,10 @@ export function resolveFeatureStyles(
   if (!geometry) {
     return [];
   }
-  const styles = styleFunction(feature, resolution, zoom);
+  const featureStyle = feature.getStyleFunction();
+  const styles = featureStyle
+    ? featureStyle(feature, resolution)
+    : styleFunction(feature, resolution, zoom);
   if (!styles) {
     return [];
   }
