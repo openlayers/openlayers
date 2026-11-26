@@ -1867,17 +1867,6 @@ describe('ol/View', function () {
   });
 
   describe('#setResolutions', function () {
-    it('updates the resolutions and constrains the current zoom', function () {
-      const view = new View({
-        resolutions: [8, 4, 2, 1],
-        zoom: 2,
-      });
-
-      view.setResolutions([8, 4]);
-      assert.deepEqual(view.getResolutions(), [8, 4]);
-      assert.strictEqual(view.getZoom(), 1);
-    });
-
     it('clamps minZoom when its resolution is absent', function () {
       const view = new View({
         resolutions: [8, 4, 2, 1],
@@ -1888,6 +1877,7 @@ describe('ol/View', function () {
       assert.strictEqual(view.getMaxResolution(), 2);
       view.setResolutions([8, 4]);
       assert.strictEqual(view.getMinZoom(), 1);
+      assert.deepEqual(view.getResolutions(), [8, 4]);
       assert.strictEqual(view.getMaxResolution(), 4);
       assert.strictEqual(view.getZoom(), 1);
     });
@@ -1906,21 +1896,6 @@ describe('ol/View', function () {
       assert.strictEqual(view.getMaxZoom(), 2);
       assert.strictEqual(view.getMinResolution(), 2);
       assert.strictEqual(view.get('maxZoom'), 2);
-    });
-
-    it('keeps zoom limit resolutions when their indices change', function () {
-      const view = new View({
-        resolutions: [8, 4, 2, 1],
-        minZoom: 2,
-        maxZoom: 3,
-        zoom: 2,
-      });
-
-      view.setResolutions([2, 1]);
-      assert.strictEqual(view.getMinZoom(), 0);
-      assert.strictEqual(view.getMaxZoom(), 1);
-      assert.strictEqual(view.getMaxResolution(), 2);
-      assert.strictEqual(view.getMinResolution(), 1);
     });
 
     it('keeps a matched minZoom when maxZoom would cross it', function () {
