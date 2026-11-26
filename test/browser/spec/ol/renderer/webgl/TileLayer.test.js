@@ -116,6 +116,22 @@ describe('ol/renderer/webgl/TileLayer', function () {
     assert.strictEqual(enqueueTiles.mock.calls.length, 0);
   });
 
+  it('#disposeInternal() deletes its program', () => {
+    renderer.prepareFrame(frameState);
+    const program = renderer.program_;
+    const deleteProgram = vi.spyOn(renderer.helper, 'deleteProgram');
+    tileLayer.dispose();
+    assert.deepEqual(deleteProgram.mock.calls, [[program]]);
+  });
+
+  it('#reset() deletes the previous program', () => {
+    renderer.prepareFrame(frameState);
+    const program = renderer.program_;
+    const deleteProgram = vi.spyOn(renderer.helper, 'deleteProgram');
+    tileLayer.setStyle({color: [255, 0, 0, 1]});
+    assert.deepEqual(deleteProgram.mock.calls, [[program]]);
+  });
+
   it('#findStaleTile_() ends the transition so the stale tile does not loop', () => {
     const source = tileLayer.getSource();
     const tile = source.getTile(0, 0, 0);

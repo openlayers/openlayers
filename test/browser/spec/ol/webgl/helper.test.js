@@ -254,6 +254,75 @@ describe('ol/webgl/WebGLHelper', function () {
       });
     });
 
+    describe('program sharing', function () {
+      let other;
+      afterEach(function () {
+        other.dispose();
+      });
+
+      it('shares programs with the same shaders on a context', function () {
+        h = new WebGLHelper({canvasCacheKey: 'shared-programs'});
+        other = new WebGLHelper({canvasCacheKey: 'shared-programs'});
+        const program = h.getProgram(FRAGMENT_SHADER, VERTEX_SHADER);
+        assert.strictEqual(
+          other.getProgram(FRAGMENT_SHADER, VERTEX_SHADER),
+          program,
+        );
+        assert.notStrictEqual(
+          other.getProgram(FRAGMENT_SHADER + '\n', VERTEX_SHADER),
+          program,
+        );
+      });
+
+      it('does not share programs across contexts', function () {
+        h = new WebGLHelper();
+        other = new WebGLHelper();
+        assert.notStrictEqual(
+          h.getProgram(FRAGMENT_SHADER, VERTEX_SHADER),
+          other.getProgram(FRAGMENT_SHADER, VERTEX_SHADER),
+        );
+      });
+
+      it('deletes a program once all its users released it', function () {
+        h = new WebGLHelper({canvasCacheKey: 'shared-programs'});
+        other = new WebGLHelper({canvasCacheKey: 'shared-programs'});
+        const gl = h.getGL();
+        const program = h.getProgram(FRAGMENT_SHADER, VERTEX_SHADER);
+        other.getProgram(FRAGMENT_SHADER, VERTEX_SHADER);
+        h.deleteProgram(program);
+        assert.isTrue(gl.isProgram(program));
+        other.deleteProgram(program);
+        assert.isFalse(gl.isProgram(program));
+        assert.notStrictEqual(
+          h.getProgram(FRAGMENT_SHADER, VERTEX_SHADER),
+          program,
+        );
+      });
+
+      it('deletes a program not obtained from getProgram()', function () {
+        h = new WebGLHelper();
+        other = new WebGLHelper();
+        const gl = h.getGL();
+        const program = gl.createProgram();
+        h.deleteProgram(program);
+        assert.isFalse(gl.isProgram(program));
+      });
+
+      it('creates new programs after the context is lost', function () {
+        h = new WebGLHelper({canvasCacheKey: 'shared-programs'});
+        const program = h.getProgram(FRAGMENT_SHADER, VERTEX_SHADER);
+        h.getCanvas().dispatchEvent(new Event('webglcontextlost'));
+        other = new WebGLHelper({canvasCacheKey: 'shared-programs'});
+        const newProgram = other.getProgram(FRAGMENT_SHADER, VERTEX_SHADER);
+        assert.notStrictEqual(newProgram, program);
+        h.deleteProgram(program);
+        assert.strictEqual(
+          other.getProgram(FRAGMENT_SHADER, VERTEX_SHADER),
+          newProgram,
+        );
+      });
+    });
+
     describe('invalid shader compiling', function () {
       it('throws for an invalid vertex shader', function () {
         h = new WebGLHelper();
