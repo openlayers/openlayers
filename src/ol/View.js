@@ -1167,6 +1167,9 @@ class View extends BaseObject {
    * @api
    */
   setResolutions(resolutions) {
+    if (!resolutions) {
+      return;
+    }
     const options = this.getUpdatedOptions_({resolutions});
     const lastZoom = resolutions.length - 1;
 
