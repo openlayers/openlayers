@@ -375,4 +375,16 @@ describe('ol/reproj/DataTile', () => {
         });
       });
     }));
+
+  it('keeps the full size of images larger than the tile grid tile size', async () => {
+    const source = new DataTileSource({
+      loader: () => createImageBitmap(new ImageData(512, 512)),
+      tileSize: 512,
+      tileGrid: createXYZ(),
+    });
+    const tile = source.getTile(0, 0, 0, 1, getProjection('EPSG:4326'));
+    tile.load();
+    await new Promise((resolve) => tile.addEventListener('change', resolve));
+    assert.strictEqual(tile.getData().width, tile.getSize()[0]);
+  });
 });
