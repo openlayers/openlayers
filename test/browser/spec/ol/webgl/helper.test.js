@@ -224,6 +224,92 @@ describe('ol/webgl/WebGLHelper', function () {
       });
     });
 
+    describe('#setScissor()', function () {
+      let frameState, gl;
+      beforeEach(function () {
+        frameState = {
+          pixelRatio: 1,
+          size: [50, 80],
+          viewState: {
+            rotation: 0,
+            resolution: 10,
+            center: [0, 0],
+          },
+          layerStatesArray: [{opacity: 1}],
+          layerIndex: 0,
+          renderTargets: {},
+        };
+      });
+
+      function getScissorState() {
+        return {
+          enabled: gl.isEnabled(gl.SCISSOR_TEST),
+          box: Array.from(gl.getParameter(gl.SCISSOR_BOX)),
+        };
+      }
+
+      describe('with the default post process', function () {
+        beforeEach(function () {
+          h = new WebGLHelper();
+          gl = h.getGL();
+        });
+
+        it('limits the clear and the composition to the box', function () {
+          h.setScissor([5, 10, 20, 30]);
+          h.prepareDraw(frameState);
+          assert.deepEqual(getScissorState(), {
+            enabled: true,
+            box: [5, 10, 20, 30],
+          });
+
+          let composeState;
+          h.finalizeDraw(frameState, () => {
+            composeState = getScissorState();
+          });
+          assert.deepEqual(composeState, {enabled: true, box: [5, 10, 20, 30]});
+          assert.isFalse(gl.isEnabled(gl.SCISSOR_TEST));
+        });
+
+        it('only applies to the next draw', function () {
+          h.setScissor([5, 10, 20, 30]);
+          h.prepareDraw(frameState);
+          h.finalizeDraw(frameState);
+          h.prepareDraw(frameState);
+          assert.isFalse(gl.isEnabled(gl.SCISSOR_TEST));
+        });
+
+        it('keeps a scissor enabled before the draw', function () {
+          gl.enable(gl.SCISSOR_TEST);
+          gl.scissor(1, 2, 3, 4);
+          h.setScissor([5, 10, 20, 30]);
+          h.prepareDraw(frameState);
+          h.finalizeDraw(frameState);
+          assert.deepEqual(getScissorState(), {
+            enabled: true,
+            box: [1, 2, 3, 4],
+          });
+        });
+      });
+
+      describe('with custom post processes', function () {
+        beforeEach(function () {
+          h = new WebGLHelper({postProcesses: [{scaleRatio: 0.5}]});
+          gl = h.getGL();
+        });
+
+        it('is ignored', function () {
+          h.setScissor([5, 10, 20, 30]);
+          h.prepareDraw(frameState);
+          assert.isFalse(gl.isEnabled(gl.SCISSOR_TEST));
+          let composeState;
+          h.finalizeDraw(frameState, () => {
+            composeState = getScissorState();
+          });
+          assert.isFalse(composeState.enabled);
+        });
+      });
+    });
+
     describe('valid shader compiling', function () {
       let p;
       beforeEach(function () {

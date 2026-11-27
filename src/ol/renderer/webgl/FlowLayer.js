@@ -353,6 +353,16 @@ class FlowLayerRenderer extends WebGLTileLayerRenderer {
   }
 
   /**
+   * The particle passes draw to other targets, at other sizes.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
+   * @return {null} No scissor.
+   * @override
+   */
+  getRenderScissor(frameState) {
+    return null;
+  }
+
+  /**
    * @override
    * @param {import("../../Map.js").FrameState} frameState Frame state.
    */

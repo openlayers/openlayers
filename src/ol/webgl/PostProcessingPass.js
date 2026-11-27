@@ -321,8 +321,10 @@ class WebGLPostProcessingPass {
    * @param {WebGLPostProcessingPass} [nextPass] Next pass, optional
    * @param {function(WebGLRenderingContext, import("../Map.js").FrameState):void} [preCompose] Called before composing.
    * @param {function(WebGLRenderingContext, import("../Map.js").FrameState):void} [postCompose] Called before composing.
+   * @param {Array<number>} [scissor] Box of the drawing buffer to compose, as `[x, y, width, height]`
+   * with the origin at the bottom left; the whole buffer if absent.
    */
-  apply(frameState, nextPass, preCompose, postCompose) {
+  apply(frameState, nextPass, preCompose, postCompose, scissor) {
     const gl = this.getGL();
     const size = frameState.size;
 
@@ -374,10 +376,17 @@ class WebGLPostProcessingPass {
 
     this.applyUniforms(frameState);
 
+    if (scissor) {
+      gl.enable(gl.SCISSOR_TEST);
+      gl.scissor(scissor[0], scissor[1], scissor[2], scissor[3]);
+    }
     if (preCompose) {
       preCompose(gl, frameState);
     }
     gl.drawArrays(gl.TRIANGLES, 0, 6);
+    if (scissor) {
+      gl.disable(gl.SCISSOR_TEST);
+    }
     if (postCompose) {
       postCompose(gl, frameState);
     }

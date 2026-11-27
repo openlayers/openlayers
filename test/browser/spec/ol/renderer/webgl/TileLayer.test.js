@@ -6,13 +6,17 @@ import {createCanvasContext2D} from '../../../../../../src/ol/dom.js';
 import {VOID} from '../../../../../../src/ol/functions.js';
 import WebGLTileLayer from '../../../../../../src/ol/layer/WebGLTile.js';
 import {get} from '../../../../../../src/ol/proj.js';
+import {getExtentScissor} from '../../../../../../src/ol/renderer/webgl/TileLayer.js';
 import {
   getCacheKey,
   newTileRepresentationLookup,
 } from '../../../../../../src/ol/renderer/webgl/TileLayerBase.js';
 import DataTile from '../../../../../../src/ol/source/DataTile.js';
 import {createXYZ} from '../../../../../../src/ol/tilegrid.js';
-import {create} from '../../../../../../src/ol/transform.js';
+import {
+  compose as composeTransform,
+  create,
+} from '../../../../../../src/ol/transform.js';
 import {getUid} from '../../../../../../src/ol/util.js';
 import TileTexture from '../../../../../../src/ol/webgl/TileTexture.js';
 
@@ -49,6 +53,16 @@ describe('ol/renderer/webgl/TileLayer', function () {
       layerIndex: 0,
       extent: proj.getExtent(),
       pixelRatio: 1,
+      coordinateToPixelTransform: composeTransform(
+        create(),
+        128,
+        128,
+        1 / 156543.03392804097,
+        -1 / 156543.03392804097,
+        0,
+        0,
+        0,
+      ),
       pixelToCoordinateTransform: create(),
       postRenderFunctions: [],
       time: Date.now(),
@@ -130,6 +144,79 @@ describe('ol/renderer/webgl/TileLayer', function () {
     const deleteProgram = vi.spyOn(renderer.helper, 'deleteProgram');
     tileLayer.setStyle({color: [255, 0, 0, 1]});
     assert.deepEqual(deleteProgram.mock.calls, [[program]]);
+  });
+
+  describe('scissor', () => {
+    it('limits the draw to the layer extent', () => {
+      tileLayer.setExtent([0, 0, 1e7, 1e7]);
+      frameState.layerStatesArray = [tileLayer.getLayerState()];
+      renderer.prepareFrame(frameState);
+      const setScissor = vi.spyOn(renderer.helper, 'setScissor');
+      renderer.renderFrame(frameState);
+      assert.deepEqual(setScissor.mock.calls[0][0], [127, 127, 66, 66]);
+    });
+
+    it('draws the whole canvas without a layer extent', () => {
+      renderer.prepareFrame(frameState);
+      const setScissor = vi.spyOn(renderer.helper, 'setScissor');
+      renderer.renderFrame(frameState);
+      assert.isNull(setScissor.mock.calls[0][0]);
+    });
+  });
+
+  describe('getExtentScissor()', () => {
+    let scissorFrameState;
+    beforeEach(() => {
+      scissorFrameState = {
+        size: [100, 50],
+        pixelRatio: 2,
+        coordinateToPixelTransform: composeTransform(
+          create(),
+          0,
+          50,
+          1,
+          -1,
+          0,
+          0,
+          0,
+        ),
+      };
+    });
+
+    it('returns the extent box in drawing buffer pixels', () => {
+      assert.deepEqual(
+        getExtentScissor(scissorFrameState, [10, 20, 30, 40]),
+        [19, 39, 42, 42],
+      );
+    });
+
+    it('clips the box to the drawing buffer', () => {
+      assert.deepEqual(
+        getExtentScissor(scissorFrameState, [-10, 20, 30, 40]),
+        [0, 39, 61, 42],
+      );
+    });
+
+    it('returns null when the extent covers the drawing buffer', () => {
+      assert.isNull(getExtentScissor(scissorFrameState, [-10, -10, 200, 200]));
+    });
+
+    it('bounds the corners of the extent on a rotated view', () => {
+      scissorFrameState.coordinateToPixelTransform = composeTransform(
+        create(),
+        50,
+        25,
+        1,
+        -1,
+        Math.PI / 4,
+        0,
+        0,
+      );
+      assert.deepEqual(
+        getExtentScissor(scissorFrameState, [-5, -5, 5, 5]),
+        [84, 34, 32, 32],
+      );
+    });
   });
 
   it('#findStaleTile_() ends the transition so the stale tile does not loop', () => {
