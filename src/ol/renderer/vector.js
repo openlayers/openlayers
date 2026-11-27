@@ -396,7 +396,10 @@ function renderPointGeometry(
   /** @type {import("../render/canvas.js").DeclutterImageWithText|undefined} */
   const declutterImageWithText =
     declutter && imageStyle && hasText
-      ? /** @type {import("../render/canvas.js").DeclutterImageWithText} */ ({})
+      ? {
+          imageOptional: imageStyle.getOptional(),
+          textOptional: textStyle.getOptional(),
+        }
       : undefined;
   if (imageStyle) {
     if (imageStyle.getImageState() != ImageState.LOADED) {
@@ -436,7 +439,10 @@ function renderMultiPointGeometry(
   /** @type {import("../render/canvas.js").DeclutterImageWithText|undefined} */
   const declutterImageWithText =
     declutter && hasImage && hasText
-      ? /** @type {import("../render/canvas.js").DeclutterImageWithText} */ ({})
+      ? {
+          imageOptional: imageStyle.getOptional(),
+          textOptional: textStyle.getOptional(),
+        }
       : undefined;
   if (hasImage) {
     if (imageStyle.getImageState() != ImageState.LOADED) {

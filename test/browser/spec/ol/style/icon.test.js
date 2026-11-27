@@ -66,6 +66,7 @@ describe('ol.style.Icon', function () {
         size: [10, 12],
         displacement: [5, 6],
         declutterMode: 'obstacle',
+        optional: false,
         placement: 'line',
         repeat: 50,
       });
@@ -92,6 +93,7 @@ describe('ol.style.Icon', function () {
       assert.deepEqual(original.getRotateWithView(), clone.getRotateWithView());
       assert.deepEqual(original.getDisplacement(), clone.getDisplacement());
       assert.deepEqual(original.getDeclutterMode(), clone.getDeclutterMode());
+      assert.deepEqual(original.getOptional(), clone.getOptional());
     });
     it('copies all values with src', function () {
       const original = new Icon({

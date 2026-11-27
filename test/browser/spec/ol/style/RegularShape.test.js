@@ -166,11 +166,13 @@ describe('ol/style/RegularShape', function () {
         rotation: 2,
         rotateWithView: true,
         displacement: [10, 20],
+        optional: false,
       });
       original.setOpacity(0.5);
       original.setScale(1.5);
       const clone = original.clone();
       assert.deepEqual(original.getAngle(), clone.getAngle());
+      assert.deepEqual(original.getOptional(), clone.getOptional());
       assert.deepEqual(
         original.getFill().getColor(),
         clone.getFill().getColor(),
