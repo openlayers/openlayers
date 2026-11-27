@@ -3,6 +3,7 @@ import Feature from '../../../../../src/ol/Feature.js';
 import GML from '../../../../../src/ol/format/GML.js';
 import GML2 from '../../../../../src/ol/format/GML2.js';
 import GML32 from '../../../../../src/ol/format/GML32.js';
+import GeometryCollection from '../../../../../src/ol/geom/GeometryCollection.js';
 import LineString from '../../../../../src/ol/geom/LineString.js';
 import LinearRing from '../../../../../src/ol/geom/LinearRing.js';
 import MultiLineString from '../../../../../src/ol/geom/MultiLineString.js';
@@ -1356,6 +1357,109 @@ describe('ol.format.GML3', function () {
         format = new GML({srsName: 'CRS:84', surface: true});
         const serialized = format.writeGeometryNode(g);
         assertXmlEqual(serialized.firstElementChild, parse(text));
+      });
+    });
+    describe('multigeometry', function () {
+      it('can read a singular multigeometry geometry', function () {
+        const text =
+          '<gml:MultiGeometry xmlns:gml="http://www.opengis.net/gml" ' +
+          '    srsName="CRS:84">' +
+          '  <gml:geometryMember>' +
+          '    <gml:Point srsName="CRS:84">' +
+          '      <gml:pos srsDimension="2">1 2</gml:pos>' +
+          '    </gml:Point>' +
+          '  </gml:geometryMember>' +
+          '  <gml:geometryMember>' +
+          '    <gml:LineString srsName="CRS:84">' +
+          '      <gml:posList srsDimension="2">1 2 3 4</gml:posList>' +
+          '    </gml:LineString>' +
+          '  </gml:geometryMember>' +
+          '  <gml:geometryMember>' +
+          '    <gml:Polygon srsName="CRS:84">' +
+          '      <gml:exterior>' +
+          '        <gml:LinearRing srsName="CRS:84">' +
+          '          <gml:posList srsDimension="2">1 2 3 2 3 4 1 2</gml:posList>' +
+          '        </gml:LinearRing>' +
+          '      </gml:exterior>' +
+          '    </gml:Polygon>' +
+          '  </gml:geometryMember>' +
+          '</gml:MultiGeometry>';
+        const g = readGeometry(format, text);
+        assert.instanceOf(g, GeometryCollection);
+        const geometries = g.getGeometries();
+        assert.lengthOf(geometries, 3);
+        assert.instanceOf(geometries[0], Point);
+        assert.deepEqual(geometries[0].getCoordinates(), [1, 2, 0]);
+        assert.instanceOf(geometries[1], LineString);
+        assert.deepEqual(geometries[1].getCoordinates(), [
+          [1, 2, 0],
+          [3, 4, 0],
+        ]);
+        assert.instanceOf(geometries[2], Polygon);
+        assert.deepEqual(geometries[2].getCoordinates(), [
+          [
+            [1, 2, 0],
+            [3, 2, 0],
+            [3, 4, 0],
+            [1, 2, 0],
+          ],
+        ]);
+      });
+
+      it('can read a plural multigeometry geometry', function () {
+        const text =
+          '<gml:MultiGeometry xmlns:gml="http://www.opengis.net/gml" ' +
+          '    srsName="CRS:84">' +
+          '  <gml:geometryMembers>' +
+          '    <gml:Point>' +
+          '      <gml:pos>1 2</gml:pos>' +
+          '    </gml:Point>' +
+          '    <gml:LineString>' +
+          '      <gml:posList>1 2 3 4</gml:posList>' +
+          '    </gml:LineString>' +
+          '  </gml:geometryMembers>' +
+          '</gml:MultiGeometry>';
+        const g = readGeometry(format, text);
+        assert.instanceOf(g, GeometryCollection);
+        const geometries = g.getGeometries();
+        assert.lengthOf(geometries, 2);
+        assert.instanceOf(geometries[0], Point);
+        assert.deepEqual(geometries[0].getCoordinates(), [1, 2, 0]);
+        assert.instanceOf(geometries[1], LineString);
+        assert.deepEqual(geometries[1].getCoordinates(), [
+          [1, 2, 0],
+          [3, 4, 0],
+        ]);
+      });
+
+      it('can read a nested multigeometry geometry', function () {
+        const text =
+          '<gml:MultiGeometry xmlns:gml="http://www.opengis.net/gml" ' +
+          '    srsName="CRS:84">' +
+          '  <gml:geometryMember>' +
+          '    <gml:Point srsName="CRS:84">' +
+          '      <gml:pos srsDimension="2">1 2</gml:pos>' +
+          '    </gml:Point>' +
+          '  </gml:geometryMember>' +
+          '  <gml:geometryMember>' +
+          '    <gml:MultiGeometry srsName="CRS:84">' +
+          '      <gml:geometryMember>' +
+          '        <gml:Point srsName="CRS:84">' +
+          '          <gml:pos srsDimension="2">3 4</gml:pos>' +
+          '        </gml:Point>' +
+          '      </gml:geometryMember>' +
+          '    </gml:MultiGeometry>' +
+          '  </gml:geometryMember>' +
+          '</gml:MultiGeometry>';
+        const g = readGeometry(format, text);
+        assert.instanceOf(g, GeometryCollection);
+        const geometries = g.getGeometries();
+        assert.lengthOf(geometries, 2);
+        assert.instanceOf(geometries[0], Point);
+        assert.instanceOf(geometries[1], GeometryCollection);
+        const nested = geometries[1].getGeometries();
+        assert.lengthOf(nested, 1);
+        assert.deepEqual(nested[0].getCoordinates(), [3, 4, 0]);
       });
     });
   });
@@ -2995,6 +3099,109 @@ describe('ol.format.GML32', function () {
         format = new GML32({srsName: 'CRS:84', surface: true});
         const serialized = format.writeGeometryNode(g);
         assertXmlEqual(serialized.firstElementChild, parse(text));
+      });
+    });
+    describe('multigeometry', function () {
+      it('can read a singular multigeometry geometry', function () {
+        const text =
+          '<gml:MultiGeometry xmlns:gml="http://www.opengis.net/gml/3.2" ' +
+          '    srsName="CRS:84">' +
+          '  <gml:geometryMember>' +
+          '    <gml:Point srsName="CRS:84">' +
+          '      <gml:pos srsDimension="2">1 2</gml:pos>' +
+          '    </gml:Point>' +
+          '  </gml:geometryMember>' +
+          '  <gml:geometryMember>' +
+          '    <gml:LineString srsName="CRS:84">' +
+          '      <gml:posList srsDimension="2">1 2 3 4</gml:posList>' +
+          '    </gml:LineString>' +
+          '  </gml:geometryMember>' +
+          '  <gml:geometryMember>' +
+          '    <gml:Polygon srsName="CRS:84">' +
+          '      <gml:exterior>' +
+          '        <gml:LinearRing srsName="CRS:84">' +
+          '          <gml:posList srsDimension="2">1 2 3 2 3 4 1 2</gml:posList>' +
+          '        </gml:LinearRing>' +
+          '      </gml:exterior>' +
+          '    </gml:Polygon>' +
+          '  </gml:geometryMember>' +
+          '</gml:MultiGeometry>';
+        const g = readGeometry(format, text);
+        assert.instanceOf(g, GeometryCollection);
+        const geometries = g.getGeometries();
+        assert.lengthOf(geometries, 3);
+        assert.instanceOf(geometries[0], Point);
+        assert.deepEqual(geometries[0].getCoordinates(), [1, 2, 0]);
+        assert.instanceOf(geometries[1], LineString);
+        assert.deepEqual(geometries[1].getCoordinates(), [
+          [1, 2, 0],
+          [3, 4, 0],
+        ]);
+        assert.instanceOf(geometries[2], Polygon);
+        assert.deepEqual(geometries[2].getCoordinates(), [
+          [
+            [1, 2, 0],
+            [3, 2, 0],
+            [3, 4, 0],
+            [1, 2, 0],
+          ],
+        ]);
+      });
+
+      it('can read a plural multigeometry geometry', function () {
+        const text =
+          '<gml:MultiGeometry xmlns:gml="http://www.opengis.net/gml/3.2" ' +
+          '    srsName="CRS:84">' +
+          '  <gml:geometryMembers>' +
+          '    <gml:Point>' +
+          '      <gml:pos>1 2</gml:pos>' +
+          '    </gml:Point>' +
+          '    <gml:LineString>' +
+          '      <gml:posList>1 2 3 4</gml:posList>' +
+          '    </gml:LineString>' +
+          '  </gml:geometryMembers>' +
+          '</gml:MultiGeometry>';
+        const g = readGeometry(format, text);
+        assert.instanceOf(g, GeometryCollection);
+        const geometries = g.getGeometries();
+        assert.lengthOf(geometries, 2);
+        assert.instanceOf(geometries[0], Point);
+        assert.deepEqual(geometries[0].getCoordinates(), [1, 2, 0]);
+        assert.instanceOf(geometries[1], LineString);
+        assert.deepEqual(geometries[1].getCoordinates(), [
+          [1, 2, 0],
+          [3, 4, 0],
+        ]);
+      });
+
+      it('can read a nested multigeometry geometry', function () {
+        const text =
+          '<gml:MultiGeometry xmlns:gml="http://www.opengis.net/gml/3.2" ' +
+          '    srsName="CRS:84">' +
+          '  <gml:geometryMember>' +
+          '    <gml:Point srsName="CRS:84">' +
+          '      <gml:pos srsDimension="2">1 2</gml:pos>' +
+          '    </gml:Point>' +
+          '  </gml:geometryMember>' +
+          '  <gml:geometryMember>' +
+          '    <gml:MultiGeometry srsName="CRS:84">' +
+          '      <gml:geometryMember>' +
+          '        <gml:Point srsName="CRS:84">' +
+          '          <gml:pos srsDimension="2">3 4</gml:pos>' +
+          '        </gml:Point>' +
+          '      </gml:geometryMember>' +
+          '    </gml:MultiGeometry>' +
+          '  </gml:geometryMember>' +
+          '</gml:MultiGeometry>';
+        const g = readGeometry(format, text);
+        assert.instanceOf(g, GeometryCollection);
+        const geometries = g.getGeometries();
+        assert.lengthOf(geometries, 2);
+        assert.instanceOf(geometries[0], Point);
+        assert.instanceOf(geometries[1], GeometryCollection);
+        const nested = geometries[1].getGeometries();
+        assert.lengthOf(nested, 1);
+        assert.deepEqual(nested[0].getCoordinates(), [3, 4, 0]);
       });
     });
   });

@@ -3,6 +3,7 @@
  */
 import {extend} from '../array.js';
 import {createOrUpdate} from '../extent.js';
+import GeometryCollection from '../geom/GeometryCollection.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
 import MultiPolygon from '../geom/MultiPolygon.js';
@@ -175,6 +176,52 @@ class GML3 extends GMLBase {
     );
     if (polygons) {
       return new MultiPolygon(polygons);
+    }
+  }
+
+  /**
+   * @param {Element} node Node.
+   * @param {Array<*>} objectStack Object stack.
+   * @return {GeometryCollection|undefined} GeometryCollection.
+   */
+  readMultiGeometry(node, objectStack) {
+    /** @type {Array<import("../geom/Geometry.js").default>} */
+    const geometries = pushParseAndPop(
+      [],
+      this.MULTIGEOMETRY_PARSERS,
+      node,
+      objectStack,
+      this,
+    );
+    if (geometries) {
+      return new GeometryCollection(geometries);
+    }
+    return undefined;
+  }
+
+  /**
+   * Parser for `geometryMember` and `geometryMembers`. Every child element
+   * that is a known geometry is read and added to the collection.
+   * @param {Element} node Node.
+   * @param {Array<*>} objectStack Object stack.
+   */
+  geometryMemberParser(node, objectStack) {
+    const geometries =
+      /** @type {Array<import("../geom/Geometry.js").default>} */ (
+        objectStack[objectStack.length - 1]
+      );
+    for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
+      const parsers = this.GEOMETRY_PARSERS[n.namespaceURI ?? ''];
+      const parser = parsers ? parsers[n.localName] : undefined;
+      if (!parser) {
+        continue;
+      }
+      objectStack.push(undefined);
+      parser.call(this, n, objectStack);
+      const geometry = objectStack.pop();
+      if (geometry && !Array.isArray(geometry)) {
+        geometries.push(geometry);
+      }
     }
   }
 
@@ -1129,6 +1176,18 @@ GML3.prototype.GEOMETRY_PARSERS = {
     'Curve': makeReplacer(GML3.prototype.readCurve),
     'MultiCurve': makeReplacer(GML3.prototype.readMultiCurve),
     'Envelope': makeReplacer(GML3.prototype.readEnvelope),
+    'MultiGeometry': makeReplacer(GML3.prototype.readMultiGeometry),
+  },
+};
+
+/**
+ * @const
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ */
+GML3.prototype.MULTIGEOMETRY_PARSERS = {
+  'http://www.opengis.net/gml': {
+    'geometryMember': GML3.prototype.geometryMemberParser,
+    'geometryMembers': GML3.prototype.geometryMemberParser,
   },
 };
 

@@ -93,6 +93,18 @@ GML32.prototype.GEOMETRY_PARSERS = {
     'Curve': makeReplacer(GML32.prototype.readCurve),
     'MultiCurve': makeReplacer(GML3.prototype.readMultiCurve),
     'Envelope': makeReplacer(GML32.prototype.readEnvelope),
+    'MultiGeometry': makeReplacer(GML3.prototype.readMultiGeometry),
+  },
+};
+
+/**
+ * @const
+ * @type {Object<string, Object<string, import("../xml.js").Parser>>}
+ */
+GML32.prototype.MULTIGEOMETRY_PARSERS = {
+  'http://www.opengis.net/gml/3.2': {
+    'geometryMember': GML3.prototype.geometryMemberParser,
+    'geometryMembers': GML3.prototype.geometryMemberParser,
   },
 };
 
