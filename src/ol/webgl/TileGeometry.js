@@ -59,6 +59,16 @@ class TileGeometry extends BaseTileRepresentation {
   }
 
   /**
+   * Replace the style renderer; the buffers belong to the previous one and are dropped.
+   * They are generated again by the next call to `setHelper()`.
+   * @param {import("../render/webgl/VectorStyleRenderer.js").default} styleRenderer Vector style renderer
+   */
+  setStyleRenderer(styleRenderer) {
+    this.styleRenderer_ = styleRenderer;
+    this.buffers = null;
+  }
+
+  /**
    * @private
    */
   generateMaskBuffer_() {

@@ -289,6 +289,32 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
   afterHelperCreated() {
     this.createRenderers_();
     this.initTileMask_();
+    // cached tiles must rebuild their buffers with the new renderer and helper
+    this.tileRepresentationCache.forEach((tileRepresentation) => {
+      const tileGeometry = /** @type {TileGeometry} */ (tileRepresentation);
+      tileGeometry.setStyleRenderer(
+        /** @type {import("../../render/webgl/VectorStyleRenderer.js").default} */ (
+          this.styleRenderer_
+        ),
+      );
+      this.redrawWhenReady_(tileGeometry);
+    });
+    super.afterHelperCreated();
+  }
+
+  /**
+   * Redraw the layer once the tile representation is ready.
+   * @param {TileGeometry} tileRep Tile representation.
+   * @private
+   */
+  redrawWhenReady_(tileRep) {
+    const listener = () => {
+      if (tileRep.ready) {
+        this.getLayer().changed();
+        tileRep.removeEventListener(EventType.CHANGE, listener);
+      }
+    };
+    tileRep.addEventListener(EventType.CHANGE, listener);
   }
 
   /**
@@ -303,13 +329,7 @@ class WebGLVectorTileLayerRenderer extends WebGLBaseTileLayerRenderer {
       ),
     );
     // redraw the layer when the tile is ready
-    const listener = () => {
-      if (tileRep.ready) {
-        this.getLayer().changed();
-        tileRep.removeEventListener(EventType.CHANGE, listener);
-      }
-    };
-    tileRep.addEventListener(EventType.CHANGE, listener);
+    this.redrawWhenReady_(tileRep);
     return tileRep;
   }
 
