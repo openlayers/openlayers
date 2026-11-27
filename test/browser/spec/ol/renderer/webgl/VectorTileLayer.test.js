@@ -229,6 +229,72 @@ describe('ol/renderer/webgl/VectorTileLayer', function () {
     });
   });
 
+  describe('#afterHelperCreated with cached tiles', () => {
+    let tileRepresentation, firstHelper, firstStyleRenderer;
+    beforeEach(async () => {
+      renderer.helper = new WebGLHelper();
+      renderer.afterHelperCreated();
+      firstHelper = renderer.helper;
+      firstStyleRenderer = renderer.styleRenderer_;
+
+      const grid = vectorTileLayer
+        .getSource()
+        .getTileGridForProjection(frameState.viewState.projection);
+      const sourceTile = new VectorTile([0, 0, 0], TileState.LOADED);
+      sourceTile.extent = [-128, -128, 128, 128];
+      sourceTile.features_ = [
+        new RenderFeature('Point', [0, 16], [], 2, {}, 1),
+      ];
+      const tile = new VectorRenderTile(
+        [1, 2, 3],
+        TileState.LOADED,
+        [0, 0, 0],
+        () => sourceTile,
+        () => {},
+      );
+      tile.setState(TileState.LOADED);
+      tile.getSourceTiles = () => [sourceTile];
+      tileRepresentation = renderer.createTileRepresentation({
+        tile,
+        grid,
+        helper: firstHelper,
+        gutter: 4,
+      });
+      renderer.tileRepresentationCache.set('key', tileRepresentation);
+      await vi.waitFor(() => assert.isTrue(tileRepresentation.ready));
+    });
+    afterEach(() => {
+      renderer.helper.dispose();
+      firstHelper.dispose();
+    });
+
+    it('rebuilds the buffers of cached tiles with the new renderer and helper', async () => {
+      const oldBuffers = tileRepresentation.buffers;
+      assert.isNotNull(oldBuffers);
+
+      renderer.helper = new WebGLHelper();
+      renderer.afterHelperCreated();
+
+      assert.notStrictEqual(renderer.styleRenderer_, firstStyleRenderer);
+      assert.strictEqual(tileRepresentation.helper, renderer.helper);
+      assert.strictEqual(
+        tileRepresentation.styleRenderer_,
+        renderer.styleRenderer_,
+      );
+      await vi.waitFor(() => assert.isNotNull(tileRepresentation.buffers));
+      assert.notStrictEqual(tileRepresentation.buffers, oldBuffers);
+    });
+
+    it('redraws the layer once the cached tiles are rebuilt', async () => {
+      vi.spyOn(vectorTileLayer, 'changed');
+      renderer.helper = new WebGLHelper();
+      renderer.afterHelperCreated();
+      await vi.waitFor(() =>
+        assert.isAtLeast(vectorTileLayer.changed.mock.calls.length, 1),
+      );
+    });
+  });
+
   describe('#disposeInternal', () => {
     it('deletes its tile mask program', () => {
       renderer.helper = new WebGLHelper();
