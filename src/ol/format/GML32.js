@@ -363,6 +363,16 @@ GML32.prototype.GEOMETRY_SERIALIZERS = {
       GML3.prototype.writeMultiSurfaceOrPolygon,
     ),
     'Envelope': makeChildAppender(GML3.prototype.writeEnvelope),
+    'MultiGeometry': makeChildAppender(GML3.prototype.writeMultiGeometry),
+  },
+};
+
+/**
+ * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
+ */
+GML32.prototype.GEOMETRYMEMBER_SERIALIZERS = {
+  'http://www.opengis.net/gml/3.2': {
+    'geometryMember': makeChildAppender(GML3.prototype.writeGeometryMember),
   },
 };
 

@@ -812,6 +812,50 @@ class GML3 extends GMLBase {
 
   /**
    * @param {Element} node Node.
+   * @param {GeometryCollection} geometry GeometryCollection geometry.
+   * @param {Array<*>} objectStack Node stack.
+   */
+  writeMultiGeometry(node, geometry, objectStack) {
+    const context = /** @type {GML3Context} */ (
+      objectStack[objectStack.length - 1]
+    );
+    const srsName = context['srsName'];
+    if (srsName) {
+      node.setAttribute('srsName', srsName);
+    }
+    pushSerializeAndPop(
+      Object.assign({}, context, {node: node}),
+      this.GEOMETRYMEMBER_SERIALIZERS,
+      makeSimpleNodeFactory('geometryMember'),
+      geometry.getGeometries(),
+      objectStack,
+      undefined,
+      this,
+    );
+  }
+
+  /**
+   * @param {Element} node Node.
+   * @param {import("../geom/Geometry.js").default} geometry Geometry.
+   * @param {Array<*>} objectStack Node stack.
+   */
+  writeGeometryMember(node, geometry, objectStack) {
+    const context = /** @type {GML3Context} */ (
+      objectStack[objectStack.length - 1]
+    );
+    pushSerializeAndPop(
+      Object.assign({}, context, {node: node}),
+      this.GEOMETRY_SERIALIZERS,
+      this.GEOMETRY_NODE_FACTORY_,
+      [geometry],
+      objectStack,
+      undefined,
+      this,
+    );
+  }
+
+  /**
+   * @param {Element} node Node.
    * @param {import("../geom/LinearRing.js").default} ring LinearRing geometry.
    * @param {Array<*>} objectStack Node stack.
    */
@@ -1065,6 +1109,8 @@ class GML3 extends GMLBase {
         nodeName = 'Curve';
       } else if (nodeName === 'MultiLineString' && multiCurve === true) {
         nodeName = 'MultiCurve';
+      } else if (nodeName === 'GeometryCollection') {
+        nodeName = 'MultiGeometry';
       }
     } else {
       nodeName = 'Envelope';
@@ -1390,6 +1436,16 @@ GML3.prototype.GEOMETRY_SERIALIZERS = {
       GML3.prototype.writeMultiSurfaceOrPolygon,
     ),
     'Envelope': makeChildAppender(GML3.prototype.writeEnvelope),
+    'MultiGeometry': makeChildAppender(GML3.prototype.writeMultiGeometry),
+  },
+};
+
+/**
+ * @type {Object<string, Object<string, import("../xml.js").Serializer>>}
+ */
+GML3.prototype.GEOMETRYMEMBER_SERIALIZERS = {
+  'http://www.opengis.net/gml': {
+    'geometryMember': makeChildAppender(GML3.prototype.writeGeometryMember),
   },
 };
 

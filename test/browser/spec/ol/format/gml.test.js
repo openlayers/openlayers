@@ -1360,7 +1360,7 @@ describe('ol.format.GML3', function () {
       });
     });
     describe('multigeometry', function () {
-      it('can read a singular multigeometry geometry', function () {
+      it('can read and write a singular multigeometry geometry', function () {
         const text =
           '<gml:MultiGeometry xmlns:gml="http://www.opengis.net/gml" ' +
           '    srsName="CRS:84">' +
@@ -1404,6 +1404,8 @@ describe('ol.format.GML3', function () {
             [1, 2, 0],
           ],
         ]);
+        const serialized = format.writeGeometryNode(g);
+        assertXmlEqual(serialized.firstElementChild, parse(text));
       });
 
       it('can read a plural multigeometry geometry', function () {
@@ -1432,7 +1434,7 @@ describe('ol.format.GML3', function () {
         ]);
       });
 
-      it('can read a nested multigeometry geometry', function () {
+      it('can read and write a nested multigeometry geometry', function () {
         const text =
           '<gml:MultiGeometry xmlns:gml="http://www.opengis.net/gml" ' +
           '    srsName="CRS:84">' +
@@ -1460,6 +1462,8 @@ describe('ol.format.GML3', function () {
         const nested = geometries[1].getGeometries();
         assert.lengthOf(nested, 1);
         assert.deepEqual(nested[0].getCoordinates(), [3, 4, 0]);
+        const serialized = format.writeGeometryNode(g);
+        assertXmlEqual(serialized.firstElementChild, parse(text));
       });
     });
   });
@@ -3102,7 +3106,7 @@ describe('ol.format.GML32', function () {
       });
     });
     describe('multigeometry', function () {
-      it('can read a singular multigeometry geometry', function () {
+      it('can read and write a singular multigeometry geometry', function () {
         const text =
           '<gml:MultiGeometry xmlns:gml="http://www.opengis.net/gml/3.2" ' +
           '    srsName="CRS:84">' +
@@ -3146,6 +3150,8 @@ describe('ol.format.GML32', function () {
             [1, 2, 0],
           ],
         ]);
+        const serialized = format.writeGeometryNode(g);
+        assertXmlEqual(serialized.firstElementChild, parse(text));
       });
 
       it('can read a plural multigeometry geometry', function () {
@@ -3174,7 +3180,7 @@ describe('ol.format.GML32', function () {
         ]);
       });
 
-      it('can read a nested multigeometry geometry', function () {
+      it('can read and write a nested multigeometry geometry', function () {
         const text =
           '<gml:MultiGeometry xmlns:gml="http://www.opengis.net/gml/3.2" ' +
           '    srsName="CRS:84">' +
@@ -3202,6 +3208,8 @@ describe('ol.format.GML32', function () {
         const nested = geometries[1].getGeometries();
         assert.lengthOf(nested, 1);
         assert.deepEqual(nested[0].getCoordinates(), [3, 4, 0]);
+        const serialized = format.writeGeometryNode(g);
+        assertXmlEqual(serialized.firstElementChild, parse(text));
       });
     });
   });
