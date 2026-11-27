@@ -26,6 +26,7 @@ import GML2 from '../../../../../src/ol/format/GML2.js';
 import GML3 from '../../../../../src/ol/format/GML3.js';
 import GML32 from '../../../../../src/ol/format/GML32.js';
 import WFS, {writeFilter} from '../../../../../src/ol/format/WFS.js';
+import GeometryCollection from '../../../../../src/ol/geom/GeometryCollection.js';
 import LineString from '../../../../../src/ol/geom/LineString.js';
 import MultiLineString from '../../../../../src/ol/geom/MultiLineString.js';
 import MultiPoint from '../../../../../src/ol/geom/MultiPoint.js';
@@ -1008,6 +1009,42 @@ describe('ol.format.WFS', function () {
         gmlOptions: {srsName: 'EPSG:900913'},
       });
       assertXmlEqual(serialized, parse(text));
+    });
+  });
+
+  describe('when writing out a Transaction request', function () {
+    it('writes a GeometryCollection as gml:MultiGeometry', function () {
+      const format = new WFS();
+      const insertFeature = new Feature({
+        the_geom: new GeometryCollection([
+          new Point([1, 2]),
+          new LineString([
+            [1, 2],
+            [3, 4],
+          ]),
+        ]),
+      });
+      insertFeature.setGeometryName('the_geom');
+      const serialized = format.writeTransaction([insertFeature], null, null, {
+        featureNS: 'http://foo',
+        featureType: 'FAULTS',
+        featurePrefix: 'foo',
+        gmlOptions: {srsName: 'EPSG:900913'},
+      });
+      const gmlNS = 'http://www.opengis.net/gml';
+      const multiGeometry = serialized.getElementsByTagNameNS(
+        gmlNS,
+        'MultiGeometry',
+      );
+      assert.lengthOf(multiGeometry, 1);
+      assert.strictEqual(multiGeometry[0].parentNode.localName, 'the_geom');
+      const members = multiGeometry[0].children;
+      assert.lengthOf(members, 2);
+      assert.strictEqual(members[0].localName, 'geometryMember');
+      assert.strictEqual(members[0].namespaceURI, gmlNS);
+      assert.strictEqual(members[0].firstElementChild.localName, 'Point');
+      assert.strictEqual(members[1].localName, 'geometryMember');
+      assert.strictEqual(members[1].firstElementChild.localName, 'LineString');
     });
   });
 
