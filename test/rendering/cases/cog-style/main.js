@@ -22,7 +22,7 @@ const layer = new TileLayer({
   source: source,
 });
 
-new Map({
+const map = new Map({
   layers: [layer],
   target: 'map',
   view: source.getView(),
@@ -41,5 +41,6 @@ layer.setStyle({
 });
 
 render({
+  map,
   message: 'update the layer style',
 });

@@ -61,5 +61,6 @@ source.getView().then((viewConfig) => {
 });
 
 render({
+  map,
   message: 'reprojects geotiffs that include a ModelTransformation',
 });

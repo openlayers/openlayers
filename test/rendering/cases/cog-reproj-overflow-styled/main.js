@@ -57,6 +57,7 @@ source.getView().then((viewConfig) => {
 });
 
 render({
+  map,
   message:
     'reprojected geotiff without alpha discards out-of-footprint pixels even with a color style',
 });

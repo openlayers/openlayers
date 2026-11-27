@@ -7,7 +7,7 @@ const source = new GeoTIFF({
   sources: [{url: '/data/raster/elevation-i16.tif'}],
 });
 
-new Map({
+const map = new Map({
   layers: [
     new TileLayer({
       source: source,
@@ -18,5 +18,6 @@ new Map({
 });
 
 render({
+  map,
   message: 'normalize i16 data with -9999 nodata based on GDAL stats',
 });

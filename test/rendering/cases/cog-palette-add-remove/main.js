@@ -44,6 +44,7 @@ map.once('rendercomplete', () => {
   map.removeLayer(layer);
   map.addLayer(layer);
   render({
+    map,
     message: 'palette still works after adding and removing layer',
   });
 });

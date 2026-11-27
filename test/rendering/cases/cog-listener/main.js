@@ -40,5 +40,6 @@ map.on('rendercomplete', function () {});
 layer.getRenderer();
 
 render({
+  map,
   message: 'alpha styled from band 2',
 });
