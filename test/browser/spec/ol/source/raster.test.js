@@ -564,7 +564,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function () {
           ],
         });
 
-        const tileCache = raster.layers_[0].getRenderer().tileCache_;
+        const tileCache = raster.renderers_[0].tileCache_;
 
         assert.equal(tileCache.getCount(), 0);
 
@@ -576,6 +576,115 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function () {
             true,
           );
           resolve();
+        });
+      }));
+
+    it('runs the operation once the inputs are complete', () =>
+      new Promise((resolve) => {
+        let releaseFine;
+        const fineLoaded = new Promise((r) => (releaseFine = r));
+        const source = new XYZ({
+          url: '{z}/{x}/{y}',
+          tileLoadFunction: (tile) => {
+            const z = tile.getTileCoord()[0];
+            const image = /** @type {HTMLImageElement} */ (tile.getImage());
+            if (z === 0) {
+              image.src = red;
+            } else {
+              fineLoaded.then(() => (image.src = green));
+            }
+          },
+        });
+        raster = new RasterSource({
+          threads: 0,
+          sources: [source],
+          operation: (inputs) => inputs[0],
+        });
+        let operations = 0;
+        raster.on('afteroperations', () => ++operations);
+
+        map2 = new Map({
+          target: target,
+          view: new View({center: [0, 0], zoom: 1}),
+          layers: [new ImageLayer({source: raster})],
+        });
+        map2.once('rendercomplete', () => {
+          assert.strictEqual(operations, 1);
+          const context = raster.renderedImageCanvas_
+            .getImage()
+            .getContext('2d');
+          // only the loaded zoom level 1 tile, no coarser fallback
+          assert.deepEqual(
+            Array.from(context.getImageData(0, 0, 1, 1).data),
+            [0, 255, 0, 255],
+          );
+          resolve();
+        });
+        // let the coarser tile load and render first
+        setTimeout(releaseFine, 200);
+      }));
+
+    it('reads all inputs while one is incomplete', () =>
+      new Promise((resolve) => {
+        // only the top left tile loads
+        const incomplete = new XYZ({
+          url: 'a/{z}/{x}/{y}',
+          tileLoadFunction: (tile) => {
+            if (tile.getTileCoord().join() === '1,0,0') {
+              /** @type {HTMLImageElement} */ (tile.getImage()).src = red;
+            }
+          },
+        });
+        const complete = new XYZ({
+          url: 'b/{z}/{x}/{y}',
+          tileLoadFunction: (tile) => {
+            /** @type {HTMLImageElement} */ (tile.getImage()).src = green;
+          },
+        });
+        raster = new RasterSource({
+          threads: 0,
+          sources: [incomplete, complete],
+          operation: (inputs) => inputs[0],
+        });
+
+        map2 = new Map({
+          target: target,
+          view: new View({center: [0, 0], zoom: 1}),
+          layers: [new ImageLayer({source: raster})],
+        });
+        setTimeout(() => {
+          assert.deepEqual(
+            raster
+              .getData([-20000000, 20000000])
+              .map((pixel) => Array.from(pixel)),
+            [
+              [255, 0, 0, 255],
+              [0, 255, 0, 255],
+            ],
+          );
+          resolve();
+        }, 200);
+      }));
+
+    it('does not wait for tile transitions', () =>
+      new Promise((resolve) => {
+        const source = new XYZ({
+          url: '{z}/{x}/{y}',
+          transition: 60000,
+          tileLoadFunction: (tile) => {
+            /** @type {HTMLImageElement} */ (tile.getImage()).src = green;
+          },
+        });
+        raster = new RasterSource({
+          threads: 0,
+          sources: [source],
+          operation: (inputs) => inputs[0],
+        });
+        raster.once('afteroperations', () => resolve());
+        map2 = new Map({
+          target: target,
+          view: new View({center: [0, 0], zoom: 1}),
+          layers: [new ImageLayer({source: raster})],
         });
       }));
   });
@@ -675,6 +784,36 @@ where('Uint8ClampedArray').describe(
           }),
           layers: [new ImageLayer({source: raster})],
         });
+      }));
+
+    it('fires rendercomplete without data tiles in view', () =>
+      new Promise((resolve) => {
+        const dataSource = new DataTileSource({
+          projection: projection,
+          tileGrid: new TileGrid({
+            extent: [-1, -1, 1, 1],
+            origin: [-1, 1],
+            resolutions: [1],
+            tileSize: [2, 2],
+          }),
+          loader: () => new Uint8Array(16),
+        });
+        raster = new RasterSource({
+          threads: 0,
+          sources: [dataSource],
+          operation: (pixels) => pixels[0],
+        });
+        map = new Map({
+          target: target,
+          view: new View({
+            projection: projection,
+            resolutions: [1],
+            center: [100, 100],
+            resolution: 1,
+          }),
+          layers: [new ImageLayer({source: raster})],
+        });
+        map.once('rendercomplete', () => resolve());
       }));
   },
 );
