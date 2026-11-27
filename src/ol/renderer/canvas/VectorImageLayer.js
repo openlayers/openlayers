@@ -236,9 +236,15 @@ class CanvasVectorImageLayerRenderer extends CanvasImageLayerRenderer {
   }
 
   /**
+   * Render events are dispatched by the vector renderer, but the frame state is
+   * needed for reading data with `getData()`.
+   * @param {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D} context Context.
+   * @param {import("../../Map.js").FrameState} frameState Frame state.
    * @override
    */
-  preRender() {}
+  preRender(context, frameState) {
+    this.frameState = frameState;
+  }
 
   /**
    * @override

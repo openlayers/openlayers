@@ -5,6 +5,7 @@ import TileState from '../../../../../src/ol/TileState.js';
 import View from '../../../../../src/ol/View.js';
 import Point from '../../../../../src/ol/geom/Point.js';
 import ImageLayer from '../../../../../src/ol/layer/Image.js';
+import VectorLayer from '../../../../../src/ol/layer/Vector.js';
 import VectorImageLayer from '../../../../../src/ol/layer/VectorImage.js';
 import Projection from '../../../../../src/ol/proj/Projection.js';
 import DataTileSource from '../../../../../src/ol/source/DataTile.js';
@@ -28,7 +29,8 @@ const green =
   'AABAAEAAAICRAEAOw==';
 
 where('Uint8ClampedArray').describe('ol.source.Raster', function () {
-  let map, target, redSource, greenSource, blueSource, layer, raster;
+  let map, target, redSource, greenSource, blueSource, vectorSource, layer;
+  let raster;
 
   beforeEach(function () {
     target = document.createElement('div');
@@ -67,9 +69,13 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function () {
       }),
     });
 
+    vectorSource = new VectorLayer({
+      source: new VectorSource(),
+    });
+
     raster = new RasterSource({
       threads: 0,
-      sources: [redSource, greenSource, blueSource],
+      sources: [redSource, greenSource, blueSource, vectorSource],
       operation: function (inputs) {
         return inputs[0];
       },
@@ -102,6 +108,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function () {
     greenSource.dispose();
     redSource.dispose();
     blueSource.dispose();
+    vectorSource.dispose();
   });
 
   describe('constructor', function () {
@@ -391,6 +398,25 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function () {
 
         raster.once('afteroperations', function (event) {
           assert.equal(event.data.count, 4);
+          resolve();
+        });
+
+        const view = map.getView();
+        view.setCenter([0, 0]);
+        view.setZoom(0);
+      }));
+  });
+
+  describe('#getData()', function () {
+    it('returns the values per input', () =>
+      new Promise((resolve) => {
+        raster.once('afteroperations', function () {
+          const [red, green, blue, vector] = raster.getData([-0.5, 0.5]);
+          assert.deepEqual(Array.from(red), [255, 0, 0, 255]);
+          assert.deepEqual(Array.from(green), [0, 255, 0, 255]);
+          assert.isAbove(blue[3], 0);
+          // the canvas vector layer renderer does not support reading data
+          assert.isNull(vector);
           resolve();
         });
 

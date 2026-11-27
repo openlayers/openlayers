@@ -52,6 +52,13 @@ describe('ol/layer/VectorImage', function () {
           resolve();
         });
       }));
+
+    it('reads rendered pixel data', function () {
+      map.renderSync();
+      const pixel = map.getPixelFromCoordinate([-1000000, 0]);
+      assert.isAbove(layer.getData(pixel)[3], 0);
+      assert.deepEqual(Array.from(layer.getData([10, 10])), [0, 0, 0, 0]);
+    });
   });
 
   describe('#getFeatures() on a rotated view', function () {
