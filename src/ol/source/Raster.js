@@ -11,6 +11,7 @@ import EventType from '../events/EventType.js';
 import {equals, getCenter} from '../extent.js';
 import ImageLayer from '../layer/Image.js';
 import TileLayer from '../layer/Tile.js';
+import CanvasTileLayerRenderer from '../renderer/canvas/TileLayer.js';
 import {
   apply as applyTransform,
   create as createTransform,
@@ -623,6 +624,35 @@ export class RasterSourceEvent extends Event {
  */
 
 /**
+ * Tile renderer for an input, owned by the source. Tiles do not fade in, because
+ * operations only run on complete inputs.
+ */
+class InputTileRenderer extends CanvasTileLayerRenderer {
+  /**
+   * @param {TileLayer} layer Tile layer.
+   */
+  constructor(layer) {
+    super(layer, {
+      cacheSize: /** @type {*} */ (layer).getCacheSize(),
+    });
+  }
+
+  /**
+   * @param {number} z Tile coordinate z.
+   * @param {number} x Tile coordinate x.
+   * @param {number} y Tile coordinate y.
+   * @param {import("../Map.js").FrameState} frameState Frame state.
+   * @return {import("../Tile.js").default|null} Tile.
+   * @override
+   */
+  getTile(z, x, y, frameState) {
+    const tile = super.getTile(z, x, y, frameState);
+    tile?.endTransition(getUid(this));
+    return tile;
+  }
+}
+
+/**
  * @classdesc
  * A source that transforms data from any number of input sources using an
  * {@link module:ol/source/Raster~Operation} function to transform input pixel values into
@@ -706,6 +736,17 @@ class RasterSource extends ImageSource {
     this.useResolutions_ = options.resolutions !== null;
 
     /**
+     * Renderers for plain tile layer inputs, owned by this source.
+     * @private
+     * @type {Array<InputTileRenderer|null>}
+     */
+    this.renderers_ = this.layers_.map((layer) =>
+      layer.constructor === TileLayer
+        ? new InputTileRenderer(/** @type {TileLayer} */ (layer))
+        : null,
+    );
+
+    /**
      * @private
      * @type {import("../TileQueue.js").default}
      */
@@ -728,11 +769,25 @@ class RasterSource extends ImageSource {
     this.renderedImageCanvas_ = undefined;
 
     /**
-     * The most recently rendered revision.
-     * @type {number}
+     * Revision of the last attempt to process the requested frame.
+     * @type {number|undefined}
      * @private
      */
-    this.renderedRevision_;
+    this.inputRevision_ = undefined;
+
+    /**
+     * The requested frame was processed at `inputRevision_`.
+     * @type {boolean}
+     * @private
+     */
+    this.processed_ = false;
+
+    /**
+     * Input layers animated in the last attempt, e.g. for tile transitions.
+     * @type {boolean}
+     * @private
+     */
+    this.inputsAnimating_ = false;
 
     /**
      * @private
@@ -894,39 +949,36 @@ class RasterSource extends ImageSource {
     }
 
     const frameState = this.updateFrameState_(extent, resolution, projection);
+    const previous = this.requestedFrameState_;
     this.requestedFrameState_ = frameState;
 
-    // check if we can't reuse the existing ol/ImageCanvas
-    if (this.renderedImageCanvas_) {
-      const renderedResolution = this.renderedImageCanvas_.getResolution();
-      const renderedExtent = this.renderedImageCanvas_.getExtent();
-      if (
-        resolution !== renderedResolution ||
-        !equals(
-          /** @type {import("../extent.js").Extent} */ (frameState.extent),
-          /** @type {import("../extent.js").Extent} */ (renderedExtent),
-        )
-      ) {
-        this.renderedImageCanvas_ = undefined;
-      }
+    // a new frame needs a new ol/ImageCanvas
+    if (
+      !previous ||
+      previous.viewState.resolution !== resolution ||
+      !equals(
+        /** @type {import("../extent.js").Extent} */ (previous.extent),
+        /** @type {import("../extent.js").Extent} */ (frameState.extent),
+      )
+    ) {
+      this.renderedImageCanvas_ = undefined;
+      this.inputRevision_ = undefined;
     }
 
-    if (
-      !this.renderedImageCanvas_ ||
-      this.getRevision() !== this.renderedRevision_
-    ) {
+    // tile loads also trigger processing, through the tile queue
+    if (this.inputsAnimating_ || this.getRevision() !== this.inputRevision_) {
+      // delays rendercomplete until the output is there
+      this.loading = !!this.processor_;
       this.processSources_();
     }
 
     if (
+      this.inputsAnimating_ ||
       this.tileQueue_.getCount() > 0 ||
       this.tileQueue_.getTilesLoading() > 0
     ) {
-      frameState.animate = true;
-    }
-
-    if (frameState.animate) {
-      requestAnimationFrame(this.changed.bind(this));
+      // render again without a new revision, which would rerun the operation
+      requestAnimationFrame(() => this.dispatchEvent(EventType.CHANGE));
     }
 
     return this.renderedImageCanvas_ ?? null;
@@ -942,12 +994,11 @@ class RasterSource extends ImageSource {
    * @private
    */
   getInput_(layerIndex, frameState) {
-    const layer = this.layers_[layerIndex];
     if (this.sampleArrayData_[layerIndex]) {
-      const renderer =
-        /** @type {import("../renderer/canvas/TileLayer.js").default} */ (
-          /** @type {*} */ (layer.getRenderer())
-        );
+      // array data inputs always have a layer created by this source
+      const renderer = /** @type {InputTileRenderer} */ (
+        this.renderers_[layerIndex]
+      );
       if (!renderer.prepareFrame(frameState)) {
         return null;
       }
@@ -955,7 +1006,22 @@ class RasterSource extends ImageSource {
     }
     frameState.layerIndex = layerIndex;
     frameState.renderTargets = {};
-    return getImageData(layer, frameState);
+    return getImageData(
+      this.layers_[layerIndex],
+      this.getInputRenderer_(layerIndex),
+      frameState,
+    );
+  }
+
+  /**
+   * @param {number} layerIndex The layer index.
+   * @return {import("../renderer/Layer.js").default<*>|null} The renderer for the input.
+   * @private
+   */
+  getInputRenderer_(layerIndex) {
+    return (
+      this.renderers_[layerIndex] ?? this.layers_[layerIndex].getRenderer()
+    );
   }
 
   /**
@@ -977,14 +1043,10 @@ class RasterSource extends ImageSource {
     }
     const pixels = new Array(this.layers_.length);
     for (let i = 0, ii = this.layers_.length; i < ii; ++i) {
-      const layer = this.layers_[i];
       if (this.sampleArrayData_[i]) {
         // array data tile inputs are gathered as native band values through the
         // layer renderer over a one-pixel extent around the coordinate
-        const renderer =
-          /** @type {import("../renderer/canvas/TileLayer.js").default} */ (
-            /** @type {*} */ (layer.getRenderer())
-          );
+        const renderer = /** @type {InputTileRenderer} */ (this.renderers_[i]);
         const resolution = frameState.viewState.resolution;
         const lookupFrameState = /** @type {import("../Map.js").FrameState} */ (
           Object.assign({}, frameState, {
@@ -1009,7 +1071,7 @@ class RasterSource extends ImageSource {
         continue;
       }
 
-      const renderer = layer.getRenderer();
+      const renderer = this.getInputRenderer_(i);
       const data = renderer?.getData(
         applyTransform(
           frameState.coordinateToPixelTransform,
@@ -1027,26 +1089,58 @@ class RasterSource extends ImageSource {
   }
 
   /**
-   * Start processing source data.
+   * Start processing source data, once the inputs are complete.
    * @private
    */
   processSources_() {
+    if (this.getRevision() !== this.inputRevision_) {
+      this.inputRevision_ = this.getRevision();
+      this.processed_ = false;
+    }
+    if (this.processed_) {
+      return;
+    }
     const frameState = this.requestedFrameState_;
+    frameState.animate = false;
+    this.inputsAnimating_ = false;
     const len = this.layers_.length;
     const sourceRevisions = new Array(len);
     const inputs = new Array(len);
+    let complete = true;
     for (let i = 0; i < len; ++i) {
       const source = this.layers_[i].getSource();
       if (!source) {
         return;
       }
       sourceRevisions[i] = source.getRevision();
+      // keep the input render loop going; only the operation waits for complete inputs
       const input = this.getInput_(i, frameState);
-      if (!input) {
-        return;
+      this.inputsAnimating_ ||= frameState.animate;
+      // array data is only returned when complete
+      if (
+        !input ||
+        (!this.sampleArrayData_[i] &&
+          /** @type {{renderComplete: (boolean|undefined)}} */ (
+            /** @type {*} */ (this.getInputRenderer_(i))
+          ).renderComplete === false)
+      ) {
+        complete = false;
+        continue;
       }
       inputs[i] = input;
     }
+    if (!complete) {
+      // nothing left to wait for, e.g. no data tiles in view
+      if (
+        !this.inputsAnimating_ &&
+        this.tileQueue_.getCount() === 0 &&
+        this.tileQueue_.getTilesLoading() === 0
+      ) {
+        this.loading = false;
+      }
+      return;
+    }
+    this.processed_ = true;
 
     const data = {};
     this.dispatchEvent(
@@ -1069,7 +1163,11 @@ class RasterSource extends ImageSource {
    * @private
    */
   onWorkerComplete_(frameState, sourceRevisions, err, output, data) {
-    if (err || !output) {
+    if (err) {
+      this.loading = false;
+      return;
+    }
+    if (!output) {
       return;
     }
 
@@ -1117,12 +1215,14 @@ class RasterSource extends ImageSource {
     }
     context.putImageData(output, 0, 0);
 
-    if (frameState.animate) {
-      requestAnimationFrame(this.changed.bind(this));
-    } else {
-      this.changed();
+    const current = this.inputRevision_ === this.getRevision();
+    if (current) {
+      this.loading = false;
     }
-    this.renderedRevision_ = this.getRevision();
+    this.changed();
+    if (current) {
+      this.inputRevision_ = this.getRevision();
+    }
 
     this.dispatchEvent(
       new RasterSourceEvent(RasterEventType.AFTEROPERATIONS, frameState, data),
@@ -1161,6 +1261,7 @@ class RasterSource extends ImageSource {
     if (this.processor_) {
       this.processor_.dispose();
     }
+    this.renderers_.forEach((renderer) => renderer?.dispose());
     super.disposeInternal();
   }
 }
@@ -1194,11 +1295,11 @@ function readsArrayData(source) {
 /**
  * Get image data from a layer.
  * @param {import("../layer/Layer.js").default} layer Layer to render.
+ * @param {import("../renderer/Layer.js").default<*>|null} renderer Renderer for the layer.
  * @param {import("../Map.js").FrameState} frameState The frame state.
  * @return {ImageData|null} The image data.
  */
-function getImageData(layer, frameState) {
-  const renderer = layer.getRenderer();
+function getImageData(layer, renderer, frameState) {
   if (!renderer) {
     throw new Error('Unsupported layer type: ' + layer);
   }
