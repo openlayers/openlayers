@@ -577,6 +577,15 @@ describe('ol/layer/WebGLTile', function () {
     });
   });
 
+  describe('render()', () => {
+    it('returns null without a frame state or extent', () => {
+      assert.isNull(layer.render(null, target));
+      assert.isNull(
+        layer.render({viewState: map.getView().getState()}, target),
+      );
+    });
+  });
+
   describe('nodata band index', () => {
     it('generates getBandValue and discard for source with nodataBandIndex', function () {
       const source = new DataTileSource({
