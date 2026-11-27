@@ -174,9 +174,9 @@ describe('ol/layer/Heatmap', function () {
 
       const rendererOpts = rendererSpy.mock.calls[0][1];
       const attrs = rendererOpts.style.attributes;
-      assert.property(attrs, 'prop_weight');
+      assert.property(attrs, 'a_prop_weight');
 
-      const attrCallback = attrs['prop_weight'].callback;
+      const attrCallback = attrs['a_prop_weight'].callback;
       const feature = new Feature({foo: 0.5});
       assert.deepEqual(attrCallback(feature), 0.5);
 
@@ -195,9 +195,9 @@ describe('ol/layer/Heatmap', function () {
 
       const rendererOpts = rendererSpy.mock.calls[0][1];
       const attrs = rendererOpts.style.attributes;
-      assert.property(attrs, 'prop_weight');
+      assert.property(attrs, 'a_prop_weight');
 
-      const attrCallback = attrs['prop_weight'].callback;
+      const attrCallback = attrs['a_prop_weight'].callback;
       const feature = new Feature({size: 3.75});
       assert.deepEqual(attrCallback(feature), 0.75);
 
@@ -216,9 +216,9 @@ describe('ol/layer/Heatmap', function () {
 
       const rendererOpts = rendererSpy.mock.calls[0][1];
       const attrs = rendererOpts.style.attributes;
-      assert.property(attrs, 'prop_sizeAttr');
+      assert.property(attrs, 'a_prop_sizeAttr');
 
-      const attrCallback = attrs['prop_sizeAttr'].callback;
+      const attrCallback = attrs['a_prop_sizeAttr'].callback;
       const feature = new Feature({sizeAttr: 34});
       assert.deepEqual(attrCallback(feature), 34);
 
@@ -263,7 +263,7 @@ describe('ol/layer/Heatmap', function () {
 
       const rendererOpts = rendererSpy.mock.calls[0][1];
       const attrs = rendererOpts.style.attributes;
-      assert.property(attrs, 'prop_sizeAttr');
+      assert.property(attrs, 'a_prop_sizeAttr');
 
       const builder = rendererOpts.style.builder;
       assert.deepEqual(
@@ -280,7 +280,7 @@ describe('ol/layer/Heatmap', function () {
 
       const rendererOpts = rendererSpy.mock.calls[0][1];
       const attrs = rendererOpts.style.attributes;
-      assert.property(attrs, 'prop_sizeAttr');
+      assert.property(attrs, 'a_prop_sizeAttr');
 
       const builder = rendererOpts.style.builder;
       assert.deepEqual(
@@ -314,8 +314,8 @@ describe('ol/layer/Heatmap', function () {
 
       const rendererOpts = rendererSpy.mock.calls[0][1];
       const attrs = rendererOpts.style.attributes;
-      assert.property(attrs, 'prop_myBlur');
-      assert.property(attrs, 'prop_myRadius');
+      assert.property(attrs, 'a_prop_myBlur');
+      assert.property(attrs, 'a_prop_myRadius');
 
       const builder = rendererOpts.style.builder;
       assert.deepEqual(
