@@ -284,6 +284,60 @@ describe('ol/render/webgl/renderinstructions.js', function () {
     });
   });
 
+  describe('string attribute with a number or boolean value', () => {
+    beforeEach(function () {
+      mixedBatch = new MixedGeometryBatch();
+      mixedBatch.addFeatures([
+        new Feature({value: 12, geometry: new Point([10, 20])}),
+        new Feature({value: true, geometry: new Point([30, 40])}),
+        new Feature({value: false, geometry: new Point([50, 60])}),
+      ]);
+      renderInstructions = generatePointRenderInstructions(
+        mixedBatch.pointBatch,
+        new Float32Array(0),
+        labelsArray,
+        [
+          {
+            name: 'value',
+            size: 3,
+            callback: function (feature) {
+              return feature.get('value');
+            },
+          },
+        ],
+        SAMPLE_TRANSFORM,
+      );
+    });
+    it('keeps the raw value as the first float', function () {
+      const instructions = Array.from(renderInstructions);
+      assert.strictEqual(instructions[2], 12);
+      assert.strictEqual(instructions[7], 1);
+      assert.strictEqual(instructions[12], 0);
+    });
+    it('stores the value as text in the labels', function () {
+      assert.deepEqual(
+        labelsArray.push.mock.calls.map((call) => call[0]),
+        ['12', 'true', 'false'],
+      );
+    });
+    it('points to the label position and length', function () {
+      const instructions = Array.from(renderInstructions);
+      const decoder = new TextDecoder();
+      const decode = (start) =>
+        decoder.decode(
+          labelsArray
+            .getArray()
+            .slice(
+              instructions[start],
+              instructions[start] + instructions[start + 1],
+            ),
+        );
+      assert.strictEqual(decode(3), '12');
+      assert.strictEqual(decode(8), 'true');
+      assert.strictEqual(decode(13), 'false');
+    });
+  });
+
   describe('undefined property', () => {
     it('uses the value UNDEFINED_PROP_VALUE if the feature does not have this property set', () => {
       renderInstructions = generatePointRenderInstructions(
