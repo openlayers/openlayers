@@ -2380,6 +2380,21 @@ describe('ol/View', function () {
       view.adjustZoom(-1, [0, 0]);
       assert.deepEqual(view.getCenter(), [0, 100 - halfSize]);
     });
+
+    it('does not accumulate zoom beyond the resolution limits while interacting', function () {
+      const view = new View({
+        resolution: 1,
+        minResolution: 1,
+        maxResolution: 16,
+      });
+      view.beginInteraction();
+
+      for (let i = 0; i < 10; ++i) {
+        view.adjustZoom(1);
+      }
+      view.adjustZoom(-2);
+      assert.isAbove(view.getResolution(), 1);
+    });
   });
 
   describe('#adjustZoom() - useGeographic', () => {
