@@ -145,6 +145,78 @@ describe('ol/render/webgpu/declutter', () => {
     assert.deepEqual(visible, [true, false, false]);
   });
 
+  it('checks pair members with their own boxes', () => {
+    const visible = resolveDeclutter(
+      [
+        {minX: 0, minY: 10, maxX: 8, maxY: 18, priority: 0},
+        {minX: 0, minY: 0, maxX: 8, maxY: 8, priority: 1, pairId: 7},
+        {minX: 10, minY: 10, maxX: 18, maxY: 18, priority: 1, pairId: 7},
+      ],
+      64,
+      64,
+    );
+    assert.deepEqual(visible, [true, true, true]);
+  });
+
+  it('hides a pair member without collisions with its blocked partner', () => {
+    const visible = resolveDeclutter(
+      [
+        {minX: 0, minY: 0, maxX: 8, maxY: 8, priority: 0},
+        {
+          minX: 20,
+          minY: 0,
+          maxX: 28,
+          maxY: 8,
+          priority: 1,
+          pairId: 7,
+          mode: 'none',
+          optional: false,
+        },
+        {
+          minX: 0,
+          minY: 0,
+          maxX: 8,
+          maxY: 8,
+          priority: 1,
+          pairId: 7,
+          optional: false,
+        },
+      ],
+      64,
+      64,
+    );
+    assert.deepEqual(visible, [true, false, false]);
+  });
+
+  it('shows a pair member when its blocked partner is optional', () => {
+    const visible = resolveDeclutter(
+      [
+        {minX: 0, minY: 0, maxX: 8, maxY: 8, priority: 0},
+        {
+          minX: 0,
+          minY: 0,
+          maxX: 8,
+          maxY: 8,
+          priority: 1,
+          pairId: 7,
+          optional: true,
+        },
+        {
+          minX: 16,
+          minY: 0,
+          maxX: 24,
+          maxY: 8,
+          priority: 1,
+          pairId: 7,
+          optional: false,
+        },
+      ],
+      64,
+      64,
+    );
+    assert.deepEqual(visible, [true, false, true]);
+  });
+
   it('shares occupancy across calls in the same group and frame', () => {
     const frameState = /** @type {any} */ ({index: 3});
     const first = resolveDeclutter(

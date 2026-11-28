@@ -101,7 +101,8 @@ function imageEquals(image, snapshot, sameSource) {
     !same(image.getDisplacement(), snapshot.getDisplacement()) ||
     image.getPlacement() !== snapshot.getPlacement() ||
     image.getRepeat() !== snapshot.getRepeat() ||
-    image.getDeclutterMode() !== snapshot.getDeclutterMode()
+    image.getDeclutterMode() !== snapshot.getDeclutterMode() ||
+    image.getOptional() !== snapshot.getOptional()
   ) {
     return false;
   }
@@ -158,6 +159,7 @@ function textEquals(text, snapshot) {
     text.getOffsetY() === snapshot.getOffsetY() &&
     same(text.getPadding(), snapshot.getPadding()) &&
     text.getDeclutterMode() === snapshot.getDeclutterMode() &&
+    text.getOptional() === snapshot.getOptional() &&
     fillEquals(text.getFill(), snapshot.getFill()) &&
     strokeEquals(text.getStroke(), snapshot.getStroke()) &&
     fillEquals(text.getBackgroundFill(), snapshot.getBackgroundFill()) &&

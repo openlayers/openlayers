@@ -287,6 +287,7 @@ class LabelView {
         extra.pairId === undefined
           ? undefined
           : extra.pairId + this.pairOffsets[i];
+      box.optional = extra.optional;
       box.padding = label.padding;
       box.glyphStart = label.glyphStart;
       box.glyphCount = label.glyphCount;

@@ -18,7 +18,8 @@ import {DECLUTTER_SHADER} from '../../webgpu/shaders.js';
  * @property {number} [id] Stable id for tie-breaking when no sequence is set (feature uid).
  * @property {Array<number>} [padding] Collision padding `[top, right, bottom, left]`.
  * @property {import("../../style/Style.js").DeclutterMode} [mode='declutter'] Mode.
- * @property {number} [pairId] Image+text pair id; both members shown or neither when mode is declutter.
+ * @property {number} [pairId] Image+text pair id; members hide together unless `optional`.
+ * @property {boolean} [optional] The other pair member may be shown when this one is decluttered.
  * @property {number} [glyphStart] Glyph instance start.
  * @property {number} [glyphCount] Glyph instance count.
  * @property {number} [symbolIndex] Index into symbolInstances (stride `SYMBOL_STRIDE`).
@@ -183,7 +184,49 @@ export function modeToInt(mode) {
  * @property {number} index Index of the (first) label in the input.
  * @property {Array<number>} [members] Indices of every label placed with this one.
  * @property {boolean} [sticky] Was visible in the previous placement.
+ * @property {boolean} [pair] The unit is an image and text pair.
  */
+
+/**
+ * Place image and text of a pair with their own boxes. A member is shown when
+ * it fits and every member that is not optional fits too.
+ * @param {Array<Label>} labels Labels.
+ * @param {Array<number>} members Member indices.
+ * @param {import('rbush').default<DeclutterBox>} tree Collision tree.
+ * @param {Array<boolean>} visible Visibility.
+ * @return {boolean} A member was shown.
+ */
+function placePair(labels, members, tree, visible) {
+  let shown = false;
+  for (const index of members) {
+    const label = labels[index];
+    const fits =
+      label.mode === 'obstacle' ||
+      label.mode === 'none' ||
+      !tree.collides(label);
+    visible[index] = fits;
+    if (!fits && !label.optional) {
+      for (const member of members) {
+        visible[member] = false;
+      }
+      return false;
+    }
+    shown ||= fits;
+  }
+  for (const index of members) {
+    const label = labels[index];
+    if (!visible[index] || label.mode === 'none') {
+      continue;
+    }
+    tree.insert({
+      minX: label.minX,
+      minY: label.minY,
+      maxX: label.maxX,
+      maxY: label.maxY,
+    });
+  }
+  return shown;
+}
 
 /**
  * @param {Set<number>|undefined} stickyIds Previously visible label ids.
@@ -359,7 +402,7 @@ export function resolveDeclutter(
   const byPair = new Map();
   for (const item of order) {
     const pairId = item.label.pairId;
-    if (pairId === undefined || item.label.mode === 'none') {
+    if (pairId === undefined) {
       continue;
     }
     const members = byPair.get(pairId);
@@ -379,7 +422,7 @@ export function resolveDeclutter(
       continue;
     }
     const pairId = item.label.pairId;
-    if (pairId !== undefined && item.label.mode !== 'none') {
+    if (pairId !== undefined) {
       const members = byPair.get(pairId) || [item];
       for (const member of members) {
         consumed.add(member.index);
@@ -392,9 +435,7 @@ export function resolveDeclutter(
         maxY: -Infinity,
         priority: Infinity,
         id: Infinity,
-        mode: 'declutter',
       };
-      let allObstacle = true;
       let sticky = false;
       let sequence;
       for (const member of members) {
@@ -413,14 +454,10 @@ export function resolveDeclutter(
               ? member.label.sequence
               : Math.min(sequence, member.label.sequence);
         }
-        if (member.label.mode !== 'obstacle') {
-          allObstacle = false;
-        }
         if (member.label.id !== undefined && stickyIds?.has(member.label.id)) {
           sticky = true;
         }
       }
-      union.mode = allObstacle ? 'obstacle' : 'declutter';
       if (sequence !== undefined) {
         union.sequence = sequence;
       }
@@ -429,6 +466,7 @@ export function resolveDeclutter(
         index: item.index,
         members: members.map((m) => m.index),
         sticky,
+        pair: true,
       });
       continue;
     }
@@ -458,6 +496,18 @@ export function resolveDeclutter(
       continue;
     }
     if (label.id !== undefined && seenIdentities.has(label.id)) {
+      continue;
+    }
+    if (unit.pair) {
+      const shown = placePair(
+        labels,
+        /** @type {Array<number>} */ (unit.members),
+        tree,
+        visible,
+      );
+      if (shown && label.id !== undefined) {
+        seenIdentities.add(label.id);
+      }
       continue;
     }
     if (label.mode === 'none') {
@@ -492,7 +542,7 @@ export function resolveDeclutter(
 /**
  * Dispatch the GPU declutter compute pass. Labels must already be sorted by
  * priority. Pair merging and shared occupancy groups are handled on the CPU
- * (`resolveDeclutter`) so Canvas image+text all-or-nothing semantics hold;
+ * (`resolveDeclutter`) so Canvas image+text pairing semantics hold;
  * this shader implements the occupancy-grid claim for a single sorted list.
  *
  * @param {import("../../webgpu/Helper.js").default} helper Helper.

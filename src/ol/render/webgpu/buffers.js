@@ -881,6 +881,12 @@ function appendStyledGeometry(
   const textAnchors =
     text && !linePlacement ? getAnchors(/** @type {any} */ (geom), reproj) : [];
   const maxAnchors = Math.max(imageAnchors.length, textAnchors.length);
+  // without an optional setting, a pair only hides together when both declutter
+  const independent =
+    (image?.getDeclutterMode?.() || 'declutter') !== 'declutter' ||
+    (text?.getDeclutterMode?.() || 'declutter') !== 'declutter';
+  const imageOptional = image?.getOptional?.() ?? independent;
+  const textOptional = text?.getOptional?.() ?? independent;
   for (let a = 0; a < maxAnchors; ++a) {
     const pid =
       imageAnchors[a] && textAnchors[a] ? state.nextPairId++ : undefined;
@@ -907,6 +913,7 @@ function appendStyledGeometry(
           id: labelId,
           mode: image.getDeclutterMode?.() || 'declutter',
           pairId: pid,
+          optional: pid ? imageOptional : undefined,
           glyphStart: 0,
           glyphCount: 0,
           symbolIndex,
@@ -922,6 +929,7 @@ function appendStyledGeometry(
           featureRef,
           id: labelId,
           pairId: pid,
+          optional: pid ? imageOptional : undefined,
           identityKey: `${featureKey}|${styleKey}|${a}|${pid ? 'pair' : 'image'}`,
         });
       }
@@ -955,6 +963,7 @@ function appendStyledGeometry(
       id: labelId,
       mode: text.getDeclutterMode?.() || 'declutter',
       pairId: pid,
+      optional: pid ? textOptional : undefined,
       padding: text.getPadding() || [0, 0, 0, 0],
       glyphStart: start,
       glyphCount: glyphs.length - start,
@@ -1124,7 +1133,7 @@ function appendSymbolInstance(symbolInstances, image, anchor, hit) {
  * @param {import("../../style/Image.js").default} image Image style.
  * @param {import("../../coordinate.js").Coordinate} anchor Anchor.
  * @param {Array<number>} hit Hit color.
- * @param {{priority:number,zIndex:number,classRank:number,sequence:number,featureRef:number,id:number,pairId:(number|undefined),identityKey:string}} stamp Label values.
+ * @param {{priority:number,zIndex:number,classRank:number,sequence:number,featureRef:number,id:number,pairId:(number|undefined),optional:(boolean|undefined),identityKey:string}} stamp Label values.
  */
 function appendIconLabel(state, image, anchor, hit, stamp) {
   let imageState = image.getImageState();
@@ -1190,6 +1199,7 @@ function appendIconLabel(state, image, anchor, hit, stamp) {
     id: stamp.id,
     mode: data.declutterMode || 'declutter',
     pairId: stamp.pairId,
+    optional: stamp.optional,
     glyphStart: 0,
     glyphCount: 0,
     iconIndex,
