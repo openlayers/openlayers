@@ -1309,7 +1309,8 @@ function createLayer(layerOrSource) {
         ? new DataTileInputLayer({source: layerOrSource})
         : new TileLayer({source: layerOrSource});
     } else if (layerOrSource instanceof ImageSource) {
-      layer = new ImageLayer({source: layerOrSource});
+      // Inputs are read back as pixels, which a GPU renderer would only round trip.
+      layer = new ImageLayer({source: layerOrSource, renderer: 'canvas'});
     } else {
       throw new Error('Unsupported source type: ' + layerOrSource);
     }

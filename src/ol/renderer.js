@@ -15,7 +15,7 @@
 let defaultRenderer = 'canvas';
 
 /**
- * Set the renderer for tile, vector and vector tile layers that are created after
+ * Set the renderer for image, tile, vector and vector tile layers that are created after
  * this call. The default is `'canvas'`. A layer's `renderer` option takes
  * precedence. Layers load their renderer when they are
  * first rendered, so an application only downloads the renderers it uses.
@@ -32,7 +32,7 @@ export function setDefaultRenderer(renderer) {
 }
 
 /**
- * Get the renderer for tile, vector and vector tile layers that are created
+ * Get the renderer for image, tile, vector and vector tile layers that are created
  * from now on.
  * @return {RendererName} The renderer.
  * @api

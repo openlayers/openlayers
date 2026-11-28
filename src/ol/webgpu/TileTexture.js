@@ -11,13 +11,26 @@ import EventTarget from '../events/Target.js';
 /** @type {CanvasRenderingContext2D|OffscreenCanvasRenderingContext2D|null} */
 let pixelContext = null;
 
-function getPixelContext() {
+/**
+ * @param {CanvasImageSource} image Image.
+ * @param {number} col Column.
+ * @param {number} row Row.
+ * @return {Uint8ClampedArray|null} RGBA, or null when the image cannot be read.
+ */
+export function readImagePixel(image, col, row) {
   if (!pixelContext) {
     pixelContext = createCanvasContext2D(1, 1, undefined, {
       willReadFrequently: true,
     });
   }
-  return pixelContext;
+  try {
+    pixelContext.clearRect(0, 0, 1, 1);
+    pixelContext.drawImage(image, col, row, 1, 1, 0, 0, 1, 1);
+    return pixelContext.getImageData(0, 0, 1, 1).data;
+  } catch {
+    pixelContext = null;
+    return null;
+  }
 }
 
 /**
@@ -423,16 +436,7 @@ class TileTexture extends EventTarget {
    * @private
    */
   getImagePixelData_(image, col, row) {
-    const context = getPixelContext();
-    const gutter = this.gutter;
-    try {
-      context.clearRect(0, 0, 1, 1);
-      context.drawImage(image, gutter + col, gutter + row, 1, 1, 0, 0, 1, 1);
-      return context.getImageData(0, 0, 1, 1).data;
-    } catch {
-      pixelContext = null;
-      return null;
-    }
+    return readImagePixel(image, this.gutter + col, this.gutter + row);
   }
 
   /**

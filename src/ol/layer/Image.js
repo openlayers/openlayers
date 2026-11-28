@@ -1,8 +1,28 @@
 /**
  * @module ol/layer/Image
  */
+import {
+  createLazyRenderer,
+  getDefaultRenderer,
+  lazyRenderer,
+} from '../renderer.js';
 import CanvasImageLayerRenderer from '../renderer/canvas/ImageLayer.js';
 import BaseImageLayer from './BaseImage.js';
+
+const webgpuRenderer = lazyRenderer(
+  () => import('../renderer/webgpu/ImageLayer.js'),
+);
+
+/**
+ * @template {import("../source/Image.js").default} ImageSourceType
+ * @typedef {import("./BaseImage.js").Options<ImageSourceType> & ImageOptions} Options
+ */
+
+/**
+ * @typedef {Object} ImageOptions
+ * @property {import("../renderer.js").RendererName} [renderer] Renderer for this layer. Defaults to the one
+ * set with {@link module:ol/renderer.setDefaultRenderer} when the layer is created.
+ */
 
 /**
  * @classdesc
@@ -13,21 +33,39 @@ import BaseImageLayer from './BaseImage.js';
  * options means that `title` is observable, and has get/set accessors.
  *
  * @template {import("../source/Image.js").default} ImageSourceType
- * @extends {BaseImageLayer<ImageSourceType, CanvasImageLayerRenderer>}
+ * @extends {BaseImageLayer<ImageSourceType, CanvasImageLayerRenderer|import("../renderer/webgpu/ImageLayer.js").default>}
  * @api
  */
 class ImageLayer extends BaseImageLayer {
   /**
-   * @param {import("./BaseImage.js").Options<ImageSourceType>} [options] Layer options.
+   * @param {Options<ImageSourceType>} [options] Layer options.
    */
   constructor(options) {
+    options = options ? Object.assign({}, options) : {};
+    const renderer = options.renderer;
+    delete options.renderer;
+
     super(options);
+
+    /**
+     * The renderer, from the `renderer` option or `getDefaultRenderer()` at
+     * construction.
+     * @protected
+     * @type {import("../renderer.js").RendererName}
+     */
+    this.rendererName = renderer ?? getDefaultRenderer();
   }
 
   /**
    * @override
    */
   createRenderer() {
+    if (this.rendererName === 'webgpu') {
+      return createLazyRenderer(
+        webgpuRenderer,
+        (Renderer) => new Renderer(this),
+      );
+    }
     return new CanvasImageLayerRenderer(this);
   }
 

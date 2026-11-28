@@ -2,6 +2,7 @@ import Map from '../../src/ol/Map.js';
 import View from '../../src/ol/View.js';
 import {setLevel as setLogLevel} from '../../src/ol/console.js';
 import {defaults as defaultInteractions} from '../../src/ol/interaction/defaults.js';
+import ImageLayer from '../../src/ol/layer/Image.js';
 import TileLayer from '../../src/ol/layer/Tile.js';
 import VectorLayer from '../../src/ol/layer/Vector.js';
 import VectorTileLayer from '../../src/ol/layer/VectorTile.js';
@@ -65,6 +66,7 @@ const webgpu = 'gpu' in navigator && !!(await navigator.gpu.requestAdapter());
    */
   global.loadRenderers = async function (renderer) {
     const layers = [
+      new ImageLayer({renderer}),
       new TileLayer({renderer}),
       new VectorLayer({renderer}),
       new VectorTileLayer({renderer}),
