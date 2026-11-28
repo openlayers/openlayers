@@ -73,6 +73,29 @@ describe('ol.render.canvas.ImageBuilder', function () {
       assert.deepEqual(builder.coordinates, [5, 0, 15, 0]);
     });
 
+    it("adds the icon's own rotation to the tangent when rotateWithView is true", function () {
+      const builder = createBuilder();
+      builder.setImageStyle(
+        createIcon({
+          placement: 'line',
+          repeat: 10,
+          rotation: 0.5,
+          rotateWithView: true,
+        }),
+      );
+      const geometry = new LineString([
+        [0, 0],
+        [10, 0],
+        [10, 10],
+      ]);
+      builder.drawLineString(geometry, new Feature(geometry));
+
+      const rotations = getDrawImageInstructions(builder).map(
+        (instruction) => instruction[11],
+      );
+      assert.deepEqual(rotations, [0.5, -Math.PI / 2 + 0.5]);
+    });
+
     it("keeps the icon's own fixed rotation at every anchor when rotateWithView is false", function () {
       const builder = createBuilder();
       builder.setImageStyle(

@@ -10,7 +10,8 @@ import {abstract} from '../util.js';
  * geometries. For a {@link module:ol/geom/LineString~LineString}, {@link module:ol/geom/MultiLineString~MultiLineString},
  * {@link module:ol/geom/Polygon~Polygon} or {@link module:ol/geom/MultiPolygon~MultiPolygon} geometry, set `placement`
  * to `'line'` to draw the symbolizer along the path (only the exterior ring for polygons), repeated at the `repeat`
- * interval when set, and rotated according to `rotateWithView`. A single symbolizer at the geometry's own midpoint,
+ * interval when set, and rotated according to `rotateWithView`, with the style's own `rotation` added to the
+ * direction of the line. A single symbolizer at the geometry's own midpoint,
  * using only the style's own fixed `rotation`, can be obtained with `placement: 'line'`, no `repeat`, and
  * `rotateWithView: false`.
  */
@@ -19,8 +20,8 @@ import {abstract} from '../util.js';
  * @typedef {Object} Options
  * @property {number} opacity Opacity.
  * @property {boolean} rotateWithView If the image should get rotated with the view. When `placement` is set to
- * `'line'`, this also controls whether the symbolizer follows the local direction of the line (`true`) or keeps
- * its own fixed `rotation` (`false`).
+ * `'line'`, this also controls whether the symbolizer follows the local direction of the line, rotated further by
+ * its own `rotation` (`true`), or keeps its own fixed `rotation` (`false`).
  * @property {number} rotation Rotation.
  * @property {number|import("../size.js").Size} scale Scale.
  * @property {Array<number>} displacement Displacement.

@@ -284,8 +284,8 @@ class CanvasImageBuilder extends CanvasBuilder {
   /**
    * Compute evenly-spaced anchors (or a single anchor when `repeat_` is not set) along
    * a sub-line, and draw one image per anchor. When `rotateWithView_` is `true` (the
-   * default), each image is rotated to follow its own interval's start/end tangent;
-   * otherwise every image just keeps the image style's own fixed rotation.
+   * default), each image is rotated to follow its own interval's start/end tangent, plus
+   * the image style's own rotation; otherwise every image just keeps that fixed rotation.
    * @param {Array<number>} flatCoordinates Flat coordinates.
    * @param {number} offset Offset.
    * @param {number} end End.
@@ -306,7 +306,9 @@ class CanvasImageBuilder extends CanvasBuilder {
     );
     const step = this.rotateWithView_ ? 3 : 2;
     for (let i = 0, ii = anchors.length; i < ii; i += step) {
-      const rotation = this.rotateWithView_ ? anchors[i + 2] : this.rotation_;
+      const rotation = this.rotateWithView_
+        ? anchors[i + 2] + (this.rotation_ ?? 0)
+        : this.rotation_;
       this.drawImageAtCoordinate_([anchors[i], anchors[i + 1]], rotation);
     }
   }
